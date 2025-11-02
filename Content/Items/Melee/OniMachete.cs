@@ -519,6 +519,41 @@ namespace CalamityOverhaul.Content.Items.Melee
         private Vector2 throwStartPos = Vector2.Zero;
         private Vector2 throwEndPos = Vector2.Zero;
 
+        /// <summary>
+        /// 每只手的独特时间偏移（0-1），用于错开动作时机
+        /// </summary>
+        private float personalityTimeOffset = 0f;
+        
+        /// <summary>
+        /// 个性化速度倍率（0.85-1.15），让每只手的动作速度略有不同
+        /// </summary>
+        private float personalitySpeedMultiplier = 1f;
+        
+        /// <summary>
+        /// 攻击偏好权重：[挥击, 下砸, 横扫, 投掷]
+        /// </summary>
+        private float[] attackPreference = new float[4];
+        
+        /// <summary>
+        /// 额外的待机延迟（帧数），让搜索目标的时机错开
+        /// </summary>
+        private int personalityIdleDelay = 0;
+        
+        /// <summary>
+        /// 是否初始化了个性
+        /// </summary>
+        private bool personalityInitialized = false;
+        
+        /// <summary>
+        /// 个性化的待机角度偏移，让漂浮位置更分散
+        /// </summary>
+        private float personalityAngleOffset = 0f;
+        
+        /// <summary>
+        /// 个性化的攻击距离偏好（0.8-1.2）
+        /// </summary>
+        private float personalityRangePreference = 1f;
+
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = false;
@@ -543,7 +578,54 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override bool? CanDamage() => State == HandState.Swinging || State == HandState.Slamming || State == HandState.Sweeping;
+        /// <summary>
+        /// 初始化每只手的个性化参数
+        /// </summary>
+        private void InitializePersonality() {
+            if (personalityInitialized) return;
+            personalityInitialized = true;
+            
+            //基于HandIndex生成一致的随机种子
+            int seed = (int)(HandIndex * 1000) + Projectile.owner * 10000;
+            Random personalRand = new Random(seed);
+            
+            //1. 时间偏移：让每只手的动作时机错开（0-60帧的随机延迟）
+            personalityTimeOffset = (float)personalRand.NextDouble();
+            personalityIdleDelay = personalRand.Next(0, 60);
+            
+            //2. 速度差异：每只手的动作速度略有不同（±15%）
+            personalitySpeedMultiplier = 0.85f + (float)personalRand.NextDouble() * 0.3f;
+            
+            //3. 攻击偏好：某些手更偏好某种攻击方式
+            for (int i = 0; i < 4; i++) {
+                attackPreference[i] = 0.5f + (float)personalRand.NextDouble() * 0.5f;
+            }
+            //归一化权重
+            float totalWeight = attackPreference[0] + attackPreference[1] + attackPreference[2] + attackPreference[3];
+            for (int i = 0; i < 4; i++) {
+                attackPreference[i] /= totalWeight;
+            }
+            
+            //4. 角度偏移：让待机位置更分散（±30度，即±Pi/6）
+            personalityAngleOffset = ((float)personalRand.NextDouble() - 0.5f) * MathHelper.Pi / 3f;
+            
+            //5. 距离偏好：某些手更喜欢远程/近战（±20%）
+            personalityRangePreference = 0.8f + (float)personalRand.NextDouble() * 0.4f;
+        }
+
+        /// <summary>
+        /// 获取经过个性化调整的持续时间
+        /// </summary>
+        private int GetPersonalizedDuration(int baseDuration) {
+            return (int)(baseDuration * personalitySpeedMultiplier);
+        }
+        
+        /// <summary>
+        /// 获取带有个性化偏移的全局时间
+        /// </summary>
+        private float GetPersonalizedTime() {
+            return Main.GlobalTimeWrappedHourly + personalityTimeOffset * MathHelper.TwoPi;
+        }
 
         private void UpdateIdleOffset() {
             //更加明显的漂浮效果
@@ -571,6 +653,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.Kill();
                 return;
             }
+
+            //初始化个性
+            InitializePersonality();
 
             Projectile.timeLeft = 60;
 
@@ -612,8 +697,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             //更新拖尾
             UpdateTrail();
 
-            //硫磺火发光效果
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.3f + 0.7f;
+            //硫磺火发光效果（使用个性化时间）
+            float pulse = (float)Math.Sin(GetPersonalizedTime() * 6f) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.8f * pulse, 0.2f * pulse, 0.1f * pulse);
 
             //冲击震动衰减
@@ -662,22 +747,27 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void IdleBehavior(Player owner) {
+            //应用个性化的待机延迟
+            int adjustedIdleDuration = GetPersonalizedDuration(IdleDuration) + personalityIdleDelay;
+            
             //在玩家周围较远距离漂浮，根据玩家朝向调整位置
-            float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
+            //使用个性化角度偏移让每只手的位置更分散
+            float angle = HandIndex * MathHelper.TwoPi / 3f + GetPersonalizedTime() * 0.5f;
 
             //根据玩家朝向镜像X偏移
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
 
             Vector2 targetPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
-            MoveToPosition(targetPos, 0.15f);
+            //应用个性化速度
+            MoveToPosition(targetPos, 0.15f * personalitySpeedMultiplier);
 
             glowIntensity = 0.4f;
             armTension = 0.3f;
             throwActionActive = false;
 
-            //搜索敌人
-            if (StateTimer > IdleDuration) {
+            //搜索敌人（考虑个性化延迟）
+            if (StateTimer > adjustedIdleDuration) {
                 NPC target = owner.Center.FindClosestNPC(SearchRange);
                 if (target != null) {
                     targetNPCID = target.whoAmI;
@@ -696,14 +786,19 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (!IsTargetValid()) {
                 State = HandState.Idle;
                 StateTimer = 0;
+                //重新随机化待机延迟，避免同时返回待机
+                personalityIdleDelay = Main.rand.Next(0, 40);
                 return;
             }
 
             NPC target = Main.npc[targetNPCID];
             float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
+            
+            //应用个性化的距离判断偏好
+            float adjustedThrowRange = 400f * personalityRangePreference;
 
             //根据距离决定行为
-            if (distanceToTarget > 400f) {
+            if (distanceToTarget > adjustedThrowRange) {
                 //距离较远-直接进入投掷模式
                 AttackType = 3;
                 State = HandState.WindingUp;
@@ -721,7 +816,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             else {
                 //距离适中，移动到目标附近
                 Vector2 approachPos = target.Center + new Vector2(0, -180f);
-                MoveToPosition(approachPos, 0.2f);
+                MoveToPosition(approachPos, 0.2f * personalitySpeedMultiplier);
 
                 glowIntensity = 0.6f;
                 armTension = 0.6f;
@@ -745,8 +840,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //如果无法接近目标,切换到投掷
-            if (StateTimer > 30 && distanceToTarget >= 120) {
+            //如果无法接近目标,切换到投掷（考虑个性化速度）
+            int timeoutDuration = (int)(30 * personalitySpeedMultiplier);
+            if (StateTimer > timeoutDuration && distanceToTarget >= 120) {
                 AttackType = 3;
                 State = HandState.WindingUp;
                 StateTimer = 0;
@@ -757,16 +853,28 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void ChooseAttackType(NPC target) {
-            //根据相对位置和随机性选择近战攻击方式
+            //基于攻击偏好权重和相对位置选择攻击方式
             Vector2 toTarget = target.Center - Projectile.Center;
 
-            if (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0) {
-                //目标在下方，下砸攻击
-                AttackType = 1;
+            //根据位置给不同攻击方式打分
+            float swingScore = attackPreference[0] * 1.0f;
+            float slamScore = attackPreference[1] * (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0 ? 2.0f : 0.5f);
+            float sweepScore = attackPreference[2] * 1.0f;
+            
+            //添加随机性
+            swingScore *= 0.8f + Main.rand.NextFloat(0.4f);
+            slamScore *= 0.8f + Main.rand.NextFloat(0.4f);
+            sweepScore *= 0.8f + Main.rand.NextFloat(0.4f);
+            
+            //选择得分最高的攻击方式
+            if (slamScore > swingScore && slamScore > sweepScore) {
+                AttackType = 1; //下砸
+            }
+            else if (sweepScore > swingScore) {
+                AttackType = 2; //横扫
             }
             else {
-                //横向，随机选择挥击/横扫
-                AttackType = Main.rand.NextBool() ? 0 : 2;
+                AttackType = 0; //挥击
             }
         }
 
@@ -777,7 +885,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            float progress = StateTimer / WindUpDuration;
+            //应用个性化速度
+            int adjustedWindUpDuration = GetPersonalizedDuration(WindUpDuration);
+            float progress = StateTimer / adjustedWindUpDuration;
             glowIntensity = 0.6f + progress * 0.4f;
             armTension = 0.9f;
 
@@ -791,7 +901,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             };
 
             Vector2 targetPos = attackStartPos + windUpOffset;
-            MoveToPosition(targetPos, 0.3f);
+            MoveToPosition(targetPos, 0.3f * personalitySpeedMultiplier);
 
             //蓄力时手部放大
             handScale = 1f + progress * 0.3f;
@@ -801,15 +911,16 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpawnWindUpDust();
             }
 
-            //蓄力音效 - 地狱火焰蓄力
+            //蓄力音效 - 地狱火焰蓄力（使用个性化pitch）
             if (StateTimer % 8 == 0) {
+                float personalPitch = -0.6f + progress * 0.4f + (personalityTimeOffset - 0.5f) * 0.2f;
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with {
                     Volume = 0.3f * progress,
-                    Pitch = -0.6f + progress * 0.4f
+                    Pitch = personalPitch
                 }, Projectile.Center);
             }
 
-            if (StateTimer >= WindUpDuration) {
+            if (StateTimer >= adjustedWindUpDuration) {
                 //切换到对应攻击状态
                 State = AttackType switch {
                     0 => HandState.Swinging,
@@ -828,7 +939,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                     //计算投掷目标点在目标敌人前方,考虑预判
                     if (IsTargetValid()) {
                         NPC target = Main.npc[targetNPCID];
-                        Vector2 predictedPos = target.Center + target.velocity * 20f;
+                        //个性化的预判时间
+                        float predictionTime = 20f * personalitySpeedMultiplier;
+                        Vector2 predictedPos = target.Center + target.velocity * predictionTime;
                         throwEndPos = predictedPos;
                     }
                 }
@@ -842,7 +955,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SwingingBehavior() {
-            float progress = StateTimer / SwingDuration;
+            int adjustedDuration = GetPersonalizedDuration(SwingDuration);
+            float progress = StateTimer / adjustedDuration;
             glowIntensity = 1f;
             armTension = 1f;
 
@@ -866,7 +980,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             );
 
             Projectile.Center = attackTargetPos + swingOffset;
-            Projectile.velocity = (attackTargetPos - Projectile.Center) * 1.2f;
+            Projectile.velocity = (attackTargetPos - Projectile.Center) * 1.2f * personalitySpeedMultiplier;
 
             //挥击时手部缩放效果
             handScale = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.4f;
@@ -874,7 +988,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //挥击特效
             SpawnSwingEffect();
 
-            if (StateTimer >= SwingDuration) {
+            if (StateTimer >= adjustedDuration) {
                 State = HandState.Recovering;
                 StateTimer = 0;
                 CreateImpactEffect(attackTargetPos);
@@ -882,7 +996,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SlammingBehavior() {
-            float progress = StateTimer / SlamDuration;
+            int adjustedDuration = GetPersonalizedDuration(SlamDuration);
+            float progress = StateTimer / adjustedDuration;
             glowIntensity = 1f;
             armTension = 1f;
 
@@ -895,7 +1010,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Projectile.velocity = Vector2.Lerp(
                 Vector2.Zero,
-                new Vector2(0, 60f),
+                new Vector2(0, 60f * personalitySpeedMultiplier),
                 easeProgress
             );
 
@@ -905,7 +1020,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //下砸轨迹特效
             SpawnSlamTrail();
 
-            if (StateTimer >= SlamDuration) {
+            if (StateTimer >= adjustedDuration) {
                 State = HandState.Recovering;
                 StateTimer = 0;
                 CreateSlamImpact(slamEnd);
@@ -913,7 +1028,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SweepingBehavior() {
-            float progress = StateTimer / SweepDuration;
+            int adjustedDuration = GetPersonalizedDuration(SweepDuration);
+            float progress = StateTimer / adjustedDuration;
             glowIntensity = 1f;
             armTension = 1f;
 
@@ -943,7 +1059,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //横扫特效
             SpawnSweepEffect();
 
-            if (StateTimer >= SweepDuration) {
+            if (StateTimer >= adjustedDuration) {
                 State = HandState.Recovering;
                 StateTimer = 0;
                 CreateImpactEffect(Projectile.Center);
@@ -951,14 +1067,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void ThrowingBehavior() {
+            int adjustedDuration = GetPersonalizedDuration(ThrowDuration);
             glowIntensity = 1f;
             armTension = 0.8f;
 
-            if (StateTimer < ThrowDuration * 0.3f) {
+            if (StateTimer < adjustedDuration * 0.3f) {
                 //前30%，保持蓄力姿态
-                float holdProgress = StateTimer / (ThrowDuration * 0.3f);
+                float holdProgress = StateTimer / (adjustedDuration * 0.3f);
                 Vector2 windUpPos = throwStartPos;
-                MoveToPosition(windUpPos, 0.2f);
+                MoveToPosition(windUpPos, 0.2f * personalitySpeedMultiplier);
                 handScale = 1f + 0.4f;
 
                 //蓄力粒子持续生成
@@ -966,20 +1083,20 @@ namespace CalamityOverhaul.Content.Items.Melee
                     SpawnWindUpDust();
                 }
             }
-            else if (StateTimer < ThrowDuration * 0.7f) {
+            else if (StateTimer < adjustedDuration * 0.7f) {
                 //中40%，快速前冲投掷动作
-                float throwProgress = (StateTimer - ThrowDuration * 0.3f) / (ThrowDuration * 0.4f);
+                float throwProgress = (StateTimer - adjustedDuration * 0.3f) / (adjustedDuration * 0.4f);
                 float easeProgress = CWRUtils.EaseOutCubic(throwProgress);
 
                 //手臂快速向前冲
                 Vector2 currentPos = Vector2.Lerp(throwStartPos, throwEndPos, easeProgress);
                 Projectile.Center = currentPos;
-                Projectile.velocity = (throwEndPos - throwStartPos).SafeNormalize(Vector2.Zero) * 35f * (1f - easeProgress);
+                Projectile.velocity = (throwEndPos - throwStartPos).SafeNormalize(Vector2.Zero) * 35f * personalitySpeedMultiplier * (1f - easeProgress);
 
                 handScale = 1f + 0.4f * (1f - throwProgress);
 
                 //在投掷动作中段释放骨头
-                if (StateTimer == (int)(ThrowDuration * 0.5f)) {
+                if (StateTimer == (int)(adjustedDuration * 0.5f)) {
                     ThrowFires();
                 }
 
@@ -990,12 +1107,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             else {
                 //后30%，收手减速
-                float recoverProgress = (StateTimer - ThrowDuration * 0.7f) / (ThrowDuration * 0.3f);
+                float recoverProgress = (StateTimer - adjustedDuration * 0.7f) / (adjustedDuration * 0.3f);
                 Projectile.velocity *= 0.85f;
                 handScale = 1f + 0.2f * (1f - recoverProgress);
             }
 
-            if (StateTimer >= ThrowDuration) {
+            if (StateTimer >= adjustedDuration) {
                 State = HandState.Recovering;
                 StateTimer = 0;
                 throwActionActive = false;
@@ -1026,7 +1143,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     throwOrigin + spawnOffset,
                     velocity,
                     ModContent.ProjectileType<OniFireBall>(),
-                    (int)(Projectile.damage * 0.1),
+                    (int)(Projectile.damage * 0.12),
                     2f,
                     Projectile.owner
                 );
@@ -1090,21 +1207,24 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void RecoveringBehavior(Player owner) {
-            float progress = StateTimer / RecoverDuration;
+            int adjustedDuration = GetPersonalizedDuration(RecoverDuration);
+            float progress = StateTimer / adjustedDuration;
             glowIntensity = 1f - progress * 0.7f;
             armTension = 0.5f;
 
-            //返回待机位置，考虑玩家朝向
-            float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
+            //返回待机位置，考虑玩家朝向和个性化角度
+            float angle = HandIndex * MathHelper.TwoPi / 3f + GetPersonalizedTime() * 0.5f;
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
 
             Vector2 recoverPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
-            MoveToPosition(recoverPos, 0.2f);
+            MoveToPosition(recoverPos, 0.2f * personalitySpeedMultiplier);
 
-            if (StateTimer >= RecoverDuration) {
+            if (StateTimer >= adjustedDuration) {
                 State = HandState.Idle;
                 StateTimer = 0;
+                //重新随机化待机延迟，确保下次攻击不同步
+                personalityIdleDelay = Main.rand.Next(0, 50);
             }
         }
 
