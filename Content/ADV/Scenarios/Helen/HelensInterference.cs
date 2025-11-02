@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Inquiry);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            public string LocalizationCategory => "Legend.HalibutText.ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Anger);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            public string LocalizationCategory => "Legend.HalibutText.ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Silence);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            public string LocalizationCategory => "Legend.HalibutText.ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(FinalBranch_Continue);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            public string LocalizationCategory => "Legend.HalibutText.ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(FinalBranch_Stop);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            public string LocalizationCategory => "Legend.HalibutText.ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
