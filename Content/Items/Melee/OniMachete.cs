@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private static void SpawnSummonEffect(Vector2 position) {
-            //硫磺火粒子爆发 - 使用Brimstone粒子
+            //硫磺火粒子爆发，使用Brimstone粒子
             for (int i = 0; i < 40; i++) {
                 float angle = MathHelper.TwoPi * i / 40f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
