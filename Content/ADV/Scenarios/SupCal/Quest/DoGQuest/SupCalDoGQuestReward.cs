@@ -1,5 +1,6 @@
 using CalamityMod.NPCs.DevourerofGods;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;
@@ -56,6 +57,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
 
         protected override void OnScenarioComplete() {
             SupCalSkyEffect.IsActive = false;
+            HelensInterference.DelayTimer = Main.rand.Next(60 * 5, 60 * 6);
         }
 
         protected override void Build() {
