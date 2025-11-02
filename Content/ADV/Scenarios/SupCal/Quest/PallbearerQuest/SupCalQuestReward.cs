@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.Providence;
-using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
