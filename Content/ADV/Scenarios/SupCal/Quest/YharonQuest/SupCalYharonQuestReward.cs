@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;
@@ -99,7 +100,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            if (args.Index == 3) {//在Line4时发放奖励
+            if (args.Index == 4) {//在Line5时发放奖励
                 ADVRewardPopup.ShowReward(ModContent.ItemType<AuricBar>(), 302, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
@@ -107,6 +108,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
                             return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
                         }
                         return new Vector2(rect.Center.X, rect.Y - 70f);
+                    }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
+            }
+            if (args.Index == 5) {//在Line6时发放奖励
+                ADVRewardPopup.ShowReward(ModContent.ItemType<Proverbs>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f - 60);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f - 60);
                     }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
             }
         }
