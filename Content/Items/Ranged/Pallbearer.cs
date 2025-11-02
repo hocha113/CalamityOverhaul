@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.UseSound = null;
-            Item.autoReuse = false;
+            Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<PallbearerHeld>();
             Item.shootSpeed = 15f;
             Item.useAmmo = AmmoID.Arrow;
@@ -64,6 +64,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override bool CanUseItem(Player player) {
+            Item.useStyle = ItemUseStyleID.Shoot;
+            if (player.altFunctionUse == 2) {
+                Item.useStyle = ItemUseStyleID.Swing;
+            }
             //确保同时只有一个手持弹幕存在
             return player.ownedProjectileCounts[Item.shoot] == 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<PallbearerBoomerang>()] == 0;
@@ -428,7 +432,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 抬棺人弩被投掷后的回旋镖形态，会旋转攻击敌人后返回玩家手中
     /// </summary>
-    internal class PallbearerBoomerang : ModProjectile
+    internal class PallbearerBoomerang : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Pallbearer>()).DisplayName;
@@ -467,13 +471,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.localNPCHitCooldown = 12;
         }
 
+        public override bool? CanDamage() => Time > 2;
+
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-            if (!owner.active || owner.dead) { Projectile.Kill(); return; }
+            if (!Owner.active || Owner.dead) { Projectile.Kill(); return; }
 
             Time++;
-            Vector2 playerCenter = owner.GetPlayerStabilityCenter();
-            Vector2 toMouseDir = (Main.MouseWorld - playerCenter).SafeNormalize(Vector2.UnitX * owner.direction);
+            Vector2 playerCenter = Owner.GetPlayerStabilityCenter();
+            Vector2 toMouseDir = (Main.MouseWorld - playerCenter).SafeNormalize(Vector2.UnitX * Owner.direction);
             Vector2 centerToPlayer = playerCenter - Projectile.Center;
 
             if (State == BoomerangState.Throwing) {
@@ -490,7 +495,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 float distanceFactor = CWRUtils.EaseOutExpo(ThrowProgress);
 
                 //弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
-                Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * owner.direction);
+                Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * Owner.direction);
                 float arc = (float)Math.Sin(distanceFactor * MathHelper.Pi) * ArcAmplitude * (1f - cruisePhase * 0.65f);
                 Vector2 targetPos = playerCenter + toMouseDir * (distanceFactor * MaxDistance) + lateral * arc;
 
@@ -518,8 +523,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
 
                 if (centerToPlayer.Length() < 54f) {
-                    owner.GetModPlayer<CWRPlayer>().GetScreenShake(4f);
-                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.9f, Pitch = 0.15f }, owner.Center);
+                    Owner.GetModPlayer<CWRPlayer>().GetScreenShake(4f);
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.9f, Pitch = 0.15f }, Owner.Center);
                     Projectile.Kill();
                     return;
                 }
@@ -529,7 +534,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             float velLen = Projectile.velocity.Length();
             float targetSpin = 0.15f + velLen / 90f; //更高速更快旋转
             SpinSpeed = MathHelper.Lerp(SpinSpeed, targetSpin, 0.15f);
-            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
+            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? Owner.direction : Projectile.velocity.X);
 
             //中程呼啸音效
             if (!PlayedMidWhoosh && ThrowProgress > 0.55f && State == BoomerangState.Throwing) {
@@ -549,8 +554,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Player owner = Main.player[Projectile.owner];
-            owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2.45f;
+            Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2.45f;
             if (State == BoomerangState.Throwing) {
                 State = BoomerangState.Returning;
                 ReturnProgress = 0f;

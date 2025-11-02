@@ -190,6 +190,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.localAI[0] = 1f;
             }
 
+            Owner.direction = Projectile.direction = Math.Sign(dashDirection.X);
+
             //更新冲刺状态
             UpdateDashMovement();
 
@@ -225,8 +227,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void UpdateDashMovement() {
-            Projectile.direction = Math.Sign(dashDirection.X);
-
             //冲刺逐渐减速
             float progress = 1f - (Projectile.timeLeft / (float)DashDuration);
             currentDashSpeed = MathHelper.Lerp(DashSpeed, DashSpeed * 0.3f, CWRUtils.EaseOutCubic(progress));
@@ -237,8 +237,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             //更新旋转
             Projectile.rotation = dashDirection.ToRotation() + (Projectile.direction > 0 ? MathHelper.PiOver4 : -MathHelper.Pi - MathHelper.PiOver4);
 
-            //更新玩家朝向
-            Owner.direction = Projectile.direction;
             Owner.Center = Projectile.Center;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
