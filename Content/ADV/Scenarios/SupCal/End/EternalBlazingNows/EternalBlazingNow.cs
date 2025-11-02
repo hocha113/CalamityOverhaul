@@ -199,31 +199,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            //如果已经触发过场景，不再触发
-            if (save.EternalBlazingNowTriggered) {
-                return;
-            }
+            //没做完，先注释掉触发方法
+            ////如果已经触发过场景，不再触发
+            //if (save.EternalBlazingNowTriggered) {
+            //    return;
+            //}
 
-            //如果玩家选择了战斗路线（FirstMetSupCal场景），则触发此坏结局
-            //TODO:条件不应该这样，但目前还未完成的状态下只能这样设计了
-            if (!save.SupCalChoseToFight) {
-                return;
-            }
+            ////如果玩家选择了战斗路线（FirstMetSupCal场景），则触发此坏结局
+            ////TODO:条件不应该这样，但目前还未完成的状态下只能这样设计了
+            //if (!save.SupCalChoseToFight) {
+            //    return;
+            //}
 
-            //检查是否满足触发条件
-            if (!EternalBlazingNowNPC.Spawned) {
-                return;
-            }
+            ////检查是否满足触发条件
+            //if (!EternalBlazingNowNPC.Spawned) {
+            //    return;
+            //}
 
-            if (--EternalBlazingNowNPC.RandomTimer > 0) {
-                return;
-            }
+            //if (--EternalBlazingNowNPC.RandomTimer > 0) {
+            //    return;
+            //}
 
-            //触发场景
-            if (ScenarioManager.Start<EternalBlazingNow>()) {
-                save.EternalBlazingNowTriggered = true;
-                EternalBlazingNowNPC.Spawned = false;
-            }
+            ////触发场景
+            //if (ScenarioManager.Start<EternalBlazingNow>()) {
+            //    save.EternalBlazingNowTriggered = true;
+            //    EternalBlazingNowNPC.Spawned = false;
+            //}
         }
     }
 

@@ -2652,7 +2652,7 @@ Legend: {
 
 			SupremeCalamitasGift: {
 				R1: Halibut
-				L0: Supreme Calamitas... an avenger. The most powerful magic-wielder of the last century.
+				L0: Brimstone Witch... an avenger. The most powerful magic-wielder of the last century.
 				L1: What we just did... did we end a legend, or create a new one?
 				L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
 				L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
@@ -2685,7 +2685,7 @@ Legend: {
 
 			FirstMetSupCal: {
 				Rolename1: ???
-				Rolename2: Supreme Calamitas
+				Rolename2: Brimstone Witch
 				Rolename3: Halibut
 				Line1: I didn't expect you to 'finish' my 'sister' so quickly.
 				Line2: Your growth rate is... concerningly fast.
@@ -2716,10 +2716,10 @@ Legend: {
 			}
 
 			SupCalMoonLordReward: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut
 				Line1: Hahaha...
-				Line2: So that's what's become of him?
+				Line2: So that's how far he's fallen.
 				Line3: Do you have any idea what the underground looks like right now?
 				Line4: ...So, why are you here this time?
 				Line5: A little toy for you. And a small commission.
@@ -2728,7 +2728,7 @@ Legend: {
 			}
 
 			SupCalDefeat: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut & [Name]
 				Line1: To think you've already reached this level... Heh. I was outmatched.
 				Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
@@ -2743,7 +2743,7 @@ Legend: {
 			}
 
 			SupCalPlayerDefeat: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut
 				Line1: You shatter at a touch. Are you made of paper?
 				Line2: I thought I'd found a toy that would last a bit longer in the fire.
@@ -2757,7 +2757,7 @@ Legend: {
 			}
 
 			SupCalVictory: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut
 				Line1: What... How is this possible!
 				Line2: You... You defeated me?!
@@ -2777,7 +2777,7 @@ Legend: {
 			}
 
 			SupCalQuestReward: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut
 				Line1: Well done.
 				Line2: This crossbow suits you.
@@ -2832,7 +2832,7 @@ Legend: {
 			}
 
 			SupCalDoGQuestReward: {
-				Rolename1: Supreme Calamitas
+				Rolename1: Brimstone Witch
 				Rolename2: Halibut
 				Line1: Cleanly done.
 				Line2: This blade... as satisfying as ever.

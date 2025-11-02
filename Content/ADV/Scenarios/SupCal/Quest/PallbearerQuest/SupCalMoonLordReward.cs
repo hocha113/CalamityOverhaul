@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "呵呵呵");
-            Line2 = this.GetLocalization(nameof(Line2), () => "那个家伙已经沦落到这种地步了吗");
+            Line2 = this.GetLocalization(nameof(Line2), () => "那个家伙……竟已落到这种地步");
             Line3 = this.GetLocalization(nameof(Line3), () => "你知道现在的地底是什么景象吗?");
             Line4 = this.GetLocalization(nameof(Line4), () => "......所以你这次来是?");
             Line5 = this.GetLocalization(nameof(Line5), () => "送你点小玩具，顺带有个委托交给你");
