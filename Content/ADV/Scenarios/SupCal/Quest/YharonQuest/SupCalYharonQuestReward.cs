@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
                 }
 
                 //获取战斗状态
-                return BaseDamageTracker.GetDamageTrackingData().isActive;
+                return BaseDamageTracker.GetDamageTrackingData().isActive && BaseDamageTracker.HuntingNPCID == ModContent.NPCType<Yharon>();
             }
         }
 

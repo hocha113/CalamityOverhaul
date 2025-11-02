@@ -1,4 +1,5 @@
 using CalamityMod.NPCs.DevourerofGods;
+using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -183,7 +184,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 }
 
                 //»ñÈ¡Õ½¶·×´Ì¬
-                return BaseDamageTracker.GetDamageTrackingData().isActive;
+                return BaseDamageTracker.GetDamageTrackingData().isActive && BaseDamageTracker.HuntingNPCID == ModContent.NPCType<DevourerofGodsHead>();
             }
         }
 
