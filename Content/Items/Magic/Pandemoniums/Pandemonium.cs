@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -50,6 +51,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.shootSpeed = 10f;
             Item.channel = true;
             Item.CWR().OmigaSnyContent = FullItems;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Pandemonium_Q, "PandemoniumQSkill", CWRLocText.Instance.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Pandemonium_R, "PandemoniumRSkill", CWRLocText.Instance.Notbound.Value);
         }
 
         public override void HoldItem(Player player) {

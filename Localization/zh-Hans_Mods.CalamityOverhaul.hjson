@@ -1271,7 +1271,25 @@ Items: {
 
 	Pandemonium: {
 		DisplayName: 万魔殿
-		Tooltip: ""
+		Tooltip:
+			'''
+			左键蓄力释放超位魔法
+			右键在光标处施放硫火符文
+			按下[PandemoniumQSkill]施展硫磺火天罚
+			按下[PandemoniumRSkill]施展万魔终焉
+			'''
+	}
+
+	Proverbs: {
+		DisplayName: 箴言
+		Tooltip:
+			'''
+			在你背后生成一个小型硫火符文
+			免疫大多数火系减益
+			你的绝大多数攻击将对敌人造成衰祟诅咒减益
+			对硫火女巫造成双倍伤害
+			硫火女巫的攻击将可能对你造成暴击
+			'''
 	}
 }
 
@@ -1679,6 +1697,7 @@ Projectiles: {
 	PandemoniumRSkill.DisplayName: 万魔殿超位终结
 	JusticeCrossMark.DisplayName: 正义裁决
 	HeartcarverDash.DisplayName: 刻心冲刺
+	ProverbsCircle.DisplayName: 硫火符文
 }
 
 Configs: {

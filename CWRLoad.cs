@@ -92,6 +92,10 @@ namespace CalamityOverhaul
         /// </summary>
         public static int ScornEater;
         /// <summary>
+        /// 至尊灾厄
+        /// </summary>
+        public static int SupremeCalamitas;
+        /// <summary>
         /// 灾坟虫
         /// </summary>
         public static List<int> targetNpcTypes;
@@ -352,6 +356,8 @@ namespace CalamityOverhaul
 
             PerforatorHive = NPCType<PerforatorHive>();
             HiveMind = NPCType<HiveMind>();
+
+            SupremeCalamitas = NPCType<SupremeCalamitas>();
 
             SepulcherHead = NPCType<SepulcherHead>();
             SepulcherBody = NPCType<SepulcherBody>();

@@ -1300,7 +1300,25 @@ Items: {
 
 	Pandemonium: {
 		// DisplayName: Pandemonium
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Left-click to charge and release Transcendent Magic
+			Right-click to cast a Brimstone Rune at the cursor
+			Press [PandemoniumQSkill] to unleash Brimstone Judgement
+			Press [PandemoniumRSkill] to perform The End of All Demons
+			''' */
+	}
+
+	Proverbs: {
+		// DisplayName: Proverbs
+		/* Tooltip:
+			'''
+			A small Brimstone Rune floats behind you
+			Grants immunity to most fire-related debuffs
+			The majority of your attacks will apply the Vulnerability Hex debuff to foes.
+			Deals double damage to the Brimstone Witch
+			Attacks from the Brimstone Witch can critically strike you
+			''' */
 	}
 }
 
@@ -1708,6 +1726,7 @@ Projectiles: {
 	// PandemoniumRSkill.DisplayName: Pandemonium's Judgment
 	// JusticeCrossMark.DisplayName: Justice Cross Mark
 	// HeartcarverDash.DisplayName: Heartcarver Dash
+	// ProverbsCircle.DisplayName: Proverbs Circle
 }
 
 Configs: {
