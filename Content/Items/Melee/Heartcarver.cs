@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -58,7 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool CanUseItem(Player player) {
             if (player.altFunctionUse == 2) {
-                if (player.CountProjectilesOfID<HeartcarverDash>() > 0) {
+                if (player.CountProjectilesOfID<HeartcarverDash>() > 0 || player.CountProjectilesOfID<HeartcarverAlt>() > 0) {
                     return false;
                 }
             }
@@ -101,6 +102,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Length = 45;
             drawTrailTopWidth = 30;
             drawTrailBtommWidth = 10;
+            Projectile.ArmorPenetration = 32767;
         }
 
         public override bool PreSwingAI() {
@@ -132,8 +134,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                     ShootSpanPos,
                     Vector2.Zero,
                     daggerType,
-                    (int)(Projectile.damage * 0.85f),
-                    Projectile.knockBack * 0.5f,
+                    Projectile.damage,
+                    Projectile.knockBack,
                     Owner.whoAmI,
                     ai0: stabCounter //传入刺击索引用于错开动画
                 );
@@ -143,6 +145,34 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Bleeding, 180);
+        }
+    }
+
+    internal class HeartcarverAlt : BaseHeldProj
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Heartcarver>()).DisplayName;
+        public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Generic;
+            Projectile.width = 60;
+            Projectile.height = 60;
+            Projectile.friendly = false;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+        }
+
+        public override void AI() {
+            Projectile.Center = Owner.Center;
+            for (int i = 0; i < 6; i++) {
+                Dust.NewDust(Owner.position, Owner.width, Owner.height, DustID.Blood);
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Owner.Center);
         }
     }
 
@@ -176,6 +206,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.timeLeft = DashDuration;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
+            Projectile.ArmorPenetration = 32767;
         }
 
         public override void AI() {
@@ -372,6 +403,11 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //重置玩家速度
             Owner.velocity *= 0.5f;
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Owner.FromObjectGetParent(), Owner.Center, Vector2.Zero
+                    , ModContent.ProjectileType<HeartcarverAlt>(), 0, 0, Owner.whoAmI);
+            }           
         }
 
         public override bool PreDraw(ref Color lightColor) {
