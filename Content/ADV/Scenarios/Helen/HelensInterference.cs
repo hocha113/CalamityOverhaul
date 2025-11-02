@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
             //开场对话
             Line0 = this.GetLocalization(nameof(Line0), () => "……喂，你有空吗？");
-            Line1 = this.GetLocalization(nameof(Line1), () => "......今天......天气不错");
+            Line1 = this.GetLocalization(nameof(Line1), () => "今天.....嗯....天气不错？");
             Line2 = this.GetLocalization(nameof(Line2), () => "(比目鱼似乎将一些东西藏了起来)");
 
             //第一层选项
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Choice1_3 = this.GetLocalization(nameof(Choice1_3), () => "(沉默)");
 
             //最终选择
-            FinalQuestion = this.GetLocalization(nameof(FinalQuestion), () => "我们中止这一切，好吗。不再帮那个女巫收集她需要的东西。剩下的路我们自己走");
+            FinalQuestion = this.GetLocalization(nameof(FinalQuestion), () => "不要再往前走了.....好吗。那个女巫，她的委托，她想要的东西......我不想看到。剩下的路我们完全可以自己走");
             FinalChoice_Continue = this.GetLocalization(nameof(FinalChoice_Continue), () => "继续委托");
             FinalChoice_Stop = this.GetLocalization(nameof(FinalChoice_Stop), () => "中止委托");
         }
@@ -173,14 +173,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
             public static LocalizedText Line4 { get; private set; }
-            public static LocalizedText Line5 { get; private set; }
 
             public override void SetStaticDefaults() {
-                Line1 = this.GetLocalization(nameof(Line1), () => "你没感觉到吗？她每次给你的东西，都.......不太正常");
-                Line2 = this.GetLocalization(nameof(Line2), () => "它们都是......'媒介物品'。她让你杀的目标，都是我们本就会讨伐的东西");//TODO
-                Line3 = this.GetLocalization(nameof(Line3), () => "我最近愈发不安");
-                Line4 = this.GetLocalization(nameof(Line4), () => "我不能让你带着它下去。至少，先想清楚，好吗？");
-                Line5 = this.GetLocalization(nameof(Line5), () => FinalQuestion.Value);
+                Line1 = this.GetLocalization(nameof(Line1), () => "我最近愈发不安");
+                Line2 = this.GetLocalization(nameof(Line2), () => "那把刀，我碰到它的时候，像是听到了......有人在窃笑 ");//TODO
+                Line3 = this.GetLocalization(nameof(Line3), () => "它们都像是......某种'媒介物品'");
+                Line4 = this.GetLocalization(nameof(Line4), () => "我不能让你带着它走下去，至少......");
             }
 
             protected override void Build() {
@@ -193,7 +191,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line4.Value);
 
                 //最终选择
-                AddWithChoices(Rolename.Value, Line5.Value, [
+                AddWithChoices(Rolename.Value, FinalQuestion.Value, [
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
                 ]);
@@ -219,14 +217,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
             public static LocalizedText Line4 { get; private set; }
-            public static LocalizedText Line5 { get; private set; }
 
             public override void SetStaticDefaults() {
-                Line1 = this.GetLocalization(nameof(Line1), () => "……你真的信她到了这种地步？");
-                Line2 = this.GetLocalization(nameof(Line2), () => "那把刀不对劲。我碰到它的时候，像是……有人在窃笑");
-                Line3 = this.GetLocalization(nameof(Line3), () => "这让我回想起在那时在深渊中碰到的那个东西，阴冷恐怖、无法理喻");
-                Line4 = this.GetLocalization(nameof(Line4), () => "这样下去绝对会出事......");
-                Line5 = this.GetLocalization(nameof(Line5), () => FinalQuestion.Value);
+                Line1 = this.GetLocalization(nameof(Line1), () => "......你真的...信她到了这种地步？");
+                Line2 = this.GetLocalization(nameof(Line2), () => "难道你没发现吗？那个女巫，她每次给你的东西都不太正常");
+                Line3 = this.GetLocalization(nameof(Line3), () => "这让我回想起深渊中的某个......我碰到它......阴冷、恐怖、令人发悸...啊....我不想回忆");
+                Line4 = this.GetLocalization(nameof(Line4), () => "你本该有所察觉的.......");
             }
 
             protected override void Build() {
@@ -239,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line4.Value);
 
                 //最终选择
-                AddWithChoices(Rolename.Value, Line5.Value, new List<Choice> {
+                AddWithChoices(Rolename.Value, FinalQuestion.Value, new List<Choice> {
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
                 });
@@ -268,9 +264,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
             public override void SetStaticDefaults() {
                 Line1 = this.GetLocalization(nameof(Line1), () => "......你沉默的时候最可怕");
-                Line2 = this.GetLocalization(nameof(Line2), () => "好吧，我说重点，我把刻心者收起来了，你也别找了");
-                Line3 = this.GetLocalization(nameof(Line3), () => "她要你死，你也会乖乖照做吗？");//TODO
-                Line4 = this.GetLocalization(nameof(Line4), () => FinalQuestion.Value);
+                Line2 = this.GetLocalization(nameof(Line2), () => "好吧，我把刻心者藏起来了......");
+                Line3 = this.GetLocalization(nameof(Line3), () => "那个女巫，来路不明，危险至极。如果那是陷阱，你也要乖乖跳进去吗？");
+                Line4 = this.GetLocalization(nameof(Line4), () => "停下来，权当是......为了我");
             }
 
             protected override void Build() {
@@ -280,9 +276,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line1.Value);
                 Add(Rolename.Value, Line2.Value);
                 Add(Rolename.Value, Line3.Value);
+                Add(Rolename.Value, Line4.Value);
 
                 //最终选择
-                AddWithChoices(Rolename.Value, Line4.Value, new List<Choice> {
+                AddWithChoices(Rolename.Value, FinalQuestion.Value, new List<Choice> {
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
                 });
@@ -308,11 +305,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
             public static LocalizedText Line4 { get; private set; }
+            public static LocalizedText Line5 { get; private set; }
             public override void SetStaticDefaults() {
                 Line1 = this.GetLocalization(nameof(Line1), () => "......好吧。我知道你会这么选");
                 Line2 = this.GetLocalization(nameof(Line2), () => "......");
-                Line3 = this.GetLocalization(nameof(Line3), () => "东西我会放回去，但我希望你用它的时候......小心一点");
-                Line4 = this.GetLocalization(nameof(Line4), () => "我会陪你下去。不是因为我信她。是因为我怕你一个人回不来");
+                Line3 = this.GetLocalization(nameof(Line3), () => "东西我会放回去，但我希望你用它的时候......谨慎一点");
+                Line4 = this.GetLocalization(nameof(Line4), () => "还有那个女巫，也......");
+                Line5 = this.GetLocalization(nameof(Line5), () => "我会陪你走下去......一直");
             }
 
             protected override void Build() {
@@ -322,7 +321,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line1.Value);
                 Add(Rolename.Value, Line2.Value);
                 Add(Rolename.Value, Line3.Value);
-                Add(Rolename.Value, Line4.Value, onComplete: () => {
+                Add(Rolename.Value, Line4.Value);
+                Add(Rolename.Value, Line5.Value, onComplete: () => {
                     //归还刻心者
                     ReturnHeartcarverToPlayer();
 
@@ -353,9 +353,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
             public override void SetStaticDefaults() {
-                Line1 = this.GetLocalization(nameof(Line1), () => "……真的？你愿意停下来？");
+                Line1 = this.GetLocalization(nameof(Line1), () => "......你真的愿意停下来吗");
                 Line2 = this.GetLocalization(nameof(Line2), () => "......");
-                Line3 = this.GetLocalization(nameof(Line3), () => "好。我们不去。让她自己下地狱吧");//TODO
+                Line3 = this.GetLocalization(nameof(Line3), () => "我们走吧，让那个女巫下地狱去吧");
             }
 
             protected override void Build() {
