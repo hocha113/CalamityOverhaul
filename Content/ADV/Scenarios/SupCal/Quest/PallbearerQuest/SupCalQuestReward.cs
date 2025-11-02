@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     /// </summary>
     internal class PallbearerQuestTracker : BaseDamageTracker
     {
-        private const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
+        internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
         internal override int TargetNPCType => ModContent.NPCType<Providence>();
 
@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         }
 
         protected override float GetRequiredContribution() {
-            return 0.8f; //80%
+            return PallbearerQuestTracker.REQUIRED_CONTRIBUTION; //80%
         }
     }
 }
