@@ -134,14 +134,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         protected virtual void CheckQuestCompletion() {
             Player player = Main.LocalPlayer;
 
-            //必须最后一击使用目标武器
-            Item heldItem = player.GetItem();
-            if (!IsTargetWeapon(heldItem.type)) {
-                ShowFailureMessage(player, FailureReasonWrongWeapon.Value);
-                return;
-            }
-
-            //并且造成足够的伤害贡献
+            //检测是否造成足够的伤害贡献
             float contribution = TotalBossDamage > 0 ? TargetWeaponDamageDealt / TotalBossDamage : 0f;
             if (contribution < RequiredContribution) {
                 ShowFailureMessage(player, $"{FailureReasonInsufficientDamage.Value} ({contribution:P0}/{RequiredContribution:P0})");
@@ -162,14 +155,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// 显示任务失败消息
         /// </summary>
         public virtual void ShowFailureMessage(Player player, string reason) {
-            CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}");
+            int combat = CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}", true);
+            Main.combatText[combat].lifeTime = 300;//延长显示时间
         }
 
         /// <summary>
         /// 显示任务成功消息
         /// </summary>
         public virtual void ShowSuccessMessage(Player player, float contribution) {
-            CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}");
+            int combat = CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", true);
+            Main.combatText[combat].lifeTime = 300;//延长显示时间
         }
 
         /// <summary>
