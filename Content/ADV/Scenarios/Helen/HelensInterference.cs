@@ -162,11 +162,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 return;
             }
 
-            //仅在夜晚触发
-            if (!Main.dayTime) {
-                if (ScenarioManager.Start<HelensInterference>()) {
-                    save.HelenInterferenceTriggered = true;
-                }
+            if (ScenarioManager.Start<HelensInterference>()) {
+                save.HelenInterferenceTriggered = true;
             }
         }
 
