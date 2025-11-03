@@ -57,7 +57,6 @@ namespace CalamityOverhaul.Content
         GoldBow,
         ShadowFlameBow,
         AstralRepeater,
-        HalibutCannon,
     }
 
     public struct HitAttributeStruct
@@ -263,11 +262,6 @@ namespace CalamityOverhaul.Content
                     Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
                     break;
-                case SpanTypesEnum.HalibutCannon:
-                    if (++halibutAmmoTime >= 100) {
-                        projectile.Kill();
-                    }
-                    break;
             }
         }
 
@@ -362,9 +356,6 @@ namespace CalamityOverhaul.Content
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     modifiers.DefenseEffectiveness *= 0.75f;
                 }
-            }
-            if (projectile.CWR().SpanTypes == (byte)SpanTypesEnum.HalibutCannon) {
-
             }
 
             if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {
