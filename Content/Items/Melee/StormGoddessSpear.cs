@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class StormGoddessSpear : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddessSpear";
-        
+
         ///<summary>连击索引计数器</summary>
         private static int comboIndex = 0;
 
@@ -57,30 +57,30 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             //使用连击索引
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai0: comboIndex);
-            
+
             //循环连击计数
             comboIndex = (comboIndex + 1) % 3;
-            
+
             return false;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             //添加武器说明
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo",
                 "[c/C8E6FF:三段连击系统]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo1", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo1",
                 "[c/C8E6FF:  第一击·天矛突刺：追踪闪电精准打击]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo2", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo2",
                 "[c/96C8FF:  第二击·雷霆横扫：三道闪电扇形攻击]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo3", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCombo3",
                 "[c/64B4FF:  第三击·风暴上挑：环形闪电直线爆发]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearLightning", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearLightning",
                 "[c/FFFFFF:释放真实的风暴闪电，分叉、连锁、劈击]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearAdrenaline", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearAdrenaline",
                 "[c/FFFF64:肾上腺素：第三击释放7道闪电风暴]"));
-            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCrit", 
+            tooltips.Add(new TooltipLine(Mod, "StormGoddessSpearCrit",
                 "[c/FFD700:暴击生成连锁电弧追击敌人]"));
-            
+
             CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         }
 

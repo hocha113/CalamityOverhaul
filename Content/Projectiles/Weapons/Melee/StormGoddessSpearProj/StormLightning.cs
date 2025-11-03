@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 自定义属性
         /// <summary>闪电颜色风格（通过ai[2]传入）</summary>
         private int ColorStyle => (int)Projectile.ai[2];
-        
+
         /// <summary>是否已产生冲击波</summary>
         private bool hasSpawnedShockwave = false;
 
@@ -61,11 +61,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             // 添加电光闪烁效果（更强烈）
             float pulseIntensity = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 18f + Projectile.identity);
-            
+
             // 根据位置添加从白到蓝的颜色渐变
             float hueShift = MathF.Sin(factor * MathHelper.Pi) * 0.2f;
             Color shiftedColor = Color.Lerp(baseColor, Color.White, hueShift * 0.5f);
-            
+
             return shiftedColor * pulseIntensity;
         }
 
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             float curve = MathF.Sin(factor * MathHelper.Pi);
             float pulse = 1f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 20f + factor * 10f);
             float shapeFactor = curve * (0.5f + 0.5f * MathF.Sin(factor * MathHelper.Pi * 0.5f));
-            
+
             return ThunderWidth * shapeFactor * Intensity * pulse;
         }
 
@@ -83,10 +83,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 return 0;
 
             float baseAlpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
-            
+
             // 更明显的脉冲透明度
             float pulse = 1f - 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 28f + factor * 18f);
-            
+
             return baseAlpha * (0.85f + 0.15f * Intensity) * pulse;
         }
         #endregion
@@ -114,11 +114,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             // 否则，向下寻找地面
             Vector2 searchPos = Projectile.Center;
             Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-            
+
             for (int i = 0; i < 100; i++) {
                 searchPos += direction * 16f;
                 Point tilePos = searchPos.ToTileCoordinates();
-                
+
                 if (WorldGen.InWorld(tilePos.X, tilePos.Y)) {
                     Tile tile = Main.tile[tilePos];
                     if (tile.HasTile && Main.tileSolid[tile.TileType]) {
@@ -135,10 +135,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 特效
         public override void OnStrike() {
             // 播放雷击音效
-            SoundEngine.PlaySound(SoundID.Item122 with { 
-                Volume = 0.8f, 
+            SoundEngine.PlaySound(SoundID.Item122 with {
+                Volume = 0.8f,
                 Pitch = -0.2f,
-                PitchVariance = 0.15f 
+                PitchVariance = 0.15f
             }, Projectile.Center);
 
             // 生成冲击波粒子
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             for (int i = 0; i < arcCount; i++) {
                 float angle = arcSpread * i + Main.rand.NextFloat(-0.3f, 0.3f);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 18f);
-                
+
                 Projectile arc = Projectile.NewProjectileDirect(
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     Projectile.knockBack * 0.5f,
                     Projectile.owner
                 );
-                
+
                 arc.timeLeft = Main.rand.Next(25, 40);
                 arc.penetrate = 3;
                 arc.tileCollide = true;
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (disableHoming) {
                 // 只添加轻微的自然抖动，不追踪目标
                 float baseSpeed = Projectile.velocity.Length();
-                
+
                 // 极小的随机扰动（模拟闪电的自然抖动）
                 if (Timer % 6 == 0) {
                     float randomAngle = Main.rand.NextFloat(-0.15f, 0.15f);
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
                 // 轻微位置抖动
                 Projectile.position += new Vector2(
-                    MathF.Sin(Timer * 0.25f), 
+                    MathF.Sin(Timer * 0.25f),
                     MathF.Cos(Timer * 0.2f)
                 ) * 1.5f;
 
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             // 位置抖动
             Projectile.position += new Vector2(
-                MathF.Sin(Timer * 0.3f), 
+                MathF.Sin(Timer * 0.3f),
                 MathF.Cos(Timer * 0.25f)
             ) * 2f;
         }
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (State == (float)LightningState.Striking && Timer % 3 == 0 && !VaultUtils.isServer) {
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15, 15);
                 Vector2 particleVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
-                
+
                 BasePRT particle = new PRT_Light(
                     particlePos,
                     particleVel,

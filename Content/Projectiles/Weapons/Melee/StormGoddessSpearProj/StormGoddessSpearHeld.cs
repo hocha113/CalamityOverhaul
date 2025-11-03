@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //根据ai[0]设置不同的攻击模式
             comboCounter = (int)Projectile.ai[0] % 3;
             hasSpawnedLightning = false;
-            
+
             //循环颜色风格（统一为白蓝色系）
             lightningColorStyle = (comboCounter % 3) + 1;
         }
@@ -57,10 +57,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //第一击：快速突刺
             if (comboCounter == 0) {
                 StabBehavior(
-                    initialLength: 70, 
-                    lifetime: 24, 
-                    scaleFactorDenominator: 480f, 
-                    maxLength: 125, 
+                    initialLength: 70,
+                    lifetime: 24,
+                    scaleFactorDenominator: 480f,
+                    maxLength: 125,
                     canDrawSlashTrail: true
                 );
 
@@ -68,12 +68,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 if (Time < 8 * UpdateRate && !VaultUtils.isServer) {
                     Vector2 sparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length * 0.7f;
                     BasePRT spark = new PRT_Spark(
-                        sparkPos, 
-                        Projectile.velocity * 0.5f, 
-                        false, 
-                        5, 
-                        1.5f, 
-                        GetLightningColorForStyle(lightningColorStyle), 
+                        sparkPos,
+                        Projectile.velocity * 0.5f,
+                        false,
+                        5,
+                        1.5f,
+                        GetLightningColorForStyle(lightningColorStyle),
                         Owner
                     );
                     PRTLoader.AddParticle(spark);
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 for (int i = 0; i < count; i++) {
                     float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.15f, 0.15f);
                     Vector2 velocity = angle.ToRotationVector2() * ShootSpeed;
-                    
+
                     //第三击的闪电禁用追踪，制造直线飞出的视觉效果
                     SpawnLightningProjectile(velocity, damageMultiplier, lightningColorStyle, true);
                 }
@@ -151,9 +151,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 }
 
                 //播放更强的音效
-                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { 
-                    Volume = 0.7f, 
-                    Pitch = -0.3f 
+                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
+                    Volume = 0.7f,
+                    Pitch = -0.3f
                 }, ShootSpanPos);
             }
         }
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// </summary>
         private void SpawnShockwaveParticles() {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
-            
+
             //环形冲击波
             for (int i = 0; i < 20; i++) {
                 float angle = MathHelper.TwoPi * i / 20f;
@@ -274,11 +274,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (!Projectile.IsOwnedByLocalPlayer()) return;
 
             int arcCount = Owner.Calamity().adrenalineModeActive ? 5 : 3;
-            
+
             for (int i = 0; i < arcCount; i++) {
                 float angle = MathHelper.TwoPi * i / arcCount + Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 18f);
-                
+
                 Projectile arc = Projectile.NewProjectileDirect(
                     Source,
                     target.Center,
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     Projectile.knockBack * 0.5f,
                     Owner.whoAmI
                 );
-                
+
                 arc.timeLeft = 30;
                 arc.penetrate = 2;
                 arc.tileCollide = true;
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// </summary>
         private void SpawnHitParticles(NPC target) {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
-            
+
             for (int i = 0; i < Main.rand.Next(8, 15); i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 18f);
                 BasePRT particle = new PRT_Light(
@@ -317,9 +317,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             }
 
             //播放电击音效
-            SoundEngine.PlaySound(SoundID.Item94 with { 
-                Volume = 0.5f, 
-                Pitch = 0.2f 
+            SoundEngine.PlaySound(SoundID.Item94 with {
+                Volume = 0.5f,
+                Pitch = 0.2f
             }, target.Center);
         }
 
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (Time % 3 == 0 && !VaultUtils.isServer) {
                 Vector2 tipPos = Projectile.Center + safeInSwingUnit * Length;
                 Color particleColor = GetLightningColorForStyle(lightningColorStyle);
-                
+
                 BasePRT spark = new PRT_Spark(
                     tipPos + Main.rand.NextVector2Circular(5, 5),
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f),

@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -33,19 +31,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 自定义属性
         /// <summary>追踪的目标NPC索引列表</summary>
         private HashSet<int> hitNPCs = new HashSet<int>();
-        
+
         /// <summary>连锁次数</summary>
         private int chainCount = 0;
-        
+
         /// <summary>最大连锁次数</summary>
         private int maxChains => 3 + (int)Intensity;
-        
+
         /// <summary>连锁搜索半径</summary>
         private float chainRadius = 500f; // 增加搜索半径
-        
+
         /// <summary>当前追踪的目标</summary>
         private NPC currentTarget = null;
-        
+
         /// <summary>是否已经尝试过连锁</summary>
         private bool hasAttemptedChain = false;
         #endregion
@@ -66,16 +64,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override Color GetLightningColor(float factor) {
             // 使用白蓝色调（比主闪电更亮）
             Color baseColor = new Color(180, 220, 255); // 明亮的白蓝色
-            
+
             // 添加电弧特有的闪烁效果
             float sparkle = 0.88f + 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 28f + Projectile.identity * 3f);
-            
+
             // 根据连锁次数调整颜色（连锁越多越亮）
             float chainBrightness = 1f + chainCount * 0.08f;
-            
+
             // 添加白色高光
             Color highlightColor = Color.Lerp(baseColor, Color.White, 0.3f);
-            
+
             return highlightColor * sparkle * chainBrightness;
         }
 
@@ -83,10 +81,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             // 更细更快的电弧
             float curve = MathF.Sin(factor * MathHelper.Pi);
             float shapeFactor = curve * (0.7f + 0.3f * MathF.Sin(factor * MathHelper.Pi));
-            
+
             // 添加高频震颤
             float vibration = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 40f + factor * 20f);
-            
+
             return ThunderWidth * shapeFactor * Intensity * vibration;
         }
 
@@ -95,10 +93,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 return 0;
 
             float baseAlpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
-            
+
             // 快速闪烁效果
             float flicker = 1f - 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 35f + factor * 25f);
-            
+
             return baseAlpha * (0.9f + 0.1f * Intensity) * flicker;
         }
         #endregion
@@ -107,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override Vector2 FindTargetPosition() {
             // 寻找最近的有效NPC（排除已命中的）
             currentTarget = FindClosestValidNPC();
-            
+
             if (currentTarget != null) {
                 return currentTarget.Center;
             }
@@ -162,9 +160,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// 检查NPC是否是有效目标
         /// </summary>
         private bool IsValidTarget(NPC npc) {
-            return npc != null && 
-                   npc.active && 
-                   npc.CanBeChasedBy() && 
+            return npc != null &&
+                   npc.active &&
+                   npc.CanBeChasedBy() &&
                    !npc.friendly &&
                    npc.life > 0 &&
                    !hitNPCs.Contains(npc.whoAmI);
@@ -174,10 +172,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 特效
         public override void OnStrike() {
             // 播放较轻的电击音效
-            SoundEngine.PlaySound(SoundID.Item94 with { 
-                Volume = 0.5f, 
+            SoundEngine.PlaySound(SoundID.Item94 with {
+                Volume = 0.5f,
                 Pitch = 0.3f,
-                PitchVariance = 0.2f 
+                PitchVariance = 0.2f
             }, Projectile.Center);
 
             // 生成小范围的冲击粒子
@@ -196,7 +194,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// </summary>
         private void SpawnArcImpactParticles() {
             Color particleColor = GetLightningColor(0.5f);
-            
+
             // 生成环形粒子
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
@@ -230,11 +228,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             // 寻找下一个目标
             NPC nextTarget = FindNextChainTarget(fromPosition);
-            
+
             if (nextTarget != null) {
                 // 创建新的电弧到下一个目标
                 Vector2 directionToNext = (nextTarget.Center - fromPosition).SafeNormalize(Vector2.UnitY);
-                
+
                 Projectile arc = Projectile.NewProjectileDirect(
                     Projectile.GetSource_FromThis(),
                     fromPosition,
@@ -247,7 +245,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     ai1: 0,
                     ai2: chainCount + 1 // 传递连锁次数
                 );
-                
+
                 // 传递已命中列表和连锁数据
                 StormArc arcModProj = arc.ModProjectile as StormArc;
                 if (arcModProj != null) {
@@ -269,13 +267,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// </summary>
         private void SpawnChainEffects(Vector2 from, Vector2 to) {
             Color chainColor = GetLightningColor(0.5f);
-            
+
             // 在连锁路径上生成粒子
             int particleCount = (int)(Vector2.Distance(from, to) / 40f);
             for (int i = 0; i < particleCount; i++) {
                 float progress = i / (float)particleCount;
                 Vector2 pos = Vector2.Lerp(from, to, progress);
-                
+
                 BasePRT particle = new PRT_Spark(
                     pos,
                     Main.rand.NextVector2Circular(3f, 3f),
@@ -289,9 +287,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             }
 
             // 播放连锁音效
-            SoundEngine.PlaySound(SoundID.Item93 with { 
-                Volume = 0.4f, 
-                Pitch = 0.5f + chainCount * 0.1f 
+            SoundEngine.PlaySound(SoundID.Item93 with {
+                Volume = 0.4f,
+                Pitch = 0.5f + chainCount * 0.1f
             }, from);
         }
 
@@ -303,7 +301,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             // 基础朝向
             float selfAngle = Projectile.velocity.ToRotation();
             float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
-            
+
             // 更强的追踪（99%跟随目标）
             float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.99f);
 
@@ -321,7 +319,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             // 轻微位置抖动
             Projectile.position += new Vector2(
-                MathF.Sin(Timer * 0.4f), 
+                MathF.Sin(Timer * 0.4f),
                 MathF.Cos(Timer * 0.35f)
             ) * 0.5f;
         }
@@ -394,7 +392,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         protected override void StartLinger() {
             base.StartLinger();
-            
+
             // 记录当前目标
             if (currentTarget != null && currentTarget.active) {
                 hitNPCs.Add(currentTarget.whoAmI);

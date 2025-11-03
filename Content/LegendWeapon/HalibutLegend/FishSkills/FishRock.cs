@@ -183,8 +183,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0)
-            //增强冲击效果
-            CreateEnhancedImpactEffect(target.Center);
+                //增强冲击效果
+                CreateEnhancedImpactEffect(target.Center);
         }
 
         public override void AI() {
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!IsTargetValid()) return;
 
             NPC target = Main.npc[(int)TargetNPCID];
-            
+
             //计算目标速度
             if (lastTargetPos != Vector2.Zero) {
                 targetVelocity = target.Center - lastTargetPos;
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             NPC target = Main.npc[(int)TargetNPCID];
 
             bezierP0 = Projectile.Center;
-            
+
             //使用预测位置作为终点
             Vector2 targetPoint = predictedPos != Vector2.Zero ? predictedPos : target.Center;
             bezierP3 = targetPoint + new Vector2(0, -120); //降低高度，更容易命中
@@ -398,7 +398,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Volume = 1.2f,
                     Pitch = -0.6f
                 }, Projectile.Center);
-                
+
                 SoundEngine.PlaySound(SoundID.Item14 with {
                     Volume = 0.8f,
                     Pitch = -0.4f
@@ -656,7 +656,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 for (int j = 0; j < 20; j++) {
                     float angle = MathHelper.TwoPi * j / 20f;
                     Vector2 offset = angle.ToRotationVector2() * radius;
-                    
+
                     Dust ring = Dust.NewDustPerfect(
                         position + offset,
                         DustID.Torch,
