@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 Add(Rolename1.Value, Line1.Value);
                 Add(Rolename1.Value, Line2.Value);
                 Add(Rolename3.Value + helenSolemn, Line3.Value); //严肃表情，认出对方
-                Add(Rolename3.Value + helenSolemn, Line4.Value); //严肃表情，说出对方身份
+                Add(Rolename3.Value + helenAmazed, Line4.Value); //惊讶表情，说出对方身份
                 Add(Rolename2.Value, Line5.Value);
                 Add(Rolename3.Value + helenAmazed, Line6.Value); //惊讶表情，质疑为何还活着
                 Add(Rolename2.Value + expressionCloseEye, Line7.Value);
