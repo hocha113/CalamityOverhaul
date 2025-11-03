@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using CalamityOverhaul.Content.Items.Accessories;
@@ -165,13 +166,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;
 
-        public override void OnQuestCompleted(Player player, float contribution) {
+        public override bool IsQuestActive(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
+                return false;
             }
 
             //检查是否接受了任务
             if (!halibutPlayer.ADCSave.SupCalYharonQuestAccepted || halibutPlayer.ADCSave.SupCalYharonQuestDeclined) {
+                return false;
+            }
+
+            //检查是否已完成
+            if (halibutPlayer.ADCSave.SupCalYharonQuestReward) {
+                return false;
+            }
+
+            return true;
+        }
+
+        public override void OnQuestCompleted(Player player, float contribution) {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }
 
@@ -192,26 +206,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         public override string LocalizationCategory => "UI";
         public static YharonQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<YharonQuestTrackerUI>();
 
-        public override bool CanOpne {
-            get {
-                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    return false;
-                }
-
-                //检查任务是否激活
-                if (!halibutPlayer.ADCSave.SupCalYharonQuestAccepted || halibutPlayer.ADCSave.SupCalYharonQuestDeclined) {
-                    return false;
-                }
-
-                //检查是否已完成
-                if (halibutPlayer.ADCSave.SupCalYharonQuestReward) {
-                    return false;
-                }
-
-                //获取战斗状态
-                return BaseDamageTracker.GetDamageTrackingData().isActive && BaseDamageTracker.HuntingNPCID == ModContent.NPCType<Yharon>();
-            }
-        }
+        public override int TargetNPCType => ModContent.NPCType<Yharon>();
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀焚世龙");

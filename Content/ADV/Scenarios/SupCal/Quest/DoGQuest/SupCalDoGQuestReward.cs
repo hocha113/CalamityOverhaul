@@ -141,14 +141,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;
 
-        public override void OnQuestCompleted(Player player, float contribution) {
+        public override bool IsQuestActive(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
+                return false;
             }
 
             if (!halibutPlayer.ADCSave.SupCalQuestReward//先完成前置任务
                 || halibutPlayer.ADCSave.SupCalDoGQuestDeclined//且未拒绝当前任务
                 ) {
+                return false;
+            }
+
+            if (halibutPlayer.ADCSave.SupCalDoGQuestReward) {
+                return false;//任务已经完成
+            }
+
+            return true;
+        }
+
+        public override void OnQuestCompleted(Player player, float contribution) {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }
 
@@ -166,28 +178,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public override string LocalizationCategory => "UI";
         public static DoGQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<DoGQuestTrackerUI>();
 
-        public override bool CanOpne {
-            get {
-                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    return false;
-                }
-
-                //检查任务是否激活
-                if (!halibutPlayer.ADCSave.SupCalQuestReward//先完成前置任务
-                || halibutPlayer.ADCSave.SupCalDoGQuestDeclined//且未拒绝当前任务
-                ) {
-                    return false;
-                }
-
-                //检查是否已完成
-                if (halibutPlayer.ADCSave.SupCalDoGQuestReward) {
-                    return false;
-                }
-
-                //获取战斗状态
-                return BaseDamageTracker.GetDamageTrackingData().isActive && BaseDamageTracker.HuntingNPCID == ModContent.NPCType<DevourerofGodsHead>();
-            }
-        }
+        public override int TargetNPCType => ModContent.NPCType<DevourerofGodsHead>();
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀神明吞噬者");

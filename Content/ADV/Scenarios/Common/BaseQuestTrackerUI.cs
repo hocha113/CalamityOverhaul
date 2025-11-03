@@ -1,3 +1,4 @@
+using CalamityMod.NPCs.Yharon;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -49,9 +50,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// </summary>
         protected abstract (float current, float total, bool isActive) GetTrackingData();
 
+        /// <summary>
+        /// 目标NPC类型
+        /// </summary>
+        public abstract int TargetNPCType { get; }
+
         public override bool Active => slideProgress > 0f || CanOpne;
 
-        public abstract bool CanOpne { get; }
+        /// <summary>
+        /// 是否可以打开UI面板
+        /// </summary>
+        public virtual bool CanOpne {
+            get {
+                if (CurrentDamageTrackerInstance == null) {
+                    return false;//没有正在进行的任务追踪实例
+                }
+                if (!CurrentDamageTrackerInstance.NPC.Alives()) {
+                    return false;//目标NPC不存在或已死亡
+                }
+                if (CurrentDamageTrackerInstance.NPC.type != TargetNPCType) {
+                    return false;//目标NPC类型不匹配
+                }
+                //获取战斗状态
+                return CurrentDamageTrackerInstance.IsQuestActive(Main.LocalPlayer) && GetDamageTrackingData().isActive;
+            }
+        }
 
         /// <summary>
         /// 获取需求的伤害贡献度阈值

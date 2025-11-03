@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -163,13 +164,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;
 
-        public override void OnQuestCompleted(Player player, float contribution) {
+        public override bool IsQuestActive(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
+                return false;
             }
 
             //检查是否接受了任务
             if (!halibutPlayer.ADCSave.SupCalQuestAccepted || halibutPlayer.ADCSave.SupCalQuestDeclined) {
+                return false;
+            }
+
+            if (halibutPlayer.ADCSave.SupCalQuestReward) {
+                return false;//任务已经完成
+            }
+
+            return true;
+        }
+
+        public override void OnQuestCompleted(Player player, float contribution) {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }
 
@@ -190,26 +203,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public override string LocalizationCategory => "UI";
         public static PallbearerQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestTrackerUI>();
 
-        public override bool CanOpne {
-            get {
-                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    return false;
-                }
-
-                //检查任务是否激活
-                if (!halibutPlayer.ADCSave.SupCalQuestAccepted || halibutPlayer.ADCSave.SupCalQuestDeclined) {
-                    return false;
-                }
-
-                //检查是否已完成
-                if (halibutPlayer.ADCSave.SupCalQuestReward) {
-                    return false;
-                }
-
-                //获取战斗状态
-                return BaseDamageTracker.GetDamageTrackingData().isActive && BaseDamageTracker.HuntingNPCID == ModContent.NPCType<Providence>();
-            }
-        }
+        public override int TargetNPCType => ModContent.NPCType<Providence>();
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀亵渎天神");

@@ -30,13 +30,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             if (!IsBossFightActive) {
                 return;//没有激活的Boss战斗，直接返回
             }
-            if (NPC.AnyNPCs(HuntingNPCID)) {
+            if (CurrentDamageTrackerInstance != null
+                && CurrentDamageTrackerInstance.NPC.Alives()
+                && NPC.AnyNPCs(CurrentDamageTrackerInstance.NPC.type)) {
                 return;//目标Boss仍然存在，继续战斗
             }
-            //Boss已被击败，重置追踪数据
+            //Boss已经被击败或者消失，重置追踪数据
             TargetWeaponDamageDealt = 0f;
             TotalBossDamage = 0f;
             IsBossFightActive = false;
+            CurrentDamageTrackerInstance = null;
         }
     }
 
@@ -50,13 +53,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         internal static float TotalBossDamage = 0f;
         internal static bool IsBossFightActive = false;
         /// <summary>
-        /// 当前正在被追踪的NPC ID
-        /// </summary>
-        internal static int HuntingNPCID;
-        /// <summary>
         /// 当前正在处理的伤害追踪实例
         /// </summary>
-        internal static BaseDamageTracker CurrentDamageTrackerInstance { get; private set; }
+        internal static BaseDamageTracker CurrentDamageTrackerInstance { get; set; }
 
         //需要子类实现的配置
         internal abstract int TargetNPCType { get; }
@@ -80,10 +79,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             ResetDamageTracking();//进入世界时重置追踪数据
         }
 
+        /// <summary>
+        /// 检查任务是否启用/激活，子类必须实现此方法来定义任务的激活条件
+        /// </summary>
+        /// <returns>如果任务处于激活状态返回true，否则返回false</returns>
+        public abstract bool IsQuestActive(Player player);
+
         protected virtual void ResetDamageTracking() {
             TargetWeaponDamageDealt = 0f;
             TotalBossDamage = 0f;
             IsBossFightActive = false;
+            CurrentDamageTrackerInstance = null;
         }
 
         public override bool PreAI(NPC npc) {
@@ -95,8 +101,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             IsBossFightActive = npc.active;
             //记录Boss总生命值
             TotalBossDamage = npc.lifeMax;
-            //标记目标
-            HuntingNPCID = TargetNPCType;
 
             if (npc.Alives()) {
                 foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
@@ -115,6 +119,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 return;
             }
 
+            //检查任务是否激活
+            if (!IsQuestActive(player)) {
+                return;
+            }
+
             //使用回调来追踪实际造成的伤害
             modifiers.ModifyHitInfo += (ref NPC.HitInfo info) => {
                 if (IsTargetWeapon(item.type)) {
@@ -125,6 +134,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
             if (!IsTargetByID(npc)) {
+                return;
+            }
+
+            Player player = Main.LocalPlayer;
+            if (projectile.owner.TryGetPlayer(out Player owner)) {
+                player = owner;
+            }
+
+            //检查任务是否激活
+            if (!IsQuestActive(player)) {
                 return;
             }
 
@@ -142,6 +161,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
         internal void Check(NPC npc) {
             if (npc.type != TargetNPCType) {
+                return;
+            }
+
+            //检查任务是否激活
+            if (!IsQuestActive(Main.LocalPlayer)) {
                 return;
             }
 
