@@ -2721,28 +2721,28 @@ Legend: {
 			FirstMetSupCal: {
 				// Rolename1: ???
 				// Rolename2: Brimstone Witch
-				// Rolename3: Halibut
-				// Line1: I didn't expect you to 'finish' my 'sister' so quickly.
-				// Line2: Your growth rate is... concerningly fast.
-				// Line3: You are... I recognize you.
-				// Line4: You are the witch who burned half the ocean.
-				// Line5: Ha?! Heh... To think someone... or some*fish*... still recognizes me. How amusing.
-				// Line6: ...You. Why are you still alive? I remember you died last century.
-				// Line7: You've even heard of that? Very well, I'll humor an interesting fish. My consciousness was fused into the brimstone fire long ago. This body is merely a corpse... piloted by the flames.
-				// Line8: ...A living consciousness in an inhuman body, walking the world by a medium... You've become an 'aberration'?!
-				// Line9: Your dimension is too low. You cannot comprehend my current state.
-				// Line10: Besides, that's not why I'm here...
-				// QuestionLine: So, what is your choice?
+				// Rolename3: Flounder
+				// Line1: I hadn't expected you to kill my 'sister' so soon.
+				// Line2: You are growing... faster than anticipated.
+				// Line3: I recognize you... You're...
+				// Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
+				// Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
+				// Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
+				// Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
+				// Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
+				// Line9: Your comprehension is too limited. You could not possibly understand my state of being.
+				// Line10: Besides, that is not why I am here...
+				// QuestionLine: Well... what is your choice?
 				// Choice1Text: (Draw weapon)
 				// Choice2Text: (Remain silent)
-				// Choice1Response: Then let me weigh your worth.
-				// Choice2Response: ...What a trash fish. Here, a little 'greeting gift'. I'll see you next time.
-				// NoFishLine1: I didn't expect you to kill my 'sister' so quickly. Did you come alone?
-				// NoFishLine2: You're growing faster than I anticipated.
-				// NoFishLine3: You ask why I'm still alive? It seems you've begun to touch upon things you were not meant to know.
-				// NoFishLine4: My consciousness was forged into the brimstone fire long ago. This body is merely a corpse, piloted by the flames.
-				// NoFishLine5: However, your perception is too base to comprehend my current state.
-				// NoFishLine6: But I didn't reveal myself just to explain these things.
+				// Choice1Response: Then let me measure your worth.
+				// Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
+				// NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
+				// NoFishLine2: You are growing stronger than I anticipated.
+				// NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
+				// NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
+				// NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
+				// NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
 			}
 
 			ADVChoiceBox: {
@@ -2879,108 +2879,108 @@ Legend: {
 			}
 
 			EternalBlazingNow: {
-				// Rolename1: 比目鱼
-				// Rolename2: ???硫火女巫???
-				// Line1: 开什么玩笑？！这些火是从那里冒出来的
-				// Line2: 过去身无法调动，过去正在被封锁
-				// Line3: 这火是从过去燃烧到现在的，那个女巫，她没死，但为什么......
-				// Line4: 明明刚才的战斗中，她一直没有表现出入侵过去的能力，现在'死后'却出现了这种情况
-				// Line5: 我是不会死的，不过也差不多了
-				// Line6: 你们很不错，或许真的有能力终结这个绝望的时代
-				// Line7: 所以我想最后拜托你们一件事
-				// Line8: 只要这世间的过去与现今还存在一缕硫磺火，'我'就不会消亡
-				// Line9: 但我的意识在沉沉浮浮的火海中终将被消磨殆尽
-				// Line10: 我有预感，如果没有遇到你们，我最多只能再撑30年
-				// Line11: ......你希望他代替你的意识？
-				// Line12: 没错，这是必须的
-				// Line13: 当我意识完全消散后，我身上近乎完整的硫磺火将会复苏，彻底焚烧掉整个世界
-				// Line14: 况且，如果你们想终结这个时代，凡人之躯太过弱小，以我的躯体作为踏板，不更好吗？
-				// Line15: 我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！
+				// Rolename1: Halibut
+				// Rolename2: ???Brimstone Witch???
+				// Line1: Are you kidding me?! Where is all this fire coming from?!
+				// Line2: I can't access my past self... the past is being sealed away!
+				// Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
+				// Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
+				// Line5: I cannot die... heh. But this is close enough.
+				// Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
+				// Line7: So, I want to ask one last thing of you.
+				// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
+				// Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
+				// Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
+				// Line11: ...You want him to *replace* your consciousness?
+				// Line12: That's right. It is necessary.
+				// Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
+				// Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
+				// Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
 				// QuestionLine: ......
-				// Choice1Text: (阻止比目鱼拼命)
-				// Choice2Text: (保持沉默)
-				// Choice1Line1: ......这就是你的选择吗？
-				// Choice1Line2: 既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边
+				// Choice1Text: (Stop Halibut)
+				// Choice2Text: (Remain silent)
+				// Choice1Line1: ...Is this your choice?
+				// Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
 			}
 
-			// AchievementToast.AchievementUnlocked: 成就达成!
+			// AchievementToast.AchievementUnlocked: Achievement Unlocked!
 
 			SupCalYharonQuestReward: {
-				// Rolename1: 硫火女巫
-				// Rolename2: 比目鱼
-				// Line1: 啊……终于结束了
-				// Line2: 那条龙，对我来说曾经是极少数值得尊敬的生物
-				// Line3: 它知道自己会死，却仍然选择站在那里......即时是'焚烧重启'又如何，下次活过来的也只是复制体
-				// Line4: 可惜，它擅长服从，而你擅长……活下来
-				// Line5: 拿着。金源锭。曾被叫做‘炼狱之金’，是凡人手中能触碰的极限力量
-				// Line6: 接下来，轮到我了
-				// Line7: 你在开什么玩笑……？
+				// Rolename1: Brimstone Witch
+				// Rolename2: Halibut
+				// Line1: Ah... it's finally over.
+				// Line2: To me... that dragon... was one of the very few beings worthy of respect.
+				// Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
+				// Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
+				// Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
+				// Line6: And now... it's my turn.
+				// Line7: What kind of joke is this...?
 			}
 
 			YharonQuestUI: {
-				// QuestTitle: 委托：焚世龙
-				// QuestDesc: 使用鬼面刀击杀焚世之龙
-				// AcceptText: 接受
-				// DeclineText: 拒绝
+				// QuestTitle: Commission: The Dragon of Incineration
+				// QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
+				// AcceptText: Accept
+				// DeclineText: Decline
 			}
 
 			HelensInterference: {
-				// Rolename: 比目鱼
-				// Line0: ……喂，你有空吗？
-				// Line1: 今天.....嗯....天气不错？
-				// Line2: (比目鱼似乎将一些东西藏了起来)
+				// Rolename: Halibut
+				// Line0: ...Hey, are you free?
+				// Line1: Today..... uh.... nice weather, right?
+				// Line2: (Halibut seems to be hiding something.)
 				// Question1: ......
-				// Choice1_1: 你在做什么？
-				// Choice1_2: 拿出来！
-				// Choice1_3: (沉默)
-				// FinalQuestion: 不要再往前走了.....好吗。那个女巫，她的委托，她想要的东西......我不想看到。剩下的路我们完全可以自己走
-				// FinalChoice_Continue: 继续委托
-				// FinalChoice_Stop: 中止委托
+				// Choice1_1: What are you doing?
+				// Choice1_2: Hand it over!
+				// Choice1_3: (Say nothing)
+				// FinalQuestion: Don't go any further... please. That witch, her commissions, the things she wants... I don't want to see it. We can walk the rest of the path ourselves, can't we?
+				// FinalChoice_Continue: Continue the commission
+				// FinalChoice_Stop: Stop the commission
 
 				Branch_Anger: {
-					// Line1: ......你真的...信她到了这种地步？
-					// Line2: 难道你没发现吗？那个女巫，她每次给你的东西都不太正常
-					// Line3: 这让我回想起深渊中的某个......我碰到它......阴冷、恐怖、令人发悸...啊....我不想回忆
-					// Line4: 你本该有所察觉的.......
+					// Line1: ...You really... trust her *that* much?
+					// Line2: Haven't you noticed? The things that witch gives you... none of them are normal.
+					// Line3: It reminds me of something... in the Abyss... I... I touched it... cold, terrifying, unsettling... Ugh... I don't want to remember.
+					// Line4: You should have realized this...
 				}
 
 				Branch_Inquiry: {
-					// Line1: 我最近愈发不安
-					// Line2: "那把刀，我碰到它的时候，像是听到了......有人在窃笑 "
-					// Line3: 它们都像是......某种'媒介物品'
-					// Line4: 我不能让你带着它走下去，至少......
+					// Line1: I've been getting more and more anxious lately.
+					// Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
+					// Line3: They all feel like... some kind of 'medium'.
+					// Line4: I can't let you go on with it, at least...
 				}
 
 				Branch_Silence: {
-					// Line1: ......你沉默的时候最可怕
-					// Line2: 好吧，我把刻心者藏起来了......
-					// Line3: 那个女巫，来路不明，危险至极。如果那是陷阱，你也要乖乖跳进去吗？
-					// Line4: 停下来，权当是......为了我
+					// Line1: ...You're most terrifying when you're silent.
+					// Line2: ...Fine, I hid the 'Heart-carver'.
+					// Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
+					// Line4: Stop... please. For my sake.
 				}
 
 				FinalBranch_Continue: {
-					// Line1: ......好吧。我知道你会这么选
+					// Line1: ...Fine. I knew you'd choose this.
 					// Line2: ......
-					// Line3: 东西我会放回去，但我希望你用它的时候......谨慎一点
-					// Line4: 还有那个女巫，也......
-					// Line5: 我会陪你走下去......一直
+					// Line3: I'll put it back. But I hope... when you use it... you'll be careful.
+					// Line4: And that witch, too...
+					// Line5: I'll walk with you... all the way.
 				}
 
 				FinalBranch_Stop: {
-					// Line1: ......你真的愿意停下来吗
+					// Line1: ...You're... you're really willing to stop?
 					// Line2: ......
-					// Line3: 我们走吧，让那个女巫下地狱去吧
+					// Line3: Let's go. Let that witch go to hell.
 				}
 			}
 
 			HellGift: {
-				// R1: 比目鱼
-				// L0: 地狱这个鬼地方是越来越热了
-				// L1: 我有个提议，把海底挖穿，让这里也变成海洋的一部分
-				// L2: 跨越整块大陆的地热温泉......
-				// L3: 想想就很舒服
-				// L4: 哦，对了，我逮到了一条鱼
-				// L5: 最开始我以为它是来地狱泡温泉的向导，结果它只是长得像
+				// R1: Halibut
+				// L0: This damn place... Hell is getting hotter and hotter.
+				// L1: I have an idea. Let's just dig through the sea floor and make this part of the ocean, too.
+				// L2: A geothermal hot spring... spanning the entire continent.
+				// L3: ...Just thinking about it is relaxing.
+				// L4: Oh, right. I caught a fish.
+				// L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
 			}
 		}
 
@@ -6720,29 +6720,29 @@ UI: {
 
 	QuestTracker: {
 		DamageTrackerSystem: {
-			// QuestFailedPrefix: 任务失败
-			// QuestCompletedPrefix: 任务完成!
-			// FailureReasonWrongWeapon: 未使用指定武器完成最后一击
-			// FailureReasonInsufficientDamage: 武器伤害占比不足
-			// SuccessDamageContribution: 伤害占比
+			// QuestFailedPrefix: Quest Failed
+			// QuestCompletedPrefix: Quest Completed!
+			// FailureReasonWrongWeapon: Did not land the killing blow with the specified weapon
+			// FailureReasonInsufficientDamage: Insufficient damage contribution from the weapon
+			// SuccessDamageContribution: Damage Contribution
 		}
 	}
 
 	DoGQuestTrackerUI: {
-		// QuestTitle: 委托：猎杀神明吞噬者
-		// DamageContribution: 刻心者伤害
-		// RequiredContribution: 需求: 85%
+		// QuestTitle: Commission: Hunt the Devourer of Gods
+		// DamageContribution: Heartcarver Damage
+		// RequiredContribution: Required: 85%
 	}
 
 	PallbearerQuestTrackerUI: {
-		// QuestTitle: 委托：猎杀亵渎天神
-		// DamageContribution: 扶柩者伤害
-		// RequiredContribution: 需求: 80%
+		// QuestTitle: Commission: Hunt the Profaned Goddess
+		// DamageContribution: Pallbearer Damage
+		// RequiredContribution: Required: 80%
 	}
 
 	YharonQuestTrackerUI: {
-		// QuestTitle: 委托：猎杀焚世龙
-		// DamageContribution: 鬼面刀伤害
-		// RequiredContribution: 需求: 90%
+		// QuestTitle: Commission: Hunt the Incineration Dragon
+		// DamageContribution: Oni Machete Damage
+		// RequiredContribution: Required: 90%
 	}
 }
