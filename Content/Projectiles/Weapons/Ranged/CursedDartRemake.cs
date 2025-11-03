@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 0;
-            Projectile.aiStyle = 1;
+            Projectile.aiStyle = ProjAIStyleID.Arrow;
             Projectile.penetrate = 1;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(39, 600);
+            target.AddBuff(BuffID.CursedInferno, 600);
         }
     }
 }

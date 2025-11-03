@@ -211,8 +211,7 @@ namespace CalamityOverhaul.Content.Structures
                     tile = Framing.GetTileSafely(newPos);
 
                     if (tileIsAirCount > 12 && tile.HasSolidTile() && !dontFindByY
-                        && tile.TileType != 189 && tile.TileType != 460
-                        && tile.TileType != 196 && tile.TileType != 202) {
+                        && tile.TileType != TileID.Cloud && tile.TileType != TileID.SnowCloud && tile.TileType != TileID.RainCloud && tile.TileType != TileID.Sunplate) {
                         scheduledPosList.Add(newPos);
                         dontFindByY = true;
                     }

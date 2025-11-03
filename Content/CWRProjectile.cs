@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitPlayer(Projectile projectile, Player target, Player.HurtInfo info) {
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                target.AddBuff(70, 60);
+                target.AddBuff(BuffID.Venom, 60);
             }
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 target.AddBuff(BuffID.Electrified, 120);
@@ -688,7 +688,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.NettlevineGreat: {
-                    target.AddBuff(70, 60);
+                    target.AddBuff(BuffID.Venom, 60);
                     break;
                 }
 

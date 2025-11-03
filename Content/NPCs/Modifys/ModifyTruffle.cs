@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 npc.friendly = true;
                 npc.width = 18;
                 npc.height = 40;
-                npc.aiStyle = 7;
+                npc.aiStyle = NPCAIStyleID.Passive;
                 npc.damage = 10;
                 npc.defense = 15;
                 npc.lifeMax = 250;

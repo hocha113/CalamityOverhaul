@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (rageEnergy > RBlightedCleaver.BlightedCleaverMaxRageEnergy) {
                 rageEnergy = RBlightedCleaver.BlightedCleaverMaxRageEnergy;
             }
-            target.AddBuff(70, 150);
+            target.AddBuff(BuffID.Venom, 150);
 
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 return;
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(70, 150);
+            target.AddBuff(BuffID.Venom, 150);
         }
     }
 }

@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 WorldGen.KillTile((int)tilePos.X, (int)tilePos.Y, noItem: true);
             }
             //锤子形态下才能拆墙
-            if (Projectile.ai[0] == 0 && tile.WallType != 0) {
+            if (Projectile.ai[0] == 0 && tile.WallType != WallID.None) {
                 if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
                     dropTypes.Add(wallValue);
                 }

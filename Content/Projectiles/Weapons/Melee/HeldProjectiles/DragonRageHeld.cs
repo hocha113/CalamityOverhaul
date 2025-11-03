@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private int Time2;
         public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
-            Projectile.aiStyle = AIType = 0;
+            Projectile.aiStyle = AIType = ProjectileID.None;
             Projectile.extraUpdates = 3;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Projectile.width = 48;

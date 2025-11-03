@@ -37,11 +37,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(70, 600);
+            target.AddBuff(BuffID.Venom, 600);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(70, 600);
+            target.AddBuff(BuffID.Venom, 600);
         }
 
         public override void OnKill(int timeLeft) {

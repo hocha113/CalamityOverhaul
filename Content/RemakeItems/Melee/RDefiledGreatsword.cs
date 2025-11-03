@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
-            target.AddBuff(70, 150);
+            target.AddBuff(BuffID.Venom, 150);
 
             if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
                 return;
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 offsety -= 20;
             }
             player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
-            target.AddBuff(70, 150);
+            target.AddBuff(BuffID.Venom, 150);
         }
     }
 }
