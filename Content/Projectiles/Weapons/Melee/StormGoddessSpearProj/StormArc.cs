@@ -41,10 +41,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private int maxChains => 3 + (int)Intensity;
         
         /// <summary>连锁搜索半径</summary>
-        private float chainRadius = 400f;
+        private float chainRadius = 500f; // 增加搜索半径
         
         /// <summary>当前追踪的目标</summary>
         private NPC currentTarget = null;
+        
+        /// <summary>是否已经尝试过连锁</summary>
+        private bool hasAttemptedChain = false;
         #endregion
 
         #region 基础设置
@@ -99,41 +102,49 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         #region 目标寻找 - 连锁逻辑
         public override Vector2 FindTargetPosition() {
-            // 如果是新生成的电弧，寻找最近的敌人
-            if (chainCount == 0) {
-                currentTarget = Projectile.Center.FindClosestNPC(chainRadius, true, true);
-                if (currentTarget != null) {
-                    return currentTarget.Center;
-                }
-            }
-            else {
-                // 连锁模式：寻找下一个目标
-                currentTarget = FindNextChainTarget();
-                if (currentTarget != null) {
-                    chainCount++;
-                    return currentTarget.Center;
-                }
+            // 寻找最近的敌人（排除已命中的）
+            currentTarget = FindClosestValidNPC();
+            
+            if (currentTarget != null) {
+                return currentTarget.Center;
             }
 
             // 如果没有找到目标，向前方射出
-            return Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 300f;
+            return Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 400f;
         }
 
         /// <summary>
-        /// 寻找下一个连锁目标
+        /// 寻找最近的有效NPC（排除已命中的）
         /// </summary>
-        private NPC FindNextChainTarget() {
-            if (currentTarget == null || !currentTarget.active) {
-                return null;
+        private NPC FindClosestValidNPC() {
+            NPC closest = null;
+            float closestDistance = chainRadius;
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (IsValidTarget(npc)) {
+                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closest = npc;
+                    }
+                }
             }
 
+            return closest;
+        }
+
+        /// <summary>
+        /// 寻找下一个连锁目标（从当前目标位置搜索）
+        /// </summary>
+        private NPC FindNextChainTarget(Vector2 fromPosition) {
             NPC nextTarget = null;
             float closestDistance = chainRadius;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (IsValidTarget(npc) && !hitNPCs.Contains(npc.whoAmI)) {
-                    float distance = Vector2.Distance(currentTarget.Center, npc.Center);
+                if (IsValidTarget(npc)) {
+                    float distance = Vector2.Distance(fromPosition, npc.Center);
                     if (distance < closestDistance) {
                         closestDistance = distance;
                         nextTarget = npc;
@@ -152,6 +163,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                    npc.active && 
                    npc.CanBeChasedBy() && 
                    !npc.friendly &&
+                   npc.life > 0 &&
                    !hitNPCs.Contains(npc.whoAmI);
         }
         #endregion
@@ -172,10 +184,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         public override void OnHit() {
-            // 尝试进行连锁
-            if (chainCount < maxChains && Projectile.IsOwnedByLocalPlayer()) {
-                AttemptChain();
-            }
+            // 这个方法在基类的 StartLinger 中被调用
+            // 不需要在这里处理连锁，连锁在 OnHitNPC 中处理
         }
 
         /// <summary>
@@ -203,21 +213,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 尝试进行连锁
+        /// 尝试进行连锁 - 从指定位置生成新电弧
         /// </summary>
-        private void AttemptChain() {
-            NPC nextTarget = FindNextChainTarget();
+        private void AttemptChain(Vector2 fromPosition) {
+            // 防止重复触发
+            if (hasAttemptedChain) return;
+            hasAttemptedChain = true;
+
+            // 检查是否还能继续连锁
+            if (chainCount >= maxChains) {
+                return;
+            }
+
+            // 寻找下一个目标
+            NPC nextTarget = FindNextChainTarget(fromPosition);
             
             if (nextTarget != null) {
                 // 创建新的电弧到下一个目标
-                Vector2 directionToNext = (nextTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                Vector2 directionToNext = (nextTarget.Center - fromPosition).SafeNormalize(Vector2.UnitY);
                 
                 Projectile arc = Projectile.NewProjectileDirect(
                     Projectile.GetSource_FromThis(),
-                    Projectile.Center,
+                    fromPosition,
                     directionToNext * BaseSpeed,
                     Type,
-                    (int)(Projectile.damage * 0.85f), // 每次连锁伤害衰减
+                    (int)(Projectile.damage * 0.85f), // 每次连锁伤害衰减15%
                     Projectile.knockBack * 0.7f,
                     Projectile.owner,
                     ai0: 0,
@@ -225,14 +245,51 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     ai2: chainCount + 1 // 传递连锁次数
                 );
                 
-                // 传递已命中列表
+                // 传递已命中列表和连锁数据
                 StormArc arcModProj = arc.ModProjectile as StormArc;
                 if (arcModProj != null) {
+                    // 复制已命中列表
                     arcModProj.hitNPCs = new HashSet<int>(hitNPCs);
                     arcModProj.chainCount = chainCount + 1;
                     arcModProj.Intensity = Math.Max(0.5f, Intensity - 0.1f); // 降低强度
                 }
+
+                // 生成连锁视觉效果
+                if (!VaultUtils.isServer) {
+                    SpawnChainEffects(fromPosition, nextTarget.Center);
+                }
             }
+        }
+
+        /// <summary>
+        /// 生成连锁特效
+        /// </summary>
+        private void SpawnChainEffects(Vector2 from, Vector2 to) {
+            Color chainColor = GetLightningColor(0.5f);
+            
+            // 在连锁路径上生成粒子
+            int particleCount = (int)(Vector2.Distance(from, to) / 40f);
+            for (int i = 0; i < particleCount; i++) {
+                float progress = i / (float)particleCount;
+                Vector2 pos = Vector2.Lerp(from, to, progress);
+                
+                BasePRT particle = new PRT_Spark(
+                    pos,
+                    Main.rand.NextVector2Circular(3f, 3f),
+                    false,
+                    Main.rand.Next(5, 10),
+                    0.9f,
+                    chainColor * 0.8f,
+                    Main.player[Projectile.owner]
+                );
+                PRTLoader.AddParticle(particle);
+            }
+
+            // 播放连锁音效
+            SoundEngine.PlaySound(SoundID.Item93 with { 
+                Volume = 0.4f, 
+                Pitch = 0.5f + chainCount * 0.1f 
+            }, from);
         }
 
         protected override void UpdateStrikeMovement() {
@@ -244,16 +301,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             float selfAngle = Projectile.velocity.ToRotation();
             float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
             
-            // 更强的追踪
-            float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.95f);
+            // 更强的追踪（99%跟随目标）
+            float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.99f);
 
-            // 较小的扰动（电弧更直）
-            float sinOffset = MathF.Sin(Timer * 0.5f) * 0.2f;
+            // 非常小的扰动（电弧几乎是直的）
+            float sinOffset = MathF.Sin(Timer * 0.5f) * 0.1f;
             newAngle += sinOffset;
 
-            // 高频抖动
-            if (Timer % 3 == 0) {
-                float randomAngle = Main.rand.NextFloat(-0.2f, 0.2f);
+            // 偶尔的轻微抖动
+            if (Timer % 5 == 0) {
+                float randomAngle = Main.rand.NextFloat(-0.1f, 0.1f);
                 newAngle += randomAngle;
             }
 
@@ -263,7 +320,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Projectile.position += new Vector2(
                 MathF.Sin(Timer * 0.4f), 
                 MathF.Cos(Timer * 0.35f)
-            ) * 0.8f;
+            ) * 0.5f;
         }
         #endregion
 
@@ -324,6 +381,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     PRTLoader.AddParticle(particle);
                 }
             }
+
+            // 关键修复：在命中敌人后立即尝试连锁
+            // 只在本地客户端执行
+            if (Projectile.IsOwnedByLocalPlayer() && !hasAttemptedChain) {
+                AttemptChain(target.Center);
+            }
         }
 
         protected override void StartLinger() {
@@ -333,6 +396,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (currentTarget != null && currentTarget.active) {
                 hitNPCs.Add(currentTarget.whoAmI);
             }
+
+            // 如果到达目标但没有命中（比如碰到地面），尝试从停留位置连锁
+            if (Projectile.IsOwnedByLocalPlayer() && !hasAttemptedChain) {
+                AttemptChain(Projectile.Center);
+            }
         }
         #endregion
 
@@ -340,6 +408,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override void SendExtraAI(System.IO.BinaryWriter writer) {
             base.SendExtraAI(writer);
             writer.Write(chainCount);
+            writer.Write(hasAttemptedChain);
             writer.Write(hitNPCs.Count);
             foreach (int npcIndex in hitNPCs) {
                 writer.Write(npcIndex);
@@ -349,6 +418,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override void ReceiveExtraAI(System.IO.BinaryReader reader) {
             base.ReceiveExtraAI(reader);
             chainCount = reader.ReadInt32();
+            hasAttemptedChain = reader.ReadBoolean();
             int count = reader.ReadInt32();
             hitNPCs.Clear();
             for (int i = 0; i < count; i++) {

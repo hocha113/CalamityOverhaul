@@ -25,10 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles
         /// </summary>
         public enum LightningState
         {
-            Initializing = 0,  // 初始化
-            Striking = 1,      // 劈击过程
-            Lingering = 2,     // 停留（持续可见）
-            Fading = 3         // 消失
+            Initializing = 0,  //初始化
+            Striking = 1,      //劈击过程
+            Lingering = 2,     //停留（持续可见）
+            Fading = 3         //消失
         }
         #endregion
 
@@ -72,11 +72,11 @@ namespace CalamityOverhaul.Content.Projectiles
         /// <summary>基础移动速度</summary>
         public virtual float BaseSpeed => 16f;
         /// <summary>停留时间（帧数）- 真实闪电应持续可见</summary>
-        public virtual int LingerTime => 25; // 约0.4秒
+        public virtual int LingerTime => 25; //约0.4秒
         /// <summary>消失时间（帧数）</summary>
-        public virtual int FadeTime => 15; // 快速消失
+        public virtual int FadeTime => 15; //快速消失
         /// <summary>基础宽度</summary>
-        public virtual float BaseWidth => 45f; // 缩小30%：64 * 0.7 ≈ 45
+        public virtual float BaseWidth => 45f; //缩小30%：64 * 0.7 ≈ 45
         /// <summary>最小分叉宽度比例</summary>
         public virtual float MinBranchWidthRatio => 0.4f;
         /// <summary>最大分叉宽度比例</summary>
@@ -93,9 +93,9 @@ namespace CalamityOverhaul.Content.Projectiles
         /// 获取闪电宽度函数 - 根据强度和位置计算
         /// </summary>
         public virtual float GetLightningWidth(float factor) {
-            // 使用更平滑的曲线，避免过粗
+            //使用更平滑的曲线，避免过粗
             float curve = MathF.Sin(factor * MathHelper.Pi);
-            // 主干中部稍粗，两端细
+            //主干中部稍粗，两端细
             float shapeFactor = curve * (0.6f + 0.4f * MathF.Sin(factor * MathHelper.Pi * 0.5f));
             return ThunderWidth * shapeFactor * Intensity;
         }
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
             float alpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
 
-            // 根据强度调整透明度
+            //根据强度调整透明度
             return alpha * (0.7f + 0.3f * Intensity);
         }
 
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
         #region 核心AI逻辑
         public override void AI() {
-            // 初始化
+            //初始化
             if (!hasSpawned) {
                 hasSpawned = true;
                 TargetPosition = FindTargetPosition();
@@ -158,10 +158,10 @@ namespace CalamityOverhaul.Content.Projectiles
                 }
             }
 
-            // 添加光源
+            //添加光源
             Lighting.AddLight(Projectile.Center, GetLightningColor(0.5f).ToVector3() * 0.8f * Intensity);
 
-            // 状态机
+            //状态机
             switch ((LightningState)State) {
                 case LightningState.Initializing:
                     InitializeStrike();
@@ -189,14 +189,14 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.tileCollide = true;
             Projectile.timeLeft = 1000;
 
-            // 设置速度
+            //设置速度
             Projectile.velocity = (TargetPosition - Projectile.Center).SafeNormalize(Vector2.Zero) * BaseSpeed;
 
-            // 初始化轨迹
+            //初始化轨迹
             TrailPoints.Clear();
             TrailPoints.AddLast(Projectile.Center);
 
-            // 创建主轨迹
+            //创建主轨迹
             if (LightningTexture != null) {
                 MainTrail = new ThunderTrail(LightningTexture, GetLightningWidth, GetLightningColor, GetAlpha) {
                     CanDraw = true,
@@ -204,8 +204,8 @@ namespace CalamityOverhaul.Content.Projectiles
                     PartitionPointCount = 3,
                     BasePositions = new Vector2[] { Projectile.Center, Projectile.Center, Projectile.Center }
                 };
-                MainTrail.SetRange((0, 6)); // 减小随机偏移
-                MainTrail.SetExpandWidth(5); // 减小扩展宽度
+                MainTrail.SetRange((0, 6)); //减小随机偏移
+                MainTrail.SetExpandWidth(5); //减小扩展宽度
             }
 
             Projectile.netUpdate = true;
@@ -220,19 +220,19 @@ namespace CalamityOverhaul.Content.Projectiles
             float distance = Projectile.Center.Distance(TargetPosition);
             float baseSpeed = Projectile.velocity.Length();
 
-            // 检查是否到达目标
+            //检查是否到达目标
             if (distance < baseSpeed * 2f) {
                 StartLinger();
                 return;
             }
 
-            // 更新速度和位置
+            //更新速度和位置
             UpdateStrikeMovement();
 
-            // 更新轨迹
+            //更新轨迹
             UpdateTrails();
 
-            // 优化的分叉生成：降低频率，更自然的分布
+            //优化的分叉生成：降低频率，更自然的分布
             if (Timer % 12 == 0 && Main.rand.NextFloat() < BranchProbability && BranchTrails.Count < MaxBranches) {
                 CreateBranch();
             }
@@ -245,19 +245,19 @@ namespace CalamityOverhaul.Content.Projectiles
             float baseSpeed = Projectile.velocity.Length();
             float distance = Projectile.Center.Distance(TargetPosition);
 
-            // 基础朝向
+            //基础朝向
             float selfAngle = Projectile.velocity.ToRotation();
             float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
             float trackingFactor = 1 - Math.Clamp(distance / 500, 0f, 1f);
 
-            // 角度插值
+            //角度插值
             float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.8f + 0.2f * trackingFactor);
 
-            // 减小扰动，让轨迹更直
+            //减小扰动，让轨迹更直
             float sinOffset = MathF.Sin(Timer * 0.35f) * 0.4f;
             newAngle += sinOffset;
 
-            // 减少随机抖动
+            //减少随机抖动
             if (Timer % 8 == 0) {
                 float randomAngle = Main.rand.NextFloat(-0.3f, 0.3f);
                 newAngle += randomAngle;
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
             Projectile.velocity = newAngle.ToRotationVector2() * baseSpeed;
 
-            // 减小位置抖动
+            //减小位置抖动
             Projectile.position += new Vector2(MathF.Sin(Timer * 0.25f), MathF.Cos(Timer * 0.2f)) * 1.2f;
         }
 
@@ -276,12 +276,12 @@ namespace CalamityOverhaul.Content.Projectiles
             if (MainTrail != null) {
                 TrailPoints.AddLast(Projectile.Center);
 
-                // 限制轨迹点数量
+                //限制轨迹点数量
                 if (TrailPoints.Count > 100) {
                     TrailPoints.RemoveFirst();
                 }
 
-                // 更新主轨迹
+                //更新主轨迹
                 if (Timer % Math.Max(1, Projectile.MaxUpdates / 2) == 0) {
                     MainTrail.BasePositions = TrailPoints.ToArray();
                     if (MainTrail.BasePositions.Length > 2) {
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 }
             }
 
-            // 更新分叉轨迹
+            //更新分叉轨迹
             foreach (var branch in BranchTrails) {
                 if (Timer % 8 == 0) {
                     branch.RandomThunder();
@@ -306,39 +306,39 @@ namespace CalamityOverhaul.Content.Projectiles
 
             var points = TrailPoints.ToArray();
 
-            // 从前2/3段选择分叉点，避免末端分叉
+            //从前2/3段选择分叉点，避免末端分叉
             int maxIndex = (int)(points.Length * 0.67f);
             int branchIndex = Main.rand.Next(Math.Max(5, points.Length / 3), maxIndex);
             Vector2 branchStart = points[branchIndex];
 
             List<Vector2> branchPoints = new List<Vector2> { branchStart };
 
-            // 计算主干方向
+            //计算主干方向
             Vector2 mainDirection = (TargetPosition - Projectile.Center).SafeNormalize(Vector2.UnitY);
 
-            // 分叉角度：向两侧偏离30-60度
+            //分叉角度：向两侧偏离30-60度
             float sideSign = Main.rand.NextBool() ? 1 : -1;
             float branchAngle = mainDirection.ToRotation() + sideSign * Main.rand.NextFloat(0.5f, 1.0f);
 
-            // 分叉长度：较短，更自然
+            //分叉长度：较短，更自然
             int branchLength = (int)(TrailPoints.Count * BranchLengthRatio * Main.rand.NextFloat(0.5f, 0.8f));
-            branchLength = Math.Max(8, Math.Min(branchLength, 125)); // 限制长度
+            branchLength = Math.Max(8, Math.Min(branchLength, 125)); //限制长度
 
             Vector2 currentPos = branchStart;
             Vector2 branchDirection = branchAngle.ToRotationVector2();
 
             for (int i = 0; i < branchLength; i++) {
-                // 逐渐向下偏移（模拟重力影响）
+                //逐渐向下偏移（模拟重力影响）
                 float progressFactor = i / (float)branchLength;
-                branchAngle += 0.05f * sideSign * (1f - progressFactor); // 角度逐渐变化
+                branchAngle += 0.05f * sideSign * (1f - progressFactor); //角度逐渐变化
 
-                // 向下的轻微引力
+                //向下的轻微引力
                 float downwardBias = 0.1f * progressFactor;
                 branchDirection = branchAngle.ToRotationVector2();
                 branchDirection.Y += downwardBias;
                 branchDirection = branchDirection.SafeNormalize(Vector2.UnitY);
 
-                // 随机偏移量递减
+                //随机偏移量递减
                 float offset = Main.rand.NextFloat(-12f, 12f) * (1f - progressFactor * 0.5f);
                 Vector2 perpendicular = branchDirection.RotatedBy(MathHelper.PiOver2);
 
@@ -346,16 +346,16 @@ namespace CalamityOverhaul.Content.Projectiles
                 currentPos += branchDirection * stepSize + perpendicular * offset;
                 branchPoints.Add(currentPos);
 
-                // 随机提前结束（越远越容易结束）
+                //随机提前结束（越远越容易结束）
                 if (Main.rand.NextFloat() < 0.03f + progressFactor * 0.07f) break;
             }
 
             if (branchPoints.Count > 3) {
-                // 分叉宽度随机变化
+                //分叉宽度随机变化
                 float widthRatio = Main.rand.NextFloat(MinBranchWidthRatio, MaxBranchWidthRatio);
 
                 ThunderTrail branch = new ThunderTrail(LightningTexture,
-                    factor => GetLightningWidth(factor) * widthRatio * 0.8f, // 分叉更细
+                    factor => GetLightningWidth(factor) * widthRatio * 0.8f, //分叉更细
                     factor => GetLightningColor(factor) * Main.rand.NextFloat(0.75f, 0.95f),
                     GetAlpha) {
                     CanDraw = true,
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.Projectiles
                     PartitionPointCount = 2,
                     BasePositions = branchPoints.ToArray()
                 };
-                branch.SetRange((0, 4)); // 更小的随机范围
+                branch.SetRange((0, 4)); //更小的随机范围
                 branch.SetExpandWidth(3);
                 branch.RandomThunder();
 
@@ -382,13 +382,13 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.extraUpdates = 0;
             Hited = 1;
 
-            // 最终确定轨迹
+            //最终确定轨迹
             if (MainTrail != null && TrailPoints.Count > 2) {
                 MainTrail.BasePositions = TrailPoints.ToArray();
                 MainTrail.RandomThunder();
             }
 
-            // 触发劈击效果
+            //触发劈击效果
             OnStrike();
             OnHit();
             Projectile.netUpdate = true;
@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content.Projectiles
         protected virtual void UpdateLinger() {
             Timer++;
 
-            // 持续可见，保持满亮度
+            //持续可见，保持满亮度
             if (MainTrail != null) {
                 MainTrail.CanDraw = true;
             }
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 branch.CanDraw = true;
             }
 
-            // 轻微的形态变化（可选，模拟能量波动）
+            //轻微的形态变化（可选，模拟能量波动）
             if (Timer % 12 == 0 && Timer < LingerTime * 0.6f) {
                 MainTrail?.RandomThunder();
                 foreach (var branch in BranchTrails) {
@@ -437,13 +437,13 @@ namespace CalamityOverhaul.Content.Projectiles
         protected virtual void UpdateFade() {
             Timer++;
 
-            // 快速线性淡出
+            //快速线性淡出
             FadeValue = Timer / FadeTime;
 
-            // 宽度也逐渐缩小
+            //宽度也逐渐缩小
             ThunderWidth = BaseWidth * (1f - FadeValue * 0.6f);
 
-            // 透明度快速降低
+            //透明度快速降低
             ThunderAlpha = 1f - FadeValue;
 
             if (MainTrail != null) {
@@ -505,12 +505,12 @@ namespace CalamityOverhaul.Content.Projectiles
 
         #region 绘制
         public override bool PreDraw(ref Color lightColor) {
-            // 绘制主体（如果未命中）
+            //绘制主体（如果未命中）
             if (Hited == 0 && State == (float)LightningState.Striking) {
                 DrawLightningCore(lightColor);
             }
 
-            // 绘制轨迹
+            //绘制轨迹
             if (State > (float)LightningState.Initializing) {
                 DrawTrails();
             }
@@ -522,7 +522,7 @@ namespace CalamityOverhaul.Content.Projectiles
         /// 绘制闪电核心
         /// </summary>
         protected virtual void DrawLightningCore(Color lightColor) {
-            // 可由子类重写以实现特定的核心绘制
+            //可由子类重写以实现特定的核心绘制
         }
 
         /// <summary>
@@ -533,7 +533,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 MainTrail.DrawThunder(Main.instance.GraphicsDevice);
             }
 
-            // 绘制分叉
+            //绘制分叉
             foreach (var branch in BranchTrails) {
                 branch?.DrawThunder(Main.instance.GraphicsDevice);
             }
