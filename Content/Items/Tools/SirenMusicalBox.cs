@@ -301,8 +301,8 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //血红色警告粒子（音乐快结束时）
             SirenMusicalBoxPlayer modPlayer = Player.GetModPlayer<SirenMusicalBoxPlayer>();
-            if (modPlayer.MusicTimer >= SirenMusicalBoxPlayer.MusicDuration - 300) {
-                float dangerIntensity = (modPlayer.MusicTimer - (SirenMusicalBoxPlayer.MusicDuration - 300)) / 300f;
+            if (modPlayer.MusicTimer >= MusicDuration - 300) {
+                float dangerIntensity = (modPlayer.MusicTimer - (MusicDuration - 300)) / 300f;
 
                 if (Main.rand.NextFloat() < dangerIntensity * 0.3f) {
                     Vector2 warnPos = Player.Center + Main.rand.NextVector2Circular(60f, 60f);
