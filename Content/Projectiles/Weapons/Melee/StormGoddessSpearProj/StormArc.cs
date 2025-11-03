@@ -1,145 +1,360 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
-    internal class StormArc : ModProjectile
+    /// <summary>
+    /// 风暴电弧 - 较小的连锁闪电，用于二次打击和追踪效果
+    /// </summary>
+    internal class StormArc : Lightning
     {
         public override string Texture => CWRConstant.Placeholder;
-        private Color light => Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
-        }
 
-        public override void SetDefaults() {
-            Projectile.width = 8;
-            Projectile.height = 8;
-            Projectile.alpha = 255;
-            Projectile.friendly = true;
-            Projectile.tileCollide = false;
-            Projectile.ignoreWater = true;
+        #region 配置参数 - 比主闪电更小更快
+        public override int MaxBranches => 2; // 更少的分叉
+        public override float BranchProbability => 0.08f; // 更低的分叉概率
+        public override float BranchLengthRatio => 0.35f; // 更短的分叉
+        public override float BaseSpeed => 22f; // 更快的速度
+        public override int LingerTime => 18; // 更短的停留时间
+        public override int FadeTime => 12; // 更快的消失
+        public override float BaseWidth => 28f; // 更细的闪电
+        public override float MinBranchWidthRatio => 0.3f;
+        public override float MaxBranchWidthRatio => 0.6f;
+        #endregion
+
+        #region 自定义属性
+        /// <summary>追踪的目标NPC索引列表</summary>
+        private HashSet<int> hitNPCs = new HashSet<int>();
+        
+        /// <summary>连锁次数</summary>
+        private int chainCount = 0;
+        
+        /// <summary>最大连锁次数</summary>
+        private int maxChains => 3 + (int)Intensity;
+        
+        /// <summary>连锁搜索半径</summary>
+        private float chainRadius = 400f;
+        
+        /// <summary>当前追踪的目标</summary>
+        private NPC currentTarget = null;
+        #endregion
+
+        #region 基础设置
+        public override void SetLightningDefaults() {
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.timeLeft = 120;
-            Projectile.penetrate = 13;
-            Projectile.MaxUpdates = 3;
-            Projectile.tileCollide = true;
+            Projectile.penetrate = -1; // 无限穿透，由连锁次数控制
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1; // 每个敌人只能命中一次
+            Projectile.width = 18;
+            Projectile.height = 18;
+            Intensity = 0.85f; // 稍低的强度
+        }
+        #endregion
+
+        #region 颜色系统
+        public override Color GetLightningColor(float factor) {
+            // 使用青蓝色调，稍微偏紫
+            Color baseColor = new Color(143, 235, 255); // 更亮的青蓝色
+            
+            // 添加电弧特有的闪烁效果
+            float sparkle = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 25f + Projectile.identity * 3f);
+            
+            // 根据连锁次数调整颜色（越多连锁越亮）
+            float chainBrightness = 1f + chainCount * 0.1f;
+            
+            return baseColor * sparkle * chainBrightness;
         }
 
-        private HashSet<NPC> shockedbefore = [];
-        private int prevX = 0;
-        public override void AI() {
-            if (Projectile.localAI[0] == 0f) {
-                AdjustMagnitude(ref Projectile.velocity);
-                Projectile.localAI[0] = 1f;
-            }
+        public override float GetLightningWidth(float factor) {
+            // 更细更快的电弧
+            float curve = MathF.Sin(factor * MathHelper.Pi);
+            float shapeFactor = curve * (0.7f + 0.3f * MathF.Sin(factor * MathHelper.Pi));
+            
+            // 添加高频震颤
+            float vibration = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 40f + factor * 20f);
+            
+            return ThunderWidth * shapeFactor * Intensity * vibration;
+        }
 
-            Vector2 move = Vector2.Zero;
-            float distance = 160f;
-            bool target = false;
-            NPC npc = null;
-            bool pastNPC = false;
-            if (Projectile.timeLeft < 118) {
-                for (int k = 0; k < Main.maxNPCs; k++) {
-                    if (Main.npc[k].active && !Main.npc[k].dontTakeDamage && !Main.npc[k].friendly && Main.npc[k].lifeMax > 5 && !shockedbefore.Contains(Main.npc[k])) {
-                        Vector2 newMove = Main.npc[k].Center - (Projectile.velocity + Projectile.Center);
-                        float distanceTo = (float)Math.Sqrt(newMove.X * newMove.X + newMove.Y * newMove.Y);
-                        if (distanceTo < distance) {
-                            move = newMove;
-                            distance = distanceTo;
-                            target = true;
-                            npc = Main.npc[k];
+        public override float GetAlpha(float factor) {
+            if (factor < FadeValue)
+                return 0;
 
-                        }
-                    }
-                }
-            }
+            float baseAlpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
+            
+            // 快速闪烁效果
+            float flicker = 1f - 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 35f + factor * 25f);
+            
+            return baseAlpha * (0.9f + 0.1f * Intensity) * flicker;
+        }
+        #endregion
 
-            if (!target) {
-                foreach (NPC pastnpc in shockedbefore) {
-                    Vector2 newMove = pastnpc.Center - (Projectile.velocity + Projectile.Center);
-                    float distanceTo = (float)Math.Sqrt(newMove.X * newMove.X + newMove.Y * newMove.Y);
-                    if (distanceTo < distance) {
-                        move = newMove;
-                        distance = distanceTo;
-                        target = true;
-                        npc = pastnpc;
-                        pastNPC = true;
-                    }
-                }
-            }
-
-            Vector2 current = Projectile.Center;
-            if (target) {
-                shockedbefore.Add(npc);
-                npc.HitEffect(0, Projectile.damage);
-                move += new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11)) * distance / 30;
-                if (pastNPC) {
-                    prevX++;
-                    move += new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11)) * prevX;
+        #region 目标寻找 - 连锁逻辑
+        public override Vector2 FindTargetPosition() {
+            // 如果是新生成的电弧，寻找最近的敌人
+            if (chainCount == 0) {
+                currentTarget = Projectile.Center.FindClosestNPC(chainRadius, true, true);
+                if (currentTarget != null) {
+                    return currentTarget.Center;
                 }
             }
             else {
-                move = (Projectile.velocity + new Vector2(Main.rand.Next(-5, 6), Main.rand.Next(-5, 6))) * 5;
-            }
-
-            for (int i = 0; i < 20; i++) {
-                current += move / 20f;
-            }
-
-            Projectile.position = current;
-        }
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = oldVelocity;
-            Projectile.timeLeft -= 32;
-            return false;
-        }
-
-        private void AdjustMagnitude(ref Vector2 vector) {
-            float magnitude = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-            if (magnitude > 6f) {
-                vector *= 6f / magnitude;
-            }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Electrified, 120);
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < Main.rand.Next(3, 16); i++) {
-                    Vector2 pos = target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(target.width);
-                    Vector2 particleSpeed = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(15.5f, 37.7f);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , 0.3f, light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
+                // 连锁模式：寻找下一个目标
+                currentTarget = FindNextChainTarget();
+                if (currentTarget != null) {
+                    chainCount++;
+                    return currentTarget.Center;
                 }
-                SoundEngine.PlaySound(SoundID.Item94, target.position);
+            }
+
+            // 如果没有找到目标，向前方射出
+            return Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 300f;
+        }
+
+        /// <summary>
+        /// 寻找下一个连锁目标
+        /// </summary>
+        private NPC FindNextChainTarget() {
+            if (currentTarget == null || !currentTarget.active) {
+                return null;
+            }
+
+            NPC nextTarget = null;
+            float closestDistance = chainRadius;
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (IsValidTarget(npc) && !hitNPCs.Contains(npc.whoAmI)) {
+                    float distance = Vector2.Distance(currentTarget.Center, npc.Center);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        nextTarget = npc;
+                    }
+                }
+            }
+
+            return nextTarget;
+        }
+
+        /// <summary>
+        /// 检查NPC是否是有效目标
+        /// </summary>
+        private bool IsValidTarget(NPC npc) {
+            return npc != null && 
+                   npc.active && 
+                   npc.CanBeChasedBy() && 
+                   !npc.friendly &&
+                   !hitNPCs.Contains(npc.whoAmI);
+        }
+        #endregion
+
+        #region 特效
+        public override void OnStrike() {
+            // 播放较轻的电击音效
+            SoundEngine.PlaySound(SoundID.Item94 with { 
+                Volume = 0.5f, 
+                Pitch = 0.3f,
+                PitchVariance = 0.2f 
+            }, Projectile.Center);
+
+            // 生成小范围的冲击粒子
+            if (!VaultUtils.isServer) {
+                SpawnArcImpactParticles();
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width * 0.6f;
-
-        public virtual Color PrimitiveColorFunction(float completionRatio) {
-            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, light);
-            return color;
+        public override void OnHit() {
+            // 尝试进行连锁
+            if (chainCount < maxChains && Projectile.IsOwnedByLocalPlayer()) {
+                AttemptChain();
+            }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 20);
-            return false;
+        /// <summary>
+        /// 生成电弧冲击粒子
+        /// </summary>
+        private void SpawnArcImpactParticles() {
+            Color particleColor = GetLightningColor(0.5f);
+            
+            // 生成环形粒子
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
+                BasePRT particle = new PRT_Light(
+                    Projectile.Center,
+                    velocity,
+                    0.25f,
+                    particleColor,
+                    Main.rand.Next(6, 12),
+                    0.9f,
+                    1.3f,
+                    hueShift: 0f
+                );
+                PRTLoader.AddParticle(particle);
+            }
         }
+
+        /// <summary>
+        /// 尝试进行连锁
+        /// </summary>
+        private void AttemptChain() {
+            NPC nextTarget = FindNextChainTarget();
+            
+            if (nextTarget != null) {
+                // 创建新的电弧到下一个目标
+                Vector2 directionToNext = (nextTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                
+                Projectile arc = Projectile.NewProjectileDirect(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    directionToNext * BaseSpeed,
+                    Type,
+                    (int)(Projectile.damage * 0.85f), // 每次连锁伤害衰减
+                    Projectile.knockBack * 0.7f,
+                    Projectile.owner,
+                    ai0: 0,
+                    ai1: 0,
+                    ai2: chainCount + 1 // 传递连锁次数
+                );
+                
+                // 传递已命中列表
+                StormArc arcModProj = arc.ModProjectile as StormArc;
+                if (arcModProj != null) {
+                    arcModProj.hitNPCs = new HashSet<int>(hitNPCs);
+                    arcModProj.chainCount = chainCount + 1;
+                    arcModProj.Intensity = Math.Max(0.5f, Intensity - 0.1f); // 降低强度
+                }
+            }
+        }
+
+        protected override void UpdateStrikeMovement() {
+            // 更激进的追踪
+            float baseSpeed = Projectile.velocity.Length();
+            float distance = Projectile.Center.Distance(TargetPosition);
+
+            // 基础朝向
+            float selfAngle = Projectile.velocity.ToRotation();
+            float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
+            
+            // 更强的追踪
+            float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.95f);
+
+            // 较小的扰动（电弧更直）
+            float sinOffset = MathF.Sin(Timer * 0.5f) * 0.2f;
+            newAngle += sinOffset;
+
+            // 高频抖动
+            if (Timer % 3 == 0) {
+                float randomAngle = Main.rand.NextFloat(-0.2f, 0.2f);
+                newAngle += randomAngle;
+            }
+
+            Projectile.velocity = newAngle.ToRotationVector2() * baseSpeed;
+
+            // 轻微位置抖动
+            Projectile.position += new Vector2(
+                MathF.Sin(Timer * 0.4f), 
+                MathF.Cos(Timer * 0.35f)
+            ) * 0.8f;
+        }
+        #endregion
+
+        #region AI逻辑
+        public override void AI() {
+            // 从ai[2]恢复连锁次数
+            if (chainCount == 0 && Projectile.ai[2] > 0) {
+                chainCount = (int)Projectile.ai[2];
+            }
+
+            base.AI();
+
+            // 添加光源
+            Color lightColor = GetLightningColor(0.5f);
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Intensity * 0.6f);
+
+            // 在飞行过程中生成轨迹粒子
+            if (State == (float)LightningState.Striking && Timer % 4 == 0 && !VaultUtils.isServer) {
+                BasePRT particle = new PRT_Light(
+                    Projectile.Center + Main.rand.NextVector2Circular(8, 8),
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
+                    0.15f,
+                    lightColor * 0.5f,
+                    Main.rand.Next(4, 8),
+                    0.7f,
+                    1f,
+                    hueShift: 0f
+                );
+                PRTLoader.AddParticle(particle);
+            }
+        }
+        #endregion
+
+        #region 命中效果
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            base.OnHitNPC(target, hit, damageDone);
+
+            // 记录已命中的NPC
+            hitNPCs.Add(target.whoAmI);
+
+            // 添加电击Debuff（时间较短）
+            target.AddBuff(BuffID.Electrified, 120);
+
+            // 生成命中粒子
+            if (!VaultUtils.isServer) {
+                Color particleColor = GetLightningColor(0.5f);
+                for (int i = 0; i < Main.rand.Next(3, 6); i++) {
+                    Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 15f);
+                    BasePRT particle = new PRT_Spark(
+                        target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
+                        velocity,
+                        false,
+                        Main.rand.Next(5, 10),
+                        1.1f,
+                        particleColor,
+                        Main.player[Projectile.owner]
+                    );
+                    PRTLoader.AddParticle(particle);
+                }
+            }
+        }
+
+        protected override void StartLinger() {
+            base.StartLinger();
+            
+            // 记录当前目标
+            if (currentTarget != null && currentTarget.active) {
+                hitNPCs.Add(currentTarget.whoAmI);
+            }
+        }
+        #endregion
+
+        #region 网络同步
+        public override void SendExtraAI(System.IO.BinaryWriter writer) {
+            base.SendExtraAI(writer);
+            writer.Write(chainCount);
+            writer.Write(hitNPCs.Count);
+            foreach (int npcIndex in hitNPCs) {
+                writer.Write(npcIndex);
+            }
+        }
+
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader) {
+            base.ReceiveExtraAI(reader);
+            chainCount = reader.ReadInt32();
+            int count = reader.ReadInt32();
+            hitNPCs.Clear();
+            for (int i = 0; i < count; i++) {
+                hitNPCs.Add(reader.ReadInt32());
+            }
+        }
+        #endregion
     }
 }
