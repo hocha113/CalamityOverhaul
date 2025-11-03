@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             comboCounter = (int)Projectile.ai[0] % 3;
             hasSpawnedLightning = false;
             
-            //循环颜色风格
+            //循环颜色风格（统一为白蓝色系）
             lightningColorStyle = (comboCounter % 3) + 1;
         }
 
@@ -121,18 +121,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             //根据不同连击发射不同效果的闪电
             if (comboCounter == 0) {
-                //第一击：单个强力闪电
-                SpawnMainLightning(1f, lightningColorStyle);
+                //第一击：单个强力追踪闪电（亮白蓝）
+                SpawnMainLightning(1f, lightningColorStyle, false);
             }
             else if (comboCounter == 1) {
-                //第二击：三道扇形闪电
+                //第二击：三道扇形追踪闪电（中蓝白）
                 for (int i = -1; i <= 1; i++) {
                     Vector2 velocity = ShootVelocity.RotatedBy(i * 0.3f);
-                    SpawnLightningProjectile(velocity, 0.7f, lightningColorStyle);
+                    SpawnLightningProjectile(velocity, 0.7f, lightningColorStyle, false);
                 }
             }
             else if (comboCounter == 2) {
-                //第三击：五道环绕闪电（如果有肾上腺素）
+                //第三击：五到七道环绕直线闪电（深蓝白，不追踪）
                 bool hasAdrenaline = Owner.Calamity().adrenalineModeActive;
                 int count = hasAdrenaline ? 7 : 5;
                 float damageMultiplier = hasAdrenaline ? 0.9f : 0.65f;
@@ -140,20 +140,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 for (int i = 0; i < count; i++) {
                     float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.15f, 0.15f);
                     Vector2 velocity = angle.ToRotationVector2() * ShootSpeed;
-                    SpawnLightningProjectile(velocity, damageMultiplier, lightningColorStyle);
+                    
+                    //第三击的闪电禁用追踪，制造直线飞出的视觉效果
+                    SpawnLightningProjectile(velocity, damageMultiplier, lightningColorStyle, true);
                 }
 
                 //额外生成冲击波效果
                 if (!VaultUtils.isServer) {
                     SpawnShockwaveParticles();
                 }
+
+                //播放更强的音效
+                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { 
+                    Volume = 0.7f, 
+                    Pitch = -0.3f 
+                }, ShootSpanPos);
             }
         }
 
         /// <summary>
         /// 生成主闪电
         /// </summary>
-        private void SpawnMainLightning(float damageMultiplier, int colorStyle) {
+        private void SpawnMainLightning(float damageMultiplier, int colorStyle, bool disableHoming) {
+            //如果禁用追踪，ai[2] 加 100 作为标记
+            int ai2Value = disableHoming ? colorStyle + 100 : colorStyle;
+
             Projectile.NewProjectileDirect(
                 Source,
                 ShootSpanPos,
@@ -164,14 +175,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 Owner.whoAmI,
                 ai0: 0,
                 ai1: 0,
-                ai2: colorStyle
+                ai2: ai2Value
             );
         }
 
         /// <summary>
         /// 生成闪电弹幕
         /// </summary>
-        private void SpawnLightningProjectile(Vector2 velocity, float damageMultiplier, int colorStyle) {
+        private void SpawnLightningProjectile(Vector2 velocity, float damageMultiplier, int colorStyle, bool disableHoming) {
+            //如果禁用追踪，ai[2] 加 100 作为标记
+            int ai2Value = disableHoming ? colorStyle + 100 : colorStyle;
+
             Projectile.NewProjectile(
                 Source,
                 ShootSpanPos,
@@ -182,7 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 Owner.whoAmI,
                 ai0: 0,
                 ai1: 0,
-                ai2: colorStyle
+                ai2: ai2Value
             );
         }
 
@@ -208,17 +222,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 );
                 PRTLoader.AddParticle(particle);
             }
+
+            //向上爆发的粒子（上挑特效）
+            for (int i = 0; i < 15; i++) {
+                float angle = Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4) - MathHelper.PiOver2;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 35f);
+                BasePRT particle = new PRT_Spark(
+                    ShootSpanPos,
+                    velocity,
+                    false,
+                    Main.rand.Next(15, 25),
+                    1.8f,
+                    particleColor * 0.9f,
+                    Owner
+                );
+                PRTLoader.AddParticle(particle);
+            }
         }
 
         /// <summary>
-        /// 获取指定风格的闪电颜色
+        /// 获取指定风格的闪电颜色（统一为白蓝色系）
         /// </summary>
         private Color GetLightningColorForStyle(int style) {
             return style switch {
-                1 => new Color(103, 255, 255), //青蓝色
-                2 => new Color(255, 255, 103), //金黄色
-                3 => new Color(255, 103, 255), //洋红色
-                _ => new Color(103, 255, 255)
+                1 => new Color(200, 230, 255), //亮白蓝（第一击）
+                2 => new Color(150, 200, 255), //中蓝白（第二击）
+                3 => new Color(100, 180, 255), //深蓝白（第三击）
+                _ => new Color(180, 220, 255)  //默认白蓝
             };
         }
 

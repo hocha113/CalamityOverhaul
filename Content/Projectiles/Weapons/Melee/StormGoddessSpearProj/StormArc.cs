@@ -62,18 +62,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
         #endregion
 
-        #region 颜色系统
+        #region 颜色系统 - 改为白蓝色系
         public override Color GetLightningColor(float factor) {
-            // 使用青蓝色调，稍微偏紫
-            Color baseColor = new Color(143, 235, 255); // 更亮的青蓝色
+            // 使用白蓝色调（比主闪电更亮）
+            Color baseColor = new Color(180, 220, 255); // 明亮的白蓝色
             
             // 添加电弧特有的闪烁效果
-            float sparkle = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 25f + Projectile.identity * 3f);
+            float sparkle = 0.88f + 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 28f + Projectile.identity * 3f);
             
-            // 根据连锁次数调整颜色（越多连锁越亮）
-            float chainBrightness = 1f + chainCount * 0.1f;
+            // 根据连锁次数调整颜色（连锁越多越亮）
+            float chainBrightness = 1f + chainCount * 0.08f;
             
-            return baseColor * sparkle * chainBrightness;
+            // 添加白色高光
+            Color highlightColor = Color.Lerp(baseColor, Color.White, 0.3f);
+            
+            return highlightColor * sparkle * chainBrightness;
         }
 
         public override float GetLightningWidth(float factor) {
@@ -102,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         #region 目标寻找 - 连锁逻辑
         public override Vector2 FindTargetPosition() {
-            // 寻找最近的敌人（排除已命中的）
+            // 寻找最近的有效NPC（排除已命中的）
             currentTarget = FindClosestValidNPC();
             
             if (currentTarget != null) {
@@ -135,7 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 寻找下一个连锁目标（从当前目标位置搜索）
+        /// 寻找下一个连锁目标（从指定位置搜索）
         /// </summary>
         private NPC FindNextChainTarget(Vector2 fromPosition) {
             NPC nextTarget = null;
@@ -333,7 +336,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             base.AI();
 
-            // 添加光源
+            // 添加光源（白蓝色光）
             Color lightColor = GetLightningColor(0.5f);
             Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Intensity * 0.6f);
 
