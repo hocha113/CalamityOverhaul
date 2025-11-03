@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 {
     /// <summary>
     /// 比目鱼鱼油获取提示与任务创建场景
@@ -49,6 +49,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         public static LocalizedText ChoiceAccept { get; private set; }
         public static LocalizedText ChoiceDecline { get; private set; }
 
+        private const string enjoy = " ";
+
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() {
@@ -68,12 +70,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         }
 
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(Rolename.Value + enjoy, ADVAsset.Helen_enjoyADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename.Value + enjoy, silhouette: false);
             Add(Rolename.Value, Line0.Value);
             Add(Rolename.Value, Line1.Value);
             Add(Rolename.Value, Line2.Value);
-            Add(Rolename.Value, Line3.Value);
+            Add(Rolename.Value + enjoy, Line3.Value);
             AddWithChoices(Rolename.Value, Line4.Value, new System.Collections.Generic.List<Choice> {
                 new Choice(ChoiceAccept.Value, OnAccept, enabled: true),
                 new Choice(ChoiceDecline.Value, OnDecline, enabled: true)

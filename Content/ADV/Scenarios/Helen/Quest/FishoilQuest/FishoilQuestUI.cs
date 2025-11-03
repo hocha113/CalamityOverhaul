@@ -12,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 {
     /// <summary>
     /// 提供普通鱼以换取一瓶鱼油的任务窗口
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 return;
             }
             //展开/关闭复合插值
-            float openAlpha = closing ? (1f - hideProgress) : showProgress;
+            float openAlpha = closing ? 1f - hideProgress : showProgress;
             float alpha = Math.Min(openAlpha * 1.6f, 1f);
             Texture2D px = VaultAsset.placeholder2.Value;
             Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, BasePanelWidth, currentPanelHeight);
