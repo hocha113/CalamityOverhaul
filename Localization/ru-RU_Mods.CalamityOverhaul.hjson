@@ -6743,6 +6743,6 @@ UI: {
 	YharonQuestTrackerUI: {
 		// QuestTitle: Commission: Hunt the Incineration Dragon
 		// DamageContribution: Oni Machete Damage
-		// RequiredContribution: Required: 90%
+		// RequiredContribution: Required: 80%
 	}
 }

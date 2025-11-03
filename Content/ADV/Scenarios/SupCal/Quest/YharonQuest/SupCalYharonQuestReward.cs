@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
     /// </summary>
     internal class YharonQuestTracker : BaseDamageTracker
     {
-        internal const float REQUIRED_CONTRIBUTION = 0.9f; //90%伤害贡献度要求
+        internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
         internal override int TargetNPCType => ModContent.NPCType<Yharon>();
 
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀焚世龙");
             DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "鬼面刀伤害");
-            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 90%");
+            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 80%");
         }
 
         protected override (float current, float total, bool isActive) GetTrackingData() {
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         }
 
         protected override float GetRequiredContribution() {
-            return YharonQuestTracker.REQUIRED_CONTRIBUTION; //90%
+            return YharonQuestTracker.REQUIRED_CONTRIBUTION; //80%
         }
     }
 }
