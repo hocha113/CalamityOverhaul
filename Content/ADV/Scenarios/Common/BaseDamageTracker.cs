@@ -49,7 +49,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         internal static float TargetWeaponDamageDealt = 0f;
         internal static float TotalBossDamage = 0f;
         internal static bool IsBossFightActive = false;
+        /// <summary>
+        /// 当前正在被追踪的NPC ID
+        /// </summary>
         internal static int HuntingNPCID;
+        /// <summary>
+        /// 当前正在处理的伤害追踪实例
+        /// </summary>
+        internal static BaseDamageTracker CurrentDamageTrackerInstance { get; private set; }
 
         //需要子类实现的配置
         internal abstract int TargetNPCType { get; }
@@ -59,13 +66,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         internal abstract int[] TargetProjectileTypes { get; }
         internal abstract float RequiredContribution { get; }
 
+        /// <summary>
+        /// 被追踪的NPC实例，注意因为更新周期原因，该实例可能并不总是存在
+        /// </summary>
+        internal NPC NPC { get; private set; }
+
         public override bool InstancePerEntity => true;//对应NPC实例创建一个实例
 
-        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);
+        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);//检查NPC是否为目标NPC
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);//应用于目标NPC
 
         void IWorldInfo.OnWorldLoad() {
-            ResetDamageTracking();
+            ResetDamageTracking();//进入世界时重置追踪数据
         }
 
         protected virtual void ResetDamageTracking() {
@@ -74,9 +86,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             IsBossFightActive = false;
         }
 
-        public override void AI(NPC npc) {
+        public override bool PreAI(NPC npc) {
             if (npc.type != TargetNPCType) {
-                return;
+                return true;
             }
 
             //Boss存在时标记战斗激活
@@ -85,6 +97,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             TotalBossDamage = npc.lifeMax;
             //标记目标
             HuntingNPCID = TargetNPCType;
+
+            if (npc.Alives()) {
+                foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
+                    if (n is BaseDamageTracker tracker) {//检查是否为BaseDamageTracker的子类
+                        CurrentDamageTrackerInstance = tracker;//记录当前实例
+                        CurrentDamageTrackerInstance.NPC = npc;//记录NPC实例
+                        break;//找到第一个实例后退出循环
+                    }
+                }
+            }
+            return true;
         }
 
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
