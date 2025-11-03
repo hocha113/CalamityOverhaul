@@ -99,7 +99,6 @@ namespace CalamityOverhaul.Content
         private float offsetHitRot;
         private float oldNPCRot;
         private float npcRotUpdateSengs;
-        private int halibutAmmoTime;
         internal int DyeItemID;
         internal bool SendDyeItemID;
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
@@ -114,8 +113,10 @@ namespace CalamityOverhaul.Content
                 }
 
                 if (source is EntitySource_Parent parent) {
-                    if (parent.Entity is Item item && item.Alives()) {
-                        DyeItemID = item.CWR().DyeItemID;
+                    if (parent.Entity is Item item) {
+                        if (item.Alives()) {
+                            DyeItemID = item.CWR().DyeItemID;
+                        }
                     }
                     else if (parent.Entity is Player player) {
                         Item heldItem = player.GetItem();
@@ -124,7 +125,14 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     else if (parent.Entity is Projectile monProj) {
-                        DyeItemID = monProj.CWR().DyeItemID;
+                        if (monProj.Alives()) {
+                            DyeItemID = monProj.CWR().DyeItemID;
+                        }
+                    }
+                    else if (parent.Entity is NPC npc) {
+                        if (npc.Alives()) {
+                            DyeItemID = npc.CWR().DyeItemID;
+                        }
                     }
                 }
 
