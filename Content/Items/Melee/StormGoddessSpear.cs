@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 5));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 8));
         }
 
         public override void SetDefaults() {

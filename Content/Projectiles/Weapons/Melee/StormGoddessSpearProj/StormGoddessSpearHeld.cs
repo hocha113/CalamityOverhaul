@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #endregion
 
         public override void SetKnifeProperty() {
+            AnimationMaxFrme = 8;
             Projectile.width = Projectile.height = 50;
             canDrawSlashTrail = true;
             drawTrailHighlight = false;

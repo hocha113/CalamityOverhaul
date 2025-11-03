@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        #region 配置参数 - 比主闪电更小更快
+        #region 配置参数，比主闪电更小更快
         public override int MaxBranches => 2; //更少的分叉
         public override float BranchProbability => 0.08f; //更低的分叉概率
         public override float BranchLengthRatio => 0.35f; //更短的分叉
