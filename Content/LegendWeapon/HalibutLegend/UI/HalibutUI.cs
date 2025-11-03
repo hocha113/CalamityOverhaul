@@ -60,9 +60,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DomainUI.Instance.Update();
             ResurrectionUI.Instance.Update();//更新复苏条
 
+            //技能快捷切换
+            HandleSkillSwitching();
+
             //反正这样加载是没问题的，你就看跑不跑得起来吧！
             if (FishSkill != null && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.SkillID = FishSkill.ID;
+            }
+        }
+
+        private void HandleSkillSwitching() {
+            if (!player.TryGetModPlayer<HalibutSave>(out var save)) {
+                return;
+            }
+
+            if (save.halibutUISkillSlots.Count == 0) {
+                return;
+            }
+
+            //获取当前技能索引
+            int currentIndex = -1;
+            if (FishSkill != null) {
+                for (int i = 0; i < save.halibutUISkillSlots.Count; i++) {
+                    if (save.halibutUISkillSlots[i].FishSkill == FishSkill) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            bool switchLeft = CWRKeySystem.Halibut_Skill_L.JustPressed;
+            bool switchRight = CWRKeySystem.Halibut_Skill_R.JustPressed;
+
+            if (!switchLeft && !switchRight) {
+                return;
+            }
+
+            //计算新索引
+            int newIndex = currentIndex;
+            if (switchLeft) {
+                newIndex = currentIndex <= 0 ? save.halibutUISkillSlots.Count - 1 : currentIndex - 1;
+            }
+            else if (switchRight) {
+                newIndex = currentIndex >= save.halibutUISkillSlots.Count - 1 ? 0 : currentIndex + 1;
+            }
+
+            //切换技能
+            if (newIndex >= 0 && newIndex < save.halibutUISkillSlots.Count) {
+                var newSkillSlot = save.halibutUISkillSlots[newIndex];
+                if (newSkillSlot.FishSkill != null && newSkillSlot.FishSkill != FishSkill) {
+                    FishSkill = newSkillSlot.FishSkill;
+
+                    //触发切换动画
+                    SkillRender.SwitchingSkill = FishSkill;
+                    SkillRender.SwitchAnimProgress = 0f;
+                    SkillRender.SwitchAnimTimer = 0;
+
+                    //播放切换音效
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f, Volume = 0.7f });
+                }
             }
         }
 
@@ -540,7 +596,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //为了视觉平滑, 将滚动偏移重置到0并快速过渡
             scrollOffset = 0;
             //辅以轻微提示音
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

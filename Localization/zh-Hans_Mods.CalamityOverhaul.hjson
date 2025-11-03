@@ -1911,6 +1911,8 @@ Keybinds: {
 	Halibut_Superposition.DisplayName: 大比目鱼:叠加
 	Halibut_Teleport.DisplayName: 大比目鱼:领域传送
 	Halibut_UIControl.DisplayName: 大比目鱼:面板开关
+	Halibut_Skill_L.DisplayName: 大比目鱼:向左切换技能
+	Halibut_Skill_R.DisplayName: 大比目鱼:向右切换技能
 	Pandemonium_Q.DisplayName: 万魔殿:硫磺火天罚
 	Pandemonium_R.DisplayName: 万魔殿:万魔终焉
 }

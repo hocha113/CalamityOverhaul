@@ -1921,6 +1921,8 @@ Keybinds: {
 	// Halibut_UIControl.DisplayName: Halibut: UI Control
 	// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
 	// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
+	// Halibut_Skill_L.DisplayName: Halibut_ Skill_ L
+	// Halibut_Skill_R.DisplayName: Halibut_ Skill_ R
 }
 
 TextContent: {

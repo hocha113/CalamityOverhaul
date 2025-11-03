@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using InnoVault.RenderHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -11,6 +12,108 @@ using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAss
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
+    internal class SkillRender : RenderHandle
+    {
+        //技能切换演出相关
+        public static FishSkill SwitchingSkill;//正在切换的技能
+        public static float SwitchAnimProgress;//切换动画进度(0-1)
+        public static int SwitchAnimTimer;//切换动画计时器
+        private const int SwitchAnimDuration = 60;//切换动画持续时间
+
+        public override void UpdateBySystem(int index) {//此处为逻辑更新
+            
+        }
+
+        public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
+            if (SwitchingSkill == null) {
+                return;
+            }
+
+            Player player = Main.LocalPlayer;
+            if (!player.active) {
+                return;
+            }
+
+            //更新动画
+            SwitchAnimTimer++;
+            SwitchAnimProgress = SwitchAnimTimer / (float)SwitchAnimDuration;
+
+            if (SwitchAnimProgress >= 1f) {
+                SwitchingSkill = null;
+                SwitchAnimProgress = 0f;
+                SwitchAnimTimer = 0;
+                return;
+            }
+
+            //计算技能图标位置(玩家头顶)
+            Vector2 playerHeadPos = player.Top + new Vector2(0, -60);
+            Vector2 screenPos = playerHeadPos - Main.screenPosition;
+
+            //动画阶段
+            float fadeInEnd = 0.2f;
+            float holdEnd = 0.8f;
+            float fadeOutEnd = 1f;
+
+            float alpha = 1f;
+            float scale = 1.5f;
+            float yOffset = 0f;
+
+            if (SwitchAnimProgress < fadeInEnd) {
+                //淡入+上升
+                float t = SwitchAnimProgress / fadeInEnd;
+                alpha = t;
+                scale = MathHelper.Lerp(0.5f, 1.5f, CWRUtils.EaseOutBack(t));
+                yOffset = MathHelper.Lerp(-20f, 0f, CWRUtils.EaseOutCubic(t));
+            }
+            else if (SwitchAnimProgress < holdEnd) {
+                //悬停
+                float t = (SwitchAnimProgress - fadeInEnd) / (holdEnd - fadeInEnd);
+                alpha = 1f;
+                scale = 1.5f + MathF.Sin(t * MathHelper.TwoPi * 2f) * 0.1f;//轻微缩放
+                yOffset = MathF.Sin(t * MathHelper.TwoPi) * 3f;//轻微浮动
+            }
+            else {
+                //淡出+上升
+                float t = (SwitchAnimProgress - holdEnd) / (fadeOutEnd - holdEnd);
+                alpha = 1f - t;
+                scale = MathHelper.Lerp(1.5f, 2f, CWRUtils.EaseInCubic(t));
+                yOffset = MathHelper.Lerp(0f, 20f, CWRUtils.EaseInCubic(t));
+            }
+
+            screenPos.Y += yOffset;
+
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            //绘制发光效果
+            Texture2D glowTex = CWRAsset.StarTexture.Value;
+            Color glowColor = Color.Gold with { A = 0 } * alpha * 0.6f;
+            Main.spriteBatch.Draw(glowTex, screenPos, null, glowColor, 0f, glowTex.Size() / 2f, scale * 0.2f, SpriteEffects.None, 0);
+
+            //绘制外圈旋转光环
+            float ringRotation = SwitchAnimProgress * MathHelper.TwoPi * 2f;
+            Color ringColor = Color.Gold with { A = 0 } * alpha * 0.8f;
+            Main.spriteBatch.Draw(glowTex, screenPos, null, ringColor, ringRotation, glowTex.Size() / 2f, scale * 0.25f, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(glowTex, screenPos, null, ringColor, -ringRotation, glowTex.Size() / 2f, scale * 0.22f, SpriteEffects.None, 0);
+
+            //绘制技能图标
+            Texture2D iconTex = SwitchingSkill.Icon;
+            Color iconColor = Color.White * alpha;
+            Main.spriteBatch.Draw(iconTex, screenPos, null, iconColor, 0f, iconTex.Size() / 2f, scale, SpriteEffects.None, 0);
+
+            Main.spriteBatch.End();
+
+            //绘制粒子效果
+            if (Main.rand.NextBool(2)) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 particlePos = screenPos + angle.ToRotationVector2() * Main.rand.NextFloat(30f, 50f) * scale;
+                int dust = Dust.NewDust(particlePos, 1, 1, DustID.GoldCoin, 0, -2f, 100, default, Main.rand.NextFloat(1f, 1.5f));
+                Main.dust[dust].noGravity = true;
+                Main.dust[dust].velocity = Vector2.Zero;
+            }
+        }
+    }
+
     internal class SkillSlot : UIHandle, ILocalizedModType
     {
         public static SkillSlot Instance => UIHandleLoader.GetUIHandleOfType<SkillSlot>();
