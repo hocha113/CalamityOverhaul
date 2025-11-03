@@ -1,38 +1,39 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    internal class TestProj : ModProjectile
-    {
-        public override string Texture => "CalamityOverhaul/icon";
-        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
-        public override void SetDefaults() {
-            Projectile.width = Projectile.height = 66;
-            Projectile.timeLeft = 400;
-        }
+    //internal class TestProj : ModProjectile
+    //{
+    //    public override string Texture => "CalamityOverhaul/icon";
+    //    public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
+    //    public override bool IsLoadingEnabled(Mod mod) {
+    //        return false;
+    //    }
+    //    public override void SetDefaults() {
+    //        Projectile.width = Projectile.height = 66;
+    //        Projectile.timeLeft = 400;
+    //    }
 
-        public override void AI() {
-            Projectile.ai[0]++;
-            if (Projectile.ai[0] == 300) {
-                EbnSkyEffect.IsActive = true;
-            }
+    //    public override void AI() {
+    //        Projectile.ai[0]++;
+    //        if (Projectile.ai[0] == 300) {
+    //            EbnSkyEffect.IsActive = true;
+    //        }
 
-            if (Projectile.ai[0] == 360) {
-                ScenarioManager.Start<EternalBlazingNow>();
-            }
-        }
+    //        if (Projectile.ai[0] == 360) {
+    //            ScenarioManager.Start<EternalBlazingNow>();
+    //        }
+    //    }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return false;
-        }
-    }
+    //    public override bool PreDraw(ref Color lightColor) {
+    //        return false;
+    //    }
+    //}
 
     internal class TextItem : ModItem
     {
@@ -40,7 +41,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         //public override void SetStaticDefaults() {

@@ -563,7 +563,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.4f, Pitch = -0.6f }, Projectile.Center);
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
-                ModContent.ProjectileType<PandemoniumBlastWave>(), (int)(Projectile.damage * 2.2f), Projectile.knockBack * 2f, Owner.whoAmI);
+                ModContent.ProjectileType<PandemoniumBlastWave>(), (int)(Projectile.damage * 8.2f), Projectile.knockBack * 2f, Owner.whoAmI);
         }
 
         private void PerformTieredAttack() {
@@ -637,7 +637,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 //螺旋轨迹的初始速度
                 Vector2 velocity = angle.ToRotationVector2() * speedBase;
 
-                int damage = (int)(Projectile.damage * (1f + tier * 0.1f));
+                int damage = (int)(Projectile.damage * (2f + tier * 0.1f));
                 int scythe = Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
@@ -678,7 +678,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     targetIndex = potentialTargets[i % potentialTargets.Count].whoAmI;
                 }
 
-                int damage = (int)(Projectile.damage * 1.3f);
+                int damage = (int)(Projectile.damage * 2.3f);
                 int scythe = Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
