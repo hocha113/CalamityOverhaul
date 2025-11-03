@@ -134,12 +134,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         #region 特效
         public override void OnStrike() {
-            // 播放雷击音效
-            SoundEngine.PlaySound(SoundID.Item122 with {
-                Volume = 0.8f,
-                Pitch = -0.2f,
-                PitchVariance = 0.15f
-            }, Projectile.Center);
+            if (Projectile.numHits == 0) {
+                // 播放雷击音效
+                SoundStyle sound = SoundID.Item122 with {
+                    Volume = 0.8f,
+                    Pitch = -0.2f,
+                    PitchVariance = 0.15f,
+                    MaxInstances = 3,
+                };
+                SoundEngine.PlaySound(sound, Projectile.Center);
+            }
 
             // 生成冲击波粒子
             if (!VaultUtils.isServer) {

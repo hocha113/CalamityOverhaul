@@ -57,10 +57,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //第一击：快速突刺
             if (comboCounter == 0) {
                 StabBehavior(
-                    initialLength: 70,
+                    initialLength: 120,
                     lifetime: 24,
                     scaleFactorDenominator: 480f,
-                    maxLength: 125,
+                    maxLength: 204,
                     canDrawSlashTrail: true
                 );
 
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     phase2Ratio: 0.7f,
                     phase0SwingSpeed: -0.4f,
                     phase1SwingSpeed: 5.5f,
-                    phase2SwingSpeed: 11f,
+                    phase2SwingSpeed: 14f,
                     phase0MeleeSizeIncrement: 0.004f,
                     phase2MeleeSizeIncrement: -0.003f,
                     swingSound: SoundID.Item1,
@@ -125,10 +125,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 SpawnMainLightning(1f, lightningColorStyle, false);
             }
             else if (comboCounter == 1) {
-                //第二击：三道扇形追踪闪电（中蓝白）
+                //第二击：三道扇形追踪闪电（中蓝白，不追踪）
                 for (int i = -1; i <= 1; i++) {
                     Vector2 velocity = ShootVelocity.RotatedBy(i * 0.3f);
-                    SpawnLightningProjectile(velocity, 0.7f, lightningColorStyle, false);
+                    SpawnLightningProjectile(velocity, 0.7f, lightningColorStyle, true);
                 }
             }
             else if (comboCounter == 2) {
