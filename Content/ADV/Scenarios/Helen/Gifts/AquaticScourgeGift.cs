@@ -1,15 +1,16 @@
-﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
-using CalamityMod.NPCs.CalClone;
+﻿using CalamityMod.NPCs.AquaticScourge;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class CalamitasCloneGift : GiftScenarioBase
+    internal class AquaticScourgeGift : GiftScenarioBase
     {
-        public override string Key => nameof(CalamitasCloneGift);
-        public override int TargetBossID => ModContent.NPCType<CalamitasClone>();
+        public override string Key => nameof(AquaticScourgeGift);
+        public override int TargetBossID => ModContent.NPCType<AquaticScourgeHead>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -18,24 +19,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一个劣质的影子，让我想起来上大学时自己窝在海沟里捣鼓的基因怪兽，总之制作这个东西的家伙品味很差");
-            L1 = this.GetLocalization(nameof(L1), () => "我有种不详的预感，真正的恐怖还在更深的地方等着，它甚至在靠近");
-            L2 = this.GetLocalization(nameof(L2), () => "说回正事，硫磺火鱼，从灾厄的余烬中捡的。捧在手心里还能听到它在瞎嘀咕些什么");
-            L3 = this.GetLocalization(nameof(L3), () => "如果你开始听懂它在说什么......呃，恭喜，你已经迈出了疯狂的第一步");
-            L4 = this.GetLocalization(nameof(L4), () => "不过别担心，疯狂也是一种清醒，只是角度不同而已");
+            L0 = this.GetLocalization(nameof(L0), () => "它让我想起家乡那些不太友好的邻居，不过它倒是挺友善的，它在我曾经任职的硫磺海大学里担任过保安队长，经常和我打招呼");
+            L1 = this.GetLocalization(nameof(L1), () => "硫酸海是个有趣的地方，那里的生物都在问同一个问题：'为什么我还活着？'");
+            L2 = this.GetLocalization(nameof(L2), () => "棱镜鱼，它的鳞片能折射出你从未见过的颜色。主要是因为它们不该存在");
+            L3 = this.GetLocalization(nameof(L3), () => "盯着它看会让你的视觉系统重启，有点像强制更新，但更痛苦");
+            L4 = this.GetLocalization(nameof(L4), () => "最好在光线暗淡的地方使用，不然感觉会像嗑了似的");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);
-            Add(R1.Value, L2.Value); //奖励
+            Add(R1.Value, L2.Value);
             Add(R1.Value, L3.Value);
             Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<Brimlish>(), 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Prismite, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.CalamitasCloneGift;
+            return save.AquaticScourgeGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.CalamitasCloneGift = true;
+            save.AquaticScourgeGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<CalamitasCloneGift>();
+            return ScenarioManager.Start<AquaticScourgeGift>();
         }
     }
 }

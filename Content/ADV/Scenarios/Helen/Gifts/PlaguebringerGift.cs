@@ -1,15 +1,16 @@
-﻿using CalamityMod.NPCs.Cryogen;
+﻿using CalamityMod.NPCs.PlaguebringerGoliath;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class CryogenGift : GiftScenarioBase
+    internal class PlaguebringerGift : GiftScenarioBase
     {
-        public override string Key => nameof(CryogenGift);
-        public override int TargetBossID => ModContent.NPCType<Cryogen>();
+        public override string Key => nameof(PlaguebringerGift);
+        public override int TargetBossID => ModContent.NPCType<PlaguebringerGoliath>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -18,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一团被冰冻的灵魂......温度低到连时间都想躺下来休息");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？寒冷的尽头并非死亡，是一种永恒的静止");
-            L2 = this.GetLocalization(nameof(L2), () => "霜鲦鱼，从冰晶碎片里解冻出来的。它还保持着被冻结时的姿态");
-            L3 = this.GetLocalization(nameof(L3), () => "据说吃了它会让你的血液降温，思维变得异常清醒");
-            L4 = this.GetLocalization(nameof(L4), () => "不过别多吃，除非你真的想成为一个冰雕");
+            L0 = this.GetLocalization(nameof(L0), () => "瘟疫的使者……一只机械蜜蜂携带着生物武器。谁设计的这个？一定是个混蛋，竟敢奴役蜜蜂");
+            L1 = this.GetLocalization(nameof(L1), () => "病毒不在乎对错，它只是想活下去。就像我们一样，只是手段更直接");
+            L2 = this.GetLocalization(nameof(L2), () => "紫晶鱼，被感染过又奇迹般痊愈的。它的免疫系统比你的人生经历还丰富");
+            L3 = this.GetLocalization(nameof(L3), () => "据说吃了它能增强抵抗力。但我觉得这更像是'杀不死你的让你更强'的另一种说法");
+            L4 = this.GetLocalization(nameof(L4), () => "不过既然你刚从瘟疫蜂窝里走出来，这点小风险应该不算什么");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.FrostMinnow, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Jewelfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.CryogenGift;
+            return save.PlaguebringerGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.CryogenGift = true;
+            save.PlaguebringerGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<CryogenGift>();
+            return ScenarioManager.Start<PlaguebringerGift>();
         }
     }
 }

@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
     internal class HellGift : ADVScenarioBase, ILocalizedModType
     {

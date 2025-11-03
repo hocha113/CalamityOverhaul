@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios
+namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 {
     internal class GiftScenarioNPC : GlobalNPC, IWorldInfo
     {

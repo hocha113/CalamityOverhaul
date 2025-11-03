@@ -1,28 +1,28 @@
-﻿using CalamityMod.NPCs.BrimstoneElemental;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class BrimstoneElementalGift : GiftScenarioBase
+    internal class QueenBeeGift : GiftScenarioBase
     {
-        public override string Key => nameof(BrimstoneElementalGift);
-        public override int TargetBossID => ModContent.NPCType<BrimstoneElemental>();
+        public override string Key => nameof(QueenBeeGift);
+        public override int TargetBossID => NPCID.QueenBee;
         public static LocalizedText R1 { get; private set; }
+        public static LocalizedText R2 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
-        public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "硫磺与火焰的化身，她的存在就是一场燃烧的演讲，不过我们还是成功让她闭嘴了");
-            L1 = this.GetLocalization(nameof(L1), () => "有些元素不是被创造的，而是从世界的裂缝中渗出来的愤怒");
-            L2 = this.GetLocalization(nameof(L2), () => "黑曜鱼，熔岩冷却的瞬间凝固产物。它的鳞片比仇恨还要坚硬");
-            L3 = this.GetLocalization(nameof(L3), () => "小心，它可能会在你手里自燃，不是物理上的，而是概念上的");
-            L4 = this.GetLocalization(nameof(L4), () => "毕竟有些愤怒是会传染的");
+            R2 = this.GetLocalization(nameof(R2), () => "???");
+            L0 = this.GetLocalization(nameof(L0), () => "我差点以为脸要被埋进巢里舀一口");
+            L1 = this.GetLocalization(nameof(L1), () => "不过，我刚才从地上堆积的蜂蜜里摸到了一条鱼");
+            L2 = this.GetLocalization(nameof(L2), () => "给，新鲜还热乎的蜂蜜鱼");
+            L3 = this.GetLocalization(nameof(L3), () => "我觉得它非常适合做糖醋鲤鱼");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -31,11 +31,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             Add(R1.Value, L1.Value);
             Add(R1.Value, L2.Value); //奖励
             Add(R1.Value, L3.Value);
-            Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.Obsidifish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Honeyfin, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,13 +45,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.BrimstoneElementalGift;
+            return save.QueenBeeGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.BrimstoneElementalGift = true;
+            save.QueenBeeGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<BrimstoneElementalGift>();
+            return ScenarioManager.Start<QueenBeeGift>();
         }
     }
 }

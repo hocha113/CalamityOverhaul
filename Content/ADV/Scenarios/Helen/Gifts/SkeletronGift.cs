@@ -1,14 +1,15 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class EyeOfCthulhuGift : GiftScenarioBase
+    internal class SkeletronGift : GiftScenarioBase
     {
-        public override string Key => nameof(EyeOfCthulhuGift);
-        public override int TargetBossID => NPCID.EyeofCthulhu;
+        public override string Key => nameof(SkeletronGift);
+        public override int TargetBossID => NPCID.SkeletronHead;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -17,24 +18,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "你的动作被那只巨眼拖成了慢镜头……我还以为你在刻意摆造型");
-            L1 = this.GetLocalization(nameof(L1), () => "恭喜，你已经进入‘被注视的阶段’。这意味着……更多戏剧性的麻烦");
-            L2 = this.GetLocalization(nameof(L2), () => "拿着，这是克苏鲁鱼。它和同名的神话一样，不太讲逻辑");
-            L3 = this.GetLocalization(nameof(L3), () => "小心使用，它会让你误以为自己开眼了。其实那不过是血液里多了点兴奋剂");
-            L4 = this.GetLocalization(nameof(L4), () => "我很好奇你会不会开始对月亮眨眼");
+            L0 = this.GetLocalization(nameof(L0), () => "那可真是一大堆钙质!");
+            L1 = this.GetLocalization(nameof(L1), () => "那东西的颅骨结构，让我想起一只失控的意念聚合体");
+            L2 = this.GetLocalization(nameof(L2), () => "让我枪管冷却一下，我刚才从这周围捡到了一条鱼");
+            L3 = this.GetLocalization(nameof(L3), () => "你看，这是‘骷髅王鱼’，据说它体内的磷质能让夜钓的人思考人生");
+            L4 = this.GetLocalization(nameof(L4), () => "走吧，前面还有更抽象的骨头在等着你");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);
-            Add(R1.Value, L2.Value); //奖励
-            Add(R1.Value, L3.Value);
+            Add(R1.Value, L2.Value);
+            Add(R1.Value, L3.Value); //奖励
             Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.TheFishofCthulu, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+            if (args.Index == 3) {
+                ADVRewardPopup.ShowReward(ItemID.Fishotron, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -45,13 +46,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.EyeOfCthulhuGift;
+            return save.SkeletronGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.EyeOfCthulhuGift = true;
+            save.SkeletronGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<EyeOfCthulhuGift>();
+            return ScenarioManager.Start<SkeletronGift>();
         }
     }
 }

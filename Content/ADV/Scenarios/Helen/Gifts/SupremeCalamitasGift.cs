@@ -1,16 +1,16 @@
-﻿using CalamityMod.NPCs.Leviathan;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class LeviathanGift : GiftScenarioBase
+    internal class SupremeCalamitasGift : GiftScenarioBase
     {
-        public override string Key => nameof(LeviathanGift);
-        public override int TargetBossID => ModContent.NPCType<Leviathan>();
+        public override string Key => nameof(SupremeCalamitasGift);
+        public override int TargetBossID => ModContent.NPCType<SupremeCalamitas>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "海洋的暴君……和那个总是跟着她的小跟班。有些友谊超越了物种，也超越了理智");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
-            L2 = this.GetLocalization(nameof(L2), () => "热带梭鱼，从深海漩涡里捞出来的。它看起来很普通，但这正是最可疑的地方");
-            L3 = this.GetLocalization(nameof(L3), () => "越是平凡的外表，越是隐藏着不平凡的过去");
-            L4 = this.GetLocalization(nameof(L4), () => "就像我们一样");
+            L0 = this.GetLocalization(nameof(L0), () => "硫火女巫……她是复仇的化身，是被背叛淬炼出的完美武器");
+            L1 = this.GetLocalization(nameof(L1), () => "我们刚才做的，是终结了一个传说。还是创造了一个新的开始？");
+            L2 = this.GetLocalization(nameof(L2), () => "公主鱼，从灾厄余烬中诞生的。它带着一种矛盾的优雅，就像在废墟上盛开的花");
+            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到自己最想成为的样子，但那个样子往往是最不像自己的");
+            L4 = this.GetLocalization(nameof(L4), () => "恭喜，你站在了力量的顶点，接下来……就是漫长的下坡路了");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.TropicalBarracuda, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.PrincessFish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,17 +46,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
                     }, offset: Vector2.Zero);
             }
         }
-        protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
-            return !NPC.AnyNPCs(ModContent.NPCType<Anahita>());//确保阿纳希塔也嘎了
-        }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.LeviathanGift;
+            return save.SupremeCalamitasGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.LeviathanGift = true;
+            save.SupremeCalamitasGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<LeviathanGift>();
+            return ScenarioManager.Start<SupremeCalamitasGift>();
         }
     }
 }

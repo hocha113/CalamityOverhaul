@@ -1,15 +1,17 @@
-﻿using CalamityMod.NPCs.DevourerofGods;
+﻿using CalamityMod.NPCs.Leviathan;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class DevourerOfGodsGift : GiftScenarioBase
+    internal class LeviathanGift : GiftScenarioBase
     {
-        public override string Key => nameof(DevourerOfGodsGift);
-        public override int TargetBossID => ModContent.NPCType<DevourerofGodsHead>();
+        public override string Key => nameof(LeviathanGift);
+        public override int TargetBossID => ModContent.NPCType<Leviathan>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -18,24 +20,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "神明吞噬者……一条以神为食的宇宙之蛇。它的胃口和它的野心一样无限");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？当你凝视深渊时，深渊也在凝视你。但这家伙不止凝视，它还想把你当零食");
-            L2 = this.GetLocalization(nameof(L2), () => "霓虹四脚鱼，从虚空裂隙里飘出来的。它发出的光不属于这个维度");
-            L3 = this.GetLocalization(nameof(L3), () => "看着它会让你的大脑尝试理解不该理解的颜色。这是一种……独特的体验");
-            L4 = this.GetLocalization(nameof(L4), () => "如果你开始看到新的颜色，恭喜。如果你开始闻到颜色，那就该休息了");
+            L0 = this.GetLocalization(nameof(L0), () => "海洋的暴君……和那个总是跟着她的小跟班。有些友谊超越了物种，也超越了理智");
+            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
+            L2 = this.GetLocalization(nameof(L2), () => "热带梭鱼，从深海漩涡里捞出来的。它看起来很普通，但这正是最可疑的地方");
+            L3 = this.GetLocalization(nameof(L3), () => "越是平凡的外表，越是隐藏着不平凡的过去");
+            L4 = this.GetLocalization(nameof(L4), () => "就像我们一样");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);
-            Add(R1.Value, L2.Value);//奖励
+            Add(R1.Value, L2.Value); //奖励
             Add(R1.Value, L3.Value);
             Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.NeonTetra, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.TropicalBarracuda, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -45,14 +47,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
                     }, offset: Vector2.Zero);
             }
         }
+        protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
+            return !NPC.AnyNPCs(ModContent.NPCType<Anahita>());//确保阿纳希塔也嘎了
+        }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.DevourerOfGodsGift;
+            return save.LeviathanGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.DevourerOfGodsGift = true;
+            save.LeviathanGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<DevourerOfGodsGift>();
+            return ScenarioManager.Start<LeviathanGift>();
         }
     }
 }

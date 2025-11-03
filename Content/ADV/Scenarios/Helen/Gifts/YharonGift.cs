@@ -1,15 +1,16 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod.NPCs.Yharon;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class SupremeCalamitasGift : GiftScenarioBase
+    internal class YharonGift : GiftScenarioBase
     {
-        public override string Key => nameof(SupremeCalamitasGift);
-        public override int TargetBossID => ModContent.NPCType<SupremeCalamitas>();
+        public override string Key => nameof(YharonGift);
+        public override int TargetBossID => ModContent.NPCType<Yharon>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -18,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "硫火女巫……她是复仇的化身，是被背叛淬炼出的完美武器");
-            L1 = this.GetLocalization(nameof(L1), () => "我们刚才做的，是终结了一个传说。还是创造了一个新的开始？");
-            L2 = this.GetLocalization(nameof(L2), () => "公主鱼，从灾厄余烬中诞生的。它带着一种矛盾的优雅，就像在废墟上盛开的花");
-            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到自己最想成为的样子，但那个样子往往是最不像自己的");
-            L4 = this.GetLocalization(nameof(L4), () => "恭喜，你站在了力量的顶点，接下来……就是漫长的下坡路了");
+            L0 = this.GetLocalization(nameof(L0), () => "丛林龙，嗯......应该叫它焚世之龙，它燃烧的并非肉体，而是执念");
+            L1 = this.GetLocalization(nameof(L1), () => "忠诚到愿意为主人燃尽自己，这种纯粹让我想起海底那些守护珊瑚礁的鱼群");
+            L2 = this.GetLocalization(nameof(L2), () => "猩红虎鱼，从火焰的中心提取的。它的条纹像是被火焰烙印上去的誓言");
+            L3 = this.GetLocalization(nameof(L3), () => "握着它会感觉到一种灼热的决心。那是属于战士的温度");
+            L4 = this.GetLocalization(nameof(L4), () => "你击败了它，但我怀疑……它在倒下的瞬间，是否终于获得了解脱");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.PrincessFish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.CrimsonTigerfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.SupremeCalamitasGift;
+            return save.YharonGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.SupremeCalamitasGift = true;
+            save.YharonGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<SupremeCalamitasGift>();
+            return ScenarioManager.Start<YharonGift>();
         }
     }
 }

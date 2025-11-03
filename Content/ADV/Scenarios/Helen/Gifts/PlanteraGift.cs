@@ -1,9 +1,10 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
     internal class PlanteraGift : GiftScenarioBase
     {

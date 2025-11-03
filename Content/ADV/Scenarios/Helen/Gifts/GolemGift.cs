@@ -1,14 +1,15 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class MoonLordGift : GiftScenarioBase
+    internal class GolemGift : GiftScenarioBase
     {
-        public override string Key => nameof(MoonLordGift);
-        public override int TargetBossID => NPCID.MoonLordCore;
+        public override string Key => nameof(GolemGift);
+        public override int TargetBossID => NPCID.Golem;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -17,11 +18,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "月球的主宰，哈！或者说，曾经是。现在它只是一堆漂浮的眼球和血肉");
-            L1 = this.GetLocalization(nameof(L1), () => "我们刚才不仅拯救了世界，还关闭了一个从未被正确打开的门");
-            L2 = this.GetLocalization(nameof(L2), () => "云鱼，从天空的裂缝里飘下来的。它在手里像是没有重量");
-            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到未来……但那个未来已经被你改写了");
-            L4 = this.GetLocalization(nameof(L4), () => "我们刚刚证明了，即使是神，也会流血");
+            L0 = this.GetLocalization(nameof(L0), () => "一堆会动的石头，古代文明的遗产，或者说是他们失败的证明");
+            L1 = this.GetLocalization(nameof(L1), () => "它守护着什么吗？还是只是在重复一个早已失去意义的程序？");
+            L2 = this.GetLocalization(nameof(L2), () => "岩鱼，从神殿的地基里挖出来的。它的密度高到让我怀疑重力是不是坏了");
+            L3 = this.GetLocalization(nameof(L3), () => "我以前试着煮过它，但我的锅先投降了");
+            L4 = this.GetLocalization(nameof(L4), () => "......有些东西存在的意义就是让人意识到，并非所有问题都需要被解决");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -34,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.Cloudfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Rockfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -45,13 +46,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.MoonLordGift;
+            return save.GolemGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.MoonLordGift = true;
+            save.GolemGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<MoonLordGift>();
+            return ScenarioManager.Start<GolemGift>();
         }
     }
 }

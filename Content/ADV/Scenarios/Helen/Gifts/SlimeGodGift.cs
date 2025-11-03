@@ -1,27 +1,29 @@
-﻿using Terraria;
+﻿using CalamityMod.NPCs.SlimeGod;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class QueenBeeGift : GiftScenarioBase
+    internal class SlimeGodGift : GiftScenarioBase
     {
-        public override string Key => nameof(QueenBeeGift);
-        public override int TargetBossID => NPCID.QueenBee;
+        public override string Key => nameof(SlimeGodGift);
+        public override int TargetBossID => ModContent.NPCType<SlimeGodCore>();
         public static LocalizedText R1 { get; private set; }
-        public static LocalizedText R2 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
+        public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            R2 = this.GetLocalization(nameof(R2), () => "???");
-            L0 = this.GetLocalization(nameof(L0), () => "我差点以为脸要被埋进巢里舀一口");
-            L1 = this.GetLocalization(nameof(L1), () => "不过，我刚才从地上堆积的蜂蜜里摸到了一条鱼");
-            L2 = this.GetLocalization(nameof(L2), () => "给，新鲜还热乎的蜂蜜鱼");
-            L3 = this.GetLocalization(nameof(L3), () => "我觉得它非常适合做糖醋鲤鱼");
+            L0 = this.GetLocalization(nameof(L0), () => "三个史莱姆，呃，或者说一个分裂的神性？这种二元对立的存在形式很有意思");
+            L1 = this.GetLocalization(nameof(L1), () => "腐化与猩红，就像这个世界永恒的矛盾。而你刚才证明了矛盾可以被'解决'");
+            L2 = this.GetLocalization(nameof(L2), () => "这是杂色猪油鱼，从那堆粘液里捞出来的。别问我为什么叫这个名字");
+            L3 = this.GetLocalization(nameof(L3), () => "它的颜色会随着观察者的心情改变，或者说，它在模仿你内心的混乱");
+            L4 = this.GetLocalization(nameof(L4), () => "如果你盯着它看太久，可能会开始思考自己到底属于哪一边");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -30,10 +32,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             Add(R1.Value, L1.Value);
             Add(R1.Value, L2.Value); //奖励
             Add(R1.Value, L3.Value);
+            Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.Honeyfin, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.VariegatedLardfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -44,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.QueenBeeGift;
+            return save.SlimeGodGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.QueenBeeGift = true;
+            save.SlimeGodGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<QueenBeeGift>();
+            return ScenarioManager.Start<SlimeGodGift>();
         }
     }
 }

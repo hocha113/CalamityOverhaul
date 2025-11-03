@@ -1,15 +1,16 @@
-﻿using CalamityMod.NPCs.Crabulon;
+﻿using CalamityMod.NPCs.Perforator;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class CrabulonGift : GiftScenarioBase
+    internal class PerforatorGift : GiftScenarioBase
     {
-        public override string Key => nameof(CrabulonGift);
-        public override int TargetBossID => ModContent.NPCType<Crabulon>();
+        public override string Key => nameof(PerforatorGift);
+        public override int TargetBossID => ModContent.NPCType<PerforatorHive>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -18,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "那团蘑菇状的……生物？它的菌盖下藏着的究竟是智慧还是本能");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗，蘑菇的菌丝网络可以传递信息。也许它刚才在向同伴求救");
-            L2 = this.GetLocalization(nameof(L2), () => "这是蘑菇鱼，从它身上散发出的孢子里提取的");
-            L3 = this.GetLocalization(nameof(L3), () => "别担心，这些孢子不会让你变成菌类……大概");
-            L4 = this.GetLocalization(nameof(L4), () => "不过如果你突然想在阴暗潮湿的地方扎根，记得告诉我");
+            L0 = this.GetLocalization(nameof(L0), () => "一堆会钻孔的血肉虫……这种生物的存在本身就是对生物学的挑战");
+            L1 = this.GetLocalization(nameof(L1), () => "它们的血液有种奇特的粘稠度，像是某种活体金属");
+            L2 = this.GetLocalization(nameof(L2), () => "从残骸里找到了这个，血腥鱼。它还在蠕动");
+            L3 = this.GetLocalization(nameof(L3), () => "别被它的外表吓到，虽然看起来像是从噩梦里爬出来的");
+            L4 = this.GetLocalization(nameof(L4), () => "但至少它不会在你睡觉时钻进你的耳朵……应该不会");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.AmanitaFungifin, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.BloodyManowar, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -46,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.CrabulonGift;
+            return save.PerforatorGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.CrabulonGift = true;
+            save.PerforatorGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<CrabulonGift>();
+            return ScenarioManager.Start<PerforatorGift>();
         }
     }
 }

@@ -1,14 +1,16 @@
-﻿using Terraria;
+﻿using CalamityMod.NPCs.Providence;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    internal class GolemGift : GiftScenarioBase
+    internal class ProvidenceGift : GiftScenarioBase
     {
-        public override string Key => nameof(GolemGift);
-        public override int TargetBossID => NPCID.Golem;
+        public override string Key => nameof(ProvidenceGift);
+        public override int TargetBossID => ModContent.NPCType<Providence>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -17,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一堆会动的石头，古代文明的遗产，或者说是他们失败的证明");
-            L1 = this.GetLocalization(nameof(L1), () => "它守护着什么吗？还是只是在重复一个早已失去意义的程序？");
-            L2 = this.GetLocalization(nameof(L2), () => "岩鱼，从神殿的地基里挖出来的。它的密度高到让我怀疑重力是不是坏了");
-            L3 = this.GetLocalization(nameof(L3), () => "我以前试着煮过它，但我的锅先投降了");
-            L4 = this.GetLocalization(nameof(L4), () => "......有些东西存在的意义就是让人意识到，并非所有问题都需要被解决");
+            L0 = this.GetLocalization(nameof(L0), () => "亵渎天神……一个由信仰和火焰构成的矛盾体。她守护的是什么？还是只是在燃烧？");
+            L1 = this.GetLocalization(nameof(L1), () => "你刚才熄灭的不仅是圣火，还有一个纪元的余烬");
+            L2 = this.GetLocalization(nameof(L2), () => "恶魔地狱鱼，从她的灰烬中重生的。它的温度永远保持在'刚好不会烫伤你'的程度");
+            L3 = this.GetLocalization(nameof(L3), () => "这种精确控制让我怀疑，也许她只是想被理解");
+            L4 = this.GetLocalization(nameof(L4), () => "不过理解和战争之间的界限，只是一次攻击的距离");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
@@ -34,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.Rockfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.DemonicHellfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -45,13 +47,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
-            return save.GolemGift;
+            return save.ProvidenceGift;
         }
         protected override void MarkGiftCompleted(ADVSave save) {
-            save.GolemGift = true;
+            save.ProvidenceGift = true;
         }
         protected override bool StartScenarioInternal() {
-            return ScenarioManager.Start<GolemGift>();
+            return ScenarioManager.Start<ProvidenceGift>();
         }
     }
 }
