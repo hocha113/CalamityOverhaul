@@ -69,7 +69,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void HandleSkillSwitching() {
+        /// <summary>
+        /// 处理技能快捷切换逻辑
+        /// </summary>
+        private static void HandleSkillSwitching() {
             if (!player.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
             }
@@ -116,9 +119,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     SkillRender.SwitchAnimProgress = 0f;
                     SkillRender.SwitchAnimTimer = 0;
 
+                    //同步技能列表滚动位置
+                    SyncSkillListScroll(newIndex);
+
                     //播放切换音效
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f, Volume = 0.7f });
                 }
+            }
+        }
+
+        /// <summary>
+        /// 同步技能列表滚动位置,确保选中的技能在可见范围内
+        /// </summary>
+        private static void SyncSkillListScroll(int targetIndex) {
+            var panel = HalibutUIPanel.Instance;
+            if (panel == null) {
+                return;
+            }
+
+            int maxOffset = Math.Max(0, panel.halibutUISkillSlots.Count - HalibutUIPanel.maxVisibleSlots);
+            int targetOffset = panel.scrollOffset;
+
+            //如果目标索引在左侧不可见区域
+            if (targetIndex < panel.scrollOffset) {
+                targetOffset = targetIndex;
+            }
+            //如果目标索引在右侧不可见区域
+            else if (targetIndex >= panel.scrollOffset + HalibutUIPanel.maxVisibleSlots) {
+                targetOffset = targetIndex - HalibutUIPanel.maxVisibleSlots + 1;
+            }
+
+            //限制在有效范围内
+            targetOffset = Math.Clamp(targetOffset, 0, maxOffset);
+
+            //如果需要滚动
+            if (targetOffset != panel.scrollOffset) {
+                int scrollDelta = targetOffset - panel.scrollOffset;
+                panel.QueueScroll(scrollDelta);
             }
         }
 

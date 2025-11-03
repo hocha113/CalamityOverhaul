@@ -1919,10 +1919,10 @@ Keybinds: {
 	// Halibut_Superposition.DisplayName: Halibut: Superposition
 	// Halibut_Teleport.DisplayName: Halibut: Domain Teleport
 	// Halibut_UIControl.DisplayName: Halibut: UI Control
+	// Halibut_Skill_L.DisplayName: Halibut: Switch to the left skill
+	// Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
 	// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
 	// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
-	// Halibut_Skill_L.DisplayName: Halibut_ Skill_ L
-	// Halibut_Skill_R.DisplayName: Halibut_ Skill_ R
 }
 
 TextContent: {
