@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 {
@@ -37,6 +38,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         protected const float UpdateInterval = 0.5f;
         protected float updateTimer = 0f;
 
+        //碰撞检测与半透明化
+        protected bool isOverlappingWithNPC = false;
+        protected float overlappingAlpha = 1f;
+        protected const float MinOverlappingAlpha = 0.3f;
+        protected const float AlphaTransitionSpeed = 0.15f;
+
         /// <summary>
         /// 获取当前伤害追踪数据
         /// </summary>
@@ -56,6 +63,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         }
 
         protected abstract void SetupLocalizedTexts();
+
+        /// <summary>
+        /// 检测UI面板是否与目标NPC碰撞箱重叠
+        /// </summary>
+        protected virtual bool CheckNPCOverlap() {
+            if (CurrentDamageTrackerInstance?.NPC == null || !CurrentDamageTrackerInstance.NPC.active) {
+                return false;
+            }
+
+            NPC targetNPC = CurrentDamageTrackerInstance.NPC;
+            
+            //将NPC的世界坐标转换为屏幕坐标
+            Vector2 npcScreenPos = targetNPC.position - Main.screenPosition;
+            Rectangle npcScreenRect = new Rectangle(
+                (int)npcScreenPos.X, 
+                (int)npcScreenPos.Y, 
+                targetNPC.width, 
+                targetNPC.height
+            );
+
+            //获取UI面板的屏幕坐标矩形
+            Rectangle uiRect = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+
+            //检测两个矩形是否相交
+            return npcScreenRect.Intersects(uiRect);
+        }
 
         public override void Update() {
             //展开/收起动画
@@ -96,6 +129,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             DrawPosition = new Vector2(offsetX, ScreenY);
             Size = new Vector2(PanelWidth, PanelHeight);
             UIHitBox = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+
+            //检测是否与NPC碰撞箱重叠
+            isOverlappingWithNPC = CheckNPCOverlap();
+
+            //平滑过渡透明度
+            float targetAlpha = isOverlappingWithNPC ? MinOverlappingAlpha : 1f;
+            overlappingAlpha = MathHelper.Lerp(overlappingAlpha, targetAlpha, AlphaTransitionSpeed);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -103,7 +143,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 return;
             }
 
-            float alpha = Math.Min(slideProgress * 2f, 1f);
+            //应用基于重叠状态的透明度
+            float alpha = Math.Min(slideProgress * 2f, 1f) * overlappingAlpha;
             DrawPanel(spriteBatch, alpha);
             DrawContent(spriteBatch, alpha);
         }
