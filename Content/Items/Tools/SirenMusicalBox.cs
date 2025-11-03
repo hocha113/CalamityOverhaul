@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            //音符环绕效果 - 多层螺旋
+            //音符环绕效果，多层螺旋
             for (int layer = 0; layer < 2; layer++) {
                 float baseAngle = Main.GlobalTimeWrappedHourly * (2f + layer * 0.5f);
                 float angle = baseAngle + Main.rand.NextFloat(MathHelper.TwoPi);
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 spawnPos = Player.Center + angle.ToRotationVector2() * radius;
                 Vector2 velocity = (Player.Center - spawnPos).SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.5f, 1.5f);
 
-                //使用音符粒子 - 随机选择音符类型
+                //使用音符粒子，随机选择音符类型
                 Color particleColor = Main.rand.Next(4) switch {
                     0 => new Color(186, 85, 211),  //中紫罗兰色
                     1 => new Color(138, 43, 226),  //蓝紫色
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 PRTLoader.AddParticle(ghostNote);
             }
 
-            //深色暗影尘埃 - 增加恐怖氛围
+            //深色暗影尘埃，增加恐怖氛围
             if (Main.rand.NextBool(3)) {
                 for (int i = 0; i < 2; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -329,7 +329,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            //海妖之眼效果 - 偶尔出现诡异的"眼睛"
+            //海妖之眼效果，偶尔出现诡异的"眼睛"
             if (Main.rand.NextBool(120)) {
                 Vector2 eyePos = Player.Center + Main.rand.NextVector2Circular(150f, 150f);
 
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 pupil.noGravity = true;
             }
 
-            //扭曲的音波效果 - 使用音符粒子
+            //扭曲的音波效果，使用音符粒子
             if (Main.rand.NextBool(10)) {
                 int waveCount = 20;
                 float waveRadius = Main.rand.NextFloat(80f, 150f);
