@@ -74,6 +74,11 @@ namespace CalamityOverhaul.Content.ADV
         public virtual void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) { }
 
         /// <summary>
+        /// 启动场景
+        /// </summary>
+        public bool StartScenario() => ScenarioManager.Start(Key);
+
+        /// <summary>
         /// 添加一条简单对话
         /// </summary>
         public void Add(string speaker, string content) {

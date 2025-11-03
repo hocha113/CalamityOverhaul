@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.ADV
         public bool CalamitasCloneGift;
         public bool PlanteraGift;
         public bool GolemGift;
+        public bool HellGift;
         public bool MoonLordGift;
         public bool LeviathanGift;
         public bool PlaguebringerGift;
