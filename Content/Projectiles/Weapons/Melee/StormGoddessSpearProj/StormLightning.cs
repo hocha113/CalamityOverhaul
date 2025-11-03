@@ -1,110 +1,286 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
-    internal class StormLightning : ModProjectile//TODO
+    ///<summary>
+    ///风暴女神之矛的主要闪电弹幕
+    ///</summary>
+    internal class StormLightning : Lightning
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Color Light => Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
+
+        #region 配置参数
+        public override int MaxBranches => 4; //增加分叉数
+        public override float BranchProbability => 0.15f; //提高分叉概率
+        public override float BranchLengthRatio => 0.6f; //更长的分叉
+        public override float BaseSpeed => 18f; //更快的速度
+        public override int LingerTime => 30; //更长的停留时间
+        public override int FadeTime => 20; //更长的消失时间
+        public override float BaseWidth => 55f; //更粗的闪电
+        public override float MinBranchWidthRatio => 0.5f;
+        public override float MaxBranchWidthRatio => 0.8f;
+        #endregion
+
+        #region 自定义属性
+        ///<summary>闪电颜色风格（通过ai[2]传入）</summary>
+        private int ColorStyle => (int)Projectile.ai[2];
+        
+        ///<summary>是否已产生冲击波</summary>
+        private bool hasSpawnedShockwave = false;
+        #endregion
+
+        #region 基础设置
+        public override void SetLightningDefaults() {
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = 3;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 15;
+            Projectile.width = 30;
+            Projectile.height = 30;
+        }
+        #endregion
+
+        #region 颜色系统
+        public override Color GetLightningColor(float factor) {
+            //根据风格返回不同颜色
+            Color baseColor = ColorStyle switch {
+                1 => new Color(103, 255, 255), //青蓝色（默认）
+                2 => new Color(255, 255, 103), //金黄色
+                3 => new Color(255, 103, 255), //洋红色
+                _ => new Color(103, 255, 255)
+            };
+
+            //添加闪烁效果
+            float pulseIntensity = 0.8f + 0.2f * MathF.Sin(Main.GlobalTimeWrappedHourly * 15f + Projectile.identity);
+            
+            //根据位置添加颜色变化
+            float hueShift = MathF.Sin(factor * MathHelper.Pi) * 0.15f;
+            
+            return baseColor * pulseIntensity * (0.9f + hueShift);
         }
 
-        public override void SetDefaults() {
-            Projectile.width = 24;
-            Projectile.height = 24;
-            Projectile.aiStyle = -1;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.alpha = 255;
-            Projectile.ignoreWater = true;
-            Projectile.tileCollide = true;
-            Projectile.extraUpdates = 6;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 120 * (Projectile.extraUpdates + 1);
+        public override float GetLightningWidth(float factor) {
+            //更动态的宽度变化
+            float curve = MathF.Sin(factor * MathHelper.Pi);
+            float pulse = 1f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 20f + factor * 10f);
+            float shapeFactor = curve * (0.5f + 0.5f * MathF.Sin(factor * MathHelper.Pi * 0.5f));
+            
+            return ThunderWidth * shapeFactor * Intensity * pulse;
         }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                projHitbox.X = (int)Projectile.oldPos[i].X;
-                projHitbox.Y = (int)Projectile.oldPos[i].Y;
-                if (projHitbox.Intersects(targetHitbox)) {
-                    return true;
+        public override float GetAlpha(float factor) {
+            if (factor < FadeValue)
+                return 0;
+
+            float baseAlpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
+            
+            //添加脉冲透明度
+            float pulse = 1f - 0.1f * MathF.Sin(Main.GlobalTimeWrappedHourly * 25f + factor * 15f);
+            
+            return baseAlpha * (0.8f + 0.2f * Intensity) * pulse;
+        }
+        #endregion
+
+        #region 目标寻找
+        public override Vector2 FindTargetPosition() {
+            //优先寻找NPC目标
+            NPC closestNPC = null;
+            float closestDistance = 1200f;
+
+            closestNPC = Projectile.Center.FindClosestNPC(closestDistance, true, true);
+
+            //如果找到NPC，返回其中心
+            if (closestNPC != null) {
+                return closestNPC.Center;
+            }
+
+            //否则，向下寻找地面
+            Vector2 searchPos = Projectile.Center;
+            Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            
+            for (int i = 0; i < 100; i++) {
+                searchPos += direction * 16f;
+                Point tilePos = searchPos.ToTileCoordinates();
+                
+                if (WorldGen.InWorld(tilePos.X, tilePos.Y)) {
+                    Tile tile = Main.tile[tilePos];
+                    if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                        return searchPos;
+                    }
                 }
             }
-            return base.Colliding(projHitbox, targetHitbox);
-        }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = new Vector2(0, Math.Sign(Projectile.velocity.Y));
-            return false;
+            //默认返回远处位置
+            return Projectile.Center + direction * 800f;
         }
+        #endregion
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits == 0) {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 15
-                , ModContent.ProjectileType<StormArc>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
-            }
-        }
+        #region 特效
+        public override void OnStrike() {
+            //播放雷击音效
+            SoundEngine.PlaySound(SoundID.Item122 with { 
+                Volume = 0.8f, 
+                Pitch = -0.2f,
+                PitchVariance = 0.15f 
+            }, Projectile.Center);
 
-        public override void AI() {
-            Projectile.localAI[1] += Main.rand.NextFloat(1.4f);
-            if (Projectile.localAI[1] > 12f) {
-                Projectile.velocity = Projectile.velocity.RotatedByRandom(0.6f);
-                Projectile.localAI[1] = 0f;
-            }
-            //Projectile.velocity.X += -0.1f * Math.Sign(Projectile.velocity.X);
-            if (Math.Abs(Projectile.velocity.X) < 0.1f) {
-                if (Math.Abs(Projectile.velocity.Y) < 1) {
-                    Projectile.velocity.Y *= 1.01f;
-                }
-            }
-            Lighting.AddLight(Projectile.Center, Color.Magenta.R / 255, Color.Magenta.G / 255, Color.Magenta.B / 255);
-        }
-
-        public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.Item94, Projectile.position);
+            //生成冲击波粒子
             if (!VaultUtils.isServer) {
-                for (int i = 0; i < Main.rand.Next(13, 26); i++) {
-                    Vector2 pos = Projectile.Center;
-                    Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(15.5f, 37.7f);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
+                SpawnImpactParticles();
+            }
+        }
+
+        public override void OnHit() {
+            //命中时生成电弧
+            if (Projectile.IsOwnedByLocalPlayer() && !hasSpawnedShockwave) {
+                hasSpawnedShockwave = true;
+                SpawnElectricArcs();
+            }
+        }
+
+        ///<summary>
+        ///生成冲击粒子特效
+        ///</summary>
+        private void SpawnImpactParticles() {
+            Color particleColor = GetLightningColor(0.5f);
+
+            //生成环形冲击波粒子
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
+                BasePRT particle = new PRT_Spark(
+                    Projectile.Center,
+                    velocity,
+                    false,
+                    Main.rand.Next(8, 15),
+                    1.5f,
+                    particleColor * 0.8f,
+                    Main.player[Projectile.owner]
+                );
+                PRTLoader.AddParticle(particle);
+            }
+        }
+
+        ///<summary>
+        ///生成连锁电弧
+        ///</summary>
+        private void SpawnElectricArcs() {
+            const float arcSpread = MathHelper.TwoPi / 5f;
+            int arcCount = Main.rand.Next(4, 7);
+
+            for (int i = 0; i < arcCount; i++) {
+                float angle = arcSpread * i + Main.rand.NextFloat(-0.3f, 0.3f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 18f);
+                
+                Projectile arc = Projectile.NewProjectileDirect(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    velocity,
+                    ModContent.ProjectileType<StormArc>(),
+                    (int)(Projectile.damage * 0.5f),
+                    Projectile.knockBack * 0.5f,
+                    Projectile.owner
+                );
+                
+                arc.timeLeft = Main.rand.Next(25, 40);
+                arc.penetrate = 3;
+                arc.tileCollide = true;
+            }
+        }
+
+        protected override void UpdateStrikeMovement() {
+            //重写移动逻辑，增加更多随机性
+            float baseSpeed = Projectile.velocity.Length();
+            float distance = Projectile.Center.Distance(TargetPosition);
+
+            //基础朝向
+            float selfAngle = Projectile.velocity.ToRotation();
+            float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
+            float trackingFactor = 1 - Math.Clamp(distance / 600, 0f, 1f);
+
+            //角度插值，更激进的追踪
+            float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.85f + 0.15f * trackingFactor);
+
+            //更大的扰动
+            float sinOffset = MathF.Sin(Timer * 0.4f) * 0.6f;
+            newAngle += sinOffset;
+
+            //增加随机抖动频率
+            if (Timer % 5 == 0) {
+                float randomAngle = Main.rand.NextFloat(-0.5f, 0.5f);
+                newAngle += randomAngle;
+            }
+
+            Projectile.velocity = newAngle.ToRotationVector2() * baseSpeed;
+
+            //位置抖动
+            Projectile.position += new Vector2(
+                MathF.Sin(Timer * 0.3f), 
+                MathF.Cos(Timer * 0.25f)
+            ) * 2f;
+        }
+        #endregion
+
+        #region 额外AI逻辑
+        public override void AI() {
+            base.AI();
+
+            //添加光源效果，颜色随状态变化
+            Color lightColor = GetLightningColor(0.5f);
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Intensity);
+
+            //在劈击过程中生成路径粒子
+            if (State == (float)LightningState.Striking && Timer % 3 == 0 && !VaultUtils.isServer) {
+                Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15, 15);
+                Vector2 particleVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
+                
+                BasePRT particle = new PRT_Light(
+                    particlePos,
+                    particleVel,
+                    0.2f,
+                    lightColor * 0.6f,
+                    Main.rand.Next(5, 12),
+                    0.8f,
+                    1.2f,
+                    hueShift: 0f
+                );
+                PRTLoader.AddParticle(particle);
+            }
+        }
+        #endregion
+
+        #region 增强的命中效果
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            base.OnHitNPC(target, hit, damageDone);
+
+            //添加电击Debuff
+            target.AddBuff(BuffID.Electrified, 180);
+
+            //生成命中粒子
+            if (!VaultUtils.isServer) {
+                Color particleColor = GetLightningColor(0.5f);
+                for (int i = 0; i < Main.rand.Next(5, 10); i++) {
+                    Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f, 20f);
+                    BasePRT particle = new PRT_Light(
+                        target.Center,
+                        velocity,
+                        0.3f,
+                        particleColor,
+                        Main.rand.Next(8, 15),
+                        1f,
+                        1.5f,
+                        hueShift: 0f
+                    );
+                    PRTLoader.AddParticle(particle);
                 }
             }
-            if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * 15
-                , ModContent.ProjectileType<StormArc>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
-                Main.projectile[proj].timeLeft = 15;
-            }
         }
-
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width * 0.6f;
-
-        public Color PrimitiveColorFunction(float completionRatio) {
-            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, Light);
-            return color;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 80);
-            return false;
-        }
+        #endregion
     }
 }
