@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -40,7 +38,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy, silhouette: false);
             DialogueBoxBase.RegisterPortrait(R1.Value + enjoy2, ADVAsset.Helen_enjoy2ADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy2, silhouette: false);
-
             Add(R1.Value + slightAnnoyed, L0.Value);
             Add(R1.Value + slightAnnoyed, L1.Value);
             Add(R1.Value + enjoy, L2.Value);
