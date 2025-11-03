@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             if (SpawnDelay > 0)
                 return false;
             Texture2D sparkTexture = PRTLoader.PRT_IDToTexture[ID];
-            Texture2D bloomTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
+            Texture2D bloomTexture = PRT_Light.BloomTex.Value;
             float properBloomSize = sparkTexture.Height / (float)bloomTexture.Height;
             Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, LifetimeCompletion);
             spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * Opacity * 0.5f, 0
