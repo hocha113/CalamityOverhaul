@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -110,6 +111,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Projectile.width = 200;
             Projectile.height = 200;
+            Projectile.hide = true;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
@@ -118,6 +120,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs
+            , List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
+            behindNPCsAndTiles.Add(index);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
