@@ -523,32 +523,32 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每只手的独特时间偏移（0-1），用于错开动作时机
         /// </summary>
         private float personalityTimeOffset = 0f;
-        
+
         /// <summary>
         /// 个性化速度倍率（0.85-1.15），让每只手的动作速度略有不同
         /// </summary>
         private float personalitySpeedMultiplier = 1f;
-        
+
         /// <summary>
         /// 攻击偏好权重：[挥击, 下砸, 横扫, 投掷]
         /// </summary>
         private float[] attackPreference = new float[4];
-        
+
         /// <summary>
         /// 额外的待机延迟（帧数），让搜索目标的时机错开
         /// </summary>
         private int personalityIdleDelay = 0;
-        
+
         /// <summary>
         /// 是否初始化了个性
         /// </summary>
         private bool personalityInitialized = false;
-        
+
         /// <summary>
         /// 个性化的待机角度偏移，让漂浮位置更分散
         /// </summary>
         private float personalityAngleOffset = 0f;
-        
+
         /// <summary>
         /// 个性化的攻击距离偏好（0.8-1.2）
         /// </summary>
@@ -584,18 +584,18 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void InitializePersonality() {
             if (personalityInitialized) return;
             personalityInitialized = true;
-            
+
             //基于HandIndex生成一致的随机种子
             int seed = (int)(HandIndex * 1000) + Projectile.owner * 10000;
             Random personalRand = new Random(seed);
-            
+
             //1. 时间偏移：让每只手的动作时机错开（0-60帧的随机延迟）
             personalityTimeOffset = (float)personalRand.NextDouble();
             personalityIdleDelay = personalRand.Next(0, 60);
-            
+
             //2. 速度差异：每只手的动作速度略有不同（±15%）
             personalitySpeedMultiplier = 0.85f + (float)personalRand.NextDouble() * 0.3f;
-            
+
             //3. 攻击偏好：某些手更偏好某种攻击方式
             for (int i = 0; i < 4; i++) {
                 attackPreference[i] = 0.5f + (float)personalRand.NextDouble() * 0.5f;
@@ -605,10 +605,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 4; i++) {
                 attackPreference[i] /= totalWeight;
             }
-            
+
             //4. 角度偏移：让待机位置更分散（±30度，即±Pi/6）
             personalityAngleOffset = ((float)personalRand.NextDouble() - 0.5f) * MathHelper.Pi / 3f;
-            
+
             //5. 距离偏好：某些手更喜欢远程/近战（±20%）
             personalityRangePreference = 0.8f + (float)personalRand.NextDouble() * 0.4f;
         }
@@ -619,7 +619,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int GetPersonalizedDuration(int baseDuration) {
             return (int)(baseDuration * personalitySpeedMultiplier);
         }
-        
+
         /// <summary>
         /// 获取带有个性化偏移的全局时间
         /// </summary>
@@ -749,7 +749,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void IdleBehavior(Player owner) {
             //应用个性化的待机延迟
             int adjustedIdleDuration = GetPersonalizedDuration(IdleDuration) + personalityIdleDelay;
-            
+
             //在玩家周围较远距离漂浮，根据玩家朝向调整位置
             //使用个性化角度偏移让每只手的位置更分散
             float angle = HandIndex * MathHelper.TwoPi / 3f + GetPersonalizedTime() * 0.5f;
@@ -793,7 +793,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             NPC target = Main.npc[targetNPCID];
             float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
-            
+
             //应用个性化的距离判断偏好
             float adjustedThrowRange = 400f * personalityRangePreference;
 
@@ -860,12 +860,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             float swingScore = attackPreference[0] * 1.0f;
             float slamScore = attackPreference[1] * (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0 ? 2.0f : 0.5f);
             float sweepScore = attackPreference[2] * 1.0f;
-            
+
             //添加随机性
             swingScore *= 0.8f + Main.rand.NextFloat(0.4f);
             slamScore *= 0.8f + Main.rand.NextFloat(0.4f);
             sweepScore *= 0.8f + Main.rand.NextFloat(0.4f);
-            
+
             //选择得分最高的攻击方式
             if (slamScore > swingScore && slamScore > sweepScore) {
                 AttackType = 1; //下砸

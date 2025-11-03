@@ -1,4 +1,3 @@
-using CalamityMod.NPCs.Yharon;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -96,13 +95,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             }
 
             NPC targetNPC = CurrentDamageTrackerInstance.NPC;
-            
+
             //将NPC的世界坐标转换为屏幕坐标
             Vector2 npcScreenPos = targetNPC.position - Main.screenPosition;
             Rectangle npcScreenRect = new Rectangle(
-                (int)npcScreenPos.X, 
-                (int)npcScreenPos.Y, 
-                targetNPC.width, 
+                (int)npcScreenPos.X,
+                (int)npcScreenPos.Y,
+                targetNPC.width,
                 targetNPC.height
             );
 

@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Owner.FromObjectGetParent(), Owner.Center, Vector2.Zero
                     , ModContent.ProjectileType<HeartcarverAlt>(), 0, 0, Owner.whoAmI);
-            }           
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
