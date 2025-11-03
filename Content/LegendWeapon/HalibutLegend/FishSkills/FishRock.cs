@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -134,16 +135,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float scaleMultiplier = 1f;
         private float impactShake = 0f;
 
+        //预判系统
+        private Vector2 lastTargetPos = Vector2.Zero;
+        private Vector2 targetVelocity = Vector2.Zero;
+        private Vector2 predictedPos = Vector2.Zero;
+
         //各阶段持续时间
         private const int AppearDuration = 30;
-        private const int FlyDuration = 45;
-        private const int PrepareDuration = 20;
-        private const int StrikeDuration = 15;
+        private const int FlyDuration = 40; //缩短飞行时间，更快到达
+        private const int PrepareDuration = 15; //缩短准备时间
+        private const int StrikeDuration = 12; //缩短敲击时间，更快速
         private const int ReturnDuration = 40;
         private const int DisappearDuration = 25;
 
+        //命中判定半径（更大）
+        private const float HitRadius = 180f;
+
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20; //增加拖尾长度
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -168,6 +177,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (target.boss) {
                 modifiers.FinalDamage *= 1.5f;
             }
+            //增加击退
+            modifiers.Knockback *= 1.5f;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.numHits == 0)
+            //增强冲击效果
+            CreateEnhancedImpactEffect(target.Center);
         }
 
         public override void AI() {
@@ -182,6 +199,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             StateTimer++;
+
+            //更新目标预判
+            UpdateTargetPrediction();
 
             //状态机
             switch (State) {
@@ -211,52 +231,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //平滑更新旋转
-            hammerRotation = MathHelper.Lerp(hammerRotation, targetRotation, 0.2f);
+            hammerRotation = MathHelper.Lerp(hammerRotation, targetRotation, 0.25f);
 
             //震动衰减
-            impactShake *= 0.9f;
+            impactShake *= 0.85f;
 
-            //照明（暖色调的岩石光）
-            float lightIntensity = glowIntensity * 0.6f;
+            //增强照明
+            float lightIntensity = glowIntensity * 0.8f;
             Lighting.AddLight(Projectile.Center,
+                1.2f * lightIntensity,
                 0.9f * lightIntensity,
-                0.7f * lightIntensity,
-                0.4f * lightIntensity);
+                0.5f * lightIntensity);
         }
 
-        //出现阶段，从上方升起并展示
+        //更新目标预判
+        private void UpdateTargetPrediction() {
+            if (!IsTargetValid()) return;
+
+            NPC target = Main.npc[(int)TargetNPCID];
+            
+            //计算目标速度
+            if (lastTargetPos != Vector2.Zero) {
+                targetVelocity = target.Center - lastTargetPos;
+            }
+            lastTargetPos = target.Center;
+
+            //预测目标位置（根据当前速度预测0.5秒后的位置）
+            float predictionTime = 0.5f;
+            predictedPos = target.Center + targetVelocity * predictionTime * 60f;
+        }
+
+        //出现阶段
         private void AppearingPhaseAI() {
             float progress = StateTimer / AppearDuration;
             float easeProgress = CWRUtils.EaseOutElastic(progress);
 
-            //初始化位置
             if (StateTimer == 1) {
                 startPos = Projectile.Center;
             }
 
-            //弹性上升动画
             Projectile.Center = startPos + new Vector2(0, -30 * easeProgress);
-
-            //旋转展示
             targetRotation = MathHelper.TwoPi * 2f * CWRUtils.EaseOutCubic(progress);
-
-            //缩放渐入
             scaleMultiplier = easeProgress;
-            glowIntensity = MathHelper.Lerp(0f, 1f, progress);
+            glowIntensity = MathHelper.Lerp(0f, 1.2f, progress); //更亮
 
-            //出现粒子
-            if (Main.rand.NextBool(3)) {
+            if (Main.rand.NextBool(2)) { //更多粒子
                 SpawnAppearParticle();
             }
 
-            //转入飞行阶段
             if (StateTimer >= AppearDuration) {
                 State = HammerState.Flying;
                 StateTimer = 0;
                 InitializeFlight();
 
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                    Volume = 0.6f,
+                    Volume = 0.7f,
                     Pitch = -0.2f
                 }, Projectile.Center);
             }
@@ -264,7 +293,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //初始化飞行路径
         private void InitializeFlight() {
-            //检查目标
             if (!IsTargetValid()) {
                 State = HammerState.Returning;
                 StateTimer = 0;
@@ -273,31 +301,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[(int)TargetNPCID];
 
-            //设置三次贝塞尔曲线的四个控制点
-            bezierP0 = Projectile.Center; //起点
-            bezierP3 = target.Center + new Vector2(0, -150); //终点（目标上方）
+            bezierP0 = Projectile.Center;
+            
+            //使用预测位置作为终点
+            Vector2 targetPoint = predictedPos != Vector2.Zero ? predictedPos : target.Center;
+            bezierP3 = targetPoint + new Vector2(0, -120); //降低高度，更容易命中
 
-            //计算中间控制点 - 创造优雅的弧线
             Vector2 toTarget = bezierP3 - bezierP0;
             float distance = toTarget.Length();
 
-            //控制点1 - 向上偏移
-            bezierP1 = bezierP0 + new Vector2(toTarget.X * 0.3f, -distance * 0.4f);
-
-            //控制点2 - 侧向弧线
-            float arcDirection = Math.Sign(toTarget.X) * -1; //反向弧线
-            bezierP2 = bezierP3 + new Vector2(arcDirection * distance * 0.3f, -distance * 0.2f);
+            //更激进的弧线
+            bezierP1 = bezierP0 + new Vector2(toTarget.X * 0.25f, -distance * 0.3f);
+            float arcDirection = Math.Sign(toTarget.X) * -1;
+            bezierP2 = bezierP3 + new Vector2(arcDirection * distance * 0.2f, -distance * 0.15f);
         }
 
-        //飞行阶段，沿贝塞尔曲线飞行
+        //飞行阶段
         private void FlyingPhaseAI() {
             float progress = StateTimer / FlyDuration;
             float easeProgress = CWRUtils.EaseInOutCubic(progress);
 
-            //沿三次贝塞尔曲线移动
             Vector2 newPos = CWRUtils.CubicBezier(easeProgress, bezierP0, bezierP1, bezierP2, bezierP3);
 
-            //计算朝向 - 沿运动方向
             Vector2 velocity = newPos - Projectile.Center;
             if (velocity.LengthSquared() > 0.1f) {
                 targetRotation = velocity.ToRotation() + MathHelper.PiOver2;
@@ -305,27 +330,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.Center = newPos;
 
-            //加速旋转效果
-            rotationSpeed = MathHelper.Lerp(0.05f, 0.3f, easeProgress);
+            rotationSpeed = MathHelper.Lerp(0.08f, 0.4f, easeProgress);
             targetRotation += rotationSpeed;
 
-            glowIntensity = 1f;
-            scaleMultiplier = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.15f;
+            glowIntensity = 1.2f;
+            scaleMultiplier = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.2f;
 
-            //飞行拖尾
-            if (Main.rand.NextBool(4)) {
+            if (Main.rand.NextBool(2)) {
                 SpawnFlyingTrail();
             }
 
-            //音效
-            if (StateTimer % 15 == 0) {
+            if (StateTimer % 10 == 0) {
                 SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.3f,
-                    Pitch = 0.2f + progress * 0.3f
+                    Volume = 0.4f,
+                    Pitch = 0.3f + progress * 0.4f
                 }, Projectile.Center);
             }
 
-            //转入准备阶段
             if (StateTimer >= FlyDuration) {
                 State = HammerState.Preparing;
                 StateTimer = 0;
@@ -333,7 +354,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //准备敲击阶段，蓄力动作
+        //准备敲击阶段 - 动态追踪
         private void PreparingPhaseAI() {
             if (!IsTargetValid()) {
                 State = HammerState.Returning;
@@ -344,144 +365,145 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / PrepareDuration;
             NPC target = Main.npc[(int)TargetNPCID];
 
+            //使用预测位置
+            Vector2 targetPoint = predictedPos != Vector2.Zero ? predictedPos : target.Center;
+
             //向后拉动蓄力
-            float pullBack = (float)Math.Sin(progress * MathHelper.Pi) * 50f;
-            Vector2 pullDirection = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+            float pullBack = (float)Math.Sin(progress * MathHelper.Pi) * 60f; //拉得更远
+            Vector2 pullDirection = (targetPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
             Projectile.Center = strikeStartPos - pullDirection * pullBack;
 
-            //蓄力旋转
-            targetRotation += 0.4f;
+            targetRotation += 0.5f; //更快旋转
+            scaleMultiplier = 1f + progress * 0.7f; //更大缩放
+            glowIntensity = 1.2f + progress * 0.8f; //更亮
 
-            //缩放蓄力效果
-            scaleMultiplier = 1f + progress * 0.5f;
-            glowIntensity = 1f + progress * 0.5f;
-
-            //蓄力粒子
-            if (Main.rand.NextBool(2)) {
+            if (Main.rand.NextBool(1)) { //更密集的蓄力粒子
                 SpawnChargeParticle();
             }
 
-            //蓄力音效
-            if (StateTimer % 6 == 0) {
+            if (StateTimer % 4 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                    Volume = 0.3f * progress,
-                    Pitch = -0.3f + progress * 0.6f
+                    Volume = 0.4f * progress,
+                    Pitch = -0.3f + progress * 0.7f
                 }, Projectile.Center);
             }
 
-            //转入敲击阶段
             if (StateTimer >= PrepareDuration) {
                 State = HammerState.Striking;
                 StateTimer = 0;
-                strikeEndPos = target.Center;
+                strikeEndPos = targetPoint; //最终使用预测位置
 
-                //重击音效
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 1f,
-                    Pitch = -0.5f
+                //强化重击音效
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                    Volume = 1.2f,
+                    Pitch = -0.6f
+                }, Projectile.Center);
+                
+                SoundEngine.PlaySound(SoundID.Item14 with {
+                    Volume = 0.8f,
+                    Pitch = -0.4f
                 }, Projectile.Center);
             }
         }
 
-        //敲击阶段，快速重击
+        //敲击阶段
         private void StrikingPhaseAI() {
             float progress = StateTimer / StrikeDuration;
             float easeProgress = CWRUtils.EaseInCubic(progress);
 
-            //快速冲向目标
             Projectile.Center = Vector2.Lerp(strikeStartPos, strikeEndPos, easeProgress);
 
-            //快速旋转
-            targetRotation += 1.2f;
+            targetRotation += 1.5f; //更快旋转
+            scaleMultiplier = 1.8f - progress * 0.4f; //更大缩放
+            glowIntensity = 2.5f; //更亮
 
-            //冲击视觉
-            scaleMultiplier = 1.5f - progress * 0.3f;
-            glowIntensity = 2f;
-
-            //冲击拖尾
-            if (Main.rand.NextBool(2)) {
+            if (Main.rand.NextBool(1)) {
                 SpawnStrikeTrail();
             }
 
-            //击中检测
-            if (IsTargetValid() && StateTimer == StrikeDuration / 2) {
+            //扩大击中检测范围和时间窗口
+            if (IsTargetValid() && StateTimer >= StrikeDuration / 3 && StateTimer <= StrikeDuration * 2 / 3) {
                 NPC target = Main.npc[(int)TargetNPCID];
                 float distance = Vector2.Distance(Projectile.Center, target.Center);
 
-                if (distance < 100f) {
+                if (distance < HitRadius) //使用更大的命中半径
+                {
                     //造成伤害
-                    target.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, null, false, 0f, true);
+                    target.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack * 2f, null, false, 0f, true);
 
-                    //创建冲击效果
-                    CreateImpactEffect(target.Center);
-                    impactShake = 20f;
+                    //增强冲击效果
+                    CreateEnhancedImpactEffect(target.Center);
+                    impactShake = 30f; //更强震动
 
-                    //重击音效
+                    //屏幕震动
+                    if (Owner.whoAmI == Main.myPlayer && CWRServerConfig.Instance.ScreenVibration) {
+                        Owner.GetModPlayer<CWRPlayer>().ScreenShakeValue = Math.Max(
+                            Owner.GetModPlayer<CWRPlayer>().ScreenShakeValue, 12f);
+                    }
+
+                    //增强音效
                     SoundEngine.PlaySound(SoundID.Item70 with {
-                        Volume = 1f,
-                        Pitch = -0.4f
+                        Volume = 1.3f,
+                        Pitch = -0.5f
                     }, target.Center);
 
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                        Volume = 0.9f
+                        Volume = 1.2f,
+                        Pitch = -0.2f
                     }, target.Center);
+
+                    SoundEngine.PlaySound(SoundID.Item14 with {
+                        Volume = 1f,
+                        Pitch = -0.3f
+                    }, target.Center);
+
+                    //标记已命中，避免重复
+                    TargetNPCID = -1;
                 }
             }
 
-            //转入返回阶段
             if (StateTimer >= StrikeDuration) {
                 State = HammerState.Returning;
                 StateTimer = 0;
             }
         }
 
-        //返回阶段，飞回玩家
+        //返回阶段
         private void ReturningPhaseAI() {
             float progress = StateTimer / ReturnDuration;
             float easeProgress = CWRUtils.EaseInOutQuad(progress);
 
-            //计算返回路径
             Vector2 returnTarget = Owner.Center + new Vector2(0, -120);
-            Projectile.Center = Vector2.Lerp(Projectile.Center, returnTarget, easeProgress * 0.1f);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, returnTarget, easeProgress * 0.12f);
 
-            //减速旋转
             targetRotation += MathHelper.Lerp(0.8f, 0.1f, progress);
+            scaleMultiplier = MathHelper.Lerp(1.3f, 0.8f, progress);
+            glowIntensity = MathHelper.Lerp(1.8f, 0.6f, progress);
 
-            //缩小
-            scaleMultiplier = MathHelper.Lerp(1.2f, 0.8f, progress);
-            glowIntensity = MathHelper.Lerp(1.5f, 0.6f, progress);
-
-            //返回拖尾
-            if (Main.rand.NextBool(6)) {
+            if (Main.rand.NextBool(5)) {
                 SpawnReturnTrail();
             }
 
-            //转入消失阶段
             if (StateTimer >= ReturnDuration || Vector2.Distance(Projectile.Center, returnTarget) < 30f) {
                 State = HammerState.Disappearing;
                 StateTimer = 0;
             }
         }
 
-        //消失阶段，淡出消失
+        //消失阶段
         private void DisappearingPhaseAI() {
             float progress = StateTimer / DisappearDuration;
             float easeProgress = CWRUtils.EaseInCubic(progress);
 
-            //减速旋转
             targetRotation += 0.2f * (1f - progress);
-
-            //淡出
             Projectile.alpha = (int)(255 * easeProgress);
             scaleMultiplier = 1f - easeProgress * 0.5f;
-            glowIntensity *= 0.9f;
+            glowIntensity *= 0.88f;
 
-            //消失粒子
-            if (Main.rand.NextBool(3)) {
+            if (Main.rand.NextBool(2)) {
                 SpawnDisappearParticle();
             }
 
-            //完全消失
             if (StateTimer >= DisappearDuration) {
                 SpawnFinalEffect();
                 Projectile.Kill();
@@ -496,7 +518,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        //各种粒子效果
+        //粒子效果
         private void SpawnAppearParticle() {
             Dust appear = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
@@ -504,10 +526,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.rand.NextVector2Circular(3f, 3f),
                 100,
                 default,
-                Main.rand.NextFloat(1.5f, 2.5f)
+                Main.rand.NextFloat(1.8f, 3f)
             );
             appear.noGravity = true;
-            appear.fadeIn = 1.2f;
+            appear.fadeIn = 1.3f;
         }
 
         private void SpawnFlyingTrail() {
@@ -517,39 +539,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 -Projectile.velocity * 0.3f,
                 100,
                 new Color(120, 100, 80),
-                Main.rand.NextFloat(1.5f, 2.2f)
+                Main.rand.NextFloat(1.8f, 2.5f)
             );
             trail.noGravity = true;
-            trail.fadeIn = 1.1f;
+            trail.fadeIn = 1.2f;
         }
 
         private void SpawnChargeParticle() {
-            Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(40f, 40f);
+            Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(50f, 50f);
             Vector2 toCenter = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero);
 
             Dust charge = Dust.NewDustPerfect(
                 particlePos,
                 DustID.Stone,
-                toCenter * Main.rand.NextFloat(3f, 6f),
-                100,
-                default,
-                Main.rand.NextFloat(1.8f, 2.8f)
-            );
-            charge.noGravity = true;
-            charge.fadeIn = 1.3f;
-        }
-
-        private void SpawnStrikeTrail() {
-            Dust strike = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                DustID.Stone,
-                -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.5f),
+                toCenter * Main.rand.NextFloat(4f, 8f),
                 100,
                 default,
                 Main.rand.NextFloat(2f, 3.5f)
             );
+            charge.noGravity = true;
+            charge.fadeIn = 1.4f;
+        }
+
+        private void SpawnStrikeTrail() {
+            Dust strike = Dust.NewDustPerfect(
+                Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
+                DustID.Stone,
+                -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.7f),
+                100,
+                default,
+                Main.rand.NextFloat(2.5f, 4f)
+            );
             strike.noGravity = true;
-            strike.fadeIn = 1.4f;
+            strike.fadeIn = 1.5f;
         }
 
         private void SpawnReturnTrail() {
@@ -559,11 +581,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.rand.NextVector2Circular(2f, 2f),
                 100,
                 new Color(100, 80, 60),
-                Main.rand.NextFloat(1.2f, 2f)
+                Main.rand.NextFloat(1.5f, 2.5f)
             );
             returnDust.noGravity = true;
-            returnDust.fadeIn = 1f;
-            returnDust.alpha = 120;
+            returnDust.fadeIn = 1.1f;
+            returnDust.alpha = 100;
         }
 
         private void SpawnDisappearParticle() {
@@ -573,18 +595,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.rand.NextVector2Circular(4f, 4f),
                 100,
                 default,
-                Main.rand.NextFloat(1.5f, 2.5f)
+                Main.rand.NextFloat(1.8f, 3f)
             );
             disappear.noGravity = true;
-            disappear.fadeIn = 1.2f;
+            disappear.fadeIn = 1.3f;
         }
 
-        //创建冲击效果
-        private static void CreateImpactEffect(Vector2 position) {
+        //增强的冲击效果
+        private static void CreateEnhancedImpactEffect(Vector2 position) {
             //冲击波环
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 15f);
+            for (int i = 0; i < 40; i++) {
+                float angle = MathHelper.TwoPi * i / 40f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 20f);
 
                 Dust impact = Dust.NewDustPerfect(
                     position,
@@ -592,30 +614,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(2.5f, 4f)
+                    Main.rand.NextFloat(3f, 5f)
                 );
                 impact.noGravity = true;
-                impact.fadeIn = 1.5f;
+                impact.fadeIn = 1.6f;
             }
 
-            //烟雾爆发
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
+            //更多烟雾爆发
+            for (int i = 0; i < 30; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
                 Dust smoke = Dust.NewDustPerfect(
                     position,
                     DustID.Smoke,
                     velocity,
                     100,
                     new Color(100, 80, 60),
-                    Main.rand.NextFloat(3f, 4.5f)
+                    Main.rand.NextFloat(3.5f, 5.5f)
                 );
                 smoke.noGravity = true;
             }
 
-            //碎石飞溅
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
-                velocity.Y -= Main.rand.NextFloat(5f, 10f);
+            //更多碎石飞溅
+            for (int i = 0; i < 25; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f);
+                velocity.Y -= Main.rand.NextFloat(6f, 12f);
 
                 Dust debris = Dust.NewDustPerfect(
                     position,
@@ -623,30 +645,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(2f, 3.5f)
+                    Main.rand.NextFloat(2.5f, 4f)
                 );
                 debris.noGravity = false;
             }
+
+            //冲击波圈
+            for (int i = 0; i < 3; i++) {
+                int radius = 50 + i * 30;
+                for (int j = 0; j < 20; j++) {
+                    float angle = MathHelper.TwoPi * j / 20f;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    
+                    Dust ring = Dust.NewDustPerfect(
+                        position + offset,
+                        DustID.Torch,
+                        angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f),
+                        100,
+                        new Color(255, 200, 100),
+                        Main.rand.NextFloat(2f, 3f)
+                    );
+                    ring.noGravity = true;
+                }
+            }
         }
 
-        //最终消失效果
         private void SpawnFinalEffect() {
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust final = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Stone,
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(1.8f, 2.8f)
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
                 final.noGravity = true;
-                final.fadeIn = 1.3f;
+                final.fadeIn = 1.4f;
             }
 
             SoundEngine.PlaySound(SoundID.Item10 with {
-                Volume = 0.5f,
+                Volume = 0.6f,
                 Pitch = -0.2f
             }, Projectile.Center);
         }
@@ -656,7 +696,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D hammerTex = TextureAssets.Item[ItemID.Rockfish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //应用震动偏移
+            //震动效果
             if (impactShake > 0) {
                 drawPos += Main.rand.NextVector2Circular(impactShake, impactShake);
             }
@@ -666,27 +706,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //绘制拖尾残影
+            //拖尾残影
             if (State == HammerState.Flying || State == HammerState.Striking) {
                 DrawHammerAfterimages(sb, hammerTex, sourceRect, origin, baseColor, alpha);
             }
 
-            //发光层
+            //增强发光层
             if (glowIntensity > 1f) {
-                Color glowColor = new Color(255, 200, 100); //暖色调辉光
-                float glowAlpha = (glowIntensity - 1f) * alpha * 0.5f;
+                Color glowColor = new Color(255, 220, 120);
+                float glowAlpha = (glowIntensity - 1f) * alpha * 0.7f;
 
-                sb.Draw(
-                    hammerTex,
-                    drawPos,
-                    sourceRect,
-                    glowColor * glowAlpha,
-                    hammerRotation,
-                    origin,
-                    Projectile.scale * scaleMultiplier * 1.2f,
-                    SpriteEffects.None,
-                    0
-                );
+                for (int i = 0; i < 3; i++) {
+                    sb.Draw(
+                        hammerTex,
+                        drawPos + Main.rand.NextVector2Circular(2, 2),
+                        sourceRect,
+                        glowColor * glowAlpha * 0.5f,
+                        hammerRotation,
+                        origin,
+                        Projectile.scale * scaleMultiplier * (1.2f + i * 0.1f),
+                        SpriteEffects.None,
+                        0
+                    );
+                }
             }
 
             //主体绘制
@@ -702,10 +744,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //额外高光（冲击时）
+            //敲击高光
             if (State == HammerState.Striking) {
-                Color strikeGlow = new Color(255, 240, 200, 0);
-                float strikeAlpha = glowIntensity * 0.4f * alpha;
+                Color strikeGlow = new Color(255, 255, 200, 0);
+                float strikeAlpha = glowIntensity * 0.6f * alpha;
 
                 sb.Draw(
                     hammerTex,
@@ -714,7 +756,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     strikeGlow * strikeAlpha,
                     hammerRotation,
                     origin,
-                    Projectile.scale * scaleMultiplier * 1.1f,
+                    Projectile.scale * scaleMultiplier * 1.15f,
                     SpriteEffects.None,
                     0
                 );
@@ -726,25 +768,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawHammerAfterimages(SpriteBatch sb, Texture2D hammerTex, Rectangle sourceRect,
             Vector2 origin, Color baseColor, float alpha) {
 
-            int afterimageCount = State == HammerState.Striking ? 15 : 10;
+            int afterimageCount = State == HammerState.Striking ? 20 : 15;
 
             for (int i = 1; i < afterimageCount; i++) {
                 if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
 
                 float afterimageProgress = 1f - i / (float)afterimageCount;
-                float afterimageAlpha = afterimageProgress * alpha * 0.5f;
+                float afterimageAlpha = afterimageProgress * alpha * 0.6f;
 
                 Color afterimageColor = Color.Lerp(
                     new Color(80, 60, 40),
-                    new Color(200, 160, 100),
+                    new Color(255, 200, 100),
                     afterimageProgress
                 ) * afterimageAlpha;
 
                 Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float afterimageScale = Projectile.scale * scaleMultiplier * MathHelper.Lerp(0.7f, 0.95f, afterimageProgress);
+                float afterimageScale = Projectile.scale * scaleMultiplier * MathHelper.Lerp(0.6f, 0.95f, afterimageProgress);
 
-                //旋转插值
-                float afterimageRotation = MathHelper.Lerp(hammerRotation, hammerRotation - 0.4f, i / (float)afterimageCount);
+                float afterimageRotation = MathHelper.Lerp(hammerRotation, hammerRotation - 0.5f, i / (float)afterimageCount);
 
                 sb.Draw(
                     hammerTex,
