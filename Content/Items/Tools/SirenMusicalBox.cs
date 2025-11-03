@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            //音符雨效果 - 从上方飘落的音符
+            //音符雨效果，从上方飘落的音符
             if (Main.rand.NextBool(8)) {
                 Vector2 fallPos = Player.Center + new Vector2(Main.rand.NextFloat(-200f, 200f), -Main.rand.NextFloat(150f, 250f));
                 Vector2 fallVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f));
