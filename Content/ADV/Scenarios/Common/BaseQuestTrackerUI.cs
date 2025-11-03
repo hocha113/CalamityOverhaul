@@ -80,6 +80,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 }
             }
 
+            cachedContribution = MathHelper.Clamp(cachedContribution, 0, 1f);//确保在0-1范围内
+
             //如果贡献度低，闪烁警告
             float requiredContribution = GetRequiredContribution();
             if (cachedContribution < requiredContribution * 0.5f) {
@@ -179,14 +181,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 percentColor = Color.Lerp(percentColor, Color.Red, warningPulse * 0.5f);
             }
 
-            Utils.DrawBorderString(spriteBatch, percentText, percentPos, percentColor * alpha, 0.75f); //从0.85缩小到0.75
+            Utils.DrawBorderString(spriteBatch, percentText, percentPos, percentColor * alpha, 0.75f);
 
-            //需求文本 - 缩小字体
+            //需求文本
             Vector2 requirementPos = contributionTextPos + new Vector2(0, 18);
             Utils.DrawBorderString(spriteBatch, RequiredContribution.Value, requirementPos,
-                Color.Gray * alpha, 0.6f); //从0.7缩小到0.6
+                Color.Gray * alpha, 0.6f);
 
-            //进度条 - 缩小高度
+            //进度条
             DrawProgressBar(spriteBatch, requirementPos + new Vector2(0, 14), alpha);
         }
 
@@ -194,7 +196,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             float barWidth = PanelWidth - 20;
-            float barHeight = 6; //从8缩小到6
+            float barHeight = 6;
 
             //背景
             Rectangle barBg = new Rectangle((int)position.X, (int)position.Y, (int)barWidth, (int)barHeight);
