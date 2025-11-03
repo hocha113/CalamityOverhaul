@@ -155,7 +155,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (localPlayer == null || !localPlayer.active) {
                     return;
                 }
-                localPlayer.GetModPlayer<SirenMusicalBoxPlayer>().IsCursed = HasActiveBox;
+                if (localPlayer.TryGetModPlayer<SirenMusicalBoxPlayer>(out var modPlayer)) {
+                    modPlayer.IsCursed = HasActiveBox;
+                }
             }
             if (HasActiveBox) {
                 Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/SirenMusic");
@@ -300,32 +302,33 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             //血红色警告粒子（音乐快结束时）
-            SirenMusicalBoxPlayer modPlayer = Player.GetModPlayer<SirenMusicalBoxPlayer>();
-            if (modPlayer.MusicTimer >= MusicDuration - 300) {
-                float dangerIntensity = (modPlayer.MusicTimer - (MusicDuration - 300)) / 300f;
+            if (Player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var modPlayer)) {
+                if (modPlayer.MusicTimer >= MusicDuration - 300) {
+                    float dangerIntensity = (modPlayer.MusicTimer - (MusicDuration - 300)) / 300f;
 
-                if (Main.rand.NextFloat() < dangerIntensity * 0.3f) {
-                    Vector2 warnPos = Player.Center + Main.rand.NextVector2Circular(60f, 60f);
-                    Dust warnDust = Dust.NewDustDirect(warnPos, 0, 0, DustID.Blood, 0f, 0f, 100, Color.Red, Main.rand.NextFloat(2f, 3.5f));
-                    warnDust.noGravity = true;
-                    warnDust.velocity = Main.rand.NextVector2Circular(3f, 3f);
-                }
+                    if (Main.rand.NextFloat() < dangerIntensity * 0.3f) {
+                        Vector2 warnPos = Player.Center + Main.rand.NextVector2Circular(60f, 60f);
+                        Dust warnDust = Dust.NewDustDirect(warnPos, 0, 0, DustID.Blood, 0f, 0f, 100, Color.Red, Main.rand.NextFloat(2f, 3.5f));
+                        warnDust.noGravity = true;
+                        warnDust.velocity = Main.rand.NextVector2Circular(3f, 3f);
+                    }
 
-                //快结束时增加音符密度
-                if (Main.rand.NextBool(2)) {
-                    float panicAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 panicPos = Player.Center + panicAngle.ToRotationVector2() * Main.rand.NextFloat(40f, 80f);
-                    Vector2 panicVel = Main.rand.NextVector2Circular(2f, 2f);
+                    //快结束时增加音符密度
+                    if (Main.rand.NextBool(2)) {
+                        float panicAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        Vector2 panicPos = Player.Center + panicAngle.ToRotationVector2() * Main.rand.NextFloat(40f, 80f);
+                        Vector2 panicVel = Main.rand.NextVector2Circular(2f, 2f);
 
-                    PRT_Note panicNote = new PRT_Note(
-                        panicPos,
-                        panicVel,
-                        Color.Lerp(Color.Red, Color.DarkMagenta, Main.rand.NextFloat()),
-                        Main.rand.Next(20, 40),
-                        Main.rand.NextFloat(0.4f, 0.7f),
-                        Main.rand.Next(3)
-                    );
-                    PRTLoader.AddParticle(panicNote);
+                        PRT_Note panicNote = new PRT_Note(
+                            panicPos,
+                            panicVel,
+                            Color.Lerp(Color.Red, Color.DarkMagenta, Main.rand.NextFloat()),
+                            Main.rand.Next(20, 40),
+                            Main.rand.NextFloat(0.4f, 0.7f),
+                            Main.rand.Next(3)
+                        );
+                        PRTLoader.AddParticle(panicNote);
+                    }
                 }
             }
 
@@ -541,7 +544,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
                     //触手本体
                     Dust tentacle = Dust.NewDustDirect(pos, 0, 0, DustID.DungeonWater, 0f, 0f, 100,
-                        Color.Lerp(Color.DarkBlue, Color.Cyan, progress), Main.rand.NextFloat(2f, 3.5f) * (1f - progress * 0.5f));
+                        Color.Lerp(Color.DarkBlue, Color.Cyan, progress), Main.rand.NextFloat(2.5f, 4f) * (1f - progress * 0.5f));
                     tentacle.noGravity = true;
                     tentacle.velocity = Main.rand.NextVector2Circular(1f, 1f);
 
@@ -747,11 +750,12 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void OnKill() {
             if (IsMusicPlaying) {
                 foreach (Player player in Main.ActivePlayers) {
-                    SirenMusicalBoxPlayer modPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
-                    if (!modPlayer.IsCursed) {
-                        continue;
+                    if (player.TryGetModPlayer(out SirenMusicalBoxPlayer modPlayer)) {
+                        if (!modPlayer.IsCursed) {
+                            continue;
+                        }
+                        modPlayer.ExecuteDeath();
                     }
-                    modPlayer.ExecuteDeath();
                 }
                 StopMusic();
             }
@@ -826,8 +830,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (!player.active || player.dead) {
                     continue;
                 }
-                SirenMusicalBoxPlayer modPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
-                modPlayer.BindToBox(Position);
+                if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var modPlayer)) {
+                    modPlayer.BindToBox(Position);
+                }
             }
         }
 
@@ -836,8 +841,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         /// </summary>
         private void UnbindAllPlayers() {
             foreach (Player player in Main.ActivePlayers) {
-                SirenMusicalBoxPlayer modPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
-                modPlayer.ResetCurse();
+                if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var modPlayer)) {
+                    modPlayer.ResetCurse();
+                }
             }
         }
 
