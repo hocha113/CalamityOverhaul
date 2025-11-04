@@ -1140,185 +1140,183 @@ Items: {
 	}
 
 	CreativeUEPipeline: {
-		// DisplayName: Energy Creative Pipeline
-		// Tooltip: ""
+		DisplayName: Энергопровод Бога
+		Tooltip: ""
 	}
 
 	ItemFilter: {
-		// DisplayName: Item Filter Board
-		/* Tooltip:
+		DisplayName: Панель фильтрации предметов
+		Tooltip:
 			'''
-			Use to open the filter panel
-			Right-click a compatible machine to apply
-			Left-click a chest to copy its contents as filter rules
-			''' */
+			Используйте, чтобы открыть панель фильтрации
+			Щёлкните ПКМ по механизму с соответствующим интерфейсом, чтобы применить
+			Щёлкните ЛКМ по сундуку, чтобы скопировать его содержимое в качестве фильтра
+			'''
 	}
 
 	SporeBubbleBlaster: {
-		// DisplayName: Spore Bubble Blaster
-		/* Tooltip:
-			'''
-			Sprays a stream of spore particles
-			Causes only 50% damage during the day
-			''' */
+		DisplayName: Споровый бластер
+		Tooltip: Выстреливает потоком спор
 	}
 
 	TomeofFungalDecay: {
-		// DisplayName: Tomeof Fungal Decay
-		// Tooltip: ""
+		DisplayName: Фолиант грибного распада
+		Tooltip: Выстреливает кольцом споровых потоков
 	}
 
 	FungalRevolver: {
-		// DisplayName: Fungal Revolver
-		// Tooltip: ""
+		DisplayName: Грибной револьвер
+		Tooltip:
+			'''
+			Преобразует мушкетные пули в грибные пули
+			"После чистки перестал работать"
+			'''
 	}
 
 	FungalFeed: {
-		// DisplayName: Fungal Feed
-		/* Tooltip:
+		DisplayName: Грибной корм
+		Tooltip:
 			'''
-			Throw at a Sporecrab to tame it
-			A tamed Sporecrab will follow you and fight by your side
-			Can be equipped with a [i:CalamityOverhaul/MushroomSaddle] Mushroom Saddle to become a mount
-			"They just love mushrooms"
-			''' */
+			Можно бросить Грибному крабу, чтобы приручить его
+			Приручённый Грибной краб будет следовать за вами и сражаться на вашей стороне
+			Можно экипировать [i:CalamityOverhaul/MushroomSaddle] Грибным седлом, чтобы сделать его ездовым
+			"Они обожают грибы"
+			'''
 	}
 
 	MushroomSaddle: {
-		// DisplayName: Mushroom Saddle
-		/* Tooltip:
+		DisplayName: Грибное седло
+		Tooltip:
 			'''
-			Can be equipped on a Sporecrab tamed with [i:CalamityOverhaul/FungalFeed] Fungal Feed
-			Left-click the Sporecrab while holding the saddle to equip it
-			Right-click an equipped Sporecrab to ride
-			''' */
-		// UseCombat: Can only be applied to crabulon
+			Можно экипировать на Грибного краба, приручённого с помощью [i:CalamityOverhaul/FungalFeed] Грибного корма
+			Держите седло в руках и щёлкните ЛКМ по Грибному крабу, чтобы экипировать
+			Щёлкните ПКМ по Грибному крабу с седлом, чтобы оседлать
+			'''
+		UseCombat: Можно надеть только на Грибного краба
 	}
 
 	SporeboundRoller: {
-		// DisplayName: Sporebound Roller
-		/* Tooltip:
+		DisplayName: Споровый катун
+		Tooltip:
 			'''
-			Generates a floating little mushroom after hitting an enemy
-			"They love to keep rolling around"
-			''' */
+			При попадании по врагу создаёт парящий грибочек
+			"Они любят кататься"
+			'''
 	}
 
 	Spectrometer: {
-		// DisplayName: Spectrometer
-		/* Tooltip:
+		DisplayName: Спектрометр
+		Tooltip:
 			'''
-			Allows dyeing items with color
-			Requires power to operate
-			''' */
+			Позволяет красить предметы с помощью красителей
+			Требует электроэнергии для работы
+			'''
 	}
 
 	SporeburstPouch: {
-		// DisplayName: Sporeburst Pouch
-		/* Tooltip:
+		DisplayName: Споровый мешочек
+		Tooltip:
 			'''
-			Throws a volatile pouch of fungal spores that explodes on impact
-			Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
-			''' */
+			Бросает хрупкий споровый мешочек, который яростно взрывается при столкновении
+			Скрытная атака вызывает мощный грибной взрыв и выпускает рой самонаводящихся споровых духов
+			'''
 	}
 
 	Pallbearer: {
-		// DisplayName: Pallbearer
-		/* Tooltip:
+		DisplayName: Могильщик
+		Tooltip:
 			'''
-			Hold left click to charge, then release to fire the Arrow of the Pallbearer.
-			The longer you charge, the stronger the arrow becomes.
-			Right click to throw the crossbow, if it hits an enemy, 
-			your next shot will be greatly empowered.
-			“Also known as the Coffin Bearer.”
-			''' */
+			Удерживайте ЛКМ для зарядки, отпустите, чтобы выстрелить стрелой могильщика
+			Чем дольше зарядка, тем мощнее стрела
+			ПКМ, чтобы бросить арбалет. Попадание по врагу значительно усиливает следующий выстрел
+			"Также известен как „несущий гроб“"
+			'''
 	}
 
 	EncyclopediaofOceanicKnowledge: {
-		// DisplayName: Encyclopediaof Oceanic Knowledge
-		/* Tooltip:
+		DisplayName: Энциклопедия океанических знаний
+		Tooltip:
 			'''
-			Instantly gain knowledge of all fish species
-			Unlock all fish-related skills
-			[c/FFD700: The wisdom of the ocean will converge upon you]
-			''' */
-		// Text1: You have mastered all the knowledge
-		// Text2: You have acquired [NUM] kinds of fish knowledge!
+			При использовании мгновенно постигает все знания о рыбах
+			Открывает все рыбные навыки
+			[c/FFD700:Мудрость океана сосредоточится в вас]
+			'''
+		Text1: Вы уже овладели всеми знаниями
+		Text2: Изучено [NUM] видов рыбьих знаний!
 	}
 
 	TheForgottenTome: {
-		// DisplayName: The Forgotten Tome
-		/* Tooltip:
+		DisplayName: Книга забытого мира
+		Tooltip:
 			'''
-			When used, it erases every trace of your worldly memories.
-			A life turned specter, condemned to eternal descent
-			all beings are burdened with sin, and no soul shall return to the next life.
-			My name is [NAME]. If you are reading this, I have already perished.
-			''' */
-		// CompletionText: You have forgotten everything
+			При использовании мгновенно забывает весь мирской опыт
+			Жизнь — это призрачный облик, вечное падение в бездну, все существа грешны, нет будущей жизни
+			Меня зовут [NAME], и когда вы увидите эту фразу, я уже буду мёртв
+			'''
+		CompletionText: Вы всё забыли
 	}
 
 	Fishoil: {
-		// DisplayName: Bottled Fish Oil
-		/* Tooltip:
+		DisplayName: Рыбий жир в бутылке
+		Tooltip:
 			'''
-			Increases fishing power by 10%
-			Allows breathing underwater
-			Grants additional resistance against certain eerie entities
-			''' */
+			Увеличивает силу рыбной ловли на 10%
+			Позволяет дышать под водой
+			Обладает дополнительным подавляющим эффектом на некоторых жутких существ
+			'''
 	}
 
 	SirenMusicalBox: {
-		// DisplayName: Siren Musical Box
-		/* Tooltip:
+		DisplayName: Музыкальная шкатулка сирены
+		Tooltip:
 			'''
-			Right-click to play eerie music from a music box.
-			All who hear it will be cursed, unable to die while the music plays.
-			When the music ends, they will suffer a fatal attack.
-			''' */
-		// DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
+			Щёлкните ПКМ, чтобы воспроизвести жуткую музыку шкатулки
+			Все, кто её слышит, будут прокляты и не смогут умереть, пока звучит музыка
+			После окончания музыки они подвергнутся смертельной атаке
+			'''
+		DeathText: "{0} превратился в гниющий труп в результате неизвестной атаки"
 	}
 
 	Heartcarver: {
-		// DisplayName: Heartcarver
-		/* Tooltip:
+		DisplayName: Сердцерез
+		Tooltip:
 			'''
-			Generate three additional ritual daggers to rotate around the player.
-			After the charging is completed, fly towards the target.
-			Right-click to perform a short-range thrust.
-			''' */
+			Создаёт три дополнительных ритуальных кинжала, вращающихся вокруг игрока
+			После завершения зарядки летят к цели
+			ПКМ для короткого выпада
+			'''
 	}
 
 	OniMachete: {
-		// DisplayName: Oni Machete
-		/* Tooltip:
+		DisplayName: Мачете Они
+		Tooltip:
 			'''
-			When held, six oni hands will be generated to assist in combat.
-			True melee attacks will release ghost flames.
-			''' */
+			Будучи в руках, создаёт шесть рук-они для помощи в бою
+			Настоящие атаки ближнего боя высвобождают призрачный огонь
+			'''
 	}
 
 	Pandemonium: {
-		// DisplayName: Pandemonium
-		/* Tooltip:
+		DisplayName: Пандемониум
+		Tooltip:
 			'''
-			Left-click to charge and release Transcendent Magic
-			Right-click to cast a Brimstone Rune at the cursor
-			Press [PandemoniumQSkill] to unleash Brimstone Judgement
-			Press [PandemoniumRSkill] to perform The End of All Demons
-			''' */
+			Удерживайте ЛКМ, чтобы высвободить супер-магию
+			ПКМ, чтобы разместить серную руну в месте курсора
+			Нажмите [PandemoniumQSkill], чтобы применить Серную Небесную Кару
+			Нажмите [PandemoniumRSkill], чтобы применить Конец Пандемониума
+			'''
 	}
 
 	Proverbs: {
-		// DisplayName: Proverbs
-		/* Tooltip:
+		DisplayName: Заповедь
+		Tooltip:
 			'''
-			A small Brimstone Rune floats behind you
-			Grants immunity to most fire-related debuffs
-			The majority of your attacks will apply the Vulnerability Hex debuff to foes.
-			Deals double damage to the Brimstone Witch
-			Attacks from the Brimstone Witch can critically strike you
-			''' */
+			Создаёт за вашей спиной малую серную руну
+			Иммунитет к большинству огненных дебаффов
+			Большинство ваших атак накладывают на врагов дебафф Проклятия Упадка
+			Наносит двойной урон Серной Ведьме
+			Атаки Серной Ведьмы могут нанести вам критический урон
+			'''
 	}
 }
 
@@ -2330,668 +2328,668 @@ Biomes: {
 
 Legend: {
 	HalibutText: {
-		/* FishByStudied:
+		FishByStudied:
 			'''
 			[i:CalamityMod/HalibutCannon]:
-			This fish can be studied
-			''' */
-		/* FishOnStudied:
+			Эту рыбу можно изучить
+			'''
+		FishOnStudied:
 			'''
 			[i:CalamityMod/HalibutCannon]:
-			This fish has been studied
-			''' */
-		/* FishByPuzzle:
+			Эта рыба была изучена
+			'''
+		FishByPuzzle:
 			'''
 			[i:CalamityMod/HalibutCannon]:
-			This fish can be used as a piece of the puzzle
-			''' */
+			Эту рыбу можно использовать как часть головоломки
+			'''
 
 		SkillSlot: {
-			// Hover1: Left Click: Select
-			// Hover2: Right Click: Pin to Top
-			// Hover3: Scroll Wheel: Scroll
-			// Hover4: Drag: Sort
+			Hover1: ЛКМ: Выбрать
+			Hover2: ПКМ: Закрепить наверху
+			Hover3: Колесо прокрутки: Прокрутить
+			Hover4: Перетащить: Сортировать
 		}
 
 		DomainUI: {
-			// TitleText: Oceanic Domain
-			// ExtraEyeTitleText: Layer X
-			// CrashedLabelText: Scream
-			/* EyeDesc1:
+			TitleText: Океанический Домен
+			ExtraEyeTitleText: Слой X
+			CrashedLabelText: Крик
+			EyeDesc1:
 				'''
-				The first eye of the domain opens. You feel something dormant within you resonate, as faint tides begin to ripple through reality.
+				Первое око домена открывается. Вы чувствуете, как что-то дремлющее внутри вас резонирует, и слабая рябь начинает расходиться по реальности.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				''' */
-			/* EyeDesc2:
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
 				'''
-				A second eye opens, overlapping the first. The boundary between reality and the domain blurs.
-				Within the domain, a new domain is forcibly opened, forming a bizarre, double-nested space.
-				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				''' */
-			/* EyeDesc3:
+			EyeDesc2:
 				'''
-				Three eyes, shimmering with an unholy light, overlap on your forehead. The domains nest, layer by layer, forming a bottomless, triple-layered sea.
-				The abyssal whispers from within you become clearly audible.
+				Второе око открывается, перекрывая первое. Граница между реальностью и доменом стирается.
+				Внутри домена принудительно открывается новый домен, образуя причудливое, двойное вложенное пространство.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				''' */
-			/* EyeDesc4:
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
 				'''
-				Four eyes split into two pairs, covering your own. These two adjacent, two-layered domains are no longer content with simply nesting.
-				In an unholy light, they begin to merge, becoming a more terrifying four-layered domain.
-				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				''' */
-			/* EyeDesc5:
+			EyeDesc3:
 				'''
-				Your skin becomes like that of a bloated, drowned corpse. Countless eerie eyes surface and swim beneath your skin before sinking away, like sharks fighting over prey.
-				They finally converge on your forehead, fusing into a single, monstrous eye.
-				The five layers of the domain fully merge, granting you the power to twist causality within it.
+				Три ока, мерцающие нечестивым светом, накладываются друг на друга на вашем лбу. Домены вкладываются, слой за слоем, образуя бездонное, трёхслойное море.
+				Шёпот бездны внутри вас становится отчётливо слышен.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] to restart yourself.
-				''' */
-			/* EyeDesc6:
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
 				'''
-				The sixth eye opens in your heart.
-				Each beat triggers a pulse of energy within the domain, making deep blue energy conduits, like a spider's web, clearly visible within the space.
-				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] to restart yourself.
-				''' */
-			/* EyeDesc7:
+			EyeDesc4:
 				'''
-				Seven eyes form an eerie array on your forehead, bursting with light in time with the pulse of the universe.
-				The domain begins to frantically erode reality. Wherever its boundary reaches, matter dissolves like sand, and the laws of nature are rewritten by the tides.
+				Четыре ока разделяются на две пары, закрывая ваши собственные. Эти два смежных двухслойных домена больше не довольствуются простым гнездованием.
+				В нечестивом свете они начинают сливаться, становясь более ужасающим четырёхслойным доменом.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] for a large-scale restart.
-				Press [Halibut_Superposition] to use a superpositional strike.
-				''' */
-			/* EyeDesc8:
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
 				'''
-				The eighth eye becomes a silent vortex in the palm of your hand.
-				The pressure within the domain becomes almost solid. Light bends here, and sound is annihilated.
-				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] for a large-scale restart.
-				Press [Halibut_Superposition] to use a superpositional strike.
-				''' */
-			/* EyeDesc9:
+			EyeDesc5:
 				'''
-				Nine is the ultimate number. Nine eyes form an illusory abyssal halo above your head, and with it, the last shred of your humanity vanishes.
+				Ваша кожа становится похожей на кожу раздувшегося утопленника. Бесчисленные жуткие глаза появляются и плавают под вашей кожей, прежде чем утонуть, словно акулы, дерущиеся за добычу.
+				Наконец они сходятся на вашем лбу, сливаясь в единое, чудовищное око.
+				Пять слоёв домена полностью сливаются, даруя вам силу искажать в нём причинность.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] for a large-scale restart.
-				Press [Halibut_Superposition] to use a superpositional strike.
-				''' */
-			/* EyeDesc10:
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart], чтобы перезапустить себя.
 				'''
-				Layers have lost their meaning. One is infinity.
-				You have become the abyss, and the abyss is you.
-				Where your gaze falls, a new genesis begins.
-				You have reached the end of this shore and become a god on the other.
+			EyeDesc6:
+				'''
+				Шестое око открывается в вашем сердце.
+				Каждый удар вызывает импульс энергии в домене, делая тёмно-синие энергетические каналы, похожие на паутину, отчётливо видимыми в пространстве.
 				[Line]
-				Press [Halibut_Domain] to open or close the domain.
-				Press [Halibut_Teleport] to teleport within the domain.
-				Press [Halibut_Clone] to make the past invade the present.
-				Press [Halibut_Restart] for a large-scale restart.
-				Press [Halibut_Superposition] to use a superpositional strike.
-				Hold the left mouse button to begin infinite superposition and infinite restarts.
-				''' */
-			// LayerTitleFormat: Layer {0}
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart], чтобы перезапустить себя.
+				'''
+			EyeDesc7:
+				'''
+				Семь очей образуют жуткий узор на вашем лбу, вспыхивая светом в такт пульсу вселенной.
+				Домен начинает неистово разъедать реальность. Куда бы ни достигала его граница, материя растворяется, как песок, а законы природы переписываются приливами.
+				[Line]
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart] для крупномасштабного перезапуска.
+				Нажмите [Halibut_Superposition], чтобы использовать удар в суперпозиции.
+				'''
+			EyeDesc8:
+				'''
+				Восьмое око становится безмолвным вихрем на вашей ладони.
+				Давление в домене становится почти твёрдым. Свет здесь изгибается, а звук уничтожается.
+				[Line]
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart] для крупномасштабного перезапуска.
+				Нажмите [Halibut_Superposition], чтобы использовать удар в суперпозиции.
+				'''
+			EyeDesc9:
+				'''
+				Девять — предельное число. Девять очей образуют иллюзорное гало бездны над вашей головой, и вместе с ним исчезает последний осколок вашей человечности.
+				[Line]
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart] для крупномасштабного перезапуска.
+				Нажмите [Halibut_Superposition], чтобы использовать удар в суперпозиции.
+				'''
+			EyeDesc10:
+				'''
+				Слои утратили свой смысл. Один — это бесконечность.
+				Вы стали бездной, а бездна — это вы.
+				Куда падает ваш взор, там начинается новый генезис.
+				Вы достигли конца этого берега и стали богом на другом.
+				[Line]
+				Нажмите [Halibut_Domain], чтобы открыть или закрыть домен.
+				Нажмите [Halibut_Teleport] для телепортации внутри домена.
+				Нажмите [Halibut_Clone], чтобы прошлое вторглось в настоящее.
+				Нажмите [Halibut_Restart] для крупномасштабного перезапуска.
+				Нажмите [Halibut_Superposition], чтобы использовать удар в суперпозиции.
+				Удерживайте ЛКМ, чтобы начать бесконечную суперпозицию и бесконечные перезапуски.
+				'''
+			LayerTitleFormat: Слой {0}
 		}
 
 		ResurrectionUI: {
-			// TitleText: Abyssal Resurrection State
-			// LinePercentFormat: Completion : {0:F1}%
-			// LineValueFormat: Resonance Value : {0:F1} / {1:F1}
-			// LineRateFormat: Flow Rate : {0:F3}/s
-			// HeaderSummaryText: Current Phenomenon Analysis
-			// RateLevelVeryLow: Dormant
-			// RateLevelLow: Faint
-			// RateLevelMedium: Active
-			// RateLevelHigh: Intense
-			// RateLevelDanger: Cataclysmic
-			// Phase1: The depths stir in silence; all remains within mortal grasp.
-			// Phase2: Gentle tremors echo through the tide — the pulse begins to breathe.
-			// Phase3: The abyss murmurs; unseen currents claw at the edges of control.
-			// Phase4: Pressure mounts, and the veil of the domain begins to waver.
-			// Phase5: The threshold breaks — the abyss gazes back.
-			// Trend1: Still and silent
-			// Trend2: Slowly awakening
-			// Trend3: Rising with rhythm
-			// Trend4: Swelling in fervor
-			// Trend5: Spiraling toward collapse
-			// SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
+			TitleText: Состояние Возрождения Бездны
+			LinePercentFormat: Завершение : {0:F1}%
+			LineValueFormat: Значение Резонанса : {0:F1} / {1:F1}
+			LineRateFormat: Скорость Потока : {0:F3}/с
+			HeaderSummaryText: Текущий Анализ Феномена
+			RateLevelVeryLow: Дремлющее
+			RateLevelLow: Слабое
+			RateLevelMedium: Активное
+			RateLevelHigh: Интенсивное
+			RateLevelDanger: Катастрофическое
+			Phase1: Глубины шевелятся в тишине; всё остаётся в пределах досягаемости смертных.
+			Phase2: Слабая дрожь эхом разносится в приливе — пульс начинает дышать.
+			Phase3: Бездна бормочет; невидимые течения впиваются в края контроля.
+			Phase4: Давление нарастает, и завеса домена начинает колебаться.
+			Phase5: Порог сломлен — бездна смотрит в ответ.
+			Trend1: Тихое и безмолвное
+			Trend2: Медленно пробуждается
+			Trend3: Поднимается в ритме
+			Trend4: Набухает в пылу
+			Trend5: Спиралью несётся к коллапсу
+			SummaryFormat: Состояние: {0}. Текущая тенденция: {1}. Бездна меняется — адаптируйте свой домен, прежде чем он поглотит всё.
 		}
 
 		ADV: {
 			FirstMet: {
-				// Rolename1: ???
-				// Rolename2: Halibut
-				// Line0: Sir... your fishing technique... leaves something to be desired.
-				// Line1: You may call me Dr. Halibut.
-				// Line2: Or, just Halibut is fine.
-				// Line3: Thanks to your hook, I was pulled out of that silent, dead water.
-				// Line4: If it weren't for you, I'd probably have been stuck in a system crash... until I truly expired.
-				// Line5: This fish should have been your catch. Now, it's a gift to mark our meeting.
-				// Line6: ......
-				// Line7: You're wondering why I'm here, aren't you.
-				// Line8: I was a professor at the Sulphurous Sea University, Department of Abyssal Research.
-				// Line9: A few years ago, we organized an 'Abyssal Ecological Sampling Project.'
-				// Line10: I was the only one who made it back.
-				// Line11: At the bottom of the abyss, we encountered... an existence that cannot be understood.
-				// Line12: It couldn't have been a living thing, nor something that could be 'killed.' It was more like... terror, in its conceptual form.
-				// Line13: As I fled, I found an eye beneath a coral tree.
-				// Line14: On pure survival instinct, I swallowed it.
-				// Line15: Using the power of that eye, I opened a domain... and tore a fissure in the abyss to escape.
-				// Line16: After that, my memory blurs... I fell into a deep slumber, until you fished me up.
-				// Line17: You look like a Terrarian.
-				// Line18: If you'll have me, take me with you.
-				// Line19: I will help you conquer this land.
-				// Line20: In exchange... help me solve this... 'revival' problem with the eyes inside me.
-				// Line21: If there are no objections, let's begin by... studying this fish.
+				Rolename1: ???
+				Rolename2: Палтус
+				Line0: Сэр... ваша техника рыбной ловли... оставляет желать лучшего.
+				Line1: Можете звать меня Доктор Палтус.
+				Line2: Или просто Палтус — тоже подойдёт.
+				Line3: Благодаря вашему крючку, я был вытащен из той тихой, мёртвой воды.
+				Line4: Если бы не вы, я бы, вероятно, застрял в системном сбое... пока по-настоящему не 'скончался'.
+				Line5: Эта рыба должна была стать вашим уловом. Теперь это подарок в честь нашего знакомства.
+				Line6: ......
+				Line7: Вы удивляетесь, почему я здесь, не так ли.
+				Line8: Я был профессором в Университете Серного Моря, на кафедре Исследований Бездны.
+				Line9: Несколько лет назад мы организовали 'Проект по отбору проб экологии Бездны'.
+				Line10: Я был единственным, кто вернулся.
+				Line11: На дне бездны мы столкнулись... с существованием, которое невозможно постичь.
+				Line12: Это не могло быть живым существом, ни чем-то, что можно 'убить'. Это было больше похоже на... ужас в его концептуальной форме.
+				Line13: Убегая, я нашёл око под коралловым деревом.
+				Line14: Из чистого инстинкта выживания я проглотил его.
+				Line15: Используя силу этого ока, я открыл домен... и прорвал разлом в бездне, чтобы сбежать.
+				Line16: После этого моя память туманна... Я впал в глубокий сон, пока вы меня не выловили.
+				Line17: Вы похожи на Жителя Террарии.
+				Line18: Если вы не против, возьмите меня с собой.
+				Line19: Я помогу вам покорить эту землю.
+				Line20: В обмен... помогите мне решить эту... проблему 'возрождения' с глазами внутри меня.
+				Line21: Если нет возражений, давайте начнём с... изучения этой рыбы.
 			}
 
 			EyeOfCthulhuGift: {
-				// R1: Halibut
-				// L0: Your movements were dragged into slow-motion... I just thought you were striking a pose.
-				// L1: We've entered the 'Watched Stage.' Which means... more trouble.
-				// L2: I found this in its... maw. Take it. A Cthulhu Fish. Just like its namesake... it doesn't really follow logic.
-				// L3: Hold onto it, but be careful. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
-				// L4: I'm curious if you'll start winking at the moon now.
+				R1: Палтус
+				L0: Ваши движения замедлились... Я-то думал, вы просто позируете.
+				L1: Мы вошли в 'Стадию Наблюдения'. Что означает... больше проблем.
+				L2: Я нашёл это в его... пасти. Возьмите. Рыба-Ктулху. Прямо как её тёзка... она не особо следует логике.
+				L3: Держите, но будьте осторожны. Он заставит вас думать, что вы открыли третий глаз. На самом деле, это просто стимулятор в вашем кровотоке.
+				L4: Мне любопытно, начнёте ли вы теперь подмигивать луне.
 			}
 
 			KingSlimeGift: {
-				// R1: Halibut
-				// L0: That blue blob... a 'slime,' you call it? Looked more like... solidified emotion.
-				// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve.
-				// L2: Here you go, a Slimefish. Don't squeeze it. Its feelings might explode.
-				// L3: Have you ever tried to make soup with one of these?
-				// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
+				R1: Палтус
+				L0: Эта синяя капля... 'слизень', вы говорите? Больше похоже на... застывшую эмоцию.
+				L1: Возможно, это неуклюжая попытка материи обрести самосознание и эволюционировать.
+				L2: Вот, Слизкая рыба. Не сжимайте. Её чувства могут взорваться.
+				L3: Вы когда-нибудь пробовали приготовить суп из одной из этих?
+				L4: Я имею в виду... да, мы можем готовить суп на дне моря. На морском дне есть даже... ну, моря внутри моря.
 			}
 
 			QueenBeeGift: {
-				// R1: Halibut
-				// R2: ???
-				// L0: I almost got a faceful of honey back there.
-				// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
-				// L2: Here, fresh and... still-warm Honeyfish.
-				// L3: I think it would be perfect for a sweet and sour dish.
+				R1: Палтус
+				R2: ???
+				L0: Я чуть не получил порцию мёда в лицо.
+				L1: И всё же, мне удалось вытащить рыбу из лужи мёда на земле.
+				L2: Вот, свежая и... всё ещё тёплая Медовая рыба.
+				L3: Думаю, она идеально подойдёт для кисло-сладкого блюда.
 			}
 
 			SkeletronGift: {
-				// R1: Halibut
-				// L0: Now that was a significant amount of calcium.
-				// L1: Its cranial structure reminded me of a runaway psychic construct.
-				// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
-				// L3: Look, a 'Skeletron Fish.' They say the phosphorus inside makes night-fishers contemplate their existence.
-				// L4: Let's move. More... 'abstract' bones await.
+				R1: Палтус
+				L0: Какое значительное количество кальция.
+				L1: Его черепная структура напомнила мне о сбежавшем психическом конструкте.
+				L2: Дайте стволу моего оружия остыть. А пока я нашёл здесь рыбу.
+				L3: Смотрите, 'Рыба-Скелетрон'. Говорят, фосфор внутри заставляет ночных рыбаков задуматься о своём существовании.
+				L4: Давайте двигаться. Нас ждут... более 'абстрактные' кости.
 			}
 
 			AquaticScourgeGift: {
-				// R1: Halibut
-				// L0: It reminds me of the less-friendly neighbors from my hometown. This one was quite amicable, though. Used to be the head of security at Sulphurous Sea University. Always said hello.
-				// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
-				// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
-				// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
-				// L4: Best to use it in dim light. Otherwise, you'll feel... high.
+				R1: Палтус
+				L0: Напоминает мне о недружелюбных соседях из моего родного города. Этот, правда, был довольно дружелюбным. Раньше был главой службы безопасности в Университете Серного Моря. Всегда здоровался.
+				L1: Серное Море — интересное место. Каждое существо там задаёт один и тот же вопрос: 'Почему я всё ещё жив?'
+				L2: Призматическая рыба. Её чешуя преломляет цвета, которых вы никогда не видели. В основном потому, что их не должно существовать.
+				L3: Если долго на неё смотреть, это перезагрузит вашу зрительную систему. Как принудительное обновление, но больнее.
+				L4: Лучше всего использовать её при тусклом свете. Иначе вы почувствуете... кайф.
 			}
 
 			BrimstoneElementalGift: {
-				// R1: Halibut
-				// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
-				// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
-				// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
-				// L3: Careful, it might spontaneously combust in your hand. Emotionally speaking.
-				// L4: After all, anger is contagious.
+				R1: Палтус
+				L0: Одно её присутствие было подобно пылкой речи. Хорошо, что нам удалось её заткнуть.
+				L1: Некоторые элементали не создаются. Они просто... странности... которые просачиваются из трещин мира.
+				L2: Обсидиановая рыба. Продукт мгновенно остывшей лавы. Её чешуя твёрже, чем обиды, гноящиеся в аду.
+				L3: Осторожно, она может самопроизвольно воспламениться у вас в руке. В эмоциональном плане.
+				L4: В конце концов, гнев заразителен.
 			}
 
 			CalamitasCloneGift: {
-				// R1: Halibut
-				// L0: A cheap shadow. Reminds me of the genetic monstrosities I used to cook up in my trench back in university. In any case, the one who made this has terrible taste.
-				// L1: I have a bad feeling. The real terror is still waiting... deeper. It's even getting closer.
-				// L2: Back to business. A Brimstone Fish, picked from her embers. You can still hear it muttering nonsense if you hold it close.
-				// L3: If you start to understand what it's saying... well, congratulations. You've taken the first step into madness.
-				// L4: But don't worry. Madness is just another form of clarity, seen from a different angle.
+				R1: Палтус
+				L0: Дешёвая тень. Напоминает мне о генетических чудовищах, которых я стряпал в своей траншее в университете. В любом случае, у того, кто это сделал, ужасный вкус.
+				L1: У меня плохое предчувствие. Настоящий ужас всё ещё ждёт... глубже. Он даже приближается.
+				L2: Вернёмся к делу. Серная рыба, подобранная из её углей. Если прислушаться, всё ещё можно услышать, как она бормочет чепуху.
+				L3: Если вы начнёте понимать, что она говорит... что ж, поздравляю. Вы сделали первый шаг к безумию.
+				L4: Но не волнуйтесь. Безумие — это просто другая форма ясности, если посмотреть под другим углом.
 			}
 
 			CrabulonGift: {
-				// R1: Halibut
-				// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
-				// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
-				// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
-				// L3: Don't worry, the spores won't turn a human into a fungus... probably.
-				// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
+				R1: Палтус
+				L0: Это грибоподобное... существо? Это мудрость или чистый инстинкт, спрятанный под шляпкой?
+				L1: Вы знали, что грибницы могут передавать информацию? Может, оно звало на помощь.
+				L2: Это Грибная рыба. Я едва поймал её среди спор, которые она выпускала.
+				L3: Не волнуйтесь, споры не превратят человека в гриб... наверное.
+				L4: Но если у вас вдруг появится желание пустить корни в тёмном, сыром месте, дайте мне знать.
 			}
 
 			CryogenGift: {
-				// R1: Halibut
-				// L0: A frozen soul...
-				// L1: In the Abyssal Archives, this kind of low temperature is usually used to 'preserve' the lunatics.
-				// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
-				// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
-				// L4: Eat too many, and you might just become an ice sculpture.
+				R1: Палтус
+				L0: Замороженная душа...
+				L1: В Архивах Бездны такие низкие температуры обычно используют для 'консервации' безумцев.
+				L2: Крио-пескарь, размороженный из ледяных осколков. Он всё ещё сохраняет позу, в которой был заморожен.
+				L3: Говорят, если съесть его, это охладит вашу кровь, сделает ваши мысли исключительно ясными.
+				L4: Съешьте слишком много, и можете сами стать ледяной скульптурой.
 			}
 
 			DevourerOfGodsGift: {
-				// R1: Halibut
-				// L0: The Devourer of Gods... a cosmic serpent that dines on deities. Its appetite is as infinite as its ambition.
-				// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze. It wants you for a snack.
-				// L2: A Neon Tetra. It floated out of a void rift. The light it emits isn't from this dimension.
-				// L3: Looking at it makes your brain try to comprehend colors it shouldn't. It's a... unique experience.
-				// L4: If you start seeing new colors, congratulations. If you start *smelling* colors, you need a rest.
+				R1: Палтус
+				L0: Пожиратель Богов... космический змей, обедающий божествами. Его аппетит так же безграничен, как и его амбиции.
+				L1: Знаете, как говорят: когда вы смотрите в бездну, бездна смотрит в ответ. Но эта тварь не просто смотрит. Она хочет вас на закуску.
+				L2: Неоновая Тетра. Она выплыла из разлома пустоты. Свет, который она излучает, не из этого измерения.
+				L3: Когда вы смотрите на неё, ваш мозг пытается воспринять цвета, которые не должен. Это... уникальный опыт.
+				L4: Если вы начнёте видеть новые цвета, поздравляю. Если вы начнёте *нюхать* цвета, вам нужен отдых.
 			}
 
 			GolemGift: {
-				// R1: Halibut
-				// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
-				// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
-				// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my own existence.
-				// L3: I tried to boil it once. My pot surrendered first.
-				// L4: ...Some things exist just to make us realize that not all problems need to be solved.
+				R1: Палтус
+				L0: Груда движущихся камней. Наследие древней цивилизации... или, возможно, доказательство их неудачи.
+				L1: Возможно, он что-то охраняет. Или просто повторяет программу, которая давно потеряла свой смысл.
+				L2: Каменная рыба, выкопанная из фундамента храма. Её плотность заставляет меня усомниться в собственном существовании.
+				L3: Я пытался её сварить. Мой котелок сдался первым.
+				L4: ...Некоторые вещи существуют просто для того, чтобы мы осознали, что не все проблемы нужно решать.
 			}
 
 			HiveMindGift: {
-				// R1: Halibut
-				// L0: A collective consciousness made of corruption... what a disgusting concept.
-				// L1: Its thought process must be... unique. Countless rotten fragments pieced together into a single, twisted whole.
-				// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask how.
-				// L3: It smells like seafood that's been left in the sun for three days.
-				// L4: But they say it lets you... resonate with the corruption. That just sounds wrong.
+				R1: Палтус
+				L0: Коллективное сознание из порчи... какая отвратительная концепция.
+				L1: Его мыслительный процесс должен быть... уникальным. Бесчисленные гнилые фрагменты, сложенные в единое, искажённое целое.
+				L2: Вот, Гнилая рыба. Вытащил её из той груды падали. Не спрашивайте, как.
+				L3: Пахнет как морепродукты, оставленные на солнце на три дня.
+				L4: Но говорят, она позволяет вам... резонировать с порчей. Что звучит просто неправильно.
 			}
 
 			LeviathanGift: {
-				// R1: Halibut
-				// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
-				// L1: I think what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
-				// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
-				// L3: The more mundane the exterior, the more extraordinary the past.
-				// L4: Just like us.
+				R1: Палтус
+				L0: Океанский тиран... и её маленький помощник, который вечно за ней таскается. Некоторая дружба выходит за рамки видов. И логики.
+				L1: Я думаю, что в самых глубоких траншеях живёт не страх, а одиночество. Они просто ищут компанию.
+				L2: Тропи-куда, выловленная из глубоководного вихря. Она выглядит обычной, что как раз и подозрительно.
+				L3: Чем банальнее внешность, тем экстраординарнее прошлое.
+				L4: Прямо как мы.
 			}
 
 			MoonLordGift: {
-				// R1: Halibut
-				// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
-				// L1: We didn't just save the world; we closed a door that was never meant to be opened.
-				// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
-				// L3: They say it lets you see the future... but you've already rewritten that future.
-				// L4: We just proved that even gods can bleed.
+				R1: Палтус
+				L0: Повелитель Луны, ха! Или, *бывший*. Теперь просто плавающая груда глазных яблок и ошмётков.
+				L1: Мы не просто спасли мир; мы закрыли дверь, которая никогда не должна была быть открыта.
+				L2: Я поймал Облачную рыбу. Она спустилась из трещины в небе. В руке кажется невесомой.
+				L3: Говорят, она позволяет видеть будущее... но вы уже переписали это будущее.
+				L4: Мы только что доказали, что даже боги могут кровоточить.
 			}
 
 			PerforatorGift: {
-				// R1: Halibut
-				// L0: A pile of drilling flesh-worms... this creature's existence is a challenge to biology.
-				// L1: Their blood has a strange viscosity, like some kind of living metal.
-				// L2: Found this in the wreckage. A Gore-fish. It's still wriggling.
-				// L3: Don't be scared by its looks, even if it looks like it crawled out of a nightmare.
-				// L4: At least it won't crawl into your ear while you sleep... probably.
+				R1: Палтус
+				L0: Куча бурящих червей из плоти... существование этого создания — вызов биологии.
+				L1: Их кровь имеет странную вязкость, как какой-то живой металл.
+				L2: Нашёл это в обломках. Кровавая рыба. Она всё ещё извивается.
+				L3: Не пугайтесь её вида, даже если она выглядит так, будто выползла из кошмара.
+				L4: По крайней мере, она не залезет вам в ухо, пока вы спите... наверное.
 			}
 
 			PlaguebringerGift: {
-				// R1: Halibut
-				// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
-				// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
-				// L2: A Jewel-fish. Infected and miraculously recovered. Its immune system is more experienced than you are.
-				// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
-				// L4: But since *we* just walked out of a plague-hive, this little risk should be nothing.
+				R1: Палтус
+				L0: Чумной Носитель... механическая пчела с биологическим оружием. Кто это спроектировал? Настоящий ублюдок, посмевший поработить пчёл.
+				L1: Вирусу нет дела до добра и зла. Он просто хочет выжить. Как и мы, только более прямолинейно.
+				L2: Рыба-Самоцвет. Инфицированная и чудом выжившая. Её иммунная система опытнее вас.
+				L3: Говорят, если съесть её, это повысит сопротивляемость. Звучит как другой способ сказать 'что не убивает тебя, делает тебя сильнее'.
+				L4: Но поскольку *мы* только что вышли из чумного улья, этот маленький риск должен быть ничем.
 			}
 
 			PlanteraGift: {
-				// R1: Halibut
-				// L0: A flower... if 'flower' is the word for that man-eating vine conglomerate.
-				// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
-				// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
-				// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
-				// L4: Like 'diet' and 'appetite.' Always fighting. My appetite always wins, though.
+				R1: Палтус
+				L0: Цветок... если 'цветок' — это слово для этого конгломерата из лоз-людоедов.
+				L1: Ярость джунглей, выросшая в форме растения. Месть природы никогда не бывает рациональной.
+				L2: Двойная треска. У неё две головы. Джунгли — это как суша-океан; вещам здесь не нужна причина, чтобы отращивать лишние части.
+				L3: Говорят, две головы — вдвое больше мудрости, но они просто выглядят так, будто спорят, в какую сторону плыть.
+				L4: Как 'диета' и 'аппетит'. Всегда борются. Мой аппетит, однако, всегда побеждает.
 			}
 
 			ProvidenceGift: {
-				// R1: Halibut
-				// L0: The Profaned Goddess... a contradiction of faith and flame. Quite pitiful.
-				// L1: We didn't just extinguish a holy flame, but the embers of an entire era.
-				// L2: A Demon-Hell Fish, reborn from her ashes. Its temperature is permanently fixed at 'just hot enough not to burn you.'
-				// L3: That precise control makes me suspect... maybe she just wanted to be understood.
-				// L4: But the line between understanding and war is only one attack away.
+				R1: Палтус
+				L0: Осквернённая Богиня... противоречие веры и пламени. Довольно жалко.
+				L1: Мы не просто погасили святое пламя, но и угли целой эры.
+				L2: Демоническая Адская Рыба, возрождённая из её пепла. Её температура постоянно зафиксирована на отметке 'ровно столько, чтобы вас не обжечь'.
+				L3: Этот точный контроль заставляет меня подозревать... может, она просто хотела, чтобы её поняли.
+				L4: Но грань между пониманием и войной — всего в одной атаке.
 			}
 
 			SlimeGodGift: {
-				// R1: Halibut
-				// L0: Three slimes... or, a fractured divinity? This dualistic existence is... interesting.
-				// L1: Corruption and Crimson. The eternal conflict of this world. And we just proved that conflict can be 'resolved.'
-				// L2: A Variegated Lardfish. Scooped from the goo. Don't ask about the name.
-				// L3: Its color changes with the observer's mood. Or perhaps, it's mimicking your inner chaos.
-				// L4: Stare too long, and you might start to wonder which side you're really on.
+				R1: Палтус
+				L0: Три слизня... или, расколотое божество? Это дуалистическое существование... интересно.
+				L1: Порча и Багрянец. Вечный конфликт этого мира. И мы только что доказали, что конфликт можно 'разрешить'.
+				L2: Пёстрая Сальная рыба. Вычерпнута из жижи. Не спрашивайте о названии.
+				L3: Её цвет меняется в зависимости от настроения наблюдателя. Или, возможно, она имитирует ваш внутренний хаос.
+				L4: Будете смотреть слишком долго — можете начать задаваться вопросом, на чьей вы стороне.
 			}
 
 			SupremeCalamitasGift: {
-				// R1: Halibut
-				// L0: Brimstone Witch... an avenger. The most powerful magic-wielder of the last century.
-				// L1: What we just did... did we end a legend, or create a new one?
-				// L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
-				// L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
-				// L4: You're nearing the peak of Terrarian power. From here on... it's a long way down.
+				R1: Палтус
+				L0: Серная Ведьма... мститель. Самый могущественный маг прошлого века.
+				L1: То, что мы только что сделали... мы покончили с легендой или создали новую?
+				L2: Рыба-Принцесса, рождённая из её углей. В ней есть противоречивое изящество, словно цветок, цветущий на руинах.
+				L3: Говорят, она показывает вам человека, которым вы больше всего хотите быть... но эта версия часто меньше всего похожа на вас.
+				L4: Вы приближаетесь к вершине силы Жителя Террарии. Отсюда... предстоит долгий путь вниз.
 			}
 
 			WallOfFleshGift: {
-				// R1: Halibut
-				// L0: A wall of flesh and bone... this world's creator must have had some peculiar ideas.
-				// L1: You just broke some kind of balance. Feel that? The world's pulse is quickening.
-				// L2: Found this Hungering Fish in the remains. It looks eternally starved.
-				// L3: Just like that wall. Always chasing, always consuming.
-				// L4: Welcome to 'Hard Mode'... though I didn't think it was 'easy' before.
+				R1: Палтус
+				L0: Стена из плоти и костей... у создателя этого мира, должно быть, были своеобразные идеи.
+				L1: Вы только что нарушили какой-то баланс. Чувствуете? Пульс мира учащается.
+				L2: Нашёл эту Голодную Рыбу в останках. Она выглядит вечно голодной.
+				L3: Прямо как та стена. Всегда преследует, всегда поглощает.
+				L4: Добро пожаловать в 'Сложный Режим'... хотя я не думал, что до этого было 'легко'.
 			}
 
 			YharonGift: {
-				// R1: Halibut
-				// L0: The Jungle Dragon... no, the World-Burning Dragon. It burns not with flesh, but with obsession.
-				// L1: A loyalty so pure it would burn itself to ash for its master... reminds me of the fish schools that guard the coral reefs back home.
-				// L2: A Scarlet Tigerfish. Just caught it. I'm quite fond of its stripes.
-				// L3: Holding it, you feel a scorching resolve. That is the temperature of a warrior.
-				// L4: You defeated that dragon, but I have to wonder... in the moment it fell, did it finally find... release?
+				R1: Палтус
+				L0: Дракон Джунглей... нет, Дракон, Сжигающий Мир. Он горит не плотью, а одержимостью.
+				L1: Верность, настолько чистая, что он сжёг бы себя дотла ради своего хозяина... напоминает мне о косяках рыб, охраняющих коралловые рифы дома.
+				L2: Алая Тигровая рыба. Только что поймал. Мне довольно нравятся её полосы.
+				L3: Держа её, вы чувствуете обжигающую решимость. Это температура воина.
+				L4: Вы победили этого дракона, но мне интересно... в тот момент, когда он пал, нашёл ли он наконец... освобождение?
 			}
 
 			ADVRewardPopup: {
-				// ClickToReceive: Click to Receive
-				// ClickToContinue: Click to Continue
-				// ClickOrWaitToContinue: Click/Wait to Continue
+				ClickToReceive: Нажмите, чтобы получить
+				ClickToContinue: Нажмите, чтобы продолжить
+				ClickOrWaitToContinue: Нажмите/Подождите, чтобы продолжить
 			}
 
 			FirstMetSupCal: {
-				// Rolename1: ???
-				// Rolename2: Brimstone Witch
-				// Rolename3: Flounder
-				// Line1: I hadn't expected you to kill my 'sister' so soon.
-				// Line2: You are growing... faster than anticipated.
-				// Line3: I recognize you... You're...
-				// Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
-				// Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
-				// Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
-				// Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
-				// Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
-				// Line9: Your comprehension is too limited. You could not possibly understand my state of being.
-				// Line10: Besides, that is not why I am here...
-				// QuestionLine: Well... what is your choice?
-				// Choice1Text: (Draw weapon)
-				// Choice2Text: (Remain silent)
-				// Choice1Response: Then let me measure your worth.
-				// Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
-				// NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
-				// NoFishLine2: You are growing stronger than I anticipated.
-				// NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
-				// NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
-				// NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
-				// NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
+				Rolename1: ???
+				Rolename2: Серная Ведьма
+				Rolename3: Палтус
+				Line1: Не ожидала, что ты так скоро убьёшь мою 'сестру'.
+				Line2: Ты растёшь... быстрее, чем ожидалось.
+				Line3: Я тебя узнаю... Ты...
+				Line4: Серная Ведьма?! Та, что испепелила половину океана?!
+				Line5: Ха?! Хех... Подумать только, кто-то... или какая-то *рыба*... действительно узнаёт меня. Вы забавные, признаю.
+				Line6: ...Но почему ты жива? Я отчётливо помню, что Серная Ведьма умерла... в прошлом веке.
+				Line7: Занятная рыбка. Моё сознание давно было вплавлено в серное пламя. Это тело... всего лишь труп, управляемый пламенем.
+				Line8: ...Живой разум в нечеловеческом сосуде, связанный с миром через посредника... Ты стала... отклонением?!
+				Line9: Твоё понимание слишком ограничено. Ты не сможешь постичь моё состояние бытия.
+				Line10: Кроме того, я здесь не для этого...
+				QuestionLine: Ну... каков твой выбор?
+				Choice1Text: (Обнажить оружие)
+				Choice2Text: (Хранить молчание)
+				Choice1Response: Тогда позволь мне измерить твою ценность.
+				Choice2Response: ...Жалкий. Действительно 'малёк'. Что ж, прими это как приветственный подарок. Мы ещё встретимся.
+				NoFishLine1: Ты убил мою 'сестру' гораздо раньше, чем я ожидала. И пришёл один?
+				NoFishLine2: Ты становишься сильнее, чем я предполагала.
+				NoFishLine3: Ты спрашиваешь, почему я всё ещё жива? Кажется, ты начал прикасаться к истинам, которые тебе не следовало знать.
+				NoFishLine4: Моё сознание давно было вплавлено в серное пламя. Это тело... всего лишь труп, управляемый
+				NoFishLine5: Но это бессмысленно. Твоё понимание слишком ограничено, чтобы постичь моё состояние бытия.
+				NoFishLine6: Конечно, я явилась не только для того, чтобы объяснять эти тривиальности.
 			}
 
 			ADVChoiceBox: {
-				// TitleText: Choose
-				// DisabledHintFormat: ({0})
+				TitleText: Выберите
+				DisabledHintFormat: ({0})
 			}
 
 			SupCalMoonLordReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Hahaha...
-				// Line2: So that's how far he's fallen.
-				// Line3: Do you have any idea what the underground looks like right now?
-				// Line4: ...So, why are you here this time?
-				// Line5: A little toy for you. And a small commission.
-				// Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
-				// Line7: If you succeed, our... 'partnership'... can continue.
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Хахаха...
+				Line2: Так вот как низко он пал.
+				Line3: Ты хоть представляешь, как сейчас выглядит подземелье?
+				Line4: ...Так, зачем ты здесь на этот раз?
+				Line5: Маленькая игрушка для тебя. И небольшое поручение.
+				Line6: Маленький арбалет. Мне нужно, чтобы ты взял его и убил ту... *тварь*... что жалко впитывает геотермальную энергию там, внизу. И помни, ты *должен* использовать этот арбалет.
+				Line7: Если преуспеешь, наше... 'партнёрство'... сможет продолжиться.
 			}
 
 			SupCalDefeat: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut & [Name]
-				// Line1: To think you've already reached this level... Heh. I was outmatched.
-				// Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
-				// Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
-				// Line4: A pity you two cannot meet...
-				// Line5: Your dimension is too low. You will never understand my state.
-				// Line6: ...My dimension is too low?
-				// Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
-				// Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
-				// Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
-				// Line10: ......
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус и [Name]
+				Line1: Подумать только, ты уже достиг этого уровня... Хех. Меня превзошли.
+				Line2: Но ты не сильнейший. Ты можешь быть хорош, но *он* определённо не хуже тебя.
+				Line3: Ярим уже прошёл до конца этого пути. Он достиг вершины того, кем может быть Житель Террарии. Никого нет сильнее.
+				Line4: Жаль, что вы двое не можете встретиться...
+				Line5: Твоё измерение слишком низкое. Ты никогда не поймёшь моё состояние.
+				Line6: ...Моё измерение слишком низкое?
+				Line7: (Я так долго живу, и это первый раз, когда кто-то сказал мне, что моё 'измерение' низкое.)
+				Line8: Я — единственное существо, 'рождённое' эрой. С тех пор как я осмелилась отбросить свою личность Жителя Террарии и объявить себя богом, я, естественно, всемогуща.
+				Line9: Ты говоришь, Ярим может 'взвесить' меня? Тебе придётся принести мне Ксилос.
+				Line10: ......
 			}
 
 			SupCalPlayerDefeat: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: You shatter at a touch. Are you made of paper?
-				// Line2: I thought I'd found a toy that would last a bit longer in the fire.
-				// Line3: I overestimated you. Your current caliber... you aren't even worthy of being my warm-up.
-				// Line4: Come back when you are strong enough to be worthy of my gaze.
-				// Line5: Although... you do have *some* courage.
-				// Line6: A mortal who dares to look me in the eye, let alone draw a blade... you are the first.
-				// Line7: (Vanishes in a whirlwind of flame)
-				// Line8: If I'd opened the ninth eye, consequences be damned... I should have had a chance. If it came to that...
-				// Line9: Sigh...
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Ты рассыпаешься от прикосновения. Ты из бумаги сделан?
+				Line2: Я-то думала, что нашла игрушку, которая продержится в огне немного дольше.
+				Line3: Я переоценила тебя. Твой нынешний калибр... ты не достоин даже быть моей разминкой.
+				Line4: Возвращайся, когда станешь достаточно силён, чтобы быть достойным моего взгляда.
+				Line5: Хотя... у тебя есть *немного* смелости.
+				Line6: Смертный, который смеет смотреть мне в глаза, не говоря уже о том, чтобы обнажить клинок... ты первый.
+				Line7: (Исчезает в вихре пламени)
+				Line8: Если бы я открыла девятое око, к чёрту последствия... у меня был бы шанс. Если бы до этого дошло...
+				Line9: Эх...
 			}
 
 			SupCalVictory: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: What... How is this possible!
-				// Line2: You... You defeated me?!
-				// Line3: Impossible... This is absolutely impossible...
-				// Line4: I have already surpassed the limits of a Terrarian...
-				// Line5: ...It seems I truly underestimated you.
-				// Line6: But this is not the end. I will return.
-				// Line7: Next time... Next time, I will not be so careless!
-				// Line8: ...She fled.
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Что... Как это возможно!
+				Line2: Ты... Ты победил меня?!
+				Line3: Невозможно... Это абсолютно невозможно...
+				Line4: Я уже превзошла пределы Жителя Террарии...
+				Line5: ...Кажется, я действительно тебя недооценила.
+				Line6: Но это не конец. Я вернусь.
+				Line7: В следующий раз... В следующий раз я не буду такой неосторожной!
+				Line8: ...Она сбежала.
 			}
 
 			PallbearerQuestUI: {
-				// QuestTitle: Commission: Hunt the Profaned Goddess
-				// QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
-				// AcceptText: Accept
-				// DeclineText: Decline
+				QuestTitle: Поручение: Охота на Осквернённую Богиню
+				QuestDesc: Победите Осквернённую Богиню, используя только Могильщика.
+				AcceptText: Принять
+				DeclineText: Отказаться
 			}
 
 			SupCalQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Well done.
-				// Line2: This crossbow suits you.
-				// Line3: You've solved a problem for me.
-				// Line4: As a reward, these are yours.
-				// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
-				// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
-				// Line7: ......
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Отлично.
+				Line2: Этот арбалет тебе идёт.
+				Line3: Ты решил для меня проблему.
+				Line4: В качестве награды, это твоё.
+				Line5: И этот клинок. Мне нужно, чтобы ты взял его и убил того... *червя*. Не волнуйся, плата будет ещё щедрее.
+				Line6: Я наполнила его частью своего Серного... 'присутствия'. Это должно облегчить тебе задачу.
+				Line7: ......
 			}
 
 			ResurrectionWarn: {
-				// Rolename: Halibut
-				// Line0: Wait... did you feel that?
-				// Line1: The 'resurrection' state is approaching a critical threshold.
-				// Line2: I have to warn you, this isn't a game.
-				// Line3: If the resurrection completes... the consequences will be dire.
-				// Line4: The end result... is being consumed by the abyss.
-				// Line5: Every one of these eyes that opens inside me... it accelerates the resurrection process.
-				// Line6: The more that are open, the faster it builds, and the greater the danger.
-				// Line7: This is the price for wielding abyssal power. If I don't have the eyes open, my own abilities are severely diminished.
-				// Line8: We need to learn how to balance it—to determine how many eyes are 'safe' to have open during combat.
-				// Line9: If we want to use this power without consequence...
-				// Line10: ...we have to find a way to make these eyes 'crash.'
+				Rolename: Палтус
+				Line0: Постой... ты это почувствовал?
+				Line1: Состояние 'возрождения' приближается к критическому порогу.
+				Line2: Я должен тебя предупредить, это не игра.
+				Line3: Если возрождение завершится... последствия будут ужасны.
+				Line4: Конечный результат... быть поглощённым бездной.
+				Line5: Каждое из этих очей, что открывается во мне... ускоряет процесс возрождения.
+				Line6: Чем больше их открыто, тем быстрее оно нарастает, и тем больше опасность.
+				Line7: Это цена за владение силой бездны. Если я не держу глаза открытыми, мои собственные способности сильно ослабевают.
+				Line8: Нам нужно научиться это балансировать — определять, сколько глаз 'безопасно' держать открытыми во время боя.
+				Line9: Если мы хотим использовать эту силу без последствий...
+				Line10: ...мы должны найти способ заставить эти глаза 'сломаться'.
 			}
 
 			FishoilQuestScenario: {
-				// Rolename: Halibut
-				// Line0: You seem to have caught a fair amount of common fish recently.
-				// Line1: Give me some for my research, and I can refine them into a bottle of fresh fish oil.
-				// Line2: The process isn't difficult, just... tedious.
-				// Line3: This fish oil has potential. It's more useful than you might think.
-				// Line4: Interested?
-				// ChoiceAccept: Alright.
-				// ChoiceDecline: Not interested.
+				Rolename: Палтус
+				Line0: Похоже, в последнее время ты поймал изрядное количество обычной рыбы.
+				Line1: Дай мне немного для моих исследований, и я смогу переработать их в бутылку свежего рыбьего жира.
+				Line2: Процесс несложный, просто... утомительный.
+				Line3: У этого рыбьего жира есть потенциал. Он полезнее, чем ты мог бы подумать.
+				Line4: Заинтересован?
+				ChoiceAccept: Хорошо.
+				ChoiceDecline: Не интересует.
 			}
 
 			FishoilQuestUI: {
-				// TitleText: Collect: Bass
-				// DescText: Deposit enough Bass, and I will refine them into a bottle of fish oil.
-				// SubmitHint: Click to Deposit/Withdraw
-				// DeclineText: Decline
-				// CompletedText: Completed
-				// RewardText: Claim Reward
-				// QuickPutText: Quick Stack
+				TitleText: Сбор: Окунь
+				DescText: Сдай достаточно Окуня, и я переработаю его в бутылку рыбьего жира.
+				SubmitHint: Нажмите для сдачи/возврата
+				DeclineText: Отказаться
+				CompletedText: Выполнено
+				RewardText: Забрать награду
+				QuickPutText: Быстрая сдача
 			}
 
 			DoGQuestUI: {
-				// QuestTitle: Commission: The Devourer of Gods
-				// QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
-				// AcceptText: Accept
-				// DeclineText: Decline
+				QuestTitle: Поручение: Пожиратель Богов
+				QuestDesc: Победите Пожирателя Богов, используя Сердцеед (Heartstopper).
+				AcceptText: Принять
+				DeclineText: Отказаться
 			}
 
 			SupCalDoGQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Cleanly done.
-				// Line2: This blade... as satisfying as ever.
-				// Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
-				// Line4: Take it.
-				// Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
-				// Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
-				// Line7: ......I really can't stand her.
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Чистая работа.
+				Line2: Этот клинок... как всегда, приносит удовлетворение.
+				Line3: Когда я ещё была смертной, именно им я вырезала сердце своего мастера. Хорошо работает, не так ли?
+				Line4: Возьми.
+				Line5: Ты когда-нибудь... задумывался, что бы ты сделал, если бы в следующий раз моим поручением было убить МЕНЯ?
+				Line6: Какая жалость. Тебе и ему не суждено встретиться. Вам двоим было бы... о чём поговорить.
+				Line7: ......Я её и правда терпеть не могу.
 			}
 
 			EternalBlazingNow: {
-				// Rolename1: Halibut
-				// Rolename2: ???Brimstone Witch???
-				// Line1: Are you kidding me?! Where is all this fire coming from?!
-				// Line2: I can't access my past self... the past is being sealed away!
-				// Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
-				// Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
-				// Line5: I cannot die... heh. But this is close enough.
-				// Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
-				// Line7: So, I want to ask one last thing of you.
-				// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
-				// Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
-				// Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
-				// Line11: ...You want him to *replace* your consciousness?
-				// Line12: That's right. It is necessary.
-				// Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
-				// Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
-				// Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
-				// QuestionLine: ......
-				// Choice1Text: (Stop Halibut)
-				// Choice2Text: (Remain silent)
-				// Choice1Line1: ...Is this your choice?
-				// Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
+				Rolename1: Палтус
+				Rolename2: ???Серная Ведьма???
+				Line1: Ты издеваешься?! Откуда столько огня?!
+				Line2: Я не могу получить доступ к своему прошлому я... прошлое блокируется!
+				Line3: Этот огонь... он горит из прошлого в настоящее. Эта ведьма... она не была мертва! Но почему?
+				Line4: Во время боя у неё явно не было силы вторгаться в прошлое... но это происходит 'после' её смерти?
+				Line5: Я не могу умереть... хех. Но это близко.
+				Line6: Вы сильны. Возможно, у вас действительно есть сила положить конец этой безнадёжной эре.
+				Line7: Поэтому я хочу попросить вас о последней вещи.
+				Line8: Пока в прошлом или настоящем этого мира существует хотя бы один уголёк серного огня, 'Я' не погибну.
+				Line9: Но моё сознание... в этом бесконечном, бурлящем море огня... в конце концов будет стёрто в ничто.
+				Line10: У меня есть предчувствие. Если бы я не встретил вас, я бы продержался ещё лет 30, не больше.
+				Line11: ...Ты хочешь, чтобы он *заменил* твоё сознание?
+				Line12: Верно. Это необходимо.
+				Line13: Когда моё сознание полностью исчезнет, почти идеальное Серное Пламя во мне пробудится. В тот час оно испепелит весь мир.
+				Line14: Кроме того... смертное тело слишком слабо, чтобы положить конец этой эре. Использовать моё тело как трамплин... разве это не лучший путь?
+				Line15: Ни за что! Позволить ему стать таким же монстром, как ты?! Только через мой труп!
+				QuestionLine: ......
+				Choice1Text: (Остановить Палтуса)
+				Choice2Text: (Хранить молчание)
+				Choice1Line1: ...Это твой выбор?
+				Choice1Line2: Раз это твой выбор, я тебя поддержу. Неважно, как далеко ты зайдёшь по этому пути... неважно, в кого это тебя превратит... Я буду рядом с тобой. Всегда...
 			}
 
-			// AchievementToast.AchievementUnlocked: Achievement Unlocked!
+			AchievementToast.AchievementUnlocked: Достижение получено!
 
 			SupCalYharonQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Ah... it's finally over.
-				// Line2: To me... that dragon... was one of the very few beings worthy of respect.
-				// Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
-				// Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
-				// Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
-				// Line6: And now... it's my turn.
-				// Line7: What kind of joke is this...?
+				Rolename1: Серная Ведьма
+				Rolename2: Палтус
+				Line1: Ах... наконец-то всё кончено.
+				Line2: Для меня... тот дракон... был одним из очень немногих существ, достойных уважения.
+				Line3: Знать, что умрёт, и всё равно стоять на своём... Даже если его оживит Ауритовая Душа, тот, кто вернётся — всего лишь копия.
+				Line4: Жаль. Он преуспел в послушании, а ты преуспел в... хм, *выживании*?
+				Line5: Возьми. Ауритовый слиток. Когда-то называемый 'Золотом Чистилища', это предел силы, которого может коснуться смертный.
+				Line6: А теперь... моя очередь.
+				Line7: Это что за шутки...?
 			}
 
 			YharonQuestUI: {
-				// QuestTitle: Commission: The Dragon of Incineration
-				// QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
-				// AcceptText: Accept
-				// DeclineText: Decline
+				QuestTitle: Поручение: Испепеляющий Дракон
+				QuestDesc: Используйте Мурамасу, чтобы убить Испепеляющего Дракона, Ярона.
+				AcceptText: Принять
+				DeclineText: Отказаться
 			}
 
 			HelensInterference: {
-				// Rolename: Halibut
-				// Line0: ...Hey, are you free?
-				// Line1: Today..... uh.... nice weather, right?
-				// Line2: (Halibut seems to be hiding something.)
-				// Question1: ......
-				// Choice1_1: What are you doing?
-				// Choice1_2: Hand it over!
-				// Choice1_3: (Say nothing)
-				// FinalQuestion: Don't go any further... please. That witch, her commissions, the things she wants... I don't want to see it. We can walk the rest of the path ourselves, can't we?
-				// FinalChoice_Continue: Continue the commission
-				// FinalChoice_Stop: Stop the commission
+				Rolename: Палтус
+				Line0: ...Эй, ты свободен?
+				Line1: Сегодня..... э.... хорошая погода, да?
+				Line2: (Палтус, кажется, что-то прячет.)
+				Question1: ......
+				Choice1_1: Что ты делаешь?
+				Choice1_2: Отдай!
+				Choice1_3: (Молчать)
+				FinalQuestion: Не ходи дальше... пожалуйста. Эта ведьма, её поручения, то, что она хочет... Я не хочу этого видеть. Мы же можем пройти остаток пути сами, да?
+				FinalChoice_Continue: Продолжить поручение
+				FinalChoice_Stop: Прекратить поручение
 
 				Branch_Anger: {
-					// Line1: ...You really... trust her *that* much?
-					// Line2: Haven't you noticed? The things that witch gives you... none of them are normal.
-					// Line3: It reminds me of something... in the Abyss... I... I touched it... cold, terrifying, unsettling... Ugh... I don't want to remember.
-					// Line4: You should have realized this...
+					Line1: ...Ты правда... *настолько* ей веришь?
+					Line2: Разве ты не заметил? Вещи, которые даёт тебе эта ведьма... они все ненормальные.
+					Line3: Это напоминает мне о чём-то... в Бездне... Я... Я коснулся этого... холодное, ужасающее, вызывающее дрожь... Ух... Я не хочу вспоминать.
+					Line4: Ты должен был это заметить...
 				}
 
 				Branch_Inquiry: {
-					// Line1: I've been getting more and more anxious lately.
-					// Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
-					// Line3: They all feel like... some kind of 'medium'.
-					// Line4: I can't let you go on with it, at least...
+					Line1: Мне в последнее время всё тревожнее.
+					Line2: Этот клинок... когда я коснулся его, мне показалось, я слышал... как кто-то *смеётся*.
+					Line3: Они все похожи на... какой-то 'носитель'.
+					Line4: Я не могу позволить тебе идти с ним дальше, по крайней мере...
 				}
 
 				Branch_Silence: {
-					// Line1: ...You're most terrifying when you're silent.
-					// Line2: ...Fine, I hid the 'Heart-carver'.
-					// Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
-					// Line4: Stop... please. For my sake.
+					Line1: ...Ты страшнее всего, когда молчишь.
+					Line2: ...Ладно, я спрятал 'Сердцерез'.
+					Line3: Эта ведьма... она опасна, она пришла из ниоткуда. Если это ловушка, ты так просто в неё пойдёшь?
+					Line4: Остановись... пожалуйста. Ради меня.
 				}
 
 				FinalBranch_Continue: {
-					// Line1: ...Fine. I knew you'd choose this.
-					// Line2: ......
-					// Line3: I'll put it back. But I hope... when you use it... you'll be careful.
-					// Line4: And that witch, too...
-					// Line5: I'll walk with you... all the way.
+					Line1: ...Ладно. Я знал, что ты так выберешь.
+					Line2: ......
+					Line3: Я верну его. Но я надеюсь... когда ты будешь его использовать... ты будешь осторожен.
+					Line4: И с той ведьмой тоже...
+					Line5: Я буду сопровождать тебя... до конца.
 				}
 
 				FinalBranch_Stop: {
-					// Line1: ...You're... you're really willing to stop?
-					// Line2: ......
-					// Line3: Let's go. Let that witch go to hell.
+					Line1: ...Ты... ты правда готов остановиться?
+					Line2: ......
+					Line3: Пойдём. А эта ведьма пусть катится в ад.
 				}
 			}
 
 			HellGift: {
-				// R1: Halibut
-				// L0: This damn place... Hell is getting hotter and hotter.
-				// L1: I have an idea. Let's just dig through the sea floor and make this part of the ocean, too.
-				// L2: A geothermal hot spring... spanning the entire continent.
-				// L3: ...Just thinking about it is relaxing.
-				// L4: Oh, right. I caught a fish.
-				// L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
+				R1: Палтус
+				L0: Это чёртово место... Ад становится всё горячее.
+				L1: У меня есть идея. Давай просто прокопаем морское дно и сделаем это место частью океана.
+				L2: Геотермальный горячий источник... охватывающий весь континент.
+				L3: ...Просто думать об этом расслабляет.
+				L4: Ах, да. Я поймал рыбу.
+				L5: Сначала я подумал, что это гид по адским источникам, но... он просто похож на него.
 			}
 		}
 
 		SeaDialogueBox: {
-			// ContinueHint: Continue
-			// FastHint: Accelerate
+			ContinueHint: Продолжить
+			FastHint: Ускорить
 		}
 
 		BrimstoneDialogueBox: {
-			// ContinueHint: Continue
-			// FastHint: Accelerate
+			ContinueHint: Продолжить
+			FastHint: Ускорить
 		}
 	}
 
@@ -3010,13 +3008,13 @@ Legend: {
 			Клинками и кровью покажите им, что наша экспедиция раздавит всех чужих тварей и ненавистные интеллекты.
 			'''
 		World_Text0: " (последний раз было обновлено в мире «{0}»  | Рекорд: <{1}>)"
-		// Subtest_Text4: Someone's shoddy handiwork still wanders the jungle. As the failure it is, it deserves to be turned into a pile of scrap.
-		// Subtest_Text5: A husk of interwoven flesh and blood, the bitter spirits of an ancient battlefield, a golem of ceaseless ruin. It destroys all things, and we... we destroy *it*.
-		// Subtest_Text6: The Star God of old is long fallen. What's left is nothing but a maggot. Let us put an end to the age of these so-called gods.
-		// Subtest_Text7: Let that clump of souls in the dungeon wither before my blade. Its soul will be the finest nourishment.
-		// Subtest_Text8: A pathetic god, merely prolonging its wretched life by sipping stellar heat. Its heretical fire needs to be extinguished. Completely.
-		// Subtest_Text9: That floral abomination deep in the jungle... Go. Shred its petals, crush its bulb, and let its juices soak the earth.
-		// Subtest_Text10: That witch who gave herself to chaos... she has a *warped* clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
+		Subtest_Text4: Чья-то топорная работа всё ещё бродит по джунглям. Будучи неудачным творением, оно заслуживает лишь превращения в груду металлолома.
+		Subtest_Text5: Оболочка из переплетённой плоти и крови, озлобленные духи древнего поля битвы, голем нескончаемого разрушения. Он уничтожает всё, а мы... мы уничтожим *его*.
+		Subtest_Text6: Древний Звёздный Бог давно пал. То, что осталось — всего лишь личинка. Положим же конец эре этих так называемых богов.
+		Subtest_Text7: Пусть этот сгусток душ в подземелье иссохнет перед моим клинком. Его душа станет лучшей пищей.
+		Subtest_Text8: Жалкий бог, лишь продлевающий свою презренную жизнь, потягивая звёздный жар. Его еретическое пламя должно быть потушено. Полностью.
+		Subtest_Text9: Та цветочная мерзость глубоко в джунглях... Иди. Разорви её лепестки, раздави её луковицу, и пусть её соки пропитают землю.
+		Subtest_Text10: У той ведьмы, что предала себя хаосу... есть *искажённая* сестра-клон. Убей эту аберрацию. Окропи этот клинок её кровью и огнём.
 	}
 }
 
@@ -6166,69 +6164,69 @@ RemakeItems: {
 	}
 
 	DyeVatItem: {
-		// DisplayName: "{$ItemName.DyeVat}"
-		/* Tooltip:
+		DisplayName: "{$ItemName.DyeVat}"
+		Tooltip:
 			'''
-			Used for crafting dyes
-			Right-click after placing to open the control panel, allowing you to dye items
-			Place a Water Bucket into the dye slot to wash dyes off items
-			''' */
+			Используется для создания красителей
+			Щёлкните правой кнопкой мыши после установки, чтобы открыть панель управления, позволяющую красить предметы
+			Поместите Ведро воды в слот для красителя, чтобы смыть краску с предметов
+			'''
 	}
 }
 
 NPCModifys: {
 	ModifyCrabulon: {
-		// CrouchText: Await
-		// CrouchAltText: Follow
-		// MountHoverText: Left-Click To Mount Saddle
-		// RideHoverText: Right-Click To Ride
-		// ChangeSaddleText: Left-Click To Change Saddle
-		// DismountText: Right-Click To Dismount
+		CrouchText: Ожидать
+		CrouchAltText: Следовать
+		MountHoverText: ЛКМ, чтобы установить седло
+		RideHoverText: ПКМ, чтобы поехать
+		ChangeSaddleText: ЛКМ, чтобы сменить седло
+		DismountText: ПКМ, чтобы спешиться
 	}
 
 	ModifyTruffle: {
-		// SleepName: ???
-		// ButtonText: Awaken
-		/* Chat0:
+		SleepName: ???
+		ButtonText: Пробудить
+		Chat0:
 			'''
-			The belly of that crab was so cozy, I’d been living there all this time.  
-			But you split it wide open—now I’m homeless.  
-			''' */
-		/* Chat1:
+			В животе у того краба было так уютно, я всё это время там жил.
+			Но ты вспорол его — теперь я бездомный.
 			'''
-			I once ran a mushroom farm, with my children helping me.  
-			One day I found out half of them were growing inside someone else’s stomach.  
-			''' */
-		// Chat2: "Red cap, white stem… eat it and lie flat forever.  "
-		// Chat3: "You can sell mushrooms to me, but you’ll get absolutely nothing in return.  "
-		// Chat4: "Everyone here wants to eat me.  "
-		/* Chat5:
+		Chat1Truffle:
 			'''
-			I once saw a mushroom tree, at least 2000 meters tall.  
-			They say if you climb to the top and jump off, you’ll land in the Mushroom World.  
-			''' */
-		/* Chat6:
+			Когда-то у меня была грибная ферма, и мои дети помогали мне.
+			Однажды я обнаружил, что половина из них растёт в чьём-то желудке.
 			'''
-			If you need soup, buy my mushrooms.  
-			At least they won’t scream in the pot.  
-			''' */
-		// Chat7: "All the mushrooms here are mine.  "
-		/* Chat8:
+		Chat2: «Красная шляпка, белая ножка… съешь и лежи плашмя вечно».
+		Chat3: «Можешь продать мне грибы, но взамен не получишь абсолютно ничего».
+		Chat4: «Здесь все хотят меня съесть».
+		Chat5:
 			'''
-			Ten years ago, you could hire me to guide you to the Fungal Kingdom underground.  
-			I hear it’s on clearance sale now.  
-			''' */
-		/* Chat9:
+			Я однажды видел грибное дерево, высотой не меньше 2000 метров.
+			Говорят, если забраться на вершину и спрыгнуть, попадёшь в Грибной Мир.
 			'''
-			I think you’ve got some fungus growing in your lungs.  
-			Come check my shop—I’ve got the perfect cure.  
-			''' */
-		// Chat10: "Oh, I hate that red guy.  "
-		/* Chat11:
+		Chat6:
 			'''
-			I hate this kind of blood moon.  
-			It makes me fade… like a wilted mushroom nobody wants.  
-			''' */
+			Если нужен суп, купи мои грибы.
+			По крайней мере, они не будут кричать в котелке.
+			'''
+		Chat7: «Все грибы здесь — мои».
+		Chat8:
+			'''
+			Десять лет назад ты мог нанять меня, чтобы я провёл тебя в Грибное Королевство под землёй.
+			Я слышал, сейчас там распродажа.
+			'''
+		Chat9:
+			'''
+			Думаю, у тебя в лёгких растёт какой-то грибок.
+			Загляни в мой магазин — у меня есть идеальное лекарство.
+			'''
+		Chat10: «Ох, как же я ненавижу этого красного парня».
+		Chat11:
+			'''
+			Ненавижу такую кровавую луну.
+			Она заставляет меня увядать… как сморщенный гриб, который никому не нужен.
+			'''
 	}
 }
 
@@ -6243,506 +6241,506 @@ Arcanes: {
 
 FishSkill: {
 	FishSwarm: {
-		// DisplayName: Phantom Swarm
-		/* Tooltip:
+		DisplayName: Призрачный рой
+		Tooltip:
 			'''
-			Right-click to transform into a fish swarm and dash.
-			Left-click to launch the swarm towards the cursor.
-			''' */
-		// Studied: An unremarkable fish, but it shows considerable potential.
+			ПКМ, чтобы превратиться в рыбий рой и совершить рывок.
+			ЛКМ, чтобы запустить рой в направлении курсора.
+			'''
+		Studied: Ничем не примечательная рыба, но она демонстрирует значительный потенциал.
 	}
 
 	FishSparkling: {
-		// DisplayName: Regal Spark-dance
-		/* Tooltip:
+		DisplayName: Королевский танец искр
+		Tooltip:
 			'''
-			Periodically summons several Sparkling Queenfish for a volley while firing.
-			Cooldown does not recharge while firing.
-			''' */
-		// Studied: I believe research into this specimen could lead to advancements in laser pointer technology.
+			Периодически призывает нескольких Сверкающих Королевских рыб для залпа во время стрельбы.
+			Время восстановления не перезаряжается во время стрельбы.
+			'''
+		Studied: Полагаю, исследование этого образца может привести к прорыву в технологии лазерных указок.
 	}
 
 	FishZombie: {
-		// DisplayName: Risen Tide
-		/* Tooltip:
+		DisplayName: Восставший прилив
+		Tooltip:
 			'''
-			Right-click to summon a horde of drowned dead that rush enemies.
-			They explode upon nearing a target.
-			''' */
-		// Studied: A foul-smelling fish. Is it even... animate?
+			ПКМ, чтобы призвать орду утопленников, которые бросаются на врагов.
+			Они взрываются при приближении к цели.
+			'''
+		Studied: Отвратительно пахнущая рыба. Она вообще... живая?
 	}
 
 	FishCloud: {
-		// DisplayName: Cloudsurfer
-		/* Tooltip:
+		DisplayName: Облачный сёрфер
+		Tooltip:
 			'''
-			Right-click to ride a rain cloud for high-speed movement.
-			While riding, you can pass through walls and use weapons.
-			Leaves a trail of rain along your path.
-			''' */
-		// Studied: It appears to be a fish, but it's technically a swimming cloud.
+			ПКМ, чтобы оседлать дождевое облако для высокоскоростного передвижения.
+			Во время езды вы можете проходить сквозь стены и использовать оружие.
+			Оставляет за собой дождевой след.
+			'''
+		Studied: Похоже, это рыба, но технически это плавающее облако.
 	}
 
 	FishVoodoo: {
-		// DisplayName: Voodoo Ward
-		/* Tooltip:
+		DisplayName: Оберег вуду
+		Tooltip:
 			'''
-			When equipped, this skill prevents death on a fatal blow,
-			transferring the damage to a nearby enemy instead. Triggers a cooldown.
-			If a Domain is active, damage is transferred to *all* enemies within it.
-			''' */
-		// Studied: A useful specimen. It gives me... interesting ideas for new experiments.
+			Будучи экипированным, этот навык предотвращает смерть от смертельного удара,
+			перенося урон на ближайшего врага. Вызывает перезарядку.
+			Если активен Домен, урон переносится на *всех* врагов в нём.
+			'''
+		Studied: Полезный образец. Он подаёт мне... интересные идеи для новых экспериментов.
 	}
 
 	FishDemonicHell: {
-		// DisplayName: Inferno Burst
-		/* Tooltip:
+		DisplayName: Адский взрыв
+		Tooltip:
 			'''
-			Periodically summons an inferno sigil while firing.
-			When fully charged, the sigil launches a hellfire ball
-			that explodes after a short flight.
-			''' */
-		// Studied: It burns in the inferno.
+			Периодически призывает адскую печать во время стрельбы.
+			Когда печать полностью заряжена, она запускает шар адского огня,
+			который взрывается после короткого полёта.
+			'''
+		Studied: Она горит в аду.
 	}
 
 	FishDynamite: {
-		// DisplayName: Dynamite Fish
-		/* Tooltip:
+		DisplayName: Динамитная рыба
+		Tooltip:
 			'''
-			Right-click to lob a Dynamite Fish, which is affected by gravity.
-			The fish explodes on contact with an enemy or after a short time.
-			''' */
-		// Studied: Its internal anatomy is highly complex. It's composed primarily of the part that goes 'BOOM'.
+			ПКМ, чтобы метнуть Динамитную рыбу, на которую действует гравитация.
+			Рыба взрывается при контакте с врагом или по прошествии короткого времени.
+			'''
+		Studied: Её внутренняя анатомия чрезвычайно сложна. Она состоит в основном из той части, которая делает «БУМ».
 	}
 
 	FishBone: {
-		// DisplayName: Bone Cyclone
-		/* Tooltip:
+		DisplayName: Костяной циклон
+		Tooltip:
 			'''
-			Periodically generates orbiting bones while firing.
-			After circling, they fly out towards enemies and return.
-			The bones will shatter if you take damage.
-			''' */
-		// Studied: Might be good for a broth. Delicious and high in calcium.
+			Периодически создаёт вращающиеся по орбите кости во время стрельбы.
+			Описав круг, они летят к врагам и возвращаются.
+			Кости разобьются, если вы получите урон.
+			'''
+		Studied: Может подойти для бульона. Вкусно и с высоким содержанием кальция.
 	}
 
 	FishHarpy: {
-		// DisplayName: Feather Typhoon
-		/* Tooltip:
+		DisplayName: Перьевой тайфун
+		Tooltip:
 			'''
-			Periodically generates orbiting harpy feathers while firing.
-			With sustained fire, the feathers will eventually launch outwards.
-			''' */
-		// Studied: I doubt this fish can actually fly, but it does, technically, have wings.
+			Периодически создаёт вращающиеся по орбите перья гарпии во время стрельбы.
+			При продолжительной стрельбе перья в конечном итоге разлетятся наружу.
+			'''
+		Studied: Сомневаюсь, что эта рыба действительно может летать, но у неё, технически, есть крылья.
 	}
 
 	FishFallenStar: {
-		// DisplayName: Star-spawn
-		/* Tooltip:
+		DisplayName: Порождение звёзд
+		Tooltip:
 			'''
-			Firing is accompanied by stars, which are orbited by smaller starlets.
-			Every set number of shots summons a starfall.
-			''' */
-		// Studied: In the daylight, it might just... vanish.
+			Стрельба сопровождается звёздами, вокруг которых вращаются звёздочки поменьше.
+			Каждое N-ное количество выстрелов вызывает звездопад.
+			'''
+		Studied: При дневном свете она может просто... исчезнуть.
 	}
 
 	FishHunger: {
-		// DisplayName: Famished Maw
-		/* Tooltip:
+		DisplayName: Изголодавшаяся пасть
+		Tooltip:
 			'''
-			Periodically spawns an orbiting Hungry Maw while firing.
-			At maximum capacity, the Maws will follow your aim to tear at enemies.
-			''' */
-		// Studied: It appears... famished.
+			Периодически создаёт вращающуюся по орбите Голодную Пасть во время стрельбы.
+			При максимальном количестве Пасти будут следовать за вашим прицелом, чтобы рвать врагов.
+			'''
+		Studied: Она выглядит... изголодавшейся.
 	}
 
 	FishBat: {
-		// DisplayName: Phantom Echo
-		/* Tooltip:
+		DisplayName: Призрачное эхо
+		Tooltip:
 			'''
-			Right-click to transform into a bat swarm for a rapid dash.
-			Attacking will exit the form.
-			''' */
-		// Studied: I wonder, if one hangs this fish upside down, will it fall asleep?
+			ПКМ, чтобы превратиться в рой летучих мышей для быстрого рывка.
+			Атака выведет вас из этой формы.
+			'''
+		Studied: Интересно, если подвесить эту рыбу вверх ногами, она уснёт?
 	}
 
 	FishEaterofPlankton: {
-		// DisplayName: Eater's Spawn
-		/* Tooltip:
+		DisplayName: Отродье Пожирателя
+		Tooltip:
 			'''
-			Firing also launches a miniature Eater of Souls
-			that will wriggle and attack enemies.
-			''' */
-		// Studied: This fish has worms!
+			При стрельбе также запускает миниатюрного Пожирателя душ,
+			который будет извиваться и атаковать врагов.
+			'''
+		Studied: У этой рыбы черви!
 	}
 
 	FishAmanita: {
-		// DisplayName: Fungal Cycle
-		/* Tooltip:
+		DisplayName: Грибной цикл
+		Tooltip:
 			'''
-			Firing cycles through four different fungal shots. Each shot switches to the next type.
-			Explosive Mushroom: Scatters 3 explosive mushrooms that deal area damage.
-			Homing Spore: Scatters 5 spores that track the nearest target.
-			Toxin Mushroom: Scatters 2 toxin mushrooms that create a damaging cloud.
-			Lightning Spore: Scatters 5 lightning spores that chain once on hit.
-			''' */
-		// Studied: This fish represents an entire fungal ecosystem.
+			Стрельба переключается между четырьмя различными грибными выстрелами. Каждый выстрел меняет тип на следующий.
+			Взрывной гриб: Разбрасывает 3 взрывных гриба, наносящих урон по области.
+			Самонаводящаяся спора: Разбрасывает 5 спор, которые преследуют ближайшую цель.
+			Токсичный гриб: Разбрасывает 2 токсичных гриба, создающих ядовитое облако.
+			Грозовая спора: Разбрасывает 5 грозовых спор, которые один раз перескакивают на другую цель при попадании.
+			'''
+		Studied: Эта рыба представляет собой целую грибную экосистему.
 	}
 
 	FishHoney: {
-		// DisplayName: Bee-caller
-		/* Tooltip:
+		DisplayName: Призыватель пчёл
+		Tooltip:
 			'''
-			Right-click to summon a swarm of bees that orbit you.
-			Bees will automatically attack enemies on sight.
-			''' */
-		// Studied: For some reason, it seems terrified of catfish.
+			ПКМ, чтобы призвать рой пчёл, вращающийся вокруг вас.
+			Пчёлы будут автоматически атаковать врагов в поле зрения.
+			'''
+		Studied: Почему-то она до смерти боится сомов.
 	}
 
 	Fishotroning: {
-		// DisplayName: Bony Grasp
-		/* Tooltip:
+		DisplayName: Костлявая хватка
+		Tooltip:
 			'''
-			Firing grows Skeletron Hands to assist in combat. You lose a hand when damaged.
-			At long range, hands charge to throw bones.
-			At close range, hands charge to slap the target.
-			''' */
-		// Studied: It has more than four hands!
+			Стрельба отращивает Руки Скелетрона для помощи в бою. Вы теряете руку при получении урона.
+			На большой дистанции руки заряжаются для броска костей.
+			На близкой дистанции руки заряжаются для удара по цели.
+			'''
+		Studied: У неё больше четырёх рук!
 	}
 
 	FishIchorn: {
-		// DisplayName: Ichor Stream
-		/* Tooltip:
+		DisplayName: Ихорный поток
+		Tooltip:
 			'''
-			Firing is accompanied by a scattering spray of ichor.
-			Hits inflict the 'Ichor' debuff.
-			''' */
-		// Studied: This fish's... 'saliva'... is remarkably useful!
+			Стрельба сопровождается разлетающимися брызгами ихора.
+			Попадания накладывают дебафф «Ихор».
+			'''
+		Studied: «Слюна» этой рыбы... на удивление полезна!
 	}
 
 	FishCursed: {
-		// DisplayName: Cursed Burst
-		/* Tooltip:
+		DisplayName: Проклятый взрыв
+		Tooltip:
 			'''
-			Firing is accompanied by a scattering of cursed flames.
-			The flames fall with an unnatural, arcing trajectory.
-			''' */
-		// Studied: And it somehow doesn't incinerate the fishing rod!?
+			Стрельба сопровождается разбросом проклятого пламени.
+			Пламя падает по неестественной, дугообразной траектории.
+			'''
+		Studied: И каким-то образом она не сжигает удочку!?
 	}
 
 	FishSlime: {
-		// DisplayName: Viscous Trail
-		/* Tooltip:
+		DisplayName: Вязкий след
+		Tooltip:
 			'''
-			Throws slime gel as you move.
-			The gel will stick to any target it touches.
-			''' */
-		// Studied: It seems very... 'attached'.
+			Бросает слизневый гель во время движения.
+			Гель прилипнет к любой цели, которой коснётся.
+			'''
+		Studied: Кажется, она очень... «привязчивая».
 	}
 
 	FishBunny: {
-		// DisplayName: Bouncing Bombs
-		/* Tooltip:
+		DisplayName: Прыгучие бомбы
+		Tooltip:
 			'''
-			Right-click to toss a cluster of bouncing, gravity-affected Bunny Fish.
-			They explode on contact with an enemy or after a short time.
-			''' */
-		// Studied: Dangerously fluffy!
+			ПКМ, чтобы бросить горсть прыгающих, подверженных гравитации Рыб-Кроликов.
+			Они взрываются при контакте с врагом или по прошествии короткого времени.
+			'''
+		Studied: Опасно пушистые!
 	}
 
 	FishCat: {
-		// DisplayName: Bouncing Catfish
-		/* Tooltip:
+		DisplayName: Прыгучий сом
+		Tooltip:
 			'''
-			Right-Toss a cluster of bouncing, gravity-affected Catfish.
-			They meow on each bounce and explode on contact or after a short time.
-			''' */
-		// Studied: This fish seems to have a particular fondness for honey.
+			ПКМ-Бросить горсть прыгающих, подверженных гравитации Сомов.
+			Они мяукают при каждом отскоке и взрываются при контакте или по прошествии короткого времени.
+			'''
+		Studied: Эта рыба, кажется, особенно неравнодушна к мёду.
 	}
 
 	FishDirt: {
-		// DisplayName: Earthen Swarm
-		/* Tooltip:
+		DisplayName: Земляной рой
+		Tooltip:
 			'''
-			Summons a swarm of Dirt Fish that orbit you while moving.
-			At full capacity, you can fire a Dirt Ball.
-			The ball bounces, then rolls, dealing continuous damage.
-			Only one ball can be active at a time.
-			''' */
-		/* Studied:
+			Призывает рой Земляных рыб, которые вращаются вокруг вас во время движения.
+			При полном заряде вы можете выстрелить Грязевым Шаром.
+			Шар отскакивает, затем катится, нанося постоянный урон.
+			Только один шар может быть активен одновременно.
 			'''
-			The scent of the soil reminds me of the seabed...
-			These little ones are quite good at huddling for warmth.
-			''' */
+		Studied:
+			'''
+			Запах почвы напоминает мне о морском дне...
+			Эти малыши довольно хорошо умеют сбиваться в кучу, чтобы согреться.
+			'''
 	}
 
 	FishMud: {
-		// DisplayName: Mud Sentries
-		/* Tooltip:
+		DisplayName: Грязевые стражи
+		Tooltip:
 			'''
-			Firing summons Mud Sentries from the ground.
-			Sentries emerge, fire a gravity-affected mud ball at enemies,
-			then submerge and disappear.
-			''' */
-		// Studied: These creatures are masters of concealment.
+			Стрельба призывает Грязевых Стражей из-под земли.
+			Стражи появляются, выстреливают во врагов грязевым шаром, подверженным гравитации,
+			затем погружаются и исчезают.
+			'''
+		Studied: Эти существа — мастера маскировки.
 	}
 
 	FishPeng: {
-		// DisplayName: Penguin Strike
-		/* Tooltip:
+		DisplayName: Удар пингвина
+		Tooltip:
 			'''
-			Firing summons penguins from the sky above enemies.
-			The penguins plummet, dealing area damage and knockback.
-			''' */
-		// Studied: They might be from Madagascar.
+			Стрельба призывает пингвинов с неба над врагами.
+			Пингвины падают, нанося урон по области и отбрасывая.
+			'''
+		Studied: Возможно, они с Мадагаскара.
 	}
 
 	FishDrizzle: {
-		// DisplayName: Sulphuric Drizzle
-		/* Tooltip:
+		DisplayName: Сернистая изморось
+		Tooltip:
 			'''
-			Periodically summons several brimstone-spitting fish while firing.
-			Cooldown does not recharge while firing.
-			''' */
-		// Studied: I suspect this is useful for more than just lighting a campfire.
+			Периодически призывает нескольких рыб, плюющихся серой, во время стрельбы.
+			Время восстановления не перезаряжается во время стрельбы.
+			'''
+		Studied: Подозреваю, это полезно не только для розжига костра.
 	}
 
 	FishofCthulu: {
-		// DisplayName: Abyssal Gaze
-		/* Tooltip:
+		DisplayName: Бездонный взор
+		Tooltip:
 			'''
-			Firing summons a Gazing Eye to observe enemies.
-			When close, the eye transforms and dashes.
-			''' */
-		// Studied: It's... staring at you.
+			Стрельба призывает Взирающее Око для наблюдения за врагами.
+			Приближаясь, око трансформируется и совершает рывок.
+			'''
+		Studied: Оно... пялится на тебя.
 	}
 
 	FishJewel: {
-		// DisplayName: Prismatic Overture
-		/* Tooltip:
+		DisplayName: Призматическая увертюра
+		Tooltip:
 			'''
-			Firing scatters gem projectiles in a set sequence.
-			Each gem type produces a different sound.
-			''' */
-		// Studied: A six-color overture... Perhaps one could truly compose a rainbow symphony with it.
+			Стрельба разбрасывает драгоценные снаряды в определённой последовательности.
+			Каждый тип драгоценных камней издаёт свой звук.
+			'''
+		Studied: Шестицветная увертюра... Возможно, с её помощью действительно можно Cочинить радужную симфонию.
 	}
 
 	FishTunabeard: {
-		// DisplayName: Torrent Dash
-		/* Tooltip:
+		DisplayName: Стремительный рывок
+		Tooltip:
 			'''
-			Right-click to perform a long-distance, high-speed dash towards the cursor.
-			Grants invincibility and phases through walls during the dash.
-			''' */
-		// Studied: For a fish, is there really a difference between a pirate and a robber?
+			ПКМ, чтобы совершить дальний, высокоскоростной рывок к курсору.
+			Даёт неуязвимость и прохождение сквозь стены во время рывка.
+			'''
+		Studied: Для рыбы, есть ли разница между пиратом и грабителем?
 	}
 
 	FishBloodyManowar: {
-		// DisplayName: Crimson Judgment
-		/* Tooltip:
+		DisplayName: Багровый суд
+		Tooltip:
 			'''
-			When firing, summon a group of bloody jellyfish to approach the enemy.
-			The gathering of the bloody jellyfish will cause extensive damage.
-			''' */
-		// Studied: Is their relationship symbiotic, or... hierarchical?
+			Во время стрельбы призывает группу кровавых медуз для приближения к врагу.
+			Скопление кровавых медуз нанесёт значительный урон.
+			'''
+		Studied: Их отношения симбиотические или... иерархические?
 	}
 
 	FishUnicorn: {
-		// DisplayName: Prismatic Lancer
-		/* Tooltip:
+		DisplayName: Радужный копейщик
+		Tooltip:
 			'''
-			Right-click to perform a long-distance, horizontal dash.
-			Grants invincibility and phases through walls during the dash.
-			''' */
-		// Studied: Legend says only a pure maiden can catch this one!
+			ПКМ, чтобы совершить дальний, горизонтальный рывок.
+			Даёт неуязвимость и прохождение сквозь стены во время рывка.
+			'''
+		Studied: Легенда гласит, что поймать её может только чистая дева!
 	}
 
 	FishWyverntail: {
-		// DisplayName: White Piercing Shadow
-		/* Tooltip:
+		DisplayName: Белая пронзающая тень
+		Tooltip:
 			'''
-			Periodically summons a white dragon while firing.
-			The white dragon swiftly flies toward enemies and deals damage.
-			''' */
-		// Studied: I believe it should be considered a type of legendary creature.
+			Периодически призывает белого дракона во время стрельбы.
+			Белый дракон стремительно летит к врагам и наносит урон.
+			'''
+		Studied: Полагаю, её следует считать разновидностью легендарного существа.
 	}
 
 	FishScorpio: {
-		// DisplayName: Sand Scorpion Sentinel
-		/* Tooltip:
+		DisplayName: Страж-песчаный скорпион
+		Tooltip:
 			'''
-			Summon the ground-moving scorpion sentinels
-			Launch the salamon rolls at the enemy
-			''' */
-		// Studied: Its entire body is filled with sand.
+			Призывает скорпионов-стражей, передвигающихся по земле
+			Запускает во врага саламандровые валы
+			'''
+		Studied: Всё его тело наполнено песком.
 	}
 
 	FishPrismite: {
-		// DisplayName: Prismatic Barrage
-		/* Tooltip:
+		DisplayName: Призматический шквал
+		Tooltip:
 			'''
-			Firing converts bullets into prismatic shockwaves.
-			Shockwaves split into multiple projectiles upon hitting enemies or tiles.
-			''' */
-		// Studied: This fish's iridescence is likely due to excessive heavy metal content.
+			Стрельба превращает пули в призматические ударные волны.
+			Ударные волны разделяются на несколько снарядов при попадании во врагов или блоки.
+			'''
+		Studied: Радужность этой рыбы, вероятно, обусловлена избыточным содержанием тяжёлых металлов.
 	}
 
 	FishObsidian: {
-		// DisplayName: Obsidian Fortress
-		/* Tooltip:
+		DisplayName: Обсидиановая крепость
+		Tooltip:
 			'''
-			Firing spawns Obsidianfish that orbit the player.
-			Obsidianfish deal continuous contact damage to enemies.
-			One fish shatters each time you take damage.
-			''' */
-		// Studied: Obsidian is actually quite brittle, you know.
+			Стрельба создаёт Обсидиановых рыб, которые вращаются вокруг игрока.
+			Обсидиановые рыбы наносят постоянный урон при контакте с врагами.
+			Одна рыба разбивается каждый раз, когда вы получаете урон.
+			'''
+		Studied: Обсидиан, вообще-то, довольно хрупкий.
 	}
 
 	FishRock: {
-		// DisplayName: Rock Hammer Slam
-		/* Tooltip:
+		DisplayName: Удар каменного молота
+		Tooltip:
 			'''
-			Periodically spawns a Rock Hammerfish that tracks nearby enemies.
-			It charges above the target before slamming down.
-			''' */
-		// Studied: No one ever asks the poor creature if it *wants* to be used as a hammer.
+			Периодически создаёт Каменную рыбу-молот, которая преследует ближайших врагов.
+			Она зависает над целью, прежде чем ударить вниз.
+			'''
+		Studied: Никто никогда не спрашивает бедное существо, хочет ли оно, чтобы его использовали как молот.
 	}
 
 	FishVariegatedLard: {
-		// DisplayName: Viscous Slick
-		/* Tooltip:
+		DisplayName: Вязкое пятно
+		Tooltip:
 			'''
-			Attacks hitting enemies spray oil from them.
-			The oil sticks to tiles or enemies and spreads further.
-			''' */
-		// Studied: I'm going to need a substantial amount of detergent.
+			Атаки, попадающие по врагам, разбрызгивают из них масло.
+			Масло прилипает к блокам или врагам и растекается дальше.
+			'''
+		Studied: Мне понадобится значительное количество моющего средства.
 	}
 
 	FishPrincess: {
-		// DisplayName: Regal Radiance
-		/* Tooltip:
+		DisplayName: Королевское сияние
+		Tooltip:
 			'''
-			Firing summons a Princess Fish to fight for you.
-			The Princess Fish fires scattering magic orbs at enemies.
-			''' */
-		// Studied: Clearly not a prince.
+			Стрельба призывает Рыбу-Принцессу, которая будет сражаться за вас.
+			Рыба-Принцесса стреляет во врагов разлетающимися магическими сферами.
+			'''
+		Studied: Очевидно, не принц.
 	}
 
 	FishCrimsonTiger: {
-		// DisplayName: Crimson Patrol
-		/* Tooltip:
+		DisplayName: Багровый патруль
+		Tooltip:
 			'''
-			Right-click to summon a school of Crimson Tigerfish that follow you.
-			They will actively seek out and attack enemies on sight.
-			''' */
-		// Studied: They appear quite ferocious.
+			ПКМ, чтобы призвать косяк Багровых тигровых рыб, которые следуют за вами.
+			Они будут активно искать и атаковать врагов в поле зрения.
+			'''
+		Studied: Они выглядят довольно свирепыми.
 	}
 
 	FishTropicalBarracuda: {
-		// DisplayName: Barracuda Blitz
-		/* Tooltip:
+		DisplayName: Блиц-атака барракуды
+		Tooltip:
 			'''
-			Firing summons schools of Tropical Barracudas from the screen edges.
-			They rapidly dart across the entire screen from a random direction.
-			''' */
-		// Studied: Their speed is remarkable.
+			Стрельба призывает косяки Тропических барракуд с краёв экрана.
+			Они быстро проносятся через весь экран со случайного направления.
+			'''
+		Studied: Их скорость поразительна.
 	}
 
 	FishNeonTetra: {
-		// DisplayName: Neon Trail
-		/* Tooltip:
+		DisplayName: Неоновый след
+		Tooltip:
 			'''
-			Leave glowing Neon Tetras behind while moving.
-			The Tetras illuminate and damage enemies along your path.
-			''' */
-		// Studied: I am rather fond of its scales.
+			Оставляет за собой светящихся Неоновых тетр во время движения.
+			Тетры освещают и наносят урон врагам на вашем пути.
+			'''
+		Studied: Мне довольно нравится её чешуя.
 	}
 
 	FishBrimlish: {
-		// DisplayName: Brimstone Dispersion
-		/* Tooltip:
+		DisplayName: Сернистое рассеивание
+		Tooltip:
 			'''
-			Periodically summons a small Brimfish while firing.
-			The Brimfish spits numerous scattering brimstone balls at enemies.
-			''' */
-		// Studied: Alarmingly high temperature.
+			Периодически призывает маленькую Серную рыбку во время стрельбы.
+			Серная рыбка плюётся во врагов многочисленными разлетающимися серными шарами.
+			'''
+		Studied: Тревожно высокая температура.
 	}
 
 	FishDoubleCod: {
-		// DisplayName: Twin Cod Pursuit
-		/* Tooltip:
+		DisplayName: Погоня трески-близнеца
+		Tooltip:
 			'''
-			Periodically fires homing Cod while firing.
-			The Cod continuously track enemies and deal contact damage.
-			''' */
-		// Studied: A most peculiar species.
+			Периодически выстреливает самонаводящейся Треской во время стрельбы.
+			Треска непрерывно преследует врагов и наносит урон при контакте.
+			'''
+		Studied: Весьма своеобразный вид.
 	}
 
 	FishFrostMinnow: {
-		// DisplayName: Frost Proclamation
-		/* Tooltip:
+		DisplayName: Морозное провозглашение
+		Tooltip:
 			'''
-			Periodically summons a Frost Minnow while firing.
-			The Frost Minnow spits numerous scattering frost balls at enemies.
-			''' */
-		// Studied: Brace yourself for frostbite!
+			Периодически призывает Морозного гольяна во время стрельбы.
+			Морозный гольян плюётся во врагов многочисленными разлетающимися морозными шарами.
+			'''
+		Studied: Готовьтесь к обморожению!
 	}
 }
 
 Resurrections: {
 	ResurrectionDeath: {
-		// DeathText: "{0} was consumed by the Abyssal Resurgence"
-		// WarningCombatText: The Abyss is devouring you...
-		// DeathNoticeText: You have been swallowed by the Abyss...
-		// MarkRemainText: The mark of the Abyss still clings to you...
-		// RetainValueFormat: Resurgence Value: {0}%
+		DeathText: "{0} был поглощён Возрождением Бездны"
+		WarningCombatText: Бездна пожирает вас...
+		DeathNoticeText: Вы были поглощены Бездной...
+		MarkRemainText: Метка Бездны всё ещё цепляется за вас...
+		RetainValueFormat: Значение Возрождения: {0}%
 	}
 }
 
 UI: {
 	ItemFilterUI: {
-		// HintText: Left-click to add an item
-		// HintText2: Left-click to remove an item
-		// CloseHint: Press [ESC] or [Right-click] to close
+		HintText: ЛКМ, чтобы добавить предмет
+		HintText2: ЛКМ, чтобы убрать предмет
+		CloseHint: Нажмите [ESC] или [ПКМ], чтобы закрыть
 	}
 
 	LegendUpgradeConfirmUI: {
-		// TitleText: Legendary Weapon Upgrade Confirmation
-		/* DescText:
+		TitleText: Подтверждение улучшения легендарного оружия
+		DescText:
 			'''
-			Current world level detected as higher than weapon level.
-			Upgrade {0} to level {1}?
-			''' */
-		// ConfirmText: Confirm Upgrade
-		// CancelText: Cancel
-		// Success: "[ITEM] has been upgraded to level [LEVEL]."
+			Обнаружено, что текущий уровень мира выше уровня оружия.
+			Улучшить {0} до уровня {1}?
+			'''
+		ConfirmText: Подтвердить улучшение
+		CancelText: Отмена
+		Success: "[ITEM] был улучшен до уровня [LEVEL]."
 	}
 
 	QuestTracker: {
 		DamageTrackerSystem: {
-			// QuestFailedPrefix: Quest Failed
-			// QuestCompletedPrefix: Quest Completed!
-			// FailureReasonWrongWeapon: Did not land the killing blow with the specified weapon
-			// FailureReasonInsufficientDamage: Insufficient damage contribution from the weapon
-			// SuccessDamageContribution: Damage Contribution
+			QuestFailedPrefix: Задание провалено
+			QuestCompletedPrefix: Задание выполнено!
+			FailureReasonWrongWeapon: Смертельный удар нанесён не указанным оружием
+			FailureReasonInsufficientDamage: Недостаточный вклад урона от оружия
+			SuccessDamageContribution: Вклад урона
 		}
 	}
 
 	DoGQuestTrackerUI: {
-		// QuestTitle: Commission: Hunt the Devourer of Gods
-		// DamageContribution: Heartcarver Damage
-		// RequiredContribution: Required: 85%
+		QuestTitle: Поручение: Охота на Пожирателя Богов
+		DamageContribution: Урон от Сердцереза
+		RequiredContribution: Требуется: 85%
 	}
 
 	PallbearerQuestTrackerUI: {
-		// QuestTitle: Commission: Hunt the Profaned Goddess
-		// DamageContribution: Pallbearer Damage
-		// RequiredContribution: Required: 80%
+		QuestTitle: Поручение: Охота на Осквернённую Богиню
+		DamageContribution: Урон от Могильщика
+		RequiredContribution: Требуется: 80%
 	}
 
 	YharonQuestTrackerUI: {
-		// QuestTitle: Commission: Hunt the Incineration Dragon
-		// DamageContribution: Oni Machete Damage
-		// RequiredContribution: Required: 80%
+		QuestTitle: Поручение: Охота на Дракона Испепеления
+		DamageContribution: Урон от Мачете Они
+		RequiredContribution: Требуется: 80%
 	}
 }
