@@ -25,9 +25,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
         //UI参数
         protected const float PanelWidth = 220f;
-        protected const float PanelHeight = 90f;
+        protected const float MinPanelHeight = 90f; //最小高度
+        protected const float MaxPanelHeight = 150f; //最大高度
+        protected float currentPanelHeight = MinPanelHeight; //当前实际高度
         protected virtual float ScreenX => 0f;
-        protected virtual float ScreenY => Main.screenHeight / 2f - PanelHeight / 2f;
+        protected virtual float ScreenY => Main.screenHeight / 2f - currentPanelHeight / 2f;
 
         //动画参数
         protected float slideProgress = 0f;
@@ -113,7 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 );
 
                 //获取UI面板的屏幕坐标矩形
-                Rectangle uiRect = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+                Rectangle uiRect = DrawPosition.GetRectangle((int)PanelWidth, (int)currentPanelHeight);
                 //检测两个矩形是否相交
                 bool result = npcScreenRect.Intersects(uiRect);
                 if (result) {
@@ -124,7 +126,49 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             return false;
         }
 
+        /// <summary>
+        /// 计算标题换行后需要的高度
+        /// </summary>
+        protected virtual float CalculateTitleHeight() {
+            var font = FontAssets.MouseText.Value;
+            const float titleScale = 0.75f;
+            const float maxTitleWidth = PanelWidth - 20f;
+
+            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
+            
+            float totalHeight = 0f;
+            foreach (string line in titleLines) {
+                totalHeight += font.MeasureString(line).Y * titleScale * 0.9f;
+            }
+
+            return totalHeight;
+        }
+
+        /// <summary>
+        /// 根据内容动态调整面板高度
+        /// </summary>
+        protected virtual void UpdatePanelHeight() {
+            float titleHeight = CalculateTitleHeight();
+            
+            //基础高度组成：
+            // - 顶部内边距: 8px
+            // - 标题高度: titleHeight
+            // - 分割线上方间距: 4px
+            // - 分割线到内容: 10px
+            // - 伤害贡献文本: ~15px
+            // - 需求文本: ~15px
+            // - 进度条: 14px
+            
+            float contentHeight = 8f + titleHeight + 4f + 10f + 15f + 15f + 14f;
+            
+            //限制在最小和最大高度之间
+            currentPanelHeight = Math.Clamp(contentHeight, MinPanelHeight, MaxPanelHeight);
+        }
+
         public override void Update() {
+            //更新面板高度
+            UpdatePanelHeight();
+
             //展开/收起动画
             float targetSlide = CanOpne ? 1f : 0f;
             slideProgress = MathHelper.Lerp(slideProgress, targetSlide, 0.15f);
@@ -158,11 +202,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 warningPulse = 0f;
             }
 
-            //设置UI位置
+            //设置UI位置（考虑动态高度）
             float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, CWRUtils.EaseOutCubic(slideProgress));
             DrawPosition = new Vector2(offsetX, ScreenY);
-            Size = new Vector2(PanelWidth, PanelHeight);
-            UIHitBox = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+            Size = new Vector2(PanelWidth, currentPanelHeight);
+            UIHitBox = DrawPosition.GetRectangle((int)PanelWidth, (int)currentPanelHeight);
 
             //检测是否与NPC碰撞箱重叠
             isOverlappingWithNPC = CheckNPCOverlap();
@@ -196,8 +240,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
                 float t2 = (i + 1) / (float)segments;
-                int y1 = (int)(DrawPosition.Y + t * PanelHeight);
-                int y2 = (int)(DrawPosition.Y + t2 * PanelHeight);
+                int y1 = (int)(DrawPosition.Y + t * currentPanelHeight);
+                int y2 = (int)(DrawPosition.Y + t2 * currentPanelHeight);
                 Rectangle r = new Rectangle((int)DrawPosition.X, y1, (int)PanelWidth, Math.Max(1, y2 - y1));
 
                 Color deep = new Color(30, 15, 15);
@@ -259,9 +303,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             var font = FontAssets.MouseText.Value;
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
-            const float maxTitleWidth = PanelWidth - 20f; //标题最大宽度
+            const float maxTitleWidth = PanelWidth - 20f;
 
-            //标题
+            //标题 - 支持自动换行
             Vector2 titlePos = DrawPosition + new Vector2(10, 8);
             Color titleColor = new Color(255, 220, 180) * alpha;
 
@@ -270,18 +314,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
             foreach (string line in titleLines) {
                 Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, currentY), titleColor, titleScale);
-                currentY += font.MeasureString(line).Y * titleScale * 0.9f; //行间距
+                currentY += font.MeasureString(line).Y * titleScale * 0.9f;
             }
 
             //分割线
-            float titleHeight = (currentY - titlePos.Y) + 2; //计算标题实际高度
-            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 4);
+            float titleHeight = currentY - titlePos.Y;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 2);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
                 Color.OrangeRed * alpha * 0.8f, Color.OrangeRed * alpha * 0.1f, 1.2f);
 
             //伤害贡献度文本
-            Vector2 contributionTextPos = dividerStart + new Vector2(0, 10);
+            Vector2 contributionTextPos = dividerStart + new Vector2(0, 8);
             string contributionText = $"{DamageContribution.Value}: ";
             Utils.DrawBorderString(spriteBatch, contributionText, contributionTextPos,
                 Color.White * alpha, textScale);
@@ -305,7 +349,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             Utils.DrawBorderString(spriteBatch, percentText, percentPos, percentColor * alpha, 0.75f);
 
             //需求文本
-            Vector2 requirementPos = contributionTextPos + new Vector2(0, 18);
+            Vector2 requirementPos = contributionTextPos + new Vector2(0, 15);
             Utils.DrawBorderString(spriteBatch, RequiredContribution.Value, requirementPos,
                 Color.Gray * alpha, 0.6f);
 
