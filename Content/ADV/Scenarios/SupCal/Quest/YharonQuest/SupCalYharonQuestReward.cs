@@ -131,6 +131,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
                 return;
             }
 
+            //如果玩家拿着大比目鱼，则必须先获得过比目鱼小姐给的礼物才能触发，避免这两个场景冲突
+            if (halibutPlayer.HeldHalibut && !save.YharonGift) {
+                return;
+            }
+
             if (!Spawned) {
                 return;
             }
