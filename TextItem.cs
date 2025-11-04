@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
+using CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -41,7 +42,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         //public override void SetStaticDefaults() {
@@ -110,7 +111,7 @@ namespace CalamityOverhaul
             //    "往日被烈火所吞噬，以异类之躯触及永恒",
             //    AchievementToast.ToastStyle.Brimstone
             //);
-            ScenarioManager.Start<FirstMet>();
+            ScenarioManager.Start<KingSlimeGift>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
