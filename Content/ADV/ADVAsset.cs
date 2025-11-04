@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.ADV
         public static Texture2D Helen_enjoyADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_enjoy2")]
         public static Texture2D Helen_enjoy2ADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_enjoy3")]
+        public static Texture2D Helen_enjoy3ADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_slightAnnoyed")]
         public static Texture2D Helen_slightAnnoyedADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_wail")]
