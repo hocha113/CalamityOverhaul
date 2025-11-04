@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(拔出武器)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
             Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "那么便让我来称量称量你吧");
-            Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "......真是杂鱼呢，那么给你一个见面礼，我们下次见");
+            Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "......真是杂鱼，那么给你一个见面礼，我们下次见");
         }
 
         protected override void OnScenarioStart() {
