@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
         protected override void Build() {
             //注册海伦立绘
-            DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
             //开场对话
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void Build() {
-                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
                 DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
                 Add(Rolename.Value, Line1.Value);
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void Build() {
-                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_amazeADV);
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
                 DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
                 Add(Rolename.Value, Line1.Value);
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void Build() {
-                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
                 DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
                 Add(Rolename.Value, Line1.Value);
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void Build() {
-                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
                 DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
                 Add(Rolename.Value, Line1.Value);
