@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         //设置场景默认使用海洋风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+        private const string alt = " ";
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
@@ -69,27 +70,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + alt, ADVAsset.Helen2ADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value + alt, silhouette: false);
 
             Add(Rolename1.Value, Line0.Value);
-            Add(Rolename2.Value, Line1.Value);
+            Add(Rolename2.Value + alt, Line1.Value);
             Add(Rolename2.Value, Line2.Value);
-            Add(Rolename2.Value, Line3.Value);
+            Add(Rolename2.Value + alt, Line3.Value);
             Add(Rolename2.Value, Line4.Value);
-            Add(Rolename2.Value, Line5.Value);//5 触发奖励
+            Add(Rolename2.Value + alt, Line5.Value);//5 触发奖励
             Add(Rolename2.Value, Line6.Value);
-            Add(Rolename2.Value, Line7.Value);
+            Add(Rolename2.Value + alt, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
-            Add(Rolename2.Value, Line9.Value);
+            Add(Rolename2.Value + alt, Line9.Value);
             Add(Rolename2.Value, Line10.Value);
-            Add(Rolename2.Value, Line11.Value);
+            Add(Rolename2.Value + alt, Line11.Value);
             Add(Rolename2.Value, Line12.Value);
-            Add(Rolename2.Value, Line13.Value);
+            Add(Rolename2.Value + alt, Line13.Value);
             Add(Rolename2.Value, Line14.Value);
-            Add(Rolename2.Value, Line15.Value);
+            Add(Rolename2.Value + alt, Line15.Value);
             Add(Rolename2.Value, Line16.Value);
-            Add(Rolename2.Value, Line17.Value);
+            Add(Rolename2.Value + alt, Line17.Value);
             Add(Rolename2.Value, Line18.Value);
-            Add(Rolename2.Value, Line19.Value);
+            Add(Rolename2.Value + alt, Line19.Value);
             Add(Rolename2.Value, Line20.Value);
             Add(Rolename2.Value, Line21.Value);
         }
