@@ -7,10 +7,22 @@ namespace CalamityOverhaul.Content.ADV
     {
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen")]
         public static Texture2D HelenADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen2")]
+        public static Texture2D Helen2ADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_naughty")]
+        public static Texture2D Helen_naughtyADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_naughty2")]
+        public static Texture2D Helen_naughty2ADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_serious2")]
+        public static Texture2D Helen_serious2ADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_tired")]
+        public static Texture2D Helen_tiredADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_amaze")]
         public static Texture2D Helen_amazeADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_solemn")]
         public static Texture2D Helen_solemnADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_serious")]
+        public static Texture2D Helen_seriousADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_wrath")]
         public static Texture2D Helen_wrathADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_doubt")]
