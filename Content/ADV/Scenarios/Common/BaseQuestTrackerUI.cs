@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         protected bool isOverlappingWithNPC = false;
         protected float overlappingAlpha = 1f;
         protected const float MinOverlappingAlpha = 0.3f;
-        protected const float AlphaTransitionSpeed = 0.15f;
+        protected const float AlphaTransitionSpeed = 0.1f;
 
         /// <summary>
         /// 获取当前伤害追踪数据
