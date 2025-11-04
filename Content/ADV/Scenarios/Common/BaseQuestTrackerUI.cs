@@ -1,6 +1,8 @@
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
@@ -218,16 +220,62 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             DrawBrimstoneFrame(spriteBatch, UIHitBox, alpha, borderGlow);
         }
 
+        /// <summary>
+        /// 将文本按宽度自动换行
+        /// </summary>
+        protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
+            List<string> lines = new();
+            
+            if (string.IsNullOrEmpty(text)) {
+                return lines;
+            }
+
+            string[] words = text.Split(' ');
+            string currentLine = "";
+
+            foreach (string word in words) {
+                string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                Vector2 testSize = font.MeasureString(testLine) * scale;
+
+                if (testSize.X > maxWidth && !string.IsNullOrEmpty(currentLine)) {
+                    //当前行已满，保存并开始新行
+                    lines.Add(currentLine);
+                    currentLine = word;
+                }
+                else {
+                    currentLine = testLine;
+                }
+            }
+
+            //添加最后一行
+            if (!string.IsNullOrEmpty(currentLine)) {
+                lines.Add(currentLine);
+            }
+
+            return lines;
+        }
+
         protected virtual void DrawContent(SpriteBatch spriteBatch, float alpha) {
             var font = FontAssets.MouseText.Value;
+            const float titleScale = 0.75f;
+            const float textScale = 0.65f;
+            const float maxTitleWidth = PanelWidth - 20f; //标题最大宽度
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(10, 8);
             Color titleColor = new Color(255, 220, 180) * alpha;
-            Utils.DrawBorderString(spriteBatch, QuestTitle.Value, titlePos, titleColor, 0.75f);
+
+            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
+            float currentY = titlePos.Y;
+
+            foreach (string line in titleLines) {
+                Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, currentY), titleColor, titleScale);
+                currentY += font.MeasureString(line).Y * titleScale * 0.9f; //行间距
+            }
 
             //分割线
-            Vector2 dividerStart = titlePos + new Vector2(0, 22);
+            float titleHeight = (currentY - titlePos.Y) + 2; //计算标题实际高度
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 4);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
                 Color.OrangeRed * alpha * 0.8f, Color.OrangeRed * alpha * 0.1f, 1.2f);
@@ -236,10 +284,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             Vector2 contributionTextPos = dividerStart + new Vector2(0, 10);
             string contributionText = $"{DamageContribution.Value}: ";
             Utils.DrawBorderString(spriteBatch, contributionText, contributionTextPos,
-                Color.White * alpha, 0.65f);
+                Color.White * alpha, textScale);
 
             //百分比显示
-            Vector2 percentPos = contributionTextPos + new Vector2(font.MeasureString(contributionText).X * 0.65f, 0);
+            Vector2 percentPos = contributionTextPos + new Vector2(font.MeasureString(contributionText).X * textScale, 0);
             string percentText = $"{cachedContribution:P1}";
 
             //根据进度改变颜色
