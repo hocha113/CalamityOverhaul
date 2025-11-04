@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             Add(Rolename1.Value + expressionSmile, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
             Add(Rolename1.Value, Line3.Value);
-            Add(Rolename1.Value + expressionSmile, Line4.Value);//奖励
+            Add(Rolename1.Value + expressionCloseEye, Line4.Value);//奖励
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
             if (hasHalibut) {
