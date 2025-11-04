@@ -41,7 +41,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         //public override void SetStaticDefaults() {
@@ -110,7 +110,7 @@ namespace CalamityOverhaul
             //    "往日被烈火所吞噬，以异类之躯触及永恒",
             //    AchievementToast.ToastStyle.Brimstone
             //);
-            ScenarioManager.Start<HelensInterference>();
+            ScenarioManager.Start<FirstMet>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         private const string solemn = " ";
         private const string serious = " " + " ";
-        private const string alt = " " + " " + " ";
+        private const string naughty = " " + " " + " ";
+        private const string enjoy = " " + " " + " " + " ";
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "一个劣质的影子，让我想起来上大学时自己窝在海沟里捣鼓的基因怪兽，总之制作这个东西的家伙品味很差");
@@ -31,17 +32,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
-            DialogueBoxBase.RegisterPortrait(R1.Value + alt, ADVAsset.Helen2ADV);
-            DialogueBoxBase.SetPortraitStyle(R1.Value + alt, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(R1.Value + naughty, ADVAsset.Helen_naughtyADV);
+            DialogueBoxBase.SetPortraitStyle(R1.Value + naughty, silhouette: false);
             DialogueBoxBase.RegisterPortrait(R1.Value + solemn, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value + solemn, silhouette: false);
             DialogueBoxBase.RegisterPortrait(R1.Value + serious, ADVAsset.Helen_seriousADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value + serious, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(R1.Value + enjoy, ADVAsset.Helen_enjoyADV);
+            DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy, silhouette: false);
             Add(R1.Value + solemn, L0.Value);
             Add(R1.Value + serious, L1.Value);
             Add(R1.Value, L2.Value); //奖励
-            Add(R1.Value + alt, L3.Value);
-            Add(R1.Value, L4.Value);
+            Add(R1.Value + naughty, L3.Value);
+            Add(R1.Value + enjoy, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
