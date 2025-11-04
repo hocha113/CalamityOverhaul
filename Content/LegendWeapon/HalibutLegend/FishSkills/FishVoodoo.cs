@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishVoodoo : FishSkill
     {
         public override int UnlockFishID => ItemID.GuideVoodooFish;
-        public override int DefaultCooldown => 80 * (60 - HalibutData.GetDomainLayer() * 3); //60 - 3 * 领域等级 秒
+        public override int DefaultCooldown => 80 * (60 - HalibutData.GetDomainLayer() * 3); //80 - 3 * 领域等级 秒
         public override int ResearchDuration => 60 * 12;
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HeldHalibut;//未装备暂停冷却
     }
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class FishVoodooPlayer : ModPlayer
     {
-        private const int UnlimitedLayersThreshold = 9; //>=9 层领域时无限替死
+        private const int UnlimitedLayersThreshold = 10; //>=10 层领域时无限替死
 
         private bool OnSet(int damageTaken) {
             if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer)) {
