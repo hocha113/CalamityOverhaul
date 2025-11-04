@@ -94,22 +94,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 return false;
             }
 
-            NPC targetNPC = CurrentDamageTrackerInstance.NPC;
+            var otherNPCs = CurrentDamageTrackerInstance.OtherNPCType;
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type != TargetNPCType && !otherNPCs.Contains(n.type)) {
+                    continue;
+                }
 
-            //将NPC的世界坐标转换为屏幕坐标
-            Vector2 npcScreenPos = targetNPC.position - Main.screenPosition;
-            Rectangle npcScreenRect = new Rectangle(
-                (int)npcScreenPos.X,
-                (int)npcScreenPos.Y,
-                targetNPC.width,
-                targetNPC.height
-            );
+                int extend = 80;
+                //将NPC的世界坐标转换为屏幕坐标
+                Vector2 npcScreenPos = n.position - Main.screenPosition;
+                Rectangle npcScreenRect = new(
+                    (int)npcScreenPos.X - extend,
+                    (int)npcScreenPos.Y - extend,
+                    n.width + extend * 2,
+                    n.height + extend * 2
+                );
 
-            //获取UI面板的屏幕坐标矩形
-            Rectangle uiRect = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+                //获取UI面板的屏幕坐标矩形
+                Rectangle uiRect = DrawPosition.GetRectangle((int)PanelWidth, (int)PanelHeight);
+                //检测两个矩形是否相交
+                bool result = npcScreenRect.Intersects(uiRect);
+                if (result) {
+                    return true;
+                }
+            }
 
-            //检测两个矩形是否相交
-            return npcScreenRect.Intersects(uiRect);
+            return false;
         }
 
         public override void Update() {
