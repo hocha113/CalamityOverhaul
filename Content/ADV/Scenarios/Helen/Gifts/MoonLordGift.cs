@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
         private const string enjoy3 = " ";
+        private const string enjoy = " " + " ";
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "月球的主宰，哈！或者说，曾经是。现在它只是一堆漂浮的眼球和血肉");
@@ -30,11 +31,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             DialogueBoxBase.RegisterPortrait(R1.Value + enjoy3, ADVAsset.Helen_enjoy3ADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy3, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(R1.Value + enjoy, ADVAsset.Helen_enjoyADV);
+            DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy, silhouette: false);
             Add(R1.Value + enjoy3, L0.Value);
             Add(R1.Value, L1.Value);
             Add(R1.Value, L2.Value); //奖励
             Add(R1.Value, L3.Value);
-            Add(R1.Value, L4.Value);
+            Add(R1.Value + enjoy, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
