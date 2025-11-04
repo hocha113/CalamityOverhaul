@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         public static LocalizedText Line9 { get; private set; }
 
         private const string expressionCloseEye = " ";
-        private const string expressionSmile = " " + " ";
+        private const string expressionSigh = " " + " ";
 
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
@@ -72,8 +72,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionSmile, ADVAsset.SupCalADV[1]);
-            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionSmile, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionSigh, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionSigh, silhouette: false);
 
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
@@ -88,9 +88,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             }
 
             //添加对话
-            Add(Rolename1.Value + expressionSmile, Line1.Value);
+            Add(Rolename1.Value + expressionSigh, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
-            Add(Rolename1.Value + expressionSmile, Line3.Value);
+            Add(Rolename1.Value + expressionCloseEye, Line3.Value);
             Add(Rolename1.Value, Line4.Value);//奖励
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
