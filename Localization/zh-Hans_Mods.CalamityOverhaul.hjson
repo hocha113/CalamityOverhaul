@@ -1702,6 +1702,7 @@ Projectiles: {
 	JusticeCrossMark.DisplayName: 正义裁决
 	HeartcarverDash.DisplayName: 刻心冲刺
 	ProverbsCircle.DisplayName: 硫火符文
+	StormGoddess.DisplayName: 风暴女神
 }
 
 Configs: {

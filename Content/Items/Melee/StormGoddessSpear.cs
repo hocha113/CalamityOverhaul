@@ -80,13 +80,42 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void HoldItem(Player player) {
-            //在手持时添加微弱的电光效果（白蓝色）
+            // 在手持时添加微弱的电光效果（白蓝色）
             if (Main.rand.NextBool(20)) {
                 Vector2 dustPos = player.Center + Main.rand.NextVector2Circular(30, 30);
                 Dust dust = Dust.NewDustPerfect(dustPos, DustID.Electric, Vector2.Zero, Scale: 1.2f);
                 dust.noGravity = true;
                 dust.fadeIn = 1.3f;
-                dust.color = new Color(180, 220, 255); //白蓝色
+                dust.color = new Color(180, 220, 255); // 白蓝色
+            }
+
+            // 生成/维持风暴女神
+            if (player.whoAmI == Main.myPlayer) {
+                // 检查是否已存在风暴女神
+                bool hasGoddess = false;
+                int goddessType = ModContent.ProjectileType<StormGoddess>();
+                
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    if (Main.projectile[i].active && 
+                        Main.projectile[i].owner == player.whoAmI && 
+                        Main.projectile[i].type == goddessType) {
+                        hasGoddess = true;
+                        break;
+                    }
+                }
+
+                // 如果没有，生成一个
+                if (!hasGoddess) {
+                    Projectile.NewProjectile(
+                        player.GetSource_ItemUse(Item),
+                        player.Center,
+                        Vector2.Zero,
+                        goddessType,
+                        0,
+                        0f,
+                        player.whoAmI
+                    );
+                }
             }
         }
     }
