@@ -2518,514 +2518,6 @@ Legend: {
 			// Trend5: Spiraling toward collapse
 			// SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
 		}
-
-		ADV: {
-			FirstMet: {
-				// Rolename1: ???
-				// Rolename2: Halibut
-				// Line0: Sir... your fishing technique... leaves something to be desired.
-				// Line1: You may call me Dr. Halibut.
-				// Line2: Or, just Halibut is fine.
-				// Line3: Thanks to your hook, I was pulled out of that silent, dead water.
-				// Line4: If it weren't for you, I'd probably have been stuck in a system crash... until I truly expired.
-				// Line5: This fish should have been your catch. Now, it's a gift to mark our meeting.
-				// Line6: ......
-				// Line7: You're wondering why I'm here, aren't you.
-				// Line8: I was a professor at the Sulphurous Sea University, Department of Abyssal Research.
-				// Line9: A few years ago, we organized an 'Abyssal Ecological Sampling Project.'
-				// Line10: I was the only one who made it back.
-				// Line11: At the bottom of the abyss, we encountered... an existence that cannot be understood.
-				// Line12: It couldn't have been a living thing, nor something that could be 'killed.' It was more like... terror, in its conceptual form.
-				// Line13: As I fled, I found an eye beneath a coral tree.
-				// Line14: On pure survival instinct, I swallowed it.
-				// Line15: Using the power of that eye, I opened a domain... and tore a fissure in the abyss to escape.
-				// Line16: After that, my memory blurs... I fell into a deep slumber, until you fished me up.
-				// Line17: You look like a Terrarian.
-				// Line18: If you'll have me, take me with you.
-				// Line19: I will help you conquer this land.
-				// Line20: In exchange... help me solve this... 'revival' problem with the eyes inside me.
-				// Line21: If there are no objections, let's begin by... studying this fish.
-			}
-
-			EyeOfCthulhuGift: {
-				// R1: Halibut
-				// L0: Your movements were dragged into slow-motion... I just thought you were striking a pose.
-				// L1: We've entered the 'Watched Stage.' Which means... more trouble.
-				// L2: I found this in its... maw. Take it. A Cthulhu Fish. Just like its namesake... it doesn't really follow logic.
-				// L3: Hold onto it, but be careful. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
-				// L4: I'm curious if you'll start winking at the moon now.
-			}
-
-			KingSlimeGift: {
-				// R1: Halibut
-				// L0: That blue blob... a 'slime,' you call it? Looked more like... solidified emotion.
-				// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve.
-				// L2: Here you go, a Slimefish. Don't squeeze it. Its feelings might explode.
-				// L3: Have you ever tried to make soup with one of these?
-				// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
-			}
-
-			QueenBeeGift: {
-				// R1: Halibut
-				// R2: ???
-				// L0: I almost got a faceful of honey back there.
-				// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
-				// L2: Here, fresh and... still-warm Honeyfish.
-				// L3: I think it would be perfect for a sweet and sour dish.
-			}
-
-			SkeletronGift: {
-				// R1: Halibut
-				// L0: Now that was a significant amount of calcium.
-				// L1: Its cranial structure reminded me of a runaway psychic construct.
-				// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
-				// L3: Look, a 'Skeletron Fish.' They say the phosphorus inside makes night-fishers contemplate their existence.
-				// L4: Let's move. More... 'abstract' bones await.
-			}
-
-			AquaticScourgeGift: {
-				// R1: Halibut
-				// L0: It reminds me of the less-friendly neighbors from my hometown. This one was quite amicable, though. Used to be the head of security at Sulphurous Sea University. Always said hello.
-				// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
-				// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
-				// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
-				// L4: Best to use it in dim light. Otherwise, you'll feel... high.
-			}
-
-			BrimstoneElementalGift: {
-				// R1: Halibut
-				// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
-				// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
-				// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
-				// L3: Careful, it might spontaneously combust in your hand. Emotionally speaking.
-				// L4: After all, anger is contagious.
-			}
-
-			CalamitasCloneGift: {
-				// R1: Halibut
-				// L0: A cheap shadow. Reminds me of the genetic monstrosities I used to cook up in my trench back in university. In any case, the one who made this has terrible taste.
-				// L1: I have a bad feeling. The real terror is still waiting... deeper. It's even getting closer.
-				// L2: Back to business. A Brimstone Fish, picked from her embers. You can still hear it muttering nonsense if you hold it close.
-				// L3: If you start to understand what it's saying... well, congratulations. You've taken the first step into madness.
-				// L4: But don't worry. Madness is just another form of clarity, seen from a different angle.
-			}
-
-			CrabulonGift: {
-				// R1: Halibut
-				// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
-				// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
-				// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
-				// L3: Don't worry, the spores won't turn a human into a fungus... probably.
-				// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
-			}
-
-			CryogenGift: {
-				// R1: Halibut
-				// L0: A frozen soul...
-				// L1: In the Abyssal Archives, this kind of low temperature is usually used to 'preserve' the lunatics.
-				// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
-				// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
-				// L4: Eat too many, and you might just become an ice sculpture.
-			}
-
-			DevourerOfGodsGift: {
-				// R1: Halibut
-				// L0: The Devourer of Gods... a cosmic serpent that dines on deities. Its appetite is as infinite as its ambition.
-				// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze. It wants you for a snack.
-				// L2: A Neon Tetra. It floated out of a void rift. The light it emits isn't from this dimension.
-				// L3: Looking at it makes your brain try to comprehend colors it shouldn't. It's a... unique experience.
-				// L4: If you start seeing new colors, congratulations. If you start *smelling* colors, you need a rest.
-			}
-
-			GolemGift: {
-				// R1: Halibut
-				// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
-				// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
-				// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my own existence.
-				// L3: I tried to boil it once. My pot surrendered first.
-				// L4: ...Some things exist just to make us realize that not all problems need to be solved.
-			}
-
-			HiveMindGift: {
-				// R1: Halibut
-				// L0: A collective consciousness made of corruption... what a disgusting concept.
-				// L1: Its thought process must be... unique. Countless rotten fragments pieced together into a single, twisted whole.
-				// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask how.
-				// L3: It smells like seafood that's been left in the sun for three days.
-				// L4: But they say it lets you... resonate with the corruption. That just sounds wrong.
-			}
-
-			LeviathanGift: {
-				// R1: Halibut
-				// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
-				// L1: I think what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
-				// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
-				// L3: The more mundane the exterior, the more extraordinary the past.
-				// L4: Just like us.
-			}
-
-			MoonLordGift: {
-				// R1: Halibut
-				// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
-				// L1: We didn't just save the world; we closed a door that was never meant to be opened.
-				// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
-				// L3: They say it lets you see the future... but you've already rewritten that future.
-				// L4: We just proved that even gods can bleed.
-			}
-
-			PerforatorGift: {
-				// R1: Halibut
-				// L0: A pile of drilling flesh-worms... this creature's existence is a challenge to biology.
-				// L1: Their blood has a strange viscosity, like some kind of living metal.
-				// L2: Found this in the wreckage. A Gore-fish. It's still wriggling.
-				// L3: Don't be scared by its looks, even if it looks like it crawled out of a nightmare.
-				// L4: At least it won't crawl into your ear while you sleep... probably.
-			}
-
-			PlaguebringerGift: {
-				// R1: Halibut
-				// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
-				// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
-				// L2: A Jewel-fish. Infected and miraculously recovered. Its immune system is more experienced than you are.
-				// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
-				// L4: But since *we* just walked out of a plague-hive, this little risk should be nothing.
-			}
-
-			PlanteraGift: {
-				// R1: Halibut
-				// L0: A flower... if 'flower' is the word for that man-eating vine conglomerate.
-				// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
-				// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
-				// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
-				// L4: Like 'diet' and 'appetite.' Always fighting. My appetite always wins, though.
-			}
-
-			ProvidenceGift: {
-				// R1: Halibut
-				// L0: The Profaned Goddess... a contradiction of faith and flame. Quite pitiful.
-				// L1: We didn't just extinguish a holy flame, but the embers of an entire era.
-				// L2: A Demon-Hell Fish, reborn from her ashes. Its temperature is permanently fixed at 'just hot enough not to burn you.'
-				// L3: That precise control makes me suspect... maybe she just wanted to be understood.
-				// L4: But the line between understanding and war is only one attack away.
-			}
-
-			SlimeGodGift: {
-				// R1: Halibut
-				// L0: Three slimes... or, a fractured divinity? This dualistic existence is... interesting.
-				// L1: Corruption and Crimson. The eternal conflict of this world. And we just proved that conflict can be 'resolved.'
-				// L2: A Variegated Lardfish. Scooped from the goo. Don't ask about the name.
-				// L3: Its color changes with the observer's mood. Or perhaps, it's mimicking your inner chaos.
-				// L4: Stare too long, and you might start to wonder which side you're really on.
-			}
-
-			SupremeCalamitasGift: {
-				// R1: Halibut
-				// L0: Brimstone Witch... an avenger. The most powerful magic-wielder of the last century.
-				// L1: What we just did... did we end a legend, or create a new one?
-				// L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
-				// L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
-				// L4: You're nearing the peak of Terrarian power. From here on... it's a long way down.
-			}
-
-			WallOfFleshGift: {
-				// R1: Halibut
-				// L0: A wall of flesh and bone... this world's creator must have had some peculiar ideas.
-				// L1: You just broke some kind of balance. Feel that? The world's pulse is quickening.
-				// L2: Found this Hungering Fish in the remains. It looks eternally starved.
-				// L3: Just like that wall. Always chasing, always consuming.
-				// L4: Welcome to 'Hard Mode'... though I didn't think it was 'easy' before.
-			}
-
-			YharonGift: {
-				// R1: Halibut
-				// L0: The Jungle Dragon... no, the World-Burning Dragon. It burns not with flesh, but with obsession.
-				// L1: A loyalty so pure it would burn itself to ash for its master... reminds me of the fish schools that guard the coral reefs back home.
-				// L2: A Scarlet Tigerfish. Just caught it. I'm quite fond of its stripes.
-				// L3: Holding it, you feel a scorching resolve. That is the temperature of a warrior.
-				// L4: You defeated that dragon, but I have to wonder... in the moment it fell, did it finally find... release?
-			}
-
-			ADVRewardPopup: {
-				// ClickToReceive: Click to Receive
-				// ClickToContinue: Click to Continue
-				// ClickOrWaitToContinue: Click/Wait to Continue
-			}
-
-			FirstMetSupCal: {
-				// Rolename1: ???
-				// Rolename2: Brimstone Witch
-				// Rolename3: Flounder
-				// Line1: I hadn't expected you to kill my 'sister' so soon.
-				// Line2: You are growing... faster than anticipated.
-				// Line3: I recognize you... You're...
-				// Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
-				// Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
-				// Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
-				// Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
-				// Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
-				// Line9: Your comprehension is too limited. You could not possibly understand my state of being.
-				// Line10: Besides, that is not why I am here...
-				// QuestionLine: Well... what is your choice?
-				// Choice1Text: (Draw weapon)
-				// Choice2Text: (Remain silent)
-				// Choice1Response: Then let me measure your worth.
-				// Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
-				// NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
-				// NoFishLine2: You are growing stronger than I anticipated.
-				// NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
-				// NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
-				// NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
-				// NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
-			}
-
-			ADVChoiceBox: {
-				// TitleText: Choose
-				// DisabledHintFormat: ({0})
-			}
-
-			SupCalMoonLordReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Hahaha...
-				// Line2: So that's how far he's fallen.
-				// Line3: Do you have any idea what the underground looks like right now?
-				// Line4: ...So, why are you here this time?
-				// Line5: A little toy for you. And a small commission.
-				// Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
-				// Line7: If you succeed, our... 'partnership'... can continue.
-			}
-
-			SupCalDefeat: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut & [Name]
-				// Line1: To think you've already reached this level... Heh. I was outmatched.
-				// Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
-				// Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
-				// Line4: A pity you two cannot meet...
-				// Line5: Your dimension is too low. You will never understand my state.
-				// Line6: ...My dimension is too low?
-				// Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
-				// Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
-				// Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
-				// Line10: ......
-			}
-
-			SupCalPlayerDefeat: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: You shatter at a touch. Are you made of paper?
-				// Line2: I thought I'd found a toy that would last a bit longer in the fire.
-				// Line3: I overestimated you. Your current caliber... you aren't even worthy of being my warm-up.
-				// Line4: Come back when you are strong enough to be worthy of my gaze.
-				// Line5: Although... you do have *some* courage.
-				// Line6: A mortal who dares to look me in the eye, let alone draw a blade... you are the first.
-				// Line7: (Vanishes in a whirlwind of flame)
-				// Line8: If I'd opened the ninth eye, consequences be damned... I should have had a chance. If it came to that...
-				// Line9: Sigh...
-			}
-
-			SupCalVictory: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: What... How is this possible!
-				// Line2: You... You defeated me?!
-				// Line3: Impossible... This is absolutely impossible...
-				// Line4: I have already surpassed the limits of a Terrarian...
-				// Line5: ...It seems I truly underestimated you.
-				// Line6: But this is not the end. I will return.
-				// Line7: Next time... Next time, I will not be so careless!
-				// Line8: ...She fled.
-			}
-
-			PallbearerQuestUI: {
-				// QuestTitle: Commission: Hunt the Profaned Goddess
-				// QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
-				// AcceptText: Accept
-				// DeclineText: Decline
-			}
-
-			SupCalQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Well done.
-				// Line2: This crossbow suits you.
-				// Line3: You've solved a problem for me.
-				// Line4: As a reward, these are yours.
-				// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
-				// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
-				// Line7: ......
-			}
-
-			ResurrectionWarn: {
-				// Rolename: Halibut
-				// Line0: Wait... did you feel that?
-				// Line1: The 'resurrection' state is approaching a critical threshold.
-				// Line2: I have to warn you, this isn't a game.
-				// Line3: If the resurrection completes... the consequences will be dire.
-				// Line4: The end result... is being consumed by the abyss.
-				// Line5: Every one of these eyes that opens inside me... it accelerates the resurrection process.
-				// Line6: The more that are open, the faster it builds, and the greater the danger.
-				// Line7: This is the price for wielding abyssal power. If I don't have the eyes open, my own abilities are severely diminished.
-				// Line8: We need to learn how to balance it—to determine how many eyes are 'safe' to have open during combat.
-				// Line9: If we want to use this power without consequence...
-				// Line10: ...we have to find a way to make these eyes 'crash.'
-			}
-
-			FishoilQuestScenario: {
-				// Rolename: Halibut
-				// Line0: You seem to have caught a fair amount of common fish recently.
-				// Line1: Give me some for my research, and I can refine them into a bottle of fresh fish oil.
-				// Line2: The process isn't difficult, just... tedious.
-				// Line3: This fish oil has potential. It's more useful than you might think.
-				// Line4: Interested?
-				// ChoiceAccept: Alright.
-				// ChoiceDecline: Not interested.
-			}
-
-			FishoilQuestUI: {
-				// TitleText: Collect: Bass
-				// DescText: Deposit enough Bass, and I will refine them into a bottle of fish oil.
-				// SubmitHint: Click to Deposit/Withdraw
-				// DeclineText: Decline
-				// CompletedText: Completed
-				// RewardText: Claim Reward
-				// QuickPutText: Quick Stack
-			}
-
-			DoGQuestUI: {
-				// QuestTitle: Commission: The Devourer of Gods
-				// QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
-				// AcceptText: Accept
-				// DeclineText: Decline
-			}
-
-			SupCalDoGQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Cleanly done.
-				// Line2: This blade... as satisfying as ever.
-				// Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
-				// Line4: Take it.
-				// Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
-				// Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
-				// Line7: ......I really can't stand her.
-			}
-
-			EternalBlazingNow: {
-				// Rolename1: Halibut
-				// Rolename2: ???Brimstone Witch???
-				// Line1: Are you kidding me?! Where is all this fire coming from?!
-				// Line2: I can't access my past self... the past is being sealed away!
-				// Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
-				// Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
-				// Line5: I cannot die... heh. But this is close enough.
-				// Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
-				// Line7: So, I want to ask one last thing of you.
-				// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
-				// Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
-				// Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
-				// Line11: ...You want him to *replace* your consciousness?
-				// Line12: That's right. It is necessary.
-				// Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
-				// Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
-				// Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
-				// QuestionLine: ......
-				// Choice1Text: (Stop Halibut)
-				// Choice2Text: (Remain silent)
-				// Choice1Line1: ...Is this your choice?
-				// Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
-			}
-
-			// AchievementToast.AchievementUnlocked: Achievement Unlocked!
-
-			SupCalYharonQuestReward: {
-				// Rolename1: Brimstone Witch
-				// Rolename2: Halibut
-				// Line1: Ah... it's finally over.
-				// Line2: To me... that dragon... was one of the very few beings worthy of respect.
-				// Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
-				// Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
-				// Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
-				// Line6: And now... it's my turn.
-				// Line7: What kind of joke is this...?
-			}
-
-			YharonQuestUI: {
-				// QuestTitle: Commission: The Dragon of Incineration
-				// QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
-				// AcceptText: Accept
-				// DeclineText: Decline
-			}
-
-			HelensInterference: {
-				// Rolename: Halibut
-				// Line0: ...Hey, are you free?
-				// Line1: Today..... uh.... nice weather, right?
-				// Line2: (Halibut seems to be hiding something.)
-				// Question1: ......
-				// Choice1_1: What are you doing?
-				// Choice1_2: Hand it over!
-				// Choice1_3: (Say nothing)
-				// FinalQuestion: Don't go any further... please. That witch, her commissions, the things she wants... I don't want to see it. We can walk the rest of the path ourselves, can't we?
-				// FinalChoice_Continue: Continue the commission
-				// FinalChoice_Stop: Stop the commission
-
-				Branch_Anger: {
-					// Line1: ...You really... trust her *that* much?
-					// Line2: Haven't you noticed? The things that witch gives you... none of them are normal.
-					// Line3: It reminds me of something... in the Abyss... I... I touched it... cold, terrifying, unsettling... Ugh... I don't want to remember.
-					// Line4: You should have realized this...
-				}
-
-				Branch_Inquiry: {
-					// Line1: I've been getting more and more anxious lately.
-					// Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
-					// Line3: They all feel like... some kind of 'medium'.
-					// Line4: I can't let you go on with it, at least...
-				}
-
-				Branch_Silence: {
-					// Line1: ...You're most terrifying when you're silent.
-					// Line2: ...Fine, I hid the 'Heart-carver'.
-					// Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
-					// Line4: Stop... please. For my sake.
-				}
-
-				FinalBranch_Continue: {
-					// Line1: ...Fine. I knew you'd choose this.
-					// Line2: ......
-					// Line3: I'll put it back. But I hope... when you use it... you'll be careful.
-					// Line4: And that witch, too...
-					// Line5: I'll walk with you... all the way.
-				}
-
-				FinalBranch_Stop: {
-					// Line1: ...You're... you're really willing to stop?
-					// Line2: ......
-					// Line3: Let's go. Let that witch go to hell.
-				}
-			}
-
-			HellGift: {
-				// R1: Halibut
-				// L0: This damn place... Hell is getting hotter and hotter.
-				// L1: I have an idea. Let's just dig through the sea floor and make this part of the ocean, too.
-				// L2: A geothermal hot spring... spanning the entire continent.
-				// L3: ...Just thinking about it is relaxing.
-				// L4: Oh, right. I caught a fish.
-				// L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
-			}
-		}
-
-		SeaDialogueBox: {
-			// ContinueHint: Continue
-			// FastHint: Accelerate
-		}
-
-		BrimstoneDialogueBox: {
-			// ContinueHint: Continue
-			// FastHint: Accelerate
-		}
 	}
 
 	MuraText: {
@@ -6657,5 +6149,513 @@ UI: {
 		// QuestTitle: Commission: Hunt the Incineration Dragon
 		// DamageContribution: Oni Machete Damage
 		// RequiredContribution: Required: 80%
+	}
+
+	SeaDialogueBox: {
+		// ContinueHint: Continue
+		// FastHint: Accelerate
+	}
+
+	BrimstoneDialogueBox: {
+		// ContinueHint: Continue
+		// FastHint: Accelerate
+	}
+}
+
+ADV: {
+	FirstMet: {
+		// Rolename1: ???
+		// Rolename2: Halibut
+		// Line0: Sir... your fishing technique... leaves something to be desired.
+		// Line1: You may call me Dr. Halibut.
+		// Line2: Or, just Halibut is fine.
+		// Line3: Thanks to your hook, I was pulled out of that silent, dead water.
+		// Line4: If it weren't for you, I'd probably have been stuck in a system crash... until I truly expired.
+		// Line5: This fish should have been your catch. Now, it's a gift to mark our meeting.
+		// Line6: ......
+		// Line7: You're wondering why I'm here, aren't you.
+		// Line8: I was a professor at the Sulphurous Sea University, Department of Abyssal Research.
+		// Line9: A few years ago, we organized an 'Abyssal Ecological Sampling Project.'
+		// Line10: I was the only one who made it back.
+		// Line11: At the bottom of the abyss, we encountered... an existence that cannot be understood.
+		// Line12: It couldn't have been a living thing, nor something that could be 'killed.' It was more like... terror, in its conceptual form.
+		// Line13: As I fled, I found an eye beneath a coral tree.
+		// Line14: On pure survival instinct, I swallowed it.
+		// Line15: Using the power of that eye, I opened a domain... and tore a fissure in the abyss to escape.
+		// Line16: After that, my memory blurs... I fell into a deep slumber, until you fished me up.
+		// Line17: You look like a Terrarian.
+		// Line18: If you'll have me, take me with you.
+		// Line19: I will help you conquer this land.
+		// Line20: In exchange... help me solve this... 'revival' problem with the eyes inside me.
+		// Line21: If there are no objections, let's begin by... studying this fish.
+	}
+
+	EyeOfCthulhuGift: {
+		// R1: Halibut
+		// L0: Your movements were dragged into slow-motion... I just thought you were striking a pose.
+		// L1: We've entered the 'Watched Stage.' Which means... more trouble.
+		// L2: I found this in its... maw. Take it. A Cthulhu Fish. Just like its namesake... it doesn't really follow logic.
+		// L3: Hold onto it, but be careful. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
+		// L4: I'm curious if you'll start winking at the moon now.
+	}
+
+	KingSlimeGift: {
+		// R1: Halibut
+		// L0: That blue blob... a 'slime,' you call it? Looked more like... solidified emotion.
+		// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve.
+		// L2: Here you go, a Slimefish. Don't squeeze it. Its feelings might explode.
+		// L3: Have you ever tried to make soup with one of these?
+		// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
+	}
+
+	QueenBeeGift: {
+		// R1: Halibut
+		// R2: ???
+		// L0: I almost got a faceful of honey back there.
+		// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
+		// L2: Here, fresh and... still-warm Honeyfish.
+		// L3: I think it would be perfect for a sweet and sour dish.
+	}
+
+	SkeletronGift: {
+		// R1: Halibut
+		// L0: Now that was a significant amount of calcium.
+		// L1: Its cranial structure reminded me of a runaway psychic construct.
+		// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
+		// L3: Look, a 'Skeletron Fish.' They say the phosphorus inside makes night-fishers contemplate their existence.
+		// L4: Let's move. More... 'abstract' bones await.
+	}
+
+	AquaticScourgeGift: {
+		// R1: Halibut
+		// L0: It reminds me of the less-friendly neighbors from my hometown. This one was quite amicable, though. Used to be the head of security at Sulphurous Sea University. Always said hello.
+		// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
+		// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
+		// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
+		// L4: Best to use it in dim light. Otherwise, you'll feel... high.
+	}
+
+	BrimstoneElementalGift: {
+		// R1: Halibut
+		// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
+		// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
+		// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
+		// L3: Careful, it might spontaneously combust in your hand. Emotionally speaking.
+		// L4: After all, anger is contagious.
+	}
+
+	CalamitasCloneGift: {
+		// R1: Halibut
+		// L0: A cheap shadow. Reminds me of the genetic monstrosities I used to cook up in my trench back in university. In any case, the one who made this has terrible taste.
+		// L1: I have a bad feeling. The real terror is still waiting... deeper. It's even getting closer.
+		// L2: Back to business. A Brimstone Fish, picked from her embers. You can still hear it muttering nonsense if you hold it close.
+		// L3: If you start to understand what it's saying... well, congratulations. You've taken the first step into madness.
+		// L4: But don't worry. Madness is just another form of clarity, seen from a different angle.
+	}
+
+	CrabulonGift: {
+		// R1: Halibut
+		// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
+		// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
+		// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
+		// L3: Don't worry, the spores won't turn a human into a fungus... probably.
+		// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
+	}
+
+	CryogenGift: {
+		// R1: Halibut
+		// L0: A frozen soul...
+		// L1: In the Abyssal Archives, this kind of low temperature is usually used to 'preserve' the lunatics.
+		// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
+		// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
+		// L4: Eat too many, and you might just become an ice sculpture.
+	}
+
+	DevourerOfGodsGift: {
+		// R1: Halibut
+		// L0: The Devourer of Gods... a cosmic serpent that dines on deities. Its appetite is as infinite as its ambition.
+		// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze. It wants you for a snack.
+		// L2: A Neon Tetra. It floated out of a void rift. The light it emits isn't from this dimension.
+		// L3: Looking at it makes your brain try to comprehend colors it shouldn't. It's a... unique experience.
+		// L4: If you start seeing new colors, congratulations. If you start *smelling* colors, you need a rest.
+	}
+
+	GolemGift: {
+		// R1: Halibut
+		// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
+		// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
+		// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my own existence.
+		// L3: I tried to boil it once. My pot surrendered first.
+		// L4: ...Some things exist just to make us realize that not all problems need to be solved.
+	}
+
+	HiveMindGift: {
+		// R1: Halibut
+		// L0: A collective consciousness made of corruption... what a disgusting concept.
+		// L1: Its thought process must be... unique. Countless rotten fragments pieced together into a single, twisted whole.
+		// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask how.
+		// L3: It smells like seafood that's been left in the sun for three days.
+		// L4: But they say it lets you... resonate with the corruption. That just sounds wrong.
+	}
+
+	LeviathanGift: {
+		// R1: Halibut
+		// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
+		// L1: I think what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
+		// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
+		// L3: The more mundane the exterior, the more extraordinary the past.
+		// L4: Just like us.
+	}
+
+	MoonLordGift: {
+		// R1: Halibut
+		// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
+		// L1: We didn't just save the world; we closed a door that was never meant to be opened.
+		// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
+		// L3: They say it lets you see the future... but you've already rewritten that future.
+		// L4: We just proved that even gods can bleed.
+	}
+
+	PerforatorGift: {
+		// R1: Halibut
+		// L0: A pile of drilling flesh-worms... this creature's existence is a challenge to biology.
+		// L1: Their blood has a strange viscosity, like some kind of living metal.
+		// L2: Found this in the wreckage. A Gore-fish. It's still wriggling.
+		// L3: Don't be scared by its looks, even if it looks like it crawled out of a nightmare.
+		// L4: At least it won't crawl into your ear while you sleep... probably.
+	}
+
+	PlaguebringerGift: {
+		// R1: Halibut
+		// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
+		// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
+		// L2: A Jewel-fish. Infected and miraculously recovered. Its immune system is more experienced than you are.
+		// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
+		// L4: But since *we* just walked out of a plague-hive, this little risk should be nothing.
+	}
+
+	PlanteraGift: {
+		// R1: Halibut
+		// L0: A flower... if 'flower' is the word for that man-eating vine conglomerate.
+		// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
+		// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
+		// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
+		// L4: Like 'diet' and 'appetite.' Always fighting. My appetite always wins, though.
+	}
+
+	ProvidenceGift: {
+		// R1: Halibut
+		// L0: The Profaned Goddess... a contradiction of faith and flame. Quite pitiful.
+		// L1: We didn't just extinguish a holy flame, but the embers of an entire era.
+		// L2: A Demon-Hell Fish, reborn from her ashes. Its temperature is permanently fixed at 'just hot enough not to burn you.'
+		// L3: That precise control makes me suspect... maybe she just wanted to be understood.
+		// L4: But the line between understanding and war is only one attack away.
+	}
+
+	SlimeGodGift: {
+		// R1: Halibut
+		// L0: Three slimes... or, a fractured divinity? This dualistic existence is... interesting.
+		// L1: Corruption and Crimson. The eternal conflict of this world. And we just proved that conflict can be 'resolved.'
+		// L2: A Variegated Lardfish. Scooped from the goo. Don't ask about the name.
+		// L3: Its color changes with the observer's mood. Or perhaps, it's mimicking your inner chaos.
+		// L4: Stare too long, and you might start to wonder which side you're really on.
+	}
+
+	SupremeCalamitasGift: {
+		// R1: Halibut
+		// L0: Brimstone Witch... an avenger. The most powerful magic-wielder of the last century.
+		// L1: What we just did... did we end a legend, or create a new one?
+		// L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
+		// L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
+		// L4: You're nearing the peak of Terrarian power. From here on... it's a long way down.
+	}
+
+	WallOfFleshGift: {
+		// R1: Halibut
+		// L0: A wall of flesh and bone... this world's creator must have had some peculiar ideas.
+		// L1: You just broke some kind of balance. Feel that? The world's pulse is quickening.
+		// L2: Found this Hungering Fish in the remains. It looks eternally starved.
+		// L3: Just like that wall. Always chasing, always consuming.
+		// L4: Welcome to 'Hard Mode'... though I didn't think it was 'easy' before.
+	}
+
+	YharonGift: {
+		// R1: Halibut
+		// L0: The Jungle Dragon... no, the World-Burning Dragon. It burns not with flesh, but with obsession.
+		// L1: A loyalty so pure it would burn itself to ash for its master... reminds me of the fish schools that guard the coral reefs back home.
+		// L2: A Scarlet Tigerfish. Just caught it. I'm quite fond of its stripes.
+		// L3: Holding it, you feel a scorching resolve. That is the temperature of a warrior.
+		// L4: You defeated that dragon, but I have to wonder... in the moment it fell, did it finally find... release?
+	}
+
+	ADVRewardPopup: {
+		// ClickToReceive: Click to Receive
+		// ClickToContinue: Click to Continue
+		// ClickOrWaitToContinue: Click/Wait to Continue
+	}
+
+	FirstMetSupCal: {
+		// Rolename1: ???
+		// Rolename2: Brimstone Witch
+		// Rolename3: Flounder
+		// Line1: I hadn't expected you to kill my 'sister' so soon.
+		// Line2: You are growing... faster than anticipated.
+		// Line3: I recognize you... You're...
+		// Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
+		// Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
+		// Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
+		// Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
+		// Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
+		// Line9: Your comprehension is too limited. You could not possibly understand my state of being.
+		// Line10: Besides, that is not why I am here...
+		// QuestionLine: Well... what is your choice?
+		// Choice1Text: (Draw weapon)
+		// Choice2Text: (Remain silent)
+		// Choice1Response: Then let me measure your worth.
+		// Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
+		// NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
+		// NoFishLine2: You are growing stronger than I anticipated.
+		// NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
+		// NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
+		// NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
+		// NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
+	}
+
+	ADVChoiceBox: {
+		// TitleText: Choose
+		// DisabledHintFormat: ({0})
+	}
+
+	SupCalMoonLordReward: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: Hahaha...
+		// Line2: So that's how far he's fallen.
+		// Line3: Do you have any idea what the underground looks like right now?
+		// Line4: ...So, why are you here this time?
+		// Line5: A little toy for you. And a small commission.
+		// Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
+		// Line7: If you succeed, our... 'partnership'... can continue.
+	}
+
+	SupCalDefeat: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut & [Name]
+		// Line1: To think you've already reached this level... Heh. I was outmatched.
+		// Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
+		// Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
+		// Line4: A pity you two cannot meet...
+		// Line5: Your dimension is too low. You will never understand my state.
+		// Line6: ...My dimension is too low?
+		// Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
+		// Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
+		// Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
+		// Line10: ......
+	}
+
+	SupCalPlayerDefeat: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: You shatter at a touch. Are you made of paper?
+		// Line2: I thought I'd found a toy that would last a bit longer in the fire.
+		// Line3: I overestimated you. Your current caliber... you aren't even worthy of being my warm-up.
+		// Line4: Come back when you are strong enough to be worthy of my gaze.
+		// Line5: Although... you do have *some* courage.
+		// Line6: A mortal who dares to look me in the eye, let alone draw a blade... you are the first.
+		// Line7: (Vanishes in a whirlwind of flame)
+		// Line8: If I'd opened the ninth eye, consequences be damned... I should have had a chance. If it came to that...
+		// Line9: Sigh...
+	}
+
+	SupCalVictory: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: What... How is this possible!
+		// Line2: You... You defeated me?!
+		// Line3: Impossible... This is absolutely impossible...
+		// Line4: I have already surpassed the limits of a Terrarian...
+		// Line5: ...It seems I truly underestimated you.
+		// Line6: But this is not the end. I will return.
+		// Line7: Next time... Next time, I will not be so careless!
+		// Line8: ...She fled.
+	}
+
+	PallbearerQuestUI: {
+		// QuestTitle: Commission: Hunt the Profaned Goddess
+		// QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
+		// AcceptText: Accept
+		// DeclineText: Decline
+	}
+
+	SupCalQuestReward: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: Well done.
+		// Line2: This crossbow suits you.
+		// Line3: You've solved a problem for me.
+		// Line4: As a reward, these are yours.
+		// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
+		// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
+		// Line7: ......
+	}
+
+	ResurrectionWarn: {
+		// Rolename: Halibut
+		// Line0: Wait... did you feel that?
+		// Line1: The 'resurrection' state is approaching a critical threshold.
+		// Line2: I have to warn you, this isn't a game.
+		// Line3: If the resurrection completes... the consequences will be dire.
+		// Line4: The end result... is being consumed by the abyss.
+		// Line5: Every one of these eyes that opens inside me... it accelerates the resurrection process.
+		// Line6: The more that are open, the faster it builds, and the greater the danger.
+		// Line7: This is the price for wielding abyssal power. If I don't have the eyes open, my own abilities are severely diminished.
+		// Line8: We need to learn how to balance it—to determine how many eyes are 'safe' to have open during combat.
+		// Line9: If we want to use this power without consequence...
+		// Line10: ...we have to find a way to make these eyes 'crash.'
+	}
+
+	FishoilQuestScenario: {
+		// Rolename: Halibut
+		// Line0: You seem to have caught a fair amount of common fish recently.
+		// Line1: Give me some for my research, and I can refine them into a bottle of fresh fish oil.
+		// Line2: The process isn't difficult, just... tedious.
+		// Line3: This fish oil has potential. It's more useful than you might think.
+		// Line4: Interested?
+		// ChoiceAccept: Alright.
+		// ChoiceDecline: Not interested.
+	}
+
+	FishoilQuestUI: {
+		// TitleText: Collect: Bass
+		// DescText: Deposit enough Bass, and I will refine them into a bottle of fish oil.
+		// SubmitHint: Click to Deposit/Withdraw
+		// DeclineText: Decline
+		// CompletedText: Completed
+		// RewardText: Claim Reward
+		// QuickPutText: Quick Stack
+	}
+
+	DoGQuestUI: {
+		// QuestTitle: Commission: The Devourer of Gods
+		// QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
+		// AcceptText: Accept
+		// DeclineText: Decline
+	}
+
+	SupCalDoGQuestReward: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: Cleanly done.
+		// Line2: This blade... as satisfying as ever.
+		// Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
+		// Line4: Take it.
+		// Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
+		// Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
+		// Line7: ......I really can't stand her.
+	}
+
+	EternalBlazingNow: {
+		// Rolename1: Halibut
+		// Rolename2: ???Brimstone Witch???
+		// Line1: Are you kidding me?! Where is all this fire coming from?!
+		// Line2: I can't access my past self... the past is being sealed away!
+		// Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
+		// Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
+		// Line5: I cannot die... heh. But this is close enough.
+		// Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
+		// Line7: So, I want to ask one last thing of you.
+		// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
+		// Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
+		// Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
+		// Line11: ...You want him to *replace* your consciousness?
+		// Line12: That's right. It is necessary.
+		// Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
+		// Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
+		// Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
+		// QuestionLine: ......
+		// Choice1Text: (Stop Halibut)
+		// Choice2Text: (Remain silent)
+		// Choice1Line1: ...Is this your choice?
+		// Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
+	}
+
+	// AchievementToast.AchievementUnlocked: Achievement Unlocked!
+
+	SupCalYharonQuestReward: {
+		// Rolename1: Brimstone Witch
+		// Rolename2: Halibut
+		// Line1: Ah... it's finally over.
+		// Line2: To me... that dragon... was one of the very few beings worthy of respect.
+		// Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
+		// Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
+		// Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
+		// Line6: And now... it's my turn.
+		// Line7: What kind of joke is this...?
+	}
+
+	YharonQuestUI: {
+		// QuestTitle: Commission: The Dragon of Incineration
+		// QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
+		// AcceptText: Accept
+		// DeclineText: Decline
+	}
+
+	HelensInterference: {
+		// Rolename: Halibut
+		// Line0: ...Hey, are you free?
+		// Line1: Today..... uh.... nice weather, right?
+		// Line2: (Halibut seems to be hiding something.)
+		// Question1: ......
+		// Choice1_1: What are you doing?
+		// Choice1_2: Hand it over!
+		// Choice1_3: (Say nothing)
+		// FinalQuestion: Don't go any further... please. That witch, her commissions, the things she wants... I don't want to see it. We can walk the rest of the path ourselves, can't we?
+		// FinalChoice_Continue: Continue the commission
+		// FinalChoice_Stop: Stop the commission
+
+		Branch_Anger: {
+			// Line1: ...You really... trust her *that* much?
+			// Line2: Haven't you noticed? The things that witch gives you... none of them are normal.
+			// Line3: It reminds me of something... in the Abyss... I... I touched it... cold, terrifying, unsettling... Ugh... I don't want to remember.
+			// Line4: You should have realized this...
+		}
+
+		Branch_Inquiry: {
+			// Line1: I've been getting more and more anxious lately.
+			// Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
+			// Line3: They all feel like... some kind of 'medium'.
+			// Line4: I can't let you go on with it, at least...
+		}
+
+		Branch_Silence: {
+			// Line1: ...You're most terrifying when you're silent.
+			// Line2: ...Fine, I hid the 'Heart-carver'.
+			// Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
+			// Line4: Stop... please. For my sake.
+		}
+
+		FinalBranch_Continue: {
+			// Line1: ...Fine. I knew you'd choose this.
+			// Line2: ......
+			// Line3: I'll put it back. But I hope... when you use it... you'll be careful.
+			// Line4: And that witch, too...
+			// Line5: I'll walk with you... all the way.
+		}
+
+		FinalBranch_Stop: {
+			// Line1: ...You're... you're really willing to stop?
+			// Line2: ......
+			// Line3: Let's go. Let that witch go to hell.
+		}
+	}
+
+	HellGift: {
+		// R1: Halibut
+		// L0: This damn place... Hell is getting hotter and hotter.
+		// L1: I have an idea. Let's just dig through the sea floor and make this part of the ocean, too.
+		// L2: A geothermal hot spring... spanning the entire continent.
+		// L3: ...Just thinking about it is relaxing.
+		// L4: Oh, right. I caught a fish.
+		// L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
 	}
 }
