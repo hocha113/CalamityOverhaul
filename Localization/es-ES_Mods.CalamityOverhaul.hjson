@@ -2351,6 +2351,11 @@ TextContent: {
 			To make sure the change takes effect,
 			it is strongly recommended that you manually toggle and keep this feature turned off.
 			''' */
+		/* LegendItemUpgradeDisable:
+			'''
+			This legendary weapon has been set to disable upgrades in the current world.
+			To lift this restriction, please re-enter the world.
+			''' */
 	}
 }
 

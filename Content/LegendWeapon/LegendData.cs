@@ -5,6 +5,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon
@@ -38,12 +39,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>
         /// 是否跳过升级（用于UI确认后调用）
         /// </summary>
-        public string DontUpgradeName;
+        public string DontUpgradeName = string.Empty;
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
             writer.Write(UpgradeWorldName);
             writer.Write(UpgradeWorldFullName);
+            DontUpgradeName ??= string.Empty;
+            writer.Write(DontUpgradeName);
             SendLegend(item, writer);
         }
 
@@ -51,6 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Level = reader.ReadInt32();
             UpgradeWorldName = reader.ReadString();
             UpgradeWorldFullName = reader.ReadString();
+            DontUpgradeName = reader.ReadString();
             ReceiveLegend(item, reader);
         }
 

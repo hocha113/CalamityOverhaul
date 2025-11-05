@@ -822,6 +822,13 @@ namespace CalamityOverhaul.Content
             }
 
             HalibutUIPanel.FishSkillTooltip(item, tooltips);
+
+            if (item.CWR().LegendData != null && item.CWR().LegendData.DontUpgradeName == SaveWorld.WorldFullName) {
+                var line = new TooltipLine(CWRMod.Instance, "LegendItemUpgradeDisable", CWRLocText.Instance.LegendItemUpgradeDisable.Value);
+                line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f
+                    , Color.Yellow, Color.Goldenrod, Color.Gold, Color.Goldenrod, Color.Yellow);
+                tooltips.Add(line);
+            }
         }
 
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset) {
