@@ -375,7 +375,6 @@ namespace CalamityOverhaul.Content
             }
 
             ModifyProjectileHitNPC(projectile, target, ref modifiers);
-            JusticeUnveiled.ModifyHitNPC(projectile, target, ref modifiers);
         }
 
         internal static void ModifyProjectileHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {

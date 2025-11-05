@@ -22,6 +22,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
 {
+    internal class JusticeUnveiledGGP : GlobalProjectile
+    {
+        public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            JusticeUnveiled.ModifyHitNPC(projectile, target, ref modifiers);
+        }
+    }
+
     /// <summary>
     /// 正义的显现
     /// </summary>
