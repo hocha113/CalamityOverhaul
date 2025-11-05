@@ -58,6 +58,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private float scale = 1f;
         private float rotation = 0f;
         private float targetRotation = 0f;
+        private int facingDirection = 1; //朝向：1=右，-1=左
+        private float directionSmoothTimer = 0f; //朝向平滑计时器
 
         //攻击系统
         private NPC currentTarget = null;
@@ -156,7 +158,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 状态AI
 
         /// <summary>
-        /// 出现状态 - 优雅地从天而降
+        /// 出现状态
         /// </summary>
         private void AppearingAI() {
             if (StateTimer == 1) {
@@ -201,12 +203,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 跟随状态 - 使用Boid算法自然跟随
+        /// 跟随状态
         /// </summary>
         private void FollowingAI() {
-            //目标位置：玩家侧后方
-            Vector2 ownerDirection = Owner.direction == 1 ? Vector2.UnitX : -Vector2.UnitX;
-            targetPosition = Owner.Center + ownerDirection * 100 + new Vector2(0, -100);
+            //根据玩家朝向调整跟随位置，让女神更自然地跟随
+            float offsetX = Owner.direction * 100;
+            float offsetY = -100;
+            
+            //如果女神在玩家后方，稍微调整位置让她能看到玩家
+            if ((Owner.direction == 1 && Projectile.Center.X < Owner.Center.X) ||
+                (Owner.direction == -1 && Projectile.Center.X > Owner.Center.X)) {
+                offsetX *= 0.5f; //减小距离
+                offsetY -= 20; //稍微高一点
+            }
+            
+            targetPosition = Owner.Center + new Vector2(offsetX, offsetY);
 
             //应用跟随力
             Vector2 desired = targetPosition - Projectile.Center;
@@ -244,17 +255,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 待机状态 - 优雅的环绕运动
+        /// 待机状态
         /// </summary>
         private void IdleAI() {
-            //环绕玩家
-            Vector2 ownerDirection = Owner.direction == 1 ? Vector2.UnitX : -Vector2.UnitX;
+            //环绕玩家，根据玩家朝向调整
             float orbitAngle = Main.GlobalTimeWrappedHourly * IdleOrbitSpeed;
-            idleOffset = new Vector2(
-                MathF.Cos(orbitAngle) * IdleOrbitRadius,
-                MathF.Sin(orbitAngle) * 60 - 80
-            );
-
+            
+            //让女神在玩家面前环绕
+            float xOffset = MathF.Cos(orbitAngle) * IdleOrbitRadius * Owner.direction;
+            float yOffset = MathF.Sin(orbitAngle) * 60 - 80;
+            
+            idleOffset = new Vector2(xOffset, yOffset);
             targetPosition = Owner.Center + idleOffset;
 
             //应用柔和的力
@@ -444,11 +455,78 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //重置加速度
             acceleration = Vector2.Zero;
 
+            //更新朝向
+            UpdateFacingDirection();
+
             //平滑旋转朝向
             if (velocity.LengthSquared() > 0.1f) {
                 targetRotation = velocity.ToRotation();
             }
             rotation = MathHelper.Lerp(rotation, targetRotation, 0.2f);
+        }
+
+        /// <summary>
+        /// 更新朝向 - 智能判断应该面向哪边
+        /// </summary>
+        private void UpdateFacingDirection() {
+            int desiredDirection = facingDirection;
+
+            switch (State) {
+                case GoddessState.Following:
+                case GoddessState.Idle:
+                case GoddessState.Returning:
+                    //跟随/待机/返回时，面向玩家
+                    if (Projectile.Center.X < Owner.Center.X - 30f) {
+                        desiredDirection = 1; //玩家在右边，面向右
+                    }
+                    else if (Projectile.Center.X > Owner.Center.X + 30f) {
+                        desiredDirection = -1; //玩家在左边，面向左
+                    }
+                    break;
+
+                case GoddessState.PrepareStrike:
+                case GoddessState.Striking:
+                    //攻击时，面向目标
+                    if (currentTarget != null && currentTarget.active) {
+                        if (Projectile.Center.X < currentTarget.Center.X) {
+                            desiredDirection = 1; //目标在右边
+                        }
+                        else {
+                            desiredDirection = -1; //目标在左边
+                        }
+                    }
+                    break;
+
+                case GoddessState.Appearing:
+                    //出现时，面向玩家方向
+                    desiredDirection = Owner.direction;
+                    break;
+            }
+
+            //如果需要改变方向，添加平滑过渡
+            if (desiredDirection != facingDirection) {
+                directionSmoothTimer++;
+                
+                //延迟翻转，避免频繁抖动（5帧后翻转）
+                if (directionSmoothTimer > 5) {
+                    facingDirection = desiredDirection;
+                    directionSmoothTimer = 0;
+                    
+                    //翻转时播放轻微音效
+                    if (State != GoddessState.Appearing && !VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item1 with { 
+                            Volume = 0.1f, 
+                            Pitch = 0.5f 
+                        }, Projectile.Center);
+                    }
+                }
+            }
+            else {
+                directionSmoothTimer = 0;
+            }
+
+            //更新 Projectile.direction 供绘制使用
+            Projectile.direction = facingDirection;
         }
 
         /// <summary>
@@ -709,9 +787,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Rectangle frameRect = texture.Frame(1, TotalFrames, 0, Projectile.frame);
             Vector2 origin = frameRect.Size() / 2f;
 
+            //根据朝向决定绘制效果
+            SpriteEffects spriteEffects = facingDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
             //绘制残影
             if (State == GoddessState.PrepareStrike || State == GoddessState.Striking) {
-                DrawAfterimages(sb, texture, frameRect, origin, lightColor);
+                DrawAfterimages(sb, texture, frameRect, origin, lightColor, spriteEffects);
             }
 
             //绘制外光晕
@@ -743,7 +824,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 0,
                 origin,
                 scale,
-                Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                spriteEffects,
                 0
             );
 
@@ -756,7 +837,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// <summary>
         /// 绘制残影
         /// </summary>
-        private void DrawAfterimages(SpriteBatch sb, Texture2D texture, Rectangle frameRect, Vector2 origin, Color lightColor) {
+        private void DrawAfterimages(SpriteBatch sb, Texture2D texture, Rectangle frameRect, Vector2 origin, Color lightColor, SpriteEffects spriteEffects) {
             for (int i = 1; i < Projectile.oldPos.Length && i < 8; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
@@ -772,7 +853,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     0,
                     origin,
                     scale * progress,
-                    Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                    spriteEffects,
                     0
                 );
             }
