@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
     /// <summary>
     /// 风暴女神
     /// </summary>
-    internal class StormGoddess : ModProjectile
+    internal class StormGoddess : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddess";
 
@@ -78,8 +79,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             public float Scale;
         }
 
-        private Player Owner => Main.player[Projectile.owner];
-
         public override void SetStaticDefaults() {
             Main.projFrames[Type] = TotalFrames;
             ProjectileID.Sets.TrailCacheLength[Type] = 12;
@@ -100,7 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public override void AI() {
             //保持存活
-            if (Owner.active && !Owner.dead && Owner.HeldItem.type == ModContent.ItemType<Items.Melee.StormGoddessSpear>()) {
+            if (Owner.active && !Owner.dead && Item.type == ModContent.ItemType<Items.Melee.StormGoddessSpear>()) {
                 Projectile.timeLeft = 2;
             }
             else {
