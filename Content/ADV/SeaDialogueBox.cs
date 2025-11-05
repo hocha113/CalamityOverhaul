@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV
     internal class SeaDialogueBox : DialogueBoxBase
     {
         public static SeaDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<SeaDialogueBox>();
-        public override string LocalizationCategory => "Legend.HalibutText";
+        public override string LocalizationCategory => "UI";
 
         //风格参数
         private const float FixedWidth = 520f; //固定宽度

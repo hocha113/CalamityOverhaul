@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV
     internal class BrimstoneDialogueBox : DialogueBoxBase
     {
         public static BrimstoneDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<BrimstoneDialogueBox>();
-        public override string LocalizationCategory => "Legend.HalibutText";
+        public override string LocalizationCategory => "UI";
 
         //风格参数
         private const float FixedWidth = 540f;
