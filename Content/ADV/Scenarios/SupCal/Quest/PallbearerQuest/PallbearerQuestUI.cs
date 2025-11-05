@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     /// </summary>
     internal class PallbearerQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override string LocalizationCategory => "ADV";
         public static PallbearerQuestUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestUI>();
 
         protected override void SetupLocalizedTexts() {

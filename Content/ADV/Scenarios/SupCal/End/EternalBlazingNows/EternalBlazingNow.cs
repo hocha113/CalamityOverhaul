@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     internal class EternalBlazingNow : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(EternalBlazingNow);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         //角色名称
         public static LocalizedText Rolename1 { get; private set; }

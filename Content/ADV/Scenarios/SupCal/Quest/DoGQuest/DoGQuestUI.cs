@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     /// </summary>
     internal class DoGQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override string LocalizationCategory => "ADV";
         public static DoGQuestUI Instance => UIHandleLoader.GetUIHandleOfType<DoGQuestUI>();
 
         protected override void SetupLocalizedTexts() {

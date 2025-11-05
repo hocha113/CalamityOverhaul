@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     internal class SupCalMoonLordReward : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(SupCalMoonLordReward);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }

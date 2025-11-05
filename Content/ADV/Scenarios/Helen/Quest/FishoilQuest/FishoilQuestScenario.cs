@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
     internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override string Key => nameof(FishoilQuestScenario);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         //触发控制
         public static bool Spwand;//外部可置 true 来允许尝试触发

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
     internal class ResurrectionWarn : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(ResurrectionWarn);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
         public static LocalizedText Rolename { get; private set; }
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
     /// </summary>
     internal class YharonQuestUI : BaseQuestAcceptUI
     {
-        public override string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override string LocalizationCategory => "ADV";
         public static YharonQuestUI Instance => UIHandleLoader.GetUIHandleOfType<YharonQuestUI>();
 
         protected override void SetupLocalizedTexts() {

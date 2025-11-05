@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV
     /// </summary>
     internal class ADVChoiceBox : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         public static ADVChoiceBox Instance => UIHandleLoader.GetUIHandleOfType<ADVChoiceBox>();
 

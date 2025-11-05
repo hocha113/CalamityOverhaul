@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     internal class SupCalPlayerDefeat : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(SupCalPlayerDefeat);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 

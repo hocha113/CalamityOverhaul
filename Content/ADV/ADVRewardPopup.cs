@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV
 {
     internal class ADVRewardPopup : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         public static ADVRewardPopup Instance => UIHandleLoader.GetUIHandleOfType<ADVRewardPopup>();
 

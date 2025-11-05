@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV
     /// </summary>
     internal class AchievementToast : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
 
         public static AchievementToast Instance => UIHandleLoader.GetUIHandleOfType<AchievementToast>();
 

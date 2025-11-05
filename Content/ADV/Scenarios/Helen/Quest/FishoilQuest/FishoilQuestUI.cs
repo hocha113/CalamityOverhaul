@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
     /// </summary>
     internal class FishoilQuestUI : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public string LocalizationCategory => "ADV";
         public static FishoilQuestUI Instance => UIHandleLoader.GetUIHandleOfType<FishoilQuestUI>();
 
         //本地化
