@@ -675,7 +675,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         private const int MarkDuration = 90; //标记持续时间（帧）
         private const float CrossSize = 50f; //十字大小
-        private const float GlowSize = 30f;   //发光范围
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;

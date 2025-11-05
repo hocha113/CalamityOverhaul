@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         //攻击系统
         private NPC currentTarget = null;
         private int attackCooldown = 0;
-        private const int AttackCooldownMax = 60;
+        private const int AttackCooldownMax = 90;
         private Vector2 strikePosition = Vector2.Zero;
 
         //粒子效果
@@ -929,7 +929,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             foreach (var effect in lightningEffects) {
                 float progress = effect.Life / effect.MaxLife;
                 float alpha = (float)Math.Sin(progress * MathHelper.Pi);
-                float effectScale = effect.Scale * (1f + progress * 2f);
+                float effectScale = effect.Scale * (1f + progress * 2f) * 0.8f;
 
                 Vector2 drawPos = effect.Position - Main.screenPosition;
                 Color effectColor = new Color(200, 230, 255) with { A = 0 };
