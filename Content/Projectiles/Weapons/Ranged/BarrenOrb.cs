@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
+﻿using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;

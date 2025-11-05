@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.OtherMods.Entropys;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +11,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
+namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     /// <summary>
     /// 风暴女神
@@ -101,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public override void AI() {
             //保持存活
-            if (Owner.active && !Owner.dead && Item.type == ModContent.ItemType<Items.Melee.StormGoddessSpear>()) {
+            if (Owner.active && !Owner.dead && (Item.type == ModContent.ItemType<StormGoddessSpear>() || EntropyCore.IsHeartOfStorm(Owner))) {
                 Projectile.timeLeft = 2;
             }
             else {
@@ -211,8 +212,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             float offsetY = -100;
 
             //如果女神在玩家后方，稍微调整位置让她能看到玩家
-            if ((Owner.direction == 1 && Projectile.Center.X < Owner.Center.X) ||
-                (Owner.direction == -1 && Projectile.Center.X > Owner.Center.X)) {
+            if (Owner.direction == 1 && Projectile.Center.X < Owner.Center.X ||
+                Owner.direction == -1 && Projectile.Center.X > Owner.Center.X) {
                 offsetX *= 0.5f; //减小距离
                 offsetY -= 20; //稍微高一点
             }
@@ -548,8 +549,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// 是否应该攻击
         /// </summary>
         private bool ShouldAttack() {
+            if (EntropyCore.IsHeartOfStorm(Owner)) {
+                return true;//始终攻击
+            }
             //玩家正在使用物品
-            return Owner.itemAnimation > 0 && Owner.HeldItem.type == ModContent.ItemType<Items.Melee.StormGoddessSpear>();
+            return Owner.itemAnimation > 0 && Owner.HeldItem.type == ModContent.ItemType<StormGoddessSpear>();
         }
 
         /// <summary>

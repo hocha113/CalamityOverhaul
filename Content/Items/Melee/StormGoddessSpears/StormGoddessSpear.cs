@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     /// <summary>
     /// 风暴女神之矛
@@ -18,7 +17,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddessSpear";
 
-        ///<summary>连击索引计数器</summary>
+        /// <summary>
+        /// 连击索引计数器
+        /// </summary>
         private static int comboIndex = 0;
 
         public override void SetStaticDefaults() {

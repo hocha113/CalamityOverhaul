@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
+namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     /// <summary>
     /// 风暴电弧，较小的连锁闪电，用于二次打击和追踪效果

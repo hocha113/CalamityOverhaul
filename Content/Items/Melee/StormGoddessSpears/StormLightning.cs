@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -7,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
+namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     /// <summary>
     /// 风暴女神之矛的主要闪电弹幕
@@ -62,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             //提取宽度缩放（千位数字）
             if (ai2 >= 1000) {
-                widthScale = (ai2 / 1000) / 10f; //1700 → 700 → 0.7
+                widthScale = ai2 / 1000 / 10f; //1700 → 700 → 0.7
                 ai2 = ai2 % 1000; //移除千位
             }
 

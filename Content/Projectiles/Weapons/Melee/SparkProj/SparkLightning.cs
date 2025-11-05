@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
+﻿using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

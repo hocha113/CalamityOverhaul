@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using CalamityOverhaul.Content.RangedModify;
 using InnoVault.GameSystem;
 using System.Collections.Generic;

@@ -9,14 +9,14 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
+namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     /// <summary>
     /// 风暴女神之矛的持握弹幕
     /// </summary>
     internal class StormGoddessSpearHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Items.Melee.StormGoddessSpear>();
+        public override int TargetID => ModContent.ItemType<StormGoddessSpear>();
         public override Texture2D TextureValue => CWRUtils.GetT2DValue(CWRConstant.Projectile_Melee + "StormGoddessSpearProj");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             hasSpawnedLightning = false;
 
             //循环颜色风格（统一为白蓝色系）
-            lightningColorStyle = (comboCounter % 3) + 1;
+            lightningColorStyle = comboCounter % 3 + 1;
         }
 
         public override bool PreSwingAI() {
