@@ -576,12 +576,17 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             //女神闪电：ai2编码 = 颜色 + 2000（表示140%宽度 + 女神标记）
             int goddessAI2 = 1 + 2400; //颜色1 + 240%(2.4倍宽度，包含1.3倍女神加成)
 
+            float baseDmg = Owner.GetWeaponDamage(Owner.HeldItem);
+            if (EntropyCore.IsHeartOfStorm(Owner)) {
+                baseDmg = 800 * Owner.GetDamage(DamageClass.Melee).Additive;
+            }
+
             Projectile mainLightning = Projectile.NewProjectileDirect(
                 Projectile.GetSource_FromThis(),
                 lightningStart,
                 direction * 25f,
                 ModContent.ProjectileType<StormLightning>(),
-                (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 1.6f),
+                (int)(baseDmg * 1.6f),
                 8f,
                 Owner.whoAmI,
                 ai0: 0,
@@ -619,7 +624,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                     extraStart,
                     extraDir * Main.rand.NextFloat(22f, 30f),
                     ModContent.ProjectileType<StormLightning>(),
-                    (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 0.9f),
+                    (int)(baseDmg * 0.9f),
                     6f,
                     Owner.whoAmI,
                     ai0: 0,

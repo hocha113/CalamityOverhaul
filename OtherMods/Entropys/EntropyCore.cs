@@ -6,14 +6,11 @@ namespace CalamityOverhaul.OtherMods.Entropys
     internal static class EntropyCore
     {
         public static bool Has => ModLoader.HasMod("CalamityEntropy");
-        public static bool IsHeartOfStorm(Player player) {
-            if (!Has) {
-                return false;
-            }
-            if (player.Alives()) {
-                return false;
-            }
-            return HeartOfStormRef.IsHeartOfStorm(player);
-        }
+        /// <summary>
+        /// 玩家是否拥有风暴之心
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool IsHeartOfStorm(Player player) => HeartOfStormPlayer.GetHeartOfStorm(player);
     }
 }
