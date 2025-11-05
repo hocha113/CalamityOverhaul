@@ -3,8 +3,6 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
-using CalamityOverhaul.Content.RemakeItems.Melee;
-using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
