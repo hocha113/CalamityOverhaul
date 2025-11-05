@@ -1719,6 +1719,7 @@ Projectiles: {
 	HeartcarverDash.DisplayName: Heartcarver Dash
 	ProverbsCircle.DisplayName: Proverbs Circle
 	StormGoddess.DisplayName: Storm Goddess
+	JusticeUnveiledCross.DisplayName: Justice Unveiled Cross
 }
 
 Configs: {

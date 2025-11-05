@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// </summary>
     internal class JusticeUnveiled : ModItem
     {
+        public static bool oldControlUp;
+        public static bool justUp;
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
         public const int DropProbabilityDenominator = 6000;
         private static bool OnLoaden;
@@ -43,6 +45,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (player.CWR().PlayerIsKreLoadTime > 0) {
                 OnLoaden = true;
             }
+
+            justUp = player.controlUp && !oldControlUp;
+            oldControlUp = player.controlUp;
         }
 
         public static bool SpwanBool(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
@@ -58,9 +63,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             if (!player.CWR().IsJusticeUnveiled) {
-                return false;
-            }
-            if (player.ownedProjectileCounts[type] > 0 || player.ownedProjectileCounts[type2] > 0) {
                 return false;
             }
 
@@ -93,13 +95,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return true;
             }
 
-            if (projectile.DamageType != DamageClass.Ranged) {
-                return false;
+            //修改触发条件，不再是暴击，而是按概率给予玩家触发机会
+            if (projectile.DamageType == DamageClass.Ranged) {
+                if (hit.Crit && Main.rand.NextBool(3)) {//暴击后33%概率给予机会
+                    player.CWR().JusticeUnveiledCharges++;
+                    if (player.whoAmI == Main.myPlayer && player.CWR().JusticeUnveiledCharges <= 5) {
+                        Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
+                            , ModContent.ProjectileType<JusticeUnveiledCross>(), 0, 0, player.whoAmI, player.CWR().JusticeUnveiledCharges);
+                    }
+                    if (player.CWR().JusticeUnveiledCharges > 5) {
+                        player.CWR().JusticeUnveiledCharges = 5;//最多5次
+                    }
+                }
             }
-            if (!hit.Crit) {
-                return false;
-            }
-            return true;
+            return false;
         }
 
         public static void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
@@ -126,45 +135,45 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 );
             }
 
-            //命中闪光特效
-            for (int i = 0; i < 4; i++) {
-                float angle = MathHelper.TwoPi * i / 4f;
+            //命中闪光特效（弱化）
+            for (int i = 0; i < 2; i++) {
+                float angle = MathHelper.TwoPi * i / 2f;
                 Vector2 direction = angle.ToRotationVector2();
 
-                //金色光线爆发
-                for (int j = 0; j < 6; j++) {
-                    Vector2 velocity = direction * Main.rand.NextFloat(4f, 10f);
+                //金色光线爆发（减少数量）
+                for (int j = 0; j < 3; j++) {
+                    Vector2 velocity = direction * Main.rand.NextFloat(2f, 5f);
                     Dust light = Dust.NewDustPerfect(
                         target.Center,
                         DustID.GoldCoin,
                         velocity,
                         0,
                         default,
-                        Main.rand.NextFloat(1.5f, 2.5f)
+                        Main.rand.NextFloat(1f, 1.5f)
                     );
                     light.noGravity = true;
-                    light.fadeIn = 1.2f;
+                    light.fadeIn = 0.8f;
                 }
             }
 
-            //环形冲击波粒子
-            for (int i = 0; i < 16; i++) {
-                float angle = MathHelper.TwoPi * i / 16f;
-                Vector2 velocity = angle.ToRotationVector2() * 8f;
+            //环形冲击波粒子（减少数量）
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
+                Vector2 velocity = angle.ToRotationVector2() * 5f;
                 Dust ring = Dust.NewDustPerfect(
                     target.Center,
                     DustID.Electric,
                     velocity,
                     0,
                     Color.Gold,
-                    Main.rand.NextFloat(1.2f, 2f)
+                    Main.rand.NextFloat(1f, 1.5f)
                 );
                 ring.noGravity = true;
             }
 
-            //命中音效
+            //命中音效（降低音量）
             SoundEngine.PlaySound(SoundID.Item4 with {
-                Volume = 0.4f,
+                Volume = 0.3f,
                 Pitch = 0.5f
             }, target.Center);
         }
@@ -184,11 +193,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, npc.whoAmI);
                 }
                 return;
-            }
-            else {
-                Projectile.NewProjectile(player.FromObjectGetParent()
-                , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
-                , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, target.whoAmI);
             }
         }
     }
@@ -260,13 +264,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 float progress = (190 - Projectile.timeLeft) / 30f;
                 chargeIntensity = MathHelper.Lerp(0f, 1f, CWRUtils.EaseOutCubic(progress));
 
-                //生成充能粒子
-                if (Main.rand.NextBool(2)) {
+                //生成充能粒子（减少）
+                if (Main.rand.NextBool(3)) {
                     SpawnChargeParticle();
                 }
 
-                //生成闪电
-                if (Main.rand.NextBool(5)) {
+                //生成闪电（减少）
+                if (Main.rand.NextBool(8)) {
                     SpawnChargeLightning();
                 }
             }
@@ -288,17 +292,17 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Projectile.timeLeft == 160) {
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
                     Pitch = -0.3f,
-                    Volume = 0.7f
+                    Volume = 0.5f//降低音量
                 }, Projectile.Center);
             }
 
-            //震屏预警
+            //震屏预警（弱化）
             if (Projectile.timeLeft < 20 && Projectile.timeLeft > 10) {
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Projectile.Center,
                         Main.rand.NextVector2Unit(),
-                        2f * chargeIntensity,
+                        1.5f * chargeIntensity,//减弱震屏强度
                         6f,
                         5,
                         800f,
@@ -307,24 +311,24 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //强化照明效果
+            //强化照明效果（稍微降低）
             Lighting.AddLight(Projectile.Center,
-                1.5f * chargeIntensity,
                 1.2f * chargeIntensity,
-                0.3f * chargeIntensity);
+                1f * chargeIntensity,
+                0.2f * chargeIntensity);
         }
 
         private void SpawnChargeParticle() {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float distance = Main.rand.NextFloat(80f, 150f);
+            float distance = Main.rand.NextFloat(60f, 120f);
             Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
             Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
-                               Main.rand.NextFloat(4f, 8f) * (1f + chargeIntensity);
+                               Main.rand.NextFloat(3f, 6f) * (1f + chargeIntensity);
 
             BasePRT particle = new PRT_Light(spawnPos, velocity,
-                Main.rand.NextFloat(0.6f, 1.2f),
+                Main.rand.NextFloat(0.5f, 1f),
                 Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),
-                25, 1, 1.5f, hueShift: 0.0f);
+                20, 1, 1.2f, hueShift: 0.0f);
             PRTLoader.AddParticle(particle);
         }
 
@@ -334,8 +338,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
             lightningBolts.Add(new LightningBolt(
                 Projectile.Center,
                 direction,
-                Main.rand.Next(100, 180),
-                20
+                Main.rand.Next(80, 140),
+                15
             ));
         }
 
@@ -362,11 +366,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Texture2D glowTex = CWRAsset.StarTexture.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //多层光晕
-            for (int i = 0; i < 4; i++) {
-                float scale = (1f + i * 0.3f) * chargeIntensity * 0.8f;
-                float alpha = (1f - i * 0.2f) * chargeIntensity * 0.6f;
-                Color color = Color.Lerp(Color.Gold, Color.OrangeRed, i / 4f) * alpha;
+            //多层光晕（减少层数）
+            for (int i = 0; i < 2; i++) {
+                float scale = (1f + i * 0.2f) * chargeIntensity * 0.6f;
+                float alpha = (1f - i * 0.3f) * chargeIntensity * 0.5f;
+                Color color = Color.Lerp(Color.Gold, Color.OrangeRed, i / 2f) * alpha;
                 color.A = 0;
 
                 Main.spriteBatch.Draw(
@@ -397,7 +401,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public static Asset<Texture2D> MaskLaserLine = null;
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 2400;
+            Projectile.width = Projectile.height = 1800;//缩小打击范围
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -413,21 +417,21 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
                 }
                 else {
-                    //多重音效叠加
-                    SoundEngine.PlaySound(CWRSound.JustStrike with { Volume = 1.2f }, Projectile.Center);
+                    //多重音效叠加（降低音量）
+                    SoundEngine.PlaySound(CWRSound.JustStrike with { Volume = 0.8f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
                         Pitch = -0.4f,
-                        Volume = 0.8f
+                        Volume = 0.6f
                     }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Thunder with {
                         Pitch = 0.3f,
-                        Volume = 0.6f
+                        Volume = 0.4f
                     }, Projectile.Center);
                 }
 
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                            Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
+                            Main.rand.NextVector2Unit(), 12f, 6f, 25, 1000f, FullName);//弱化震屏
                     Main.instance.CameraModifiers.Add(modifier);
                 }
             }
@@ -441,7 +445,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 InitializeExplosionEffects();
 
                 if (Projectile.ai[0].TryGetNPC(out var target2)) {
-                    int size = 2400;
+                    int size = 1800;
                     Point pos = target2.Center.ToPoint() - new Point(size / 2, size / 2);
                     Rectangle hitBox = new Rectangle(pos.X, pos.Y, size, size);
                     foreach (var n in Main.ActiveNPCs) {
@@ -472,9 +476,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Projectile.frameCounter = 0;
             }
 
-            Projectile.scale += 0.065f;
+            Projectile.scale += 0.055f;//稍微减缓缩放
 
-            if (Projectile.ai[1] < 4 && Projectile.ai[2] == 0) {
+            if (Projectile.ai[1] < 3 && Projectile.ai[2] == 0) {//减少光柱强度
                 Projectile.ai[1]++;
             }
             if (frameIndex > 8) {
@@ -487,82 +491,82 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //更新特效
             UpdateExplosionEffects();
 
-            //强化照明
+            //强化照明（稍微降低）
             float lightIntensity = (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi);
             Lighting.AddLight(Projectile.Center,
-                2f * lightIntensity,
                 1.5f * lightIntensity,
-                0.5f * lightIntensity);
+                1.2f * lightIntensity,
+                0.4f * lightIntensity);
         }
 
         private void InitializeExplosionEffects() {
-            //生成初始冲击波
-            for (int i = 0; i < 3; i++) {
-                explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 15f));
+            //生成初始冲击波（减少数量）
+            for (int i = 0; i < 2; i++) {
+                explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 10f));
             }
 
-            //生成火花效果
-            for (int i = 0; i < 80; i++) {
-                float angle = MathHelper.TwoPi * i / 80f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 30f);
+            //生成火花效果（减少数量）
+            for (int i = 0; i < 50; i++) {
+                float angle = MathHelper.TwoPi * i / 50f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 24f);
                 impactSparks.Add(new ImpactSpark(Projectile.Center, velocity));
             }
 
-            //大量粒子爆发
-            SpawnExplosionParticles(100);
+            //大量粒子爆发（减少数量）
+            SpawnExplosionParticles(60);
         }
 
         private void TriggerMainImpact() {
-            //主要冲击
+            //主要冲击（弱化）
             if (CWRServerConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                    Main.rand.NextVector2Unit(), 25f, 10f, 35, 1500f, FullName);
+                    Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
-            //音效
+            //音效（降低音量）
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
-                Volume = 1.5f,
+                Volume = 1.0f,
                 Pitch = -0.3f
             }, Projectile.Center);
 
             //额外冲击波
-            for (int i = 0; i < 2; i++) {
-                explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 20f));
+            for (int i = 0; i < 1; i++) {
+                explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 15f));
             }
 
-            SpawnExplosionParticles(150);
+            SpawnExplosionParticles(100);
         }
 
         private void TriggerSecondaryImpact() {
-            //次级冲击
+            //次级冲击（弱化）
             if (CWRServerConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                    Main.rand.NextVector2Unit(), 15f, 8f, 25, 1200f, FullName);
+                    Main.rand.NextVector2Unit(), 10f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
             SoundEngine.PlaySound(SoundID.Item62 with {
-                Volume = 1.2f,
+                Volume = 0.8f,
                 Pitch = -0.2f
             }, Projectile.Center);
 
-            SpawnExplosionParticles(80);
+            SpawnExplosionParticles(50);
         }
 
         private void SpawnExplosionParticles(int count) {
             for (int i = 0; i < count; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 40f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 30f);
 
                 //金色火花
                 BasePRT spark = new PRT_Light(
-                    Projectile.Center + Main.rand.NextVector2Circular(50f, 50f),
+                    Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
                     velocity,
-                    Main.rand.NextFloat(0.8f, 1.5f),
+                    Main.rand.NextFloat(0.6f, 1.2f),
                     Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),
-                    Main.rand.Next(20, 40),
-                    1, 1.5f, hueShift: 0.0f
+                    Main.rand.Next(15, 30),
+                    1, 1.3f, hueShift: 0.0f
                 );
                 PRTLoader.AddParticle(spark);
             }
@@ -622,20 +626,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi));
             drawColor.A = 0;
 
-            //主光柱
+            //主光柱（减弱宽度）
             Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, drawColor
                 , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
-                , new Vector2(4000, Projectile.ai[1] * 0.05f * Projectile.scale), SpriteEffects.None, 0);
+                , new Vector2(4000, Projectile.ai[1] * 0.04f * Projectile.scale), SpriteEffects.None, 0);
 
-            //附加光柱增强效果
+            //附加光柱增强效果（稍微弱化）
             Color accentColor = Color.Lerp(Color.Yellow, Color.White,
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.5f + 0.5f);
             accentColor.A = 0;
-            accentColor *= 0.6f;
+            accentColor *= 0.5f;
 
             Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, accentColor
                 , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
-                , new Vector2(4000, Projectile.ai[1] * 0.03f * Projectile.scale), SpriteEffects.None, 0);
+                , new Vector2(4000, Projectile.ai[1] * 0.025f * Projectile.scale), SpriteEffects.None, 0);
         }
 
         private void DrawMainExplosion(Color lightColor) {
@@ -648,9 +652,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.5f + 0.5f);
             glowColor.A = 0;
 
-            for (int i = 0; i < 3; i++) {
-                float glowScale = Projectile.scale * (1f + i * 0.1f);
-                float glowAlpha = (1f - i * 0.3f) * 0.5f;
+            for (int i = 0; i < 2; i++) {//减少绘制层数
+                float glowScale = Projectile.scale * (1f + i * 0.08f);
+                float glowAlpha = (1f - i * 0.25f) * 0.4f;
 
                 Main.spriteBatch.Draw(value, drawPos
                     , rectangle, glowColor * glowAlpha, Projectile.rotation, origin
@@ -677,8 +681,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
         private float pulsePhase = 0f;
         private float fadeProgress = 0f;
 
-        private const int MarkDuration = 90; //标记持续时间（帧）
-        private const float CrossSize = 50f; //十字大小
+        private const int MarkDuration = 90;//标记持续时间（帧）
+        private const float CrossSize = 50f;//十字大小
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;
@@ -863,10 +867,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void OnKill(int timeLeft) {
-            //消散特效
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
+            //消散特效（减少粒子）
+            for (int i = 0; i < 12; i++) {
+                float angle = MathHelper.TwoPi * i / 12f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
 
                 Dust fade = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -874,27 +878,27 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     velocity,
                     0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
+                    Main.rand.NextFloat(1.2f, 2f)
                 );
                 fade.noGravity = true;
-                fade.fadeIn = 1f;
+                fade.fadeIn = 0.8f;
             }
 
             //闪光粒子
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 8; i++) {
                 Dust flash = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Electric,
-                    Main.rand.NextVector2Circular(5f, 5f),
+                    Main.rand.NextVector2Circular(4f, 4f),
                     0,
                     Color.Gold,
-                    Main.rand.NextFloat(1.2f, 2f)
+                    Main.rand.NextFloat(1f, 1.5f)
                 );
                 flash.noGravity = true;
             }
 
             SoundEngine.PlaySound(SoundID.Item29 with {
-                Volume = 0.3f,
+                Volume = 0.25f,
                 Pitch = 0.4f
             }, Projectile.Center);
         }
@@ -930,7 +934,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             for (int i = 0; i < segments; i++) {
                 float segmentLength = Length / segments;
-                Vector2 offset = Direction.RotatedByRandom(0.6f) * segmentLength;
+                Vector2 offset = Direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * segmentLength;
                 offset += Main.rand.NextVector2Circular(12f, 12f);
                 currentPos += offset;
                 Points.Add(currentPos);
@@ -978,9 +982,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
     {
         public Vector2 Center;
         public float Radius;
-        public float MaxRadius = 1350f;
+        public float MaxRadius = 1000f;//缩小最大半径
         public int Life;
-        public int MaxLife = 40;
+        public int MaxLife = 35;//缩短持续时间
         public Color WaveColor;
         public float StartDelay;
 
@@ -1006,11 +1010,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Life < StartDelay) return;
 
             float progress = (Life - StartDelay) / (float)MaxLife;
-            float alpha = (1f - progress) * 0.7f;
+            float alpha = (1f - progress) * 0.6f;
             if (alpha <= 0.05f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            int segments = 72;
+            int segments = 60;//减少分段数
             float angleStep = MathHelper.TwoPi / segments;
 
             for (int i = 0; i < segments; i++) {
@@ -1034,7 +1038,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     color,
                     rotation,
                     Vector2.Zero,
-                    new Vector2(length, 5f + alpha * 4f),
+                    new Vector2(length, 4f + alpha * 3f),
                     SpriteEffects.None,
                     0f
                 );
@@ -1059,11 +1063,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public ImpactSpark(Vector2 position, Vector2 velocity) {
             Position = position;
             Velocity = velocity;
-            Scale = Main.rand.NextFloat(0.8f, 1.5f);
+            Scale = Main.rand.NextFloat(0.6f, 1.2f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Alpha = 1f;
             Life = 0;
-            MaxLife = Main.rand.Next(25, 45);
+            MaxLife = Main.rand.Next(20, 35);
             SparkColor = Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat());
         }
 
@@ -1092,7 +1096,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 drawColor,
                 Rotation,
                 sparkTex.Size() / 2f,
-                Scale * 0.2f,
+                Scale * 0.15f,
                 SpriteEffects.None,
                 0f
             );

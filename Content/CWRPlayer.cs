@@ -163,6 +163,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool IsJusticeUnveiled;
         /// <summary>
+        /// 正义显现的触发机会次数
+        /// </summary>
+        public int JusticeUnveiledCharges;
+        /// <summary>
+        /// 正义显现的触发冷却
+        /// </summary>
+        public int JusticeUnveiledCooldown;
+        /// <summary>
         /// 存储待应用的冲刺速度向量，当其不为null时将在下一个帧应用
         /// </summary>
         public Vector2? PendingDashVelocity { get; set; } = null;
@@ -246,6 +254,8 @@ namespace CalamityOverhaul.Content
             cwr.SoulfireExplosion = SoulfireExplosion;
             cwr.DestroyerOwner = DestroyerOwner;
             cwr.IsJusticeUnveiled = IsJusticeUnveiled;
+            cwr.JusticeUnveiledCharges = JusticeUnveiledCharges;
+            cwr.JusticeUnveiledCooldown = JusticeUnveiledCooldown;
             cwr.PendingDashVelocity = PendingDashVelocity;
             cwr.PendingDashRotSpeedMode = PendingDashRotSpeedMode;
             cwr.DecelerationCounter = DecelerationCounter;
@@ -470,6 +480,14 @@ namespace CalamityOverhaul.Content
             }
             if (ThermalGenerationActiveTime > 0) {
                 ThermalGenerationActiveTime--;
+            }
+
+            if (!IsJusticeUnveiled) {
+                JusticeUnveiledCharges = 0;
+            }
+
+            if (JusticeUnveiledCooldown > 0) {
+                JusticeUnveiledCooldown--;
             }
 
             PlayerPositionChange = oldPlayerPositionChange.To(Player.position);

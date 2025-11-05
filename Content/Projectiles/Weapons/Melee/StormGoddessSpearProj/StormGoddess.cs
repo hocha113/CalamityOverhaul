@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 攻击状态 - 释放闪电
+        /// 攻击状态
         /// </summary>
         private void StrikingAI() {
             if (currentTarget == null || !currentTarget.active) {
@@ -408,7 +408,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 返回状态 - 回到玩家身边
+        /// 返回状态，回到玩家身边
         /// </summary>
         private void ReturningAI() {
             targetPosition = Owner.Center + new Vector2(Owner.direction * 80, -100);
@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         #region 运动系统
 
         /// <summary>
-        /// 应用力 - Boid算法核心
+        /// 应用力
         /// </summary>
         private void ApplyForce(Vector2 force) {
             acceleration += force;
@@ -466,7 +466,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 更新朝向 - 智能判断应该面向哪边
+        /// 更新朝向
         /// </summary>
         private void UpdateFacingDirection() {
             int desiredDirection = facingDirection;
@@ -884,7 +884,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 baseColor,
                 0,
                 origin,
-                scale,
+                Projectile.scale,
                 spriteEffects,
                 0
             );
