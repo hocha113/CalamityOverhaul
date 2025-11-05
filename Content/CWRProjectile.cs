@@ -6,7 +6,6 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;

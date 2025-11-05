@@ -209,14 +209,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //根据玩家朝向调整跟随位置，让女神更自然地跟随
             float offsetX = Owner.direction * 100;
             float offsetY = -100;
-            
+
             //如果女神在玩家后方，稍微调整位置让她能看到玩家
             if ((Owner.direction == 1 && Projectile.Center.X < Owner.Center.X) ||
                 (Owner.direction == -1 && Projectile.Center.X > Owner.Center.X)) {
                 offsetX *= 0.5f; //减小距离
                 offsetY -= 20; //稍微高一点
             }
-            
+
             targetPosition = Owner.Center + new Vector2(offsetX, offsetY);
 
             //应用跟随力
@@ -260,11 +260,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private void IdleAI() {
             //环绕玩家，根据玩家朝向调整
             float orbitAngle = Main.GlobalTimeWrappedHourly * IdleOrbitSpeed;
-            
+
             //让女神在玩家面前环绕
             float xOffset = MathF.Cos(orbitAngle) * IdleOrbitRadius * Owner.direction;
             float yOffset = MathF.Sin(orbitAngle) * 60 - 80;
-            
+
             idleOffset = new Vector2(xOffset, yOffset);
             targetPosition = Owner.Center + idleOffset;
 
@@ -310,9 +310,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             if (StateTimer == 1) {
                 //蓄力音效
-                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { 
-                    Volume = 0.6f, 
-                    Pitch = -0.4f 
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
+                    Volume = 0.6f,
+                    Pitch = -0.4f
                 }, Projectile.Center);
             }
 
@@ -368,12 +368,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 ReleaseStormLightning();
 
                 //攻击音效
-                SoundEngine.PlaySound(SoundID.Item122 with { 
-                    Volume = 1f, 
-                    Pitch = -0.3f 
+                SoundEngine.PlaySound(SoundID.Item122 with {
+                    Volume = 1f,
+                    Pitch = -0.3f
                 }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { 
-                    Volume = 0.8f 
+                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
+                    Volume = 0.8f
                 }, Projectile.Center);
 
                 //屏幕震动
@@ -506,17 +506,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //如果需要改变方向，添加平滑过渡
             if (desiredDirection != facingDirection) {
                 directionSmoothTimer++;
-                
+
                 //延迟翻转，避免频繁抖动（5帧后翻转）
                 if (directionSmoothTimer > 5) {
                     facingDirection = desiredDirection;
                     directionSmoothTimer = 0;
-                    
+
                     //翻转时播放轻微音效
                     if (State != GoddessState.Appearing && !VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item1 with { 
-                            Volume = 0.1f, 
-                            Pitch = 0.5f 
+                        SoundEngine.PlaySound(SoundID.Item1 with {
+                            Volume = 0.1f,
+                            Pitch = 0.5f
                         }, Projectile.Center);
                     }
                 }
@@ -597,12 +597,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 float progress = i / (float)extraCount;
                 float spiralAngle = progress * MathHelper.TwoPi * 1.5f;
                 float radius = 120f * (1f - progress * 0.6f); //渐进收缩
-                
+
                 Vector2 offset = new Vector2(
                     MathF.Cos(spiralAngle) * radius,
                     -50f * (1f - progress) //高度递减
                 );
-                
+
                 Vector2 extraStart = lightningStart + offset;
                 Vector2 extraTarget = currentTarget.Center + Main.rand.NextVector2Circular(60, 60);
                 Vector2 extraDir = (extraTarget - extraStart).SafeNormalize(Vector2.UnitY);
@@ -640,7 +640,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (VaultUtils.isServer || currentTarget == null) return;
 
             Color lightningColor = new Color(200, 230, 255);
-            
+
             //环形闪电粒子
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
@@ -707,7 +707,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// </summary>
         private void SpawnIdleParticles() {
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
-            
+
             BasePRT particle = new PRT_Spark(
                 particlePos,
                 Main.rand.NextVector2Circular(2f, 2f),
@@ -833,9 +833,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private void UpdateEffects() {
             //光源
             float lightIntensity = GlowIntensity * 0.8f;
-            Lighting.AddLight(Projectile.Center, 
-                0.7f * lightIntensity, 
-                0.9f * lightIntensity, 
+            Lighting.AddLight(Projectile.Center,
+                0.7f * lightIntensity,
+                0.9f * lightIntensity,
                 1f * lightIntensity);
         }
 
@@ -876,7 +876,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             //绘制主体
             Color baseColor = Color.White * ((255f - Projectile.alpha) / 255f);
-            
+
             sb.Draw(
                 texture,
                 drawPos,

@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             const float maxTitleWidth = PanelWidth - 20f;
 
             List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
-            
+
             float totalHeight = 0f;
             foreach (string line in titleLines) {
                 totalHeight += font.MeasureString(line).Y * titleScale * 0.9f;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// </summary>
         protected virtual void UpdatePanelHeight() {
             float titleHeight = CalculateTitleHeight();
-            
+
             //基础高度组成：
             // - 顶部内边距: 8px
             // - 标题高度: titleHeight
@@ -158,9 +158,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             // - 伤害贡献文本: ~15px
             // - 需求文本: ~15px
             // - 进度条: 14px
-            
+
             float contentHeight = 8f + titleHeight + 4f + 10f + 15f + 15f + 14f;
-            
+
             //限制在最小和最大高度之间
             currentPanelHeight = Math.Clamp(contentHeight, MinPanelHeight, MaxPanelHeight);
         }
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// </summary>
         protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
             List<string> lines = new();
-            
+
             if (string.IsNullOrEmpty(text)) {
                 return lines;
             }

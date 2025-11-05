@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

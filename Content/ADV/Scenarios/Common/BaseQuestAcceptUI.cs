@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// </summary>
         protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
             List<string> lines = [];
-            
+
             if (string.IsNullOrEmpty(text)) {
                 return lines;
             }
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             //描述文本
             Vector2 descPos = dividerStart + new Vector2(2, 12);
             string desc = QuestDesc.Value;
-            
+
             //先按换行符分割
             string[] paragraphs = desc.Split('\n');
             currentY = descPos.Y;
@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             foreach (string paragraph in paragraphs) {
                 //每个段落再进行自动换行
                 List<string> wrappedLines = WrapText(paragraph, font, maxTitleWidth, descScale);
-                
+
                 foreach (string line in wrappedLines) {
                     Vector2 linePos = new Vector2(descPos.X, currentY);
                     Utils.DrawBorderString(spriteBatch, line, linePos + new Vector2(1, 1), Color.Black * alpha * 0.5f, descScale);

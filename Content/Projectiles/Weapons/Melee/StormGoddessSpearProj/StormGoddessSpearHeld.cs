@@ -131,10 +131,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (comboCounter == 0) {
                 //第一击：单个精准闪电（细长型）
                 SpawnPlayerLightning(
-                    ShootVelocity, 
-                    1f, 
-                    lightningColorStyle, 
-                    false, 
+                    ShootVelocity,
+                    1f,
+                    lightningColorStyle,
+                    false,
                     widthScale: 0.7f //70%宽度
                 );
             }
@@ -144,11 +144,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     //黄金角度分布：中间更密，两侧更开
                     float angle = i * 0.25f * (1f + MathF.Abs(i) * 0.2f);
                     Vector2 velocity = ShootVelocity.RotatedBy(angle);
-                    
+
                     SpawnPlayerLightning(
-                        velocity, 
-                        0.65f, 
-                        lightningColorStyle, 
+                        velocity,
+                        0.65f,
+                        lightningColorStyle,
                         true,
                         widthScale: 0.65f, //65%宽度
                         speedScale: 0.9f
@@ -166,13 +166,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     float progress = i / (float)count;
                     float spiralAngle = MathHelper.TwoPi * progress + progress * MathHelper.PiOver4;
                     float radiusOffset = 0.8f + progress * 0.4f; //螺旋扩散
-                    
+
                     Vector2 velocity = spiralAngle.ToRotationVector2() * ShootSpeed * radiusOffset;
 
                     SpawnPlayerLightning(
-                        velocity, 
-                        damageMultiplier, 
-                        lightningColorStyle, 
+                        velocity,
+                        damageMultiplier,
+                        lightningColorStyle,
                         true,
                         widthScale: 0.6f, //60%宽度
                         speedScale: 0.85f + progress * 0.3f //渐进速度
@@ -196,13 +196,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// 生成玩家闪电（优化版 - 更细致）
         /// </summary>
         private void SpawnPlayerLightning(
-            Vector2 velocity, 
-            float damageMultiplier, 
-            int colorStyle, 
+            Vector2 velocity,
+            float damageMultiplier,
+            int colorStyle,
             bool disableHoming,
             float widthScale = 1f,
             float speedScale = 1f) {
-            
+
             //使用ai[2]传递宽度缩放：原值 + 1000 * widthScale
             //例如：colorStyle=1, widthScale=0.7 → ai2 = 1 + 700 = 701
             int ai2Value = colorStyle;

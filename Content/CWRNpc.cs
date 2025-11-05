@@ -8,7 +8,7 @@ using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Items.Accessories;
+using CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Painting;

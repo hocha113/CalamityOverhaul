@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     dontDmgTimer = Main.rand.Next(16);
                     Projectile.netUpdate = true;
-                }               
+                }
             }
 
             //从ai[2]恢复连锁次数
