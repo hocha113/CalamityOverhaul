@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         //攻击系统
         private NPC currentTarget = null;
         private int attackCooldown = 0;
-        private const int AttackCooldownMax = 120;
+        private const int AttackCooldownMax = 60;
         private Vector2 strikePosition = Vector2.Zero;
 
         //粒子效果
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             //优雅下降
             float progress = StateTimer / 60f;
-            float easeProgress = EaseOutCubic(progress);
+            float easeProgress = CWRUtils.EaseOutCubic(progress);
 
             //淡入
             Projectile.alpha = (int)(255 * (1f - easeProgress));
@@ -565,19 +565,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private void ReleaseStormLightning() {
             if (currentTarget == null || !Projectile.IsOwnedByLocalPlayer()) return;
 
-            // 主闪电（粗壮威猛）
+            //主闪电（粗壮威猛）
             Vector2 lightningStart = Projectile.Center + new Vector2(0, 30);
             Vector2 direction = (currentTarget.Center - lightningStart).SafeNormalize(Vector2.UnitY);
 
-            // 女神闪电：ai2编码 = 颜色 + 2000（表示140%宽度 + 女神标记）
-            int goddessAI2 = 1 + 2400; // 颜色1 + 240%(2.4倍宽度，包含1.3倍女神加成)
+            //女神闪电：ai2编码 = 颜色 + 2000（表示140%宽度 + 女神标记）
+            int goddessAI2 = 1 + 2400; //颜色1 + 240%(2.4倍宽度，包含1.3倍女神加成)
 
             Projectile mainLightning = Projectile.NewProjectileDirect(
                 Projectile.GetSource_FromThis(),
                 lightningStart,
                 direction * 25f,
                 ModContent.ProjectileType<StormLightning>(),
-                (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 1.2f),
+                (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 1.6f),
                 8f,
                 Owner.whoAmI,
                 ai0: 0,
@@ -585,29 +585,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 ai2: goddessAI2
             );
 
-            // 标记为女神闪电
+            //标记为女神闪电
             if (mainLightning.ModProjectile is StormLightning mainLightningProj) {
                 mainLightningProj.isGoddessLightning = true;
             }
 
-            // 辅助闪电（设计感分布 - 螺旋下降）
+            //辅助闪电（设计感分布 - 螺旋下降）
             int extraCount = Main.rand.Next(3, 5);
             for (int i = 0; i < extraCount; i++) {
-                // 螺旋分布，从外向内
+                //螺旋分布，从外向内
                 float progress = i / (float)extraCount;
                 float spiralAngle = progress * MathHelper.TwoPi * 1.5f;
-                float radius = 120f * (1f - progress * 0.6f); // 渐进收缩
+                float radius = 120f * (1f - progress * 0.6f); //渐进收缩
                 
                 Vector2 offset = new Vector2(
                     MathF.Cos(spiralAngle) * radius,
-                    -50f * (1f - progress) // 高度递减
+                    -50f * (1f - progress) //高度递减
                 );
                 
                 Vector2 extraStart = lightningStart + offset;
                 Vector2 extraTarget = currentTarget.Center + Main.rand.NextVector2Circular(60, 60);
                 Vector2 extraDir = (extraTarget - extraStart).SafeNormalize(Vector2.UnitY);
 
-                // 女神辅助闪电：ai2 = 颜色 + 不追踪 + 较粗（180%）
+                //女神辅助闪电：ai2 = 颜色 + 不追踪 + 较粗（180%）
                 int extraAI2 = 1 + 100 + 1800;
 
                 Projectile extraLightning = Projectile.NewProjectileDirect(
@@ -623,13 +623,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     ai2: extraAI2
                 );
 
-                // 标记为女神闪电
+                //标记为女神闪电
                 if (extraLightning.ModProjectile is StormLightning extraLightningProj) {
                     extraLightningProj.isGoddessLightning = true;
                 }
             }
 
-            // 额外的雷暴环绕效果
+            //额外的雷暴环绕效果
             SpawnThunderRingEffect();
         }
 
@@ -641,7 +641,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             Color lightningColor = new Color(200, 230, 255);
             
-            // 环形闪电粒子
+            //环形闪电粒子
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 ringPos = Projectile.Center + angle.ToRotationVector2() * 80f;
@@ -660,7 +660,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 PRTLoader.AddParticle(particle);
             }
 
-            // 向下汇聚的能量束
+            //向下汇聚的能量束
             for (int i = 0; i < 12; i++) {
                 Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(60, 30);
                 Vector2 velocity = (currentTarget.Center - startPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(15f, 25f);
@@ -946,17 +946,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     0
                 );
             }
-        }
-
-        #endregion
-
-        #region 工具方法
-
-        /// <summary>
-        /// 缓动函数 - EaseOutCubic
-        /// </summary>
-        private float EaseOutCubic(float t) {
-            return 1f - MathF.Pow(1f - t, 3f);
         }
 
         #endregion
