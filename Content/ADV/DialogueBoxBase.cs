@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -363,9 +364,12 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             if (keyRightPressState == KeyPressState.Pressed && hover) {
-                BeginClose();
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
+                //BeginClose();//暂时注释掉，老实说，右键就不应该有这种功能
             }
-            fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
+            fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)
+                || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift)
+                || keyRightPressState == KeyPressState.Held;
         }
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {
