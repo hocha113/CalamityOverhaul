@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -21,11 +22,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
 
         #region 长矛属性
-        /// <summary>连击计数</summary>
+        /// <summary>
+        /// 连击计数
+        /// </summary>
         private int comboCounter = 0;
-        /// <summary>是否已发射闪电</summary>
+        /// <summary>
+        /// 是否已发射闪电
+        /// </summary>
         private bool hasSpawnedLightning = false;
-        /// <summary>闪电颜色风格</summary>
+        /// <summary>
+        /// 闪电颜色风格
+        /// </summary>
         private int lightningColorStyle = 0;
         #endregion
 
@@ -65,15 +72,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     canDrawSlashTrail: true
                 );
 
-                //在突刺过程中生成电火花
-                if (Time < 8 * UpdateRate && !VaultUtils.isServer) {
+                //在突刺过程中生成电火花（更细致）
+                if (Time < 8 * UpdateRate && !VaultUtils.isServer && Main.rand.NextBool(2)) {
                     Vector2 sparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length * 0.7f;
                     BasePRT spark = new PRT_Spark(
                         sparkPos,
-                        Projectile.velocity * 0.5f,
+                        Projectile.velocity * 0.3f,
                         false,
-                        5,
-                        1.5f,
+                        4,
+                        0.8f, //更小的粒子
                         GetLightningColorForStyle(lightningColorStyle),
                         Owner
                     );
@@ -122,78 +129,93 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
             //根据不同连击发射不同效果的闪电
             if (comboCounter == 0) {
-                //第一击：单个强力追踪闪电（亮白蓝）
-                SpawnMainLightning(1f, lightningColorStyle, false);
+                //第一击：单个精准闪电（细长型）
+                SpawnPlayerLightning(
+                    ShootVelocity, 
+                    1f, 
+                    lightningColorStyle, 
+                    false, 
+                    widthScale: 0.7f //70%宽度
+                );
             }
             else if (comboCounter == 1) {
-                //第二击：三道扇形追踪闪电（中蓝白，不追踪）
+                //第二击：三道优雅扇形闪电（设计感分布）
                 for (int i = -1; i <= 1; i++) {
-                    Vector2 velocity = ShootVelocity.RotatedBy(i * 0.3f);
-                    SpawnLightningProjectile(velocity, 0.7f, lightningColorStyle, true);
+                    //黄金角度分布：中间更密，两侧更开
+                    float angle = i * 0.25f * (1f + MathF.Abs(i) * 0.2f);
+                    Vector2 velocity = ShootVelocity.RotatedBy(angle);
+                    
+                    SpawnPlayerLightning(
+                        velocity, 
+                        0.65f, 
+                        lightningColorStyle, 
+                        true,
+                        widthScale: 0.65f, //65%宽度
+                        speedScale: 0.9f
+                    );
                 }
             }
             else if (comboCounter == 2) {
-                //第三击：五到七道环绕直线闪电（深蓝白，不追踪）
+                //第三击：螺旋上升闪电阵（更有设计感）
                 bool hasAdrenaline = Owner.Calamity().adrenalineModeActive;
-                int count = hasAdrenaline ? 7 : 5;
-                float damageMultiplier = hasAdrenaline ? 0.9f : 0.65f;
+                int count = hasAdrenaline ? 7 : 0;
+                float damageMultiplier = hasAdrenaline ? 0.85f : 0.6f;
 
                 for (int i = 0; i < count; i++) {
-                    float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.15f, 0.15f);
-                    Vector2 velocity = angle.ToRotationVector2() * ShootSpeed;
+                    //螺旋分布，而非均匀圆形
+                    float progress = i / (float)count;
+                    float spiralAngle = MathHelper.TwoPi * progress + progress * MathHelper.PiOver4;
+                    float radiusOffset = 0.8f + progress * 0.4f; //螺旋扩散
+                    
+                    Vector2 velocity = spiralAngle.ToRotationVector2() * ShootSpeed * radiusOffset;
 
-                    //第三击的闪电禁用追踪，制造直线飞出的视觉效果
-                    SpawnLightningProjectile(velocity, damageMultiplier, lightningColorStyle, true);
+                    SpawnPlayerLightning(
+                        velocity, 
+                        damageMultiplier, 
+                        lightningColorStyle, 
+                        true,
+                        widthScale: 0.6f, //60%宽度
+                        speedScale: 0.85f + progress * 0.3f //渐进速度
+                    );
                 }
 
-                //额外生成冲击波效果
+                //减少冲击波粒子
                 if (!VaultUtils.isServer) {
                     SpawnShockwaveParticles();
                 }
 
-                //播放更强的音效
+                //播放音效
                 SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
-                    Volume = 0.7f,
+                    Volume = 0.6f,
                     Pitch = -0.3f
                 }, ShootSpanPos);
             }
         }
 
         /// <summary>
-        /// 生成主闪电
+        /// 生成玩家闪电（优化版 - 更细致）
         /// </summary>
-        private void SpawnMainLightning(float damageMultiplier, int colorStyle, bool disableHoming) {
-            //如果禁用追踪，ai[2] 加 100 作为标记
-            int ai2Value = disableHoming ? colorStyle + 100 : colorStyle;
-
-            Projectile.NewProjectileDirect(
-                Source,
-                ShootSpanPos,
-                ShootVelocity,
-                ModContent.ProjectileType<StormLightning>(),
-                (int)(Projectile.damage * damageMultiplier),
-                Projectile.knockBack,
-                Owner.whoAmI,
-                ai0: 0,
-                ai1: 0,
-                ai2: ai2Value
-            );
-        }
-
-        /// <summary>
-        /// 生成闪电弹幕
-        /// </summary>
-        private void SpawnLightningProjectile(Vector2 velocity, float damageMultiplier, int colorStyle, bool disableHoming) {
-            //如果禁用追踪，ai[2] 加 100 作为标记
-            int ai2Value = disableHoming ? colorStyle + 100 : colorStyle;
+        private void SpawnPlayerLightning(
+            Vector2 velocity, 
+            float damageMultiplier, 
+            int colorStyle, 
+            bool disableHoming,
+            float widthScale = 1f,
+            float speedScale = 1f) {
+            
+            //使用ai[2]传递宽度缩放：原值 + 1000 * widthScale
+            //例如：colorStyle=1, widthScale=0.7 → ai2 = 1 + 700 = 701
+            int ai2Value = colorStyle;
+            if (disableHoming) ai2Value += 100;
+            ai2Value += (int)(1000 * widthScale); //编码宽度缩放
 
             Projectile.NewProjectile(
                 Source,
                 ShootSpanPos,
-                velocity,
+                velocity * speedScale,
                 ModContent.ProjectileType<StormLightning>(),
                 (int)(Projectile.damage * damageMultiplier),
-                Projectile.knockBack * 0.8f,
+                Projectile.knockBack * 0.7f,
                 Owner.whoAmI,
                 ai0: 0,
                 ai1: 0,
@@ -202,38 +224,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         /// <summary>
-        /// 生成冲击波粒子
+        /// 生成冲击波粒子（优化版 - 减少数量）
         /// </summary>
         private void SpawnShockwaveParticles() {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
 
-            //环形冲击波
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 25f);
+            //环形冲击波（减少密度）
+            for (int i = 0; i < 12; i++) {
+                float angle = MathHelper.TwoPi * i / 12f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
                 BasePRT particle = new PRT_Light(
                     ShootSpanPos,
                     velocity,
-                    0.4f,
-                    particleColor,
-                    Main.rand.Next(20, 30),
-                    1.5f,
-                    2f,
+                    0.35f,
+                    particleColor * 0.8f,
+                    Main.rand.Next(15, 25),
+                    1.2f,
+                    1.6f,
                     hueShift: 0f
                 );
                 PRTLoader.AddParticle(particle);
             }
 
-            //向上爆发的粒子（上挑特效）
-            for (int i = 0; i < 15; i++) {
+            //向上爆发的粒子（减少数量）
+            for (int i = 0; i < 8; i++) {
                 float angle = Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4) - MathHelper.PiOver2;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 35f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 28f);
                 BasePRT particle = new PRT_Spark(
                     ShootSpanPos,
                     velocity,
                     false,
-                    Main.rand.Next(15, 25),
-                    1.8f,
+                    Main.rand.Next(12, 20),
+                    1.4f,
                     particleColor * 0.9f,
                     Owner
                 );
@@ -257,86 +279,88 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             //添加电击效果
             target.AddBuff(BuffID.Electrified, 120);
 
-            //暴击时生成额外的电弧
+            //暴击时生成额外的电弧（减少数量）
             if (hit.Crit) {
                 SpawnCriticalArcs(target);
             }
 
-            //生成命中粒子
-            if (!VaultUtils.isServer) {
+            //生成命中粒子（减少密度）
+            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 SpawnHitParticles(target);
             }
         }
 
         /// <summary>
-        /// 生成暴击电弧
+        /// 生成暴击电弧（优化版）
         /// </summary>
         private void SpawnCriticalArcs(NPC target) {
             if (!Projectile.IsOwnedByLocalPlayer()) return;
 
-            int arcCount = Owner.Calamity().adrenalineModeActive ? 5 : 3;
+            int arcCount = Owner.Calamity().adrenalineModeActive ? 3 : 2; //减少数量
 
             for (int i = 0; i < arcCount; i++) {
                 float angle = MathHelper.TwoPi * i / arcCount + Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 18f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 16f);
 
                 Projectile arc = Projectile.NewProjectileDirect(
                     Source,
                     target.Center,
                     velocity,
                     ModContent.ProjectileType<StormArc>(),
-                    (int)(Projectile.damage * 0.4f),
-                    Projectile.knockBack * 0.5f,
+                    (int)(Projectile.damage * 0.35f),
+                    Projectile.knockBack * 0.4f,
                     Owner.whoAmI
                 );
 
-                arc.timeLeft = 30;
+                arc.timeLeft = 25;
                 arc.penetrate = 2;
                 arc.tileCollide = true;
             }
         }
 
         /// <summary>
-        /// 生成命中粒子
+        /// 生成命中粒子（优化版 - 减少数量）
         /// </summary>
         private void SpawnHitParticles(NPC target) {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
 
-            for (int i = 0; i < Main.rand.Next(8, 15); i++) {
-                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 18f);
+            for (int i = 0; i < Main.rand.Next(4, 8); i++) {
+                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 14f);
                 BasePRT particle = new PRT_Light(
-                    target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f),
+                    target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
                     velocity,
-                    0.3f,
-                    particleColor,
-                    Main.rand.Next(10, 18),
-                    1.2f,
-                    1.8f,
+                    0.25f,
+                    particleColor * 0.9f,
+                    Main.rand.Next(8, 15),
+                    1f,
+                    1.5f,
                     hueShift: Main.rand.NextFloat(-0.05f, 0.05f)
                 );
                 PRTLoader.AddParticle(particle);
             }
 
-            //播放电击音效
-            SoundEngine.PlaySound(SoundID.Item94 with {
-                Volume = 0.5f,
-                Pitch = 0.2f
-            }, target.Center);
+            //音效概率播放
+            if (Main.rand.NextBool(3)) {
+                SoundEngine.PlaySound(SoundID.Item94 with {
+                    Volume = 0.4f,
+                    Pitch = 0.2f
+                }, target.Center);
+            }
         }
 
         public override void MeleeEffect() {
-            //在挥舞过程中生成电火花轨迹
-            if (Time % 3 == 0 && !VaultUtils.isServer) {
+            //在挥舞过程中生成电火花轨迹（减少频率）
+            if (Time % 5 == 0 && !VaultUtils.isServer) {
                 Vector2 tipPos = Projectile.Center + safeInSwingUnit * Length;
                 Color particleColor = GetLightningColorForStyle(lightningColorStyle);
 
                 BasePRT spark = new PRT_Spark(
-                    tipPos + Main.rand.NextVector2Circular(5, 5),
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f),
+                    tipPos + Main.rand.NextVector2Circular(3, 3),
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
                     false,
-                    Main.rand.Next(3, 6),
-                    1f,
-                    particleColor * 0.8f,
+                    Main.rand.Next(3, 5),
+                    0.8f, //更小的粒子
+                    particleColor * 0.7f,
                     Owner
                 );
                 PRTLoader.AddParticle(spark);

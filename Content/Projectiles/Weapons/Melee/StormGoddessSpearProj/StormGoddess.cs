@@ -556,20 +556,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         /// 寻找最近的敌人
         /// </summary>
         private NPC FindNearestEnemy() {
-            NPC closest = null;
-            float closestDist = 800f;
-
-            foreach (NPC npc in Main.npc) {
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(Owner.Center, npc.Center);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = npc;
-                    }
-                }
-            }
-
-            return closest;
+            return Projectile.Center.FindClosestNPC(1600, true, true);
         }
 
         /// <summary>
@@ -578,11 +565,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         private void ReleaseStormLightning() {
             if (currentTarget == null || !Projectile.IsOwnedByLocalPlayer()) return;
 
-            //主闪电
+            // 主闪电（粗壮威猛）
             Vector2 lightningStart = Projectile.Center + new Vector2(0, 30);
             Vector2 direction = (currentTarget.Center - lightningStart).SafeNormalize(Vector2.UnitY);
 
-            Projectile.NewProjectile(
+            // 女神闪电：ai2编码 = 颜色 + 2000（表示140%宽度 + 女神标记）
+            int goddessAI2 = 1 + 2400; // 颜色1 + 240%(2.4倍宽度，包含1.3倍女神加成)
+
+            Projectile mainLightning = Projectile.NewProjectileDirect(
                 Projectile.GetSource_FromThis(),
                 lightningStart,
                 direction * 25f,
@@ -592,28 +582,99 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 Owner.whoAmI,
                 ai0: 0,
                 ai1: 0,
-                ai2: 1  //白蓝色
+                ai2: goddessAI2
             );
 
-            //额外的辅助闪电
-            int extraLightning = Main.rand.Next(2, 4);
-            for (int i = 0; i < extraLightning; i++) {
-                Vector2 offset = Main.rand.NextVector2Circular(100, 50);
-                Vector2 extraStart = lightningStart + offset;
-                Vector2 extraDir = (currentTarget.Center + Main.rand.NextVector2Circular(80, 80) - extraStart).SafeNormalize(Vector2.UnitY);
+            // 标记为女神闪电
+            if (mainLightning.ModProjectile is StormLightning mainLightningProj) {
+                mainLightningProj.isGoddessLightning = true;
+            }
 
-                Projectile.NewProjectile(
+            // 辅助闪电（设计感分布 - 螺旋下降）
+            int extraCount = Main.rand.Next(3, 5);
+            for (int i = 0; i < extraCount; i++) {
+                // 螺旋分布，从外向内
+                float progress = i / (float)extraCount;
+                float spiralAngle = progress * MathHelper.TwoPi * 1.5f;
+                float radius = 120f * (1f - progress * 0.6f); // 渐进收缩
+                
+                Vector2 offset = new Vector2(
+                    MathF.Cos(spiralAngle) * radius,
+                    -50f * (1f - progress) // 高度递减
+                );
+                
+                Vector2 extraStart = lightningStart + offset;
+                Vector2 extraTarget = currentTarget.Center + Main.rand.NextVector2Circular(60, 60);
+                Vector2 extraDir = (extraTarget - extraStart).SafeNormalize(Vector2.UnitY);
+
+                // 女神辅助闪电：ai2 = 颜色 + 不追踪 + 较粗（180%）
+                int extraAI2 = 1 + 100 + 1800;
+
+                Projectile extraLightning = Projectile.NewProjectileDirect(
                     Projectile.GetSource_FromThis(),
                     extraStart,
-                    extraDir * Main.rand.NextFloat(20f, 28f),
+                    extraDir * Main.rand.NextFloat(22f, 30f),
                     ModContent.ProjectileType<StormLightning>(),
-                    (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 0.8f),
+                    (int)(Owner.GetWeaponDamage(Owner.HeldItem) * 0.9f),
                     6f,
                     Owner.whoAmI,
                     ai0: 0,
                     ai1: 0,
-                    ai2: 101  //白蓝色，不追踪
+                    ai2: extraAI2
                 );
+
+                // 标记为女神闪电
+                if (extraLightning.ModProjectile is StormLightning extraLightningProj) {
+                    extraLightningProj.isGoddessLightning = true;
+                }
+            }
+
+            // 额外的雷暴环绕效果
+            SpawnThunderRingEffect();
+        }
+
+        /// <summary>
+        /// 生成雷暴环绕特效
+        /// </summary>
+        private void SpawnThunderRingEffect() {
+            if (VaultUtils.isServer || currentTarget == null) return;
+
+            Color lightningColor = new Color(200, 230, 255);
+            
+            // 环形闪电粒子
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 ringPos = Projectile.Center + angle.ToRotationVector2() * 80f;
+                Vector2 velocity = (currentTarget.Center - ringPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
+
+                BasePRT particle = new PRT_Light(
+                    ringPos,
+                    velocity,
+                    0.5f,
+                    lightningColor,
+                    Main.rand.Next(20, 30),
+                    1.8f,
+                    3f,
+                    hueShift: 0f
+                );
+                PRTLoader.AddParticle(particle);
+            }
+
+            // 向下汇聚的能量束
+            for (int i = 0; i < 12; i++) {
+                Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(60, 30);
+                Vector2 velocity = (currentTarget.Center - startPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(15f, 25f);
+
+                BasePRT particle = new PRT_Spark(
+                    startPos,
+                    velocity,
+                    false,
+                    Main.rand.Next(15, 25),
+                    2f,
+                    lightningColor * 0.9f,
+                    Owner
+                );
+                PRTLoader.AddParticle(particle);
             }
         }
 
