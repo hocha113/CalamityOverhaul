@@ -91,7 +91,23 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (UpgradeWorldFullName != "") {
                 tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
             }
-            DontUpgradeName = string.Empty;//重置跳过升级标记
+        }
+
+        public static void ResetInventory(Player player) {
+            foreach (var i in player.inventory) {
+                if (!i.Alives()) {
+                    continue;
+                }
+                try {
+                    var data = i.CWR().LegendData;
+                    if (data == null) {
+                        continue;
+                    }
+                    data.DontUpgradeName = string.Empty;//重置跳过升级标记
+                } catch {
+                    continue;
+                }
+            }
         }
 
         public virtual void LoadData(Item item, TagCompound tag) {

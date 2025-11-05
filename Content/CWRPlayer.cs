@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
@@ -390,6 +391,8 @@ namespace CalamityOverhaul.Content
             HandlerCanOverride.ModifiIntercept_OnEnterWorld();
 
             HighFPSRef.DisableMotionInterpolation();
+
+            LegendData.ResetInventory(Player);
 
             //初始化位置信息
             oldPlayerPositionChange = Player.position;
