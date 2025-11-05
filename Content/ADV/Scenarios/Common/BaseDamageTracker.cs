@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
 using static CalamityOverhaul.Content.ADV.Scenarios.Common.DamageTrackerSystem;
 
@@ -114,7 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             return true;
         }
 
-        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
+        public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone) {
             if (!IsTargetByID(npc)) {
                 return;
             }
@@ -124,15 +125,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 return;
             }
 
-            //使用回调来追踪实际造成的伤害
-            modifiers.ModifyHitInfo += (ref NPC.HitInfo info) => {
-                if (IsTargetWeapon(item.type)) {
-                    TargetWeaponDamageDealt += info.Damage;
-                }
-            };
+            //追踪实际造成的伤害
+            if (IsTargetWeapon(item.type)) {
+                TargetWeaponDamageDealt += hit.Damage;
+            }
         }
 
-        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
+        public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone) {
             if (!IsTargetByID(npc)) {
                 return;
             }
@@ -147,12 +146,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
                 return;
             }
 
-            modifiers.ModifyHitInfo += (ref NPC.HitInfo info) => {
-                //检测弹幕是否来自目标武器
-                if (IsTargetProjectile(projectile)) {
-                    TargetWeaponDamageDealt += info.Damage;
-                }
-            };
+            //检测弹幕是否来自目标武器
+            if (IsTargetProjectile(projectile)) {
+                TargetWeaponDamageDealt += hit.Damage;
+            }
         }
 
         public sealed override void OnKill(NPC npc) {
