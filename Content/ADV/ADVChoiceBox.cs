@@ -182,9 +182,6 @@ namespace CalamityOverhaul.Content.ADV
             inst.currentStyle = style;
             inst.styleAnimTimer = 0f;
 
-            //清空事件订阅（避免内存泄漏）
-            OnHoverChanged = null;
-
             //重置悬停动画
             for (int i = 0; i < inst.choiceHoverProgress.Length; i++) {
                 inst.choiceHoverProgress[i] = 0f;
