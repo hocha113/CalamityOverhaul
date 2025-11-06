@@ -5,13 +5,91 @@ using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.World;
+using InnoVault.RenderHandles;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
+    internal class ExoMechdusaSumRender : RenderHandle
+    {
+        //用于记录上次悬停的选项，避免重复播放音效
+        private static int lastHoveredChoice = -1;
+
+        //反射加载三种悬停音效
+        [VaultLoaden("@CalamityMod/Sounds/Custom/Codebreaker/")]
+        public static readonly SoundStyle ThanatosIconHover = default;
+        [VaultLoaden("@CalamityMod/Sounds/Custom/Codebreaker/")]
+        public static readonly SoundStyle AresIconHover = default;
+        [VaultLoaden("@CalamityMod/Sounds/Custom/Codebreaker/")]
+        public static readonly SoundStyle ArtemisApolloIconHover = default;
+
+        //反射加载纹理，对应三种机甲图标
+        [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]
+        public static Texture2D HeadIcon_THanos = null;
+        [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]
+        public static Texture2D HeadIcon_Ares = null;
+        [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]
+        public static Texture2D HeadIcon_ArtemisApollo = null;
+
+        public override void UpdateBySystem(int index) {//更新在逻辑线程中，不受绘制帧率印象，逻辑更新在此处调用处理
+            
+        }
+
+        public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {//绘制在世界中，所以使用的坐标是世界原点坐标而非UI屏幕坐标
+            
+        }
+
+        /// <summary>
+        /// 注册悬停效果（音效和动画）
+        /// </summary>
+        internal static void RegisterHoverEffects() {
+            //重置上次悬停状态
+            lastHoveredChoice = -1;
+            //订阅悬停变化事件
+            ADVChoiceBox.OnHoverChanged += OnChoiceHoverChanged;
+        }
+
+        /// <summary>
+        /// 处理选项悬停变化
+        /// </summary>
+        private static void OnChoiceHoverChanged(object sender, ChoiceHoverEventArgs e) {
+            //如果悬停到新的启用选项上（避免重复触发）
+            if (e.CurrentIndex >= 0 && e.CurrentChoice != null && e.CurrentChoice.Enabled && e.CurrentIndex != lastHoveredChoice) {
+                lastHoveredChoice = e.CurrentIndex;
+
+                //播放科技感悬停音效
+                SoundEngine.PlaySound(SoundID.MenuTick with {
+                    Volume = 0.5f,
+                    Pitch = 0.3f + e.CurrentIndex * 0.15f,  //根据选项索引改变音高
+                    MaxInstances = 3
+                });
+
+                switch (e.CurrentIndex) {
+                    case 0: //战神阿瑞斯
+
+                        break;
+                    case 1: //死神塔纳托斯
+
+                        break;
+                    case 2: //双子
+
+                        break;
+                }
+            }
+
+            //如果离开了选项（悬停到空白处）
+            if (e.CurrentIndex < 0 && e.PreviousIndex >= 0) {
+                lastHoveredChoice = -1;
+            }
+        }
+    }
+
     internal class ExoMechdusaSum : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public string LocalizationCategory => "ADV";
@@ -92,7 +170,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                ], onStart: ExoMechdusaSumRender.RegisterHoverEffects, choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
             else {
                 //普通模式，就播放老逼登的完整介绍对话
@@ -106,7 +184,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                ], onStart: ExoMechdusaSumRender.RegisterHoverEffects, choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
         }
 

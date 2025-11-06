@@ -30,6 +30,39 @@ namespace CalamityOverhaul.Content.ADV
     }
 
     /// <summary>
+    /// 悬停状态变化事件参数
+    /// </summary>
+    internal class ChoiceHoverEventArgs : EventArgs
+    {
+        /// <summary>
+        /// 当前悬停的选项索引（-1表示无悬停）
+        /// </summary>
+        public int CurrentIndex { get; }
+
+        /// <summary>
+        /// 之前悬停的选项索引（-1表示无悬停）
+        /// </summary>
+        public int PreviousIndex { get; }
+
+        /// <summary>
+        /// 当前悬停的选项对象（如果有）
+        /// </summary>
+        public Choice CurrentChoice { get; }
+
+        /// <summary>
+        /// 之前悬停的选项对象（如果有）
+        /// </summary>
+        public Choice PreviousChoice { get; }
+
+        public ChoiceHoverEventArgs(int currentIndex, int previousIndex, Choice currentChoice, Choice previousChoice) {
+            CurrentIndex = currentIndex;
+            PreviousIndex = previousIndex;
+            CurrentChoice = currentChoice;
+            PreviousChoice = previousChoice;
+        }
+    }
+
+    /// <summary>
     /// ADV选项框UI，参考ResurrectionUI的绘制风格
     /// </summary>
     internal class ADVChoiceBox : UIHandle, ILocalizedModType
@@ -54,6 +87,29 @@ namespace CalamityOverhaul.Content.ADV
         private bool isSelecting = false;
         private ChoiceBoxStyle currentStyle = ChoiceBoxStyle.Default;
 
+        /// <summary>
+        /// 悬停状态变化事件
+        /// </summary>
+        public static event EventHandler<ChoiceHoverEventArgs> OnHoverChanged;
+
+        /// <summary>
+        /// 获取当前悬停的选项索引（-1表示无悬停）
+        /// </summary>
+        public static int CurrentHoveredIndex => Instance?.hoveredIndex ?? -1;
+
+        /// <summary>
+        /// 获取当前悬停的选项对象（如果有）
+        /// </summary>
+        public static Choice CurrentHoveredChoice {
+            get {
+                var inst = Instance;
+                if (inst == null || inst.hoveredIndex < 0 || inst.hoveredIndex >= inst.choices.Count) {
+                    return null;
+                }
+                return inst.choices[inst.hoveredIndex];
+            }
+        }
+
         //动画状态
         private float showProgress = 0f;
         private float hideProgress = 0f;
@@ -72,6 +128,17 @@ namespace CalamityOverhaul.Content.ADV
 
         //样式动画参数
         private float styleAnimTimer = 0f;//样式动画计时器
+
+        //硫磺火风格粒子
+        private readonly List<BrimstoneEmber> brimstoneEmbers = new();
+        private int brimstoneEmberTimer = 0;
+        private float brimstoneFlameTimer = 0f;
+
+        //嘉登科技风格效果
+        private readonly List<DraedonDataStream> draedonStreams = new();
+        private int draedonStreamTimer = 0;
+        private float draedonScanLineTimer = 0f;
+        private float draedonHologramFlicker = 0f;
 
         //布局常量
         private const float MinWidth = 200f;
@@ -115,6 +182,9 @@ namespace CalamityOverhaul.Content.ADV
             inst.currentStyle = style;
             inst.styleAnimTimer = 0f;
 
+            //清空事件订阅（避免内存泄漏）
+            OnHoverChanged = null;
+
             //重置悬停动画
             for (int i = 0; i < inst.choiceHoverProgress.Length; i++) {
                 inst.choiceHoverProgress[i] = 0f;
@@ -148,6 +218,9 @@ namespace CalamityOverhaul.Content.ADV
             var inst = Instance;
             inst.closing = true;
             inst.hideProgress = 0f;
+
+            //清空事件订阅
+            OnHoverChanged = null;
         }
 
         private void CalculatePanelSize() {
@@ -199,6 +272,16 @@ namespace CalamityOverhaul.Content.ADV
             styleAnimTimer += 0.05f;
             if (styleAnimTimer > MathHelper.TwoPi) {
                 styleAnimTimer -= MathHelper.TwoPi;
+            }
+
+            //硫磺火风格动画更新
+            if (currentStyle == ChoiceBoxStyle.Brimstone) {
+                UpdateBrimstoneParticles();
+            }
+
+            //嘉登科技风格动画更新
+            if (currentStyle == ChoiceBoxStyle.Draedon) {
+                UpdateDraedonEffects();
             }
 
             //动画更新
@@ -278,6 +361,14 @@ namespace CalamityOverhaul.Content.ADV
                         break;
                     }
                 }
+            }
+
+            //触发悬停变化事件
+            if (oldHoveredIndex != hoveredIndex) {
+                Choice oldChoice = oldHoveredIndex >= 0 && oldHoveredIndex < choices.Count ? choices[oldHoveredIndex] : null;
+                Choice newChoice = hoveredIndex >= 0 && hoveredIndex < choices.Count ? choices[hoveredIndex] : null;
+
+                OnHoverChanged?.Invoke(this, new ChoiceHoverEventArgs(hoveredIndex, oldHoveredIndex, newChoice, oldChoice));
             }
 
             //更新悬停动画
@@ -400,200 +491,148 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
-        #region 硫磺火样式绘制
-        private void DrawBrimstoneStyle(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //绘制阴影
-            Rectangle shadowRect = panelRect;
-            shadowRect.Offset(7, 9);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
-
-            //渐变背景 - 硫磺火深红色
-            int segments = 25;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                float t2 = (i + 1) / (float)segments;
-                int y1 = panelRect.Y + (int)(t * panelRect.Height);
-                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
-
-                float flameWave = (float)Math.Sin(styleAnimTimer * 0.6f + t * 2.2f) * 0.5f + 0.5f;
-                Color brimstoneDeep = new Color(25, 5, 5);
-                Color brimstoneMid = new Color(80, 15, 10);
-                Color brimstoneHot = new Color(140, 35, 20);
-
-                Color baseColor = Color.Lerp(brimstoneDeep, brimstoneMid, flameWave);
-                Color finalColor = Color.Lerp(baseColor, brimstoneHot, t * 0.5f);
-                finalColor *= alpha * 0.92f;
-
-                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), finalColor);
+        #region 硫磺火粒子系统
+        private void UpdateBrimstoneParticles() {
+            brimstoneFlameTimer += 0.045f;
+            if (brimstoneFlameTimer > MathHelper.TwoPi) {
+                brimstoneFlameTimer -= MathHelper.TwoPi;
             }
 
-            //火焰脉冲叠加
-            float pulseBrightness = (float)Math.Sin(styleAnimTimer * 1.8f) * 0.5f + 0.5f;
-            Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
-            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
-
-            //火焰边框
-            Color flameEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulseBrightness) * (alpha * 0.85f);
-            DrawBorder(spriteBatch, panelRect, flameEdge);
-
-            //绘制标题
-            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
-            string title = TitleText.Value;
-
-            //火焰光晕效果
-            Color nameGlow = new Color(255, 140, 80) * alpha * 0.75f;
-            for (int i = 0; i < 6; i++) {
-                float angle = MathHelper.TwoPi * i / 6f + styleAnimTimer * 0.5f;
-                Vector2 offset = angle.ToRotationVector2() * 2.2f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, nameGlow * 0.5f, 0.95f);
+            //生成余烬粒子
+            brimstoneEmberTimer++;
+            if (Active && !closing && brimstoneEmberTimer >= 6 && brimstoneEmbers.Count < 20) {
+                brimstoneEmberTimer = 0;
+                float xPos = Main.rand.NextFloat(panelRect.X + 15f, panelRect.Right - 15f);
+                Vector2 startPos = new(xPos, panelRect.Bottom - 5f);
+                brimstoneEmbers.Add(new BrimstoneEmber(startPos));
             }
-            Utils.DrawBorderString(spriteBatch, title, titlePos, new Color(255, 240, 220) * alpha, 0.95f);
 
-            //分隔线
-            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
-            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
-            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
-                new Color(220, 80, 40) * (alpha * 0.9f),
-                new Color(120, 30, 15) * (alpha * 0.1f), 1.5f);
-
-            //绘制选项
-            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
-            DrawBrimstoneChoices(spriteBatch, choiceStartPos, alpha, flameEdge);
+            //更新粒子
+            for (int i = brimstoneEmbers.Count - 1; i >= 0; i--) {
+                if (brimstoneEmbers[i].Update(panelRect)) {
+                    brimstoneEmbers.RemoveAt(i);
+                }
+            }
         }
 
-        private void DrawBrimstoneChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color flameColor) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+        private class BrimstoneEmber
+        {
+            public Vector2 Pos;
+            public float Size;
+            public float RiseSpeed;
+            public float Drift;
+            public float Life;
+            public float MaxLife;
+            public float Seed;
+            public float Rotation;
+            public float RotationSpeed;
 
-            for (int i = 0; i < choices.Count; i++) {
-                var choice = choices[i];
-                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+            public BrimstoneEmber(Vector2 start) {
+                Pos = start;
+                Size = Main.rand.NextFloat(2f, 4.5f);
+                RiseSpeed = Main.rand.NextFloat(0.5f, 1.2f);
+                Drift = Main.rand.NextFloat(-0.3f, 0.3f);
+                Life = 0f;
+                MaxLife = Main.rand.NextFloat(60f, 110f);
+                Seed = Main.rand.NextFloat(10f);
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                RotationSpeed = Main.rand.NextFloat(-0.06f, 0.06f);
+            }
 
-                Rectangle choiceRect = new Rectangle(
-                    (int)choicePos.X,
-                    (int)choicePos.Y,
-                    (int)(panelSize.X - HorizontalPadding * 2),
-                    (int)ChoiceHeight
-                );
+            public bool Update(Rectangle bounds) {
+                Life++;
+                float t = Life / MaxLife;
+                Pos.Y -= RiseSpeed * (1f - t * 0.3f);
+                Pos.X += (float)Math.Sin(Life * 0.06f + Seed) * Drift;
+                Rotation += RotationSpeed;
 
-                float hoverProgress = choiceHoverProgress[i];
-                Color choiceBg = choice.Enabled
-                    ? Color.Lerp(new Color(40, 10, 5) * 0.3f, new Color(100, 25, 15) * 0.5f, hoverProgress)
-                    : new Color(30, 20, 15) * 0.2f;
-
-                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
-
-                if (hoverProgress > 0.01f) {
-                    DrawChoiceBorder(spriteBatch, choiceRect, flameColor * (hoverProgress * 0.6f * alpha));
+                if (Life >= MaxLife || Pos.Y < bounds.Y - 10f) {
+                    return true;
                 }
+                return false;
+            }
 
-                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, flameColor, hoverProgress, i);
+            public void Draw(SpriteBatch sb, float alpha) {
+                Texture2D pixel = VaultAsset.placeholder2.Value;
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * Math.PI);
+                float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
+
+                Color emberCore = Color.Lerp(new Color(255, 180, 80), new Color(255, 80, 40), t) * (alpha * 0.85f * fade);
+                Color emberGlow = Color.Lerp(new Color(255, 140, 60), new Color(180, 40, 20), t) * (alpha * 0.5f * fade);
+
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
             }
         }
         #endregion
 
-        #region 嘉登科技样式绘制
-        private void DrawDraedonStyle(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+        #region 嘉登科技效果系统
+        private void UpdateDraedonEffects() {
+            draedonScanLineTimer += 0.048f;
+            draedonHologramFlicker += 0.12f;
+            if (draedonScanLineTimer > MathHelper.TwoPi) draedonScanLineTimer -= MathHelper.TwoPi;
+            if (draedonHologramFlicker > MathHelper.TwoPi) draedonHologramFlicker -= MathHelper.TwoPi;
 
-            //绘制阴影
-            Rectangle shadowRect = panelRect;
-            shadowRect.Offset(5, 6);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.65f));
-
-            //科技背景渐变
-            int segments = 25;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                float t2 = (i + 1) / (float)segments;
-                int y1 = panelRect.Y + (int)(t * panelRect.Height);
-                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
-
-                float pulse = (float)Math.Sin(styleAnimTimer * 0.6f + t * 2.0f) * 0.5f + 0.5f;
-                Color techDark = new Color(8, 12, 22);
-                Color techMid = new Color(18, 28, 42);
-                Color techEdge = new Color(35, 55, 85);
-
-                Color blendBase = Color.Lerp(techDark, techMid, pulse);
-                Color c = Color.Lerp(blendBase, techEdge, t * 0.45f);
-                c *= alpha * 0.92f;
-
-                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
+            //生成数据流
+            draedonStreamTimer++;
+            if (Active && !closing && draedonStreamTimer >= 15 && draedonStreams.Count < 12) {
+                draedonStreamTimer = 0;
+                float xPos = Main.rand.NextFloat(panelRect.X + 20f, panelRect.Right - 20f);
+                Vector2 startPos = new(xPos, panelRect.Y + Main.rand.NextFloat(20f, panelRect.Height - 20f));
+                draedonStreams.Add(new DraedonDataStream(startPos));
             }
 
-            //全息闪烁覆盖层
-            float flicker = (float)Math.Sin(styleAnimTimer * 1.5f) * 0.5f + 0.5f;
-            Color hologramOverlay = new Color(15, 30, 45) * (alpha * 0.25f * flicker);
-            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), hologramOverlay);
-
-            //科技边框
-            Color techEdgeColor = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), flicker) * (alpha * 0.85f);
-            DrawBorder(spriteBatch, panelRect, techEdgeColor);
-
-            //绘制标题
-            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
-            string title = TitleText.Value;
-
-            Color nameGlow = new Color(80, 220, 255) * alpha * 0.8f;
-            for (int i = 0; i < 4; i++) {
-                float a = MathHelper.TwoPi * i / 4f;
-                Vector2 off = a.ToRotationVector2() * 2f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + off, nameGlow * 0.6f, 0.95f);
+            //更新数据流
+            for (int i = draedonStreams.Count - 1; i >= 0; i--) {
+                if (draedonStreams[i].Update(panelRect)) {
+                    draedonStreams.RemoveAt(i);
+                }
             }
-            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.95f);
-
-            //分隔线
-            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
-            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
-            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
-                new Color(60, 160, 240) * (alpha * 0.9f),
-                new Color(60, 160, 240) * (alpha * 0.08f), 1.5f);
-
-            //绘制选项
-            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
-            DrawDraedonChoices(spriteBatch, choiceStartPos, alpha, techEdgeColor);
         }
 
-        private void DrawDraedonChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color techColor) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+        private class DraedonDataStream
+        {
+            public Vector2 Pos;
+            public float Size;
+            public float Life;
+            public float MaxLife;
+            public float Seed;
+            public Vector2 Velocity;
+            public float Rotation;
 
-            for (int i = 0; i < choices.Count; i++) {
-                var choice = choices[i];
-                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+            public DraedonDataStream(Vector2 start) {
+                Pos = start;
+                Size = Main.rand.NextFloat(1.5f, 3f);
+                Life = 0f;
+                MaxLife = Main.rand.NextFloat(70f, 120f);
+                Seed = Main.rand.NextFloat(10f);
+                Velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-0.6f, -0.2f));
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            }
 
-                Rectangle choiceRect = new Rectangle(
-                    (int)choicePos.X,
-                    (int)choicePos.Y,
-                    (int)(panelSize.X - HorizontalPadding * 2),
-                    (int)ChoiceHeight
-                );
+            public bool Update(Rectangle bounds) {
+                Life++;
+                Rotation += 0.025f;
+                Pos += Velocity;
+                Velocity.Y -= 0.015f;
 
-                float hoverProgress = choiceHoverProgress[i];
-                Color choiceBg = choice.Enabled
-                    ? Color.Lerp(new Color(8, 16, 30) * 0.3f, new Color(20, 40, 65) * 0.5f, hoverProgress)
-                    : new Color(15, 15, 20) * 0.2f;
-
-                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
-
-                if (hoverProgress > 0.01f) {
-                    DrawChoiceBorder(spriteBatch, choiceRect, techColor * (hoverProgress * 0.6f * alpha));
+                if (Life >= MaxLife || Pos.X < bounds.X - 30 || Pos.X > bounds.Right + 30 || 
+                    Pos.Y < bounds.Y - 30 || Pos.Y > bounds.Bottom + 30) {
+                    return true;
                 }
+                return false;
+            }
 
-                //绘制数据流效果
-                if (choice.Enabled && hoverProgress > 0.3f) {
-                    float dataShift = (float)Math.Sin(styleAnimTimer * 3f + i * 0.5f) * 1.5f;
-                    Color dataColor = techColor * (hoverProgress * 0.2f * alpha);
-                    spriteBatch.Draw(pixel,
-                        new Rectangle((int)(choiceRect.X + dataShift), choiceRect.Y, 1, choiceRect.Height),
-                        dataColor);
-                }
+            public void Draw(SpriteBatch sb, float alpha) {
+                Texture2D pixel = VaultAsset.placeholder2.Value;
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
+                float scale = Size * (0.7f + (float)Math.Sin((Life + Seed * 40f) * 0.09f) * 0.3f);
 
-                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, techColor, hoverProgress, i);
+                Color c = new Color(80, 200, 255) * (0.8f * fade);
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), c, Rotation, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), c * 0.9f, Rotation + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
             }
         }
         #endregion
@@ -706,6 +745,280 @@ namespace CalamityOverhaul.Content.ADV
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
+        }
+        #endregion
+
+        #region 硫磺火样式绘制
+        private void DrawBrimstoneStyle(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //绘制阴影
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(7, 9);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
+
+            //渐变背景 - 硫磺火深红色
+            int segments = 25;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = panelRect.Y + (int)(t * panelRect.Height);
+                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+
+                float flameWave = (float)Math.Sin(brimstoneFlameTimer * 0.6f + t * 2.2f) * 0.5f + 0.5f;
+                Color brimstoneDeep = new Color(25, 5, 5);
+                Color brimstoneMid = new Color(80, 15, 10);
+                Color brimstoneHot = new Color(140, 35, 20);
+
+                Color baseColor = Color.Lerp(brimstoneDeep, brimstoneMid, flameWave);
+                Color finalColor = Color.Lerp(baseColor, brimstoneHot, t * 0.5f);
+                finalColor *= alpha * 0.92f;
+
+                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), finalColor);
+            }
+
+            //火焰脉冲叠加
+            float pulseBrightness = (float)Math.Sin(styleAnimTimer * 1.8f) * 0.5f + 0.5f;
+            Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
+
+            //绘制热浪扭曲效果
+            DrawBrimstoneHeatWaves(spriteBatch, panelRect, alpha * 0.75f);
+
+            //火焰边框
+            Color flameEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulseBrightness) * (alpha * 0.85f);
+            DrawBorder(spriteBatch, panelRect, flameEdge);
+
+            //绘制余烬粒子
+            foreach (var ember in brimstoneEmbers) {
+                ember.Draw(spriteBatch, alpha * 0.9f);
+            }
+
+            //绘制标题
+            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
+            string title = TitleText.Value;
+
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4f;
+                Vector2 o = ang.ToRotationVector2() * 1.25f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + o, flameEdge * 0.55f, 0.9f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
+
+            //分隔线
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, flameEdge * 0.9f, flameEdge * 0.05f, 1.3f);
+
+            //绘制选项
+            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
+            DrawBrimstoneChoices(spriteBatch, choiceStartPos, alpha, flameEdge);
+        }
+
+        private void DrawBrimstoneChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color flameColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            for (int i = 0; i < choices.Count; i++) {
+                var choice = choices[i];
+                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+
+                Rectangle choiceRect = new Rectangle(
+                    (int)choicePos.X,
+                    (int)choicePos.Y,
+                    (int)(panelSize.X - HorizontalPadding * 2),
+                    (int)ChoiceHeight
+                );
+
+                float hoverProgress = choiceHoverProgress[i];
+                Color choiceBg = choice.Enabled
+                    ? Color.Lerp(new Color(40, 10, 5) * 0.3f, new Color(100, 25, 15) * 0.5f, hoverProgress)
+                    : new Color(30, 20, 15) * 0.2f;
+
+                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
+
+                if (hoverProgress > 0.01f) {
+                    DrawChoiceBorder(spriteBatch, choiceRect, flameColor * (hoverProgress * 0.6f * alpha));
+                }
+
+                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, flameColor, hoverProgress, i);
+            }
+        }
+
+        private void DrawBrimstoneHeatWaves(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int waveCount = 5;
+            for (int i = 0; i < waveCount; i++) {
+                float t = i / (float)waveCount;
+                float baseY = rect.Y + 15 + t * (rect.Height - 30);
+                float amplitude = 3f + (float)Math.Sin((brimstoneFlameTimer + t * 1.2f) * 2.5f) * 2f;
+
+                int segments = 30;
+                Vector2 prevPoint = Vector2.Zero;
+                for (int s = 0; s <= segments; s++) {
+                    float progress = s / (float)segments;
+                    float waveY = baseY + (float)Math.Sin(brimstoneFlameTimer * 3f + progress * MathHelper.TwoPi * 1.5f + t * 2f) * amplitude;
+                    Vector2 point = new(rect.X + 10 + progress * (rect.Width - 20), waveY);
+
+                    if (s > 0) {
+                        Vector2 diff = point - prevPoint;
+                        float len = diff.Length();
+                        if (len > 0.01f) {
+                            float rot = diff.ToRotation();
+                            Color waveColor = new Color(180, 60, 30) * (alpha * 0.08f);
+                            sb.Draw(pixel, prevPoint, new Rectangle(0, 0, 1, 1), waveColor, rot, Vector2.Zero, new Vector2(len, 1.2f), SpriteEffects.None, 0f);
+                        }
+                    }
+                    prevPoint = point;
+                }
+            }
+        }
+        #endregion
+
+        #region 嘉登科技样式绘制
+        private void DrawDraedonStyle(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //绘制阴影
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(5, 6);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.65f));
+
+            //科技背景渐变
+            int segments = 25;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = panelRect.Y + (int)(t * panelRect.Height);
+                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+
+                float pulse = (float)Math.Sin(styleAnimTimer * 0.6f + t * 2.0f) * 0.5f + 0.5f;
+                Color techDark = new Color(8, 12, 22);
+                Color techMid = new Color(18, 28, 42);
+                Color techEdge = new Color(35, 55, 85);
+
+                Color blendBase = Color.Lerp(techDark, techMid, pulse);
+                Color c = Color.Lerp(blendBase, techEdge, t * 0.45f);
+                c *= alpha * 0.92f;
+
+                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
+            }
+
+            //全息闪烁覆盖层
+            float flicker = (float)Math.Sin(draedonHologramFlicker * 1.5f) * 0.5f + 0.5f;
+            Color hologramOverlay = new Color(15, 30, 45) * (alpha * 0.25f * flicker);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), hologramOverlay);
+
+            //绘制六角网格纹理
+            DrawDraedonHexGrid(spriteBatch, panelRect, alpha * 0.75f);
+
+            //绘制扫描线
+            DrawDraedonScanLines(spriteBatch, panelRect, alpha * 0.85f);
+
+            //科技边框
+            Color techEdgeColor = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), flicker) * (alpha * 0.85f);
+            DrawBorder(spriteBatch, panelRect, techEdgeColor);
+
+            //绘制数据流粒子
+            foreach (var stream in draedonStreams) {
+                stream.Draw(spriteBatch, alpha * 0.85f);
+            }
+
+            //绘制标题
+            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
+            string title = TitleText.Value;
+
+            Color nameGlow = new Color(80, 220, 255) * alpha * 0.8f;
+            for (int i = 0; i < 4; i++) {
+                float a = MathHelper.TwoPi * i / 4f;
+                Vector2 off = a.ToRotationVector2() * 2f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + off, nameGlow * 0.6f, 0.95f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.95f);
+
+            //分隔线
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
+                new Color(60, 160, 240) * (alpha * 0.9f),
+                new Color(60, 160, 240) * (alpha * 0.08f), 1.5f);
+
+            //绘制选项
+            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
+            DrawDraedonChoices(spriteBatch, choiceStartPos, alpha, techEdgeColor);
+        }
+
+        private void DrawDraedonChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color techColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            for (int i = 0; i < choices.Count; i++) {
+                var choice = choices[i];
+                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+
+                Rectangle choiceRect = new Rectangle(
+                    (int)choicePos.X,
+                    (int)choicePos.Y,
+                    (int)(panelSize.X - HorizontalPadding * 2),
+                    (int)ChoiceHeight
+                );
+
+                float hoverProgress = choiceHoverProgress[i];
+                Color choiceBg = choice.Enabled
+                    ? Color.Lerp(new Color(8, 16, 30) * 0.3f, new Color(20, 40, 65) * 0.5f, hoverProgress)
+                    : new Color(15, 15, 20) * 0.2f;
+
+                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
+
+                if (hoverProgress > 0.01f) {
+                    DrawChoiceBorder(spriteBatch, choiceRect, techColor * (hoverProgress * 0.6f * alpha));
+                }
+
+                //绘制数据流效果
+                if (choice.Enabled && hoverProgress > 0.3f) {
+                    float dataShift = (float)Math.Sin(styleAnimTimer * 3f + i * 0.5f) * 1.5f;
+                    Color dataColor = techColor * (hoverProgress * 0.2f * alpha);
+                    spriteBatch.Draw(pixel,
+                        new Rectangle((int)(choiceRect.X + dataShift), choiceRect.Y, 1, choiceRect.Height),
+                        dataColor);
+                }
+
+                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, techColor, hoverProgress, i);
+            }
+        }
+
+        private void DrawDraedonHexGrid(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int hexRows = 6;
+            float hexHeight = rect.Height / (float)hexRows;
+
+            for (int row = 0; row < hexRows; row++) {
+                float t = row / (float)hexRows;
+                float y = rect.Y + row * hexHeight;
+                float phase = styleAnimTimer + t * MathHelper.Pi;
+                float brightness = (float)Math.Sin(phase) * 0.5f + 0.5f;
+
+                Color gridColor = new Color(25, 90, 140) * (alpha * 0.04f * brightness);
+                sb.Draw(pixel, new Rectangle(rect.X + 8, (int)y, rect.Width - 16, 1), new Rectangle(0, 0, 1, 1), gridColor);
+            }
+        }
+
+        private void DrawDraedonScanLines(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float scanY = rect.Y + (float)Math.Sin(draedonScanLineTimer) * 0.5f * rect.Height + rect.Height * 0.5f;
+
+            for (int i = -2; i <= 2; i++) {
+                float offsetY = scanY + i * 3f;
+                if (offsetY < rect.Y || offsetY > rect.Bottom) {
+                    continue;
+                }
+
+                float intensity = 1f - Math.Abs(i) * 0.3f;
+                Color scanColor = new Color(60, 180, 255) * (alpha * 0.15f * intensity);
+                sb.Draw(pixel, new Rectangle(rect.X + 6, (int)offsetY, rect.Width - 12, 2), new Rectangle(0, 0, 1, 1), scanColor);
+            }
         }
         #endregion
     }
