@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using static InnoVault.VaultUtils;
+﻿using CalamityOverhaul.Content.Items.Accessories;
+using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
@@ -40,17 +40,75 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
      */
     internal class SupCalDisplayText : ModifyDisplayText
     {
-        public override bool Handle(ref string key, ref Color color) {
-            string result = key.Split('.').Last();
-            switch (result) {
-                case "SCalSummonText":
-                    Text("看样子，你是活腻歪了", color);
-                    return false;
-                case "SCalSummonTextRematch":
-                    Text("我觉得你的行为没什么必要......", color);
-                    return false;
-            }
-            return true;
+        public override void SetStaticDefaults() {
+            /*
+            下面是写给画师以及其他合作进行文学的创作的朋友的：
+
+            示例0：基础台词覆盖
+            SetDialogue("SCalSummonText", "看样子，你是活腻歪了");
+            SetDialogue("SCalSummonTextRematch", "我觉得你的行为没什么必要......");
+
+            示例1：根据玩家生命值显示不同台词
+            SetDynamicDialogue("SCalStartText", () => {
+                var player = Main.LocalPlayer;
+                if (player.statLife < player.statLifeMax2 * 0.3f) {
+                    return new DialogueOverride("你看起来已经奄奄一息了", Color.Red);
+                }
+                else if (player.statLife < player.statLifeMax2 * 0.7f) {
+                    return new DialogueOverride("受伤了？真有意思", Color.Yellow);
+                }
+                else {
+                    return new DialogueOverride("真奇怪，你应该已经死了才对……", Color.White);
+                }
+            });
+
+            示例2：使用条件构建器根据多个条件选择台词
+            SetConditionalDialogue("SCalBH2Text",
+                CreateConditional()
+                    .When(() => Main.expertMode && Main.masterMode,
+                          "在大师模式中挑战我？勇气可嘉", Color.Purple)
+                    .When(() => Main.expertMode,
+                          "专家模式？也不过如此", Color.Orange)
+                    .When(() => Main.LocalPlayer.ZoneUnderworldHeight,
+                          "在地狱深处与我战斗，倒也合适", Color.OrangeRed)
+                    .Otherwise("距离你上次勉强才击败我的克隆体也没过多久。那玩意就是个失败品，不是么？")
+            );
+             */
+            SetDynamicDialogue("SCalSummonText", () => {
+                var player = Main.LocalPlayer;
+                if (player.TryGetModPlayer<ProverbsPlayer>(out var proverbsPlayer) && proverbsPlayer.HasProverbs) {
+                    return new DialogueOverride("你竟然真的戴着那个戒指来了......既然如此，我便不会再留情", Color.Orange);
+                }
+                else {
+                    return new DialogueOverride("啊......我期待这一刻已经很久了，从见到你那刻开始", Color.Yellow);
+                }
+            });
+
+            SetDynamicDialogue("SCalStartText", () => {
+                var player = Main.LocalPlayer;
+                if (player.statLife < player.statLifeMax2 * 0.3f) {
+                    return new DialogueOverride("你看起来已经奄奄一息了", Color.Orange);
+                }
+                else if (player.statLife < player.statLifeMax2 * 0.7f) {
+                    return new DialogueOverride("你的技术还有待进步", Color.Yellow);
+                }
+                else {
+                    return new DialogueOverride("真奇怪，你应该已经死了才对……", null);
+                }
+            });
+
+            SetDynamicDialogue("SCalStartTextRematch", () => {
+                var player = Main.LocalPlayer;
+                if (player.statLife < player.statLifeMax2 * 0.3f) {
+                    return new DialogueOverride("你看起来已经奄奄一息了", Color.Orange);
+                }
+                else if (player.statLife < player.statLifeMax2 * 0.7f) {
+                    return new DialogueOverride("受伤了？真有意思", Color.Yellow);
+                }
+                else {
+                    return new DialogueOverride("真奇怪，你应该已经死了才对……", null);
+                }
+            });
         }
     }
 }
