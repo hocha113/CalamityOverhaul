@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Line10 = this.GetLocalization(nameof(Line10), () => "我有预感，如果没有遇到你们，我只能再撑30年");
             Line11 = this.GetLocalization(nameof(Line11), () => "......你希望他代替你的意识？");
             Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是必须的");
-            Line13 = this.GetLocalization(nameof(Line13), () => "当我意识完全消散后，我身上近乎完整的硫磺火将会复苏，彻底焚烧掉整个世界");
+            Line13 = this.GetLocalization(nameof(Line13), () => "当我意识完全消散后，我身上近乎完整的硫磺火将会彻底焚烧掉整个世界");
             Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人之躯太过弱小，以我的躯体作为踏板，不更好吗？");
             Line15 = this.GetLocalization(nameof(Line15), () => "我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！");
 
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         protected override void OnScenarioStart() {
             //开始生成粒子效果
-            EbnSkyEffect.IsActive = true;
+            EbnEffect.IsActive = true;
         }
 
         protected override void Build() {
@@ -176,10 +176,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void OnScenarioStart() {
                 //开始生成粒子效果
-                EbnSkyEffect.IsActive = true;
+                EbnEffect.IsActive = true;
             }
             protected override void OnScenarioComplete() {
-                EbnSkyEffect.IsActive = false;
+                EbnEffect.IsActive = false;
             }
             protected override void Build() {
                 //选择阻止比目鱼
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
             Complete();
             //停止粒子生成
-            EbnSkyEffect.IsActive = false;
+            EbnEffect.IsActive = false;
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

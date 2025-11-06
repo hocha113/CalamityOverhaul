@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     {
         public override int Music => -1; // 音乐在 EbnSkyEffect 里控制
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => EbnSkyEffect.IsActive || EbnSkyEffect.Sengs > 0f;
+        public override bool IsSceneEffectActive(Player player) => EbnEffect.IsActive || EbnEffect.Sengs > 0f;
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(EbnSky.Name, isActive);
     }
 
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         [VaultLoaden(CWRConstant.Masking)]
         public static Texture2D Noise2;
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
-            if (!EbnSkyEffect.IsActive && EbnSkyEffect.Sengs <= 0) {
+            if (!EbnEffect.IsActive && EbnEffect.Sengs <= 0) {
                 return;
             }
 
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             var shader = EbnShader.Shader;
             shader.Parameters["colorMult"].SetValue(7.35f);
             shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["radius"].SetValue(300 + (1f - EbnSkyEffect.Sengs) * 1200);
+            shader.Parameters["radius"].SetValue(300 + (1f - EbnEffect.Sengs) * 1200);
             shader.Parameters["setPoint"].SetValue(Main.LocalPlayer.Center);
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
@@ -123,10 +123,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public override void Update(GameTime gameTime) {
-            _ = EbnSkyEffect.Cek();
+            _ = EbnEffect.Cek();
 
             // 根据场景状态调整强度
-            if (EbnSkyEffect.IsActive) {
+            if (EbnEffect.IsActive) {
                 if (intensity < 1f) {
                     intensity += 0.025f; // 稍快的淡入速度
                 }
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             // 应用更强的暗红硫磺火色调
             if (intensity > 0.1f) {
                 // 计算淡出效果
-                float currentTime = EbnSkyEffect.CekTimer / 60f;
+                float currentTime = EbnEffect.CekTimer / 60f;
                 float maxTime = 300f;
                 float fadeOutTime = 10f;
 
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     /// <summary>
     /// 永恒燃烧的如今场景效果管理器（负责粒子生成）
     /// </summary>
-    internal class EbnSkyEffect : ModSystem
+    internal class EbnEffect : ModSystem
     {
         public static bool IsActive;
         public static int CekTimer = 0;
@@ -248,9 +248,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
             CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
-
-            // 播放危机音乐
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
         }
 
         /// <summary>

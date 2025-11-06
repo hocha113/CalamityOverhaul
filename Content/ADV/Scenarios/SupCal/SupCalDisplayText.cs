@@ -1,5 +1,8 @@
-﻿using CalamityOverhaul.Content.Items.Accessories;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 
@@ -17,7 +20,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     ---------------------------------------------------这段台词全部屏蔽-------------------------------------------------------
         SCalSeekerRingText: 一个后起之人，只识杀戮与偷窃，但却以此得到力量。我想想，这让我想起了谁……？
         SCalBH5Text: 这场战斗的输赢对你而言毫无意义！那你又有什么理由干涉这一切！
-        SCalSepulcher2Text: 我们两人里只有一个可以活下来，但如果那个人是你，这一切还有什么意义？！
+        SCalSepulcher2Text: 我们两人里只有一个可以活下来，但如果那个人是你，这一切还有什么意义？!
         SCalDesparationText1: 给我停下！
         SCalDesparationText2: 如果我在这里失败，我就再无未来可言。
         SCalDesparationText3: 一旦你战胜了我，你就只剩下一条道路。
@@ -122,15 +125,52 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             });
         }
 
+        //需要屏蔽的原版对话key
+        public static HashSet<string> BlockedDialogueKeys = new HashSet<string>()
+        {
+            //战败前的濒死台词（屏蔽以使用自定义场景)
+            "SCalSeekerRingText",
+            "SCalBH5Text",
+            "SCalSepulcher2Text",
+            "SCalDesparationText1",
+            "SCalDesparationText2",
+            "SCalDesparationText3",
+            "SCalDesparationText4",
+
+            //战败后的接受台词（屏蔽以使用自定义场景)
+            "SCalAcceptanceText1",
+            "SCalAcceptanceText2",
+            "SCalAcceptanceText3",
+
+            //重复战败台词（屏蔽以使用自定义场景)
+            "SCalDesparationText1Rematch",
+            "SCalDesparationText2Rematch",
+            "SCalDesparationText3Rematch",
+            "SCalDesparationText4Rematch"
+        };
+
         public override bool PreHandle(ref string key, ref Color color) {
             //提取key的最后一部分(去除模组前缀)
             string result = key.Split('.').Last();
+
+            if (result == "SCalAcceptanceText1") {
+                //Boss已经进入濒死阶段，触发战败对话场景
+                if (!VaultUtils.isServer) {
+                    ScenarioManager.Reset<EternalBlazingNow>();
+                    ScenarioManager.Start<EternalBlazingNow>();
+                }
+            }
+
+            //如果是需要屏蔽的对话，返回false阻止显示
+            if (BlockedDialogueKeys.Contains(result)) {
+                return false;
+            }
+
             return true;
         }
 
         public override bool Alive(Player player) {
-            return player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
-                && halibutPlayer.ADCSave.SupCalYharonQuestReward;//仅在完成了与焚世龙的任务后才触发这些台词修改
+            return true;// player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ADCSave.SupCalYharonQuestReward;//仅在完成了与焚世龙的任务后才触发这些台词修改
         }
     }
 }
