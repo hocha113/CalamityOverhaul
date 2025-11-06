@@ -1,10 +1,14 @@
 ﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
@@ -15,9 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static int lastHoveredChoice = -1;
 
         public static readonly SoundStyle ThanatosIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover");
-
         public static readonly SoundStyle AresIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/AresIconHover");
-
         public static readonly SoundStyle ArtemisApolloIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover");
 
         //反射加载纹理，对应三种机甲图标
@@ -28,6 +30,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]
         public static Texture2D HeadIcon_ArtemisApollo = null;
 
+        //本地化文本
+        public static LocalizedText ThanatosDescription { get; private set; }
+        public static LocalizedText AresDescription { get; private set; }
+        public static LocalizedText ArtemisApolloDescription { get; private set; }
+
         //图标动画状态
         private static int currentIconIndex = -1;
         private static int targetIconIndex = -1;
@@ -36,28 +43,49 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static float iconRotation = 0f;
         private static float iconGlowIntensity = 0f;
 
+        //文本解码动画状态
+        private static float textDecodeProgress = 0f;
+        private static string decodedText = "";
+        private static string targetText = "";
+        private static float textFadeProgress = 0f;
+        private static int visibleCharCount = 0;
+
         //动画参数
         private const float FadeSpeed = 0.08f;
         private const float ScaleSpeed = 0.12f;
+        private const float TextDecodeSpeed = 0.05f;
+        private const float TextFadeSpeed = 0.06f;
         private const float IconBaseScale = 2.2f;
         private const float IconMaxScale = 3.6f;
 
         //图标位置偏移（玩家头顶）
         private static Vector2 iconOffset = new Vector2(0, -120f);
+        private static Vector2 textOffset = new Vector2(0, 60f);//文本相对图标的偏移
 
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
         private static int particleSpawnTimer = 0;
 
+        //用于乱码生成的字符集
+        private static readonly char[] glitchChars = "█▓▒░▄▀■□▪▫◘◙◚◛◜◝◞◟●○◎◯⊕⊗⊙⊛⊠⊡⌂▬▭▮▯┼┴┬┤├┌┐└┘╳╱╲╬╪╫╩╦╠╣╔╗╚╝║═╞╡╟╢╖╓╙╜╛╘╒╕╤╧╨╥╙╟╢".ToCharArray();
+
         public string LocalizationCategory => "UI";
 
         public override void SetStaticDefaults() {
-            
+            ThanatosDescription = this.GetLocalization(nameof(ThanatosDescription), 
+                () => "塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒。");
+            AresDescription = this.GetLocalization(nameof(AresDescription), 
+                () => "阿瑞斯，一个搭载着四台超级星流武器的庞然巨物。");
+            ArtemisApolloDescription = this.GetLocalization(nameof(ArtemisApolloDescription), 
+                () => "阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器。");
         }
 
         public override void UpdateBySystem(int index) {
             //更新图标动画
             UpdateIconAnimation();
+
+            //更新文本解码动画
+            UpdateTextDecoding();
 
             //更新科技粒子
             UpdateTechParticles();
@@ -69,6 +97,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 DrawMechIcon(spriteBatch, main);
+                DrawMechDescription(spriteBatch, main);
                 Main.spriteBatch.End();
             }
         }
@@ -90,6 +119,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                         iconFadeProgress = 0f;
                         iconScaleProgress = 0f;
                         iconRotation = 0f;
+                        
+                        //重置文本动画
+                        ResetTextAnimation();
                     }
                 }
                 else {
@@ -98,6 +130,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     iconFadeProgress = 0f;
                     iconScaleProgress = 0f;
                     iconRotation = 0f;
+                    
+                    //重置文本动画
+                    ResetTextAnimation();
                 }
             }
 
@@ -121,6 +156,87 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     SpawnTechParticle();
                 }
             }
+        }
+
+        /// <summary>
+        /// 重置文本动画
+        /// </summary>
+        private static void ResetTextAnimation() {
+            textDecodeProgress = 0f;
+            textFadeProgress = 0f;
+            visibleCharCount = 0;
+            decodedText = "";
+            targetText = GetDescriptionText(currentIconIndex);
+        }
+
+        /// <summary>
+        /// 更新文本解码动画
+        /// </summary>
+        private static void UpdateTextDecoding() {
+            if (currentIconIndex < 0 || iconFadeProgress < 0.5f) {
+                return;
+            }
+
+            //文本淡入
+            textFadeProgress = Math.Min(textFadeProgress + TextFadeSpeed, 1f);
+
+            //解码进度
+            if (textDecodeProgress < 1f) {
+                textDecodeProgress = Math.Min(textDecodeProgress + TextDecodeSpeed, 1f);
+                
+                //计算可见字符数
+                int targetCharCount = (int)(targetText.Length * textDecodeProgress);
+                if (targetCharCount != visibleCharCount) {
+                    visibleCharCount = targetCharCount;
+                    UpdateDecodedText();
+                }
+            }
+            else if (decodedText != targetText) {
+                //完全解码后，直接显示完整文本
+                decodedText = targetText;
+            }
+        }
+
+        /// <summary>
+        /// 更新解码文本（带乱码效果）
+        /// </summary>
+        private static void UpdateDecodedText() {
+            if (string.IsNullOrEmpty(targetText)) {
+                decodedText = "";
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            
+            for (int i = 0; i < targetText.Length; i++) {
+                if (i < visibleCharCount) {
+                    //已解码的字符
+                    sb.Append(targetText[i]);
+                }
+                else {
+                    //未解码的字符显示为乱码
+                    if (Main.rand.NextBool(3)) {
+                        sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                    }
+                    else {
+                        sb.Append(' ');
+                    }
+                }
+            }
+
+            decodedText = sb.ToString();
+        }
+
+        /// <summary>
+        /// 获取描述文本
+        /// </summary>
+        private static string GetDescriptionText(int index) {
+            return index switch {
+                0 => AresDescription?.Value ?? "",
+                1 => ThanatosDescription?.Value ?? "",
+                2 => ArtemisApolloDescription?.Value ?? "",
+                _ => ""
+            };
         }
 
         /// <summary>
@@ -200,6 +316,141 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         /// <summary>
+        /// 绘制机甲描述文本
+        /// </summary>
+        private static void DrawMechDescription(SpriteBatch spriteBatch, Main main) {
+            if (string.IsNullOrEmpty(decodedText) || textFadeProgress < 0.01f) {
+                return;
+            }
+
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active) return;
+
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            
+            //计算文本位置
+            Vector2 worldPos = player.Center + iconOffset + textOffset;
+            Vector2 screenPos = worldPos - Main.screenPosition;
+
+            //计算文本尺寸
+            Vector2 textSize = font.MeasureString(decodedText) * 0.75f;
+            Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, 0);
+
+            float alpha = textFadeProgress * iconFadeProgress * 0.9f;
+            Color iconColor = GetIconColor(currentIconIndex);
+
+            //绘制背景面板
+            DrawTextBackground(spriteBatch, textPos, textSize, alpha, iconColor);
+
+            //绘制扫描线效果
+            DrawTextScanLines(spriteBatch, textPos, textSize, alpha, iconColor);
+
+            //绘制噪点效果
+            DrawTextNoise(spriteBatch, textPos, textSize, alpha);
+
+            //绘制文本光晕
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4f;
+                Vector2 offset = angle.ToRotationVector2() * 1.5f;
+                Utils.DrawBorderString(spriteBatch, decodedText, textPos + offset, 
+                    iconColor * (alpha * 0.4f), 0.75f);
+            }
+
+            //绘制主文本
+            Color textColor = Color.Lerp(Color.White, iconColor, 0.3f);
+            Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, 0.75f);
+        }
+
+        /// <summary>
+        /// 绘制文本背景
+        /// </summary>
+        private static void DrawTextBackground(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha, Color color) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            if (pixel == null) return;
+
+            Rectangle bgRect = new Rectangle(
+                (int)(pos.X - 10),
+                (int)(pos.Y - 6),
+                (int)(size.X + 20),
+                (int)(size.Y + 12)
+            );
+
+            //半透明深色背景
+            sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(10, 15, 25) * (alpha * 0.85f));
+
+            //发光边框
+            Color edgeColor = color * (alpha * 0.6f);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 2), edgeColor);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 2, bgRect.Width, 2), edgeColor * 0.7f);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, 2, bgRect.Height), edgeColor * 0.85f);
+            sb.Draw(pixel, new Rectangle(bgRect.Right - 2, bgRect.Y, 2, bgRect.Height), edgeColor * 0.85f);
+        }
+
+        /// <summary>
+        /// 绘制文本扫描线
+        /// </summary>
+        private static void DrawTextScanLines(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha, Color color) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            if (pixel == null) return;
+
+            float scanSpeed = Main.GlobalTimeWrappedHourly * 3f;
+            int lineCount = 3;
+
+            for (int i = 0; i < lineCount; i++) {
+                float lineProgress = (scanSpeed + i * 0.33f) % 1f;
+                float lineY = pos.Y + size.Y * lineProgress;
+
+                float lineAlpha = (float)Math.Sin(lineProgress * MathHelper.Pi) * alpha * 0.3f;
+                Color lineColor = color * lineAlpha;
+
+                sb.Draw(
+                    pixel,
+                    new Vector2(pos.X - 8, lineY),
+                    new Rectangle(0, 0, 1, 1),
+                    lineColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(size.X + 16, 1.5f),
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+        }
+
+        /// <summary>
+        /// 绘制文本噪点效果
+        /// </summary>
+        private static void DrawTextNoise(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            if (pixel == null) return;
+
+            //随机噪点
+            for (int i = 0; i < 8; i++) {
+                if (Main.rand.NextBool(3)) {
+                    Vector2 noisePos = pos + new Vector2(
+                        Main.rand.NextFloat(size.X),
+                        Main.rand.NextFloat(size.Y)
+                    );
+
+                    float noiseSize = Main.rand.NextFloat(0.5f, 1.5f);
+                    Color noiseColor = new Color(100, 200, 255) * (alpha * 0.3f);
+
+                    sb.Draw(
+                        pixel,
+                        noisePos,
+                        new Rectangle(0, 0, 1, 1),
+                        noiseColor,
+                        0f,
+                        new Vector2(0.5f),
+                        noiseSize,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+            }
+        }
+
+        /// <summary>
         /// 绘制扫描线效果
         /// </summary>
         private static void DrawScanLines(SpriteBatch spriteBatch, Vector2 center, Vector2 size, float alpha, Color color) {
@@ -247,9 +498,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// </summary>
         private static Color GetIconColor(int index) {
             return index switch {
-                0 => new Color(255, 80, 80),     // 阿瑞斯 - 红色
-                1 => new Color(100, 255, 150),   // 塔纳托斯 - 绿色
-                2 => new Color(80, 200, 255),    // 双子 - 蓝色
+                0 => new Color(255, 80, 80),     //阿瑞斯 - 红色
+                1 => new Color(100, 255, 150),   //塔纳托斯 - 绿色
+                2 => new Color(80, 200, 255),    //双子 - 蓝色
                 _ => Color.White
             };
         }

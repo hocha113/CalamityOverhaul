@@ -6196,6 +6196,12 @@ UI: {
 		// ContinueHint: Continue
 		// FastHint: Accelerate
 	}
+
+	ExoMechdusaSumRender: {
+		// ThanatosDescription: 塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒。
+		// AresDescription: 阿瑞斯，一个搭载着四台超级星流武器的庞然巨物。
+		// ArtemisApolloDescription: 阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器。
+	}
 }
 
 ADV: {
