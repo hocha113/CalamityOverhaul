@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
-using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
