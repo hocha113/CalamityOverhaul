@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private float softFlickerIntensity = 0f;
 
         //雪花屏效果参数
-        private float noiseTimer = 0f;
         private float noiseIntensity = 0f;
 
         //全局脉冲
@@ -69,7 +68,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             intensity = 0f;
             scanLineTimer = 0f;
             softFlickerTimer = 0f;
-            noiseTimer = 0f;
 
             //重置科技格子
             for (int i = 0; i < techGrids.Length; i++) {
@@ -151,10 +149,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
             //更新柔和闪烁（持续微弱的脉冲，不刺眼）
             softFlickerTimer += 0.05f;
-            softFlickerIntensity = (float)Math.Sin(softFlickerTimer * 0.8f) * 0.5f + 0.15f;//0.0-0.3范围
+            softFlickerIntensity = (float)Math.Sin(softFlickerTimer * 0.8f) * 0.5f + 0.15f;//0.0-0.65范围
 
-            //雪花屏效果（降低强度）
-            noiseTimer += 0.08f;
+            //雪花屏效果
             noiseIntensity = (float)Math.Sin(globalPulse * 0.7f) * 0.02f + 0.02f;//降低到0.0-0.04范围
 
             //更新科技格子
