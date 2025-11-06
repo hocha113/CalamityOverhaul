@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;

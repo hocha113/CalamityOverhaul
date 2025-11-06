@@ -7,9 +7,9 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
+using static CalamityOverhaul.Content.ADV.Common.BaseDamageTracker;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Common
+namespace CalamityOverhaul.Content.ADV.Common
 {
     /// <summary>
     /// 任务追踪UI的通用基类，用于显示战斗中的任务进度

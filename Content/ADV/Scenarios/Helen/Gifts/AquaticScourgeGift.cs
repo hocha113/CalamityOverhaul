@@ -1,5 +1,5 @@
 ﻿using CalamityMod.NPCs.AquaticScourge;
-using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

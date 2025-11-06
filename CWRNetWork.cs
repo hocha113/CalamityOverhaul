@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Industrials.Modifys;

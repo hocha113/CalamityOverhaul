@@ -1,5 +1,5 @@
 using CalamityMod.NPCs.DevourerofGods;
-using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;

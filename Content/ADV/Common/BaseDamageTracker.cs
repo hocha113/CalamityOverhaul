@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
-using static CalamityOverhaul.Content.ADV.Scenarios.Common.DamageTrackerSystem;
+using static CalamityOverhaul.Content.ADV.Common.BaseDamageTracker;
+using static CalamityOverhaul.Content.ADV.Common.DamageTrackerSystem;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Common
+namespace CalamityOverhaul.Content.ADV.Common
 {
     internal class DamageTrackerSystem : ModSystem, ILocalizedModType
     {

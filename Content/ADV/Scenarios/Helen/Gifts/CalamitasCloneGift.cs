@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using CalamityMod.NPCs.CalClone;
-using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

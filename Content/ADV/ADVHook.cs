@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV
