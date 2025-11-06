@@ -65,7 +65,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         protected override void OnScenarioStart() {
-            //可以在这里添加特效或音效
+            DraedonEffect.IsActive = true;
+        }
+
+        protected override void OnScenarioComplete() {
+            DraedonEffect.IsActive = false;
         }
 
         protected override void Build() {
@@ -76,7 +80,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             bool isBossRush = BossRushEvent.BossRushActive;
 
             if (isBossRush) {
-                //Boss Rush模式：直接显示选择界面，时间紧迫
+                //Boss Rush模式，直接显示选择界面，时间紧迫，不等你嗷
                 AddWithChoices(DraedonName.Value, BossRushLine.Value, [
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
@@ -84,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 ]);
             }
             else {
-                //普通模式：完整的介绍对话
+                //普通模式，就播放老逼登的完整介绍对话
                 Add(DraedonName.Value, IntroLine1.Value);
                 Add(DraedonName.Value, IntroLine2.Value);
                 Add(DraedonName.Value, IntroLine3.Value);

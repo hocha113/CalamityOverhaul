@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
 
                 //获取当前实际使用的对话框来入队
-                //注意：这里我们仍然使用初始对话框入队
+                //注意，这里仍然使用初始对话框入队
                 //样式切换会在 OnStart 回调中处理
                 initialBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
             }
