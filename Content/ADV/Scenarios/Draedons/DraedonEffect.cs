@@ -288,15 +288,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         private void DrawNoiseEffect(SpriteBatch sb) {
-            //降低雪花屏强度，减少视觉不适
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            int noiseCount = (int)(50 * noiseIntensity * intensity);//从150降低到50
+            int noiseCount = (int)(50 * noiseIntensity * intensity);
 
             for (int i = 0; i < noiseCount; i++) {
                 int x = Main.rand.Next(Main.screenWidth);
                 int y = Main.rand.Next(Main.screenHeight);
-                int size = Main.rand.Next(1, 3);//最大尺寸从4降到3
-                float noiseAlpha = Main.rand.NextFloat(0.2f, 0.5f);//透明度从0.3-0.8降到0.2-0.5
+                int size = Main.rand.Next(1, 3);
+                float noiseAlpha = Main.rand.NextFloat(0.2f, 0.5f);
 
                 sb.Draw(pixel,
                     new Rectangle(x, y, size, size),

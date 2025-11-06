@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content.ADV
 
         protected override void VaultRegister() {
             Instances.Add(this);
+            TypeToInstance[GetType()] = this;
             ScenarioManager.Register(this);
         }
 

@@ -136,14 +136,14 @@ namespace CalamityOverhaul.Content.ADV
                 EnqueueDialogue(seg.speaker, seg.content, seg.callback);
             }
         }
-        protected virtual void BeginClose() {
+        public virtual void BeginClose() {
             if (closing) {
                 return;
             }
             closing = true;
             hideProgress = 0f;
         }
-        protected virtual void StartNext() {
+        public virtual void StartNext() {
             if (queue.Count == 0) {
                 BeginClose();
                 playedCount = 0;
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV
             }
             current = queue.Dequeue();
 
-            // 在处理对话之前触发 OnStart
+            //在处理对话之前触发 OnStart
             current?.OnStart?.Invoke();
 
             playedCount++;

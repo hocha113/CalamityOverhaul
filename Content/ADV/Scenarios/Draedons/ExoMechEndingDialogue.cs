@@ -1,3 +1,4 @@
+using InnoVault.UIHandles;
 using System;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -59,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         protected override void Build() {
             //注册嘉登立绘
-            DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.Cyan, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2RedADV, silhouette: false);
 
             if (IsKillAttempt) {
                 //玩家尝试击杀嘉登
@@ -79,9 +80,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
         }
 
+        protected override void OnScenarioStart() {
+            DraedonEffect.IsActive = true;
+        }
+
         protected override void OnScenarioComplete() {
-            //对话结束后的逻辑
-            IsKillAttempt = false;
+            if (IsKillAttempt) {
+                //对话结束后的逻辑
+                IsKillAttempt = false;
+                TriggerEndingDialogue();
+            }
+            else {
+                DraedonEffect.IsActive = false;
+            }
         }
 
         /// <summary>
@@ -89,6 +100,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// </summary>
         public static void TriggerEndingDialogue() {
             IsKillAttempt = false;
+            ScenarioManager.Reset<ExoMechEndingDialogue>();
             ScenarioManager.Start<ExoMechEndingDialogue>();
         }
 
@@ -97,6 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// </summary>
         public static void TriggerKillAttemptDialogue() {
             IsKillAttempt = true;
+            ScenarioManager.Reset<ExoMechEndingDialogue>();
             ScenarioManager.Start<ExoMechEndingDialogue>();
         }
     }
