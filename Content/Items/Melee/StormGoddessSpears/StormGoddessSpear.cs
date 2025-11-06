@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
 using System.Collections.Generic;
 using Terraria;

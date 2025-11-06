@@ -1,8 +1,6 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
@@ -16,7 +14,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -169,7 +166,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         public override string Texture => CWRConstant.Placeholder;
         public Color Light => Lighting.GetColor((int)(Projectile.position.X + Projectile.width * 0.5) / 16, (int)((Projectile.position.Y + Projectile.height * 0.5) / 16.0));
         private Trail Trail;
-        
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
@@ -218,7 +215,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Projectile.velocity = Projectile.velocity.RotatedByRandom(0.6f);
                 Projectile.localAI[1] = 0f;
             }
-            
+
             if (Math.Abs(Projectile.velocity.X) < 0.1f) {
                 if (Math.Abs(Projectile.velocity.Y) < 1) {
                     Projectile.velocity.Y *= 1.01f;
@@ -296,7 +293,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         public override string Texture => CWRConstant.Placeholder;
         private Color light => Lighting.GetColor((int)(Projectile.position.X + Projectile.width * 0.5) / 16, (int)((Projectile.position.Y + Projectile.height * 0.5) / 16.0));
         private Trail Trail;
-        
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
