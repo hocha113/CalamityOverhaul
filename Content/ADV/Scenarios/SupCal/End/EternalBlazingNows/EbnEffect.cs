@@ -190,8 +190,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (Main.gameMenu) {
                 // 主菜单界面自动关闭效果
                 IsActive = false;
-                EternalBlazingNowNPC.Spawned = false;
-                EternalBlazingNowNPC.RandomTimer = 0;
                 return false;
             }
 

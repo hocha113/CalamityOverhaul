@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
-                ]);
+                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
             else {
                 //普通模式，就播放老逼登的完整介绍对话
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
-                ]);
+                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
         }
 

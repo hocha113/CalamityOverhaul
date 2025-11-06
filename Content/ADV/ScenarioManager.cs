@@ -28,7 +28,8 @@ namespace CalamityOverhaul.Content.ADV
         public Action OnStart { get; set; }
         public Action OnComplete { get; set; }
         public Func<DialogueBoxBase> StyleOverride { get; set; }
-        public List<Choice> Choices { get; set; } // 选项列表
+        public List<Choice> Choices { get; set; }//选项列表
+        public ADVChoiceBox.ChoiceBoxStyle ChoiceBoxStyle { get; set; } = ADVChoiceBox.ChoiceBoxStyle.Default;//选项框样式
 
         public DialogueLine(string speaker, string content) {
             Speaker = speaker;
@@ -97,7 +98,7 @@ namespace CalamityOverhaul.Content.ADV
 
         /// <summary>
         /// 添加带完成回调的对话
-        /// /// </summary>
+        /// </summary>
         public void Add(string speaker, string content, Action onComplete) {
             var line = new DialogueLine(speaker, content) { OnComplete = onComplete };
             lines.Add(line);
@@ -118,13 +119,19 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 添加带选项的对话
         /// </summary>
-        public void AddWithChoices(string speaker, string content, List<Choice> choices, Action onStart = null, Func<DialogueBoxBase> styleOverride = null) {
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="choices">选项列表</param>
+        /// <param name="onStart">对话开始时的回调</param>
+        /// <param name="styleOverride">对话框样式重写</param>
+        /// <param name="choiceBoxStyle">选项框样式</param>
+        public void AddWithChoices(string speaker, string content, List<Choice> choices, Action onStart = null, Func<DialogueBoxBase> styleOverride = null, ADVChoiceBox.ChoiceBoxStyle choiceBoxStyle = ADVChoiceBox.ChoiceBoxStyle.Default) {
             var line = new DialogueLine(speaker, content) {
                 OnStart = onStart,
                 StyleOverride = styleOverride,
                 Choices = choices,
-                // 选项对话的完成由选项选择触发
-                OnComplete = null
+                ChoiceBoxStyle = choiceBoxStyle,
+                OnComplete = null//选项对话的完成由选项选择触发
             };
             lines.Add(line);
         }
@@ -160,11 +167,8 @@ namespace CalamityOverhaul.Content.ADV
                     DialogueUIRegistry.SwitchDialogueBox(initialBox, transferQueue: false);
                 }
                 //设置解析器为默认样式
-                //操你妈的得在这里设置一下样式，不然这坨屎会卡住，下面的一堆对话数据会被设置到他妈的另一个样式拿过去
-                //这种情况在前面进行了一次另一个样式的场景后会触发，你妈的我真是服气了，写了一坨屎
                 DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
-
 
             initialBox ??= DialogueUIRegistry.Current;
             initialBox.PreProcessor = PreProcessSegment;
@@ -174,25 +178,24 @@ namespace CalamityOverhaul.Content.ADV
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
 
-                //为了正确处理 Index，我们需要捕获当前的索引
-                int currentIndex = i;
-
                 Action completeCallback = null;
 
-                //如果有选项，不设置完成回调（由选项触发）
+                //如果有选项，设置显示选项框的回调
                 if (line.Choices != null && line.Choices.Count > 0) {
+                    //捕获当前行的选项框样式
+                    ADVChoiceBox.ChoiceBoxStyle capturedStyle = line.ChoiceBoxStyle;
+
                     completeCallback = () => {
-                        //显示选项框
+                        //显示选项框，传递样式参数
                         ADVChoiceBox.Show(line.Choices, () => {
                             var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                             if (rect != Rectangle.Empty) {
                                 return new Vector2(rect.Center.X, rect.Bottom + 30f);
                             }
                             return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
-                        });
+                        }, capturedStyle);//使用捕获的样式
 
                         //暂停对话推进，等待选择
-                        //注意，这里不调用场景完成
                     };
                 }
                 else if (line.OnComplete != null || isLast) {
@@ -229,8 +232,6 @@ namespace CalamityOverhaul.Content.ADV
                 }
 
                 //获取当前实际使用的对话框来入队
-                //注意，这里仍然使用初始对话框入队
-                //样式切换会在 OnStart 回调中处理
                 initialBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
             }
         }
@@ -246,9 +247,6 @@ namespace CalamityOverhaul.Content.ADV
             if (box != null && box.PreProcessor == PreProcessSegment) {
                 box.PreProcessor = null;
             }
-
-            //他妈的别在这里调用解析器的恢复，会让对话框结束时卡住不动
-            //DialogueUIRegistry.SetResolver(null);
         }
 
         public virtual void SaveData(TagCompound tag) { }
@@ -327,6 +325,14 @@ namespace CalamityOverhaul.Content.ADV
         /// </summary>
         public DialogueLineBuilder WithChoices(List<Choice> choices) {
             line.Choices = choices;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置选项框样式
+        /// </summary>
+        public DialogueLineBuilder WithChoiceBoxStyle(ADVChoiceBox.ChoiceBoxStyle style) {
+            line.ChoiceBoxStyle = style;
             return this;
         }
 

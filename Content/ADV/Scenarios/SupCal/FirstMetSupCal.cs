@@ -167,11 +167,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 Add(Rolename2.Value + expressionBeTo, NoFishLine6.Value);
             }
 
-            //统一的选择部分
+            //统一的选择部分（使用硫磺火风格的选项框）
             AddWithChoices(Rolename2.Value + expressionBeTo, QuestionLine.Value, [
                 new Choice(Choice1Text.Value, Choice1),
                 new Choice(Choice2Text.Value, Choice2),
-            ]);
+            ], onStart: null, styleOverride: () => BrimstoneDialogueBox.Instance, choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
         }
 
         public void Choice1() {

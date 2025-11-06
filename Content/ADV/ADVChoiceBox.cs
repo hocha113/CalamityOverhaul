@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.ADV
     }
 
     /// <summary>
-    /// ADV 选项框 UI，参考 ResurrectionUI 的绘制风格
+    /// ADV选项框UI，参考ResurrectionUI的绘制风格
     /// </summary>
     internal class ADVChoiceBox : UIHandle, ILocalizedModType
     {
@@ -38,28 +38,42 @@ namespace CalamityOverhaul.Content.ADV
 
         public static ADVChoiceBox Instance => UIHandleLoader.GetUIHandleOfType<ADVChoiceBox>();
 
+        /// <summary>
+        /// 选项框样式枚举
+        /// </summary>
+        public enum ChoiceBoxStyle
+        {
+            Default,//默认深蓝科技风格
+            Brimstone,//硫磺火风格
+            Draedon//嘉登科技风格
+        }
+
         private readonly List<Choice> choices = new();
         private int hoveredIndex = -1;
         private int selectedIndex = -1;
         private bool isSelecting = false;
+        private ChoiceBoxStyle currentStyle = ChoiceBoxStyle.Default;
 
-        // 动画状态
+        //动画状态
         private float showProgress = 0f;
         private float hideProgress = 0f;
         private const float ShowDuration = 12f;
         private const float HideDuration = 10f;
         private bool closing = false;
 
-        // 选项悬停动画
-        private readonly float[] choiceHoverProgress = new float[10]; // 支持最多10个选项
+        //选项悬停动画
+        private readonly float[] choiceHoverProgress = new float[10];//支持最多10个选项
         private const float HoverSpeed = 0.15f;
 
-        // 位置和尺寸
+        //位置和尺寸
         private Vector2 anchorPosition;
         private Vector2 panelSize;
         private Rectangle panelRect;
 
-        // 布局常量
+        //样式动画参数
+        private float styleAnimTimer = 0f;//样式动画计时器
+
+        //布局常量
         private const float MinWidth = 200f;
         private const float MaxWidth = 420f;
         private const float HorizontalPadding = 14f;
@@ -71,7 +85,7 @@ namespace CalamityOverhaul.Content.ADV
         private const float ChoiceHeight = 32f;
         private const float ChoicePadding = 8f;
 
-        // 本地化文本
+        //本地化文本
         protected static LocalizedText TitleText;
         protected static LocalizedText DisabledHintFormat;
 
@@ -85,7 +99,10 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 显示选项框
         /// </summary>
-        public static void Show(List<Choice> choices, Func<Vector2> anchorProvider = null) {
+        /// <param name="choices">选项列表</param>
+        /// <param name="anchorProvider">锚点位置提供者</param>
+        /// <param name="style">选项框样式</param>
+        public static void Show(List<Choice> choices, Func<Vector2> anchorProvider = null, ChoiceBoxStyle style = ChoiceBoxStyle.Default) {
             var inst = Instance;
             inst.choices.Clear();
             inst.choices.AddRange(choices);
@@ -95,13 +112,15 @@ namespace CalamityOverhaul.Content.ADV
             inst.hideProgress = 0f;
             inst.hoveredIndex = -1;
             inst.selectedIndex = -1;
+            inst.currentStyle = style;
+            inst.styleAnimTimer = 0f;
 
-            // 重置悬停动画
+            //重置悬停动画
             for (int i = 0; i < inst.choiceHoverProgress.Length; i++) {
                 inst.choiceHoverProgress[i] = 0f;
             }
 
-            // 计算锚点位置
+            //计算锚点位置
             if (anchorProvider != null) {
                 inst.anchorPosition = anchorProvider();
             }
@@ -118,7 +137,7 @@ namespace CalamityOverhaul.Content.ADV
                 inst.anchorPosition = new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
             }
 
-            // 计算面板尺寸
+            //计算面板尺寸
             inst.CalculatePanelSize();
         }
 
@@ -137,11 +156,11 @@ namespace CalamityOverhaul.Content.ADV
                 return;
             }
 
-            // 计算标题尺寸
+            //计算标题尺寸
             string title = TitleText.Value;
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
 
-            // 计算选项区域所需宽度
+            //计算选项区域所需宽度
             float maxChoiceWidth = 0f;
             foreach (var choice in choices) {
                 string text = choice.Text;
@@ -157,7 +176,7 @@ namespace CalamityOverhaul.Content.ADV
             float contentWidth = Math.Max(maxChoiceWidth + ChoicePadding * 2, MinWidth - HorizontalPadding * 2);
             float panelWidth = Math.Clamp(contentWidth + HorizontalPadding * 2, MinWidth, MaxWidth);
 
-            // 计算面板高度
+            //计算面板高度
             float dividerHeight = 1.3f;
             float choicesHeight = choices.Count * ChoiceHeight + (choices.Count - 1) * ChoiceSpacing;
 
@@ -176,7 +195,13 @@ namespace CalamityOverhaul.Content.ADV
                 return;
             }
 
-            // 动画更新
+            //更新样式动画计时器
+            styleAnimTimer += 0.05f;
+            if (styleAnimTimer > MathHelper.TwoPi) {
+                styleAnimTimer -= MathHelper.TwoPi;
+            }
+
+            //动画更新
             if (!closing && showProgress < 1f) {
                 showProgress += 1f / ShowDuration;
                 showProgress = Math.Clamp(showProgress, 0f, 1f);
@@ -200,7 +225,7 @@ namespace CalamityOverhaul.Content.ADV
                 return;
             }
 
-            // 更新面板矩形
+            //更新面板矩形
             float progress = closing ? 1f - hideProgress : showProgress;
             float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
 
@@ -209,7 +234,7 @@ namespace CalamityOverhaul.Content.ADV
 
             panelRect = new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
 
-            // 检测鼠标悬停
+            //检测鼠标悬停
             Point mousePos = new Point(Main.mouseX, Main.mouseY);
             bool hoverInPanel = panelRect.Contains(mousePos);
 
@@ -221,7 +246,7 @@ namespace CalamityOverhaul.Content.ADV
             hoveredIndex = -1;
 
             if (hoverInPanel && isSelecting) {
-                // 计算每个选项的矩形
+                //计算每个选项的矩形
                 float startY = drawPos.Y + TopPadding
                     + FontAssets.MouseText.Value.MeasureString(TitleText.Value).Y * 0.9f
                     + TitleExtra + DividerSpacing * 2 + 1.3f;
@@ -238,7 +263,7 @@ namespace CalamityOverhaul.Content.ADV
                     if (choiceRect.Contains(mousePos)) {
                         hoveredIndex = i;
 
-                        // 点击处理
+                        //点击处理
                         if (keyLeftPressState == KeyPressState.Pressed) {
                             if (choices[i].Enabled) {
                                 selectedIndex = i;
@@ -255,7 +280,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
             }
 
-            // 更新悬停动画
+            //更新悬停动画
             for (int i = 0; i < choiceHoverProgress.Length && i < choices.Count; i++) {
                 float target = i == hoveredIndex ? 1f : 0f;
                 choiceHoverProgress[i] = MathHelper.Lerp(choiceHoverProgress[i], target, HoverSpeed);
@@ -273,14 +298,31 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             float alpha = Math.Min(progress * 1.5f, 1f);
+
+            //根据样式选择绘制方法
+            switch (currentStyle) {
+                case ChoiceBoxStyle.Brimstone:
+                    DrawBrimstoneStyle(spriteBatch, alpha);
+                    break;
+                case ChoiceBoxStyle.Draedon:
+                    DrawDraedonStyle(spriteBatch, alpha);
+                    break;
+                default:
+                    DrawDefaultStyle(spriteBatch, alpha);
+                    break;
+            }
+        }
+
+        #region 默认样式绘制
+        private void DrawDefaultStyle(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 绘制阴影
+            //绘制阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.5f * alpha);
 
-            // 绘制背景
+            //绘制背景
             float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
             Color baseA = new Color(14, 22, 38) * (alpha * wave);
             Color baseB = new Color(8, 26, 46) * 0.3f;
@@ -292,11 +334,11 @@ namespace CalamityOverhaul.Content.ADV
             );
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
 
-            // 绘制边框
+            //绘制边框
             Color edgeColor = new Color(70, 180, 230) * (alpha * 0.75f);
             DrawBorder(spriteBatch, panelRect, edgeColor);
 
-            // 绘制标题
+            //绘制标题
             Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
             string title = TitleText.Value;
 
@@ -307,31 +349,31 @@ namespace CalamityOverhaul.Content.ADV
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
 
-            // 绘制分割线
+            //绘制分割线
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd, edgeColor * 0.9f, edgeColor * 0.05f, 1.3f);
 
-            // 绘制选项
+            //绘制选项
             Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
-            DrawChoices(spriteBatch, choiceStartPos, alpha, edgeColor);
+            DrawDefaultChoices(spriteBatch, choiceStartPos, alpha, edgeColor);
 
-            // 绘制装饰星星
+            //绘制装饰星星
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
             Vector2 star1 = new Vector2(panelRect.Right - 18, panelRect.Y + 14);
             float s1a = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * alpha;
             DrawStar(spriteBatch, star1, 3.5f, edgeColor * s1a);
         }
 
-        private void DrawChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color edgeColor) {
+        private void DrawDefaultChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color edgeColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             for (int i = 0; i < choices.Count; i++) {
                 var choice = choices[i];
                 Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
 
-                // 选项背景
+                //选项背景
                 Rectangle choiceRect = new Rectangle(
                     (int)choicePos.X,
                     (int)choicePos.Y,
@@ -339,7 +381,7 @@ namespace CalamityOverhaul.Content.ADV
                     (int)ChoiceHeight
                 );
 
-                // 悬停效果
+                //悬停效果
                 float hoverProgress = choiceHoverProgress[i];
                 Color choiceBg = choice.Enabled
                     ? Color.Lerp(new Color(20, 35, 50) * 0.3f, new Color(40, 70, 100) * 0.5f, hoverProgress)
@@ -347,58 +389,261 @@ namespace CalamityOverhaul.Content.ADV
 
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-                // 选项边框
+                //选项边框
                 if (hoverProgress > 0.01f) {
                     DrawChoiceBorder(spriteBatch, choiceRect, edgeColor * (hoverProgress * 0.6f * alpha));
                 }
 
-                // 选项文本
-                string text = choice.Text;
-                Color textColor = choice.Enabled ? Color.White : new Color(120, 120, 130);
-
-                Vector2 textPos = new Vector2(choiceRect.X + ChoicePadding, choiceRect.Y + ChoiceHeight / 2f);
-                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
-                textPos.Y -= textSize.Y / 2f;
-
-                // 文本发光效果（仅启用的选项）
-                if (choice.Enabled && hoverProgress > 0.3f) {
-                    for (int j = 0; j < 4; j++) {
-                        float ang = MathHelper.TwoPi * j / 4f;
-                        Vector2 offset = ang.ToRotationVector2() * (1f * hoverProgress);
-                        Utils.DrawBorderString(spriteBatch, text, textPos + offset,
-                            edgeColor * (0.3f * hoverProgress * alpha), 0.75f);
-                    }
-                }
-
-                Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.75f);
-
-                // 禁用提示
-                if (!choice.Enabled && !string.IsNullOrEmpty(choice.DisabledHint)) {
-                    string hint = string.Format(DisabledHintFormat.Value, choice.DisabledHint);
-                    Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.65f;
-                    Vector2 hintPos = new Vector2(
-                        choiceRect.Right - ChoicePadding - hintSize.X,
-                        textPos.Y + 2f
-                    );
-                    Utils.DrawBorderString(spriteBatch, hint, hintPos,
-                        new Color(180, 100, 100) * alpha, 0.65f);
-                }
-
-                // 选项序号
-                string indexText = $"{i + 1}.";
-                Vector2 indexPos = new Vector2(
-                    choiceRect.X - 18f,
-                    textPos.Y
-                );
-                Utils.DrawBorderString(spriteBatch, indexText, indexPos,
-                    edgeColor * (0.5f + hoverProgress * 0.5f) * alpha, 0.7f);
+                //选项文本
+                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, edgeColor, hoverProgress, i);
             }
+        }
+        #endregion
+
+        #region 硫磺火样式绘制
+        private void DrawBrimstoneStyle(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //绘制阴影
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(7, 9);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
+
+            //渐变背景 - 硫磺火深红色
+            int segments = 25;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = panelRect.Y + (int)(t * panelRect.Height);
+                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+
+                float flameWave = (float)Math.Sin(styleAnimTimer * 0.6f + t * 2.2f) * 0.5f + 0.5f;
+                Color brimstoneDeep = new Color(25, 5, 5);
+                Color brimstoneMid = new Color(80, 15, 10);
+                Color brimstoneHot = new Color(140, 35, 20);
+
+                Color baseColor = Color.Lerp(brimstoneDeep, brimstoneMid, flameWave);
+                Color finalColor = Color.Lerp(baseColor, brimstoneHot, t * 0.5f);
+                finalColor *= alpha * 0.92f;
+
+                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), finalColor);
+            }
+
+            //火焰脉冲叠加
+            float pulseBrightness = (float)Math.Sin(styleAnimTimer * 1.8f) * 0.5f + 0.5f;
+            Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
+
+            //火焰边框
+            Color flameEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulseBrightness) * (alpha * 0.85f);
+            DrawBorder(spriteBatch, panelRect, flameEdge);
+
+            //绘制标题
+            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
+            string title = TitleText.Value;
+
+            //火焰光晕效果
+            Color nameGlow = new Color(255, 140, 80) * alpha * 0.75f;
+            for (int i = 0; i < 6; i++) {
+                float angle = MathHelper.TwoPi * i / 6f + styleAnimTimer * 0.5f;
+                Vector2 offset = angle.ToRotationVector2() * 2.2f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, nameGlow * 0.5f, 0.95f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, new Color(255, 240, 220) * alpha, 0.95f);
+
+            //分隔线
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
+                new Color(220, 80, 40) * (alpha * 0.9f),
+                new Color(120, 30, 15) * (alpha * 0.1f), 1.5f);
+
+            //绘制选项
+            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
+            DrawBrimstoneChoices(spriteBatch, choiceStartPos, alpha, flameEdge);
+        }
+
+        private void DrawBrimstoneChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color flameColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            for (int i = 0; i < choices.Count; i++) {
+                var choice = choices[i];
+                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+
+                Rectangle choiceRect = new Rectangle(
+                    (int)choicePos.X,
+                    (int)choicePos.Y,
+                    (int)(panelSize.X - HorizontalPadding * 2),
+                    (int)ChoiceHeight
+                );
+
+                float hoverProgress = choiceHoverProgress[i];
+                Color choiceBg = choice.Enabled
+                    ? Color.Lerp(new Color(40, 10, 5) * 0.3f, new Color(100, 25, 15) * 0.5f, hoverProgress)
+                    : new Color(30, 20, 15) * 0.2f;
+
+                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
+
+                if (hoverProgress > 0.01f) {
+                    DrawChoiceBorder(spriteBatch, choiceRect, flameColor * (hoverProgress * 0.6f * alpha));
+                }
+
+                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, flameColor, hoverProgress, i);
+            }
+        }
+        #endregion
+
+        #region 嘉登科技样式绘制
+        private void DrawDraedonStyle(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //绘制阴影
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(5, 6);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.65f));
+
+            //科技背景渐变
+            int segments = 25;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = panelRect.Y + (int)(t * panelRect.Height);
+                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+
+                float pulse = (float)Math.Sin(styleAnimTimer * 0.6f + t * 2.0f) * 0.5f + 0.5f;
+                Color techDark = new Color(8, 12, 22);
+                Color techMid = new Color(18, 28, 42);
+                Color techEdge = new Color(35, 55, 85);
+
+                Color blendBase = Color.Lerp(techDark, techMid, pulse);
+                Color c = Color.Lerp(blendBase, techEdge, t * 0.45f);
+                c *= alpha * 0.92f;
+
+                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
+            }
+
+            //全息闪烁覆盖层
+            float flicker = (float)Math.Sin(styleAnimTimer * 1.5f) * 0.5f + 0.5f;
+            Color hologramOverlay = new Color(15, 30, 45) * (alpha * 0.25f * flicker);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), hologramOverlay);
+
+            //科技边框
+            Color techEdgeColor = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), flicker) * (alpha * 0.85f);
+            DrawBorder(spriteBatch, panelRect, techEdgeColor);
+
+            //绘制标题
+            Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
+            string title = TitleText.Value;
+
+            Color nameGlow = new Color(80, 220, 255) * alpha * 0.8f;
+            for (int i = 0; i < 4; i++) {
+                float a = MathHelper.TwoPi * i / 4f;
+                Vector2 off = a.ToRotationVector2() * 2f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + off, nameGlow * 0.6f, 0.95f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.95f);
+
+            //分隔线
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
+                new Color(60, 160, 240) * (alpha * 0.9f),
+                new Color(60, 160, 240) * (alpha * 0.08f), 1.5f);
+
+            //绘制选项
+            Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
+            DrawDraedonChoices(spriteBatch, choiceStartPos, alpha, techEdgeColor);
+        }
+
+        private void DrawDraedonChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color techColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            for (int i = 0; i < choices.Count; i++) {
+                var choice = choices[i];
+                Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
+
+                Rectangle choiceRect = new Rectangle(
+                    (int)choicePos.X,
+                    (int)choicePos.Y,
+                    (int)(panelSize.X - HorizontalPadding * 2),
+                    (int)ChoiceHeight
+                );
+
+                float hoverProgress = choiceHoverProgress[i];
+                Color choiceBg = choice.Enabled
+                    ? Color.Lerp(new Color(8, 16, 30) * 0.3f, new Color(20, 40, 65) * 0.5f, hoverProgress)
+                    : new Color(15, 15, 20) * 0.2f;
+
+                spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
+
+                if (hoverProgress > 0.01f) {
+                    DrawChoiceBorder(spriteBatch, choiceRect, techColor * (hoverProgress * 0.6f * alpha));
+                }
+
+                //绘制数据流效果
+                if (choice.Enabled && hoverProgress > 0.3f) {
+                    float dataShift = (float)Math.Sin(styleAnimTimer * 3f + i * 0.5f) * 1.5f;
+                    Color dataColor = techColor * (hoverProgress * 0.2f * alpha);
+                    spriteBatch.Draw(pixel,
+                        new Rectangle((int)(choiceRect.X + dataShift), choiceRect.Y, 1, choiceRect.Height),
+                        dataColor);
+                }
+
+                DrawChoiceText(spriteBatch, choice, choiceRect, alpha, techColor, hoverProgress, i);
+            }
+        }
+        #endregion
+
+        #region 通用绘制工具
+        private void DrawChoiceText(SpriteBatch spriteBatch, Choice choice, Rectangle choiceRect, float alpha, Color edgeColor, float hoverProgress, int index) {
+            string text = choice.Text;
+            Color textColor = choice.Enabled ? Color.White : new Color(120, 120, 130);
+
+            Vector2 textPos = new Vector2(choiceRect.X + ChoicePadding, choiceRect.Y + ChoiceHeight / 2f);
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
+            textPos.Y -= textSize.Y / 2f;
+
+            //文本发光效果（仅启用的选项）
+            if (choice.Enabled && hoverProgress > 0.3f) {
+                for (int j = 0; j < 4; j++) {
+                    float ang = MathHelper.TwoPi * j / 4f;
+                    Vector2 offset = ang.ToRotationVector2() * (1f * hoverProgress);
+                    Utils.DrawBorderString(spriteBatch, text, textPos + offset,
+                        edgeColor * (0.3f * hoverProgress * alpha), 0.75f);
+                }
+            }
+
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.75f);
+
+            //禁用提示
+            if (!choice.Enabled && !string.IsNullOrEmpty(choice.DisabledHint)) {
+                string hint = string.Format(DisabledHintFormat.Value, choice.DisabledHint);
+                Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.65f;
+                Vector2 hintPos = new Vector2(
+                    choiceRect.Right - ChoicePadding - hintSize.X,
+                    textPos.Y + 2f
+                );
+                Utils.DrawBorderString(spriteBatch, hint, hintPos,
+                    new Color(180, 100, 100) * alpha, 0.65f);
+            }
+
+            //选项序号
+            string indexText = $"{index + 1}.";
+            Vector2 indexPos = new Vector2(
+                choiceRect.X - 18f,
+                textPos.Y
+            );
+            Utils.DrawBorderString(spriteBatch, indexText, indexPos,
+                edgeColor * (0.5f + hoverProgress * 0.5f) * alpha, 0.7f);
         }
 
         private static void DrawBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 上下左右边框
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2),
                 new Rectangle(0, 0, 1, 1), color);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2),
@@ -408,7 +653,6 @@ namespace CalamityOverhaul.Content.ADV
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.85f);
 
-            // 角落装饰
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 8, rect.Y + 8), color * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 8, rect.Y + 8), color * 0.9f);
         }
@@ -463,5 +707,6 @@ namespace CalamityOverhaul.Content.ADV
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
         }
+        #endregion
     }
 }

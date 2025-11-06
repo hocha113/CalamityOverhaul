@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -113,7 +115,7 @@ namespace CalamityOverhaul
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
-
+            ScenarioManager.Start<FirstMetSupCal>();
             //Point16 point = Main.MouseWorld.ToTileCoordinates16();
 
             //MagikeCrossed.GetData(point).Domp();
