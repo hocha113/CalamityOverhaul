@@ -187,14 +187,7 @@ namespace CalamityOverhaul.Content.ADV
 
                     completeCallback = () => {
                         //显示选项框，传递样式参数
-                        ADVChoiceBox.Show(line.Choices, () => {
-                            var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                            if (rect != Rectangle.Empty) {
-                                return new Vector2(rect.Center.X, rect.Bottom + 30f);
-                            }
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
-                        }, capturedStyle);//使用捕获的样式
-
+                        ADVChoiceBox.Show(line.Choices, null, capturedStyle);//使用捕获的样式
                         //暂停对话推进，等待选择
                     };
                 }

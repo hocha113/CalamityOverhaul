@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         //图标位置偏移（玩家头顶）
         private static Vector2 iconOffset = new Vector2(0, -120f);
-        private static Vector2 textOffset = new Vector2(0, 60f);//文本相对图标的偏移
+        private static Vector2 textOffset = new Vector2(0, -100f);//文本相对图标的偏移（上方）
 
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
@@ -332,9 +332,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Vector2 worldPos = player.Center + iconOffset + textOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            //计算文本尺寸
-            Vector2 textSize = font.MeasureString(decodedText) * 0.75f;
-            Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, 0);
+            //计算文本尺寸（放大1.5倍）
+            float textScale = 1.5f;
+            Vector2 textSize = font.MeasureString(decodedText) * textScale;
+            Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, textSize.Y);//向上偏移文本高度
 
             float alpha = textFadeProgress * iconFadeProgress * 0.9f;
             Color iconColor = GetIconColor(currentIconIndex);
@@ -348,17 +349,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //绘制噪点效果
             DrawTextNoise(spriteBatch, textPos, textSize, alpha);
 
-            //绘制文本光晕
+            //绘制文本光晕（放大）
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
-                Vector2 offset = angle.ToRotationVector2() * 1.5f;
+                Vector2 offset = angle.ToRotationVector2() * (2f * textScale);
                 Utils.DrawBorderString(spriteBatch, decodedText, textPos + offset, 
-                    iconColor * (alpha * 0.4f), 0.75f);
+                    iconColor * (alpha * 0.4f), textScale);
             }
 
-            //绘制主文本
+            //绘制主文本（放大）
             Color textColor = Color.Lerp(Color.White, iconColor, 0.3f);
-            Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, 0.75f);
+            Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, textScale);
         }
 
         /// <summary>
@@ -369,21 +370,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (pixel == null) return;
 
             Rectangle bgRect = new Rectangle(
-                (int)(pos.X - 10),
-                (int)(pos.Y - 6),
-                (int)(size.X + 20),
-                (int)(size.Y + 12)
+                (int)(pos.X - 15),
+                (int)(pos.Y - 10),
+                (int)(size.X + 30),
+                (int)(size.Y + 20)
             );
 
             //半透明深色背景
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(10, 15, 25) * (alpha * 0.85f));
 
-            //发光边框
+            //发光边框（加粗）
             Color edgeColor = color * (alpha * 0.6f);
-            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 2), edgeColor);
-            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 2, bgRect.Width, 2), edgeColor * 0.7f);
-            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, 2, bgRect.Height), edgeColor * 0.85f);
-            sb.Draw(pixel, new Rectangle(bgRect.Right - 2, bgRect.Y, 2, bgRect.Height), edgeColor * 0.85f);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 3), edgeColor);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 3, bgRect.Width, 3), edgeColor * 0.7f);
+            sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, 3, bgRect.Height), edgeColor * 0.85f);
+            sb.Draw(pixel, new Rectangle(bgRect.Right - 3, bgRect.Y, 3, bgRect.Height), edgeColor * 0.85f);
         }
 
         /// <summary>
@@ -394,10 +395,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (pixel == null) return;
 
             float scanSpeed = Main.GlobalTimeWrappedHourly * 3f;
-            int lineCount = 3;
+            int lineCount = 4;
 
             for (int i = 0; i < lineCount; i++) {
-                float lineProgress = (scanSpeed + i * 0.33f) % 1f;
+                float lineProgress = (scanSpeed + i * 0.25f) % 1f;
                 float lineY = pos.Y + size.Y * lineProgress;
 
                 float lineAlpha = (float)Math.Sin(lineProgress * MathHelper.Pi) * alpha * 0.3f;
@@ -405,12 +406,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
                 sb.Draw(
                     pixel,
-                    new Vector2(pos.X - 8, lineY),
+                    new Vector2(pos.X - 12, lineY),
                     new Rectangle(0, 0, 1, 1),
                     lineColor,
                     0f,
                     Vector2.Zero,
-                    new Vector2(size.X + 16, 1.5f),
+                    new Vector2(size.X + 24, 2f),
                     SpriteEffects.None,
                     0f
                 );
@@ -424,15 +425,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //随机噪点
-            for (int i = 0; i < 8; i++) {
+            //随机噪点（增加数量）
+            for (int i = 0; i < 12; i++) {
                 if (Main.rand.NextBool(3)) {
                     Vector2 noisePos = pos + new Vector2(
                         Main.rand.NextFloat(size.X),
                         Main.rand.NextFloat(size.Y)
                     );
 
-                    float noiseSize = Main.rand.NextFloat(0.5f, 1.5f);
+                    float noiseSize = Main.rand.NextFloat(1f, 2.5f);
                     Color noiseColor = new Color(100, 200, 255) * (alpha * 0.3f);
 
                     sb.Draw(

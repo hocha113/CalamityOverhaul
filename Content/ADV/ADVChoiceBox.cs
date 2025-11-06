@@ -126,6 +126,8 @@ namespace CalamityOverhaul.Content.ADV
         private Vector2 panelSize;
         private Rectangle panelRect;
 
+        private static Func<Vector2> AnchorProvider = null;
+
         //样式动画参数
         private float styleAnimTimer = 0f;//样式动画计时器
 
@@ -170,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV
         /// <param name="anchorProvider">锚点位置提供者</param>
         /// <param name="style">选项框样式</param>
         public static void Show(List<Choice> choices, Func<Vector2> anchorProvider = null, ChoiceBoxStyle style = ChoiceBoxStyle.Default) {
-            var inst = Instance;
+            ADVChoiceBox inst = Instance;
             inst.choices.Clear();
             inst.choices.AddRange(choices);
             inst.isSelecting = true;
@@ -187,25 +189,13 @@ namespace CalamityOverhaul.Content.ADV
                 inst.choiceHoverProgress[i] = 0f;
             }
 
-            //计算锚点位置
-            if (anchorProvider != null) {
-                inst.anchorPosition = anchorProvider();
-            }
-            else if (DialogueUIRegistry.Current != null) {
-                var rect = DialogueUIRegistry.Current.GetPanelRect();
-                if (rect != Rectangle.Empty) {
-                    inst.anchorPosition = new Vector2(rect.Center.X, rect.Bottom + 20f);
-                }
-                else {
-                    inst.anchorPosition = new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
-                }
-            }
-            else {
-                inst.anchorPosition = new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
-            }
+            AnchorProvider = anchorProvider;
 
-            //计算面板尺寸
+            //在更新锚点之前计算面板尺寸
             inst.CalculatePanelSize();
+
+            //初始化锚点位置
+            UpdateAnchorPosition(inst);
         }
 
         /// <summary>
@@ -260,6 +250,20 @@ namespace CalamityOverhaul.Content.ADV
             panelSize = new Vector2(panelWidth, panelHeight);
         }
 
+        /// <summary>
+        /// 更新锚点位置
+        /// </summary>
+        /// <param name="inst"></param>
+        public static void UpdateAnchorPosition(ADVChoiceBox inst) {
+            //计算锚点位置
+            if (AnchorProvider != null) {
+                inst.anchorPosition = AnchorProvider.Invoke();
+            }
+            else {
+                inst.anchorPosition = new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
+            }
+        }
+
         public override void Update() {
             if (choices.Count == 0 && !closing) {
                 return;
@@ -303,6 +307,11 @@ namespace CalamityOverhaul.Content.ADV
 
             if (closing || showProgress < 0.5f) {
                 return;
+            }
+
+            //在动画完成后每帧更新锚点位置
+            if (showProgress >= 1f) {
+                UpdateAnchorPosition(Instance);
             }
 
             //更新面板矩形
