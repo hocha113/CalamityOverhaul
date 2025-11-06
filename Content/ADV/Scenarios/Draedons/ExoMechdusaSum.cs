@@ -41,6 +41,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
+        private const string red = " ";
+        private const string alt = " " + " ";
+
         void IWorldInfo.OnWorldLoad() {
             //重置状态
         }
@@ -74,14 +77,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         protected override void Build() {
             //注册嘉登立绘(使用科技风格的剪影效果)
-            DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.Cyan, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2ADV, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(DraedonName.Value + alt, ADVAsset.DraedonADV, silhouette: false);
 
             //检查是否为Boss Rush模式
             bool isBossRush = BossRushEvent.BossRushActive;
 
             if (isBossRush) {
                 //Boss Rush模式，直接显示选择界面，时间紧迫，不等你嗷
-                AddWithChoices(DraedonName.Value, BossRushLine.Value, [
+                AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
@@ -89,13 +94,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
             else {
                 //普通模式，就播放老逼登的完整介绍对话
-                Add(DraedonName.Value, IntroLine1.Value);
+                Add(DraedonName.Value + alt, IntroLine1.Value);
                 Add(DraedonName.Value, IntroLine2.Value);
                 Add(DraedonName.Value, IntroLine3.Value);
-                Add(DraedonName.Value, IntroLine4.Value);
+                Add(DraedonName.Value + red, IntroLine4.Value);
 
                 //添加选择界面
-                AddWithChoices(DraedonName.Value, IntroLine5.Value, [
+                AddWithChoices(DraedonName.Value + red, IntroLine5.Value, [
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))

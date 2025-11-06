@@ -5,6 +5,8 @@ namespace CalamityOverhaul.Content.ADV
 {
     internal static class ADVAsset
     {
+        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 0, arrayCount: 6)]
+        public static IList<Texture2D> SupCalADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen")]
         public static Texture2D HelenADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen2")]
@@ -37,7 +39,13 @@ namespace CalamityOverhaul.Content.ADV
         public static Texture2D Helen_slightAnnoyedADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen_wail")]
         public static Texture2D Helen_wailADV = null;
-        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 0, arrayCount: 6)]
-        public static IList<Texture2D> SupCalADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Draedon/Draedon")]
+        public static Texture2D DraedonADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Draedon/Draedon2")]
+        public static Texture2D Draedon2ADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Draedon/DraedonRed")]
+        public static Texture2D DraedonRedADV = null;
+        [VaultLoaden(CWRConstant.ADV + "Draedon/Draedon2Red")]
+        public static Texture2D Draedon2RedADV = null;
     }
 }
