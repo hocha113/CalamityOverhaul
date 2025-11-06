@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
 using static CalamityOverhaul.Content.ADV.Scenarios.Common.DamageTrackerSystem;
 
