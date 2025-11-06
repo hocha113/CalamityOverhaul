@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.ADV
                 Pos += Velocity;
                 Velocity.Y -= 0.015f;
 
-                if (Life >= MaxLife || Pos.X < bounds.X - 30 || Pos.X > bounds.Right + 30 || 
+                if (Life >= MaxLife || Pos.X < bounds.X - 30 || Pos.X > bounds.Right + 30 ||
                     Pos.Y < bounds.Y - 30 || Pos.Y > bounds.Bottom + 30) {
                     return true;
                 }

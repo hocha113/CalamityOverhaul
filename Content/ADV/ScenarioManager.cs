@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV

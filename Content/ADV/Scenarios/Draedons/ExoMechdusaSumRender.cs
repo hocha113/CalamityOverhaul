@@ -72,11 +72,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public string LocalizationCategory => "UI";
 
         public override void SetStaticDefaults() {
-            ThanatosDescription = this.GetLocalization(nameof(ThanatosDescription), 
+            ThanatosDescription = this.GetLocalization(nameof(ThanatosDescription),
                 () => "塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒。");
-            AresDescription = this.GetLocalization(nameof(AresDescription), 
+            AresDescription = this.GetLocalization(nameof(AresDescription),
                 () => "阿瑞斯，一个搭载着四台超级星流武器的庞然巨物。");
-            ArtemisApolloDescription = this.GetLocalization(nameof(ArtemisApolloDescription), 
+            ArtemisApolloDescription = this.GetLocalization(nameof(ArtemisApolloDescription),
                 () => "阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器。");
         }
 
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                         iconFadeProgress = 0f;
                         iconScaleProgress = 0f;
                         iconRotation = 0f;
-                        
+
                         //重置文本动画
                         ResetTextAnimation();
                     }
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     iconFadeProgress = 0f;
                     iconScaleProgress = 0f;
                     iconRotation = 0f;
-                    
+
                     //重置文本动画
                     ResetTextAnimation();
                 }
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //解码进度
             if (textDecodeProgress < 1f) {
                 textDecodeProgress = Math.Min(textDecodeProgress + TextDecodeSpeed, 1f);
-                
+
                 //计算可见字符数
                 int targetCharCount = (int)(targetText.Length * textDecodeProgress);
                 if (targetCharCount != visibleCharCount) {
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
 
             StringBuilder sb = new StringBuilder();
-            
+
             for (int i = 0; i < targetText.Length; i++) {
                 if (i < visibleCharCount) {
                     //已解码的字符
@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (player == null || !player.active) return;
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            
+
             //计算文本位置
             Vector2 worldPos = player.Center + iconOffset + textOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * (2f * textScale);
-                Utils.DrawBorderString(spriteBatch, decodedText, textPos + offset, 
+                Utils.DrawBorderString(spriteBatch, decodedText, textPos + offset,
                     iconColor * (alpha * 0.4f), textScale);
             }
 

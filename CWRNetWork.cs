@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;

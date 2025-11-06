@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
