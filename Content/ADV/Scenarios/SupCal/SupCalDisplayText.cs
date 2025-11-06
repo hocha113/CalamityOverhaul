@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Accessories;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
@@ -83,7 +85,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return new DialogueOverride("啊......我期待这一刻已经很久了，从见到你那刻开始", Color.Yellow);
                 }
             });
-
+            SetDynamicDialogue("SCalSummonTextRematch", () => {
+                var player = Main.LocalPlayer;
+                if (player.TryGetModPlayer<ProverbsPlayer>(out var proverbsPlayer) && proverbsPlayer.HasProverbs) {
+                    return new DialogueOverride("你还戴着那个戒指......看来你是铁了心要挑战我了", Color.Orange);
+                }
+                else {
+                    return new DialogueOverride("又是你......看来你对死亡的理解还不够深刻", Color.Yellow);
+                }
+            });
             SetDynamicDialogue("SCalStartText", () => {
                 var player = Main.LocalPlayer;
                 if (player.statLife < player.statLifeMax2 * 0.3f) {
@@ -96,7 +106,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return new DialogueOverride("真奇怪，你应该已经死了才对……", null);
                 }
             });
-
             SetDynamicDialogue("SCalStartTextRematch", () => {
                 var player = Main.LocalPlayer;
                 if (player.statLife < player.statLifeMax2 * 0.3f) {
@@ -109,6 +118,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return new DialogueOverride("真奇怪，你应该已经死了才对……", null);
                 }
             });
+        }
+
+        public override bool Alive(Player player) {
+            return player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+                && halibutPlayer.ADCSave.SupCalYharonQuestReward;//仅在完成了与焚世龙的任务后才触发这些台词修改
         }
     }
 }

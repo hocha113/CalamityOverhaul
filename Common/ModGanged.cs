@@ -531,9 +531,12 @@ namespace CalamityOverhaul.Common
         internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
         internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
             Color color = textColor ?? Color.White;
-            if (VaultLoad.LoadenContent) {
+            if (VaultLoad.LoadenContent && !VaultUtils.isServer) {
                 bool result = true;
                 foreach (var d in ModifyDisplayText.Instances) {
+                    if (!d.Alive(Main.LocalPlayer)) {
+                        continue;
+                    }
                     bool newResult = d.Handle(ref key, ref color);
                     if (!newResult) {
                         result = false;

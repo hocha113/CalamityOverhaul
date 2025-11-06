@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using static InnoVault.VaultUtils;
 
@@ -23,10 +25,28 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 台词覆盖数据结构
         /// </summary>
-        public class DialogueOverride(string text, Color? color = null)
+        public class DialogueOverride
         {
-            public string Text { get; set; } = text;
-            public Color? Color { get; set; } = color;
+            public string Text { get; set; }
+            public Color? Color { get; set; }
+            public LocalizedText LocalizedText { get; set; }
+
+            public DialogueOverride(string text, Color? color = null) {
+                Text = text;
+                Color = color;
+            }
+
+            public DialogueOverride(LocalizedText text, Color? color = null) {
+                LocalizedText = text;
+                Color = color;
+            }
+
+            /// <summary>
+            /// 获取最终显示的文本（优先使用本地化文本）
+            /// </summary>
+            public string GetDisplayText() {
+                return LocalizedText?.Value ?? Text;
+            }
         }
 
         /// <summary>
@@ -38,7 +58,7 @@ namespace CalamityOverhaul.Content.ADV
             private DialogueOverride defaultDialogue;
 
             /// <summary>
-            /// 添加一个条件分支
+            /// 添加一个条件分支（硬编码文本）
             /// </summary>
             public ConditionalDialogue When(Func<bool> condition, string text, Color? color = null) {
                 conditions.Add((condition, new DialogueOverride(text, color)));
@@ -46,7 +66,15 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             /// <summary>
-            /// 添加一个条件分支
+            /// 添加一个条件分支（使用本地化文本）
+            /// </summary>
+            public ConditionalDialogue When(Func<bool> condition, LocalizedText localizedText, Color? color = null) {
+                conditions.Add((condition, new DialogueOverride(string.Empty, color) { LocalizedText = localizedText }));
+                return this;
+            }
+
+            /// <summary>
+            /// 添加一个条件分支（使用DialogueOverride对象）
             /// </summary>
             public ConditionalDialogue When(Func<bool> condition, DialogueOverride dialogue) {
                 conditions.Add((condition, dialogue));
@@ -54,7 +82,7 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             /// <summary>
-            /// 设置默认台词，当所有条件都不满足时使用
+            /// 设置默认台词（硬编码文本），当所有条件都不满足时使用
             /// </summary>
             public ConditionalDialogue Otherwise(string text, Color? color = null) {
                 defaultDialogue = new DialogueOverride(text, color);
@@ -62,7 +90,15 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             /// <summary>
-            /// 设置默认台词
+            /// 设置默认台词（使用本地化文本）
+            /// </summary>
+            public ConditionalDialogue Otherwise(LocalizedText localizedText, Color? color = null) {
+                defaultDialogue = new DialogueOverride(string.Empty, color) { LocalizedText = localizedText };
+                return this;
+            }
+
+            /// <summary>
+            /// 设置默认台词（使用DialogueOverride对象）
             /// </summary>
             public ConditionalDialogue Otherwise(DialogueOverride dialogue) {
                 defaultDialogue = dialogue;
@@ -90,8 +126,10 @@ namespace CalamityOverhaul.Content.ADV
             SetStaticDefaults();
         }
 
+        #region 硬编码文本方法
+
         /// <summary>
-        /// 设置单条台词覆盖（静态）
+        /// 设置单条台词覆盖
         /// </summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="text">新的台词文本</param>
@@ -103,7 +141,68 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// 设置动态台词（每次调用Handle时都会重新计算）
+        /// 批量设置台词覆盖
+        /// </summary>
+        /// <param name="overrides">台词key和文本的字典</param>
+        public void SetDialogues(Dictionary<string, string> overrides) {
+            foreach (var kvp in overrides) {
+                SetDialogue(kvp.Key, kvp.Value);
+            }
+        }
+
+        #endregion
+
+        #region 本地化文本方法
+
+        /// <summary>
+        /// 设置单条台词覆盖
+        /// </summary>
+        /// <param name="key">台词的key（不含前缀）</param>
+        /// <param name="localizedText">本地化文本对象</param>
+        /// <param name="color">可选的颜色，如果为null则使用默认颜色</param>
+        public void SetDialogueLocalized(string key, LocalizedText localizedText, Color? color = null) {
+            dialogueOverrides[key] = new DialogueOverride(string.Empty, color) { LocalizedText = localizedText };
+            //如果已经有动态提供器，移除它
+            dynamicDialogueProviders.Remove(key);
+        }
+
+        /// <summary>
+        /// 设置单条台词覆盖
+        /// </summary>
+        /// <param name="key">台词的key（不含前缀）</param>
+        /// <param name="localizationKey">本地化key（如 "Mods.YourMod.Dialogue.SomeKey"）</param>
+        /// <param name="color">可选的颜色，如果为null则使用默认颜色</param>
+        public void SetDialogueLocalized(string key, string localizationKey, Color? color = null) {
+            var localizedText = Language.GetText(localizationKey);
+            SetDialogueLocalized(key, localizedText, color);
+        }
+
+        /// <summary>
+        /// 批量设置台词覆盖
+        /// </summary>
+        /// <param name="overrides">台词key和本地化文本的字典</param>
+        public void SetDialoguesLocalized(Dictionary<string, LocalizedText> overrides) {
+            foreach (var kvp in overrides) {
+                SetDialogueLocalized(kvp.Key, kvp.Value);
+            }
+        }
+
+        /// <summary>
+        /// 批量设置台词覆盖
+        /// </summary>
+        /// <param name="overrides">台词key和本地化key的字典</param>
+        public void SetDialoguesLocalizedByKey(Dictionary<string, string> overrides) {
+            foreach (var kvp in overrides) {
+                SetDialogueLocalized(kvp.Key, kvp.Value);
+            }
+        }
+
+        #endregion
+
+        #region 动态台词方法
+
+        /// <summary>
+        /// 设置动态台词，每次调用Handle时都会重新计算
         /// </summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="provider">提供台词的函数</param>
@@ -114,7 +213,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// 设置条件台词（根据条件返回不同的台词）
+        /// 设置条件台词，根据条件返回不同的台词
         /// </summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="conditionalDialogue">条件台词构建器</param>
@@ -129,15 +228,9 @@ namespace CalamityOverhaul.Content.ADV
             return new ConditionalDialogue();
         }
 
-        /// <summary>
-        /// 批量设置台词覆盖
-        /// </summary>
-        /// <param name="overrides">台词key和文本的字典</param>
-        public void SetDialogues(Dictionary<string, string> overrides) {
-            foreach (var kvp in overrides) {
-                SetDialogue(kvp.Key, kvp.Value);
-            }
-        }
+        #endregion
+
+        #region 通用方法
 
         /// <summary>
         /// 批量设置带颜色的台词覆盖
@@ -190,6 +283,10 @@ namespace CalamityOverhaul.Content.ADV
             return dialogueOverrides.Keys.Concat(dynamicDialogueProviders.Keys).Distinct();
         }
 
+        #endregion
+
+        public virtual bool Alive(Player player) => true;
+
         public virtual bool Handle(ref string key, ref Color color) {
             string result = key.Split('.').Last();
 
@@ -197,14 +294,14 @@ namespace CalamityOverhaul.Content.ADV
             if (dynamicDialogueProviders.TryGetValue(result, out var provider)) {
                 var dialogue = provider();
                 if (dialogue != null) {
-                    Text(dialogue.Text, dialogue.Color ?? color);
+                    Text(dialogue.GetDisplayText(), dialogue.Color ?? color);
                     return false;
                 }
             }
 
             //然后检查静态覆盖
             if (dialogueOverrides.TryGetValue(result, out var over)) {
-                Text(over.Text, over.Color ?? color);
+                Text(over.GetDisplayText(), over.Color ?? color);
                 return false;
             }
 
