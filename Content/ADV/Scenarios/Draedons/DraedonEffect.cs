@@ -33,10 +33,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private float scanLineTimer = 0f;
         private float scanLineSpeed = 0.8f;
 
-        //闪屏效果参数
-        private float flickerTimer = 0f;
-        private float flickerIntensity = 0f;
-        private int flickerCooldown = 0;
+        //柔化的闪烁效果参数
+        private float softFlickerTimer = 0f;
+        private float softFlickerIntensity = 0f;
 
         //雪花屏效果参数
         private float noiseTimer = 0f;
@@ -45,10 +44,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //全局脉冲
         private float globalPulse = 0f;
 
-        void ICWRLoader.LoadData()
-        {
-            if (VaultUtils.isServer)
-            {
+        //科技格子闪光效果
+        private readonly TechGridFlash[] techGrids = new TechGridFlash[6];
+
+        void ICWRLoader.LoadData() {
+            if (VaultUtils.isServer) {
                 return;
             }
             SkyManager.Instance[Name] = this;
@@ -57,26 +57,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.05f, 0.15f, 0.25f)//冷色科技调
                 .UseOpacity(0.5f), EffectPriority.High);
+
+            //初始化科技格子
+            for (int i = 0; i < techGrids.Length; i++) {
+                techGrids[i] = new TechGridFlash();
+            }
         }
 
-        public override void Activate(Vector2 position, params object[] args)
-        {
+        public override void Activate(Vector2 position, params object[] args) {
             active = true;
             intensity = 0f;
             scanLineTimer = 0f;
-            flickerTimer = 0f;
+            softFlickerTimer = 0f;
             noiseTimer = 0f;
+
+            //重置科技格子
+            for (int i = 0; i < techGrids.Length; i++) {
+                techGrids[i].Reset();
+            }
         }
 
-        public override void Deactivate(params object[] args)
-        {
+        public override void Deactivate(params object[] args) {
             active = false;
         }
 
-        public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
-        {
-            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed)
-            {
+        public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
+            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 return;
             }
 
@@ -91,15 +97,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //绘制扫描线网格
             DrawScanLineGrid(spriteBatch);
 
-            //绘制闪屏效果
-            if (flickerIntensity > 0.05f)
-            {
-                DrawFlickerEffect(spriteBatch);
+            //绘制科技格子闪光（使用TileHightlight纹理）
+            DrawTechGridFlashes(spriteBatch);
+
+            //绘制柔和闪烁效果（移除刺眼的闪屏）
+            if (softFlickerIntensity > 0.05f) {
+                DrawSoftFlickerEffect(spriteBatch);
             }
 
-            //绘制雪花屏噪点
-            if (noiseIntensity > 0.05f)
-            {
+            //绘制雪花屏噪点（降低强度）
+            if (noiseIntensity > 0.05f) {
                 DrawNoiseEffect(spriteBatch);
             }
 
@@ -109,72 +116,56 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         public override bool IsActive() => active || intensity > 0;
 
-        public override void Reset()
-        {
+        public override void Reset() {
             active = false;
             intensity = 0f;
         }
 
-        public override void Update(GameTime gameTime)
-        {
+        public override void Update(GameTime gameTime) {
             _ = DraedonEffect.Cek();
 
             //强度变化
-            if (DraedonEffect.IsActive)
-            {
-                if (intensity < 1f)
-                {
+            if (DraedonEffect.IsActive) {
+                if (intensity < 1f) {
                     intensity += 0.02f;
                 }
             }
-            else
-            {
+            else {
                 intensity -= 0.015f;
-                if (intensity <= 0)
-                {
+                if (intensity <= 0) {
                     Deactivate();
                 }
             }
 
             //更新扫描线
             scanLineTimer += scanLineSpeed * 0.016f;
-            if (scanLineTimer > 1f)
-            {
+            if (scanLineTimer > 1f) {
                 scanLineTimer -= 1f;
             }
 
             //更新全局脉冲
             globalPulse += 0.03f;
-            if (globalPulse > MathHelper.TwoPi)
-            {
+            if (globalPulse > MathHelper.TwoPi) {
                 globalPulse -= MathHelper.TwoPi;
             }
 
-            //闪屏效果更新
-            flickerCooldown--;
-            if (flickerCooldown <= 0 && Main.rand.NextBool(300))//随机触发
-            {
-                flickerTimer = 0f;
-                flickerIntensity = Main.rand.NextFloat(0.3f, 0.7f);
-                flickerCooldown = Main.rand.Next(180, 360);
-            }
+            //更新柔和闪烁（持续微弱的脉冲，不刺眼）
+            softFlickerTimer += 0.05f;
+            softFlickerIntensity = (float)Math.Sin(softFlickerTimer * 0.8f) * 0.5f + 0.15f;//0.0-0.3范围
 
-            if (flickerIntensity > 0f)
-            {
-                flickerTimer += 0.15f;
-                flickerIntensity *= 0.9f;
-            }
-
-            //雪花屏效果
+            //雪花屏效果（降低强度）
             noiseTimer += 0.08f;
-            noiseIntensity = (float)Math.Sin(globalPulse * 0.7f) * 0.05f + 0.03f;
+            noiseIntensity = (float)Math.Sin(globalPulse * 0.7f) * 0.02f + 0.02f;//降低到0.0-0.04范围
+
+            //更新科技格子
+            for (int i = 0; i < techGrids.Length; i++) {
+                techGrids[i].Update();
+            }
         }
 
-        public override Color OnTileColor(Color inColor)
-        {
+        public override Color OnTileColor(Color inColor) {
             //应用冷色科技调
-            if (intensity > 0.1f)
-            {
+            if (intensity > 0.1f) {
                 float techR = 0.7f;
                 float techG = 0.85f;
                 float techB = 1.0f;
@@ -192,19 +183,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         #region 绘制特效方法
-        private void DrawScanLineGrid(SpriteBatch sb)
-        {
+        private void DrawScanLineGrid(SpriteBatch sb) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //垂直扫描线
             int scanY = (int)(scanLineTimer * Main.screenHeight);
             Color scanColor = new Color(60, 180, 255) * (intensity * 0.2f);
 
-            for (int i = -3; i <= 3; i++)
-            {
+            for (int i = -3; i <= 3; i++) {
                 int y = scanY + i * 2;
-                if (y >= 0 && y < Main.screenHeight)
-                {
+                if (y >= 0 && y < Main.screenHeight) {
                     float lineAlpha = 1f - Math.Abs(i) * 0.25f;
                     sb.Draw(pixel, new Rectangle(0, y, Main.screenWidth, 2),
                         scanColor * lineAlpha);
@@ -213,47 +201,105 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
             //水平网格线
             int gridSpacing = 80;
-            for (int y = 0; y < Main.screenHeight; y += gridSpacing)
-            {
+            for (int y = 0; y < Main.screenHeight; y += gridSpacing) {
                 float wave = (float)Math.Sin(globalPulse + y * 0.01f) * 0.5f + 0.5f;
                 sb.Draw(pixel, new Rectangle(0, y, Main.screenWidth, 1),
                     new Color(40, 120, 180) * (intensity * 0.08f * wave));
             }
         }
 
-        private void DrawFlickerEffect(SpriteBatch sb)
-        {
-            //模拟屏幕闪烁
-            float flicker = (float)Math.Sin(flickerTimer * 30f) * 0.5f + 0.5f;
-            Color flashColor = Color.White * (flickerIntensity * flicker * intensity * 0.3f);
+        private void DrawTechGridFlashes(SpriteBatch sb) {
+            //使用TileHightlight纹理绘制科技格子闪光
+            if (CWRAsset.TileHightlight == null || CWRAsset.TileHightlight.IsDisposed) {
+                return;
+            }
 
-            sb.Draw(VaultAsset.placeholder2.Value,
-                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                flashColor);
+            Texture2D gridTex = CWRAsset.TileHightlight.Value;
+            int frameWidth = gridTex.Width / 3;//3列
+            int frameHeight = gridTex.Height / 3;//3行
 
-            //闪烁时的扫描线扭曲
-            if (flicker > 0.7f)
-            {
-                int distortY = (int)(Main.screenHeight * Main.rand.NextFloat());
-                int distortHeight = Main.rand.Next(20, 60);
-                sb.Draw(VaultAsset.placeholder2.Value,
-                    new Rectangle(0, distortY, Main.screenWidth, distortHeight),
-                    new Color(100, 200, 255) * (flickerIntensity * 0.4f));
+            for (int i = 0; i < techGrids.Length; i++) {
+                TechGridFlash grid = techGrids[i];
+                if (!grid.IsActive) {
+                    continue;
+                }
+
+                //计算当前帧（3*3=9帧）
+                int currentFrame = (int)(grid.AnimProgress * 9);
+                if (currentFrame >= 9) {
+                    currentFrame = 8;
+                }
+
+                int frameX = (currentFrame % 3) * frameWidth;
+                int frameY = (currentFrame / 3) * frameHeight;
+
+                Rectangle sourceRect = new Rectangle(frameX, frameY, frameWidth, frameHeight);
+
+                //绘制位置
+                Vector2 drawPos = grid.Position - Main.screenPosition;
+                float scale = grid.Scale * (1f + (float)Math.Sin(grid.AnimProgress * MathHelper.Pi) * 0.3f);
+                float alpha = (float)Math.Sin(grid.AnimProgress * MathHelper.Pi) * intensity * 0.7f;
+
+                Color drawColor = new Color(80, 200, 255, 0) * alpha;
+
+                sb.Draw(
+                    gridTex,
+                    drawPos,
+                    sourceRect,
+                    drawColor,
+                    grid.Rotation,
+                    new Vector2(frameWidth, frameHeight) * 0.5f,
+                    scale,
+                    SpriteEffects.None,
+                    0f
+                );
+
+                //额外的发光层
+                sb.Draw(
+                    gridTex,
+                    drawPos,
+                    sourceRect,
+                    drawColor * 0.5f,
+                    grid.Rotation,
+                    new Vector2(frameWidth, frameHeight) * 0.5f,
+                    scale * 1.2f,
+                    SpriteEffects.None,
+                    0f
+                );
             }
         }
 
-        private void DrawNoiseEffect(SpriteBatch sb)
-        {
-            //雪花屏噪点效果
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            int noiseCount = (int)(150 * noiseIntensity * intensity);
+        private void DrawSoftFlickerEffect(SpriteBatch sb) {
+            //柔和的闪烁效果，不会刺眼
+            Color flickerColor = new Color(20, 60, 90) * (softFlickerIntensity * intensity * 0.5f);
 
-            for (int i = 0; i < noiseCount; i++)
-            {
+            sb.Draw(VaultAsset.placeholder2.Value,
+                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                flickerColor);
+
+            //柔和的边缘亮度
+            float edgeBrightness = (float)Math.Sin(softFlickerTimer * 1.2f) * 0.5f + 0.5f;
+            Color edgeColor = new Color(40, 120, 180) * (edgeBrightness * intensity * 0.1f);
+
+            //上下边缘
+            sb.Draw(VaultAsset.placeholder2.Value,
+                new Rectangle(0, 0, Main.screenWidth, 50),
+                edgeColor);
+            sb.Draw(VaultAsset.placeholder2.Value,
+                new Rectangle(0, Main.screenHeight - 50, Main.screenWidth, 50),
+                edgeColor);
+        }
+
+        private void DrawNoiseEffect(SpriteBatch sb) {
+            //降低雪花屏强度，减少视觉不适
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int noiseCount = (int)(50 * noiseIntensity * intensity);//从150降低到50
+
+            for (int i = 0; i < noiseCount; i++) {
                 int x = Main.rand.Next(Main.screenWidth);
                 int y = Main.rand.Next(Main.screenHeight);
-                int size = Main.rand.Next(1, 4);
-                float noiseAlpha = Main.rand.NextFloat(0.3f, 0.8f);
+                int size = Main.rand.Next(1, 3);//最大尺寸从4降到3
+                float noiseAlpha = Main.rand.NextFloat(0.2f, 0.5f);//透明度从0.3-0.8降到0.2-0.5
 
                 sb.Draw(pixel,
                     new Rectangle(x, y, size, size),
@@ -261,19 +307,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
         }
 
-        private void DrawHologramStream(SpriteBatch sb)
-        {
+        private void DrawHologramStream(SpriteBatch sb) {
             //全息数据流线条
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float streamSpeed = (float)Main.timeForVisualEffects * 0.02f;
 
-            for (int i = 0; i < 8; i++)
-            {
+            for (int i = 0; i < 8; i++) {
                 float x = (streamSpeed + i * 0.2f) % 1.2f - 0.1f;
                 int screenX = (int)(x * Main.screenWidth);
 
-                if (screenX >= 0 && screenX < Main.screenWidth)
-                {
+                if (screenX >= 0 && screenX < Main.screenWidth) {
                     float streamAlpha = (float)Math.Sin(i * 0.8f + globalPulse) * 0.5f + 0.5f;
                     Color streamColor = new Color(80, 200, 255) * (streamAlpha * intensity * 0.15f);
 
@@ -281,6 +324,60 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                         new Rectangle(screenX, 0, 2, Main.screenHeight),
                         streamColor);
                 }
+            }
+        }
+        #endregion
+
+        #region 科技格子闪光类
+        private class TechGridFlash
+        {
+            public Vector2 Position;
+            public float Scale;
+            public float Rotation;
+            public float AnimProgress;
+            public float AnimSpeed;
+            public bool IsActive;
+
+            private int cooldown;
+
+            public TechGridFlash() {
+                Reset();
+            }
+
+            public void Reset() {
+                IsActive = false;
+                AnimProgress = 0f;
+                cooldown = Main.rand.Next(60, 180);
+            }
+
+            public void Update() {
+                if (!IsActive) {
+                    cooldown--;
+                    if (cooldown <= 0) {
+                        Activate();
+                    }
+                    return;
+                }
+
+                AnimProgress += AnimSpeed;
+                if (AnimProgress >= 1f) {
+                    Reset();
+                }
+            }
+
+            private void Activate() {
+                IsActive = true;
+                AnimProgress = 0f;
+                AnimSpeed = Main.rand.NextFloat(0.015f, 0.025f);
+
+                //随机位置
+                Position = new Vector2(
+                    Main.screenPosition.X + Main.rand.Next(100, Main.screenWidth - 100),
+                    Main.screenPosition.Y + Main.rand.Next(100, Main.screenHeight - 100)
+                );
+
+                Scale = Main.rand.NextFloat(1.5f, 3f);
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             }
         }
         #endregion
@@ -294,19 +391,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public static bool IsActive;
         public static int CekTimer = 0;
         private int particleTimer = 0;
-        private int gridFlashTimer = 0;
         private int dataStreamTimer = 0;
 
-        public static bool Cek()
-        {
-            if (!IsActive)
-            {
+        public static bool Cek() {
+            if (!IsActive) {
                 CekTimer = 0;
                 return false;
             }
 
-            if (Main.gameMenu)
-            {
+            if (Main.gameMenu) {
                 IsActive = false;
                 return false;
             }
@@ -314,10 +407,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             return true;
         }
 
-        public override void PostUpdateEverything()
-        {
-            if (!Cek())
-            {
+        public override void PostUpdateEverything() {
+            if (!Cek()) {
                 return;
             }
 
@@ -328,74 +419,57 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
 
             particleTimer++;
-            gridFlashTimer++;
             dataStreamTimer++;
 
-            //生成数据粒子
-            if (particleTimer % 3 == 0)
-            {
+            //生成数据粒子（降低频率）
+            if (particleTimer % 5 == 0) {
                 SpawnDataParticles();
             }
 
-            //生成电路节点
-            if (particleTimer % 8 == 0)
-            {
+            //生成电路节点（降低频率）
+            if (particleTimer % 12 == 0) {
                 SpawnCircuitNodes();
             }
 
-            //生成网格闪光效果
-            if (gridFlashTimer >= 45)
-            {
-                SpawnGridFlash();
-                gridFlashTimer = 0;
-            }
-
             //生成数据流
-            if (dataStreamTimer % 5 == 0)
-            {
+            if (dataStreamTimer % 8 == 0) {
                 SpawnDataStream();
             }
 
             //偶尔生成科技爆发
-            if (particleTimer % 90 == 0)
-            {
+            if (particleTimer % 120 == 0) {
                 SpawnTechBurst();
             }
         }
 
-        private static void SpawnDataParticles()
-        {
-            //生成科技数据粒子
-            for (int i = 0; i < 2; i++)
-            {
-                Vector2 spawnPos = new Vector2(
-                    Main.screenPosition.X + Main.rand.Next(-50, Main.screenWidth + 50),
-                    Main.screenPosition.Y + Main.rand.Next(-50, Main.screenHeight + 50)
-                );
+        private static void SpawnDataParticles() {
+            //生成科技数据粒子（减少数量）
+            Vector2 spawnPos = new Vector2(
+                Main.screenPosition.X + Main.rand.Next(-50, Main.screenWidth + 50),
+                Main.screenPosition.Y + Main.rand.Next(-50, Main.screenHeight + 50)
+            );
 
-                Vector2 velocity = new Vector2(
-                    Main.rand.NextFloat(-0.8f, 0.8f),
-                    Main.rand.NextFloat(-0.8f, 0.8f)
-                );
+            Vector2 velocity = new Vector2(
+                Main.rand.NextFloat(-0.5f, 0.5f),
+                Main.rand.NextFloat(-0.5f, 0.5f)
+            );
 
-                PRT_Spark dataSpark = new PRT_Spark(
-                    spawnPos,
-                    velocity,
-                    false,
-                    Main.rand.Next(60, 120),
-                    Main.rand.NextFloat(0.6f, 1.2f),
-                    Color.Lerp(
-                        new Color(80, 200, 255),
-                        new Color(100, 220, 255),
-                        Main.rand.NextFloat()
-                    )
-                );
-                PRTLoader.AddParticle(dataSpark);
-            }
+            PRT_Spark dataSpark = new PRT_Spark(
+                spawnPos,
+                velocity,
+                false,
+                Main.rand.Next(80, 150),
+                Main.rand.NextFloat(0.5f, 1f),
+                Color.Lerp(
+                    new Color(80, 200, 255),
+                    new Color(100, 220, 255),
+                    Main.rand.NextFloat()
+                )
+            );
+            PRTLoader.AddParticle(dataSpark);
         }
 
-        private static void SpawnCircuitNodes()
-        {
+        private static void SpawnCircuitNodes() {
             //生成电路节点光点
             Vector2 spawnPos = new Vector2(
                 Main.screenPosition.X + Main.rand.Next(Main.screenWidth),
@@ -405,64 +479,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             PRT_Light circuitNode = new PRT_Light(
                 spawnPos,
                 Vector2.Zero,
-                Main.rand.NextFloat(0.8f, 1.5f),
+                Main.rand.NextFloat(0.7f, 1.2f),
                 new Color(100, 220, 255),
-                Main.rand.Next(80, 150),
+                Main.rand.Next(100, 180),
                 1f,
-                1.2f
+                1f
             );
             PRTLoader.AddParticle(circuitNode);
         }
 
-        private static void SpawnGridFlash()
-        {
-            //使用3*3帧纹理生成网格闪光
-            if (CWRAsset.TileHightlight == null)
-            {
-                return;
-            }
-
-            Vector2 gridPos = new Vector2(
-                Main.screenPosition.X + Main.rand.Next(100, Main.screenWidth - 100),
-                Main.screenPosition.Y + Main.rand.Next(100, Main.screenHeight - 100)
-            );
-
-            //创建网格闪光粒子
-            int gridSize = Main.rand.Next(30, 60);
-            Color gridColor = new Color(80, 200, 255) * 0.8f;
-
-            PRT_Light gridFlash = new PRT_Light(
-                gridPos,
-                Vector2.Zero,
-                Main.rand.NextFloat(1.5f, 2.5f),
-                gridColor,
-                Main.rand.Next(40, 80),
-                1f,
-                1.8f,
-                hueShift: 0.02f
-            );
-            PRTLoader.AddParticle(gridFlash);
-
-            //周围生成小型数据点
-            for (int i = 0; i < 4; i++)
-            {
-                float angle = MathHelper.TwoPi * i / 4f;
-                Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 40f);
-
-                PRT_Spark miniSpark = new PRT_Spark(
-                    gridPos + offset,
-                    Vector2.Zero,
-                    false,
-                    Main.rand.Next(30, 60),
-                    Main.rand.NextFloat(0.5f, 1f),
-                    new Color(100, 220, 255)
-                );
-                PRTLoader.AddParticle(miniSpark);
-            }
-        }
-
-        private static void SpawnDataStream()
-        {
+        private static void SpawnDataStream() {
             //生成从屏幕边缘流向中心的数据流
             int edge = Main.rand.Next(4);
             Vector2 spawnPos;
@@ -471,8 +497,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 Main.screenPosition.Y + Main.screenHeight * 0.5f
             );
 
-            switch (edge)
-            {
+            switch (edge) {
                 case 0://上
                     spawnPos = new Vector2(
                         Main.screenPosition.X + Main.rand.Next(Main.screenWidth),
@@ -499,14 +524,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     break;
             }
 
-            Vector2 velocity = (targetPos - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+            Vector2 velocity = (targetPos - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3f);
 
             PRT_Spark streamSpark = new PRT_Spark(
                 spawnPos,
                 velocity,
                 false,
-                Main.rand.Next(80, 140),
-                Main.rand.NextFloat(0.8f, 1.4f),
+                Main.rand.Next(100, 160),
+                Main.rand.NextFloat(0.6f, 1.2f),
                 Color.Lerp(
                     new Color(60, 180, 255),
                     new Color(100, 220, 255),
@@ -516,27 +541,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             PRTLoader.AddParticle(streamSpark);
         }
 
-        private static void SpawnTechBurst()
-        {
+        private static void SpawnTechBurst() {
             //生成科技爆发效果
             Vector2 burstCenter = new Vector2(
-                Main.screenPosition.X + Main.screenWidth * Main.rand.NextFloat(0.2f, 0.8f),
-                Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.2f, 0.8f)
+                Main.screenPosition.X + Main.screenWidth * Main.rand.NextFloat(0.3f, 0.7f),
+                Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.3f, 0.7f)
             );
 
-            //环形粒子爆发
-            int burstCount = 12;
-            for (int i = 0; i < burstCount; i++)
-            {
+            //环形粒子爆发（减少数量）
+            int burstCount = 8;
+            for (int i = 0; i < burstCount; i++) {
                 float angle = MathHelper.TwoPi * i / burstCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
 
                 PRT_Spark burstSpark = new PRT_Spark(
                     burstCenter,
                     velocity,
                     false,
-                    Main.rand.Next(50, 90),
-                    Main.rand.NextFloat(1f, 1.8f),
+                    Main.rand.Next(60, 100),
+                    Main.rand.NextFloat(0.8f, 1.5f),
                     Color.Lerp(
                         new Color(80, 200, 255),
                         new Color(120, 240, 255),
@@ -550,34 +573,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             PRT_Light centralLight = new PRT_Light(
                 burstCenter,
                 Vector2.Zero,
-                Main.rand.NextFloat(2f, 3f),
+                Main.rand.NextFloat(1.5f, 2.5f),
                 new Color(100, 220, 255),
-                60,
+                80,
                 1f,
-                2.5f,
-                hueShift: 0.03f
+                2f,
+                hueShift: 0.02f
             );
             PRTLoader.AddParticle(centralLight);
 
-            //生成次级数据碎片
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2 fragmentVelocity = Main.rand.NextVector2Circular(4f, 4f);
+            //生成次级数据碎片（减少数量）
+            for (int i = 0; i < 12; i++) {
+                Vector2 fragmentVelocity = Main.rand.NextVector2Circular(3f, 3f);
 
                 PRT_Spark fragment = new PRT_Spark(
-                    burstCenter + Main.rand.NextVector2Circular(20f, 20f),
+                    burstCenter + Main.rand.NextVector2Circular(15f, 15f),
                     fragmentVelocity,
                     false,
-                    Main.rand.Next(40, 80),
-                    Main.rand.NextFloat(0.6f, 1.2f),
+                    Main.rand.Next(50, 90),
+                    Main.rand.NextFloat(0.5f, 1f),
                     new Color(60, 180, 240)
                 );
                 PRTLoader.AddParticle(fragment);
             }
         }
 
-        public override void Unload()
-        {
+        public override void Unload() {
             IsActive = false;
         }
     }
