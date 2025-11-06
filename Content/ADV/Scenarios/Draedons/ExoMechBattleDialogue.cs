@@ -1,6 +1,4 @@
-using CalamityMod.Events;
 using System;
-using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -13,6 +11,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
     {
         public string LocalizationCategory => "ADV";
         public override string Key => nameof(ExoMechBattleDialogue);
+
+        public override bool CanRepeat => true;
 
         //角色名称
         public static LocalizedText DraedonName { get; private set; }
@@ -45,13 +45,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
-        void IWorldInfo.OnWorldLoad()
-        {
+        void IWorldInfo.OnWorldLoad() {
             CurrentPhase = 0;
         }
 
-        public override void SetStaticDefaults()
-        {
+        public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //阶段1对话
@@ -83,14 +81,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             AresEnrageLine = this.GetLocalization(nameof(AresEnrageLine), () => "真是愚昧，你是无法逃跑的。");
         }
 
-        protected override void Build()
-        {
+        protected override void Build() {
             //注册嘉登立绘
-            DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.Cyan, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.White, silhouette: false);
 
             //根据当前阶段构建对话
-            switch (CurrentPhase)
-            {
+            switch (CurrentPhase) {
                 case 1:
                     Add(DraedonName.Value, Phase1Line1.Value);
                     Add(DraedonName.Value, Phase1Line2.Value);
@@ -131,8 +127,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// <summary>
         /// 触发特定阶段的对话
         /// </summary>
-        public static void TriggerPhaseDialogue(int phase)
-        {
+        public static void TriggerPhaseDialogue(int phase) {
             CurrentPhase = phase;
             ScenarioManager.Start<ExoMechBattleDialogue>();
         }
@@ -140,8 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// <summary>
         /// 触发阿瑞斯狂暴对话
         /// </summary>
-        public static void TriggerAresEnrage()
-        {
+        public static void TriggerAresEnrage() {
             CurrentPhase = 99;
             ScenarioManager.Start<ExoMechBattleDialogue>();
         }

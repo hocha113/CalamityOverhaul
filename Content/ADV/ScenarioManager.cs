@@ -39,8 +39,17 @@ namespace CalamityOverhaul.Content.ADV
     internal abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario
     {
         public abstract string Key { get; }
+        /// <summary>
+        /// 场景是否可以重复触发
+        /// </summary>
         public virtual bool CanRepeat => false;
+        /// <summary>
+        /// 场景是否已完成
+        /// </summary>
         public bool IsCompleted { get; private set; }
+        /// <summary>
+        /// 对话行列表
+        /// </summary>
         private readonly List<DialogueLine> lines = new();
 
         /// <summary>
@@ -369,11 +378,11 @@ namespace CalamityOverhaul.Content.ADV
             return null;
         }
 
-        public static bool Start<T>() where T : IADVScenario, new() { 
-            var temp = new T(); 
-            if (!scenarios.ContainsKey(temp.Key)) 
-                Register(temp); 
-            return Start(temp.Key); 
+        public static bool Start<T>() where T : IADVScenario, new() {
+            var temp = new T();
+            if (!scenarios.ContainsKey(temp.Key))
+                Register(temp);
+            return Start(temp.Key);
         }
         public static void Reset<T>() where T : IADVScenario, new() { var temp = new T(); if (scenarios.TryGetValue(temp.Key, out var sc)) sc.Reset(); }
         public static bool IsActive(string key) => active != null && active.Key == key && DialogueUIRegistry.Current.Active;

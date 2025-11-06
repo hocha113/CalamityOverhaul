@@ -34,8 +34,7 @@ namespace CalamityOverhaul.Content.ADV
         private int circuitNodeSpawnTimer = 0;
         private const float TechSideMargin = 28f;
 
-        protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize)
-        {
+        protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize) {
             //背景动画计时器
             scanLineTimer += 0.048f;
             hologramFlicker += 0.12f;
@@ -51,24 +50,20 @@ namespace CalamityOverhaul.Content.ADV
 
             //数据粒子刷新
             dataParticleSpawnTimer++;
-            if (Active && dataParticleSpawnTimer >= 18 && dataParticles.Count < 15)
-            {
+            if (Active && dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleSpawnTimer = 0;
                 Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(TechSideMargin, panelSize.X - TechSideMargin), Main.rand.NextFloat(40f, panelSize.Y - 40f));
                 dataParticles.Add(new DataParticleFx(p));
             }
-            for (int i = dataParticles.Count - 1; i >= 0; i--)
-            {
-                if (dataParticles[i].Update(panelPos, panelSize))
-                {
+            for (int i = dataParticles.Count - 1; i >= 0; i--) {
+                if (dataParticles[i].Update(panelPos, panelSize)) {
                     dataParticles.RemoveAt(i);
                 }
             }
 
             //电路节点刷新
             circuitNodeSpawnTimer++;
-            if (Active && circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8)
-            {
+            if (Active && circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8) {
                 circuitNodeSpawnTimer = 0;
                 float scaleW = Main.UIScale;
                 float left = panelPos.X + TechSideMargin * scaleW;
@@ -76,17 +71,14 @@ namespace CalamityOverhaul.Content.ADV
                 Vector2 start = new(Main.rand.NextFloat(left, right), panelPos.Y + Main.rand.NextFloat(40f, panelSize.Y - 40f));
                 circuitNodes.Add(new CircuitNodeFx(start));
             }
-            for (int i = circuitNodes.Count - 1; i >= 0; i--)
-            {
-                if (circuitNodes[i].Update(panelPos, panelSize))
-                {
+            for (int i = circuitNodes.Count - 1; i >= 0; i--) {
+                if (circuitNodes[i].Update(panelPos, panelSize)) {
                     circuitNodes.RemoveAt(i);
                 }
             }
         }
 
-        protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress)
-        {
+        protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //阴影
@@ -96,8 +88,7 @@ namespace CalamityOverhaul.Content.ADV
 
             //主背景渐变
             int segs = 35;
-            for (int i = 0; i < segs; i++)
-            {
+            for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
                 float t2 = (i + 1) / (float)segs;
                 int y1 = panelRect.Y + (int)(t * panelRect.Height);
@@ -137,38 +128,32 @@ namespace CalamityOverhaul.Content.ADV
             DrawTechFrame(spriteBatch, panelRect, alpha, innerPulse);
 
             //绘制粒子
-            foreach (var node in circuitNodes)
-            {
+            foreach (var node in circuitNodes) {
                 node.Draw(spriteBatch, alpha * 0.85f);
             }
-            foreach (var particle in dataParticles)
-            {
+            foreach (var particle in dataParticles) {
                 particle.Draw(spriteBatch, alpha * 0.75f);
             }
 
-            if (current == null || contentAlpha <= 0.01f)
-            {
+            if (current == null || contentAlpha <= 0.01f) {
                 return;
             }
 
             DrawPortraitAndText(spriteBatch, panelRect, alpha, contentAlpha);
         }
 
-        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha)
-        {
+        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             bool hasPortrait = false;
             PortraitData speakerPortrait = null;
 
-            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f)
-            {
+            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f) {
                 hasPortrait = true;
                 speakerPortrait = pd;
             }
 
             float switchEase = speakerSwitchProgress;
-            if (switchEase < 1f)
-            {
+            if (switchEase < 1f) {
                 switchEase = CWRUtils.EaseOutCubic(switchEase);
             }
 
@@ -179,8 +164,7 @@ namespace CalamityOverhaul.Content.ADV
             float topNameOffset = 12f;
             float textBlockOffsetY = Padding + 38;
 
-            if (hasPortrait)
-            {
+            if (hasPortrait) {
                 float availHeight = panelRect.Height - 50f;
                 float maxPortraitHeight = Math.Clamp(availHeight, 100f, 270f);
                 Texture2D ptex = speakerPortrait.Texture;
@@ -192,8 +176,7 @@ namespace CalamityOverhaul.Content.ADV
                 DrawPortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 6), (int)(pPos.Y - 6), (int)(pSize.X + 12), (int)(pSize.Y + 12)), alpha * speakerPortrait.Fade * portraitExtraAlpha);
 
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
-                if (speakerPortrait.Silhouette)
-                {
+                if (speakerPortrait.Silhouette) {
                     drawColor = new Color(20, 35, 55) * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.85f;
                 }
 
@@ -205,14 +188,12 @@ namespace CalamityOverhaul.Content.ADV
                 leftOffset += PortraitWidth + 22f;
             }
 
-            if (current != null && !string.IsNullOrEmpty(current.Speaker))
-            {
+            if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
                 Vector2 speakerPos = new(panelRect.X + leftOffset, panelRect.Y + topNameOffset - (1f - switchEase) * 5f);
                 float nameAlpha = contentAlpha * switchEase;
 
                 Color nameGlow = new Color(80, 220, 255) * nameAlpha * 0.8f;
-                for (int i = 0; i < 4; i++)
-                {
+                for (int i = 0; i < 4; i++) {
                     float a = MathHelper.TwoPi * i / 4f;
                     Vector2 off = a.ToRotationVector2() * 2f * switchEase;
                     Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + off, nameGlow * 0.6f, 0.95f);
@@ -231,23 +212,18 @@ namespace CalamityOverhaul.Content.ADV
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
             int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
 
-            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++)
-            {
+            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
-                if (string.IsNullOrEmpty(fullLine))
-                {
+                if (string.IsNullOrEmpty(fullLine)) {
                     continue;
                 }
 
                 string visLine;
-                if (finishedCurrent)
-                {
+                if (finishedCurrent) {
                     visLine = fullLine;
                 }
-                else
-                {
-                    if (remaining <= 0)
-                    {
+                else {
+                    if (remaining <= 0) {
                         break;
                     }
                     int take = Math.Min(fullLine.Length, remaining);
@@ -256,8 +232,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
 
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > panelRect.Bottom - Padding)
-                {
+                if (linePos.Y + lineHeight > panelRect.Bottom - Padding) {
                     break;
                 }
 
@@ -268,8 +243,7 @@ namespace CalamityOverhaul.Content.ADV
                 Utils.DrawBorderString(spriteBatch, visLine, shiftedPos, lineColor, 0.82f);
             }
 
-            if (waitingForAdvance)
-            {
+            if (waitingForAdvance) {
                 float blink = (float)Math.Sin(advanceBlinkTimer / 11f * MathHelper.TwoPi) * 0.5f + 0.5f;
                 string hint = $"> {ContinueHint.Value}<";
                 Vector2 hintSize = font.MeasureString(hint) * 0.65f;
@@ -277,8 +251,7 @@ namespace CalamityOverhaul.Content.ADV
                 Utils.DrawBorderString(spriteBatch, hint, hintPos, new Color(80, 220, 255) * blink * contentAlpha, 0.82f);
             }
 
-            if (!finishedCurrent)
-            {
+            if (!finishedCurrent) {
                 string fast = FastHint.Value;
                 Vector2 fastSize = font.MeasureString(fast) * 0.62f;
                 Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 18);
@@ -287,14 +260,12 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         #region 样式工具函数
-        private void DrawHexGrid(SpriteBatch sb, Rectangle rect, float alpha)
-        {
+        private void DrawHexGrid(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             int hexRows = 8;
             float hexHeight = rect.Height / (float)hexRows;
 
-            for (int row = 0; row < hexRows; row++)
-            {
+            for (int row = 0; row < hexRows; row++) {
                 float t = row / (float)hexRows;
                 float y = rect.Y + row * hexHeight;
                 float phase = hexGridPhase + t * MathHelper.Pi;
@@ -305,16 +276,13 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        private void DrawScanLines(SpriteBatch sb, Rectangle rect, float alpha)
-        {
+        private void DrawScanLines(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             float scanY = rect.Y + (float)Math.Sin(scanLineTimer) * 0.5f * rect.Height + rect.Height * 0.5f;
 
-            for (int i = -2; i <= 2; i++)
-            {
+            for (int i = -2; i <= 2; i++) {
                 float offsetY = scanY + i * 3f;
-                if (offsetY < rect.Y || offsetY > rect.Bottom)
-                {
+                if (offsetY < rect.Y || offsetY > rect.Bottom) {
                     continue;
                 }
 
@@ -324,8 +292,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        private static void DrawTechFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse)
-        {
+        private static void DrawTechFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             Color techEdge = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), pulse) * (alpha * 0.85f);
 
@@ -348,8 +315,7 @@ namespace CalamityOverhaul.Content.ADV
             DrawCornerCircuit(sb, new Vector2(rect.Right - 12, rect.Bottom - 12), alpha * 0.65f);
         }
 
-        private static void DrawCornerCircuit(SpriteBatch sb, Vector2 pos, float a)
-        {
+        private static void DrawCornerCircuit(SpriteBatch sb, Vector2 pos, float a) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float size = 6f;
             Color c = new Color(100, 220, 255) * a;
@@ -360,13 +326,11 @@ namespace CalamityOverhaul.Content.ADV
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c * 0.6f, 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 0.4f, size * 0.4f), SpriteEffects.None, 0f);
         }
 
-        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness)
-        {
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
-            if (length < 1f)
-            {
+            if (length < 1f) {
                 return;
             }
 
@@ -374,8 +338,7 @@ namespace CalamityOverhaul.Content.ADV
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
             int segments = Math.Max(1, (int)(length / 12f));
 
-            for (int i = 0; i < segments; i++)
-            {
+            for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
@@ -396,29 +359,25 @@ namespace CalamityOverhaul.Content.ADV
             public float Seed = Main.rand.NextFloat(10f);
             public Vector2 Velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-0.6f, -0.2f));
 
-            public bool Update(Vector2 panelPos, Vector2 panelSize)
-            {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 Rot += 0.025f;
                 Pos += Velocity;
                 Velocity.Y -= 0.015f;
 
                 float t = Life / MaxLife;
-                if (Life >= MaxLife)
-                {
+                if (Life >= MaxLife) {
                     return true;
                 }
 
-                if (Pos.X < panelPos.X - 50 || Pos.X > panelPos.X + panelSize.X + 50 || Pos.Y < panelPos.Y - 50 || Pos.Y > panelPos.Y + panelSize.Y + 50)
-                {
+                if (Pos.X < panelPos.X - 50 || Pos.X > panelPos.X + panelSize.X + 50 || Pos.Y < panelPos.Y - 50 || Pos.Y > panelPos.Y + panelSize.Y + 50) {
                     return true;
                 }
 
                 return false;
             }
 
-            public void Draw(SpriteBatch sb, float alpha)
-            {
+            public void Draw(SpriteBatch sb, float alpha) {
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
                 float scale = Size * (0.7f + (float)Math.Sin((Life + Seed * 40f) * 0.09f) * 0.3f);
@@ -440,8 +399,7 @@ namespace CalamityOverhaul.Content.ADV
             public float MaxLife;
             public float Seed;
 
-            public CircuitNodeFx(Vector2 start)
-            {
+            public CircuitNodeFx(Vector2 start) {
                 Pos = start;
                 Radius = Main.rand.NextFloat(2f, 5f);
                 PulseSpeed = Main.rand.NextFloat(0.8f, 1.6f);
@@ -450,18 +408,15 @@ namespace CalamityOverhaul.Content.ADV
                 Seed = Main.rand.NextFloat(10f);
             }
 
-            public bool Update(Vector2 panelPos, Vector2 panelSize)
-            {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
-                if (Life >= MaxLife)
-                {
+                if (Life >= MaxLife) {
                     return true;
                 }
                 return false;
             }
 
-            public void Draw(SpriteBatch sb, float alpha)
-            {
+            public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
@@ -480,8 +435,7 @@ namespace CalamityOverhaul.Content.ADV
         #endregion
 
         #region 公共静态绘制碎片
-        private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha)
-        {
+        private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             Color back = new Color(8, 16, 30) * (alpha * 0.88f);
             sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), back);
@@ -493,8 +447,7 @@ namespace CalamityOverhaul.Content.ADV
             sb.Draw(vaule, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
         }
 
-        private static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow)
-        {
+        private static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), glow * 0.18f);
 

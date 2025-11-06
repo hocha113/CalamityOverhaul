@@ -1,13 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
-using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.World;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -43,13 +41,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
-        void IWorldInfo.OnWorldLoad()
-        {
+        void IWorldInfo.OnWorldLoad() {
             //重置状态
         }
 
-        public override void SetStaticDefaults()
-        {
+        public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //介绍台词(对应原游戏的 DraedonIntroductionText 系列)
@@ -68,21 +64,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             ChoiceTwins = this.GetLocalization(nameof(ChoiceTwins), () => "双子阿尔忒弥斯与阿波罗");
         }
 
-        protected override void OnScenarioStart()
-        {
+        protected override void OnScenarioStart() {
             //可以在这里添加特效或音效
         }
 
-        protected override void Build()
-        {
+        protected override void Build() {
             //注册嘉登立绘(使用科技风格的剪影效果)
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.Cyan, silhouette: false);
 
             //检查是否为Boss Rush模式
             bool isBossRush = BossRushEvent.BossRushActive;
 
-            if (isBossRush)
-            {
+            if (isBossRush) {
                 //Boss Rush模式：直接显示选择界面，时间紧迫
                 AddWithChoices(DraedonName.Value, BossRushLine.Value, [
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
@@ -90,8 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
                 ]);
             }
-            else
-            {
+            else {
                 //普通模式：完整的介绍对话
                 Add(DraedonName.Value, IntroLine1.Value);
                 Add(DraedonName.Value, IntroLine2.Value);
@@ -107,8 +99,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
         }
 
-        private void SummonMech(ExoMech mechType)
-        {
+        private void SummonMech(ExoMech mechType) {
             //设置要召唤的机械类型
             CalamityWorld.DraedonMechToSummon = mechType;
 
@@ -118,10 +109,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Complete();
         }
 
-        public static void DoSummon(Player player)
-        {
-            switch (CalamityWorld.DraedonMechToSummon)
-            {
+        public static void DoSummon(Player player) {
+            switch (CalamityWorld.DraedonMechToSummon) {
                 case ExoMech.Destroyer:
                     Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
                     NPC thanatos = CalamityUtils.SpawnBossBetter(thanatosSpawnPosition, ModContent.NPCType<ThanatosHead>());

@@ -1,5 +1,4 @@
 using System;
-using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -36,13 +35,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
-        void IWorldInfo.OnWorldLoad()
-        {
+        void IWorldInfo.OnWorldLoad() {
             IsKillAttempt = false;
         }
 
-        public override void SetStaticDefaults()
-        {
+        public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //结束对话(对应原游戏的 DraedonEndText 系列)
@@ -60,18 +57,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             KillAttemptLine = this.GetLocalization(nameof(KillAttemptLine), () => "……你的行为没什么必要。");
         }
 
-        protected override void Build()
-        {
+        protected override void Build() {
             //注册嘉登立绘
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, "CalamityMod/NPCs/ExoMechs/Draedon", Color.Cyan, silhouette: false);
 
-            if (IsKillAttempt)
-            {
+            if (IsKillAttempt) {
                 //玩家尝试击杀嘉登
                 Add(DraedonName.Value, KillAttemptLine.Value);
             }
-            else
-            {
+            else {
                 //正常结束对话
                 Add(DraedonName.Value, EndLine1.Value);
                 Add(DraedonName.Value, EndLine2.Value);
@@ -85,8 +79,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
         }
 
-        protected override void OnScenarioComplete()
-        {
+        protected override void OnScenarioComplete() {
             //对话结束后的逻辑
             IsKillAttempt = false;
         }
@@ -94,8 +87,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// <summary>
         /// 触发正常结束对话
         /// </summary>
-        public static void TriggerEndingDialogue()
-        {
+        public static void TriggerEndingDialogue() {
             IsKillAttempt = false;
             ScenarioManager.Start<ExoMechEndingDialogue>();
         }
@@ -103,8 +95,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// <summary>
         /// 触发击杀尝试对话
         /// </summary>
-        public static void TriggerKillAttemptDialogue()
-        {
+        public static void TriggerKillAttemptDialogue() {
             IsKillAttempt = true;
             ScenarioManager.Start<ExoMechEndingDialogue>();
         }

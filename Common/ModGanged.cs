@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameSystem;
@@ -546,7 +545,7 @@ namespace CalamityOverhaul.Common
                     return;
                 }
             }
-            
+
             orig.Invoke(key, color);
         }
 

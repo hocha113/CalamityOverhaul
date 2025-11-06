@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         public override bool Alive(Player player) {
-            return player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+            return player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
                 && halibutPlayer.ADCSave.SupCalYharonQuestReward;//仅在完成了与焚世龙的任务后才触发这些台词修改
         }
     }

@@ -86,14 +86,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             "DraedonEndKillAttemptText"
         };
 
-        public override bool PreHandle(ref string key, ref Color color)
-        {
+        public override bool PreHandle(ref string key, ref Color color) {
             //提取key的最后一部分(去除模组前缀)
             string result = key.Split('.').Last();
 
             //如果是需要屏蔽的对话，返回false阻止显示
-            if (BlockedDialogueKeys.Contains(result))
-            {
+            if (BlockedDialogueKeys.Contains(result)) {
                 return false;
             }
 
