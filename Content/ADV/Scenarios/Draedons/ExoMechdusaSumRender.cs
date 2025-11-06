@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
-    internal class ExoMechdusaSumRender : RenderHandle
+    internal class ExoMechdusaSumRender : RenderHandle, ILocalizedModType
     {
         //用于记录上次悬停的选项，避免重复播放音效
         private static int lastHoveredChoice = -1;
@@ -38,9 +39,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //动画参数
         private const float FadeSpeed = 0.08f;
         private const float ScaleSpeed = 0.12f;
-        private const float RotationSpeed = 0.03f;
-        private const float IconBaseScale = 1.2f;
-        private const float IconMaxScale = 1.5f;
+        private const float IconBaseScale = 2.2f;
+        private const float IconMaxScale = 3.6f;
 
         //图标位置偏移（玩家头顶）
         private static Vector2 iconOffset = new Vector2(0, -120f);
@@ -48,6 +48,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
         private static int particleSpawnTimer = 0;
+
+        public string LocalizationCategory => "UI";
+
+        public override void SetStaticDefaults() {
+            
+        }
 
         public override void UpdateBySystem(int index) {
             //更新图标动画
@@ -134,7 +140,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
             //计算缩放（带缓动效果）
             float easedScale = CWRUtils.EaseOutBack(iconScaleProgress);
-            float scale = MathHelper.Lerp(IconBaseScale, IconMaxScale, easedScale) * 2f;
+            float scale = MathHelper.Lerp(IconBaseScale, IconMaxScale, easedScale);
 
             //计算透明度
             float alpha = iconFadeProgress * 0.85f;
