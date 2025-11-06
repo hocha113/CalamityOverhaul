@@ -1,7 +1,5 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.Localization;

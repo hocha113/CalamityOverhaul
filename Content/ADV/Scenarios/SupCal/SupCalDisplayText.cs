@@ -1,7 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Accessories;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
