@@ -2,6 +2,8 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameSystem;
@@ -467,6 +469,9 @@ namespace CalamityOverhaul.Common
                 else {
                     LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
                 }
+
+                MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("DisplayLocalizedText", BindingFlags.Static | BindingFlags.Public);
+                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
             }
             #endregion
 
@@ -521,6 +526,25 @@ namespace CalamityOverhaul.Common
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
             calamityUtils_GetReworkedReforge_Method = null;
+        }
+
+        internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
+        internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
+            Color color = textColor ?? Color.White;
+            if (VaultLoad.LoadenContent) {
+                bool result = true;
+                foreach (var d in ModifyDisplayText.Instances) {
+                    bool newResult = d.Handle(ref key, ref color);
+                    if (!newResult) {
+                        result = false;
+                    }
+                }
+                if (!result) {
+                    return;
+                }
+            }
+            
+            orig.Invoke(key, color);
         }
 
         //LuiAFK的代码写的是真难绷，实现无限弹药的效果，不用CanConsumeAmmo，去用OnConsumeAmmo，
