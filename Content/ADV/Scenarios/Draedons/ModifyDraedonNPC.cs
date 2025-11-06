@@ -34,6 +34,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                         ScenarioManager.Reset<ExoMechEndingDialogue>();
                         ScenarioManager.Start<ExoMechEndingDialogue>();
                     }
+
+                    if (DraedonEffect.IsActive) {//哔哔完后再退场
+                        if (draedon.DefeatTimer > 30 + 150 * 8f + 120f) {
+                            draedon.DefeatTimer = 30 + 150 * 8f + 120f;//200 - 120 = 80，给这个老逼登80帧的时间过渡到退场动画
+                        }
+                    }
                 }
             }
         }

@@ -69,10 +69,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         protected override void OnScenarioStart() {
             DraedonEffect.IsActive = true;
+            DraedonEffect.Send();
         }
 
         protected override void OnScenarioComplete() {
             DraedonEffect.IsActive = false;
+            DraedonEffect.Send();
         }
 
         protected override void Build() {

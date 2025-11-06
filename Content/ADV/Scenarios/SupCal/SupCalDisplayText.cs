@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using System.Linq;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
@@ -13,6 +14,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         SCalBrothersText: 你想见见我的家人吗？听上去挺可怕，不是么？
         SCalPhase2Text: 你将痛不欲生。
         SCalBH4Text: 别想着逃跑。只要你还活着，痛苦就不会离你而去。
+    ---------------------------------------------------这段台词全部屏蔽-------------------------------------------------------
         SCalSeekerRingText: 一个后起之人，只识杀戮与偷窃，但却以此得到力量。我想想，这让我想起了谁……？
         SCalBH5Text: 这场战斗的输赢对你而言毫无意义！那你又有什么理由干涉这一切！
         SCalSepulcher2Text: 我们两人里只有一个可以活下来，但如果那个人是你，这一切还有什么意义？！
@@ -23,6 +25,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         SCalAcceptanceText1: 哪怕他抛弃了一切，他的力量也不会消失。
         SCalAcceptanceText2: 我已没有余力去怨恨他了，对你也是如此……
         SCalAcceptanceText3: 现在，一切都取决于你。
+     --------------------------------------------------这段台词全部屏蔽--------------------------------------------------------
         // SCal (Rematch)
         SCalSummonTextRematch: 如果你想感受一下四级烫伤的话，你可算是找对人了。
         SCalStartTextRematch: 他日若你魂销魄散，你会介意我将你的骨头和血肉融入我的造物中吗？
@@ -117,6 +120,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return new DialogueOverride("真奇怪，你应该已经死了才对……", null);
                 }
             });
+        }
+
+        public override bool PreHandle(ref string key, ref Color color) {
+            //提取key的最后一部分(去除模组前缀)
+            string result = key.Split('.').Last();
+            return true;
         }
 
         public override bool Alive(Player player) {

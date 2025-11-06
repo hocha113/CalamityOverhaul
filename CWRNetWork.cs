@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Industrials.Modifys;
@@ -32,6 +33,7 @@ namespace CalamityOverhaul
         DoGQuestTracker,
         EternalBlazingNowNPC,
         BaseDamageTracker,
+        DraedonEffect,
     }
 
     public static class CWRNetWork
@@ -71,6 +73,7 @@ namespace CalamityOverhaul
             SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
             EternalBlazingNowNPC.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
+            DraedonEffect.NetHandle(type, reader, whoAmI);
         }
     }
 }

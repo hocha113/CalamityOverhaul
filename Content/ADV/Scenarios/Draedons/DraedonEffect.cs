@@ -2,6 +2,7 @@
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -388,6 +389,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public static int CekTimer = 0;
         private int particleTimer = 0;
         private int dataStreamTimer = 0;
+
+        internal static void Send() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.DraedonEffect);
+            packet.Write(IsActive);
+            packet.Send();
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (type == CWRMessageType.DraedonEffect) {
+                IsActive = reader.ReadBoolean();
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.DraedonEffect);
+                    packet.Write(IsActive);
+                    packet.Send(-1, whoAmI);
+                }
+            }
+        }
 
         public static bool Cek() {
             if (!IsActive) {
