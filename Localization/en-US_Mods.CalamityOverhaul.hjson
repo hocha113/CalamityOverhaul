@@ -6705,4 +6705,50 @@ ADV: {
 		L4: Oh, right. I caught a fish.
 		L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
 	}
+
+	ExoMechBattleDialogue: {
+		DraedonName: 嘉登
+		Phase1Line1: 时间与知识的积累带来的不断改进，正是我作品精华所在。
+		Phase1Line2: 接近完美的方法，除此再无。
+		Phase2Line1: 很好，很好，你的表现水平完全就在误差范围之内。
+		Phase2Line2: 这着实令人满意。接下来我们将进入下一个测试环节。
+		Phase3Line1: 自我第一次到得知你的存在，我就一直在研究你的战斗，并以此让我的机械变得更强。
+		Phase3Line2: 就算是现在，我依然在检测你的行动。一切都在我的计算之内。
+		Phase4Line1: 有趣，十分有趣。
+		Phase4Line2: 就算是面对更为困难的挑战，你仍可以稳步推进。
+		Phase5Line1: 我依然无法理解你的本质，这样下去可不行。
+		Phase5Line2: ……我一向追求完美，可惜造化弄人，这一定是我犯下的第一个错误。
+		Phase6Line1: 荒谬至极。
+		Phase6Line2: 我不会再让那些无用的计算干扰我对这场战斗的观察了。
+		Phase6Line3: 我将向你展示，我终极造物的全部威力。
+		AresEnrageLine: 真是愚昧，你是无法逃跑的。
+	}
+
+	ExoMechdusaSum: {
+		DraedonName: 嘉登
+		IntroLine1: 你知道吗？这一刻已经等了太久了。
+		IntroLine2: 我对一切未知感到着迷，但最让我着迷的莫过于你的本质。
+		IntroLine3: 我将会向你展示，我那些超越神明的造物。
+		IntroLine4: 而你，则将在战斗中向我展示你的本质。
+		IntroLine5: 现在，选择吧。
+		SelectionPrompt: 做出你的选择。
+		BossRushLine: 做出你的选择。你有20秒的时间。
+		ChoiceAres: 战神阿瑞斯
+		ChoiceThanatos: 死神塔纳托斯
+		ChoiceTwins: 双子阿尔忒弥斯与阿波罗
+	}
+
+	ExoMechEndingDialogue: {
+		DraedonName: 嘉登
+		EndLine1: 一个未知因素——你，是一个特异点。
+		EndLine2: 你对这片大地和它的历史而言，只是外来之人，就和我一样。
+		EndLine3: ……很抱歉，但在看了这样一场"展示"之后，我必须得花点时间整理我的思绪。
+		EndLine4: 迄今为止喷洒的血液已经让这片大陆变得陈腐无比，毫无生气。
+		EndLine5: 你也挥洒了自己的鲜血，但这可能足以带来一个新的时代……是什么，我不知道。但那一定是我所渴望看到的时代。
+		EndLine6: 现在，你想要接触那位暴君。可惜我无法帮到你。
+		EndLine7: 这并非出自怨恨，毕竟从一开始，我的目标就只有观察刚才的这一场战斗。
+		EndLine8: 但你过去也成功过，所以你最后会找到办法的。
+		EndLine9: 我必须尊重并承认你的胜利，但现在，我得把注意力放回到我的机械上了。
+		KillAttemptLine: ……你的行为没什么必要。
+	}
 }

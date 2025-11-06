@@ -287,8 +287,16 @@ namespace CalamityOverhaul.Content.ADV
 
         public virtual bool Alive(Player player) => true;
 
-        public virtual bool Handle(ref string key, ref Color color) {
+        public virtual bool PreHandle(ref string key, ref Color color) {
+            return true;
+        }
+
+        public bool Handle(ref string key, ref Color color) {
             string result = key.Split('.').Last();
+
+            if (!PreHandle(ref key, ref color)) {
+                return false;
+            }
 
             //优先检查动态提供器
             if (dynamicDialogueProviders.TryGetValue(result, out var provider)) {

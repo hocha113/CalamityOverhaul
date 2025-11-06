@@ -369,7 +369,12 @@ namespace CalamityOverhaul.Content.ADV
             return null;
         }
 
-        public static bool Start<T>() where T : IADVScenario, new() { var temp = new T(); if (!scenarios.ContainsKey(temp.Key)) Register(temp); return Start(temp.Key); }
+        public static bool Start<T>() where T : IADVScenario, new() { 
+            var temp = new T(); 
+            if (!scenarios.ContainsKey(temp.Key)) 
+                Register(temp); 
+            return Start(temp.Key); 
+        }
         public static void Reset<T>() where T : IADVScenario, new() { var temp = new T(); if (scenarios.TryGetValue(temp.Key, out var sc)) sc.Reset(); }
         public static bool IsActive(string key) => active != null && active.Key == key && DialogueUIRegistry.Current.Active;
         public static void ResetAll() { foreach (var sc in scenarios.Values) sc.Reset(); active = null; }
