@@ -38,6 +38,11 @@ namespace CalamityOverhaul.Content.ADV
         public static DialogueBoxBase Brimstone => BrimstoneDialogueBox.Instance;
 
         /// <summary>
+        /// 获取嘉登科技风格对话框
+        /// </summary>
+        public static DialogueBoxBase Draedon => DraedonDialogueBox.Instance;
+
+        /// <summary>
         /// 切换对话框样式，并迁移当前对话队列
         /// </summary>
         /// <param name="newBox">新的对话框实例</param>
