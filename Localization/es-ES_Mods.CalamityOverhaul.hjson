@@ -1313,6 +1313,30 @@ Items: {
 			Attacks from the Brimstone Witch can critically strike you
 			''' */
 	}
+
+	AncientStormGoddessSpear: {
+		// DisplayName: Ancient Storm Goddess Spear
+		/* Tooltip:
+			'''
+			A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
+			"It is already a thing of the past, but it still works."
+			[legend]
+			''' */
+		/* Legend:
+			'''
+			Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
+			her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
+			When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
+			She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
+			She no longer sought the light but reforged herself in the abyss. An ancient, 
+			forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
+			Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
+			She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
+			Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
+			She fought not for justice, not for Terra, not for the gods.  
+			She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
+			''' */
+	}
 }
 
 Projectiles: {
@@ -1722,6 +1746,8 @@ Projectiles: {
 	// ProverbsCircle.DisplayName: Proverbs Circle
 	// StormGoddess.DisplayName: Storm Goddess
 	// JusticeUnveiledCross.DisplayName: Justice Unveiled Cross
+	// AncientStormLightning.DisplayName: Ancient Storm Lightning
+	// AncientStormArc.DisplayName: Ancient Storm Arc
 }
 
 Configs: {

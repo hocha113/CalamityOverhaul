@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 8));
+            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AncientStormGoddessSpear>();
         }
 
         public override void SetDefaults() {
@@ -73,7 +74,6 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
                 .AddIngredient<StormRuler>()
-                .AddIngredient<StormfrontRazor>()
                 .AddIngredient<StormlionMandible>(5)
                 .AddIngredient(ItemID.LunarBar, 15)
                 .AddTile(TileID.LunarCraftingStation)
