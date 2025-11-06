@@ -6199,6 +6199,11 @@ UI: {
 		// ContinueHint: Continue
 		// FastHint: Accelerate
 	}
+
+	DraedonDialogueBox: {
+		// ContinueHint: Continue
+		// FastHint: Accelerate
+	}
 }
 
 ADV: {

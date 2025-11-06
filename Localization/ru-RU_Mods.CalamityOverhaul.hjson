@@ -6278,6 +6278,11 @@ UI: {
 		ContinueHint: Продолжить
 		FastHint: Ускорить
 	}
+
+	DraedonDialogueBox: {
+		// ContinueHint: Continue
+		// FastHint: Accelerate
+	}
 }
 
 ADV: {
