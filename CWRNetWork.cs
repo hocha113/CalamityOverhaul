@@ -71,8 +71,7 @@ namespace CalamityOverhaul
             SupCalDefeatNPC.NetHandle(type, reader, whoAmI);
             SupCalPlayerDefeatTracker.NetHandle(type, reader, whoAmI);
             SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
-            EternalBlazingNowNPC.NetHandle(type, reader, whoAmI);
-            HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
+            HalibutPlayer.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);
         }
     }

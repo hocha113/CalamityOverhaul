@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return InWorldBossPhase.Halibut_Level() == 14;
         }
 
-        internal static void HandleHalibutMouseWorld(CWRMessageType type, BinaryReader reader, int whoAmI) {
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type != CWRMessageType.HalibutMouseWorld) {
                 return;
             }
