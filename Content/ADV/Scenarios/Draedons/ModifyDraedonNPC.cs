@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public override void PostAI() {
             Main.player[npc.target].Calamity().AbleToSelectExoMech = false;
             if (npc.ai[0] == 60 && !VaultUtils.isServer) {
+                ScenarioManager.Reset<ExoMechdusaSum>();
                 ScenarioManager.Start<ExoMechdusaSum>();
             }
         }

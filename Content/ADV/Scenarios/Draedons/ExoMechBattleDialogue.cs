@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public string LocalizationCategory => "ADV";
         public override string Key => nameof(ExoMechBattleDialogue);
 
-        public override bool CanRepeat => true;
-
         //½ÇÉ«Ãû³Æ
         public static LocalizedText DraedonName { get; private set; }
 

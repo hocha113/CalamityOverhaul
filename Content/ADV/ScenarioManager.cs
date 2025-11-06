@@ -144,6 +144,7 @@ namespace CalamityOverhaul.Content.ADV
 
         public void Start() {
             if (IsCompleted && !CanRepeat) return;
+            lines.Clear();//清空旧对话
             Build();//每次开始都重新构建对话内容，方便自定义内容
             if (lines.Count == 0) { Complete(); return; }
 
