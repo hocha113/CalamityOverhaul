@@ -110,7 +110,6 @@ namespace CalamityOverhaul
             //    "往日被烈火所吞噬，以异类之躯触及永恒",
             //    AchievementToast.ToastStyle.Brimstone
             //);
-            ScenarioManager.Start<ExoMechdusaSum>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

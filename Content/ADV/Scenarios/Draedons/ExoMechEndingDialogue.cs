@@ -1,4 +1,3 @@
-using InnoVault.UIHandles;
 using System;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -12,6 +11,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
     {
         public string LocalizationCategory => "ADV";
         public override string Key => nameof(ExoMechEndingDialogue);
+
+        //允许重复播放（用于击杀尝试后重新播放正常结束）
+        public override bool CanRepeat => true;
 
         //角色名称
         public static LocalizedText DraedonName { get; private set; }
@@ -30,14 +32,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //玩家尝试击杀嘉登时的对话
         public static LocalizedText KillAttemptLine { get; private set; }
 
-        //是否为击杀尝试场景
-        public static bool IsKillAttempt { get; set; } = false;
-
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() {
-            IsKillAttempt = false;
+            //重置状态
         }
 
         public override void SetStaticDefaults() {
@@ -62,22 +61,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //注册嘉登立绘
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2RedADV, silhouette: false);
 
-            if (IsKillAttempt) {
-                //玩家尝试击杀嘉登
-                Add(DraedonName.Value, KillAttemptLine.Value);
-            }
-            else {
-                //正常结束对话
-                Add(DraedonName.Value, EndLine1.Value);
-                Add(DraedonName.Value, EndLine2.Value);
-                Add(DraedonName.Value, EndLine3.Value);
-                Add(DraedonName.Value, EndLine4.Value);
-                Add(DraedonName.Value, EndLine5.Value);
-                Add(DraedonName.Value, EndLine6.Value);
-                Add(DraedonName.Value, EndLine7.Value);
-                Add(DraedonName.Value, EndLine8.Value);
-                Add(DraedonName.Value, EndLine9.Value);
-            }
+            //正常结束对话
+            Add(DraedonName.Value, EndLine1.Value);
+            Add(DraedonName.Value, EndLine2.Value);
+            Add(DraedonName.Value, EndLine3.Value);
+            Add(DraedonName.Value, EndLine4.Value);
+            Add(DraedonName.Value, EndLine5.Value);
+            Add(DraedonName.Value, EndLine6.Value);
+            Add(DraedonName.Value, EndLine7.Value);
+            Add(DraedonName.Value, EndLine8.Value);
+            Add(DraedonName.Value, EndLine9.Value);
         }
 
         protected override void OnScenarioStart() {
@@ -85,32 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         protected override void OnScenarioComplete() {
-            if (IsKillAttempt) {
-                //对话结束后的逻辑
-                IsKillAttempt = false;
-                TriggerEndingDialogue();
-            }
-            else {
-                DraedonEffect.IsActive = false;
-            }
-        }
-
-        /// <summary>
-        /// 触发正常结束对话
-        /// </summary>
-        public static void TriggerEndingDialogue() {
-            IsKillAttempt = false;
-            ScenarioManager.Reset<ExoMechEndingDialogue>();
-            ScenarioManager.Start<ExoMechEndingDialogue>();
-        }
-
-        /// <summary>
-        /// 触发击杀尝试对话
-        /// </summary>
-        public static void TriggerKillAttemptDialogue() {
-            IsKillAttempt = true;
-            ScenarioManager.Reset<ExoMechEndingDialogue>();
-            ScenarioManager.Start<ExoMechEndingDialogue>();
+            DraedonEffect.IsActive = false;
         }
     }
 }
