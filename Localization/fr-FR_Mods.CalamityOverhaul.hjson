@@ -567,9 +567,9 @@ Items: {
 		// DisplayName: Justice Unveiled
 		/* Tooltip:
 			'''
-			Ranged attacks have a chance to summon a strike of justice
-			The great divine impact will crush the enemy
-			"If justice is needed, I will go wherever it is."
+			Ranged attacks build charges of "Judgment Strike", up to a maximum of 5
+			Press [UP] to expend 1 charge and call down a devastating holy impact
+			"Should justice be summoned, I shall heed the call—wherever it leads."
 			''' */
 	}
 
