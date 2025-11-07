@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             );
 
             float alpha = imageFadeProgress * 0.85f;
-            float flicker = (float)Math.Sin(hologramFlicker * 1.5f) * 0.12f + 0.88f;
+            float flicker = (float)Math.Sin(hologramFlicker * 1.5f) * 0.1f + 0.88f;
             alpha *= flicker;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// 绘制增强版数据文本
+        /// 绘制数据文本
         /// </summary>
         private static void DrawInfoBoxDataTextEnhanced(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             if (currentDataLines.Count == 0) return;
@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             float alpha = imageFadeProgress * 0.88f;
 
             //全息闪烁效果
-            float flicker = (float)Math.Sin(hologramFlicker * 1.8f) * 0.15f + 0.85f;
+            float flicker = (float)Math.Sin(hologramFlicker * 1f) * 0.1f + 0.9f;
             alpha *= flicker;
 
             Color techColor = new Color(80, 200, 255);
