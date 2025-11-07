@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltower;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -113,7 +114,7 @@ namespace CalamityOverhaul
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
-            ScenarioManager.Start<FirstMetSupCal>();
+            ScenarioManager.Start<DeploySignaltowerScenario>();
             //Point16 point = Main.MouseWorld.ToTileCoordinates16();
 
             //MagikeCrossed.GetData(point).Domp();

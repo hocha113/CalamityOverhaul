@@ -6736,4 +6736,21 @@ ADV: {
 		// EndLine9: 我必须尊重并承认你的胜利，但现在，我得把注意力放回到我的机械上了。
 		// KillAttemptLine: ……你的行为没什么必要。
 	}
+
+	DeploySignaltowerScenario: {
+		// DraedonName: 嘉登
+		// IntroLine1: 我需要你的协助来完成一项重要的实验
+		// IntroLine2: 星际通讯一直是我研究的核心领域之一，而你正好可以帮我测试最新的量子纠缠通讯系统
+		// IntroLine3: 这项技术可以突破光速限制，实现跨越星际的即时通讯
+		// IntroLine4: 但在实际应用之前，我需要在这个世界建立足够多的量子纠缠节点
+		// ShowTowerLine: 这就是我设计的量子信号塔，它的核心采用了纠缠态稳定器和零点能量放大器
+		// TechExplainLine1: 每座信号塔都能与其他节点建立量子纠缠链接，形成一个覆盖全星系的通讯网络
+		// TechExplainLine2: 理论上，这个网络的传输延迟可以达到普朗克时间级别
+		// TaskLine: 你的任务是在世界各地部署这些信号塔，建立起完整的纠缠网络
+		// AcceptPrompt: 那么，你愿意接受这个委托吗？
+		// ChoiceAccept: 接受委托
+		// ChoiceDecline: 稍后再说
+		// AcceptResponse: 很好我会将信号塔的制作图纸发送给你，记得定期向我汇报部署进度
+		// DeclineResponse: 我理解当你准备好时随时可以回来找我
+	}
 }
