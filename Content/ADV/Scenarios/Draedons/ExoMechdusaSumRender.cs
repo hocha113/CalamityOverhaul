@@ -48,36 +48,38 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static string decodedText = "";
         private static string targetText = "";
         private static float textFadeProgress = 0f;
-        private static int visibleCharCount = 0;
+        private static float[] charDecodeProgress;//每个字符的独立解码进度
+        private static int decodeUpdateTimer = 0;//用于控制乱码更新频率
 
         //动画参数
         private const float FadeSpeed = 0.08f;
         private const float ScaleSpeed = 0.12f;
-        private const float TextDecodeSpeed = 0.05f;
-        private const float TextFadeSpeed = 0.06f;
+        private const float TextDecodeSpeed = 0.03f;//解码速度，逼养的0.03还不够慢就吃屎去吧
+        private const float TextFadeSpeed = 0.04f;//稍微减慢淡入速度
         private const float IconBaseScale = 2.2f;
         private const float IconMaxScale = 3.6f;
+        private const int GlitchUpdateInterval = 2;//乱码更新间隔，单位帧
 
         //图标位置偏移（玩家头顶）
         private static Vector2 iconOffset = new Vector2(0, -120f);
-        private static Vector2 textOffset = new Vector2(0, -100f);//文本相对图标的偏移（上方）
+        private static Vector2 textOffset = new Vector2(0, -100f);//文本相对图标的偏移，这里是偏移到上方位置
 
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
         private static int particleSpawnTimer = 0;
 
-        //用于乱码生成的字符集
-        private static readonly char[] glitchChars = "█▓▒░▄▀■□▪▫◘◙◚◛◜◝◞◟●○◎◯⊕⊗⊙⊛⊠⊡⌂▬▭▮▯┼┴┬┤├┌┐└┘╳╱╲╬╪╫╩╦╠╣╔╗╚╝║═╞╡╟╢╖╓╙╜╛╘╒╕╤╧╨╥╙╟╢".ToCharArray();
+        //用于乱码生成的字符集（增加更多科技感符号）
+        private static readonly char[] glitchChars = "█▓▒░▄▀■□▪▫◘◙◚◛◜◝◞◟●○◎◯⊕⊗⊙⊛⊠⊡⌂▬▭▮▯┼┴┬┤├┌┐└┘╳╱╲╬╪╫╩╦╠╣╔╗╚╝║═╞╡╟╢╖╓╙╜╛╘╒╕╤╧╨╥╙╟╢01ABCDEFX".ToCharArray();
 
         public string LocalizationCategory => "UI";
 
         public override void SetStaticDefaults() {
             ThanatosDescription = this.GetLocalization(nameof(ThanatosDescription),
-                () => "塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒。");
+                () => "塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒");
             AresDescription = this.GetLocalization(nameof(AresDescription),
-                () => "阿瑞斯，一个搭载着四台超级星流武器的庞然巨物。");
+                () => "阿瑞斯，一个搭载着四台超级星流武器的庞然巨物");
             ArtemisApolloDescription = this.GetLocalization(nameof(ArtemisApolloDescription),
-                () => "阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器。");
+                () => "阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器");
         }
 
         public override void UpdateBySystem(int index) {
@@ -164,9 +166,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static void ResetTextAnimation() {
             textDecodeProgress = 0f;
             textFadeProgress = 0f;
-            visibleCharCount = 0;
             decodedText = "";
             targetText = GetDescriptionText(currentIconIndex);
+            decodeUpdateTimer = 0;
+
+            //初始化每个字符的解码进度
+            if (!string.IsNullOrEmpty(targetText)) {
+                charDecodeProgress = new float[targetText.Length];
+                for (int i = 0; i < charDecodeProgress.Length; i++) {
+                    charDecodeProgress[i] = 0f;
+                }
+            }
         }
 
         /// <summary>
@@ -184,10 +194,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (textDecodeProgress < 1f) {
                 textDecodeProgress = Math.Min(textDecodeProgress + TextDecodeSpeed, 1f);
 
-                //计算可见字符数
-                int targetCharCount = (int)(targetText.Length * textDecodeProgress);
-                if (targetCharCount != visibleCharCount) {
-                    visibleCharCount = targetCharCount;
+                //更新每个字符的独立解码进度
+                if (charDecodeProgress != null) {
+                    for (int i = 0; i < charDecodeProgress.Length; i++) {
+                        //每个字符有延迟启动效果
+                        float charStartProgress = (float)i / charDecodeProgress.Length;
+                        if (textDecodeProgress > charStartProgress) {
+                            float localProgress = (textDecodeProgress - charStartProgress) / (1f - charStartProgress);
+                            charDecodeProgress[i] = Math.Min(localProgress, 1f);
+                        }
+                    }
+                }
+
+                //控制乱码更新频率
+                decodeUpdateTimer++;
+                if (decodeUpdateTimer >= GlitchUpdateInterval) {
+                    decodeUpdateTimer = 0;
                     UpdateDecodedText();
                 }
             }
@@ -209,17 +231,52 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < targetText.Length; i++) {
-                if (i < visibleCharCount) {
-                    //已解码的字符
-                    sb.Append(targetText[i]);
-                }
-                else {
-                    //未解码的字符显示为乱码
-                    if (Main.rand.NextBool(3)) {
-                        sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                if (charDecodeProgress != null && i < charDecodeProgress.Length) {
+                    float charProgress = charDecodeProgress[i];
+
+                    if (charProgress >= 0.9f) {
+                        //字符已完全解码
+                        sb.Append(targetText[i]);
+                    }
+                    else if (charProgress > 0.1f) {
+                        //解码中，显示多层乱码效果
+                        if (charProgress > 0.7f) {
+                            //接近完成，偶尔显示真实字符
+                            if (Main.rand.NextBool(3)) {
+                                sb.Append(targetText[i]);
+                            }
+                            else {
+                                //使用相似度更高的乱码
+                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
+                            }
+                        }
+                        else if (charProgress > 0.4f) {
+                            //中期，使用中等密度乱码
+                            if (Main.rand.NextBool(4)) {
+                                sb.Append(targetText[i]);
+                            }
+                            else {
+                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                            }
+                        }
+                        else {
+                            //初期，完全随机乱码
+                            if (Main.rand.NextBool(2)) {
+                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                            }
+                            else {
+                                sb.Append(' ');
+                            }
+                        }
                     }
                     else {
-                        sb.Append(' ');
+                        //尚未开始解码
+                        if (Main.rand.NextBool(4)) {
+                            sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                        }
+                        else {
+                            sb.Append(' ');
+                        }
                     }
                 }
             }
@@ -499,9 +556,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// </summary>
         private static Color GetIconColor(int index) {
             return index switch {
-                0 => new Color(255, 80, 80),     //阿瑞斯 - 红色
-                1 => new Color(100, 255, 150),   //塔纳托斯 - 绿色
-                2 => new Color(80, 200, 255),    //双子 - 蓝色
+                0 => new Color(255, 80, 80),//阿瑞斯 - 红色
+                1 => new Color(100, 255, 150),//塔纳托斯 - 绿色
+                2 => new Color(80, 200, 255),//双子 - 蓝色
                 _ => Color.White
             };
         }
@@ -627,9 +684,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
                 //播放对应机甲的悬停音效
                 SoundStyle hoverSound = e.CurrentIndex switch {
-                    0 => AresIconHover,           // 阿瑞斯
-                    1 => ThanatosIconHover,       // 塔纳托斯
-                    2 => ArtemisApolloIconHover,  // 双子
+                    0 => AresIconHover,//阿瑞斯
+                    1 => ThanatosIconHover,//塔纳托斯
+                    2 => ArtemisApolloIconHover,//双子
                     _ => SoundID.MenuTick
                 };
 
