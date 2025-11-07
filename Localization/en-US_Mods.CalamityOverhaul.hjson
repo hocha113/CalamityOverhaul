@@ -6238,6 +6238,12 @@ UI: {
 		GuideText_NeedBlocks: 需要 {0} 个星流镀板
 		GuideText_Ready: 准备就绪！
 	}
+
+	DeploySignaltowerTrackerUI: {
+		QuestTitle: 量子纠缠网络部署
+		DamageContribution: 部署进度
+		RequiredContribution: 目标:10座信号塔
+	}
 }
 
 ADV: {
@@ -6790,5 +6796,22 @@ ADV: {
 		}
 
 		Choice_Decline.DeclineResponse: 我理解，当你准备好时随时可以回来找我
+	}
+
+	FirstTowerBuiltScenario: {
+		DraedonName: 嘉登
+		Line1: 检测到量子纠缠节点已建立，信号强度稳定
+		Line2: 很好，第一座信号塔已经开始运作。继续部署剩余的节点
+		Line3: 当网络完成后，我将能够更精确地定位和监控整个星系的能量波动
+		Line4: 保持这个速度，很快我们就能建立完整的通讯网络
+	}
+
+	QuestCompleteScenario: {
+		DraedonName: 嘉登
+		Line1: 量子纠缠网络已完全建立，所有节点运行稳定
+		Line2: 数据传输延迟达到了预期的普朗克时间级别，完美符合理论预测
+		Line3: 你的效率让我印象深刻。有了这个网络，我能够实时监控整个星系的异常波动
+		Line4: 作为报酬，我会开放部分高级科技的访问权限给你
+		Line5: 如果有需要，随时可以通过量子通讯网络联系我
 	}
 }
