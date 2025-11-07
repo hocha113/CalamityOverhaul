@@ -1,5 +1,4 @@
-﻿using InnoVault.RenderHandles;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -34,20 +33,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private const float ImageBaseScale = 0.6f;
         private const float ImageMaxScale = 0.7f;
 
-        //图片位置偏移，在屏幕右侧，相对于屏幕中心
-        private static Vector2 GetImageScreenPos() {
-            //定位到屏幕垂直居中偏上
-            return new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.35f);
-        }
-
         //信息框参数
         private const float InfoBoxWidth = 280f;
-        private const float InfoBoxHeight = 400f;
-        private static Vector2 GetInfoBoxScreenPos() {
-            //信息框在图片左侧
-            Vector2 imagePos = GetImageScreenPos();
-            return new Vector2(imagePos.X - 320f, imagePos.Y);
-        }
+        private const float InfoBoxHeight = 400f;      
 
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
@@ -88,6 +76,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //数据显示状态
         private const int maxDataLines = 12;
+
+        //图片位置偏移，在屏幕右侧，相对于屏幕中心
+        private static Vector2 GetImageScreenPos() {
+            //定位到屏幕垂直居中偏上
+            return new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.35f);
+        }
+
+        private static Vector2 GetInfoBoxScreenPos() {
+            //信息框在图片左侧
+            Vector2 imagePos = GetImageScreenPos();
+            return new Vector2(imagePos.X - 320f, imagePos.Y);
+        }
 
         public override void LogicUpdate() {
             if (!showingImage) {
