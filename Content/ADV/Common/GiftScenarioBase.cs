@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Common
             }
 
             //避免在不合适的时候触发
-            if (CWRWorld.HasBoss) {
+            if (CWRWorld.HasBoss || CWRWorld.BossRush) {
                 return;
             }
 
