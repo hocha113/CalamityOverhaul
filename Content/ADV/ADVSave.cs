@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.ADV
         public bool HelenInterferenceTriggered;//海伦劝阻场景是否已触发
         public bool HelenInterferenceContinue;//选择继续委托
         public bool HelenInterferenceStop;//选择中止委托
+        public bool DeploySignaltowerQuestAccepted;//玩家是否接受了信号塔部署任务
+        public bool DeploySignaltowerQuestDeclined;//玩家是否拒绝了信号塔部署任务
+        public bool DeploySignaltowerFirstTowerBuilt;//玩家是否已搭建第一座信号塔
+        public bool DeploySignaltowerQuestCompleted;//玩家是否完成了信号塔部署任务
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];

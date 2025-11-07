@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -103,6 +104,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //玩家接受任务
         private void OnAcceptQuest() {
+            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            ADVSave save = halibutPlayer.ADCSave;
+            if (save != null) {
+                save.DeploySignaltowerQuestAccepted = true;
+            }
+
             //完成当前场景
             Complete();
             ScenarioManager.Reset<Choice_Accept>();
@@ -151,6 +161,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //玩家拒绝任务
         private void OnDeclineQuest() {
+            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            ADVSave save = halibutPlayer.ADCSave;
+            if (save != null) {
+                save.DeploySignaltowerQuestDeclined = true;
+            }
+
             //完成当前场景
             Complete();
             ScenarioManager.Reset<Choice_Decline>();
