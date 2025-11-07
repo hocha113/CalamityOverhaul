@@ -1325,11 +1325,14 @@ Items: {
 	ConstructionBlueprintQET: {
 		DisplayName: 建造原图(量子纠缠塔)
 		Tooltip: ""
+		L1: 已获得制作量子塔自我构建器的知识!
+		L2: 你已经学习过这个图纸了!
 	}
 
 	CQETConstructor: {
 		DisplayName: 自我搭建器(量子纠缠塔)
 		Tooltip: ""
+		UseConstructionBlueprint: 学习构造蓝图(量子塔)
 	}
 
 	DeploySignaltower: {

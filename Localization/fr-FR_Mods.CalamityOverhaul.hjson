@@ -1327,11 +1327,14 @@ Items: {
 	ConstructionBlueprintQET: {
 		// DisplayName: Construction Blueprint (Quantum Entanglement Tower)
 		// Tooltip: ""
+		// L1: 已获得制作量子塔自我构建器的知识!
+		// L2: 你已经学习过这个图纸了!
 	}
 
 	CQETConstructor: {
 		// DisplayName: Self-Assembler (Quantum Entanglement Tower)
 		// Tooltip: ""
+		// UseConstructionBlueprint: 学习构造蓝图(量子塔)
 	}
 
 	DeploySignaltower: {

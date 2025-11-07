@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -16,13 +18,14 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    ///<summary>
-    ///量子塔自我构建器
-    ///</summary>
+    /// <summary>
+    /// 量子塔自我构建器
+    /// </summary>
     internal class CQETConstructor : ModItem
     {
         public override string Texture => CWRConstant.Item_Tools + "CQETConstructor";
-
+        public static LocalizedText UseConstructionBlueprint;
+        public override void SetStaticDefaults() => UseConstructionBlueprint = this.GetLocalization(nameof(UseConstructionBlueprint), () => "学习构造蓝图(量子塔)");
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -37,12 +40,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Item.rare = ItemRarityID.LightRed;
             Item.createTile = ModContent.TileType<CQETConstructorTile>();
         }
-
+        public static LocalizedText RecipeCondition(out Func<bool> condition) {
+            condition = new Func<bool>(() => 
+            Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+            && halibutPlayer.ADCSave.UseConstructionBlueprint);
+            return UseConstructionBlueprint;
+        }
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<StarflowPlatedBlock>(80)
+                .AddIngredient<StarflowPlatedBlock>(8)
                 .AddIngredient(ItemID.Wire, 20)
-                .AddIngredient(ItemID.Actuator, 5)
+                .AddIngredient(ItemID.Actuator, 20)
+                .AddCondition(RecipeCondition(out var condition), condition)
                 .AddTile(TileID.TinkerersWorkbench)
                 .Register();
         }
@@ -53,13 +62,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override string Texture => CWRConstant.Item_Tools + "CQETConstructorTile";
 
         public override void SetStaticDefaults() {
+            Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-
-            TileID.Sets.DisableSmartCursor[Type] = true;
-
             AddMapEntry(new Color(150, 200, 255), VaultUtils.GetLocalizedItemName<CQETConstructor>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
@@ -67,12 +74,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             TileObjectData.newTile.Height = 2;
             TileObjectData.newTile.Origin = new Point16(0, 1);
             TileObjectData.newTile.CoordinateHeights = [16, 16];
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
+                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
         }
+
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<CQETConstructor>());
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             r = 0.15f;
@@ -83,6 +92,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override bool CreateDust(int i, int j, ref int type) {
             type = DustID.TreasureSparkle;
             return true;
+        }
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return false;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out CQETConstructorTP constructorTP)) {
+                return false;
+            }
+
+            Tile t = Main.tile[i, j];
+            int frameXPos = t.TileFrameX;
+            int frameYPos = t.TileFrameY;
+            frameYPos += constructorTP.frame * 18 * 2;
+            Texture2D tex = TextureAssets.Tile[Type].Value;
+            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
+            Color drawColor = Lighting.GetColor(i, j);
+            if (!t.IsHalfBlock && t.Slope == 0) {
+                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            else if (t.IsHalfBlock) {
+                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            return false;
         }
     }
 
@@ -102,6 +138,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private const int ConstructionDuration = 180; //3秒（60帧/秒）
         private const int CheckInterval = 30; //每0.5秒检测一次
 
+        public int frame;
+        private int frameCounter;
+
         //用于搭建指示
         private bool showGuide;
         private int guideAlphaTime;
@@ -117,6 +156,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         public override void Update() {
+            if (++frameCounter > 5) {
+                frameCounter = 0;
+                if (frame < 28) {
+                    frame++;
+                    if (frame == 24) {
+                        SoundEngine.PlaySound(ExoMechdusaSumRender.AresIconHover with { Pitch = 0.2f }, PosInWorld);
+                    }
+                }
+            }
+
             checkDelay++;
 
             if (checkDelay >= CheckInterval) {
@@ -286,6 +335,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
+        [VaultLoaden(CWRConstant.Item + "Placeable/")]
+        public static Texture2D StarflowPlatedBlockAlt;//发现这个占位符纹理效果意外不错，于是便留着
+
         private void DrawConstructionGuide(SpriteBatch spriteBatch) {
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();
             int baseX = Position.X - 2;
@@ -294,8 +346,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //计算透明度（呼吸效果）
             float alphaBase = 0.3f + 0.2f * MathF.Sin(guideAlphaTime * 0.05f);
 
-            //获取StarflowPlatedBlock的纹理
-            Texture2D blockTexture = TextureAssets.Tile[starflowBlockType].Value;
+            Texture2D blockTexture = StarflowPlatedBlockAlt;
 
             for (int x = 0; x < 6; x++) {
                 for (int y = 0; y < 14; y++) {

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Items.Tools;
+﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -152,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             protected override void Build() {
                 DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
                 Add(DraedonName.Value, AcceptResponse.Value, onStart: () => Give(ModContent.ItemType<ConstructionBlueprintQET>(), 1));
-                Add(DraedonName.Value, L1.Value, onStart: () => Give(ModContent.ItemType<ExoPrism>(), 8082));
+                Add(DraedonName.Value, L1.Value, onStart: () => Give(CWRID.ExoPrism, 8082));
                 Add(DraedonName.Value, L2.Value);
                 Add(DraedonName.Value, L3.Value);
             }

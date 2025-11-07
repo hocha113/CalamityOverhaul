@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Tiles
                 ModContent.TileType<StaticRefiner>(),
                 ModContent.TileType<ProfanedCrucible>(),
                 ModContent.TileType<PlagueInfuser>(),
-                ModContent.TileType<DraedonsForge>(),
+                CWRID.Tile_DraedonsForge,
                 ModContent.TileType<DarkMatterCompressor>(),
             ];
 
