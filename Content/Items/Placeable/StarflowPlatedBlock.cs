@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override void AddRecipes() {
             CreateRecipe(10)
-                .AddIngredient(CWRID.ExoPrism, 80)
+                .AddIngredient(CWRID.Item_ExoPrism, 80)
                 .AddTile(CWRID.Tile_DraedonsForge)
                 .Register();
         }

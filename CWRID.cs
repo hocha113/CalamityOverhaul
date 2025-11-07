@@ -31,21 +31,11 @@ namespace CalamityOverhaul
     /// </summary>
     internal static class CWRID
     {
-        public static int ExoPrism => ModContent.ItemType<ExoPrism>();
-        public static int Item_DraedonsForge => ModContent.ItemType<CalamityMod.Items.Placeables.Furniture.CraftingStations.DraedonsForge>();
-        public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
-        public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
+        public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
         public static int Item_Rock => ModContent.ItemType<Rock>();
-        public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
-        public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
-        public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
-        public static int NPC_AquaticScourgeHead => ModContent.NPCType<AquaticScourgeHead>();
-        public static int NPC_OldDuke => ModContent.NPCType<OldDuke>();
-        public static int Proj_AngelicBeam => ModContent.ProjectileType<AngelicBeam>();
-        public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
-        public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
-        public static int Buff_Plague => ModContent.BuffType<Plague>();
+        public static int Item_ExoPrism => ModContent.ItemType<ExoPrism>();
+        public static int Item_DraedonsForge => ModContent.ItemType<CalamityMod.Items.Placeables.Furniture.CraftingStations.DraedonsForge>();
         public static int Item_RogueEmblem => ModContent.ItemType<RogueEmblem>();
         public static int Item_SnowRuffianMask => ModContent.ItemType<SnowRuffianMask>();
         public static int Item_SnowRuffianChestplate => ModContent.ItemType<SnowRuffianChestplate>();
@@ -119,7 +109,17 @@ namespace CalamityOverhaul
         public static int Item_StaffoftheMechworm => ModContent.ItemType<StaffoftheMechworm>();
         public static int Item_Eradicator => ModContent.ItemType<Eradicator>();
         public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
-        public static int Item_Norfleet => ModContent.ItemType<Norfleet>();       
+        public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
+        public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
+        public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
+        public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
+        public static int NPC_AquaticScourgeHead => ModContent.NPCType<AquaticScourgeHead>();
+        public static int NPC_OldDuke => ModContent.NPCType<OldDuke>();
+        public static int Proj_AngelicBeam => ModContent.ProjectileType<AngelicBeam>();
+        public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
+        public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
         public static int Tile_PlagueInfuser => ModContent.TileType<PlagueInfuser>();
+        public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
+        public static int Buff_Plague => ModContent.BuffType<Plague>();
     }
 }
