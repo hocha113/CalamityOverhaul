@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override bool Active => showingImage || imageFadeProgress > 0f;
 
+        public override float RenderPriority => 0.9f;//稳定的在大部分UI之上，但低于模组UI
+
         //图片展示动画状态
         private static bool showingImage = false;
         private static float imageFadeProgress = 0f;

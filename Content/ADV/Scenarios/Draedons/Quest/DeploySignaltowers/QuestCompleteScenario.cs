@@ -43,9 +43,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         protected override void OnScenarioStart() {
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
-
-            //Í£ÓÃÈÎÎñ×·×ÙUI
-            DeploySignaltowerTrackerUI.Instance.Deactivate();
         }
 
         protected override void OnScenarioComplete() {

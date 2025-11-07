@@ -20,36 +20,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override int TargetNPCType => -1;//信号塔任务不需要NPC
 
-        //UI位置设置为右上角
-        protected override float ScreenX => Main.screenWidth - PanelWidth - 20;
-        protected override float ScreenY => 120f;
-
-        public override void SetStaticDefaults() {
-            SetupLocalizedTexts();
-        }
-
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "量子纠缠网络部署");
             DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "部署进度");
             RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "目标:10座信号塔");
         }
 
-        /// <summary>
-        /// 激活UI
-        /// </summary>
-        public void Activate() {
-            //激活UI时无需特殊操作UI会根据CanOpne自动显示
-        }
-
-        /// <summary>
-        /// 停用UI
-        /// </summary>
-        public void Deactivate() {
-            //停用UI时无需特殊操作UI会根据CanOpne自动隐藏
-        }
-
         public override bool CanOpne {
             get {
+                if (CWRWorld.BossRush || CWRWorld.HasBoss) {
+                    return false;//有Boss时不显示
+                }
+
+                //如果玩家不在世界中则不显示
+                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
+                    return false;
+                }
+
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     return false;
                 }
@@ -61,11 +48,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
                 //如果任务未接受或已完成则不显示
                 if (!save.DeploySignaltowerQuestAccepted || save.DeploySignaltowerQuestCompleted) {
-                    return false;
-                }
-
-                //如果玩家不在世界中则不显示
-                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
                     return false;
                 }
 
@@ -163,7 +145,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             var font = FontAssets.MouseText.Value;
             const float titleScale = 0.72f;
             const float textScale = 0.62f;
-            const float maxTitleWidth = PanelWidth - 20f;
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(10, 8);
@@ -231,16 +212,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 //渐变填充色
                 Color fillStart = new Color(60, 180, 255);
                 Color fillEnd = new Color(100, 220, 255);
-                Color fillColor = Color.Lerp(fillStart, fillEnd, progress);
 
                 //绘制渐变填充
                 int segmentCount = 20;
                 for (int i = 0; i < segmentCount; i++) {
                     float t = i / (float)segmentCount;
                     float t2 = (i + 1) / (float)segmentCount;
-
-                    if (t2 > progress) break;
-
                     int x1 = (int)(barFill.X + t * barFill.Width);
                     int x2 = (int)(barFill.X + t2 * barFill.Width);
 

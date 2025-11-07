@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         /// </summary>
         private static void UpdateTowerCount() {
             DeployedTowerCount = 0;
-            if (TileProcessorLoader.TP_ID_To_InWorld_Count.TryGetValue(ModContent.TileType<DeploySignaltowerTile>(), out int count)) {
+            if (TileProcessorLoader.TP_ID_To_InWorld_Count.TryGetValue(TPUtils.GetID<DeploySignaltowerTP>(), out int count)) {
                 DeployedTowerCount = count;
             }
         }
