@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Accessories;
-using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -14,7 +13,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using static System.Net.WebRequestMethods;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
