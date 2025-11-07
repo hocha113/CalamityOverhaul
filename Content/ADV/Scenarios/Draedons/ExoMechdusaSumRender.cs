@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //用于记录上次悬停的选项，避免重复播放音效
         private static int lastHoveredChoice = -1;
 
+        //三个机甲图标的悬停音效
         public static readonly SoundStyle ThanatosIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover");
         public static readonly SoundStyle AresIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/AresIconHover");
         public static readonly SoundStyle ArtemisApolloIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover");
@@ -231,52 +232,54 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < targetText.Length; i++) {
-                if (charDecodeProgress != null && i < charDecodeProgress.Length) {
-                    float charProgress = charDecodeProgress[i];
+                if (charDecodeProgress == null || i >= charDecodeProgress.Length) {
+                    continue;
+                }
 
-                    if (charProgress >= 0.9f) {
-                        //字符已完全解码
-                        sb.Append(targetText[i]);
-                    }
-                    else if (charProgress > 0.1f) {
-                        //解码中，显示多层乱码效果
-                        if (charProgress > 0.7f) {
-                            //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
-                            if (Main.rand.NextBool(3)) {
-                                sb.Append(targetText[i]);
-                            }
-                            else {
-                                //使用相似度更高的乱码
-                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
-                            }
-                        }
-                        else if (charProgress > 0.4f) {
-                            //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
-                            if (Main.rand.NextBool(4)) {
-                                sb.Append(targetText[i]);
-                            }
-                            else {
-                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
-                            }
+                float charProgress = charDecodeProgress[i];
+
+                if (charProgress >= 0.9f) {
+                    //字符已完全解码，哈哈哈哈哈哈我看懂啦道爷我成啦哈哈哈哈哈哈哈哈哈
+                    sb.Append(targetText[i]);
+                }
+                else if (charProgress > 0.1f) {
+                    //解码中，显示多层乱码效果
+                    if (charProgress > 0.7f) {
+                        //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
+                        if (Main.rand.NextBool(3)) {
+                            sb.Append(targetText[i]);
                         }
                         else {
-                            //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
-                            if (Main.rand.NextBool(2)) {
-                                sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
-                            }
-                            else {
-                                sb.Append(' ');
-                            }
+                            //使用相似度更高的乱码
+                            sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
+                        }
+                    }
+                    else if (charProgress > 0.4f) {
+                        //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
+                        if (Main.rand.NextBool(4)) {
+                            sb.Append(targetText[i]);
+                        }
+                        else {
+                            sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
                     }
                     else {
-                        //尚未开始解码，全是火星文噜噜噜噜
-                        if (Main.rand.NextBool(4)) {
+                        //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
+                        if (Main.rand.NextBool(2)) {
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
                         else {
                             sb.Append(' ');
                         }
+                    }
+                }
+                else {
+                    //尚未开始解码，全是火星文噜噜噜噜
+                    if (Main.rand.NextBool(4)) {
+                        sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
+                    }
+                    else {
+                        sb.Append(' ');
                     }
                 }
             }
@@ -311,7 +314,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Vector2 worldPos = player.Center + iconOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            //计算缩放（带缓动效果）
+            //计算缩放
             float easedScale = CWRUtils.EaseOutBack(iconScaleProgress);
             float scale = MathHelper.Lerp(IconBaseScale, IconMaxScale, easedScale);
 
@@ -389,7 +392,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Vector2 worldPos = player.Center + iconOffset + textOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            //计算文本尺寸（放大1.5倍）
+            //计算文本尺寸
             float textScale = 1.5f;
             Vector2 textSize = font.MeasureString(decodedText) * textScale;
             Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, textSize.Y);//向上偏移文本高度
@@ -406,7 +409,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //绘制噪点效果
             DrawTextNoise(spriteBatch, textPos, textSize, alpha);
 
-            //绘制文本光晕（放大）
+            //绘制文本光晕
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * (2f * textScale);
@@ -414,7 +417,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     iconColor * (alpha * 0.4f), textScale);
             }
 
-            //绘制主文本（放大）
+            //绘制主文本
             Color textColor = Color.Lerp(Color.White, iconColor, 0.3f);
             Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, textScale);
         }
@@ -436,7 +439,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //半透明深色背景
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(10, 15, 25) * (alpha * 0.85f));
 
-            //发光边框（加粗）
+            //发光边框
             Color edgeColor = color * (alpha * 0.6f);
             sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 3), edgeColor);
             sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 3, bgRect.Width, 3), edgeColor * 0.7f);
@@ -482,7 +485,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //随机噪点（增加数量）
+            //随机噪点
             for (int i = 0; i < 12; i++) {
                 if (Main.rand.NextBool(3)) {
                     Vector2 noisePos = pos + new Vector2(
@@ -653,7 +656,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         #endregion
 
         /// <summary>
-        /// 注册悬停效果（音效和动画）
+        /// 注册悬停效果，管理音效和动画
         /// </summary>
         internal static void RegisterHoverEffects() {
             //重置上次悬停状态
@@ -675,7 +678,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// 处理选项悬停变化
         /// </summary>
         private static void OnChoiceHoverChanged(object sender, ChoiceHoverEventArgs e) {
-            //如果悬停到新的启用选项上（避免重复触发）
+            //如果悬停到新的启用选项上，避免重复触发
             if (e.CurrentIndex >= 0 && e.CurrentChoice != null && e.CurrentChoice.Enabled && e.CurrentIndex != lastHoveredChoice) {
                 lastHoveredChoice = e.CurrentIndex;
 
@@ -714,7 +717,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 });
             }
 
-            //如果离开了选项（悬停到空白处）
+            //如果离开了选项，悬停到空白处
             if (e.CurrentIndex < 0 && e.PreviousIndex >= 0) {
                 lastHoveredChoice = -1;
                 targetIconIndex = -1;
@@ -728,7 +731,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         /// <summary>
-        /// 清理资源（当场景结束时调用）
+        /// 清理资源，当场景结束时调用
         /// </summary>
         internal static void Cleanup() {
             currentIconIndex = -1;
