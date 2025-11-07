@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityMod.Items.Accessories;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -13,6 +14,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static System.Net.WebRequestMethods;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
@@ -222,8 +224,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
             }
 
+            int placeX = baseX + 2;
+            int placeY = baseY + 13;
             //放置信号塔（6×14，原点在底部中间偏左：2, 13）
-            WorldGen.PlaceTile(baseX + 2, baseY + 13, signalTowerType, true, true);
+            WorldGen.PlaceTile(placeX, placeY, signalTowerType, true, true);
+            //放置TP实体
+            if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
+                TileProcessorLoader.AddInWorld(signalTowerType, point, null);
+                if (Main.netMode == NetmodeID.Server) {
+                    NetMessage.SendObjectPlacement(-1, placeX, placeY, signalTowerType, 0, 0, -1, -1);
+                    TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, signalTowerType, point);
+                }
+            }
 
             //播放完成音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.5f }, PosInWorld);
@@ -239,9 +251,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (Main.netMode == NetmodeID.Server) {
                 NetMessage.SendTileSquare(-1, baseX, baseY, 6, 14);
             }
-
-            //移除构建器TP
-            Kill();
         }
 
         private void CreateConstructionDust() {

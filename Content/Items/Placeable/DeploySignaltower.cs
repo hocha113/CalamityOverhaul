@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using InnoVault.TileProcessors;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -65,6 +66,19 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override bool CreateDust(int i, int j, ref int type) {
             type = DustID.TreasureSparkle;
             return true;
+        }
+
+        public override bool CanDrop(int i, int j) {
+            return false;//被破坏后不会掉落物品
+        }
+    }
+
+    internal class DeploySignaltowerTP : TileProcessor
+    {
+        public override int TargetTileID => ModContent.TileType<DeploySignaltowerTile>();
+
+        public override void Update() {
+            
         }
     }
 }
