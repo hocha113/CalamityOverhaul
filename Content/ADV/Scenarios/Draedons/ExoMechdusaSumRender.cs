@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private const float IconMaxScale = 3.6f;
         private const int GlitchUpdateInterval = 2;//乱码更新间隔，单位帧
 
-        //图标位置偏移（玩家头顶）
+        //图标位置偏移，在玩家头顶
         private static Vector2 iconOffset = new Vector2(0, -120f);
         private static Vector2 textOffset = new Vector2(0, -100f);//文本相对图标的偏移，这里是偏移到上方位置
 
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static readonly List<TechParticle> techParticles = new();
         private static int particleSpawnTimer = 0;
 
-        //用于乱码生成的字符集（增加更多科技感符号）
+        //用于乱码生成的字符集
         private static readonly char[] glitchChars = "█▓▒░▄▀■□▪▫◘◙◚◛◜◝◞◟●○◎◯⊕⊗⊙⊛⊠⊡⌂▬▭▮▯┼┴┬┤├┌┐└┘╳╱╲╬╪╫╩╦╠╣╔╗╚╝║═╞╡╟╢╖╓╙╜╛╘╒╕╤╧╨╥╙╟╢01ABCDEFX".ToCharArray();
 
         public string LocalizationCategory => "UI";
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     else if (charProgress > 0.1f) {
                         //解码中，显示多层乱码效果
                         if (charProgress > 0.7f) {
-                            //接近完成，偶尔显示真实字符
+                            //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
                             if (Main.rand.NextBool(3)) {
                                 sb.Append(targetText[i]);
                             }
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                             }
                         }
                         else if (charProgress > 0.4f) {
-                            //中期，使用中等密度乱码
+                            //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
                             if (Main.rand.NextBool(4)) {
                                 sb.Append(targetText[i]);
                             }
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                             }
                         }
                         else {
-                            //初期，完全随机乱码
+                            //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
                             if (Main.rand.NextBool(2)) {
                                 sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                             }
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                         }
                     }
                     else {
-                        //尚未开始解码
+                        //尚未开始解码，全是火星文噜噜噜噜
                         if (Main.rand.NextBool(4)) {
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
