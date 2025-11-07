@@ -38,8 +38,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private const string red = " ";
         private const string alt = " " + " ";
 
-        private LocalizedText Loc(string name, string text) => this.GetLocalization(name, () => text);
-
         public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
