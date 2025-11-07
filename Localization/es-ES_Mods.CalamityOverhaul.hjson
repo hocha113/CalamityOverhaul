@@ -6232,6 +6232,18 @@ UI: {
 		// QuestTitle: 量子纠缠网络部署
 		// DamageContribution: 部署进度
 		// RequiredContribution: 目标:10座信号塔
+		// NearestTargetText: 最近的目标点
+		// NodeText: "[NUM]号纠缠节点"
+		// StatusText: 状态
+		// InRangeText: 范围内
+		// DistanceText: 距离
+		// QuestCompleteText: 任务完成!
+	}
+
+	SignalTowerTargetRenderer: {
+		// InRangeText: 范围内
+		// TargetCompletedText: 目标点[NUM]已完成!
+		// AllCompletedText: 量子纠缠网络已完成!
 	}
 }
 

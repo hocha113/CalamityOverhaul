@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
 
             //显示完成文本
-            string completionText = $"目标点 #{pointIndex + 1} 已完成!";
+            string completionText = SignalTowerTargetRenderer.TargetCompletedText.Value.Replace("[NUM]", (pointIndex + 1).ToString());
             CombatText.NewText(new Rectangle((int)worldPosition.X - 50, (int)worldPosition.Y - 100, 100, 50),
                 new Color(100, 220, 255), completionText, true, false);
         }
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //显示完成文本
             CombatText.NewText(new Rectangle((int)player.Center.X - 100, (int)player.Center.Y - 100, 200, 50),
-                Color.Gold, "量子纠缠网络已完成!", true, true);
+                Color.Gold, SignalTowerTargetRenderer.AllCompletedText.Value, true, true);
         }
     }
 }

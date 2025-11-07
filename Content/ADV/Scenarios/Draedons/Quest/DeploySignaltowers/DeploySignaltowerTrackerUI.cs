@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
@@ -19,6 +20,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override string LocalizationCategory => "UI";
 
         public override int TargetNPCType => -1;//信号塔任务不需要NPC
+
+        //本地化文本
+        public static LocalizedText NearestTargetText { get; private set; }
+        public static LocalizedText NodeText { get; private set; }
+        public static LocalizedText StatusText { get; private set; }
+        public static LocalizedText InRangeText { get; private set; }
+        public static LocalizedText DistanceText { get; private set; }
+        public static LocalizedText QuestCompleteText { get; private set; }
+
+        public override void SetStaticDefaults() {
+            base.SetStaticDefaults();
+
+            NearestTargetText = this.GetLocalization(nameof(NearestTargetText), () => "最近的目标点");
+            NodeText = this.GetLocalization(nameof(NodeText), () => "[NUM]号纠缠节点");
+            StatusText = this.GetLocalization(nameof(StatusText), () => "状态");
+            InRangeText = this.GetLocalization(nameof(InRangeText), () => "范围内");
+            DistanceText = this.GetLocalization(nameof(DistanceText), () => "距离");
+            QuestCompleteText = this.GetLocalization(nameof(QuestCompleteText), () => "任务完成!");
+        }
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "量子纠缠网络部署");
@@ -74,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         protected override void UpdatePanelHeight() {
             base.UpdatePanelHeight();
-            currentPanelHeight += 30f; //为额外信息增加高度
+            currentPanelHeight += 30f;//为额外信息增加高度
         }
 
         protected override void DrawPanel(SpriteBatch spriteBatch, float alpha) {
@@ -175,7 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 Vector2 targetInfoPos = dividerStart + new Vector2(0, 12);
 
                 //目标编号和状态
-                string targetText = $"最近的目标点: {nearestTarget.Index + 1}号纠缠节点";
+                string targetText = $"{NearestTargetText.Value}: {NodeText.Value.Replace("[NUM]", (nearestTarget.Index + 1).ToString())}";
                 Color targetTextColor = playerInRange
                     ? Color.Lerp(new Color(255, 200, 100), Color.LimeGreen, 0.5f) * alpha
                     : new Color(255, 200, 100) * alpha;
@@ -188,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 Color distanceColor;
 
                 if (playerInRange) {
-                    distanceText = "状态: 范围内";
+                    distanceText = $"{StatusText.Value}: {InRangeText.Value}";
                     distanceColor = Color.LimeGreen * alpha;
 
                     //添加脉冲效果
@@ -197,7 +217,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
                 else {
                     float distance = Vector2.Distance(Main.LocalPlayer.Center, nearestTarget.WorldPosition) / 16f;
-                    distanceText = $"距离: {(int)distance}m";
+                    distanceText = $"{DistanceText.Value}: {(int)distance}m";
                     distanceColor = new Color(200, 230, 255) * alpha;
                 }
 
@@ -230,8 +250,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             else {
                 //没有目标,显示完成状态
                 Vector2 progressTextPos = dividerStart + new Vector2(0, 12);
-                string completedText = "任务完成!";
-                Utils.DrawBorderString(spriteBatch, completedText, progressTextPos,
+                Utils.DrawBorderString(spriteBatch, QuestCompleteText.Value, progressTextPos,
                     Color.Gold * alpha, textScale * 1.2f);
 
                 Vector2 numberPos = progressTextPos + new Vector2(0, 20);
