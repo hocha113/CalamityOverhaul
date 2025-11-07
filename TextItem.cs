@@ -114,6 +114,7 @@ namespace CalamityOverhaul
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
+            ScenarioManager.Reset<DeploySignaltowerScenario>();
             ScenarioManager.Start<DeploySignaltowerScenario>();
             //Point16 point = Main.MouseWorld.ToTileCoordinates16();
 
