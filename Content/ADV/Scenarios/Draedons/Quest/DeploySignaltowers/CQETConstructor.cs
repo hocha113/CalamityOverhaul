@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -41,8 +40,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Item.createTile = ModContent.TileType<CQETConstructorTile>();
         }
         public static LocalizedText RecipeCondition(out Func<bool> condition) {
-            condition = new Func<bool>(() => 
-            Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+            condition = new Func<bool>(() =>
+            Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
             && halibutPlayer.ADCSave.UseConstructionBlueprint);
             return UseConstructionBlueprint;
         }
