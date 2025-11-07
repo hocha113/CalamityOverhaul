@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //设置场景默认使用嘉登科技风格
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
             public override void SetStaticDefaults() {
-                DeclineResponse = this.GetLocalization(nameof(DeclineResponse), () => "我理解，当你准备好时随时可以回来找我");
+                DeclineResponse = this.GetLocalization(nameof(DeclineResponse), () => "我理解，当你准备好时随时可以来找我");
             }
             protected override void OnScenarioComplete() {
                 DraedonEffect.IsActive = false;
