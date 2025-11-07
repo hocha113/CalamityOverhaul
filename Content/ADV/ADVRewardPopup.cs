@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.ADV
         public enum RewardStyle
         {
             Ocean,      // 海洋风格（默认）
-            Brimstone   // 硫磺火风格
+            Brimstone,  // 硫磺火风格
+            Draedon     // 嘉登科技风格
         }
 
         public class RewardEntry
@@ -75,6 +76,18 @@ namespace CalamityOverhaul.Content.ADV
         private readonly List<FlameWisp> flameWisps = new();
         private int wispSpawnTimer = 0;
         private const float ParticleSideMargin = 30f;
+
+        //嘉登科技风格动画变量
+        private float draedonScanLineTimer = 0f;
+        private float draedonHologramFlicker = 0f;
+        private float draedonCircuitPulse = 0f;
+        private float draedonDataStream = 0f;
+        private float draedonHexGridPhase = 0f;
+        private readonly List<DraedonDataParticle> draedonDataParticles = new();
+        private int draedonDataParticleTimer = 0;
+        private readonly List<DraedonCircuitNode> draedonCircuitNodes = new();
+        private int draedonCircuitNodeTimer = 0;
+        private const float DraedonParticleMargin = 30f;
 
         //面板区域缓存和鼠标悬停状态
         private Rectangle panelRect;
@@ -180,6 +193,8 @@ namespace CalamityOverhaul.Content.ADV
             embers.Clear();
             ashes.Clear();
             flameWisps.Clear();
+            draedonDataParticles.Clear();
+            draedonCircuitNodes.Clear();
         }
 
         private RewardStyle GetCurrentStyle() {
@@ -225,6 +240,18 @@ namespace CalamityOverhaul.Content.ADV
             if (emberGlowTimer > MathHelper.TwoPi) emberGlowTimer -= MathHelper.TwoPi;
             if (heatWavePhase > MathHelper.TwoPi) heatWavePhase -= MathHelper.TwoPi;
             if (infernoPulse > MathHelper.TwoPi) infernoPulse -= MathHelper.TwoPi;
+
+            //嘉登科技动画计时器
+            draedonScanLineTimer += 0.048f;
+            draedonHologramFlicker += 0.12f;
+            draedonCircuitPulse += 0.025f;
+            draedonDataStream += 0.055f;
+            draedonHexGridPhase += 0.015f;
+            if (draedonScanLineTimer > MathHelper.TwoPi) draedonScanLineTimer -= MathHelper.TwoPi;
+            if (draedonHologramFlicker > MathHelper.TwoPi) draedonHologramFlicker -= MathHelper.TwoPi;
+            if (draedonCircuitPulse > MathHelper.TwoPi) draedonCircuitPulse -= MathHelper.TwoPi;
+            if (draedonDataStream > MathHelper.TwoPi) draedonDataStream -= MathHelper.TwoPi;
+            if (draedonHexGridPhase > MathHelper.TwoPi) draedonHexGridPhase -= MathHelper.TwoPi;
 
             if (current == null && queue.Count > 0) {
                 StartNext();
@@ -282,6 +309,9 @@ namespace CalamityOverhaul.Content.ADV
             }
             else if (style == RewardStyle.Brimstone) {
                 UpdateBrimstoneParticles(basePos);
+            }
+            else if (style == RewardStyle.Draedon) {
+                UpdateDraedonParticles(basePos);
             }
         }
 
@@ -342,6 +372,38 @@ namespace CalamityOverhaul.Content.ADV
             for (int i = flameWisps.Count - 1; i >= 0; i--) {
                 if (flameWisps[i].Update(basePos)) {
                     flameWisps.RemoveAt(i);
+                }
+            }
+        }
+
+        private void UpdateDraedonParticles(Vector2 basePos) {
+            //数据粒子生成
+            draedonDataParticleTimer++;
+            if (panelFade > 0.6f && draedonDataParticleTimer >= 15 && draedonDataParticles.Count < 18) {
+                draedonDataParticleTimer = 0;
+                float xPos = Main.rand.NextFloat(basePos.X - 100f + DraedonParticleMargin, basePos.X + 100f - DraedonParticleMargin);
+                Vector2 startPos = new(xPos, basePos.Y + Main.rand.NextFloat(-40f, 40f));
+                draedonDataParticles.Add(new DraedonDataParticle(startPos));
+            }
+            for (int i = draedonDataParticles.Count - 1; i >= 0; i--) {
+                if (draedonDataParticles[i].Update(basePos)) {
+                    draedonDataParticles.RemoveAt(i);
+                }
+            }
+
+            //电路节点生成
+            draedonCircuitNodeTimer++;
+            if (panelFade > 0.6f && draedonCircuitNodeTimer >= 30 && draedonCircuitNodes.Count < 10) {
+                draedonCircuitNodeTimer = 0;
+                Vector2 startPos = new(
+                    Main.rand.NextFloat(basePos.X - 90f, basePos.X + 90f),
+                    Main.rand.NextFloat(basePos.Y - 50f, basePos.Y + 50f)
+                );
+                draedonCircuitNodes.Add(new DraedonCircuitNode(startPos));
+            }
+            for (int i = draedonCircuitNodes.Count - 1; i >= 0; i--) {
+                if (draedonCircuitNodes[i].Update()) {
+                    draedonCircuitNodes.RemoveAt(i);
                 }
             }
         }
@@ -450,6 +512,9 @@ namespace CalamityOverhaul.Content.ADV
             }
             else if (style == RewardStyle.Brimstone) {
                 DrawBrimstoneStyle(spriteBatch, rect, alpha);
+            }
+            else if (style == RewardStyle.Draedon) {
+                DrawDraedonStyle(spriteBatch, rect, alpha);
             }
 
             if (current != null) DrawRewardContent(spriteBatch, rect, alpha);
@@ -674,6 +739,132 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
+        #region 嘉登科技风格绘制
+        private void DrawDraedonStyle(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            float hoverGlow = isHovering ? 0.15f : 0f;
+
+            //主背景渐变 - 深蓝科技色调
+            int segments = 30;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = rect.Y + (int)(t * rect.Height);
+                int y2 = rect.Y + (int)(t2 * rect.Height);
+                Rectangle r = new(rect.X, y1, rect.Width, Math.Max(1, y2 - y1));
+
+                //嘉登色调：深蓝到亮蓝
+                Color techDark = new Color(8, 12, 22);
+                Color techMid = new Color(18, 28, 42);
+                Color techBright = new Color(35, 55, 85);
+
+                float pulse = (float)Math.Sin(draedonCircuitPulse * 0.6f + t * 2.0f) * 0.5f + 0.5f;
+                Color baseColor = Color.Lerp(techDark, techMid, pulse);
+                Color finalColor = Color.Lerp(baseColor, techBright, t * 0.45f);
+                finalColor *= alpha * (0.92f + hoverGlow);
+
+                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
+            }
+
+            //全息闪烁覆盖层
+            float flicker = (float)Math.Sin(draedonHologramFlicker * 1.5f) * 0.5f + 0.5f;
+            Color hologramOverlay = new Color(15, 30, 45) * (alpha * 0.25f * flicker);
+            spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), hologramOverlay);
+
+            //六角网格纹理
+            DrawDraedonHexGrid(spriteBatch, rect, alpha * 0.85f);
+
+            //扫描线效果
+            DrawDraedonScanLines(spriteBatch, rect, alpha * 0.9f);
+
+            //电路脉冲内发光
+            float innerPulse = (float)Math.Sin(draedonCircuitPulse * 1.3f) * 0.5f + 0.5f;
+            Rectangle inner = rect;
+            inner.Inflate(-5, -5);
+            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(40, 180, 255) * (alpha * (0.12f + hoverGlow * 0.5f) * innerPulse));
+
+            //科技边框
+            DrawDraedonFrame(spriteBatch, rect, alpha, innerPulse, hoverGlow);
+
+            //绘制粒子
+            foreach (var node in draedonCircuitNodes) {
+                node.Draw(spriteBatch, alpha * 0.85f);
+            }
+            foreach (var particle in draedonDataParticles) {
+                particle.Draw(spriteBatch, alpha * 0.75f);
+            }
+        }
+
+        private void DrawDraedonHexGrid(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            int hexRows = 6;
+            float hexHeight = rect.Height / (float)hexRows;
+
+            for (int row = 0; row < hexRows; row++) {
+                float t = row / (float)hexRows;
+                float y = rect.Y + row * hexHeight;
+                float phase = draedonHexGridPhase + t * MathHelper.Pi;
+                float brightness = (float)Math.Sin(phase) * 0.5f + 0.5f;
+
+                Color gridColor = new Color(25, 90, 140) * (alpha * 0.04f * brightness);
+                sb.Draw(px, new Rectangle(rect.X + 10, (int)y, rect.Width - 20, 1), new Rectangle(0, 0, 1, 1), gridColor);
+            }
+        }
+
+        private void DrawDraedonScanLines(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            float scanY = rect.Y + (float)Math.Sin(draedonScanLineTimer) * 0.5f * rect.Height + rect.Height * 0.5f;
+
+            for (int i = -2; i <= 2; i++) {
+                float offsetY = scanY + i * 3f;
+                if (offsetY < rect.Y || offsetY > rect.Bottom) {
+                    continue;
+                }
+
+                float intensity = 1f - Math.Abs(i) * 0.3f;
+                Color scanColor = new Color(60, 180, 255) * (alpha * 0.15f * intensity);
+                sb.Draw(px, new Rectangle(rect.X + 8, (int)offsetY, rect.Width - 16, 2), new Rectangle(0, 0, 1, 1), scanColor);
+            }
+        }
+
+        private void DrawDraedonFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse, float hoverGlow = 0f) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+
+            //外框 - 科技蓝
+            Color techEdge = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), pulse) * (alpha * (0.85f + hoverGlow * 0.3f));
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), techEdge);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), techEdge * 0.75f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), techEdge * 0.9f);
+            sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), techEdge * 0.9f);
+
+            //内框发光
+            Rectangle inner = rect;
+            inner.Inflate(-6, -6);
+            Color innerGlow = new Color(100, 200, 255) * (alpha * (0.22f + hoverGlow * 0.5f) * pulse);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow);
+            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow * 0.7f);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.9f);
+            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.9f);
+
+            //角落电路标记
+            DrawDraedonCircuitMark(sb, new Vector2(rect.X + 12, rect.Y + 12), alpha * (0.95f + hoverGlow * 0.4f));
+            DrawDraedonCircuitMark(sb, new Vector2(rect.Right - 12, rect.Y + 12), alpha * (0.95f + hoverGlow * 0.4f));
+            DrawDraedonCircuitMark(sb, new Vector2(rect.X + 12, rect.Bottom - 12), alpha * (0.65f + hoverGlow * 0.3f));
+            DrawDraedonCircuitMark(sb, new Vector2(rect.Right - 12, rect.Bottom - 12), alpha * (0.65f + hoverGlow * 0.3f));
+        }
+
+        private static void DrawDraedonCircuitMark(SpriteBatch sb, Vector2 pos, float alpha) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            float size = 6f;
+            Color techColor = new Color(100, 220, 255) * alpha;
+
+            //电路标记
+            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), techColor, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.2f), SpriteEffects.None, 0f);
+            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), techColor * 0.85f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.2f), SpriteEffects.None, 0f);
+            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), techColor * 0.6f, 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 0.4f, size * 0.4f), SpriteEffects.None, 0f);
+        }
+        #endregion
+
         private void DrawRewardContent(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             float a = current.Appear;
             float ease = (float)Math.Sin(a * MathHelper.PiOver2);
@@ -707,12 +898,20 @@ namespace CalamityOverhaul.Content.ADV
 
             //根据风格调整文字颜色
             RewardStyle style = GetCurrentStyle();
-            Color nameGlow = style == RewardStyle.Brimstone
-                ? new Color(255, 150, 80) * (nameAlpha * 0.6f)
-                : new Color(140, 230, 255) * (nameAlpha * 0.6f);
-            Color nameColor = style == RewardStyle.Brimstone
-                ? new Color(255, 220, 200) * nameAlpha
-                : Color.White * nameAlpha;
+            Color nameGlow, nameColor;
+            
+            if (style == RewardStyle.Brimstone) {
+                nameGlow = new Color(255, 150, 80) * (nameAlpha * 0.6f);
+                nameColor = new Color(255, 220, 200) * nameAlpha;
+            }
+            else if (style == RewardStyle.Draedon) {
+                nameGlow = new Color(80, 220, 255) * (nameAlpha * 0.8f);
+                nameColor = Color.White * nameAlpha;
+            }
+            else {
+                nameGlow = new Color(140, 230, 255) * (nameAlpha * 0.6f);
+                nameColor = Color.White * nameAlpha;
+            }
 
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
@@ -739,9 +938,16 @@ namespace CalamityOverhaul.Content.ADV
                 //悬停时提示文字更亮
                 float hintAlpha = isHovering ? blink * alpha * 1.2f : blink * alpha * 0.7f;
 
-                Color hintColor = style == RewardStyle.Brimstone
-                    ? new Color(255, 160, 90) * hintAlpha
-                    : new Color(140, 230, 255) * hintAlpha;
+                Color hintColor;
+                if (style == RewardStyle.Brimstone) {
+                    hintColor = new Color(255, 160, 90) * hintAlpha;
+                }
+                else if (style == RewardStyle.Draedon) {
+                    hintColor = new Color(80, 220, 255) * hintAlpha;
+                }
+                else {
+                    hintColor = new Color(140, 230, 255) * hintAlpha;
+                }
 
                 Utils.DrawBorderString(spriteBatch, hint, hp, hintColor, 0.7f);
             }
@@ -930,6 +1136,87 @@ namespace CalamityOverhaul.Content.ADV
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), wispGlow, 0f, new Vector2(0.5f, 0.5f), scale * 3f, SpriteEffects.None, 0f);
                 //内层核心
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), wispCore, 0f, new Vector2(0.5f, 0.5f), scale * 1.2f, SpriteEffects.None, 0f);
+            }
+        }
+        #endregion
+
+        #region 嘉登科技粒子类
+        private class DraedonDataParticle(Vector2 start)
+        {
+            public Vector2 Pos = start;
+            public float Size = Main.rand.NextFloat(1.5f, 3.5f);
+            public float Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(80f, 150f);
+            public float Seed = Main.rand.NextFloat(10f);
+            public Vector2 Velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-0.6f, -0.2f));
+
+            public bool Update(Vector2 basePos) {
+                Life++;
+                Rotation += 0.025f;
+                Pos += Velocity;
+                Velocity.Y -= 0.015f;
+
+                if (Life >= MaxLife) {
+                    return true;
+                }
+
+                //边界检查
+                if (Pos.X < basePos.X - 150f || Pos.X > basePos.X + 150f || 
+                    Pos.Y < basePos.Y - 100f || Pos.Y > basePos.Y + 100f) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            public void Draw(SpriteBatch sb, float alpha) {
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * Math.PI) * alpha;
+                float scale = Size * (0.7f + (float)Math.Sin((Life + Seed * 40f) * 0.09f) * 0.3f);
+
+                Color techColor = new Color(80, 200, 255) * (0.8f * fade);
+                Texture2D px = VaultAsset.placeholder2.Value;
+
+                //绘制十字数据粒子
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), techColor, Rotation, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), techColor * 0.9f, Rotation + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
+            }
+        }
+
+        private class DraedonCircuitNode(Vector2 start)
+        {
+            public Vector2 Pos = start;
+            public float Radius = Main.rand.NextFloat(2f, 5f);
+            public float PulseSpeed = Main.rand.NextFloat(0.8f, 1.6f);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(100f, 180f);
+            public float Seed = Main.rand.NextFloat(10f);
+
+            public bool Update() {
+                Life++;
+                if (Life >= MaxLife) {
+                    return true;
+                }
+                return false;
+            }
+
+            public void Draw(SpriteBatch sb, float alpha) {
+                Texture2D px = VaultAsset.placeholder2.Value;
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * Math.PI);
+                float pulse = (float)Math.Sin((Life + Seed * 20f) * 0.08f * PulseSpeed) * 0.5f + 0.5f;
+                float scale = Radius * (0.8f + pulse * 0.4f);
+
+                Color core = new Color(100, 220, 255) * (alpha * 0.7f * fade);
+                Color ring = new Color(40, 140, 200) * (alpha * 0.5f * fade);
+
+                //外环
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), ring, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 2.2f, scale * 2.2f), SpriteEffects.None, 0f);
+                //核心
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f);
+                //中心亮点
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core * 0.4f, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 0.3f, scale * 0.3f), SpriteEffects.None, 0f);
             }
         }
         #endregion

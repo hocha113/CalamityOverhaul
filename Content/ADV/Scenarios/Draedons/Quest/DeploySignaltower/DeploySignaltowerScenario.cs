@@ -69,8 +69,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         protected override void OnScenarioComplete() {
-            DraedonEffect.IsActive = false;
-            DraedonEffect.Send();
             DeploySignaltowerRender.Cleanup();//清理信号塔展示特效
         }
 
@@ -108,7 +106,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private void OnAcceptQuest() {
             //完成当前场景
             Complete();
-
             ScenarioManager.Reset<Choice_Accept>();
             ScenarioManager.Start<Choice_Accept>();
         }
@@ -124,15 +121,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //设置场景默认使用嘉登科技风格
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
             public override void SetStaticDefaults() {
-                AcceptResponse = this.GetLocalization(nameof(AcceptResponse),() => "很好，我会将信号塔的建造蓝图传输给你。记得定期向我汇报部署进度");
-                L1 = this.GetLocalization(nameof(L1),() => "这是第一批建材，数量有限。请优先完成信号塔基础框架");
-                L2 = this.GetLocalization(nameof(L2),() => "当第一个纠缠节点建成后，空间导航链路将更加稳定");
-                L3 = this.GetLocalization(nameof(L3),() => "到那时，我就能通过亚空间持续输送更多资源，用于更大规模的建造");
+                AcceptResponse = this.GetLocalization(nameof(AcceptResponse), () => "很好，我会将信号塔的建造蓝图传输给你。记得定期向我汇报部署进度");
+                L1 = this.GetLocalization(nameof(L1), () => "这是第一批建材，数量有限。请优先完成信号塔基础框架");
+                L2 = this.GetLocalization(nameof(L2), () => "当第一个纠缠节点建成后，空间导航链路将更加稳定");
+                L3 = this.GetLocalization(nameof(L3), () => "到那时，我就能通过亚空间持续输送更多资源，用于更大规模的建造");
+            }
+            protected override void OnScenarioComplete() {
+                DraedonEffect.IsActive = false;
+                DraedonEffect.Send();
+            }
+            private void Give() {
+                ADVRewardPopup.ShowReward(ModContent.ItemType<ExoPrism>(), 8082, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f);
+                    }, offset: Vector2.Zero
+                    , styleProvider: () => ADVRewardPopup.RewardStyle.Draedon);
             }
             protected override void Build() {
                 DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
                 Add(DraedonName.Value, AcceptResponse.Value);
-                Add(DraedonName.Value, L1.Value);
+                Add(DraedonName.Value, L1.Value, onStart: Give);
                 Add(DraedonName.Value, L2.Value);
                 Add(DraedonName.Value, L3.Value);
             }
@@ -142,7 +154,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private void OnDeclineQuest() {
             //完成当前场景
             Complete();
-
             ScenarioManager.Reset<Choice_Decline>();
             ScenarioManager.Start<Choice_Decline>();
         }
@@ -156,6 +167,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
             public override void SetStaticDefaults() {
                 DeclineResponse = this.GetLocalization(nameof(DeclineResponse), () => "我理解，当你准备好时随时可以回来找我");
+            }
+            protected override void OnScenarioComplete() {
+                DraedonEffect.IsActive = false;
+                DraedonEffect.Send();
             }
             protected override void Build() {
                 DialogueBoxBase.RegisterPortrait(DraedonName.Value + alt, ADVAsset.DraedonADV, silhouette: false);
