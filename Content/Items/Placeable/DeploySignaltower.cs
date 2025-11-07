@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
+using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -75,8 +76,34 @@ namespace CalamityOverhaul.Content.Items.Placeable
     {
         public override int TargetTileID => ModContent.TileType<DeploySignaltowerTile>();
 
-        public override void Update() {
+        /// <summary>
+        /// 是否已标记目标点完成
+        /// </summary>
+        private bool hasMarkedCompletion;
 
+        public override void Update() {
+            //持续检查是否在目标点范围内
+            if (!hasMarkedCompletion) {
+                CheckAndMarkTargetCompletion();
+            }
+        }
+
+        private void CheckAndMarkTargetCompletion() {
+            if (VaultUtils.isClient || hasMarkedCompletion) {
+                return;
+            }
+
+            if (!SignalTowerTargetManager.IsGenerated) {
+                return;
+            }
+
+            //将Point16转换为Point
+            Point tilePos = new(Position.X, Position.Y);
+
+            //检查信号塔位置是否在任何目标点范围内
+            if (SignalTowerTargetManager.CheckAndMarkCompletion(tilePos)) {
+                hasMarkedCompletion = true;
+            }
         }
     }
 }

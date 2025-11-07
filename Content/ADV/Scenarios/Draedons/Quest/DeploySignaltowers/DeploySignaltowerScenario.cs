@@ -104,14 +104,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //玩家接受任务
         private void OnAcceptQuest() {
-            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
+            //标记接受任务
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
             }
 
-            ADVSave save = halibutPlayer.ADCSave;
-            if (save != null) {
-                save.DeploySignaltowerQuestAccepted = true;
-            }
+            //生成目标点位
+            SignalTowerTargetManager.GenerateTargetPoints();
 
             //完成当前场景
             Complete();
@@ -161,13 +160,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //玩家拒绝任务
         private void OnDeclineQuest() {
-            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
-            }
-
-            ADVSave save = halibutPlayer.ADCSave;
-            if (save != null) {
-                save.DeploySignaltowerQuestDeclined = true;
+            //标记拒绝任务
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.DeploySignaltowerQuestDeclined = true;
             }
 
             //完成当前场景

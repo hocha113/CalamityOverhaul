@@ -28,15 +28,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override bool CanOpne {
             get {
-                if (CWRWorld.BossRush || CWRWorld.HasBoss) {
-                    return false;//有Boss时不显示
-                }
-
-                //如果玩家不在世界中则不显示
-                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
-                    return false;
-                }
-
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     return false;
                 }
@@ -51,17 +42,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     return false;
                 }
 
+                //如果玩家不在世界中则不显示
+                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
+                    return false;
+                }
+
                 return true;
             }
         }
 
         protected override (float current, float total, bool isActive) GetTrackingData() {
             if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return (0, 0, false);
+                return (0, DeploySignaltowerCheck.TargetTowerCount, false);
             }
 
             ADVSave save = halibutPlayer.ADCSave;
-
             if (save == null) {
                 return (0, DeploySignaltowerCheck.TargetTowerCount, false);
             }
@@ -75,6 +70,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         protected override float GetRequiredContribution() {
             return 1.0f;//信号塔任务不需要贡献度要求只需要完成全部
+        }
+
+        protected override void UpdatePanelHeight() {
+            base.UpdatePanelHeight();
+            currentPanelHeight += 30f; //为额外信息增加高度
         }
 
         protected override void DrawPanel(SpriteBatch spriteBatch, float alpha) {
@@ -167,29 +167,79 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
                 new Color(80, 200, 255) * (alpha * 0.9f), new Color(80, 200, 255) * (alpha * 0.1f), 1.5f);
 
-            //进度文本
-            Vector2 progressTextPos = dividerStart + new Vector2(0, 12);
-            string progressText = $"{DamageContribution.Value}: ";
-            Utils.DrawBorderString(spriteBatch, progressText, progressTextPos,
-                new Color(200, 230, 255) * alpha, textScale);
+            //获取最近的目标点
+            SignalTowerTargetPoint nearestTarget = SignalTowerTargetManager.GetNearestTarget(Main.LocalPlayer);
+            if (nearestTarget != null) {
+                bool playerInRange = nearestTarget.IsPlayerInRange(Main.LocalPlayer);
 
-            //进度数字
-            Vector2 numberPos = progressTextPos + new Vector2(font.MeasureString(progressText).X * textScale, 0);
-            string numberText = $"{DeploySignaltowerCheck.DeployedTowerCount}/{DeploySignaltowerCheck.TargetTowerCount}";
+                Vector2 targetInfoPos = dividerStart + new Vector2(0, 12);
 
-            Color numberColor;
-            if (DeploySignaltowerCheck.DeployedTowerCount >= DeploySignaltowerCheck.TargetTowerCount) {
-                numberColor = Color.LimeGreen;
+                //目标编号和状态
+                string targetText = $"最近的目标点: {nearestTarget.Index + 1}号纠缠节点";
+                Color targetTextColor = playerInRange
+                    ? Color.Lerp(new Color(255, 200, 100), Color.LimeGreen, 0.5f) * alpha
+                    : new Color(255, 200, 100) * alpha;
+
+                Utils.DrawBorderString(spriteBatch, targetText, targetInfoPos, targetTextColor, textScale);
+
+                //距离或状态
+                Vector2 distancePos = targetInfoPos + new Vector2(0, 15);
+                string distanceText;
+                Color distanceColor;
+
+                if (playerInRange) {
+                    distanceText = "状态: 范围内";
+                    distanceColor = Color.LimeGreen * alpha;
+
+                    //添加脉冲效果
+                    float pulse = (float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f;
+                    distanceColor *= pulse;
+                }
+                else {
+                    float distance = Vector2.Distance(Main.LocalPlayer.Center, nearestTarget.WorldPosition) / 16f;
+                    distanceText = $"距离: {(int)distance}m";
+                    distanceColor = new Color(200, 230, 255) * alpha;
+                }
+
+                Utils.DrawBorderString(spriteBatch, distanceText, distancePos, distanceColor, textScale * 0.9f);
+
+                //进度文本
+                Vector2 progressTextPos = distancePos + new Vector2(0, 15);
+                string progressText = $"{DamageContribution.Value}: ";
+                Utils.DrawBorderString(spriteBatch, progressText, progressTextPos,
+                    new Color(200, 230, 255) * alpha, textScale);
+
+                //进度数字
+                Vector2 numberPos = progressTextPos + new Vector2(font.MeasureString(progressText).X * textScale, 0);
+                string numberText = $"{DeploySignaltowerCheck.DeployedTowerCount}/{DeploySignaltowerCheck.TargetTowerCount}";
+
+                Color numberColor;
+                if (DeploySignaltowerCheck.DeployedTowerCount >= DeploySignaltowerCheck.TargetTowerCount) {
+                    numberColor = Color.LimeGreen;
+                }
+                else {
+                    numberColor = Color.Lerp(new Color(100, 200, 255), Color.Cyan,
+                        DeploySignaltowerCheck.DeployedTowerCount / (float)DeploySignaltowerCheck.TargetTowerCount);
+                }
+
+                Utils.DrawBorderString(spriteBatch, numberText, numberPos, numberColor * alpha, 0.7f);
+
+                //进度条
+                DrawProgressBar(spriteBatch, progressTextPos + new Vector2(0, 18), alpha);
             }
             else {
-                numberColor = Color.Lerp(new Color(100, 200, 255), Color.Cyan,
-                    DeploySignaltowerCheck.DeployedTowerCount / (float)DeploySignaltowerCheck.TargetTowerCount);
+                //没有目标,显示完成状态
+                Vector2 progressTextPos = dividerStart + new Vector2(0, 12);
+                string completedText = "任务完成!";
+                Utils.DrawBorderString(spriteBatch, completedText, progressTextPos,
+                    Color.Gold * alpha, textScale * 1.2f);
+
+                Vector2 numberPos = progressTextPos + new Vector2(0, 20);
+                string numberText = $"{DeploySignaltowerCheck.DeployedTowerCount}/{DeploySignaltowerCheck.TargetTowerCount}";
+                Utils.DrawBorderString(spriteBatch, numberText, numberPos, Color.LimeGreen * alpha, 0.7f);
+
+                DrawProgressBar(spriteBatch, progressTextPos + new Vector2(0, 45), alpha);
             }
-
-            Utils.DrawBorderString(spriteBatch, numberText, numberPos, numberColor * alpha, 0.7f);
-
-            //进度条
-            DrawProgressBar(spriteBatch, progressTextPos + new Vector2(0, 18), alpha);
         }
 
         protected override void DrawProgressBar(SpriteBatch spriteBatch, Vector2 position, float alpha) {
