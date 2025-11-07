@@ -1337,6 +1337,11 @@ Items: {
 			She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
 			''' */
 	}
+
+	ConstructionBlueprintQET: {
+		// DisplayName: Construction Blueprint Q E T
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltower
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     internal class DeploySignaltowerRender : UIHandle, ILocalizedModType
     {

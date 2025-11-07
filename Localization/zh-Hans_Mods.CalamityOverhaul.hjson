@@ -1321,6 +1321,11 @@ Items: {
 			风暴女神，阿莉娜，无情地带来了毁灭与复仇。
 			'''
 	}
+
+	ConstructionBlueprintQET: {
+		// DisplayName: Construction Blueprint Q E T
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

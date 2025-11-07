@@ -1,10 +1,11 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Items.Tools;
 using System;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltower
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     internal class DeploySignaltowerScenario : ADVScenarioBase, ILocalizedModType
     {
@@ -128,8 +129,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 DraedonEffect.IsActive = false;
                 DraedonEffect.Send();
             }
-            private void Give() {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<ExoPrism>(), 8082, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+            private static void Give(int id, int num) {
+                ADVRewardPopup.ShowReward(id, num, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -141,8 +142,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
             protected override void Build() {
                 DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
-                Add(DraedonName.Value, AcceptResponse.Value);
-                Add(DraedonName.Value, L1.Value, onStart: Give);
+                Add(DraedonName.Value, AcceptResponse.Value, onStart: () => Give(ModContent.ItemType<ConstructionBlueprintQET>(), 1));
+                Add(DraedonName.Value, L1.Value, onStart: () => Give(ModContent.ItemType<ExoPrism>(), 8082));
                 Add(DraedonName.Value, L2.Value);
                 Add(DraedonName.Value, L3.Value);
             }
