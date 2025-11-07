@@ -45,14 +45,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private static float hologramFlicker = 0f;
         private static float scanLineProgress = 0f;
 
-        //数据流效果（多层）
+        //数据流效果
         private static readonly List<DataStream> dataStreams = new();
         private static readonly List<MatrixRain> matrixRains = new();//矩阵雨效果
         private static int dataStreamTimer = 0;
         private static float dataUpdateTimer = 0f;
         private static readonly List<DataLine> currentDataLines = new();//使用结构化数据行
 
-        //科技数据文本库（增强版）
+        //科技数据文本
         private static readonly string[] techDataTemplates = [
             "QE_SYNC: {0}%",
             "SIG_PWR: {0} dBm",
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// 生成随机科技数据行（增强版）
+        /// 生成随机科技数据行
         /// </summary>
         private static string GenerateRandomDataLine() {
             string template = techDataTemplates[Main.rand.Next(techDataTemplates.Length)];
@@ -389,7 +389,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// 绘制增强版数据文本（带动态乱码）
+        /// 绘制增强版数据文本
         /// </summary>
         private static void DrawInfoBoxDataTextEnhanced(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             if (currentDataLines.Count == 0) return;
@@ -416,11 +416,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     line = glitched.ToString();
                 }
 
-                //计算透明度和颜色（带闪烁）
+                //计算透明度和颜色
                 float flicker = (float)Math.Sin(dataLine.FlickerPhase) * 0.4f + 0.6f;
                 float lineAlpha = alpha * flicker;
 
-                //渐变消失效果（顶部的行更透明）
+                //渐变消失效果
                 float fadeOut = 1f - (i / (float)maxDataLines) * 0.6f;
                 lineAlpha *= fadeOut;
 
@@ -451,7 +451,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //主扫描线（加粗，多层）
+            //主扫描线
             float scanY = rect.Y + 42 + scanLineProgress * (rect.Height - 42);
             for (int layer = 0; layer < 3; layer++) {
                 float offset = layer * 1.5f;
