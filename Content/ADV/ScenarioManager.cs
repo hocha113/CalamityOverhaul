@@ -38,7 +38,10 @@ namespace CalamityOverhaul.Content.ADV
 
     internal abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario
     {
-        public abstract string Key { get; }
+        /// <summary>
+        /// 场景唯一标识符
+        /// </summary>
+        public virtual string Key => Name;
         /// <summary>
         /// 场景是否可以重复触发
         /// </summary>
