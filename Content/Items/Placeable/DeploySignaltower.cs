@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override int TargetTileID => ModContent.TileType<DeploySignaltowerTile>();
 
         public override void Update() {
-            
+
         }
     }
 }
