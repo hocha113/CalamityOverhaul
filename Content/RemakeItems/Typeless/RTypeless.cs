@@ -1,7 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Typeless;
-using CalamityOverhaul.Content.Projectiles.Weapons.Typeless;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Typeless;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Typeless
 {
@@ -11,8 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     internal class RLunicEye : CWRItemOverride
     {
         public override bool DrawingInfo => false;
-        public override int TargetID => ModContent.ItemType<LunicEye>();
-
         public override void SetDefaults(Item item) => item.SetHeldProj<LunicEyeHeldProj>();
     }
 
@@ -22,8 +18,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     internal class REyeofMagnus : CWRItemOverride
     {
         public override bool DrawingInfo => false;
-        public override int TargetID => ModContent.ItemType<EyeofMagnus>();
-
         public override void SetDefaults(Item item) => item.SetHeldProj<EyeofMagnusHeldProj>();
     }
 
@@ -33,8 +27,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     internal class RAestheticus : CWRItemOverride
     {
         public override bool DrawingInfo => false;
-        public override int TargetID => ModContent.ItemType<Aestheticus>();
-
         public override void SetDefaults(Item item) => item.SetHeldProj<AestheticusHeldProj>();
     }
 }

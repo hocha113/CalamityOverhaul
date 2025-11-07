@@ -1,23 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
     internal abstract class CWRItemOverride : ItemOverride
     {
-        public override int TargetID => VaultUtils.GetItemTypeFromFullName(SafeName);
-        public virtual string SafeName => string.Empty;
-        public override bool IsLoadingEnabled(Mod mod) {
-            if (SafeName != string.Empty) {
-                int id = VaultUtils.GetItemTypeFromFullName(SafeName);
-                if (id == ItemID.None) {
-                    return false;
-                }
-            }
-            return base.IsLoadingEnabled(mod);
-        }
+        public override int TargetID => GetCalItemID(Name[1..]);
 
         /// <summary>
         /// 获取来自灾厄的物品名
@@ -25,6 +13,13 @@ namespace CalamityOverhaul.Content.RemakeItems
         /// <param name="itemKey"></param>
         /// <returns></returns>
         public static string GetCalItem(string itemKey) => $"CalamityMod/{itemKey}";
+
+        /// <summary>
+        /// 获取来自灾厄的物品ID
+        /// </summary>
+        /// <param name="itemKey"></param>
+        /// <returns></returns>
+        public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
         public sealed override void PostSetStaticDefaults() {
             HandlerCanOverride.CanOverrideByID.Add(TargetID, true);

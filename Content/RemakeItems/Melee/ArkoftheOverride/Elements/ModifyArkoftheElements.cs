@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
 {
     internal class ModifyArkoftheElements : CWRItemOverride
     {
-        public override int TargetID => ItemType<ArkoftheElements>();
+        public override int TargetID => GetCalItemID("ArkoftheElements");
         public override bool CanLoadLocalization => false;
         public override void SetDefaults(Item item) {
             item.damage = 400;

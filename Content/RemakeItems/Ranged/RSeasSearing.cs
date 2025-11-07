@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
@@ -10,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSeasSearing : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<SeasSearing>();
         public override void SetDefaults(Item item) {
             item.damage = 40;
             item.DamageType = DamageClass.Ranged;

@@ -1,22 +1,18 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RSwordsplosion : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Swordsplosion>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<SwordsplosionHeld>();
     }
 
     internal class SwordsplosionHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Swordsplosion>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("Swordsplosion");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Swordsplosion_Bar";
         public override void SetKnifeProperty() {
@@ -34,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = GetRandomProjectileType();
+            int type = CWRRef.GetRandomProjectileType();
             int damage = Projectile.damage;
             float knockback = Projectile.knockBack;
             float projSpeed = Main.rand.Next(22, 30);
@@ -48,16 +44,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 float speedY = spawnDist.Y + Main.rand.NextFloat(-7.2f, 7.2f);
                 Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, type, damage, knockback, Owner.whoAmI, 2f, 0f);
             }
-        }
-
-        private int GetRandomProjectileType() {
-            return Main.rand.Next(4) switch {
-                0 => ModContent.ProjectileType<SwordsplosionBlue>(),
-                1 => ModContent.ProjectileType<SwordsplosionGreen>(),
-                2 => ModContent.ProjectileType<SwordsplosionPurple>(),
-                3 => ModContent.ProjectileType<SwordsplosionRed>(),
-                _ => ModContent.ProjectileType<SwordsplosionBlue>(),
-            };
         }
 
         private Vector2 GetMouseDistance(Vector2 playerPos, float gravDir) {

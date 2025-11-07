@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -8,13 +7,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTeardropCleaver : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TeardropCleaver>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<TeardropCleaverHeld>();
     }
 
     internal class TeardropCleaverHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TeardropCleaver>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("TeardropCleaver");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
         public override void SetKnifeProperty() {
