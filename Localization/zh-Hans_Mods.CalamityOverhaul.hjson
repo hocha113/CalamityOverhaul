@@ -1344,6 +1344,11 @@ Items: {
 		DisplayName: 星流电镀块
 		Tooltip: ""
 	}
+
+	PQCD: {
+		// DisplayName: P Q C D
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -1346,6 +1346,11 @@ Items: {
 		// DisplayName: Starflow-Plated Block
 		// Tooltip: ""
 	}
+
+	PQCD: {
+		// DisplayName: P Q C D
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
