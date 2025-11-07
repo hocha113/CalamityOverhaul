@@ -1,7 +1,6 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
@@ -43,10 +42,10 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            
+
             DustType = DustID.Stone;
             AddMapEntry(new Color(150, 180, 220));
-            
+
             MineResist = 1.5f;
             MinPick = 55;
         }

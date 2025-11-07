@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //科技数据文本库（增强版）
         private static readonly string[] techDataTemplates = [
-            "QE_SYNC: {0}%",  
+            "QE_SYNC: {0}%",
             "SIG_PWR: {0} dBm",
             "FREQ_BAND: {0} GHz",
             "UPLINK: {0} Tb/s",

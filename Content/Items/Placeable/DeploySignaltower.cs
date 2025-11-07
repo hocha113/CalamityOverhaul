@@ -37,11 +37,11 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileSolid[Type] = false;
-            
+
             TileID.Sets.DisableSmartCursor[Type] = true;
-            
+
             AddMapEntry(new Color(100, 150, 255), VaultUtils.GetLocalizedItemName<DeploySignaltower>());
-            
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 6;
             TileObjectData.newTile.Height = 14;

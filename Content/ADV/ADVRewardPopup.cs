@@ -899,7 +899,7 @@ namespace CalamityOverhaul.Content.ADV
             //根据风格调整文字颜色
             RewardStyle style = GetCurrentStyle();
             Color nameGlow, nameColor;
-            
+
             if (style == RewardStyle.Brimstone) {
                 nameGlow = new Color(255, 150, 80) * (nameAlpha * 0.6f);
                 nameColor = new Color(255, 220, 200) * nameAlpha;
@@ -1162,7 +1162,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
 
                 //边界检查
-                if (Pos.X < basePos.X - 150f || Pos.X > basePos.X + 150f || 
+                if (Pos.X < basePos.X - 150f || Pos.X > basePos.X + 150f ||
                     Pos.Y < basePos.Y - 100f || Pos.Y > basePos.Y + 100f) {
                     return true;
                 }

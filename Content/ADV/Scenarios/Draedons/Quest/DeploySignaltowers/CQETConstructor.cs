@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -58,11 +57,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            
+
             TileID.Sets.DisableSmartCursor[Type] = true;
-            
+
             AddMapEntry(new Color(150, 200, 255), VaultUtils.GetLocalizedItemName<CQETConstructor>());
-            
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 2;
@@ -119,10 +118,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override void Update() {
             checkDelay++;
-            
+
             if (checkDelay >= CheckInterval) {
                 checkDelay = 0;
-                
+
                 if (!isConstructing && CheckConstructionConditions()) {
                     isConstructing = true;
                     constructionTime = 0;
@@ -132,7 +131,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             if (isConstructing) {
                 constructionTime++;
-                
+
                 //显示粒子效果
                 if (constructionTime % 5 == 0) {
                     CreateConstructionDust();
@@ -172,7 +171,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
 
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();
-            
+
             //构建器位于底部中间位置，需要检测周围6×14区域
             //构建器是2×2，位于底部中间（占用X: 2-3, Y: 12-13）
             int baseX = Position.X - 2; //向左延伸2格
@@ -183,7 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 for (int y = 0; y < 14; y++) {
                     int checkX = baseX + x;
                     int checkY = baseY + y;
-                    
+
                     //跳过构建器自身位置（2×2）
                     if (x >= 2 && x < 4 && y >= 12 && y < 14) {
                         continue;
@@ -206,7 +205,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();
             int signalTowerType = ModContent.TileType<DeploySignaltowerTile>();
-            
+
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
 
@@ -215,7 +214,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 for (int y = 0; y < 14; y++) {
                     int checkX = baseX + x;
                     int checkY = baseY + y;
-                    
+
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
                     if (tile.HasTile) {
                         WorldGen.KillTile(checkX, checkY, false, false, true);
@@ -228,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //播放完成音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.5f }, PosInWorld);
-            
+
             //创建完成特效
             for (int i = 0; i < 50; i++) {
                 Vector2 dustPos = PosInWorld + new Vector2(Main.rand.Next(-48, 48), Main.rand.Next(-96, 32));
@@ -252,17 +251,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
-            
+
             //在6×14区域周围创建粒子
             float progress = constructionTime / (float)ConstructionDuration;
-            
+
             //使用 PRT_TileHightlight 粒子创建更好的构建效果
             for (int i = 0; i < 2; i++) {
                 int x = baseX + Main.rand.Next(0, 6);
                 int y = baseY + (int)(14 * progress) + Main.rand.Next(-2, 2);
-                
+
                 Vector2 particlePos = new Vector2(x * 16, y * 16) + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16));
-                
+
                 //生成 TileHightlight 粒子，颜色为青色，表示构建进度
                 PRTLoader.NewParticle<PRT_TileHightlight>(particlePos, Vector2.Zero, Color.Gold);
             }
@@ -287,7 +286,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //计算透明度（呼吸效果）
             float alphaBase = 0.3f + 0.2f * MathF.Sin(guideAlphaTime * 0.05f);
-            
+
             //获取StarflowPlatedBlock的纹理
             Texture2D blockTexture = TextureAssets.Tile[starflowBlockType].Value;
 
@@ -295,22 +294,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 for (int y = 0; y < 14; y++) {
                     int checkX = baseX + x;
                     int checkY = baseY + y;
-                    
+
                     //跳过构建器自身位置（2×2）
                     if (x >= 2 && x < 4 && y >= 12 && y < 14) {
                         continue;
                     }
 
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    
+
                     //只为缺失的方块绘制虚影
                     if (!tile.HasTile || tile.TileType != starflowBlockType) {
                         Vector2 drawPos = new Vector2(checkX * 16, checkY * 16) - Main.screenPosition;
-                        
+
                         //计算当前方块的特殊效果（从下到上渐变）
                         float heightFactor = 1f - (y / 14f);
                         float alpha = alphaBase * heightFactor;
-                        
+
                         //边框颜色（青色）
                         Color borderColor = new Color(100, 200, 255) * alpha;
                         //填充颜色（更淡的青色）
@@ -443,7 +442,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     int checkX = baseX + x;
                     int checkY = baseY + y;
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    
+
                     if (!tile.HasTile || tile.TileType != starflowBlockType) {
                         missingBlocks++;
                     }
@@ -467,7 +466,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 string text = GuideText_Ready.Value;
                 Color textColor = Color.Lime * textAlpha;
                 Color shadowColor = Color.Black * textAlpha * 0.5f;
-                
+
                 //绘制阴影
                 Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(2, 2), shadowColor, 1.2f);
                 //绘制文本
@@ -478,7 +477,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private void DrawConstructionProgress(SpriteBatch spriteBatch) {
             float progress = constructionTime / (float)ConstructionDuration;
             Color glowColor = Color.Cyan * (0.5f + 0.5f * MathF.Sin(constructionTime * 0.1f));
-            
+
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
             Vector2 drawPos = new Vector2((baseX + 3) * 16, (baseY + 7) * 16) - Main.screenPosition;
@@ -503,7 +502,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             string progressText = $"{(int)(progress * 100)}%";
             Vector2 textPos = progressBarPos + new Vector2(0, barHeight + 5);
             Color shadowColor = Color.Black * 0.8f;
-            
+
             //绘制阴影
             Utils.DrawBorderString(spriteBatch, progressText, textPos + new Vector2(1, 1), shadowColor, 0.8f);
             //绘制文本
