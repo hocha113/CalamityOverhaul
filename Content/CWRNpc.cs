@@ -1,13 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs.AquaticScourge;
-using CalamityMod.NPCs.DesertScourge;
-using CalamityMod.NPCs.OldDuke;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -154,7 +145,7 @@ namespace CalamityOverhaul.Content
                 || CWRLoad.targetNpcTypes8.Contains(target.type) || CWRLoad.targetNpcTypes7.Contains(target.type)
                 || CWRLoad.targetNpcTypes6.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type)
                 || CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes2.Contains(target.type)
-                || CWRLoad.WormBodys.Contains(target.type) || target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+                || CWRLoad.WormBodys.Contains(target.type) || target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
                 modifiers.FinalDamage *= 0.1f;
                 int dmownInt = (int)(target.lifeMax * 0.001f);
                 if (dmownInt < 50) {
@@ -230,7 +221,7 @@ namespace CalamityOverhaul.Content
 
             if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                 for (int i = 0; i < Main.rand.Next(3, 6); i++) {
-                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<DubiousPlating>(), Main.rand.Next(7, 13));
+                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_DubiousPlating, Main.rand.Next(7, 13));
                     if (!VaultUtils.isSinglePlayer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                     }
@@ -256,8 +247,8 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (npc.type == CWRLoad.PrimordialWyrmHead && !DownedBossSystem.downedPrimordialWyrm) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
-                DownedBossSystem.downedPrimordialWyrm = true;
+            if (npc.type == CWRLoad.PrimordialWyrmHead && !CWRRef.GetDownedPrimordialWyrm()) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
+                CWRRef.SetDownedPrimordialWyrm(true);
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
                 }
@@ -272,14 +263,14 @@ namespace CalamityOverhaul.Content
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit) {
             if (npc.life <= 0 && TheEndSunOnHitNum) {
-                if (!BossRushEvent.BossRushActive) {
+                if (!CWRRef.GetBossRushActive()) {
                     for (int i = 0; i < Main.rand.Next(16, 23); i++) {
                         npc.DropItem();
                     }
                 }
                 else {
                     if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<Rock>());
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_Rock);
                         if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
@@ -318,21 +309,21 @@ namespace CalamityOverhaul.Content
                 npcLoot.RemoveWhere(rule => true);
                 npcLoot.Add(3380, 1, 2, 6);
             }
-            else if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
+            else if (npc.type == CWRID.NPC_SupremeCalamitas) {
                 npcLoot.Add(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
             }
-            else if (npc.type == ModContent.NPCType<DesertScourgeHead>()) {
+            else if (npc.type == CWRID.NPC_DesertScourgeHead) {
                 dontExpertRule.Add(ModContent.ItemType<UnderTheSand>(), 10);
                 dontExpertRule.Add(ModContent.ItemType<WastelandFang>(), 10);
                 dontExpertRule.Add(ModContent.ItemType<SandDagger>(), 10);
-                dontExpertRule.Add(ModContent.ItemType<BurntSienna>(), 10);
+                dontExpertRule.Add(CWRID.Item_BurntSienna, 10);
                 npcLoot.Add(dontExpertRule);
             }
-            else if (npc.type == ModContent.NPCType<AquaticScourgeHead>()) {
+            else if (npc.type == CWRID.NPC_AquaticScourgeHead) {
                 dontExpertRule.Add(ModContent.ItemType<MelodyTheSand>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
-            else if (npc.type == ModContent.NPCType<OldDuke>()) {
+            else if (npc.type == CWRID.NPC_OldDuke) {
                 dontExpertRule.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
             }

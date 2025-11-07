@@ -1,13 +1,125 @@
-﻿using CalamityMod.Items.Materials;
+﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Items;
+using CalamityMod.Items.Accessories;
+using CalamityMod.Items.Armor.Plaguebringer;
+using CalamityMod.Items.Armor.SnowRuffian;
+using CalamityMod.Items.DraedonMisc;
+using CalamityMod.Items.Fishing.BrimstoneCragCatches;
+using CalamityMod.Items.Fishing.SunkenSeaCatches;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Items.Weapons.Rogue;
+using CalamityMod.Items.Weapons.Summon;
+using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.DesertScourge;
+using CalamityMod.NPCs.OldDuke;
+using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.Projectiles.Melee;
+using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Projectiles.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
+    /// <summary>
+    /// 所有用于引用外部模组内部内容的ID集中地
+    /// 当然也包括部分自身内容
+    /// </summary>
     internal static class CWRID
     {
         public static int ExoPrism => ModContent.ItemType<ExoPrism>();
         public static int Item_DraedonsForge => ModContent.ItemType<CalamityMod.Items.Placeables.Furniture.CraftingStations.DraedonsForge>();
         public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
+        public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
+        public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
+        public static int Item_Rock => ModContent.ItemType<Rock>();
+        public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
+        public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
+        public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
+        public static int NPC_AquaticScourgeHead => ModContent.NPCType<AquaticScourgeHead>();
+        public static int NPC_OldDuke => ModContent.NPCType<OldDuke>();
+        public static int Proj_AngelicBeam => ModContent.ProjectileType<AngelicBeam>();
+        public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
+        public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
+        public static int Buff_Plague => ModContent.BuffType<Plague>();
+        public static int Item_RogueEmblem => ModContent.ItemType<RogueEmblem>();
+        public static int Item_SnowRuffianMask => ModContent.ItemType<SnowRuffianMask>();
+        public static int Item_SnowRuffianChestplate => ModContent.ItemType<SnowRuffianChestplate>();
+        public static int Item_SnowRuffianGreaves => ModContent.ItemType<SnowRuffianGreaves>();
+        public static int Item_PurifiedGel => ModContent.ItemType<PurifiedGel>();
+        public static int Item_VulcaniteLance => ModContent.ItemType<VulcaniteLance>();
+        public static int Item_Brimlance => ModContent.ItemType<Brimlance>();
+        public static int Item_ContinentalGreatbow => ModContent.ItemType<ContinentalGreatbow>();
+        public static int Item_BrimstoneFury => ModContent.ItemType<BrimstoneFury>();
+        public static int Item_Helstorm => ModContent.ItemType<Helstorm>();
+        public static int Item_Hellborn => ModContent.ItemType<Hellborn>();
+        public static int Item_AuricBar => ModContent.ItemType<AuricBar>();
+        public static int Item_GrandGuardian => ModContent.ItemType<GrandGuardian>();
+        public static int Item_SomaPrime => ModContent.ItemType<SomaPrime>();
+        public static int Item_Infinity => ModContent.ItemType<Infinity>();
+        public static int Item_PlagueKeeper => ModContent.ItemType<PlagueKeeper>();
+        public static int Item_Hellkite => ModContent.ItemType<Hellkite>();
+        public static int Item_Contagion => ModContent.ItemType<Contagion>();
+        public static int Item_PlagueCellCanister => ModContent.ItemType<PlagueCellCanister>();
+        public static int Item_PlaguebringerCarapace => ModContent.ItemType<PlaguebringerCarapace>();
+        public static int Item_InfectedArmorPlating => ModContent.ItemType<InfectedArmorPlating>();
+        public static int Item_PlaguebringerVisor => ModContent.ItemType<PlaguebringerVisor>();
+        public static int Item_PlaguebringerPistons => ModContent.ItemType<PlaguebringerPistons>();
+        public static int Item_Lazhar => ModContent.ItemType<Lazhar>();
+        public static int Item_ScoriaBar => ModContent.ItemType<ScoriaBar>();
+        public static int Item_BloodSample => ModContent.ItemType<BloodSample>();
+        public static int Item_BlightedGel => ModContent.ItemType<BlightedGel>();
+        public static int Item_RottenMatter => ModContent.ItemType<RottenMatter>();
+        public static int Item_MidasPrime => ModContent.ItemType<MidasPrime>();
+        public static int Item_CrackshotColt => ModContent.ItemType<CrackshotColt>();
+        public static int Item_HolyCollider => ModContent.ItemType<HolyCollider>();
+        public static int Item_CelestialClaymore => ModContent.ItemType<CelestialClaymore>();
+        public static int Item_DivineGeode => ModContent.ItemType<DivineGeode>();
+        public static int Item_StormlionMandible => ModContent.ItemType<StormlionMandible>();
+        public static int Item_DiseasedPike => ModContent.ItemType<DiseasedPike>();
+        public static int Item_HellionFlowerSpear => ModContent.ItemType<HellionFlowerSpear>();
+        public static int Item_Pandemic => ModContent.ItemType<Pandemic>();
+        public static int Item_SulphurousGrabber => ModContent.ItemType<SulphurousGrabber>();
+        public static int Item_TheSyringe => ModContent.ItemType<TheSyringe>();
+        public static int Item_PestilentDefiler => ModContent.ItemType<PestilentDefiler>();
+        public static int Item_TheHive => ModContent.ItemType<TheHive>();
+        public static int Item_BlightSpewer => ModContent.ItemType<BlightSpewer>();
+        public static int Item_Malevolence => ModContent.ItemType<Malevolence>();
+        public static int Item_PlagueStaff => ModContent.ItemType<PlagueStaff>();
+        public static int Item_SparklingEmpress => ModContent.ItemType<SparklingEmpress>();
+        public static int Item_SeaPrism => ModContent.ItemType<SeaPrism>();
+        public static int Item_PearlShard => ModContent.ItemType<PearlShard>();
+        public static int Item_DragoonDrizzlefish => ModContent.ItemType<DragoonDrizzlefish>();
+        public static int Item_Murasama => ModContent.ItemType<Murasama>();
+        public static int Item_PlasmaDriveCore => ModContent.ItemType<PlasmaDriveCore>();
+        public static int Item_MysteriousCircuitry => ModContent.ItemType<MysteriousCircuitry>();
+        public static int Item_EncryptedSchematicHell => ModContent.ItemType<EncryptedSchematicHell>();
+        public static int Item_LuxorsGift => ModContent.ItemType<LuxorsGift>();
+        public static int Item_EternalBlizzard => ModContent.ItemType<EternalBlizzard>();
+        public static int Item_Arbalest => ModContent.ItemType<Arbalest>();
+        public static int Item_CoreofEleum => ModContent.ItemType<CoreofEleum>();
+        public static int Item_Condemnation => ModContent.ItemType<Condemnation>();
+        public static int Item_AshesofAnnihilation => ModContent.ItemType<AshesofAnnihilation>();
+        public static int Item_Vehemence => ModContent.ItemType<Vehemence>();
+        public static int Item_ValkyrieRay => ModContent.ItemType<ValkyrieRay>();
+        public static int Item_Violence => ModContent.ItemType<Violence>();
+        public static int Item_Vigilance => ModContent.ItemType<Vigilance>();
+        public static int Item_DeathstareRod => ModContent.ItemType<DeathstareRod>();
+        public static int Item_ArmoredShell => ModContent.ItemType<ArmoredShell>();
+        public static int Item_DarkPlasma => ModContent.ItemType<DarkPlasma>();
+        public static int Item_TwistingNether => ModContent.ItemType<TwistingNether>();
+        public static int Item_Excelsus => ModContent.ItemType<Excelsus>();
+        public static int Item_TheObliterator => ModContent.ItemType<TheObliterator>();
+        public static int Item_Deathwind => ModContent.ItemType<Deathwind>();
+        public static int Item_DeathhailStaff => ModContent.ItemType<DeathhailStaff>();
+        public static int Item_StaffoftheMechworm => ModContent.ItemType<StaffoftheMechworm>();
+        public static int Item_Eradicator => ModContent.ItemType<Eradicator>();
+        public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
+        public static int Item_Norfleet => ModContent.ItemType<Norfleet>();       
+        public static int Tile_PlagueInfuser => ModContent.TileType<PlagueInfuser>();
     }
 }

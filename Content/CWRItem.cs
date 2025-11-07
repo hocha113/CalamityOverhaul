@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
@@ -757,11 +756,11 @@ namespace CalamityOverhaul.Content
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
                 }
                 if (item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
-                    string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString());
+                    string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.ToTooltipString());
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_KL", newText));
                 }
                 if (item.CWR().Scope) {
-                    string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
+                    string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.ToTooltipString());
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
                 }
                 if (CWRServerConfig.Instance.ActivateGunRecoil && CWRLoad.ItemIsGunAndGetRecoilValue[item.type] > 0) {
@@ -836,9 +835,9 @@ namespace CalamityOverhaul.Content
                 Texture2D value = CWRAsset.DraedonContactPanel.Value;
                 VaultUtils.DrawBorderedRectangle(Main.spriteBatch, value, 4
                     , new Vector2(line.X, line.Y), 200, 28, Color.White, Color.White * 0, 1);
-                Color color = VaultUtils.MultiStepColorLerp(item.Calamity().ChargeRatio, Color.Red, Color.SeaGreen);
+                Color color = VaultUtils.MultiStepColorLerp(CWRRef.ChargeRatio(item), Color.Red, Color.SeaGreen);
                 VaultUtils.DrawBorderedRectangle(Main.spriteBatch, value, 4
-                    , new Vector2(line.X, line.Y), (int)(200 * item.Calamity().ChargeRatio), 28, Color.White * 0, color, 1);
+                    , new Vector2(line.X, line.Y), (int)(200 * CWRRef.ChargeRatio(item)), 28, Color.White * 0, color, 1);
                 ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, new Vector2(line.X + 16, line.Y + 6)
                 , Color.White, line.Rotation, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
                 return false;

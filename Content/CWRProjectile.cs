@@ -1,15 +1,7 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Projectiles.Summon;
-using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -332,7 +324,7 @@ namespace CalamityOverhaul.Content
                 }
                 int proj = Projectile.NewProjectile(projectile.GetSource_FromAI()
                     , projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
-                    , ModContent.ProjectileType<AngelicBeam>(), projectile.damage / 2, 0, projectile.owner, 0);
+                    , CWRID.Proj_AngelicBeam, projectile.damage / 2, 0, projectile.owner, 0);
                 Main.projectile[proj].timeLeft = 90;
             }
         }
@@ -354,7 +346,7 @@ namespace CalamityOverhaul.Content
                 modifiers.DisableCrit();
             }
             if (HitAttribute.OnHitBlindArmor) {
-                if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
+                if (modifiers.SuperArmor || target.defense > 999) {
                     return;
                 }
                 modifiers.DefenseEffectiveness *= 0f;
@@ -392,7 +384,7 @@ namespace CalamityOverhaul.Content
                     modifiers.FinalDamage *= 0.8f;
                 }
             }
-            else if (projectile.type == ModContent.ProjectileType<CosmicIceBurst>()) {
+            else if (projectile.type == CWRID.Proj_CosmicIceBurst) {
                 if (target.type == CWRLoad.Yharon) {
                     modifiers.FinalDamage *= 0.8f;
                 }
@@ -559,7 +551,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.WoodenBow: {
                     if (projectile.numHits == 0) {
                         Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
-                        , ModContent.ProjectileType<SquirrelSquireAcorn>(), 3, projectile.knockBack, projectile.owner);
+                        , CWRID.Proj_SquirrelSquireAcorn, 3, projectile.knockBack, projectile.owner);
                         proj.DamageType = DamageClass.Ranged;
                     }
                     break;
@@ -651,31 +643,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.AstralRepeater: {
-                    if (projectile.numHits == 0) {
-                        for (int i = 0; i < 2; i++) {
-                            Vector2 spanPos = projectile.Center + VaultUtils.RandVr(860, 990);
-                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 20;
-                            Projectile proj7 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
-                            , ModContent.ProjectileType<AstralStar>(), projectile.damage / 4, projectile.knockBack, projectile.owner, 1);
-                            proj7.DamageType = DamageClass.Ranged;
-                            proj7.extraUpdates = 1;
-                            proj7.CWR().HitAttribute.NeverCrit = true;
-                        }
-                        bool blue = Main.rand.NextBool();
-                        float multiplier = 1.9f;
-                        float angleStart = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                        float var = 0.05f + (2f - multiplier);
-                        int dust1 = ModContent.DustType<AstralBlue>();
-                        int dust2 = ModContent.DustType<AstralOrange>();
-                        for (float angle = 0f; angle < MathHelper.TwoPi; angle += var) {
-                            blue = !blue;
-                            Vector2 velocity = angle.ToRotationVector2() * (2f + (float)(Math.Sin(angleStart + angle * 3f) + 1) * 2.5f) * Main.rand.NextFloat(0.95f, 1.05f);
-                            Dust d = Dust.NewDustPerfect(target.Center, blue ? dust1 : dust2, velocity);
-                            d.customData = 0.025f;
-                            d.scale = multiplier - 0.75f;
-                            d.noLight = false;
-                        }
-                    }
+                    //TODO
                     break;
                 }
 
@@ -695,7 +663,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.FetidEmesis: {
-                    target.AddBuff(ModContent.BuffType<Plague>(), 60);
+                    target.AddBuff(CWRID.Buff_Plague, 60);
                     break;
                 }
             }
