@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
@@ -227,13 +225,13 @@ namespace CalamityOverhaul
         /// 是否处于入侵期间
         /// </summary>
         public static bool Invasion => Main.invasionType > 0 || Main.pumpkinMoon
-                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing;
+                || Main.snowMoon || DD2Event.Ongoing || CWRRef.GetAcidRainEventIsOngoing();
 
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
 
-        public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
+        public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? CWRRef.GetTrueMeleeDamageClass() : DamageClass.Melee;
 
         public static bool IsWaterBucket(this Item item) => item.type == ItemID.WaterBucket || item.type == ItemID.BottomlessBucket;
 
@@ -253,10 +251,6 @@ namespace CalamityOverhaul
 
             return false;
         }
-
-        public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
-
-        public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
@@ -314,8 +308,8 @@ namespace CalamityOverhaul
         /// <param name="dontStopOrigShoot"></param>
         public static void SetKnifeHeld<T>(this Item item, bool dontStopOrigShoot = false) where T : ModProjectile {
             if (item.shoot == ProjectileID.None || !item.noUseGraphic
-                || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                || item.DamageType == CWRRef.GetTrueMeleeDamageClass()
+                || item.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass()) {
                 ItemOverride.ItemMeleePrefixDic[item.type] = true;
             }
             item.noMelee = true;
