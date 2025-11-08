@@ -3,13 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
@@ -863,14 +861,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         //初始化商店物品
         public void InitializeShop() {
             if (shopItems.Count > 0) return;
-            for (int i = 0; i < Recipe.numRecipes; i++) {
-                Recipe recipe = Main.recipe[i];
-                if (recipe.requiredItem.Any(i => i.type == CWRID.Item_ExoPrism 
-                || i.type == CWRID.Item_DubiousPlating 
-                || i.type == CWRID.Item_MysteriousCircuitry)) {
-                    shopItems.Add(new ShopItem(recipe.createItem.type, 1, recipe.createItem.value * 2));
-                }
-            }
+            //添加嘉登材料合成的物品
+            ShopHandle.Handle(shopItems);
         }
     }
 }
