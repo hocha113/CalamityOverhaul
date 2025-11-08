@@ -3,11 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
@@ -861,15 +863,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         //初始化商店物品
         public void InitializeShop() {
             if (shopItems.Count > 0) return;
-            //占位符，后面他妈的再想
-            shopItems.Add(new ShopItem(ItemID.HealingPotion, 1, Item.buyPrice(silver: 50)));
-            shopItems.Add(new ShopItem(ItemID.ManaPotion, 1, Item.buyPrice(silver: 25)));
-            shopItems.Add(new ShopItem(ItemID.RecallPotion, 1, Item.buyPrice(silver: 10)));
-            shopItems.Add(new ShopItem(ItemID.WormholePotion, 1, Item.buyPrice(silver: 5)));
-            shopItems.Add(new ShopItem(ItemID.BattlePotion, 1, Item.buyPrice(silver: 15)));
-            shopItems.Add(new ShopItem(ItemID.BuilderPotion, 1, Item.buyPrice(silver: 10)));
-            shopItems.Add(new ShopItem(ItemID.CalmingPotion, 1, Item.buyPrice(silver: 8)));
-            shopItems.Add(new ShopItem(ItemID.GravitationPotion, 1, Item.buyPrice(silver: 12)));
+            for (int i = 0; i < Recipe.numRecipes; i++) {
+                Recipe recipe = Main.recipe[i];
+                if (recipe.requiredItem.Any(i => i.type == CWRID.Item_ExoPrism 
+                || i.type == CWRID.Item_DubiousPlating 
+                || i.type == CWRID.Item_MysteriousCircuitry)) {
+                    shopItems.Add(new ShopItem(recipe.createItem.type, 1, recipe.createItem.value * 2));
+                }
+            }
         }
     }
 }

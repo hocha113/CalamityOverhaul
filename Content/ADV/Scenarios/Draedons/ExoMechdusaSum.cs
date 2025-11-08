@@ -52,14 +52,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //介绍台词(对应原游戏的 DraedonIntroductionText 系列)
-            IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "你知道吗？这一刻已经等了太久了。");
-            IntroLine2 = this.GetLocalization(nameof(IntroLine2), () => "我对一切未知感到着迷，但最让我着迷的莫过于你的本质。");
-            IntroLine3 = this.GetLocalization(nameof(IntroLine3), () => "我将会向你展示，我那些超越神明的造物。");
-            IntroLine4 = this.GetLocalization(nameof(IntroLine4), () => "而你，则将在战斗中向我展示你的本质。");
-            IntroLine5 = this.GetLocalization(nameof(IntroLine5), () => "现在，选择吧。");
+            IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "你知道吗？这一刻已经等了太久了");
+            IntroLine2 = this.GetLocalization(nameof(IntroLine2), () => "我对一切未知感到着迷，但最让我着迷的莫过于你的本质");
+            IntroLine3 = this.GetLocalization(nameof(IntroLine3), () => "我将会向你展示，我那些超越神明的造物");
+            IntroLine4 = this.GetLocalization(nameof(IntroLine4), () => "而你，则将在战斗中向我展示你的本质");
+            IntroLine5 = this.GetLocalization(nameof(IntroLine5), () => "现在，选择吧");
 
-            SelectionPrompt = this.GetLocalization(nameof(SelectionPrompt), () => "做出你的选择。");
-            BossRushLine = this.GetLocalization(nameof(BossRushLine), () => "做出你的选择。你有20秒的时间。");
+            SelectionPrompt = this.GetLocalization(nameof(SelectionPrompt), () => "做出你的选择");
+            BossRushLine = this.GetLocalization(nameof(BossRushLine), () => "做出你的选择。你有20秒的时间");
 
             //机械选项
             ChoiceAres = this.GetLocalization(nameof(ChoiceAres), () => "战神阿瑞斯");
