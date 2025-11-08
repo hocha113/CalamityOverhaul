@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static CalamityMod.Projectiles.Summon.SmallAresArms.ExoskeletonPanel;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
@@ -537,6 +538,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         /// </summary>
         private static void DrawCoinWithAmount(SpriteBatch spriteBatch, Vector2 position, int coinType, 
             int amount, float scale, float alpha, float pulse) {
+            Main.instance.LoadItem(coinType);
             //加载货币纹理
             Texture2D coinTexture = TextureAssets.Item[coinType].Value;
             Rectangle coinFrame = coinTexture.Bounds;
@@ -668,6 +670,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 spriteBatch.Draw(pixel, glowRect, glowColor);
             }
 
+            Main.instance.LoadItem(shopItem.itemType);
             //物品图标
             Texture2D itemTexture = TextureAssets.Item[shopItem.itemType].Value;
             Rectangle itemFrame = Main.itemAnimations[shopItem.itemType]?.GetFrame(itemTexture) ?? itemTexture.Bounds;
@@ -744,6 +747,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         /// </summary>
         private void DrawPriceCoin(SpriteBatch spriteBatch, Vector2 position, int coinType,
             int amount, float scale, float hoverProgress, bool canAfford) {
+            Main.instance.LoadItem(coinType);
             //加载货币纹理
             Texture2D coinTexture = TextureAssets.Item[coinType].Value;
             Rectangle coinFrame = coinTexture.Bounds;

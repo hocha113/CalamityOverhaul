@@ -459,6 +459,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (particleTimer % 120 == 0) {
                 SpawnTechBurst();
             }
+
+            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityMod/Sounds/Music/DraedonExoSelect");
         }
 
         private static void SpawnDataParticles() {

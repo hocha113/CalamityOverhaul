@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
     //便携式量子通讯装置
     internal class PQCD : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Tools/DraedonsRemote";
+        public override string Texture => CWRConstant.Item + "Tools/PQCD";
 
         public override void SetDefaults() {
             Item.width = 32;
