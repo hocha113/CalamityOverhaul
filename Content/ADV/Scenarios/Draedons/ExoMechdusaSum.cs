@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
@@ -38,6 +37,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         //Boss Rush模式文本
         public static LocalizedText BossRushLine { get; private set; }
 
+        /// <summary>
+        /// 是否启用简洁模式，如果是，跳过介绍直接选择机甲
+        /// </summary>
+        public static bool SimpleMode;
+
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
@@ -74,6 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         protected override void OnScenarioComplete() {
+            SimpleMode = false;
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
             ExoMechdusaSumRender.Cleanup();//清理机甲选择悬停特效
@@ -85,11 +90,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + alt, ADVAsset.DraedonADV, silhouette: false);
 
-            //检查是否为Boss Rush模式
-            bool isBossRush = BossRushEvent.BossRushActive;
+            //检查是否为简洁模式
+            bool simpleMode = CWRRef.GetBossRushActive() || SimpleMode;
 
-            if (isBossRush) {
-                //Boss Rush模式，直接显示选择界面，时间紧迫，不等你嗷
+            if (simpleMode) {
+                //简洁模式，直接显示选择界面，时间紧迫，不等你嗷
                 AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
                     new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
                     new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),

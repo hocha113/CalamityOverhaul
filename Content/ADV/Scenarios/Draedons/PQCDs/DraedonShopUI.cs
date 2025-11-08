@@ -9,7 +9,6 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityMod.Projectiles.Summon.SmallAresArms.ExoskeletonPanel;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
@@ -88,6 +87,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             uiAlpha = MathHelper.Clamp(uiAlpha, 0f, 1f);
             panelSlideProgress = MathHelper.Clamp(panelSlideProgress, 0f, 1f);
+            DraedonCallUI.Instance.Active = uiAlpha >= 0f;
 
             //更新科技动画
             UpdateTechEffects();
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 //检测物品点击和悬停
                 UpdateItemSelection(MousePosition.ToPoint());
             }
-            else if (keyLeftPressState == KeyPressState.Pressed && uiAlpha >= 1f) {
+            else if (keyLeftPressState == KeyPressState.Pressed && uiAlpha >= 1f && !DraedonCallUI.Instance.hoverInMainPage) {
                 _active = false;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = 0.2f });
             }
@@ -291,9 +291,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         public override void Draw(SpriteBatch spriteBatch) {
             if (uiAlpha <= 0f) return;
 
-            //绘制半透明背景
-            DrawDarkenBackground(spriteBatch);
-
             //绘制主面板
             DrawMainPanel(spriteBatch);
 
@@ -308,12 +305,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             //绘制滚动条提示
             DrawScrollHint(spriteBatch);
-        }
-
-        private void DrawDarkenBackground(SpriteBatch spriteBatch) {
-            Rectangle fullScreen = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            spriteBatch.Draw(pixel, fullScreen, Color.Black * (uiAlpha * 0.7f));
         }
 
         private void DrawMainPanel(SpriteBatch spriteBatch) {

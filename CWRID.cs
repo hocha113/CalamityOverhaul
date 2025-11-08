@@ -15,6 +15,7 @@ using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.DesertScourge;
+using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Melee;
@@ -110,6 +111,7 @@ namespace CalamityOverhaul
         public static int Item_Eradicator => ModContent.ItemType<Eradicator>();
         public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
         public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
+        public static int NPC_Draedon => ModContent.NPCType<Draedon>();
         public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
         public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
         public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
