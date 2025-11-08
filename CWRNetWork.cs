@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;
@@ -24,15 +23,8 @@ namespace CalamityOverhaul
         CrabulonFeed,
         CrabulonModifyNetWork,
         HalibutMouseWorld,
-        GiftScenarioNPC,
-        FirstMetSupCalNPC,
-        SupCalDefeatNPC,
-        SupCalPlayerDefeatTracker,
-        SupCalVictoryNPC,
-        DoGQuestTracker,
-        EternalBlazingNowNPC,
-        BaseDamageTracker,
         DraedonEffect,
+        SignalTowerTargetManager,
     }
 
     public static class CWRNetWork
@@ -65,13 +57,9 @@ namespace CalamityOverhaul
                 ModifyTruffle.HandleGlobalSleep(reader);
             }
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
-            GiftScenarioNPC.NetHandle(type, reader, whoAmI);
-            FirstMetSupCalNPC.NetHandle(type, reader, whoAmI);
-            SupCalDefeatNPC.NetHandle(type, reader, whoAmI);
-            SupCalPlayerDefeatTracker.NetHandle(type, reader, whoAmI);
-            SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
             HalibutPlayer.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);
+            SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
         }
     }
 }

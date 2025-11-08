@@ -1,13 +1,13 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Common
 {
-    internal class GiftScenarioNPC : GlobalNPC, IWorldInfo
+    internal class GiftScenarioNPC : DeathTrackingNPC, IWorldInfo
     {
         void IWorldInfo.OnWorldLoad() {
             foreach (var giftScenario in GiftScenarioBase.BossIDToInds.Values) {
@@ -15,28 +15,11 @@ namespace CalamityOverhaul.Content.ADV.Common
             }
         }
 
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => GiftScenarioBase.SpawnedDic.Keys.Any(g => g.TargetBossID == entity.type);
+
         public override void OnKill(NPC npc) {
             if (GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var giftScenarioBase)) {
                 GiftScenarioBase.SpawnedDic[giftScenarioBase] = true;
-            }
-            //仅服务器发送
-            if (VaultUtils.isServer && GiftScenarioBase.BossIDToInds.ContainsKey(npc.type)) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.GiftScenarioNPC);
-                packet.Write(npc.type);
-                packet.Send();
-            }
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;//仅客户端处理
-            }
-            if (type == CWRMessageType.GiftScenarioNPC) {
-                int bossID = reader.ReadInt32();
-                if (GiftScenarioBase.BossIDToInds.TryGetValue(bossID, out var giftScenarioBase)) {
-                    GiftScenarioBase.SpawnedDic[giftScenarioBase] = true;
-                }
             }
         }
     }

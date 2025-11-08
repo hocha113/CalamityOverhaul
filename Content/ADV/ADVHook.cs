@@ -14,14 +14,19 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private void OnNPCLootHook(On_NPC.orig_NPCLoot orig, NPC npc) {
-            if (VaultLoad.LoadenContent) {
-                foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
-                    if (n is BaseDamageTracker tracker) {//检查是否为BaseDamageTracker的子类
-                        tracker.Check(npc);//调用Check方法进行任务完成检查
-                    }
-                }
-            }
             orig.Invoke(npc);
+            if (!VaultLoad.LoadenContent) {
+                return;
+            }
+            if (!VaultUtils.isClient) {//仅客户端处理
+                return;
+            }
+            foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
+                if (n is not DeathTrackingNPC tracker) {//检查是否为DeathTrackingNPC的子类
+                    continue;
+                }
+                tracker.OnKill(npc);//调用OnKill方法进行任务完成检查
+            }
         }
     }
 }

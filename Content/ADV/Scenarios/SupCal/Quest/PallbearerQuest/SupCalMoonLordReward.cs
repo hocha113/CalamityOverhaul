@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.ADV.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -138,7 +139,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         }
     }
 
-    internal class SupCalMoonLordRewardNPC : GlobalNPC, IWorldInfo
+    internal class SupCalMoonLordRewardNPC : DeathTrackingNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
@@ -146,12 +147,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             Spawned = false;
             RandomTimer = 0;
         }
-        public override bool SpecialOnKill(NPC npc) {
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.MoonLordCore;
+        public override void OnKill(NPC npc) {
             if (npc.type == NPCID.MoonLordCore) {
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
             }
-            return false;
         }
     }
 }

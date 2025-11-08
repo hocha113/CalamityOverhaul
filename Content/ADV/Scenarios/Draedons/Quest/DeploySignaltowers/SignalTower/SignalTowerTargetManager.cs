@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -127,6 +128,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
             }
 
+            //发送生成的数据点集
+            SendGeneratedPoints(generatedPoints);
+
             //创建目标点对象
             for (int i = 0; i < generatedPoints.Count; i++) {
                 TargetPoints.Add(new SignalTowerTargetPoint(generatedPoints[i], PointRange, i));
@@ -134,6 +138,52 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             IsGenerated = true;
         }
+
+        #region NetWork
+        internal static void SendGeneratedPoints(List<Point> points) {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.SignalTowerTargetManager);
+            modPacket.Write(points.Count);
+            for (int i = 0; i < points.Count; i++) {
+                modPacket.Write(points[i].X);
+                modPacket.Write(points[i].Y);
+            }
+            modPacket.Send();
+        }
+
+        internal static List<Point> ReceiveGeneratedPoints(BinaryReader reader) {
+            List<Point> points = [];
+            int count = reader.ReadInt32();
+            TargetPoints.Clear();
+            for (int i = 0; i < count; i++) {
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                TargetPoints.Add(new SignalTowerTargetPoint(new Point(x, y), PointRange, i));
+                points.Add(new Point(x, y));
+            }
+            IsGenerated = true;
+            return points;
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (type == CWRMessageType.SignalTowerTargetManager) {
+                List<Point> points = ReceiveGeneratedPoints(reader);
+                if (VaultUtils.isServer) {
+                    ModPacket modPacket = CWRMod.Instance.GetPacket();
+                    modPacket.Write((byte)CWRMessageType.SignalTowerTargetManager);
+                    modPacket.Write(points.Count);
+                    for (int i = 0; i < points.Count; i++) {
+                        modPacket.Write(points[i].X);
+                        modPacket.Write(points[i].Y);
+                    }
+                    modPacket.Send(-1, whoAmI);
+                }
+            }
+        }
+        #endregion
 
         /// <summary>
         /// 检查位置是否安全

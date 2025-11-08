@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.ADV.Common
     /// <summary>
     /// 通用的伤害追踪系统基类，用于追踪玩家对特定NPC使用特定武器造成的伤害
     /// </summary>
-    internal abstract class BaseDamageTracker : GlobalNPC, IWorldInfo
+    internal abstract class BaseDamageTracker : DeathTrackingNPC, IWorldInfo
     {
         //伤害追踪数据
         internal static float TargetWeaponDamageDealt = 0f;
@@ -152,7 +152,9 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         public sealed override void OnKill(NPC npc) {
-            //弃用，改为在ADVHook中调用Check方法
+            if (IsTargetByID(npc)) {//这个判定是不必要的，不过还是写上吧
+                Check(npc);//作为 DeathTrackingNPC 的子类，OnKill会被客户端调用，所以这里的运行不会出现问题
+            }
         }
 
         internal void Check(NPC npc) {

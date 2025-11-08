@@ -49,6 +49,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override bool CanOpne {
             get {
+                //如果玩家不在世界中则不显示
+                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
+                    return false;
+                }
+
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     return false;
                 }
@@ -63,12 +68,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     return false;
                 }
 
-                //如果玩家不在世界中则不显示
-                if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
-                    return false;
-                }
-
-                return true;
+                return SignalTowerTargetManager.TargetPoints.Count > 0;
             }
         }
 

@@ -1,9 +1,6 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Materials;
-using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -89,7 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         private static void GiveReward() {
             //给予奖励
-            ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "",
+            ADVRewardPopup.ShowReward(CWRID.Item_AshesofCalamity, 999, "",
                 appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                 anchorProvider: () => {
                     var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
@@ -128,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class SupCalVictoryNPC : GlobalNPC, IWorldInfo
+    internal class SupCalVictoryNPC : DeathTrackingNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
@@ -138,46 +135,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             RandomTimer = 0;
         }
 
-        public override bool PreAI(NPC npc) {
-            if (!FirstMetSupCal.ThisIsToFight) {
-                return true;
-            }
-            if (npc.type != ModContent.NPCType<SupremeCalamitas>()) {
-                return true;
-            }
-            if (npc.ModNPC is SupremeCalamitas supCal) {
-                if (supCal.gettingTired5) {//进入最后的哔哔阶段，如果处于应该触发场景的时机，那么设置一下状态，避免哔哔
-                    DownedBossSystem.downedCalamitas = true;//把这个设置了就可以跳过哔哔了
-                }
-            }
-            return true;
-        }
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_SupremeCalamitas;
 
         public override void OnKill(NPC npc) {
-            if (FirstMetSupCal.ThisIsToFight && npc.type == ModContent.NPCType<SupremeCalamitas>()) {
-                Player player = Main.LocalPlayer;
-                if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    if (halibutPlayer.ADCSave.SupCalChoseToFight) {
-                        Spawned = true;
-                        RandomTimer = 60 * Main.rand.Next(2, 4);
-                    }
-                }
-                FirstMetSupCal.ThisIsToFight = false;//战斗结束
-
-                //仅服务器发送
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.SupCalVictoryNPC);
-                    packet.Send();
-                }
-            }
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;//仅客户端处理
-            }
-            if (type == CWRMessageType.SupCalVictoryNPC) {
+            if (FirstMetSupCal.ThisIsToFight && npc.type == CWRID.NPC_SupremeCalamitas) {
                 Player player = Main.LocalPlayer;
                 if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     if (halibutPlayer.ADCSave.SupCalChoseToFight) {

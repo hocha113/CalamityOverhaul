@@ -1,11 +1,6 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.NPCs.CalClone;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Projectiles.Boss;
-using CalamityMod.Tiles.Furniture.CraftingStations;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -186,10 +181,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void Build() => Add(Rolename2.Value, Choice1Response.Value);
             protected override void OnScenarioComplete() {
-                Vector2 spawnPos = Main.LocalPlayer.Center;
-                SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
-                Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
-                    , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
+                CWRRef.SumSupCal(Main.LocalPlayer.Center);
 
                 //标记玩家选择了战斗
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
@@ -214,7 +206,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void Build() => Add(Rolename2.Value + expressionDespise, Choice2Response.Value);
             protected override void OnScenarioStart() {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(CWRID.Item_AshesofCalamity, 999, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -243,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             if (!FirstMetSupCalNPC.Spawned) {
                 return;
             }
-            if (NPC.AnyNPCs(ModContent.NPCType<SupremeCalamitas>())) {
+            if (NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
                 FirstMetSupCalNPC.Spawned = false;//如果至尊灾厄已经存在，则重置状态，避免重复触发
                 return;
             }
@@ -257,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class FirstMetSupCalNPC : GlobalNPC, IWorldInfo
+    internal class FirstMetSupCalNPC : DeathTrackingNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
@@ -265,26 +257,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Spawned = false;
             RandomTimer = 0;
         }
-
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_CalamitasClone;//应用于目标NPC
         public override void OnKill(NPC npc) {
-            if (npc.type == ModContent.NPCType<CalamitasClone>()) {
-                Spawned = true;
-                RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
-
-                //仅服务器发送
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.FirstMetSupCalNPC);
-                    packet.Send();
-                }
-            }
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;//仅客户端处理
-            }
-            if (type == CWRMessageType.FirstMetSupCalNPC) {
+            if (npc.type == CWRID.NPC_CalamitasClone) {
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
             }

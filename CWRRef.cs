@@ -1,7 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
+using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
+using CalamityMod.Tiles.Furniture.CraftingStations;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -25,6 +29,11 @@ namespace CalamityOverhaul
                 3 => ModContent.ProjectileType<SwordsplosionRed>(),
                 _ => ModContent.ProjectileType<SwordsplosionBlue>(),
             };
+        }
+        public static void SumSupCal(Vector2 spawnPos) {
+            SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
+            Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
+                , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
         }
     }
 }

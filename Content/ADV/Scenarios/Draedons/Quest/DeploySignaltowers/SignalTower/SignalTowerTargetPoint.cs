@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {

@@ -14,6 +14,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.OldDuke;
@@ -92,6 +93,7 @@ namespace CalamityOverhaul
         public static int Item_LuxorsGift => ModContent.ItemType<LuxorsGift>();
         public static int Item_EternalBlizzard => ModContent.ItemType<EternalBlizzard>();
         public static int Item_Arbalest => ModContent.ItemType<Arbalest>();
+        public static int Item_AshesofCalamity => ModContent.ItemType<AshesofCalamity>();
         public static int Item_CoreofEleum => ModContent.ItemType<CoreofEleum>();
         public static int Item_Condemnation => ModContent.ItemType<Condemnation>();
         public static int Item_AshesofAnnihilation => ModContent.ItemType<AshesofAnnihilation>();
@@ -112,6 +114,7 @@ namespace CalamityOverhaul
         public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
         public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
         public static int NPC_Draedon => ModContent.NPCType<Draedon>();
+        public static int NPC_CalamitasClone => ModContent.NPCType<CalamitasClone>();
         public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
         public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
         public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();

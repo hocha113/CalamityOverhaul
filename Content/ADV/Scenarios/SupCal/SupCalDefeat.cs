@@ -1,7 +1,6 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -83,7 +82,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class SupCalDefeatNPC : GlobalNPC, IWorldInfo
+    internal class SupCalDefeatNPC : DeathTrackingNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
@@ -91,26 +90,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Spawned = false;
             RandomTimer = 0;
         }
-
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_SupremeCalamitas;
         public override void OnKill(NPC npc) {
-            if (npc.type == ModContent.NPCType<SupremeCalamitas>() && Main.LocalPlayer.GetItem().type == HalibutOverride.ID) {
-                Spawned = true;
-                RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
-
-                //仅服务器发送
-                if (VaultUtils.isServer) {
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.SupCalDefeatNPC);
-                    packet.Send();
-                }
-            }
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;//仅客户端处理
-            }
-            if (type == CWRMessageType.SupCalDefeatNPC) {
+            if (npc.type == CWRID.NPC_SupremeCalamitas && Main.LocalPlayer.GetItem().type == HalibutOverride.ID) {
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
             }
