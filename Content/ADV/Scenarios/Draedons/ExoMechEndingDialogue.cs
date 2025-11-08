@@ -1,4 +1,6 @@
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
 using System;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -81,6 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         protected override void OnScenarioComplete() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
+            DeploySignaltowerScenario.SetTurnOn();
         }
     }
 }

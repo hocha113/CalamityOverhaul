@@ -6340,6 +6340,17 @@ UI: {
 		// TargetCompletedText: 目标点[NUM]已完成!
 		// AllCompletedText: 量子纠缠网络已完成!
 	}
+
+	DraedonCallUI: {
+		// TitleText: 呼叫嘉登
+		// TitleTextDisabled: 呼叫禁用
+		// CallButtonText: 启动呼叫
+		// CallingText: 正在呼叫...
+		// DisabledButtonText: 禁用中
+		// ConnectingText: 正在连接...
+		// ConnectedText: 已连接
+		// DisabledReasonText: 嘉登已被呼叫
+	}
 }
 
 ADV: {

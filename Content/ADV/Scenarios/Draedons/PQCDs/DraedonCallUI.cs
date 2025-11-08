@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
@@ -51,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         /// <summary>
         /// 禁用原因文本
         /// </summary>
-        public string DisabledReason => "嘉登已被呼叫";
+        public string DisabledReason => DraedonCallUI.DisabledReasonText?.Value ?? "UNAVAILABLE";
     }
 
     /// <summary>
@@ -76,6 +77,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         public override float RenderPriority => 0.9f;
 
         public string LocalizationCategory => "UI";
+
+        //本地化文本
+        public static LocalizedText TitleText { get; private set; }
+        public static LocalizedText TitleTextDisabled { get; private set; }
+        public static LocalizedText CallButtonText { get; private set; }
+        public static LocalizedText CallingText { get; private set; }
+        public static LocalizedText DisabledButtonText { get; private set; }
+        public static LocalizedText ConnectingText { get; private set; }
+        public static LocalizedText ConnectedText { get; private set; }
+        public static LocalizedText DisabledReasonText { get; private set; }
+
+        public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "呼叫嘉登");
+            TitleTextDisabled = this.GetLocalization(nameof(TitleTextDisabled), () => "呼叫禁用");
+            CallButtonText = this.GetLocalization(nameof(CallButtonText), () => "启动呼叫");
+            CallingText = this.GetLocalization(nameof(CallingText), () => "正在呼叫...");
+            DisabledButtonText = this.GetLocalization(nameof(DisabledButtonText), () => "禁用中");
+            ConnectingText = this.GetLocalization(nameof(ConnectingText), () => "正在连接...");
+            ConnectedText = this.GetLocalization(nameof(ConnectedText), () => "已连接");
+            DisabledReasonText = this.GetLocalization(nameof(DisabledReasonText), () => "嘉登已被呼叫");
+        }
 
         //动画参数
         private float uiAlpha = 0f;
@@ -349,7 +371,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private void StartCall() {
             isCalling = true;
             callProgress = 0f;
-            statusText = "正在连接...";
+            statusText = ConnectingText.Value;
 
             //播放音效
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.3f });
@@ -357,7 +379,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void OnCallComplete() {
-            statusText = "已连接";
+            statusText = ConnectedText.Value;
 
             //播放完成音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.8f, Pitch = 0.5f });
@@ -516,7 +538,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
         private void DrawTitle(SpriteBatch spriteBatch) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string title = isDisabled ? "呼叫禁用" : "呼叫嘉登";
+            string title = isDisabled ? TitleTextDisabled.Value : TitleText.Value;
             Vector2 titleSize = font.MeasureString(title) * 1.1f;
             Vector2 titlePos = panelPosition + new Vector2((PanelWidth - titleSize.X) / 2f, 20);
 
@@ -708,7 +730,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             }
 
             //按钮文字
-            string buttonText = isDisabled ? "禁用中" : (isCalling ? "正在呼叫..." : "启动呼叫");
+            string buttonText = isDisabled ? DisabledButtonText.Value : (isCalling ? CallingText.Value : CallButtonText.Value);
             Vector2 textSize = font.MeasureString(buttonText) * 1.0f;
             Vector2 textPos = new Vector2(
                 callButtonRect.X + (callButtonRect.Width - textSize.X) / 2f,

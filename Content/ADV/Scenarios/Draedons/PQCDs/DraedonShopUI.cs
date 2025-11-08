@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
     /// <summary>
     /// 嘉登商店
     /// </summary>
-    internal class DraedonShopUI : UIHandle, ILocalizedModType
+    internal class DraedonShopUI : UIHandle
     {
         public static DraedonShopUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonShopUI>();
 
@@ -25,8 +25,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             get => _active || uiAlpha > 0f;
             set => _active = value;
         }
-
-        public string LocalizationCategory => "UI";
 
         //动画参数
         private float uiAlpha = 0f;

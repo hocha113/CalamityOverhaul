@@ -13,6 +13,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public string LocalizationCategory => "ADV";
         public override string Key => nameof(DeploySignaltowerScenario);
 
+        public static bool Spawn { get; private set; }
+        public static int RandTimer { get; private set; }
+
         //角色名称本地化
         public static LocalizedText DraedonName { get; private set; }
 
@@ -44,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //介绍台词
-            IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "我需要执行一项关键实验，而你是当前最适合协助我的个体");
+            IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "我需要执行一项关键行动，而你是当前最适合协助我的个体");
             IntroLine2 = this.GetLocalization(nameof(IntroLine2), () => "两百个泰拉年前，一场能量风暴横扫星系，摧毁了我在泰拉的绝大部分设施");
             IntroLine3 = this.GetLocalization(nameof(IntroLine3), () => "一切都太过遥远，当我意识到和泰拉的意识体断连时，已经两百年过去了");
             IntroLine4 = this.GetLocalization(nameof(IntroLine4), () => "在那场风暴后，星际跃迁开始变得极度不稳定，因此我必须重建泰拉上的基础系统");
@@ -100,6 +103,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 new Choice(ChoiceAccept.Value, OnAcceptQuest),
                 new Choice(ChoiceDecline.Value, OnDeclineQuest)
             ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+        }
+
+        internal static void SetTurnOn() {
+            Spawn = true;
+            RandTimer = Main.rand.Next(60 * 120, 60 * 160);//2到2分40秒后触发
+        }
+
+        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            if (save.DeploySignaltowerQuestCompleted) {
+                return;//任务已完成，不更新
+            }
+            if (!Spawn) {
+                return;//未触发任务，不更新
+            }
+            if (CWRWorld.HasBoss || CWRWorld.BossRush) {
+                return;//有Boss战斗时不触发
+            }
+            RandTimer.Domp();
+            if (--RandTimer > 0) {
+                return;//等待计时器
+            }
+            if (StartScenario()) {
+                Spawn = false;
+                RandTimer = 0;
+            }
         }
 
         //玩家接受任务
