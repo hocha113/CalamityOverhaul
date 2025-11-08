@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
         private void OnCallComplete() {
             statusText = "已连接";
-            
+
             //播放完成音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.8f, Pitch = 0.5f });
 
@@ -524,13 +524,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color normalGlow = new Color(80, 220, 255);
             Color disabledGlow = new Color(255, 100, 100);
             Color glowColor = Color.Lerp(normalGlow, disabledGlow, disabledTransition) * (uiAlpha * 0.8f);
-            
+
             for (int i = 0; i < 6; i++) {
                 float angle = MathHelper.TwoPi * i / 6f;
                 Vector2 offset = angle.ToRotationVector2() * 2.5f;
                 Utils.DrawBorderString(spriteBatch, title, titlePos + offset, glowColor * 0.4f, 1.1f);
             }
-            
+
             Color titleColor = Color.Lerp(Color.White, new Color(255, 180, 180), disabledTransition) * uiAlpha;
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor, 1.1f);
         }
@@ -538,7 +538,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private void DrawDraedonPortrait(SpriteBatch spriteBatch) {
             //获取嘉登头像纹理
             Texture2D portraitTexture = (isCalling || isDisabled)
-                ? ADVAsset.DraedonRedADV 
+                ? ADVAsset.DraedonRedADV
                 : ADVAsset.DraedonADV;
 
             if (portraitTexture == null) return;
@@ -562,10 +562,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             //绘制头像
             float rotation = portraitRotation * (1f + callProgress * 2f);
-            
+
             //禁用时的颜色调制
             Color portraitColor = Color.Lerp(Color.White, new Color(255, 150, 150), disabledTransition) * disabledAlpha;
-            
+
             spriteBatch.Draw(
                 portraitTexture,
                 portraitPosition,
@@ -676,7 +676,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color normalBg = Color.Lerp(new Color(20, 60, 100), new Color(40, 100, 160), buttonHoverProgress);
             Color disabledBg = Color.Lerp(new Color(60, 20, 20), new Color(80, 30, 30), buttonHoverProgress * 0.5f);
             Color callingBg = Color.Lerp(new Color(60, 20, 20), new Color(100, 40, 40), buttonHoverProgress);
-            
+
             Color buttonBg = isCalling ? callingBg : Color.Lerp(normalBg, disabledBg, disabledTransition);
             buttonBg *= uiAlpha * 0.7f;
 
@@ -687,7 +687,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color normalBorder = Color.Lerp(new Color(60, 180, 255), new Color(100, 220, 255), pulse);
             Color disabledBorder = Color.Lerp(new Color(150, 50, 50), new Color(200, 80, 80), pulse);
             Color callingBorder = Color.Lerp(new Color(255, 80, 80), new Color(255, 150, 150), pulse);
-            
+
             Color borderColor = isCalling ? callingBorder : Color.Lerp(normalBorder, disabledBorder, disabledTransition);
             borderColor *= uiAlpha * (0.7f + buttonHoverProgress * 0.3f);
 
@@ -718,7 +718,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color normalText = Color.Lerp(new Color(200, 230, 255), Color.White, buttonHoverProgress);
             Color disabledText = Color.Lerp(new Color(200, 150, 150), new Color(255, 180, 180), buttonHoverProgress * 0.5f);
             Color callingText = Color.Lerp(new Color(255, 200, 200), Color.White, buttonHoverProgress);
-            
+
             Color textColor = isCalling ? callingText : Color.Lerp(normalText, disabledText, disabledTransition);
             textColor *= uiAlpha;
 
@@ -817,7 +817,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             //随机故障条纹
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float glitch = (float)Math.Sin(glitchTimer * 3f);
-            
+
             if (glitch > 0.7f && Main.rand.NextBool(3)) {
                 int glitchCount = Main.rand.Next(2, 5);
                 for (int i = 0; i < glitchCount; i++) {
@@ -830,8 +830,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                         height
                     );
 
-                    Color glitchColor = Main.rand.NextBool() 
-                        ? new Color(255, 100, 100) 
+                    Color glitchColor = Main.rand.NextBool()
+                        ? new Color(255, 100, 100)
                         : new Color(100, 255, 255);
                     glitchColor *= uiAlpha * disabledTransition * 0.3f;
 
@@ -939,7 +939,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             public bool Update() {
                 Life++;
-                
+
                 //线条生长
                 if (Length < 200f) {
                     Length += Speed;
@@ -956,10 +956,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * MathHelper.Pi);
-                
+
                 Texture2D px = VaultAsset.placeholder2.Value;
                 Vector2 endPos = Position + Angle.ToRotationVector2() * Length;
-                
+
                 //绘制主线
                 Color lineColor = new Color(255, 80, 80) * (alpha * 0.8f * fade);
                 DrawLine(sb, Position, endPos, lineColor, Thickness);

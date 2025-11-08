@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -40,6 +41,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Line5 = this.GetLocalization(nameof(Line5), () => "如果有需要，随时可以通过量子通讯网络联系我");
         }
 
+        private static void Give(int id, int num) {
+            ADVRewardPopup.ShowReward(id, num, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                anchorProvider: () => {
+                    var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                    if (rect == Rectangle.Empty) {
+                        return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                    }
+                    return new Vector2(rect.Center.X, rect.Y - 70f);
+                }, offset: Vector2.Zero
+                , styleProvider: () => ADVRewardPopup.RewardStyle.Draedon);
+        }
+
         protected override void OnScenarioStart() {
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
@@ -65,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Add(DraedonName.Value + red, Line1.Value);
             Add(DraedonName.Value + alt, Line2.Value);
             Add(DraedonName.Value, Line3.Value);
-            Add(DraedonName.Value, Line4.Value);
+            Add(DraedonName.Value, Line4.Value, onStart: () => Give(ModContent.ItemType<PQCD>(), 1));
             Add(DraedonName.Value, Line5.Value);
         }
     }

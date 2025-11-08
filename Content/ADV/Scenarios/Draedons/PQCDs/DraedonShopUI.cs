@@ -442,7 +442,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
         private void DrawHeader(SpriteBatch spriteBatch) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            
+
             //标题
             string title = "DRAEDON QUANTUM STORE";
             Vector2 titleSize = font.MeasureString(title) * 1.3f;
@@ -460,8 +460,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             //分隔线
             Vector2 lineStart = panelPosition + new Vector2(40, 75);
             Vector2 lineEnd = lineStart + new Vector2(PanelWidth - 80, 0);
-            DrawGradientLine(spriteBatch, lineStart, lineEnd, 
-                new Color(60, 160, 240) * (uiAlpha * 0.9f), 
+            DrawGradientLine(spriteBatch, lineStart, lineEnd,
+                new Color(60, 160, 240) * (uiAlpha * 0.9f),
                 new Color(60, 160, 240) * (uiAlpha * 0.1f), 2f);
 
             //货币显示
@@ -527,7 +527,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         /// <summary>
         /// 绘制货币图标和数量
         /// </summary>
-        private static void DrawCoinWithAmount(SpriteBatch spriteBatch, Vector2 position, int coinType, 
+        private static void DrawCoinWithAmount(SpriteBatch spriteBatch, Vector2 position, int coinType,
             int amount, float scale, float alpha, float pulse) {
             Main.instance.LoadItem(coinType);
             //加载货币纹理
@@ -616,7 +616,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             }
         }
 
-        private void DrawShopItemSlot(SpriteBatch spriteBatch, ShopItem shopItem, Vector2 position, 
+        private void DrawShopItemSlot(SpriteBatch spriteBatch, ShopItem shopItem, Vector2 position,
             bool isHovered, bool isSelected, float hoverProgress, DynamicSpriteFont font) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle slotRect = new Rectangle(
@@ -668,14 +668,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             float itemScale = Math.Min(56f / itemFrame.Width, 56f / itemFrame.Height);
             itemScale *= 1f + hoverProgress * 0.1f; //悬停放大效果
             Vector2 itemDrawPos = position + new Vector2(42, ItemSlotHeight / 2f - 4);
-            
+
             //物品图标发光
             if (hoverProgress > 0.01f) {
                 Color itemGlow = new Color(80, 200, 255) * (uiAlpha * 0.3f * hoverProgress);
-                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, itemGlow, 0f, 
+                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, itemGlow, 0f,
                     itemFrame.Size() / 2f, itemScale * 1.15f, SpriteEffects.None, 0f);
             }
-            spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, Color.White * uiAlpha, 0f, 
+            spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, Color.White * uiAlpha, 0f,
                 itemFrame.Size() / 2f, itemScale, SpriteEffects.None, 0f);
 
             //物品名称
@@ -691,7 +691,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             float dataShift = (float)Math.Sin(dataStreamTimer * 1.5f + position.Y * 0.02f) * (1f + hoverProgress);
             Vector2 dataLinePos = position + new Vector2(dataShift + 90, ItemSlotHeight / 2f + 5);
             Color dataColor = new Color(60, 160, 240) * (uiAlpha * (0.15f + hoverProgress * 0.15f));
-            spriteBatch.Draw(pixel, new Rectangle((int)dataLinePos.X, (int)dataLinePos.Y, 
+            spriteBatch.Draw(pixel, new Rectangle((int)dataLinePos.X, (int)dataLinePos.Y,
                 (int)((PanelWidth - 150) * (0.7f + hoverProgress * 0.3f)), 1), dataColor);
         }
 
@@ -809,12 +809,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             int maxScroll = Math.Max(0, shopItems.Count - MaxVisibleItems);
-            
+
             //滚动进度条
             float scrollProgress = maxScroll > 0 ? scrollOffset / (float)maxScroll : 0f;
             Vector2 barPos = panelPosition + new Vector2(PanelWidth - 20, 120);
             int barHeight = (MaxVisibleItems * ItemSlotHeight) - 20;
-            
+
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle barBg = new Rectangle((int)barPos.X, (int)barPos.Y, 4, barHeight);
             spriteBatch.Draw(pixel, barBg, new Color(40, 100, 150) * (uiAlpha * 0.3f));
@@ -848,7 +848,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, null, color, rotation, new Vector2(0, 0.5f), 
+                spriteBatch.Draw(pixel, segPos, null, color, rotation, new Vector2(0, 0.5f),
                     new Vector2(segLength, thickness), SpriteEffects.None, 0f);
             }
         }
@@ -881,7 +881,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Velocity.Y -= 0.015f;
 
                 if (Life >= MaxLife) return true;
-                if (Pos.X < panelPos.X - 50 || Pos.X > panelPos.X + panelSize.X + 50 || 
+                if (Pos.X < panelPos.X - 50 || Pos.X > panelPos.X + panelSize.X + 50 ||
                     Pos.Y < panelPos.Y - 50 || Pos.Y > panelPos.Y + panelSize.Y + 50) {
                     return true;
                 }
@@ -896,9 +896,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Color c = new Color(80, 200, 255) * (0.8f * fade);
                 Texture2D px = VaultAsset.placeholder2.Value;
 
-                sb.Draw(px, Pos, null, c, Rot, new Vector2(0.5f), 
+                sb.Draw(px, Pos, null, c, Rot, new Vector2(0.5f),
                     new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, null, c * 0.9f, Rot + MathHelper.PiOver2, new Vector2(0.5f), 
+                sb.Draw(px, Pos, null, c * 0.9f, Rot + MathHelper.PiOver2, new Vector2(0.5f),
                     new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
             }
         }
@@ -936,11 +936,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Color core = new Color(100, 220, 255) * (alpha * 0.7f * fade);
                 Color ring = new Color(40, 140, 200) * (alpha * 0.5f * fade);
 
-                sb.Draw(px, Pos, null, ring, 0f, new Vector2(0.5f), 
+                sb.Draw(px, Pos, null, ring, 0f, new Vector2(0.5f),
                     new Vector2(scale * 2.2f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, null, core, 0f, new Vector2(0.5f), 
+                sb.Draw(px, Pos, null, core, 0f, new Vector2(0.5f),
                     new Vector2(scale), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, null, core * 0.4f, 0f, new Vector2(0.5f), 
+                sb.Draw(px, Pos, null, core * 0.4f, 0f, new Vector2(0.5f),
                     new Vector2(scale * 0.3f), SpriteEffects.None, 0f);
             }
         }
@@ -973,7 +973,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             public void Draw(SpriteBatch sb, float alpha) {
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * MathHelper.Pi);
-                
+
                 Vector2 direction = End - Start;
                 float length = direction.Length();
                 direction.Normalize();
@@ -982,12 +982,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 for (int i = 0; i < segments; i++) {
                     float segT = i / (float)segments;
                     float wave = (float)Math.Sin(FlowOffset + segT * MathHelper.TwoPi * 2f) * 0.5f + 0.5f;
-                    
+
                     Vector2 pos = Start + direction * (length * segT);
                     Color color = new Color(60, 160, 240) * (alpha * 0.15f * fade * wave);
-                    
+
                     Texture2D px = VaultAsset.placeholder2.Value;
-                    sb.Draw(px, pos, null, color, 0f, new Vector2(0.5f), 
+                    sb.Draw(px, pos, null, color, 0f, new Vector2(0.5f),
                         new Vector2(3f, 1.5f), SpriteEffects.None, 0f);
                 }
             }

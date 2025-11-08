@@ -1346,8 +1346,8 @@ Items: {
 	}
 
 	PQCD: {
-		// DisplayName: P Q C D
-		// Tooltip: ""
+		DisplayName: 便携式量子通讯器
+		Tooltip: ""
 	}
 }
 

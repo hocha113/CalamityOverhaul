@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.DataStructures;

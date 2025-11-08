@@ -1,97 +1,42 @@
-using System.Collections.Generic;
-using System.Linq;
+ï»¿using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {
     /// <summary>
-    /// ĞÅºÅËşÄ¿±êµãÊı¾İ
-    /// </summary>
-    public class SignalTowerTargetPoint
-    {
-        /// <summary>
-        /// Ä¿±êµãÎ»ÖÃ(Í¼¸ñ×ø±ê)
-        /// </summary>
-        public Point TilePosition { get; set; }
-
-        /// <summary>
-        /// ÓĞĞ§·¶Î§(Í¼¸ñµ¥Î»)
-        /// </summary>
-        public int Range { get; set; }
-
-        /// <summary>
-        /// ÊÇ·ñÒÑÍê³É
-        /// </summary>
-        public bool IsCompleted { get; set; }
-
-        /// <summary>
-        /// µãÎ»Ë÷Òı
-        /// </summary>
-        public int Index { get; set; }
-
-        public SignalTowerTargetPoint(Point position, int range, int index) {
-            TilePosition = position;
-            Range = range;
-            IsCompleted = false;
-            Index = index;
-        }
-
-        /// <summary>
-        /// ¼ì²éÖ¸¶¨Î»ÖÃÊÇ·ñÔÚ·¶Î§ÄÚ
-        /// </summary>
-        public bool IsInRange(Point tilePos) {
-            float distance = Vector2.Distance(TilePosition.ToVector2(), tilePos.ToVector2());
-            return distance <= Range;
-        }
-
-        /// <summary>
-        /// ¼ì²éÍæ¼ÒÊÇ·ñÔÚ·¶Î§ÄÚ
-        /// </summary>
-        public bool IsPlayerInRange(Player player) {
-            Point playerTilePos = player.Center.ToTileCoordinates();
-            return IsInRange(playerTilePos);
-        }
-
-        /// <summary>
-        /// »ñÈ¡ÊÀ½ç×ø±ê
-        /// </summary>
-        public Vector2 WorldPosition => TilePosition.ToVector2() * 16f;
-    }
-
-    /// <summary>
-    /// ĞÅºÅËşÄ¿±êµã¹ÜÀíÆ÷
+    /// ä¿¡å·å¡”ç›®æ ‡ç‚¹ç®¡ç†å™¨
     /// </summary>
     internal class SignalTowerTargetManager : ModSystem
     {
         /// <summary>
-        /// ËùÓĞÄ¿±êµã
+        /// æ‰€æœ‰ç›®æ ‡ç‚¹
         /// </summary>
         public static List<SignalTowerTargetPoint> TargetPoints { get; private set; } = [];
 
         /// <summary>
-        /// Ä¿±êµãÊıÁ¿
+        /// ç›®æ ‡ç‚¹æ•°é‡
         /// </summary>
         public const int TargetPointCount = 10;
 
         /// <summary>
-        /// Ã¿¸öµãÎ»µÄÓĞĞ§·¶Î§(Í¼¸ñ)
+        /// æ¯ä¸ªç‚¹ä½çš„æœ‰æ•ˆèŒƒå›´(å›¾æ ¼)
         /// </summary>
         public const int PointRange = 50;
 
         /// <summary>
-        /// µãÎ»Ö®¼äµÄ×îĞ¡¾àÀë(Í¼¸ñ)
+        /// ç‚¹ä½ä¹‹é—´çš„æœ€å°è·ç¦»(å›¾æ ¼)
         /// </summary>
         public const int MinDistanceBetweenPoints = 200;
 
         /// <summary>
-        /// ÊÇ·ñÒÑÉú³ÉÄ¿±êµã
+        /// æ˜¯å¦å·²ç”Ÿæˆç›®æ ‡ç‚¹
         /// </summary>
         public static bool IsGenerated { get; private set; }
 
         /// <summary>
-        /// »ñÈ¡ÀëÍæ¼Ò×î½üµÄÎ´Íê³ÉÄ¿±êµã
+        /// è·å–ç¦»ç©å®¶æœ€è¿‘çš„æœªå®Œæˆç›®æ ‡ç‚¹
         /// </summary>
         public static SignalTowerTargetPoint GetNearestTarget(Player player) {
             SignalTowerTargetPoint nearest = null;
@@ -113,22 +58,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// Éú³ÉÄ¿±êµãÎ»
+        /// ç”Ÿæˆç›®æ ‡ç‚¹ä½
         /// </summary>
         public static void GenerateTargetPoints() {
             TargetPoints.Clear();
 
-            //»ñÈ¡ÊÀ½ç³ß´ç
+            //è·å–ä¸–ç•Œå°ºå¯¸
             int worldWidth = Main.maxTilesX;
             int worldHeight = Main.maxTilesY;
 
-            //¶¨Òå¿ÉÓÃÇøÓò(±Ü¿ªµØÓüºÍÌì¿Õ)
-            int minY = (int)(worldHeight * 0.15f);//±Ü¿ªÌ«¸ß
-            int maxY = (int)(worldHeight * 0.85f);//±Ü¿ªµØÓü
+            //å®šä¹‰å¯ç”¨åŒºåŸŸ(é¿å¼€åœ°ç‹±å’Œå¤©ç©º)
+            int minY = (int)(worldHeight * 0.15f);//é¿å¼€å¤ªé«˜
+            int maxY = (int)(worldHeight * 0.85f);//é¿å¼€åœ°ç‹±
             int minX = (int)(worldWidth * 0.1f);
             int maxX = (int)(worldWidth * 0.9f);
 
-            //ÒÑÉú³ÉµÄµãÎ»
+            //å·²ç”Ÿæˆçš„ç‚¹ä½
             List<Point> generatedPoints = [];
 
             int attempts = 0;
@@ -137,17 +82,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             while (generatedPoints.Count < TargetPointCount && attempts < maxAttempts) {
                 attempts++;
 
-                //Ëæ»úÉú³ÉºòÑ¡µã
+                //éšæœºç”Ÿæˆå€™é€‰ç‚¹
                 int x = Main.rand.Next(minX, maxX);
                 int y = Main.rand.Next(minY, maxY);
                 Point candidate = new(x, y);
 
-                //¼ì²éÊÇ·ñÔÚ°²È«ÇøÓò(²»ÔÚÒºÌåÖĞ,ÓĞ×ã¹»¿Õ¼ä)
+                //æ£€æŸ¥æ˜¯å¦åœ¨å®‰å…¨åŒºåŸŸ(ä¸åœ¨æ¶²ä½“ä¸­,æœ‰è¶³å¤Ÿç©ºé—´)
                 if (!IsSafeLocation(candidate)) {
                     continue;
                 }
 
-                //¼ì²éÓëÒÑÓĞµãÎ»µÄ¾àÀë
+                //æ£€æŸ¥ä¸å·²æœ‰ç‚¹ä½çš„è·ç¦»
                 bool tooClose = false;
                 foreach (Point existingPoint in generatedPoints) {
                     float distance = Vector2.Distance(candidate.ToVector2(), existingPoint.ToVector2());
@@ -161,11 +106,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     continue;
                 }
 
-                //Ìí¼Óµ½ÁĞ±í
+                //æ·»åŠ åˆ°åˆ—è¡¨
                 generatedPoints.Add(candidate);
             }
 
-            //Èç¹ûÉú³ÉÊ§°Ü,Ê¹ÓÃ¾ùÔÈ·Ö²¼
+            //å¦‚æœç”Ÿæˆå¤±è´¥,ä½¿ç”¨å‡åŒ€åˆ†å¸ƒ
             if (generatedPoints.Count < TargetPointCount) {
                 generatedPoints.Clear();
                 int segmentWidth = (maxX - minX) / (TargetPointCount / 2);
@@ -182,7 +127,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
             }
 
-            //´´½¨Ä¿±êµã¶ÔÏó
+            //åˆ›å»ºç›®æ ‡ç‚¹å¯¹è±¡
             for (int i = 0; i < generatedPoints.Count; i++) {
                 TargetPoints.Add(new SignalTowerTargetPoint(generatedPoints[i], PointRange, i));
             }
@@ -191,10 +136,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// ¼ì²éÎ»ÖÃÊÇ·ñ°²È«
+        /// æ£€æŸ¥ä½ç½®æ˜¯å¦å®‰å…¨
         /// </summary>
         private static bool IsSafeLocation(Point tilePos) {
-            //¼ì²éÊÇ·ñÓĞ×ã¹»µÄ¿Õ¼ä(6x14ÇøÓò)
+            //æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿçš„ç©ºé—´(6x14åŒºåŸŸ)
             for (int x = -3; x < 3; x++) {
                 for (int y = -7; y < 7; y++) {
                     int checkX = tilePos.X + x;
@@ -206,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
 
-                    //±Ü¿ªÒºÌå
+                    //é¿å¼€æ¶²ä½“
                     if (tile.LiquidAmount > 0) {
                         return false;
                     }
@@ -217,17 +162,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// ¼ì²é²¢±ê¼ÇµãÎ»Íê³É
+        /// æ£€æŸ¥å¹¶æ ‡è®°ç‚¹ä½å®Œæˆ
         /// </summary>
         public static bool CheckAndMarkCompletion(Point towerTilePos) {
             foreach (SignalTowerTargetPoint point in TargetPoints) {
                 if (!point.IsCompleted && point.IsInRange(towerTilePos)) {
                     point.IsCompleted = true;
 
-                    //²¥·ÅÍê³ÉĞ§¹û
+                    //æ’­æ”¾å®Œæˆæ•ˆæœ
                     SignalTowerCompletionEffects.PlayCompletionEffect(point.WorldPosition, point.Index);
 
-                    //¼ì²éÊÇ·ñÈ«²¿Íê³É
+                    //æ£€æŸ¥æ˜¯å¦å…¨éƒ¨å®Œæˆ
                     bool allCompleted = true;
                     foreach (SignalTowerTargetPoint p in TargetPoints) {
                         if (!p.IsCompleted) {
@@ -247,7 +192,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// ÖØÖÃËùÓĞÄ¿±êµã
+        /// é‡ç½®æ‰€æœ‰ç›®æ ‡ç‚¹
         /// </summary>
         public static void Reset() {
             TargetPoints.Clear();
@@ -280,8 +225,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 return;
             }
 
-            List<Point> positions = tag.GetList<Point>("TargetPositions").ToList();
-            List<bool> completions = tag.GetList<bool>("TargetCompletions").ToList();
+            List<Point> positions = [.. tag.GetList<Point>("TargetPositions")];
+            List<bool> completions = [.. tag.GetList<bool>("TargetCompletions")];
 
             for (int i = 0; i < positions.Count && i < completions.Count; i++) {
                 SignalTowerTargetPoint point = new(positions[i], PointRange, i) {
@@ -293,8 +238,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             IsGenerated = true;
         }
 
-        public override void ClearWorld() {
-            Reset();
-        }
+        public override void ClearWorld() => Reset();
     }
 }

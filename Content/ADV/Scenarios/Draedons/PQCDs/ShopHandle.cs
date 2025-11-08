@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             for (int i = 0; i < Recipe.numRecipes; i++) {
                 Recipe recipe = Main.recipe[i];
-                
+
                 //检查配方是否包含嘉登材料
                 if (!ContainsDraedonMaterials(recipe)) {
                     continue;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 if (itemType == ModContent.ItemType<InfinityCatalyst>()) {
                     continue;
                 }
-                
+
                 //跳过已添加的物品
                 if (addedItems.Contains(itemType)) {
                     continue;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
                 //计算合理的价格
                 int price = CalculateReasonablePrice(recipe);
-                
+
                 //添加物品
                 tempItems.Add(new ShopItem(itemType, 1, price));
                 addedItems.Add(itemType);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         /// 检查配方是否包含嘉登材料
         /// </summary>
         private static bool ContainsDraedonMaterials(Recipe recipe) {
-            return recipe.requiredItem.Any(item => 
+            return recipe.requiredItem.Any(item =>
                 item.type == CWRID.Item_ExoPrism ||
                 item.type == CWRID.Item_DubiousPlating ||
                 item.type == CWRID.Item_MysteriousCircuitry
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             }
 
             Item item = new Item(itemType);
-            
+
             //如果物品本身有合理价值，直接返回
             if (item.value > 0 && item.value < Item.buyPrice(platinum: 50)) {
                 return item.value;

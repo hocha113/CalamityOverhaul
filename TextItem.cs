@@ -3,37 +3,35 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    //internal class TestProj : ModProjectile
-    //{
-    //    public override string Texture => "CalamityOverhaul/icon";
-    //    public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
-    //    public override bool IsLoadingEnabled(Mod mod) {
-    //        return false;
-    //    }
-    //    public override void SetDefaults() {
-    //        Projectile.width = Projectile.height = 66;
-    //        Projectile.timeLeft = 400;
-    //    }
+    internal class TestProj : ModProjectile
+    {
+        public override string Texture => "CalamityOverhaul/icon";
+        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;
+        }
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 66;
+            Projectile.timeLeft = 400;
+        }
 
-    //    public override void AI() {
-    //        Projectile.ai[0]++;
-    //        if (Projectile.ai[0] == 300) {
-    //            EbnSkyEffect.IsActive = true;
-    //        }
+        public override void AI() {
+            Projectile.ai[0]++;
+            if (Projectile.ai[0] == 360) {
+                ScenarioManager.Reset<QuestCompleteScenario>();
+                ScenarioManager.Start<QuestCompleteScenario>();
+            }
+        }
 
-    //        if (Projectile.ai[0] == 360) {
-    //            ScenarioManager.Start<EternalBlazingNow>();
-    //        }
-    //    }
-
-    //    public override bool PreDraw(ref Color lightColor) {
-    //        return false;
-    //    }
-    //}
+        public override bool PreDraw(ref Color lightColor) {
+            return false;
+        }
+    }
 
     internal class TextItem : ModItem
     {
@@ -99,7 +97,6 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
             //ScenarioManager.Start<EternalBlazingNow>();
             //EbnSkyEffect.IsActive = true;
@@ -113,8 +110,7 @@ namespace CalamityOverhaul
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
-            ScenarioManager.Reset<DeploySignaltowerScenario>();
-            ScenarioManager.Start<DeploySignaltowerScenario>();
+
             //Point16 point = Main.MouseWorld.ToTileCoordinates16();
 
             //MagikeCrossed.GetData(point).Domp();

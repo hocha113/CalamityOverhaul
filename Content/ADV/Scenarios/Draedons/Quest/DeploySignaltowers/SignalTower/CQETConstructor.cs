@@ -15,7 +15,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {
     /// <summary>
     /// 量子塔自我构建器
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
 
             //检测玩家是否在附近
-            Player closestPlayer = VaultUtils.FindClosestPlayer(CenterInWorld, GuideMaxDistance);
+            Player closestPlayer = CenterInWorld.FindClosestPlayer(GuideMaxDistance);
             showGuide = closestPlayer != null && !isConstructing;
 
             if (showGuide) {
@@ -364,7 +364,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                         Vector2 drawPos = new Vector2(checkX * 16, checkY * 16) - Main.screenPosition;
 
                         //计算当前方块的特殊效果（从下到上渐变）
-                        float heightFactor = 1f - (y / 14f);
+                        float heightFactor = 1f - y / 14f;
                         float alpha = alphaBase * heightFactor;
 
                         //边框颜色（青色）
