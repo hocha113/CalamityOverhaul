@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.Items.Materials;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShopUI;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
@@ -34,6 +36,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 }
 
                 int itemType = recipe.createItem.type;
+
+                if (itemType == ModContent.ItemType<InfinityCatalyst>()) {
+                    continue;
+                }
                 
                 //跳过已添加的物品
                 if (addedItems.Contains(itemType)) {

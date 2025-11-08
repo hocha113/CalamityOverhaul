@@ -8,13 +8,14 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
     /// <summary>
     /// 嘉登商店
     /// </summary>
-    internal class DraedonShopUI : UIHandle
+    internal class DraedonShopUI : UIHandle, ILocalizedModType
     {
         public static DraedonShopUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonShopUI>();
 
@@ -24,6 +25,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             get => _active || uiAlpha > 0f;
             set => _active = value;
         }
+
+        public string LocalizationCategory => "UI";
 
         //动画参数
         private float uiAlpha = 0f;
@@ -46,7 +49,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private int scrollOffset = 0;
         private const int MaxVisibleItems = 6;
         private const int ItemSlotHeight = 85;
-        private float[] slotHoverProgress = new float[20];
+        private float[] slotHoverProgress = new float[short.MaxValue];
 
         //UI尺寸
         private const int PanelWidth = 680;
@@ -492,18 +495,114 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             int silver = (int)((totalCopper % 10000) / 100);
             int copper = (int)(totalCopper % 100);
 
-            string currencyText = $"FUNDS: {platinum}p {gold}g {silver}s {copper}c";
+            //FUNDS文字
+            string fundsText = "FUNDS: ";
             float pulse = (float)Math.Sin(coinDisplayPulse) * 0.5f + 0.5f;
-            Color currencyColor = Color.Lerp(new Color(255, 215, 0), new Color(255, 255, 200), pulse * 0.3f) * uiAlpha;
+            Color fundsTitleColor = Color.Lerp(new Color(200, 220, 255), new Color(255, 255, 255), pulse * 0.3f) * uiAlpha;
+            Utils.DrawBorderString(spriteBatch, fundsText, currencyPos, fundsTitleColor, 0.85f);
 
-            //货币文字发光
-            Color currencyGlow = new Color(255, 215, 0) * (uiAlpha * 0.6f);
+            //计算FUNDS文字的宽度，用于定位货币图标
+            Vector2 fundsTextSize = font.MeasureString(fundsText) * 0.85f;
+            Vector2 coinPos = currencyPos + new Vector2(fundsTextSize.X, -2);
+
+            float coinScale = 0.8f;
+            float spacing = 8f; //货币之间的间距
+
+            //绘制铂金币
+            if (platinum > 0) {
+                DrawCoinWithAmount(spriteBatch, coinPos, ItemID.PlatinumCoin, platinum, coinScale, uiAlpha, pulse);
+                coinPos.X += GetCoinDisplayWidth(platinum, coinScale) + spacing;
+            }
+
+            //绘制金币
+            if (gold > 0) {
+                DrawCoinWithAmount(spriteBatch, coinPos, ItemID.GoldCoin, gold, coinScale, uiAlpha, pulse);
+                coinPos.X += GetCoinDisplayWidth(gold, coinScale) + spacing;
+            }
+
+            //绘制银币
+            if (silver > 0) {
+                DrawCoinWithAmount(spriteBatch, coinPos, ItemID.SilverCoin, silver, coinScale, uiAlpha, pulse);
+                coinPos.X += GetCoinDisplayWidth(silver, coinScale) + spacing;
+            }
+
+            //绘制铜币（或者当没有任何货币时显示0铜币）
+            if (copper > 0 || totalCopper == 0) {
+                DrawCoinWithAmount(spriteBatch, coinPos, ItemID.CopperCoin, copper, coinScale, uiAlpha, pulse);
+            }
+        }
+
+        /// <summary>
+        /// 绘制货币图标和数量
+        /// </summary>
+        private static void DrawCoinWithAmount(SpriteBatch spriteBatch, Vector2 position, int coinType, 
+            int amount, float scale, float alpha, float pulse) {
+            //加载货币纹理
+            Texture2D coinTexture = TextureAssets.Item[coinType].Value;
+            Rectangle coinFrame = coinTexture.Bounds;
+
+            //调整货币图标大小
+            float iconScale = Math.Min(24f / coinFrame.Width, 24f / coinFrame.Height) * scale;
+
+            //货币图标位置
+            Vector2 iconPos = position + new Vector2(12, 12);
+
+            //货币发光效果
+            Color glowColor = GetCoinGlowColor(coinType, pulse) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
-                Vector2 offset = angle.ToRotationVector2() * 1.5f;
-                Utils.DrawBorderString(spriteBatch, currencyText, currencyPos + offset, currencyGlow * 0.5f, 0.85f);
+                Vector2 offset = angle.ToRotationVector2() * (1.2f * scale);
+                spriteBatch.Draw(coinTexture, iconPos + offset, coinFrame, glowColor, 0f,
+                    coinFrame.Size() / 2f, iconScale * 1.1f, SpriteEffects.None, 0f);
             }
-            Utils.DrawBorderString(spriteBatch, currencyText, currencyPos, currencyColor, 0.85f);
+
+            //绘制货币图标
+            spriteBatch.Draw(coinTexture, iconPos, coinFrame, Color.White * alpha, 0f,
+                coinFrame.Size() / 2f, iconScale, SpriteEffects.None, 0f);
+
+            //绘制数量文字
+            string amountText = amount.ToString();
+            Vector2 textPos = position + new Vector2(26, 4);
+            Color textColor = Color.Lerp(Color.White, GetCoinColor(coinType), 0.4f) * alpha;
+
+            //文字发光
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4f;
+                Vector2 offset = angle.ToRotationVector2() * (1.0f * scale);
+                Utils.DrawBorderString(spriteBatch, amountText, textPos + offset, glowColor * 0.4f, 0.75f * scale);
+            }
+            Utils.DrawBorderString(spriteBatch, amountText, textPos, textColor, 0.75f * scale);
+        }
+
+        /// <summary>
+        /// 获取货币颜色
+        /// </summary>
+        private static Color GetCoinColor(int coinType) {
+            return coinType switch {
+                ItemID.PlatinumCoin => new Color(220, 220, 255),//铂金 - 亮白色
+                ItemID.GoldCoin => new Color(255, 215, 0),//金色
+                ItemID.SilverCoin => new Color(192, 192, 192),//银色
+                ItemID.CopperCoin => new Color(184, 115, 51),//铜色
+                _ => Color.White
+            };
+        }
+
+        /// <summary>
+        /// 获取货币发光颜色
+        /// </summary>
+        private static Color GetCoinGlowColor(int coinType, float pulse) {
+            Color baseColor = GetCoinColor(coinType);
+            return Color.Lerp(baseColor, Color.White, pulse * 0.3f);
+        }
+
+        /// <summary>
+        /// 计算货币显示的宽度
+        /// </summary>
+        private static float GetCoinDisplayWidth(int amount, float scale) {
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            string amountText = amount.ToString();
+            float textWidth = font.MeasureString(amountText).X * 0.75f * scale;
+            return 26 + textWidth; //图标宽度 + 文字宽度
         }
 
         private void DrawItemList(SpriteBatch spriteBatch) {
@@ -603,7 +702,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawPriceDisplay(SpriteBatch spriteBatch, ShopItem shopItem, Vector2 position, float hoverProgress) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 pricePos = position + new Vector2(90, 45);
 
             int platinum = shopItem.price / 1000000;
@@ -611,29 +709,87 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             int silver = (shopItem.price % 10000) / 100;
             int copper = shopItem.price % 100;
 
-            string priceText = "";
-            if (platinum > 0) priceText += $"{platinum}p ";
-            if (gold > 0) priceText += $"{gold}g ";
-            if (silver > 0) priceText += $"{silver}s ";
-            if (copper > 0 || priceText == "") priceText += $"{copper}c";
-
             bool canAfford = player.CanAfford(shopItem.price);
+            float coinScale = 0.65f;
+            float spacing = 6f;
+
+            Vector2 coinPos = pricePos;
+
+            //绘制铂金币
+            if (platinum > 0) {
+                DrawPriceCoin(spriteBatch, coinPos, ItemID.PlatinumCoin, platinum, coinScale, hoverProgress, canAfford);
+                coinPos.X += GetCoinDisplayWidth(platinum, coinScale) + spacing;
+            }
+
+            //绘制金币
+            if (gold > 0) {
+                DrawPriceCoin(spriteBatch, coinPos, ItemID.GoldCoin, gold, coinScale, hoverProgress, canAfford);
+                coinPos.X += GetCoinDisplayWidth(gold, coinScale) + spacing;
+            }
+
+            //绘制银币
+            if (silver > 0) {
+                DrawPriceCoin(spriteBatch, coinPos, ItemID.SilverCoin, silver, coinScale, hoverProgress, canAfford);
+                coinPos.X += GetCoinDisplayWidth(silver, coinScale) + spacing;
+            }
+
+            //绘制铜币
+            if (copper > 0 || shopItem.price == 0) {
+                DrawPriceCoin(spriteBatch, coinPos, ItemID.CopperCoin, copper, coinScale, hoverProgress, canAfford);
+            }
+        }
+
+        /// <summary>
+        /// 绘制价格货币图标和数量
+        /// </summary>
+        private void DrawPriceCoin(SpriteBatch spriteBatch, Vector2 position, int coinType,
+            int amount, float scale, float hoverProgress, bool canAfford) {
+            //加载货币纹理
+            Texture2D coinTexture = TextureAssets.Item[coinType].Value;
+            Rectangle coinFrame = coinTexture.Bounds;
+
+            //调整货币图标大小
+            float iconScale = Math.Min(20f / coinFrame.Width, 20f / coinFrame.Height) * scale;
+
+            //货币图标位置
+            Vector2 iconPos = position + new Vector2(10, 10);
+
+            //根据是否买得起设置颜色
             Color priceColor = canAfford
-                ? Color.Lerp(new Color(255, 215, 0), new Color(255, 255, 100), hoverProgress)
+                ? Color.Lerp(GetCoinColor(coinType), Color.Lerp(GetCoinColor(coinType), Color.White, 0.4f), hoverProgress)
                 : Color.Lerp(new Color(255, 100, 100), new Color(255, 150, 150), hoverProgress);
             priceColor *= uiAlpha;
 
-            //价格发光
+            //货币发光
             if (canAfford && hoverProgress > 0.01f) {
-                Color priceGlow = new Color(255, 215, 0) * (uiAlpha * 0.5f * hoverProgress);
+                Color glowColor = GetCoinGlowColor(coinType, hoverProgress) * (uiAlpha * 0.5f * hoverProgress);
                 for (int i = 0; i < 4; i++) {
                     float angle = MathHelper.TwoPi * i / 4f;
-                    Vector2 offset = angle.ToRotationVector2() * 1.2f;
-                    Utils.DrawBorderString(spriteBatch, priceText, pricePos + offset, priceGlow * 0.4f, 0.8f);
+                    Vector2 offset = angle.ToRotationVector2() * (1.0f * scale);
+                    spriteBatch.Draw(coinTexture, iconPos + offset, coinFrame, glowColor * 0.4f, 0f,
+                        coinFrame.Size() / 2f, iconScale * 1.15f, SpriteEffects.None, 0f);
                 }
             }
 
-            Utils.DrawBorderString(spriteBatch, priceText, pricePos, priceColor, 0.8f);
+            //绘制货币图标
+            spriteBatch.Draw(coinTexture, iconPos, coinFrame, priceColor, 0f,
+                coinFrame.Size() / 2f, iconScale, SpriteEffects.None, 0f);
+
+            //绘制数量文字
+            string amountText = amount.ToString();
+            Vector2 textPos = position + new Vector2(22, 2);
+
+            //文字发光
+            if (canAfford && hoverProgress > 0.01f) {
+                Color textGlowColor = GetCoinGlowColor(coinType, hoverProgress) * (uiAlpha * 0.5f * hoverProgress);
+                for (int i = 0; i < 4; i++) {
+                    float angle = MathHelper.TwoPi * i / 4f;
+                    Vector2 offset = angle.ToRotationVector2() * (0.8f * scale);
+                    Utils.DrawBorderString(spriteBatch, amountText, textPos + offset, textGlowColor * 0.4f, 0.7f * scale);
+                }
+            }
+
+            Utils.DrawBorderString(spriteBatch, amountText, textPos, priceColor, scale);
         }
 
         private void DrawTechEffects(SpriteBatch spriteBatch) {
