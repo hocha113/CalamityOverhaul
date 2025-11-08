@@ -6206,7 +6206,7 @@ UI: {
 	}
 
 	CQETConstructorTP: {
-		GuideText_NeedBlocks: 需要 {0} 个星流镀板
+		GuideText_NeedBlocks: 需要 {0} 个星流电镀块
 		GuideText_Ready: 准备就绪！
 	}
 
