@@ -6169,7 +6169,7 @@ UI: {
 	DoGQuestTrackerUI: {
 		QuestTitle: 委托：猎杀神明吞噬者
 		DamageContribution: 刻心者伤害
-		RequiredContribution: 需求: 85%
+		RequiredContribution: 需求: 80%
 	}
 
 	PallbearerQuestTrackerUI: {

@@ -106,6 +106,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreSwingAI() {
+            //右键冲刺突击行为，这样防止右键被左键硬控
+            if (DownRight && Owner.CountProjectilesOfID<HeartcarverDash>() == 0
+                && Owner.CountProjectilesOfID<HeartcarverAlt>() == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                ShootState shootState = Owner.GetShootState();
+                Projectile.NewProjectile(shootState.Source, Owner.Center, ShootVelocity.SafeNormalize(Vector2.Zero),
+                    ModContent.ProjectileType<HeartcarverDash>(), (int)(shootState.WeaponDamage * 1.5f)
+                    , shootState.WeaponKnockback * 2f, Owner.whoAmI);
+                Projectile.Kill();
+                return false;
+            }
             //短剑刺击行为
             StabBehavior(
                 initialLength: 35,

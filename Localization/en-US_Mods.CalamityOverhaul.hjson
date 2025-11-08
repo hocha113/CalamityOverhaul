@@ -6206,7 +6206,7 @@ UI: {
 	DoGQuestTrackerUI: {
 		QuestTitle: Commission: Hunt the Devourer of Gods
 		DamageContribution: Heartcarver Damage
-		RequiredContribution: Required: 85%
+		RequiredContribution: Required: 80%
 	}
 
 	PallbearerQuestTrackerUI: {

@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     /// </summary>
     internal class DoGQuestTracker : BaseDamageTracker
     {
-        private const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
+        internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
         internal override int TargetNPCType => ModContent.NPCType<DevourerofGodsHead>();
 
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀神明吞噬者");
             DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "刻心者伤害");
-            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 85%");
+            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 80%");
         }
 
         protected override (float current, float total, bool isActive) GetTrackingData() {
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         }
 
         protected override float GetRequiredContribution() {
-            return 0.85f; //85%
+            return DoGQuestTracker.REQUIRED_CONTRIBUTION;
         }
     }
 }

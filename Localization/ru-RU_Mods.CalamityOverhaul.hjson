@@ -6282,7 +6282,7 @@ UI: {
 	DoGQuestTrackerUI: {
 		QuestTitle: Поручение: Охота на Пожирателя Богов
 		DamageContribution: Урон от Сердцереза
-		RequiredContribution: Требуется: 85%
+		RequiredContribution: Требуется: 80%
 	}
 
 	PallbearerQuestTrackerUI: {
