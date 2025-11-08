@@ -81,10 +81,30 @@ namespace CalamityOverhaul.Content.Items.Placeable
         /// </summary>
         private bool hasMarkedCompletion;
 
+        /// <summary>
+        /// 连接动画进度计时器
+        /// </summary>
+        private int connectionAnimTimer;
+
+        /// <summary>
+        /// 是否正在播放连接动画
+        /// </summary>
+        private bool isPlayingConnectionAnim;
+
+        /// <summary>
+        /// 连接动画持续时间（帧数）
+        /// </summary>
+        private const int ConnectionAnimDuration = 180; // 3秒
+
         public override void Update() {
             //持续检查是否在目标点范围内
             if (!hasMarkedCompletion) {
                 CheckAndMarkTargetCompletion();
+            }
+
+            //更新连接动画
+            if (isPlayingConnectionAnim) {
+                UpdateConnectionAnimation();
             }
         }
 
@@ -103,6 +123,174 @@ namespace CalamityOverhaul.Content.Items.Placeable
             //检查信号塔位置是否在任何目标点范围内
             if (SignalTowerTargetManager.CheckAndMarkCompletion(tilePos)) {
                 hasMarkedCompletion = true;
+                //触发连接动画
+                TriggerConnectionAnimation();
+            }
+        }
+
+        /// <summary>
+        /// 触发信号塔连接动画
+        /// </summary>
+        private void TriggerConnectionAnimation() {
+            isPlayingConnectionAnim = true;
+            connectionAnimTimer = 0;
+
+            //播放连接成功音效
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item4 with {
+                Volume = 0.8f,
+                Pitch = 0.3f,
+                MaxInstances = 2
+            }, new Vector2(Position.X * 16, Position.Y * 16));
+
+            //额外的科技感音效
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
+                Volume = 0.6f,
+                Pitch = 0.5f,
+                MaxInstances = 1
+            }, new Vector2(Position.X * 16, Position.Y * 16));
+        }
+
+        /// <summary>
+        /// 更新连接动画
+        /// </summary>
+        private void UpdateConnectionAnimation() {
+            connectionAnimTimer++;
+
+            //获取信号塔顶部位置（世界坐标）
+            Vector2 towerTop = new Vector2(Position.X * 16 + 48, Position.Y * 16); // 信号塔宽6格（96像素），取中心点
+
+            //动画分为几个阶段
+            float progress = connectionAnimTimer / (float)ConnectionAnimDuration;
+
+            // 阶段1：初始能量聚集（0-30帧）
+            if (connectionAnimTimer <= 30) {
+                SpawnEnergyGatherEffect(towerTop, connectionAnimTimer / 30f);
+            }
+            // 阶段2：矩阵雨爆发（30-120帧）
+            else if (connectionAnimTimer <= 120) {
+                SpawnMatrixRainBurst(towerTop, (connectionAnimTimer - 30) / 90f);
+            }
+            // 阶段3：能量脉冲扩散（120-180帧）
+            else if (connectionAnimTimer <= ConnectionAnimDuration) {
+                SpawnEnergyPulseRings(towerTop, (connectionAnimTimer - 120) / 60f);
+            }
+
+            //动画结束
+            if (connectionAnimTimer >= ConnectionAnimDuration) {
+                isPlayingConnectionAnim = false;
+            }
+        }
+
+        /// <summary>
+        /// 生成能量聚集特效
+        /// </summary>
+        private static void SpawnEnergyGatherEffect(Vector2 position, float progress) {
+            //在信号塔周围生成向中心聚集的粒子
+            if (Main.rand.NextBool(2)) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float distance = MathHelper.Lerp(200f, 50f, progress);
+                Vector2 spawnPos = position + angle.ToRotationVector2() * distance;
+                Vector2 velocity = (position - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f);
+
+                Dust dust = Dust.NewDustPerfect(spawnPos, DustID.Electric, velocity);
+                dust.noGravity = true;
+                dust.scale = Main.rand.NextFloat(1.2f, 1.8f);
+                dust.color = new Color(80, 200, 255);
+                dust.alpha = 100;
+            }
+        }
+
+        /// <summary>
+        /// 生成矩阵雨爆发效果
+        /// </summary>
+        private static void SpawnMatrixRainBurst(Vector2 position, float progress) {
+            //每帧生成多条矩阵雨
+            int rainCount = (int)MathHelper.Lerp(3, 8, progress);
+            for (int i = 0; i < rainCount; i++) {
+                //在信号塔上方区域随机生成矩阵雨起始点
+                float horizontalSpread = Main.rand.NextFloat(-60f, 60f);
+                Vector2 rainStart = position + new Vector2(horizontalSpread, -Main.rand.Next(20, 50));
+
+                //向上发射的速度（模拟数据流向天空）
+                Vector2 velocity = new Vector2(
+                    Main.rand.NextFloat(-0.5f, 0.5f),
+                    Main.rand.NextFloat(-8f, -4f) // 负值表示向上
+                );
+
+                //创建矩阵雨字符粒子
+                SpawnMatrixCharacter(rainStart, velocity, progress);
+            }
+
+            //额外的能量波纹
+            if (Main.rand.NextBool(5)) {
+                for (int i = 0; i < 8; i++) {
+                    float angle = MathHelper.TwoPi * i / 8f;
+                    Vector2 waveVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+
+                    Dust dust = Dust.NewDustPerfect(position, DustID.TreasureSparkle, waveVelocity);
+                    dust.noGravity = true;
+                    dust.scale = Main.rand.NextFloat(1f, 1.5f);
+                    dust.color = new Color(100, 220, 255);
+                    dust.fadeIn = 1.2f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 生成矩阵字符粒子
+        /// </summary>
+        private static void SpawnMatrixCharacter(Vector2 position, Vector2 velocity, float intensity) {
+            //使用Dust模拟字符效果
+            Dust charDust = Dust.NewDustPerfect(position, DustID.Electric, velocity);
+            charDust.noGravity = true;
+            charDust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+            charDust.alpha = 50;
+
+            //科技蓝绿色渐变
+            float colorLerp = Main.rand.NextFloat();
+            charDust.color = Color.Lerp(
+                new Color(80, 200, 255),
+                new Color(100, 255, 200),
+                colorLerp
+            );
+
+            //添加轻微的拖尾效果
+            charDust.fadeIn = Main.rand.NextFloat(1.2f, 1.6f);
+        }
+
+        /// <summary>
+        /// 生成能量脉冲环
+        /// </summary>
+        private static void SpawnEnergyPulseRings(Vector2 position, float progress) {
+            //生成向外扩散的能量环
+            if (Main.rand.NextBool(3)) {
+                int ringSegments = 16;
+                float ringRadius = MathHelper.Lerp(50f, 150f, progress);
+
+                for (int i = 0; i < ringSegments; i++) {
+                    float angle = MathHelper.TwoPi * i / ringSegments;
+                    Vector2 ringPos = position + angle.ToRotationVector2() * ringRadius;
+                    Vector2 ringVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 2f);
+
+                    Dust dust = Dust.NewDustPerfect(ringPos, DustID.Electric, ringVelocity);
+                    dust.noGravity = true;
+                    dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
+                    dust.color = new Color(80, 200, 255) * (1f - progress);
+                    dust.alpha = 100;
+                }
+            }
+
+            //向上发射的余波粒子
+            if (Main.rand.NextBool(2)) {
+                Vector2 upwardVelocity = new Vector2(
+                    Main.rand.NextFloat(-1f, 1f),
+                    Main.rand.NextFloat(-6f, -3f)
+                );
+
+                Dust dust = Dust.NewDustPerfect(position, DustID.TreasureSparkle, upwardVelocity);
+                dust.noGravity = true;
+                dust.scale = Main.rand.NextFloat(1f, 1.5f);
+                dust.color = new Color(100, 220, 255) * (1f - progress);
             }
         }
     }
