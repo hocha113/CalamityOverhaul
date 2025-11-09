@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
+using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
@@ -62,6 +63,20 @@ namespace CalamityOverhaul
                     CalamityUtils.SpawnBossBetter(apolloSpawnPosition, ModContent.NPCType<Apollo>());
                     break;
             }
+        }
+        public static void SetDraedonDefeatTimer(NPC npc, float value) {
+            if (npc.ModNPC is Draedon draedon) {
+                draedon.DefeatTimer = value;
+            }
+        }
+        public static float GetDraedonDefeatTimer(NPC npc) {
+            if (npc.ModNPC is Draedon draedon) {
+                return draedon.DefeatTimer;
+            }
+            return 0f;
+        }
+        public static void SetAbleToSelectExoMech(Player player, bool value) {
+            player.Calamity().AbleToSelectExoMech = value;
         }
     }
 }
