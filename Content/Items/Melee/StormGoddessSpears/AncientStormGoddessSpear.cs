@@ -198,12 +198,45 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (!VaultUtils.isServer && Projectile.localAI[0] == 0) {
+                Projectile.localAI[0]++;
+
+                SoundStyle sound = SoundID.Item94;
+                sound.MaxInstances = 6;
+                sound.SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest;
+                sound.Pitch = 0.6f;
+                sound.Volume = 0.6f;
+                SoundEngine.PlaySound(sound, Projectile.position);
+
+                for (int i = 0; i < Main.rand.Next(13, 26); i++) {
+                    Vector2 pos = Projectile.Center;
+                    Vector2 particleSpeed = oldVelocity.RotatedByRandom(1.9f).UnitVector() * -Main.rand.NextFloat(12, 64);
+                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                        , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
+                    PRTLoader.AddParticle(energyLeak);
+                }
+            }
             Projectile.velocity = new Vector2(0, Math.Sign(Projectile.velocity.Y));
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
+                if (!VaultUtils.isServer) {
+                    SoundStyle sound = SoundID.Item94;
+                    sound.MaxInstances = 6;
+                    sound.SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest;
+                    SoundEngine.PlaySound(sound, Projectile.position);
+
+                    for (int i = 0; i < Main.rand.Next(13, 26); i++) {
+                        Vector2 pos = Projectile.Center;
+                        Vector2 particleSpeed = Projectile.velocity.RotatedByRandom(1.9f).UnitVector() * -Main.rand.NextFloat(12, 64);
+                        BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                            , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
+                        PRTLoader.AddParticle(energyLeak);
+                    }
+                }
+
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 15
                 , ModContent.ProjectileType<AncientStormArc>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
             }
@@ -225,7 +258,6 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.Item94, Projectile.position);
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                     Vector2 pos = Projectile.Center;
@@ -234,6 +266,10 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                         , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
+                SoundStyle sound = SoundID.Item94;
+                sound.MaxInstances = 6;
+                sound.SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest;
+                SoundEngine.PlaySound(sound, Projectile.position);
             }
             if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * 15
@@ -399,7 +435,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                         , 0.3f, light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
-                SoundEngine.PlaySound(SoundID.Item94, target.position);
+                if (Projectile.numHits == 0) {
+                    SoundStyle sound = SoundID.Item94;
+                    sound.MaxInstances = 6;
+                    sound.SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest;
+                    SoundEngine.PlaySound(sound, target.position);
+                }
             }
         }
 
