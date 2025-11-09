@@ -52,6 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         internal const string helenShock = " ";
         internal const string helenSolemn = " " + " ";
         internal const string helenWrath = " " + " " + " ";
+        internal const string helenSilence = " " + " " + " " + " ";
 
         //至尊灾厄表情常量
         private const string supCalDespise = " ";
@@ -97,6 +98,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenWrath, ADVAsset.Helen_wrathADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenWrath, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSilence, ADVAsset.Helen_silenceADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSilence, silhouette: false);
 
             //注册至尊灾厄立绘
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
@@ -186,7 +190,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             protected override void Build() {
                 //选择阻止比目鱼
                 Add(Rolename1.Value + helenSolemn, Choice1Line1.Value);
-                Add(Rolename1.Value, Choice1Line2.Value);
+                Add(Rolename1.Value + helenSilence, Choice1Line2.Value);
             }
         }
 
