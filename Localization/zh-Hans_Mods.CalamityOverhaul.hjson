@@ -3053,7 +3053,11 @@ RemakeItems: {
 
 	RMirrorBlade: {
 		DisplayName: 镜之刃
-		Tooltip: 发射翻飞的魔能镜刃
+		Tooltip:
+			'''
+			发射翻飞的魔能镜刃
+			真近战会将被击中的敌人的接触伤害添加进武器面板伤害中
+			'''
 	}
 
 	ROrderbringer: {

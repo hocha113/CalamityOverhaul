@@ -3092,7 +3092,12 @@ RemakeItems: {
 
 	RMirrorBlade: {
 		DisplayName: Mirror Blade
-		Tooltip: Launch a flying Magic Mirror blade
+		Tooltip:
+			'''
+			Launch a flying Magic Mirror blade.
+			True Close Combat will add the contact damage of the enemy 
+			that was hit to the damage displayed on the weapon panel.
+			'''
 	}
 
 	ROrderbringer: {
