@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -249,6 +250,35 @@ namespace CalamityOverhaul
                 return true;
             }
 
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试获取玩家的ADV存档实例
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="save"></param>
+        /// <returns></returns>
+        internal static bool TryGetADVSave(this Player player, out ADVSave save) {
+            save = null;
+            if (player.TryGetHalibutPlayer(out var halibutPlayer)) {
+                save = halibutPlayer.ADCSave;
+                return save != null;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试获取玩家的HalibutPlayer实例
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="halibutPlayer"></param>
+        /// <returns></returns>
+        internal static bool TryGetHalibutPlayer(this Player player, out HalibutPlayer halibutPlayer) {
+            halibutPlayer = null;
+            if (player.TryGetOverride(out halibutPlayer)) {
+                return true;
+            }
             return false;
         }
 

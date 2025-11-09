@@ -60,6 +60,8 @@ namespace CalamityOverhaul.Content.ADV
         public bool DeploySignaltowerFirstTowerBuilt;//玩家是否已搭建第一座信号塔
         public bool DeploySignaltowerQuestCompleted;//玩家是否完成了信号塔部署任务
         public bool UseConstructionBlueprint;//玩家是否使用了建筑蓝图QET
+        public bool FristExoMechdusaSum;//玩家是否第一次触发机甲嘉登场景
+        public bool ExoMechEndingDialogue;//玩家是否观看过机甲嘉登的结束对话场景
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];

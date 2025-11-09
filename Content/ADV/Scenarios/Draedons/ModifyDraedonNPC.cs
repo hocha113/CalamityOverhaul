@@ -31,8 +31,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     //正常战败对话
                     if (draedon.DefeatTimer > 0 && !defeat) {
                         defeat = true;
-                        ScenarioManager.Reset<ExoMechEndingDialogue>();
-                        ScenarioManager.Start<ExoMechEndingDialogue>();
+                        //触发战败对话场景
+                        if (Main.LocalPlayer.TryGetADVSave(out var save) && !save.ExoMechEndingDialogue) {//未观看过机甲嘉登的结束对话场景
+                            ScenarioManager.Reset<ExoMechEndingDialogue>();
+                            ScenarioManager.Start<ExoMechEndingDialogue>();
+                        }
                     }
 
                     if (DraedonEffect.IsActive) {//哔哔完后再退场
