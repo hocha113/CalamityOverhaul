@@ -1323,7 +1323,7 @@ Items: {
 	}
 
 	ConstructionBlueprintQET: {
-		DisplayName: 建造原图(量子纠缠塔)
+		DisplayName: 构造蓝图(量子纠缠塔)
 		Tooltip: 
 			'''
 			使用以窥见星光深处的秘密，习得跨越维度通讯的关键
