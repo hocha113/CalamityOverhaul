@@ -1324,19 +1324,18 @@ Items: {
 
 	ConstructionBlueprintQET: {
 		DisplayName: 构造蓝图(量子纠缠塔)
-		Tooltip: 
+		Tooltip:
 			'''
 			使用以窥见星光深处的秘密，习得跨越维度通讯的关键
 			你的双手将因此能够铸造连接两个世界的基石与高塔
 			'''
-
 		L1: 已获得制作自我搭建器(量子纠缠塔)的知识!
 		L2: 你已经学习过这个图纸了!
 	}
 
 	CQETConstructor: {
 		DisplayName: 自我搭建器(量子纠缠塔)
-		Tooltip: 
+		Tooltip:
 			'''
 			“蓝图已载入，等待建材与时机”
 			当基石已经就位，它将无声地编织星光，让高塔自平地而起
@@ -1346,7 +1345,7 @@ Items: {
 
 	DeploySignaltower: {
 		DisplayName: 量子纠缠塔
-		Tooltip: 
+		Tooltip:
 			'''
 			“嘉登对因果律的拙劣模仿”
 			无论跨越维度，亦能同步湮灭
@@ -1364,7 +1363,7 @@ Items: {
 
 	PQCD: {
 		DisplayName: 便携式量子通讯器
-		Tooltip: 
+		Tooltip:
 			'''
 			“网络已就绪，这是你应得的权限。”
 			使用以联络嘉登，开启嘉登工业的全息购物界面，同时可以直接召唤星流巨械
@@ -6263,6 +6262,11 @@ UI: {
 		ConnectingText: 正在连接...
 		ConnectedText: 已连接
 		DisabledReasonText: 嘉登已被呼叫
+	}
+
+	TzeentchDialogueBox: {
+		// ContinueHint: 继续
+		// FastHint: 加速
 	}
 }
 

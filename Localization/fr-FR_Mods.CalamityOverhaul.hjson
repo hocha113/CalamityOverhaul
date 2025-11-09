@@ -6225,6 +6225,11 @@ UI: {
 		// ConnectedText: 已连接
 		// DisabledReasonText: 嘉登已被呼叫
 	}
+
+	TzeentchDialogueBox: {
+		// ContinueHint: 继续
+		// FastHint: 加速
+	}
 }
 
 ADV: {
