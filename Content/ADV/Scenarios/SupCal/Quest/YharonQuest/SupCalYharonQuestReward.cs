@@ -57,11 +57,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
         }
 
         protected override void OnScenarioStart() {
-            SupCalSkyEffect.IsActive = true;
+            SupCalEffect.IsActive = true;
         }
 
         protected override void OnScenarioComplete() {
-            SupCalSkyEffect.IsActive = false;
+            SupCalEffect.IsActive = false;
         }
 
         protected override void Build() {

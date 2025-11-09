@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         protected override void OnScenarioStart() {
             //开始生成粒子
-            SupCalSkyEffect.IsActive = true;
+            SupCalEffect.IsActive = true;
         }
 
         //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
                 ThisIsToFight = true;
                 //停止粒子生成
-                SupCalSkyEffect.IsActive = false;
+                SupCalEffect.IsActive = false;
             }
         }
 
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             }
             protected override void OnScenarioComplete() {
                 //停止粒子生成
-                SupCalSkyEffect.IsActive = false;
+                SupCalEffect.IsActive = false;
             }
         }
 

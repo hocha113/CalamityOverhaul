@@ -48,12 +48,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
 
         protected override void OnScenarioStart() {
             //开始生成粒子
-            SupCalSkyEffect.IsActive = true;
+            SupCalEffect.IsActive = true;
         }
 
         protected override void OnScenarioComplete() {
             //停止粒子生成
-            SupCalSkyEffect.IsActive = false;
+            SupCalEffect.IsActive = false;
         }
 
         protected override void Build() {

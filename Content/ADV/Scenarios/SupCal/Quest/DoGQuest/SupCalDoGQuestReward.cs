@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         }
 
         protected override void OnScenarioStart() {
-            SupCalSkyEffect.IsActive = true;
+            SupCalEffect.IsActive = true;
         }
 
         protected override void OnScenarioComplete() {
-            SupCalSkyEffect.IsActive = false;
+            SupCalEffect.IsActive = false;
             HelensInterference.DelayTimer = Main.rand.Next(60 * 5, 60 * 6);
         }
 
