@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenWrath, ADVAsset.Helen_wrathADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenWrath, silhouette: false);
 
-            //注册至尊灾厄立绘（使用剪影效果）
+            //注册至尊灾厄立绘
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
 
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 ]);
             }
             else {
-                //无比目鱼版本 - 简化对话后直接结束
+                //无比目鱼版本
                 Add(Rolename2.Value, Line5.Value);
                 Add(Rolename2.Value, Line6.Value);
                 Add(Rolename2.Value, Line7.Value, onComplete: Complete);

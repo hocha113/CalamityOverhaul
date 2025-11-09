@@ -266,13 +266,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         Main.rand.NextFloat(-5f, -2.5f)
                     ),
                     Scale = Main.rand.NextFloat(1.2f, 2f),
-                    ai = new float[] { 0, 0 },
-                    colors = new Color[] {
+                    ai = [0, 0],
+                    colors = [
                         new Color(255, 180, 100),   // 极亮的橙黄
                         new Color(255, 100, 50),    // 明亮的橙红
                         new Color(200, 50, 30),     // 深红
                         new Color(100, 20, 10)      // 暗红
-                    },
+                    ],
                     minLifeTime = 100,
                     maxLifeTime = 180
                 };
