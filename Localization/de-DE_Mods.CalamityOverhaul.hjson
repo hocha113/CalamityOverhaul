@@ -6757,7 +6757,7 @@ ADV: {
 		// BossRushLine: 做出你的选择。你有20秒的时间。
 		// ChoiceAres: 战神阿瑞斯
 		// ChoiceThanatos: 死神塔纳托斯
-		// ChoiceTwins: 双子阿尔忒弥斯与阿波罗
+		// ChoiceTwins: 双子神阿尔忒弥斯
 	}
 
 	ExoMechEndingDialogue: {

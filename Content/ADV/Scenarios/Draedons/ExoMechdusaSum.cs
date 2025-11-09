@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             //机械选项
             ChoiceAres = this.GetLocalization(nameof(ChoiceAres), () => "战神阿瑞斯");
             ChoiceThanatos = this.GetLocalization(nameof(ChoiceThanatos), () => "死神塔纳托斯");
-            ChoiceTwins = this.GetLocalization(nameof(ChoiceTwins), () => "双子阿尔忒弥斯与阿波罗");
+            ChoiceTwins = this.GetLocalization(nameof(ChoiceTwins), () => "双子神阿尔忒弥斯");
         }
 
         protected override void OnScenarioStart() {
