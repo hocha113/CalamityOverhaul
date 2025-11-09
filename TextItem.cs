@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -98,7 +99,8 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            //ScenarioManager.Start<EternalBlazingNow>();
+            ScenarioManager.Reset<EternalBlazingNow>();
+            ScenarioManager.Start<EternalBlazingNow>();
             //EbnSkyEffect.IsActive = true;
             //显示成就提示 - 硫磺火风格
             //AchievementToast.ShowAchievement(

@@ -482,13 +482,17 @@ namespace CalamityOverhaul.Content.ADV
                 float hoverProgress = choiceHoverProgress[i];
                 Color choiceBg = choice.Enabled
                     ? Color.Lerp(new Color(20, 35, 50) * 0.3f, new Color(40, 70, 100) * 0.5f, hoverProgress)
-                    : new Color(30, 30, 35) * 0.2f;
+                    : new Color(15, 15, 20) * 0.15f;//禁用时更暗
 
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
                 //选项边框
-                if (hoverProgress > 0.01f) {
+                if (choice.Enabled && hoverProgress > 0.01f) {
                     DrawChoiceBorder(spriteBatch, choiceRect, edgeColor * (hoverProgress * 0.6f * alpha));
+                }
+                else if (!choice.Enabled) {
+                    //禁用状态的暗淡边框
+                    DrawChoiceBorder(spriteBatch, choiceRect, new Color(60, 60, 70) * (alpha * 0.25f));
                 }
 
                 //选项文本
@@ -646,13 +650,13 @@ namespace CalamityOverhaul.Content.ADV
         #region 通用绘制工具
         private void DrawChoiceText(SpriteBatch spriteBatch, Choice choice, Rectangle choiceRect, float alpha, Color edgeColor, float hoverProgress, int index) {
             string text = choice.Text;
-            Color textColor = choice.Enabled ? Color.White : new Color(120, 120, 130);
+            Color textColor = choice.Enabled ? Color.White : new Color(80, 80, 85);//禁用时更暗
 
             Vector2 textPos = new Vector2(choiceRect.X + ChoicePadding, choiceRect.Y + ChoiceHeight / 2f);
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
             textPos.Y -= textSize.Y / 2f;
 
-            //文本发光效果（仅启用的选项）
+            //文本发光效果
             if (choice.Enabled && hoverProgress > 0.3f) {
                 for (int j = 0; j < 4; j++) {
                     float ang = MathHelper.TwoPi * j / 4f;
@@ -662,7 +666,9 @@ namespace CalamityOverhaul.Content.ADV
                 }
             }
 
-            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.75f);
+            //绘制主文本，禁用时降低透明度
+            float textAlpha = choice.Enabled ? alpha : alpha * 0.35f;
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * textAlpha, 0.75f);
 
             //禁用提示
             if (!choice.Enabled && !string.IsNullOrEmpty(choice.DisabledHint)) {
@@ -673,17 +679,20 @@ namespace CalamityOverhaul.Content.ADV
                     textPos.Y + 2f
                 );
                 Utils.DrawBorderString(spriteBatch, hint, hintPos,
-                    new Color(180, 100, 100) * alpha, 0.65f);
+                    new Color(150, 80, 80) * (alpha * 0.6f), 0.65f);
             }
 
-            //选项序号
+            //选项序号，禁用时也变暗
             string indexText = $"{index + 1}.";
             Vector2 indexPos = new Vector2(
                 choiceRect.X - 18f,
                 textPos.Y
             );
+            Color indexColor = choice.Enabled 
+                ? edgeColor * (0.5f + hoverProgress * 0.5f) 
+                : new Color(60, 60, 70) * 0.4f;
             Utils.DrawBorderString(spriteBatch, indexText, indexPos,
-                edgeColor * (0.5f + hoverProgress * 0.5f) * alpha, 0.7f);
+                indexColor * alpha, 0.7f);
         }
 
         private static void DrawBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
@@ -840,12 +849,16 @@ namespace CalamityOverhaul.Content.ADV
                 float hoverProgress = choiceHoverProgress[i];
                 Color choiceBg = choice.Enabled
                     ? Color.Lerp(new Color(40, 10, 5) * 0.3f, new Color(100, 25, 15) * 0.5f, hoverProgress)
-                    : new Color(30, 20, 15) * 0.2f;
+                    : new Color(20, 10, 8) * 0.12f;//禁用时更暗
 
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-                if (hoverProgress > 0.01f) {
+                if (choice.Enabled && hoverProgress > 0.01f) {
                     DrawChoiceBorder(spriteBatch, choiceRect, flameColor * (hoverProgress * 0.6f * alpha));
+                }
+                else if (!choice.Enabled) {
+                    //禁用状态的暗淡边框
+                    DrawChoiceBorder(spriteBatch, choiceRect, new Color(80, 40, 30) * (alpha * 0.2f));
                 }
 
                 DrawChoiceText(spriteBatch, choice, choiceRect, alpha, flameColor, hoverProgress, i);
@@ -974,12 +987,16 @@ namespace CalamityOverhaul.Content.ADV
                 float hoverProgress = choiceHoverProgress[i];
                 Color choiceBg = choice.Enabled
                     ? Color.Lerp(new Color(8, 16, 30) * 0.3f, new Color(20, 40, 65) * 0.5f, hoverProgress)
-                    : new Color(15, 15, 20) * 0.2f;
+                    : new Color(10, 12, 15) * 0.15f;//禁用时更暗
 
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-                if (hoverProgress > 0.01f) {
+                if (choice.Enabled && hoverProgress > 0.01f) {
                     DrawChoiceBorder(spriteBatch, choiceRect, techColor * (hoverProgress * 0.6f * alpha));
+                }
+                else if (!choice.Enabled) {
+                    //禁用状态的暗淡边框
+                    DrawChoiceBorder(spriteBatch, choiceRect, new Color(40, 60, 80) * (alpha * 0.2f));
                 }
 
                 //绘制数据流效果

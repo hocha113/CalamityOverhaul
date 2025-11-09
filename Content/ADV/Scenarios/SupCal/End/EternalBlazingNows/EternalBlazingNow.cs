@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "比目鱼");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???硫火女巫???");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑？！这些火是从那里冒出来的");
+            Line1 = this.GetLocalization(nameof(Line1), () => "这些火......是从那里冒出来的");
             Line2 = this.GetLocalization(nameof(Line2), () => "过去身无法调动，过去正在被封锁");
             Line3 = this.GetLocalization(nameof(Line3), () => "这火是从过去燃烧到现在的，那个女巫，她没死，但为什么......");
             Line4 = this.GetLocalization(nameof(Line4), () => "明明刚才的战斗中，她一直没有表现出入侵过去的能力，现在'死后'却出现了这种情况");
@@ -141,8 +141,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //添加选项
                 AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
                     new Choice(Choice1Text.Value, Choice1),
-                    new Choice(Choice2Text.Value, Choice2),
-                ]);
+                    new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
+                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
             }
             else {
                 //无比目鱼版本
@@ -163,6 +163,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice1 = true;
             }
+            ScenarioManager.Reset<EternalBlazingNow_Choice1>();
             ScenarioManager.Start<EternalBlazingNow_Choice1>();
             Complete();
         }
