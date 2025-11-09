@@ -6674,31 +6674,6 @@ ADV: {
 		Line7: ......I really can't stand her.
 	}
 
-	EternalBlazingNow: {
-		Rolename1: Halibut
-		Rolename2: ???Brimstone Witch???
-		Line1: Are you kidding me?! Where is all this fire coming from?!
-		Line2: I can't access my past self... the past is being sealed away!
-		Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
-		Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
-		Line5: I cannot die... heh. But this is close enough.
-		Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
-		Line7: So, I want to ask one last thing of you.
-		Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
-		Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
-		Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
-		Line11: ...You want him to *replace* your consciousness?
-		Line12: That's right. It is necessary.
-		Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
-		Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
-		Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
-		QuestionLine: ......
-		Choice1Text: (Stop Halibut)
-		Choice2Text: (Remain silent)
-		Choice1Line1: ...Is this your choice?
-		Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
-	}
-
 	AchievementToast.AchievementUnlocked: Achievement Unlocked!
 
 	SupCalYharonQuestReward: {

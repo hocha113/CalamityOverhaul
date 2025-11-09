@@ -60,20 +60,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "比目鱼");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???硫火女巫???");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "这些火......是从那里冒出来的");
-            Line2 = this.GetLocalization(nameof(Line2), () => "过去身无法调动，过去正在被封锁");
-            Line3 = this.GetLocalization(nameof(Line3), () => "这火是从过去燃烧到现在的，那个女巫，她没死，但为什么......");
-            Line4 = this.GetLocalization(nameof(Line4), () => "明明刚才的战斗中，她一直没有表现出入侵过去的能力，现在'死后'却出现了这种情况");
-            Line5 = this.GetLocalization(nameof(Line5), () => "我是不会死的，不过也差不多了");
-            Line6 = this.GetLocalization(nameof(Line6), () => "你们很不错，或许真的有能力终结这个绝望的时代");
-            Line7 = this.GetLocalization(nameof(Line7), () => "所以我想最后拜托你们一件事");
-            Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现今还存在一缕硫磺火，'我'就不会消亡");
-            Line9 = this.GetLocalization(nameof(Line9), () => "但我的意识在沉沉浮浮的火海中终将被消磨殆尽");
-            Line10 = this.GetLocalization(nameof(Line10), () => "我有预感，如果没有遇到你们，我只能再撑30年");
-            Line11 = this.GetLocalization(nameof(Line11), () => "......你希望他代替你的意识？");
-            Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是必须的");
-            Line13 = this.GetLocalization(nameof(Line13), () => "当我意识完全消散后，我身上近乎完整的硫磺火将会彻底焚烧掉整个世界");
-            Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人之躯太过弱小，以我的躯体作为踏板，不更好吗？");
+            Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑......");
+            Line2 = this.GetLocalization(nameof(Line2), () => "过去的身影都消失了......这些火......是在封锁过去？！");
+            Line3 = this.GetLocalization(nameof(Line3), () => "这火从过去一直燃烧到现在......这个女巫......她的力量果然不是普通的魔法");
+            Line4 = this.GetLocalization(nameof(Line4), () => "刚才的战斗一直在隐藏吗，不过就算是这种力量的对抗，我也有信心再让你死一遍");
+            Line5 = this.GetLocalization(nameof(Line5), () => "我不会死......不过，也差不多了");
+            Line6 = this.GetLocalization(nameof(Line6), () => "你们做得很好......或许，你们真的是他口中那个值得等待的“时代唯一”");
+            Line7 = this.GetLocalization(nameof(Line7), () => "所以，我有最后一件事，想拜托你们");
+            Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡");
+            Line9 = this.GetLocalization(nameof(Line9), () => "可我的意识，却会在这无尽的火海中被逐渐磨灭");
+            Line10 = this.GetLocalization(nameof(Line10), () => "如果没有遇到你们，我最多还能撑三十年");
+            Line11 = this.GetLocalization(nameof(Line11), () => "......即使是完美的异类，也逃不过意识被侵蚀殆尽的结局吗？所以，你想让他继承你的躯体？");
+            Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是唯一的办法");
+            Line13 = this.GetLocalization(nameof(Line13), () => "当我的意识彻底消散，整个世界都会被焚尽");
+            Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......就以我的躯体做你们迈向终点的踏板吧");
             Line15 = this.GetLocalization(nameof(Line15), () => "我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
@@ -81,12 +81,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
 
             Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
-            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "......既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边");
-        }
-
-        protected override void OnScenarioStart() {
-            //开始生成粒子效果
-            EbnEffect.IsActive = true;
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "我明白了......");
         }
 
         protected override void Build() {
@@ -110,6 +105,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
 
+            /*
             //检查是否拥有比目鱼
             bool hasHalibut = false;
             try {
@@ -122,27 +118,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             if (hasHalibut) {
                 //有比目鱼版本对话
-                Add(Rolename1.Value + helenShock, Line1.Value);
-                Add(Rolename1.Value + helenShock, Line2.Value);
-                Add(Rolename1.Value + helenShock, Line3.Value);
-                Add(Rolename1.Value + helenShock, Line4.Value);
-                Add(Rolename2.Value, Line5.Value);
-                Add(Rolename2.Value, Line6.Value);
-                Add(Rolename2.Value, Line7.Value);
-                Add(Rolename2.Value + supCalDespise, Line8.Value);
-                Add(Rolename2.Value, Line9.Value);
-                Add(Rolename2.Value, Line10.Value);
-                Add(Rolename1.Value + helenShock, Line11.Value);
-                Add(Rolename2.Value + supCalDespise, Line12.Value);
-                Add(Rolename2.Value + supCalDespise, Line13.Value);
-                Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
-                Add(Rolename1.Value + helenWrath, Line15.Value);
-
-                //添加选项
-                AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
-                    new Choice(Choice1Text.Value, Choice1),
-                    new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
+                
             }
             else {
                 //无比目鱼版本
@@ -150,6 +126,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 Add(Rolename2.Value, Line6.Value);
                 Add(Rolename2.Value, Line7.Value, onComplete: Complete);
             }
+            */
+            Add(Rolename1.Value + helenShock, Line1.Value);
+            Add(Rolename1.Value + helenShock, Line2.Value);
+            Add(Rolename1.Value + helenShock, Line3.Value);
+            Add(Rolename1.Value + helenShock, Line4.Value);
+            Add(Rolename2.Value, Line5.Value);
+            Add(Rolename2.Value, Line6.Value);
+            Add(Rolename2.Value, Line7.Value);
+            Add(Rolename2.Value + supCalDespise, Line8.Value);
+            Add(Rolename2.Value, Line9.Value);
+            Add(Rolename2.Value, Line10.Value);
+            Add(Rolename1.Value + helenShock, Line11.Value);
+            Add(Rolename2.Value + supCalDespise, Line12.Value);
+            Add(Rolename2.Value + supCalDespise, Line13.Value);
+            Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
+            Add(Rolename1.Value + helenWrath, Line15.Value);
+
+            //添加选项
+            AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
+                new Choice(Choice1Text.Value, Choice1),
+                    new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
+                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
+        }
+
+        protected override void OnScenarioStart() {
+            //开始生成粒子效果
+            EbnEffect.IsActive = true;
         }
 
         private void Screenjittering() {
