@@ -151,6 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
+            DefaultDialogueStyle().BeginClose();
         }
 
         private enum ExoMechType

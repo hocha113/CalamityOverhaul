@@ -1,4 +1,4 @@
-ï»¿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
@@ -8,18 +8,18 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
     /// <summary>
-    /// æ°¸æ’ç‡ƒçƒ§çš„å¦‚ä»Šï¼Œåç»“å±€åœºæ™¯
+    /// ÓÀºãÈ¼ÉÕµÄÈç½ñ£¬»µ½á¾Ö³¡¾°
     /// </summary>
     internal class EternalBlazingNow : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(EternalBlazingNow);
         public string LocalizationCategory => "ADV";
 
-        //è§’è‰²åç§°
+        //½ÇÉ«Ãû³Æ
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
 
-        //å¯¹è¯å°è¯
+        //¶Ô»°Ì¨´Ê
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -36,69 +36,69 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText Line14 { get; private set; }
         public static LocalizedText Line15 { get; private set; }
 
-        //é€‰é¡¹æ–‡æœ¬
+        //Ñ¡ÏîÎÄ±¾
         public static LocalizedText QuestionLine { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
 
-        //é€‰æ‹©1åçš„å¯¹è¯
+        //Ñ¡Ôñ1ºóµÄ¶Ô»°
         public static LocalizedText Choice1Line1 { get; private set; }
         public static LocalizedText Choice1Line2 { get; private set; }
 
-        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨ç¡«ç£ºç«é£æ ¼
+        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃÁò»Ç»ğ·ç¸ñ
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
-        //æ¯”ç›®é±¼è¡¨æƒ…å¸¸é‡
+        //±ÈÄ¿Óã±íÇé³£Á¿
         internal const string helenShock = " ";
         internal const string helenSolemn = " " + " ";
         internal const string helenWrath = " " + " " + " ";
 
-        //è‡³å°Šç¾å„è¡¨æƒ…å¸¸é‡
+        //ÖÁ×ğÔÖ¶ò±íÇé³£Á¿
         private const string supCalDespise = " ";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "æ¯”ç›®é±¼");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???ç¡«ç«å¥³å·«???");
+            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "±ÈÄ¿Óã");
+            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???Áò»ğÅ®Î×???");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "å¼€ä»€ä¹ˆç©ç¬‘......");
-            Line2 = this.GetLocalization(nameof(Line2), () => "è¿‡å»çš„èº«å½±éƒ½æ¶ˆå¤±äº†......è¿™äº›ç«......æ˜¯åœ¨å°é”è¿‡å»ï¼Ÿï¼");
-            Line3 = this.GetLocalization(nameof(Line3), () => "è¿™ç«ä»è¿‡å»ä¸€ç›´ç‡ƒçƒ§åˆ°ç°åœ¨......è¿™ä¸ªå¥³å·«......å¥¹çš„åŠ›é‡æœç„¶ä¸æ˜¯æ™®é€šçš„é­”æ³•");
-            Line4 = this.GetLocalization(nameof(Line4), () => "åˆšæ‰çš„æˆ˜æ–—ä¸€ç›´åœ¨éšè—å—ï¼Œä¸è¿‡å°±ç®—æ˜¯è¿™ç§åŠ›é‡çš„å¯¹æŠ—ï¼Œæˆ‘ä¹Ÿæœ‰ä¿¡å¿ƒå†è®©ä½ æ­»ä¸€é");
-            Line5 = this.GetLocalization(nameof(Line5), () => "æˆ‘ä¸ä¼šæ­»......ä¸è¿‡ï¼Œä¹Ÿå·®ä¸å¤šäº†");
-            Line6 = this.GetLocalization(nameof(Line6), () => "ä½ ä»¬åšå¾—å¾ˆå¥½......æˆ–è®¸ï¼Œä½ ä»¬çœŸçš„æ˜¯ä»–å£ä¸­é‚£ä¸ªå€¼å¾—ç­‰å¾…çš„â€œæ—¶ä»£å”¯ä¸€â€");
-            Line7 = this.GetLocalization(nameof(Line7), () => "æ‰€ä»¥ï¼Œæˆ‘æœ‰æœ€åä¸€ä»¶äº‹ï¼Œæƒ³æ‹œæ‰˜ä½ ä»¬");
-            Line8 = this.GetLocalization(nameof(Line8), () => "åªè¦è¿™ä¸–é—´çš„è¿‡å»ä¸ç°åœ¨ï¼Œè¿˜å­˜æœ‰ä¸€ç¼•ç¡«ç£ºç«ï¼Œâ€œæˆ‘â€å°±ä¸ä¼šæ¶ˆäº¡");
-            Line9 = this.GetLocalization(nameof(Line9), () => "å¯æˆ‘çš„æ„è¯†ï¼Œå´ä¼šåœ¨è¿™æ— å°½çš„ç«æµ·ä¸­è¢«é€æ¸ç£¨ç­");
-            Line10 = this.GetLocalization(nameof(Line10), () => "å¦‚æœæ²¡æœ‰é‡åˆ°ä½ ä»¬ï¼Œæˆ‘æœ€å¤šè¿˜èƒ½æ’‘ä¸‰åå¹´");
-            Line11 = this.GetLocalization(nameof(Line11), () => "......å³ä½¿æ˜¯å®Œç¾çš„å¼‚ç±»ï¼Œä¹Ÿé€ƒä¸è¿‡æ„è¯†è¢«ä¾µèš€æ®†å°½çš„ç»“å±€å—ï¼Ÿæ‰€ä»¥ï¼Œä½ æƒ³è®©ä»–ç»§æ‰¿ä½ çš„èº¯ä½“ï¼Ÿ");
-            Line12 = this.GetLocalization(nameof(Line12), () => "æ²¡é”™ï¼Œè¿™æ˜¯å”¯ä¸€çš„åŠæ³•");
-            Line13 = this.GetLocalization(nameof(Line13), () => "å½“æˆ‘çš„æ„è¯†å½»åº•æ¶ˆæ•£ï¼Œæ•´ä¸ªä¸–ç•Œéƒ½ä¼šè¢«ç„šå°½");
-            Line14 = this.GetLocalization(nameof(Line14), () => "å†µä¸”ï¼Œå¦‚æœä½ ä»¬æƒ³ç»ˆç»“è¿™ä¸ªæ—¶ä»£ï¼Œå‡¡äººçš„èº¯å£³å¤ªè¿‡è„†å¼±......å°±ä»¥æˆ‘çš„èº¯ä½“åšä½ ä»¬è¿ˆå‘ç»ˆç‚¹çš„è¸æ¿å§");
-            Line15 = this.GetLocalization(nameof(Line15), () => "æˆ‘ç»å¯¹ä¸å…è®¸ï¼è®©ä»–å˜æˆä½ è¿™å‰¯é¬¼æ ·å­ï¼Ÿï¼å…ˆä»æˆ‘çš„å°¸ä½“ä¸Šè·¨è¿‡å»å§ï¼");
+            Line1 = this.GetLocalization(nameof(Line1), () => "¿ªÊ²Ã´ÍæĞ¦......");
+            Line2 = this.GetLocalization(nameof(Line2), () => "¹ıÈ¥µÄÉíÓ°¶¼ÏûÊ§ÁË......ÕâĞ©»ğ......ÊÇÔÚ·âËø¹ıÈ¥£¿£¡");
+            Line3 = this.GetLocalization(nameof(Line3), () => "Õâ»ğ´Ó¹ıÈ¥Ò»Ö±È¼ÉÕµ½ÏÖÔÚ......Õâ¸öÅ®Î×......ËıµÄÁ¦Á¿¹ûÈ»²»ÊÇÆÕÍ¨µÄÄ§·¨");
+            Line4 = this.GetLocalization(nameof(Line4), () => "¸Õ²ÅµÄÕ½¶·Ò»Ö±ÔÚÒş²ØÂğ£¬²»¹ı¾ÍËãÊÇÕâÖÖÁ¦Á¿µÄ¶Ô¿¹£¬ÎÒÒ²ÓĞĞÅĞÄÔÙÈÃÄãËÀÒ»±é");
+            Line5 = this.GetLocalization(nameof(Line5), () => "ÎÒ²»»áËÀ......²»¹ı£¬Ò²²î²»¶àÁË");
+            Line6 = this.GetLocalization(nameof(Line6), () => "ÄãÃÇ×öµÃºÜºÃ......»òĞí£¬ÄãÃÇÕæµÄÊÇËû¿ÚÖĞÄÇ¸öÖµµÃµÈ´ıµÄ¡°Ê±´úÎ¨Ò»¡±");
+            Line7 = this.GetLocalization(nameof(Line7), () => "ËùÒÔ£¬ÎÒÓĞ×îºóÒ»¼şÊÂ£¬Ïë°İÍĞÄãÃÇ");
+            Line8 = this.GetLocalization(nameof(Line8), () => "Ö»ÒªÕâÊÀ¼äµÄ¹ıÈ¥ÓëÏÖÔÚ£¬»¹´æÓĞÒ»ÂÆÁò»Ç»ğ£¬¡°ÎÒ¡±¾Í²»»áÏûÍö");
+            Line9 = this.GetLocalization(nameof(Line9), () => "¿ÉÎÒµÄÒâÊ¶£¬È´»áÔÚÕâÎŞ¾¡µÄ»ğº£ÖĞ±»Öğ½¥Ä¥Ãğ");
+            Line10 = this.GetLocalization(nameof(Line10), () => "Èç¹ûÃ»ÓĞÓöµ½ÄãÃÇ£¬ÎÒ×î¶à»¹ÄÜ³ÅÈıÊ®Äê");
+            Line11 = this.GetLocalization(nameof(Line11), () => "......¼´Ê¹ÊÇÍêÃÀµÄÒìÀà£¬Ò²ÌÓ²»¹ıÒâÊ¶±»ÇÖÊ´´ù¾¡µÄ½á¾ÖÂğ£¿ËùÒÔ£¬ÄãÏëÈÃËû¼Ì³ĞÄãµÄÇûÌå£¿");
+            Line12 = this.GetLocalization(nameof(Line12), () => "Ã»´í£¬ÕâÊÇÎ¨Ò»µÄ°ì·¨");
+            Line13 = this.GetLocalization(nameof(Line13), () => "µ±ÎÒµÄÒâÊ¶³¹µ×ÏûÉ¢£¬Õû¸öÊÀ½ç¶¼»á±»·Ù¾¡");
+            Line14 = this.GetLocalization(nameof(Line14), () => "¿öÇÒ£¬Èç¹ûÄãÃÇÏëÖÕ½áÕâ¸öÊ±´ú£¬·²ÈËµÄÇû¿ÇÌ«¹ı´àÈõ......¾ÍÒÔÎÒµÄÇûÌå×öÄãÃÇÂõÏòÖÕµãµÄÌ¤°å°É");
+            Line15 = this.GetLocalization(nameof(Line15), () => "ÎÒ¾ø¶Ô²»ÔÊĞí£¡ÈÃËû±ä³ÉÄãÕâ¸±¹íÑù×Ó£¿£¡ÏÈ´ÓÎÒµÄÊ¬ÌåÉÏ¿ç¹ıÈ¥°É£¡");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
-            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(é˜»æ­¢æ¯”ç›®é±¼)");
-            Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(ä¿æŒæ²‰é»˜)");
+            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(×èÖ¹±ÈÄ¿Óã)");
+            Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(±£³Ö³ÁÄ¬)");
 
-            Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......è¿™å°±æ˜¯ä½ çš„é€‰æ‹©å—ï¼Ÿ");
-            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "æˆ‘æ˜ç™½äº†......");
+            Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......Õâ¾ÍÊÇÄãµÄÑ¡ÔñÂğ£¿");
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "ÎÒÃ÷°×ÁË......");
         }
 
         protected override void Build() {
-            //æ³¨å†Œæ¯”ç›®é±¼ç«‹ç»˜
+            //×¢²á±ÈÄ¿ÓãÁ¢»æ
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
 
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenShock, ADVAsset.Helen_amazeADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenShock, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSolemn, ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSolemn, ADVAsset.Helen2ADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSolemn, silhouette: false);
 
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenWrath, ADVAsset.Helen_wrathADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenWrath, silhouette: false);
 
-            //æ³¨å†Œè‡³å°Šç¾å„ç«‹ç»˜
+            //×¢²áÖÁ×ğÔÖ¶òÁ¢»æ
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
 
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
 
             /*
-            //æ£€æŸ¥æ˜¯å¦æ‹¥æœ‰æ¯”ç›®é±¼
+            //¼ì²éÊÇ·ñÓµÓĞ±ÈÄ¿Óã
             bool hasHalibut = false;
             try {
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
@@ -117,11 +117,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             if (hasHalibut) {
-                //æœ‰æ¯”ç›®é±¼ç‰ˆæœ¬å¯¹è¯
+                //ÓĞ±ÈÄ¿Óã°æ±¾¶Ô»°
                 
             }
             else {
-                //æ— æ¯”ç›®é±¼ç‰ˆæœ¬
+                //ÎŞ±ÈÄ¿Óã°æ±¾
                 Add(Rolename2.Value, Line5.Value);
                 Add(Rolename2.Value, Line6.Value);
                 Add(Rolename2.Value, Line7.Value, onComplete: Complete);
@@ -143,15 +143,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
             Add(Rolename1.Value + helenWrath, Line15.Value);
 
-            //æ·»åŠ é€‰é¡¹
+            //Ìí¼ÓÑ¡Ïî
             AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
                 new Choice(Choice1Text.Value, Choice1),
-                    new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
+                new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
+            ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
         }
 
         protected override void OnScenarioStart() {
-            //å¼€å§‹ç”Ÿæˆç²’å­æ•ˆæœ
+            //¿ªÊ¼Éú³ÉÁ£×ÓĞ§¹û
             EbnEffect.IsActive = true;
         }
 
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         private void Choice1() {
-            //é€‰æ‹©1ï¼šé˜»æ­¢æ¯”ç›®é±¼æ‹¼å‘½
+            //Ñ¡Ôñ1£º×èÖ¹±ÈÄ¿ÓãÆ´Ãü
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice1 = true;
             }
@@ -174,29 +174,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         internal class EternalBlazingNow_Choice1 : ADVScenarioBase
         {
             public override string Key => nameof(EternalBlazingNow_Choice1);
-            //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨ç¡«ç£ºç«é£æ ¼
+            //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃÁò»Ç»ğ·ç¸ñ
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void OnScenarioStart() {
-                //å¼€å§‹ç”Ÿæˆç²’å­æ•ˆæœ
+                //¿ªÊ¼Éú³ÉÁ£×ÓĞ§¹û
                 EbnEffect.IsActive = true;
             }
             protected override void OnScenarioComplete() {
                 EbnEffect.IsActive = false;
             }
             protected override void Build() {
-                //é€‰æ‹©é˜»æ­¢æ¯”ç›®é±¼
+                //Ñ¡Ôñ×èÖ¹±ÈÄ¿Óã
                 Add(Rolename1.Value + helenSolemn, Choice1Line1.Value);
                 Add(Rolename1.Value, Choice1Line2.Value);
             }
         }
 
         private void Choice2() {
-            //é€‰æ‹©2ï¼šä¿æŒæ²‰é»˜
+            //Ñ¡Ôñ2£º±£³Ö³ÁÄ¬
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice2 = true;
             }
             Complete();
-            //åœæ­¢ç²’å­ç”Ÿæˆ
+            //Í£Ö¹Á£×ÓÉú³É
             EbnEffect.IsActive = false;
         }
     }

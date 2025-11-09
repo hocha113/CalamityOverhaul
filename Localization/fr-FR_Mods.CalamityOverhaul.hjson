@@ -6619,31 +6619,6 @@ ADV: {
 		// Line7: ......I really can't stand her.
 	}
 
-	EternalBlazingNow: {
-		// Rolename1: Halibut
-		// Rolename2: ???Brimstone Witch???
-		// Line1: Are you kidding me?! Where is all this fire coming from?!
-		// Line2: I can't access my past self... the past is being sealed away!
-		// Line3: This fire... it's burning from the past into the present. That witch... she wasn't dead! But why?
-		// Line4: During the fight, she clearly had no power to invade the past... but this happens 'after' she died?
-		// Line5: I cannot die... heh. But this is close enough.
-		// Line6: You are strong. Perhaps you truly have the power to end this hopeless era.
-		// Line7: So, I want to ask one last thing of you.
-		// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
-		// Line9: But my consciousness... in this endless, churning sea of fire... it will eventually be worn down to nothing.
-		// Line10: I have a premonition. If I hadn't met you, I would have lasted 30 more years, at most.
-		// Line11: ...You want him to *replace* your consciousness?
-		// Line12: That's right. It is necessary.
-		// Line13: When my consciousness fades completely, the near-perfect Brimstone Flame within me will reawaken. At that time, it will incinerate the entire world.
-		// Line14: Besides... a mortal body is too weak to end this era. Using my body as a stepping stone... isn't that a better path?
-		// Line15: Absolutely not! Letting him become a monster like you?! Over my dead body!
-		// QuestionLine: ......
-		// Choice1Text: (Stop Halibut)
-		// Choice2Text: (Remain silent)
-		// Choice1Line1: ...Is this your choice?
-		// Choice1Line2: If this is what you've chosen, I'll support you. No matter how far you walk down this path... no matter what it turns you into... I'll be by your side. Always...
-	}
-
 	// AchievementToast.AchievementUnlocked: Achievement Unlocked!
 
 	SupCalYharonQuestReward: {
@@ -6820,5 +6795,30 @@ ADV: {
 		// DraedonName: 嘉登
 		// ThirdDefeatLine1: 稳定的表现，这正是我所追求的完美的一部分
 		// ThirdDefeatLine2: 你已经证明了自己的价值不是偶然
+	}
+
+	EternalBlazingNow: {
+		// Rolename1: 比目鱼
+		// Rolename2: ???硫火女巫???
+		// Line1: 开什么玩笑......
+		// Line2: 过去的身影都消失了......这些火......是在封锁过去？！
+		// Line3: 这火从过去一直燃烧到现在......这个女巫......她的力量果然不是普通的魔法
+		// Line4: 刚才的战斗一直在隐藏吗，不过就算是这种力量的对抗，我也有信心再让你死一遍
+		// Line5: 我不会死......不过，也差不多了
+		// Line6: 你们做得很好......或许，你们真的是他口中那个值得等待的“时代唯一”
+		// Line7: 所以，我有最后一件事，想拜托你们
+		// Line8: 只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡
+		// Line9: 可我的意识，却会在这无尽的火海中被逐渐磨灭
+		// Line10: 如果没有遇到你们，我最多还能撑三十年
+		// Line11: ......即使是完美的异类，也逃不过意识被侵蚀殆尽的结局吗？所以，你想让他继承你的躯体？
+		// Line12: 没错，这是唯一的办法
+		// Line13: 当我的意识彻底消散，整个世界都会被焚尽
+		// Line14: 况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......就以我的躯体做你们迈向终点的踏板吧
+		// Line15: 我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！
+		// QuestionLine: ......
+		// Choice1Text: (阻止比目鱼)
+		// Choice2Text: (保持沉默)
+		// Choice1Line1: ......这就是你的选择吗？
+		// Choice1Line2: 我明白了......
 	}
 }
