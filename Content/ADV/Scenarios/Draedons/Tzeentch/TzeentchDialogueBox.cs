@@ -9,8 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
 {
     /// <summary>
-    /// 奸奇风格对话框 - 变化之神，魔法与诡计的化身
-    /// 特点：炫彩变幻的蓝紫粉色调、扭曲的几何图案、变幻的魔法火焰
+    /// 奸奇风格对话框
     /// </summary>
     internal class TzeentchDialogueBox : DialogueBoxBase
     {
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             shadow.Offset((int)shadowWarp, 0);
             spriteBatch.Draw(vaule, shadow, new Rectangle(0, 0, 1, 1), new Color(20, 0, 40) * (alpha * 0.7f));
 
-            //炫彩渐变背景 - 奸奇的蓝紫粉色调
+            //炫彩渐变背景
             int segments = 40;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -182,7 +181,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             //绘制奸奇魔法边框
             DrawTzeentchFrame(spriteBatch, panelRect, alpha, arcanePulse);
 
-            //绘制粒子（从后到前）
+            //绘制粒子，从后到前
             foreach (var thread in fateThreads) {
                 thread.Draw(spriteBatch, alpha * 0.7f);
             }

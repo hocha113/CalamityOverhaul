@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
     /// <summary>
-    /// 嘉登场景效果（科技风格）
+    /// 嘉登场景效果
     /// </summary>
     internal class DraedonSceneEffect : ModSceneEffect
     {
@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
     }
 
     /// <summary>
-    /// 嘉登场景效果管理器（负责粒子和特效生成）
+    /// 嘉登场景效果管理器
     /// </summary>
     internal class DraedonEffect : ModSystem
     {

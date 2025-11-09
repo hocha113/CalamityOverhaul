@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -24,6 +25,7 @@ namespace CalamityOverhaul
         CrabulonModifyNetWork,
         HalibutMouseWorld,
         DraedonEffect,
+        TzeentchEffect,
         SignalTowerTargetManager,
     }
 
@@ -59,6 +61,7 @@ namespace CalamityOverhaul
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             HalibutPlayer.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);
+            TzeentchEffect.NetHandle(type, reader, whoAmI);
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
         }
     }
