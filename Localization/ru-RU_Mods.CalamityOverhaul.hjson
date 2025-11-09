@@ -6921,4 +6921,30 @@ ADV: {
 		// Line4: 作为报酬，我会开放部分高级科技的访问权限给你
 		// Line5: 如果有需要，随时可以通过量子通讯网络联系我
 	}
+
+	ExoMechHardDefeat: {
+		// DraedonName: 嘉登
+		// HardDefeatLine1: 极限状态下的决策，这才是我想看到的数据
+		// HardDefeatLine2: 在压力之下你仍能保持理性，令人满意
+	}
+
+	ExoMechQuickDefeat: {
+		// DraedonName: 嘉登
+		// QuickDefeatLine1: ……这个时间远低于我的预测模型
+		// QuickDefeatLine2: 看来我低估了你当前的战斗效率
+		// QuickDefeatLine3: 或许是时候考虑更激进的设计方案了
+	}
+
+	ExoMechSecondDefeat: {
+		// DraedonName: 嘉登
+		// SecondDefeatLine1: 有趣，你的适应速度超出了我的预期
+		// SecondDefeatLine2: 数据显示你在上次战斗后已经进行了针对性的改进
+		// SecondDefeatLine3: 看来我需要重新评估你的学习曲线了
+	}
+
+	ExoMechThirdDefeat: {
+		// DraedonName: 嘉登
+		// ThirdDefeatLine1: 稳定的表现，这正是我所追求的完美的一部分
+		// ThirdDefeatLine2: 你已经证明了自己的价值不是偶然
+	}
 }

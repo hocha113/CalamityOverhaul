@@ -62,6 +62,9 @@ namespace CalamityOverhaul.Content.ADV
         public bool UseConstructionBlueprint;//玩家是否使用了建筑蓝图QET
         public bool FristExoMechdusaSum;//玩家是否第一次触发机甲嘉登场景
         public bool ExoMechEndingDialogue;//玩家是否观看过机甲嘉登的结束对话场景
+        public bool ExoMechSecondDefeat;//玩家是否观看过机甲嘉登的第二次战败对话
+        public bool ExoMechThirdDefeat;//玩家是否观看过机甲嘉登的第三次战败对话
+        public int ExoMechDefeatCount;//玩家击败机甲的次数
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
@@ -69,10 +72,14 @@ namespace CalamityOverhaul.Content.ADV
             //使用反射自动保存所有公共字段
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields) {
-                if (field.FieldType != typeof(bool)) {
-                    continue;
+                //处理bool类型字段
+                if (field.FieldType == typeof(bool)) {
+                    tag[field.Name] = field.GetValue(this);
                 }
-                tag[field.Name] = field.GetValue(this);
+                //处理int类型字段
+                else if (field.FieldType == typeof(int)) {
+                    tag[field.Name] = field.GetValue(this);
+                }
             }
 
             return tag;
@@ -82,8 +89,17 @@ namespace CalamityOverhaul.Content.ADV
             //使用反射自动加载所有公共字段
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields) {
-                if (tag.TryGet(field.Name, out bool value)) {
-                    field.SetValue(this, value);
+                //处理bool类型字段
+                if (field.FieldType == typeof(bool)) {
+                    if (tag.TryGet(field.Name, out bool boolValue)) {
+                        field.SetValue(this, boolValue);
+                    }
+                }
+                //处理int类型字段
+                else if (field.FieldType == typeof(int)) {
+                    if (tag.TryGet(field.Name, out int intValue)) {
+                        field.SetValue(this, intValue);
+                    }
                 }
             }
         }

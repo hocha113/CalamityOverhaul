@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.ExoMechs;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,6 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         private int timer;
         private bool defeat;
+        private int battleStartTime;
         public override bool AI() {
             timer++;
             return true;
@@ -25,16 +27,52 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 if (timer == 90) {
                     ScenarioManager.Reset<ExoMechdusaSum>();
                     ScenarioManager.Start<ExoMechdusaSum>();
+                    battleStartTime = timer;//记录战斗开始时间
                 }
 
                 if (npc.ModNPC is Draedon draedon) {
                     //正常战败对话
                     if (draedon.DefeatTimer > 0 && !defeat) {
                         defeat = true;
-                        //触发战败对话场景
-                        if (Main.LocalPlayer.TryGetADVSave(out var save) && !save.ExoMechEndingDialogue) {//未观看过机甲嘉登的结束对话场景
-                            ScenarioManager.Reset<ExoMechEndingDialogue>();
-                            ScenarioManager.Start<ExoMechEndingDialogue>();
+                        
+                        if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                            //增加击败次数
+                            save.ExoMechDefeatCount++;
+                            
+                            //计算战斗时长（帧数）
+                            int battleDuration = timer - battleStartTime;
+                            
+                            //判断玩家当前血量百分比
+                            float healthPercent = Main.LocalPlayer.statLife / (float)Main.LocalPlayer.statLifeMax2;
+                            
+                            //未观看过第一次结束对话，播放完整结束对话
+                            if (!save.ExoMechEndingDialogue) {
+                                ScenarioManager.Reset<ExoMechEndingDialogue>();
+                                ScenarioManager.Start<ExoMechEndingDialogue>();
+                            }
+                            //第二次击败
+                            else if (save.ExoMechDefeatCount == 2 && !save.ExoMechSecondDefeat) {
+                                ScenarioManager.Reset<ExoMechSecondDefeat>();
+                                ScenarioManager.Start<ExoMechSecondDefeat>();
+                            }
+                            //第三次击败
+                            else if (save.ExoMechDefeatCount == 3 && !save.ExoMechThirdDefeat) {
+                                ScenarioManager.Reset<ExoMechThirdDefeat>();
+                                ScenarioManager.Start<ExoMechThirdDefeat>();
+                            }
+                            //后续击败：根据战斗情况触发不同对话
+                            else if (save.ExoMechDefeatCount > 3) {
+                                //快速击败（战斗时长少于2分钟，即7200帧）
+                                if (battleDuration < 60 * 60 * 2) {
+                                    ScenarioManager.Reset<ExoMechQuickDefeat>();
+                                    ScenarioManager.Start<ExoMechQuickDefeat>();
+                                }
+                                //艰难战胜
+                                else if (healthPercent < 0.2f) {
+                                    ScenarioManager.Reset<ExoMechHardDefeat>();
+                                    ScenarioManager.Start<ExoMechHardDefeat>();
+                                }
+                            }
                         }
                     }
 
