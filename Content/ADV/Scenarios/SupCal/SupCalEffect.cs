@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     {
         public override int Music => -1;//音乐在 SupCalSkyPlayer 里控制
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => SupCalSkyEffect.IsActive;
+        public override bool IsSceneEffectActive(Player player) => SupCalEffect.IsActive;
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(SupCalSky.Name, isActive);
     }
 
@@ -66,9 +66,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         public override void Update(GameTime gameTime) {
-            _ = SupCalSkyEffect.Cek();
+            _ = SupCalEffect.Cek();
             //根据对话场景状态调整强度
-            if (SupCalSkyEffect.IsActive) {
+            if (SupCalEffect.IsActive) {
                 if (intensity < 1f) {
                     intensity += 0.015f;
                 }
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     ///<summary>
     ///至尊灾厄场景效果管理器（负责粒子生成）
     ///</summary>
-    internal class SupCalSkyEffect : ModSystem
+    internal class SupCalEffect : ModSystem
     {
         public static bool IsActive;
         public static int CekTimer = 0;
@@ -175,12 +175,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                         Main.rand.NextFloat(-3.5f, -1.5f)  //更强的上升力
                     ),
                     Scale = Main.rand.NextFloat(0.8f, 1.4f),
-                    ai = new float[] { 0, 0 },  //ai[1] = 0 表示使用标准漂浮模式
-                    colors = new Color[] {
+                    ai = [0, 0],  //ai[1] = 0 表示使用标准漂浮模式
+                    colors = [
                         new Color(255, 140, 70),   //亮橙色
                         new Color(200, 80, 40),    //暗橙红
                         new Color(140, 40, 30)     //深红
-                    },
+                    ],
                     minLifeTime = 120,
                     maxLifeTime = 200
                 };
