@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
 
         //迷雾效果参数
         private readonly MysticFog[] fogs = new MysticFog[88];
-        
+
         //魔法符文闪烁效果
         private readonly MagicRune[] runes = new MagicRune[16];
 
@@ -201,11 +201,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 }
 
                 Vector2 drawPos = fog.Position - Main.screenPosition;
-                
+
                 //根据时间变换颜色
                 int colorIndex = (int)(colorShiftTimer * 3f + i) % tzeentchColors.Length;
-                Color fogColor = Color.Lerp(tzeentchColors[colorIndex], 
-                    tzeentchColors[(colorIndex + 1) % tzeentchColors.Length], 
+                Color fogColor = Color.Lerp(tzeentchColors[colorIndex],
+                    tzeentchColors[(colorIndex + 1) % tzeentchColors.Length],
                     (float)Math.Sin(colorShiftTimer * 2f + i) * 0.5f + 0.5f);
 
                 float alpha = (float)Math.Sin(fog.AnimProgress * MathHelper.Pi) * intensity * 0.3f;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 Rectangle sourceRect = new Rectangle(frameX, frameY, frameWidth, frameHeight);
 
                 Vector2 drawPos = rune.Position - Main.screenPosition;
-                
+
                 //变幻的颜色
                 int colorIndex = (int)(colorShiftTimer * 2f + i * 1.5f) % tzeentchColors.Length;
                 Color runeColor = tzeentchColors[colorIndex];
@@ -303,21 +303,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         private void DrawMagicPulse(SpriteBatch sb) {
             //绘制从中心向外的魔法脉冲
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             float pulseAlpha = (float)Math.Sin(magicPulseTimer * 1.5f) * 0.5f + 0.5f;
             int colorIndex = (int)(colorShiftTimer * 1.5f) % tzeentchColors.Length;
-            Color pulseColor = Color.Lerp(tzeentchColors[colorIndex], 
-                tzeentchColors[(colorIndex + 1) % tzeentchColors.Length], 
+            Color pulseColor = Color.Lerp(tzeentchColors[colorIndex],
+                tzeentchColors[(colorIndex + 1) % tzeentchColors.Length],
                 pulseAlpha);
 
             //中心脉冲
             Vector2 centerPos = new Vector2(Main.screenWidth * 0.5f, Main.screenHeight * 0.5f);
             float radius = (float)Math.Sin(magicPulseTimer) * 100f + 200f;
-            
+
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f + magicPulseTimer;
                 Vector2 offset = angle.ToRotationVector2() * radius;
-                
+
                 sb.Draw(pixel,
                     centerPos + offset,
                     new Rectangle(0, 0, 3, 3),
@@ -328,12 +328,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         private void DrawColorRipples(SpriteBatch sb) {
             //绘制变幻色彩涟漪效果
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             int rippleCount = 3;
             for (int i = 0; i < rippleCount; i++) {
                 float phase = (colorShiftTimer + i * MathHelper.TwoPi / rippleCount) % MathHelper.TwoPi;
                 float rippleAlpha = (float)Math.Sin(phase) * 0.5f + 0.5f;
-                
+
                 int colorIndex = (int)(phase * 3f) % tzeentchColors.Length;
                 Color rippleColor = tzeentchColors[colorIndex];
 

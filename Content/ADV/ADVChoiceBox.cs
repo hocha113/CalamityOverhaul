@@ -688,8 +688,8 @@ namespace CalamityOverhaul.Content.ADV
                 choiceRect.X - 18f,
                 textPos.Y
             );
-            Color indexColor = choice.Enabled 
-                ? edgeColor * (0.5f + hoverProgress * 0.5f) 
+            Color indexColor = choice.Enabled
+                ? edgeColor * (0.5f + hoverProgress * 0.5f)
                 : new Color(60, 60, 70) * 0.4f;
             Utils.DrawBorderString(spriteBatch, indexText, indexPos,
                 indexColor * alpha, 0.7f);
