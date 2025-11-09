@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<StarflowPlatedBlock>(8)
+                .AddIngredient<StarflowPlatedBlock>(80)
                 .AddIngredient(ItemID.Wire, 20)
                 .AddIngredient(ItemID.Actuator, 20)
                 .AddCondition(RecipeCondition(out var condition), condition)

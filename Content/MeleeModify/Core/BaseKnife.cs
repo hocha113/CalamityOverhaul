@@ -130,6 +130,10 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (onHitNPCs.TryAdd(target.whoAmI, target)) {
                 KnifeHitNPC(target, hit, damageDone);
+                Owner.wingTime += Owner.wingTimeMax * 0.2f;
+                if (Owner.wingTime > Owner.wingTimeMax) {
+                    Owner.wingTime = Owner.wingTimeMax;
+                }
             }
         }
         /// <summary>

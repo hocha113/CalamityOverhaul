@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs.ExoMechs.Apollo;
-using CalamityMod.NPCs.ExoMechs.Ares;
-using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityMod.World;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -41,6 +36,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// 是否启用简洁模式，如果是，跳过介绍直接选择机甲
         /// </summary>
         public static bool SimpleMode;
+        public static bool CountDown;
+        public static int CountDownTimer;
 
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
@@ -49,7 +46,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private const string alt = " " + " ";
 
         void IWorldInfo.OnWorldLoad() {
-            //重置状态
+            SimpleMode = false;
+            CountDown = false;
+            CountDownTimer = 0;
         }
 
         public override void SetStaticDefaults() {
@@ -72,6 +71,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         protected override void OnScenarioStart() {
+            if (SimpleMode) {
+                CountDown = true;
+                CountDownTimer = 60 * 20;
+            }
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
             ExoMechdusaSumRender.RegisterHoverEffects();//注册机甲选择悬停特效
@@ -79,6 +82,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
         protected override void OnScenarioComplete() {
             SimpleMode = false;
+            CountDown = false;
+            CountDownTimer = 0;
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
             ExoMechdusaSumRender.Cleanup();//清理机甲选择悬停特效
@@ -96,9 +101,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (simpleMode) {
                 //简洁模式，直接显示选择界面，时间紧迫，不等你嗷
                 AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
-                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
-                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
-                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
+                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
+                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
+                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
                 ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
             else {
@@ -110,44 +115,43 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
                 //添加选择界面
                 AddWithChoices(DraedonName.Value + red, IntroLine5.Value, [
-                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMech.Prime)),
-                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMech.Destroyer)),
-                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMech.Twins))
+                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
+                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
+                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
                 ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
             }
         }
 
-        private void SummonMech(ExoMech mechType) {
-            //设置要召唤的机械类型
-            CalamityWorld.DraedonMechToSummon = mechType;
+        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            if (CountDown) {
+                if (CountDownTimer > 0) {
+                    CountDownTimer--;
+                }
+                else {
+                    //时间到，随机选择一个机甲进行召唤
+                    ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
+                    ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
+                    SummonMech(selectedMech);
+                    ADVChoiceBox.Hide();//手动清理选项框
+                    CountDown = false;
+                    CountDownTimer = 0;
+                }
+            }
+        }
 
-            DoSummon(Main.LocalPlayer);
-
+        private void SummonMech(ExoMechType mechType) {
+            //召唤设置的机械类型
+            CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
         }
 
-        public static void DoSummon(Player player) {
-            switch (CalamityWorld.DraedonMechToSummon) {
-                case ExoMech.Destroyer:
-                    Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
-                    NPC thanatos = CalamityUtils.SpawnBossBetter(thanatosSpawnPosition, ModContent.NPCType<ThanatosHead>());
-                    if (thanatos != null)
-                        thanatos.velocity = thanatos.SafeDirectionTo(player.Center) * 40f;
-                    break;
-
-                case ExoMech.Prime:
-                    Vector2 aresSpawnPosition = player.Center - Vector2.UnitY * 1400f;
-                    CalamityUtils.SpawnBossBetter(aresSpawnPosition, ModContent.NPCType<AresBody>());
-                    break;
-
-                case ExoMech.Twins:
-                    Vector2 artemisSpawnPosition = player.Center + new Vector2(-1100f, -1600f);
-                    Vector2 apolloSpawnPosition = player.Center + new Vector2(1100f, -1600f);
-                    CalamityUtils.SpawnBossBetter(artemisSpawnPosition, ModContent.NPCType<Artemis>());
-                    CalamityUtils.SpawnBossBetter(apolloSpawnPosition, ModContent.NPCType<Apollo>());
-                    break;
-            }
+        private enum ExoMechType
+        {
+            None = 0,
+            Destroyer = 1,
+            Prime = 2,
+            Twins = 3
         }
     }
 }

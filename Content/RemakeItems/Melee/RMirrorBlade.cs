@@ -1,14 +1,10 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RMirrorBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<MirrorBlade>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<MirrorBladeHeld>();
@@ -17,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class MirrorBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<MirrorBlade>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("MirrorBlade");
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
             drawTrailHighlight = false;
@@ -32,10 +28,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Length = 54;
         }
 
-        public override void Shoot() {
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<MirrorBlast>()
+        public override bool PreSwingAI() {
+            if (Time > 10 && Time % (4 * UpdateRate) == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, CWRID.Proj_MirrorBlast
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+            }
+            return base.PreSwingAI();
         }
 
         public override bool PreInOwner() {
@@ -43,6 +41,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwner();
+        }
+
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            int addDamage = target.damage + 100;
+            if (addDamage < 100) {
+                addDamage = 100;
+            }
+            if (addDamage > 400) {
+                addDamage = 400;
+            }
+            Item.damage = addDamage;
         }
     }
 }

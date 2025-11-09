@@ -771,12 +771,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            Player player = Main.player[projectile.owner];
+            if (!projectile.owner.TryGetPlayer(out var owner)) {
+                return;//不是本地玩家发出的弹幕不处理
+            }
             ViscositySD(projectile, target);
             SuperAttackOnHitNPC(projectile, target);
             WhipHit(projectile, target);
-            SpanTypesOnHitNPC(player, projectile, target, hit);
-            SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
+            SpanTypesOnHitNPC(owner, projectile, target, hit);
+            SpecialAmmoStateOnHitEffect(owner, projectile, target, hit);
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {

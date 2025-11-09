@@ -87,20 +87,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 return cachedPrice;
             }
 
-            int calculatedPrice;
+            //通过材料计算初始价格
+            int calculatedPrice = CalculatePriceFromMaterials(recipe);
 
             //获取物品基础价值
-            Item resultItem = new Item(resultType);
-            int baseValue = resultItem.value;
-
-            //如果基础价值合理（大于0且小于100铂金），直接使用并加成
-            if (baseValue > 0 && baseValue < Item.buyPrice(platinum: 100)) {
-                calculatedPrice = (int)(baseValue * 1.5f); //50%加成作为商店售价
-            }
-            else {
-                //基础价值不合理，通过材料计算
-                calculatedPrice = CalculatePriceFromMaterials(recipe);
-            }
+            Item resultItem = new(resultType);
 
             //确保最低价格
             int minimumPrice = Item.buyPrice(silver: 1);

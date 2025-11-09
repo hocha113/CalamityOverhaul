@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             SwingAIType = SwingAITypeEnum.UpAndDown;
             ShootSpeed = 18f;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 6 * UpdateRate;
         }
 
         public override void KnifeInitialize() {

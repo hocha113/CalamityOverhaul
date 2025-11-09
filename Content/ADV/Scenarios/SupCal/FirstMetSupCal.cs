@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void Build() => Add(Rolename2.Value, Choice1Response.Value);
             protected override void OnScenarioComplete() {
-                CWRRef.SumSupCal(Main.LocalPlayer.Center);
+                CWRRef.SummonSupCal(Main.LocalPlayer.Center);
 
                 //标记玩家选择了战斗
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {

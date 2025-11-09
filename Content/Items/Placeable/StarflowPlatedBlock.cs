@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class StarflowPlatedBlock : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/StarflowPlatedBlock";
-
         public override void SetDefaults() {
             Item.width = 16;
             Item.height = 16;

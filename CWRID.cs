@@ -123,6 +123,7 @@ namespace CalamityOverhaul
         public static int Proj_AngelicBeam => ModContent.ProjectileType<AngelicBeam>();
         public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
         public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
+        public static int Proj_MirrorBlast => ModContent.ProjectileType<MirrorBlast>();
         public static int Tile_PlagueInfuser => ModContent.TileType<PlagueInfuser>();
         public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
         public static int Buff_Plague => ModContent.BuffType<Plague>();

@@ -653,8 +653,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawCallingEffect(SpriteBatch spriteBatch, Vector2 position, float size, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
             //旋转的能量环
             for (int ring = 0; ring < 3; ring++) {
                 float ringRadius = size * (0.6f + ring * 0.2f) * callProgress;
@@ -673,17 +671,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                     DrawLine(spriteBatch, point1, point2, ringColor, 2f);
                 }
             }
-
+            Texture2D softGlow = CWRAsset.SoftGlow.Value;
             //中心光球
-            float coreSize = size * 0.3f * callProgress;
-            Color coreColor = new Color(255, 150, 150) * (alpha * 0.8f * callProgress);
+            float coreSize = size * callProgress * 0.1f;
+            Color coreColor = new Color(255, 150, 150, 0) * (alpha * 0.8f * callProgress);
             spriteBatch.Draw(
-                pixel,
+                softGlow,
                 position,
                 null,
                 coreColor,
                 0f,
-                new Vector2(0.5f),
+                softGlow.Size() / 2,
                 coreSize,
                 SpriteEffects.None,
                 0f

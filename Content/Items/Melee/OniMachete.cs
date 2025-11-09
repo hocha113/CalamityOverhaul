@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<OniHandMinion>(),
-                damage,
+                2666,//给定一个不变的基础伤害
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
@@ -474,6 +474,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private ref float HandIndex => ref Projectile.ai[0];
         private ref float StateRaw => ref Projectile.ai[1];
+        private ref float Timer => ref Projectile.ai[2];
         private ref float StateTimer => ref Projectile.localAI[0];
         private ref float AttackType => ref Projectile.localAI[1];
 
@@ -654,11 +655,19 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
+            if (Timer < 30) {
+                Projectile.damage = 0;
+            }
+            else {
+                Projectile.damage = (int)(2666 * Owner.GetDamage(DamageClass.Generic).Additive);
+            }
+
             //初始化个性
             InitializePersonality();
 
             Projectile.timeLeft = 60;
 
+            Timer++;
             StateTimer++;
             UpdateIdleOffset();
             UpdateShoulderPosition(Owner);

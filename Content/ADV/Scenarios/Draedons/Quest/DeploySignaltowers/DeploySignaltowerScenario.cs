@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         internal static void SetTurnOn() {
             Spawn = true;
-            RandTimer = Main.rand.Next(60 * 120, 60 * 160);//2到2分40秒后触发
+            RandTimer = Main.rand.Next(60 * 32, 60 * 50);//大概半分钟到一分钟之间触发
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
@@ -120,7 +120,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (CWRWorld.HasBoss || CWRWorld.BossRush) {
                 return;//有Boss战斗时不触发
             }
-            RandTimer.Domp();
             if (--RandTimer > 0) {
                 return;//等待计时器
             }
@@ -180,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             protected override void Build() {
                 DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
                 Add(DraedonName.Value, AcceptResponse.Value, onStart: () => Give(ModContent.ItemType<ConstructionBlueprintQET>(), 1));
-                Add(DraedonName.Value, L1.Value, onStart: () => Give(CWRID.Item_ExoPrism, 8082));
+                Add(DraedonName.Value, L1.Value, onStart: () => Give(CWRID.Item_ExoPrism, 8082 + Main.rand.Next(30)));//这里数量给个30的随机数，以增加真实感(所谓的真实感就是不确定性)
                 Add(DraedonName.Value, L2.Value);
                 Add(DraedonName.Value, L3.Value);
             }
