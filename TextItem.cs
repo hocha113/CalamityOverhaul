@@ -104,6 +104,14 @@ namespace CalamityOverhaul
             ScenarioManager.Start<EternalBlazingNow>();
             //ScenarioManager.Reset<FirstMetTzeentch>();
             //ScenarioManager.Start<FirstMetTzeentch>();
+            // 带专辑封面和自定义风格
+            //MusicToast.ShowMusic(
+            //    title: "雨湿的窗边",
+            //    artist: "腐姫",
+            //    albumCover: CWRAsset.icon_small.Value,
+            //    style: MusicToast.MusicStyle.Neon,
+            //    displayDuration: 450 // 7.5秒
+            //);
             //EbnSkyEffect.IsActive = true;
             //显示成就提示 - 硫磺火风格
             //AchievementToast.ShowAchievement(

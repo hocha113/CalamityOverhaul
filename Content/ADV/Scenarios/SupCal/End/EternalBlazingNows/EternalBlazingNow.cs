@@ -157,6 +157,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         protected override void OnScenarioStart() {
             //开始生成粒子效果
             EbnEffect.IsActive = true;
+
+            MusicToast.ShowMusic(
+                title: "雨湿的窗边",
+                artist: "腐姫",
+                albumCover: CWRAsset.icon_small.Value,
+                style: MusicToast.MusicStyle.Neon,
+                displayDuration: 450 // 7.5秒
+            );
         }
 
         private void Screenjittering() {
