@@ -298,6 +298,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     "往日被烈火所吞噬，以异类之躯触及永恒",
                     AchievementToast.ToastStyle.Brimstone
                 );
+                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                    save.EternalBlazingNow = true;//标记达成永恒燃烧的现在结局
+                }
             }
         }
 
