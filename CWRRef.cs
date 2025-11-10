@@ -5,10 +5,12 @@ using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -77,6 +79,23 @@ namespace CalamityOverhaul
         }
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
+        }
+        public static bool GetDownedCalamitas() {
+            return DownedBossSystem.downedCalamitas;
+        }
+        public static void SetDownedCalamitas(bool value) {
+            DownedBossSystem.downedCalamitas = value;
+        }
+        public static int GetSupCalGiveUpCounter(NPC npc) {
+            if (npc.ModNPC is SupremeCalamitas supCal) {
+                return supCal.giveUpCounter;
+            }
+            return 0;
+        }
+        public static void SetSupCalGiveUpCounter(NPC npc, int value) {
+            if (npc.ModNPC is SupremeCalamitas supCal) {
+                supCal.giveUpCounter = value;
+            }
         }
     }
 }

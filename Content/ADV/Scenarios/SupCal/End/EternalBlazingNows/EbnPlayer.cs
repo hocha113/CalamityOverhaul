@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// <summary>
         /// 玩家是否达成永恒燃烧的现在结局
         /// </summary>
-        public bool IsEbn => Player.TryGetADVSave(out var save) && save.EternalBlazingNow;
+        public bool IsEbn => IsConquered(Player);
+
+        public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
 
         #region 数据字段
         //视觉效果数据
@@ -303,11 +305,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 MaxLife = Main.rand.NextFloat(80f, 120f),
                 Scale = Main.rand.NextFloat(0.8f, 1.5f),
                 RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f),
-                Color = Main.rand.Next(new Color[] {
+                Color = Main.rand.Next([
                     new Color(255, 120, 60),
                     new Color(255, 80, 40),
                     new Color(200, 50, 30)
-                })
+                ])
             });
         }
 

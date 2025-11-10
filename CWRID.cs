@@ -19,6 +19,7 @@ using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
@@ -117,6 +118,8 @@ namespace CalamityOverhaul
         public static int NPC_CalamitasClone => ModContent.NPCType<CalamitasClone>();
         public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
         public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
+        public static int NPC_WITCH => ModContent.NPCType<WITCH>();
+        public static int NPC_DILF => ModContent.NPCType<DILF>();//什么叫他妈的DILF？？？？
         public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
         public static int NPC_AquaticScourgeHead => ModContent.NPCType<AquaticScourgeHead>();
         public static int NPC_OldDuke => ModContent.NPCType<OldDuke>();
