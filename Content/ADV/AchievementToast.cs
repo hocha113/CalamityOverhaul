@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.ADV
         private const float IconSize = 60f;          //图标大小
         private const float TextStartX = 90f;        //文字起始X
         private const float TextPaddingRight = 20f;  //文字右边距
-        
+
         private float currentPanelWidth = MinPanelWidth;
         private float OffscreenX => -currentPanelWidth - 50f;  //屏幕外左侧位置
         private const float OnscreenX = 20f;                   //屏幕上显示位置
@@ -188,20 +188,20 @@ namespace CalamityOverhaul.Content.ADV
 
         private void CalculatePanelWidth() {
             var font = FontAssets.MouseText.Value;
-            
+
             string titleText = currentAchievement.Title ?? AchievementUnlocked.Value;
             Vector2 titleSize = font.MeasureString(titleText) * 0.9f;
-            
+
             float maxTextWidth = titleSize.X;
-            
+
             if (!string.IsNullOrEmpty(currentAchievement.Description)) {
                 Vector2 descSize = font.MeasureString(currentAchievement.Description) * 0.7f;
                 maxTextWidth = Math.Max(maxTextWidth, descSize.X);
             }
-            
+
             //总宽度 = 文字起始X + 文字宽度 + 右边距
             float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
-            
+
             //限制在最小和最大宽度之间
             currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
         }
@@ -253,15 +253,16 @@ namespace CalamityOverhaul.Content.ADV
 
         private void UpdateCelebrate() {
             float t = stateTimer / (float)CelebrateDuration;
-            
+
             //平滑的光晕脉冲
             float pulseCurve = (float)Math.Sin(t * MathHelper.Pi);
             glowIntensity = pulseCurve * 0.6f;
-            
+
             //闪光效果 - 在开始和结束时闪烁
             if (stateTimer < 10) {
                 shimmerPhase = stateTimer / 10f * MathHelper.TwoPi;
-            } else if (stateTimer > CelebrateDuration - 10) {
+            }
+            else if (stateTimer > CelebrateDuration - 10) {
                 shimmerPhase = (CelebrateDuration - stateTimer) / 10f * MathHelper.TwoPi;
             }
 
@@ -274,7 +275,7 @@ namespace CalamityOverhaul.Content.ADV
                     particles.Add(new CelebrationParticle(panelCenter, currentAchievement.Style, true));
                 }
             }
-            
+
             //持续生成少量粒子
             particleSpawnTimer++;
             if (particleSpawnTimer >= 5) {
@@ -320,7 +321,7 @@ namespace CalamityOverhaul.Content.ADV
             if (currentAchievement.Style == ToastStyle.Ocean) {
                 //海洋风格：小星星
                 if (currentState == AnimationState.Celebrate && Main.rand.NextBool(4)) {
-                    miniStars.Add(new MiniStar(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth/2f + 20, currentPanelWidth/2f - 20), Main.rand.NextFloat(-40f, 40f))));
+                    miniStars.Add(new MiniStar(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth / 2f + 20, currentPanelWidth / 2f - 20), Main.rand.NextFloat(-40f, 40f))));
                 }
                 for (int i = miniStars.Count - 1; i >= 0; i--) {
                     if (miniStars[i].Update()) {
@@ -331,7 +332,7 @@ namespace CalamityOverhaul.Content.ADV
             else if (currentAchievement.Style == ToastStyle.Brimstone) {
                 //硫磺火风格：小余烬
                 if (currentState == AnimationState.Celebrate && Main.rand.NextBool(3)) {
-                    miniEmbers.Add(new MiniEmber(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth/2f + 20, currentPanelWidth/2f - 20), 45f)));
+                    miniEmbers.Add(new MiniEmber(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth / 2f + 20, currentPanelWidth / 2f - 20), 45f)));
                 }
                 for (int i = miniEmbers.Count - 1; i >= 0; i--) {
                     if (miniEmbers[i].Update()) {
@@ -383,27 +384,27 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawGlowEffect(SpriteBatch spriteBatch, Rectangle rect) {
             if (glowIntensity <= 0.01f) return;
-            
+
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             //外发光
             Color glowColor = currentAchievement.Style == ToastStyle.Ocean
                 ? new Color(100, 200, 255) * (glowIntensity * alpha * 0.3f)
                 : new Color(255, 150, 80) * (glowIntensity * alpha * 0.3f);
-            
+
             int glowSize = 8;
             for (int i = 0; i < glowSize; i++) {
                 float offset = i + 1;
                 float intensity = (1f - i / (float)glowSize) * glowIntensity;
                 Color c = glowColor * intensity;
-                
+
                 Rectangle glowRect = new Rectangle(
                     rect.X - (int)offset,
                     rect.Y - (int)offset,
                     rect.Width + (int)(offset * 2),
                     rect.Height + (int)(offset * 2)
                 );
-                
+
                 //上下
                 spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Y, glowRect.Width, 1), new Rectangle(0, 0, 1, 1), c);
                 spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Bottom, glowRect.Width, 1), new Rectangle(0, 0, 1, 1), c);
@@ -411,7 +412,7 @@ namespace CalamityOverhaul.Content.ADV
                 spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c);
                 spriteBatch.Draw(px, new Rectangle(glowRect.Right, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c);
             }
-            
+
             //闪光效果
             float shimmer = (float)Math.Sin(shimmerPhase) * 0.5f + 0.5f;
             if (shimmer > 0.7f) {
@@ -576,14 +577,15 @@ namespace CalamityOverhaul.Content.ADV
             //标题
             string titleText = currentAchievement.Title ?? AchievementUnlocked.Value;
             Vector2 titleSize = font.MeasureString(titleText) * 0.9f;
-            
+
             //如果标题过长，自动换行或缩小
             float availableWidth = currentPanelWidth - TextStartX - TextPaddingRight;
             if (titleSize.X > availableWidth) {
                 float scale = Math.Max(0.6f, availableWidth / titleSize.X * 0.9f);
                 Utils.DrawBorderString(spriteBatch, titleText, textStart, titleColor, scale);
                 titleSize = font.MeasureString(titleText) * scale;
-            } else {
+            }
+            else {
                 Utils.DrawBorderString(spriteBatch, titleText, textStart, titleColor, 0.9f);
             }
 
@@ -591,12 +593,13 @@ namespace CalamityOverhaul.Content.ADV
             if (!string.IsNullOrEmpty(currentAchievement.Description)) {
                 Vector2 descPos = textStart + new Vector2(0, titleSize.Y + 5);
                 Vector2 descSize = font.MeasureString(currentAchievement.Description) * 0.7f;
-                
+
                 //如果描述过长，自动缩小
                 if (descSize.X > availableWidth) {
                     float scale = Math.Max(0.5f, availableWidth / descSize.X * 0.7f);
                     Utils.DrawBorderString(spriteBatch, currentAchievement.Description, descPos, descColor, scale);
-                } else {
+                }
+                else {
                     Utils.DrawBorderString(spriteBatch, currentAchievement.Description, descPos, descColor, 0.7f);
                 }
             }

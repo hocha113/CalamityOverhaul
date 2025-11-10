@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             var maxOpacity = 1f;
-            
+
             //计算火圈半径 - 考虑收缩效果
             float baseRadius = 300 + (1f - EbnEffect.Sengs) * 1200;
             if (EbnEffect.IsContracting) {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //绘制红屏效果
             if (EbnEffect.IsRedScreenActive || EbnEffect.FinalFadeOut || EbnEffect.EpilogueFadeIn) {
                 float redAlpha = EbnEffect.RedScreenProgress;
-                
+
                 if (EbnEffect.FinalFadeOut) {
                     //最终淡出时逐渐减少红屏，使用GetFadeOutProgress获取进度
                     float fadeProgress = EbnEffect.GetFadeOutProgress();
@@ -298,14 +298,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             IsContracting = false;
             ContractionProgress = 0f;
             contractionTimer = 0;
-            
+
             IsRedScreenActive = false;
             RedScreenProgress = 0f;
             redScreenTimer = 0;
-            
+
             FinalFadeOut = false;
             fadeOutTimer = 0;
-            
+
             EpilogueFadeIn = false;
             EpilogueFadeProgress = 0f;
             epilogueFadeTimer = 0;
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (IsContracting) {
                 contractionTimer++;
                 ContractionProgress = Math.Min(1f, contractionTimer / (float)ContractionDuration);
-                
+
                 //收缩完成后自动触发红屏
                 if (ContractionProgress >= 1f && !IsRedScreenActive) {
                     //StartRedScreen(); // 由对话触发，不自动触发
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (FinalFadeOut) {
                 fadeOutTimer++;
                 float fadeProgress = Math.Min(1f, fadeOutTimer / (float)FadeOutDuration);
-                
+
                 //淡出完成后关闭所有效果
                 if (fadeProgress >= 1f) {
                     IsActive = false;
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (EpilogueFadeIn) {
                 epilogueFadeTimer++;
                 EpilogueFadeProgress = Math.Min(1f, epilogueFadeTimer / (float)EpilogueFadeDuration);
-                
+
                 //淡入完成
                 if (EpilogueFadeProgress >= 1f) {
                     EpilogueFadeIn = false;
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
             CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
-            
+
             if (Main.musicVolume < 0.6f) {
                 Main.musicVolume = 0.6f;
             }

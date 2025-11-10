@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.ADV
         private const float AlbumPadding = 10f;      //专辑封面左边距
         private const float TextStartX = 95f;        //文字起始X
         private const float TextPaddingRight = 15f;  //文字右边距
-        
+
         private float currentPanelWidth = MinPanelWidth;
         private float OffscreenX => -currentPanelWidth - 50f;
         private const float OnscreenX = 15f;
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 显示音乐信息
         /// </summary>
-        public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null, 
+        public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null,
             MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null) {
             var music = new MusicInfo {
                 Title = title,
@@ -187,20 +187,20 @@ namespace CalamityOverhaul.Content.ADV
 
         private void CalculatePanelWidth() {
             var font = FontAssets.MouseText.Value;
-            
+
             string titleText = currentMusic.Title ?? "Unknown Track";
             Vector2 titleSize = font.MeasureString(titleText) * 0.85f;
-            
+
             float maxTextWidth = titleSize.X;
-            
+
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
                 Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
                 maxTextWidth = Math.Max(maxTextWidth, artistSize.X);
             }
-            
+
             //总宽度 = 文字起始X + 文字宽度 + 右边距
             float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
-            
+
             //限制在最小和最大宽度之间
             currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
         }
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.ADV
                 particleSpawnTimer = 0;
                 Vector2 panelPos = GetCurrentPanelPosition();
                 particles.Add(new MusicParticle(
-                    new Vector2(panelPos.X + currentPanelWidth, panelPos.Y + Main.rand.NextFloat(PanelHeight)), 
+                    new Vector2(panelPos.X + currentPanelWidth, panelPos.Y + Main.rand.NextFloat(PanelHeight)),
                     currentMusic.Style
                 ));
             }
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawVinylGrooves(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             //绘制同心圆纹路
             Vector2 center = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
             int grooveCount = 8;
@@ -371,14 +371,14 @@ namespace CalamityOverhaul.Content.ADV
                 float radius = 25f + i * 3f;
                 int segments = 32;
                 Color grooveColor = new Color(80, 60, 70) * (alpha * 0.3f);
-                
+
                 for (int s = 0; s < segments; s++) {
                     float angle1 = (s / (float)segments) * MathHelper.TwoPi + vinylRotation;
                     float angle2 = ((s + 1) / (float)segments) * MathHelper.TwoPi + vinylRotation;
-                    
+
                     Vector2 p1 = center + new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * radius;
                     Vector2 p2 = center + new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * radius;
-                    
+
                     Vector2 diff = p2 - p1;
                     float len = diff.Length();
                     if (len > 0.01f) {
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.ADV
             //深色科技背景
             Color bgDark = new Color(5, 15, 25) * alpha;
             Color bgLight = new Color(10, 25, 40) * alpha;
-            
+
             int segments = 20;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -443,7 +443,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawAudioWaveform(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             float startX = rect.X + TextStartX;
             float endX = rect.Right - TextPaddingRight;
             float centerY = rect.Y + rect.Height - 15f;
@@ -455,7 +455,7 @@ namespace CalamityOverhaul.Content.ADV
                 float t = i / (float)(audioLevels.Length - 1);
                 float x1 = MathHelper.Lerp(startX, endX, t);
                 float x2 = MathHelper.Lerp(startX, endX, (i + 1) / (float)(audioLevels.Length - 1));
-                
+
                 float h1 = audioLevels[i] * maxHeight;
                 float h2 = audioLevels[i + 1] * maxHeight;
 
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content.ADV
             //渐变边框
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonPink);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonCyan);
-            
+
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonPink * 0.7f);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonCyan * 0.7f);
 
@@ -504,7 +504,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawSpectrumBars(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             float barWidth = 4f;
             float spacing = 2f;
             float startX = rect.X + TextStartX;
@@ -516,7 +516,7 @@ namespace CalamityOverhaul.Content.ADV
                 if (x + barWidth > rect.Right - TextPaddingRight) break;
 
                 float height = spectrumBars[i] * maxBarHeight;
-                
+
                 //渐变颜色
                 float hue = (i / (float)spectrumBars.Length + pulsePhase * 0.1f) % 1f;
                 Color barColor = Main.hslToRgb(hue, 1f, 0.6f) * alpha;
@@ -531,12 +531,12 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawNeonGlow(SpriteBatch sb, Rectangle rect, Color color1, Color color2) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             int glowSize = 6;
             for (int i = 0; i < glowSize; i++) {
                 float offset = i + 1;
                 float intensity = (1f - i / (float)glowSize) * 0.2f;
-                
+
                 Rectangle glowRect = new Rectangle(
                     rect.X - (int)offset,
                     rect.Y - (int)offset,
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.ADV
                 //上下
                 sb.Draw(px, new Rectangle(glowRect.X, glowRect.Y, glowRect.Width / 2, 1), new Rectangle(0, 0, 1, 1), c1);
                 sb.Draw(px, new Rectangle(glowRect.X + glowRect.Width / 2, glowRect.Y, glowRect.Width / 2, 1), new Rectangle(0, 0, 1, 1), c2);
-                
+
                 //左右
                 sb.Draw(px, new Rectangle(glowRect.X, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c1);
                 sb.Draw(px, new Rectangle(glowRect.Right, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c2);
@@ -577,7 +577,7 @@ namespace CalamityOverhaul.Content.ADV
             //渐变边框
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonRed);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonWhite);
-            
+
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonRed * 0.7f);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonWhite * 0.7f);
 
@@ -590,7 +590,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawRedSpectrumBars(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             float barWidth = 4f;
             float spacing = 2f;
             float startX = rect.X + TextStartX;
@@ -602,11 +602,11 @@ namespace CalamityOverhaul.Content.ADV
                 if (x + barWidth > rect.Right - TextPaddingRight) break;
 
                 float height = spectrumBars[i] * maxBarHeight;
-                
+
                 //红色系渐变 - 从深红到亮红到橙红
                 float t = (i / (float)spectrumBars.Length + pulsePhase * 0.1f) % 1f;
                 Color barColor;
-                
+
                 if (t < 0.33f) {
                     //深红 -> 鲜红
                     float localT = t / 0.33f;
@@ -622,7 +622,7 @@ namespace CalamityOverhaul.Content.ADV
                     float localT = (t - 0.66f) / 0.34f;
                     barColor = Color.Lerp(new Color(255, 80, 0), new Color(255, 150, 50), localT);
                 }
-                
+
                 barColor *= alpha;
 
                 Rectangle barRect = new Rectangle((int)x, (int)(bottomY - height), (int)barWidth, (int)height);
@@ -639,11 +639,11 @@ namespace CalamityOverhaul.Content.ADV
 
             //绘制专辑封面或音乐图标
             Vector2 albumPos = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
-            
+
             if (currentMusic.AlbumCover != null) {
                 Texture2D album = currentMusic.AlbumCover;
                 float albumScale = Math.Min(AlbumSize / album.Width, AlbumSize / album.Height);
-                
+
                 //黑胶唱片风格：旋转封面
                 float rotation = currentMusic.Style == MusicStyle.Vinyl ? vinylRotation : 0f;
                 spriteBatch.Draw(album, albumPos, null, Color.White * alpha, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
@@ -655,7 +655,7 @@ namespace CalamityOverhaul.Content.ADV
 
             //绘制文字
             Vector2 textStart = new Vector2(rect.X + TextStartX, rect.Y + 15);
-            
+
             Color textColor = currentMusic.Style switch {
                 MusicStyle.Vinyl => new Color(220, 200, 180) * alpha,
                 MusicStyle.Digital => new Color(0, 220, 255) * alpha,
@@ -667,19 +667,20 @@ namespace CalamityOverhaul.Content.ADV
             //"正在播放" 标签
             string nowPlayingText = NowPlaying.Value;
             Utils.DrawBorderString(spriteBatch, nowPlayingText, textStart, textColor * 0.7f, 0.6f);
-            
+
             //标题
             Vector2 titlePos = textStart + new Vector2(0, 14);
             string titleText = currentMusic.Title ?? "Unknown Track";
-            
+
             float availableWidth = currentPanelWidth - TextStartX - TextPaddingRight;
             Vector2 titleSize = font.MeasureString(titleText) * 0.85f;
-            
+
             if (titleSize.X > availableWidth) {
                 float scale = Math.Max(0.55f, availableWidth / titleSize.X * 0.85f);
                 Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, scale);
                 titleSize = font.MeasureString(titleText) * scale;
-            } else {
+            }
+            else {
                 Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f);
             }
 
@@ -687,11 +688,12 @@ namespace CalamityOverhaul.Content.ADV
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
                 Vector2 artistPos = titlePos + new Vector2(0, titleSize.Y + 3);
                 Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
-                
+
                 if (artistSize.X > availableWidth) {
                     float scale = Math.Max(0.45f, availableWidth / artistSize.X * 0.65f);
                     Utils.DrawBorderString(spriteBatch, currentMusic.Artist, artistPos, textColor * 0.75f, scale);
-                } else {
+                }
+                else {
                     Utils.DrawBorderString(spriteBatch, currentMusic.Artist, artistPos, textColor * 0.75f, 0.65f);
                 }
             }
@@ -703,7 +705,7 @@ namespace CalamityOverhaul.Content.ADV
 
             //简单的音符图标
             float noteSize = AlbumSize * 0.6f;
-            
+
             //音符柄
             Rectangle stem = new Rectangle(
                 (int)(center.X + noteSize * 0.15f),
@@ -714,7 +716,7 @@ namespace CalamityOverhaul.Content.ADV
             sb.Draw(px, stem, new Rectangle(0, 0, 1, 1), iconColor);
 
             //音符头
-            sb.Draw(px, center + new Vector2(0, noteSize * 0.2f), new Rectangle(0, 0, 1, 1), iconColor, 
+            sb.Draw(px, center + new Vector2(0, noteSize * 0.2f), new Rectangle(0, 0, 1, 1), iconColor,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(noteSize * 0.25f, noteSize * 0.2f), SpriteEffects.None, 0f);
         }
         #endregion
@@ -739,15 +741,15 @@ namespace CalamityOverhaul.Content.ADV
                 Size = Main.rand.NextFloat(1.5f, 3.5f);
 
                 Color = style switch {
-                    MusicStyle.Vinyl => Main.rand.Next(new Color[] { 
-                        new Color(180, 150, 120), 
-                        new Color(200, 170, 140), 
-                        Color.Wheat 
+                    MusicStyle.Vinyl => Main.rand.Next(new Color[] {
+                        new Color(180, 150, 120),
+                        new Color(200, 170, 140),
+                        Color.Wheat
                     }),
-                    MusicStyle.Digital => Main.rand.Next(new Color[] { 
-                        new Color(0, 180, 255), 
-                        new Color(0, 220, 255), 
-                        Color.Cyan 
+                    MusicStyle.Digital => Main.rand.Next(new Color[] {
+                        new Color(0, 180, 255),
+                        new Color(0, 220, 255),
+                        Color.Cyan
                     }),
                     MusicStyle.Neon => Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.6f),
                     MusicStyle.RedNeon => Main.rand.Next(new Color[] {
@@ -765,7 +767,7 @@ namespace CalamityOverhaul.Content.ADV
                 Position += Velocity;
                 Velocity.X *= 0.98f;
                 Velocity.Y *= 0.95f;
-                
+
                 //霓虹风格：颜色变化
                 if (Style == MusicStyle.Neon) {
                     float hue = (Life * 0.02f) % 1f;
@@ -781,7 +783,7 @@ namespace CalamityOverhaul.Content.ADV
                         Color = Color.Lerp(new Color(255, 100, 0), new Color(255, 0, 0), (t - 0.5f) * 2f);
                     }
                 }
-                
+
                 return Life >= MaxLife;
             }
 

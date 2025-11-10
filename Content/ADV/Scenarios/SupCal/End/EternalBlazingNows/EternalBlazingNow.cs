@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //场景结束后完全关闭效果
                 EbnEffect.IsActive = false;
                 EbnEffect.ResetEffects();
-                
+
                 if (Main.LocalPlayer.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut) {
                     //触发比目鱼的收尾场景
                     HelenEpilogue.Spwan = true;

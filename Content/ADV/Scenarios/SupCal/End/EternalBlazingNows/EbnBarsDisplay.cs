@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -78,7 +77,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private static readonly Dictionary<int, float> _starScales = new(); //每个星星的缩放值
         private static readonly Dictionary<int, int> _starConsumeTimers = new(); //每个星星的消耗计时器
         private static readonly Dictionary<int, float> _starGlowIntensity = new(); //每个星星的泛光强度
-        
+
         //整体闪烁效果
         private static int _manaFlashTimer = 0;
         private const int ManaFlashDuration = 20; //整体闪烁持续帧数
@@ -131,12 +130,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //检测受伤
             if (_lastLife > 0 && _currentLife < _lastLife) {
                 _shakeTimer = ShakeDuration;
-                
+
                 //计算受伤影响的心脏范围
                 int lifePerHeart = _maxLife / _totalHearts;
                 int damagedHeartStart = _currentLife / lifePerHeart;
                 int damagedHeartEnd = _lastLife / lifePerHeart;
-                
+
                 //为受影响的心脏添加受伤动画
                 for (int i = damagedHeartStart; i <= Math.Min(damagedHeartEnd, _totalHearts - 1); i++) {
                     _heartDamageTimers[i] = 30; //受伤动画持续时间
@@ -149,14 +148,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //触发整体闪烁效果
                 _manaFlashTimer = ManaFlashDuration;
                 _manaFlashIntensity = 1f;
-                
+
                 //计算消耗影响的星星范围
                 if (_totalStars > 0 && _maxMana > 0) {
                     int manaPerStar = _maxMana / _totalStars;
                     if (manaPerStar > 0) {
                         int consumedStarStart = _currentMana / manaPerStar;
                         int consumedStarEnd = _lastMana / manaPerStar;
-                        
+
                         //为受影响的星星添加消耗动画
                         for (int i = consumedStarStart; i <= Math.Min(consumedStarEnd, _totalStars - 1); i++) {
                             _starConsumeTimers[i] = 45; //消耗动画持续时间
@@ -264,22 +263,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //绘制每一排
             for (int row = 0; row < totalRows; row++) {
                 int heartsInThisRow = Math.Min(MaxHeartsPerRow, _totalHearts - row * MaxHeartsPerRow);
-                
+
                 //计算当前行的Y坐标
                 int rowY = startY + row * (heartBackHeight + RowSpacing);
 
                 //绘制当前行的每颗心脏
                 for (int i = 0; i < heartsInThisRow; i++) {
                     int heartIndex = row * MaxHeartsPerRow + i;
-                    
+
                     //计算当前心脏的X坐标
                     int heartX = startX + i * (heartBackWidth + HeartSpacing);
-                    
+
                     //计算当前心脏应该填充多少
                     int lifePerHeart = _maxLife / _totalHearts;
                     int heartStartLife = heartIndex * lifePerHeart;
                     int heartEndLife = (heartIndex + 1) * lifePerHeart;
-                    
+
                     //如果是最后一颗心，要处理可能的余数
                     if (heartIndex == _totalHearts - 1) {
                         heartEndLife = _maxLife;
@@ -295,7 +294,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                     //计算心脏的缩放值（基于生命值百分比）
                     float targetScale = 0.5f + fillPercent * 0.5f; // 范围：0.5 到 1.0
-                    
+
                     //添加心跳动画（仅对有生命值的心脏）
                     if (fillPercent > 0 && fillPercent < 1f) {
                         float heartbeat = (float)Math.Sin(_heartbeatPhase * 2f) * 0.05f;
@@ -345,7 +344,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                     //计算背景绘制参数
                     Vector2 backOrigin = new Vector2(heartBackWidth / 2f, heartBackHeight / 2f);
-                    
+
                     //绘制心脏背景
                     spriteBatch.Draw(
                         EbnLifeBack.Value,
@@ -362,7 +361,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     //绘制心脏填充部分（同样从中心缩放）
                     if (fillPercent > 0f) {
                         Vector2 fillOrigin = new Vector2(heartFillWidth / 2f, heartFillHeight / 2f);
-                        
+
                         //计算填充部分的颜色（生命值低时变红）
                         Color fillColor = Color.White;
                         if (fillPercent < 0.3f) {
@@ -370,7 +369,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                             float pulseIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.3f + 0.7f;
                             fillColor = Color.Lerp(Color.Red, Color.White, fillPercent / 0.3f) * pulseIntensity;
                         }
-                        
+
                         spriteBatch.Draw(
                             EbnLife.Value,
                             heartCenter,
@@ -393,7 +392,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public void DrawMana(SpriteBatch spriteBatch) {
-            if (Main.dedServ || EbnMagicStarBack == null || EbnMagicStar == null || 
+            if (Main.dedServ || EbnMagicStarBack == null || EbnMagicStar == null ||
                 EbnMagicStar.IsDisposed || EbnMagicStarBack.IsDisposed)
                 return;
 
@@ -430,10 +429,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //绘制每颗星星
             for (int i = 0; i < displayStars; i++) {
                 int starIndex = i;
-                
+
                 //计算当前星星的Y坐标
                 int starY = startY + i * (starBackHeight + StarSpacing);
-                
+
                 //计算当前星星应该填充多少
                 float fillPercent = 0f;
                 if (displayStars > 0 && _maxMana > 0) {
@@ -442,7 +441,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     if (manaPerStar > 0) {
                         int starStartMana = starIndex * manaPerStar;
                         int starEndMana = (starIndex + 1) * manaPerStar;
-                        
+
                         //如果是最后一颗星，要处理可能的余数
                         if (starIndex == displayStars - 1) {
                             starEndMana = _maxMana;
@@ -459,7 +458,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                 //计算星星的缩放值（基于魔力值百分比）
                 float targetScale = 0.5f + fillPercent * 0.5f; // 范围：0.5 到 1.0
-                
+
                 //添加闪烁动画（仅对有魔力值的星星）
                 if (fillPercent > 0 && fillPercent < 1f) {
                     float twinkle = (float)Math.Sin(_starTwinklePhase + starIndex * 0.3f) * 0.08f;
@@ -499,7 +498,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                 //计算背景绘制参数
                 Vector2 backOrigin = new Vector2(starBackWidth / 2f, starBackHeight / 2f);
-                
+
                 //绘制星星背景（应用整体闪烁效果）
                 spriteBatch.Draw(
                     EbnMagicStarBack.Value,
@@ -516,10 +515,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //绘制星星填充部分
                 if (fillPercent > 0f) {
                     Vector2 fillOrigin = new Vector2(starFillWidth / 2f, starFillHeight / 2f);
-                    
+
                     //基础颜色（应用整体闪烁效果）
                     Color fillColor = flashColor;
-                    
+
                     //绘制填充
                     spriteBatch.Draw(
                         EbnMagicStar.Value,
@@ -540,7 +539,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                             float layerScale = currentScale * (1.2f + layer * 0.3f);
                             float layerAlpha = glowIntensity * (0.6f - layer * 0.15f);
                             Color glowColor = new Color(100, 150, 255, 0) * layerAlpha;
-                            
+
                             spriteBatch.Draw(
                                 EbnMagicStar.Value,
                                 starCenter,
@@ -569,25 +568,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private void DrawLifeTooltip(SpriteBatch spriteBatch) {
             //格式化生命值文本
             string lifeText = $"{_currentLife}/{_maxLife}";
-            
+
             //计算百分比
             float lifePercent = (_currentLife / (float)_maxLife) * 100f;
             string percentText = $"({lifePercent:F1}%)";
-            
+
             //计算文本尺寸
             float textScale = 1f;
             Vector2 lifeTextSize = FontAssets.MouseText.Value.MeasureString(lifeText) * textScale;
             Vector2 percentTextSize = FontAssets.MouseText.Value.MeasureString(percentText) * textScale * 0.8f;
-            
+
             //计算总尺寸
             Vector2 totalSize = new Vector2(
                 Math.Max(lifeTextSize.X, percentTextSize.X),
                 lifeTextSize.Y + percentTextSize.Y + 4
             );
-            
+
             //计算绘制位置（在鼠标右下方）
             Vector2 drawPos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
-            
+
             //确保不会超出屏幕边界
             if (drawPos.X + totalSize.X > Main.screenWidth) {
                 drawPos.X = Main.mouseX - totalSize.X - 16;
@@ -611,10 +610,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //绘制百分比文本（稍小且偏下）
             Vector2 percentPos = drawPos + new Vector2(0, lifeTextSize.Y + 4);
-            Color percentColor = lifePercent < 30f ? Color.Red : 
-                                lifePercent < 50f ? Color.Yellow : 
+            Color percentColor = lifePercent < 30f ? Color.Red :
+                                lifePercent < 50f ? Color.Yellow :
                                 Color.LimeGreen;
-            
+
             Utils.DrawBorderStringFourWay(
                 spriteBatch,
                 FontAssets.MouseText.Value,
@@ -634,25 +633,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private void DrawManaTooltip(SpriteBatch spriteBatch) {
             //格式化魔力值文本
             string manaText = $"{_currentMana}/{_maxMana}";
-            
+
             //计算百分比
             float manaPercent = (_currentMana / (float)_maxMana) * 100f;
             string percentText = $"({manaPercent:F1}%)";
-            
+
             //计算文本尺寸
             float textScale = 1f;
             Vector2 manaTextSize = FontAssets.MouseText.Value.MeasureString(manaText) * textScale;
             Vector2 percentTextSize = FontAssets.MouseText.Value.MeasureString(percentText) * textScale * 0.8f;
-            
+
             //计算总尺寸
             Vector2 totalSize = new Vector2(
                 Math.Max(manaTextSize.X, percentTextSize.X),
                 manaTextSize.Y + percentTextSize.Y + 4
             );
-            
+
             //计算绘制位置（在鼠标右下方）
             Vector2 drawPos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
-            
+
             //确保不会超出屏幕边界
             if (drawPos.X + totalSize.X > Main.screenWidth) {
                 drawPos.X = Main.mouseX - totalSize.X - 16;
@@ -676,10 +675,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //绘制百分比文本（稍小且偏下）
             Vector2 percentPos = drawPos + new Vector2(0, manaTextSize.Y + 4);
-            Color percentColor = manaPercent < 30f ? Color.Red : 
-                                manaPercent < 50f ? Color.Yellow : 
+            Color percentColor = manaPercent < 30f ? Color.Red :
+                                manaPercent < 50f ? Color.Yellow :
                                 Color.Cyan;
-            
+
             Utils.DrawBorderStringFourWay(
                 spriteBatch,
                 FontAssets.MouseText.Value,

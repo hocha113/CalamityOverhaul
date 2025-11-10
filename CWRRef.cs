@@ -10,7 +10,6 @@ using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
