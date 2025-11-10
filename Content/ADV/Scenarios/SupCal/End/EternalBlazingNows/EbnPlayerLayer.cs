@@ -33,6 +33,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         protected override void Draw(ref PlayerDrawSet drawInfo) {
+            if (Main.gameMenu) {
+                return;
+            }
+
             Player player = drawInfo.drawPlayer;
             EbnPlayer ebnPlayer = player.GetModPlayer<EbnPlayer>();
 
