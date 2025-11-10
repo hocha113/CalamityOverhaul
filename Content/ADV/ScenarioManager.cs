@@ -89,7 +89,10 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 启动场景
         /// </summary>
-        public bool StartScenario() => ScenarioManager.Start(Key);
+        public bool StartScenario() {
+            ScenarioManager.Reset(Key);
+            return ScenarioManager.Start(Key);
+        }
 
         /// <summary>
         /// 添加一条简单对话

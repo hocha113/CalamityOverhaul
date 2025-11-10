@@ -6880,6 +6880,16 @@ ADV: {
 		Choice2Text: (保持沉默)
 		Choice1Line1: ......这就是你的选择吗？
 		Choice1Line2: 我明白了......
+
+		WitchFarewell: {
+			FarewellLine1: 从我诞生之时起，就注定是个孤独的存在
+			FarewellLine2: 在无尽的火焰中游荡，看着一个又一个时代的更迭
+			FarewellLine3: 燃烧......是我唯一的使命，也是唯一的归宿
+			FarewellLine4: 但在最后......我终于遇见了你们
+			FarewellLine5: 能够在消亡前，见证这样的意志......
+			FarewellLine6: 或许，这就是他所说的......希望
+			FarewellLine7: 那么......永别了，时代的见证者们......
+		}
 	}
 
 	FirstMetTzeentch: {

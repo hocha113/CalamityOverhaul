@@ -2,6 +2,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -71,10 +72,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡");
             Line9 = this.GetLocalization(nameof(Line9), () => "可我的意识，却会在这无尽的火海中被逐渐磨灭");
             Line10 = this.GetLocalization(nameof(Line10), () => "如果没有遇到你们，我最多还能撑三十年");
-            Line11 = this.GetLocalization(nameof(Line11), () => "......即使是完美的异类，也逃不过意识被侵蚀殆尽的结局吗？所以，你想让他继承你的躯体？");
+            Line11 = this.GetLocalization(nameof(Line11), () => "......所以，你想让他继承你的躯体？");
             Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是唯一的办法");
             Line13 = this.GetLocalization(nameof(Line13), () => "当我的意识彻底消散，整个世界都会被焚尽");
-            Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......就以我的躯体做你们迈向终点的踏板吧");
+            Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......");
             Line15 = this.GetLocalization(nameof(Line15), () => "我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
@@ -108,7 +109,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
-
             /*
             //检查是否拥有比目鱼
             bool hasHalibut = false;
@@ -175,6 +175,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Complete();
         }
 
+        private void Choice2() {
+            //选择2：保持沉默
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.EternalBlazingNowChoice2 = true;
+            }
+            Complete();
+            //停止粒子生成
+            EbnEffect.IsActive = false;
+        }
+
         internal class EternalBlazingNow_Choice1 : ADVScenarioBase
         {
             public override string Key => nameof(EternalBlazingNow_Choice1);
@@ -185,7 +195,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 EbnEffect.IsActive = true;
             }
             protected override void OnScenarioComplete() {
-                EbnEffect.IsActive = false;
+                //不在这里关闭效果，让它延续到告别场景
+                //EbnEffect.IsActive = false;
+
+                //启动女巫告别场景
+                WitchFarewell.Spwan = true;
             }
             protected override void Build() {
                 //选择阻止比目鱼
@@ -194,14 +208,84 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
-        private void Choice2() {
-            //选择2：保持沉默
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.EternalBlazingNowChoice2 = true;
+        /// <summary>
+        /// 女巫告别场景
+        /// </summary>
+        internal class WitchFarewell : ADVScenarioBase, ILocalizedModType, IWorldInfo
+        {
+            public static bool Spwan;
+            public override string Key => nameof(WitchFarewell);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+            //女巫告别独白
+            public static LocalizedText FarewellLine1 { get; private set; }
+            public static LocalizedText FarewellLine2 { get; private set; }
+            public static LocalizedText FarewellLine3 { get; private set; }
+            public static LocalizedText FarewellLine4 { get; private set; }
+            public static LocalizedText FarewellLine5 { get; private set; }
+            public static LocalizedText FarewellLine6 { get; private set; }
+            public static LocalizedText FarewellLine7 { get; private set; }
+
+            public string LocalizationCategory => "ADV.EternalBlazingNow";
+
+            void IWorldInfo.OnWorldLoad() {
+                Spwan = false;
             }
-            Complete();
-            //停止粒子生成
-            EbnEffect.IsActive = false;
+
+            public override void SetStaticDefaults() {
+                FarewellLine1 = this.GetLocalization(nameof(FarewellLine1), () => "从我诞生之时起，就注定是个孤独的存在");
+                FarewellLine2 = this.GetLocalization(nameof(FarewellLine2), () => "在无尽的火焰中游荡，看着一个又一个时代的更迭");
+                FarewellLine3 = this.GetLocalization(nameof(FarewellLine3), () => "燃烧......是我唯一的使命，也是唯一的归宿");
+                FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "但在最后......我终于遇见了你们");
+                FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "能够在消亡前，见证这样的意志......");
+                FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "或许，这就是他所说的......希望");
+                FarewellLine7 = this.GetLocalization(nameof(FarewellLine7), () => "那么......永别了，时代的见证者们......");
+            }
+            protected override void OnScenarioStart() {
+                //开始火圈收缩效果
+                EbnEffect.StartContraction();
+            }
+
+            protected override void OnScenarioComplete() {
+                //场景结束后完全关闭效果
+                EbnEffect.IsActive = false;
+                EbnEffect.ResetEffects();
+            }
+
+            protected override void Build() {
+                //女巫的最后独白
+                Add(Rolename2.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
+                Add(Rolename2.Value, FarewellLine2.Value);
+                Add(Rolename2.Value, FarewellLine3.Value);
+                Add(Rolename2.Value, FarewellLine4.Value);
+                Add(Rolename2.Value, FarewellLine5.Value);
+                Add(Rolename2.Value, FarewellLine6.Value, onStart: Achievement);
+                Add(Rolename2.Value, FarewellLine7.Value, FinalFade);
+            }
+
+            public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+                if (Spwan && StartScenario()) {
+                    Spwan = false;
+                }
+            }
+
+            private void TriggerRedScreen() {
+                //触发红屏效果
+                EbnEffect.StartRedScreen();
+            }
+
+            private void FinalFade() {
+                //最终淡出
+                EbnEffect.FinalFadeOut = true;
+            }
+
+            private static void Achievement() {
+                AchievementToast.ShowAchievement(
+                    ItemID.None,
+                    "BE结局：永恒燃烧的现在",
+                    "往日被烈火所吞噬，以异类之躯触及永恒",
+                    AchievementToast.ToastStyle.Brimstone
+                );
+            }
         }
     }
 }

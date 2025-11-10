@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -34,10 +35,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             var maxOpacity = 1f;
+            
+            //计算火圈半径 - 考虑收缩效果
+            float baseRadius = 300 + (1f - EbnEffect.Sengs) * 1200;
+            if (EbnEffect.IsContracting) {
+                //收缩时半径快速减小
+                baseRadius *= (1f - EbnEffect.ContractionProgress * 0.95f); // 收缩到原来的5%
+            }
+
             var shader = EbnShader.Shader;
             shader.Parameters["colorMult"].SetValue(7.35f);
             shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["radius"].SetValue(300 + (1f - EbnEffect.Sengs) * 1200);
+            shader.Parameters["radius"].SetValue(baseRadius);
             shader.Parameters["setPoint"].SetValue(Main.LocalPlayer.Center);
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
@@ -50,6 +59,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
             spriteBatch.Draw(VaultAsset.placeholder2.Value, rekt, null, default, 0f, VaultAsset.placeholder2.Value.Size() * 0.5f, 0, 0f);
             spriteBatch.End();
+
+            //绘制红屏效果
+            if (EbnEffect.IsRedScreenActive || EbnEffect.FinalFadeOut) {
+                float redAlpha = EbnEffect.RedScreenProgress;
+                if (EbnEffect.FinalFadeOut) {
+                    //最终淡出时逐渐减少红屏，使用GetFadeOutProgress获取进度
+                    float fadeProgress = EbnEffect.GetFadeOutProgress();
+                    redAlpha *= (1f - fadeProgress);
+                }
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                    new Color(180, 20, 10) * redAlpha * 0.95f
+                );
+                spriteBatch.End();
+            }
         }
     }
 
@@ -125,10 +152,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override void Update(GameTime gameTime) {
             _ = EbnEffect.Cek();
 
-            // 根据场景状态调整强度
+            //根据场景状态调整强度
             if (EbnEffect.IsActive) {
                 if (intensity < 1f) {
-                    intensity += 0.025f; // 稍快的淡入速度
+                    intensity += 0.025f; //稍快的淡入速度
                 }
             }
             else {
@@ -140,9 +167,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public override Color OnTileColor(Color inColor) {
-            // 应用更强的暗红硫磺火色调
+            //应用更强的暗红硫磺火色调
             if (intensity > 0.1f) {
-                // 计算淡出效果
+                //计算淡出效果
                 float currentTime = EbnEffect.CekTimer / 60f;
                 float maxTime = 300f;
                 float fadeOutTime = 10f;
@@ -153,7 +180,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     effectIntensity *= (1f - fadeProgress);
                 }
 
-                // 更强的红色调，更弱的其他颜色
+                //更强的红色调，更弱的其他颜色
                 float darkR = 0.75f;
                 float darkG = 0.22f;
                 float darkB = 0.28f;
@@ -181,6 +208,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static float Sengs;
         private int particleTimer = 0;
 
+        //火圈收缩相关
+        public static bool IsContracting = false;
+        public static float ContractionProgress = 0f;
+        private static int contractionTimer = 0;
+        private const int ContractionDuration = 180; //3秒收缩时间
+
+        //红屏效果相关
+        public static bool IsRedScreenActive = false;
+        public static float RedScreenProgress = 0f;
+        private static int redScreenTimer = 0;
+        private const int RedScreenDuration = 120; //2秒过渡到完全红屏
+
+        //声音静止相关
+        private static bool soundMuted = false;
+        private static float originalVolume = 1f;
+        private static float originalMusicVolume = 1f;
+
+        //最终淡出
+        public static bool FinalFadeOut = false;
+        private static int fadeOutTimer = 0;
+        private const int FadeOutDuration = 240; //4秒完全淡出
+
         public static bool Cek() {
             if (!IsActive) {
                 CekTimer = 0;
@@ -188,12 +237,67 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             if (Main.gameMenu) {
-                // 主菜单界面自动关闭效果
+                //主菜单界面自动关闭效果
                 IsActive = false;
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 获取淡出进度
+        /// </summary>
+        public static float GetFadeOutProgress() {
+            return Math.Min(1f, fadeOutTimer / (float)FadeOutDuration);
+        }
+
+        /// <summary>
+        /// 开始火圈收缩
+        /// </summary>
+        public static void StartContraction() {
+            IsContracting = true;
+            ContractionProgress = 0f;
+            contractionTimer = 0;
+        }
+
+        /// <summary>
+        /// 开始红屏效果
+        /// </summary>
+        public static void StartRedScreen() {
+            IsRedScreenActive = true;
+            RedScreenProgress = 0f;
+            redScreenTimer = 0;
+            
+            //开始静音
+            if (!soundMuted) {
+                originalVolume = Main.soundVolume;
+                originalMusicVolume = Main.musicVolume;
+                soundMuted = true;
+            }
+        }
+
+        /// <summary>
+        /// 重置所有效果
+        /// </summary>
+        public static void ResetEffects() {
+            IsContracting = false;
+            ContractionProgress = 0f;
+            contractionTimer = 0;
+            
+            IsRedScreenActive = false;
+            RedScreenProgress = 0f;
+            redScreenTimer = 0;
+            
+            FinalFadeOut = false;
+            fadeOutTimer = 0;
+            
+            //恢复声音
+            if (soundMuted) {
+                Main.soundVolume = originalVolume;
+                Main.musicVolume = originalMusicVolume;
+                soundMuted = false;
+            }
         }
 
         public override void PostUpdateEverything() {
@@ -205,6 +309,43 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             else {
                 if (Sengs > 0f) {
                     Sengs -= 0.02f;
+                }
+            }
+
+            //处理火圈收缩
+            if (IsContracting) {
+                contractionTimer++;
+                ContractionProgress = Math.Min(1f, contractionTimer / (float)ContractionDuration);
+                
+                //收缩完成后自动触发红屏
+                if (ContractionProgress >= 1f && !IsRedScreenActive) {
+                    //StartRedScreen(); // 由对话触发，不自动触发
+                }
+            }
+
+            //处理红屏效果
+            if (IsRedScreenActive) {
+                redScreenTimer++;
+                RedScreenProgress = Math.Min(1f, redScreenTimer / (float)RedScreenDuration);
+                
+                //逐渐静音
+                if (soundMuted) {
+                    float volumeFade = 1f - RedScreenProgress;
+                    Main.soundVolume = originalVolume * volumeFade;
+                    Main.musicVolume = originalMusicVolume * volumeFade;
+                }
+            }
+
+            //处理最终淡出
+            if (FinalFadeOut) {
+                fadeOutTimer++;
+                float fadeProgress = Math.Min(1f, fadeOutTimer / (float)FadeOutDuration);
+                
+                //淡出完成后关闭所有效果
+                if (fadeProgress >= 1f) {
+                    IsActive = false;
+                    ResetEffects();
+                    return;
                 }
             }
 
@@ -220,18 +361,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             particleTimer++;
 
+            //火圈收缩时减少粒子生成
+            float particleMultiplier = IsContracting ? (1f - ContractionProgress * 0.8f) : 1f;
+
             // 生成更密集的火焰粒子
-            if (particleTimer % 1 == 0) {
+            if (particleTimer % 1 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnIntenseBrimstoneFlames();
             }
 
             // 生成大量灰烬和火星
-            if (particleTimer % 1 == 0) {
+            if (particleTimer % 1 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnAshAndEmbers();
             }
 
             // 频繁生成大型火焰爆发
-            if (particleTimer % 20 == 0) {
+            if (particleTimer % 20 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnMassiveFlameBurst();
             }
 
@@ -246,6 +390,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
             CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
+
+            if (!soundMuted) {
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
+            }
         }
 
         /// <summary>
@@ -268,10 +416,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     Scale = Main.rand.NextFloat(1.2f, 2f),
                     ai = [0, 0],
                     colors = [
-                        new Color(255, 180, 100),   // 极亮的橙黄
-                        new Color(255, 100, 50),    // 明亮的橙红
-                        new Color(200, 50, 30),     // 深红
-                        new Color(100, 20, 10)      // 暗红
+                        new Color(255, 180, 100),//极亮的橙黄
+                        new Color(255, 100, 50), //明亮的橙红
+                        new Color(200, 50, 30),  //深红
+                        new Color(100, 20, 10)   //暗红
                     ],
                     minLifeTime = 100,
                     maxLifeTime = 180
@@ -399,6 +547,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override void Unload() {
             IsActive = false;
+            ResetEffects();
         }
     }
 }
