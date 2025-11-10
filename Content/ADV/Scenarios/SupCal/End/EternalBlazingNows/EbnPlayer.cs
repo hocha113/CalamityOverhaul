@@ -31,9 +31,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private Vector2 blinkStartPos;
         private Vector2 blinkEndPos;
 
-        //再生效果
-        private int regenTimer = 0;
-
         //粒子数据类
         private class BrimstoneTrailData
         {
