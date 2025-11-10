@@ -6857,6 +6857,14 @@ ADV: {
 		ThirdDefeatLine2: 你已经证明了自己的价值不是偶然
 	}
 
+	FirstMetTzeentch: {
+		L1: 嘻嘻嘻...有趣的变化正在酝酿...
+		L2: 我亲爱的朋友，很高兴认识你！
+		L3: 你可以称我为魔术师...什么都行...
+	}
+
+	MusicToast.NowPlaying: 正在播放
+
 	EternalBlazingNow: {
 		Rolename1: 比目鱼
 		Rolename2: ???硫火女巫???
@@ -6870,16 +6878,22 @@ ADV: {
 		Line8: 只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡
 		Line9: 可我的意识，却会在这无尽的火海中被逐渐磨灭
 		Line10: 如果没有遇到你们，我最多还能撑三十年
-		Line11: ......即使是完美的异类，也逃不过意识被侵蚀殆尽的结局吗？所以，你想让他继承你的躯体？
+		Line11: ......所以，你想让他继承你的躯体？
 		Line12: 没错，这是唯一的办法
 		Line13: 当我的意识彻底消散，整个世界都会被焚尽
-		Line14: 况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......就以我的躯体做你们迈向终点的踏板吧
+		Line14: 况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......
 		Line15: 我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！
 		QuestionLine: ......
 		Choice1Text: (阻止比目鱼)
 		Choice2Text: (保持沉默)
 		Choice1Line1: ......这就是你的选择吗？
 		Choice1Line2: 我明白了......
+
+		HelenEpilogue: {
+			EpilogueLine1: 我在等一个笨蛋
+			EpilogueLine2: .....
+			EpilogueLine3: 欢迎回来.....
+		}
 
 		WitchFarewell: {
 			FarewellLine1: 从我诞生之时起，就注定是个孤独的存在
@@ -6890,19 +6904,5 @@ ADV: {
 			FarewellLine6: 或许，这就是他所说的......希望
 			FarewellLine7: 那么......永别了，时代的见证者们......
 		}
-
-		HelenEpilogue: {
-			EpilogueLine1: 我在等一个笨蛋
-			EpilogueLine2: .....
-			EpilogueLine3: 欢迎回来.....
-		}
 	}
-
-	FirstMetTzeentch: {
-		L1: 嘻嘻嘻...有趣的变化正在酝酿...
-		L2: 我亲爱的朋友，很高兴认识你！
-		L3: 你可以称我为魔术师...什么都行...
-	}
-
-	MusicToast.NowPlaying: 正在播放
 }

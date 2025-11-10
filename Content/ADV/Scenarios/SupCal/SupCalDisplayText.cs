@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             //提取key的最后一部分(去除模组前缀)
             string result = key.Split('.').Last();
 
-            if (result == "SCalAcceptanceText3") {
+            if (result == "SCalAcceptanceText3" && NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
                 //Boss已经进入濒死阶段，触发战败对话场景
                 if (!VaultUtils.isServer) {
                     ScenarioManager.Reset<EternalBlazingNow>();
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         public override bool Alive(Player player) {
-            return true;// player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ADCSave.SupCalYharonQuestReward;//仅在完成了与焚世龙的任务后才触发这些台词修改
+            return EbnPlayer.IsConquered(player);//被攻略后才会触发这些台词
         }
     }
 }

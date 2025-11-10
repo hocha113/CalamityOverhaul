@@ -2,7 +2,6 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
