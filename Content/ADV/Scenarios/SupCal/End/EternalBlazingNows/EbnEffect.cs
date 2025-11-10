@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         [VaultLoaden(CWRConstant.Masking)]
         public static Texture2D Noise2;
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
-            if (!EbnEffect.IsActive && EbnEffect.Sengs <= 0) {
+            if (!EbnEffect.IsActive && EbnEffect.Sengs <= 0 && !EbnEffect.IsRedScreenActive && !EbnEffect.EpilogueFadeIn) {
                 return;
             }
 
@@ -43,39 +43,49 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 baseRadius *= (1f - EbnEffect.ContractionProgress * 0.95f); // 收缩到原来的5%
             }
 
-            var shader = EbnShader.Shader;
-            shader.Parameters["colorMult"].SetValue(7.35f);
-            shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["radius"].SetValue(baseRadius);
-            shader.Parameters["setPoint"].SetValue(Main.LocalPlayer.Center);
-            shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
-            shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
-            shader.Parameters["burnIntensity"].SetValue(1f);
-            shader.Parameters["maxOpacity"].SetValue(maxOpacity);
+            //只在效果激活时绘制火圈
+            if (EbnEffect.IsActive || EbnEffect.Sengs > 0) {
+                var shader = EbnShader.Shader;
+                shader.Parameters["colorMult"].SetValue(7.35f);
+                shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+                shader.Parameters["radius"].SetValue(baseRadius);
+                shader.Parameters["setPoint"].SetValue(Main.LocalPlayer.Center);
+                shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
+                shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
+                shader.Parameters["burnIntensity"].SetValue(1f);
+                shader.Parameters["maxOpacity"].SetValue(maxOpacity);
 
-            spriteBatch.GraphicsDevice.Textures[1] = Noise2;
+                spriteBatch.GraphicsDevice.Textures[1] = Noise2;
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
-            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            spriteBatch.Draw(VaultAsset.placeholder2.Value, rekt, null, default, 0f, VaultAsset.placeholder2.Value.Size() * 0.5f, 0, 0f);
-            spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
+                Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+                spriteBatch.Draw(VaultAsset.placeholder2.Value, rekt, null, default, 0f, VaultAsset.placeholder2.Value.Size() * 0.5f, 0, 0f);
+                spriteBatch.End();
+            }
 
             //绘制红屏效果
-            if (EbnEffect.IsRedScreenActive || EbnEffect.FinalFadeOut) {
+            if (EbnEffect.IsRedScreenActive || EbnEffect.FinalFadeOut || EbnEffect.EpilogueFadeIn) {
                 float redAlpha = EbnEffect.RedScreenProgress;
+                
                 if (EbnEffect.FinalFadeOut) {
                     //最终淡出时逐渐减少红屏，使用GetFadeOutProgress获取进度
                     float fadeProgress = EbnEffect.GetFadeOutProgress();
                     redAlpha *= (1f - fadeProgress);
                 }
+                else if (EbnEffect.EpilogueFadeIn) {
+                    //尾声淡入时，红屏继续淡出
+                    redAlpha = 1f - EbnEffect.EpilogueFadeProgress;
+                }
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                spriteBatch.Draw(
-                    VaultAsset.placeholder2.Value,
-                    new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                    new Color(180, 20, 10) * redAlpha * 0.95f
-                );
-                spriteBatch.End();
+                if (redAlpha > 0.01f) {
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    spriteBatch.Draw(
+                        VaultAsset.placeholder2.Value,
+                        new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                        new Color(180, 20, 10) * redAlpha * 0.95f
+                    );
+                    spriteBatch.End();
+                }
             }
         }
     }
@@ -212,13 +222,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool IsContracting = false;
         public static float ContractionProgress = 0f;
         private static int contractionTimer = 0;
-        private const int ContractionDuration = 180; //3秒收缩时间
+        private const int ContractionDuration = 180; // 3秒收缩时间
 
         //红屏效果相关
         public static bool IsRedScreenActive = false;
         public static float RedScreenProgress = 0f;
         private static int redScreenTimer = 0;
-        private const int RedScreenDuration = 120; //2秒过渡到完全红屏
+        private const int RedScreenDuration = 120; // 2秒过渡到完全红屏
 
         //声音静止相关
         private static bool soundMuted = false;
@@ -228,7 +238,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         //最终淡出
         public static bool FinalFadeOut = false;
         private static int fadeOutTimer = 0;
-        private const int FadeOutDuration = 240; //4秒完全淡出
+        private const int FadeOutDuration = 240; // 4秒完全淡出
+
+        //尾声淡入相关
+        public static bool EpilogueFadeIn = false;
+        public static float EpilogueFadeProgress = 0f;
+        private static int epilogueFadeTimer = 0;
+        private const int EpilogueFadeDuration = 180; // 3秒淡入
+        public static bool EpilogueComplete = false;
 
         public static bool Cek() {
             if (!IsActive) {
@@ -237,7 +254,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             if (Main.gameMenu) {
-                //主菜单界面自动关闭效果
+                // 主菜单界面自动关闭效果
                 IsActive = false;
                 return false;
             }
@@ -278,6 +295,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         /// <summary>
+        /// 开始尾声淡入效果
+        /// </summary>
+        public static void StartEpilogueFadeIn() {
+            EpilogueFadeIn = true;
+            EpilogueFadeProgress = 0f;
+            epilogueFadeTimer = 0;
+            
+            //恢复声音
+            if (soundMuted) {
+                soundMuted = false;
+            }
+        }
+
+        /// <summary>
         /// 重置所有效果
         /// </summary>
         public static void ResetEffects() {
@@ -291,6 +322,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             
             FinalFadeOut = false;
             fadeOutTimer = 0;
+            
+            EpilogueFadeIn = false;
+            EpilogueFadeProgress = 0f;
+            epilogueFadeTimer = 0;
+            EpilogueComplete = false;
             
             //恢复声音
             if (soundMuted) {
@@ -344,9 +380,35 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //淡出完成后关闭所有效果
                 if (fadeProgress >= 1f) {
                     IsActive = false;
-                    ResetEffects();
+                    FinalFadeOut = false;
+                    //不立即重置，等待尾声场景
                     return;
                 }
+            }
+
+            //处理尾声淡入
+            if (EpilogueFadeIn) {
+                epilogueFadeTimer++;
+                EpilogueFadeProgress = Math.Min(1f, epilogueFadeTimer / (float)EpilogueFadeDuration);
+                
+                //逐渐恢复声音
+                if (!soundMuted && EpilogueFadeProgress > 0f) {
+                    Main.soundVolume = originalVolume * EpilogueFadeProgress;
+                    Main.musicVolume = originalMusicVolume * EpilogueFadeProgress;
+                }
+                
+                //淡入完成
+                if (EpilogueFadeProgress >= 1f) {
+                    EpilogueFadeIn = false;
+                    Main.soundVolume = originalVolume;
+                    Main.musicVolume = originalMusicVolume;
+                }
+            }
+
+            //尾声完成后完全重置
+            if (EpilogueComplete) {
+                ResetEffects();
+                return;
             }
 
             if (!Cek()) {

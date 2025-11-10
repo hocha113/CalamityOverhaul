@@ -249,6 +249,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //场景结束后完全关闭效果
                 EbnEffect.IsActive = false;
                 EbnEffect.ResetEffects();
+                
+                //触发比目鱼的收尾场景
+                HelenEpilogue.Spwan = true;
             }
 
             protected override void Build() {
@@ -280,11 +283,61 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             private static void Achievement() {
                 AchievementToast.ShowAchievement(
-                    ItemID.None,
+                    CWRAsset.icon_small.Value,
                     "BE结局：永恒燃烧的现在",
                     "往日被烈火所吞噬，以异类之躯触及永恒",
                     AchievementToast.ToastStyle.Brimstone
                 );
+            }
+        }
+
+        /// <summary>
+        /// 比目鱼尾声场景，60年的等待
+        /// </summary>
+        internal class HelenEpilogue : ADVScenarioBase, ILocalizedModType, IWorldInfo
+        {
+            public static bool Spwan;
+            public override string Key => nameof(HelenEpilogue);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+
+            //比目鱼尾声台词
+            public static LocalizedText EpilogueLine1 { get; private set; }
+            public static LocalizedText EpilogueLine2 { get; private set; }
+            public static LocalizedText EpilogueLine3 { get; private set; }
+
+            public string LocalizationCategory => "ADV.EternalBlazingNow";
+
+            void IWorldInfo.OnWorldLoad() {
+                Spwan = false;
+            }
+
+            public override void SetStaticDefaults() {
+                EpilogueLine1 = this.GetLocalization(nameof(EpilogueLine1), () => "我在等一个笨蛋");
+                EpilogueLine2 = this.GetLocalization(nameof(EpilogueLine2), () => ".....");
+                EpilogueLine3 = this.GetLocalization(nameof(EpilogueLine3), () => "欢迎回来.....");
+            }
+
+            protected override void OnScenarioStart() {
+                //淡入效果，等待红屏完全消失
+                EbnEffect.StartEpilogueFadeIn();
+            }
+
+            protected override void OnScenarioComplete() {
+                //场景结束
+                EbnEffect.EpilogueComplete = true;
+            }
+
+            protected override void Build() {
+                //比目鱼的等待与重逢
+                Add(Rolename1.Value + helenSilence, EpilogueLine1.Value);
+                Add(Rolename1.Value + helenSilence, EpilogueLine2.Value);
+                Add(Rolename1.Value, EpilogueLine3.Value);
+            }
+
+            public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+                if (Spwan && StartScenario()) {
+                    Spwan = false;
+                }
             }
         }
     }

@@ -6874,6 +6874,12 @@ ADV: {
 			// FarewellLine6: 或许，这就是他所说的......希望
 			// FarewellLine7: 那么......永别了，时代的见证者们......
 		}
+
+		HelenEpilogue: {
+			// EpilogueLine1: 我在等一个笨蛋
+			// EpilogueLine2: .....
+			// EpilogueLine3: 欢迎回来.....
+		}
 	}
 
 	FirstMetTzeentch: {
