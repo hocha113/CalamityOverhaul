@@ -202,6 +202,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         public virtual void ShowFailureMessage(Player player, string reason) {
             int combat = CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}", true);
             Main.combatText[combat].lifeTime = 300;//延长显示时间
+            VaultUtils.Text($"{QuestFailedPrefix.Value}: {reason}", Color.Red);
         }
 
         /// <summary>
@@ -210,6 +211,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         public virtual void ShowSuccessMessage(Player player, float contribution) {
             int combat = CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", true);
             Main.combatText[combat].lifeTime = 300;//延长显示时间
+            VaultUtils.Text($"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", Color.Gold);
         }
 
         /// <summary>
