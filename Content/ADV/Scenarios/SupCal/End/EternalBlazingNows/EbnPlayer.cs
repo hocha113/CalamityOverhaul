@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// <summary>
         /// 玩家是否达成永恒燃烧的现在结局
         /// </summary>
-        public bool IsEbn => IsConquered(Player);
+        public bool IsEbn => OnEbn(Player);
 
+        public static bool OnEbn(Player player) => player.TryGetADVSave(out var save) && save.EternalBlazingNow;
         public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
 
         #region 数据字段

@@ -34,6 +34,7 @@ namespace CalamityOverhaul
     /// </summary>
     internal static class CWRID
     {
+        public static int Item_Heresy => ModContent.ItemType<Heresy>();
         public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
         public static int Item_Rock => ModContent.ItemType<Rock>();

@@ -545,6 +545,21 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
                     .AddTile(CWRID.Tile_DraedonsForge)
                     .Register();
+                //异端
+                Recipe.Create(CWRID.Item_Heresy)
+                    .AddIngredient(ItemID.WaterBolt)
+                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                    .AddTile(CWRID.Tile_DraedonsForge)
+                    .Register();
+            }
+            //添加水矢的合成
+            {
+                Recipe.Create(ItemID.WaterBolt)
+                    .AddIngredient(ItemID.Book)
+                    .AddIngredient(ItemID.BottledWater, 2)
+                    .AddIngredient(ItemID.ManaCrystal, 2)
+                    .AddTile(TileID.Bookcases)
+                    .Register();
             }
         }
 
