@@ -6889,4 +6889,33 @@ ADV: {
 			// FarewellLine7: 那么......永别了，时代的见证者们......
 		}
 	}
+
+	SupCalDisplayText: {
+		// SummonWithProverbs: 你竟然真的戴着那个戒指来了……既然如此，我便不会再留情
+		// SummonWithoutProverbs: 哈哈哈……这一刻，我已经期待许久
+		// SummonRematchWithProverbs: 你还戴着那个戒指……
+		// SummonRematchWithoutProverbs: 又是你……看来你对死亡的理解还不够深刻
+		// StartLowHealth: 你看起来已经奄奄一息了
+		// StartMediumHealth: 你的技术还有待进步
+		// StartDefault: 真奇怪，你应该已经死了才对……
+		// StartRematchLowHealth: 你看起来已经奄奄一息了
+		// StartRematchMediumHealth: 受伤了？真有意思
+		// StartRematchDefault: 真奇怪，你应该已经死了才对……
+		// BH3WithHalibut: 以凡人之躯驾驭这种诡异的力量……走到如今，你们确实值得尊敬
+		// BH3WithoutHalibut: 你很不错，但你什么时候才能意识到，你只是在徒劳的攻击一团火焰
+		// BrothersWithHalibut: 是时候让你们见见我的家人了，他们失败在成为异类的路上，你们今后可别如此
+		// BrothersWithoutHalibut: 是时候让你见见我的家人了。若你日后死于某人的手下，我会将你的灵魂收于此处
+		// Phase2WithHalibut: 你们真的不打算求饶吗？
+		// Phase2WithoutHalibut: 你真的不准备求饶？
+		// BH4Text: 给我站在那里别动！
+		// SeekerRingText: 你的力量均来自身外之物，这样的你形如虚设……这倒让我想起了那个虚伪之人
+		// BH5Text: 胜利的天平有些不确定会倒向何方了...你只需站住一会儿就可以改变现状，好吗？
+		// Sepulcher2Text: 如果今天只能活一个，你觉得我会希望是谁？
+		// Desperation1Text: 给 我 老 老 实 实 站 那 里，杂 鱼
+		// Desperation2Text: 别得意——我之前只是在陪你玩罢了
+		// Desperation3Text: 咳……咳……我承认，今天的状态不太好
+		// Desperation4Text: 看来是我输了……遇见你，真是幸事一件
+		// Acceptance1Text: 这是我百年来最开心的一天……
+		// Acceptance2Text: 或许，你真的能终结这个该死的时代
+	}
 }
