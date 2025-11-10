@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //找到血条和魔力条的资源显示层并禁用它
             int resourceIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Resource Bars"));
             if (resourceIndex != -1) {
-                layers[resourceIndex].Active = false; // 完全禁用原版血条
+                layers[resourceIndex].Active = false; //完全禁用原版血条
             }
 
             //在合适的位置插入自定义血条层
