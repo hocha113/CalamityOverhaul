@@ -230,11 +230,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private static int redScreenTimer = 0;
         private const int RedScreenDuration = 120; // 2秒过渡到完全红屏
 
-        //声音静止相关
-        private static bool soundMuted = false;
-        private static float originalVolume = 1f;
-        private static float originalMusicVolume = 1f;
-
         //最终淡出
         public static bool FinalFadeOut = false;
         private static int fadeOutTimer = 0;
@@ -285,13 +280,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             IsRedScreenActive = true;
             RedScreenProgress = 0f;
             redScreenTimer = 0;
-            
-            //开始静音
-            if (!soundMuted) {
-                originalVolume = Main.soundVolume;
-                originalMusicVolume = Main.musicVolume;
-                soundMuted = true;
-            }
         }
 
         /// <summary>
@@ -301,11 +289,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             EpilogueFadeIn = true;
             EpilogueFadeProgress = 0f;
             epilogueFadeTimer = 0;
-            
-            //恢复声音
-            if (soundMuted) {
-                soundMuted = false;
-            }
         }
 
         /// <summary>
@@ -327,13 +310,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             EpilogueFadeProgress = 0f;
             epilogueFadeTimer = 0;
             EpilogueComplete = false;
-            
-            //恢复声音
-            if (soundMuted) {
-                Main.soundVolume = originalVolume;
-                Main.musicVolume = originalMusicVolume;
-                soundMuted = false;
-            }
         }
 
         public override void PostUpdateEverything() {
@@ -363,13 +339,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (IsRedScreenActive) {
                 redScreenTimer++;
                 RedScreenProgress = Math.Min(1f, redScreenTimer / (float)RedScreenDuration);
-                
-                //逐渐静音
-                if (soundMuted) {
-                    float volumeFade = 1f - RedScreenProgress;
-                    Main.soundVolume = originalVolume * volumeFade;
-                    Main.musicVolume = originalMusicVolume * volumeFade;
-                }
             }
 
             //处理最终淡出
@@ -391,17 +360,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 epilogueFadeTimer++;
                 EpilogueFadeProgress = Math.Min(1f, epilogueFadeTimer / (float)EpilogueFadeDuration);
                 
-                //逐渐恢复声音
-                if (!soundMuted && EpilogueFadeProgress > 0f) {
-                    Main.soundVolume = originalVolume * EpilogueFadeProgress;
-                    Main.musicVolume = originalMusicVolume * EpilogueFadeProgress;
-                }
-                
                 //淡入完成
                 if (EpilogueFadeProgress >= 1f) {
                     EpilogueFadeIn = false;
-                    Main.soundVolume = originalVolume;
-                    Main.musicVolume = originalMusicVolume;
                 }
             }
 
@@ -452,10 +413,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
             CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
-
-            if (!soundMuted) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
+            
+            if (Main.musicVolume < 0.6f) {
+                Main.musicVolume = 0.6f;
             }
+            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/WetWindowsill");
         }
 
         /// <summary>

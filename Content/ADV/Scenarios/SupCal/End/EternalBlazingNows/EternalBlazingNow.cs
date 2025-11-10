@@ -134,14 +134,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Add(Rolename1.Value + helenShock, Line1.Value);
             Add(Rolename1.Value + helenShock, Line2.Value);
             Add(Rolename1.Value + helenShock, Line3.Value);
-            Add(Rolename1.Value + helenShock, Line4.Value);
+            Add(Rolename1.Value + helenSilence, Line4.Value);
             Add(Rolename2.Value, Line5.Value);
             Add(Rolename2.Value, Line6.Value);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value + supCalDespise, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
             Add(Rolename2.Value, Line10.Value);
-            Add(Rolename1.Value + helenShock, Line11.Value);
+            Add(Rolename1.Value + helenSilence, Line11.Value);
             Add(Rolename2.Value + supCalDespise, Line12.Value);
             Add(Rolename2.Value + supCalDespise, Line13.Value);
             Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
@@ -250,8 +250,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 EbnEffect.IsActive = false;
                 EbnEffect.ResetEffects();
                 
-                //触发比目鱼的收尾场景
-                HelenEpilogue.Spwan = true;
+                if (Main.LocalPlayer.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut) {
+                    //触发比目鱼的收尾场景
+                    HelenEpilogue.Spwan = true;
+                }
             }
 
             protected override void Build() {
@@ -292,7 +294,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         /// <summary>
-        /// 比目鱼尾声场景，60年的等待
+        /// 比目鱼尾声场景
         /// </summary>
         internal class HelenEpilogue : ADVScenarioBase, ILocalizedModType, IWorldInfo
         {

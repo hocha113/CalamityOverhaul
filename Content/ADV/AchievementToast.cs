@@ -59,24 +59,33 @@ namespace CalamityOverhaul.Content.ADV
 
         //动画参数
         private const int SlideInDuration = 30;      //滑入时长(帧)
-        private const int HoldDuration = 20;        //停留时长(帧)
-        private const int CelebrateDuration = 45;    //庆祝动画时长(帧)
+        private const int HoldDuration = 40;        //停留时长(帧)
+        private const int CelebrateDuration = 60;    //庆祝动画时长(帧)
         private const int SlideOutDuration = 25;     //滑出时长(帧)
 
         private float slideProgress = 0f;            //滑动进度 0-1
-        private float celebrateScale = 1f;           //庆祝缩放
+        private float glowIntensity = 0f;            //光晕强度
+        private float shimmerPhase = 0f;             //闪光相位
         private float alpha = 1f;                    //透明度
 
         //面板参数
-        private const float PanelWidth = 320f;
+        private const float MinPanelWidth = 280f;
+        private const float MaxPanelWidth = 500f;
         private const float PanelHeight = 100f;
-        private const float OffscreenX = -PanelWidth - 50f;  //屏幕外左侧位置
-        private const float OnscreenX = 20f;                 //屏幕上显示位置
+        private const float IconPadding = 20f;       //图标左边距
+        private const float IconSize = 60f;          //图标大小
+        private const float TextStartX = 90f;        //文字起始X
+        private const float TextPaddingRight = 20f;  //文字右边距
+        
+        private float currentPanelWidth = MinPanelWidth;
+        private float OffscreenX => -currentPanelWidth - 50f;  //屏幕外左侧位置
+        private const float OnscreenX = 20f;                   //屏幕上显示位置
         private static float ScreenY => Main.screenHeight / 2f - PanelHeight / 2f; //垂直居中
 
         //粒子系统
         private readonly List<CelebrationParticle> particles = new();
         private int particleSpawnTimer = 0;
+        private int celebrationBurstTimer = 0;
 
         //风格动画变量 - 海洋
         private float oceanWavePhase = 0f;
@@ -135,11 +144,13 @@ namespace CalamityOverhaul.Content.ADV
             oceanPulse += 0.015f;
             flameTimer += 0.05f;
             emberGlowTimer += 0.04f;
+            shimmerPhase += 0.08f;
 
             if (oceanWavePhase > MathHelper.TwoPi) oceanWavePhase -= MathHelper.TwoPi;
             if (oceanPulse > MathHelper.TwoPi) oceanPulse -= MathHelper.TwoPi;
             if (flameTimer > MathHelper.TwoPi) flameTimer -= MathHelper.TwoPi;
             if (emberGlowTimer > MathHelper.TwoPi) emberGlowTimer -= MathHelper.TwoPi;
+            if (shimmerPhase > MathHelper.TwoPi) shimmerPhase -= MathHelper.TwoPi;
 
             //如果没有当前成就但队列有，开始下一个
             if (currentAchievement == null && achievementQueue.Count > 0) {
@@ -162,12 +173,37 @@ namespace CalamityOverhaul.Content.ADV
             stateTimer = 0;
             slideProgress = 0f;
             alpha = 1f;
+            glowIntensity = 0f;
+            shimmerPhase = 0f;
             particles.Clear();
             miniStars.Clear();
             miniEmbers.Clear();
 
+            //计算面板宽度
+            CalculatePanelWidth();
+
             //播放成就音效
             SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with { Volume = 0.6f, Pitch = 0.3f });
+        }
+
+        private void CalculatePanelWidth() {
+            var font = FontAssets.MouseText.Value;
+            
+            string titleText = currentAchievement.Title ?? AchievementUnlocked.Value;
+            Vector2 titleSize = font.MeasureString(titleText) * 0.9f;
+            
+            float maxTextWidth = titleSize.X;
+            
+            if (!string.IsNullOrEmpty(currentAchievement.Description)) {
+                Vector2 descSize = font.MeasureString(currentAchievement.Description) * 0.7f;
+                maxTextWidth = Math.Max(maxTextWidth, descSize.X);
+            }
+            
+            //总宽度 = 文字起始X + 文字宽度 + 右边距
+            float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
+            
+            //限制在最小和最大宽度之间
+            currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
         }
 
         private void UpdateAnimation() {
@@ -202,29 +238,55 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private void UpdateHold() {
+            //轻微的呼吸效果
+            float breathe = (float)Math.Sin(stateTimer * 0.1f) * 0.5f + 0.5f;
+            glowIntensity = breathe * 0.15f;
+
             if (stateTimer >= HoldDuration) {
                 currentState = AnimationState.Celebrate;
                 stateTimer = 0;
+                celebrationBurstTimer = 0;
+                //播放庆祝音效
+                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = 0.2f });
             }
         }
 
         private void UpdateCelebrate() {
             float t = stateTimer / (float)CelebrateDuration;
-            float pulse = (float)Math.Sin(t * MathHelper.TwoPi * 2f);
-            celebrateScale = 1f + pulse * 0.08f;
+            
+            //平滑的光晕脉冲
+            float pulseCurve = (float)Math.Sin(t * MathHelper.Pi);
+            glowIntensity = pulseCurve * 0.6f;
+            
+            //闪光效果 - 在开始和结束时闪烁
+            if (stateTimer < 10) {
+                shimmerPhase = stateTimer / 10f * MathHelper.TwoPi;
+            } else if (stateTimer > CelebrateDuration - 10) {
+                shimmerPhase = (CelebrateDuration - stateTimer) / 10f * MathHelper.TwoPi;
+            }
 
-            //生成庆祝粒子
+            //生成庆祝粒子 - 3次爆发
+            celebrationBurstTimer++;
+            if (celebrationBurstTimer == 1 || celebrationBurstTimer == 20 || celebrationBurstTimer == 40) {
+                Vector2 panelCenter = GetCurrentPanelCenter();
+                //每次爆发生成多个粒子
+                for (int i = 0; i < 8; i++) {
+                    particles.Add(new CelebrationParticle(panelCenter, currentAchievement.Style, true));
+                }
+            }
+            
+            //持续生成少量粒子
             particleSpawnTimer++;
-            if (particleSpawnTimer >= 3) {
+            if (particleSpawnTimer >= 5) {
                 particleSpawnTimer = 0;
                 Vector2 panelCenter = GetCurrentPanelCenter();
-                particles.Add(new CelebrationParticle(panelCenter, currentAchievement.Style));
+                particles.Add(new CelebrationParticle(panelCenter, currentAchievement.Style, false));
             }
 
             if (stateTimer >= CelebrateDuration) {
                 currentState = AnimationState.SlideOut;
                 stateTimer = 0;
-                celebrateScale = 1f;
+                glowIntensity = 0f;
             }
         }
 
@@ -258,7 +320,7 @@ namespace CalamityOverhaul.Content.ADV
             if (currentAchievement.Style == ToastStyle.Ocean) {
                 //海洋风格：小星星
                 if (currentState == AnimationState.Celebrate && Main.rand.NextBool(4)) {
-                    miniStars.Add(new MiniStar(panelCenter + new Vector2(Main.rand.NextFloat(-140f, 140f), Main.rand.NextFloat(-40f, 40f))));
+                    miniStars.Add(new MiniStar(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth/2f + 20, currentPanelWidth/2f - 20), Main.rand.NextFloat(-40f, 40f))));
                 }
                 for (int i = miniStars.Count - 1; i >= 0; i--) {
                     if (miniStars[i].Update()) {
@@ -269,7 +331,7 @@ namespace CalamityOverhaul.Content.ADV
             else if (currentAchievement.Style == ToastStyle.Brimstone) {
                 //硫磺火风格：小余烬
                 if (currentState == AnimationState.Celebrate && Main.rand.NextBool(3)) {
-                    miniEmbers.Add(new MiniEmber(panelCenter + new Vector2(Main.rand.NextFloat(-140f, 140f), 45f)));
+                    miniEmbers.Add(new MiniEmber(panelCenter + new Vector2(Main.rand.NextFloat(-currentPanelWidth/2f + 20, currentPanelWidth/2f - 20), 45f)));
                 }
                 for (int i = miniEmbers.Count - 1; i >= 0; i--) {
                     if (miniEmbers[i].Update()) {
@@ -280,7 +342,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private Vector2 GetCurrentPanelCenter() {
-            float x = MathHelper.Lerp(OffscreenX, OnscreenX, slideProgress) + PanelWidth / 2f;
+            float x = MathHelper.Lerp(OffscreenX, OnscreenX, slideProgress) + currentPanelWidth / 2f;
             return new Vector2(x, ScreenY + PanelHeight / 2f);
         }
         #endregion
@@ -291,7 +353,7 @@ namespace CalamityOverhaul.Content.ADV
 
             float x = MathHelper.Lerp(OffscreenX, OnscreenX, slideProgress);
             Vector2 panelPos = new Vector2(x, ScreenY);
-            Rectangle panelRect = new Rectangle((int)panelPos.X, (int)panelPos.Y, (int)(PanelWidth * celebrateScale), (int)(PanelHeight * celebrateScale));
+            Rectangle panelRect = new Rectangle((int)panelPos.X, (int)panelPos.Y, (int)currentPanelWidth, (int)PanelHeight);
 
             //根据风格绘制
             if (currentAchievement.Style == ToastStyle.Ocean) {
@@ -300,6 +362,9 @@ namespace CalamityOverhaul.Content.ADV
             else {
                 DrawBrimstoneStyle(spriteBatch, panelRect);
             }
+
+            //绘制光晕效果
+            DrawGlowEffect(spriteBatch, panelRect);
 
             //绘制内容
             DrawContent(spriteBatch, panelRect);
@@ -313,6 +378,45 @@ namespace CalamityOverhaul.Content.ADV
             }
             foreach (var ember in miniEmbers) {
                 ember.Draw(spriteBatch, alpha * 0.9f);
+            }
+        }
+
+        private void DrawGlowEffect(SpriteBatch spriteBatch, Rectangle rect) {
+            if (glowIntensity <= 0.01f) return;
+            
+            Texture2D px = VaultAsset.placeholder2.Value;
+            
+            //外发光
+            Color glowColor = currentAchievement.Style == ToastStyle.Ocean
+                ? new Color(100, 200, 255) * (glowIntensity * alpha * 0.3f)
+                : new Color(255, 150, 80) * (glowIntensity * alpha * 0.3f);
+            
+            int glowSize = 8;
+            for (int i = 0; i < glowSize; i++) {
+                float offset = i + 1;
+                float intensity = (1f - i / (float)glowSize) * glowIntensity;
+                Color c = glowColor * intensity;
+                
+                Rectangle glowRect = new Rectangle(
+                    rect.X - (int)offset,
+                    rect.Y - (int)offset,
+                    rect.Width + (int)(offset * 2),
+                    rect.Height + (int)(offset * 2)
+                );
+                
+                //上下
+                spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Y, glowRect.Width, 1), new Rectangle(0, 0, 1, 1), c);
+                spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Bottom, glowRect.Width, 1), new Rectangle(0, 0, 1, 1), c);
+                //左右
+                spriteBatch.Draw(px, new Rectangle(glowRect.X, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c);
+                spriteBatch.Draw(px, new Rectangle(glowRect.Right, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c);
+            }
+            
+            //闪光效果
+            float shimmer = (float)Math.Sin(shimmerPhase) * 0.5f + 0.5f;
+            if (shimmer > 0.7f) {
+                Color shimmerColor = Color.White * ((shimmer - 0.7f) / 0.3f * glowIntensity * alpha * 0.4f);
+                spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), shimmerColor);
             }
         }
 
@@ -444,13 +548,13 @@ namespace CalamityOverhaul.Content.ADV
 
         private void DrawContent(SpriteBatch spriteBatch, Rectangle rect) {
             var font = FontAssets.MouseText.Value;
-            Vector2 iconPos = new Vector2(rect.X + 20, rect.Y + rect.Height / 2f);
+            Vector2 iconPos = new Vector2(rect.X + IconPadding + IconSize / 2f, rect.Y + rect.Height / 2f);
 
             //绘制图标
             if (currentAchievement.CustomIcon != null) {
                 Texture2D icon = currentAchievement.CustomIcon;
-                float iconScale = Math.Min(60f / icon.Width, 60f / icon.Height);
-                spriteBatch.Draw(icon, iconPos, null, Color.White * alpha, 0f, icon.Size() / 2f, iconScale * celebrateScale, SpriteEffects.None, 0f);
+                float iconScale = Math.Min(IconSize / icon.Width, IconSize / icon.Height);
+                spriteBatch.Draw(icon, iconPos, null, Color.White * alpha, 0f, icon.Size() / 2f, iconScale, SpriteEffects.None, 0f);
             }
             else if (currentAchievement.IconItemID != ItemID.None) {
                 Main.instance.LoadItem(currentAchievement.IconItemID);
@@ -458,12 +562,12 @@ namespace CalamityOverhaul.Content.ADV
                 Rectangle itemFrame = Main.itemAnimations[currentAchievement.IconItemID] != null
                     ? Main.itemAnimations[currentAchievement.IconItemID].GetFrame(itemTex)
                     : itemTex.Frame();
-                float itemScale = Math.Min(60f / itemFrame.Width, 60f / itemFrame.Height);
-                spriteBatch.Draw(itemTex, iconPos, itemFrame, Color.White * alpha, 0f, itemFrame.Size() / 2f, itemScale * celebrateScale * 1.2f, SpriteEffects.None, 0f);
+                float itemScale = Math.Min(IconSize / itemFrame.Width, IconSize / itemFrame.Height);
+                spriteBatch.Draw(itemTex, iconPos, itemFrame, Color.White * alpha, 0f, itemFrame.Size() / 2f, itemScale * 1.2f, SpriteEffects.None, 0f);
             }
 
             //绘制文字
-            Vector2 textStart = new Vector2(rect.X + 90, rect.Y + 20);
+            Vector2 textStart = new Vector2(rect.X + TextStartX, rect.Y + 20);
             Color titleColor = currentAchievement.Style == ToastStyle.Brimstone
                 ? new Color(255, 230, 200) * alpha
                 : new Color(220, 240, 255) * alpha;
@@ -472,12 +576,29 @@ namespace CalamityOverhaul.Content.ADV
             //标题
             string titleText = currentAchievement.Title ?? AchievementUnlocked.Value;
             Vector2 titleSize = font.MeasureString(titleText) * 0.9f;
-            Utils.DrawBorderString(spriteBatch, titleText, textStart, titleColor, 0.9f);
+            
+            //如果标题过长，自动换行或缩小
+            float availableWidth = currentPanelWidth - TextStartX - TextPaddingRight;
+            if (titleSize.X > availableWidth) {
+                float scale = Math.Max(0.6f, availableWidth / titleSize.X * 0.9f);
+                Utils.DrawBorderString(spriteBatch, titleText, textStart, titleColor, scale);
+                titleSize = font.MeasureString(titleText) * scale;
+            } else {
+                Utils.DrawBorderString(spriteBatch, titleText, textStart, titleColor, 0.9f);
+            }
 
             //描述
             if (!string.IsNullOrEmpty(currentAchievement.Description)) {
                 Vector2 descPos = textStart + new Vector2(0, titleSize.Y + 5);
-                Utils.DrawBorderString(spriteBatch, currentAchievement.Description, descPos, descColor, 0.7f);
+                Vector2 descSize = font.MeasureString(currentAchievement.Description) * 0.7f;
+                
+                //如果描述过长，自动缩小
+                if (descSize.X > availableWidth) {
+                    float scale = Math.Max(0.5f, availableWidth / descSize.X * 0.7f);
+                    Utils.DrawBorderString(spriteBatch, currentAchievement.Description, descPos, descColor, scale);
+                } else {
+                    Utils.DrawBorderString(spriteBatch, currentAchievement.Description, descPos, descColor, 0.7f);
+                }
             }
         }
         #endregion
@@ -493,17 +614,19 @@ namespace CalamityOverhaul.Content.ADV
             public Color Color;
             public float Rotation;
             public float RotationSpeed;
+            public bool IsBurst;
 
-            public CelebrationParticle(Vector2 center, ToastStyle style) {
+            public CelebrationParticle(Vector2 center, ToastStyle style, bool isBurst) {
+                IsBurst = isBurst;
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(2f, 5f);
-                Position = center + angle.ToRotationVector2() * Main.rand.NextFloat(20f, 40f);
+                float speed = isBurst ? Main.rand.NextFloat(3f, 7f) : Main.rand.NextFloat(1f, 3f);
+                Position = center + (isBurst ? Vector2.Zero : angle.ToRotationVector2() * Main.rand.NextFloat(20f, 40f));
                 Velocity = angle.ToRotationVector2() * speed;
                 Life = 0f;
-                MaxLife = Main.rand.NextFloat(40f, 70f);
-                Size = Main.rand.NextFloat(2f, 4f);
+                MaxLife = Main.rand.NextFloat(isBurst ? 50f : 40f, isBurst ? 90f : 70f);
+                Size = Main.rand.NextFloat(isBurst ? 3f : 2f, isBurst ? 6f : 4f);
                 Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-                RotationSpeed = Main.rand.NextFloat(-0.1f, 0.1f);
+                RotationSpeed = Main.rand.NextFloat(-0.15f, 0.15f);
 
                 Color = style == ToastStyle.Ocean
                     ? Main.rand.Next(new Color[] { new Color(100, 200, 255), new Color(150, 230, 255), Color.Cyan })
@@ -513,8 +636,8 @@ namespace CalamityOverhaul.Content.ADV
             public bool Update() {
                 Life++;
                 Position += Velocity;
-                Velocity *= 0.95f;
-                Velocity.Y += 0.15f;//重力
+                Velocity *= 0.96f;
+                Velocity.Y += 0.12f;//重力
                 Rotation += RotationSpeed;
                 return Life >= MaxLife;
             }
@@ -524,7 +647,7 @@ namespace CalamityOverhaul.Content.ADV
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin((1f - t) * MathHelper.Pi);
                 Color drawColor = Color * (fade * alpha);
-                sb.Draw(px, Position, new Rectangle(0, 0, 1, 1), drawColor, Rotation, new Vector2(0.5f), Size, SpriteEffects.None, 0f);
+                sb.Draw(px, Position, new Rectangle(0, 0, 1, 1), drawColor, Rotation, new Vector2(0.5f), Size * (IsBurst ? 1f + t * 0.3f : 1f), SpriteEffects.None, 0f);
             }
         }
 
