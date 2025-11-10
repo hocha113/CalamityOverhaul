@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         internal const string helenSolemn = " " + " ";
         internal const string helenWrath = " " + " " + " ";
         internal const string helenSilence = " " + " " + " " + " ";
+        internal const string helenSerious = " " + " " + " " + " " + " ";
 
         //至尊灾厄表情常量
         private const string supCalDespise = " ";
@@ -102,6 +103,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSilence, ADVAsset.Helen_silenceADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSilence, silhouette: false);
 
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSerious, ADVAsset.Helen_serious2ADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSerious, silhouette: false);
+
             //注册至尊灾厄立绘
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
@@ -133,14 +137,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Add(Rolename1.Value + helenShock, Line1.Value);
             Add(Rolename1.Value + helenShock, Line2.Value);
             Add(Rolename1.Value + helenShock, Line3.Value);
-            Add(Rolename1.Value + helenSilence, Line4.Value);
+            Add(Rolename1.Value + helenSerious, Line4.Value);
             Add(Rolename2.Value, Line5.Value);
             Add(Rolename2.Value, Line6.Value);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value + supCalDespise, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
             Add(Rolename2.Value, Line10.Value);
-            Add(Rolename1.Value + helenSilence, Line11.Value);
+            Add(Rolename1.Value + helenSerious, Line11.Value);
             Add(Rolename2.Value + supCalDespise, Line12.Value);
             Add(Rolename2.Value + supCalDespise, Line13.Value);
             Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
