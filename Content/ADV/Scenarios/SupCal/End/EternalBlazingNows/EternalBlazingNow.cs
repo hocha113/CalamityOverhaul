@@ -161,9 +161,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             MusicToast.ShowMusic(
                 title: "ÓêÊªµÄ´°±ß",
                 artist: "¸¯Šª",
-                albumCover: CWRAsset.icon_small.Value,
-                style: MusicToast.MusicStyle.Neon,
-                displayDuration: 450 // 7.5Ãë
+                albumCover: ADVAsset.FUJI,
+                style: MusicToast.MusicStyle.RedNeon,
+                displayDuration: 480//8Ãë
             );
         }
 

@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -27,7 +25,8 @@ namespace CalamityOverhaul.Content.ADV
         {
             Vinyl,      //黑胶唱片风格
             Digital,    //数字音波风格
-            Neon        //霓虹光谱风格
+            Neon,       //霓虹光谱风格
+            RedNeon     //红色霓虹光谱风格
         }
 
         /// <summary>
@@ -316,6 +315,9 @@ namespace CalamityOverhaul.Content.ADV
                 case MusicStyle.Neon:
                     DrawNeonStyle(spriteBatch, panelRect);
                     break;
+                case MusicStyle.RedNeon:
+                    DrawRedNeonStyle(spriteBatch, panelRect);
+                    break;
             }
 
             //绘制内容
@@ -556,6 +558,82 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
+        #region 红色霓虹光谱风格
+        private void DrawRedNeonStyle(SpriteBatch spriteBatch, Rectangle rect) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+
+            //深色背景
+            Color bgColor = new Color(10, 5, 15) * alpha;
+            spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor);
+
+            //霓虹光谱条
+            DrawRedSpectrumBars(spriteBatch, rect);
+
+            //发光边框
+            float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
+            Color neonRed = Color.Lerp(new Color(255, 0, 0), new Color(255, 100, 100), pulse) * alpha;
+            Color neonWhite = Color.Lerp(new Color(255, 255, 255), new Color(255, 255, 200), pulse) * alpha;
+
+            //渐变边框
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonRed);
+            spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonWhite);
+            
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonRed * 0.7f);
+            spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Bottom - 3, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonWhite * 0.7f);
+
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonRed * 0.85f);
+            spriteBatch.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonWhite * 0.85f);
+
+            //外发光
+            DrawNeonGlow(spriteBatch, rect, neonRed, neonWhite);
+        }
+
+        private void DrawRedSpectrumBars(SpriteBatch sb, Rectangle rect) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            
+            float barWidth = 4f;
+            float spacing = 2f;
+            float startX = rect.X + TextStartX;
+            float bottomY = rect.Y + rect.Height - 10f;
+            float maxBarHeight = 20f;
+
+            for (int i = 0; i < spectrumBars.Length; i++) {
+                float x = startX + i * (barWidth + spacing);
+                if (x + barWidth > rect.Right - TextPaddingRight) break;
+
+                float height = spectrumBars[i] * maxBarHeight;
+                
+                //红色系渐变 - 从深红到亮红到橙红
+                float t = (i / (float)spectrumBars.Length + pulsePhase * 0.1f) % 1f;
+                Color barColor;
+                
+                if (t < 0.33f) {
+                    //深红 -> 鲜红
+                    float localT = t / 0.33f;
+                    barColor = Color.Lerp(new Color(180, 0, 0), new Color(255, 0, 0), localT);
+                }
+                else if (t < 0.66f) {
+                    //鲜红 -> 橙红
+                    float localT = (t - 0.33f) / 0.33f;
+                    barColor = Color.Lerp(new Color(255, 0, 0), new Color(255, 80, 0), localT);
+                }
+                else {
+                    //橙红 -> 亮橙
+                    float localT = (t - 0.66f) / 0.34f;
+                    barColor = Color.Lerp(new Color(255, 80, 0), new Color(255, 150, 50), localT);
+                }
+                
+                barColor *= alpha;
+
+                Rectangle barRect = new Rectangle((int)x, (int)(bottomY - height), (int)barWidth, (int)height);
+                sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor);
+
+                //发光效果
+                sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor * 0.4f);
+            }
+        }
+        #endregion
+
         private void DrawContent(SpriteBatch spriteBatch, Rectangle rect) {
             var font = FontAssets.MouseText.Value;
 
@@ -569,23 +647,6 @@ namespace CalamityOverhaul.Content.ADV
                 //黑胶唱片风格：旋转封面
                 float rotation = currentMusic.Style == MusicStyle.Vinyl ? vinylRotation : 0f;
                 spriteBatch.Draw(album, albumPos, null, Color.White * alpha, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
-                
-                //添加边框
-                Texture2D px = VaultAsset.placeholder2.Value;
-                Color frameColor = Color.White * (alpha * 0.3f);
-                int frameSize = (int)(AlbumSize / 2f * albumScale);
-                for (int i = 0; i < 4; i++) {
-                    Rectangle frameRect = new Rectangle(
-                        (int)albumPos.X - frameSize - i,
-                        (int)albumPos.Y - frameSize - i,
-                        frameSize * 2 + i * 2,
-                        frameSize * 2 + i * 2
-                    );
-                    spriteBatch.Draw(px, new Rectangle(frameRect.X, frameRect.Y, frameRect.Width, 1), new Rectangle(0, 0, 1, 1), frameColor);
-                    spriteBatch.Draw(px, new Rectangle(frameRect.X, frameRect.Bottom, frameRect.Width, 1), new Rectangle(0, 0, 1, 1), frameColor);
-                    spriteBatch.Draw(px, new Rectangle(frameRect.X, frameRect.Y, 1, frameRect.Height), new Rectangle(0, 0, 1, 1), frameColor);
-                    spriteBatch.Draw(px, new Rectangle(frameRect.Right, frameRect.Y, 1, frameRect.Height), new Rectangle(0, 0, 1, 1), frameColor);
-                }
             }
             else {
                 //默认音符图标
@@ -599,6 +660,7 @@ namespace CalamityOverhaul.Content.ADV
                 MusicStyle.Vinyl => new Color(220, 200, 180) * alpha,
                 MusicStyle.Digital => new Color(0, 220, 255) * alpha,
                 MusicStyle.Neon => new Color(255, 100, 255) * alpha,
+                MusicStyle.RedNeon => new Color(255, 125, 75) * alpha,
                 _ => Color.White * alpha
             };
 
@@ -688,6 +750,12 @@ namespace CalamityOverhaul.Content.ADV
                         Color.Cyan 
                     }),
                     MusicStyle.Neon => Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.6f),
+                    MusicStyle.RedNeon => Main.rand.Next(new Color[] {
+                        new Color(255, 0, 0),
+                        new Color(255, 80, 40),
+                        new Color(255, 120, 60),
+                        Color.OrangeRed
+                    }),
                     _ => Color.White
                 };
             }
@@ -702,6 +770,16 @@ namespace CalamityOverhaul.Content.ADV
                 if (Style == MusicStyle.Neon) {
                     float hue = (Life * 0.02f) % 1f;
                     Color = Main.hslToRgb(hue, 1f, 0.6f);
+                }
+                else if (Style == MusicStyle.RedNeon) {
+                    //红色霓虹：在红色范围内变化
+                    float t = (Life * 0.03f) % 1f;
+                    if (t < 0.5f) {
+                        Color = Color.Lerp(new Color(255, 0, 0), new Color(255, 100, 0), t * 2f);
+                    }
+                    else {
+                        Color = Color.Lerp(new Color(255, 100, 0), new Color(255, 0, 0), (t - 0.5f) * 2f);
+                    }
                 }
                 
                 return Life >= MaxLife;

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV
 
         //动画参数
         private const int SlideInDuration = 30;      //滑入时长(帧)
-        private const int HoldDuration = 40;        //停留时长(帧)
+        private const int HoldDuration = 120;        //停留时长(帧)
         private const int CelebrateDuration = 60;    //庆祝动画时长(帧)
         private const int SlideOutDuration = 25;     //滑出时长(帧)
 
