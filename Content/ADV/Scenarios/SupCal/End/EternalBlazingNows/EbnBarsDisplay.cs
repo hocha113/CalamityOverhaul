@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -15,8 +14,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     {
         public override bool PreDrawResourceDisplay(PlayerStatsSnapshot snapshot
             , IPlayerResourcesDisplaySet displaySet, bool drawingLife, ref Color textColor, out bool drawText) {
-            drawText = true;
             if (EbnBarsDisplay.ShouldDrawCustomLifeBars()) {
+                drawText = true;
                 return false;
             }
             return base.PreDrawResourceDisplay(snapshot, displaySet, drawingLife, ref textColor, out drawText);
