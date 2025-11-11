@@ -130,6 +130,8 @@ namespace CalamityOverhaul
         public static int Proj_MirrorBlast => ModContent.ProjectileType<MirrorBlast>();
         public static int Tile_PlagueInfuser => ModContent.TileType<PlagueInfuser>();
         public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
+        public static int Tile_SCalAltar => ModContent.TileType<SCalAltar>();
+        public static int Tile_SCalAltarLarge => ModContent.TileType<SCalAltarLarge>();
         public static int Buff_Plague => ModContent.BuffType<Plague>();
     }
 }

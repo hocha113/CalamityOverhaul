@@ -6246,7 +6246,7 @@ UI: {
 	YharonQuestTrackerUI: {
 		// QuestTitle: Commission: Hunt the Incineration Dragon
 		// DamageContribution: Oni Machete Damage
-		// RequiredContribution: Required: 80%
+		// RequiredContribution: Required: 75%
 	}
 
 	SeaDialogueBox: {
@@ -6991,5 +6991,12 @@ ADV: {
 		// Choice3_R3: It's just... most of the endings are not very pleasant.
 		// EndLine1: Well, then. We will meet again.
 		// EndLine2: Soon.
+	}
+
+	SCalAltarScenario: {
+		// Rolename1: Brimstone Witch
+		// L1: It is not yet time. There is still another enemy blocking your path.
+		// L2: Go piece together that pile of mechanical toys of yours, then defeat him.
+		// L3: ...What? Do I need to repeat myself?
 	}
 }

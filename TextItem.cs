@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
-using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -41,7 +40,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         //public override void SetStaticDefaults() {
@@ -66,7 +65,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            //player.GetDamage(DamageClass.Generic) *= 100;
+            player.GetDamage(DamageClass.Generic) *= 100;
             //player.velocity.Domp();
             //bool news = player.PressKey();
             //if (news && !old) {

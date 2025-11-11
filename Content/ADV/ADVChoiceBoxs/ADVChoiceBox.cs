@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
 {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
         private int hoveredIndex = -1;
         private int selectedIndex = -1;
         private bool isSelecting = false;
-        
+
         //样式系统
         private ChoiceBoxStyle currentStyleType = ChoiceBoxStyle.Default;
         private IChoiceBoxStyle currentStyle;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "选择");
             DisabledHintFormat = this.GetLocalization(nameof(DisabledHintFormat), () => "（{0}）");
-            
+
             //初始化样式实例
             var inst = Instance;
             inst.styleInstances[ChoiceBoxStyle.Default] = new DefaultChoiceBoxStyle();
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
             inst.hideProgress = 0f;
             inst.hoveredIndex = -1;
             inst.selectedIndex = -1;
-            
+
             //切换样式
             inst.currentStyleType = style;
             if (inst.styleInstances.TryGetValue(style, out var styleInstance)) {
@@ -359,14 +359,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
             if (currentStyle != null) {
                 currentStyle.DrawTitleDecoration(spriteBatch, titlePos, title, alpha);
             }
-            
+
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
 
             //绘制分割线
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
-            
+
             if (currentStyle != null) {
                 currentStyle.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
             }

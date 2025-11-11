@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Phase2WithoutHalibut = this.GetLocalization(nameof(Phase2WithoutHalibut), () => "你真的不准备求饶？");
 
             BH4Text = this.GetLocalization(nameof(BH4Text), () => "给我站在那里别动！");
-            SeekerRingText = this.GetLocalization(nameof(SeekerRingText), () => "你的力量均来自身外之物，这样的你形如虚设……这倒让我想起了那个虚伪之人");
+            SeekerRingText = this.GetLocalization(nameof(SeekerRingText), () => "你的力量皆非己出。失去外物，你什么都不是……真像极了那个虚伪之人");
             BH5Text = this.GetLocalization(nameof(BH5Text), () => "胜利的天平有些不确定会倒向何方了...你只需站住一会儿就可以改变现状，好吗？");
             Sepulcher2Text = this.GetLocalization(nameof(Sepulcher2Text), () => "如果今天只能活一个，你觉得我会希望是谁？");
 

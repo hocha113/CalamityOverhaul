@@ -1,11 +1,114 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+﻿using CalamityMod.Dusts;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
+    internal class SCalAltarScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
+    {
+        public override string Key => nameof(SCalAltarScenario);
+        public string LocalizationCategory => "ADV";
+        //设置场景默认使用硫磺火风格
+        protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+        //角色名称本地化
+        public static LocalizedText Rolename1 { get; private set; }
+        public static LocalizedText L1;
+        public static LocalizedText L2;
+        public static LocalizedText L3;
+        public static int Count;
+        void IWorldInfo.OnWorldLoad() {
+            Count = -1;
+        }
+        public override void SetStaticDefaults() {
+            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
+            L1 = this.GetLocalization(nameof(L1), () => "现在还不是时候，你的前方还有另一个挡路的敌人");
+            L2 = this.GetLocalization(nameof(L2), () => "去把你那堆机械玩具拼好，再把他打倒");
+            L3 = this.GetLocalization(nameof(L3), () => "……怎么？需要我再说一遍吗？");
+        }
+        protected override void Build() {
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[3]);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
+
+            string line = L1.Value;
+            if (Count == 1) {
+                line = L2.Value;
+            }
+            if (Count == 2) {
+                line = L3.Value;
+            }
+            Add(Rolename1.Value, line);
+        }
+    }
+
+    internal class ModifySCalAltar : TileOverride
+    {
+        public override int TargetID => CWRID.Tile_SCalAltar;
+        public static void HitEffctByPlayer(Player player) {
+            //硫磺火粒子爆发，使用Brimstone粒子
+            for (int z = 0; z < 40; z++) {
+                float angle = MathHelper.TwoPi * z / 40f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
+
+                Dust dust = Dust.NewDustPerfect(
+                    player.Center,
+                    (int)CalamityDusts.Brimstone,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(1.8f, 3f)
+                );
+                dust.noGravity = true;
+                dust.fadeIn = 1.4f;
+            }
+            //硫磺火召唤音效 - 参考SCal的音效
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 0.7f,
+                Pitch = -0.4f
+            }, player.Center);
+
+            //低沉的地狱火焰音
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
+                Volume = 0.6f,
+                Pitch = -0.5f
+            }, player.Center);
+            PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
+            player.Hurt(pd, 250, 0);
+        }
+        public static bool? Click() {
+            if (EbnEffect.IsActive) {
+                return false;//永恒燃烧的现在结局激活时无法使用灾厄祭坛
+            }
+            if (EbnPlayer.IsConquered(Main.LocalPlayer)) {
+                if (!InWorldBossPhase.Downed29.Invoke()) {//没有击败星流巨械
+                    if (++SCalAltarScenario.Count > 2) {
+                        HitEffctByPlayer(Main.LocalPlayer);
+                        return false;//无法使用灾厄祭坛
+                    }
+                    ScenarioManager.Reset<SCalAltarScenario>();
+                    ScenarioManager.Start<SCalAltarScenario>();
+                    return false;//无法使用灾厄祭坛
+                }
+            }
+            return null;
+        }
+        public override bool? RightClick(int i, int j, Tile tile) => Click();
+    }
+
+    internal class ModifySCalAltarLarge : TileOverride
+    {
+        public override int TargetID => CWRID.Tile_SCalAltarLarge;
+        public override bool? RightClick(int i, int j, Tile tile) => ModifySCalAltar.Click();
+    }
+
     internal class ModifySupCalSystem : ModSystem
     {
         public override void PostUpdateNPCs() {

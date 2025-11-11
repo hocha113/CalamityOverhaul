@@ -124,7 +124,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             float targetProgress = IsCollapsed ? 1f : 0f;
             if (CollapseProgress < targetProgress) {
                 CollapseProgress = Math.Min(1f, CollapseProgress + CollapseAnimSpeed);
-            } else if (CollapseProgress > targetProgress) {
+            }
+            else if (CollapseProgress > targetProgress) {
                 CollapseProgress = Math.Max(0f, CollapseProgress - CollapseAnimSpeed);
             }
 
@@ -303,17 +304,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             );
 
             bool isHovering = MouseScreenArea.Intersects(buttonRect);
-            
+
             //绘制按钮背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color buttonBg = isHovering ? new Color(255, 140, 70) * 0.6f : new Color(180, 60, 30) * 0.5f;
-            
+
             if (ToggleButtonClickCountdown > 0f) {
                 buttonBg = new Color(255, 180, 100) * 0.7f;
             }
 
             spriteBatch.Draw(pixel, buttonRect, buttonBg);
-            
+
             //绘制按钮边框
             int borderWidth = 2;
             Color borderColor = new Color(255, 200, 120) * 0.8f;
@@ -327,7 +328,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             string arrowText = IsCollapsed ? "►" : "◄";
             Vector2 textSize = font.MeasureString(arrowText);
             Vector2 textPos = buttonRect.Center.ToVector2() - textSize / 2;
-            
+
             Utils.DrawBorderString(spriteBatch, arrowText, textPos, Color.White, 1f);
 
             //处理点击

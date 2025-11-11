@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
             if (styleCreators.TryGetValue(styleType, out var creator)) {
                 return creator();
             }
-            
+
             return new DefaultChoiceBoxStyle(); //Ä¬ÈÏÑשÊ½
         }
 
