@@ -161,9 +161,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (!Active)
-                return;
-
             Texture2D backgroundTexture = ModContent.Request<Texture2D>("CalamityMod/UI/CalamitasEnchantments/CalamitasCurseBackground").Value;
             Vector2 backgroundScale = Vector2.One * UIScale;
 
@@ -184,29 +181,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             // 选择附魔
             IEnumerable<Enchantment> possibleEnchantments = SelectEnchantment();
 
-            // 绘制物品槽
-            Vector2 itemSlotDrawPosition = UITopLeft + new Vector2(30f, 50f) * backgroundScale;
-            Vector2 enchantIconDrawPosition = UITopLeft + new Vector2(84f, 60f) * backgroundScale;
+            // 调整后的UI元素位置和大小
+            // 物品槽位置 - 增大并左移一些以提供更好的视觉平衡
+            Vector2 itemSlotDrawPosition = UITopLeft + new Vector2(35f, 45f) * backgroundScale;
+            // 附魔按钮位置 - 调整到物品槽下方，增加间距
+            Vector2 enchantIconDrawPosition = UITopLeft + new Vector2(35f, 125f) * backgroundScale;
+            
             DrawItemIcon(spriteBatch, itemSlotDrawPosition, enchantIconDrawPosition, backgroundScale, out bool isHoveringOverItemIcon, out bool isHoveringOverEnchantIcon);
 
             if (isHoveringOverItemIcon)
                 InteractWithItemSlot();
 
-            // 绘制按钮
-            DrawAndInteractWithButtons(spriteBatch, possibleEnchantments, UITopLeft + new Vector2(210f, 50f) * backgroundScale, UITopLeft + new Vector2(210f, 90f) * backgroundScale, backgroundScale);
+            // 调整按钮位置 - 移到右侧，增大间距
+            Vector2 topButtonPos = UITopLeft + new Vector2(240f, 42f) * backgroundScale;
+            Vector2 bottomButtonPos = UITopLeft + new Vector2(240f, 110f) * backgroundScale;
+            DrawAndInteractWithButtons(spriteBatch, possibleEnchantments, topButtonPos, bottomButtonPos, backgroundScale);
 
             // 绘制附魔信息
             if (SelectedEnchantment.HasValue) {
-                // 绘制附魔名称
-                DrawEnchantmentName(spriteBatch, UITopLeft + new Vector2(216f, 66f) * backgroundScale);
+                // 绘制附魔名称 - 调整位置到右侧区域中心
+                DrawEnchantmentName(spriteBatch, UITopLeft + new Vector2(300f, 70f) * backgroundScale);
 
-                // 绘制附魔描述
-                Point descriptionDrawPositionTopLeft = (UITopLeft + new Vector2(50f, 148f) * backgroundScale).ToPoint();
+                // 绘制附魔描述 - 调整到下方区域，增加上边距
+                Point descriptionDrawPositionTopLeft = (UITopLeft + new Vector2(40f, 180f) * backgroundScale).ToPoint();
                 DrawEnchantmentDescription(spriteBatch, descriptionDrawPositionTopLeft);
 
-                // 绘制附魔图标（如果有）
+                // 绘制附魔图标（如果有）- 调整位置
                 if (!string.IsNullOrEmpty(SelectedEnchantment.Value.IconTexturePath)) {
-                    Vector2 iconDrawPositionTopLeft = UITopLeft + new Vector2(320f, 54f) * UIScale;
+                    Vector2 iconDrawPositionTopLeft = UITopLeft + new Vector2(226f, 56f) * UIScale;
                     Texture2D iconTexture = ModContent.Request<Texture2D>(SelectedEnchantment.Value.IconTexturePath).Value;
                     DrawIcon(spriteBatch, iconDrawPositionTopLeft, iconTexture);
                 }
@@ -318,7 +320,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
 
             // 进度条填充（硫磺火效果）
             Rectangle progressBarFill = progressBarBg;
-            progressBarFill.Width = (int)(progressBarFill.Width * progress);
+            progressBarFill.Width = (int)((int)(progressBarFill.Width * progress) * 5.25f);
 
             // 绘制火焰渐变进度条
             int segments = 10;
@@ -340,7 +342,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 spriteBatch.Draw(VaultAsset.placeholder2.Value, segment, fillColor);
             }
 
-            // 绘制进度文本
+            // 绘制进度文本 - 增大字体
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string progressText = $"{(int)(progress * 100)}%";
             Vector2 textSize = font.MeasureString(progressText);
@@ -349,7 +351,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 progressBarBg.Center.Y - textSize.Y / 2
             );
 
-            Utils.DrawBorderString(spriteBatch, progressText, textPos, Color.White * 0.9f, 0.8f);
+            Utils.DrawBorderString(spriteBatch, progressText, textPos, Color.White * 0.9f, 1.0f);
         }
 
         private void DrawItemIcon(SpriteBatch spriteBatch, Vector2 itemSlotDrawPosition, Vector2 enchantIconDrawPosition, Vector2 scale, out bool isHoveringOverItemIcon, out bool isHoveringOverEnchantIcon) {
@@ -357,11 +359,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             Texture2D itemSlotTexture = ModContent.Request<Texture2D>("CalamityMod/UI/CalamitasEnchantments/CalamitasCurseItemSlot").Value;
             Texture2D enchantIconTexture = ModContent.Request<Texture2D>("CalamityMod/UI/CalamitasEnchantments/CalamitasCurseUI_Button").Value;
 
+            // 增大物品槽和按钮的缩放
+            Vector2 itemSlotScale = scale * 1.5f;
+            Vector2 enchantButtonScale = scale * 1.5f;
+
             Rectangle enchantIconArea = new Rectangle(
                 (int)enchantIconDrawPosition.X,
                 (int)enchantIconDrawPosition.Y,
-                (int)(enchantIconTexture.Width * scale.X),
-                (int)(enchantIconTexture.Height * scale.Y)
+                (int)(enchantIconTexture.Width * enchantButtonScale.X),
+                (int)(enchantIconTexture.Height * enchantButtonScale.Y)
             );
 
             // 检测鼠标悬停
@@ -376,11 +382,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             isHoveringOverItemIcon = MouseScreenArea.Intersects(new Rectangle(
                 (int)itemSlotDrawPosition.X,
                 (int)itemSlotDrawPosition.Y,
-                (int)(itemSlotTexture.Width * scale.X),
-                (int)(itemSlotTexture.Height * scale.Y)
+                (int)(itemSlotTexture.Width * itemSlotScale.X),
+                (int)(itemSlotTexture.Height * itemSlotScale.Y)
             ));
 
-            spriteBatch.Draw(itemSlotTexture, itemSlotDrawPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(itemSlotTexture, itemSlotDrawPosition, null, Color.White, 0f, Vector2.Zero, itemSlotScale, SpriteEffects.None, 0f);
 
             // 绘制物品
             if (!CurrentlyHeldItem.IsAir) {
@@ -391,7 +397,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 if (hasMultipleFrames)
                     itemFrame = Main.itemAnimations[CurrentlyHeldItem.type].GetFrame(itemTexture);
 
-                float baseScale = UIScale;
+                float baseScale = UIScale * 1.5f; // 增大物品显示
 
                 float itemScale = 1f;
                 if (itemFrame.Width > 36 || itemFrame.Height > 36)
@@ -404,7 +410,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, CurrentlyHeldItem.GetColor(Color.White), 0f, itemFrame.Size() * 0.5f, itemScale, SpriteEffects.None, 0f);
             }
 
-            spriteBatch.Draw(enchantIconTexture, enchantIconDrawPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(enchantIconTexture, enchantIconDrawPosition, null, Color.White, 0f, Vector2.Zero, enchantButtonScale, SpriteEffects.None, 0f);
         }
 
         private void DrawAndInteractWithButtons(SpriteBatch spriteBatch, IEnumerable<Enchantment> possibleEnchantments, Vector2 topButtonTopLeft, Vector2 bottomButtonTopLeft, Vector2 scale) {
@@ -419,8 +425,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             if (BottomButtonClickCountdown > 0f)
                 bottomArrowTexture = ModContent.Request<Texture2D>("CalamityMod/UI/CalamitasEnchantments/CalamitasCurseUI_ArrowDownClicked").Value;
 
-            Rectangle topButtonArea = new Rectangle((int)topButtonTopLeft.X, (int)topButtonTopLeft.Y, (int)(topArrowTexture.Width * scale.X), (int)(topArrowTexture.Height * scale.Y));
-            Rectangle bottomButtonArea = new Rectangle((int)bottomButtonTopLeft.X, (int)bottomButtonTopLeft.Y, (int)(bottomArrowTexture.Width * scale.X), (int)(bottomArrowTexture.Height * scale.Y));
+            // 增大箭头按钮缩放
+            Vector2 arrowScale = scale * 1.5f;
+
+            Rectangle topButtonArea = new Rectangle((int)topButtonTopLeft.X, (int)topButtonTopLeft.Y, (int)(topArrowTexture.Width * arrowScale.X), (int)(topArrowTexture.Height * arrowScale.Y));
+            Rectangle bottomButtonArea = new Rectangle((int)bottomButtonTopLeft.X, (int)bottomButtonTopLeft.Y, (int)(bottomArrowTexture.Width * arrowScale.X), (int)(bottomArrowTexture.Height * arrowScale.Y));
 
             bool hoveringOverTopArrow = MouseScreenArea.Intersects(topButtonArea);
             bool hoveringOverBottomArrow = MouseScreenArea.Intersects(bottomButtonArea);
@@ -431,9 +440,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 bottomArrowTexture = ModContent.Request<Texture2D>("CalamityMod/UI/CalamitasEnchantments/CalamitasCurseUI_ArrowDownHovered").Value;
 
             if (EnchantIndex > 0)
-                spriteBatch.Draw(topArrowTexture, topButtonTopLeft, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(topArrowTexture, topButtonTopLeft, null, Color.White, 0f, Vector2.Zero, arrowScale, SpriteEffects.None, 0f);
             if (EnchantIndex < possibleEnchantments.Count() - 1)
-                spriteBatch.Draw(bottomArrowTexture, bottomButtonTopLeft, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(bottomArrowTexture, bottomButtonTopLeft, null, Color.White, 0f, Vector2.Zero, arrowScale, SpriteEffects.None, 0f);
 
             if (Main.mouseLeft && Main.mouseLeftRelease && !IsEnchanting) {
                 if (hoveringOverTopArrow && EnchantIndex > 0) {
@@ -451,7 +460,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         private void DrawEnchantmentName(SpriteBatch spriteBatch, Vector2 nameDrawCenter) {
-            Vector2 scale = new Vector2(0.8f, 0.745f) * UIScale;
+            // 增大附魔名称字体
+            Vector2 scale = new Vector2(1.0f, 0.95f) * UIScale;
             string enchName = SelectedEnchantment.Value.Name.ToString();
             float textWidth = FontAssets.MouseText.Value.MeasureString(enchName).X * scale.X;
             Color drawColor = SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment) ? Color.White : Color.Orange;
@@ -461,7 +471,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
 
         private void DrawEnchantmentDescription(SpriteBatch spriteBatch, Point descriptionDrawPositionTopLeft) {
             Vector2 vectorDrawPosition = descriptionDrawPositionTopLeft.ToVector2();
-            Vector2 scale = new Vector2(0.8f, 0.825f) * MathHelper.Clamp(UIScale, 0.825f, 1f) * UIScale;
+            // 增大描述文字大小
+            Vector2 scale = new Vector2(0.95f, 0.95f) * MathHelper.Clamp(UIScale, 0.85f, 1f) * UIScale;
 
             string unifiedDescription = SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
             foreach (string line in Utils.WordwrapString(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
@@ -469,12 +480,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                     continue;
 
                 ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line, vectorDrawPosition, Color.Orange, 0f, Vector2.Zero, scale);
-                vectorDrawPosition.Y += UIScale * 16f;
+                // 增加行间距
+                vectorDrawPosition.Y += UIScale * 20f;
             }
         }
 
         private static void DrawIcon(SpriteBatch spriteBatch, Vector2 drawPositionTopLeft, Texture2D texture) {
-            spriteBatch.Draw(texture, drawPositionTopLeft, null, Color.White, 0f, Vector2.Zero, UIScale, SpriteEffects.None, 0f);
+            // 增大图标缩放
+            spriteBatch.Draw(texture, drawPositionTopLeft, null, Color.White, 0f, Vector2.Zero, UIScale * 1.3f, SpriteEffects.None, 0f);
         }
 
         #endregion
@@ -535,7 +548,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             CurrentlyHeldItem.Prefix(oldPrefix);
             CurrentlyHeldItem = CurrentlyHeldItem.Clone();
 
-            CurrentlyHeldItem.Calamity().AppliedEnchantment = SelectedEnchantment.Value;
+            if (SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment)) {
+                CurrentlyHeldItem.Calamity().AppliedEnchantment = null;
+            }
+            else {
+                CurrentlyHeldItem.Calamity().AppliedEnchantment = SelectedEnchantment.Value;
+            }
+            
 
             EnchantIndex = 0;
             IsEnchanting = false;
