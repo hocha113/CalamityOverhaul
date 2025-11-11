@@ -43,10 +43,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         //展开/收起状态
         public static bool IsCollapsed = false;
-        public static float CollapseProgress = 0f; // 0 = 完全展开, 1 = 完全折叠
+        public static float CollapseProgress = 0f;// 0 = 完全展开, 1 = 完全折叠
         public static float CollapseAnimSpeed = 0.12f;
-        public static float CollapsedWidth = 60f; // 折叠后的宽度
-        public static float CollapsedHeight = 80f; // 折叠后的高度
+        public static float CollapsedWidth = 60f; //折叠后的宽度
+        public static float CollapsedHeight = 80f; //折叠后的高度
 
         //当前状态
         public static Item CurrentlyHeldItem = new Item();
