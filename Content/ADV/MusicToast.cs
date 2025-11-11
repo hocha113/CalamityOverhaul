@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV
         #endregion
 
         #region 更新逻辑
-        public override void Update() {
+        public override void LogicUpdate() {
             //动画计时器更新
             pulsePhase += 0.04f;
             wavePhase += 0.06f;
