@@ -87,16 +87,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 new Choice(Choice1Text.Value, Choice1_Magician),
                 new Choice(Choice2Text.Value, Choice2_Liar),
                 new Choice(Choice3Text.Value, Choice3_Stranger)
-            ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Default);
+            ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Tzeentch);
         }
 
         protected override void OnScenarioStart() {
             TzeentchEffect.IsActive = true;
-            TzeentchEffect.Send();
-        }
-
-        protected override void OnScenarioComplete() {
-            TzeentchEffect.IsActive = false;
             TzeentchEffect.Send();
         }
 

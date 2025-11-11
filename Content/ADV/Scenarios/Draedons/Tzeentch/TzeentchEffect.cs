@@ -517,6 +517,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
 
         public override void PostUpdateEverything() {
             if (!Cek()) {
+                if (origMusicVolume > 0f) {
+                    Main.musicVolume = origMusicVolume;
+                    origMusicVolume = -1f;
+                }
                 return;
             }
 
@@ -535,7 +539,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             }
 
             Main.newMusic = Main.musicBox2 = -1;
+            if (Main.musicVolume > 0f) {
+                origMusicVolume = Main.musicVolume;
+            }
+            Main.musicVolume = 0f;
         }
+
+        private static float origMusicVolume = -1f;
 
         private static void SpawnMysticSmoke() {
             //生成神秘烟雾
