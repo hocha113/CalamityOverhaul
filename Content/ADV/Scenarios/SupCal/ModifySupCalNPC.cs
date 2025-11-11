@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         public override int TargetID => CWRID.NPC_SupremeCalamitas;
         private static bool originallyDownedCalamitas = false;
         public override bool AI() {
+            if (CWRRef.GetBossRushActive()) {
+                return true;//Boss Rush模式下不进行任何修改
+            }
             foreach (var p in Main.ActivePlayers) {
                 //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
                 if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
