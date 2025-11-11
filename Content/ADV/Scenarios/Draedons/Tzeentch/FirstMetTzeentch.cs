@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -10,6 +12,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         public string LocalizationCategory => "ADV";
         private const string Rolename1 = "?????????????????????";
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => TzeentchDialogueBox.Instance;
+
+        public static bool Spawn;
+        public static int RandTimer;
 
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -111,6 +116,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             ScenarioManager.Reset<Choice3_StrangerPath>();
             ScenarioManager.Start<Choice3_StrangerPath>();
             Complete();
+        }
+
+        public static void Open() {
+            Spawn = true;
+            RandTimer = Main.rand.Next(60 * 13, 60 * 20);
+        }
+
+        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            if (!Spawn) {
+                return;
+            }
+            if (RandTimer > 0) {
+                RandTimer--;
+                return;
+            }
+            if (StartScenario()) {
+                Spawn = false;
+            }
         }
 
         internal class Choice1_MagicianPath : ADVScenarioBase

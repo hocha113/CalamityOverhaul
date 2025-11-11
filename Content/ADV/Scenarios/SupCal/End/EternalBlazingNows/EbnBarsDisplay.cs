@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod.Items.Potions.Alcohol;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         //多排血条配置
         private const int MaxHeartsPerRow = 10;    //每行最多显示的心脏数
-        private const int MaxRows = 3;             //最多显示的行数
+        private const int MaxRows = 2;             //最多显示的行数
         private const int HeartSpacing = 2;        //心脏之间的间距
         private const int RowSpacing = 4;          //行与行之间的间距
 
@@ -119,9 +120,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public void PreDrawResources(PlayerStatsSnapshot snapshot) {
-            _totalHearts = snapshot.AmountOfLifeHearts;
             _currentLife = snapshot.Life;
             _maxLife = snapshot.LifeMax;
+
+            _totalHearts = (int)MathHelper.Clamp(snapshot.AmountOfLifeHearts, 1, 20);
 
             _totalStars = snapshot.AmountOfManaStars;
             _currentMana = snapshot.Mana;
@@ -240,7 +242,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //计算需要绘制多少排
             int totalRows = (_totalHearts + MaxHeartsPerRow - 1) / MaxHeartsPerRow;
-            totalRows = Math.Min(totalRows, MaxRows);
+
+            totalRows = Math.Min(totalRows, 2);
 
             //计算总宽度（用于右对齐）
             int maxHeartsInAnyRow = Math.Min(MaxHeartsPerRow, _totalHearts);

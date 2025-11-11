@@ -172,6 +172,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
+            Projectile.damage = (int)(3000 * Owner.GetDamage(DamageClass.Generic).Additive);
+
             bool hideVisual = proverbsPlayer.HideVisual;
             if (hideVisual) {
                 circleAlpha = MathHelper.Lerp(circleAlpha, 0f, 0.1f);

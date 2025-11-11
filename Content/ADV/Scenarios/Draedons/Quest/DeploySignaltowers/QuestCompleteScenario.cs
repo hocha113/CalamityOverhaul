@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -66,6 +67,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.DeploySignaltowerQuestCompleted = true;
             }
+            //开启与变节者的后续对话
+            FirstMetTzeentch.Open();
         }
 
         protected override void Build() {
