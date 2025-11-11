@@ -6326,7 +6326,7 @@ UI: {
 	YharonQuestTrackerUI: {
 		QuestTitle: Поручение: Охота на Дракона Испепеления
 		DamageContribution: Урон от Мачете Они
-		RequiredContribution: Требуется: 80%
+		RequiredContribution: Требуется: 75%
 	}
 
 	SeaDialogueBox: {

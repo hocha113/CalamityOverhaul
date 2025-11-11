@@ -6215,7 +6215,7 @@ UI: {
 	YharonQuestTrackerUI: {
 		QuestTitle: 委托：猎杀焚世龙
 		DamageContribution: 鬼面刀伤害
-		RequiredContribution: 需求: 80%
+		RequiredContribution: 需求: 75%
 	}
 
 	SeaDialogueBox: {
