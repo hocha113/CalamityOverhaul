@@ -1,7 +1,8 @@
+using CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles;
 using System;
 using System.Collections.Generic;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles
+namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
 {
     /// <summary>
     /// 选项框样式工厂，用于创建和管理样式实例
@@ -12,7 +13,8 @@ namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles
         {
             { ADVChoiceBox.ChoiceBoxStyle.Default, () => new DefaultChoiceBoxStyle() },
             { ADVChoiceBox.ChoiceBoxStyle.Brimstone, () => new BrimstoneChoiceBoxStyle() },
-            { ADVChoiceBox.ChoiceBoxStyle.Draedon, () => new DraedonChoiceBoxStyle() }
+            { ADVChoiceBox.ChoiceBoxStyle.Draedon, () => new DraedonChoiceBoxStyle() },
+            { ADVChoiceBox.ChoiceBoxStyle.Tzeentch, () => new TzeentchChoiceBoxStyle() }
         };
 
         /// <summary>
