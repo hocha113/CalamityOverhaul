@@ -6277,6 +6277,12 @@ UI: {
 		ContinueHint: 继续
 		FastHint: 加速
 	}
+
+	EnchantUI: {
+		ExpandHint: 展开炼铸界面
+		CollapseHint: 收起炼铸界面
+		EnchantTitle: 炼铸
+	}
 }
 
 ADV: {

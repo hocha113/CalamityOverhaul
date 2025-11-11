@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     /// 提供免费无限制的武器附魔，但需要等待附魔时间
     /// </summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
-    internal class EnchantUI : UIHandle
+    internal class EnchantUI : UIHandle, ILocalizedModType
     {
         public static Asset<Texture2D> CalamitasCurseBackground = null;
         public static Asset<Texture2D> CalamitasCurseItemSlot = null;
@@ -80,6 +81,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static Rectangle MouseScreenArea => Utils.CenteredRectangle(Main.MouseScreen, Vector2.One * 2f);
 
         public override bool Active => Main.playerInventory && player.chest == -1 && player.talkNPC == -1 && !Main.InGuideCraftMenu && EbnPlayer.OnEbn(player);
+
+        public string LocalizationCategory => "UI";
+
+        public static LocalizedText ExpandHint;
+        public static LocalizedText CollapseHint;
+        public static LocalizedText EnchantTitle;
+
+        public override void SetStaticDefaults() {
+            ExpandHint = this.GetLocalization(nameof(ExpandHint), () => "展开炼铸界面");
+            CollapseHint = this.GetLocalization(nameof(CollapseHint), () => "收起炼铸界面");
+            EnchantTitle = this.GetLocalization(nameof(EnchantTitle), () => "炼铸");
+        }
 
         public override void Update() {
             if (!Active) {
@@ -326,7 +339,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //显示悬停提示
             if (isHovering) {
-                Main.instance.MouseText(IsCollapsed ? "展开附魔界面" : "收起附魔界面");
+                Main.instance.MouseText(IsCollapsed ? ExpandHint.Value : CollapseHint.Value);
             }
         }
 
@@ -342,7 +355,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //显示标题
             if (lerpProgress < 0.8f) {
                 DynamicSpriteFont font = FontAssets.MouseText.Value;
-                string text = "附魔";
+                string text = EnchantTitle.Value;
                 Vector2 textSize = font.MeasureString(text);
                 Vector2 textPos = new Vector2(
                     panelRect.Center.X - textSize.X / 2,
