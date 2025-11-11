@@ -6912,6 +6912,9 @@ ADV: {
 			FarewellLine10: 那么到这里，就足够了
 			FarewellLine11: 去吧，杂鱼
 		}
+
+		AchievementTitle: BE结局：永恒燃烧的现在
+		AchievementTooltip: 往日被烈火所吞噬，以异类之躯触及永恒
 	}
 
 	SupCalDisplayText: {

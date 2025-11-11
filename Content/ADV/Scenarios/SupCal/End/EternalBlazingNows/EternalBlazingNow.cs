@@ -37,6 +37,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText Line14 { get; private set; }
         public static LocalizedText Line15 { get; private set; }
 
+        public static LocalizedText AchievementTitle;
+        public static LocalizedText AchievementTooltip;
+
         //选项文本
         public static LocalizedText QuestionLine { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }
@@ -86,6 +89,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
             Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "我明白了......");
+
+            AchievementTitle = this.GetLocalization(nameof(AchievementTitle), () => "BE结局：永恒燃烧的现在");
+            AchievementTooltip = this.GetLocalization(nameof(AchievementTooltip), () => "往日被烈火所吞噬，以异类之躯触及永恒");
         }
 
         protected override void Build() {
@@ -116,7 +122,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
 
             DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.SupCalADV[0]);
-            DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
+            DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: true);
             /*
             //检查是否拥有比目鱼
             bool hasHalibut = false;
@@ -153,10 +159,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Add(Rolename2.Value + supCalDespise, Line12.Value);
             Add(Rolename2.Value + supCalDespise, Line13.Value);
             Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
-            Add(Rolename1.Value + helenWrath, Line15.Value);
 
             //添加选项
-            AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
+            AddWithChoices(Rolename1.Value + helenWrath, Line15.Value, [
                 new Choice(Choice1Text.Value, Choice1),
                 new Choice(Choice2Text.Value, Choice2, enabled: false, disabledHint: string.Empty),
             ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Brimstone);
@@ -167,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             EbnEffect.IsActive = true;
 
             MusicToast.ShowMusic(
-                title: "雨湿的窗边",
+                title: "罪之楔",
                 artist: "腐姫",
                 albumCover: ADVAsset.FUJI,
                 style: MusicToast.MusicStyle.RedNeon,
@@ -255,7 +260,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 FarewellLine1 = this.GetLocalization(nameof(FarewellLine1), () => "这漫长的一生里，我见过无数次黎明与终焉");
                 FarewellLine2 = this.GetLocalization(nameof(FarewellLine2), () => "火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外");
                 FarewellLine3 = this.GetLocalization(nameof(FarewellLine3), () => "没想到，在最后的路上，会有人同行");
-                FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "不用担心我。对我来说，这样的结局……已经足够了");
+                FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "对我来说，这样的结局……已经足够了");
                 FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "你们的存在，证明这片大地还没有真正枯竭");
                 FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "我相信，你们会走得比我更远");
                 FarewellLine7 = this.GetLocalization(nameof(FarewellLine7), () => "而我，也终于可以停下来了");
@@ -291,8 +296,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 Add(Rolename2.Value, FarewellLine7.Value);
                 Add(Rolename2.Value, FarewellLine8.Value);
                 Add(Rolename2.Value, FarewellLine9.Value);
-                Add(Rolename2.Value, FarewellLine10.Value, onStart: Achievement);
-                Add(Rolename3.Value, FarewellLine11.Value, FinalFade);
+                Add(Rolename2.Value, FarewellLine10.Value);
+                Add(Rolename3.Value, FarewellLine11.Value, onStart: Achievement, FinalFade);
             }
 
             public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
@@ -314,8 +319,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             private static void Achievement() {
                 AchievementToast.ShowAchievement(
                     CWRAsset.icon_small.Value,
-                    "BE结局：永恒燃烧的现在",
-                    "往日被烈火所吞噬，以异类之躯触及永恒",
+                    AchievementTitle.Value,
+                    AchievementTooltip.Value,
                     AchievementToast.ToastStyle.Brimstone
                 );
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
