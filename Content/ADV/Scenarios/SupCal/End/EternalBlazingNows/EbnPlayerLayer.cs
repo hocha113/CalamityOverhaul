@@ -62,9 +62,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //绘制外层虚空环
-            DrawVoidRings(sb, playerCenter);
-
             //绘制中层符文轨道
             DrawRuneOrbits(sb, playerCenter);
 

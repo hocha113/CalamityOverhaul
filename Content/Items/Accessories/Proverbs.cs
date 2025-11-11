@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -38,26 +39,27 @@ namespace CalamityOverhaul.Content.Items.Accessories
     {
         public bool HasProverbs;
         public bool HideVisual;
-
+        public bool IsEbn;
         public override void ResetEffects() {
             HasProverbs = false;
             HideVisual = false;
+            IsEbn = EbnPlayer.OnEbn(Player);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (HasProverbs) {
+            if (HasProverbs || IsEbn) {
                 target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
             }
         }
 
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (HasProverbs) {
+            if (HasProverbs || IsEbn) {
                 target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
             }
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (HasProverbs) {
+            if (HasProverbs || IsEbn) {
                 target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
             }
         }
@@ -82,7 +84,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void PostUpdate() {
-            if (HasProverbs && Player.CountProjectilesOfID<ProverbsCircle>() == 0) {
+            if ((HasProverbs || IsEbn) && Player.CountProjectilesOfID<ProverbsCircle>() == 0) {
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                     , ModContent.ProjectileType<ProverbsCircle>(), 3000, 0, Player.whoAmI);
             }
@@ -141,13 +143,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void AI() {
             Projectile.timeLeft = 2;
-
-            if (!Owner.Alives() || !Owner.GetModPlayer<ProverbsPlayer>().HasProverbs) {
+            var proverbsPlayer = Owner.GetModPlayer<ProverbsPlayer>();
+            if (!Owner.Alives() || (!proverbsPlayer.HasProverbs && !proverbsPlayer.IsEbn)) {
                 Projectile.Kill();
                 return;
             }
 
-            bool hideVisual = Owner.GetModPlayer<ProverbsPlayer>().HideVisual;
+            bool hideVisual = proverbsPlayer.HideVisual;
             if (hideVisual) {
                 circleAlpha = MathHelper.Lerp(circleAlpha, 0f, 0.1f);
             }
@@ -157,10 +159,16 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //缓慢展开法阵
-            if (circleRadius < 120f && !hideVisual) {
-                circleRadius += 2f;
+            float maxR = 120f;
+            if (proverbsPlayer.HasProverbs && proverbsPlayer.IsEbn) {
+                maxR = 620f;
             }
+
+            if (hideVisual) {
+                maxR = 0;
+            }
+
+            circleRadius = MathHelper.Lerp(circleRadius, maxR, 0.1f);
 
             //旋转
             rotationAngle += 0.015f;
