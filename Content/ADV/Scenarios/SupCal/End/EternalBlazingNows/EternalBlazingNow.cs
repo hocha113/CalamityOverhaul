@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡");
             Line9 = this.GetLocalization(nameof(Line9), () => "可我的意识，却会在这无尽的火海中被逐渐磨灭");
             Line10 = this.GetLocalization(nameof(Line10), () => "如果没有遇到你们，我最多还能撑三十年");
-            Line11 = this.GetLocalization(nameof(Line11), () => "......所以，你想让他继承你的躯体？");
+            Line11 = this.GetLocalization(nameof(Line11), () => "......所以，你想让他接替你？");
             Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是唯一的办法");
             Line13 = this.GetLocalization(nameof(Line13), () => "当我的意识彻底消散，整个世界都会被焚尽");
             Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......");
@@ -262,27 +262,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 FarewellLine2 = this.GetLocalization(nameof(FarewellLine2), () => "火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外");
                 FarewellLine3 = this.GetLocalization(nameof(FarewellLine3), () => "没想到，在最后的路上，会有人同行");
                 FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "对我来说，这样的结局……已经足够了");
-                FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "你们的存在，证明这片大地还没有真正枯竭");
-                FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "我相信，你们会走得比我更远");
+                FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "你的存在，证明这片大地还没有真正枯竭");
+                FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "我相信，你会走得比我更远");
                 FarewellLine7 = this.GetLocalization(nameof(FarewellLine7), () => "而我，也终于可以停下来了");
-                FarewellLine8 = this.GetLocalization(nameof(FarewellLine8), () => "不必回头看。前面还有更重要的事情等着你们");
+                FarewellLine8 = this.GetLocalization(nameof(FarewellLine8), () => "不必回头看。前面还有更重要的事情等着你");
                 FarewellLine9 = this.GetLocalization(nameof(FarewellLine9), () => "就当我在这场漫长的旅途中，终于抵达了属于自己的地方");
                 FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
                 FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
             }
+            private static bool HasHalibut;
             protected override void OnScenarioStart() {
                 //开始火圈收缩效果
                 EbnEffect.StartContraction();
+                if (Main.LocalPlayer.HasHalibut()) {
+                    RemoveHalubutFromPlayer();
+                    HasHalibut = true;
+                }
             }
 
             protected override void OnScenarioComplete() {
                 //场景结束后完全关闭效果
                 EbnEffect.IsActive = false;
                 EbnEffect.ResetEffects();
-
-                if (Main.LocalPlayer.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut) {
+                //淡入效果，等待红屏完全消失
+                EbnEffect.StartEpilogueFadeIn();
+                if (HasHalibut) {
                     //触发比目鱼的收尾场景
                     HelenEpilogue.Spwan = true;
+                    HasHalibut = false;
+                }
+            }
+
+            private static void RemoveHalubutFromPlayer() {
+                Player player = Main.LocalPlayer;
+                //从背包中移除所有比目鱼
+                for (int i = 0; i < player.inventory.Length; i++) {
+                    if (player.inventory[i].type == HalibutOverride.ID) {
+                        player.inventory[i].TurnToAir();
+                    }
                 }
             }
 
@@ -346,24 +363,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             public string LocalizationCategory => "ADV.EternalBlazingNow";
 
-            void IWorldInfo.OnWorldLoad() {
-                Spwan = false;
-            }
-
             public override void SetStaticDefaults() {
                 EpilogueLine1 = this.GetLocalization(nameof(EpilogueLine1), () => "我在等一个笨蛋");
                 EpilogueLine2 = this.GetLocalization(nameof(EpilogueLine2), () => ".....");
                 EpilogueLine3 = this.GetLocalization(nameof(EpilogueLine3), () => "欢迎回来.....");
-            }
-
-            protected override void OnScenarioStart() {
-                //淡入效果，等待红屏完全消失
-                EbnEffect.StartEpilogueFadeIn();
-            }
-
-            protected override void OnScenarioComplete() {
-                //场景结束
-                EbnEffect.EpilogueComplete = true;
             }
 
             protected override void Build() {
@@ -374,7 +377,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-                if (Spwan && StartScenario()) {
+                if (Spwan && halibutPlayer.HasHalubut && StartScenario()) {
                     Spwan = false;
                 }
             }

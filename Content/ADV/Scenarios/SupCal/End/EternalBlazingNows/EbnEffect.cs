@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 if (fadeProgress >= 1f) {
                     IsActive = false;
                     FinalFadeOut = false;
-                    //不立即重置，等待尾声场景
+                    EpilogueComplete = true;
                     return;
                 }
             }

@@ -659,7 +659,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.damage = 0;
             }
             else {
-                Projectile.damage = (int)(2666 * Owner.GetDamage(DamageClass.Generic).Additive);
+                Projectile.damage = (int)(Item.damage * Owner.GetDamage(DamageClass.Generic).Additive);
             }
 
             //初始化个性

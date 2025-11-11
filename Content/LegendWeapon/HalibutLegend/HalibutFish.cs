@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.EternalBlazingNow;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -26,6 +27,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
             if (!CWRServerConfig.Instance.WeaponOverhaul || attempt.inHoney || attempt.inLava) {
+                return;
+            }
+
+            if (HelenEpilogue.Spwan) {
+                itemDrop = HalibutOverride.ID;
                 return;
             }
 

@@ -127,6 +127,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             if (!Spawn) {
                 return;
             }
+            if (CWRWorld.HasBoss || CWRWorld.BossRush) {
+                return;//有Boss战斗时不触发
+            }
             if (RandTimer > 0) {
                 RandTimer--;
                 return;

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System;
 using Terraria;
@@ -115,6 +116,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
             if (save.FirstMet) {
                 return;
+            }
+
+            if (EbnEffect.IsActive) {
+                return;//避免在不合适的时候触发
             }
 
             //避免在不合适的时候触发
