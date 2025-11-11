@@ -282,6 +282,13 @@ namespace CalamityOverhaul
             return false;
         }
 
+        /// <summary>
+        /// 玩家是否拥有比目鱼传说武器
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut; 
+
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
             if (legendtops != null) {
