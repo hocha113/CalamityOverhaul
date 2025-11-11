@@ -287,7 +287,7 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
-        internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut; 
+        internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
