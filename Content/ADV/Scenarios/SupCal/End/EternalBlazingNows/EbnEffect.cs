@@ -320,6 +320,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
             else {
                 if (Sengs > 0f) {
+                    if (origMusicVolume > 0f) {
+                        Main.musicVolume = origMusicVolume;
+                        origMusicVolume = -1f;
+                    }
                     Sengs -= 0.02f;
                 }
             }
@@ -415,10 +419,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
 
             if (Main.musicVolume < 0.6f) {
+                origMusicVolume = Main.musicVolume;
                 Main.musicVolume = 0.6f;
             }
             Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/SinsWedge");
         }
+
+        private static float origMusicVolume = -1;
 
         /// <summary>
         /// 生成强烈的硫磺火焰粒子
