@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 240;
         }
 
         public override void AI() {
