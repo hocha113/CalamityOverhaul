@@ -1317,8 +1317,18 @@ Items: {
 			Наносит двойной урон Серной Ведьме
 			Атаки Серной Ведьмы могут нанести вам критический урон
 			'''
-		// L1: 对硫火女巫造成双倍伤害，硫火女巫的攻击将可能对你造成暴击
-		// L2: 谢谢你
+		// L1: Deal double damage to the Brimstone Witch; her attacks may critically strike you.
+		/* L2:
+			'''
+			If you are reading this, I am likely already gone.
+			This ring has been with me for as long as I can remember. 
+			Some said it was a symbol of misfortune; others, a key to salvation.
+			I never found the answer in my lifetime.
+			The gods never responded, and I do not know if this era has a future.
+			But I still wish to believe—now that the ring has fallen into your hands, it was not in vain.
+			Please, see the end of this world in my stead.
+			If one day, it can finally find peace... then... my life will not have been worthless.
+			''' */
 	}
 
 	AncientStormGoddessSpear: {
@@ -1347,30 +1357,50 @@ Items: {
 
 	ConstructionBlueprintQET: {
 		// DisplayName: Construction Blueprint (Quantum Entanglement Tower)
-		// Tooltip: ""
-		// L1: 已获得制作量子塔自我构建器的知识!
-		// L2: 你已经学习过这个图纸了!
+		/* Tooltip:
+			'''
+			Use to learn how to craft the [i:CalamityOverhaul/CQETConstructor] Self-Constructor
+			"Your hands will forge the cornerstone and tower that connect two worlds"
+			''' */
+		// L1: Learned to craft the Self-Constructor (Quantum Entanglement Tower)!
+		// L2: You have already learned this blueprint!
 	}
 
 	CQETConstructor: {
-		// DisplayName: Self-Assembler (Quantum Entanglement Tower)
-		// Tooltip: ""
-		// UseConstructionBlueprint: 学习构造蓝图(量子塔)
+		// DisplayName: Self-Constructor (Quantum Entanglement Tower)
+		/* Tooltip:
+			'''
+			Place to construct a Quantum Entanglement Tower
+			Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Gausspulse Plating
+			''' */
+		// UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
 	}
 
 	DeploySignaltower: {
 		// DisplayName: Quantum Entanglement Tower
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			To be annihilated in sync, even across dimensions
+			"Draedon's crude imitation of causality"
+			''' */
 	}
 
 	StarflowPlatedBlock: {
-		// DisplayName: Starflow-Plated Block
-		// Tooltip: ""
+		// DisplayName: Gausspulse Plating
+		/* Tooltip:
+			'''
+			The cornerstone for building the Quantum Entanglement Tower
+			"Forging flowing starlight into an immortal foundation"
+			''' */
 	}
 
 	PQCD: {
-		// DisplayName: P Q C D
-		// Tooltip: ""
+		// DisplayName: Portable Quantum Communicator
+		/* Tooltip:
+			'''
+			Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
+			"Friendly reminder: Credit is not supported"
+			''' */
 	}
 }
 
@@ -6315,54 +6345,54 @@ UI: {
 	}
 
 	ExoMechdusaSumRender: {
-		// ThanatosDescription: 塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒。
-		// AresDescription: 阿瑞斯，一个搭载着四台超级星流武器的庞然巨物。
-		// ArtemisApolloDescription: 阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器。
+		// ThanatosDescription: Thanatos, a terrifying giant serpent equipped with heavy armor and countless autocannons.
+		// AresDescription: Ares, a colossus armed with four super-Gausspulse weapons.
+		// ArtemisApolloDescription: Artemis and Apollo, an exceptionally durable pair of automata with highly unstable energy reserves.
 	}
 
 	CQETConstructorTP: {
-		// GuideText_NeedBlocks: 需要 {0} 个星流镀板
-		// GuideText_Ready: 准备就绪！
+		// GuideText_NeedBlocks: Needs {0} Gausspulse Plating
+		// GuideText_Ready: Ready!
 	}
 
 	DeploySignaltowerTrackerUI: {
-		// QuestTitle: 量子纠缠网络部署
-		// DamageContribution: 部署进度
-		// RequiredContribution: 目标:10座信号塔
-		// NearestTargetText: 最近的目标点
-		// NodeText: "[NUM]号纠缠节点"
-		// StatusText: 状态
-		// InRangeText: 范围内
-		// DistanceText: 距离
-		// QuestCompleteText: 任务完成!
+		// QuestTitle: Quantum Entanglement Network Deployment
+		// DamageContribution: Deployment Progress
+		// RequiredContribution: Goal: 10 Signal Towers
+		// NearestTargetText: Nearest Target Point
+		// NodeText: Entanglement Node #[NUM]
+		// StatusText: Status
+		// InRangeText: In Range
+		// DistanceText: Distance
+		// QuestCompleteText: Mission Complete!
 	}
 
 	SignalTowerTargetRenderer: {
-		// InRangeText: 范围内
-		// TargetCompletedText: 目标点[NUM]已完成!
-		// AllCompletedText: 量子纠缠网络已完成!
+		// InRangeText: In Range
+		// TargetCompletedText: Target Point [NUM] Complete!
+		// AllCompletedText: Quantum Entanglement Network Complete!
 	}
 
 	DraedonCallUI: {
-		// TitleText: 呼叫嘉登
-		// TitleTextDisabled: 呼叫禁用
-		// CallButtonText: 启动呼叫
-		// CallingText: 正在呼叫...
-		// DisabledButtonText: 禁用中
-		// ConnectingText: 正在连接...
-		// ConnectedText: 已连接
-		// DisabledReasonText: 嘉登已被呼叫
+		// TitleText: Call Draedon
+		// TitleTextDisabled: Call Disabled
+		// CallButtonText: Initiate Call
+		// CallingText: Calling...
+		// DisabledButtonText: Disabled
+		// ConnectingText: Connecting...
+		// ConnectedText: Connected
+		// DisabledReasonText: Draedon Has Been Called
 	}
 
 	TzeentchDialogueBox: {
-		// ContinueHint: 继续
-		// FastHint: 加速
+		// ContinueHint: Continue
+		// FastHint: Accelerate
 	}
 
 	EnchantUI: {
-		// ExpandHint: 展开炼铸界面
-		// CollapseHint: 收起炼铸界面
-		// EnchantTitle: 炼铸
+		// ExpandHint: Expand Enchant Menu
+		// CollapseHint: Collapse Enchant Menu
+		// EnchantTitle: Enchant
 	}
 }
 
@@ -6839,207 +6869,207 @@ ADV: {
 	}
 
 	ExoMechdusaSum: {
-		// DraedonName: 嘉登
-		// IntroLine1: 你知道吗？这一刻已经等了太久了。
-		// IntroLine2: 我对一切未知感到着迷，但最让我着迷的莫过于你的本质。
-		// IntroLine3: 我将会向你展示，我那些超越神明的造物。
-		// IntroLine4: 而你，则将在战斗中向我展示你的本质。
-		// IntroLine5: 现在，选择吧。
-		// SelectionPrompt: 做出你的选择。
-		// BossRushLine: 做出你的选择。你有20秒的时间。
-		// ChoiceAres: 战神阿瑞斯
-		// ChoiceThanatos: 死神塔纳托斯
-		// ChoiceTwins: 双子神阿尔忒弥斯
+		// DraedonName: Draedon
+		// IntroLine1: You understand... this moment has been long anticipated.
+		// IntroLine2: I am fascinated by all apects of the unknown, but nothing fascinates me more than your very nature.
+		// IntroLine3: I will show you my god-surpassing creations.
+		// IntroLine4: And you... you will show me your nature in combat.
+		// IntroLine5: Now. Make your selection.
+		// SelectionPrompt: Make your choice.
+		// BossRushLine: Make your choice. You have 20 seconds.
+		// ChoiceAres: Ares
+		// ChoiceThanatos: Thanatos
+		// ChoiceTwins: Artemis
 	}
 
 	ExoMechEndingDialogue: {
-		// DraedonName: 嘉登
-		// EndLine1: 一个未知因素——你，是一个特异点。
-		// EndLine2: 你对这片大地和它的历史而言，只是外来之人，就和我一样。
-		// EndLine3: ……很抱歉，但在看了这样一场"展示"之后，我必须得花点时间整理我的思绪。
-		// EndLine4: 迄今为止喷洒的血液已经让这片大陆变得陈腐无比，毫无生气。
-		// EndLine5: 你也挥洒了自己的鲜血，但这可能足以带来一个新的时代……是什么，我不知道。但那一定是我所渴望看到的时代。
-		// EndLine6: 现在，你想要接触那位暴君。可惜我无法帮到你。
-		// EndLine7: 这并非出自怨恨，毕竟从一开始，我的目标就只有观察刚才的这一场战斗。
-		// EndLine8: 但你过去也成功过，所以你最后会找到办法的。
-		// EndLine9: 我必须尊重并承认你的胜利，但现在，我得把注意力放回到我的机械上了。
-		// KillAttemptLine: ……你的行为没什么必要。
+		// DraedonName: Draedon
+		// EndLine1: An unknown variable. You... are a singularity.
+		// EndLine2: You are an outsider to this land and its history, just as I am.
+		// EndLine3: ...My apologies. But after a "demonstration" such as that, I must take a moment to collate my thoughts.
+		// EndLine4: The blood spilled thus far has left this continent stagnant and lifeless.
+		// EndLine5: You have spilled your own blood. Perhaps it will be enough to end this era of despair... Regardless, it is a change I wished to see.
+		// EndLine6: You now wish to reach the tyrant. Unfortunately, I cannot assist you.
+		// EndLine7: This is not born from spite. My only goal from the beginning was to observe this battle.
+		// EndLine8: But you have succeeded in the past. You will find a way, eventually.
+		// EndLine9: I must respect and acknowledge your victory. But for now, my attention must return to my mechanisms.
+		// KillAttemptLine: ...Your actions are... unnecessary.
 	}
 
 	DeploySignaltowerScenario: {
-		// DraedonName: 嘉登
-		// IntroLine1: 我需要执行一项关键实验，而你是当前最适合协助我的个体
-		// IntroLine2: 两百个泰拉年前，一场能量风暴横扫星系，摧毁了我在泰拉的绝大部分设施
-		// IntroLine3: 一切都太过遥远，当我意识到和泰拉的意识体断连时，已经两百年过去了
-		// IntroLine4: 在那场风暴后，星际跃迁开始变得极度不稳定，因此我必须重建泰拉上的基础系统
-		// IntroLine5: 我需要你协助搭建最新的量子纠缠阵列
-		// IntroLine6: 这项技术可以突破光速限制，实现跨越星际的即时通讯
-		// IntroLine7: 但在实际应用之前，我需要在这个世界建立足够多的量子纠缠节点
-		// IntroLine8: 这就是我设计的量子信号塔，它的核心采用了纠缠态稳定器和零点能量放大器
-		// TechExplainLine1: 每座信号塔都能与其他节点建立量子纠缠链接，形成一个覆盖全星系的通讯网络
-		// TechExplainLine2: 理论上，这个网络的传输延迟可以达到普朗克时间级别
-		// TaskLine: 你的任务是在世界各地部署这些信号塔，建立起完整的纠缠网络
-		// AcceptPrompt: 那么，你愿意接受这个委托吗？
-		// ChoiceAccept: 接受委托
-		// ChoiceDecline: 以后再说
+		// DraedonName: Draedon
+		// IntroLine1: I must conduct a critical experiment, and you are the most suitable individual currently available to assist me.
+		// IntroLine2: One hundred Terran years ago, an energy storm swept through the galaxy, destroying the majority of my facilities on this planet.
+		// IntroLine3: Everything was too distant. By the time I realized my monitoring network on Terra had gone dark, a century had passed.
+		// IntroLine4: After that storm, interstellar travel became extremely unstable. I must, therefore, rebuild my foundational systems on Terra.
+		// IntroLine5: I require your assistance in deploying the latest quantum entanglement array.
+		// IntroLine6: This technology bypasses the limitations of light-speed, achieving instantaneous, galaxy-spanning communication.
+		// IntroLine7: But before it can be applied, this world requires a sufficient number of quantum entanglement nodes.
+		// IntroLine8: This is the quantum signal tower I have designed. Its core utilizes entanglement stabilizers and zero-point energy amplifiers.
+		// TechExplainLine1: Each tower can establish a quantum entanglement link with other nodes, forming a communications network that spans the galaxy.
+		// TechExplainLine2: Under theoretical conditions, its transmission latency can approach zero.
+		// TaskLine: I need you to deploy these signal towers across the world to establish the complete entanglement network.
+		// AcceptPrompt: Well? Do you accept?
+		// ChoiceAccept: Accept commission
+		// ChoiceDecline: Later
 
 		Choice_Accept: {
-			// AcceptResponse: 很好，我会将信号塔的建造蓝图传输给你。记得定期向我汇报部署进度
-			// L1: 这是第一批建材，数量有限。请优先完成信号塔基础框架
-			// L2: 当第一个纠缠节点建成后，空间导航链路将更加稳定
-			// L3: 到那时，我就能通过亚空间持续输送更多资源，用于更大规模的建造
+			// AcceptResponse: Excellent. Here are the schematics for the towers. Report to me on your progress when you are finished.
+			// L1: This is the first batch of materials. It is limited. Construct the main framework of the signal tower first.
+			// L2: Once the first node is operational, the communication link will begin to stabilize.
+			// L3: At that point, I will be able to transport more resources continuously through subspace for larger-scale construction.
 		}
 
-		// Choice_Decline.DeclineResponse: 我理解，当你准备好时随时可以回来找我
+		// Choice_Decline.DeclineResponse: Understood. You may return to me when you are prepared.
 	}
 
 	FirstTowerBuiltScenario: {
-		// DraedonName: 嘉登
-		// Line1: 检测到量子纠缠节点已建立，信号强度稳定
-		// Line2: 很好，第一座信号塔已经开始运作。继续部署剩余的节点
-		// Line3: 当网络完成后，我将能够更精确地定位和监控整个星系的能量波动
-		// Line4: 保持这个速度，很快我们就能建立完整的通讯网络
+		// DraedonName: Draedon
+		// Line1: The new quantum entanglement node is functioning smoothly. The signal is stable.
+		// Line2: Good. This is the first step for the network. Continue deploying the remaining signal towers.
+		// Line3: When the number of nodes reaches the standard, I will be able to conduct precise observations over a much wider area.
+		// Line4: Continue maintaining your efficiency.
 	}
 
 	QuestCompleteScenario: {
-		// DraedonName: 嘉登
-		// Line1: 量子纠缠网络已完全建立，所有节点运行稳定
-		// Line2: 数据传输延迟达到了预期的普朗克时间级别，完美符合理论预测
-		// Line3: 你的效率让我印象深刻。有了这个网络，我能够实时监控整个星系的异常波动
-		// Line4: 作为报酬，我会开放部分高级科技的访问权限给你
-		// Line5: 如果有需要，随时可以通过量子通讯网络联系我
+		// DraedonName: Draedon
+		// Line1: All quantum nodes are online. The network is fully operational.
+		// Line2: Data transmission latency is consistent with theoretical values. No deviations.
+		// Line3: Your performance was faster than my projections. Commendable.
+		// Line4: As payment, I am granting you access to a selection of my equipment and clearances. You may use them as you see fit.
+		// Line5: If you require assistance, you may contact me directly through the communications network.
 	}
 
 	ExoMechHardDefeat: {
-		// DraedonName: 嘉登
-		// HardDefeatLine1: 极限状态下的决策，这才是我想看到的数据
-		// HardDefeatLine2: 在压力之下你仍能保持理性，令人满意
+		// DraedonName: Draedon
+		// HardDefeatLine1: Decision-making under extreme duress. This is the data I wished to see.
+		// HardDefeatLine2: Your ability to maintain rationality under pressure is... satisfactory.
 	}
 
 	ExoMechQuickDefeat: {
-		// DraedonName: 嘉登
-		// QuickDefeatLine1: ……这个时间远低于我的预测模型
-		// QuickDefeatLine2: 看来我低估了你当前的战斗效率
-		// QuickDefeatLine3: 或许是时候考虑更激进的设计方案了
+		// DraedonName: Draedon
+		// QuickDefeatLine1: ...This timeframe is significantly below my predictive models.
+		// QuickDefeatLine2: It seems I underestimated your current combat efficiency.
+		// QuickDefeatLine3: Perhaps it is time to consider... more aggressive... design philosophies.
 	}
 
 	ExoMechSecondDefeat: {
-		// DraedonName: 嘉登
-		// SecondDefeatLine1: 有趣，你的适应速度超出了我的预期
-		// SecondDefeatLine2: 数据显示你在上次战斗后已经进行了针对性的改进
-		// SecondDefeatLine3: 看来我需要重新评估你的学习曲线了
+		// DraedonName: Draedon
+		// SecondDefeatLine1: Interesting. Your rate of adaptation exceeds my projections.
+		// SecondDefeatLine2: The data indicates you have already made targeted improvements since the last engagement.
+		// SecondDefeatLine3: It appears I must re-evaluate your learning curve.
 	}
 
 	ExoMechThirdDefeat: {
-		// DraedonName: 嘉登
-		// ThirdDefeatLine1: 稳定的表现，这正是我所追求的完美的一部分
-		// ThirdDefeatLine2: 你已经证明了自己的价值不是偶然
+		// DraedonName: Draedon
+		// ThirdDefeatLine1: Consistent performance. A component of the perfection I strive for.
+		// ThirdDefeatLine2: You have proven your capabilities are not... a statistical anomaly.
 	}
 
-	// MusicToast.NowPlaying: 正在播放
+	// MusicToast.NowPlaying: Now Playing
 
 	EternalBlazingNow: {
-		// Rolename1: 比目鱼
-		// Rolename2: ???硫火女巫???
-		// Line1: 开什么玩笑......
-		// Line2: 过去的身影都消失了......这些火......是在封锁过去？！
-		// Line3: 这火从过去一直燃烧到现在......这个女巫......她的力量果然不是普通的魔法
-		// Line4: 刚才的战斗一直在隐藏吗，不过就算是这种力量的对抗，我也有信心再让你死一遍
-		// Line5: 我不会死......不过，也差不多了
-		// Line6: 你们做得很好......或许，你们真的是他口中那个值得等待的“时代唯一”
-		// Line7: 所以，我有最后一件事，想拜托你们
-		// Line8: 只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡
-		// Line9: 可我的意识，却会在这无尽的火海中被逐渐磨灭
-		// Line10: 如果没有遇到你们，我最多还能撑三十年
-		// Line11: ......所以，你想让他继承你的躯体？
-		// Line12: 没错，这是唯一的办法
-		// Line13: 当我的意识彻底消散，整个世界都会被焚尽
-		// Line14: 况且，如果你们想终结这个时代，凡人的躯壳太过脆弱......
-		// Line15: 我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！
+		// Rolename1: Halibut
+		// Rolename2: ???Brimstone Witch???
+		// Line1: Are you kidding me...
+		// Line2: The figures from the past... they've vanished... Is this fire... *sealing* the past?!
+		// Line3: This fire burns from the past all the way to the present... This witch... her power is truly no ordinary magic.
+		// Line4: Was she holding back during the fight? No matter. Even against this kind of power, I'm confident I can kill you all over again.
+		// Line5: I cannot die... but... this is close enough.
+		// Line6: You have done well... Perhaps... you truly are the "Era's Chosen" he spoke of, the one worth waiting for.
+		// Line7: So... I have one last thing to ask of you.
+		// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
+		// Line9: But my consciousness... in this endless sea of fire... it will eventually be worn down to nothing.
+		// Line10: I can last 30 more years, at most.
+		// Line11: ...So, you want *him* to replace you?
+		// Line12: That's right. It is the only way.
+		// Line13: When my consciousness fades completely, the entire world will be incinerated.
+		// Line14: Besides... if you wish to end this era, a mortal vessel is far too fragile...
+		// Line15: Absolutely not! Let him become a monster like you?! Over my dead body!
 		// QuestionLine: ......
-		// Choice1Text: (阻止比目鱼)
-		// Choice2Text: (保持沉默)
-		// Choice1Line1: ......这就是你的选择吗？
-		// Choice1Line2: 我明白了......
+		// Choice1Text: (Stop Halibut)
+		// Choice2Text: (Remain silent)
+		// Choice1Line1: ...Is this your choice?
+		// Choice1Line2: I understand...
 
 		HelenEpilogue: {
-			// EpilogueLine1: 我在等一个笨蛋
-			// EpilogueLine2: .....
-			// EpilogueLine3: 欢迎回来.....
+			// EpilogueLine1: I'm waiting for an idiot.
+			// EpilogueLine2: ...
+			// EpilogueLine3: Welcome back...
 		}
 
-		// Rolename3: 硫火女巫
+		// Rolename3: Brimstone Witch
 
 		WitchFarewell: {
-			// FarewellLine1: 这漫长的一生里，我见过无数次黎明与终焉
-			// FarewellLine2: 火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外
-			// FarewellLine3: 没想到，在最后的路上，会有人同行
-			// FarewellLine4: 不用担心我。对我来说，这样的结局……已经足够了
-			// FarewellLine5: 你们的存在，证明这片大地还没有真正枯竭
-			// FarewellLine6: 我相信，你们会走得比我更远
-			// FarewellLine7: 而我，也终于可以停下来了
-			// FarewellLine8: 不必回头看。前面还有更重要的事情等着你们
-			// FarewellLine9: 就当我在这场漫长的旅途中，终于抵达了属于自己的地方
-			// FarewellLine10: 那么到这里，就足够了
-			// FarewellLine11: 去吧，杂鱼
+			// FarewellLine1: In this long life, I have seen countless dawns and endings.
+			// FarewellLine2: Flames devour eras, but also illuminate new beginnings. I thought this time would be no exception.
+			// FarewellLine3: I never expected to have a companion on this final road.
+			// FarewellLine4: For me... an ending like this... is more than enough.
+			// FarewellLine5: Your existence proves that this land has not truly withered.
+			// FarewellLine6: I believe you will walk further than I ever did.
+			// FarewellLine7: And I... I can finally rest.
+			// FarewellLine8: Don't look back. There are more important things ahead of you.
+			// FarewellLine9: Just... think of it as me finally reaching my own destination on this long journey.
+			// FarewellLine10: And so... this is enough.
+			// FarewellLine11: Go on, small fry.
 		}
 
-		// AchievementTitle: BE结局：永恒燃烧的现在
-		// AchievementTooltip: 往日被烈火所吞噬，以异类之躯触及永恒
+		// AchievementTitle: "[BE] Ending: The Eternally Burning Present"
+		// AchievementTooltip: The past is consumed by fire; an aberrant body touches eternity.
 	}
 
 	SupCalDisplayText: {
-		// SummonWithProverbs: 你竟然真的戴着那个戒指来了……既然如此，我便不会再留情
-		// SummonWithoutProverbs: 哈哈哈……这一刻，我已经期待许久
-		// SummonRematchWithProverbs: 你还戴着那个戒指……
-		// SummonRematchWithoutProverbs: 又是你……看来你对死亡的理解还不够深刻
-		// StartLowHealth: 你看起来已经奄奄一息了
-		// StartMediumHealth: 你的技术还有待进步
-		// StartDefault: 真奇怪，你应该已经死了才对……
-		// StartRematchLowHealth: 你看起来已经奄奄一息了
-		// StartRematchMediumHealth: 受伤了？真有意思
-		// StartRematchDefault: 真奇怪，你应该已经死了才对……
-		// BH3WithHalibut: 以凡人之躯驾驭这种诡异的力量……走到如今，你们确实值得尊敬
-		// BH3WithoutHalibut: 你很不错，但你什么时候才能意识到，你只是在徒劳的攻击一团火焰
-		// BrothersWithHalibut: 是时候让你们见见我的家人了，他们失败在成为异类的路上，你们今后可别如此
-		// BrothersWithoutHalibut: 是时候让你见见我的家人了。若你日后死于某人的手下，我会将你的灵魂收于此处
-		// Phase2WithHalibut: 你们真的不打算求饶吗？
-		// Phase2WithoutHalibut: 你真的不准备求饶？
-		// BH4Text: 给我站在那里别动！
-		// SeekerRingText: 你的力量均来自身外之物，这样的你形如虚设……这倒让我想起了那个虚伪之人
-		// BH5Text: 胜利的天平有些不确定会倒向何方了...你只需站住一会儿就可以改变现状，好吗？
-		// Sepulcher2Text: 如果今天只能活一个，你觉得我会希望是谁？
-		// Desperation1Text: 给 我 老 老 实 实 站 那 里，杂 鱼
-		// Desperation2Text: 别得意——我之前只是在陪你玩罢了
-		// Desperation3Text: 咳……咳……我承认，今天的状态不太好
-		// Desperation4Text: 看来是我输了……遇见你，真是幸事一件
-		// Acceptance1Text: 这是我百年来最开心的一天……
-		// Acceptance2Text: 或许，你真的能终结这个该死的时代
+		// SummonWithProverbs: You... you actually came wearing that ring... Very well. I will show no mercy.
+		// SummonWithoutProverbs: Hahaha... This moment... I have awaited it for so long.
+		// SummonRematchWithProverbs: You're still wearing that ring...
+		// SummonRematchWithoutProverbs: You again... It seems your understanding of death is still... insufficient.
+		// StartLowHealth: You already look to be on your last breath.
+		// StartMediumHealth: Your technique still requires improvement.
+		// StartDefault: How strange. You should be dead already...
+		// StartRematchLowHealth: You already look to be on your last breath.
+		// StartRematchMediumHealth: Wounded? How interesting.
+		// StartRematchDefault: How strange. You should be dead already...
+		// BH3WithHalibut: Wielding such... aberrant... power in a mortal vessel... To have come this far, you are indeed worthy of respect.
+		// BH3WithoutHalibut: You are skilled... but when will you realize you are merely attacking a plume of fire in vain?
+		// BrothersWithHalibut: It is time you met my family. They failed on the path to becoming... 'other'. Do not follow their example.
+		// BrothersWithoutHalibut: It is time you met my family. Should you die at another's hand, I will keep your soul here.
+		// Phase2WithHalibut: Are you certain you do not wish to beg for mercy?
+		// Phase2WithoutHalibut: Are you certain you do not wish to beg?
+		// BH4Text: Stand still and face me!
+		// SeekerRingText: Your power comes from external sources. As you are, you are nothing... It reminds me of that hypocrite.
+		// BH5Text: The scales of victory are... uncertain. You only need to stand still for a moment to change this, understood?
+		// Sepulcher2Text: If only one of us can live today... who do you think I *want* it to be?
+		// Desperation1Text: JUST... STAND... STILL... YOU... SMALL FRY!
+		// Desperation2Text: Don't get arrogant—I was merely toying with you before!
+		// Desperation3Text: *cough*... *cough*... I admit, I am not in peak condition today.
+		// Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
+		// Acceptance1Text: This... is the happiest I have been in a hundred years...
+		// Acceptance2Text: Perhaps... you truly can end this damned era.
 	}
 
 	FirstMetTzeentch: {
-		// L1: 嘘——别回头
-		// L2: 我一直在看你搭建这些小玩意儿
-		// L3: 十座量子节点，十条通路，十个可能的未来
-		// L4: 很可爱的小网络，你知道它会吸引多少东西过来吗？
-		// L5: 啊，对了该介绍一下自己
-		// L6: 有人叫我预言者，有人叫我命运之羽……
-		// L7: 但我更喜欢听到——你——现在怎么称呼我
-		// L8: 来吧，让我听听
-		// Choice1Text: 魔术师……？
-		// Choice2Text: 骗子
-		// Choice3Text: 不，我不认识你
-		// Choice1_R1: 哈！多么温和的叫法
-		// Choice1_R2: 可惜，我不变魔术我只改变事实
-		// Choice1_R3: 继续吧，'魔术师'就先放在账上
-		// Choice2_R1: 啊，直接、粗暴、诚实，多可贵的品质
-		// Choice2_R2: 但很遗憾，我从不骗人
-		// Choice2_R3: 我只是提前告诉你，将要发生的事而已
-		// Choice2_R4: 无论你信不信——都已经发生了
-		// Choice3_R1: 不认识？很好
-		// Choice3_R2: 所有的故事，都是从这句话开始的
-		// Choice3_R3: 只是……大多数结局都不太愉快
-		// EndLine1: 那么，我们会再见的
-		// EndLine2: 很快
+		// L1: Hush... don't look back.
+		// L2: I've been watching you build these little contraptions.
+		// L3: Ten quantum nodes. Ten pathways. Ten possible futures.
+		// L4: A cute little network. Do you have any idea how many... *things*... it will attract?
+		// L5: Ah, right. I should introduce myself.
+		// L6: Some call me the Oracle. Others, the Feather of Fate...
+		// L7: But I'm more interested in what... *you*... would call me, right now.
+		// L8: Go on. Let me hear it.
+		// Choice1Text: A... Magician...?
+		// Choice2Text: A Liar.
+		// Choice3Text: No. I don't know you.
+		// Choice1_R1: Hah! Such a... gentle term.
+		// Choice1_R2: A pity. I don't perform magic. I only change facts.
+		// Choice1_R3: Continue on. We'll put 'Magician' on the tab for now.
+		// Choice2_R1: Ah. Direct, blunt, honest. Such precious qualities.
+		// Choice2_R2: But I'm afraid I never lie.
+		// Choice2_R3: I simply tell you... what is about to happen.
+		// Choice2_R4: Whether you believe it or not... it has already occurred.
+		// Choice3_R1: You don't? Excellent.
+		// Choice3_R2: All stories begin with those words.
+		// Choice3_R3: It's just... most of the endings are not very pleasant.
+		// EndLine1: Well, then. We will meet again.
+		// EndLine2: Soon.
 	}
 }
