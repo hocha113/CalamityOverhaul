@@ -40,6 +40,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static Vector2 UITopLeft => new Vector2(168f, 320f);
         public static float UIScale => 0.8f;
 
+        //展开/收起状态
+        public static bool IsCollapsed = false;
+        public static float CollapseProgress = 0f; // 0 = 完全展开, 1 = 完全折叠
+        public static float CollapseAnimSpeed = 0.12f;
+        public static float CollapsedWidth = 60f; // 折叠后的宽度
+        public static float CollapsedHeight = 80f; // 折叠后的高度
+
         //当前状态
         public static Item CurrentlyHeldItem = new Item();
         public static int EnchantIndex = 0;
@@ -54,6 +61,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static float TopButtonClickCountdown = 0f;
         public static float BottomButtonClickCountdown = 0f;
         public static float EnchantButtonClickCountdown = 0f;
+        public static float ToggleButtonClickCountdown = 0f;
 
         //硫磺火视觉效果参数
         private float flameTimer = 0f;
@@ -96,6 +104,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 BottomButtonClickCountdown--;
             if (EnchantButtonClickCountdown > 0f)
                 EnchantButtonClickCountdown--;
+            if (ToggleButtonClickCountdown > 0f)
+                ToggleButtonClickCountdown--;
+
+            //更新折叠动画
+            float targetProgress = IsCollapsed ? 1f : 0f;
+            if (CollapseProgress < targetProgress) {
+                CollapseProgress = Math.Min(1f, CollapseProgress + CollapseAnimSpeed);
+            } else if (CollapseProgress > targetProgress) {
+                CollapseProgress = Math.Max(0f, CollapseProgress - CollapseAnimSpeed);
+            }
 
             //更新火焰动画计时器
             flameTimer += 0.045f;
@@ -123,6 +141,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         private void UpdateParticles() {
+            //折叠状态下减少粒子效果
+            if (CollapseProgress > 0.5f)
+                return;
+
             Vector2 uiCenter = UITopLeft + new Vector2(200f, 150f) * UIScale;
             Vector2 uiSize = new Vector2(400f, 300f) * UIScale;
 
@@ -178,12 +200,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Texture2D backgroundTexture = CalamitasCurseBackground.Value;
             Vector2 backgroundScale = Vector2.One * UIScale;
 
+            //根据折叠状态计算面板大小
+            float lerpProgress = MathHelper.SmoothStep(0f, 1f, CollapseProgress);
+            float currentWidth = MathHelper.Lerp(backgroundTexture.Width * backgroundScale.X, CollapsedWidth, lerpProgress);
+            float currentHeight = MathHelper.Lerp(backgroundTexture.Height * backgroundScale.Y, CollapsedHeight, lerpProgress);
+
             //绘制背景
             Rectangle panelRect = new Rectangle(
                 (int)UITopLeft.X,
                 (int)UITopLeft.Y,
-                (int)(backgroundTexture.Width * backgroundScale.X),
-                (int)(backgroundTexture.Height * backgroundScale.Y)
+                (int)currentWidth,
+                (int)currentHeight
             );
 
             //绘制硫磺火风格背景
@@ -191,6 +218,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //禁用鼠标交互
             DisableMouseWhenOverUI(panelRect);
+
+            //绘制展开/收起按钮
+            DrawToggleButton(spriteBatch, panelRect);
+
+            //如果正在折叠或已折叠，只显示简化内容
+            if (CollapseProgress > 0.01f) {
+                DrawCollapsedContent(spriteBatch, panelRect, lerpProgress);
+                return;
+            }
 
             //选择附魔
             IEnumerable<Enchantment> possibleEnchantments = SelectEnchantment();
@@ -243,6 +279,81 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         #region 绘制函数
 
+        private void DrawToggleButton(SpriteBatch spriteBatch, Rectangle panelRect) {
+            //按钮位置在面板右上角
+            int buttonSize = 24;
+            Rectangle buttonRect = new Rectangle(
+                panelRect.Right - buttonSize - 8,
+                panelRect.Y + 8,
+                buttonSize,
+                buttonSize
+            );
+
+            bool isHovering = MouseScreenArea.Intersects(buttonRect);
+            
+            //绘制按钮背景
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Color buttonBg = isHovering ? new Color(255, 140, 70) * 0.6f : new Color(180, 60, 30) * 0.5f;
+            
+            if (ToggleButtonClickCountdown > 0f) {
+                buttonBg = new Color(255, 180, 100) * 0.7f;
+            }
+
+            spriteBatch.Draw(pixel, buttonRect, buttonBg);
+            
+            //绘制按钮边框
+            int borderWidth = 2;
+            Color borderColor = new Color(255, 200, 120) * 0.8f;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, borderWidth), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - borderWidth, buttonRect.Width, borderWidth), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, borderWidth, buttonRect.Height), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - borderWidth, buttonRect.Y, borderWidth, buttonRect.Height), borderColor);
+
+            //绘制箭头图标
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            string arrowText = IsCollapsed ? "►" : "◄";
+            Vector2 textSize = font.MeasureString(arrowText);
+            Vector2 textPos = buttonRect.Center.ToVector2() - textSize / 2;
+            
+            Utils.DrawBorderString(spriteBatch, arrowText, textPos, Color.White, 1f);
+
+            //处理点击
+            if (isHovering && Main.mouseLeft && Main.mouseLeftRelease && ToggleButtonClickCountdown <= 0f) {
+                IsCollapsed = !IsCollapsed;
+                ToggleButtonClickCountdown = 15f;
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            }
+
+            //显示悬停提示
+            if (isHovering) {
+                Main.instance.MouseText(IsCollapsed ? "展开附魔界面" : "收起附魔界面");
+            }
+        }
+
+        private void DrawCollapsedContent(SpriteBatch spriteBatch, Rectangle panelRect, float lerpProgress) {
+            //折叠状态下显示简化的火焰效果和提示文字
+            float alpha = 1f - lerpProgress * 0.5f;
+
+            //绘制简化粒子
+            foreach (var ember in embers.Take(5)) {
+                ember.Draw(spriteBatch, alpha * 0.5f);
+            }
+
+            //显示标题
+            if (lerpProgress < 0.8f) {
+                DynamicSpriteFont font = FontAssets.MouseText.Value;
+                string text = "附魔";
+                Vector2 textSize = font.MeasureString(text);
+                Vector2 textPos = new Vector2(
+                    panelRect.Center.X - textSize.X / 2,
+                    panelRect.Center.Y - textSize.Y / 2
+                );
+
+                Color textColor = new Color(255, 200, 120) * (1f - lerpProgress);
+                Utils.DrawBorderString(spriteBatch, text, textPos, textColor, 1f);
+            }
+        }
+
         private void DrawBrimstoneBackground(SpriteBatch spriteBatch, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -288,15 +399,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //绘制火焰边框
             DrawBrimstoneFrame(spriteBatch, panelRect, glowPulse);
 
-            //绘制粒子
-            foreach (var ash in ashes) {
-                ash.Draw(spriteBatch, 0.7f);
-            }
-            foreach (var wisp in flameWisps) {
-                wisp.Draw(spriteBatch, 0.8f);
-            }
-            foreach (var ember in embers) {
-                ember.Draw(spriteBatch, 0.95f);
+            //只在展开状态绘制完整粒子
+            if (CollapseProgress < 0.5f) {
+                foreach (var ash in ashes) {
+                    ash.Draw(spriteBatch, 0.7f * (1f - CollapseProgress * 2f));
+                }
+                foreach (var wisp in flameWisps) {
+                    wisp.Draw(spriteBatch, 0.8f * (1f - CollapseProgress * 2f));
+                }
+                foreach (var ember in embers) {
+                    ember.Draw(spriteBatch, 0.95f * (1f - CollapseProgress * 2f));
+                }
             }
         }
 
