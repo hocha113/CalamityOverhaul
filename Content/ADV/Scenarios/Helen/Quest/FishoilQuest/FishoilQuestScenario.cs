@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.Linq;
 using Terraria;

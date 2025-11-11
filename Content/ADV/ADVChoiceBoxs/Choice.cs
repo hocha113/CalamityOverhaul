@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
 {
     /// <summary>
     /// 选项数据类

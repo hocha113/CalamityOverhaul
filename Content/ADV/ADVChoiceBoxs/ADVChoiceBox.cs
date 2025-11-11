@@ -9,7 +9,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
 {
     /// <summary>
     /// ADV选项框UI，参考ResurrectionUI的绘制风格
