@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         //角色名称
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
+        public static LocalizedText Rolename3 { get; private set; }
 
         //对话台词
         public static LocalizedText Line1 { get; private set; }
@@ -61,6 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "比目鱼");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???硫火女巫???");
+            Rolename3 = this.GetLocalization(nameof(Rolename3), () => "硫火女巫");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑......");
             Line2 = this.GetLocalization(nameof(Line2), () => "过去的身影都消失了......这些火......是在封锁过去？！");
@@ -112,6 +114,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
+
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
             /*
             //检查是否拥有比目鱼
             bool hasHalibut = false;
@@ -235,6 +240,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             public static LocalizedText FarewellLine5 { get; private set; }
             public static LocalizedText FarewellLine6 { get; private set; }
             public static LocalizedText FarewellLine7 { get; private set; }
+            public static LocalizedText FarewellLine8 { get; private set; }
+            public static LocalizedText FarewellLine9 { get; private set; }
+            public static LocalizedText FarewellLine10 { get; private set; }
+            public static LocalizedText FarewellLine11 { get; private set; }
 
             public string LocalizationCategory => "ADV.EternalBlazingNow";
 
@@ -243,13 +252,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             public override void SetStaticDefaults() {
-                FarewellLine1 = this.GetLocalization(nameof(FarewellLine1), () => "从我诞生之时起，就注定是个孤独的存在");
-                FarewellLine2 = this.GetLocalization(nameof(FarewellLine2), () => "在无尽的火焰中游荡，看着一个又一个时代的更迭");
-                FarewellLine3 = this.GetLocalization(nameof(FarewellLine3), () => "燃烧......是我唯一的使命，也是唯一的归宿");
-                FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "但在最后......我终于遇见了你们");
-                FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "能够在消亡前，见证这样的意志......");
-                FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "或许，这就是他所说的......希望");
-                FarewellLine7 = this.GetLocalization(nameof(FarewellLine7), () => "那么......永别了，时代的见证者们......");
+                FarewellLine1 = this.GetLocalization(nameof(FarewellLine1), () => "这漫长的一生里，我见过无数次黎明与终焉");
+                FarewellLine2 = this.GetLocalization(nameof(FarewellLine2), () => "火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外");
+                FarewellLine3 = this.GetLocalization(nameof(FarewellLine3), () => "没想到，在最后的路上，会有人同行");
+                FarewellLine4 = this.GetLocalization(nameof(FarewellLine4), () => "不用担心我。对我来说，这样的结局……已经足够了");
+                FarewellLine5 = this.GetLocalization(nameof(FarewellLine5), () => "你们的存在，证明这片大地还没有真正枯竭");
+                FarewellLine6 = this.GetLocalization(nameof(FarewellLine6), () => "我相信，你们会走得比我更远");
+                FarewellLine7 = this.GetLocalization(nameof(FarewellLine7), () => "而我，也终于可以停下来了");
+                FarewellLine8 = this.GetLocalization(nameof(FarewellLine8), () => "不必回头看。前面还有更重要的事情等着你们");
+                FarewellLine9 = this.GetLocalization(nameof(FarewellLine9), () => "就当我在这场漫长的旅途中，终于抵达了属于自己的地方");
+                FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
+                FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
             }
             protected override void OnScenarioStart() {
                 //开始火圈收缩效果
@@ -274,8 +287,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 Add(Rolename2.Value, FarewellLine3.Value);
                 Add(Rolename2.Value, FarewellLine4.Value);
                 Add(Rolename2.Value, FarewellLine5.Value);
-                Add(Rolename2.Value, FarewellLine6.Value, onStart: Achievement);
-                Add(Rolename2.Value, FarewellLine7.Value, FinalFade);
+                Add(Rolename2.Value, FarewellLine6.Value);
+                Add(Rolename2.Value, FarewellLine7.Value);
+                Add(Rolename2.Value, FarewellLine8.Value);
+                Add(Rolename2.Value, FarewellLine9.Value);
+                Add(Rolename2.Value, FarewellLine10.Value, onStart: Achievement);
+                Add(Rolename3.Value, FarewellLine11.Value, FinalFade);
             }
 
             public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

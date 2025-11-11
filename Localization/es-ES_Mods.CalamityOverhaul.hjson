@@ -6881,14 +6881,20 @@ ADV: {
 			// EpilogueLine3: 欢迎回来.....
 		}
 
+		// Rolename3: 硫火女巫
+
 		WitchFarewell: {
-			// FarewellLine1: 从我诞生之时起，就注定是个孤独的存在
-			// FarewellLine2: 在无尽的火焰中游荡，看着一个又一个时代的更迭
-			// FarewellLine3: 燃烧......是我唯一的使命，也是唯一的归宿
-			// FarewellLine4: 但在最后......我终于遇见了你们
-			// FarewellLine5: 能够在消亡前，见证这样的意志......
-			// FarewellLine6: 或许，这就是他所说的......希望
-			// FarewellLine7: 那么......永别了，时代的见证者们......
+			// FarewellLine1: 这漫长的一生里，我见过无数次黎明与终焉
+			// FarewellLine2: 火焰吞噬时代，也照亮新的开始。我原以为，这次也不会例外
+			// FarewellLine3: 没想到，在最后的路上，会有人同行
+			// FarewellLine4: 不用担心我。对我来说，这样的结局……已经足够了
+			// FarewellLine5: 你们的存在，证明这片大地还没有真正枯竭
+			// FarewellLine6: 我相信，你们会走得比我更远
+			// FarewellLine7: 而我，也终于可以停下来了
+			// FarewellLine8: 不必回头看。前面还有更重要的事情等着你们
+			// FarewellLine9: 就当我在这场漫长的旅途中，终于抵达了属于自己的地方
+			// FarewellLine10: 那么到这里，就足够了
+			// FarewellLine11: 去吧，杂鱼
 		}
 	}
 
