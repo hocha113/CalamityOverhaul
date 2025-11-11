@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
@@ -17,7 +18,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class Proverbs : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "Proverbs";
-
+        public static LocalizedText L1;
+        public static LocalizedText L2;
+        public override void SetStaticDefaults() {
+            L1 = this.GetLocalization(nameof(L1), () => "对硫火女巫造成双倍伤害，硫火女巫的攻击将可能对你造成暴击");
+            L2 = this.GetLocalization(nameof(L2), () => "谢谢你");
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -32,6 +38,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
             player.buffImmune[BuffID.OnFire3] = true;
             player.GetModPlayer<ProverbsPlayer>().HasProverbs = true;
             player.GetModPlayer<ProverbsPlayer>().HideVisual = hideVisual;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            bool ebn = EbnPlayer.OnEbn(Main.LocalPlayer);
+            foreach (TooltipLine line in tooltips) {
+                if (line.Name == "ItemName") {
+                    continue;
+                }
+                if (!line.Text.Contains("[Content]")) {
+                    continue;
+                }
+                line.OverrideColor = ebn ? Color.Orange : Color.IndianRed;
+                line.Text = line.Text.Replace("[Content]", ebn ? L2.Value : L1.Value);
+            }
         }
     }
 
@@ -49,6 +69,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (HasProverbs || IsEbn) {
                 target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+            }
+            if (IsEbn && target.life <= 0 && target.lifeMax > 500 && Main.rand.NextBool(6)) {//击杀概率掉落湮灭灰烬
+                VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(CWRID.Item_AshesofAnnihilation));
             }
         }
 

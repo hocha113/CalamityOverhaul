@@ -1298,6 +1298,8 @@ Items: {
 			Deals double damage to the Brimstone Witch
 			Attacks from the Brimstone Witch can critically strike you
 			''' */
+		// L1: 对硫火女巫造成双倍伤害，硫火女巫的攻击将可能对你造成暴击
+		// L2: 谢谢你
 	}
 
 	AncientStormGoddessSpear: {
