@@ -1,6 +1,9 @@
 ﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using CalamityMod.NPCs.CalClone;
 using CalamityOverhaul.Content.ADV.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -66,6 +69,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         }
         protected override bool StartScenarioInternal() {
             return ScenarioManager.Start<CalamitasCloneGift>();
+        }
+        protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
+            return !SupCalEffect.IsActive;
         }
     }
 }
