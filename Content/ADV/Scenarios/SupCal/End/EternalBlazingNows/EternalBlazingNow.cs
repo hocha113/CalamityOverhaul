@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             MusicToast.ShowMusic(
                 title: "×ïÖ®Ð¨",
-                artist: "¸¯Šª",
+                artist: "¸¯¼§",
                 albumCover: ADVAsset.FUJI,
                 style: MusicToast.MusicStyle.RedNeon,
                 displayDuration: 480//8Ãë

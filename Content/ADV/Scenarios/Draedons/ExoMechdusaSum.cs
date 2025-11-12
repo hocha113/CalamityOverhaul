@@ -141,6 +141,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
                     SummonMech(selectedMech);
                     ADVChoiceBox.Hide();//手动清理选项框
+                    SimpleMode = false;
                     CountDown = false;
                     CountDownTimer = 0;
                 }
@@ -152,7 +153,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
-            DefaultDialogueStyle().BeginClose();
+            //DefaultDialogueStyle().BeginClose();//别他妈的用这个关，会把后面的都鸡巴卡掉
+            DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
         }
 
         private enum ExoMechType

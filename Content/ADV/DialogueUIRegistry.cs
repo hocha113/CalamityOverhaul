@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 强制关闭对话框，不触发完成回调
         /// </summary>
-        private static void ForceCloseBox(DialogueBoxBase box) {
+        internal static void ForceCloseBox(DialogueBoxBase box) {
             if (box == null) {
                 return;
             }
