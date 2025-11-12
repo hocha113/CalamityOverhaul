@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Line6 = this.GetLocalization(nameof(Line6), () => "......我层次太低?");
             Line7 = this.GetLocalization(nameof(Line7), () => "(活这么多年，还是第一次被说层次太低)");
             Line8 = this.GetLocalization(nameof(Line8), () => "我是一个时代孕育出来的唯一，既然敢舍弃泰拉人的身份，自封为神，自然是无所不能");
-            Line9 = this.GetLocalization(nameof(Line9), () => "你说亚利姆可以称量我?得让克洛希克来");
+            Line9 = this.GetLocalization(nameof(Line9), () => "你说亚利姆可以称量我?得让克希洛克来");
             Line10 = this.GetLocalization(nameof(Line10), () => "......");
         }
 
