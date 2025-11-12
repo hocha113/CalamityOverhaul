@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
     /// <summary>
     /// 嘉登战斗结束对话场景

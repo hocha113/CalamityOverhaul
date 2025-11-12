@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
     internal class ExoMechdusaSum : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
@@ -37,6 +37,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// 是否启用简洁模式，如果是，跳过介绍直接选择机甲
         /// </summary>
         public static bool SimpleMode;
+        /// <summary>
+        /// 启用兼容模式，默认使用原版选择UI而非覆盖使用选项框模式
+        /// </summary>
+        public static bool CompatibleMode;
         public static bool CountDown;
         public static int CountDownTimer;
 

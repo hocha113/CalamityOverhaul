@@ -44,6 +44,7 @@ namespace CalamityOverhaul
         internal Mod bossChecklist = null;
         internal Mod highFPSSupport = null;
         internal Mod calamityEntropy = null;
+        internal Mod fargowiltasCrossmod = null;
 
         #endregion
 
@@ -105,6 +106,7 @@ namespace CalamityOverhaul
             bossChecklist = null;
             highFPSSupport = null;
             calamityEntropy = null;
+            fargowiltasCrossmod = null;
         }
 
         public void FindMod() {
@@ -133,6 +135,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("BossChecklist", out bossChecklist);
             ModLoader.TryGetMod("HighFPSSupport", out highFPSSupport);
             ModLoader.TryGetMod("CalamityEntropy", out calamityEntropy);
+            ModLoader.TryGetMod("FargowiltasCrossmod", out fargowiltasCrossmod);
         }
     }
 }
