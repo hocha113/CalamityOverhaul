@@ -2,7 +2,6 @@
 using CalamityMod.NPCs.CalClone;
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
 using Terraria.Localization;

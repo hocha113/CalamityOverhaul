@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     internal class ModifyWITCH : ICWRLoader
     {
         void ICWRLoader.LoadData() {
-            
+
             var type = CWRRef.GetNPC_WITCH_Type();
             if (type != null) {
                 var meth = type.GetMethod("CanTownNPCSpawn", BindingFlags.Instance | BindingFlags.Public);
