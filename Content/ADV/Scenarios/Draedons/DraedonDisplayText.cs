@@ -164,8 +164,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     ModifyDraedonNPC.DefeatEvent();
                 }
                 //你妈的嘉登介绍对话也放过吧求求了
-                if (result.Contains("IntroductionMonologue") 
-                    || result.Contains("EndOfBattle_FirstDefeat") 
+                if (result.Contains("IntroductionMonologue")
+                    || result.Contains("EndOfBattle_FirstDefeat")
                     || result.Contains("EndOfBattle_SuccessiveDefeat")) {
                     return false;//这些本地化全部屏蔽
                 }

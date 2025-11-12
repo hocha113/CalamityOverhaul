@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
-            
+
             //如果不是兼容模式，才注册机甲选择悬停特效
             if (!CompatibleMode) {
                 ExoMechdusaSumRender.RegisterHoverEffects();
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             CountDownTimer = 0;
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
-            
+
             //如果不是兼容模式，才清理机甲选择悬停特效
             if (!CompatibleMode) {
                 ExoMechdusaSumRender.Cleanup();
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
-            
+
             //如果不是兼容模式，强制关闭对话框
             if (!CompatibleMode) {
                 DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
