@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
@@ -117,6 +118,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
             if (!Spawn) {
                 return;//未触发任务，不更新
+            }
+            if (EbnEffect.IsActive) {
+                return;//避免在不合适的时候触发
             }
             if (CWRWorld.HasBoss || CWRWorld.BossRush) {
                 return;//有Boss战斗时不触发

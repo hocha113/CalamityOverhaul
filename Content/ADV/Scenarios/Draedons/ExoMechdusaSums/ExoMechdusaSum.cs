@@ -48,6 +48,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 if (CWRMod.Instance.infernum != null) {
                     return true;//操你妈InfernumMode
                 }
+                if (CWRMod.Instance.woTM != null) {
+                    return true;//操你妈WoTM
+                }
                 return false;
             }
         }

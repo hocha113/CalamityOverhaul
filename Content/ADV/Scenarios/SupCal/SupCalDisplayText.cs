@@ -269,11 +269,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             //提取key的最后一部分(去除模组前缀)
             string result = key.Split('.').Last();
 
-            if (result == "SCalAcceptanceText3" && NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
-                //Boss已经进入濒死阶段，触发战败对话场景
-                if (!VaultUtils.isServer) {
+            if (NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas) && !VaultUtils.isServer) {
+                if (result == "SCalAcceptanceText3") {
+                    //Boss已经进入濒死阶段，触发战败对话场景
                     ScenarioManager.Reset<EternalBlazingNow>();
                     ScenarioManager.Start<EternalBlazingNow>();
+                    return false;
+                }
+                if (result == "SCalDesparationText4Rematch") {//如果已经是重复击杀
+                    if (!EbnPlayer.OnEbn(Main.LocalPlayer)) {//但玩家因为某些原因还是没有完成BE结局
+                        //就再次触发结局场景
+                        ScenarioManager.Reset<EternalBlazingNow>();
+                        ScenarioManager.Start<EternalBlazingNow>();
+                        return false;
+                    }
+                }
+                if (CWRMod.Instance.infernum != null && result == "SCalCongratulations") {
+                    //Boss已经进入濒死阶段，触发战败对话场景
+                    ScenarioManager.Reset<EternalBlazingNow>();
+                    ScenarioManager.Start<EternalBlazingNow>();
+                    return false;
                 }
             }
 
