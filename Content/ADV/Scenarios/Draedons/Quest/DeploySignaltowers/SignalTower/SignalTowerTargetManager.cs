@@ -242,6 +242,65 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
+        /// 检查并标记点位完成，返回完成的目标点索引
+        /// </summary>
+        public static int CheckAndMarkCompletionWithIndex(Point towerTilePos) {
+            foreach (SignalTowerTargetPoint point in TargetPoints) {
+                if (!point.IsCompleted && point.IsInRange(towerTilePos)) {
+                    point.IsCompleted = true;
+
+                    //播放完成效果
+                    SignalTowerCompletionEffects.PlayCompletionEffect(point.WorldPosition, point.Index);
+
+                    //检查是否全部完成
+                    bool allCompleted = true;
+                    foreach (SignalTowerTargetPoint p in TargetPoints) {
+                        if (!p.IsCompleted) {
+                            allCompleted = false;
+                            break;
+                        }
+                    }
+
+                    if (allCompleted) {
+                        SignalTowerCompletionEffects.PlayAllCompletionEffect();
+                    }
+
+                    return point.Index;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 取消指定位置的目标点完成状态（当信号塔被移除时调用）
+        /// </summary>
+        public static bool UnmarkCompletion(Point towerTilePos) {
+            foreach (SignalTowerTargetPoint point in TargetPoints) {
+                if (point.IsCompleted && point.IsInRange(towerTilePos)) {
+                    point.IsCompleted = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 根据索引取消目标点完成状态
+        /// </summary>
+        public static bool UnmarkCompletionByIndex(int index) {
+            if (index < 0 || index >= TargetPoints.Count) {
+                return false;
+            }
+
+            if (TargetPoints[index].IsCompleted) {
+                TargetPoints[index].IsCompleted = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 重置所有目标点
         /// </summary>
         public static void Reset() {

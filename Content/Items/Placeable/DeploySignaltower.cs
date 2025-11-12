@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using InnoVault.TileProcessors;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -82,6 +83,11 @@ namespace CalamityOverhaul.Content.Items.Placeable
         private bool hasMarkedCompletion;
 
         /// <summary>
+        /// 已完成的目标点索引（-1表示未完成任何点）
+        /// </summary>
+        private int completedTargetIndex = -1;
+
+        /// <summary>
         /// 连接动画进度计时器
         /// </summary>
         private int connectionAnimTimer;
@@ -94,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         /// <summary>
         /// 连接动画持续时间（帧数）
         /// </summary>
-        private const int ConnectionAnimDuration = 180; // 3秒
+        private const int ConnectionAnimDuration = 180; //3秒
 
         public override void Update() {
             //持续检查是否在目标点范围内
@@ -120,9 +126,11 @@ namespace CalamityOverhaul.Content.Items.Placeable
             //将Point16转换为Point
             Point tilePos = new(Position.X, Position.Y);
 
-            //检查信号塔位置是否在任何目标点范围内
-            if (SignalTowerTargetManager.CheckAndMarkCompletion(tilePos)) {
+            //检查信号塔位置是否在任何目标点范围内，并获取索引
+            int targetIndex = SignalTowerTargetManager.CheckAndMarkCompletionWithIndex(tilePos);
+            if (targetIndex >= 0) {
                 hasMarkedCompletion = true;
+                completedTargetIndex = targetIndex;
                 //触发连接动画
                 TriggerConnectionAnimation();
             }
@@ -136,14 +144,14 @@ namespace CalamityOverhaul.Content.Items.Placeable
             connectionAnimTimer = 0;
 
             //播放连接成功音效
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item4 with {
+            SoundEngine.PlaySound(SoundID.Item4 with {
                 Volume = 0.8f,
                 Pitch = 0.3f,
                 MaxInstances = 2
             }, new Vector2(Position.X * 16, Position.Y * 16));
 
             //额外的科技感音效
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
+            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
                 Volume = 0.6f,
                 Pitch = 0.5f,
                 MaxInstances = 1
@@ -157,20 +165,17 @@ namespace CalamityOverhaul.Content.Items.Placeable
             connectionAnimTimer++;
 
             //获取信号塔顶部位置（世界坐标）
-            Vector2 towerTop = new Vector2(Position.X * 16 + 48, Position.Y * 16); // 信号塔宽6格（96像素），取中心点
+            Vector2 towerTop = new Vector2(Position.X * 16 + 48, Position.Y * 16 + 32); //信号塔宽6格（96像素），取中心点
 
-            //动画分为几个阶段
-            float progress = connectionAnimTimer / (float)ConnectionAnimDuration;
-
-            // 阶段1：初始能量聚集（0-30帧）
+            //阶段1：初始能量聚集（0-30帧）
             if (connectionAnimTimer <= 30) {
                 SpawnEnergyGatherEffect(towerTop, connectionAnimTimer / 30f);
             }
-            // 阶段2：矩阵雨爆发（30-120帧）
+            //阶段2：矩阵雨爆发（30-120帧）
             else if (connectionAnimTimer <= 120) {
                 SpawnMatrixRainBurst(towerTop, (connectionAnimTimer - 30) / 90f);
             }
-            // 阶段3：能量脉冲扩散（120-180帧）
+            //阶段3：能量脉冲扩散（120-180帧）
             else if (connectionAnimTimer <= ConnectionAnimDuration) {
                 SpawnEnergyPulseRings(towerTop, (connectionAnimTimer - 120) / 60f);
             }
@@ -214,7 +219,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 //向上发射的速度（模拟数据流向天空）
                 Vector2 velocity = new Vector2(
                     Main.rand.NextFloat(-0.5f, 0.5f),
-                    Main.rand.NextFloat(-8f, -4f) // 负值表示向上
+                    Main.rand.NextFloat(-8f, -4f) //负值表示向上
                 );
 
                 //创建矩阵雨字符粒子
@@ -291,6 +296,22 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 dust.noGravity = true;
                 dust.scale = Main.rand.NextFloat(1f, 1.5f);
                 dust.color = new Color(100, 220, 255) * (1f - progress);
+            }
+        }
+
+        /// <summary>
+        /// 当TileProcessor被移除时调用（信号塔被破坏）
+        /// </summary>
+        public override void OnKill() {
+            //如果该信号塔已完成某个目标点，则取消该目标点的完成状态
+            if (hasMarkedCompletion && completedTargetIndex >= 0) {
+                SignalTowerTargetManager.UnmarkCompletionByIndex(completedTargetIndex);
+                //播放失效音效
+                SoundEngine.PlaySound(SoundID.Item8 with {
+                    Volume = 0.6f,
+                    Pitch = -0.3f,
+                    MaxInstances = 2
+                }, new Vector2(Position.X * 16, Position.Y * 16));
             }
         }
     }

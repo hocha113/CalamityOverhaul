@@ -32,14 +32,16 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override bool? UseItem(Player player) {
             if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.5f }, player.Center);
+                int combat;
                 if (halibutPlayer.ADCSave.UseConstructionBlueprint) {
-                    CombatText.NewText(new Rectangle((int)player.Center.X - 100, (int)player.Center.Y - 100, 200, 50),
-                        Color.BlueViolet, L2.Value, true, true);
+                    combat = CombatText.NewText(new Rectangle((int)player.Center.X - 100, (int)player.Center.Y - 100, 200, 50),
+                        Color.BlueViolet, L2.Value, true);
                 }
                 else {
-                    CombatText.NewText(new Rectangle((int)player.Center.X - 100, (int)player.Center.Y - 100, 200, 50),
-                        Color.Gold, L1.Value, true, true);
+                    combat = CombatText.NewText(new Rectangle((int)player.Center.X - 100, (int)player.Center.Y - 100, 200, 50),
+                        Color.Gold, L1.Value, true);
                 }
+                Main.combatText[combat].lifeTime = 300;
                 halibutPlayer.ADCSave.UseConstructionBlueprint = true;
             }
             return true;
