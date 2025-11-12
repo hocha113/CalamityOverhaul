@@ -40,7 +40,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// <summary>
         /// 启用兼容模式，默认使用原版选择UI而非覆盖使用选项框模式
         /// </summary>
-        public static bool CompatibleMode;
+        public static bool CompatibleMode {
+            get {
+                if (CWRMod.Instance.fargowiltasCrossmod != null) {
+                    return true;//操你妈FargowiltasCrossmod
+                }
+                if (CWRMod.Instance.infernum != null) {
+                    return true;//操你妈InfernumMode
+                }
+                return false;
+            }
+        }
         public static bool CountDown;
         public static int CountDownTimer;
 
@@ -82,7 +92,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
-            ExoMechdusaSumRender.RegisterHoverEffects();//注册机甲选择悬停特效
+            
+            //如果不是兼容模式，才注册机甲选择悬停特效
+            if (!CompatibleMode) {
+                ExoMechdusaSumRender.RegisterHoverEffects();
+            }
         }
 
         protected override void OnScenarioComplete() {
@@ -95,7 +109,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             CountDownTimer = 0;
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
-            ExoMechdusaSumRender.Cleanup();//清理机甲选择悬停特效
+            
+            //如果不是兼容模式，才清理机甲选择悬停特效
+            if (!CompatibleMode) {
+                ExoMechdusaSumRender.Cleanup();
+            }
         }
 
         protected override void Build() {
@@ -112,11 +130,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 
             if (simpleMode) {
                 //简洁模式，直接显示选择界面，时间紧迫，不等你嗷
-                AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
-                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
-                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
-                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                if (CompatibleMode) {
+                    //兼容模式：显示对话但不显示选项框，依赖原版选项UI
+                    Add(DraedonName.Value + red, BossRushLine.Value, onComplete: () => {
+                        //对话结束后，重新启用原版选择UI
+                        CWRRef.SetAbleToSelectExoMech(Main.LocalPlayer, true);
+                        //场景不自动完成，等待玩家选择
+                    });
+                }
+                else {
+                    //正常模式：显示自定义选项框
+                    AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
+                        new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
+                        new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
+                        new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
+                    ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                }
             }
             else {
                 //普通模式，就播放老逼登的完整介绍对话
@@ -125,12 +154,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 Add(DraedonName.Value, IntroLine3.Value);
                 Add(DraedonName.Value + red, IntroLine4.Value);
 
-                //添加选择界面
-                AddWithChoices(DraedonName.Value + red, IntroLine5.Value, [
-                    new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
-                    new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
-                    new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
-                ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                if (CompatibleMode) {
+                    //兼容模式：显示最后一句对话后重新启用原版选择UI
+                    Add(DraedonName.Value + red, IntroLine5.Value, onComplete: () => {
+                        //对话结束后，重新启用原版选择UI
+                        CWRRef.SetAbleToSelectExoMech(Main.LocalPlayer, true);
+                        //场景不自动完成，等待玩家选择
+                    });
+                }
+                else {
+                    //正常模式：添加选择界面
+                    AddWithChoices(DraedonName.Value + red, IntroLine5.Value, [
+                        new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
+                        new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
+                        new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
+                    ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                }
             }
         }
 
@@ -140,11 +179,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     CountDownTimer--;
                 }
                 else {
-                    //时间到，随机选择一个机甲进行召唤
-                    ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
-                    ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
-                    SummonMech(selectedMech);
-                    ADVChoiceBox.Hide();//手动清理选项框
+                    if (CompatibleMode) {
+                        //兼容模式：倒计时结束后随机选择机甲，但通过原版系统
+                        ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
+                        ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
+                        SummonMech(selectedMech);
+                    }
+                    else {
+                        //正常模式：时间到，随机选择一个机甲进行召唤
+                        ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
+                        ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
+                        SummonMech(selectedMech);
+                        ADVChoiceBox.Hide();//手动清理选项框
+                    }
                     SimpleMode = false;
                     CountDown = false;
                     CountDownTimer = 0;
@@ -157,8 +204,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
-            //DefaultDialogueStyle().BeginClose();//别他妈的用这个关，会把后面的都鸡巴卡掉
-            DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
+            
+            //如果不是兼容模式，强制关闭对话框
+            if (!CompatibleMode) {
+                DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
+            }
         }
 
         private enum ExoMechType

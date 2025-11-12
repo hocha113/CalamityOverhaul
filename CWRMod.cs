@@ -45,6 +45,7 @@ namespace CalamityOverhaul
         internal Mod highFPSSupport = null;
         internal Mod calamityEntropy = null;
         internal Mod fargowiltasCrossmod = null;
+        internal Mod luminance = null;
 
         #endregion
 
@@ -107,6 +108,7 @@ namespace CalamityOverhaul
             highFPSSupport = null;
             calamityEntropy = null;
             fargowiltasCrossmod = null;
+            luminance = null;
         }
 
         public void FindMod() {
@@ -136,6 +138,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("HighFPSSupport", out highFPSSupport);
             ModLoader.TryGetMod("CalamityEntropy", out calamityEntropy);
             ModLoader.TryGetMod("FargowiltasCrossmod", out fargowiltasCrossmod);
+            ModLoader.TryGetMod("Luminance", out luminance);
         }
     }
 }

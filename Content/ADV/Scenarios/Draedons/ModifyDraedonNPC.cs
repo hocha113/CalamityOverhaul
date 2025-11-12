@@ -18,8 +18,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         }
 
         public override void PostAI() {
-            //禁用原版机甲选择UI
-            CWRRef.SetAbleToSelectExoMech(Main.player[npc.target], false);
+            //根据兼容模式决定是否禁用原版机甲选择UI
+            //如果启用兼容模式，则不禁用原版UI；否则禁用原版UI，使用自定义选项框
+            if (!ExoMechdusaSum.CompatibleMode) {
+                CWRRef.SetAbleToSelectExoMech(Main.player[npc.target], false);
+            }
 
             if (!VaultUtils.isServer && Main.myPlayer == npc.target) {
                 //召唤机甲对话

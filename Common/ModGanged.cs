@@ -471,6 +471,13 @@ namespace CalamityOverhaul.Common
 
                 MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("DisplayLocalizedText", BindingFlags.Static | BindingFlags.Public);
                 VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+
+                //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
+                if (CWRMod.Instance.luminance != null) {
+                    var utType = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.luminance), "Utilities");
+                    methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
+                    VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+                }
             }
             #endregion
 
