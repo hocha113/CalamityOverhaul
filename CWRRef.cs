@@ -45,7 +45,17 @@ namespace CalamityOverhaul
                 , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
         }
         public static void SummonExo(int exoType, Player player) {
+            if (CWRMod.Instance.calamity == null) {
+                return;
+            }
             CalamityWorld.DraedonMechToSummon = (ExoMech)exoType;
+            if (VaultUtils.isClient) {//客户端发送网络数据到服务器
+                var netMessage = CWRMod.Instance.calamity.GetPacket();
+                netMessage.Write((byte)CalamityModMessageType.ExoMechSelection);
+                netMessage.Write((int)CalamityWorld.DraedonMechToSummon);
+                netMessage.Send();
+                return;
+            }
             switch (CalamityWorld.DraedonMechToSummon) {
                 case ExoMech.Destroyer:
                     Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
