@@ -313,6 +313,10 @@ namespace CalamityOverhaul.Content.Items.Placeable
                     MaxInstances = 2
                 }, new Vector2(Position.X * 16, Position.Y * 16));
             }
+            if (!VaultUtils.isClient) {
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox
+                    , new Item(ModContent.ItemType<StarflowPlatedBlock>(), Main.rand.Next(32, 42)));
+            }
         }
     }
 }

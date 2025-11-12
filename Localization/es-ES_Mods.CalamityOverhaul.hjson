@@ -1395,6 +1395,8 @@ Items: {
 			Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
 			"Friendly reminder: Credit is not supported"
 			''' */
+		// NeedSignalTowersText: Entanglement network incomplete! System locked until all {0} signal towers are deployed.
+		// SignalTowerProgressText: Signal Tower Deployment: {0}/{1}
 	}
 }
 
