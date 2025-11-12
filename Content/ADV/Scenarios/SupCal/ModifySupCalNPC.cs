@@ -4,6 +4,8 @@ using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -130,6 +132,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     Main.npc[witch].netUpdate = true;
                 }
             }
+        }
+    }
+
+    internal class ModifyWITCH : ICWRLoader
+    {
+        void ICWRLoader.LoadData() {
+            
+            var type = CWRRef.GetNPC_WITCH_Type();
+            if (type != null) {
+                var meth = type.GetMethod("CanTownNPCSpawn", BindingFlags.Instance | BindingFlags.Public);
+                VaultHook.Add(meth, OnCanTownNPCSpawnHook);
+            }
+        }
+        private delegate bool OnCanTownNPCSpawnDelegate(object obj, int numTownNPCs);
+        //临时钩子，后续改用前置实现
+        private static bool OnCanTownNPCSpawnHook(OnCanTownNPCSpawnDelegate orig, object obj, int numTownNPCs) {
+            if (Main.player.Any(EbnPlayer.OnEbn)) {//如果有玩家达成永恒燃烧的现在结局
+                return false;//女巫不生成
+            }
+            return orig.Invoke(obj, numTownNPCs);
         }
     }
 

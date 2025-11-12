@@ -6,10 +6,12 @@ using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -96,5 +98,6 @@ namespace CalamityOverhaul
                 supCal.giveUpCounter = value;
             }
         }
+        public static Type GetNPC_WITCH_Type() => typeof(WITCH);
     }
 }
