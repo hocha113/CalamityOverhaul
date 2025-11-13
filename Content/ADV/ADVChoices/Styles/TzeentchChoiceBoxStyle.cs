@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles
+namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 {
     /// <summary>
     /// 奸奇魔法风格 - 变化之神的炫彩扭曲样式

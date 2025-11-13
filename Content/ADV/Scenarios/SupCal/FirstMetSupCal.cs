@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
+﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;

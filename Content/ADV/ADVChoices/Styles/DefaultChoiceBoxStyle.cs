@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles
+namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 {
     /// <summary>
     /// 默认深蓝科技风格

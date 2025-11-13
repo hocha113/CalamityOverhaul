@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles;
+﻿using CalamityOverhaul.Content.ADV.ADVChoices.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
+namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
     /// <summary>
     /// ADV选项框UI，参考ResurrectionUI的绘制风格

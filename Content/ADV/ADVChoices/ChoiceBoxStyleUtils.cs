@@ -1,8 +1,8 @@
-using CalamityOverhaul.Content.ADV.ADVChoiceBoxs.Styles;
+using CalamityOverhaul.Content.ADV.ADVChoices.Styles;
 using System;
 using System.Collections.Generic;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoiceBoxs
+namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
     /// <summary>
     /// 选项框样式工厂，用于创建和管理样式实例

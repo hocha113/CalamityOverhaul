@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
+﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Tools;

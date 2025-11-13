@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoiceBoxs;
+﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
