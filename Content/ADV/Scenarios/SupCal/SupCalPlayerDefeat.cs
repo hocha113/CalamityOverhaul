@@ -49,13 +49,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionDespise, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionDespise, ADVAsset.SupCalsADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionDespise, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
 
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);

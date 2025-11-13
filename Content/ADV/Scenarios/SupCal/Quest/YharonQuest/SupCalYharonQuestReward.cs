@@ -66,13 +66,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
 
         protected override void Build() {
             //注册立绘
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionSigh, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionSigh, ADVAsset.SupCalsADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionSigh, silhouette: false);
 
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             L3 = this.GetLocalization(nameof(L3), () => "……怎么？需要我再说一遍吗？");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[3]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
 
             string line = L1.Value;

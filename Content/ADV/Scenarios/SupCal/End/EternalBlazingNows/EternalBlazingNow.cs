@@ -116,13 +116,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSerious, silhouette: false);
 
             //×¢²áÖÁ×ðÔÖ¶òÁ¢»æ
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[3]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalsADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
 
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: true);
 
             Add(Rolename1.Value + helenShock, Line1.Value);

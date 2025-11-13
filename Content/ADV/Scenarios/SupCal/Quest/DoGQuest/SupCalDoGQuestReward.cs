@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         }
 
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_slightAnnoyedADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);

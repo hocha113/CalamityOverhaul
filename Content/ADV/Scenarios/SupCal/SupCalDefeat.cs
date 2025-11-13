@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
 
             string hapName = Rolename2.Value.Replace("[Name]", Main.LocalPlayer.name);

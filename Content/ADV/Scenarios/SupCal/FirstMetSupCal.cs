@@ -104,19 +104,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         protected override void Build() {
             //注册立绘
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionCloseEye, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionCloseEye, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionBeTo, ADVAsset.SupCalADV[3]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionBeTo, ADVAsset.SupCalsADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionBeTo, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalsADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionDespise, silhouette: false);
 
             bool hasHalibut = false;
