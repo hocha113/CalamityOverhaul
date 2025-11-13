@@ -398,5 +398,42 @@ namespace CalamityOverhaul.Content
             }
             return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
         }
+
+        /// <summary>
+        /// 强制让指定NPC掉落物品并设置死亡事件
+        /// </summary>
+        /// <param name="npcID"></param>
+        public static void SetNPCLoot(int npcID) {
+            if (VaultUtils.isClient) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.SetNPCLoot);
+                modPacket.Write(npcID);
+                modPacket.Send();
+                return;
+            }
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == npcID) {
+                    n.active = false;
+                    n.netUpdate = true;
+                    n.NPCLoot();
+                }
+            }
+        }
+        public static void HandleSetNPCLoot(BinaryReader reader, int whoAmI) {
+            int npcID = reader.ReadInt32();
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == npcID) {
+                    n.active = false;
+                    n.netUpdate = true;
+                    n.NPCLoot();
+                }
+            }
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.SetNPCLoot);
+                modPacket.Write(npcID);
+                modPacket.Send(-1, whoAmI);
+            }
+        }
     }
 }

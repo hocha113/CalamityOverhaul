@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
             FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
         }
-        
+
         protected override void OnScenarioStart() {
             //开始火圈收缩效果
             EbnEffect.StartContraction();
@@ -112,6 +112,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         private static void Achievement() {
+            CWRNpc.SetNPCLoot(CWRID.NPC_SupremeCalamitas);
             AchievementToast.ShowAchievement(
                 CWRAsset.icon_small.Value,
                 AchievementTitle.Value,

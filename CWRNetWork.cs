@@ -27,6 +27,7 @@ namespace CalamityOverhaul
         DraedonEffect,
         TzeentchEffect,
         SignalTowerTargetManager,
+        SetNPCLoot,
     }
 
     public static class CWRNetWork
@@ -57,6 +58,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.GlobalSleep) {
                 ModifyTruffle.HandleGlobalSleep(reader);
+            }
+            else if (type == CWRMessageType.SetNPCLoot) {
+                CWRNpc.HandleSetNPCLoot(reader, whoAmI);
             }
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             HalibutPlayer.NetHandle(type, reader, whoAmI);

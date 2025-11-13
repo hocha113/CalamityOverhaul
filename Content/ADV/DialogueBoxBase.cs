@@ -64,15 +64,15 @@ namespace CalamityOverhaul.Content.ADV
         public override bool Active => current != null || queue.Count > 0 || showProgress > 0f && !closing;
         protected static LocalizedText ContinueHint;
         protected static LocalizedText FastHint;
-        
+
         #region 全身立绘系统
-        
+
         //全身立绘注册表
         protected static readonly Dictionary<string, FullBodyPortraitBase> fullBodyPortraits = new(StringComparer.Ordinal);
-        
+
         //当前激活的全身立绘
         protected FullBodyPortraitBase activeFullBodyPortrait;
-        
+
         /// <summary>
         /// 注册一个全身立绘实例
         /// </summary>
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.ADV
             if (string.IsNullOrWhiteSpace(key) || portrait == null) {
                 return;
             }
-            
+
             if (fullBodyPortraits.ContainsKey(key)) {
                 fullBodyPortraits[key] = portrait;
             }
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.ADV
                 fullBodyPortraits.Add(key, portrait);
             }
         }
-        
+
         /// <summary>
         /// 移除注册的全身立绘
         /// </summary>
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.ADV
                 fullBodyPortraits.Remove(key);
             }
         }
-        
+
         /// <summary>
         /// 显示全身立绘
         /// </summary>
@@ -110,26 +110,26 @@ namespace CalamityOverhaul.Content.ADV
             if (string.IsNullOrWhiteSpace(key)) {
                 return false;
             }
-            
+
             if (!fullBodyPortraits.TryGetValue(key, out var portrait)) {
                 return false;
             }
-            
+
             //停止当前立绘
             if (activeFullBodyPortrait != null && activeFullBodyPortrait != portrait) {
                 activeFullBodyPortrait.EndPerformance();
             }
-            
+
             //启动新立绘
             activeFullBodyPortrait = portrait;
             if (!portrait.Active) {
                 portrait.Initialize(this);
             }
             portrait.StartPerformance();
-            
+
             return true;
         }
-        
+
         /// <summary>
         /// 隐藏当前全身立绘
         /// </summary>
@@ -138,23 +138,23 @@ namespace CalamityOverhaul.Content.ADV
                 activeFullBodyPortrait.EndPerformance();
             }
         }
-        
+
         /// <summary>
         /// 获取当前激活的全身立绘
         /// </summary>
         public FullBodyPortraitBase GetActiveFullBodyPortrait() {
             return activeFullBodyPortrait;
         }
-        
+
         /// <summary>
         /// 清理所有全身立绘
         /// </summary>
         public static void ClearAllFullBodyPortraits() {
             fullBodyPortraits.Clear();
         }
-        
+
         #endregion
-        
+
         public override void SetStaticDefaults() {
             ContinueHint = this.GetLocalization(nameof(ContinueHint), () => "继续");
             FastHint = this.GetLocalization(nameof(FastHint), () => "加速");
@@ -231,15 +231,15 @@ namespace CalamityOverhaul.Content.ADV
             if (closing) {
                 return;
             }
-            
+
             //检查全身立绘是否阻止关闭
             if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueClose) {
                 return;
             }
-            
+
             closing = true;
             hideProgress = 0f;
-            
+
             //关闭对话框时隐藏全身立绘
             HideFullBodyPortrait();
         }
@@ -409,17 +409,17 @@ namespace CalamityOverhaul.Content.ADV
                     p.Fade = 0f;
                 }
             }
-            
+
             //更新全身立绘
             if (activeFullBodyPortrait != null) {
                 activeFullBodyPortrait.Update();
-                
+
                 //如果立绘不再激活，清空引用
                 if (!activeFullBodyPortrait.Active) {
                     activeFullBodyPortrait = null;
                 }
             }
-            
+
             Vector2 panelPos = anchorPos - new Vector2(PanelWidth / 2f, panelHeight);
             Vector2 panelSize = new(PanelWidth, panelHeight);
             StyleUpdate(panelPos, panelSize);
@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content.ADV
                         if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                             return;
                         }
-                        
+
                         current.OnFinish?.Invoke();
                         StartNext();
                     }
@@ -496,12 +496,12 @@ namespace CalamityOverhaul.Content.ADV
             Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             float alpha = progress;
             float contentAlpha = contentFade * alpha;
-            
+
             //绘制全身立绘(在对话框之前绘制，作为背景层)
             if (activeFullBodyPortrait != null) {
                 activeFullBodyPortrait.Draw(spriteBatch, alpha);
             }
-            
+
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
         }
         protected abstract void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress);
