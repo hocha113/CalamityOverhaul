@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.ADV
         protected Vector2 anchorPos;
         internal float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
-        protected virtual float MaxHeight => 480f; // 从340f增加到480f以容纳更多文本
+        protected virtual float MaxHeight => 480f;
         protected virtual int Padding => 18;
         protected virtual int LineSpacing => 6;
         protected abstract float PanelWidth { get; }
@@ -64,6 +64,97 @@ namespace CalamityOverhaul.Content.ADV
         public override bool Active => current != null || queue.Count > 0 || showProgress > 0f && !closing;
         protected static LocalizedText ContinueHint;
         protected static LocalizedText FastHint;
+        
+        #region 全身立绘系统
+        
+        //全身立绘注册表
+        protected static readonly Dictionary<string, FullBodyPortraitBase> fullBodyPortraits = new(StringComparer.Ordinal);
+        
+        //当前激活的全身立绘
+        protected FullBodyPortraitBase activeFullBodyPortrait;
+        
+        /// <summary>
+        /// 注册一个全身立绘实例
+        /// </summary>
+        /// <param name="key">立绘标识符</param>
+        /// <param name="portrait">立绘实例</param>
+        public static void RegisterFullBodyPortrait(string key, FullBodyPortraitBase portrait) {
+            if (string.IsNullOrWhiteSpace(key) || portrait == null) {
+                return;
+            }
+            
+            if (fullBodyPortraits.ContainsKey(key)) {
+                fullBodyPortraits[key] = portrait;
+            }
+            else {
+                fullBodyPortraits.Add(key, portrait);
+            }
+        }
+        
+        /// <summary>
+        /// 移除注册的全身立绘
+        /// </summary>
+        /// <param name="key">立绘标识符</param>
+        public static void UnregisterFullBodyPortrait(string key) {
+            if (fullBodyPortraits.ContainsKey(key)) {
+                fullBodyPortraits.Remove(key);
+            }
+        }
+        
+        /// <summary>
+        /// 显示全身立绘
+        /// </summary>
+        /// <param name="key">立绘标识符</param>
+        /// <returns>是否成功显示</returns>
+        public virtual bool ShowFullBodyPortrait(string key) {
+            if (string.IsNullOrWhiteSpace(key)) {
+                return false;
+            }
+            
+            if (!fullBodyPortraits.TryGetValue(key, out var portrait)) {
+                return false;
+            }
+            
+            //停止当前立绘
+            if (activeFullBodyPortrait != null && activeFullBodyPortrait != portrait) {
+                activeFullBodyPortrait.EndPerformance();
+            }
+            
+            //启动新立绘
+            activeFullBodyPortrait = portrait;
+            if (!portrait.Active) {
+                portrait.Initialize(this);
+            }
+            portrait.StartPerformance();
+            
+            return true;
+        }
+        
+        /// <summary>
+        /// 隐藏当前全身立绘
+        /// </summary>
+        public virtual void HideFullBodyPortrait() {
+            if (activeFullBodyPortrait != null) {
+                activeFullBodyPortrait.EndPerformance();
+            }
+        }
+        
+        /// <summary>
+        /// 获取当前激活的全身立绘
+        /// </summary>
+        public FullBodyPortraitBase GetActiveFullBodyPortrait() {
+            return activeFullBodyPortrait;
+        }
+        
+        /// <summary>
+        /// 清理所有全身立绘
+        /// </summary>
+        public static void ClearAllFullBodyPortraits() {
+            fullBodyPortraits.Clear();
+        }
+        
+        #endregion
+        
         public override void SetStaticDefaults() {
             ContinueHint = this.GetLocalization(nameof(ContinueHint), () => "继续");
             FastHint = this.GetLocalization(nameof(FastHint), () => "加速");
@@ -140,8 +231,17 @@ namespace CalamityOverhaul.Content.ADV
             if (closing) {
                 return;
             }
+            
+            //检查全身立绘是否阻止关闭
+            if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueClose) {
+                return;
+            }
+            
             closing = true;
             hideProgress = 0f;
+            
+            //关闭对话框时隐藏全身立绘
+            HideFullBodyPortrait();
         }
         public virtual void StartNext() {
             if (queue.Count == 0) {
@@ -203,19 +303,19 @@ namespace CalamityOverhaul.Content.ADV
             string[] manual = raw.Split('\n');
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             //计算可用宽度(考虑立绘与文字缩放)
-            float textScale = 0.8f; //与绘制时保持一致
+            float textScale = 0.8f;
             float baseWidth = PanelWidth - Padding * 2 - 24f;
             bool hasPortrait = false;
             if (!string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null) {
                 hasPortrait = true;
             }
             if (hasPortrait) {
-                baseWidth -= PortraitWidth + 20f; //与绘制 leftOffset 增量同步
+                baseWidth -= PortraitWidth + 20f;
             }
             if (baseWidth < 60f) {
-                baseWidth = 60f; //最低保障
+                baseWidth = 60f;
             }
-            int wrapWidth = (int)(baseWidth / textScale); //换算为未缩放字体测量宽度
+            int wrapWidth = (int)(baseWidth / textScale);
             foreach (var block in manual) {
                 if (string.IsNullOrWhiteSpace(block)) {
                     allLines.Add(string.Empty);
@@ -233,17 +333,12 @@ namespace CalamityOverhaul.Content.ADV
             int textLines = wrappedLines.Length;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
 
-            // 精确的headerHeight计算：
-            // 在子类绘制实现中，textBlockOffsetY 通常设置为 Padding + 36~38
-            // 这个值表示从面板顶部到文本区域开始位置的距离
-            // 包括：topNameOffset(10-12) + 名字高度(~23) + titleExtra(6) + 分隔线间距(8*2) + 分隔线高度(1-2) ≈ 56-59
-            // 为了与实际绘制布局保持一致，使用 textBlockOffsetY 的典型值
-            int headerHeight = 38; // 设置为典型的 textBlockOffsetY - Padding 值，即 (Padding + 38) - Padding = 38
+            int headerHeight = 38;
 
             float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
-        public override void Update() { HandleInput(); }//此处更新在绘制逻辑中
+        public override void Update() { HandleInput(); }
         public new void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
             if (current == null && queue.Count > 0 && !closing) {
@@ -267,8 +362,6 @@ namespace CalamityOverhaul.Content.ADV
                         lastSpeaker = null;
                         speakerSwitchProgress = 1f;
 
-                        // 淡出动画完成后，恢复默认解析器
-                        // 只有当前对话框是通过解析器设置的才恢复
                         if (DialogueUIRegistry.Current == this) {
                             DialogueUIRegistry.SetResolver(null);
                         }
@@ -316,6 +409,17 @@ namespace CalamityOverhaul.Content.ADV
                     p.Fade = 0f;
                 }
             }
+            
+            //更新全身立绘
+            if (activeFullBodyPortrait != null) {
+                activeFullBodyPortrait.Update();
+                
+                //如果立绘不再激活，清空引用
+                if (!activeFullBodyPortrait.Active) {
+                    activeFullBodyPortrait = null;
+                }
+            }
+            
             Vector2 panelPos = anchorPos - new Vector2(PanelWidth / 2f, panelHeight);
             Vector2 panelSize = new(PanelWidth, panelHeight);
             StyleUpdate(panelPos, panelSize);
@@ -357,6 +461,11 @@ namespace CalamityOverhaul.Content.ADV
                         waitingForAdvance = true;
                     }
                     else {
+                        //检查全身立绘是否阻止推进
+                        if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                            return;
+                        }
+                        
                         current.OnFinish?.Invoke();
                         StartNext();
                     }
@@ -365,7 +474,6 @@ namespace CalamityOverhaul.Content.ADV
 
             if (keyRightPressState == KeyPressState.Pressed && hover) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
-                //BeginClose();//暂时注释掉，老实说，右键就不应该有这种功能
             }
             fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)
                 || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift)
@@ -388,6 +496,12 @@ namespace CalamityOverhaul.Content.ADV
             Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             float alpha = progress;
             float contentAlpha = contentFade * alpha;
+            
+            //绘制全身立绘(在对话框之前绘制，作为背景层)
+            if (activeFullBodyPortrait != null) {
+                activeFullBodyPortrait.Draw(spriteBatch, alpha);
+            }
+            
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
         }
         protected abstract void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress);

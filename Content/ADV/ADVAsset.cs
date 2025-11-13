@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.ADV
     {
         [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 0, arrayCount: 6)]
         public static IList<Texture2D> SupCalADV = null;
+        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal")]
+        public static IList<Texture2D> SupCalFullADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen")]
         public static Texture2D HelenADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen2")]
