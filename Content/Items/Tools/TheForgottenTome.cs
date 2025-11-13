@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             return IsAnySaveDataActive(save);
         }
 
-        private static bool IsAnySaveDataActive(ADVSave save) {
+        internal static bool IsAnySaveDataActive(ADVSave save) {
             FieldInfo[] fields = typeof(ADVSave).GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields) {
                 if (field.FieldType == typeof(bool)) {
@@ -56,8 +56,50 @@ namespace CalamityOverhaul.Content.Items.Tools
                         return true;
                     }
                 }
+                if (field.FieldType == typeof(int)) {
+                    int value = (int)field.GetValue(save);
+                    if (value != 0) {
+                        return true;
+                    }
+                }
             }
             return false;
+        }
+
+        internal static int ResetAllADVData(Player owner) {
+            int resetFieldCount = 0;
+            if (!owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return resetFieldCount;
+            }
+
+            ADVSave save = halibutPlayer.ADCSave;
+            if (save == null) {
+                return resetFieldCount;
+            }
+
+            FieldInfo[] fields = typeof(ADVSave).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            resetFieldCount = 0;
+
+            foreach (FieldInfo field in fields) {
+                if (field.FieldType == typeof(bool)) {
+                    bool value = (bool)field.GetValue(save);
+                    if (value) {
+                        field.SetValue(save, false);
+                        resetFieldCount++;
+                    }
+                }
+                if (field.FieldType == typeof(int)) {
+                    int value = (int)field.GetValue(save);
+                    if (value != 0) {
+                        field.SetValue(save, 0);
+                        resetFieldCount++;
+                    }
+                }
+            }
+
+            DialogueUIRegistry.ForceCloseBox(DialogueUIRegistry.Current);
+            ScenarioManager.ResetAll();
+            return resetFieldCount;
         }
 
         public override bool? UseItem(Player player) {
@@ -128,8 +170,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         private readonly List<ClockHand> clockHands = new List<ClockHand>();
         private float auraRadius = 0f;
         private float auraIntensity = 0f;
-        private int resetFieldCount = 0;
-
         public override void SetDefaults() {
             Projectile.width = 1;
             Projectile.height = 1;
@@ -230,7 +270,10 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (Timer >= RewindDuration) {
                 Phase = EffectPhase.Reset;
                 Timer = 0;
-                ResetAllADVData(owner);
+                TheForgottenTome.ResetAllADVData(owner);
+                for (int i = 0; i < 40; i++) {
+                    SpawnResetExplosion(owner.Center);
+                }
                 PlayResetSound(owner);
             }
         }
@@ -273,36 +316,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             for (int i = 0; i < 12; i++) {
                 float angle = (i / 12f) * MathHelper.TwoPi;
                 clockHands.Add(new ClockHand(angle, 150f + i * 10f));
-            }
-        }
-
-        private void ResetAllADVData(Player owner) {
-            if (!owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
-            }
-
-            ADVSave save = halibutPlayer.ADCSave;
-            if (save == null) {
-                return;
-            }
-
-            FieldInfo[] fields = typeof(ADVSave).GetFields(BindingFlags.Public | BindingFlags.Instance);
-            resetFieldCount = 0;
-
-            foreach (FieldInfo field in fields) {
-                if (field.FieldType == typeof(bool)) {
-                    bool value = (bool)field.GetValue(save);
-                    if (value) {
-                        field.SetValue(save, false);
-                        resetFieldCount++;
-                    }
-                }
-            }
-
-            ScenarioManager.ResetAll();
-
-            for (int i = 0; i < 40; i++) {
-                SpawnResetExplosion(owner.Center);
             }
         }
 
