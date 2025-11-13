@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///<summary>
         ///纯逻辑更新: 研究进度推进、研究完成处理、复苏系统数值变更
         ///</summary>
-        internal void LogicUpdate() {
+        internal new void LogicUpdate() {
             if (!isResearching) {
                 return;
             }

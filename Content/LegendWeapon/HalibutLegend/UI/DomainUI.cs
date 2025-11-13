@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///<summary>
         ///纯逻辑更新 (由系统层调用)
         ///</summary>
-        internal void LogicUpdate() {
+        internal new void LogicUpdate() {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }

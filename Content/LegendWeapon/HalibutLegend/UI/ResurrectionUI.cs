@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///<summary>
         ///纯逻辑更新 (数值平滑、动画驱动变量、粒子生成与生命周期, 不含UI定位)
         ///</summary>
-        internal void LogicUpdate() {
+        internal new void LogicUpdate() {
             var resurrectionSystem = GetResurrectionSystem();
             if (resurrectionSystem == null) {
                 return;
