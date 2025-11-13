@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText FarewellLine9 { get; private set; }
         public static LocalizedText FarewellLine10 { get; private set; }
         public static LocalizedText FarewellLine11 { get; private set; }
-
+        private static bool HasHalibut;
         public string LocalizationCategory => "ADV.EternalBlazingNow";
 
         void IWorldInfo.OnWorldLoad() {
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
             FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
         }
-        private static bool HasHalibut;
+        
         protected override void OnScenarioStart() {
             //开始火圈收缩效果
             EbnEffect.StartContraction();
