@@ -110,16 +110,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //女巫的最后独白
             Add(Rolename3.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
-            Add(Rolename3.Value, FarewellLine2.Value);
-            Add(Rolename3.Value, FarewellLine3.Value);
-            Add(Rolename3.Value, FarewellLine4.Value);
-            Add(Rolename3.Value, FarewellLine5.Value);
-            Add(Rolename3.Value, FarewellLine6.Value);
-            Add(Rolename3.Value, FarewellLine7.Value);
-            Add(Rolename3.Value, FarewellLine8.Value);
-            Add(Rolename3.Value, FarewellLine9.Value);
-            Add(Rolename3.Value, FarewellLine10.Value, onComplete: StartBurningEffect);
-            Add(Rolename3.Value, FarewellLine11.Value, onStart: Achievement, FinalFade);
+            Add(Rolename3.Value, FarewellLine2.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine3.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine4.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine5.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine6.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine7.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine8.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine9.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
+            Add(Rolename3.Value, FarewellLine10.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance(), onComplete: StartBurningEffect);
+            Add(Rolename3.Value, FarewellLine11.Value, onStart: () => { 
+                fullBodyPortrait?.OnDialogueAdvance(); 
+                Achievement(); 
+            }, FinalFade);
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

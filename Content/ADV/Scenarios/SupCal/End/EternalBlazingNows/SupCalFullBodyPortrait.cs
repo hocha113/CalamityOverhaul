@@ -34,6 +34,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private float burnHeight = 0f; //燃烧高度（从下往上，0-1）
         private float fireAnimationTimer = 0f;
 
+        //立绘切换
+        private int dialogueCounter = 0; //对话计数器
+        private bool useSmilePortrait = false; //是否使用微笑立绘
+        private float portraitTransitionProgress = 0f; //立绘切换进度
+        private const float PortraitTransitionDuration = 30f; //立绘切换持续时间
+
         //火焰粒子系统
         private class FireParticle
         {
@@ -65,6 +71,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             currentTint = Color.White;
             fireParticles.Clear();
             particleSpawnTimer = 0;
+            dialogueCounter = 0;
+            useSmilePortrait = false;
+            portraitTransitionProgress = 0f;
         }
 
         protected override void OnStartPerformance() {
@@ -93,11 +102,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             SetBlockClose(true);
         }
 
+        /// <summary>
+        /// 当对话框推进到下一句时调用
+        /// </summary>
+        public void OnDialogueAdvance() {
+            dialogueCounter++;
+            
+            //第10句对话开始切换到微笑立绘
+            if (dialogueCounter >= 9 && !useSmilePortrait) {
+                useSmilePortrait = true;
+                portraitTransitionProgress = 0f;
+            }
+        }
+
         protected override void OnUpdate() {
             fireAnimationTimer += 0.12f;
             if (fireAnimationTimer > 16f) //16帧循环
             {
                 fireAnimationTimer -= 16f;
+            }
+
+            //更新立绘切换
+            if (useSmilePortrait && portraitTransitionProgress < 1f) {
+                portraitTransitionProgress += 1f / PortraitTransitionDuration;
+                if (portraitTransitionProgress > 1f) {
+                    portraitTransitionProgress = 1f;
+                }
             }
 
             switch (currentState) {
@@ -218,9 +248,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// 生成火焰粒子
         /// </summary>
         private void SpawnFireParticles() {
-            if (ADVAsset.SupCalADV == null) return;
+            Texture2D currentPortrait = GetCurrentPortrait();
+            if (currentPortrait == null) return;
 
-            Vector2 portraitSize = ADVAsset.SupCalADV.Size() * scale;
+            Vector2 portraitSize = currentPortrait.Size() * scale;
 
             //在燃烧边缘生成粒子
             float edgeY = position.Y + portraitSize.Y * (1f - burnHeight);
@@ -244,14 +275,40 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
+        /// <summary>
+        /// 获取当前应该使用的立绘
+        /// </summary>
+        private Texture2D GetCurrentPortrait() {
+            if (useSmilePortrait) {
+                return ADVAsset.SupCal_smileADV;
+            }
+            return ADVAsset.SupCal_closeEyesADV;
+        }
+
         protected override void OnDraw(SpriteBatch spriteBatch, float alpha) {
-            Texture2D portrait = ADVAsset.SupCalADV;
-            if (portrait == null) {
+            Texture2D currentPortrait = GetCurrentPortrait();
+            if (currentPortrait == null) {
                 return;
             }
 
-            position = ownerDialogue.GetPanelRect().Top() + new Vector2(-portrait.Width + 60, -portrait.Height + 20) * scale;
-            Vector2 portraitSize = portrait.Size() * scale;
+            position = ownerDialogue.GetPanelRect().Top() + new Vector2(-currentPortrait.Width + 60, -currentPortrait.Height + 20) * scale;
+            Vector2 portraitSize = currentPortrait.Size() * scale;
+
+            //立绘切换时的混合绘制
+            if (useSmilePortrait && portraitTransitionProgress < 1f && ADVAsset.SupCal_closeEyesADV != null) {
+                //绘制淡出的闭眼立绘
+                float closeEyesAlpha = alpha * (1f - portraitTransitionProgress);
+                Color closeEyesColor = currentTint * closeEyesAlpha;
+                spriteBatch.Draw(ADVAsset.SupCal_closeEyesADV, position, null, closeEyesColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+                //绘制淡入的微笑立绘
+                float smileAlpha = alpha * portraitTransitionProgress;
+                Color smileColor = currentTint * smileAlpha;
+                if (ADVAsset.SupCal_smileADV != null) {
+                    spriteBatch.Draw(ADVAsset.SupCal_smileADV, position, null, smileColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                }
+                return;
+            }
 
             //燃烧状态下的特殊绘制
             if (currentState == PerformanceState.BurningDissolve) {
@@ -260,7 +317,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             else {
                 //正常绘制
                 Color drawColor = currentTint * alpha;
-                spriteBatch.Draw(portrait, position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(currentPortrait, position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -268,7 +325,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// 绘制燃烧中的立绘
         /// </summary>
         private void DrawBurningPortrait(SpriteBatch spriteBatch, Vector2 pos, Vector2 size, float alpha) {
-            Texture2D portrait = ADVAsset.SupCalADV;
+            Texture2D portrait = GetCurrentPortrait();
             Texture2D fireMask = CWRAsset.Fire?.Value;
 
             if (fireMask == null) {
