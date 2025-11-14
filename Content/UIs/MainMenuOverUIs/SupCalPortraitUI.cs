@@ -10,30 +10,30 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     /// <summary>
-    /// 至尊女主立绘UI - 主菜单显示
+    /// 女巫立绘UI，主菜单显示
     /// </summary>
     internal class SupCalPortraitUI : UIHandle, ICWRLoader
     {
         #region 数据字段
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
 
-        private bool _showFullPortrait = false; // 是否显示全身立绘
-        private float _iconAlpha = 0f; // 头像框透明度
-        private float _portraitAlpha = 0f; // 立绘透明度
-        private float _transitionProgress = 0f; // 过渡进度
+        private bool _showFullPortrait = false; //是否显示全身立绘
+        private float _iconAlpha = 0f; //头像框透明度
+        private float _portraitAlpha = 0f; //立绘透明度
+        private float _transitionProgress = 0f; //过渡进度
 
-        // 动画计时器
+        //动画计时器
         private float _flameTimer = 0f;
         private float _glowTimer = 0f;
         private float _pulseTimer = 0f;
 
-        // 粒子系统
+        //粒子系统
         private readonly List<EmberParticle> _embers = new();
         private readonly List<FlameWisp> _flameWisps = new();
         private int _emberSpawnTimer = 0;
         private int _wispSpawnTimer = 0;
 
-        // UI位置和尺寸
+        //UI位置和尺寸
         private const float IconSize = 80f;
         private const float IconBottomMargin = 20f;
         private const float PortraitScale = 0.8f;
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 );
                 Pos += Velocity + drift;
 
-                // 边界检查
+                //边界检查
                 Vector2 toCenter = center - Pos;
                 if (toCenter.Length() > radius) {
                     Velocity = toCenter * 0.01f;
@@ -179,12 +179,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            // 渐入效果
+            //渐入效果
             if (_iconAlpha < 1f) {
                 _iconAlpha += 0.02f;
             }
 
-            // 立绘过渡
+            //立绘过渡
             if (_showFullPortrait) {
                 if (_portraitAlpha < 1f) {
                     _portraitAlpha += 0.05f;
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            // 动画计时器
+            //动画计时器
             _flameTimer += 0.045f;
             _glowTimer += 0.038f;
             _pulseTimer += 0.025f;
@@ -211,10 +211,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (_glowTimer > MathHelper.TwoPi) _glowTimer -= MathHelper.TwoPi;
             if (_pulseTimer > MathHelper.TwoPi) _pulseTimer -= MathHelper.TwoPi;
 
-            // 更新粒子
+            //更新粒子
             UpdateParticles();
 
-            // 检测点击
+            //检测点击
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint());
             if (hoverIcon && keyLeftPressState == KeyPressState.Pressed && CanInteract()) {
                 _showFullPortrait = !_showFullPortrait;
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private void UpdateParticles() {
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
 
-            // 生成余烬粒子
+            //生成余烬粒子
             _emberSpawnTimer++;
             if (_emberSpawnTimer >= 10 && _embers.Count < 25) {
                 _emberSpawnTimer = 0;
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            // 生成火焰精灵
+            //生成火焰精灵
             if (_showFullPortrait) {
                 _wispSpawnTimer++;
                 if (_wispSpawnTimer >= 30 && _flameWisps.Count < 12) {
@@ -269,12 +269,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            // 绘制全身立绘
+            //绘制全身立绘
             if (_portraitAlpha > 0.01f) {
                 DrawFullPortrait(spriteBatch);
             }
 
-            // 绘制头像框
+            //绘制头像框
             DrawIconFrame(spriteBatch);
         }
 
@@ -286,28 +286,28 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Texture2D portraitTex = ADVAsset.SupCalADV;
             Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
 
-            // 背景暗化
+            //背景暗化
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float bgAlpha = _portraitAlpha * 0.7f;
             spriteBatch.Draw(pixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 new Rectangle(0, 0, 1, 1), Color.Black * bgAlpha);
 
-            // 绘制火焰精灵
+            //绘制火焰精灵
             foreach (var wisp in _flameWisps) {
                 wisp.Draw(spriteBatch, _portraitAlpha * 0.8f);
             }
 
-            // 计算立绘尺寸和位置
+            //计算立绘尺寸和位置
             float scale = PortraitScale * (0.9f + _transitionProgress * 0.1f) * 2;
             Vector2 portraitSize = portraitTex.Size() * scale;
             Vector2 portraitPos = portraitCenter - portraitSize / 2;
 
-            // 立绘阴影
+            //立绘阴影
             float shadowOffset = 10f;
             spriteBatch.Draw(portraitTex, portraitPos + new Vector2(shadowOffset, shadowOffset),
                 null, new Color(20, 0, 0) * (_portraitAlpha * 0.5f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            // 火焰光晕
+            //火焰光晕
             float glowPulse = (float)Math.Sin(_glowTimer * 1.5f) * 0.5f + 0.5f;
             Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.15f * glowPulse);
             for (int i = 0; i < 8; i++) {
@@ -317,11 +317,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
-            // 主体绘制
+            //主体绘制
             spriteBatch.Draw(portraitTex, portraitPos,
                 null, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            // 边框装饰
+            //边框装饰
             DrawPortraitFrame(spriteBatch, new Rectangle((int)portraitPos.X, (int)portraitPos.Y,
                 (int)portraitSize.X, (int)portraitSize.Y), _portraitAlpha);
         }
@@ -336,17 +336,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 
-            // 绘制余烬粒子
+            //绘制余烬粒子
             foreach (var ember in _embers) {
                 ember.Draw(spriteBatch, _iconAlpha * 0.9f);
             }
 
-            // 背景框
+            //背景框
             Rectangle bgRect = new Rectangle((int)IconPosition.X - 5, (int)IconPosition.Y - 5,
                 (int)IconSize + 10, (int)IconSize + 10);
             Color bgColor = new Color(25, 5, 5) * (_iconAlpha * 0.85f);
 
-            // 悬停光效
+            //悬停光效
             if (hoverIcon) {
                 Color hoverGlow = new Color(255, 180, 80) * (_iconAlpha * 0.4f);
                 for (int i = 0; i < 6; i++) {
@@ -359,12 +359,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            // 火焰脉冲背景
+            //火焰脉冲背景
             float pulse = (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f;
             Color pulseColor = new Color(120, 25, 15) * (_iconAlpha * 0.2f * pulse);
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
 
-            // 头像
+            //头像
             float iconScale = IconSize / Math.Max(iconTex.Width, iconTex.Height);
             if (hoverIcon) {
                 iconScale *= 1.1f + (float)Math.Sin(_flameTimer * 2f) * 0.05f;
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             spriteBatch.Draw(iconTex, iconDrawPos, null, Color.White * _iconAlpha,
                 0f, iconTex.Size() / 2, iconScale, SpriteEffects.None, 0f);
 
-            // 火焰边框
+            //火焰边框
             DrawBrimstoneFrame(spriteBatch, bgRect, _iconAlpha, pulse);
         }
 
@@ -382,13 +382,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulse) * (alpha * 0.85f);
 
-            // 外框
+            //外框
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            // 内框发光
+            //内框发光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color innerGlow = new Color(220, 100, 50) * (alpha * 0.22f * pulse);
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            // 角落火焰标记
+            //角落火焰标记
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f);
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float pulse = (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f;
 
-            // 火焰边框
+            //火焰边框
             Color edge = Color.Lerp(new Color(200, 80, 40), new Color(255, 140, 70), pulse) * (alpha * 0.8f);
             int thickness = 4;
 
@@ -432,23 +432,23 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
 
-            // 角落装饰
+            //角落装饰
             int cornerSize = 20;
             Color cornerColor = new Color(255, 180, 80) * (alpha * 0.7f);
 
-            // 左上角
+            //左上角
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor);
 
-            // 右上角
+            //右上角
             sb.Draw(pixel, new Rectangle(rect.Right - cornerSize, rect.Y, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor);
             sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor);
 
-            // 左下角
+            //左下角
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - cornerSize, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
 
-            // 右下角
+            //右下角
             sb.Draw(pixel, new Rectangle(rect.Right - cornerSize, rect.Bottom - thickness, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
             sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Bottom - cornerSize, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
         }

@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool Spwan;
         public override string Key => nameof(WitchFarewell);
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
-        
+
         //全身立绘实例
         private static SupCalFullBodyPortrait fullBodyPortrait;
-        
+
         //女巫告别独白
         public static LocalizedText FarewellLine1 { get; private set; }
         public static LocalizedText FarewellLine2 { get; private set; }
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             FarewellLine9 = this.GetLocalization(nameof(FarewellLine9), () => "就当我在这场漫长的旅途中，终于抵达了属于自己的地方");
             FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
             FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
-            
+
             //初始化全身立绘
             fullBodyPortrait = new SupCalFullBodyPortrait();
         }
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 RemoveHalubutFromPlayer();
                 HasHalibut = true;
             }
-            
+
             //注册并显示全身立绘
             if (fullBodyPortrait != null) {
                 DialogueBoxBase.RegisterFullBodyPortrait(fullBodyPortrait.PortraitKey, fullBodyPortrait);
