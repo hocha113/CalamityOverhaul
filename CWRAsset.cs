@@ -44,6 +44,8 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SoftGlow = null;
         [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Fire = null;
+        [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fog = null;
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> DiffusionCircle = null;
