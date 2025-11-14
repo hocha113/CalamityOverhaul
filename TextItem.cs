@@ -99,8 +99,8 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Reset<EternalBlazingNow>();
-            ScenarioManager.Start<EternalBlazingNow>();
+            ScenarioManager.Reset<WitchFarewell>();
+            ScenarioManager.Start<WitchFarewell>();
             // 带专辑封面和自定义风格
             //MusicToast.ShowMusic(
             //    title: "雨湿的窗边",

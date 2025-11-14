@@ -81,6 +81,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         protected override void Build() {
+            //注册至尊灾厄立绘
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, texture: null);//注销掉使其成为无头像，因为要使用全身立绘
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
             //女巫的最后独白
             Add(Rolename2.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
             Add(Rolename2.Value, FarewellLine2.Value);
