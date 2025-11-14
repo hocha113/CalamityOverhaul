@@ -9,10 +9,10 @@ namespace CalamityOverhaul.Content.ADV
         public static IList<Texture2D> SupCalsADV = null;
         [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal")]
         public static Texture2D SupCalADV = null;
-        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal_backwards")]
-        public static Texture2D SupCal_backwardsADV = null;//完全转身背对离开
-        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal_turnBack")]
-        public static Texture2D SupCal_turnBackADV = null;//转身但回头，一个离开的过渡
+        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal_closeEyes")]
+        public static Texture2D SupCal_closeEyesADV = null;
+        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal_smile")]
+        public static Texture2D SupCal_smileADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen")]
         public static Texture2D HelenADV = null;
         [VaultLoaden(CWRConstant.ADV + "Halibut/Helen2")]
