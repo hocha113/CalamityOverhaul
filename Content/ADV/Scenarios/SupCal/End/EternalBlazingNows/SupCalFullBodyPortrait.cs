@@ -108,8 +108,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public void OnDialogueAdvance() {
             dialogueCounter++;
             
-            //第10句对话开始切换到微笑立绘
-            if (dialogueCounter >= 9 && !useSmilePortrait) {
+            //第11句对话开始切换到微笑立绘
+            if (dialogueCounter >= 10 && !useSmilePortrait) {
                 useSmilePortrait = true;
                 portraitTransitionProgress = 0f;
             }
@@ -178,10 +178,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 return;
             }
 
-            float t = fadeInProgress / FadeInDuration;
-            float eased = CWRUtils.EaseOutCubic(t);
-
-            TargetFade = eased;
+            TargetFade = fadeInProgress / FadeInDuration;
             currentTint = Color.White;
         }
 
