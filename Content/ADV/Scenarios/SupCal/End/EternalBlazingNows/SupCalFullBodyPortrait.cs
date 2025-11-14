@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// </summary>
         public void OnDialogueAdvance() {
             dialogueCounter++;
-            
+
             //第11句对话开始切换到微笑立绘
             if (dialogueCounter >= 10 && !useSmilePortrait) {
                 useSmilePortrait = true;
