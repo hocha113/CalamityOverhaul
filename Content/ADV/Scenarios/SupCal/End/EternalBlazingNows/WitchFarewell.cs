@@ -105,20 +105,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         protected override void Build() {
             //注册至尊灾厄立绘
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, texture: null);//注销掉使其成为无头像，因为要使用全身立绘
-            DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
-            
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value, texture: null);//注销掉使其成为无头像，因为要使用全身立绘
+            DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: true);
+
             //女巫的最后独白
-            Add(Rolename2.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
-            Add(Rolename2.Value, FarewellLine2.Value);
-            Add(Rolename2.Value, FarewellLine3.Value);
-            Add(Rolename2.Value, FarewellLine4.Value);
-            Add(Rolename2.Value, FarewellLine5.Value);
-            Add(Rolename2.Value, FarewellLine6.Value);
-            Add(Rolename2.Value, FarewellLine7.Value);
-            Add(Rolename2.Value, FarewellLine8.Value);
-            Add(Rolename2.Value, FarewellLine9.Value);
-            Add(Rolename2.Value, FarewellLine10.Value, onComplete: StartBurningEffect);
+            Add(Rolename3.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
+            Add(Rolename3.Value, FarewellLine2.Value);
+            Add(Rolename3.Value, FarewellLine3.Value);
+            Add(Rolename3.Value, FarewellLine4.Value);
+            Add(Rolename3.Value, FarewellLine5.Value);
+            Add(Rolename3.Value, FarewellLine6.Value);
+            Add(Rolename3.Value, FarewellLine7.Value);
+            Add(Rolename3.Value, FarewellLine8.Value);
+            Add(Rolename3.Value, FarewellLine9.Value);
+            Add(Rolename3.Value, FarewellLine10.Value, onComplete: StartBurningEffect);
             Add(Rolename3.Value, FarewellLine11.Value, onStart: Achievement, FinalFade);
         }
 
