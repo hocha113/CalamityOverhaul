@@ -74,9 +74,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 DialogueBoxBase.RegisterFullBodyPortrait(fullBodyPortrait.PortraitKey, fullBodyPortrait);
                 //在对话框实例中显示全身立绘
                 var dialogueBox = BrimstoneDialogueBox.Instance;
-                if (dialogueBox != null) {
-                    dialogueBox.ShowFullBodyPortrait(fullBodyPortrait.PortraitKey);
-                }
+                dialogueBox?.ShowFullBodyPortrait(fullBodyPortrait.PortraitKey);
             }
         }
 
