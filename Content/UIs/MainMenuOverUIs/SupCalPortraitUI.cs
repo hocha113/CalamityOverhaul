@@ -1,10 +1,12 @@
 using CalamityOverhaul.Content.ADV;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
@@ -17,6 +19,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         #region 数据字段
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
 
+        /// <summary>
+        /// 立绘表情类型枚举
+        /// </summary>
+        private enum PortraitExpression
+        {
+            Default,    // 默认表情
+            CloseEyes,  // 闭眼
+            Smile       // 微笑
+        }
+
+        private PortraitExpression _currentExpression = PortraitExpression.Default;
         private bool _showFullPortrait = false; //是否显示全身立绘
         private float _iconAlpha = 0f; //头像框透明度
         private float _portraitAlpha = 0f; //立绘透明度
@@ -48,6 +61,21 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             (int)IconSize,
             (int)IconSize
         );
+
+        // 立绘切换按钮区域（在立绘显示时可点击切换表情）
+        private Rectangle PortraitHitBox {
+            get {
+                if (ADVAsset.SupCalADV == null) {
+                    return Rectangle.Empty;
+                }
+                Texture2D portraitTex = GetCurrentPortraitTexture();
+                Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
+                float scale = PortraitScale * (0.9f + _transitionProgress * 0.1f) * 2;
+                Vector2 portraitSize = portraitTex.Size() * scale;
+                Vector2 portraitPos = portraitCenter - portraitSize / 2;
+                return new Rectangle((int)portraitPos.X, (int)portraitPos.Y, (int)portraitSize.X, (int)portraitSize.Y);
+            }
+        }
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu;
@@ -163,11 +191,38 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _iconAlpha = 0f;
             _portraitAlpha = 0f;
             _showFullPortrait = false;
+            _currentExpression = PortraitExpression.Default;
         }
 
         public override void UnLoad() {
             _embers?.Clear();
             _flameWisps?.Clear();
+        }
+        #endregion
+
+        #region 立绘管理
+        /// <summary>
+        /// 获取当前表情对应的立绘纹理
+        /// </summary>
+        private Texture2D GetCurrentPortraitTexture() {
+            return _currentExpression switch {
+                PortraitExpression.CloseEyes => ADVAsset.SupCal_closeEyesADV ?? ADVAsset.SupCalADV,
+                PortraitExpression.Smile => ADVAsset.SupCal_smileADV ?? ADVAsset.SupCalADV,
+                _ => ADVAsset.SupCalADV
+            };
+        }
+
+        /// <summary>
+        /// 切换到下一个表情
+        /// </summary>
+        private void CycleExpression() {
+            _currentExpression = _currentExpression switch {
+                PortraitExpression.Default => PortraitExpression.CloseEyes,
+                PortraitExpression.CloseEyes => PortraitExpression.Smile,
+                PortraitExpression.Smile => PortraitExpression.Default,
+                _ => PortraitExpression.Default
+            };
+            SoundEngine.PlaySound(SoundID.MenuTick);
         }
         #endregion
 
@@ -216,9 +271,18 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             //检测点击
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint());
-            if (hoverIcon && keyLeftPressState == KeyPressState.Pressed && CanInteract()) {
-                _showFullPortrait = !_showFullPortrait;
-                SoundEngine.PlaySound(_showFullPortrait ? SoundID.MenuOpen : SoundID.MenuClose);
+            bool hoverPortrait = _showFullPortrait && PortraitHitBox.Contains(MousePosition.ToPoint());
+
+            if (CanInteract() && keyLeftPressState == KeyPressState.Pressed) {
+                if (hoverIcon) {
+                    // 点击头像框：切换立绘显示/隐藏
+                    _showFullPortrait = !_showFullPortrait;
+                    SoundEngine.PlaySound(_showFullPortrait ? SoundID.MenuOpen : SoundID.MenuClose);
+                }
+                else if (hoverPortrait) {
+                    // 点击立绘：切换表情
+                    CycleExpression();
+                }
             }
         }
 
@@ -279,11 +343,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         private void DrawFullPortrait(SpriteBatch spriteBatch) {
-            if (ADVAsset.SupCalADV == null) {
+            Texture2D portraitTex = GetCurrentPortraitTexture();
+            if (portraitTex == null) {
                 return;
             }
 
-            Texture2D portraitTex = ADVAsset.SupCalADV;
             Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
 
             //背景暗化
@@ -324,6 +388,30 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             //边框装饰
             DrawPortraitFrame(spriteBatch, new Rectangle((int)portraitPos.X, (int)portraitPos.Y,
                 (int)portraitSize.X, (int)portraitSize.Y), _portraitAlpha);
+
+            //绘制切换提示（悬停时显示）
+            if (PortraitHitBox.Contains(MousePosition.ToPoint()) && CanInteract()) {
+                DrawExpressionHint(spriteBatch, portraitCenter);
+            }
+        }
+
+        /// <summary>
+        /// 绘制表情切换提示
+        /// </summary>
+        private void DrawExpressionHint(SpriteBatch sb, Vector2 center) {
+            string hintText = "点击切换表情";
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            Vector2 textSize = font.MeasureString(hintText);
+            Vector2 textPos = new Vector2(center.X - textSize.X / 2, Main.screenHeight - 60);
+
+            float pulse = (float)Math.Sin(_pulseTimer * 3f) * 0.5f + 0.5f;
+            Color textColor = Color.Lerp(new Color(255, 200, 150), new Color(255, 150, 80), pulse) * (_portraitAlpha * 0.9f);
+            Color shadowColor = Color.Black * (_portraitAlpha * 0.6f);
+
+            //阴影
+            Utils.DrawBorderString(sb, hintText, textPos + new Vector2(2, 2), shadowColor);
+            //主文字
+            Utils.DrawBorderString(sb, hintText, textPos, textColor);
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
