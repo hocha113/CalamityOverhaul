@@ -48,10 +48,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         //UIλ�úͳߴ�
         private const float IconSize = 80f;
-        private const float IconBottomMargin = 20f;
+        private const float IconBottomMargin = 46f;
         private const float PortraitScale = 0.8f;
         private Vector2 IconPosition => new Vector2(
-            Main.screenWidth / 6 * 1 - IconSize / 2,
+            Main.screenWidth / 2 - IconSize / 2,
             Main.screenHeight - IconSize - IconBottomMargin
         );
 

@@ -14,7 +14,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 66;
@@ -24,8 +24,8 @@ namespace CalamityOverhaul
         public override void AI() {
             Projectile.ai[0]++;
             if (Projectile.ai[0] == 360) {
-                ScenarioManager.Reset<QuestCompleteScenario>();
-                ScenarioManager.Start<QuestCompleteScenario>();
+                ScenarioManager.Reset<EternalBlazingNow>();
+                ScenarioManager.Start<EternalBlazingNow>();
             }
         }
 
@@ -98,9 +98,10 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Reset<EternalBlazingNow>();
-            ScenarioManager.Start<EternalBlazingNow>();
+            //ScenarioManager.Reset<EternalBlazingNow>();
+            //ScenarioManager.Start<EternalBlazingNow>();
             // 带专辑封面和自定义风格
             //MusicToast.ShowMusic(
             //    title: "雨湿的窗边",
