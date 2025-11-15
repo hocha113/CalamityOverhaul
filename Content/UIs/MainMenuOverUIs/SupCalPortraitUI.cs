@@ -71,8 +71,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private const float ExpressionButtonSize = 40f;
         private float _expressionButtonAlpha = 0f;
         
+        //图标间距（两个图标之间的距离）
+        private const float IconSpacing = 95f;
+        
         private Vector2 IconPosition => new Vector2(
-            Main.screenWidth / 2 - IconSize / 2,
+            Main.screenWidth / 2 - IconSize / 2 - IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
         );
 
