@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Texture2D GetCurrentPortraitTexture() {
             return _currentExpression switch {
                 PortraitExpression.CloseEyes => ADVAsset.SupCal_closeEyesADV ?? ADVAsset.SupCalADV,
-                PortraitExpression.Smile => ADVAsset.SupCalADV ?? ADVAsset.SupCalADV,
+                PortraitExpression.Smile => ADVAsset.SupCal_smileADV ?? ADVAsset.SupCalADV,
                 _ => ADVAsset.SupCalADV
             };
         }

@@ -109,5 +109,6 @@ namespace CalamityOverhaul
             }
         }
         public static Type GetNPC_WITCH_Type() => typeof(WITCH);
+        public static Type GetNPC_SupCal_Type() => typeof(SupremeCalamitas);
     }
 }

@@ -155,10 +155,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class ModifySupCalNPC : NPCOverride
+    internal class ModifySupCalNPC : NPCOverride, ICWRLoader
     {
         public override int TargetID => CWRID.NPC_SupremeCalamitas;
+
         private static bool originallyDownedCalamitas = false;
+
+        private delegate void BossHeadSlotDelegate(ModNPC modNPC, ref int index);
+
+        void ICWRLoader.LoadData() {
+            var type = CWRRef.GetNPC_SupCal_Type();
+            if (type != null) {
+                var meth = type.GetMethod("BossHeadSlot", BindingFlags.Instance | BindingFlags.Public);
+                VaultHook.Add(meth, OnBossHeadSlotHook);
+            }
+        }
+        
+        //临时钩子，后续改用前置实现
+        private static void OnBossHeadSlotHook(BossHeadSlotDelegate orig, ModNPC modNPC, ref int index) {
+            originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
+            if (EbnPlayer.IsConquered(Main.player[modNPC.NPC.target])) {
+                CWRRef.SetDownedCalamitas(true);//如果被攻略了的话就无条件摘掉兜帽
+            }
+            orig.Invoke(modNPC, ref index);
+            CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
+        }
+
         public override bool AI() {
             if (CWRRef.GetBossRushActive()) {
                 return true;//Boss Rush模式下不进行任何修改
