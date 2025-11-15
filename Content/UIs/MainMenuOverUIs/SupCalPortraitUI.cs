@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV;
+ï»¿using CalamityOverhaul.Content.ADV;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -12,52 +12,64 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     /// <summary>
-    /// Å®Î×Á¢»æUI£¬Ö÷²Ëµ¥ÏÔÊ¾
+    /// å¥³å·«ç«‹ç»˜UIï¼Œä¸»èœå•æ˜¾ç¤º
     /// </summary>
     internal class SupCalPortraitUI : UIHandle, ICWRLoader
     {
-        #region Êı¾İ×Ö¶Î
+        #region æ•°æ®å­—æ®µ
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
 
         /// <summary>
-        /// Á¢»æ±íÇéÀàĞÍÃ¶¾Ù
+        /// ç«‹ç»˜è¡¨æƒ…ç±»å‹æšä¸¾
         /// </summary>
         private enum PortraitExpression
         {
-            Default,    // Ä¬ÈÏ±íÇé
-            CloseEyes,  // ±ÕÑÛ
-            Smile       // Î¢Ğ¦
+            Default,    // é»˜è®¤è¡¨æƒ…
+            CloseEyes,  // é—­çœ¼
+            Smile       // å¾®ç¬‘
         }
 
         private PortraitExpression _currentExpression = PortraitExpression.Default;
-        private bool _showFullPortrait = false; //ÊÇ·ñÏÔÊ¾È«ÉíÁ¢»æ
-        private float _iconAlpha = 0f; //Í·Ïñ¿òÍ¸Ã÷¶È
-        private float _portraitAlpha = 0f; //Á¢»æÍ¸Ã÷¶È
-        private float _transitionProgress = 0f; //¹ı¶É½ø¶È
+        private bool _showFullPortrait = false; //æ˜¯å¦æ˜¾ç¤ºå…¨èº«ç«‹ç»˜
+        private float _iconAlpha = 0f; //å¤´åƒæ¡†é€æ˜åº¦
+        private float _portraitAlpha = 0f; //ç«‹ç»˜é€æ˜åº¦
+        private float _transitionProgress = 0f; //è¿‡æ¸¡è¿›åº¦
 
-        //¶¯»­¼ÆÊ±Æ÷
+        //åŠ¨ç”»è®¡æ—¶å™¨
         private float _flameTimer = 0f;
         private float _glowTimer = 0f;
         private float _pulseTimer = 0f;
 
-        //Á£×ÓÏµÍ³
+        //ç²’å­ç³»ç»Ÿ
         private readonly List<EmberParticle> _embers = new();
         private readonly List<FlameWisp> _flameWisps = new();
         private int _emberSpawnTimer = 0;
         private int _wispSpawnTimer = 0;
 
-        //UIÎ»ÖÃºÍ³ß´ç
+        //UIä½ç½®å’Œå°ºå¯¸
         private const float IconSize = 80f;
         private const float IconBottomMargin = 46f;
         
-        //×ó²àÁ¢»æ²ÎÊı£¨°ëÉí´óÍ¼£¬´ÓÑü²¿¿ªÊ¼²Ã¼ô£©
+        //å·¦ä¾§ç«‹ç»˜å‚æ•°ï¼ˆåŠèº«å¤§å›¾ï¼Œä»è…°éƒ¨å¼€å§‹è£å‰ªï¼‰
         private const float LeftPortraitXRatio = 0.18f;
-        private const float LeftPortraitScale = 2.0f; //·Å´óµ½2±¶
-        private const float LeftPortraitCropBottom = 0.45f; //²Ã¼ôµ×²¿45%£¨±£ÁôÉÏ°ëÉí£©
+        private const float LeftPortraitScale = 2.0f;
+        private const float LeftPortraitCropBottom = 0.45f;
         
-        //ÓÒ²àÁ¢»æ²ÎÊı£¨È«ÉíĞ¡Í¼£©
+        //å³ä¾§ç«‹ç»˜å‚æ•°ï¼ˆå…¨èº«å°å›¾ï¼‰
         private const float RightPortraitXRatio = 0.82f;
-        private const float RightPortraitScale = 0.85f; //·Å´óµ½0.85±¶
+        private const float RightPortraitScale = 0.85f;
+
+        //ç«‹ç»˜æ‹–åŠ¨ç›¸å…³
+        private bool _draggingLeftPortrait = false;
+        private bool _draggingRightPortrait = false;
+        private Vector2 _leftPortraitOffset = Vector2.Zero; //å·¦ä¾§ç«‹ç»˜åç§»
+        private Vector2 _rightPortraitOffset = Vector2.Zero; //å³ä¾§ç«‹ç»˜åç§»
+        private Vector2 _dragStartMousePos = Vector2.Zero;
+        private Vector2 _dragStartOffset = Vector2.Zero;
+
+        //è¡¨æƒ…åˆ‡æ¢æŒ‰é’®ç›¸å…³
+        private const float ExpressionButtonSize = 40f;
+        private float _expressionButtonAlpha = 0f;
         
         private Vector2 IconPosition => new Vector2(
             Main.screenWidth / 2 - IconSize / 2,
@@ -71,28 +83,41 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             (int)IconSize
         );
 
-        // ×ó²àÁ¢»æµã»÷ÇøÓò
+        // è¡¨æƒ…åˆ‡æ¢æŒ‰é’®ä½ç½®ï¼ˆåœ¨å¤´åƒæ¡†å³ä¾§ï¼‰
+        private Vector2 ExpressionButtonPosition => new Vector2(
+            IconPosition.X + IconSize + 15,
+            IconPosition.Y + (IconSize - ExpressionButtonSize) / 2
+        );
+
+        private Rectangle ExpressionButtonHitBox => new Rectangle(
+            (int)ExpressionButtonPosition.X,
+            (int)ExpressionButtonPosition.Y,
+            (int)ExpressionButtonSize,
+            (int)ExpressionButtonSize
+        );
+
+        // å·¦ä¾§ç«‹ç»˜ç‚¹å‡»åŒºåŸŸ
         private Rectangle LeftPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
                 if (portraitTex == null) return Rectangle.Empty;
                 
                 Vector2 leftPos = GetLeftPortraitPosition(portraitTex);
-                float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
+                float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
                 Vector2 size = new Vector2(portraitTex.Width, portraitTex.Height * (1f - LeftPortraitCropBottom)) * scale;
                 
                 return new Rectangle((int)leftPos.X, (int)leftPos.Y, (int)size.X, (int)size.Y);
             }
         }
 
-        // ÓÒ²àÁ¢»æµã»÷ÇøÓò
+        // å³ä¾§ç«‹ç»˜ç‚¹å‡»åŒºåŸŸ
         private Rectangle RightPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
                 if (portraitTex == null) return Rectangle.Empty;
                 
                 Vector2 rightPos = GetRightPortraitPosition(portraitTex);
-                float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
+                float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2f;
                 Vector2 size = portraitTex.Size() * scale;
                 
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
@@ -104,7 +129,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         #endregion
 
-        #region Á£×ÓÄÚ²¿Àà
+        #region ç²’å­å†…éƒ¨ç±»
         private class EmberParticle
         {
             public Vector2 Pos;
@@ -181,7 +206,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 );
                 Pos += Velocity + drift;
 
-                //±ß½ç¼ì²é
+                //è¾¹ç•Œæ£€æŸ¥
                 Vector2 toCenter = center - Pos;
                 if (toCenter.Length() > radius) {
                     Velocity = toCenter * 0.01f;
@@ -206,7 +231,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         #endregion
 
-        #region ÉúÃüÖÜÆÚ
+        #region ç”Ÿå‘½å‘¨æœŸ
         void ICWRLoader.SetupData() { }
 
         public override void SetStaticDefaults() {
@@ -214,6 +239,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _portraitAlpha = 0f;
             _showFullPortrait = false;
             _currentExpression = PortraitExpression.Default;
+            _leftPortraitOffset = Vector2.Zero;
+            _rightPortraitOffset = Vector2.Zero;
+            _expressionButtonAlpha = 0f;
         }
 
         public override void UnLoad() {
@@ -222,9 +250,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         #endregion
 
-        #region Á¢»æ¹ÜÀí
+        #region ç«‹ç»˜ç®¡ç†
         /// <summary>
-        /// »ñÈ¡µ±Ç°±íÇé¶ÔÓ¦µÄÁ¢»æÎÆÀí
+        /// è·å–å½“å‰è¡¨æƒ…å¯¹åº”çš„ç«‹ç»˜çº¹ç†
         /// </summary>
         private Texture2D GetCurrentPortraitTexture() {
             return _currentExpression switch {
@@ -235,7 +263,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         /// <summary>
-        /// ÇĞ»»µ½ÏÂÒ»¸ö±íÇé
+        /// åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªè¡¨æƒ…
         /// </summary>
         private void CycleExpression() {
             _currentExpression = _currentExpression switch {
@@ -248,45 +276,58 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         /// <summary>
-        /// »ñÈ¡×ó²àÁ¢»æ»æÖÆÎ»ÖÃ£¨ÉÏ°ëÉí´óÍ¼£©
+        /// è·å–å·¦ä¾§ç«‹ç»˜ç»˜åˆ¶ä½ç½®ï¼ˆä¸ŠåŠèº«å¤§å›¾ï¼‰
         /// </summary>
         private Vector2 GetLeftPortraitPosition(Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
             float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
             
-            return new Vector2(
+            Vector2 basePos = new Vector2(
                 Main.screenWidth * LeftPortraitXRatio - (tex.Width * scale) / 2,
-                Main.screenHeight - displayHeight - 140 //µ×²¿¶ÔÆë£¬Áô³ö¸ü¶à±ß¾à
+                Main.screenHeight - displayHeight - 140
             );
+            
+            return basePos + _leftPortraitOffset;
         }
 
         /// <summary>
-        /// »ñÈ¡ÓÒ²àÁ¢»æ»æÖÆÎ»ÖÃ£¨È«ÉíĞ¡Í¼£©
+        /// è·å–å³ä¾§ç«‹ç»˜ç»˜åˆ¶ä½ç½®ï¼ˆå…¨èº«å°å›¾ï¼‰
         /// </summary>
         private Vector2 GetRightPortraitPosition(Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
             
-            return new Vector2(
+            Vector2 basePos = new Vector2(
                 Main.screenWidth * RightPortraitXRatio - (tex.Width * scale) / 2 - 300,
-                Main.screenHeight - tex.Height * scale - 220 //µ×²¿¶ÔÆë
+                Main.screenHeight - tex.Height * scale - 220
             );
+            
+            return basePos + _rightPortraitOffset;
         }
         #endregion
 
-        #region ¸üĞÂÂß¼­
+        #region æ›´æ–°é€»è¾‘
         public override void Update() {
             if (!Main.gameMenu) {
                 _iconAlpha = 0f;
                 _portraitAlpha = 0f;
+                _expressionButtonAlpha = 0f;
                 return;
             }
 
-            //½¥ÈëĞ§¹û
+            //æ¸å…¥æ•ˆæœ
             if (_iconAlpha < 1f) {
                 _iconAlpha += 0.02f;
             }
 
-            //Á¢»æ¹ı¶É
+            //è¡¨æƒ…æŒ‰é’®æ¸å…¥æ•ˆæœ
+            if (_showFullPortrait && _expressionButtonAlpha < 1f) {
+                _expressionButtonAlpha += 0.05f;
+            }
+            else if (!_showFullPortrait && _expressionButtonAlpha > 0f) {
+                _expressionButtonAlpha -= 0.05f;
+            }
+
+            //ç«‹ç»˜è¿‡æ¸¡
             if (_showFullPortrait) {
                 if (_portraitAlpha < 1f) {
                     _portraitAlpha += 0.05f;
@@ -304,7 +345,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            //¶¯»­¼ÆÊ±Æ÷
+            //åŠ¨ç”»è®¡æ—¶å™¨
             _flameTimer += 0.045f;
             _glowTimer += 0.038f;
             _pulseTimer += 0.025f;
@@ -313,31 +354,68 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (_glowTimer > MathHelper.TwoPi) _glowTimer -= MathHelper.TwoPi;
             if (_pulseTimer > MathHelper.TwoPi) _pulseTimer -= MathHelper.TwoPi;
 
-            //¸üĞÂÁ£×Ó
+            //æ›´æ–°ç²’å­
             UpdateParticles();
 
-            //¼ì²âµã»÷
+            //æ£€æµ‹äº¤äº’
+            UpdateInteraction();
+        }
+
+        private void UpdateInteraction() {
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint());
+            bool hoverExpressionButton = _showFullPortrait && ExpressionButtonHitBox.Contains(MousePosition.ToPoint());
             bool hoverLeftPortrait = _showFullPortrait && LeftPortraitHitBox.Contains(MousePosition.ToPoint());
             bool hoverRightPortrait = _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint());
 
-            if (CanInteract() && keyLeftPressState == KeyPressState.Pressed) {
-                if (hoverIcon) {
-                    // µã»÷Í·Ïñ¿ò£ºÇĞ»»Á¢»æÏÔÊ¾/Òş²Ø
-                    _showFullPortrait = !_showFullPortrait;
-                    SoundEngine.PlaySound(_showFullPortrait ? SoundID.MenuOpen : SoundID.MenuClose);
+            if (!CanInteract()) {
+                _draggingLeftPortrait = false;
+                _draggingRightPortrait = false;
+                return;
+            }
+
+            //å¤„ç†æ‹–åŠ¨
+            if (keyLeftPressState == KeyPressState.Pressed) {
+                if (hoverLeftPortrait && !_draggingRightPortrait) {
+                    _draggingLeftPortrait = true;
+                    _dragStartMousePos = MousePosition;
+                    _dragStartOffset = _leftPortraitOffset;
                 }
-                else if (hoverLeftPortrait || hoverRightPortrait) {
-                    // µã»÷ÈÎÒâÁ¢»æ£ºÇĞ»»±íÇé
+                else if (hoverRightPortrait && !_draggingLeftPortrait) {
+                    _draggingRightPortrait = true;
+                    _dragStartMousePos = MousePosition;
+                    _dragStartOffset = _rightPortraitOffset;
+                }
+                else if (hoverIcon && !_draggingLeftPortrait && !_draggingRightPortrait) {
+                    //ç‚¹å‡»å¤´åƒæ¡†ï¼šåˆ‡æ¢ç«‹ç»˜æ˜¾ç¤º/éšè—
+                    _showFullPortrait = !_showFullPortrait;
+                }
+                else if (hoverExpressionButton && !_draggingLeftPortrait && !_draggingRightPortrait) {
+                    //ç‚¹å‡»è¡¨æƒ…æŒ‰é’®ï¼šåˆ‡æ¢è¡¨æƒ…
                     CycleExpression();
                 }
+            }
+
+            if (keyLeftPressState == KeyPressState.Released) {
+                if (_draggingLeftPortrait || _draggingRightPortrait) {
+                    //SoundEngine.PlaySound(SoundID.Grab with { Pitch = -0.2f });
+                }
+                _draggingLeftPortrait = false;
+                _draggingRightPortrait = false;
+            }
+
+            //æ›´æ–°æ‹–åŠ¨åç§»
+            if (_draggingLeftPortrait) {
+                _leftPortraitOffset = _dragStartOffset + (MousePosition - _dragStartMousePos);
+            }
+            else if (_draggingRightPortrait) {
+                _rightPortraitOffset = _dragStartOffset + (MousePosition - _dragStartMousePos);
             }
         }
 
         private void UpdateParticles() {
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
 
-            //Éú³ÉÓà½ıÁ£×Ó
+            //ç”Ÿæˆä½™çƒ¬ç²’å­
             _emberSpawnTimer++;
             if (_emberSpawnTimer >= 10 && _embers.Count < 25) {
                 _emberSpawnTimer = 0;
@@ -352,27 +430,27 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            //Éú³É»ğÑæ¾«Áé£¨·Ö²¼ÔÚÁ½²àÁ¢»æÖÜÎ§£©
+            //ç”Ÿæˆç«ç„°ç²¾çµï¼ˆåˆ†å¸ƒåœ¨ä¸¤ä¾§ç«‹ç»˜å‘¨å›´ï¼‰
             if (_showFullPortrait) {
                 _wispSpawnTimer++;
                 if (_wispSpawnTimer >= 30 && _flameWisps.Count < 20) {
                     _wispSpawnTimer = 0;
                     
-                    //Ëæ»úÔÚ×ó²à»òÓÒ²àÉú³É
+                    //éšæœºåœ¨å·¦ä¾§æˆ–å³ä¾§ç”Ÿæˆ
                     bool spawnLeft = Main.rand.NextBool();
                     Vector2 center = spawnLeft 
-                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f)
-                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f);
+                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
+                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
                     
                     Vector2 spawnPos = center + Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(200f, 350f);
                     _flameWisps.Add(new FlameWisp(spawnPos));
                 }
 
                 for (int i = _flameWisps.Count - 1; i >= 0; i--) {
-                    //ÈÃ»ğÑæ¾«Áé·Ö±ğÎ§ÈÆ×óÓÒÁ½²à
+                    //è®©ç«ç„°ç²¾çµåˆ†åˆ«å›´ç»•å·¦å³ä¸¤ä¾§
                     Vector2 targetCenter = _flameWisps[i].Pos.X < Main.screenWidth * 0.5f
-                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f)
-                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f);
+                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
+                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
                     
                     if (_flameWisps[i].Update(targetCenter, 400f)) {
                         _flameWisps.RemoveAt(i);
@@ -386,19 +464,24 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         #endregion
 
-        #region »æÖÆ
+        #region ç»˜åˆ¶
         public override void Draw(SpriteBatch spriteBatch) {
             if (_iconAlpha <= 0.01f) {
                 return;
             }
 
-            //»æÖÆÁ¢»æ£¨ÎŞ±³¾°°µ»¯£¬ÎŞ±ß¿ò£©
+            //ç»˜åˆ¶ç«‹ç»˜ï¼ˆæ— èƒŒæ™¯æš—åŒ–ï¼Œæ— è¾¹æ¡†ï¼‰
             if (_portraitAlpha > 0.01f) {
                 DrawPortraits(spriteBatch);
             }
 
-            //»æÖÆÍ·Ïñ¿ò
+            //ç»˜åˆ¶å¤´åƒæ¡†
             DrawIconFrame(spriteBatch);
+
+            //ç»˜åˆ¶è¡¨æƒ…åˆ‡æ¢æŒ‰é’®
+            if (_expressionButtonAlpha > 0.01f) {
+                DrawExpressionButton(spriteBatch);
+            }
         }
 
         private void DrawPortraits(SpriteBatch spriteBatch) {
@@ -407,104 +490,132 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            //»æÖÆ»ğÑæ¾«Áé£¨ÔÚÁ¢»æºóÃæ£©
+            //ç»˜åˆ¶ç«ç„°ç²¾çµï¼ˆåœ¨ç«‹ç»˜åé¢ï¼‰
             foreach (var wisp in _flameWisps) {
                 wisp.Draw(spriteBatch, _portraitAlpha * 0.5f);
             }
 
-            //×ó²àÁ¢»æ£¨ÉÏ°ëÉí´óÍ¼£©
+            //å·¦ä¾§ç«‹ç»˜ï¼ˆä¸ŠåŠèº«å¤§å›¾ï¼‰
             DrawLeftPortrait(spriteBatch, portraitTex);
 
-            //ÓÒ²àÁ¢»æ£¨È«ÉíĞ¡Í¼£©
+            //å³ä¾§ç«‹ç»˜ï¼ˆå…¨èº«å°å›¾ï¼‰
             DrawRightPortrait(spriteBatch, portraitTex);
-
-            //»æÖÆÇĞ»»ÌáÊ¾
-            if (CanInteract()) {
-                bool hoverLeft = LeftPortraitHitBox.Contains(MousePosition.ToPoint());
-                bool hoverRight = RightPortraitHitBox.Contains(MousePosition.ToPoint());
-                
-                if (hoverLeft || hoverRight) {
-                    DrawExpressionHint(spriteBatch, hoverLeft);
-                }
-            }
         }
 
         /// <summary>
-        /// »æÖÆ×ó²àÉÏ°ëÉí´óÍ¼
+        /// ç»˜åˆ¶å·¦ä¾§ä¸ŠåŠèº«å¤§å›¾
         /// </summary>
         private void DrawLeftPortrait(SpriteBatch sb, Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
             Vector2 drawPos = GetLeftPortraitPosition(tex);
 
-            //¼ÆËã²Ã¼ôÇøÓò£¨Ö»ÏÔÊ¾ÉÏ°ëÉí£¬²Ã¼ôÍÈ²¿£©
+            //è®¡ç®—è£å‰ªåŒºåŸŸï¼ˆåªæ˜¾ç¤ºä¸ŠåŠèº«ï¼Œè£å‰ªè…¿éƒ¨ï¼‰
             int displayHeight = (int)(tex.Height * (1f - LeftPortraitCropBottom));
             Rectangle sourceRect = new Rectangle(0, 0, tex.Width, displayHeight);
 
-            //ÇáÎ¢ÒõÓ°£¨¸üµ­£¬ÈÚÈë±³¾°£©
+            //æ‹–åŠ¨æ—¶çš„é«˜äº®æ•ˆæœ
+            float dragHighlight = _draggingLeftPortrait ? 1.1f : 1f;
+
+            //è½»å¾®é˜´å½±ï¼ˆæ›´æ·¡ï¼Œèå…¥èƒŒæ™¯ï¼‰
             float shadowOffset = 6f;
             sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
                 sourceRect, new Color(10, 5, 5) * (_portraitAlpha * 0.25f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            //»ğÑæ¹âÔÎ£¨¸üÈáºÍ£©
+            //ç«ç„°å…‰æ™•ï¼ˆæ›´æŸ”å’Œï¼‰
             float glowPulse = (float)Math.Sin(_glowTimer * 1.2f) * 0.5f + 0.5f;
-            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.08f * glowPulse);
+            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.08f * glowPulse * dragHighlight);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f + _flameTimer;
                 Vector2 offset = angle.ToRotationVector2() * 4f;
                 sb.Draw(tex, drawPos + offset, sourceRect, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
-            //Ö÷Ìå»æÖÆ
-            sb.Draw(tex, drawPos, sourceRect, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            //ä¸»ä½“ç»˜åˆ¶
+            sb.Draw(tex, drawPos, sourceRect, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         /// <summary>
-        /// »æÖÆÓÒ²àÈ«ÉíĞ¡Í¼
+        /// ç»˜åˆ¶å³ä¾§å…¨èº«å°å›¾
         /// </summary>
         private void DrawRightPortrait(SpriteBatch sb, Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
             Vector2 drawPos = GetRightPortraitPosition(tex);
 
-            //ÇáÎ¢ÒõÓ°
+            //æ‹–åŠ¨æ—¶çš„é«˜äº®æ•ˆæœ
+            float dragHighlight = _draggingRightPortrait ? 1.1f : 1f;
+
+            //è½»å¾®é˜´å½±
             float shadowOffset = 5f;
             sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
                 null, new Color(10, 5, 5) * (_portraitAlpha * 0.2f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            //»ğÑæ¹âÔÎ£¨¸üÈáºÍ£©
+            //ç«ç„°å…‰æ™•ï¼ˆæ›´æŸ”å’Œï¼‰
             float glowPulse = (float)Math.Sin(_glowTimer * 1.1f) * 0.5f + 0.5f;
-            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.05f * glowPulse);
+            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.05f * glowPulse * dragHighlight);
             for (int i = 0; i < 3; i++) {
                 float angle = MathHelper.TwoPi * i / 3f + _flameTimer * 0.7f;
                 Vector2 offset = angle.ToRotationVector2() * 3f;
                 sb.Draw(tex, drawPos + offset, null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
-            //Ö÷Ìå»æÖÆ
-            sb.Draw(tex, drawPos, null, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            //ä¸»ä½“ç»˜åˆ¶
+            sb.Draw(tex, drawPos, null, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         /// <summary>
-        /// »æÖÆ±íÇéÇĞ»»ÌáÊ¾
+        /// ç»˜åˆ¶è¡¨æƒ…åˆ‡æ¢æŒ‰é’®
         /// </summary>
-        private void DrawExpressionHint(SpriteBatch sb, bool isLeftSide) {
-            string hintText = "µã»÷ÇĞ»»±íÇé";
+        private void DrawExpressionButton(SpriteBatch sb) {
+            if (_expressionButtonAlpha <= 0.01f) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Vector2 buttonPos = ExpressionButtonPosition;
+            bool hoverButton = ExpressionButtonHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
+
+            //èƒŒæ™¯æ¡†
+            Rectangle bgRect = new Rectangle(
+                (int)buttonPos.X - 3,
+                (int)buttonPos.Y - 3,
+                (int)ExpressionButtonSize + 6,
+                (int)ExpressionButtonSize + 6
+            );
+            Color bgColor = new Color(25, 5, 5) * (_expressionButtonAlpha * 0.85f);
+
+            //æ‚¬åœå…‰æ•ˆ
+            if (hoverButton) {
+                Color hoverGlow = new Color(255, 180, 80) * (_expressionButtonAlpha * 0.4f);
+                for (int i = 0; i < 6; i++) {
+                    float angle = MathHelper.TwoPi * i / 6f + _flameTimer * 1.5f;
+                    Vector2 offset = angle.ToRotationVector2() * 5f;
+                    sb.Draw(pixel, bgRect.Location.ToVector2() + offset,
+                        new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
+                }
+            }
+
+            sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
+
+            //ç«ç„°è„‰å†²èƒŒæ™¯
+            float pulse = (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f;
+            Color pulseColor = new Color(120, 25, 15) * (_expressionButtonAlpha * 0.2f * pulse);
+            sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
+
+            //ç»˜åˆ¶è¡¨æƒ…å›¾æ ‡ï¼ˆæ–‡å­—ï¼‰
+            string expressionIcon = _currentExpression switch {
+                PortraitExpression.Default => "â—†",
+                PortraitExpression.CloseEyes => "â—‡",
+                PortraitExpression.Smile => "â—ˆ",
+                _ => "â—†"
+            };
+
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            Vector2 textSize = font.MeasureString(hintText);
-            
-            //ÌáÊ¾Î»ÖÃ£º×ó²àÔÚ×óÏÂ½Ç£¬ÓÒ²àÔÚÓÒÏÂ½Ç
-            float xPos = isLeftSide 
-                ? Main.screenWidth * LeftPortraitXRatio - textSize.X / 2
-                : Main.screenWidth * RightPortraitXRatio - textSize.X / 2;
-            Vector2 textPos = new Vector2(xPos, Main.screenHeight - 100);
+            Vector2 textSize = font.MeasureString(expressionIcon);
+            Vector2 textPos = buttonPos + new Vector2(ExpressionButtonSize / 2 - textSize.X / 2, ExpressionButtonSize / 2 - textSize.Y / 2);
 
-            float pulse = (float)Math.Sin(_pulseTimer * 3f) * 0.5f + 0.5f;
-            Color textColor = Color.Lerp(new Color(255, 200, 150), new Color(255, 150, 80), pulse) * (_portraitAlpha * 0.9f);
-            Color shadowColor = Color.Black * (_portraitAlpha * 0.6f);
+            float iconScale = hoverButton ? 1.15f : 1f;
+            Utils.DrawBorderString(sb, expressionIcon, textPos, Color.White * _expressionButtonAlpha, iconScale);
 
-            //ÒõÓ°
-            Utils.DrawBorderString(sb, hintText, textPos + new Vector2(2, 2), shadowColor);
-            //Ö÷ÎÄ×Ö
-            Utils.DrawBorderString(sb, hintText, textPos, textColor);
+            //ç«ç„°è¾¹æ¡†
+            DrawBrimstoneFrame(sb, bgRect, _expressionButtonAlpha, pulse);
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
@@ -517,17 +628,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 
-            //»æÖÆÓà½ıÁ£×Ó
+            //ç»˜åˆ¶ä½™çƒ¬ç²’å­
             foreach (var ember in _embers) {
                 ember.Draw(spriteBatch, _iconAlpha * 0.9f);
             }
 
-            //±³¾°¿ò
+            //èƒŒæ™¯æ¡†
             Rectangle bgRect = new Rectangle((int)IconPosition.X - 5, (int)IconPosition.Y - 5,
                 (int)IconSize + 10, (int)IconSize + 10);
             Color bgColor = new Color(25, 5, 5) * (_iconAlpha * 0.85f);
 
-            //ĞüÍ£¹âĞ§
+            //æ‚¬åœå…‰æ•ˆ
             if (hoverIcon) {
                 Color hoverGlow = new Color(255, 180, 80) * (_iconAlpha * 0.4f);
                 for (int i = 0; i < 6; i++) {
@@ -540,12 +651,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //»ğÑæÂö³å±³¾°
+            //ç«ç„°è„‰å†²èƒŒæ™¯
             float pulse = (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f;
             Color pulseColor = new Color(120, 25, 15) * (_iconAlpha * 0.2f * pulse);
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
 
-            //Í·Ïñ
+            //å¤´åƒ
             float iconScale = IconSize / Math.Max(iconTex.Width, iconTex.Height);
             if (hoverIcon) {
                 iconScale *= 1.1f + (float)Math.Sin(_flameTimer * 2f) * 0.05f;
@@ -555,7 +666,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             spriteBatch.Draw(iconTex, iconDrawPos, null, Color.White * _iconAlpha,
                 0f, iconTex.Size() / 2, iconScale, SpriteEffects.None, 0f);
 
-            //»ğÑæ±ß¿ò
+            //ç«ç„°è¾¹æ¡†
             DrawBrimstoneFrame(spriteBatch, bgRect, _iconAlpha, pulse);
         }
 
@@ -563,13 +674,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulse) * (alpha * 0.85f);
 
-            //Íâ¿ò
+            //å¤–æ¡†
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            //ÄÚ¿ò·¢¹â
+            //å†…æ¡†å‘å…‰
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color innerGlow = new Color(220, 100, 50) * (alpha * 0.22f * pulse);
@@ -578,7 +689,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            //½ÇÂä»ğÑæ±ê¼Ç
+            //è§’è½ç«ç„°æ ‡è®°
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f);
