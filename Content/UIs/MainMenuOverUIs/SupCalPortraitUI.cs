@@ -490,6 +490,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
+            //结束当前批次
+            spriteBatch.End();
+
+            //使用点采样模式重新开始，避免立绘缩放时像素模糊
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, 
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
             //绘制火焰精灵（在立绘后面）
             foreach (var wisp in _flameWisps) {
                 wisp.Draw(spriteBatch, _portraitAlpha * 0.5f);
@@ -500,6 +507,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             //右侧立绘（全身小图）
             DrawRightPortrait(spriteBatch, portraitTex);
+
+            //恢复默认SpriteBatch设置
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, 
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
         /// <summary>
