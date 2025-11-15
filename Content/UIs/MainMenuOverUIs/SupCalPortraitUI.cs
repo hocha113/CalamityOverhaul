@@ -396,9 +396,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             if (keyLeftPressState == KeyPressState.Released) {
-                if (_draggingLeftPortrait || _draggingRightPortrait) {
-                    //SoundEngine.PlaySound(SoundID.Grab with { Pitch = -0.2f });
-                }
                 _draggingLeftPortrait = false;
                 _draggingRightPortrait = false;
             }
