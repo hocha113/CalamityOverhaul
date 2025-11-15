@@ -49,7 +49,16 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         //UI位置和尺寸
         private const float IconSize = 80f;
         private const float IconBottomMargin = 46f;
-        private const float PortraitScale = 0.8f;
+        
+        //左侧立绘参数（半身大图，从腰部开始裁剪）
+        private const float LeftPortraitXRatio = 0.18f;
+        private const float LeftPortraitScale = 2.0f; //放大到2倍
+        private const float LeftPortraitCropBottom = 0.45f; //裁剪底部45%（保留上半身）
+        
+        //右侧立绘参数（全身小图）
+        private const float RightPortraitXRatio = 0.82f;
+        private const float RightPortraitScale = 0.85f; //放大到0.85倍
+        
         private Vector2 IconPosition => new Vector2(
             Main.screenWidth / 2 - IconSize / 2,
             Main.screenHeight - IconSize - IconBottomMargin
@@ -62,18 +71,31 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             (int)IconSize
         );
 
-        // 立绘切换按钮区域（在立绘显示时可点击切换表情）
-        private Rectangle PortraitHitBox {
+        // 左侧立绘点击区域
+        private Rectangle LeftPortraitHitBox {
             get {
-                if (ADVAsset.SupCalADV == null) {
-                    return Rectangle.Empty;
-                }
                 Texture2D portraitTex = GetCurrentPortraitTexture();
-                Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
-                float scale = PortraitScale * (0.9f + _transitionProgress * 0.1f) * 2;
-                Vector2 portraitSize = portraitTex.Size() * scale;
-                Vector2 portraitPos = portraitCenter - portraitSize / 2;
-                return new Rectangle((int)portraitPos.X, (int)portraitPos.Y, (int)portraitSize.X, (int)portraitSize.Y);
+                if (portraitTex == null) return Rectangle.Empty;
+                
+                Vector2 leftPos = GetLeftPortraitPosition(portraitTex);
+                float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
+                Vector2 size = new Vector2(portraitTex.Width, portraitTex.Height * (1f - LeftPortraitCropBottom)) * scale;
+                
+                return new Rectangle((int)leftPos.X, (int)leftPos.Y, (int)size.X, (int)size.Y);
+            }
+        }
+
+        // 右侧立绘点击区域
+        private Rectangle RightPortraitHitBox {
+            get {
+                Texture2D portraitTex = GetCurrentPortraitTexture();
+                if (portraitTex == null) return Rectangle.Empty;
+                
+                Vector2 rightPos = GetRightPortraitPosition(portraitTex);
+                float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
+                Vector2 size = portraitTex.Size() * scale;
+                
+                return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
             }
         }
 
@@ -224,6 +246,31 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             };
             SoundEngine.PlaySound(SoundID.MenuTick);
         }
+
+        /// <summary>
+        /// 获取左侧立绘绘制位置（上半身大图）
+        /// </summary>
+        private Vector2 GetLeftPortraitPosition(Texture2D tex) {
+            float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
+            
+            return new Vector2(
+                Main.screenWidth * LeftPortraitXRatio - (tex.Width * scale) / 2,
+                Main.screenHeight - displayHeight - 140 //底部对齐，留出更多边距
+            );
+        }
+
+        /// <summary>
+        /// 获取右侧立绘绘制位置（全身小图）
+        /// </summary>
+        private Vector2 GetRightPortraitPosition(Texture2D tex) {
+            float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            
+            return new Vector2(
+                Main.screenWidth * RightPortraitXRatio - (tex.Width * scale) / 2 - 300,
+                Main.screenHeight - tex.Height * scale - 220 //底部对齐
+            );
+        }
         #endregion
 
         #region 更新逻辑
@@ -271,7 +318,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             //检测点击
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint());
-            bool hoverPortrait = _showFullPortrait && PortraitHitBox.Contains(MousePosition.ToPoint());
+            bool hoverLeftPortrait = _showFullPortrait && LeftPortraitHitBox.Contains(MousePosition.ToPoint());
+            bool hoverRightPortrait = _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint());
 
             if (CanInteract() && keyLeftPressState == KeyPressState.Pressed) {
                 if (hoverIcon) {
@@ -279,8 +327,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     _showFullPortrait = !_showFullPortrait;
                     SoundEngine.PlaySound(_showFullPortrait ? SoundID.MenuOpen : SoundID.MenuClose);
                 }
-                else if (hoverPortrait) {
-                    // 点击立绘：切换表情
+                else if (hoverLeftPortrait || hoverRightPortrait) {
+                    // 点击任意立绘：切换表情
                     CycleExpression();
                 }
             }
@@ -304,18 +352,29 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            //生成火焰精灵
+            //生成火焰精灵（分布在两侧立绘周围）
             if (_showFullPortrait) {
                 _wispSpawnTimer++;
-                if (_wispSpawnTimer >= 30 && _flameWisps.Count < 12) {
+                if (_wispSpawnTimer >= 30 && _flameWisps.Count < 20) {
                     _wispSpawnTimer = 0;
-                    Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
-                    Vector2 spawnPos = portraitCenter + Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(200f, 400f);
+                    
+                    //随机在左侧或右侧生成
+                    bool spawnLeft = Main.rand.NextBool();
+                    Vector2 center = spawnLeft 
+                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f)
+                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f);
+                    
+                    Vector2 spawnPos = center + Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(200f, 350f);
                     _flameWisps.Add(new FlameWisp(spawnPos));
                 }
 
                 for (int i = _flameWisps.Count - 1; i >= 0; i--) {
-                    if (_flameWisps[i].Update(new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), 500f)) {
+                    //让火焰精灵分别围绕左右两侧
+                    Vector2 targetCenter = _flameWisps[i].Pos.X < Main.screenWidth * 0.5f
+                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f)
+                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f);
+                    
+                    if (_flameWisps[i].Update(targetCenter, 400f)) {
                         _flameWisps.RemoveAt(i);
                     }
                 }
@@ -333,76 +392,110 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            //绘制全身立绘
+            //绘制立绘（无背景暗化，无边框）
             if (_portraitAlpha > 0.01f) {
-                DrawFullPortrait(spriteBatch);
+                DrawPortraits(spriteBatch);
             }
 
             //绘制头像框
             DrawIconFrame(spriteBatch);
         }
 
-        private void DrawFullPortrait(SpriteBatch spriteBatch) {
+        private void DrawPortraits(SpriteBatch spriteBatch) {
             Texture2D portraitTex = GetCurrentPortraitTexture();
             if (portraitTex == null) {
                 return;
             }
 
-            Vector2 portraitCenter = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
-
-            //背景暗化
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            float bgAlpha = _portraitAlpha * 0.7f;
-            spriteBatch.Draw(pixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                new Rectangle(0, 0, 1, 1), Color.Black * bgAlpha);
-
-            //绘制火焰精灵
+            //绘制火焰精灵（在立绘后面）
             foreach (var wisp in _flameWisps) {
-                wisp.Draw(spriteBatch, _portraitAlpha * 0.8f);
+                wisp.Draw(spriteBatch, _portraitAlpha * 0.5f);
             }
 
-            //计算立绘尺寸和位置
-            float scale = PortraitScale * (0.9f + _transitionProgress * 0.1f) * 2;
-            Vector2 portraitSize = portraitTex.Size() * scale;
-            Vector2 portraitPos = portraitCenter - portraitSize / 2;
+            //左侧立绘（上半身大图）
+            DrawLeftPortrait(spriteBatch, portraitTex);
 
-            //立绘阴影
-            float shadowOffset = 10f;
-            spriteBatch.Draw(portraitTex, portraitPos + new Vector2(shadowOffset, shadowOffset),
-                null, new Color(20, 0, 0) * (_portraitAlpha * 0.5f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            //右侧立绘（全身小图）
+            DrawRightPortrait(spriteBatch, portraitTex);
 
-            //火焰光晕
-            float glowPulse = (float)Math.Sin(_glowTimer * 1.5f) * 0.5f + 0.5f;
-            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.15f * glowPulse);
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f + _flameTimer;
-                Vector2 offset = angle.ToRotationVector2() * 8f;
-                spriteBatch.Draw(portraitTex, portraitPos + offset,
-                    null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            //绘制切换提示
+            if (CanInteract()) {
+                bool hoverLeft = LeftPortraitHitBox.Contains(MousePosition.ToPoint());
+                bool hoverRight = RightPortraitHitBox.Contains(MousePosition.ToPoint());
+                
+                if (hoverLeft || hoverRight) {
+                    DrawExpressionHint(spriteBatch, hoverLeft);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制左侧上半身大图
+        /// </summary>
+        private void DrawLeftPortrait(SpriteBatch sb, Texture2D tex) {
+            float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
+            Vector2 drawPos = GetLeftPortraitPosition(tex);
+
+            //计算裁剪区域（只显示上半身，裁剪腿部）
+            int displayHeight = (int)(tex.Height * (1f - LeftPortraitCropBottom));
+            Rectangle sourceRect = new Rectangle(0, 0, tex.Width, displayHeight);
+
+            //轻微阴影（更淡，融入背景）
+            float shadowOffset = 6f;
+            sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
+                sourceRect, new Color(10, 5, 5) * (_portraitAlpha * 0.25f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+            //火焰光晕（更柔和）
+            float glowPulse = (float)Math.Sin(_glowTimer * 1.2f) * 0.5f + 0.5f;
+            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.08f * glowPulse);
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4f + _flameTimer;
+                Vector2 offset = angle.ToRotationVector2() * 4f;
+                sb.Draw(tex, drawPos + offset, sourceRect, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
             //主体绘制
-            spriteBatch.Draw(portraitTex, portraitPos,
-                null, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            sb.Draw(tex, drawPos, sourceRect, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        }
 
-            //边框装饰
-            DrawPortraitFrame(spriteBatch, new Rectangle((int)portraitPos.X, (int)portraitPos.Y,
-                (int)portraitSize.X, (int)portraitSize.Y), _portraitAlpha);
+        /// <summary>
+        /// 绘制右侧全身小图
+        /// </summary>
+        private void DrawRightPortrait(SpriteBatch sb, Texture2D tex) {
+            float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
+            Vector2 drawPos = GetRightPortraitPosition(tex);
 
-            //绘制切换提示（悬停时显示）
-            if (PortraitHitBox.Contains(MousePosition.ToPoint()) && CanInteract()) {
-                DrawExpressionHint(spriteBatch, portraitCenter);
+            //轻微阴影
+            float shadowOffset = 5f;
+            sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
+                null, new Color(10, 5, 5) * (_portraitAlpha * 0.2f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+            //火焰光晕（更柔和）
+            float glowPulse = (float)Math.Sin(_glowTimer * 1.1f) * 0.5f + 0.5f;
+            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.05f * glowPulse);
+            for (int i = 0; i < 3; i++) {
+                float angle = MathHelper.TwoPi * i / 3f + _flameTimer * 0.7f;
+                Vector2 offset = angle.ToRotationVector2() * 3f;
+                sb.Draw(tex, drawPos + offset, null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
+
+            //主体绘制
+            sb.Draw(tex, drawPos, null, Color.White * _portraitAlpha, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         /// <summary>
         /// 绘制表情切换提示
         /// </summary>
-        private void DrawExpressionHint(SpriteBatch sb, Vector2 center) {
+        private void DrawExpressionHint(SpriteBatch sb, bool isLeftSide) {
             string hintText = "点击切换表情";
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 textSize = font.MeasureString(hintText);
-            Vector2 textPos = new Vector2(center.X - textSize.X / 2, Main.screenHeight - 60);
+            
+            //提示位置：左侧在左下角，右侧在右下角
+            float xPos = isLeftSide 
+                ? Main.screenWidth * LeftPortraitXRatio - textSize.X / 2
+                : Main.screenWidth * RightPortraitXRatio - textSize.X / 2;
+            Vector2 textPos = new Vector2(xPos, Main.screenHeight - 100);
 
             float pulse = (float)Math.Sin(_pulseTimer * 3f) * 0.5f + 0.5f;
             Color textColor = Color.Lerp(new Color(255, 200, 150), new Color(255, 150, 80), pulse) * (_portraitAlpha * 0.9f);
@@ -505,40 +598,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, -MathHelper.PiOver4,
                 new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
-        }
-
-        private void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            float pulse = (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f;
-
-            //火焰边框
-            Color edge = Color.Lerp(new Color(200, 80, 40), new Color(255, 140, 70), pulse) * (alpha * 0.8f);
-            int thickness = 4;
-
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), new Rectangle(0, 0, 1, 1), edge);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), new Rectangle(0, 0, 1, 1), edge * 0.75f);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
-            sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
-
-            //角落装饰
-            int cornerSize = 20;
-            Color cornerColor = new Color(255, 180, 80) * (alpha * 0.7f);
-
-            //左上角
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor);
-
-            //右上角
-            sb.Draw(pixel, new Rectangle(rect.Right - cornerSize, rect.Y, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor);
-            sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor);
-
-            //左下角
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - cornerSize, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
-
-            //右下角
-            sb.Draw(pixel, new Rectangle(rect.Right - cornerSize, rect.Bottom - thickness, cornerSize, thickness), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
-            sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Bottom - cornerSize, thickness, cornerSize), new Rectangle(0, 0, 1, 1), cornerColor * 0.8f);
         }
         #endregion
     }
