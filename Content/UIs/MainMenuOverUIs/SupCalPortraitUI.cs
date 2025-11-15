@@ -85,8 +85,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         // 表情切换按钮位置（在头像框右侧）
         private Vector2 ExpressionButtonPosition => new Vector2(
-            IconPosition.X + IconSize + 15,
-            IconPosition.Y + (IconSize - ExpressionButtonSize) / 2
+            IconPosition.X + ExpressionButtonSize / 2,
+            IconPosition.Y - ExpressionButtonSize * 2
         );
 
         private Rectangle ExpressionButtonHitBox => new Rectangle(
