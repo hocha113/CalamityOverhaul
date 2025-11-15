@@ -23,7 +23,7 @@ namespace CalamityOverhaul
 
         public override void AI() {
             Projectile.ai[0]++;
-            if (Projectile.ai[0] == 360) {
+            if (Projectile.ai[0] == 90) {
                 ScenarioManager.Reset<EternalBlazingNow>();
                 ScenarioManager.Start<EternalBlazingNow>();
             }

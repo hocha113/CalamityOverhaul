@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// </summary>
         private Texture2D GetCurrentPortrait() {
             if (useSmilePortrait) {
-                return ADVAsset.SupCal_smileADV;
+                return ADVAsset.SupCalADV;
             }
             return ADVAsset.SupCal_closeEyesADV;
         }
@@ -301,8 +301,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //绘制淡入的微笑立绘
                 float smileAlpha = alpha * portraitTransitionProgress;
                 Color smileColor = currentTint * smileAlpha;
-                if (ADVAsset.SupCal_smileADV != null) {
-                    spriteBatch.Draw(ADVAsset.SupCal_smileADV, position, null, smileColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                if (ADVAsset.SupCalADV != null) {
+                    spriteBatch.Draw(ADVAsset.SupCalADV, position, null, smileColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 }
                 return;
             }
