@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Dusts;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.OtherMods.BossChecklist;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -189,6 +190,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
                 if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
                     p.Teleport(npc.Center, 999);
+                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
                     npc.active = false;
                     npc.netUpdate = true;
                     return false;
