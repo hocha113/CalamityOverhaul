@@ -294,7 +294,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
             }
             else {//野生的才掉蘑菇人
-                ModifyTruffle.Spawn(npc);//死亡后生成沉睡蘑菇人
+                if (!CWRRef.GetBossRushActive()) {//别在Boss Rush时生成
+                    ModifyTruffle.Spawn(npc);//死亡后生成沉睡蘑菇人
+                }
             }
 
             FeedValue = 0f;

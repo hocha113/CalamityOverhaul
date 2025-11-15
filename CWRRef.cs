@@ -24,6 +24,7 @@ namespace CalamityOverhaul
         public static bool GetDownedPrimordialWyrm() => DownedBossSystem.downedPrimordialWyrm;
         public static void SetDownedPrimordialWyrm(bool value) => DownedBossSystem.downedPrimordialWyrm = value;
         public static bool GetBossRushActive() => BossRushEvent.BossRushActive;
+        public static void SetBossRushActive(bool value) => BossRushEvent.BossRushActive = value;
         public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
         public static DamageClass GetTrueMeleeDamageClass() => ModContent.GetInstance<TrueMeleeDamageClass>();
         public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
@@ -96,6 +97,17 @@ namespace CalamityOverhaul
         }
         public static void SetDownedCalamitas(bool value) {
             DownedBossSystem.downedCalamitas = value;
+        }
+        public static bool GetSupCalPermafrost(NPC npc) {
+            if (npc.ModNPC is SupremeCalamitas supCal) {
+                return supCal.permafrost;
+            }
+            return false;
+        }
+        public static void SetSupCalPermafrost(NPC npc, bool value) {
+            if (npc.ModNPC is SupremeCalamitas supCal) {
+                supCal.permafrost = value;
+            }
         }
         public static int GetSupCalGiveUpCounter(NPC npc) {
             if (npc.ModNPC is SupremeCalamitas supCal) {

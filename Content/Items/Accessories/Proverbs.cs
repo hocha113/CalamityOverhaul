@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (HasProverbs || IsEbn) {
                 target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
             }
-            if (IsEbn && target.life <= 0 && target.lifeMax > 500 && Main.rand.NextBool(6)) {//击杀概率掉落湮灭灰烬
+            if (IsEbn && target.life <= 0 && target.lifeMax > 500 && Main.rand.NextBool(6) && !CWRRef.GetBossRushActive()) {//击杀概率掉落湮灭灰烬
                 VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(CWRID.Item_AshesofAnnihilation));
             }
         }

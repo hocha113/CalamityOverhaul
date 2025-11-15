@@ -133,6 +133,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     Main.npc[witch].netUpdate = true;
                 }
             }
+            //全局生命周期更新，避免因为一些意外情况导致BossRush状态无法重置
+            if (ModifySupCalNPC.TrueBossRushStateByAI) {
+                if (!NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {//BossRush状态下SupCal消失后，重置状态
+                    ModifySupCalNPC.TrueBossRushStateByAI = false;//BossRush状态结束
+                }
+            }
         }
     }
 
@@ -161,6 +167,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         public override int TargetID => CWRID.NPC_SupremeCalamitas;
 
         private static bool originallyDownedCalamitas = false;
+        private static bool originallyBossRush = false;
+        public static bool TrueBossRushStateByAI;
 
         private delegate void BossHeadSlotDelegate(ModNPC modNPC, ref int index);
 
@@ -175,16 +183,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         //临时钩子，后续改用前置实现
         private static void OnBossHeadSlotHook(BossHeadSlotDelegate orig, ModNPC modNPC, ref int index) {
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
-            if (EbnPlayer.IsConquered(Main.player[modNPC.NPC.target])) {
+            originallyBossRush = CWRRef.GetBossRushActive();
+            if (EbnPlayer.IsConquered(Main.player[modNPC.NPC.target]) || EbnPlayer.OnEbn(Main.player[modNPC.NPC.target])) {
                 CWRRef.SetDownedCalamitas(true);//如果被攻略了的话就无条件摘掉兜帽
+                CWRRef.SetBossRushActive(false);//避免BossRush状态干扰
             }
             orig.Invoke(modNPC, ref index);
             CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
+            CWRRef.SetBossRushActive(originallyBossRush);
         }
 
         public override bool AI() {
-            if (CWRRef.GetBossRushActive()) {
-                return true;//Boss Rush模式下不进行任何修改
+            originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
+            originallyBossRush = CWRRef.GetBossRushActive();
+            if (originallyBossRush) {
+                if (EbnPlayer.OnEbn(Main.player[npc.target]) && CWRRef.GetSupCalGiveUpCounter(npc) > 0) {
+                    CWRRef.SetDownedCalamitas(false);//设置为未击败，这样可以恢复初次见面的场景
+                    CWRRef.SetBossRushActive(false);
+                    TrueBossRushStateByAI = true;
+                }
+                return true;
             }
             foreach (var p in Main.ActivePlayers) {
                 //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
@@ -205,18 +223,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     CWRRef.SetSupCalGiveUpCounter(npc, 120);
                 }
             }
+            CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
+            CWRRef.SetBossRushActive(originallyBossRush);
+            TrueBossRushStateByAI = false;
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
-            if (EbnPlayer.IsConquered(Main.player[npc.target])) {
+            originallyBossRush = CWRRef.GetBossRushActive();
+            if (EbnPlayer.IsConquered(Main.player[npc.target]) || EbnPlayer.OnEbn(Main.player[npc.target])) {
                 CWRRef.SetDownedCalamitas(true);//如果被攻略了的话就无条件摘掉兜帽
+                CWRRef.SetBossRushActive(false);
             }
             return base.Draw(spriteBatch, screenPos, drawColor);
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
+            CWRRef.SetBossRushActive(originallyBossRush);
             return base.PostDraw(spriteBatch, screenPos, drawColor);
         }
     }

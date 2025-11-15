@@ -6954,4 +6954,24 @@ ADV: {
 		// L2: Go piece together that pile of mechanical toys of yours, then defeat him.
 		// L3: ...What? Do I need to repeat myself?
 	}
+
+	SupCalDisplayTextByBossRush: {
+		// SummonBossRush: Heh… The aura on you almost reminds me of the one who has long since perished.
+		// SummonBossRushWithProverbs: That ring… even a mere remnant like me can feel its trembling.
+		// StartBossRush: I may be nothing more than an anomalous construct born from the Golden Soul… but there are duties even I must fulfill.
+		// BH2BossRush: Your strength is impressive… yet still insufficient.
+		// BH3BossRush: The real her turned to ash long ago, scattered along the path you’ve walked… heh.
+		// BrothersBossRush: These souls… shadows of shadows. The more you copy something, the sadder it becomes, don’t you think?
+		// Phase2BossRush: Even a fabricated life can have something worth fighting for.
+		// BH4BossRush: Stand still! Let me see if you can truly bear the weight of an era!
+		// SeekerRingBossRush: Your power resembles that person in her memories far too closely… mere coincidence?
+		// BH5BossRush: As an anomalous creation, my purpose is to face this very moment.
+		// Sepulcher2BossRush: The final trial begins now… show me whether you are worthy of carrying her path forward.
+		// Desperation1BossRush: Even a fragment…
+		// Desperation2BossRush: Don’t assume victory is yours just yet…
+		// Desperation3BossRush: Heh… the life of a shadow was fragile from the start…
+		// Desperation4BossRush: You’ve won… but her journey is far from over.
+		// Acceptance1BossRush: Perhaps… this is where I was always meant to end.
+		// Acceptance2BossRush: Good luck… small fry.
+	}
 }

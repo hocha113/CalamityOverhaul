@@ -111,6 +111,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 return;
             }
 
+            if (Owner.DistanceSQ(Projectile.Center) > 1800 * 1800) {
+                Projectile.Kill();
+                return;
+            }
+
             StateTimer++;
             particleTimer++;
 
