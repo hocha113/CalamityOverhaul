@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
 
         public override bool Alive(Player player) {
-            return EbnPlayer.IsConquered(player);//被攻略后才会触发这些台词
+            return EbnPlayer.IsConquered(player) && !CWRWorld.BossRush;//被攻略后才会触发这些台词
         }
     }
 }

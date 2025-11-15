@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
             defeat = true;
 
+            if (CWRRef.GetBossRushActive()) {
+                return;//Boss Rush模式下不触发对话
+            }
+
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
                 return;
             }

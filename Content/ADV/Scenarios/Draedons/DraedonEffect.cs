@@ -460,7 +460,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 SpawnTechBurst();
             }
 
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityMod/Sounds/Music/DraedonExoSelect");
+            if (!CWRRef.GetBossRushActive()) {//BossRush时不更换音乐
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityMod/Sounds/Music/DraedonExoSelect");
+            }
         }
 
         private static void SpawnDataParticles() {
