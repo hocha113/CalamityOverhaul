@@ -24,12 +24,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private float pulsePhase = 0f;
         private float wingFlamePhase = 0f;
 
-        //特殊能力冷却
-        private int blinkCooldown = 0;
-        private int blinkDuration = 0;
-        private Vector2 blinkStartPos;
-        private Vector2 blinkEndPos;
-
         //粒子数据类
         private class BrimstoneTrailData
         {
@@ -78,13 +72,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //更新粒子
             UpdateAuraParticles();
 
-            //更新冷却
-            if (blinkCooldown > 0) blinkCooldown--;
-            if (blinkDuration > 0) {
-                blinkDuration--;
-                UpdateBlinkEffect();
-            }
-
             //动态照明
             UpdateLighting();
         }
@@ -98,15 +85,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 health.Base = 2200;
                 //法力上限大幅提升
                 mana.Base = 2400;
-            }
-        }
-
-        public override void PostUpdate() {
-            if (!IsEbn) return;
-
-            //生命值过低时自动触发护盾效果
-            if (Player.statLife < Player.statLifeMax2 * 0.3f && Main.rand.NextBool(3)) {
-                SpawnShieldParticles();
             }
         }
 
@@ -174,20 +152,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             });
         }
 
-        private void SpawnShieldParticles() {
-            //生命值低时的护盾粒子
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 pos = Player.Center + angle.ToRotationVector2() * 60f;
-                Vector2 vel = angle.ToRotationVector2() * 2f;
-
-                Dust d = Dust.NewDustPerfect(pos, (int)CalamityDusts.Brimstone, vel,
-                    100, default, 2.5f);
-                d.noGravity = true;
-                d.fadeIn = 2f;
-            }
-        }
-
         private void UpdateLighting() {
             //动态照明（硫磺火风格）
             float pulse = (float)Math.Sin(pulsePhase * 2f) * 0.3f + 0.7f;
@@ -204,45 +168,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     1.5f * pulse, 0.5f * pulse, 0.2f * pulse);
                 Lighting.AddLight(Player.Center + new Vector2(25f, -10f),
                     1.5f * pulse, 0.5f * pulse, 0.2f * pulse);
-            }
-        }
-        #endregion
-
-        #region 特殊能力
-        private void UpdateBlinkEffect() {
-            //闪现动画
-            float progress = 1f - (blinkDuration / 15f);
-            Player.position = Vector2.Lerp(blinkStartPos, blinkEndPos, CWRUtils.EaseOutCubic(progress));
-
-            //闪现粒子
-            if (Main.rand.NextBool(2)) {
-                Vector2 pos = Player.Center + Main.rand.NextVector2Circular(30f, 30f);
-                Dust d = Dust.NewDustPerfect(pos, (int)CalamityDusts.Brimstone,
-                    Main.rand.NextVector2Circular(4f, 4f), 100, default, 2f);
-                d.noGravity = true;
-                d.fadeIn = 1.5f;
-            }
-        }
-
-        //可以添加右键技能触发闪现
-        public void TriggerBlink(Vector2 targetPosition) {
-            if (blinkCooldown > 0) return;
-
-            blinkStartPos = Player.position;
-            blinkEndPos = targetPosition - new Vector2(Player.width / 2f, Player.height / 2f);
-            blinkDuration = 15;
-            blinkCooldown = 180; //3秒冷却
-
-            //闪现音效
-            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.8f, Pitch = -0.3f }, Player.Center);
-
-            //闪现爆发粒子
-            for (int i = 0; i < 30; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
-                Dust d = Dust.NewDustPerfect(Player.Center, (int)CalamityDusts.Brimstone, vel,
-                    100, default, Main.rand.NextFloat(2f, 3.5f));
-                d.noGravity = true;
-                d.fadeIn = 2f;
             }
         }
         #endregion
