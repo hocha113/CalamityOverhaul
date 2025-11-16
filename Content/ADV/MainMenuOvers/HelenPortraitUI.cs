@@ -1,4 +1,3 @@
-using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,21 +9,19 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
-    /// 比目鱼小姐立绘UI，深海风格，主菜单显示
+    /// 比目鱼小姐立绘UI,主菜单显示
     /// </summary>
-    internal class HelenPortraitUI : UIHandle, ICWRLoader
+    internal class HelenPortraitUI : BasePortraitUI
     {
         #region 数据字段
         public static HelenPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<HelenPortraitUI>();
 
         private bool _unlocked = false; //是否已解锁
-        private float _iconAlpha = 0f; //头像框透明度
         private float _unlockProgress = 0f; //解锁进度动画
 
         //动画计时器
         private float _waveTimer = 0f;
         private float _bubbleTimer = 0f;
-        private float _pulseTimer = 0f;
 
         //粒子系统
         private readonly List<BubbleParticle> _bubbles = [];
@@ -32,55 +29,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private readonly List<WaterRipple> _ripples = [];
         private int _rippleSpawnTimer = 0;
 
-        //UI位置和尺寸
-        private const float IconSize = 80f;
-        private const float IconBottomMargin = 46f;
-        private const float IconSpacing = 95f; //与女巫头像的间距
-
-        //立绘偏移（用于拖动功能的预留）
-        private Vector2 _portraitOffset = Vector2.Zero;
-
-        //自动保存计时器
-        private int _autoSaveTimer = 0;
-        private const int AutoSaveInterval = 300; // 5秒自动保存一次
-        private bool _needsSave = false;
-
-        private Vector2 IconPosition => new Vector2(
+        //重写基类属性
+        protected override Vector2 GetIconBasePosition() => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 + IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
-        ) + _portraitOffset;
-
-        private Rectangle IconHitBox => new Rectangle(
-            (int)IconPosition.X,
-            (int)IconPosition.Y,
-            (int)IconSize,
-            (int)IconSize
         );
 
-        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-
-        //确保资源已加载
-        public override bool Active => MenuSave.IsPortraitUnlocked() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
-
-        //检查资源是否已正确加载
-        private static bool IsResourceLoaded() {
+        protected override bool IsResourceLoaded() {
             return ADVAsset.HelenADV != null && !ADVAsset.HelenADV.IsDisposed;
         }
 
-        /// <summary>
-        /// 检查玩家是否在主菜单（menuMode == 0），而不是在子菜单中
-        /// </summary>
-        private static bool IsInMainMenu() {
-            return Main.menuMode == 0;
-        }
-
-        /// <summary>
-        /// 检查图标是否应该可见（仅在主菜单显示，进入子菜单时隐藏）
-        /// </summary>
-        private static bool ShouldShowIcon() {
-            return IsInMainMenu();
-        }
-
+        protected override Color GetHoverGlowColor() => new Color(70, 180, 230);
+        protected override Color GetPulseColor() => new Color(30, 120, 150);
         #endregion
 
         #region 粒子内部类
@@ -158,7 +118,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
                 Color rippleColor = new Color(70, 180, 230) * (alpha * 0.4f * fade);
 
-                //绘制圆环
                 int segments = 24;
                 for (int i = 0; i < segments; i++) {
                     float angle1 = MathHelper.TwoPi * i / segments;
@@ -179,54 +138,31 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         #endregion
 
         #region 生命周期
-        void ICWRLoader.SetupData() { }
-
-        public override void SetStaticDefaults() {
-            _iconAlpha = 0f;
+        protected override void OnSetStaticDefaults() {
             _unlocked = false;
             _unlockProgress = 0f;
             _waveTimer = 0f;
             _bubbleTimer = 0f;
-            _pulseTimer = 0f;
             _bubbleSpawnTimer = 0;
             _rippleSpawnTimer = 0;
-            _portraitOffset = Vector2.Zero;
-            _autoSaveTimer = 0;
-            _needsSave = false;
-
-            //加载保存的状态
-            LoadSavedState();
         }
 
-        public override void UnLoad() {
-            // 卸载前保存当前状态
-            SaveCurrentState();
-
+        protected override void OnUnLoad() {
             _bubbles?.Clear();
             _ripples?.Clear();
 
-            // 重置所有状态
-            _iconAlpha = 0f;
             _unlocked = false;
             _unlockProgress = 0f;
             _waveTimer = 0f;
             _bubbleTimer = 0f;
-            _pulseTimer = 0f;
         }
 
-        /// <summary>
-        /// 从MenuSave加载保存的UI状态
-        /// </summary>
-        public void LoadSavedState() {
-            // 加载立绘位置
+        public override void LoadSavedState() {
             _portraitOffset = MenuSave.Helen_PortraitOffset;
             _needsSave = false;
         }
 
-        /// <summary>
-        /// 保存当前UI状态到MenuSave
-        /// </summary>
-        public void SaveCurrentState() {
+        public override void SaveCurrentState() {
             if (!_needsSave) {
                 return;
             }
@@ -237,9 +173,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         #endregion
 
         #region 解锁管理
-        /// <summary>
-        /// 解锁比目鱼小姐头像
-        /// </summary>
         public void Unlock() {
             if (!_unlocked) {
                 _unlocked = true;
@@ -247,9 +180,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
         }
 
-        /// <summary>
-        /// 锁定比目鱼小姐头像（用于测试）
-        /// </summary>
         public void Lock() {
             _unlocked = false;
             _unlockProgress = 0f;
@@ -258,32 +188,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         #region 更新逻辑
         public override void Update() {
+            UpdateIconAlpha();
+
             if (!Main.gameMenu || !IsResourceLoaded()) {
-                _iconAlpha = 0f;
                 return;
             }
 
-            // 自动保存逻辑
-            if (_needsSave) {
-                _autoSaveTimer++;
-                if (_autoSaveTimer >= AutoSaveInterval) {
-                    SaveCurrentState();
-                    _autoSaveTimer = 0;
-                }
-            }
+            HandleAutoSave();
 
-            // 进入子菜单时快速淡出图标
             if (!ShouldShowIcon()) {
-                if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; //快速淡出
-                    if (_iconAlpha < 0f) _iconAlpha = 0f;
-                }
-                return; //在子菜单中不更新其他逻辑
-            }
-
-            //渐入效果
-            if (_iconAlpha < 1f) {
-                _iconAlpha += 0.02f;
+                return;
             }
 
             //解锁动画
@@ -297,16 +211,13 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             //动画计时器
             _waveTimer += 0.035f;
             _bubbleTimer += 0.025f;
-            _pulseTimer += 0.02f;
+            UpdatePulseTimer();
 
             if (_waveTimer > MathHelper.TwoPi) _waveTimer -= MathHelper.TwoPi;
             if (_bubbleTimer > MathHelper.TwoPi) _bubbleTimer -= MathHelper.TwoPi;
-            if (_pulseTimer > MathHelper.TwoPi) _pulseTimer -= MathHelper.TwoPi;
 
-            //更新粒子
             UpdateParticles();
 
-            //检测点击
             if (CanInteract() && IconHitBox.Contains(MousePosition.ToPoint())) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     OnIconClicked();
@@ -317,7 +228,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private void UpdateParticles() {
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
 
-            //生成气泡粒子
             _bubbleSpawnTimer++;
             if (_bubbleSpawnTimer >= 15 && _bubbles.Count < 15) {
                 _bubbleSpawnTimer = 0;
@@ -332,7 +242,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 }
             }
 
-            //生成水波纹
             if (_unlocked) {
                 _rippleSpawnTimer++;
                 if (_rippleSpawnTimer >= 80 && _ripples.Count < 3) {
@@ -350,18 +259,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         private void OnIconClicked() {
             if (!_unlocked) {
-                //未解锁时播放锁定音效
                 SoundEngine.PlaySound(SoundID.Unlock);
             }
             else {
-                //已解锁时的行为（暂时留空，后续可以添加显示立绘等功能）
                 SoundEngine.PlaySound(SoundID.MenuOpen);
             }
-        }
-
-        private static bool CanInteract() {
-            // 必须在主菜单才能交互
-            return IsInMainMenu() && !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         }
         #endregion
 
@@ -375,7 +277,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
-            // 双重检查资源有效性
             if (!IsResourceLoaded()) {
                 return;
             }
@@ -395,7 +296,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 bubble.Draw(spriteBatch, _iconAlpha * 0.8f);
             }
 
-            //背景框
             Rectangle bgRect = new Rectangle(
                 (int)IconPosition.X - 5,
                 (int)IconPosition.Y - 5,
@@ -404,22 +304,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             );
 
             Color bgColor = new Color(5, 20, 28) * (_iconAlpha * 0.9f);
-
-            //悬停光效（深海蓝色）
-            if (hoverIcon) {
-                Color hoverGlow = new Color(70, 180, 230) * (_iconAlpha * 0.35f);
-                for (int i = 0; i < 6; i++) {
-                    spriteBatch.Draw(pixel, bgRect.Location.ToVector2(),
-                        new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
-                }
-            }
-
-            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
-
-            //水波脉冲背景
-            float pulse = (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(30, 120, 150) * (_iconAlpha * 0.15f * pulse);
-            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
+            DrawBaseBackground(spriteBatch, bgRect, _iconAlpha, hoverIcon, bgColor);
 
             //头像绘制
             float iconScale = IconSize / Math.Max(iconTex.Width, iconTex.Height);
@@ -429,21 +314,15 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             Vector2 iconDrawPos = iconCenter;
 
-            //未解锁时的暗化效果
-            Color iconColor;
-            if (_unlocked) {
-                iconColor = Color.White * _iconAlpha;
-            }
-            else {
-                //暗化并添加蓝色调
-                iconColor = new Color(30, 50, 70) * (_iconAlpha * 0.4f);
-            }
+            Color iconColor = _unlocked ? 
+                Color.White * _iconAlpha : 
+                new Color(30, 50, 70) * (_iconAlpha * 0.4f);
 
             spriteBatch.Draw(iconTex, iconDrawPos, null, iconColor,
                 0f, iconTex.Size() / 2, iconScale, SpriteEffects.None, 0f);
 
             //深海边框
-            DrawOceanFrame(spriteBatch, bgRect, _iconAlpha, pulse);
+            DrawOceanFrame(spriteBatch, bgRect, _iconAlpha, (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f);
 
             //解锁动画特效
             if (_unlockProgress > 0f && _unlockProgress < 1f) {
@@ -455,13 +334,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.8f);
 
-            //外框
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
             sb.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
 
-            //内框发光
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerGlow = new Color(120, 220, 255) * (alpha * 0.18f * pulse);
@@ -470,7 +347,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            //角落星标
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.6f);
@@ -491,7 +367,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private void DrawUnlockEffect(SpriteBatch sb, Vector2 center, float progress) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //从中心向外扩散的光环
             int rings = 3;
             for (int i = 0; i < rings; i++) {
                 float t = (progress + i * 0.3f) % 1f;

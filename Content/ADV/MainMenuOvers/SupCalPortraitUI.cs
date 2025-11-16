@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -12,9 +11,9 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
-    /// 女巫立绘UI，主菜单显示
+    /// 女巫立绘UI,主菜单显示
     /// </summary>
-    internal class SupCalPortraitUI : UIHandle, ICWRLoader
+    internal class SupCalPortraitUI : BasePortraitUI
     {
         #region 数据字段
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
@@ -31,14 +30,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         private PortraitExpression _currentExpression = PortraitExpression.Default;
         private bool _showFullPortrait = false; //是否显示全身立绘
-        private float _iconAlpha = 0f; //头像框透明度
         private float _portraitAlpha = 0f; //立绘透明度
         private float _transitionProgress = 0f; //过渡进度
 
         //动画计时器
         private float _flameTimer = 0f;
         private float _glowTimer = 0f;
-        private float _pulseTimer = 0f;
 
         //粒子系统
         private readonly List<EmberParticle> _embers = new();
@@ -46,16 +43,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private int _emberSpawnTimer = 0;
         private int _wispSpawnTimer = 0;
 
-        //UI位置和尺寸
-        private const float IconSize = 80f;
-        private const float IconBottomMargin = 46f;
-
-        //左侧立绘参数（半身大图，从腰部开始裁剪）
+        //左侧立绘参数(半身大图,从腰部开始裁剪)
         private const float LeftPortraitXRatio = 0.18f;
         private const float LeftPortraitScale = 2.0f;
         private const float LeftPortraitCropBottom = 0.45f;
 
-        //右侧立绘参数（全身小图）
+        //右侧立绘参数(全身小图)
         private const float RightPortraitXRatio = 0.82f;
         private const float RightPortraitScale = 0.85f;
 
@@ -71,30 +64,35 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private const float ExpressionButtonSize = 40f;
         private float _expressionButtonAlpha = 0f;
 
-        //图标间距（两个图标之间的距离）
-        private const float IconSpacing = 95f;
-
-        //自动保存计时器
-        private int _autoSaveTimer = 0;
-        private const int AutoSaveInterval = 300; //5秒自动保存一次 (60帧*5秒)
-        private bool _needsSave = false; //标记是否需要保存
-
-        private Vector2 IconPosition => new Vector2(
+        //重写基类属性
+        protected override Vector2 GetIconBasePosition() => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 - IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
         );
 
-        private Rectangle IconHitBox => new Rectangle(
-            (int)IconPosition.X,
-            (int)IconPosition.Y,
-            (int)IconSize,
-            (int)IconSize
-        );
+        protected override bool IsResourceLoaded() {
+            if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
+                return false;
+            }
 
-        //表情切换按钮位置（在头像框右侧）
+            if (ADVAsset.SupCalADV == null || ADVAsset.SupCalADV.IsDisposed) {
+                return false;
+            }
+
+            if (ADVAsset.SupCalsADV[0] == null || ADVAsset.SupCalsADV[0].IsDisposed) {
+                return false;
+            }
+
+            return true;
+        }
+
+        protected override Color GetHoverGlowColor() => new Color(255, 180, 80);
+        protected override Color GetPulseColor() => new Color(120, 25, 15);
+
+        //表情切换按钮位置(在头像框右侧)
         private Vector2 ExpressionButtonPosition => new Vector2(
             IconPosition.X + ExpressionButtonSize / 2,
-            IconPosition.Y - ExpressionButtonSize * 2
+            IconPosition.Y - ExpressionButtonSize
         );
 
         private Rectangle ExpressionButtonHitBox => new Rectangle(
@@ -131,46 +129,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
             }
         }
-
-        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-
-        //确保资源已加载
-        public override bool Active => MenuSave.IsPortraitUnlocked() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
-
-        //检查资源是否已正确加载
-        private static bool IsResourceLoaded() {
-            if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
-                return false;
-            }
-
-            //检查主纹理是否有效
-            if (ADVAsset.SupCalADV == null || ADVAsset.SupCalADV.IsDisposed) {
-                return false;
-            }
-
-            //检查第一个头像纹理是否有效
-            if (ADVAsset.SupCalsADV[0] == null || ADVAsset.SupCalsADV[0].IsDisposed) {
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// 检查玩家是否在主菜单（menuMode == 0），而不是在子菜单中
-        /// </summary>
-        private static bool IsInMainMenu() {
-            return Main.menuMode == 0;
-        }
-
-        /// <summary>
-        /// 检查图标是否应该可见（仅在主菜单显示，进入子菜单时隐藏）
-        /// 立绘不受影响，即使进入子菜单也可以继续显示
-        /// </summary>
-        private bool ShouldShowIcon() {
-            return IsInMainMenu();
-        }
-
         #endregion
 
         #region 粒子内部类
@@ -250,7 +208,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 );
                 Pos += Velocity + drift;
 
-                //边界检查
                 Vector2 toCenter = center - Pos;
                 if (toCenter.Length() > radius) {
                     Velocity = toCenter * 0.01f;
@@ -276,10 +233,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         #endregion
 
         #region 生命周期
-        void ICWRLoader.SetupData() { }
-
-        public override void SetStaticDefaults() {
-            _iconAlpha = 0f;
+        protected override void OnSetStaticDefaults() {
             _portraitAlpha = 0f;
             _showFullPortrait = false;
             _currentExpression = PortraitExpression.Default;
@@ -288,27 +242,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _expressionButtonAlpha = 0f;
             _flameTimer = 0f;
             _glowTimer = 0f;
-            _pulseTimer = 0f;
             _emberSpawnTimer = 0;
             _wispSpawnTimer = 0;
             _draggingLeftPortrait = false;
             _draggingRightPortrait = false;
-            _autoSaveTimer = 0;
-            _needsSave = false;
-
-            //加载保存的状态
-            LoadSavedState();
         }
 
-        public override void UnLoad() {
-            //卸载前保存当前状态
-            SaveCurrentState();
-
+        protected override void OnUnLoad() {
             _embers?.Clear();
             _flameWisps?.Clear();
 
-            //重置所有状态
-            _iconAlpha = 0f;
             _portraitAlpha = 0f;
             _showFullPortrait = false;
             _currentExpression = PortraitExpression.Default;
@@ -319,11 +262,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _draggingRightPortrait = false;
         }
 
-        /// <summary>
-        /// 从MenuSave加载保存的UI状态
-        /// </summary>
-        public void LoadSavedState() {
-            //加载表情状态
+        public override void LoadSavedState() {
             int savedExpression = MenuSave.SupCal_Expression;
             _currentExpression = savedExpression switch {
                 1 => PortraitExpression.CloseEyes,
@@ -331,7 +270,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _ => PortraitExpression.Default
             };
 
-            //加载立绘位置
             _leftPortraitOffset = MenuSave.SupCal_LeftPortraitOffset;
             _rightPortraitOffset = MenuSave.SupCal_RightPortraitOffset;
             _showFullPortrait = MenuSave.SupCal_ShowFullPortrait;
@@ -339,10 +277,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _needsSave = false;
         }
 
-        /// <summary>
-        /// 保存当前UI状态到MenuSave
-        /// </summary>
-        public void SaveCurrentState() {
+        public override void SaveCurrentState() {
             if (!_needsSave) {
                 return;
             }
@@ -356,22 +291,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             MenuSave.SaveSupCalPortraitState(expressionValue, _leftPortraitOffset, _rightPortraitOffset, _showFullPortrait);
             _needsSave = false;
         }
-
-        /// <summary>
-        /// 标记需要保存
-        /// </summary>
-        private void MarkNeedsSave() {
-            _needsSave = true;
-            _autoSaveTimer = 0; //重置自动保存计时器
-        }
         #endregion
 
         #region 立绘管理
-        /// <summary>
-        /// 获取当前表情对应的立绘纹理
-        /// </summary>
         private Texture2D GetCurrentPortraitTexture() {
-            //确保资源已加载
             if (!IsResourceLoaded()) {
                 return null;
             }
@@ -383,9 +306,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             };
         }
 
-        /// <summary>
-        /// 切换到下一个表情
-        /// </summary>
         private void CycleExpression() {
             _currentExpression = _currentExpression switch {
                 PortraitExpression.Default => PortraitExpression.CloseEyes,
@@ -394,14 +314,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _ => PortraitExpression.Default
             };
             SoundEngine.PlaySound(SoundID.MenuTick);
-            
-            //表情改变时标记需要保存
             MarkNeedsSave();
         }
 
-        /// <summary>
-        /// 获取左侧立绘绘制位置，左侧大图
-        /// </summary>
         private Vector2 GetLeftPortraitPosition(Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
             float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
@@ -414,9 +329,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             return basePos + _leftPortraitOffset;
         }
 
-        /// <summary>
-        /// 获取右侧立绘绘制位置，右侧小图
-        /// </summary>
         private Vector2 GetRightPortraitPosition(Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
 
@@ -440,29 +352,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //自动保存逻辑
-            if (_needsSave) {
-                _autoSaveTimer++;
-                if (_autoSaveTimer >= AutoSaveInterval) {
-                    SaveCurrentState();
-                    _autoSaveTimer = 0;
-                }
-            }
-
-            //进入子菜单时快速淡出图标（但保留立绘显示）
-            if (!ShouldShowIcon()) {
-                if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; //快速淡出
-                    if (_iconAlpha < 0f) _iconAlpha = 0f;
-                }
-                //注意：立绘和表情按钮继续更新，不受子菜单影响
-            }
-            else {
-                //仅在主菜单时渐入图标
-                if (_iconAlpha < 1f) {
-                    _iconAlpha += 0.02f;
-                }
-            }
+            HandleAutoSave();
+            UpdateIconAlpha();
 
             //表情按钮渐入效果
             if (_showFullPortrait && _expressionButtonAlpha < 1f) {
@@ -472,7 +363,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _expressionButtonAlpha -= 0.05f;
             }
 
-            //立绘过渡（不受子菜单影响）
+            //立绘过渡
             if (_showFullPortrait) {
                 if (_transitionProgress < 1f) {
                     _transitionProgress += 0.04f;
@@ -500,16 +391,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             //动画计时器
             _flameTimer += 0.045f;
             _glowTimer += 0.038f;
-            _pulseTimer += 0.025f;
+            UpdatePulseTimer();
 
             if (_flameTimer > MathHelper.TwoPi) _flameTimer -= MathHelper.TwoPi;
             if (_glowTimer > MathHelper.TwoPi) _glowTimer -= MathHelper.TwoPi;
-            if (_pulseTimer > MathHelper.TwoPi) _pulseTimer -= MathHelper.TwoPi;
 
-            //更新粒子
             UpdateParticles();
-
-            //检测交互
             UpdateInteraction();
         }
 
@@ -520,7 +407,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             bool hoverRightPortrait = ShouldShowIcon() && _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint()) && !hoverIcon && !hoverExpressionButton;
 
             if (!CanInteract()) {
-                //如果正在拖动，释放时保存位置
                 if (_draggingLeftPortrait || _draggingRightPortrait) {
                     MarkNeedsSave();
                 }
@@ -529,7 +415,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //处理拖动
             if (keyLeftPressState == KeyPressState.Pressed) {
                 if (hoverLeftPortrait && !_draggingRightPortrait) {
                     _draggingLeftPortrait = true;
@@ -542,17 +427,15 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                     _dragStartOffset = _rightPortraitOffset;
                 }
                 else if (hoverIcon && !_draggingLeftPortrait && !_draggingRightPortrait) {
-                    //点击头像框：切换立绘显示/隐藏
                     _showFullPortrait = !_showFullPortrait;
+                    MarkNeedsSave();
                 }
                 else if (hoverExpressionButton && !_draggingLeftPortrait && !_draggingRightPortrait) {
-                    //点击表情按钮：切换表情
                     CycleExpression();
                 }
             }
 
             if (keyLeftPressState == KeyPressState.Released) {
-                //拖动结束时保存位置
                 if (_draggingLeftPortrait || _draggingRightPortrait) {
                     MarkNeedsSave();
                 }
@@ -560,7 +443,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _draggingRightPortrait = false;
             }
 
-            //更新拖动偏移
             if (_draggingLeftPortrait) {
                 _leftPortraitOffset = _dragStartOffset + (MousePosition - _dragStartMousePos);
             }
@@ -572,7 +454,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private void UpdateParticles() {
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
 
-            //生成余烬粒子
             _emberSpawnTimer++;
             if (_emberSpawnTimer >= 10 && _embers.Count < 25) {
                 _emberSpawnTimer = 0;
@@ -587,13 +468,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 }
             }
 
-            //生成火焰精灵（分布在两侧立绘周围）
             if (_showFullPortrait) {
                 _wispSpawnTimer++;
                 if (_wispSpawnTimer >= 30 && _flameWisps.Count < 20) {
                     _wispSpawnTimer = 0;
 
-                    //随机在左侧或右侧生成
                     bool spawnLeft = Main.rand.NextBool();
                     Vector2 center = spawnLeft
                         ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
@@ -604,7 +483,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 }
 
                 for (int i = _flameWisps.Count - 1; i >= 0; i--) {
-                    //让火焰精灵分别围绕左右两侧
                     Vector2 targetCenter = _flameWisps[i].Pos.X < Main.screenWidth * 0.5f
                         ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
                         : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
@@ -615,11 +493,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 }
             }
         }
-
-        private static bool CanInteract() {
-            //立绘和表情按钮始终可以交互，图标仅在主菜单可交互
-            return !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
-        }
         #endregion
 
         #region 绘制
@@ -628,16 +501,13 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //绘制立绘（无背景暗化，无边框）
             if (_portraitAlpha > 0.01f) {
                 DrawPortraits(spriteBatch);
             }
 
             if (_iconAlpha > 0.01f) {
-                //绘制头像框
                 DrawIconFrame(spriteBatch);
 
-                //绘制表情切换按钮
                 if (_expressionButtonAlpha > 0.01f) {
                     DrawExpressionButton(spriteBatch);
                 }
@@ -650,48 +520,32 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //结束当前批次
             spriteBatch.End();
-
-            //使用点采样模式重新开始，避免立绘缩放时像素模糊
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-            //绘制火焰精灵（在立绘后面）
             foreach (var wisp in _flameWisps) {
                 wisp.Draw(spriteBatch, _portraitAlpha * 0.5f);
             }
 
-            //左侧立绘（上半身大图）
             DrawLeftPortrait(spriteBatch, portraitTex);
-
-            //右侧立绘（全身小图）
             DrawRightPortrait(spriteBatch, portraitTex);
 
-            //恢复默认SpriteBatch设置
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>
-        /// 绘制左侧上半身大图
-        /// </summary>
         private void DrawLeftPortrait(SpriteBatch sb, Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
             Vector2 drawPos = GetLeftPortraitPosition(tex);
-
             Rectangle sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
-
-            //拖动时的高亮效果
             float dragHighlight = _draggingLeftPortrait ? 1.1f : 1f;
 
-            //轻微阴影（更淡，融入背景）
             float shadowOffset = 6f;
             sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
                 sourceRect, new Color(10, 5, 5) * (_portraitAlpha * 0.25f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            //火焰光晕（更柔和）
             float glowPulse = (float)Math.Sin(_glowTimer * 1.2f) * 0.5f + 0.5f;
             Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.08f * glowPulse * dragHighlight);
             for (int i = 0; i < 4; i++) {
@@ -700,26 +554,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 sb.Draw(tex, drawPos + offset, sourceRect, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
-            //主体绘制
             sb.Draw(tex, drawPos, sourceRect, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制右侧全身小图
-        /// </summary>
         private void DrawRightPortrait(SpriteBatch sb, Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
             Vector2 drawPos = GetRightPortraitPosition(tex);
-
-            //拖动时的高亮效果
             float dragHighlight = _draggingRightPortrait ? 1.1f : 1f;
 
-            //轻微阴影
             float shadowOffset = 5f;
             sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
                 null, new Color(10, 5, 5) * (_portraitAlpha * 0.2f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            //火焰光晕（更柔和）
             float glowPulse = (float)Math.Sin(_glowTimer * 1.1f) * 0.5f + 0.5f;
             Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.05f * glowPulse * dragHighlight);
             for (int i = 0; i < 3; i++) {
@@ -728,13 +574,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 sb.Draw(tex, drawPos + offset, null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
 
-            //主体绘制
             sb.Draw(tex, drawPos, null, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制表情切换按钮
-        /// </summary>
         private void DrawExpressionButton(SpriteBatch sb) {
             if (_expressionButtonAlpha <= 0.01f) return;
 
@@ -742,32 +584,20 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Vector2 buttonPos = ExpressionButtonPosition;
             bool hoverButton = ExpressionButtonHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 
-            //背景框
             Rectangle bgRect = new Rectangle(
                 (int)buttonPos.X - 3,
                 (int)buttonPos.Y - 3,
                 (int)ExpressionButtonSize + 6,
                 (int)ExpressionButtonSize + 6
             );
-            Color bgColor = new Color(25, 5, 5) * (_expressionButtonAlpha * 0.85f);
-
-            //悬停光效
-            if (hoverButton) {
-                Color hoverGlow = new Color(255, 180, 80) * (_expressionButtonAlpha * 0.4f);
-                for (int i = 0; i < 6; i++) {
-                    sb.Draw(pixel, bgRect.Location.ToVector2(),
-                        new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
-                }
-            }
-
-            sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
-
-            //火焰脉冲背景
+            Color bgColor = new Color(25, 5, 5) * (_expressionButtonAlpha * _iconAlpha * 0.85f);
             float pulse = (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(120, 25, 15) * (_expressionButtonAlpha * 0.2f * pulse);
+
+            DrawBaseBackground(sb, bgRect, _expressionButtonAlpha * _iconAlpha, hoverButton, bgColor);
+
+            Color pulseColor = new Color(120, 25, 15) * (_expressionButtonAlpha * _iconAlpha * 0.2f * pulse);
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
 
-            //绘制表情图标（文字）
             string expressionIcon = _currentExpression switch {
                 PortraitExpression.Default => "◆",
                 PortraitExpression.CloseEyes => "◇",
@@ -780,14 +610,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Vector2 textPos = buttonPos + new Vector2(ExpressionButtonSize / 2 - textSize.X / 2, ExpressionButtonSize / 2 - textSize.Y / 2);
 
             float iconScale = hoverButton ? 1.15f : 1f;
-            Utils.DrawBorderString(sb, expressionIcon, textPos, Color.White * _expressionButtonAlpha, iconScale);
+            Utils.DrawBorderString(sb, expressionIcon, textPos, Color.White * _expressionButtonAlpha * _iconAlpha, iconScale);
 
-            //火焰边框
-            DrawBrimstoneFrame(sb, bgRect, _expressionButtonAlpha, pulse);
+            DrawBrimstoneFrame(sb, bgRect, _expressionButtonAlpha * _iconAlpha, pulse);
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
-            //双重检查资源有效性
             if (!IsResourceLoaded()) {
                 return;
             }
@@ -797,33 +625,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 
-            //绘制余烬粒子
             foreach (var ember in _embers) {
                 ember.Draw(spriteBatch, _iconAlpha * 0.9f);
             }
 
-            //背景框
             Rectangle bgRect = new Rectangle((int)IconPosition.X - 5, (int)IconPosition.Y - 5,
                 (int)IconSize + 10, (int)IconSize + 10);
             Color bgColor = new Color(25, 5, 5) * (_iconAlpha * 0.85f);
 
-            //悬停光效
-            if (hoverIcon) {
-                Color hoverGlow = new Color(255, 180, 80) * (_iconAlpha * 0.4f);
-                for (int i = 0; i < 6; i++) {
-                    spriteBatch.Draw(pixel, bgRect.Location.ToVector2(),
-                        new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
-                }
-            }
+            DrawBaseBackground(spriteBatch, bgRect, _iconAlpha, hoverIcon, bgColor);
 
-            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
-
-            //火焰脉冲背景
-            float pulse = (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(120, 25, 15) * (_iconAlpha * 0.2f * pulse);
-            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
-
-            //头像
             float iconScale = IconSize / Math.Max(iconTex.Width, iconTex.Height);
             if (hoverIcon) {
                 iconScale *= 1.1f + (float)Math.Sin(_flameTimer * 2f) * 0.05f;
@@ -833,21 +644,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             spriteBatch.Draw(iconTex, iconDrawPos, null, Color.White * _iconAlpha,
                 0f, iconTex.Size() / 2, iconScale, SpriteEffects.None, 0f);
 
-            //火焰边框
-            DrawBrimstoneFrame(spriteBatch, bgRect, _iconAlpha, pulse);
+            DrawBrimstoneFrame(spriteBatch, bgRect, _iconAlpha, (float)Math.Sin(_pulseTimer * 1.8f) * 0.5f + 0.5f);
         }
 
         private void DrawBrimstoneFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulse) * (alpha * 0.85f);
 
-            //外框
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            //内框发光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color innerGlow = new Color(220, 100, 50) * (alpha * 0.22f * pulse);
@@ -856,7 +664,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            //角落火焰标记
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawFlameMark(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f);
