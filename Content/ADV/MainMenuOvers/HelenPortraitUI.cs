@@ -51,7 +51,28 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         );
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => false && CWRLoad.OnLoadContentBool && Main.gameMenu;
+        
+        // 安全的Active检查：确保资源已加载
+        public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
+
+        // 检查资源是否已正确加载
+        private bool IsResourceLoaded() {
+            return ADVAsset.HelenADV != null && !ADVAsset.HelenADV.IsDisposed;
+        }
+
+        /// <summary>
+        /// 检查玩家是否在主菜单（menuMode == 0），而不是在子菜单中
+        /// </summary>
+        private static bool IsInMainMenu() {
+            return Main.menuMode == 0;
+        }
+
+        /// <summary>
+        /// 检查图标是否应该可见（仅在主菜单显示，进入子菜单时隐藏）
+        /// </summary>
+        private bool ShouldShowIcon() {
+            return IsInMainMenu();
+        }
 
         #endregion
 
@@ -157,11 +178,24 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _iconAlpha = 0f;
             _unlocked = false;
             _unlockProgress = 0f;
+            _waveTimer = 0f;
+            _bubbleTimer = 0f;
+            _pulseTimer = 0f;
+            _bubbleSpawnTimer = 0;
+            _rippleSpawnTimer = 0;
         }
 
         public override void UnLoad() {
             _bubbles?.Clear();
             _ripples?.Clear();
+            
+            // 重置所有状态
+            _iconAlpha = 0f;
+            _unlocked = false;
+            _unlockProgress = 0f;
+            _waveTimer = 0f;
+            _bubbleTimer = 0f;
+            _pulseTimer = 0f;
         }
         #endregion
 
@@ -187,12 +221,21 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         #region 更新逻辑
         public override void Update() {
-            if (!Main.gameMenu) {
+            if (!Main.gameMenu || !IsResourceLoaded()) {
                 _iconAlpha = 0f;
                 return;
             }
 
-            //渐入效果
+            // 进入子菜单时快速淡出图标
+            if (!ShouldShowIcon()) {
+                if (_iconAlpha > 0f) {
+                    _iconAlpha -= 0.1f; // 快速淡出
+                    if (_iconAlpha < 0f) _iconAlpha = 0f;
+                }
+                return; // 在子菜单中不更新其他逻辑
+            }
+
+            //渐入效果（仅在主菜单）
             if (_iconAlpha < 1f) {
                 _iconAlpha += 0.02f;
             }
@@ -217,7 +260,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             //更新粒子
             UpdateParticles();
 
-            //检测点击
+            //检测点击（仅在主菜单且可交互时）
             if (CanInteract() && IconHitBox.Contains(MousePosition.ToPoint())) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     OnIconClicked();
@@ -271,13 +314,14 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private bool CanInteract() {
-            return !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
+            // 必须在主菜单才能交互
+            return IsInMainMenu() && !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         }
         #endregion
 
         #region 绘制
         public override void Draw(SpriteBatch spriteBatch) {
-            if (_iconAlpha <= 0.01f) {
+            if (_iconAlpha <= 0.01f || !IsResourceLoaded()) {
                 return;
             }
 
@@ -285,7 +329,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
-            if (ADVAsset.HelenADV == null) {
+            // 双重检查资源有效性
+            if (!IsResourceLoaded()) {
                 return;
             }
 

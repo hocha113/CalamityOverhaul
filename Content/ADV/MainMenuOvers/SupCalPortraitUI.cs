@@ -128,7 +128,43 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu;
+        
+        // 安全的Active检查：确保资源已加载
+        public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
+
+        // 检查资源是否已正确加载
+        private static bool IsResourceLoaded() {
+            if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
+                return false;
+            }
+            
+            // 检查主纹理是否有效
+            if (ADVAsset.SupCalADV == null || ADVAsset.SupCalADV.IsDisposed) {
+                return false;
+            }
+            
+            // 检查第一个头像纹理是否有效
+            if (ADVAsset.SupCalsADV[0] == null || ADVAsset.SupCalsADV[0].IsDisposed) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        /// <summary>
+        /// 检查玩家是否在主菜单（menuMode == 0），而不是在子菜单中
+        /// </summary>
+        private static bool IsInMainMenu() {
+            return Main.menuMode == 0;
+        }
+
+        /// <summary>
+        /// 检查图标是否应该可见（仅在主菜单显示，进入子菜单时隐藏）
+        /// 立绘不受影响，即使进入子菜单也可以继续显示
+        /// </summary>
+        private bool ShouldShowIcon() {
+            return IsInMainMenu();
+        }
 
         #endregion
 
@@ -245,11 +281,29 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _leftPortraitOffset = Vector2.Zero;
             _rightPortraitOffset = Vector2.Zero;
             _expressionButtonAlpha = 0f;
+            _flameTimer = 0f;
+            _glowTimer = 0f;
+            _pulseTimer = 0f;
+            _emberSpawnTimer = 0;
+            _wispSpawnTimer = 0;
+            _draggingLeftPortrait = false;
+            _draggingRightPortrait = false;
         }
 
         public override void UnLoad() {
             _embers?.Clear();
             _flameWisps?.Clear();
+            
+            // 重置所有状态
+            _iconAlpha = 0f;
+            _portraitAlpha = 0f;
+            _showFullPortrait = false;
+            _currentExpression = PortraitExpression.Default;
+            _leftPortraitOffset = Vector2.Zero;
+            _rightPortraitOffset = Vector2.Zero;
+            _expressionButtonAlpha = 0f;
+            _draggingLeftPortrait = false;
+            _draggingRightPortrait = false;
         }
         #endregion
 
@@ -258,6 +312,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// 获取当前表情对应的立绘纹理
         /// </summary>
         private Texture2D GetCurrentPortraitTexture() {
+            // 确保资源已加载
+            if (!IsResourceLoaded()) {
+                return null;
+            }
+            
             return _currentExpression switch {
                 PortraitExpression.CloseEyes => ADVAsset.SupCal_closeEyesADV ?? ADVAsset.SupCalADV,
                 PortraitExpression.Smile => ADVAsset.SupCal_smileADV ?? ADVAsset.SupCalADV,
@@ -310,16 +369,28 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         #region 更新逻辑
         public override void Update() {
-            if (!Main.gameMenu) {
+            if (!Main.gameMenu || !IsResourceLoaded()) {
                 _iconAlpha = 0f;
                 _portraitAlpha = 0f;
                 _expressionButtonAlpha = 0f;
+                _draggingLeftPortrait = false;
+                _draggingRightPortrait = false;
                 return;
             }
 
-            //渐入效果
-            if (_iconAlpha < 1f) {
-                _iconAlpha += 0.02f;
+            // 进入子菜单时快速淡出图标（但保留立绘显示）
+            if (!ShouldShowIcon()) {
+                if (_iconAlpha > 0f) {
+                    _iconAlpha -= 0.1f; // 快速淡出
+                    if (_iconAlpha < 0f) _iconAlpha = 0f;
+                }
+                // 注意：立绘和表情按钮继续更新，不受子菜单影响
+            }
+            else {
+                // 仅在主菜单时渐入图标
+                if (_iconAlpha < 1f) {
+                    _iconAlpha += 0.02f;
+                }
             }
 
             //表情按钮渐入效果
@@ -330,7 +401,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _expressionButtonAlpha -= 0.05f;
             }
 
-            //立绘过渡
+            //立绘过渡（不受子菜单影响）
             if (_showFullPortrait) {
                 if (_portraitAlpha < 1f) {
                     _portraitAlpha += 0.05f;
@@ -365,7 +436,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void UpdateInteraction() {
-            bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint());
+            bool hoverIcon = ShouldShowIcon() && IconHitBox.Contains(MousePosition.ToPoint());
             bool hoverExpressionButton = _showFullPortrait && ExpressionButtonHitBox.Contains(MousePosition.ToPoint());
             bool hoverLeftPortrait = _showFullPortrait && LeftPortraitHitBox.Contains(MousePosition.ToPoint());
             bool hoverRightPortrait = _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint());
@@ -389,7 +460,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                     _dragStartOffset = _rightPortraitOffset;
                 }
                 else if (hoverIcon && !_draggingLeftPortrait && !_draggingRightPortrait) {
-                    //点击头像框：切换立绘显示/隐藏
+                    //点击头像框：切换立绘显示/隐藏（仅在主菜单可用）
                     _showFullPortrait = !_showFullPortrait;
                 }
                 else if (hoverExpressionButton && !_draggingLeftPortrait && !_draggingRightPortrait) {
@@ -460,13 +531,14 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private bool CanInteract() {
+            // 立绘和表情按钮始终可以交互，图标仅在主菜单可交互
             return !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         }
         #endregion
 
         #region 绘制
         public override void Draw(SpriteBatch spriteBatch) {
-            if (_iconAlpha <= 0.01f) {
+            if (!IsResourceLoaded()) {
                 return;
             }
 
@@ -475,18 +547,20 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 DrawPortraits(spriteBatch);
             }
 
-            //绘制头像框
-            DrawIconFrame(spriteBatch);
+            if (_iconAlpha > 0.01f) {
+                //绘制头像框
+                DrawIconFrame(spriteBatch);
 
-            //绘制表情切换按钮
-            if (_expressionButtonAlpha > 0.01f) {
-                DrawExpressionButton(spriteBatch);
+                //绘制表情切换按钮
+                if (_expressionButtonAlpha > 0.01f) {
+                    DrawExpressionButton(spriteBatch);
+                }
             }
         }
 
         private void DrawPortraits(SpriteBatch spriteBatch) {
             Texture2D portraitTex = GetCurrentPortraitTexture();
-            if (portraitTex == null) {
+            if (portraitTex == null || portraitTex.IsDisposed) {
                 return;
             }
 
@@ -521,9 +595,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
             Vector2 drawPos = GetLeftPortraitPosition(tex);
 
-            //计算裁剪区域（只显示上半身，裁剪腿部）
-            int displayHeight = (int)(tex.Height * (1f - LeftPortraitCropBottom));
-            Rectangle sourceRect = new Rectangle(0, 0, tex.Width, displayHeight);
+            Rectangle sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
 
             //拖动时的高亮效果
             float dragHighlight = _draggingLeftPortrait ? 1.1f : 1f;
@@ -631,7 +703,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
-            if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
+            // 双重检查资源有效性
+            if (!IsResourceLoaded()) {
                 return;
             }
 
