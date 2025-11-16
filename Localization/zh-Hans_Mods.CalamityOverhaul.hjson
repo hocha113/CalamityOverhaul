@@ -6990,4 +6990,10 @@ ADV: {
 		Acceptance1BossRush: 这大概，就是我的最终归宿吧
 		Acceptance2BossRush: 祝你好运，杂鱼
 	}
+
+	DyeProtest: {
+		R1: 比目鱼
+		L1: 老实说，我并不喜欢那些鲜艳的颜色
+		L2: 洗掉好吗？放染缸里，然后用那个水桶
+	}
 }

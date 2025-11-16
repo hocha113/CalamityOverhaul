@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.ADV
         /// </summary>
         protected virtual void OnScenarioComplete() { }
 
-        protected LocalizedText AddLocalized(string key, string text) {
+        protected LocalizedText Localized(string key, string text) {
             if (LocalizedTextDic.TryGetValue(key, out var localizedText)) {
                 return localizedText;
             }
@@ -113,8 +113,8 @@ namespace CalamityOverhaul.Content.ADV
         /// <summary>
         /// 添加一条简单对话
         /// </summary>
-        public void AddLineFromKey(string speaker, string key) {
-            lines.Add(new DialogueLine(speaker, LocalizedTextDic[key].Value));
+        public void AddLineFromKey(string speakerKey, string key) {
+            lines.Add(new DialogueLine(LocalizedTextDic[speakerKey].Value, LocalizedTextDic[key].Value));
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.ADV
         /// 添加选项
         /// </summary>
         public DialogueLineBuilder WithChoices(params Choice[] choices) {
-            line.Choices = new List<Choice>(choices);
+            line.Choices = [.. choices];
             return this;
         }
 

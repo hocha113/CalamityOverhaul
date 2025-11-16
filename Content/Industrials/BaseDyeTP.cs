@@ -112,6 +112,18 @@ namespace CalamityOverhaul.Content.Industrials
 
         public override void MachineKill() {
             CloseDyeMachineUI();
+            if (VaultUtils.isClient) {
+                return;//客户端不处理掉落
+            }
+            if (DyeSlotItem.Alives()) {
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, DyeSlotItem);
+            }
+            if (BeDyedItem.Alives()) {
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, BeDyedItem);
+            }
+            if (ResultDyedItem.Alives()) {
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, ResultDyedItem);
+            }
         }
     }
 }

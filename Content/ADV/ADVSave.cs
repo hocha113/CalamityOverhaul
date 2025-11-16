@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.ADV
     internal class ADVSave
     {
         public bool FirstMet;
+        public bool DyeProtest;
         public bool FishoilQuestDeclined;
         public bool FishoilQuestAccepted;
         public bool FishoilQuestCompleted;

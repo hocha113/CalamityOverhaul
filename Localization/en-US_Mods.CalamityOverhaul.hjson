@@ -7028,4 +7028,10 @@ ADV: {
 		Acceptance1BossRush: Perhaps… this is where I was always meant to end.
 		Acceptance2BossRush: Good luck… small fry.
 	}
+
+	DyeProtest: {
+		R1: Halibut
+		L1: Honestly, I don't really like wearing those bright colors.
+		L2: Get it washed off, will you? Put it in the dye vat, then use that water bucket.
+	}
 }
