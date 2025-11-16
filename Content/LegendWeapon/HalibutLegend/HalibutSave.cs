@@ -81,7 +81,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     tag["ADCSave"] = hPlayer.ADCSave.SaveData();
                     tag["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
 
-                    MenuSave.SaveByADV(hPlayer.ADCSave, hPlayer.Player);
+                    //检查是否达成永恒燃烧的现在结局并解锁主菜单立绘
+                    if (hPlayer.ADCSave.EternalBlazingNow) {
+                        MenuSave.UnlockEternalBlazingNowPortrait(Player);
+                    }
                 }
 
                 foreach (var scenario in ADVScenarioBase.Instances) {
@@ -123,7 +126,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     //加载ADCSave数据
                     if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
                         halibutPlayer.ADCSave.LoadData(adcTag);
-                        MenuSave.LoadByADV(halibutPlayer.ADCSave, halibutPlayer.Player);
+                        //检查是否已达成永恒燃烧的现在结局
+                        if (halibutPlayer.ADCSave.EternalBlazingNow) {
+                            MenuSave.UnlockEternalBlazingNowPortrait(Player);
+                        }
                     }
                     //加载锁定时间
                     if (tag.TryGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {

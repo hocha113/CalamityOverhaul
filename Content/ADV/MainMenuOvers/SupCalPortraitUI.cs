@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// </summary>
         private enum PortraitExpression
         {
-            Default,    // 默认表情
-            CloseEyes,  // 闭眼
-            Smile       // 微笑
+            Default,    //默认表情
+            CloseEyes,  //闭眼
+            Smile       //微笑
         }
 
         private PortraitExpression _currentExpression = PortraitExpression.Default;
@@ -73,6 +73,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         //图标间距（两个图标之间的距离）
         private const float IconSpacing = 95f;
+
+        //自动保存计时器
+        private int _autoSaveTimer = 0;
+        private const int AutoSaveInterval = 300; //5秒自动保存一次 (60帧*5秒)
+        private bool _needsSave = false; //标记是否需要保存
 
         private Vector2 IconPosition => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 - IconSpacing / 2,
@@ -130,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
         //确保资源已加载
-        public override bool Active => MenuSave.UsePortraitUI() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
+        public override bool Active => MenuSave.IsPortraitUnlocked() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
         //检查资源是否已正确加载
         private static bool IsResourceLoaded() {
@@ -288,13 +293,21 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _wispSpawnTimer = 0;
             _draggingLeftPortrait = false;
             _draggingRightPortrait = false;
+            _autoSaveTimer = 0;
+            _needsSave = false;
+
+            //加载保存的状态
+            LoadSavedState();
         }
 
         public override void UnLoad() {
+            //卸载前保存当前状态
+            SaveCurrentState();
+
             _embers?.Clear();
             _flameWisps?.Clear();
 
-            // 重置所有状态
+            //重置所有状态
             _iconAlpha = 0f;
             _portraitAlpha = 0f;
             _showFullPortrait = false;
@@ -305,6 +318,52 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _draggingLeftPortrait = false;
             _draggingRightPortrait = false;
         }
+
+        /// <summary>
+        /// 从MenuSave加载保存的UI状态
+        /// </summary>
+        public void LoadSavedState() {
+            //加载表情状态
+            int savedExpression = MenuSave.SupCal_Expression;
+            _currentExpression = savedExpression switch {
+                1 => PortraitExpression.CloseEyes,
+                2 => PortraitExpression.Smile,
+                _ => PortraitExpression.Default
+            };
+
+            //加载立绘位置
+            _leftPortraitOffset = MenuSave.SupCal_LeftPortraitOffset;
+            _rightPortraitOffset = MenuSave.SupCal_RightPortraitOffset;
+            _showFullPortrait = MenuSave.SupCal_ShowFullPortrait;
+
+            _needsSave = false;
+        }
+
+        /// <summary>
+        /// 保存当前UI状态到MenuSave
+        /// </summary>
+        public void SaveCurrentState() {
+            if (!_needsSave) {
+                return;
+            }
+
+            int expressionValue = _currentExpression switch {
+                PortraitExpression.CloseEyes => 1,
+                PortraitExpression.Smile => 2,
+                _ => 0
+            };
+
+            MenuSave.SaveSupCalPortraitState(expressionValue, _leftPortraitOffset, _rightPortraitOffset, _showFullPortrait);
+            _needsSave = false;
+        }
+
+        /// <summary>
+        /// 标记需要保存
+        /// </summary>
+        private void MarkNeedsSave() {
+            _needsSave = true;
+            _autoSaveTimer = 0; //重置自动保存计时器
+        }
         #endregion
 
         #region 立绘管理
@@ -312,7 +371,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// 获取当前表情对应的立绘纹理
         /// </summary>
         private Texture2D GetCurrentPortraitTexture() {
-            // 确保资源已加载
+            //确保资源已加载
             if (!IsResourceLoaded()) {
                 return null;
             }
@@ -335,6 +394,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _ => PortraitExpression.Default
             };
             SoundEngine.PlaySound(SoundID.MenuTick);
+            
+            //表情改变时标记需要保存
+            MarkNeedsSave();
         }
 
         /// <summary>
@@ -378,10 +440,19 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
+            //自动保存逻辑
+            if (_needsSave) {
+                _autoSaveTimer++;
+                if (_autoSaveTimer >= AutoSaveInterval) {
+                    SaveCurrentState();
+                    _autoSaveTimer = 0;
+                }
+            }
+
             //进入子菜单时快速淡出图标（但保留立绘显示）
             if (!ShouldShowIcon()) {
                 if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; // 快速淡出
+                    _iconAlpha -= 0.1f; //快速淡出
                     if (_iconAlpha < 0f) _iconAlpha = 0f;
                 }
                 //注意：立绘和表情按钮继续更新，不受子菜单影响
@@ -449,6 +520,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             bool hoverRightPortrait = ShouldShowIcon() && _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint()) && !hoverIcon && !hoverExpressionButton;
 
             if (!CanInteract()) {
+                //如果正在拖动，释放时保存位置
+                if (_draggingLeftPortrait || _draggingRightPortrait) {
+                    MarkNeedsSave();
+                }
                 _draggingLeftPortrait = false;
                 _draggingRightPortrait = false;
                 return;
@@ -477,6 +552,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             if (keyLeftPressState == KeyPressState.Released) {
+                //拖动结束时保存位置
+                if (_draggingLeftPortrait || _draggingRightPortrait) {
+                    MarkNeedsSave();
+                }
                 _draggingLeftPortrait = false;
                 _draggingRightPortrait = false;
             }
@@ -708,7 +787,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawIconFrame(SpriteBatch spriteBatch) {
-            // 双重检查资源有效性
+            //双重检查资源有效性
             if (!IsResourceLoaded()) {
                 return;
             }

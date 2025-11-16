@@ -37,10 +37,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private const float IconBottomMargin = 46f;
         private const float IconSpacing = 95f; //与女巫头像的间距
 
+        //立绘偏移（用于拖动功能的预留）
+        private Vector2 _portraitOffset = Vector2.Zero;
+
+        //自动保存计时器
+        private int _autoSaveTimer = 0;
+        private const int AutoSaveInterval = 300; // 5秒自动保存一次
+        private bool _needsSave = false;
+
         private Vector2 IconPosition => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 + IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
-        );
+        ) + _portraitOffset;
 
         private Rectangle IconHitBox => new Rectangle(
             (int)IconPosition.X,
@@ -52,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
         //确保资源已加载
-        public override bool Active => MenuSave.UsePortraitUI() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
+        public override bool Active => MenuSave.IsPortraitUnlocked() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
         //检查资源是否已正确加载
         private static bool IsResourceLoaded() {
@@ -182,19 +190,49 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _pulseTimer = 0f;
             _bubbleSpawnTimer = 0;
             _rippleSpawnTimer = 0;
+            _portraitOffset = Vector2.Zero;
+            _autoSaveTimer = 0;
+            _needsSave = false;
+
+            //加载保存的状态
+            LoadSavedState();
         }
 
         public override void UnLoad() {
+            // 卸载前保存当前状态
+            SaveCurrentState();
+
             _bubbles?.Clear();
             _ripples?.Clear();
 
-            //重置所有状态
+            // 重置所有状态
             _iconAlpha = 0f;
             _unlocked = false;
             _unlockProgress = 0f;
             _waveTimer = 0f;
             _bubbleTimer = 0f;
             _pulseTimer = 0f;
+        }
+
+        /// <summary>
+        /// 从MenuSave加载保存的UI状态
+        /// </summary>
+        public void LoadSavedState() {
+            // 加载立绘位置
+            _portraitOffset = MenuSave.Helen_PortraitOffset;
+            _needsSave = false;
+        }
+
+        /// <summary>
+        /// 保存当前UI状态到MenuSave
+        /// </summary>
+        public void SaveCurrentState() {
+            if (!_needsSave) {
+                return;
+            }
+
+            MenuSave.SaveHelenPortraitState(_portraitOffset);
+            _needsSave = false;
         }
         #endregion
 
@@ -225,16 +263,25 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
+            // 自动保存逻辑
+            if (_needsSave) {
+                _autoSaveTimer++;
+                if (_autoSaveTimer >= AutoSaveInterval) {
+                    SaveCurrentState();
+                    _autoSaveTimer = 0;
+                }
+            }
+
             // 进入子菜单时快速淡出图标
             if (!ShouldShowIcon()) {
                 if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; // 快速淡出
+                    _iconAlpha -= 0.1f; //快速淡出
                     if (_iconAlpha < 0f) _iconAlpha = 0f;
                 }
-                return; // 在子菜单中不更新其他逻辑
+                return; //在子菜单中不更新其他逻辑
             }
 
-            //渐入效果（仅在主菜单）
+            //渐入效果
             if (_iconAlpha < 1f) {
                 _iconAlpha += 0.02f;
             }
@@ -259,7 +306,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             //更新粒子
             UpdateParticles();
 
-            //检测点击（仅在主菜单且可交互时）
+            //检测点击
             if (CanInteract() && IconHitBox.Contains(MousePosition.ToPoint())) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     OnIconClicked();
