@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     CWRRef.SetDraedonDefeatTimer(npc, maxTime);
                 }
             }
-            else if (timer > 220 && !CWRRef.HasExo()) {//如果哔哔完了就快滚蛋
+            else if (!ExoMechdusaSum.AwaitSummonUIbeenGenerated && timer > 220 && !CWRRef.HasExo()) {//如果哔哔完了就快滚蛋
                 float maxTime = 30 + 150 * 8f + 120f;
                 if (CWRRef.GetDraedonDefeatTimer(npc) < maxTime) {
                     CWRRef.SetDraedonDefeatTimer(npc, maxTime);

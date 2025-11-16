@@ -474,7 +474,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override bool Alive(Player player) {
             //已经完成'永恒燃烧'结局，并且处于BossRush模式下，且SupCal正在场上时才会触发这些台词
-            return EbnPlayer.OnEbn(player)
+            return ModifySupCalNPC.SetAIState() && EbnPlayer.OnEbn(player)
                 && ModifySupCalNPC.TrueBossRushStateByAI
                 && NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas);
         }

@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 return false;
             }
         }
+        /// <summary>
+        /// 是否等待机甲选择UI生成完毕
+        /// </summary>
+        public static bool AwaitSummonUIbeenGenerated;
         public static bool CountDown;
         public static int CountDownTimer;
 
@@ -65,6 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         private const string alt = " " + " ";
 
         void IWorldInfo.OnWorldLoad() {
+            AwaitSummonUIbeenGenerated = false;
             SimpleMode = false;
             CountDown = false;
             CountDownTimer = 0;
@@ -101,6 +106,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             if (!CompatibleMode) {
                 ExoMechdusaSumRender.RegisterHoverEffects();
             }
+
+            AwaitSummonUIbeenGenerated = true;
         }
 
         protected override void OnScenarioComplete() {
@@ -108,6 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.FristExoMechdusaSum = true;//标记已触发机甲嘉登场景
             }
+            AwaitSummonUIbeenGenerated = false;
             SimpleMode = false;
             CountDown = false;
             CountDownTimer = 0;
@@ -196,6 +204,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 Complete();
                 ADVChoiceBox.Hide();//手动清理选项框
                 DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
+            }
+            if (AwaitSummonUIbeenGenerated && CWRRef.HasExo()) {
+                AwaitSummonUIbeenGenerated = false;
             }
         }
 

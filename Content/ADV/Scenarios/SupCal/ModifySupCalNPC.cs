@@ -193,17 +193,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             CWRRef.SetBossRushActive(originallyBossRush);
         }
 
-        public override bool AI() {
-            originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
-            originallyBossRush = CWRRef.GetBossRushActive();
-            if (originallyBossRush) {
-                if (EbnPlayer.OnEbn(Main.player[npc.target]) && CWRRef.GetSupCalGiveUpCounter(npc) > 0) {
-                    CWRRef.SetDownedCalamitas(false);//设置为未击败，这样可以恢复初次见面的场景
-                    CWRRef.SetBossRushActive(false);
-                    TrueBossRushStateByAI = true;
-                }
-                return true;
+        /// <summary>
+        /// 设置AI状态，决定是否启用修改逻辑
+        /// </summary>
+        /// <returns></returns>
+        internal static bool SetAIState() {
+            if (ModGanged.InfernumModeOpenState) {
+                return false;
             }
+            return true;
+        }
+
+        public override bool AI() {
+            if (SetAIState()) {
+                originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
+                originallyBossRush = CWRRef.GetBossRushActive();
+                if (originallyBossRush) {
+                    if (EbnPlayer.OnEbn(Main.player[npc.target]) && CWRRef.GetSupCalGiveUpCounter(npc) > 0) {
+                        CWRRef.SetDownedCalamitas(false);//设置为未击败，这样可以恢复初次见面的场景
+                        CWRRef.SetBossRushActive(false);
+                        TrueBossRushStateByAI = true;
+                    }
+                    return true;
+                }
+            }
+            
             foreach (var p in Main.ActivePlayers) {
                 //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
                 if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
@@ -214,17 +228,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return false;
                 }
             }
-            return base.AI();
+
+            return true;
         }
 
         public override void PostAI() {
+            if (SetAIState()) {
+                CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
+                CWRRef.SetBossRushActive(originallyBossRush);
+            }
+
             if (EbnEffect.IsActive) {
                 if (CWRRef.GetSupCalGiveUpCounter(npc) < 120) {
                     CWRRef.SetSupCalGiveUpCounter(npc, 120);
                 }
             }
-            CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
-            CWRRef.SetBossRushActive(originallyBossRush);
+            
             TrueBossRushStateByAI = false;
         }
 
