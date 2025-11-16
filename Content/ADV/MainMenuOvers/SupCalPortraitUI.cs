@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV;
+﻿using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
     /// 女巫立绘UI，主菜单显示
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
             
             Vector2 basePos = new Vector2(
-                Main.screenWidth * LeftPortraitXRatio - (tex.Width * scale) / 2,
+                Main.screenWidth * LeftPortraitXRatio - tex.Width * scale / 2,
                 Main.screenHeight - displayHeight - 140
             );
             
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
             
             Vector2 basePos = new Vector2(
-                Main.screenWidth * RightPortraitXRatio - (tex.Width * scale) / 2 - 300,
+                Main.screenWidth * RightPortraitXRatio - tex.Width * scale / 2 - 300,
                 Main.screenHeight - tex.Height * scale - 220
             );
             

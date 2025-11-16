@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,7 +8,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
     /// 比目鱼小姐立绘UI，深海风格，主菜单显示
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         );
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu;
+        public override bool Active => false && CWRLoad.OnLoadContentBool && Main.gameMenu;
 
         #endregion
 
