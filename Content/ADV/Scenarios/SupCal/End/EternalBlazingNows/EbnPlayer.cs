@@ -15,9 +15,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// </summary>
         public bool IsEbn => OnEbn(Player);
 
-        public static bool OnEbn(Player player) => player.TryGetADVSave(out var save) && save.EternalBlazingNow;
-        public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
-
         #region 数据字段
         private readonly List<AuraParticleData> auraParticles = [];
         private float auraPhase = 0f;
@@ -36,6 +33,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             public Color Color;
         }
         #endregion
+
+        public static bool OnEbn(Player player) => player.TryGetADVSave(out var save) && save.EternalBlazingNow;
+        public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
 
         public override void ResetEffects() {
             if (!IsEbn) {

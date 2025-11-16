@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
+using Terraria;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
@@ -102,6 +105,39 @@ namespace CalamityOverhaul.Content.ADV
                         field.SetValue(this, intValue);
                     }
                 }
+            }
+        }
+
+        public void SendEbnData(Player player) {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.EbnTag);
+            modPacket.Write(player.whoAmI);
+            modPacket.Write(EternalBlazingNow);
+            modPacket.Send();
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (type == CWRMessageType.EbnTag) {
+                int playerIndex = reader.ReadInt32();
+                bool eternalBlazingNow = reader.ReadBoolean();
+                if (!playerIndex.TryGetPlayer(out var player)) {
+                    return;
+                }
+                if (!player.TryGetADVSave(out var save)) {
+                    return;
+                }
+                save.EternalBlazingNow = eternalBlazingNow;
+                if (!VaultUtils.isServer) {
+                    return;
+                }
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.EbnTag);
+                modPacket.Write(player.whoAmI);
+                modPacket.Write(eternalBlazingNow);
+                modPacket.Send(-1, whoAmI);
             }
         }
     }

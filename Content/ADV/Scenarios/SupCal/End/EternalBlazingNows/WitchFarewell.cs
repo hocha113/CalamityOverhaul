@@ -158,6 +158,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             );
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.EternalBlazingNow = true;//标记达成永恒燃烧的现在结局
+                save.SendEbnData(Main.LocalPlayer);//同步数据
             }
         }
     }

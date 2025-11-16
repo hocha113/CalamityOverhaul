@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
@@ -28,6 +29,7 @@ namespace CalamityOverhaul
         TzeentchEffect,
         SignalTowerTargetManager,
         SetNPCLoot,
+        EbnTag,
     }
 
     public static class CWRNetWork
@@ -67,6 +69,7 @@ namespace CalamityOverhaul
             DraedonEffect.NetHandle(type, reader, whoAmI);
             TzeentchEffect.NetHandle(type, reader, whoAmI);
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
+            ADVSave.NetHandle(type, reader, whoAmI);
         }
     }
 }
