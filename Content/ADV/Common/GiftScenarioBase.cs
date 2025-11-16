@@ -39,10 +39,6 @@ namespace CalamityOverhaul.Content.ADV.Common
         /// </summary>
         private readonly static Dictionary<string, int> pendingTimers = [];
         /// <summary>
-        /// 本场景的本地化类别
-        /// </summary>
-        public string LocalizationCategory => "ADV";
-        /// <summary>
         /// 目标Boss的NPC ID
         /// </summary>
         public abstract int TargetBossID { get; }

@@ -36,7 +36,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public static LocalizedText Line19 { get; private set; }
         public static LocalizedText Line20 { get; private set; }
         public static LocalizedText Line21 { get; private set; }
-        public string LocalizationCategory => "ADV";
         //设置场景默认使用海洋风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
         private const string enjoy = " ";

@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
     internal class FirstMetSupCal : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public override string Key => nameof(FirstMetSupCal);
-        public string LocalizationCategory => "ADV";
         /// <summary>
         /// 玩家是否选择了战斗，并且正在进入战斗场景
         /// </summary>

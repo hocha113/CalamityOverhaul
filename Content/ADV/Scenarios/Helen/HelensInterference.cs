@@ -16,9 +16,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
     /// </summary>
     internal class HelensInterference : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public override string Key => nameof(HelensInterference);
-        public string LocalizationCategory => "ADV";
-
         public static int DelayTimer;
 
         //角色名称本地化
@@ -175,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Inquiry);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "ADV.HelensInterference";
+            public override string LocalizationCategory => "ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -219,7 +216,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Anger);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "ADV.HelensInterference";
+            public override string LocalizationCategory => "ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -263,7 +260,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(Branch_Silence);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "ADV.HelensInterference";
+            public override string LocalizationCategory => "ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -307,7 +304,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(FinalBranch_Continue);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "ADV.HelensInterference";
+            public override string LocalizationCategory => "ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
@@ -355,7 +352,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         {
             public override string Key => nameof(FinalBranch_Stop);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
-            public string LocalizationCategory => "ADV.HelensInterference";
+            public override string LocalizationCategory => "ADV.HelensInterference";
             //本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }

@@ -14,9 +14,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
     /// </summary>
     internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public override string Key => nameof(FishoilQuestScenario);
-        public string LocalizationCategory => "ADV";
-
         //触发控制
         public static bool Spwand;//外部可置 true 来允许尝试触发
         private static bool scenarioStarted;//已进入对话(等待玩家选择)

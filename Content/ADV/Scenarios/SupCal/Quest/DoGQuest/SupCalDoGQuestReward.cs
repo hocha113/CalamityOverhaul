@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     /// </summary>
     internal class SupCalDoGQuestReward : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupCalDoGQuestReward);
-        public string LocalizationCategory => "ADV";
-
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
         public static bool Spawned = false;

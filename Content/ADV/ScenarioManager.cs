@@ -2,6 +2,8 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.Collections.Generic;
+using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
@@ -37,8 +39,9 @@ namespace CalamityOverhaul.Content.ADV
         }
     }
 
-    internal abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario
+    internal abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario, ILocalizedModType
     {
+        public virtual string LocalizationCategory => "ADV";
         /// <summary>
         /// 场景唯一标识符
         /// </summary>
@@ -55,7 +58,10 @@ namespace CalamityOverhaul.Content.ADV
         /// 对话行列表
         /// </summary>
         private readonly List<DialogueLine> lines = new();
-
+        /// <summary>
+        /// 本场景使用的本地化文本字典
+        /// </summary>
+        protected Dictionary<string, LocalizedText> LocalizedTextDic { get; private set; } = [];
         /// <summary>
         /// 场景级别的默认对话框样式，如果不设置则使用全局默认
         /// </summary>
@@ -70,6 +76,15 @@ namespace CalamityOverhaul.Content.ADV
         /// 场景完成时触发
         /// </summary>
         protected virtual void OnScenarioComplete() { }
+
+        protected LocalizedText AddLocalized(string key, string text) {
+            if (LocalizedTextDic.TryGetValue(key, out var localizedText)) {
+                return localizedText;
+            }
+            localizedText = this.GetLocalization(key, () => text);
+            LocalizedTextDic[key] = localizedText;
+            return localizedText;
+        }
 
         protected abstract void Build();
 
@@ -93,6 +108,13 @@ namespace CalamityOverhaul.Content.ADV
         public bool StartScenario() {
             ScenarioManager.Reset(Key);
             return ScenarioManager.Start(Key);
+        }
+
+        /// <summary>
+        /// 添加一条简单对话
+        /// </summary>
+        public void AddLineFromKey(string speaker, string key) {
+            lines.Add(new DialogueLine(speaker, LocalizedTextDic[key].Value));
         }
 
         /// <summary>

@@ -13,9 +13,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
     /// </summary>
     internal class QuestCompleteScenario : ADVScenarioBase, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
-        public override string Key => nameof(QuestCompleteScenario);
-
         //角色名称本地化
         public static LocalizedText DraedonName { get; private set; }
 

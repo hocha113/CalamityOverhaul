@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
     /// </summary>
     internal class ExoMechThirdDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public string LocalizationCategory => "ADV";
-        public override string Key => nameof(ExoMechThirdDefeat);
         public override bool CanRepeat => false;
 
         //½ÇÉ«Ãû³Æ

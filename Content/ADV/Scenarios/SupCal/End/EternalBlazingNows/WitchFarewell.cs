@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText FarewellLine10 { get; private set; }
         public static LocalizedText FarewellLine11 { get; private set; }
         private static bool HasHalibut;
-        public string LocalizationCategory => "ADV.EternalBlazingNow";
+        public override string LocalizationCategory => "ADV.EternalBlazingNow";
 
         void IWorldInfo.OnWorldLoad() {
             Spwan = false;

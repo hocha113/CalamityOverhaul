@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 {
     internal class DeploySignaltowerScenario : ADVScenarioBase, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
-        public override string Key => nameof(DeploySignaltowerScenario);
-
         public static bool Spawn { get; private set; }
         public static int RandTimer { get; private set; }
 
@@ -155,7 +152,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public class Choice_Accept : ADVScenarioBase, ILocalizedModType
         {
-            public string LocalizationCategory => "ADV.DeploySignaltowerScenario";
+            public override string LocalizationCategory => "ADV.DeploySignaltowerScenario";
             public override string Key => nameof(Choice_Accept);
             public static LocalizedText AcceptResponse { get; private set; }
             public static LocalizedText L1 { get; private set; }
@@ -208,7 +205,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public class Choice_Decline : ADVScenarioBase, ILocalizedModType
         {
-            public string LocalizationCategory => "ADV.DeploySignaltowerScenario";
+            public override string LocalizationCategory => "ADV.DeploySignaltowerScenario";
             public override string Key => nameof(Choice_Decline);
             public static LocalizedText DeclineResponse { get; private set; }
             //设置场景默认使用嘉登科技风格

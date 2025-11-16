@@ -11,9 +11,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
     /// </summary>
     internal class ExoMechEndingDialogue : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public string LocalizationCategory => "ADV";
-        public override string Key => nameof(ExoMechEndingDialogue);
-
         //允许重复播放（用于击杀尝试后重新播放正常结束）
         public override bool CanRepeat => true;
 

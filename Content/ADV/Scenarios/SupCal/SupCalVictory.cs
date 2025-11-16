@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
     /// </summary>
     internal class SupCalVictory : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupCalVictory);
-        public string LocalizationCategory => "ADV";
-
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
         public static LocalizedText Rolename1 { get; private set; }

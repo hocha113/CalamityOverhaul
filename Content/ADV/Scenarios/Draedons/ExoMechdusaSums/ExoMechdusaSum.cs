@@ -10,9 +10,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
     internal class ExoMechdusaSum : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public string LocalizationCategory => "ADV";
-        public override string Key => nameof(ExoMechdusaSum);
-
         //角色名称本地化
         public static LocalizedText DraedonName { get; private set; }
 

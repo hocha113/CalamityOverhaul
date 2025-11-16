@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        public void LogicUpdate() {
+        public new void LogicUpdate() {
             //更新通用动画计时器
             wavePhase += 0.02f;
             abyssPulse += 0.013f;

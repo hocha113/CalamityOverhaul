@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
 {
     internal class FirstMetTzeentch : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public string LocalizationCategory => "ADV";
         private const string Rolename1 = "?????????????????????";
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => TzeentchDialogueBox.Instance;
 

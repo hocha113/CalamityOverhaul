@@ -13,9 +13,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     /// </summary>
     internal class EternalBlazingNow : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(EternalBlazingNow);
-        public string LocalizationCategory => "ADV";
-
         //角色名称
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
@@ -223,7 +220,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             public static LocalizedText EpilogueLine2 { get; private set; }
             public static LocalizedText EpilogueLine3 { get; private set; }
 
-            public string LocalizationCategory => "ADV.EternalBlazingNow";
+            public override string LocalizationCategory => "ADV.EternalBlazingNow";
 
             public override void SetStaticDefaults() {
                 EpilogueLine1 = this.GetLocalization(nameof(EpilogueLine1), () => "我在等一个笨蛋");

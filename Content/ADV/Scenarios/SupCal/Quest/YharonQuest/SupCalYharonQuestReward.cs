@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
     /// </summary>
     internal class SupCalYharonQuestReward : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupCalYharonQuestReward);
-        public string LocalizationCategory => "ADV";
-
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
         public static bool Spawned = false;

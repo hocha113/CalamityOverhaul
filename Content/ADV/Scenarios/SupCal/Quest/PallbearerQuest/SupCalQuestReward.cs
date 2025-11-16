@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     /// </summary>
     internal class SupCalQuestReward : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupCalQuestReward);
-        public string LocalizationCategory => "ADV";
-
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
         public static bool Spawned = false;

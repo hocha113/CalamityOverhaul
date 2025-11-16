@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
     internal class SupCalDefeat : ADVScenarioBase, ILocalizedModType//彩蛋章
     {
-        public override string Key => nameof(SupCalDefeat);
-        public string LocalizationCategory => "ADV";
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
         //角色名称本地化

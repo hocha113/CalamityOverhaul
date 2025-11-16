@@ -8,8 +8,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
     internal class HellGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(HellGift);
-        public string LocalizationCategory => "ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0;
         public static LocalizedText L1;
