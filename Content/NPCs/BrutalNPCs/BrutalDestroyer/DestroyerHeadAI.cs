@@ -388,8 +388,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             int index = npc.whoAmI;
-            int oldIndex = npc.whoAmI;
-            for (int i = 0; i < 88; i++) {
+            int oldIndex;
+            for (int i = 0; i < 68; i++) {
                 oldIndex = index;
                 index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
                     , i == 87 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody
