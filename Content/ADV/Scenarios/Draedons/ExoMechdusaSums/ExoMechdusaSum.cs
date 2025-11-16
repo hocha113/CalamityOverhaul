@@ -44,13 +44,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         public static bool CompatibleMode {
             get {
                 if (CWRMod.Instance.fargowiltasCrossmod != null) {
-                    return true;//操你妈FargowiltasCrossmod
+                    return true;//我爱你FargowiltasCrossmod
                 }
                 if (CWRMod.Instance.infernum != null && ModGanged.InfernumModeOpenState) {
-                    return true;//操你妈InfernumMode
+                    return true;//我爱你InfernumMode
                 }
                 if (CWRMod.Instance.woTM != null) {
-                    return true;//操你妈WoTM
+                    return true;//我爱你WoTM
                 }
                 return false;
             }
