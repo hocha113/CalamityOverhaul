@@ -125,6 +125,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (CWRWorld.HasBoss || CWRWorld.BossRush) {
                 return;//有Boss战斗时不触发
             }
+            if (NPC.AnyNPCs(CWRID.NPC_Draedon)) {
+                return;//嘉登存在时不触发
+            }
             if (--RandTimer > 0) {
                 return;//等待计时器
             }

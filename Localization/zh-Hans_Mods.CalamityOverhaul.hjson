@@ -1378,8 +1378,8 @@ Items: {
 			使用以联络嘉登，开启嘉登工业的全息购物界面
 			"友情提醒：不支持赊账"
 			'''
-		// NeedSignalTowersText: Entanglement network incomplete! System locked until all {0} signal towers are deployed.
-		// SignalTowerProgressText: Signal Tower Deployment: {0}/{1}
+		NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
+		SignalTowerProgressText: "信号塔部署进度: {0}/{1}"
 	}
 }
 

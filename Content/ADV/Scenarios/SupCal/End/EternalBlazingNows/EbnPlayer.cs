@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,10 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
 
         #region 数据字段
-        //视觉效果数据
-        private readonly List<BrimstoneTrailData> brimstoneTrails = new();
         private readonly List<AuraParticleData> auraParticles = new();
-        private int particleSpawnTimer = 0;
         private float auraPhase = 0f;
         private float pulsePhase = 0f;
         private float wingFlamePhase = 0f;
@@ -63,7 +59,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override void ResetEffects() {
             if (!IsEbn) {
                 //重置所有效果
-                brimstoneTrails.Clear();
                 auraParticles.Clear();
             }
         }
@@ -81,9 +76,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (wingFlamePhase > MathHelper.TwoPi) wingFlamePhase -= MathHelper.TwoPi;
 
             //更新粒子
-            UpdateBrimstoneTrails();
             UpdateAuraParticles();
-            SpawnMovementParticles();
 
             //更新冷却
             if (blinkCooldown > 0) blinkCooldown--;
@@ -101,8 +94,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             mana = StatModifier.Default;
 
             if (IsEbn) {
-                //血量上限提升到220万
-                health.Base = 2200000;
+                //血量上限提升2200
+                health.Base = 2200;
                 //法力上限大幅提升
                 mana.Base = 2400;
             }
@@ -125,10 +118,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Player.statDefense += 50;           //防御力+50
             Player.GetDamage(DamageClass.Generic) += 0.5f;  //全伤害+50%
             Player.GetCritChance(DamageClass.Generic) += 50f; //暴击率+50%
-            Player.moveSpeed += 1.2f;            //移速+120%
-            Player.maxRunSpeed += 5f;           //最大奔跑速度
+            Player.moveSpeed += 0.2f;            //移速+20%
+            Player.maxRunSpeed += 2f;           //最大奔跑速度
             Player.maxFallSpeed += 1f;           //最大坠落速度
-            Player.jumpSpeedBoost += 2f;         //跳跃力
+            Player.jumpSpeedBoost += 1f;         //跳跃力
             Player.wingTimeMax = (int)(Player.wingTimeMax * 3f); //飞行时间*3
 
             //特殊能力
@@ -139,10 +132,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Player.buffImmune[BuffID.CursedInferno] = true;
             Player.buffImmune[BuffID.Burning] = true;
 
-            //生命再生
-            Player.lifeRegen += 100;             //每秒恢复50生命
-            Player.lifeRegenTime = Math.Max(Player.lifeRegenTime, 300);
-
             //法力再生
             Player.manaRegen += 50;
             Player.manaCost *= 0.5f;             //法力消耗减半
@@ -150,26 +139,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         #endregion
 
         #region 粒子效果更新
-        private void UpdateBrimstoneTrails() {
-            for (int i = brimstoneTrails.Count - 1; i >= 0; i--) {
-                var trail = brimstoneTrails[i];
-                trail.Life++;
-                trail.Position += trail.Velocity;
-                trail.Velocity *= 0.96f;
-                trail.Velocity.Y -= 0.08f; //轻微上升
-                trail.Rotation += 0.05f;
-
-                //淡出
-                if (trail.Life > trail.MaxLife * 0.6f) {
-                    trail.Alpha = MathHelper.Lerp(1f, 0f, (trail.Life - trail.MaxLife * 0.6f) / (trail.MaxLife * 0.4f));
-                }
-
-                if (trail.Life >= trail.MaxLife) {
-                    brimstoneTrails.RemoveAt(i);
-                }
-            }
-        }
-
         private void UpdateAuraParticles() {
             for (int i = auraParticles.Count - 1; i >= 0; i--) {
                 var particle = auraParticles[i];
@@ -185,115 +154,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //持续生成光环粒子
             if (Main.rand.NextBool(5)) {
                 SpawnAuraParticle();
-            }
-        }
-
-        private void SpawnMovementParticles() {
-            particleSpawnTimer++;
-
-            //行走粒子
-            if (Math.Abs(Player.velocity.X) > 0.5f && Player.velocity.Y == 0f && particleSpawnTimer % 3 == 0) {
-                SpawnFootstepParticles();
-            }
-
-            //飞行粒子
-            if (Player.wingTime > 0 && particleSpawnTimer % 2 == 0) {
-                SpawnWingParticles();
-            }
-
-            //冲刺粒子
-            if (Player.dash > 0 || Math.Abs(Player.velocity.X) > 10f) {
-                SpawnDashParticles();
-            }
-        }
-
-        private void SpawnFootstepParticles() {
-            Vector2 spawnPos = Player.Bottom + new Vector2(Main.rand.NextFloat(-8f, 8f), 0);
-
-            //硫磺火尘埃
-            for (int i = 0; i < 2; i++) {
-                Dust d = Dust.NewDustPerfect(spawnPos, (int)CalamityDusts.Brimstone,
-                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-3f, -1f)),
-                    100, default, Main.rand.NextFloat(1.5f, 2.5f));
-                d.noGravity = true;
-                d.fadeIn = 1.2f;
-            }
-
-            //红色火焰
-            if (Main.rand.NextBool(2)) {
-                Dust fire = Dust.NewDustPerfect(spawnPos, DustID.Torch,
-                    new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-2f, 0f)),
-                    100, Color.Red, 1.5f);
-                fire.noGravity = true;
-            }
-
-            //自定义拖尾
-            brimstoneTrails.Add(new BrimstoneTrailData {
-                Position = spawnPos,
-                Velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-2f, -0.5f)),
-                Life = 0,
-                MaxLife = Main.rand.NextFloat(30f, 50f),
-                Scale = Main.rand.NextFloat(1.2f, 2.0f),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                Color = Main.rand.Next(new Color[] {
-                    new Color(255, 100, 50),
-                    new Color(200, 60, 30),
-                    new Color(255, 140, 70)
-                }),
-                Alpha = 1f
-            });
-        }
-
-        private void SpawnWingParticles() {
-            //翅膀位置
-            Vector2 wingCenter = Player.Center + new Vector2(0, -10);
-            float wingSpread = 25f;
-
-            for (int i = 0; i < 2; i++) {
-                float side = i == 0 ? -1 : 1;
-                Vector2 wingPos = wingCenter + new Vector2(wingSpread * side, 0);
-
-                //火焰羽毛效果
-                Vector2 velocity = new Vector2(
-                    Main.rand.NextFloat(-2f, 2f) * side,
-                    Main.rand.NextFloat(1f, 3f)
-                );
-
-                Dust d = Dust.NewDustPerfect(wingPos, (int)CalamityDusts.Brimstone, velocity,
-                    100, default, Main.rand.NextFloat(1.8f, 2.8f));
-                d.noGravity = true;
-                d.fadeIn = 1.5f;
-
-                //金色火花
-                if (Main.rand.NextBool(3)) {
-                    Dust spark = Dust.NewDustPerfect(wingPos, DustID.Torch, velocity,
-                        100, Color.OrangeRed, 1.2f);
-                    spark.noGravity = true;
-                }
-            }
-        }
-
-        private void SpawnDashParticles() {
-            Vector2 spawnPos = Player.Center + new Vector2(
-                -Player.direction * Main.rand.NextFloat(15f, 25f),
-                Main.rand.NextFloat(-15f, 15f)
-            );
-
-            //硫磺火拖尾
-            Dust d = Dust.NewDustPerfect(spawnPos, (int)CalamityDusts.Brimstone,
-                -Player.velocity * Main.rand.NextFloat(0.2f, 0.5f),
-                100, default, Main.rand.NextFloat(2f, 3.5f));
-            d.noGravity = true;
-            d.fadeIn = 1.8f;
-
-            //火焰残影
-            if (Main.rand.NextBool(4)) {
-                for (int i = 0; i < 3; i++) {
-                    Dust fire = Dust.NewDustPerfect(spawnPos, DustID.Torch,
-                        Main.rand.NextVector2Circular(3f, 3f),
-                        100, Color.Red, 1.5f);
-                    fire.noGravity = true;
-                }
             }
         }
 
@@ -440,11 +300,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (Player.statLife < Player.statLifeMax2) {
                 Player.statLife = Math.Min(Player.statLife + healAmount, Player.statLifeMax2);
             }
-        }
-        #endregion
-
-        #region 绘制效果
-        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright) {
         }
         #endregion
     }

@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
                     if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
                         hasEbn = true;
-                        p.Teleport(Main.npc[witch].Center, 999);
+                        //p.Teleport(Main.npc[witch].Center, 999);
                     }
                 }
                 if (hasEbn) {
