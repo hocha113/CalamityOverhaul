@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Accessories;
+using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -459,6 +461,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             SetDynamicDialogue("SCalDesparationText4Rematch", () => {
                 return new DialogueOverride(Desperation4BossRush, Color.Orange);
             });
+        }
+
+        public override bool PreHandle(ref string key, ref Color color) {
+            string result = key.Split('.').Last();
+            if (result == "SCalAcceptanceText3" && !VaultUtils.isClient) {
+                VaultUtils.SpwanItem(new EntitySource_WorldEvent("BOSSRUSH"), new Item(ModContent.ItemType<Pandemonium>()));
+                return false;
+            }
+            return base.PreHandle(ref key, ref color);
         }
 
         public override bool Alive(Player player) {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -9,6 +10,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public string[] Values { get; set; }
         private int? _cachedHashCode;
         public int[] MaterialTypesCache;//缓存
+        public static void Register(string[] recipes) {
+            RecipeData recipeData = new RecipeData {
+                Values = recipes,
+                Target = VaultUtils.GetItemTypeFromFullName(recipes[^1])
+            };
+            recipeData.BuildMaterialTypesCache();
+            SupertableUI.AllRecipes.Add(recipeData);
+        }
         public void BuildMaterialTypesCache() {
             if (Values == null) {
                 return;

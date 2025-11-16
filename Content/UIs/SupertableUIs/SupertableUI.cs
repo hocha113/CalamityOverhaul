@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.UIHandles;
@@ -153,12 +154,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static void SetZenithWorldRecipesData() {
             if (Main.zenithWorld) {
                 foreach (var recipes in OtherRpsData_ZenithWorld_StringList) {
-                    RecipeData recipeData = new RecipeData {
-                        Values = recipes,
-                        Target = VaultUtils.GetItemTypeFromFullName(recipes[^1])
-                    };
-                    recipeData.BuildMaterialTypesCache();
-                    AllRecipes.Add(recipeData);
+                    RecipeData.Register(recipes);
                 }
             }
         }

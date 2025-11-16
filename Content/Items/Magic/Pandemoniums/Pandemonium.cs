@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+            SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);
         }
 
         public override void SetDefaults() {

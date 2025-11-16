@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
         //确保资源已加载
-        public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
+        public override bool Active => MenuSave.UsePortraitUI() && CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
         //检查资源是否已正确加载
         private static bool IsResourceLoaded() {
@@ -676,9 +676,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             if (hoverButton) {
                 Color hoverGlow = new Color(255, 180, 80) * (_expressionButtonAlpha * 0.4f);
                 for (int i = 0; i < 6; i++) {
-                    float angle = MathHelper.TwoPi * i / 6f + _flameTimer * 1.5f;
-                    Vector2 offset = angle.ToRotationVector2() * 5f;
-                    sb.Draw(pixel, bgRect.Location.ToVector2() + offset,
+                    sb.Draw(pixel, bgRect.Location.ToVector2(),
                         new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
                 }
             }
@@ -734,9 +732,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             if (hoverIcon) {
                 Color hoverGlow = new Color(255, 180, 80) * (_iconAlpha * 0.4f);
                 for (int i = 0; i < 6; i++) {
-                    float angle = MathHelper.TwoPi * i / 6f + _flameTimer * 1.5f;
-                    Vector2 offset = angle.ToRotationVector2() * 6f;
-                    spriteBatch.Draw(pixel, bgRect.Location.ToVector2() + offset,
+                    spriteBatch.Draw(pixel, bgRect.Location.ToVector2(),
                         new Rectangle(0, 0, bgRect.Width, bgRect.Height), hoverGlow);
                 }
             }

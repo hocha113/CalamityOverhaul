@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.MainMenuOvers;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System.Collections.Generic;
@@ -79,6 +80,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
                     tag["ADCSave"] = hPlayer.ADCSave.SaveData();
                     tag["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
+
+                    MenuSave.SaveByADV(hPlayer.ADCSave, hPlayer.Player);
                 }
 
                 foreach (var scenario in ADVScenarioBase.Instances) {
@@ -120,6 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     //加载ADCSave数据
                     if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
                         halibutPlayer.ADCSave.LoadData(adcTag);
+                        MenuSave.LoadByADV(halibutPlayer.ADCSave, halibutPlayer.Player);
                     }
                     //加载锁定时间
                     if (tag.TryGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {
