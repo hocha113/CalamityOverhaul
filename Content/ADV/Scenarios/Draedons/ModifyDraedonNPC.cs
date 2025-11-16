@@ -12,10 +12,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static int timer;
         private static bool defeat;
         private static int battleStartTime;
+        /// <summary>
+        /// 是否等待机甲选择UI生成完毕
+        /// </summary>
+        public static bool AwaitSummonUIbeenGenerated;
         public override void SetProperty() {
             timer = 0;
             defeat = false;
             battleStartTime = 0;
+            AwaitSummonUIbeenGenerated = false;
         }
         public override bool AI() {
             timer++;
@@ -85,6 +90,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             if (!VaultUtils.isServer && Main.myPlayer == npc.target) {
                 //召唤机甲对话
                 if (timer == 90) {
+                    AwaitSummonUIbeenGenerated = true;//标记开始等待生成UI
                     ScenarioManager.Reset<ExoMechdusaSum>();
                     ScenarioManager.Start<ExoMechdusaSum>();
                     battleStartTime = timer;//记录战斗开始时间
@@ -92,6 +98,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
                 //正常战败对话
                 if (CWRRef.GetDraedonDefeatTimer(npc) > 0) {
+                    AwaitSummonUIbeenGenerated = false;//如果已经是召唤了机甲后被打败了，重置等待UI生成标记
                     DefeatEvent();
                 }
             }
@@ -102,7 +109,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                     CWRRef.SetDraedonDefeatTimer(npc, maxTime);
                 }
             }
-            else if (!ExoMechdusaSum.AwaitSummonUIbeenGenerated && timer > 220 && !CWRRef.HasExo()) {//如果哔哔完了就快滚蛋
+            //首先确保战败对话结束后迅速退场
+            //这里 AwaitSummonUIbeenGenerated 是避免在一些极端情况下，机甲选择UI还没生成出来就开始计时然后强制退场
+            else if (timer > 220 && !AwaitSummonUIbeenGenerated && !CWRRef.HasExo()) {//如果哔哔完了就快滚蛋
                 float maxTime = 30 + 150 * 8f + 120f;
                 if (CWRRef.GetDraedonDefeatTimer(npc) < maxTime) {
                     CWRRef.SetDraedonDefeatTimer(npc, maxTime);
