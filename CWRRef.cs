@@ -89,6 +89,7 @@ namespace CalamityOverhaul
             }
             return 0f;
         }
+        public static bool HasExo() => Draedon.ExoMechIsPresent;
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
         }

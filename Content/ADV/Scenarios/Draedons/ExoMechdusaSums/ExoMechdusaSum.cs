@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 if (CWRMod.Instance.fargowiltasCrossmod != null) {
                     return true;//操你妈FargowiltasCrossmod
                 }
-                if (CWRMod.Instance.infernum != null) {
+                if (CWRMod.Instance.infernum != null && ModGanged.InfernumModeOpenState) {
                     return true;//操你妈InfernumMode
                 }
                 if (CWRMod.Instance.woTM != null) {
@@ -182,23 +183,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     CountDownTimer--;
                 }
                 else {
-                    if (CompatibleMode) {
-                        //兼容模式：倒计时结束后随机选择机甲，但通过原版系统
-                        ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
-                        ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
-                        SummonMech(selectedMech);
-                    }
-                    else {
-                        //正常模式：时间到，随机选择一个机甲进行召唤
-                        ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
-                        ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
-                        SummonMech(selectedMech);
-                        ADVChoiceBox.Hide();//手动清理选项框
-                    }
+                    ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
+                    ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
+                    SummonMech(selectedMech);
                     SimpleMode = false;
                     CountDown = false;
                     CountDownTimer = 0;
                 }
+            }
+            if (CompatibleMode && DraedonEffect.IsActive && CWRRef.HasExo()) {
+                //完成当前场景
+                Complete();
+                ADVChoiceBox.Hide();//手动清理选项框
+                DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
             }
         }
 
@@ -207,11 +204,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             CWRRef.SummonExo((int)mechType, Main.LocalPlayer);
             //完成当前场景
             Complete();
-
-            //如果不是兼容模式，强制关闭对话框
-            if (!CompatibleMode) {
-                DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
-            }
         }
 
         private enum ExoMechType
