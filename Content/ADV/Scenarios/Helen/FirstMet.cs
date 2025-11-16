@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 {
     internal class FirstMet : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(FirstMet);
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Line0 { get; private set; }
