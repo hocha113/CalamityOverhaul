@@ -19,23 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.SupCalYharonQuestReward;
 
         #region 数据字段
-        private readonly List<AuraParticleData> auraParticles = new();
+        private readonly List<AuraParticleData> auraParticles = [];
         private float auraPhase = 0f;
         private float pulsePhase = 0f;
         private float wingFlamePhase = 0f;
-
-        //粒子数据类
-        private class BrimstoneTrailData
-        {
-            public Vector2 Position;
-            public Vector2 Velocity;
-            public float Life;
-            public float MaxLife;
-            public float Scale;
-            public float Rotation;
-            public Color Color;
-            public float Alpha;
-        }
 
         private class AuraParticleData
         {

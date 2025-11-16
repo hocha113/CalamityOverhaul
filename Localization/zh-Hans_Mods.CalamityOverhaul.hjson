@@ -1379,7 +1379,7 @@ Items: {
 			"友情提醒：不支持赊账"
 			'''
 		NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
-		SignalTowerProgressText: "信号塔部署进度: {0}/{1}"
+		SignalTowerProgressText: 信号塔部署进度: {0}/{1}
 	}
 }
 
