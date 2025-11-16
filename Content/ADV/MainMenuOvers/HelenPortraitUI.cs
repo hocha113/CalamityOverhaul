@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         
-        // 安全的Active检查：确保资源已加载
+        //确保资源已加载
         public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
-        // 检查资源是否已正确加载
-        private bool IsResourceLoaded() {
+        //检查资源是否已正确加载
+        private static bool IsResourceLoaded() {
             return ADVAsset.HelenADV != null && !ADVAsset.HelenADV.IsDisposed;
         }
 
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// <summary>
         /// 检查图标是否应该可见（仅在主菜单显示，进入子菜单时隐藏）
         /// </summary>
-        private bool ShouldShowIcon() {
+        private static bool ShouldShowIcon() {
             return IsInMainMenu();
         }
 
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
         }
 
-        private bool CanInteract() {
+        private static bool CanInteract() {
             // 必须在主菜单才能交互
             return IsInMainMenu() && !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         }

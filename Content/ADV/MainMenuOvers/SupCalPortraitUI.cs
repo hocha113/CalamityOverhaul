@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             (int)IconSize
         );
 
-        // 表情切换按钮位置（在头像框右侧）
+        //表情切换按钮位置（在头像框右侧）
         private Vector2 ExpressionButtonPosition => new Vector2(
             IconPosition.X + ExpressionButtonSize / 2,
             IconPosition.Y - ExpressionButtonSize * 2
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             (int)ExpressionButtonSize
         );
 
-        // 左侧立绘点击区域
+        //左侧立绘点击区域
         private Rectangle LeftPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
         }
 
-        // 右侧立绘点击区域
+        //右侧立绘点击区域
         private Rectangle RightPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
@@ -129,21 +129,21 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         
-        // 安全的Active检查：确保资源已加载
+        //确保资源已加载
         public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
-        // 检查资源是否已正确加载
+        //检查资源是否已正确加载
         private static bool IsResourceLoaded() {
             if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
                 return false;
             }
             
-            // 检查主纹理是否有效
+            //检查主纹理是否有效
             if (ADVAsset.SupCalADV == null || ADVAsset.SupCalADV.IsDisposed) {
                 return false;
             }
             
-            // 检查第一个头像纹理是否有效
+            //检查第一个头像纹理是否有效
             if (ADVAsset.SupCalsADV[0] == null || ADVAsset.SupCalsADV[0].IsDisposed) {
                 return false;
             }
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         /// <summary>
-        /// 获取左侧立绘绘制位置（上半身大图）
+        /// 获取左侧立绘绘制位置，左侧大图
         /// </summary>
         private Vector2 GetLeftPortraitPosition(Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         /// <summary>
-        /// 获取右侧立绘绘制位置（全身小图）
+        /// 获取右侧立绘绘制位置，右侧小图
         /// </summary>
         private Vector2 GetRightPortraitPosition(Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
@@ -378,16 +378,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            // 进入子菜单时快速淡出图标（但保留立绘显示）
+            //进入子菜单时快速淡出图标（但保留立绘显示）
             if (!ShouldShowIcon()) {
                 if (_iconAlpha > 0f) {
                     _iconAlpha -= 0.1f; // 快速淡出
                     if (_iconAlpha < 0f) _iconAlpha = 0f;
                 }
-                // 注意：立绘和表情按钮继续更新，不受子菜单影响
+                //注意：立绘和表情按钮继续更新，不受子菜单影响
             }
             else {
-                // 仅在主菜单时渐入图标
+                //仅在主菜单时渐入图标
                 if (_iconAlpha < 1f) {
                     _iconAlpha += 0.02f;
                 }
@@ -402,12 +402,19 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             //立绘过渡（不受子菜单影响）
-            if (_showFullPortrait) {
-                if (_portraitAlpha < 1f) {
-                    _portraitAlpha += 0.05f;
-                }
+            if (_showFullPortrait) {              
                 if (_transitionProgress < 1f) {
                     _transitionProgress += 0.04f;
+                }
+                if (ShouldShowIcon()) {
+                    if (_portraitAlpha < 1f) {
+                        _portraitAlpha += 0.05f;
+                    }
+                }
+                else {
+                    if (_portraitAlpha > 0.3f) {
+                        _portraitAlpha -= 0.05f;
+                    }
                 }
             }
             else {
@@ -437,9 +444,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         private void UpdateInteraction() {
             bool hoverIcon = ShouldShowIcon() && IconHitBox.Contains(MousePosition.ToPoint());
-            bool hoverExpressionButton = _showFullPortrait && ExpressionButtonHitBox.Contains(MousePosition.ToPoint());
-            bool hoverLeftPortrait = _showFullPortrait && LeftPortraitHitBox.Contains(MousePosition.ToPoint());
-            bool hoverRightPortrait = _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint());
+            bool hoverExpressionButton = ShouldShowIcon() && _showFullPortrait && ExpressionButtonHitBox.Contains(MousePosition.ToPoint()) && !hoverIcon;
+            bool hoverLeftPortrait = ShouldShowIcon() && _showFullPortrait && LeftPortraitHitBox.Contains(MousePosition.ToPoint()) && !hoverIcon && !hoverExpressionButton;
+            bool hoverRightPortrait = ShouldShowIcon() && _showFullPortrait && RightPortraitHitBox.Contains(MousePosition.ToPoint()) && !hoverIcon && !hoverExpressionButton;
 
             if (!CanInteract()) {
                 _draggingLeftPortrait = false;
@@ -460,7 +467,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                     _dragStartOffset = _rightPortraitOffset;
                 }
                 else if (hoverIcon && !_draggingLeftPortrait && !_draggingRightPortrait) {
-                    //点击头像框：切换立绘显示/隐藏（仅在主菜单可用）
+                    //点击头像框：切换立绘显示/隐藏
                     _showFullPortrait = !_showFullPortrait;
                 }
                 else if (hoverExpressionButton && !_draggingLeftPortrait && !_draggingRightPortrait) {
@@ -530,8 +537,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
         }
 
-        private bool CanInteract() {
-            // 立绘和表情按钮始终可以交互，图标仅在主菜单可交互
+        private static bool CanInteract() {
+            //立绘和表情按钮始终可以交互，图标仅在主菜单可交互
             return !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         }
         #endregion
