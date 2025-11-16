@@ -87,10 +87,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 CWRRef.SetAbleToSelectExoMech(Main.player[npc.target], false);
             }
 
+            if (timer == 80) {
+                AwaitSummonUIbeenGenerated = true;//标记开始等待生成UI
+            }
+
             if (!VaultUtils.isServer && Main.myPlayer == npc.target) {
                 //召唤机甲对话
                 if (timer == 90) {
-                    AwaitSummonUIbeenGenerated = true;//标记开始等待生成UI
                     ScenarioManager.Reset<ExoMechdusaSum>();
                     ScenarioManager.Start<ExoMechdusaSum>();
                     battleStartTime = timer;//记录战斗开始时间
@@ -98,9 +101,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
                 //正常战败对话
                 if (CWRRef.GetDraedonDefeatTimer(npc) > 0) {
-                    AwaitSummonUIbeenGenerated = false;//如果已经是召唤了机甲后被打败了，重置等待UI生成标记
                     DefeatEvent();
                 }
+            }
+
+            if (timer > 210 && CWRRef.GetDraedonDefeatTimer(npc) > 0) {
+                AwaitSummonUIbeenGenerated = false;//如果已经是召唤了机甲后被打败了，重置等待UI生成标记
             }
 
             if (DraedonEffect.IsActive) {//哔哔完后再退场
