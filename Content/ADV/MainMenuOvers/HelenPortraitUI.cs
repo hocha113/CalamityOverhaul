@@ -1,4 +1,3 @@
-using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         );
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        
+
         //确保资源已加载
         public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
@@ -114,9 +113,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 Color core = new Color(140, 230, 255) * (alpha * 0.6f * fade);
                 Color rim = new Color(30, 100, 150) * (alpha * 0.35f * fade);
 
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), rim, 0f, 
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), rim, 0f,
                     new Vector2(0.5f, 0.5f), new Vector2(scale * 1.5f, scale * 0.5f), SpriteEffects.None, 0f);
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), core, 0f, 
+                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), core, 0f,
                     new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
             }
         }
@@ -148,23 +147,23 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 Texture2D pixel = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
-                
+
                 Color rippleColor = new Color(70, 180, 230) * (alpha * 0.4f * fade);
-                
+
                 //绘制圆环
                 int segments = 24;
                 for (int i = 0; i < segments; i++) {
                     float angle1 = MathHelper.TwoPi * i / segments;
                     float angle2 = MathHelper.TwoPi * (i + 1) / segments;
-                    
+
                     Vector2 p1 = Center + angle1.ToRotationVector2() * Radius;
                     Vector2 p2 = Center + angle2.ToRotationVector2() * Radius;
-                    
+
                     Vector2 diff = p2 - p1;
                     float length = diff.Length();
                     float rotation = diff.ToRotation();
-                    
-                    sb.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), rippleColor, rotation, 
+
+                    sb.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), rippleColor, rotation,
                         Vector2.Zero, new Vector2(length, 1.5f), SpriteEffects.None, 0f);
                 }
             }
@@ -188,8 +187,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override void UnLoad() {
             _bubbles?.Clear();
             _ripples?.Clear();
-            
-            // 重置所有状态
+
+            //重置所有状态
             _iconAlpha = 0f;
             _unlocked = false;
             _unlockProgress = 0f;
@@ -351,12 +350,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             //背景框
             Rectangle bgRect = new Rectangle(
-                (int)IconPosition.X - 5, 
+                (int)IconPosition.X - 5,
                 (int)IconPosition.Y - 5,
-                (int)IconSize + 10, 
+                (int)IconSize + 10,
                 (int)IconSize + 10
             );
-            
+
             Color bgColor = new Color(5, 20, 28) * (_iconAlpha * 0.9f);
 
             //悬停光效（深海蓝色）
@@ -384,7 +383,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             Vector2 iconDrawPos = iconCenter;
-            
+
             //未解锁时的暗化效果
             Color iconColor;
             if (_unlocked) {
@@ -446,28 +445,28 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         private void DrawUnlockEffect(SpriteBatch sb, Vector2 center, float progress) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //从中心向外扩散的光环
             int rings = 3;
             for (int i = 0; i < rings; i++) {
                 float t = (progress + i * 0.3f) % 1f;
                 float radius = 20f + t * 60f;
                 float alpha = (float)Math.Sin(t * Math.PI) * 0.6f;
-                
+
                 Color ringColor = new Color(140, 230, 255) * alpha;
-                
+
                 int segments = 24;
                 for (int s = 0; s < segments; s++) {
                     float angle1 = MathHelper.TwoPi * s / segments;
                     float angle2 = MathHelper.TwoPi * (s + 1) / segments;
-                    
+
                     Vector2 p1 = center + angle1.ToRotationVector2() * radius;
                     Vector2 p2 = center + angle2.ToRotationVector2() * radius;
-                    
+
                     Vector2 diff = p2 - p1;
                     float length = diff.Length();
                     float rotation = diff.ToRotation();
-                    
+
                     sb.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), ringColor, rotation,
                         Vector2.Zero, new Vector2(length, 2f), SpriteEffects.None, 0f);
                 }

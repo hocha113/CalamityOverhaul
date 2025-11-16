@@ -49,12 +49,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         //UI位置和尺寸
         private const float IconSize = 80f;
         private const float IconBottomMargin = 46f;
-        
+
         //左侧立绘参数（半身大图，从腰部开始裁剪）
         private const float LeftPortraitXRatio = 0.18f;
         private const float LeftPortraitScale = 2.0f;
         private const float LeftPortraitCropBottom = 0.45f;
-        
+
         //右侧立绘参数（全身小图）
         private const float RightPortraitXRatio = 0.82f;
         private const float RightPortraitScale = 0.85f;
@@ -70,10 +70,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         //表情切换按钮相关
         private const float ExpressionButtonSize = 40f;
         private float _expressionButtonAlpha = 0f;
-        
+
         //图标间距（两个图标之间的距离）
         private const float IconSpacing = 95f;
-        
+
         private Vector2 IconPosition => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 - IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
@@ -104,11 +104,11 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
                 if (portraitTex == null) return Rectangle.Empty;
-                
+
                 Vector2 leftPos = GetLeftPortraitPosition(portraitTex);
                 float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
                 Vector2 size = new Vector2(portraitTex.Width, portraitTex.Height * (1f - LeftPortraitCropBottom)) * scale;
-                
+
                 return new Rectangle((int)leftPos.X, (int)leftPos.Y, (int)size.X, (int)size.Y);
             }
         }
@@ -118,17 +118,17 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
                 if (portraitTex == null) return Rectangle.Empty;
-                
+
                 Vector2 rightPos = GetRightPortraitPosition(portraitTex);
                 float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2f;
                 Vector2 size = portraitTex.Size() * scale;
-                
+
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
             }
         }
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        
+
         //确保资源已加载
         public override bool Active => CWRLoad.OnLoadContentBool && Main.gameMenu && IsResourceLoaded();
 
@@ -137,17 +137,17 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             if (ADVAsset.SupCalsADV == null || ADVAsset.SupCalsADV.Count == 0) {
                 return false;
             }
-            
+
             //检查主纹理是否有效
             if (ADVAsset.SupCalADV == null || ADVAsset.SupCalADV.IsDisposed) {
                 return false;
             }
-            
+
             //检查第一个头像纹理是否有效
             if (ADVAsset.SupCalsADV[0] == null || ADVAsset.SupCalsADV[0].IsDisposed) {
                 return false;
             }
-            
+
             return true;
         }
 
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override void UnLoad() {
             _embers?.Clear();
             _flameWisps?.Clear();
-            
+
             // 重置所有状态
             _iconAlpha = 0f;
             _portraitAlpha = 0f;
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             if (!IsResourceLoaded()) {
                 return null;
             }
-            
+
             return _currentExpression switch {
                 PortraitExpression.CloseEyes => ADVAsset.SupCal_closeEyesADV ?? ADVAsset.SupCalADV,
                 PortraitExpression.Smile => ADVAsset.SupCal_smileADV ?? ADVAsset.SupCalADV,
@@ -343,12 +343,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private Vector2 GetLeftPortraitPosition(Texture2D tex) {
             float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
             float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
-            
+
             Vector2 basePos = new Vector2(
                 Main.screenWidth * LeftPortraitXRatio - tex.Width * scale / 2,
                 Main.screenHeight - displayHeight - 140
             );
-            
+
             return basePos + _leftPortraitOffset;
         }
 
@@ -357,12 +357,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// </summary>
         private Vector2 GetRightPortraitPosition(Texture2D tex) {
             float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
-            
+
             Vector2 basePos = new Vector2(
                 Main.screenWidth * RightPortraitXRatio - tex.Width * scale / 2 - 300,
                 Main.screenHeight - tex.Height * scale - 220
             );
-            
+
             return basePos + _rightPortraitOffset;
         }
         #endregion
@@ -402,7 +402,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             //立绘过渡（不受子菜单影响）
-            if (_showFullPortrait) {              
+            if (_showFullPortrait) {
                 if (_transitionProgress < 1f) {
                     _transitionProgress += 0.04f;
                 }
@@ -513,13 +513,13 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _wispSpawnTimer++;
                 if (_wispSpawnTimer >= 30 && _flameWisps.Count < 20) {
                     _wispSpawnTimer = 0;
-                    
+
                     //随机在左侧或右侧生成
                     bool spawnLeft = Main.rand.NextBool();
-                    Vector2 center = spawnLeft 
+                    Vector2 center = spawnLeft
                         ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
                         : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
-                    
+
                     Vector2 spawnPos = center + Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(200f, 350f);
                     _flameWisps.Add(new FlameWisp(spawnPos));
                 }
@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                     Vector2 targetCenter = _flameWisps[i].Pos.X < Main.screenWidth * 0.5f
                         ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
                         : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
-                    
+
                     if (_flameWisps[i].Update(targetCenter, 400f)) {
                         _flameWisps.RemoveAt(i);
                     }
@@ -575,7 +575,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             spriteBatch.End();
 
             //使用点采样模式重新开始，避免立绘缩放时像素模糊
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
             //绘制火焰精灵（在立绘后面）
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             //恢复默认SpriteBatch设置
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 

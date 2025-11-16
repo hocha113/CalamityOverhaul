@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 VaultHook.Add(meth, OnBossHeadSlotHook);
             }
         }
-        
+
         //临时钩子，后续改用前置实现
         private static void OnBossHeadSlotHook(BossHeadSlotDelegate orig, ModNPC modNPC, ref int index) {
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();

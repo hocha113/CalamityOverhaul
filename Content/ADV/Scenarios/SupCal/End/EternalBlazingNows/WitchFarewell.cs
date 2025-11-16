@@ -117,9 +117,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Add(Rolename3.Value, FarewellLine8.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
             Add(Rolename3.Value, FarewellLine9.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
             Add(Rolename3.Value, FarewellLine10.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance(), onComplete: StartBurningEffect);
-            Add(Rolename3.Value, FarewellLine11.Value, onStart: () => { 
-                fullBodyPortrait?.OnDialogueAdvance(); 
-                Achievement(); 
+            Add(Rolename3.Value, FarewellLine11.Value, onStart: () => {
+                fullBodyPortrait?.OnDialogueAdvance();
+                Achievement();
             }, FinalFade);
         }
 
