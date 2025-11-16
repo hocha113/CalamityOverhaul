@@ -104,10 +104,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override void Update() {
             //持续检查是否在目标点范围内
-            if (!hasMarkedCompletion) {
-                CheckAndMarkTargetCompletion();
-            }
-
+            CheckAndMarkTargetCompletion();
             //更新连接动画
             if (isPlayingConnectionAnim) {
                 UpdateConnectionAnimation();
@@ -115,7 +112,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         private void CheckAndMarkTargetCompletion() {
-            if (VaultUtils.isClient || hasMarkedCompletion) {
+            if (hasMarkedCompletion) {
                 return;
             }
 
