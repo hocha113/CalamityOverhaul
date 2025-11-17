@@ -5696,6 +5696,7 @@ NPCModifys: {
 		RideHoverText: Right-Click To Ride
 		ChangeSaddleText: Left-Click To Change Saddle
 		DismountText: Right-Click To Dismount
+		DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
 	}
 
 	ModifyTruffle: {

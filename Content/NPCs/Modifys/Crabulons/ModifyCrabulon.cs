@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public static LocalizedText RideHoverText { get; set; }
         public static LocalizedText ChangeSaddleText { get; set; }
         public static LocalizedText DismountText { get; set; }
+        public static LocalizedText DontDismountText { get; set; }
         public string LocalizationCategory => "NPCModifys";
         public float FeedValue = 0;
         public NPC TargetNPC;
@@ -69,6 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             RideHoverText = this.GetLocalization(nameof(RideHoverText), () => "Right-Click To Ride");
             ChangeSaddleText = this.GetLocalization(nameof(ChangeSaddleText), () => "Right-Click To Change Saddle");
             DismountText = this.GetLocalization(nameof(DismountText), () => "Right-Click To Dismount");
+            DontDismountText = this.GetLocalization(nameof(DontDismountText), () => "The mount feature is temporarily unavailable in multiplayer mode!");
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) {
@@ -708,8 +710,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
                 //按下交互键骑乘
                 if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
-                    MountACrabulon = true;
-                    SendNetWork();
+                    if (VaultUtils.isSinglePlayer) {
+                        MountACrabulon = true;
+                        SendNetWork();
+                    }
+                    else if (VaultUtils.isClient){
+                        CombatText text = Main.combatText[CombatText.NewText(Owner.Hitbox, Color.GreenYellow, DontDismountText.Value)];
+                        text.text = DontDismountText.Value;
+                        text.lifeTime = 320;
+                    }
 
                     if (!VaultUtils.isServer) {//播放一下上鞍声音
                         SoundEngine.PlaySound(CWRSound.ToMount with { PitchRange = (-0.1f, 0.1f), Volume = Main.rand.NextFloat(0.6f, 0.8f) }, Owner.Center);
@@ -898,7 +907,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Vector2 oldRotOrigin = mountPlayerByDraw.fullRotationOrigin;
             mountPlayerByDraw.fullRotationOrigin = mountPlayerByDraw.Size / 2f;
             mountPlayerByDraw.Center = GetMountPos();
-
             if (mountPlayerByDraw.itemAnimation <= 0) {//判断itemAnimation是为了避免覆盖掉物品使用动画
                 mountPlayerByDraw.headFrame.Y = 0;
                 mountPlayerByDraw.bodyFrame.Y = 0;

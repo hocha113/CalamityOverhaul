@@ -5658,6 +5658,7 @@ NPCModifys: {
 		RideHoverText: 右键骑乘
 		ChangeSaddleText: 左键更换鞍具
 		DismountText: 右键取消骑乘
+		DontDismountText: 在多人模式中暂时无法骑乘!
 	}
 
 	ModifyTruffle: {

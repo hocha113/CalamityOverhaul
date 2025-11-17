@@ -5769,6 +5769,7 @@ NPCModifys: {
 		RideHoverText: ПКМ, чтобы поехать
 		ChangeSaddleText: ЛКМ, чтобы сменить седло
 		DismountText: ПКМ, чтобы спешиться
+		// DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
 	}
 
 	ModifyTruffle: {
