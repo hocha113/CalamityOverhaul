@@ -57,6 +57,7 @@ namespace CalamityOverhaul.Content.ADV
         public bool EternalBlazingNowTriggered;
         public bool EternalBlazingNowChoice1;
         public bool EternalBlazingNowChoice2;
+        public bool GiveBlazingBud;//是否已获得燃烧芽(众神之怒适配)
         public bool EternalBlazingNow;//是否达成永恒燃烧的现在结局
         public bool HelenInterferenceTriggered;//海伦劝阻场景是否已触发
         public bool HelenInterferenceContinue;//选择继续委托

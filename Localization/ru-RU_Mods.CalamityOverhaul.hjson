@@ -7113,4 +7113,6 @@ ADV: {
 		// L1: Honestly, I don't really like wearing those bright colors.
 		// L2: Get it washed off, will you? Put it in the dye vat, then use that water bucket.
 	}
+
+	// GiveBlazingBud.MessageText: The burning embers whisper in the wind, and a strange flower drifts into your hands…
 }

@@ -47,6 +47,7 @@ namespace CalamityOverhaul
         internal Mod fargowiltasCrossmod = null;
         internal Mod luminance = null;
         internal Mod woTM = null;
+        internal Mod noxusBoss = null;
 
         #endregion
 
@@ -111,6 +112,7 @@ namespace CalamityOverhaul
             fargowiltasCrossmod = null;
             luminance = null;
             woTM = null;
+            noxusBoss = null;
         }
 
         public void FindMod() {
@@ -142,6 +144,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("FargowiltasCrossmod", out fargowiltasCrossmod);
             ModLoader.TryGetMod("Luminance", out luminance);
             ModLoader.TryGetMod("WoTM", out woTM);
+            ModLoader.TryGetMod("NoxusBoss", out noxusBoss);
         }
     }
 }
