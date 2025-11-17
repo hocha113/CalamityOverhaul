@@ -44,12 +44,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private int _wispSpawnTimer = 0;
 
         //左侧立绘参数(半身大图,从腰部开始裁剪)
-        private const float LeftPortraitXRatio = 0.18f;
+        private const float LeftPortraitXRatio = 0.14f;
         private const float LeftPortraitScale = 2.0f;
-        private const float LeftPortraitCropBottom = 0.45f;
+        private const float LeftPortraitCropBottom = 0.33f;
 
         //右侧立绘参数(全身小图)
-        private const float RightPortraitXRatio = 0.82f;
+        private const float RightPortraitXRatio = 0.96f;
         private const float RightPortraitScale = 0.85f;
 
         //立绘拖动相关
@@ -529,7 +529,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             DrawLeftPortrait(spriteBatch, portraitTex);
-            DrawRightPortrait(spriteBatch, portraitTex);
+            //效果一般，暂时禁用
+            //DrawRightPortrait(spriteBatch, portraitTex);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
