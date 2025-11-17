@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         //左侧立绘参数(半身大图,从腰部开始裁剪)
         private const float LeftPortraitXRatio = 0.14f;
         private const float LeftPortraitScale = 2.0f;
-        private const float LeftPortraitCropBottom = 0.33f;
+        private const float LeftPortraitCropBottom = 0.5f;
 
         //右侧立绘参数(全身小图)
         private const float RightPortraitXRatio = 0.96f;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private Vector2 _dragStartOffset = Vector2.Zero;
 
         //表情切换按钮相关
-        private const float ExpressionButtonSize = 40f;
+        private const float ExpressionButtonSize = 30f;
         private float _expressionButtonAlpha = 0f;
 
         //重写基类属性
@@ -608,7 +608,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 textSize = font.MeasureString(expressionIcon);
-            Vector2 textPos = buttonPos + new Vector2(ExpressionButtonSize / 2 - textSize.X / 2, ExpressionButtonSize / 2 - textSize.Y / 2);
+            Vector2 textPos = buttonPos + new Vector2(ExpressionButtonSize / 2 - textSize.X / 2, ExpressionButtonSize / 2 - textSize.Y / 2 + 4);
 
             float iconScale = hoverButton ? 1.15f : 1f;
             Utils.DrawBorderString(sb, expressionIcon, textPos, Color.White * _expressionButtonAlpha * _iconAlpha, iconScale);

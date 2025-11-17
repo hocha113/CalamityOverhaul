@@ -53,13 +53,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalsADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HelenADV);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
             Add(Rolename1.Value + expressionShock, Line1.Value);
             Add(Rolename1.Value + expressionShock, Line2.Value);
-            Add(Rolename1.Value, Line3.Value);
-            Add(Rolename1.Value, Line4.Value);
+            Add(Rolename1.Value + expressionCloseEye, Line3.Value);
+            Add(Rolename1.Value + expressionCloseEye, Line4.Value);
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
 

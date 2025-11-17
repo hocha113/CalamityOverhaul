@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         protected float _pulseTimer = 0f;
 
         //UI位置和尺寸
-        protected const float IconSize = 80f;
+        protected const float IconSize = 60f;
         protected const float IconBottomMargin = 46f;
-        protected const float IconSpacing = 95f; //与另一个头像的间距
+        protected const float IconSpacing = 80f; //与另一个头像的间距
 
         //图标位置(由子类实现具体偏移)
         protected abstract Vector2 GetIconBasePosition();

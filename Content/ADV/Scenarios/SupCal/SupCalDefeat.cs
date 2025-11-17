@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalsADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + " ", ADVAsset.SupCalsADV[4]);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + " ", silhouette: false);
 
             string hapName = Rolename2.Value.Replace("[Name]", Main.LocalPlayer.name);
             Add(Rolename1.Value, Line1.Value);
@@ -50,11 +52,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Add(Rolename1.Value, Line3.Value);
             Add(Rolename1.Value, Line4.Value);
             Add(hapName, Line5.Value);
-            Add(Rolename1.Value, Line6.Value);
-            Add(Rolename1.Value, Line7.Value);
+            Add(Rolename1.Value + " ", Line6.Value);
+            Add(Rolename1.Value + " ", Line7.Value);
             Add(hapName, Line8.Value);
             Add(hapName, Line9.Value);
-            Add(Rolename1.Value, Line10.Value);
+            Add(Rolename1.Value + " ", Line10.Value);
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
