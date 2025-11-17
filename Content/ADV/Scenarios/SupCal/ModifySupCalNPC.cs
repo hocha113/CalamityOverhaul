@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         private delegate bool OnCanTownNPCSpawnDelegate(object obj, int numTownNPCs);
         //临时钩子，后续改用前置实现
         private static bool OnCanTownNPCSpawnHook(OnCanTownNPCSpawnDelegate orig, object obj, int numTownNPCs) {
-            if (Main.player.Any(EbnPlayer.OnEbn)) {//如果有玩家达成永恒燃烧的现在结局
+            if (Main.player.Any(p => p.Alives() && EbnPlayer.OnEbn(p))) {//如果有玩家达成永恒燃烧的现在结局
                 return false;//女巫不生成
             }
             return orig.Invoke(obj, numTownNPCs);
@@ -215,15 +215,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     return true;
                 }
             }
-            
-            foreach (var p in Main.ActivePlayers) {
-                //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
-                if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
-                    p.Teleport(npc.Center, 999);
-                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
-                    npc.active = false;
-                    npc.netUpdate = true;
-                    return false;
+
+            if (!CWRRef.GetBossRushActive()) {//非BossRush状态下检查永恒燃烧的现在结局，执行位置替换等操作
+                foreach (var p in Main.ActivePlayers) {
+                    //如果已经有人达成了永恒燃烧的现在结局，说明女巫已死，玩家替换女巫的位置
+                    if (p.TryGetADVSave(out var save) && save.EternalBlazingNow) {
+                        p.Teleport(npc.Center, 999);
+                        BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                        npc.active = false;
+                        npc.netUpdate = true;
+                        return false;
+                    }
                 }
             }
 
