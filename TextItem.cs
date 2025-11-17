@@ -14,7 +14,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 66;
