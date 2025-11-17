@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.ADV
 {
     internal class ADVSave
     {
+        public bool HasCaughtHalibut;
         public bool FirstMet;
         public bool DyeProtest;
         public bool FishoilQuestDeclined;

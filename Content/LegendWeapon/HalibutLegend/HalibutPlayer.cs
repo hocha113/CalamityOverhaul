@@ -400,6 +400,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
             HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
 
+            if (HasHalubut) {//只要拥有大比目鱼，就标记已经捕获过
+                ADCSave.HasCaughtHalibut = true;
+            }
+
             if (!HeldHalibut && Main.myPlayer == Player.whoAmI) {
                 //当切换走武器时，如果领域或过去身处于激活状态，标记需要在重新拿起时恢复
                 if (SeaDomainActive) {
