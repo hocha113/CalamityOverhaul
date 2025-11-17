@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.World;
-using CalamityOverhaul.Content.NPCs.Modifys;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;

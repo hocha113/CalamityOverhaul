@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.NPCs.Modifys;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

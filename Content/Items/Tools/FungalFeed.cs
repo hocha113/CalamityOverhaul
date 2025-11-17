@@ -1,5 +1,5 @@
 ﻿using CalamityMod.NPCs.Crabulon;
-using CalamityOverhaul.Content.NPCs.Modifys;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

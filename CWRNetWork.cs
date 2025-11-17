@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
 using Terraria.ModLoader;
