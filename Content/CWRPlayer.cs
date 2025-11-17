@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
@@ -160,6 +161,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool DestroyerOwner;
         /// <summary>
+        /// 是否穿戴英雄无冕
+        /// </summary>
+        public bool IsUnsunghero;
+        /// <summary>
         /// 是否穿戴正义显现
         /// </summary>
         public bool IsJusticeUnveiled;
@@ -293,6 +298,7 @@ namespace CalamityOverhaul.Content
             HeldStyle = -1;
             ReloadingRatio = 0;
             TheDestroyer = -1;
+            IsUnsunghero = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;

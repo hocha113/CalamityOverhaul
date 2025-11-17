@@ -119,6 +119,7 @@ namespace CalamityOverhaul
         public static int NPC_CalamitasClone => ModContent.NPCType<CalamitasClone>();
         public static int NPC_AquaticScourgeBodyAlt => ModContent.NPCType<AquaticScourgeBodyAlt>();
         public static int NPC_SupremeCalamitas => ModContent.NPCType<SupremeCalamitas>();
+        public static int NPC_THIEF => ModContent.NPCType<THIEF>();
         public static int NPC_WITCH => ModContent.NPCType<WITCH>();
         public static int NPC_DILF => ModContent.NPCType<DILF>();//什么叫他妈的DILF？？？？
         public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();

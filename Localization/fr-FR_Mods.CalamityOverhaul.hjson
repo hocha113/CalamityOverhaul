@@ -1384,6 +1384,11 @@ Items: {
 		// NeedSignalTowersText: Entanglement network incomplete! System locked until all {0} signal towers are deployed.
 		// SignalTowerProgressText: Signal Tower Deployment: {0}/{1}
 	}
+
+	Unsunghero: {
+		// DisplayName: Unsunghero
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

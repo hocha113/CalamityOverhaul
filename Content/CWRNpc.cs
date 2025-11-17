@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -337,6 +338,9 @@ namespace CalamityOverhaul.Content
                 shop.Add(ItemID.WormholePotion, Condition.Multiplayer);//商人会在多人模式下售卖传送药水
                 shop.Add(ItemID.RecallPotion, Condition.DownedEyeOfCthulhu);//击败克苏鲁之眼后售卖回忆药水
                 shop.Add(ItemID.PotionOfReturn, Condition.Hardmode);//击败血肉墙之眼后售卖返回药水
+            }
+            if (shop.NpcType == CWRID.NPC_THIEF) {
+                shop.Add(ModContent.ItemType<Unsunghero>(), Condition.Hardmode);//击败血肉墙之眼后售卖英雄无冕
             }
             foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
                 Item item = shopEntity.Item;

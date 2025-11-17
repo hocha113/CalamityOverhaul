@@ -1381,6 +1381,15 @@ Items: {
 		NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
 		SignalTowerProgressText: 信号塔部署进度: {0}/{1}
 	}
+
+	Unsunghero: {
+		DisplayName: 英雄无冕
+		Tooltip:
+			'''
+			增加10点潜伏值上限
+			潜伏速度将不会降低潜伏伤害
+			'''
+	}
 }
 
 Projectiles: {
