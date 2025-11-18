@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
     internal class EnchantUI : UIHandle, ILocalizedModType
     {
-        public static Asset<Texture2D> CalamitasCurseBackground = null;
         public static Asset<Texture2D> CalamitasCurseItemSlot = null;
         public static Asset<Texture2D> CalamitasCurseUI_Button = null;
         public static Asset<Texture2D> CalamitasCurseUI_ButtonHovered = null;
@@ -37,8 +36,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static Asset<Texture2D> CalamitasCurseUI_ArrowDownClicked = null;
         public static EnchantUI Instance => UIHandleLoader.GetUIHandleOfType<EnchantUI>();
 
+        private static bool drogBool = false;
+        private static Vector2 drogOffset;
+
         //UI布局参数
-        public static Vector2 UITopLeft => new Vector2(168f, 320f);
+        public static Vector2 UITopLeft => Instance.DrawPosition;
         public static float UIScale => 0.8f;
 
         //展开/收起状态
@@ -70,6 +72,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private float heatWavePhase = 0f;
         private float infernoPulse = 0f;
 
+        private float lerpProgress;
+
         //粒子系统
         private readonly List<EmberParticle> embers = new();
         private int emberSpawnTimer = 0;
@@ -77,8 +81,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private int ashSpawnTimer = 0;
         private readonly List<FlameWisp> flameWisps = new();
         private int wispSpawnTimer = 0;
-
-        public static Rectangle MouseScreenArea => Utils.CenteredRectangle(Main.MouseScreen, Vector2.One * 2f);
 
         public override bool Active => Main.playerInventory && player.chest == -1 && player.talkNPC == -1 && !Main.InGuideCraftMenu && EbnPlayer.OnEbn(player);
 
@@ -96,7 +98,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override void Update() {
             if (!Active) {
-                //如果UI关闭，将物品返还给玩家
                 if (!CurrentlyHeldItem.IsAir) {
                     player.QuickSpawnItem(player.GetSource_Misc(CurrentlyHeldItem.Name), CurrentlyHeldItem, CurrentlyHeldItem.stack);
                     CurrentlyHeldItem.TurnToAir();
@@ -107,9 +108,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 EnchantProgress = 0f;
                 return;
             }
+
+            Vector2 backgroundScale = Vector2.One * UIScale;
+            float currentWidth = MathHelper.Lerp(392 * backgroundScale.X, CollapsedWidth, lerpProgress);
+            float currentHeight = MathHelper.Lerp(324 * backgroundScale.Y, CollapsedHeight, lerpProgress);
+
+            UIHitBox = new Rectangle(
+                (int)UITopLeft.X,
+                (int)UITopLeft.Y,
+                (int)currentWidth,
+                (int)currentHeight
+            );
+
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                if (keyLeftPressState == KeyPressState.Held) {
+                    if (!drogBool) {
+                        drogOffset = MousePosition.To(DrawPosition);
+                    }
+                    drogBool = true;
+                }
+            }
+            if (drogBool) {
+                DrawPosition = MousePosition + drogOffset;
+                if (keyLeftPressState == KeyPressState.Released) {
+                    drogBool = false;
+                    drogOffset = MousePosition.To(DrawPosition);
+                }
+            }
         }
 
         public override void LogicUpdate() {
+            if (DrawPosition == Vector2.Zero || DrawPosition == default) {
+                DrawPosition = new Vector2(168f, 320f);
+            }
+
+            //根据折叠状态计算面板大小
+            lerpProgress = MathHelper.SmoothStep(0f, 1f, CollapseProgress);
+
             //递减点击冷却
             if (TopButtonClickCountdown > 0f)
                 TopButtonClickCountdown--;
@@ -211,34 +247,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D backgroundTexture = CalamitasCurseBackground.Value;
             Vector2 backgroundScale = Vector2.One * UIScale;
 
-            //根据折叠状态计算面板大小
-            float lerpProgress = MathHelper.SmoothStep(0f, 1f, CollapseProgress);
-            float currentWidth = MathHelper.Lerp(backgroundTexture.Width * backgroundScale.X, CollapsedWidth, lerpProgress);
-            float currentHeight = MathHelper.Lerp(backgroundTexture.Height * backgroundScale.Y, CollapsedHeight, lerpProgress);
-
-            //绘制背景
-            Rectangle panelRect = new Rectangle(
-                (int)UITopLeft.X,
-                (int)UITopLeft.Y,
-                (int)currentWidth,
-                (int)currentHeight
-            );
-
             //绘制硫磺火风格背景
-            DrawBrimstoneBackground(spriteBatch, panelRect);
+            DrawBrimstoneBackground(spriteBatch, UIHitBox);
 
             //禁用鼠标交互
-            DisableMouseWhenOverUI(panelRect);
+            DisableMouseWhenOverUI(UIHitBox);
 
             //绘制展开/收起按钮
-            DrawToggleButton(spriteBatch, panelRect);
+            DrawToggleButton(spriteBatch, UIHitBox);
 
             //如果正在折叠或已折叠，只显示简化内容
             if (CollapseProgress > 0.01f) {
-                DrawCollapsedContent(spriteBatch, panelRect, lerpProgress);
+                DrawCollapsedContent(spriteBatch, UIHitBox, lerpProgress);
                 return;
             }
 
@@ -287,7 +309,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //绘制附魔进度
             if (IsEnchanting) {
-                DrawEnchantProgress(spriteBatch, panelRect);
+                DrawEnchantProgress(spriteBatch, UIHitBox);
             }
         }
 
@@ -303,7 +325,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 buttonSize
             );
 
-            bool isHovering = MouseScreenArea.Intersects(buttonRect);
+            bool isHovering = MouseHitBox.Intersects(buttonRect);
 
             //绘制按钮背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -511,7 +533,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             );
 
             //检测鼠标悬停
-            if (MouseScreenArea.Intersects(enchantIconArea) && !IsEnchanting) {
+            if (MouseHitBox.Intersects(enchantIconArea) && !IsEnchanting) {
                 enchantIconTexture = CalamitasCurseUI_ButtonHovered.Value;
                 isHoveringOverEnchantIcon = true;
             }
@@ -519,7 +541,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (EnchantButtonClickCountdown > 0f)
                 enchantIconTexture = CalamitasCurseUI_ButtonClicked.Value;
 
-            isHoveringOverItemIcon = MouseScreenArea.Intersects(new Rectangle(
+            isHoveringOverItemIcon = MouseHitBox.Intersects(new Rectangle(
                 (int)itemSlotDrawPosition.X,
                 (int)itemSlotDrawPosition.Y,
                 (int)(itemSlotTexture.Width * itemSlotScale.X),
@@ -571,8 +593,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Rectangle topButtonArea = new Rectangle((int)topButtonTopLeft.X, (int)topButtonTopLeft.Y, (int)(topArrowTexture.Width * arrowScale.X), (int)(topArrowTexture.Height * arrowScale.Y));
             Rectangle bottomButtonArea = new Rectangle((int)bottomButtonTopLeft.X, (int)bottomButtonTopLeft.Y, (int)(bottomArrowTexture.Width * arrowScale.X), (int)(bottomArrowTexture.Height * arrowScale.Y));
 
-            bool hoveringOverTopArrow = MouseScreenArea.Intersects(topButtonArea);
-            bool hoveringOverBottomArrow = MouseScreenArea.Intersects(bottomButtonArea);
+            bool hoveringOverTopArrow = MouseHitBox.Intersects(topButtonArea);
+            bool hoveringOverBottomArrow = MouseHitBox.Intersects(bottomButtonArea);
 
             if (hoveringOverTopArrow)
                 topArrowTexture = CalamitasCurseUI_ArrowUpHovered.Value;
@@ -635,7 +657,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         #region 交互函数
 
         public static void DisableMouseWhenOverUI(Rectangle backgroundArea) {
-            if (MouseScreenArea.Intersects(backgroundArea)) {
+            if (Instance.MouseHitBox.Intersects(backgroundArea)) {
                 player.mouseInterface = false;
                 Main.blockMouse = true;
             }
