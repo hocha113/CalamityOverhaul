@@ -22,6 +22,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override int TargetNPCType => -1;//信号塔任务不需要NPC
 
+        private bool drogBool;
+        private float drogOffset;
+        private float screenYValue = 0;
+        protected override float ScreenY => screenYValue;
+
         //本地化文本
         public static LocalizedText NearestTargetText { get; private set; }
         public static LocalizedText NodeText { get; private set; }
@@ -100,6 +105,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         protected override void DrawPanel(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            if (screenYValue == 0) {
+                screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+            }
+
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                if (keyLeftPressState == KeyPressState.Held) {
+                    if (!drogBool) {
+                        drogOffset = MousePosition.Y - screenYValue;
+                    }
+                    drogBool = true;
+                }
+            }
+            if (drogBool) {
+                screenYValue = MousePosition.Y - drogOffset;
+                if (keyLeftPressState == KeyPressState.Released) {
+                    drogBool = false;
+                    drogOffset = MousePosition.Y;
+                }
+            }
+
+            screenYValue = MathHelper.Clamp(screenYValue, 0, Main.screenHeight - currentPanelHeight);
 
             //阴影
             Rectangle shadowRect = UIHitBox;
