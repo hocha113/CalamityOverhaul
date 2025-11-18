@@ -1,6 +1,5 @@
 ﻿using InnoVault.GameSystem;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
     /// </summary>
     internal class MenuSave : SaveMod
     {
-        //当前数据版本号(修改数据结构时请递增此版本号)
+        //当前数据版本号(修改数据结构时递增此版本号)
         private const int CurrentDataVersion = 1;
 
         /// <summary>
