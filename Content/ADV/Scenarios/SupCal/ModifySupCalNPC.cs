@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Dusts;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.OtherMods.BossChecklist;
 using InnoVault.GameSystem;
@@ -137,6 +138,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     ModifySupCalNPC.TrueBossRushStateByAI = false;//BossRush状态结束
                 }
             }
+            //设置灾厄被击败
+            if (TraceSupCalDeath.SupCalDefeated && !NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
+                TraceSupCalDeath.SupCalDefeated = false;
+                CWRRef.SetDownedCalamitas(true);
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+            }
         }
     }
 
@@ -157,6 +166,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 return false;//女巫不生成
             }
             return orig.Invoke(obj, numTownNPCs);
+        }
+    }
+
+    internal class TraceSupCalDeath : DeathTrackingNPC
+    {
+        internal static bool SupCalDefeated { get; set; }
+        public override void OnKill(NPC npc) {
+            if (npc.type == CWRID.NPC_SupremeCalamitas) {
+                SupCalDefeated = true;
+            }
         }
     }
 
