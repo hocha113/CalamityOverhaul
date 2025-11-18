@@ -48,6 +48,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private const int ItemSlotHeight = 85;
         private float[] slotHoverProgress = new float[short.MaxValue];
 
+        //长按连续购买相关
+        private int holdingPurchaseIndex = -1; //当前长按的物品索引
+        private int holdingPurchaseTimer = 0; //长按计时器
+        private int purchaseCooldown = 30; //购买间隔（帧）
+        private const int InitialPurchaseCooldown = 30; //初始购买间隔
+        private const int MinPurchaseCooldown = 2; //最小购买间隔（加速上限）
+        private const int HoldThreshold = 20; //需要长按多少帧才开始连续购买
+        private int consecutivePurchaseCount = 0; //连续购买计数（用于加速计算）
+
         //UI尺寸
         private const int PanelWidth = 680;
         private const int PanelHeight = 640;
@@ -259,12 +268,66 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.4f });
                     }
 
-                    if (Main.mouseLeft && Main.mouseLeftRelease) {
-                        selectedIndex = index;
-                        TryPurchaseItem(index);
+                    if (Main.mouseLeft) {
+                        //按下左键
+                        if (Main.mouseLeftRelease) {
+                            //首次点击
+                            selectedIndex = index;
+                            holdingPurchaseIndex = index;
+                            holdingPurchaseTimer = 0;
+                            consecutivePurchaseCount = 0;
+                            purchaseCooldown = InitialPurchaseCooldown;
+                            TryPurchaseItem(index);
+                        }
+                        else {
+                            //持续按住
+                            if (holdingPurchaseIndex == index) {
+                                holdingPurchaseTimer++;
+
+                                //达到长按阈值后开始连续购买
+                                if (holdingPurchaseTimer >= HoldThreshold) {
+                                    if (holdingPurchaseTimer % purchaseCooldown == 0) {
+                                        TryPurchaseItem(index);
+                                        consecutivePurchaseCount++;
+
+                                        //逐渐加速：每购买5次，间隔减少20%
+                                        if (consecutivePurchaseCount % 5 == 0) {
+                                            purchaseCooldown = Math.Max(
+                                                MinPurchaseCooldown,
+                                                (int)(purchaseCooldown * 0.8f)
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                //切换到不同物品，重置
+                                holdingPurchaseIndex = index;
+                                holdingPurchaseTimer = 0;
+                                consecutivePurchaseCount = 0;
+                                purchaseCooldown = InitialPurchaseCooldown;
+                            }
+                        }
+                    }
+                    else {
+                        //松开鼠标，重置长按状态
+                        if (holdingPurchaseIndex == index) {
+                            holdingPurchaseIndex = -1;
+                            holdingPurchaseTimer = 0;
+                            consecutivePurchaseCount = 0;
+                            purchaseCooldown = InitialPurchaseCooldown;
+                        }
                     }
                     break;
                 }
+            }
+
+            //鼠标离开所有物品区域，重置长按状态
+            if (hoveredIndex == -1) {
+                holdingPurchaseIndex = -1;
+                holdingPurchaseTimer = 0;
+                consecutivePurchaseCount = 0;
+                purchaseCooldown = InitialPurchaseCooldown;
             }
         }
 
@@ -465,19 +528,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             DrawCurrencyDisplay(spriteBatch);
         }
 
+        private static void Calculateinventory(Item[] items, ref long totalCopper) {
+            if (items == null) {
+                return;
+            }
+            for (int i = 0; i < items.Length; i++) {
+                Item item = items[i];
+                if (!item.Alives()) {
+                    continue;
+                }
+                if (item.type == ItemID.CopperCoin) totalCopper += item.stack;
+                if (item.type == ItemID.SilverCoin) totalCopper += item.stack * 100;
+                if (item.type == ItemID.GoldCoin) totalCopper += item.stack * 10000;
+                if (item.type == ItemID.PlatinumCoin) totalCopper += item.stack * 1000000;
+            }
+        }
+
         private void DrawCurrencyDisplay(SpriteBatch spriteBatch) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 currencyPos = panelPosition + new Vector2(40, 85);
 
             //计算玩家总货币
             long totalCopper = 0;
-            for (int i = 0; i < 58; i++) {
-                Item item = player.inventory[i];
-                if (item.type == ItemID.CopperCoin) totalCopper += item.stack;
-                if (item.type == ItemID.SilverCoin) totalCopper += item.stack * 100;
-                if (item.type == ItemID.GoldCoin) totalCopper += item.stack * 10000;
-                if (item.type == ItemID.PlatinumCoin) totalCopper += item.stack * 1000000;
-            }
+            Calculateinventory(player.inventory, ref totalCopper);
+            Calculateinventory(player.bank.item, ref totalCopper);
+            Calculateinventory(player.bank2.item, ref totalCopper);
+            Calculateinventory(player.bank3.item, ref totalCopper);
+            Calculateinventory(player.bank4.item, ref totalCopper);
 
             int platinum = (int)(totalCopper / 1000000);
             int gold = (int)((totalCopper % 1000000) / 10000);
@@ -623,13 +700,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 ItemSlotHeight - 8
             );
 
+            //检查当前物品是否正在长按购买
+            int currentItemIndex = shopItems.IndexOf(shopItem);
+            bool isHolding = holdingPurchaseIndex == currentItemIndex && holdingPurchaseTimer > 0;
+            
             //槽位背景
             Color baseSlotColor = new Color(20, 40, 60);
             Color hoverSlotColor = new Color(40, 80, 120);
             Color selectedSlotColor = new Color(60, 120, 180);
+            Color holdingSlotColor = new Color(80, 150, 100); //长按时的绿色调
 
             Color slotColor = baseSlotColor;
-            if (isSelected) {
+            if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
+                //长按连续购买时的颜色
+                slotColor = Color.Lerp(hoverSlotColor, holdingSlotColor, 0.7f);
+            }
+            else if (isSelected) {
                 slotColor = Color.Lerp(hoverSlotColor, selectedSlotColor, 0.6f);
             }
             else if (isHovered) {
@@ -639,13 +725,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             spriteBatch.Draw(pixel, slotRect, slotColor);
 
+            //长按购买进度条效果（蓄力阶段）
+            if (isHolding && holdingPurchaseTimer < HoldThreshold) {
+                float holdProgress = holdingPurchaseTimer / (float)HoldThreshold;
+                int progressWidth = (int)(slotRect.Width * holdProgress);
+                Rectangle progressRect = new Rectangle(
+                    slotRect.X,
+                    slotRect.Bottom - 4,
+                    progressWidth,
+                    4
+                );
+                Color progressColor = Color.Lerp(Color.Yellow, Color.Lime, holdProgress) * (uiAlpha * 0.8f);
+                spriteBatch.Draw(pixel, progressRect, progressColor);
+                
+                //进度条发光效果
+                Rectangle progressGlow = progressRect;
+                progressGlow.Inflate(0, 2);
+                spriteBatch.Draw(pixel, progressGlow, progressColor * 0.3f);
+            }
+
             //槽位边框
             float borderPulse = (float)Math.Sin(circuitPulseTimer * 1.5f + position.Y * 0.01f) * 0.5f + 0.5f;
+            
+            //长按连续购买时的额外脉冲效果
+            if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
+                float rapidPulse = (float)Math.Sin(Main.GameUpdateCount * 0.3f) * 0.5f + 0.5f;
+                borderPulse = Math.Max(borderPulse, rapidPulse * 0.9f);
+            }
+            
             Color borderColor = Color.Lerp(
                 new Color(40, 140, 200),
                 new Color(80, 200, 255),
                 borderPulse * hoverProgress
             ) * (uiAlpha * (0.4f + hoverProgress * 0.4f));
+            
+            //长按时边框变绿
+            if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
+                borderColor = Color.Lerp(borderColor, new Color(120, 255, 120), 0.6f);
+            }
 
             spriteBatch.Draw(pixel, new Rectangle(slotRect.X, slotRect.Y, slotRect.Width, 2), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(slotRect.X, slotRect.Bottom - 2, slotRect.Width, 2), borderColor * 0.7f);
@@ -655,7 +772,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Rectangle glowRect = slotRect;
                 glowRect.Inflate(2, 2);
                 Color glowColor = new Color(80, 200, 255) * (uiAlpha * 0.15f * hoverProgress);
+                
+                //长按连续购买时增强发光并变绿
+                if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
+                    glowColor = Color.Lerp(glowColor, new Color(120, 255, 120), 0.5f);
+                    glowColor *= 1.5f; //增强亮度
+                }
+                
                 spriteBatch.Draw(pixel, glowRect, glowColor);
+            }
+
+            //连续购买计数显示（右上角）
+            if (isHolding && consecutivePurchaseCount > 0 && holdingPurchaseTimer >= HoldThreshold) {
+                string countText = $"x{consecutivePurchaseCount + 1}";
+                Vector2 countPos = new Vector2(slotRect.Right - 10, slotRect.Y + 5);
+                float countPulse = (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f + 0.5f;
+                Color countColor = Color.Lerp(Color.Lime, Color.Yellow, countPulse);
+                Utils.DrawBorderString(spriteBatch, countText, countPos, countColor * uiAlpha, 1f, 1f, 0f);
             }
 
             Main.instance.LoadItem(shopItem.itemType);

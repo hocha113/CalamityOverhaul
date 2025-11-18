@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -106,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                     );
 
                     //播放失败音效
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose with {
+                    SoundEngine.PlaySound(SoundID.MenuClose with {
                         Volume = 0.7f,
                         Pitch = -0.3f
                     }, player.Center);
@@ -116,12 +117,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
                 //所有信号塔已部署，打开商店界面
                 DraedonShopUI.Instance.Active = !DraedonShopUI.Instance.Active;
-
-                //播放成功音效（更科技感）
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                    Volume = 0.5f,
-                    Pitch = 0.3f
-                }, player.Center);
             }
             return true;
         }
