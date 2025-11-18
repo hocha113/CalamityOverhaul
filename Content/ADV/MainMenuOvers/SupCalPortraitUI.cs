@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
@@ -45,12 +46,19 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         //左侧立绘参数(半身大图,从腰部开始裁剪)
         private const float LeftPortraitXRatio = 0.14f;
-        private const float LeftPortraitScale = 2.0f;
         private const float LeftPortraitCropBottom = 0.5f;
 
         //右侧立绘参数(全身小图)
         private const float RightPortraitXRatio = 0.96f;
-        private const float RightPortraitScale = 0.85f;
+
+        //立绘缩放相关
+        private float _leftPortraitScale = 2.0f;   //左侧立绘缩放
+        private float _rightPortraitScale = 0.85f; //右侧立绘缩放
+        private const float MinScale = 0.3f;       //最小缩放
+        private const float MaxScale = 5.0f;       //最大缩放
+        private const float ScaleStep = 0.05f;     //缩放步进
+        private int _scaleKeyTimer = 0;            //按键缩放计时器
+        private const int ScaleKeyDelay = 3;       //按键缩放延迟(帧)
 
         //立绘拖动相关
         private bool _draggingLeftPortrait = false;
@@ -109,8 +117,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 if (portraitTex == null) return Rectangle.Empty;
 
                 Vector2 leftPos = GetLeftPortraitPosition(portraitTex);
-                float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
-                Vector2 size = new Vector2(portraitTex.Width, portraitTex.Height * (1f - LeftPortraitCropBottom)) * scale;
+                float scale = _leftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.8f;
+                Vector2 size = new Vector2(portraitTex.Width, portraitTex.Height) * scale;
 
                 return new Rectangle((int)leftPos.X, (int)leftPos.Y, (int)size.X, (int)size.Y);
             }
@@ -123,7 +131,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 if (portraitTex == null) return Rectangle.Empty;
 
                 Vector2 rightPos = GetRightPortraitPosition(portraitTex);
-                float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2f;
+                float scale = _rightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2f;
                 Vector2 size = portraitTex.Size() * scale;
 
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
@@ -239,11 +247,14 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _currentExpression = PortraitExpression.Default;
             _leftPortraitOffset = Vector2.Zero;
             _rightPortraitOffset = Vector2.Zero;
+            _leftPortraitScale = 2.0f;
+            _rightPortraitScale = 0.85f;
             _expressionButtonAlpha = 0f;
             _flameTimer = 0f;
             _glowTimer = 0f;
             _emberSpawnTimer = 0;
             _wispSpawnTimer = 0;
+            _scaleKeyTimer = 0;
             _draggingLeftPortrait = false;
             _draggingRightPortrait = false;
         }
@@ -257,7 +268,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _currentExpression = PortraitExpression.Default;
             _leftPortraitOffset = Vector2.Zero;
             _rightPortraitOffset = Vector2.Zero;
+            _leftPortraitScale = 2.0f;
+            _rightPortraitScale = 0.85f;
             _expressionButtonAlpha = 0f;
+            _scaleKeyTimer = 0;
             _draggingLeftPortrait = false;
             _draggingRightPortrait = false;
         }
@@ -273,6 +287,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _leftPortraitOffset = MenuSave.SupCal_LeftPortraitOffset;
             _rightPortraitOffset = MenuSave.SupCal_RightPortraitOffset;
             _showFullPortrait = MenuSave.SupCal_ShowFullPortrait;
+            _leftPortraitScale = MenuSave.SupCal_LeftPortraitScale;
+            _rightPortraitScale = MenuSave.SupCal_RightPortraitScale;
+
+            //确保缩放值在合法范围内
+            _leftPortraitScale = Math.Clamp(_leftPortraitScale, MinScale, MaxScale);
+            _rightPortraitScale = Math.Clamp(_rightPortraitScale, MinScale, MaxScale);
 
             _needsSave = false;
         }
@@ -288,7 +308,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _ => 0
             };
 
-            MenuSave.SaveSupCalPortraitState(expressionValue, _leftPortraitOffset, _rightPortraitOffset, _showFullPortrait);
+            MenuSave.SaveSupCalPortraitState(expressionValue, _leftPortraitOffset, _rightPortraitOffset, _showFullPortrait, _leftPortraitScale, _rightPortraitScale);
             _needsSave = false;
         }
         #endregion
@@ -318,7 +338,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private Vector2 GetLeftPortraitPosition(Texture2D tex) {
-            float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            float scale = _leftPortraitScale * (0.95f + _transitionProgress * 0.05f);
             float displayHeight = tex.Height * (1f - LeftPortraitCropBottom) * scale;
 
             Vector2 basePos = new Vector2(
@@ -330,7 +350,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private Vector2 GetRightPortraitPosition(Texture2D tex) {
-            float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            float scale = _rightPortraitScale * (0.95f + _transitionProgress * 0.05f);
 
             Vector2 basePos = new Vector2(
                 Main.screenWidth * RightPortraitXRatio - tex.Width * scale / 2 - 300,
@@ -338,6 +358,22 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             );
 
             return basePos + _rightPortraitOffset;
+        }
+
+        /// <summary>
+        /// 调整左侧立绘缩放
+        /// </summary>
+        private void AdjustLeftPortraitScale(float delta) {
+            _leftPortraitScale = Math.Clamp(_leftPortraitScale + delta, MinScale, MaxScale);
+            MarkNeedsSave();
+        }
+
+        /// <summary>
+        /// 调整右侧立绘缩放
+        /// </summary>
+        private void AdjustRightPortraitScale(float delta) {
+            _rightPortraitScale = Math.Clamp(_rightPortraitScale + delta, MinScale, MaxScale);
+            MarkNeedsSave();
         }
         #endregion
 
@@ -398,6 +434,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             UpdateParticles();
             UpdateInteraction();
+            UpdateScaleInput();
         }
 
         private void UpdateInteraction() {
@@ -448,6 +485,67 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
             else if (_draggingRightPortrait) {
                 _rightPortraitOffset = _dragStartOffset + (MousePosition - _dragStartMousePos);
+            }
+
+            //处理鼠标滚轮缩放
+            if (_showFullPortrait && CanInteract()) {
+                int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
+                if (scrollDelta != 0) {
+                    float scaleDelta = scrollDelta > 0 ? ScaleStep : -ScaleStep;
+                    
+                    if (hoverLeftPortrait) {
+                        AdjustLeftPortraitScale(scaleDelta);
+                    }
+                    else if (hoverRightPortrait) {
+                        AdjustRightPortraitScale(scaleDelta);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新键盘缩放输入
+        /// </summary>
+        private void UpdateScaleInput() {
+            if (!_showFullPortrait || !CanInteract()) {
+                _scaleKeyTimer = 0;
+                return;
+            }
+
+            //减少计时器
+            if (_scaleKeyTimer > 0) {
+                _scaleKeyTimer--;
+                return;
+            }
+
+            bool hoverLeftPortrait = LeftPortraitHitBox.Contains(MousePosition.ToPoint());
+            bool hoverRightPortrait = RightPortraitHitBox.Contains(MousePosition.ToPoint());
+
+            //加号键或等号键(+/=)增大
+            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemPlus) || 
+                Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Add)) {
+                
+                if (hoverLeftPortrait) {
+                    AdjustLeftPortraitScale(ScaleStep);
+                    _scaleKeyTimer = ScaleKeyDelay;
+                }
+                else if (hoverRightPortrait) {
+                    AdjustRightPortraitScale(ScaleStep);
+                    _scaleKeyTimer = ScaleKeyDelay;
+                }
+            }
+            //减号键(-)减小
+            else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemMinus) || 
+                     Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Subtract)) {
+                
+                if (hoverLeftPortrait) {
+                    AdjustLeftPortraitScale(-ScaleStep);
+                    _scaleKeyTimer = ScaleKeyDelay;
+                }
+                else if (hoverRightPortrait) {
+                    AdjustRightPortraitScale(-ScaleStep);
+                    _scaleKeyTimer = ScaleKeyDelay;
+                }
             }
         }
 
@@ -538,7 +636,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawLeftPortrait(SpriteBatch sb, Texture2D tex) {
-            float scale = LeftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
+            float scale = _leftPortraitScale * (0.95f + _transitionProgress * 0.05f) * 1.6f;
             Vector2 drawPos = GetLeftPortraitPosition(tex);
             Rectangle sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             float dragHighlight = _draggingLeftPortrait ? 1.1f : 1f;
@@ -559,7 +657,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         private void DrawRightPortrait(SpriteBatch sb, Texture2D tex) {
-            float scale = RightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
+            float scale = _rightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
             Vector2 drawPos = GetRightPortraitPosition(tex);
             float dragHighlight = _draggingRightPortrait ? 1.1f : 1f;
 

@@ -43,6 +43,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// </summary>
         public static bool SupCal_ShowFullPortrait { get; private set; } = false;
 
+        /// <summary>
+        /// SupCal左侧立绘的缩放值
+        /// </summary>
+        public static float SupCal_LeftPortraitScale { get; private set; } = 2.0f;
+
+        /// <summary>
+        /// SupCal右侧立绘的缩放值
+        /// </summary>
+        public static float SupCal_RightPortraitScale { get; private set; } = 0.85f;
+
         public override void SetStaticDefaults() {
             if (!HasSave) {
                 DoSave<MenuSave>();
@@ -60,6 +70,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             tag["SupCal_LeftPortraitOffset"] = SupCal_LeftPortraitOffset;
             tag["SupCal_RightPortraitOffset"] = SupCal_RightPortraitOffset;
             tag["SupCal_ShowFullPortrait"] = SupCal_ShowFullPortrait;
+            tag["SupCal_LeftPortraitScale"] = SupCal_LeftPortraitScale;
+            tag["SupCal_RightPortraitScale"] = SupCal_RightPortraitScale;
             tag["Helen_PortraitOffset"] = Helen_PortraitOffset;
         }
 
@@ -122,6 +134,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 showFullPortrait = false;
             }
             SupCal_ShowFullPortrait = showFullPortrait;
+
+            if (!tag.TryGet("SupCal_LeftPortraitScale", out float leftScale)) {
+                leftScale = 2.0f;
+            }
+            SupCal_LeftPortraitScale = leftScale;
+
+            if (!tag.TryGet("SupCal_RightPortraitScale", out float rightScale)) {
+                rightScale = 0.85f;
+            }
+            SupCal_RightPortraitScale = rightScale;
         }
 
         /// <summary>
@@ -147,7 +169,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// <summary>
         /// 保存SupCal立绘的UI状态
         /// </summary>
-        public static void SaveSupCalPortraitState(int expression, Vector2 leftOffset, Vector2 rightOffset, bool showFullPortrait) {
+        public static void SaveSupCalPortraitState(int expression, Vector2 leftOffset, Vector2 rightOffset, bool showFullPortrait, float leftScale = 2.0f, float rightScale = 0.85f) {
             bool changed = false;
 
             if (SupCal_Expression != expression) {
@@ -167,6 +189,16 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             if (SupCal_ShowFullPortrait != showFullPortrait) {
                 SupCal_ShowFullPortrait = showFullPortrait;
+                changed = true;
+            }
+
+            if (SupCal_LeftPortraitScale != leftScale) {
+                SupCal_LeftPortraitScale = leftScale;
+                changed = true;
+            }
+
+            if (SupCal_RightPortraitScale != rightScale) {
+                SupCal_RightPortraitScale = rightScale;
                 changed = true;
             }
 
@@ -204,6 +236,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// </summary>
         public static void ResetSupCalExpression() {
             SupCal_Expression = 0;
+            DoSave<MenuSave>();
+
+            //立即同步到UI
+            SupCalPortraitUI.Instance?.LoadSavedState();
+        }
+
+        /// <summary>
+        /// 重置SupCal立绘缩放到默认状态
+        /// </summary>
+        public static void ResetSupCalPortraitScale() {
+            SupCal_LeftPortraitScale = 2.0f;
+            SupCal_RightPortraitScale = 0.85f;
             DoSave<MenuSave>();
 
             //立即同步到UI
