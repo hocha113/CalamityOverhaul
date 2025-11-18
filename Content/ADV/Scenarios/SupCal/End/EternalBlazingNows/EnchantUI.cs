@@ -248,6 +248,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override void Draw(SpriteBatch spriteBatch) {
             Vector2 backgroundScale = Vector2.One * UIScale;
+            float currentWidth = MathHelper.Lerp(392 * backgroundScale.X, CollapsedWidth, lerpProgress);
+            float currentHeight = MathHelper.Lerp(324 * backgroundScale.Y, CollapsedHeight, lerpProgress);
+            UIHitBox = new Rectangle(
+                (int)UITopLeft.X,
+                (int)UITopLeft.Y,
+                (int)currentWidth,
+                (int)currentHeight
+            );
 
             //绘制硫磺火风格背景
             DrawBrimstoneBackground(spriteBatch, UIHitBox);
