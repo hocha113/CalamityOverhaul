@@ -229,6 +229,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 6) {
                 canFormOwnerSetDir = false;
                 canSetOwnerArmBver = false;
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = 6;
                 if (Time == 0) {
                     distanceToOwner = 155;
                     drawTrailTopWidth = 60;
@@ -274,7 +276,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     }
                 }
                 Projectile.timeLeft = 1200;
-                if (Time >= 90 * UpdateRate && !DownRight || (Math.Abs(rotSpeed) <= 0.06f && Time2 >= 90 * UpdateRate)) {
+                if (Time >= 30 * UpdateRate && !DownRight || (Math.Abs(rotSpeed) <= 0.06f && Time2 >= 90 * UpdateRate)) {
                     Projectile.Kill();
                 }
                 if (Time % UpdateRate == UpdateRate - 1) {

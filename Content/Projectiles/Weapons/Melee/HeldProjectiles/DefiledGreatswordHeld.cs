@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class DefiledGreatswordHeld : BaseHeldProj
+    internal class DefiledGreatswordHeldAlt : BaseHeldProj
     {
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<DefiledGreatsword>()).DisplayName;
         public override string Texture => CWRConstant.Placeholder;

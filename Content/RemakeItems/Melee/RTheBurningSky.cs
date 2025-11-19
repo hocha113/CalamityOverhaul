@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.height = 74;
             item.useAnimation = 12;
             item.useTime = 12;
-            item.damage = 950;
+            item.damage = 1650;
             item.crit = 16;
             item.knockBack = 7.5f;
             item.UseSound = null;

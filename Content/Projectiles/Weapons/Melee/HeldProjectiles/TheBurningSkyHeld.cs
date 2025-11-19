@@ -48,9 +48,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
             for (int i = 0; i < 9; ++i) {
                 float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
-                CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
+                Projectile projectile = CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                     , 290f, 130f, 850f, 1100f, randomSpeed, ShootID
                     , Projectile.damage / 6, 6f, Owner.whoAmI);
+                if (Main.rand.NextBool(3)) {
+                    projectile.Calamity().allProjectilesHome = true;
+                }
             }
         }
     }

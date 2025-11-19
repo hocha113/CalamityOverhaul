@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.autoReuse = true;
             Item.height = 88;
             Item.shootSpeed = 12f;
-            Item.CWR().heldProjType = ModContent.ProjectileType<Projectiles.Weapons.Melee.HeldProjectiles.DefiledGreatswordHeld>();
+            Item.CWR().heldProjType = ModContent.ProjectileType<Projectiles.Weapons.Melee.HeldProjectiles.DefiledGreatswordHeldAlt>();
             Item.SetKnifeHeld<BlightedCleaverHeld>();
         }
     }

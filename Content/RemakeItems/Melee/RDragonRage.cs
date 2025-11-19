@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTime = 32;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.damage = 920;
+            Item.damage = 1920;
             Item.crit = 16;
             Item.knockBack = 7.5f;
             Item.noUseGraphic = true;
@@ -49,17 +49,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         internal static bool ShootFunc(ref int Level, ref int LevelAlt, Item Item, Player player
             , EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                if (LevelAlt < 2) {
-                    SoundEngine.PlaySound(SwingSound with { MaxInstances = 6, Volume = 0.6f }, position);
-                    int newLevel = 4 + LevelAlt;
-                    int newDmg = damage;
-                    if (newLevel == 6 && CoolWorld) {
-                        newDmg = (int)(damage * 0.6f);
-                    }
-                    Projectile.NewProjectile(source, position, velocity, type, newDmg, knockback, player.whoAmI, newLevel);
-                    LevelAlt++;
-                    return false;
-                }
                 SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/MeatySlash"), player.Center);
                 SoundEngine.PlaySound(SwingSound with { MaxInstances = 6, Volume = 1.06f }, position);
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 6);
