@@ -28,6 +28,11 @@ namespace CalamityOverhaul.Content.ADV.Common
 
         public override void PostUpdateNPCs() {
             if (!IsBossFightActive) {
+                //Boss已经被击败或者消失，重置追踪数据
+                TargetWeaponDamageDealt = 0f;
+                TotalBossDamage = 0f;
+                IsBossFightActive = false;
+                CurrentDamageTrackerInstance = null;
                 return;//没有激活的Boss战斗，直接返回
             }
             if (CurrentDamageTrackerInstance != null
