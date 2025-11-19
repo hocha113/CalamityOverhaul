@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.UIHandles;

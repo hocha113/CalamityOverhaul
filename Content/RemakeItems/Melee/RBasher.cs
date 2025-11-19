@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;

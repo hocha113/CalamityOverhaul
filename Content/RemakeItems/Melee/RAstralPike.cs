@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;

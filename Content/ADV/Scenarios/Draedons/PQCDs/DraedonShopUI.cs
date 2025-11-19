@@ -703,7 +703,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             //检查当前物品是否正在长按购买
             int currentItemIndex = shopItems.IndexOf(shopItem);
             bool isHolding = holdingPurchaseIndex == currentItemIndex && holdingPurchaseTimer > 0;
-            
+
             //槽位背景
             Color baseSlotColor = new Color(20, 40, 60);
             Color hoverSlotColor = new Color(40, 80, 120);
@@ -737,7 +737,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 );
                 Color progressColor = Color.Lerp(Color.Yellow, Color.Lime, holdProgress) * (uiAlpha * 0.8f);
                 spriteBatch.Draw(pixel, progressRect, progressColor);
-                
+
                 //进度条发光效果
                 Rectangle progressGlow = progressRect;
                 progressGlow.Inflate(0, 2);
@@ -746,19 +746,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             //槽位边框
             float borderPulse = (float)Math.Sin(circuitPulseTimer * 1.5f + position.Y * 0.01f) * 0.5f + 0.5f;
-            
+
             //长按连续购买时的额外脉冲效果
             if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
                 float rapidPulse = (float)Math.Sin(Main.GameUpdateCount * 0.3f) * 0.5f + 0.5f;
                 borderPulse = Math.Max(borderPulse, rapidPulse * 0.9f);
             }
-            
+
             Color borderColor = Color.Lerp(
                 new Color(40, 140, 200),
                 new Color(80, 200, 255),
                 borderPulse * hoverProgress
             ) * (uiAlpha * (0.4f + hoverProgress * 0.4f));
-            
+
             //长按时边框变绿
             if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
                 borderColor = Color.Lerp(borderColor, new Color(120, 255, 120), 0.6f);
@@ -772,13 +772,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Rectangle glowRect = slotRect;
                 glowRect.Inflate(2, 2);
                 Color glowColor = new Color(80, 200, 255) * (uiAlpha * 0.15f * hoverProgress);
-                
+
                 //长按连续购买时增强发光并变绿
                 if (isHolding && holdingPurchaseTimer >= HoldThreshold) {
                     glowColor = Color.Lerp(glowColor, new Color(120, 255, 120), 0.5f);
                     glowColor *= 1.5f; //增强亮度
                 }
-                
+
                 spriteBatch.Draw(pixel, glowRect, glowColor);
             }
 

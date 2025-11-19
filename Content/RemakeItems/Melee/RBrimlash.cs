@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
 using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;

@@ -492,7 +492,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
                 if (scrollDelta != 0) {
                     float scaleDelta = scrollDelta > 0 ? ScaleStep : -ScaleStep;
-                    
+
                     if (hoverLeftPortrait) {
                         AdjustLeftPortraitScale(scaleDelta);
                     }
@@ -522,9 +522,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             bool hoverRightPortrait = RightPortraitHitBox.Contains(MousePosition.ToPoint());
 
             //加号键或等号键(+/=)增大
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemPlus) || 
+            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemPlus) ||
                 Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Add)) {
-                
+
                 if (hoverLeftPortrait) {
                     AdjustLeftPortraitScale(ScaleStep);
                     _scaleKeyTimer = ScaleKeyDelay;
@@ -535,9 +535,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 }
             }
             //减号键(-)减小
-            else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemMinus) || 
+            else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemMinus) ||
                      Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Subtract)) {
-                
+
                 if (hoverLeftPortrait) {
                     AdjustLeftPortraitScale(-ScaleStep);
                     _scaleKeyTimer = ScaleKeyDelay;

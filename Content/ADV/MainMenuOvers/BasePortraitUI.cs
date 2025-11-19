@@ -41,9 +41,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
         //确保资源已加载
-        public override bool Active => MenuSave.IsPortraitUnlocked() && 
-                                      CWRLoad.OnLoadContentBool && 
-                                      Main.gameMenu && 
+        public override bool Active => MenuSave.IsPortraitUnlocked() &&
+                                      CWRLoad.OnLoadContentBool &&
+                                      Main.gameMenu &&
                                       IsResourceLoaded();
 
         //检查资源是否已正确加载(由子类实现)
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// 检查是否可以交互
         /// </summary>
         protected static bool CanInteract() {
-            return IsInMainMenu() && 
-                   !FeedbackUI.Instance.OnActive() && 
+            return IsInMainMenu() &&
+                   !FeedbackUI.Instance.OnActive() &&
                    !AcknowledgmentUI.OnActive();
         }
 

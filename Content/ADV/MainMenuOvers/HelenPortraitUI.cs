@@ -314,8 +314,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             Vector2 iconDrawPos = iconCenter;
 
-            Color iconColor = _unlocked ? 
-                Color.White * _iconAlpha : 
+            Color iconColor = _unlocked ?
+                Color.White * _iconAlpha :
                 new Color(30, 50, 70) * (_iconAlpha * 0.4f);
 
             spriteBatch.Draw(iconTex, iconDrawPos, null, iconColor,

@@ -1,9 +1,5 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using System.Linq;
 using Terraria;
 using Terraria.ID;

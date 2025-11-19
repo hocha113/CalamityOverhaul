@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             int num = 0;
-            foreach(var player in Main.player) {
+            foreach (var player in Main.player) {
                 if (player.active) {
                     num++;
                 }

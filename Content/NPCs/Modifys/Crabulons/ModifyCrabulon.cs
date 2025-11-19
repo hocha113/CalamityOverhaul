@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Crabulon;
-using CalamityMod.Systems;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
@@ -8,13 +7,11 @@ using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -714,7 +711,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                         MountACrabulon = true;
                         SendNetWork();
                     }
-                    else if (VaultUtils.isClient){
+                    else if (VaultUtils.isClient) {
                         CombatText text = Main.combatText[CombatText.NewText(Owner.Hitbox, Color.GreenYellow, DontDismountText.Value)];
                         text.text = DontDismountText.Value;
                         text.lifeTime = 320;

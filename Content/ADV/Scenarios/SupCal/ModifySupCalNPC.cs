@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     CWRRef.SetSupCalGiveUpCounter(npc, 120);
                 }
             }
-            
+
             TrueBossRushStateByAI = false;
         }
 
