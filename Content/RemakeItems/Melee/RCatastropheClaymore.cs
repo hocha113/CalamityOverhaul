@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RCatastropheClaymore : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.useTime = 16;
@@ -19,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class CatastropheClaymoreHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("CatastropheClaymore");
         public override string gradientTexturePath => CWRConstant.ColorBar + "CatastropheClaymore_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
@@ -45,7 +42,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<CatastropheClaymoreSparkle>();
+            int type = CWRID.Proj_CatastropheClaymoreSparkle;
             int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, type
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, Main.rand.Next(3));
             Main.projectile[proj].extraUpdates = 2;

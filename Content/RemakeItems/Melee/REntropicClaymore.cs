@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -16,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class REntropicClaymore : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<EntropicClaymore>();
         public static readonly Color EntropicColor1 = new Color(25, 5, 9);
         public static readonly Color EntropicColor2 = new Color(25, 5, 9);
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -32,7 +29,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.autoReuse = true;
             Item.noUseGraphic = true;
             Item.noMelee = true;
-            Item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             Item.rare = ItemRarityID.Cyan;
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<EntropicClaymoreHeld>();
@@ -94,7 +90,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class EntropicClaymoreHeld : BaseKnife, IWarpDrawable
     {
-        public override int TargetID => ModContent.ItemType<EntropicClaymore>();
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 96;
             canDrawSlashTrail = true;

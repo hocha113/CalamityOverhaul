@@ -1,9 +1,4 @@
-﻿using CalamityMod.Buffs.StatBuffs;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDefiledGreatsword : CWRItemOverride, ICWRLoader
     {
-        public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
         public const float DefiledGreatswordMaxRageEnergy = 15000;
         private static Asset<Texture2D> rageEnergyBarAsset;
         private static Asset<Texture2D> rageEnergyBackAsset;
@@ -46,12 +40,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 102;
-            Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
-            Item.rare = ModContent.RarityType<Turquoise>();
-            Item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
             Item.shootSpeed = 12f;
-            Item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
-            Item.SetKnifeHeld<DefiledGreatswordSwing>();
+            Item.CWR().heldProjType = ModContent.ProjectileType<Projectiles.Weapons.Melee.HeldProjectiles.DefiledGreatswordHeld>();
+            Item.SetKnifeHeld<DefiledGreatswordHeld>();
         }
 
         public static void DrawRageEnergyChargeBar(Player player, float alp, float charge) {
@@ -135,9 +126,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
     }
 
-    internal class DefiledGreatswordSwing : BaseKnife
+    internal class DefiledGreatswordHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BlightedCleaver_Bar";
         private float rageEnergy {
@@ -220,7 +210,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 rageEnergy = RDefiledGreatsword.DefiledGreatswordMaxRageEnergy;
             }
 
-            player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
+            player.AddBuff(CWRID.Buff_BrutalCarnage, 300);
             target.AddBuff(BuffID.Venom, 150);
 
             if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
@@ -277,7 +267,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
                 offsety -= 20;
             }
-            player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
+            player.AddBuff(CWRID.Buff_BrutalCarnage, 300);
             target.AddBuff(BuffID.Venom, 150);
         }
     }

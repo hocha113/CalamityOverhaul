@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBlightedCleaver : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<BlightedCleaver>();
         public const float BlightedCleaverMaxRageEnergy = 5000;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
@@ -29,11 +28,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 88;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
-            Item.rare = ItemRarityID.Yellow;
-            Item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
             Item.shootSpeed = 12f;
-            Item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
+            Item.CWR().heldProjType = ModContent.ProjectileType<Projectiles.Weapons.Melee.HeldProjectiles.DefiledGreatswordHeld>();
             Item.SetKnifeHeld<BlightedCleaverHeld>();
         }
     }
@@ -41,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BlightedCleaverHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<BlightedCleaver>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("BlightedCleaver");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BlightedCleaver_Bar";
         private float rageEnergy {

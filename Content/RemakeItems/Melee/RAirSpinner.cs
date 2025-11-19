@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RAirSpinner : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<AirSpinner>();
         public override void SetDefaults(Item item) {
             item.width = 28;
             item.height = 28;

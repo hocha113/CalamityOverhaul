@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,13 +7,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDraconicDestruction : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<DraconicDestruction>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<DraconicDestructionHeld>();
     }
 
     internal class DraconicDestructionHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<DraconicDestruction>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "HolyCollider_Bar";
         public override void SetKnifeProperty() {
@@ -31,7 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<DracoBeam>(), Projectile.damage
+                , CWRID.Proj_DracoBeam, Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 

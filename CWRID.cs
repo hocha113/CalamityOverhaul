@@ -1,4 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Buffs.StatBuffs;
+using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Armor.Plaguebringer;
@@ -125,14 +127,20 @@ namespace CalamityOverhaul
         public static int NPC_DesertScourgeHead => ModContent.NPCType<DesertScourgeHead>();
         public static int NPC_AquaticScourgeHead => ModContent.NPCType<AquaticScourgeHead>();
         public static int NPC_OldDuke => ModContent.NPCType<OldDuke>();
+        public static int Proj_CatastropheClaymoreSparkle => ModContent.ProjectileType<CatastropheClaymoreSparkle>();
         public static int Proj_AngelicBeam => ModContent.ProjectileType<AngelicBeam>();
         public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
         public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
+        public static int Proj_DracoBeam => ModContent.ProjectileType<DracoBeam>();
+        public static int Proj_EarthProj => ModContent.ProjectileType<EarthProj>();
+        public static int Proj_FossilShard => ModContent.ProjectileType<FossilShard>();
         public static int Proj_MirrorBlast => ModContent.ProjectileType<MirrorBlast>();
         public static int Tile_PlagueInfuser => ModContent.TileType<PlagueInfuser>();
         public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
         public static int Tile_SCalAltar => ModContent.TileType<SCalAltar>();
         public static int Tile_SCalAltarLarge => ModContent.TileType<SCalAltarLarge>();
         public static int Buff_Plague => ModContent.BuffType<Plague>();
+        public static int Buff_BrutalCarnage => ModContent.BuffType<BrutalCarnage>();
+        public static int Buff_ArmorCrunch => ModContent.BuffType<ArmorCrunch>();
     }
 }

@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBansheeHook : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<BansheeHook>();
         internal static int index;
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[TargetID] = true;

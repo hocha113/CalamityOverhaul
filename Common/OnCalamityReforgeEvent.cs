@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System;
 using Terraria;
 using Terraria.GameContent.Prefixes;
@@ -11,8 +10,6 @@ namespace CalamityOverhaul.Common
 {
     internal class OnCalamityReforgeEvent
     {
-        private static CalamityMod.CalamityMod CalamityMod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
-
         //获取当前前缀在指定前缀层级中的层级索引
         private static int GetPrefixTier(int[][] tiers, int currentPrefix) {
             for (int checkingTier = 0; checkingTier < tiers.Length; checkingTier++) {
@@ -29,7 +26,7 @@ namespace CalamityOverhaul.Common
             return rand.Next(reforgeTiers[newTier]);
         }
 
-        private static int GetCalPrefix(string name) => CalamityMod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
+        private static int GetCalPrefix(string name) => CWRMod.Instance.calamity.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
 
         //修改的关键，决定什么物品可以获得近战加成前缀
         private static bool OverWeaponFixMeleePerg(Item item) {
@@ -65,7 +62,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, accessoryReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>()
+            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass(CWRRef.GetMeleeRangedHybridDamageClass())
                 || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) //近战
             {
                 int[][] meleeReforgeTiers;

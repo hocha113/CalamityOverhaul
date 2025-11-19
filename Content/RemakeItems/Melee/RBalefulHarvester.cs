@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBalefulHarvester : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<BalefulHarvester>();
         public static int maxCharge = 160;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

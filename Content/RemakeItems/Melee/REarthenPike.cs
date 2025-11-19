@@ -1,7 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class REarthenPike : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<EarthenPike>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) {
             item.UseSound = null;
@@ -114,7 +110,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class EarthenPikeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<EarthenPike>();
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 64;
             Length = 52;
@@ -131,7 +126,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity,
-                ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5), Projectile.knockBack * 0.85f, Projectile.owner);
+                CWRID.Proj_FossilShard, (int)(Projectile.damage * 0.5), Projectile.knockBack * 0.85f, Projectile.owner);
             Item.useTime = 40;
         }
 
@@ -143,7 +138,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 60);
+            target.AddBuff(CWRID.Buff_ArmorCrunch, 60);
         }
     }
 }

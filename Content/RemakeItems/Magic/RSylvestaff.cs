@@ -8,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
     internal class RSylvestaff : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Sylvestaff>();
         public override bool DrawingInfo => false;
         public override void ModifyRecipe(Recipe recipe) {
             recipe.RemoveIngredient(ItemID.GenderChangePotion);

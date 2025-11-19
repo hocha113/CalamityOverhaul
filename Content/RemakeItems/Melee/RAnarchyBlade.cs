@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RAnarchyBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<AnarchyBlade>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 114;

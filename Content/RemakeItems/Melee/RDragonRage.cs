@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Rarities;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,11 +9,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDragonRage : CWRItemOverride
     {
+        public static readonly SoundStyle SwingSound = new("CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash1");
         private int Level;
         private int LevelAlt;
         internal static bool CoolWorld => Main.zenithWorld || Main.getGoodWorld || Main.drunkWorld || Main.worldName == "HoCha113";
-        public override int TargetID => ModContent.ItemType<DragonRage>();
-        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<DragonRage>()] = true;
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -42,12 +37,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.crit = 16;
             Item.knockBack = 7.5f;
             Item.noUseGraphic = true;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.noMelee = true;
             Item.channel = true;
             Item.shootSpeed = 10f;
             Item.shoot = ModContent.ProjectileType<DragonRageHeld>();
-            Item.rare = ModContent.RarityType<Violet>();
             ItemMeleePrefixDic[Item.type] = true;
             ItemRangedPrefixDic[Item.type] = false;
         }
@@ -56,7 +50,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             , EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 if (LevelAlt < 2) {
-                    SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f }, position);
+                    SoundEngine.PlaySound(SwingSound with { MaxInstances = 6, Volume = 0.6f }, position);
                     int newLevel = 4 + LevelAlt;
                     int newDmg = damage;
                     if (newLevel == 6 && CoolWorld) {
@@ -66,16 +60,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     LevelAlt++;
                     return false;
                 }
-                SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, player.Center);
-                SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 1.06f }, position);
+                SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/MeatySlash"), player.Center);
+                SoundEngine.PlaySound(SwingSound with { MaxInstances = 6, Volume = 1.06f }, position);
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 6);
                 LevelAlt = 0;
                 return false;
             }
             if (!Main.dedServ) {
-                SoundStyle sound = SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.2f };
+                SoundStyle sound = SwingSound with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.2f };
                 if (Level == 3) {
-                    sound = SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.1f };
+                    sound = SwingSound with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.1f };
                 }
                 SoundEngine.PlaySound(sound, player.position);
             }

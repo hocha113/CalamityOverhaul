@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDevilsDevastation : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<DevilsDevastation>();
         private int Level;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 0;
@@ -36,7 +33,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<DevilsDevastationHeld>();
             Item.shootSpeed = 10f;
-            Item.rare = ModContent.RarityType<DarkBlue>();
         }
 
         internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

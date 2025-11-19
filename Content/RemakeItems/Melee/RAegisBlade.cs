@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RAegisBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<AegisBlade>();
         private int Level;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AegisBladeGuardian>()] == 0;

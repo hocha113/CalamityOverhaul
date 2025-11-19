@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class REssenceFlayer : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<EssenceFlayer>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.damage = 180;

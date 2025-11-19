@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBrimlash : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Brimlash>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BrimlashHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Brimlash>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("Brimlash");
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override string GlowTexturePath => CWRConstant.Item_Melee + "BrimlashGlow";
         public override void SetKnifeProperty() {

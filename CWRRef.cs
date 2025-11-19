@@ -28,6 +28,7 @@ namespace CalamityOverhaul
         public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
         public static DamageClass GetTrueMeleeDamageClass() => ModContent.GetInstance<TrueMeleeDamageClass>();
         public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+        public static DamageClass GetMeleeRangedHybridDamageClass() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
         public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
         public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
         public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
@@ -38,6 +39,22 @@ namespace CalamityOverhaul
                 2 => ModContent.ProjectileType<SwordsplosionPurple>(),
                 3 => ModContent.ProjectileType<SwordsplosionRed>(),
                 _ => ModContent.ProjectileType<SwordsplosionBlue>(),
+            };
+        }
+        public static int GetRandomProjectileType2() {
+            return Main.rand.Next(6) switch {
+                1 => ModContent.ProjectileType<GalaxyBlast>(),
+                2 => ModContent.ProjectileType<GalaxyBlastType2>(),
+                3 => ModContent.ProjectileType<GalaxyBlastType3>(),
+                _ => ModContent.ProjectileType<GalaxyBlast>(),
+            };
+        }
+        public static int GetProjectileTypeByIndex(int index) {
+            return index switch {
+                0 => ModContent.ProjectileType<GalaxyBlast>(),
+                1 => ModContent.ProjectileType<GalaxyBlastType2>(),
+                2 => ModContent.ProjectileType<GalaxyBlastType3>(),
+                _ => ModContent.ProjectileType<GalaxyBlast>(),
             };
         }
         public static void SummonSupCal(Vector2 spawnPos) {

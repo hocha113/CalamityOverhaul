@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
     internal class RLazhar : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Lazhar>();
         public override void SetDefaults(Item item) => item.SetHeldProj<LazharHeldProj>();
     }
 }

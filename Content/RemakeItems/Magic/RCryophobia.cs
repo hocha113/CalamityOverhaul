@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
     internal class RCryophobia : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Cryophobia>();
         public override void SetDefaults(Item item) => item.SetHeldProj<CryophobiaHeldProj>();
     }
 }

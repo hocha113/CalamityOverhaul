@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
     internal class RPlasmaRifle : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<PlasmaRifle>();
         public override void SetDefaults(Item item) => item.SetHeldProj<PlasmaRifleHeldProj>();
     }
 }

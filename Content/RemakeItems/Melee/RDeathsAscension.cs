@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -9,11 +7,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDeathsAscension : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<DeathsAscension>();
         private int swingIndex = 0;
         public override void SetDefaults(Item item) {
             item.UseSound = null;
-            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             item.SetKnifeHeld<DeathsAscensionHeld>();
         }
 

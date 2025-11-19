@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RAstralPike : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<AstralPike>();
         public const int InTargetProjToLang = 1220;
         public const int ShootPeriod = 2;
         internal static int index;
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class AstralPikeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<AstralPike>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("AstralPike");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Astral_Bar";
         public override Texture2D TextureValue => CWRUtils.GetT2DValue(CWRConstant.Cay_Proj_Melee + "Spears/AstralPikeProj");

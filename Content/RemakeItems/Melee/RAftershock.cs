@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RAftershock : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Aftershock>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? AltFunctionUse(Item item, Player player) => true;

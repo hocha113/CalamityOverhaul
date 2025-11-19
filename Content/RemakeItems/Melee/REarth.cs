@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -8,7 +6,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class REarth : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Earth>();
         public override void SetDefaults(Item item) {
             item.GiveMeleeType();
             item.SetKnifeHeld<EarthHeld>();
@@ -17,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class EarthHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Earth>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Swordsplosion_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 86;
@@ -46,7 +42,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<EarthProj>();
+            int type = CWRID.Proj_EarthProj;
             Vector2 orig = ShootSpanPos + new Vector2(0, -800);
             Vector2 toMou = orig.To(InMousePos);
             Vector2 spwanPos = orig + toMou.UnitVector() * 600;

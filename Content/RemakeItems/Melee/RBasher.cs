@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBasher : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Basher>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.UseSound = null;
@@ -21,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BasherHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Basher>();
+        public override int TargetID => CWRItemOverride.GetCalItemID("Basher");
         public override void SetKnifeProperty() {
             canDrawSlashTrail = false;
             drawTrailCount = 10;

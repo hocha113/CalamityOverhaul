@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBrinyBaron : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<BrinyBaron>();
         private int Level;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -29,12 +25,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.shootSpeed = 4f;
-            Item.shoot = ModContent.ProjectileType<Razorwind>();
             Item.width = 100;
             Item.height = 102;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.SetKnifeHeld<BrinyBaronHeld>();
         }

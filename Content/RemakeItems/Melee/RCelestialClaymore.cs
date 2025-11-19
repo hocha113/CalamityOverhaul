@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.ID;
@@ -10,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RCelestialClaymore : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<CelestialClaymore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 80;
@@ -24,7 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 5.25f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityLightRedBuyPrice;
             Item.rare = ItemRarityID.LightRed;
             Item.shoot = ModContent.ProjectileType<PercussionCosmicSpiritBomb>();
             Item.shootSpeed = 0.1f;
@@ -34,7 +30,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class CelestialClaymoreHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<CelestialClaymore>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Excelsus_Bar";
         public override void SetKnifeProperty() {

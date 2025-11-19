@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -12,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDiseasedPike : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<DiseasedPike>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
 
         public override void SetDefaults(Item item) {
@@ -29,7 +25,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 58;
-            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<RDiseasedPikeSpear>();
             item.shootSpeed = 10f;
@@ -42,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             if (player.altFunctionUse == 2) {
-                SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, player.Center);
+                SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/MeatySlash"), player.Center);
                 item.CWR().MeleeCharge = 0;
                 Main.projectile[proj].ai[1] = 1;
             }

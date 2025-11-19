@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -10,13 +8,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDevastation : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Devastation>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<DevastationHeld>();
     }
 
     internal class DevastationHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Devastation>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "CatastropheClaymore_Bar";
         public override void SetKnifeProperty() {
@@ -45,7 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void Shoot() {
             Vector2 position = ShootSpanPos;
             Vector2 velocity = ShootVelocity;
-            int type = GetRandomProjectileType();
+            int type = CWRRef.GetRandomProjectileType2();
             int damage = Projectile.damage;
             float knockback = Projectile.knockBack;
             Player player = Owner;
@@ -65,19 +61,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 for (int j = 0; j < 3; j++) {
                     float speedX = spawnDist.X + Main.rand.NextFloat(-0.8f, 0.8f);
                     float speedY = spawnDist.Y + Main.rand.NextFloat(-0.8f, 0.8f);
-                    int projectileType = GetProjectileTypeByIndex(j);
+                    int projectileType = CWRRef.GetProjectileTypeByIndex(j);
                     Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, projectileType, damage / 2, knockback, player.whoAmI, 0f, Main.rand.Next(5 - j * 2));
                 }
             }
-        }
-
-        private static int GetRandomProjectileType() {
-            return Main.rand.Next(6) switch {
-                1 => ModContent.ProjectileType<GalaxyBlast>(),
-                2 => ModContent.ProjectileType<GalaxyBlastType2>(),
-                3 => ModContent.ProjectileType<GalaxyBlastType3>(),
-                _ => ModContent.ProjectileType<GalaxyBlast>(),
-            };
         }
 
         private static Vector2 GetMouseDistance(Vector2 playerPos, float gravDir) {
@@ -100,15 +87,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             distance.Y = Math.Abs(distance.Y) < 20f ? 20f : distance.Y;
             float distanceLength = distance.Length();
             return distance * (speed / distanceLength);
-        }
-
-        private static int GetProjectileTypeByIndex(int index) {
-            return index switch {
-                0 => ModContent.ProjectileType<GalaxyBlast>(),
-                1 => ModContent.ProjectileType<GalaxyBlastType2>(),
-                2 => ModContent.ProjectileType<GalaxyBlastType3>(),
-                _ => ModContent.ProjectileType<GalaxyBlast>(),
-            };
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
