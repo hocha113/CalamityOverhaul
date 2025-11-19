@@ -26,25 +26,27 @@ namespace CalamityOverhaul.Content.ADV.Common
             SuccessDamageContribution = this.GetLocalization(nameof(SuccessDamageContribution), () => "伤害占比");
         }
 
-        public override void PostUpdateNPCs() {
-            if (!IsBossFightActive) {
-                //Boss已经被击败或者消失，重置追踪数据
-                TargetWeaponDamageDealt = 0f;
-                TotalBossDamage = 0f;
-                IsBossFightActive = false;
-                CurrentDamageTrackerInstance = null;
-                return;//没有激活的Boss战斗，直接返回
-            }
-            if (CurrentDamageTrackerInstance != null
-                && CurrentDamageTrackerInstance.NPC.Alives()
-                && NPC.AnyNPCs(CurrentDamageTrackerInstance.NPC.type)) {
-                return;//目标Boss仍然存在，继续战斗
-            }
+        internal static void DealtReset() {
             //Boss已经被击败或者消失，重置追踪数据
             TargetWeaponDamageDealt = 0f;
             TotalBossDamage = 0f;
             IsBossFightActive = false;
             CurrentDamageTrackerInstance = null;
+        }
+
+        public override void PostUpdateNPCs() {
+            if (!IsBossFightActive) {//没有正在进行的Boss战斗，重置追踪数据
+                DealtReset();
+                return;
+            }
+
+            if (CurrentDamageTrackerInstance != null
+                && CurrentDamageTrackerInstance.NPC.Alives()
+                && NPC.AnyNPCs(CurrentDamageTrackerInstance.NPC.type)) {
+                return;//Boss仍然存在，继续追踪
+            }
+
+            DealtReset();
         }
     }
 
