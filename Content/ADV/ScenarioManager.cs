@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.ADV
     /// <summary>
     /// 对话场景接口
     /// </summary>
-    internal interface IADVScenario
+    public interface IADVScenario
     {
         string Key { get; }
         bool CanRepeat { get; }
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.ADV
     /// <summary>
     /// 单条对话数据，支持绑定事件和自定义样式
     /// </summary>
-    internal class DialogueLine
+    public class DialogueLine
     {
         public string Speaker { get; set; }
         public string Content { get; set; }
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV
         }
     }
 
-    internal abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario, ILocalizedModType
+    public abstract class ADVScenarioBase : VaultType<ADVScenarioBase>, IADVScenario, ILocalizedModType
     {
         public virtual string LocalizationCategory => "ADV";
         /// <summary>
@@ -283,12 +283,12 @@ namespace CalamityOverhaul.Content.ADV
     /// <summary>
     /// 对话行链式构建器
     /// </summary>
-    internal class DialogueLineBuilder
+    public class DialogueLineBuilder
     {
         private readonly ADVScenarioBase scenario;
         private readonly DialogueLine line;
 
-        internal DialogueLineBuilder(ADVScenarioBase scenario, string speaker, string content) {
+        public DialogueLineBuilder(ADVScenarioBase scenario, string speaker, string content) {
             this.scenario = scenario;
             line = new DialogueLine(speaker, content);
         }
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.ADV
         }
     }
 
-    internal static class ScenarioManager
+    public static class ScenarioManager
     {
         private static readonly Dictionary<string, IADVScenario> scenarios = new();
         private static IADVScenario active;

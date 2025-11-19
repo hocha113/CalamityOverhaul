@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
     /// <summary>
     /// 选项数据类
     /// </summary>
-    internal class Choice
+    public class Choice
     {
         public string Text { get; set; }
         public Action OnSelect { get; set; }
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
     /// <summary>
     /// 悬停状态变化事件参数
     /// </summary>
-    internal class ChoiceHoverEventArgs : EventArgs
+    public class ChoiceHoverEventArgs : EventArgs
     {
         /// <summary>
         /// 当前悬停的选项索引（-1表示无悬停）

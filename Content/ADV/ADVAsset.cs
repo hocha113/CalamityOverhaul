@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    internal static class ADVAsset
+    public static class ADVAsset
     {
         [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 0, arrayCount: 6)]
         public static IList<Texture2D> SupCalsADV = null;

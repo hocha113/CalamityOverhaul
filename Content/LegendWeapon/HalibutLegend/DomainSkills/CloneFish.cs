@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
 
     #region 数据结构
-    internal struct PlayerSnapshot
+    public struct PlayerSnapshot
     {
         public Vector2 Position;
         public Vector2 Velocity;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    internal struct CloneShootEvent
+    public struct CloneShootEvent
     {
         public int FrameIndex;
         public Vector2 Position;

@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutPlayer : PlayerOverride//这个类用于存储一些与玩家相关的额外数据
+    public class HalibutPlayer : PlayerOverride//这个类用于存储一些与玩家相关的额外数据
     {
         #region Data
         /// <summary>

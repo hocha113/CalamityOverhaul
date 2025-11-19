@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    internal abstract class DialogueBoxBase : UIHandle, ILocalizedModType
+    public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {
         public class DialoguePreProcessArgs
         {

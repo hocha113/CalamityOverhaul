@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
     /// <summary>
     /// ADV选项框UI，参考ResurrectionUI的绘制风格
     /// </summary>
-    internal class ADVChoiceBox : UIHandle, ILocalizedModType
+    public class ADVChoiceBox : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
 

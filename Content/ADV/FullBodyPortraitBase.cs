@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.ADV
     /// 用于制作带动画效果的全身立绘，支持变色、抖动等演出效果
     /// 可以控制对话框的推进行为
     /// </summary>
-    internal abstract class FullBodyPortraitBase
+    public abstract class FullBodyPortraitBase
     {
         /// <summary>
         /// 立绘标识符

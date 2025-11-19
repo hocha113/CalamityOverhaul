@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    internal class ADVSave
+    public class ADVSave
     {
         public bool HasCaughtHalibut;
         public bool FirstMet;
