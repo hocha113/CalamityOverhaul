@@ -953,6 +953,8 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
+        //去他妈的吧，最好别动这些粒子，我写得很累
+
         #region 海洋粒子类
         private class Bubble(Vector2 p)
         {
