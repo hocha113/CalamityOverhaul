@@ -137,11 +137,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         //玩家接受任务
         private void OnAcceptQuest() {
-            //标记接受任务
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
-            }
-
             //生成目标点位
             SignalTowerTargetManager.GenerateTargetPoints();
             //重置信号塔追踪UI的Y轴位置

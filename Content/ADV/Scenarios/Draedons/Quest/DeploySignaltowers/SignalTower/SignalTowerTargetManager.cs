@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -137,6 +138,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
 
             IsGenerated = true;
+            //标记接受任务
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
+            }
         }
 
         #region NetWork
@@ -165,6 +170,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 points.Add(new Point(x, y));
             }
             IsGenerated = true;
+            //这里顺带让其他客户端也接受任务
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
+            }
             return points;
         }
 

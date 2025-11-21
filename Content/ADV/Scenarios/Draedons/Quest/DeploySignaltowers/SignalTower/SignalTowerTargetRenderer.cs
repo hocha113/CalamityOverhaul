@@ -49,8 +49,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 return;
             }
 
-            SpriteBatch spriteBatch = Main.spriteBatch;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
             Player player = Main.LocalPlayer;
 
@@ -63,17 +63,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 bool playerInRange = point.IsPlayerInRange(player);
 
                 //绘制范围指示器
-                DrawTargetRangeIndicator(spriteBatch, point, screenPos, playerInRange);
+                DrawTargetRangeIndicator(Main.spriteBatch, point, screenPos, playerInRange);
             }
 
             //绘制指向最近目标的箭头
             SignalTowerTargetPoint nearestTarget = SignalTowerTargetManager.GetNearestTarget(player);
             if (nearestTarget != null) {
                 bool playerInRange = nearestTarget.IsPlayerInRange(player);
-                DrawArrowToTarget(spriteBatch, player, nearestTarget, playerInRange);
+                DrawArrowToTarget(Main.spriteBatch, player, nearestTarget, playerInRange);
             }
 
-            spriteBatch.End();
+            Main.spriteBatch.End();
         }
 
         /// <summary>
