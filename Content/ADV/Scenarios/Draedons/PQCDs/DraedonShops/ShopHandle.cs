@@ -5,7 +5,6 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops.DraedonShopUI;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {

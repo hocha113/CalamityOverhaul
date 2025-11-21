@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private const int PanelHeight = 640;
         private const float TechSideMargin = 35f;
 
-        public DraedonShopRenderer(Player player, List<ShopItem> shopItems, 
+        public DraedonShopRenderer(Player player, List<ShopItem> shopItems,
             DraedonShopAnimation animation, DraedonShopInteraction interaction) {
             this.player = player;
             this.shopItems = shopItems;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         /// </summary>
         public Vector2 CalculatePanelPosition() {
             float slideOffset = (1f - CWRUtils.EaseOutCubic(animation.PanelSlideProgress)) * PanelWidth;
-            return new Vector2(Main.screenWidth - PanelWidth + slideOffset, 
+            return new Vector2(Main.screenWidth - PanelWidth + slideOffset,
                 (Main.screenHeight - PanelHeight) / 2f);
         }
 
@@ -272,11 +272,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
         private static void CalculateInventory(Item[] items, ref long totalCopper) {
             if (items == null) return;
-            
+
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
                 if (!item.Alives()) continue;
-                
+
                 if (item.type == ItemID.CopperCoin) totalCopper += item.stack;
                 if (item.type == ItemID.SilverCoin) totalCopper += item.stack * 100;
                 if (item.type == ItemID.GoldCoin) totalCopper += item.stack * 10000;
@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             DrawDataStreamEffect(spriteBatch, position, hoverProgress, pixel);
         }
 
-        private void DrawSlotBackground(SpriteBatch spriteBatch, Rectangle slotRect, bool isHovered, 
+        private void DrawSlotBackground(SpriteBatch spriteBatch, Rectangle slotRect, bool isHovered,
             bool isSelected, bool isHolding, float hoverProgress, Texture2D pixel) {
             Color baseSlotColor = new Color(20, 40, 60);
             Color hoverSlotColor = new Color(40, 80, 120);

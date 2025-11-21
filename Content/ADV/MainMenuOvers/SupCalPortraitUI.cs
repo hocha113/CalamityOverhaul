@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -39,8 +40,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private float _glowTimer = 0f;
 
         //粒子系统
-        private readonly List<EmberParticle> _embers = new();
-        private readonly List<FlameWisp> _flameWisps = new();
+        private readonly List<EmberPRT> _embers = new();
+        private readonly List<FlameWispPRT> _flameWisps = new();
         private int _emberSpawnTimer = 0;
         private int _wispSpawnTimer = 0;
 
@@ -135,107 +136,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 Vector2 size = portraitTex.Size() * scale;
 
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
-            }
-        }
-        #endregion
-
-        #region 粒子内部类
-        private class EmberParticle
-        {
-            public Vector2 Pos;
-            public float Size;
-            public float RiseSpeed;
-            public float Drift;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public float Rotation;
-            public float RotationSpeed;
-
-            public EmberParticle(Vector2 start) {
-                Pos = start;
-                Size = Main.rand.NextFloat(2f, 4.5f);
-                RiseSpeed = Main.rand.NextFloat(0.4f, 1.0f);
-                Drift = Main.rand.NextFloat(-0.3f, 0.3f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(60f, 100f);
-                Seed = Main.rand.NextFloat(10f);
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-                RotationSpeed = Main.rand.NextFloat(-0.04f, 0.04f);
-            }
-
-            public bool Update() {
-                Life++;
-                float t = Life / MaxLife;
-                Pos.Y -= RiseSpeed * (1f - t * 0.3f);
-                Pos.X += (float)Math.Sin(Life * 0.06f + Seed) * Drift;
-                Rotation += RotationSpeed;
-                return Life >= MaxLife;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D pixel = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
-
-                Color emberCore = Color.Lerp(new Color(255, 180, 80), new Color(255, 80, 40), t) * (alpha * 0.85f * fade);
-                Color emberGlow = Color.Lerp(new Color(255, 140, 60), new Color(180, 40, 20), t) * (alpha * 0.5f * fade);
-
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
-            }
-        }
-
-        private class FlameWisp
-        {
-            public Vector2 Pos;
-            public Vector2 Velocity;
-            public float Size;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public float Phase;
-
-            public FlameWisp(Vector2 start) {
-                Pos = start;
-                Velocity = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(0.2f, 0.6f);
-                Size = Main.rand.NextFloat(6f, 12f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(80f, 140f);
-                Seed = Main.rand.NextFloat(10f);
-                Phase = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
-
-            public bool Update(Vector2 center, float radius) {
-                Life++;
-                Phase += 0.08f;
-                Vector2 drift = new Vector2(
-                    (float)Math.Sin(Phase + Seed) * 0.5f,
-                    (float)Math.Cos(Phase * 1.3f + Seed * 1.5f) * 0.3f
-                );
-                Pos += Velocity + drift;
-
-                Vector2 toCenter = center - Pos;
-                if (toCenter.Length() > radius) {
-                    Velocity = toCenter * 0.01f;
-                }
-
-                return Life >= MaxLife;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D pixel = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float pulse = (float)Math.Sin(Life * 0.15f + Seed) * 0.5f + 0.5f;
-                float scale = Size * (0.8f + pulse * 0.4f);
-
-                Color wispCore = new Color(255, 200, 120) * (alpha * 0.6f * fade);
-                Color wispGlow = new Color(255, 120, 60) * (alpha * 0.3f * fade);
-
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), wispGlow, 0f, new Vector2(0.5f, 0.5f), scale * 3f, SpriteEffects.None, 0f);
-                sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), wispCore, 0f, new Vector2(0.5f, 0.5f), scale * 1.2f, SpriteEffects.None, 0f);
             }
         }
         #endregion
@@ -557,7 +457,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _emberSpawnTimer = 0;
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 spawnPos = iconCenter + angle.ToRotationVector2() * IconSize * 0.4f;
-                _embers.Add(new EmberParticle(spawnPos));
+                _embers.Add(new EmberPRT(spawnPos
+                    , Main.rand.NextFloat(2f, 4.5f)
+                    , Main.rand.NextFloat(0.4f, 1.0f)
+                    , Main.rand.NextFloat(-0.3f, 0.3f)
+                    , 0
+                    , Main.rand.NextFloat(60f, 100f)));
             }
 
             for (int i = _embers.Count - 1; i >= 0; i--) {
@@ -571,13 +476,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 if (_wispSpawnTimer >= 30 && _flameWisps.Count < 20) {
                     _wispSpawnTimer = 0;
 
-                    bool spawnLeft = Main.rand.NextBool();
-                    Vector2 center = spawnLeft
-                        ? new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset
-                        : new Vector2(Main.screenWidth * RightPortraitXRatio, Main.screenHeight * 0.5f) + _rightPortraitOffset;
+                    Vector2 center = new Vector2(Main.screenWidth * LeftPortraitXRatio, Main.screenHeight * 0.5f) + _leftPortraitOffset;
 
                     Vector2 spawnPos = center + Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(200f, 350f);
-                    _flameWisps.Add(new FlameWisp(spawnPos));
+                    var wisp = new FlameWispPRT(spawnPos);
+                    wisp.Size /= 2;
+                    _flameWisps.Add(wisp);
                 }
 
                 for (int i = _flameWisps.Count - 1; i >= 0; i--) {
@@ -627,8 +531,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             DrawLeftPortrait(spriteBatch, portraitTex);
-            //效果一般，暂时禁用
-            //DrawRightPortrait(spriteBatch, portraitTex);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
@@ -654,26 +556,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             sb.Draw(tex, drawPos, sourceRect, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-        }
-
-        private void DrawRightPortrait(SpriteBatch sb, Texture2D tex) {
-            float scale = _rightPortraitScale * (0.95f + _transitionProgress * 0.05f) * 2;
-            Vector2 drawPos = GetRightPortraitPosition(tex);
-            float dragHighlight = _draggingRightPortrait ? 1.1f : 1f;
-
-            float shadowOffset = 5f;
-            sb.Draw(tex, drawPos + new Vector2(shadowOffset, shadowOffset),
-                null, new Color(10, 5, 5) * (_portraitAlpha * 0.2f), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-
-            float glowPulse = (float)Math.Sin(_glowTimer * 1.1f) * 0.5f + 0.5f;
-            Color glowColor = new Color(255, 120, 60) * (_portraitAlpha * 0.05f * glowPulse * dragHighlight);
-            for (int i = 0; i < 3; i++) {
-                float angle = MathHelper.TwoPi * i / 3f + _flameTimer * 0.7f;
-                Vector2 offset = angle.ToRotationVector2() * 3f;
-                sb.Draw(tex, drawPos + offset, null, glowColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            }
-
-            sb.Draw(tex, drawPos, null, Color.White * _portraitAlpha * dragHighlight, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         private void DrawExpressionButton(SpriteBatch sb) {
@@ -720,7 +602,6 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             }
 
             Texture2D iconTex = ADVAsset.SupCalsADV[0];
-            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 

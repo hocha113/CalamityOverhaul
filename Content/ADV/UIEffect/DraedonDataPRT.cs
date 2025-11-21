@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
-    public class DataParticlePRT(Vector2 p)
+    public class DraedonDataPRT(Vector2 p)
     {
         public Vector2 Pos = p;
         public float Size = Main.rand.NextFloat(1.5f, 3.5f);
@@ -25,6 +25,25 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
                 Pos.Y < panelPos.Y - 50 || Pos.Y > panelPos.Y + panelSize.Y + 50) {
                 return true;
             }
+            return false;
+        }
+
+        public bool Update(Vector2 basePos) {
+            Life++;
+            Rot += 0.025f;
+            Pos += Velocity;
+            Velocity.Y -= 0.015f;
+
+            if (Life >= MaxLife) {
+                return true;
+            }
+
+            //边界检查
+            if (Pos.X < basePos.X - 150f || Pos.X > basePos.X + 150f ||
+                Pos.Y < basePos.Y - 100f || Pos.Y > basePos.Y + 100f) {
+                return true;
+            }
+
             return false;
         }
 

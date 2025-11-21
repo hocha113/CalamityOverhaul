@@ -18,6 +18,11 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             return Life >= MaxLife;
         }
 
+        public bool Update() {
+            Life++;
+            return Life >= MaxLife;
+        }
+
         public void Draw(SpriteBatch sb, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float t = Life / MaxLife;

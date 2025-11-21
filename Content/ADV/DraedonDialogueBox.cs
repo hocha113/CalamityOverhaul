@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV
         private float hexGridPhase = 0f;
 
         //视觉粒子
-        private readonly List<DataParticlePRT> dataParticles = [];
+        private readonly List<DraedonDataPRT> dataParticles = [];
         private int dataParticleSpawnTimer = 0;
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer = 0;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV
             if (Active && dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleSpawnTimer = 0;
                 Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(TechSideMargin, panelSize.X - TechSideMargin), Main.rand.NextFloat(40f, panelSize.Y - 40f));
-                dataParticles.Add(new DataParticlePRT(p));
+                dataParticles.Add(new DraedonDataPRT(p));
             }
             for (int i = dataParticles.Count - 1; i >= 0; i--) {
                 if (dataParticles[i].Update(panelPos, panelSize)) {

@@ -11,9 +11,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
     internal class DraedonShopEffects
     {
         //粒子列表
-        private readonly List<DataParticlePRT> dataParticles = new();
+        private readonly List<DraedonDataPRT> dataParticles = new();
         private readonly List<CircuitNodePRT> circuitNodes = new();
-        private readonly List<EnergyLine> energyLines = new();
+        private readonly List<EnergyLinePRT> energyLines = new();
 
         //粒子刷新计时器
         private int dataParticleSpawnTimer = 0;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     Main.rand.NextFloat(TechSideMargin, panelWidth - TechSideMargin),
                     Main.rand.NextFloat(50f, panelHeight - 50f)
                 );
-                dataParticles.Add(new DataParticlePRT(spawnPos));
+                dataParticles.Add(new DraedonDataPRT(spawnPos));
             }
             for (int i = dataParticles.Count - 1; i >= 0; i--) {
                 if (dataParticles[i].Update(panelPosition, new Vector2(panelWidth, panelHeight))) {
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     start = new Vector2(panelPosition.X + TechSideMargin, y);
                     end = new Vector2(panelPosition.X + panelWidth - TechSideMargin, y);
                 }
-                energyLines.Add(new EnergyLine(start, end));
+                energyLines.Add(new EnergyLinePRT(start, end));
             }
             for (int i = energyLines.Count - 1; i >= 0; i--) {
                 if (energyLines[i].Update()) {

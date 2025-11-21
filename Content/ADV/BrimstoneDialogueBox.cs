@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -27,11 +28,11 @@ namespace CalamityOverhaul.Content.ADV
         private float infernoPulse = 0f;
 
         //粒子系统
-        private readonly List<EmberParticle> embers = new();
+        private readonly List<EmberPRT> embers = new();
         private int emberSpawnTimer = 0;
-        private readonly List<AshParticle> ashes = new();
+        private readonly List<AshPRT> ashes = new();
         private int ashSpawnTimer = 0;
-        private readonly List<FlameWisp> flameWisps = new();
+        private readonly List<FlameWispPRT> flameWisps = new();
         private int wispSpawnTimer = 0;
         private const float ParticleSideMargin = 30f;
 
@@ -52,7 +53,7 @@ namespace CalamityOverhaul.Content.ADV
                 emberSpawnTimer = 0;
                 float xPos = Main.rand.NextFloat(panelPos.X + ParticleSideMargin, panelPos.X + panelSize.X - ParticleSideMargin);
                 Vector2 startPos = new(xPos, panelPos.Y + panelSize.Y - 5f);
-                embers.Add(new EmberParticle(startPos));
+                embers.Add(new EmberPRT(startPos));
             }
             for (int i = embers.Count - 1; i >= 0; i--) {
                 if (embers[i].Update(panelPos, panelSize)) {
@@ -66,7 +67,7 @@ namespace CalamityOverhaul.Content.ADV
                 ashSpawnTimer = 0;
                 float xPos = Main.rand.NextFloat(panelPos.X + ParticleSideMargin, panelPos.X + panelSize.X - ParticleSideMargin);
                 Vector2 startPos = new(xPos, panelPos.Y + panelSize.Y);
-                ashes.Add(new AshParticle(startPos));
+                ashes.Add(new AshPRT(startPos));
             }
             for (int i = ashes.Count - 1; i >= 0; i--) {
                 if (ashes[i].Update(panelPos, panelSize)) {
@@ -82,7 +83,7 @@ namespace CalamityOverhaul.Content.ADV
                     Main.rand.NextFloat(panelPos.X + 40f, panelPos.X + panelSize.X - 40f),
                     Main.rand.NextFloat(panelPos.Y + 60f, panelPos.Y + panelSize.Y - 60f)
                 );
-                flameWisps.Add(new FlameWisp(startPos));
+                flameWisps.Add(new FlameWispPRT(startPos));
             }
             for (int i = flameWisps.Count - 1; i >= 0; i--) {
                 if (flameWisps[i].Update(panelPos, panelSize)) {
@@ -378,139 +379,6 @@ namespace CalamityOverhaul.Content.ADV
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
                 spriteBatch.Draw(vaule, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
-            }
-        }
-        #endregion
-
-        #region 粒子内部类
-        private class EmberParticle(Vector2 start)
-        {
-            public Vector2 Pos = start;
-            public float Size = Main.rand.NextFloat(2.5f, 5.5f);
-            public float RiseSpeed = Main.rand.NextFloat(0.4f, 1.1f);
-            public float Drift = Main.rand.NextFloat(-0.25f, 0.25f);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(70f, 130f);
-            public float Seed = Main.rand.NextFloat(10f);
-            public float RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
-            public float Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                float t = Life / MaxLife;
-                Pos.Y -= RiseSpeed * (1f - t * 0.3f);
-                Pos.X += (float)Math.Sin(Life * 0.06f + Seed) * Drift;
-                Rotation += RotationSpeed;
-
-                if (Life >= MaxLife || Pos.Y < panelPos.Y + 15f) {
-                    return true;
-                }
-                return false;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D vaule = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
-
-                //火焰余烬颜色：橙红到深红
-                Color emberCore = Color.Lerp(new Color(255, 180, 80), new Color(255, 80, 40), t) * (alpha * 0.85f * fade);
-                Color emberGlow = Color.Lerp(new Color(255, 140, 60), new Color(180, 40, 20), t) * (alpha * 0.5f * fade);
-
-                //光晕
-                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
-                //核心
-                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
-            }
-        }
-
-        private class AshParticle(Vector2 start)
-        {
-            public Vector2 Pos = start;
-            public float Size = Main.rand.NextFloat(1.5f, 3.5f);
-            public float RiseSpeed = Main.rand.NextFloat(0.15f, 0.45f);
-            public float Drift = Main.rand.NextFloat(-0.35f, 0.35f);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(100f, 180f);
-            public float Seed = Main.rand.NextFloat(10f);
-            public float Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                float t = Life / MaxLife;
-                Pos.Y -= RiseSpeed * (0.7f + (float)Math.Sin(t * Math.PI) * 0.3f);
-                Pos.X += (float)Math.Sin(Life * 0.04f + Seed) * Drift * 1.5f;
-
-                if (Life >= MaxLife || Pos.Y < panelPos.Y) {
-                    return true;
-                }
-                return false;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI) * (1f - t * 0.4f);
-
-                //灰烬颜色：深灰到黑
-                Color ashColor = Color.Lerp(new Color(60, 50, 45), new Color(30, 20, 15), t) * (alpha * 0.65f * fade);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), ashColor, Rotation, new Vector2(0.5f, 0.5f), Size, SpriteEffects.None, 0f);
-            }
-        }
-
-        private class FlameWisp(Vector2 start)
-        {
-            public Vector2 Pos = start;
-            public Vector2 Velocity = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(0.3f, 0.8f);
-            public float Size = Main.rand.NextFloat(8f, 16f);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(120f, 200f);
-            public float Seed = Main.rand.NextFloat(10f);
-            public float Phase = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                float t = Life / MaxLife;
-
-                //漂浮运动
-                Phase += 0.08f;
-                Vector2 drift = new Vector2(
-                    (float)Math.Sin(Phase + Seed) * 0.5f,
-                    (float)Math.Cos(Phase * 1.3f + Seed * 1.5f) * 0.3f
-                );
-                Pos += Velocity + drift;
-
-                //边界检查
-                if (Pos.X < panelPos.X + 20f || Pos.X > panelPos.X + panelSize.X - 20f) {
-                    Velocity.X *= -0.8f;
-                }
-                if (Pos.Y < panelPos.Y + 40f || Pos.Y > panelPos.Y + panelSize.Y - 40f) {
-                    Velocity.Y *= -0.8f;
-                }
-
-                if (Life >= MaxLife) {
-                    return true;
-                }
-                return false;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D vaule = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float pulse = (float)Math.Sin(Life * 0.15f + Seed) * 0.5f + 0.5f;
-
-                float scale = Size * (0.8f + pulse * 0.4f);
-
-                //火焰精灵颜色
-                Color wispCore = new Color(255, 200, 120) * (alpha * 0.6f * fade);
-                Color wispGlow = new Color(255, 120, 60) * (alpha * 0.3f * fade);
-
-                //外层光晕
-                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), wispGlow, 0f, new Vector2(0.5f, 0.5f), scale * 3f, SpriteEffects.None, 0f);
-                //内层核心
-                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), wispCore, 0f, new Vector2(0.5f, 0.5f), scale * 1.2f, SpriteEffects.None, 0f);
             }
         }
         #endregion
