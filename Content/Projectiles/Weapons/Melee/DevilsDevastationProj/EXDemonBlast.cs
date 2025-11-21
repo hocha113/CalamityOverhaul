@@ -75,16 +75,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     ChargeBackPosition,
                     CWRUtils.EaseOutBack(chargeIntensity)
                 );
-                
+
                 Projectile.position = targetPosition;
-                
+
                 //蓄力旋转效果
                 Projectile.rotation = ToMouseA + MathHelper.PiOver4;
-                
+
                 //蓄力粒子效果
                 if (Main.rand.NextBool(2)) {
                     Vector2 offset = Main.rand.NextVector2Circular(20, 20) * chargeIntensity;
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.ShadowbeamStaff, 
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.ShadowbeamStaff,
                         -offset * 0.1f, 0, Color.Purple, 1.5f * chargeIntensity);
                     dust.noGravity = true;
                 }
@@ -92,11 +92,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 //完成蓄力
                 if (ChargeTime >= 25 || !DownLeft) {
                     isCharging = false;
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { 
-                        Pitch = -0.3f, 
-                        Volume = 0.8f 
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with {
+                        Pitch = -0.3f,
+                        Volume = 0.8f
                     }, Projectile.position);
-                    
+
                     //爆发式冲刺
                     Vector2 launchDirection = Projectile.DirectionTo(InMousePos);
                     Projectile.velocity = launchDirection * (20 + chargeIntensity * 10);
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     //发射时的震撼效果
                     for (int i = 0; i < 20; i++) {
                         Vector2 vel = Main.rand.NextVector2Circular(8, 8);
-                        Dust shockDust = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff, 
+                        Dust shockDust = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff,
                             vel, 0, Color.Purple, 2f);
                         shockDust.noGravity = true;
                     }
@@ -118,10 +118,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 //快速旋转以增强力量感
                 float targetRot = Projectile.velocity.ToRotation();
                 Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRot + MathHelper.PiOver4, 0.25f);
-                
+
                 //拖尾粒子效果
                 if (Main.rand.NextBool()) {
-                    Dust trail = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff, 
+                    Dust trail = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff,
                         -Projectile.velocity * 0.3f, 0, Color.Pink, 1.8f);
                     trail.noGravity = true;
                 }
@@ -137,25 +137,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            
+
             //增强爆炸效果
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
-            
+
             //爆炸粒子
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(12, 12);
-                Dust explosion = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff, 
+                Dust explosion = Dust.NewDustPerfect(Projectile.Center, DustID.ShadowbeamStaff,
                     velocity, 0, Color.Purple, Main.rand.NextFloat(2f, 3f));
                 explosion.noGravity = true;
             }
-            
+
             CWRUtils.SplashDust(Projectile, 21, DustID.ShadowbeamStaff, DustID.ShadowbeamStaff, 13, Main.DiscoColor);
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 drawOrigin = texture.Size() / 2;
-            
+
             //绘制拖尾
             if (Projectile.ai[0] == 1) {
                 for (int k = 0; k < Projectile.oldPos.Length; k++) {
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     Vector2 drawPos = Projectile.Center - Main.screenPosition - offsetPos;
                     float trailAlpha = (Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length;
                     Color color = Color.Lerp(Color.Pink, Color.Purple, k / (float)Projectile.oldPos.Length) * trailAlpha;
-                    Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, 
+                    Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin,
                         Projectile.scale * (1f - k * 0.05f), SpriteEffects.None, 0);
                 }
             }
@@ -171,19 +171,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             //蓄力光效
             if (isCharging && chargeIntensity > 0) {
                 Color chargeGlow = Color.Purple * chargeIntensity * 0.6f;
-                VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Time, 
-                    Projectile.Center - Main.screenPosition, null, chargeGlow, Projectile.rotation, 
+                VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Time,
+                    Projectile.Center - Main.screenPosition, null, chargeGlow, Projectile.rotation,
                     drawOrigin, Projectile.scale * (1f + chargeIntensity * 0.3f), 0);
             }
 
             //主体绘制
             Color mainColor = isCharging ? Color.Lerp(lightColor, Color.Purple, chargeIntensity * 0.5f) : lightColor;
-            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Time, 
-                Projectile.Center - Main.screenPosition, null, Color.Pink, Projectile.rotation, 
+            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Time,
+                Projectile.Center - Main.screenPosition, null, Color.Pink, Projectile.rotation,
                 drawOrigin, Projectile.scale, 0);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, 
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null,
                 Projectile.GetAlpha(mainColor), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
-            
+
             return false;
         }
     }

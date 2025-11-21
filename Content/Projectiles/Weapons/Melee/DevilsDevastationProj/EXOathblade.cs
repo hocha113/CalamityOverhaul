@@ -10,12 +10,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     internal class EXOathblade : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Oathblade";
-        
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
-        
+
         public override void SetDefaults() {
             Projectile.width = 58;
             Projectile.height = 58;
@@ -38,10 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
             //更快的速度衰减让其更有冲击力
             Projectile.velocity *= 0.99f;
-            
+
             //增强粒子效果
             if (Main.rand.NextBool(2)) {
-                Dust trail = Dust.NewDustDirect(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, 
+                Dust trail = Dust.NewDustDirect(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
                     DustID.ShadowbeamStaff, Projectile.velocity.X * 0.3f, Projectile.velocity.Y * 0.3f);
                 trail.noGravity = true;
                 trail.scale = 1.5f;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire, 240);
             target.AddBuff(BuffID.ShadowFlame, 120);
-            
+
             //添加击中粒子效果
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4, 4);
@@ -63,25 +63,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 drawOrigin = texture.Size() / 2;
-            
+
             //增强拖尾效果
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);
                 Vector2 drawPos = Projectile.Center - Main.screenPosition - offsetPos;
                 float trailProgress = k / (float)Projectile.oldPos.Length;
                 Color color = Color.Lerp(Color.Pink, Color.Purple, trailProgress) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, 
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin,
                     Projectile.scale * (1f - trailProgress * 0.3f), SpriteEffects.None, 0);
             }
 
             //增强旋转光效
-            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Projectile.timeLeft, 
-                Projectile.Center - Main.screenPosition, null, Color.Pink * 0.7f, Projectile.rotation, 
+            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Projectile.timeLeft,
+                Projectile.Center - Main.screenPosition, null, Color.Pink * 0.7f, Projectile.rotation,
                 drawOrigin, Projectile.scale * 1.1f, 0);
-            
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, 
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null,
                 Projectile.GetAlpha(lightColor), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
-            
+
             return false;
         }
     }

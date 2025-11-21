@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             //增强的火焰路径
             for (int i = 0; i < lengs / 8; i++) {
                 Vector2 currentPos = origPos + Projectile.velocity * (1 + i) * 8;
-                
+
                 //主火焰粒子
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = ToMouse.UnitVector() * Main.rand.NextFloat(1.5f, 3f),
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 if (i % 3 == 0) {
                     Vector2 perpendicular = ToMouse.UnitVector().RotatedBy(MathHelper.PiOver2);
                     for (int j = -1; j <= 1; j += 2) {
-                        Dust spark = Dust.NewDustPerfect(currentPos + perpendicular * j * 20, DustID.Torch, 
+                        Dust spark = Dust.NewDustPerfect(currentPos + perpendicular * j * 20, DustID.Torch,
                             perpendicular * j * Main.rand.NextFloat(2, 4), 0, Color.OrangeRed, 2.5f);
                         spark.noGravity = true;
                     }
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     for (int i = 0; i < dustRings[ring]; i++) {
                         float angle = MathHelper.TwoPi / dustRings[ring] * i;
                         Vector2 velocity = angle.ToRotationVector2() * speeds[ring];
-                        
+
                         int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.Torch, Scale: 7);
                         Main.dust[dust].position = spanPos;
                         Main.dust[dust].velocity = velocity;
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     lavaFire.colors[2] = new Color(200, 90, 30, 255);
                     PRTLoader.AddParticle(lavaFire);
                 }
-                
+
                 expansionSpeed = 0.35f;
                 return;
             }
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             //燃烧持续粒子效果
             if (Time % 2 == 0 && Projectile.timeLeft > 10) {
                 Vector2 randomPos = Projectile.Center + Main.rand.NextVector2Circular(
-                    Projectile.ai[0] == 1 ? 250 : 100, 
+                    Projectile.ai[0] == 1 ? 250 : 100,
                     Projectile.ai[0] == 1 ? 250 : 100
                 );
                 Dust burn = Dust.NewDustPerfect(randomPos, DustID.Torch, Vector2.Zero, 0, Color.Orange, 2f);
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             Projectile.localAI[1] += 0.09f;
             Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
-            
+
             //强烈的光照效果
             float lightIntensity = Projectile.ai[0] == 1 ? 1.5f : 1f;
             Lighting.AddLight(Projectile.Center, new Vector3(1, 0.8f, 0.3f) * lightIntensity);
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Color warpColor = new Color(55, 40, 25) * Projectile.ai[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 drawOrig = warpTex.Size() / 2;
-            
+
             int num = Projectile.ai[0] == 1 ? 32 : 12;
             float scaleMultiplier = Projectile.ai[0] == 1 ? 0.018f : 0.012f;
 

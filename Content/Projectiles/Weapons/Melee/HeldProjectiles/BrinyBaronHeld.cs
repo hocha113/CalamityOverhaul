@@ -50,14 +50,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
 
                 ExecuteAdaptiveSwing(
-                    initialMeleeSize: 1.05f, 
-                    phase1Ratio: 0.15f, 
-                    phase2Ratio: 0.55f, 
+                    initialMeleeSize: 1.05f,
+                    phase1Ratio: 0.15f,
+                    phase2Ratio: 0.55f,
                     phase0SwingSpeed: 2.5f,
-                    phase1SwingSpeed: 10f, 
-                    phase2SwingSpeed: 4f, 
+                    phase1SwingSpeed: 10f,
+                    phase2SwingSpeed: 4f,
                     phase0MeleeSizeIncrement: 0.015f,
-                    phase2MeleeSizeIncrement: 0, 
+                    phase2MeleeSizeIncrement: 0,
                     swingSound: SoundID.Item71
                 );
 
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Time % 2 == 0 && rotSpeed > 0.15f) {
                     for (int i = 0; i < 2; i++) {
                         Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(60, 60);
-                        Dust water = Dust.NewDustPerfect(dustPos, DustID.DungeonWater, 
+                        Dust water = Dust.NewDustPerfect(dustPos, DustID.DungeonWater,
                             -Projectile.velocity * 0.5f, 0, default, 2f);
                         water.noGravity = true;
                         water.velocity += Owner.velocity * 0.5f;
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Time % 3 == 0) {
                     float angle = Time * 0.2f;
                     Vector2 offset = angle.ToRotationVector2() * (50 + chargeProgress * 30);
-                    Dust bubble = Dust.NewDustPerfect(Projectile.Center + offset, DustID.DungeonWater, 
+                    Dust bubble = Dust.NewDustPerfect(Projectile.Center + offset, DustID.DungeonWater,
                         -offset * 0.08f, 0, default, 1.8f + chargeProgress * 0.5f);
                     bubble.noGravity = true;
                 }
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 //普通攻击水花
                 if (Time % 3 == 0 && Main.rand.NextBool()) {
-                    Dust splash = Dust.NewDustDirect(Projectile.position, Projectile.width, 
+                    Dust splash = Dust.NewDustDirect(Projectile.position, Projectile.width,
                         Projectile.height, DustID.DungeonWater);
                     splash.velocity *= 0.6f;
                     splash.scale = 1.5f;
@@ -145,20 +145,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void Shoot() {
             int type = ModContent.ProjectileType<Razorwind>();
-            
+
             if (Projectile.ai[0] == 1) {
                 type = ProjectileID.Bubble;
                 SoundEngine.PlaySound(SoundID.Item85 with { Pitch = 0.3f, Volume = 1.1f }, Owner.Center);
-                
+
                 for (int i = 0; i < 28; i++) {
                     Vector2 ver = UnitToMouseV.RotatedByRandom(1.7f) * ShootSpeed * Main.rand.NextFloat(0.7f, 1.3f);
                     int proj = Projectile.NewProjectile(
-                        Projectile.GetSource_FromAI(), 
+                        Projectile.GetSource_FromAI(),
                         Owner.Center + ver * 65f,
-                        ver, 
-                        type, 
-                        Projectile.damage / 2, 
-                        2, 
+                        ver,
+                        type,
+                        Projectile.damage / 2,
+                        2,
                         Owner.whoAmI
                     );
                     Main.projectile[proj].DamageType = DamageClass.Melee;
@@ -169,23 +169,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Owner.CWR().GetScreenShake(6f);
                 return;
             }
-            
+
             if (Projectile.ai[0] == 2) {
                 //水球终结技
                 SoundEngine.PlaySound(SoundID.Item20 with { MaxInstances = 6, Volume = 1.3f }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item96 with { Pitch = -0.2f }, Owner.Center);
-                
+
                 type = ModContent.ProjectileType<BrinyBaronOrb>();
-                
+
                 //发射3个强力水球
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(
-                        Projectile.GetSource_FromAI(), 
+                        Projectile.GetSource_FromAI(),
                         Owner.Center,
                         safeInSwingUnit.RotatedBy((-1 + i) * 0.12f) * 14,
-                        type, 
-                        (int)(Projectile.damage * 0.85f), 
-                        3f, 
+                        type,
+                        (int)(Projectile.damage * 0.85f),
+                        3f,
                         Owner.whoAmI
                     );
                 }
@@ -218,18 +218,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             //普通攻击
             SoundEngine.PlaySound(SoundID.Item84 with { Pitch = 0.1f }, Owner.Center);
             Projectile.NewProjectile(
-                Projectile.GetSource_FromAI(), 
-                Owner.Center, 
+                Projectile.GetSource_FromAI(),
+                Owner.Center,
                 ShootVelocity * 1.2f,
-                type, 
-                (int)(Projectile.damage * 0.55f), 
-                Projectile.knockBack * 0.6f, 
+                type,
+                (int)(Projectile.damage * 0.55f),
+                Projectile.knockBack * 0.6f,
                 Owner.whoAmI
             );
 
             //普通攻击水花
             for (int i = 0; i < 5; i++) {
-                Dust water = Dust.NewDustDirect(Owner.Center, 20, 20, DustID.DungeonWater, 
+                Dust water = Dust.NewDustDirect(Owner.Center, 20, 20, DustID.DungeonWater,
                     ShootVelocity.X * 0.3f, ShootVelocity.Y * 0.3f);
                 water.noGravity = true;
                 water.scale = 1.3f;

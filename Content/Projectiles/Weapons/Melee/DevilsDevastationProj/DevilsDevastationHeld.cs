@@ -42,21 +42,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             }
             Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
             Vector2 unitToM = UnitToMouseV;
-            
+
             //增强冲击波粒子效果
             for (int i = 0; i < lengs / 10; i++) {
                 Vector2 spwanPos = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 10;
                 Dust dust = Dust.NewDustPerfect(spwanPos, DustID.Blood, UnitToMouseV * 8, 125, Color.OrangeRed, 3.5f);
                 dust.noGravity = true;
                 dust.scale = 6;
-                
+
                 //添加火焰粒子
                 if (i % 2 == 0) {
                     Dust flame = Dust.NewDustPerfect(spwanPos, DustID.Torch, UnitToMouseV * 5, 100, Color.Red, 2.5f);
                     flame.noGravity = true;
                 }
             }
-            
+
             //增强爆炸粒子环
             int bloodQuantity = 12;
             for (int i = 0; i < bloodQuantity; i++) {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     }
                 }
             }
-            
+
             //屏幕震动
             Owner.CWR().GetScreenShake(12f);
         }
@@ -93,8 +93,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (canShoot && Projectile.ai[0] == 3) {
                 EXDemonBlastAltEffect();
             }
-            if (Projectile.ai[0] != 3 && !Has16EXDemonBlast() 
-                && Time > 5 * UpdateRate && Time < 60 * UpdateRate && Time % 10 * UpdateRate == 0 
+            if (Projectile.ai[0] != 3 && !Has16EXDemonBlast()
+                && Time > 5 * UpdateRate && Time < 60 * UpdateRate && Time % 10 * UpdateRate == 0
                 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
                 , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
@@ -108,12 +108,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.08f) * 8
                         , ModContent.ProjectileType<EXOathblade>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
                 }
-                
+
                 //添加击打音效
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.2f }, Owner.Center);
                 return;
             }
-            
+
             if (Projectile.ai[0] == 3) {
                 //终结技发射增强效果
                 for (int i = 0; i < 6; i++) {
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 SwingBehavior(starArg: 63, baseSwingSpeed: 7, ler1_UpLengthSengs: 0.12f, ler1_UpSpeedSengs: 0.15f, ler1_UpSizeSengs: 0.068f
                 , ler2_DownLengthSengs: 0.008f, ler2_DownSpeedSengs: 0.16f, ler2_DownSizeSengs: 0
                 , minClampLength: 165, maxClampLength: 230, ler1Time: 16, maxSwingTime: 28);
-                
+
                 //添加挥舞尾迹粒子
                 if (Time % 2 == 0 && Main.rand.NextBool(2)) {
                     Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 SwingBehavior(starArg: 63, baseSwingSpeed: -7, ler1_UpLengthSengs: 0.12f, ler1_UpSpeedSengs: 0.15f, ler1_UpSizeSengs: 0.068f
                 , ler2_DownLengthSengs: 0.008f, ler2_DownSpeedSengs: 0.16f, ler2_DownSizeSengs: 0
                 , minClampLength: 165, maxClampLength: 230, ler1Time: 16, maxSwingTime: 28);
-                
+
                 //添加挥舞尾迹粒子
                 if (Time % 2 == 0 && Main.rand.NextBool(2)) {
                     Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
@@ -167,18 +167,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 SwingBehavior(starArg: 13, baseSwingSpeed: 2.5f, ler1_UpLengthSengs: 0.12f, ler1_UpSpeedSengs: 0.12f, ler1_UpSizeSengs: 0.075f
                 , ler2_DownLengthSengs: 0.008f, ler2_DownSpeedSengs: 0.18f, ler2_DownSizeSengs: 0
                 , minClampLength: 170, maxClampLength: 210, ler1Time: 6, maxSwingTime: 55);
-                
+
                 //蓄力阶段的粒子效果
                 if (Time < maxSwingTime * shootSengs) {
                     float chargeProgress = Time / (maxSwingTime * shootSengs);
                     if (Main.rand.NextBool(3)) {
                         Vector2 offset = Main.rand.NextVector2Circular(60, 60) * chargeProgress;
-                        Dust charge = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Blood, 
+                        Dust charge = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Blood,
                             -offset * 0.08f, 0, Color.OrangeRed, 2f * chargeProgress);
                         charge.noGravity = true;
                     }
                 }
-                
+
                 //屏幕震动
                 if (Time == (int)(maxSwingTime * shootSengs)) {
                     Owner.CWR().GetScreenShake(8f);
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (hit.Crit) {
                 target.AddBuff(BuffID.ShadowFlame, 540);
                 target.AddBuff(BuffID.OnFire, 1080);
-                
+
                 //暴击特效
                 SoundEngine.PlaySound(SoundID.NPCHit53 with { Pitch = -0.3f }, target.Center);
                 for (int i = 0; i < 8; i++) {
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     crit.noGravity = true;
                 }
             }
-            
+
             //添加击打音效和轻微震动
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with { Pitch = 0.5f, Volume = 0.6f }, target.Center);
             Owner.CWR().GetScreenShake(2f);
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
             }
-            
+
             //增强光效
             if (Projectile.ai[0] != 0) {
                 float intensity = Projectile.ai[0] == 3 ? 1.2f : 0.8f;

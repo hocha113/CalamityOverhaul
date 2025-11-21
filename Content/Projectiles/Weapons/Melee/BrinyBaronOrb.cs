@@ -39,9 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             //动态气泡生成
             if (trailTimer % 4 == 0) {
                 Gore bubble = Gore.NewGorePerfect(
-                    Projectile.GetSource_FromAI(), 
-                    Projectile.position, 
-                    Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f), 
+                    Projectile.GetSource_FromAI(),
+                    Projectile.position,
+                    Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f),
                     Main.rand.NextBool(3) ? 412 : 411
                 );
                 bubble.timeLeft = 12 + Main.rand.Next(10);
@@ -53,9 +53,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (trailTimer % 3 == 0) {
                 for (int i = 0; i < 3; i++) {
                     Dust water = Dust.NewDustDirect(
-                        Projectile.position, 
-                        Projectile.width, 
-                        Projectile.height, 
+                        Projectile.position,
+                        Projectile.width,
+                        Projectile.height,
                         DustID.DungeonWater
                     );
                     water.noGravity = true;
@@ -98,10 +98,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromAI(),
                     Projectile.Center + new Vector2(0, 16),
-                    Vector2.Zero, 
+                    Vector2.Zero,
                     ModContent.ProjectileType<BrinyTyphoonBubble>(),
-                    Projectile.damage, 
-                    Projectile.knockBack, 
+                    Projectile.damage,
+                    Projectile.knockBack,
                     Projectile.owner
                 );
             }
@@ -159,10 +159,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Vector2 velocity = angle.ToRotationVector2() * (radius + Main.rand.NextFloat(-2, 2));
 
                     Dust water = Dust.NewDustPerfect(
-                        Projectile.Center, 
-                        DustID.DungeonWater, 
-                        velocity, 
-                        0, default, 
+                        Projectile.Center,
+                        DustID.DungeonWater,
+                        velocity,
+                        0, default,
                         1.5f + ring * 0.3f
                     );
                     water.noGravity = true;
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 int particleCount = 30 + i * 8;
 
                 for (int j = 0; j < particleCount; j++) {
-                    Vector2 offset = Vector2.Normalize(Projectile.velocity) * 
+                    Vector2 offset = Vector2.Normalize(Projectile.velocity) *
                         new Vector2(Projectile.width / 2f, Projectile.height) * 0.75f;
                     Vector2 rotatedOffset = offset.RotatedBy(
                         (j - (particleCount / 2 - 1)) * MathHelper.TwoPi / particleCount
@@ -186,15 +186,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Vector2 faceDirection = rotatedOffset - Projectile.Center;
 
                     int dustIndex = Dust.NewDust(
-                        rotatedOffset + faceDirection, 
-                        0, 0, 
-                        DustID.DungeonWater, 
-                        faceDirection.X * 2.5f, 
-                        faceDirection.Y * 2.5f, 
-                        100, default, 
+                        rotatedOffset + faceDirection,
+                        0, 0,
+                        DustID.DungeonWater,
+                        faceDirection.X * 2.5f,
+                        faceDirection.Y * 2.5f,
+                        100, default,
                         1.6f + i * 0.2f
                     );
-                    
+
                     Dust dust = Main.dust[dustIndex];
                     dust.noGravity = true;
                     dust.velocity = faceDirection * (1 + i * 0.5f);
