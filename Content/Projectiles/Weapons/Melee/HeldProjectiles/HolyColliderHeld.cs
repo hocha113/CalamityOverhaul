@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 //生成强化的火焰冲击
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, unitToM2
-                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage * 2, Projectile.knockBack * 2
+                , ModContent.ProjectileType<HolyColliderExFire>(), (int)(Projectile.damage * 1.5f), Projectile.knockBack * 2
                 , Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
 
                 //屏幕震动
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             //生成火焰斩击
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, unitToM
-                , ModContent.ProjectileType<HolyColliderExFire>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<HolyColliderExFire>(), (int)(Projectile.damage * 1.2f), Projectile.knockBack, Owner.whoAmI);
 
             //小范围震动
             Owner.CWR().GetScreenShake(4f);
