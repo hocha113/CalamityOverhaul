@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -28,9 +29,9 @@ namespace CalamityOverhaul.Content.ADV
         private float hexGridPhase = 0f;
 
         //视觉粒子
-        private readonly List<DataParticleFx> dataParticles = [];
+        private readonly List<DataParticlePRT> dataParticles = [];
         private int dataParticleSpawnTimer = 0;
-        private readonly List<CircuitNodeFx> circuitNodes = [];
+        private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer = 0;
         private const float TechSideMargin = 28f;
 
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV
             if (Active && dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleSpawnTimer = 0;
                 Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(TechSideMargin, panelSize.X - TechSideMargin), Main.rand.NextFloat(40f, panelSize.Y - 40f));
-                dataParticles.Add(new DataParticleFx(p));
+                dataParticles.Add(new DataParticlePRT(p));
             }
             for (int i = dataParticles.Count - 1; i >= 0; i--) {
                 if (dataParticles[i].Update(panelPos, panelSize)) {
@@ -69,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV
                 float left = panelPos.X + TechSideMargin * scaleW;
                 float right = panelPos.X + panelSize.X - TechSideMargin * scaleW;
                 Vector2 start = new(Main.rand.NextFloat(left, right), panelPos.Y + Main.rand.NextFloat(40f, panelSize.Y - 40f));
-                circuitNodes.Add(new CircuitNodeFx(start));
+                circuitNodes.Add(new CircuitNodePRT(start));
             }
             for (int i = circuitNodes.Count - 1; i >= 0; i--) {
                 if (circuitNodes[i].Update(panelPos, panelSize)) {
@@ -344,92 +345,6 @@ namespace CalamityOverhaul.Content.ADV
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
                 spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
-            }
-        }
-        #endregion
-
-        #region 粒子内部类
-        private class DataParticleFx(Vector2 p)
-        {
-            public Vector2 Pos = p;
-            public float Size = Main.rand.NextFloat(1.5f, 3.5f);
-            public float Rot = Main.rand.NextFloat(MathHelper.TwoPi);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(80f, 150f);
-            public float Seed = Main.rand.NextFloat(10f);
-            public Vector2 Velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-0.6f, -0.2f));
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                Rot += 0.025f;
-                Pos += Velocity;
-                Velocity.Y -= 0.015f;
-
-                float t = Life / MaxLife;
-                if (Life >= MaxLife) {
-                    return true;
-                }
-
-                if (Pos.X < panelPos.X - 50 || Pos.X > panelPos.X + panelSize.X + 50 || Pos.Y < panelPos.Y - 50 || Pos.Y > panelPos.Y + panelSize.Y + 50) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
-                float scale = Size * (0.7f + (float)Math.Sin((Life + Seed * 40f) * 0.09f) * 0.3f);
-
-                Color c = new Color(80, 200, 255) * (0.8f * fade);
-                Texture2D px = VaultAsset.placeholder2.Value;
-
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, Rot, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.9f, Rot + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.3f), SpriteEffects.None, 0f);
-            }
-        }
-
-        private class CircuitNodeFx
-        {
-            public Vector2 Pos;
-            public float Radius;
-            public float PulseSpeed;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-
-            public CircuitNodeFx(Vector2 start) {
-                Pos = start;
-                Radius = Main.rand.NextFloat(2f, 5f);
-                PulseSpeed = Main.rand.NextFloat(0.8f, 1.6f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(100f, 180f);
-                Seed = Main.rand.NextFloat(10f);
-            }
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                if (Life >= MaxLife) {
-                    return true;
-                }
-                return false;
-            }
-
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float pulse = (float)Math.Sin((Life + Seed * 20f) * 0.08f * PulseSpeed) * 0.5f + 0.5f;
-                float scale = Radius * (0.8f + pulse * 0.4f);
-
-                Color core = new Color(100, 220, 255) * (alpha * 0.7f * fade);
-                Color ring = new Color(40, 140, 200) * (alpha * 0.5f * fade);
-
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), ring, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 2.2f, scale * 2.2f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f);
-
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core * 0.4f, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 0.3f, scale * 0.3f), SpriteEffects.None, 0f);
             }
         }
         #endregion

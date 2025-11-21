@@ -186,6 +186,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     SimpleMode = false;
                     CountDown = false;
                     CountDownTimer = 0;
+                    //完成当前场景
+                    Complete();
+                    ADVChoiceBox.Hide();//手动清理选项框
+                    DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
                 }
             }
             if (CompatibleMode && DraedonEffect.IsActive && CWRRef.HasExo()) {

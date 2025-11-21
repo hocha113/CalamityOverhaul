@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -129,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private Vector2 panelPosition;
 
         //嘉登头像参数
-        private const float PortraitSize = 160f;
+        private static float PortraitSize => 140f;
         private Vector2 portraitPosition;
         private float portraitRotation = 0f;
         private bool isHoveringPortrait = false;
@@ -412,6 +413,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             //绘制嘉登头像
             DrawDraedonPortrait(spriteBatch);
 
+            //标题
+            DrawTitle(spriteBatch);
+
             //绘制呼叫按钮
             DrawCallButton(spriteBatch);
 
@@ -490,9 +494,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             //科技边框
             DrawTechFrame(spriteBatch, panelRect, innerPulse);
-
-            //标题
-            DrawTitle(spriteBatch);
         }
 
         private void DrawScanLines(SpriteBatch spriteBatch, Rectangle rect) {
