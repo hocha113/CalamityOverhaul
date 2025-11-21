@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RInfinity : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Infinity>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => true;
         public static void SetDefaultsFunc(Item Item) {
@@ -27,14 +21,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 1f;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.rare = ModContent.RarityType<DarkBlue>();
             Item.UseSound = SoundID.Item31;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<ChargedBlast>();
             Item.shootSpeed = 6f;
             Item.useAmmo = AmmoID.Bullet;
-            Item.Calamity().canFirePointBlankShots = true;
             Item.SetCartridgeGun<InfinityHeldProj>(900);
             Item.CWR().Scope = true;
         }

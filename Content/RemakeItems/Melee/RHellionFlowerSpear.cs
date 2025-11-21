@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public static List<GuardOfLife> guardOfLives = [];
         private static int index;
-        public override int TargetID => ModContent.ItemType<HellionFlowerSpear>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<HellionFlowerSpearHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -78,7 +75,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             else if (Projectile.localAI[0] == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 Item item = Main.player[Projectile.owner].GetItem();//没拿着武器时自己切换阶段
-                if (item != null && item.type != ModContent.ItemType<HellionFlowerSpear>()) {
+                if (item != null && item.type != CWRItemOverride.GetCalItemID("HellionFlowerSpear")) {
                     Projectile.localAI[0] = 1;
                     Projectile.netUpdate = true;
                 }
@@ -186,7 +183,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class HellionFlowerSpearHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<HellionFlowerSpear>();
         public override Texture2D TextureValue => CWRUtils.GetT2DValue(CWRConstant.Cay_Proj_Melee + "Spears/HellionFlowerSpearProjectile");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
@@ -248,13 +244,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (hit.Crit) {
-                Projectile petal = CalamityUtils.ProjectileBarrage(Source, Projectile.Center, target.Center
-                    , Main.rand.NextBool(), 800f, 800f, 0f, 800f, 10f, ProjectileID.FlowerPetal
-                    , (int)(Projectile.damage * 0.5), Projectile.knockBack * 0.5f, Projectile.owner, true);
-                if (petal.whoAmI.WithinBounds(Main.maxProjectiles)) {
-                    petal.DamageType = DamageClass.Melee;
-                    petal.localNPCHitCooldown = -1;
-                }
+                var petal = Projectile.NewProjectileDirect(Owner.FromObjectGetParent(), Projectile.Center, VaultUtils.RandVr(8, 12), ProjectileID.FlowerPetal, Projectile.damage, 2f, Owner.whoAmI);
+                petal.DamageType = DamageClass.Melee;
+                petal.localNPCHitCooldown = -1;
             }
         }
     }

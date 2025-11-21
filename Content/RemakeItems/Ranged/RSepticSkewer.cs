@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -9,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSepticSkewer : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<SepticSkewer>();
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<SepticSkewerProj>();
             item.useAmmo = AmmoID.Bullet;

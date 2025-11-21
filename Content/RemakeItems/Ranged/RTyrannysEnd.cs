@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Rarities;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RTyrannysEnd : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TyrannysEnd>();
         public override void SetDefaults(Item item) {
             item.damage = 1500;
             item.knockBack = 9.5f;
@@ -27,11 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.height = 48;
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
-            item.UseSound = CommonCalamitySounds.LargeWeaponFireSound;
-            item.value = CalamityGlobalItem.RarityVioletBuyPrice;
-            item.rare = ModContent.RarityType<Violet>();
-            item.Calamity().donorItem = true;
-            item.Calamity().canFirePointBlankShots = true;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
             item.CWR().HasCartridgeHolder = true;

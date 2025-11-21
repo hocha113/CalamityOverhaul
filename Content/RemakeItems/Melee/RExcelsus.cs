@@ -1,8 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RExcelsus : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Excelsus>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -28,9 +23,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 94;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.rare = ModContent.RarityType<DarkBlue>();
-            Item.shoot = ModContent.ProjectileType<ExcelsusMain>();
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<ExcelsusHeld>();
         }
@@ -38,7 +30,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class ExcelsusHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Excelsus>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Excelsus_Bar";
         public override string GlowTexturePath => "CalamityMod/Items/Weapons/Melee/ExcelsusGlow";
@@ -63,7 +54,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<ExcelsusMain>();
+            int type = CWRID.Proj_ExcelsusMain;
             if (DownRight) {
                 type = ModContent.ProjectileType<ExcelsusBomb>();
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
@@ -75,13 +66,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 float speedY = ShootVelocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);
                 switch (i) {
                     case 0:
-                        type = ModContent.ProjectileType<ExcelsusMain>();
+                        type = CWRID.Proj_ExcelsusMain;
                         break;
                     case 1:
-                        type = ModContent.ProjectileType<ExcelsusBlue>();
+                        type = CWRID.Proj_ExcelsusBlue;
                         break;
                     case 2:
-                        type = ModContent.ProjectileType<ExcelsusPink>();
+                        type = CWRID.Proj_ExcelsusPink;
                         break;
                 }
 

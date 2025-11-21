@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBlossomFlux : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<BlossomFlux>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? On_CanUseItem(Item item, Player player) {
             return false;
@@ -28,12 +23,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Item.knockBack = 0.15f;
             Item.UseSound = SoundID.Item5;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<LeafArrow>();
             Item.shootSpeed = 10f;
             Item.useAmmo = AmmoID.Arrow;
-            Item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             Item.rare = ItemRarityID.Lime;
-            Item.Calamity().canFirePointBlankShots = true;
             Item.SetHeldProj<BlossomFluxHeldProj>();
         }
     }

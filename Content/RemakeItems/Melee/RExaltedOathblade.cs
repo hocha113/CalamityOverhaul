@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RExaltedOathblade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<ExaltedOathblade>();
         public override void SetDefaults(Item item) {
             item.damage = 300;
             item.SetKnifeHeld<ExaltedOathbladeHeld>();
@@ -23,7 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class ExaltedOathbladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<ExaltedOathblade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "ExaltedOathblade_Bar";
         public override void SetKnifeProperty() {
@@ -89,7 +85,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Shadowflame>(), 450);
+            target.AddBuff(CWRID.Buff_Shadowflame, 450);
             target.AddBuff(BuffID.OnFire, 900);
             SoundEngine.PlaySound(SoundID.Item14, target.Center);
         }

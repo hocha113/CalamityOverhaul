@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.ID;
@@ -11,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class ROrderbringer : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Orderbringer>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = Item.height = 108;
@@ -24,8 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 7f;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.rare = ModContent.RarityType<DarkBlue>();
             Item.shoot = ModContent.ProjectileType<RulingPrism>();
             Item.shootSpeed = 6f;
             Item.SetKnifeHeld<OrderbringerHeld>();
@@ -34,7 +28,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class OrderbringerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Orderbringer>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "GreatswordofJudgement_Bar";
         public override void SetKnifeProperty() {

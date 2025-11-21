@@ -1,9 +1,5 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityMod.World;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
@@ -20,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
             if (info.npc == null) {
                 return true;
             }
-            return info.npc.type == ModContent.NPCType<ThanatosHead>() || DownedBossSystem.downedThanatos;
+            return info.npc.type == CWRID.NPC_ThanatosHead || CWRRef.GetDownedThanatos();
         }
         bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
         string IProvideItemConditionDescription.GetConditionDescription() => null;
@@ -28,15 +24,15 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 
     public class DropInDeathMode : IItemDropRuleCondition, IProvideItemConditionDescription
     {
-        public bool CanDrop(DropAttemptInfo info) => CalamityWorld.death;
-        public bool CanShowItemDropInUI() => CalamityWorld.death || ModGanged.InfernumModeOpenState;
+        public bool CanDrop(DropAttemptInfo info) => CWRWorld.Death;
+        public bool CanShowItemDropInUI() => CWRWorld.Death || ModGanged.InfernumModeOpenState;
         public string GetConditionDescription() => CWRLocText.Instance.DeathModeItem.Value;
     }
 
     public class DropInMachineRebellion : IItemDropRuleCondition, IProvideItemConditionDescription
     {
         public bool CanDrop(DropAttemptInfo info) => CWRWorld.MachineRebellion;
-        public bool CanShowItemDropInUI() => CalamityWorld.death;
+        public bool CanShowItemDropInUI() => CWRWorld.MachineRebellion;
         public string GetConditionDescription() => CWRLocText.Instance.DropInMachineRebellion.Value;
     }
 }

@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.Audio;
@@ -12,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RWindBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<WindBlade>();
-        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WindBlade>()] = true;
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -31,7 +28,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 58;
-            Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<AirBomb>();
             Item.shootSpeed = 3f;
@@ -49,7 +45,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class WindBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<WindBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "WindBlade_Bar";
         public override void SetKnifeProperty() {

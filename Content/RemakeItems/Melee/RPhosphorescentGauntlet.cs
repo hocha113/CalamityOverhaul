@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -11,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RPhosphorescentGauntlet : CWRItemOverride
     {
         public const int OnHitIFrames = 15;
-        public override int TargetID => ModContent.ItemType<PhosphorescentGauntlet>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => item.damage = 1205;
         public override void HoldItem(Item item, Player player) => HoldItemFunc(player);

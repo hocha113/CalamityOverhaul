@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
@@ -16,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTerrorBlade : CWRItemOverride, ICWRLoader
     {
-        public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public const float TerrorBladeMaxRageEnergy = 5000;
         public static Asset<Texture2D> frightEnergyBarAsset;
         public static Asset<Texture2D> frightEnergyBackAsset;
@@ -46,8 +42,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.height = 80;
             Item.shoot = ModContent.ProjectileType<WraithBeam>();
             Item.shootSpeed = 20f;
-            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
-            Item.rare = ModContent.RarityType<PureGreen>();
             Item.CWR().heldProjType = ModContent.ProjectileType<TerrorBladeHeld>();
             Item.SetKnifeHeld<TerrorBladeSwing>();
         }
@@ -77,7 +71,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class TerrorBladeSwing : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "TerrorBlade_Bar";
         public override string GlowTexturePath => CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow";

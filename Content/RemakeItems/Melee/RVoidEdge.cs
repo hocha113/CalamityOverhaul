@@ -1,9 +1,7 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<GhastlySoulLarge>();
+            int type = CWRID.Proj_GhastlySoulLarge;
             float knockback = Projectile.knockBack;
             Vector2 velocity = ShootVelocity;
             for (int i = 0; i < 3; i++) {
@@ -43,12 +41,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                         break;
 
                     case 1:
-                        type = ModContent.ProjectileType<GhastlySoulMedium>();
+                        type = CWRID.Proj_GhastlySoulMedium;
                         knockback *= 1.25f;
                         break;
 
                     case 2:
-                        type = ModContent.ProjectileType<GhastlySoulSmall>();
+                        type = CWRID.Proj_GhastlySoulSmall;
                         knockback *= 0.76f;
                         break;
                 }
@@ -84,11 +82,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             int soulDamage = damageDone / 3;
             Vector2 velocity = new Vector2(0f, -14f).RotatedByRandom(0.65f) * Main.rand.NextFloat(0.9f, 1.1f);
             Projectile.NewProjectile(Source, target.Center + new Vector2(0, 1300f), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.9f, 1.1f)
-                , ModContent.ProjectileType<GhastlySoulLarge>(), soulDamage, 0f, Owner.whoAmI, 0f, ai1);
+                , CWRID.Proj_GhastlySoulLarge, soulDamage, 0f, Owner.whoAmI, 0f, ai1);
             Projectile.NewProjectile(Source, target.Center + new Vector2(0, 1300f), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.9f, 1.1f)
-                , ModContent.ProjectileType<GhastlySoulMedium>(), soulDamage, 0f, Owner.whoAmI, 0f, ai1);
+                , CWRID.Proj_GhastlySoulMedium, soulDamage, 0f, Owner.whoAmI, 0f, ai1);
             Projectile.NewProjectile(Source, target.Center + new Vector2(0, 1300f), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.9f, 1.1f)
-                , ModContent.ProjectileType<GhastlySoulSmall>(), soulDamage, 0f, Owner.whoAmI, 0f, ai1);
+                , CWRID.Proj_GhastlySoulSmall, soulDamage, 0f, Owner.whoAmI, 0f, ai1);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitEffect(target, damageDone);

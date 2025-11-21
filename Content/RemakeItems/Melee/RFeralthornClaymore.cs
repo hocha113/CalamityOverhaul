@@ -1,21 +1,16 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RFeralthornClaymore : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<FeralthornClaymore>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<FeralthornClaymoreHeld>();
     }
 
     internal class FeralthornClaymoreHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<FeralthornClaymore>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "FeralthornClaymore_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 64;
@@ -41,21 +36,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void Shoot() {
             Vector2 spanPos = ShootSpanPos + ShootVelocity.UnitVector() * Length * Main.rand.NextFloat(0.6f, 8.2f);
             Projectile.NewProjectile(Source, spanPos, VaultUtils.RandVr(23, 35)
-                , ModContent.ProjectileType<ThornBase>(), (int)(Item.damage * 0.5), 0f, Main.myPlayer);
+                , CWRID.Proj_ThornBase, (int)(Item.damage * 0.5), 0f, Main.myPlayer);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Venom, 300);
             Projectile.NewProjectile(Source, target.Center.X, target.Center.Y
                 , Main.rand.NextFloat(-18f, 18f), Main.rand.NextFloat(-18f, 18f)
-                , ModContent.ProjectileType<ThornBase>(), (int)(Item.damage * 0.5), 0f, Main.myPlayer);
+                , CWRID.Proj_ThornBase, (int)(Item.damage * 0.5), 0f, Main.myPlayer);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(BuffID.Venom, 300);
             Projectile.NewProjectile(Source, target.Center.X, target.Center.Y
                 , Main.rand.NextFloat(-18f, 18f), Main.rand.NextFloat(-18f, 18f)
-                , ModContent.ProjectileType<ThornBase>(), (int)(Item.damage * 0.5), 0f, Main.myPlayer);
+                , CWRID.Proj_ThornBase, (int)(Item.damage * 0.5), 0f, Main.myPlayer);
         }
     }
 }

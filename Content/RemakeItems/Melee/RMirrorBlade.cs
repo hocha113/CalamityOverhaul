@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class MirrorBladeHeld : BaseKnife
     {
-        public override int TargetID => CWRItemOverride.GetCalItemID("MirrorBlade");
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
             drawTrailHighlight = false;

@@ -1,19 +1,13 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RSausageMaker : CWRItemOverride
     {
         internal static int index;
-        public override int TargetID => ModContent.ItemType<SausageMaker>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<SausageMakerHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -31,7 +25,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class SausageMakerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<SausageMaker>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
@@ -74,7 +67,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity,
-                ModContent.ProjectileType<BloodBall>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+                CWRID.Proj_BloodBall, (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
         public override void MeleeEffect() {
@@ -85,14 +78,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<BurningBlood>(), 240);
+            target.AddBuff(CWRID.Buff_BurningBlood, 240);
             if (Projectile.ai[0] == 0 || Projectile.ai[0] == 1) {
                 int heal = (int)MathHelper.Clamp(hit.Damage, 2, 16);
                 if (Main.player[Main.myPlayer].lifeSteal <= 0f || heal <= 0 || target.lifeMax <= 5) {
                     return;
                 }
 
-                CalamityGlobalProjectile.SpawnLifeStealProjectile(Projectile, Owner, heal, ProjectileID.VampireHeal, 3000f);
+                CWRRef.SpawnLifeStealProjectile(Projectile, Owner, heal, ProjectileID.VampireHeal, 3000f);
                 if (Projectile.ai[1] == 0) {
                     Projectile.NewProjectile(Source, Projectile.Center, AbsolutelyShootVelocity, Type, 0, 0f, Projectile.owner, 0, 1);
                 }

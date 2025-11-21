@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RHolyCollider : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<HolyCollider>();
         private int Level;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -35,8 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<HolyColliderHeld>();
             Item.shootSpeed = 10f;
-            Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
-            Item.rare = ModContent.RarityType<Turquoise>();
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 

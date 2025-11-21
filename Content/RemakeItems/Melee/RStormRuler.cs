@@ -1,16 +1,11 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RStormRuler : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<StormRuler>();
-
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<StormRulerHeld>();
@@ -19,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class StormRulerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<StormRuler>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "AbsoluteZero_Bar";
         public override void SetKnifeProperty() {
@@ -38,8 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<StormRulerProj>()
-                , Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_StormRulerProj, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override bool PreInOwner() {

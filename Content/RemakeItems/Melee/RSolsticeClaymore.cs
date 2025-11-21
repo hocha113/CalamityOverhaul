@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -13,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RSolsticeClaymore : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<SolsticeClaymore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.UseSound = null;
@@ -61,7 +57,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 }
             }
 
-            int dustType = GetDustTypeBySeason(CalamityMod.CalamityMod.CurrentSeason);
+            int dustType = GetDustTypeBySeason(CWRRef.GetCurrentSeason());
 
             if (Main.rand.NextBool(3)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType,
@@ -70,39 +66,39 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             if (Projectile.timeLeft < 560) {
-                CalamityUtils.HomeInOnNPC(Projectile, false, 620f, 9f, 60f);
+                CWRRef.HomeInOnNPC(Projectile, false, 620f, 9f, 60f);
             }
         }
 
         //根据当前季节返回对应的尘埃类型
-        internal static int GetDustTypeBySeason(Season season) {
+        internal static int GetDustTypeBySeason(int season) {
             return season switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, new[] { 74, 157, 107 }),
-                Season.Summer => Utils.SelectRandom(Main.rand, new[] { 247, 228, 57 }),
-                Season.Fall => Utils.SelectRandom(Main.rand, new[] { 6, 259, 158 }),
-                Season.Winter => Utils.SelectRandom(Main.rand, new[] { 67, 229, 185 }),
+                1 => Utils.SelectRandom(Main.rand, [74, 157, 107]),
+                2 => Utils.SelectRandom(Main.rand, [247, 228, 57]),
+                3 => Utils.SelectRandom(Main.rand, [6, 259, 158]),
+                0 => Utils.SelectRandom(Main.rand, [67, 229, 185]),
                 _ => 0 //默认尘埃类型
             };
         }
 
         internal static Color GetColorBySeason(Projectile projectile) {
             //根据当前季节定义弹幕颜色
-            var color = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => new Color(0, 250, 0, projectile.alpha),         //春季：绿色
-                Season.Summer => new Color(250, 250, 0, projectile.alpha),       //夏季：黄色
-                Season.Fall => new Color(250, 150, 50, projectile.alpha),        //秋季：橙色
-                Season.Winter => new Color(100, 150, 250, projectile.alpha),     //冬季：淡蓝色
+            var color = CWRRef.GetCurrentSeason() switch {
+                1 => new Color(0, 250, 0, projectile.alpha),         //春季：绿色
+                2 => new Color(250, 250, 0, projectile.alpha),       //夏季：黄色
+                3 => new Color(250, 150, 50, projectile.alpha),        //秋季：橙色
+                0 => new Color(100, 150, 250, projectile.alpha),     //冬季：淡蓝色
                 _ => new Color(255, 255, 255, projectile.alpha)                  //默认颜色：白色
             };
             return color;
         }
 
         public override void OnKill(int timeLeft) {
-            int dustType = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
+            int dustType = CWRRef.GetCurrentSeason() switch {
+                1 => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
+                2 => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
+                3 => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
+                0 => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
                 _ => 0                                                         //默认值：无效尘埃类型
             };
 
@@ -127,7 +123,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            int buff = Main.dayTime ? BuffID.Daybreak : ModContent.BuffType<Nightwither>();
+            int buff = Main.dayTime ? BuffID.Daybreak : CWRID.Buff_Nightwither;
             target.AddBuff(buff, 180);
         }
 
@@ -147,7 +143,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class SolsticeClaymoreHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<SolsticeClaymore>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "SolsticeClaymore_Bar";
         public override void SetKnifeProperty() {
@@ -174,16 +169,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void MeleeEffect() {
             int dustType = Main.dayTime ?
-            Utils.SelectRandom(Main.rand, new int[] {
+            Utils.SelectRandom(Main.rand, [
                     6,
                     259,
                     158
-                }) :
-            Utils.SelectRandom(Main.rand, new int[] {
+                ]) :
+            Utils.SelectRandom(Main.rand, [
                     173,
                     27,
                     234
-                });
+                ]);
             if (Main.rand.NextBool(3)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType);
                 Main.dust[dust].noGravity = true;
@@ -200,14 +195,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 target.AddBuff(BuffID.Daybreak, 300);
             }
             else {
-                target.AddBuff(ModContent.BuffType<Nightwither>(), 300);
+                target.AddBuff(CWRID.Buff_Nightwither, 300);
             }
 
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             if (!Main.dayTime) {
-                target.AddBuff(ModContent.BuffType<Nightwither>(), 300);
+                target.AddBuff(CWRID.Buff_Nightwither, 300);
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,9 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.UseSound = SoundID.Item11;
             item.autoReuse = true;
             item.useAmmo = AmmoID.Bullet;
-            item.shoot = ModContent.ProjectileType<SeasSearingBubble>();
             item.shootSpeed = 13f;
-            item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             item.rare = ItemRarityID.Pink;
             item.SetHeldProj<SeasSearingHeldProj>();
         }

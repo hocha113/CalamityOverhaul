@@ -7,6 +7,8 @@ using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
@@ -95,6 +97,34 @@ namespace CalamityOverhaul
                     break;
             }
         }
+        public static int GetCurrentSeason() {
+            DateTime date = DateTime.Now;
+            int day = date.DayOfYear - Convert.ToInt32(DateTime.IsLeapYear(date.Year) && date.DayOfYear > 59);
+
+            if (day < 80 || day >= 355) {
+                return 0;
+            }
+
+            else if (day >= 80 && day < 172) {
+                return 1;
+            }
+
+            else if (day >= 172 && day < 266) {
+                return 2;
+            }
+
+            else {
+                return 3;
+            }
+        }
+        public static void SpawnMediumMistParticle(Vector2 smokePos, Vector2 smokeVel, bool Smoketype) {
+            Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 110, 50), Color.OrangeRed
+                    , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
+            GeneralParticleHandler.SpawnParticle(smoke);
+        }
+        public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
+        public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f)
+            => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
         public static void SetDraedonDefeatTimer(NPC npc, float value) {
             if (npc.ModNPC is Draedon draedon) {
                 draedon.DefeatTimer = value;
@@ -122,6 +152,7 @@ namespace CalamityOverhaul
             }
             return false;
         }
+        public static bool GetDownedThanatos() => DownedBossSystem.downedThanatos;
         public static void SetSupCalPermafrost(NPC npc, bool value) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 supCal.permafrost = value;

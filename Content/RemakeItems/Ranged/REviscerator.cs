@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class REviscerator : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override void SetDefaults(Item item) => item.SetCartridgeGun<EvisceratorHeld>(22);
     }
 
@@ -35,9 +32,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(ModContent.BuffType<BurningBlood>(), 240);
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(CWRID.Buff_BurningBlood, 240);
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<BurningBlood>(), 240);
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(CWRID.Buff_BurningBlood, 240);
 
         public override void OnKill(int timeLeft) {
             CWRUtils.BlastingSputteringDust(Projectile, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood);
@@ -54,7 +51,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class EvisceratorHeld : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Eviscerator";
-        public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override void SetRangedProperty() {
             Recoil = 1.8f;
             HandIdleDistanceX = 20;

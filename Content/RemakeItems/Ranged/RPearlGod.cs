@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RPearlGod : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<PearlGod>();
         public override void SetDefaults(Item item) {
             item.damage = 150;
             item.DamageType = DamageClass.Ranged;
@@ -23,14 +18,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 3f;
-            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
             item.UseSound = SoundID.Item41;
             item.autoReuse = true;
             item.shootSpeed = 12f;
-            item.shoot = ModContent.ProjectileType<ShockblastRound>();
             item.useAmmo = AmmoID.Bullet;
-            item.Calamity().canFirePointBlankShots = true;
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 12;
             item.SetHeldProj<PearlGodHeldProj>();

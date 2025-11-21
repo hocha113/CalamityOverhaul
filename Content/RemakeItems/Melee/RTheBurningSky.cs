@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTheBurningSky : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TheBurningSky>();
         public override void SetDefaults(Item item) {
             item.width = 74;
             item.height = 74;
@@ -27,7 +24,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 10f;
             item.value = Item.sellPrice(gold: 75);
             item.useStyle = ItemUseStyleID.Shoot;
-            item.rare = ModContent.RarityType<Violet>();
             item.SetKnifeHeld<TheBurningSkyHeld>();
         }
     }

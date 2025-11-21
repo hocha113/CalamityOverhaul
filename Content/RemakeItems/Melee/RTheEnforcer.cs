@@ -1,8 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTheEnforcer : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TheEnforcer>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 100;
@@ -27,23 +22,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 9f;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.rare = ModContent.RarityType<DarkBlue>();
             Item.shoot = ModContent.ProjectileType<EnforcerFlame>();
             Item.shootSpeed = 2;
             Item.SetKnifeHeld<TheEnforcerHeld>();
         }
 
         public override void ModifyRecipe(Recipe recipe) {
-            recipe.RemoveIngredient(ModContent.ItemType<CosmiliteBar>());
-            recipe.AddIngredient(ModContent.ItemType<HolyCollider>())
-                    .AddIngredient(ModContent.ItemType<CosmiliteBar>(), 5);
+            recipe.RemoveIngredient(CWRID.Item_CosmiliteBar);
+            recipe.AddIngredient(CWRID.Item_HolyCollider)
+                    .AddIngredient(CWRID.Item_CosmiliteBar, 5);
         }
     }
 
     internal class TheEnforcerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TheEnforcer>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "TheEnforcer_Bar";
         public override void SetKnifeProperty() {

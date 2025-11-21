@@ -1,16 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RStarnightLance : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<StarnightLance>();
         internal static int index;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<StarnightLanceHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
@@ -29,7 +25,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class StarnightLanceHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<StarnightLance>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Gel_Bar";
         public override void SetKnifeProperty() {
@@ -72,7 +67,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 3,
-                ModContent.ProjectileType<StarnightBeam>(), Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
+                CWRID.Proj_StarnightBeam, Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
         public override void MeleeEffect() {
@@ -85,7 +80,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (Projectile.ai[0] == 0 && Projectile.numHits == 0) {
                 for (int i = 0; i < 5; i++) {
                     Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity.RotatedBy(MathHelper.TwoPi / 5f * i) / 6,
-                    ModContent.ProjectileType<StarnightBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+                    CWRID.Proj_StarnightBeam, (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
                 }
                 Projectile.numHits++;
             }

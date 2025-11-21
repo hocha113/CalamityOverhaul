@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.ID;
@@ -10,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RGreatswordofJudgement : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<GreatswordofJudgement>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 78;
@@ -24,7 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 78;
-            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<JudgementBeam>();
             Item.shootSpeed = 15f;
@@ -34,7 +30,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class GreatswordofJudgementHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<GreatswordofJudgement>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "GreatswordofJudgement_Bar";
         public override void SetKnifeProperty() {

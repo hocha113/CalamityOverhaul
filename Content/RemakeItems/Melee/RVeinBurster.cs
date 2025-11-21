@@ -1,21 +1,15 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RVeinBurster : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<VeinBurster>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<VeinBursterHeld>();
     }
 
     internal class VeinBursterHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<VeinBurster>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 36;
@@ -32,15 +26,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<BloodBall>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_BloodBall, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<BurningBlood>(), 300);
+            target.AddBuff(CWRID.Buff_BurningBlood, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<BurningBlood>(), 300);
+            target.AddBuff(CWRID.Buff_BurningBlood, 300);
         }
     }
 }

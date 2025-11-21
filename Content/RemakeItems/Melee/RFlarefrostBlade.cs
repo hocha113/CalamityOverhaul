@@ -1,15 +1,11 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RFlarefrostBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<FlarefrostBlade>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<FlarefrostBladeHeld>();
@@ -18,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class FlarefrostBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<FlarefrostBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "FlarefrostBlade_Bar";
         public override void SetKnifeProperty() {
@@ -36,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<Flarefrost>(), Projectile.damage
+                , CWRID.Proj_Flarefrost, Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 

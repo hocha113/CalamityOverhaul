@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RPlagueKeeper : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<PlagueKeeper>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
         public static void SetDefaultsFunc(Item Item) {
@@ -27,7 +22,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 90;
-            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<PlagueBeeWave>();
             Item.shootSpeed = 9f;
@@ -37,7 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class PlagueKeeperHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<PlagueKeeper>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
         public override void SetKnifeProperty() {
@@ -56,26 +49,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 300);
+            target.AddBuff(CWRID.Buff_Plague, 300);
             for (int i = 0; i < 3; i++) {
                 int bee = Projectile.NewProjectile(Source, Owner.Center, Vector2.Zero, Owner.beeType(),
                     Owner.beeDamage(Item.damage / 3), Owner.beeKB(0f), Owner.whoAmI);
-                if (bee.WithinBounds(Main.maxProjectiles)) {
-                    Main.projectile[bee].penetrate = 1;
-                    Main.projectile[bee].DamageType = DamageClass.Melee;
-                }
+                Main.projectile[bee].penetrate = 1;
+                Main.projectile[bee].DamageType = DamageClass.Melee;
             }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 300);
+            target.AddBuff(CWRID.Buff_Plague, 300);
             for (int i = 0; i < 3; i++) {
                 int bee = Projectile.NewProjectile(Source, Owner.Center, Vector2.Zero, Owner.beeType(),
                     Owner.beeDamage(Item.damage / 3), Owner.beeKB(0f), Owner.whoAmI);
-                if (bee.WithinBounds(Main.maxProjectiles)) {
-                    Main.projectile[bee].penetrate = 1;
-                    Main.projectile[bee].DamageType = DamageClass.Melee;
-                }
+                Main.projectile[bee].penetrate = 1;
+                Main.projectile[bee].DamageType = DamageClass.Melee;
             }
         }
     }

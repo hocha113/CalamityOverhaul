@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -21,14 +17,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 2.5f;
-            item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
-            item.rare = ModContent.RarityType<Turquoise>();
             item.UseSound = SoundID.Item11;
             item.autoReuse = true;
-            item.shoot = ModContent.ProjectileType<ArcherfishShot>();
             item.shootSpeed = 16f;
             item.useAmmo = AmmoID.Bullet;
-            item.Calamity().canFirePointBlankShots = true;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<SeadragonHeldProj>();
         }

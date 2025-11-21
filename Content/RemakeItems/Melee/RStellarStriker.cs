@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria;
 using Terraria.Audio;
@@ -12,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RStellarStriker : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<StellarStriker>();
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -35,7 +32,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 7.75f;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ProjectileID.LunarFlare;
             Item.shootSpeed = 12f;
@@ -65,7 +61,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class StellarStrikerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<StellarStriker>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "StellarStriker_Bar";
         public override void SetKnifeProperty() {

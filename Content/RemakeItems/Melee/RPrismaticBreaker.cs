@@ -1,8 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Tools;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RPrismaticBreaker : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<PrismaticBreaker>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<PrismaticBreakerHeld>();
         public override bool? On_CanUseItem(Item item, Player player) => CanUseItemFunc(item, player);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
@@ -31,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Item.channel = false;
             }
             else {
-                Item.UseSound = CrystylCrusher.ChargeSound;
+                Item.UseSound = new("CalamityMod/Sounds/Item/CrystylCharge");
                 Item.useStyle = ItemUseStyleID.Shoot;
                 Item.useTurn = false;
                 Item.autoReuse = false;
@@ -40,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Item.channel = true;
             }
             return player.ownedProjectileCounts[ModContent.ProjectileType<PrismaticBreakerHeld>()] == 0
-                && player.ownedProjectileCounts[ModContent.ProjectileType<PrismaticBeam>()] == 0;
+                && player.ownedProjectileCounts[CWRID.Proj_PrismaticBeam] == 0;
         }
 
         public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -48,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Projectile.NewProjectile(source, position, velocity, type, (int)(damage * 1.1f), knockback, player.whoAmI);
             }
             else {
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<PrismaticBeam>(), damage, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, CWRID.Proj_PrismaticBeam, damage, knockback, player.whoAmI);
             }
             return false;
         }
@@ -56,7 +51,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class PrismaticBreakerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<PrismaticBreaker>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "AbsoluteZero_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 40;
@@ -78,16 +72,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 32
-                , ModContent.ProjectileType<PrismaticWave>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_PrismaticWave, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Nightwither>(), 300);
+            target.AddBuff(CWRID.Buff_Nightwither, 300);
             target.AddBuff(BuffID.Daybreak, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Nightwither>(), 300);
+            target.AddBuff(CWRID.Buff_Nightwither, 300);
             target.AddBuff(BuffID.Daybreak, 300);
         }
     }

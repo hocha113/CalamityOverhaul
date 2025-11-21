@@ -1,21 +1,15 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RGalactusBlade : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<GalactusBlade>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<GalactusBladeHeld>();
     }
 
     internal class GalactusBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<GalactusBlade>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "GalactusBlade_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 40;
@@ -40,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<GalacticaComet>();
+            int type = CWRID.Proj_GalacticaComet;
             Vector2 orig = ShootSpanPos + new Vector2(0, -1000);
             Vector2 toMou = orig.To(InMousePos);
             for (int i = 0; i < 3; i++) {
@@ -55,11 +49,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<HolyFlames>(), 300);
+            target.AddBuff(CWRID.Buff_HolyFlames, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HolyFlames>(), 300);
+            target.AddBuff(CWRID.Buff_HolyFlames, 300);
         }
     }
 }

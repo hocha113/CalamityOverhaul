@@ -1,21 +1,16 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTrueCausticEdge : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TrueCausticEdge>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<TrueCausticEdgeHeld>();
     }
 
     internal class TrueCausticEdgeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TrueCausticEdge>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
@@ -38,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<CausticEdgeProjectile>()
+                , CWRID.Proj_CausticEdgeProjectile
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 

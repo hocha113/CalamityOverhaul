@@ -1,16 +1,11 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RRedSun : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<RedSun>();
         public override void SetDefaults(Item item) {
             item.useTime = item.useAnimation = 40;
             item.SetKnifeHeld<RedSunHeld>();
@@ -19,7 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class RedSunHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<RedSun>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "RedSun_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 40;
@@ -43,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<RSSolarFlare>();
+            int type = CWRID.Proj_RSSolarFlare;
             for (int i = 0; i < 3; i++) {
                 Vector2 spwanPos = new Vector2(InMousePos.X, ShootSpanPos.Y);
                 spwanPos.X += Main.rand.Next(-160, 160);
@@ -56,11 +50,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<HolyFlames>(), 300);
+            target.AddBuff(CWRID.Buff_HolyFlames, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HolyFlames>(), 300);
+            target.AddBuff(CWRID.Buff_HolyFlames, 300);
         }
     }
 }

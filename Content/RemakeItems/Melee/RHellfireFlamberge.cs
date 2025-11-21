@@ -1,16 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RHellfireFlamberge : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
         public override void SetDefaults(Item item) {
             item.damage = 80;
             item.UseSound = null;
@@ -20,7 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class HellfireFlambergeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "RedSun_Bar";
         public override void SetKnifeProperty() {
@@ -45,16 +40,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item20, Owner.Center);
-            int type = ModContent.ProjectileType<VolcanicFireball>();
+            int type = CWRID.Proj_VolcanicFireball;
             for (int index = 0; index < 6; ++index) {
                 float damageMult = 0.4f;
                 switch (index) {
                     case 0:
                     case 1:
-                        type = ModContent.ProjectileType<VolcanicFireball>();
+                        type = CWRID.Proj_VolcanicFireball;
                         break;
                     case 2:
-                        type = ModContent.ProjectileType<VolcanicFireballLarge>();
+                        type = CWRID.Proj_VolcanicFireballLarge;
                         damageMult = 0.75f;
                         break;
                     default:

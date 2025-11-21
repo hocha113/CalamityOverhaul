@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -11,7 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RUltimusCleaver : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<UltimusCleaver>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 72;
@@ -25,7 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 8f;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.autoReuse = true;
             Item.SetKnifeHeld<UltimusCleaverHeld>();
         }
@@ -33,7 +28,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class UltimusCleaverHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<UltimusCleaver>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "UltimusCleaver_Bar";
         public override void SetKnifeProperty() {
@@ -56,7 +50,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void Shoot() {
             for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Source, Owner.Center, new Vector2(Projectile.spriteDirection * (7 + i * 0.2f), Main.rand.Next(-13, 0))
-                , ModContent.ProjectileType<UltimusCleaverDust>(), Projectile.damage / 4, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_UltimusCleaverDust, Projectile.damage / 4, Projectile.knockBack, Owner.whoAmI);
             }
         }
 

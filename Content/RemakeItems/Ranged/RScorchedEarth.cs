@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RScorchedEarth : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<ScorchedEarth>();
         public override void SetDefaults(Item item) {
             item.damage = 350;
             item.DamageType = DamageClass.Ranged;
@@ -25,13 +19,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 8.7f;
-            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            item.rare = ModContent.RarityType<DarkBlue>();
             item.autoReuse = true;
             item.shootSpeed = 12.6f;
-            item.shoot = ModContent.ProjectileType<ScorchedEarthRocket>();
             item.useAmmo = AmmoID.Rocket;
-            item.Calamity().donorItem = true;
             item.SetCartridgeGun<ScorchedEarthHeldProj>(4);
         }
     }

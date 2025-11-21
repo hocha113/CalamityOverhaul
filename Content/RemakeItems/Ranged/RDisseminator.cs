@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,8 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RDisseminator : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Disseminator>();
-
         public override void SetDefaults(Item item) {
             item.damage = 48;
             item.DamageType = DamageClass.Ranged;
@@ -21,7 +17,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 4.5f;
-            item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             item.rare = ItemRarityID.Red;
             item.UseSound = SoundID.Item38;
             item.autoReuse = true;

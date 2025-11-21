@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RPlanetaryAnnihilation : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<PlanetaryAnnihilation>();
         public override void SetDefaults(Item item) {
             item.damage = 66;
             item.DamageType = DamageClass.Ranged;
@@ -21,11 +17,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 5.5f;
-            item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             item.rare = ItemRarityID.Purple;
             item.UseSound = SoundID.Item75;
             item.autoReuse = true;
-            item.shoot = ModContent.ProjectileType<PlanetaryAnnihilationProj>();
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Arrow;
             item.CWR().hasHeldNoCanUseBool = true;

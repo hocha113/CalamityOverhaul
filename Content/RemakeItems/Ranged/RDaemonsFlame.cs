@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,8 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RDaemonsFlame : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<DaemonsFlame>();
-
         public override void SetDefaults(Item item) {
             item.damage = 150;
             item.width = 62;
@@ -30,9 +24,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<DaemonsFlameHeldProj>();
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
-            item.rare = ModContent.RarityType<PureGreen>();
-            item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<DaemonsFlameHeldProj>();
         }
     }

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RLucrecia : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Lucrecia>();
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<LucreciaRapier>();
             item.useTime = 60;

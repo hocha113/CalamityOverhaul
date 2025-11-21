@@ -1,7 +1,5 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -27,11 +25,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<TemporalSadness>(), 60);
+            target.AddBuff(CWRID.Buff_TemporalSadness, 60);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<TemporalSadness>(), 60);
+            target.AddBuff(CWRID.Buff_TemporalSadness, 60);
         }
     }
 }

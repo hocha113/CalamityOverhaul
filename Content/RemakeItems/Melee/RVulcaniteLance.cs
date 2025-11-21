@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Particles;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -12,7 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RVulcaniteLance : CWRItemOverride
     {
         internal static int index;
-        public override int TargetID => ModContent.ItemType<VulcaniteLance>();
         public override void SetDefaults(Item item) {
             item.damage = 120;
             item.SetKnifeHeld<VulcaniteLanceHeld>();
@@ -34,7 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class VulcaniteLanceHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<VulcaniteLance>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
@@ -69,9 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 bool Smoketype = Main.rand.NextBool();
                 Vector2 smokePos = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f);
                 Vector2 smokeVel = AbsolutelyShootVelocity.UnitVector() * Main.rand.NextFloat(0.2f, 2f) * MathHelper.Clamp(Projectile.height * 0.1f, 1f, 10f);
-                Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 110, 50), Color.OrangeRed
-                    , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
-                GeneralParticleHandler.SpawnParticle(smoke);
+                CWRRef.SpawnMediumMistParticle(smokePos, smokeVel, Smoketype);
                 return true;
             }
             if (Time % 2 == 0 && Time < maxSwingTime / 2) {

@@ -1799,6 +1799,8 @@ Projectiles: {
 	// JusticeUnveiledCross.DisplayName: Justice Unveiled Cross
 	// AncientStormLightning.DisplayName: Ancient Storm Lightning
 	// AncientStormArc.DisplayName: Ancient Storm Arc
+	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// EvisceratorHeld.DisplayName: Eviscerator Held
 }
 
 Configs: {

@@ -1,11 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles;
-using CalamityMod.Projectiles.Healing;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -68,11 +61,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                         Projectile.velocity = Projectile.Center.To(target.Center).UnitVector() * 26;
                     }
                     Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.2f);
-                    if (!Main.dedServ) {
-                        LineParticle spark2 = new LineParticle(Projectile.Center + VaultUtils.RandVr(Projectile.width / 2)
-                            , -Projectile.velocity * 0.05f, false, 7, 1.7f, Color.AliceBlue);
-                        GeneralParticleHandler.SpawnParticle(spark2);
-                    }
                 }
             }
             else {
@@ -85,11 +73,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 180);
-            if (target.life <= 0 && target.lifeMax > 5 && Projectile.IsOwnedByLocalPlayer()) {
-                CalamityGlobalProjectile.SpawnLifeStealProjectile(Projectile, Main.player[Projectile.owner]
-                    , 8, ModContent.ProjectileType<EssenceFlame>(), 2000, 0f);
-            }
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 180);
 
             if (Projectile.numHits == 0) {
                 for (int i = 0; i < 3; i++) {
@@ -100,7 +84,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             if (!onHitNPCs.Contains(target)) {
-                SoundStyle sound = CommonCalamitySounds.SwiftSliceSound;
+                SoundStyle sound = new("CalamityMod/Sounds/Custom/SwiftSlice");
                 sound.Pitch = 0.2f;
                 sound.MaxInstances = 3;
                 sound.Volume = 0.6f;
@@ -110,7 +94,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 180);
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 180);
         }
 
         public override void OnKill(int timeLeft) {
@@ -129,13 +113,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 
             Texture2D value2 = CWRAsset.SemiCircularSmear.Value;
-            Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             Main.EntitySpriteDraw(color: Color.AliceBlue * (Projectile.alpha / 255f)
                 , origin: value2.Size() * 0.5f, texture: value2
                 , position: Projectile.Center - Main.screenPosition
                 , sourceRectangle: null, rotation: Projectile.rotation + MathHelper.Pi
                 , scale: Projectile.scale * 0.7f, effects: SpriteEffects.None);
-            Main.spriteBatch.ExitShaderRegion();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             return false;
         }
@@ -235,7 +223,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class EssenceFlayerHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<EssenceFlayer>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Excelsus_Bar";
         public override void SetKnifeProperty() {
             drawTrailHighlight = false;
@@ -253,11 +240,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 300);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 300);
         }
 
         public override bool PreInOwner() {

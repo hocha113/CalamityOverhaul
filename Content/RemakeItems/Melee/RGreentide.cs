@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -13,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RGreentide : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Greentide>();
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -32,11 +27,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 7;
-            Item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             Item.rare = ItemRarityID.Lime;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<GreenWater>();
             Item.shootSpeed = 18f;
             Item.SetKnifeHeld<GreentideHeld>();
         }
@@ -53,7 +46,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class GreentideHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Greentide>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
         public override void SetKnifeProperty() {
@@ -73,7 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, InMousePos + new Vector2(0, 600), new Vector2(0, -22).RotatedByRandom(0.3f)
-                    , ModContent.ProjectileType<GreenWater>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+                    , CWRID.Proj_GreenWater, Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void MeleeEffect() {
@@ -85,7 +77,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool PreInOwner() {
             if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer() && Time % (12 * UpdateRate) == 0) {
                 Projectile.NewProjectileDirect(Source, InMousePos, ShootVelocity.RotatedByRandom(0.3f)
-                    , ModContent.ProjectileType<GreenWater>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+                    , CWRID.Proj_GreenWater, Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
 
             }
 
@@ -137,10 +129,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                             : MathHelper.Lerp(minVelAdj, maxVelAdj, Math.Abs((j + offsetAmount) - centralIndex) / centralIndex);
 
                         currentPos.X += MathHelper.Lerp(-480, 480, j / (float)(5 - 1));
-                        currentVelocity = CalamityUtils.CalculatePredictiveAimToTargetMaxUpdates(currentPos, target, ShootSpeed, 1) * velAdj;
                         currentVelocity.X *= xVelocityReduction;
 
-                        Projectile.NewProjectile(Source, currentPos, currentVelocity, ModContent.ProjectileType<GreenWater>()
+                        Projectile.NewProjectile(Source, currentPos, currentVelocity, CWRID.Proj_GreenWater
                             , teethDamage, teethKnockback, Owner.whoAmI, 0f, i, target.Center.Y);
 
                         currentPos = cachedPos;
@@ -185,10 +176,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                             : MathHelper.Lerp(minVelAdj, maxVelAdj, Math.Abs((j + offsetAmount) - centralIndex) / centralIndex);
 
                         currentPos.X += MathHelper.Lerp(-480, 480, j / (float)(5 - 1));
-                        currentVelocity = CalamityUtils.CalculatePredictiveAimToTargetMaxUpdates(currentPos, target, ShootSpeed, 1) * velAdj;
                         currentVelocity.X *= xVelocityReduction;
 
-                        Projectile.NewProjectile(Source, currentPos, currentVelocity, ModContent.ProjectileType<GreenWater>()
+                        Projectile.NewProjectile(Source, currentPos, currentVelocity, CWRID.Proj_GreenWater
                             , teethDamage, teethKnockback, Owner.whoAmI, 0f, i, target.Center.Y);
 
                         currentPos = cachedPos;

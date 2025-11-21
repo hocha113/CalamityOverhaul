@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +7,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAngelicShotgun : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<AngelicShotgun>();
         public override void SetDefaults(Item item) {
             item.damage = 126;
             item.knockBack = 3f;
@@ -25,13 +19,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAnimation = 24;
             item.UseSound = SoundID.Item38;
             item.useStyle = ItemUseStyleID.Shoot;
-            item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
-            item.rare = ModContent.RarityType<Turquoise>();
-            item.Calamity().donorItem = true;
             item.shootSpeed = 12;
-            item.shoot = ModContent.ProjectileType<HallowPointRoundProj>();
             item.useAmmo = AmmoID.Bullet;
-            item.Calamity().canFirePointBlankShots = true;
             item.SetCartridgeGun<AngelicShotgunHeldProj>(50);
         }
     }

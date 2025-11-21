@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,13 +19,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.noMelee = true;
             item.noUseGraphic = true;
             item.knockBack = 5f;
-            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            item.rare = ModContent.RarityType<DarkBlue>();
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<DeathwindHeldProj>();
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<DeathwindHeldProj>();
         }
 

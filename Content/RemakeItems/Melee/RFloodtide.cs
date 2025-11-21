@@ -1,21 +1,16 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RFloodtide : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<Floodtide>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<FloodtideHeld>();
     }
 
     internal class FloodtideHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Floodtide>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Floodtide_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
@@ -44,7 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 float SpeedX = velocity.X + Main.rand.Next(-20, 21) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-20, 21) * 0.05f;
                 Projectile.NewProjectile(Source, ShootSpanPos, new Vector2(SpeedX, SpeedY)
-                    , ModContent.ProjectileType<FloodtideShark>(), Projectile.damage
+                    , CWRID.Proj_FloodtideShark, Projectile.damage
                     , Projectile.knockBack, Owner.whoAmI, 0f, 0f);
             }
         }

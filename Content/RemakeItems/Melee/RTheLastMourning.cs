@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using System.Linq;
 using Terraria;
@@ -15,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTheLastMourning : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<TheLastMourning>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? AltFunctionUse(Item item, Player player) => true;
@@ -32,9 +27,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = null;
-            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
-            Item.rare = ModContent.RarityType<PureGreen>();
-            Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<SoulSeekerSkull>();
             Item.shootSpeed = 15;
             Item.SetKnifeHeld<TheLastMourningHeld>(false);
@@ -56,7 +48,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class TheLastMourningHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TheLastMourning>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "TheLastMourning_Bar";
         public override void SetKnifeProperty() {

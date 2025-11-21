@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,14 +17,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 4f;
-            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             item.UseSound = SoundID.Item5;
             item.autoReuse = true;
             item.shoot = ProjectileID.WoodenArrowFriendly;
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Arrow;
-            item.rare = ModContent.RarityType<DarkBlue>();
-            item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<AlluvionHeldProj>();
         }
     }
