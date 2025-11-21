@@ -40,13 +40,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static Asset<Texture2D> EbnMagicStarBack;//单颗魔法星星的背景部分，大小高32*宽30
 
         //多排血条配置
-        private static int MaxHeartsPerRow => 10;    //每行最多显示的心脏数
-        private static int HeartSpacing => 0;        //心脏之间的间距
-        private static int RowSpacing => 2;          //行与行之间的间距
+        private const int MaxHeartsPerRow = 10;    //每行最多显示的心脏数
+        private const int HeartSpacing = 0;        //心脏之间的间距
+        private const int RowSpacing = 2;          //行与行之间的间距
 
         //魔法星配置
-        private static int MaxStarsPerColumn => 20;  //每列最多显示的星星数
-        private static int StarSpacing => -2;         //星星之间的间距
+        private const int MaxStarsPerColumn = 20;  //每列最多显示的星星数
+        private const int StarSpacing = 0;         //星星之间的间距
 
         //用于存储血条状态的变量
         private int _totalHearts;
