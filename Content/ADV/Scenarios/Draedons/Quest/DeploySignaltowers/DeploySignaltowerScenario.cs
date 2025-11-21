@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.S
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.UIHandles;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -143,6 +144,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //生成目标点位
             SignalTowerTargetManager.GenerateTargetPoints();
+            //重置信号塔追踪UI的Y轴位置
+            UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().SetDefScreenYValue();
 
             //完成当前场景
             Complete();

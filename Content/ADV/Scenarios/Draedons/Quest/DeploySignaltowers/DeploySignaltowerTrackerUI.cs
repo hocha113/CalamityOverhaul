@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,11 +9,12 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     /// <summary>
-    /// 信号塔搭建任务追踪UI(嘉登科技风格)
+    /// 信号塔搭建任务追踪UI
     /// </summary>
     internal class DeploySignaltowerTrackerUI : BaseQuestTrackerUI
     {
@@ -34,6 +36,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public static LocalizedText InRangeText { get; private set; }
         public static LocalizedText DistanceText { get; private set; }
         public static LocalizedText QuestCompleteText { get; private set; }
+
+        internal void SetDefScreenYValue() => screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+
+        public new void LoadUIData(TagCompound tag) {
+            tag.TryGet("screenYValue", out screenYValue);
+        }
+
+        public new void SaveUIData(TagCompound tag) {
+            tag[nameof(screenYValue)] = screenYValue;
+        }
 
         public override void SetStaticDefaults() {
             base.SetStaticDefaults();
@@ -105,10 +117,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         protected override void DrawPanel(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            if (screenYValue == 0) {
-                screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
-            }
 
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
             if (hoverInMainPage) {

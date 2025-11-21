@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.UI.CalamitasEnchants;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -13,6 +14,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
@@ -36,8 +38,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static Asset<Texture2D> CalamitasCurseUI_ArrowDownClicked = null;
         public static EnchantUI Instance => UIHandleLoader.GetUIHandleOfType<EnchantUI>();
 
-        private static bool drogBool = false;
-        private static Vector2 drogOffset;
+        private static bool DrogBool = false;
+        private static Vector2 DrogOffset;
 
         //UI布局参数
         public static Vector2 UITopLeft => Instance.DrawPosition;
@@ -90,6 +92,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText CollapseHint;
         public static LocalizedText EnchantTitle;
 
+        public new void LoadUIData(TagCompound tag) {
+            tag.TryGet(nameof(DrogOffset), out DrogOffset);
+            tag.TryGet(nameof(IsCollapsed), out IsCollapsed);
+            if (tag.TryGet(nameof(CurrentlyHeldItem), out TagCompound itemTag)) {
+                CurrentlyHeldItem = ItemIO.Load(itemTag);
+            }
+            else {
+                CurrentlyHeldItem = new Item();
+            }
+        }
+
+        public new void SaveUIData(TagCompound tag) {
+            tag[nameof(DrogOffset)] = DrogOffset;
+            tag[nameof(IsCollapsed)] = IsCollapsed;
+            CurrentlyHeldItem ??= new Item();
+            tag[nameof(CurrentlyHeldItem)] = ItemIO.Save(CurrentlyHeldItem);
+        }
+
         public override void SetStaticDefaults() {
             ExpandHint = this.GetLocalization(nameof(ExpandHint), () => "展开炼铸界面");
             CollapseHint = this.GetLocalization(nameof(CollapseHint), () => "收起炼铸界面");
@@ -123,17 +143,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Held) {
-                    if (!drogBool) {
-                        drogOffset = MousePosition.To(DrawPosition);
+                    if (!DrogBool) {
+                        DrogOffset = MousePosition.To(DrawPosition);
                     }
-                    drogBool = true;
+                    DrogBool = true;
                 }
             }
-            if (drogBool) {
-                DrawPosition = MousePosition + drogOffset;
+            if (DrogBool) {
+                DrawPosition = MousePosition + DrogOffset;
                 if (keyLeftPressState == KeyPressState.Released) {
-                    drogBool = false;
-                    drogOffset = MousePosition.To(DrawPosition);
+                    DrogBool = false;
+                    DrogOffset = MousePosition.To(DrawPosition);
                 }
             }
         }

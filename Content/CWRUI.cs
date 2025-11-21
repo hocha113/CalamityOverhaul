@@ -1,5 +1,10 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using InnoVault.GameSystem;
+using InnoVault.UIHandles;
+using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -12,6 +17,30 @@ namespace CalamityOverhaul.Content
                 HoverItem = Main.HoverItem;
             }
             DontSetHoverItem = false;
+        }
+
+        public override void LoadWorldData(TagCompound tag) {
+            SaveMod.DoLoad<UIDataSave>();
+        }
+
+        public override void SaveWorldData(TagCompound tag) {
+            SaveMod.DoSave<UIDataSave>();
+        }
+    }
+
+    internal class UIDataSave : SaveMod
+    {
+        public override void SaveData(TagCompound tag) {
+            try {
+                UIHandleLoader.GetUIHandleOfType<EnchantUI>().SaveUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().SaveUIData(tag);
+            } catch { }
+        }
+        public override void LoadData(TagCompound tag) {
+            try {
+                UIHandleLoader.GetUIHandleOfType<EnchantUI>().LoadUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().LoadUIData(tag);
+            } catch { }
         }
     }
 }
