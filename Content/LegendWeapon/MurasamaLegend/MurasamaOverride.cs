@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static Asset<Texture2D> MuraItemAsset { get; private set; }
         private static readonly string[] SamNameList = ["激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam"];
         private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
-        public override int TargetID => ModContent.ItemType<Murasama>();
+        public override int TargetID => GetCalItemID("Murasama");
         #endregion
         /// <summary>
         /// 获取时期对应的伤害
@@ -68,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// <summary>
         /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="TrueMeleeDamageClass"/>相关的乘算伤害
         /// </summary>
-        public static int ActualTrueMeleeDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage<TrueMeleeDamageClass>().Additive);
+        public static int ActualTrueMeleeDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage(CWRRef.GetTrueMeleeDamageClass()).Additive);
         /// <summary>
         /// 获取时期对应的范围增幅
         /// </summary>
@@ -103,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// <param name="item"></param>
         /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type != ModContent.ItemType<Murasama>()) {
+            if (item.type != GetCalItemID("Murasama")) {
                 return 0;
             }
             CWRItem cwrItem = item.CWR();
@@ -209,21 +205,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[TargetID] = true;
 
+            List<int> list = CWRRef.GetPierceResistExceptionList();
             //防止鬼妖受到蠕虫伤害衰减
-            if (CalamityLists.pierceResistExceptionList != null) {
-                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
+            if (list != null) {
+                list.Add(ModContent.ProjectileType<MuraSlashDefault>());
+                list.Add(ModContent.ProjectileType<MuraBreakerSlash>());
             }
-            if (CalamityLists.projectileDestroyExceptionList != null) {
-                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
+            if (list != null) {
+                list.Add(ModContent.ProjectileType<MuraSlashDefault>());
+                list.Add(ModContent.ProjectileType<MuraBreakerSlash>());
             }
         }
 
         public override void Unload() {
-            if (CalamityLists.pierceResistExceptionList != null) {
-                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraBreakerSlash>());
+            List<int> list = CWRRef.GetPierceResistExceptionList();
+            if (list != null) {
+                list.Remove(ModContent.ProjectileType<MuraSlashDefault>());
+                list.Remove(ModContent.ProjectileType<MuraBreakerSlash>());
             }
         }
 
@@ -253,7 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.height = 134;
             Item.width = 90;
             Item.damage = GetStartDamage;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.channel = true;
@@ -262,10 +260,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.useTime = 5;
             Item.knockBack = GetStartKnockback;
             Item.autoReuse = false;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.shoot = ModContent.ProjectileType<MuraSlashDefault>();
             Item.shootSpeed = 24f;
-            Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
             Item.CWR().LegendData = new MuraData();

@@ -14,6 +14,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -136,6 +137,7 @@ namespace CalamityOverhaul
             }
             return 0f;
         }
+        public static List<int> GetPierceResistExceptionList() => CalamityLists.projectileDestroyExceptionList;
         public static bool HasExo() => Draedon.ExoMechIsPresent;
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;

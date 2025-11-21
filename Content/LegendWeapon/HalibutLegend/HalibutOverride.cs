@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
 using System;
 using System.Collections.Generic;
@@ -19,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 目标ID
         /// </summary>
-        public static int ID => ModContent.ItemType<HalibutCannon>();
+        public static int ID => GetCalItemID("HalibutCannon");
         /// <summary>
         /// 目标ID
         /// </summary>
@@ -112,16 +108,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.useTime = 10;
             Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.rare = ModContent.RarityType<HotPink>();
             Item.noMelee = true;
             Item.knockBack = 1f;
-            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.UseSound = SoundID.Item38 with { Volume = 0.6f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Bullet;
-            Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().LegendData = new HalibutData();
         }
 
