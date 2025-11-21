@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.width = 94;
             Item.height = 80;
             Item.scale = 1f;
-            Item.damage = 230;
+            Item.damage = 1230;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 20;
             Item.useTime = 20;
@@ -33,6 +33,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<DevilsDevastationHeld>();
             Item.shootSpeed = 10f;
+        }
+
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            if (InWorldBossPhase.Downed28.Invoke()) {
+                damage *= 1.25f;
+            }
         }
 
         internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
