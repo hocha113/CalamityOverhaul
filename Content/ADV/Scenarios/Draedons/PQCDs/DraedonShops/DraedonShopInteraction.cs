@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         /// <summary>
         /// 更新滚动条
         /// </summary>
-        public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition, 
+        public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition,
             bool mouseLeftDown, bool mouseLeftRelease) {
             if (shopItems.Count <= MaxVisibleItems) return;
 
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         /// <summary>
         /// 绘制滚动条
         /// </summary>
-        public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, 
+        public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch,
             Vector2 panelPosition, float uiAlpha, float circuitPulseTimer) {
             if (shopItems.Count <= MaxVisibleItems) return;
 
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private void HandlePurchaseInput(int index) {
             if (Main.mouseLeft) {
                 if (Main.mouseLeftRelease) {
-                    // 首次点击
+                    //首次点击
                     SelectedIndex = index;
                     holdingPurchaseIndex = index;
                     holdingPurchaseTimer = 0;
@@ -143,17 +143,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     TryPurchaseItem(index);
                 }
                 else {
-                    // 持续按住
+                    //持续按住
                     if (holdingPurchaseIndex == index) {
                         holdingPurchaseTimer++;
 
-                        // 达到长按阈值后开始连续购买
+                        //达到长按阈值后开始连续购买
                         if (holdingPurchaseTimer >= HoldThreshold) {
                             if (holdingPurchaseTimer % purchaseCooldown == 0) {
                                 TryPurchaseItem(index);
                                 ConsecutivePurchaseCount++;
 
-                                // 逐渐加速：每购买5次，间隔减少20%
+                                //逐渐加速：每购买5次，间隔减少20%
                                 if (ConsecutivePurchaseCount % 5 == 0) {
                                     purchaseCooldown = Math.Max(
                                         MinPurchaseCooldown,
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                         }
                     }
                     else {
-                        // 切换到不同物品，重置
+                        //切换到不同物品，重置
                         holdingPurchaseIndex = index;
                         holdingPurchaseTimer = 0;
                         ConsecutivePurchaseCount = 0;
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 }
             }
             else {
-                // 松开鼠标，重置长按状态
+                //松开鼠标，重置长按状态
                 if (holdingPurchaseIndex == index) {
                     ResetHoldingState();
                 }
@@ -185,9 +185,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             ShopItem shopItem = shopItems[index];
 
-            // 检查是否有足够的钱币
+            //检查是否有足够的钱币
             if (player.BuyItem(shopItem.price)) {
-                // 给予物品
+                //给予物品
                 player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
                 SoundEngine.PlaySound(SoundID.Coins);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
