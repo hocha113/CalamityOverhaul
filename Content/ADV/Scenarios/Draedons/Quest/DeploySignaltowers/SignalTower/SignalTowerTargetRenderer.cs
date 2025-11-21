@@ -60,6 +60,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
 
                 Vector2 screenPos = point.WorldPosition - Main.screenPosition;
+                if (!VaultUtils.IsPointOnScreen(screenPos, 1220)) {
+                    continue;//屏幕外不绘制
+                }
+
                 bool playerInRange = point.IsPlayerInRange(player);
 
                 //绘制范围指示器
