@@ -592,6 +592,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         /// <param name="mode"></param>
         public void GetScreenShake(float mode) {
+            if (!CWRServerConfig.Instance.ScreenVibration) {
+                return;
+            }
             if (ScreenShakeValue < mode)
                 ScreenShakeValue = mode;
         }
