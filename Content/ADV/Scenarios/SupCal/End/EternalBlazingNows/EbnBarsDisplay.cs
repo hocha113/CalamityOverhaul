@@ -6,31 +6,11 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.ResourceSets;
 using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
-    internal class EbnBarsDisplaySet : ModResourceOverlay
-    {
-        public override bool PreDrawResourceDisplay(PlayerStatsSnapshot snapshot
-            , IPlayerResourcesDisplaySet displaySet, bool drawingLife, ref Color textColor, out bool drawText) {
-            if (EbnPlayer.OnEbn(Main.LocalPlayer)) {
-                drawText = true;
-                return false;
-            }
-            return base.PreDrawResourceDisplay(snapshot, displaySet, drawingLife, ref textColor, out drawText);
-        }
-
-        public override bool DisplayHoverText(PlayerStatsSnapshot snapshot, IPlayerResourcesDisplaySet displaySet, bool drawingLife) {
-            if (EbnPlayer.OnEbn(Main.LocalPlayer)) {
-                return false;
-            }
-            return base.DisplayHoverText(snapshot, displaySet, drawingLife);
-        }
-    }
-
     [VaultLoaden(CWRConstant.ADV)]
-    internal class EbnBarsDisplay : ModSystem
+    internal class EbnBarsDisplay : ModResourceOverlay
     {
         //反射加载心脏的纹理
         public static Asset<Texture2D> EbnLife;//单颗心脏的填充部分，大小22*22
@@ -87,34 +67,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         //星星闪烁动画
         private static float _starTwinklePhase = 0f;
 
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            //检查是否应该绘制自定义血条
-            if (!EbnPlayer.OnEbn(Main.LocalPlayer)) {
-                return;
+        public override bool PreDrawResourceDisplay(PlayerStatsSnapshot snapshot
+            , IPlayerResourcesDisplaySet displaySet, bool drawingLife, ref Color textColor, out bool drawText) {
+            if (EbnPlayer.OnEbn(Main.LocalPlayer)) {
+                drawText = true;
+                //准备数据
+                PreDrawResources(snapshot);
+                DrawLife(Main.spriteBatch);
+                DrawMana(Main.spriteBatch);
+                return false;
             }
-            //找到血条和魔力条的资源显示层并禁用它
-            int resourceIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Resource Bars"));
-            if (resourceIndex != -1) {
-                layers[resourceIndex].Active = false; //完全禁用原版血条
-            }
+            return base.PreDrawResourceDisplay(snapshot, displaySet, drawingLife, ref textColor, out drawText);
+        }
 
-            //在合适的位置插入自定义血条层
-            int inventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
-            if (inventoryIndex == -1) {
-                return;
+        public override bool DisplayHoverText(PlayerStatsSnapshot snapshot, IPlayerResourcesDisplaySet displaySet, bool drawingLife) {
+            if (EbnPlayer.OnEbn(Main.LocalPlayer)) {
+                return false;
             }
-            //在物品栏层之前插入自定义血条层
-            layers.Insert(inventoryIndex, new LegacyGameInterfaceLayer(
-                "CWRMod: Ebn Life Bars",
-                delegate {
-                    //准备数据
-                    PreDrawResources(new PlayerStatsSnapshot(Main.LocalPlayer));
-                    DrawLife(Main.spriteBatch);
-                    DrawMana(Main.spriteBatch);
-                    return true;
-                },
-                InterfaceScaleType.UI
-            ));
+            return base.DisplayHoverText(snapshot, displaySet, drawingLife);
         }
 
         public void PreDrawResources(PlayerStatsSnapshot snapshot) {
@@ -674,7 +644,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 textScale
             );
 
-            //绘制百分比文本（稍小且偏下）
+            //绘制百分比文本
             Vector2 percentPos = drawPos + new Vector2(0, manaTextSize.Y + 4);
             Color percentColor = manaPercent < 30f ? Color.Red :
                                 manaPercent < 50f ? Color.Yellow :
