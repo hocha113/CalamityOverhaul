@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
@@ -171,6 +172,7 @@ namespace CalamityOverhaul
                 supCal.giveUpCounter = value;
             }
         }
+        public static Type GetItem_SHPC_Type() => typeof(SHPC);
         public static Type GetNPC_WITCH_Type() => typeof(WITCH);
         public static Type GetNPC_SupCal_Type() => typeof(SupremeCalamitas);
     }

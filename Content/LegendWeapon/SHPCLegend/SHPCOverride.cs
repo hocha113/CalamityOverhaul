@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameSystem;
 using System;
@@ -24,11 +22,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
-        public override int TargetID => ModContent.ItemType<SHPC>();
+        public override int TargetID => GetCalItemID("SHPC");
         private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
-            MethodInfo methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-            VaultHook.Add(methodInfo, OnSHPCToolFunc);
+            var type = CWRRef.GetItem_SHPC_Type();
+            if (type != null) {
+                MethodInfo methodInfo = type.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
+                VaultHook.Add(methodInfo, OnSHPCToolFunc);
+            }
         }
         /// <summary>
         /// 获得成长等级
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// <param name="item"></param>
         /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type != ModContent.ItemType<SHPC>()) {
+            if (item.type != GetCalItemID("SHPC")) {
                 return 0;
             }
             CWRItem cwrItem = item.CWR();
@@ -73,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             };
         }
 
-        public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[TargetID] = ModContent.ItemType<PlasmaDriveCore>();
+        public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[TargetID] = CWRID.Item_PlasmaDriveCore;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => SHPCDamage(item, ref damage);
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
