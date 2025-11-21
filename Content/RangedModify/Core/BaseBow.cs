@@ -96,9 +96,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public float AimingAnimationSpeed = 0.1f;
         /// <summary>
-        /// 是否启用“牛仔甩枪”式的旋转瞄准动画，默认为<see langword="true"/>
+        /// 是否启用“牛仔甩枪”式的旋转瞄准动画，默认为<see langword="false"/>
         /// </summary>
-        public bool EnableCowboySpin = true;
+        public bool EnableCowboySpin = false;
         /// <summary>
         /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
         /// </summary>

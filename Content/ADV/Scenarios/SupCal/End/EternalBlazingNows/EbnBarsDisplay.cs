@@ -35,19 +35,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         //反射加载心脏的纹理
         public static Asset<Texture2D> EbnLife;//单颗心脏的填充部分，大小22*22
         public static Asset<Texture2D> EbnLifeBack;//单颗心脏的背景部分，大小30*30，也就是说，边框宽度是4
-        //发射加载魔法星星的纹理
+        //反射加载魔法星星的纹理
         public static Asset<Texture2D> EbnMagicStar;//单颗魔法星星的填充部分，大小高22*宽24
         public static Asset<Texture2D> EbnMagicStarBack;//单颗魔法星星的背景部分，大小高32*宽30
 
         //多排血条配置
-        private const int MaxHeartsPerRow = 10;    //每行最多显示的心脏数
-        private const int MaxRows = 2;             //最多显示的行数
-        private const int HeartSpacing = 2;        //心脏之间的间距
-        private const int RowSpacing = 4;          //行与行之间的间距
+        private static int MaxHeartsPerRow => 10;    //每行最多显示的心脏数
+        private static int HeartSpacing => 0;        //心脏之间的间距
+        private static int RowSpacing => 2;          //行与行之间的间距
 
         //魔法星配置
-        private const int MaxStarsPerColumn = 20;  //每列最多显示的星星数
-        private const int StarSpacing = 2;         //星星之间的间距
+        private static int MaxStarsPerColumn => 20;  //每列最多显示的星星数
+        private static int StarSpacing => -2;         //星星之间的间距
 
         //用于存储血条状态的变量
         private int _totalHearts;
@@ -249,7 +248,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             int totalWidth = maxHeartsInAnyRow * (heartBackWidth + HeartSpacing) - HeartSpacing;
 
             //计算起始位置（屏幕右上角偏移，向左对齐）
-            int startX = Main.screenWidth - totalWidth - 4;
+            int startX = Main.screenWidth - totalWidth - 44;
             int startY = 18;
 
             //计算全局抖动偏移
@@ -418,7 +417,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             //计算起始位置（屏幕右侧，竖列排列）
             int startX = Main.screenWidth - starBackWidth - 8;
-            int startY = 100; //在血条下方一些距离开始
+            int startY = 28; //在血条下方一些距离开始
 
             //整体闪烁效果的颜色调制
             Color flashColor = Color.White;
