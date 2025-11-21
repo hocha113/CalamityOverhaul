@@ -592,22 +592,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             int maxScroll = Math.Max(0, shopItems.Count - DraedonShopInteraction.MaxVisibleItems);
 
-            // 滚动进度条
-            float scrollProgress = maxScroll > 0 ? interaction.ScrollOffset / (float)maxScroll : 0f;
-            Vector2 barPos = panelPosition + new Vector2(PanelWidth - 20, 120);
-            int barHeight = DraedonShopInteraction.MaxVisibleItems * DraedonShopInteraction.ItemSlotHeight - 20;
+            //滚动条绘制
+            interaction.DrawScrollBar(spriteBatch, panelPosition, animation.UIAlpha, animation.CircuitPulseTimer);
 
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle barBg = new Rectangle((int)barPos.X, (int)barPos.Y, 4, barHeight);
-            spriteBatch.Draw(pixel, barBg, new Color(40, 100, 150) * (animation.UIAlpha * 0.3f));
-
-            int indicatorHeight = Math.Max(20, barHeight * DraedonShopInteraction.MaxVisibleItems / shopItems.Count);
-            int indicatorY = (int)(barPos.Y + scrollProgress * (barHeight - indicatorHeight));
-            Rectangle indicator = new Rectangle((int)barPos.X - 1, indicatorY, 6, indicatorHeight);
-            Color indicatorColor = new Color(80, 200, 255) * animation.UIAlpha;
-            spriteBatch.Draw(pixel, indicator, indicatorColor);
-
-            // 滚动提示文字
+            //滚动提示文字
             if (interaction.ScrollOffset > 0 || interaction.ScrollOffset < maxScroll) {
                 string hint = $"▲▼ [{interaction.ScrollOffset + 1}/{shopItems.Count}]";
                 Vector2 hintPos = panelPosition + new Vector2(PanelWidth - 35, PanelHeight - 25);

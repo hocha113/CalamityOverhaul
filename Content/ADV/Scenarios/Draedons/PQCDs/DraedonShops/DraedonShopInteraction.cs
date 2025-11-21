@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         //选择和悬停状态
         public int SelectedIndex { get; set; } = -1;
         public int HoveredIndex { get; private set; } = -1;
-        public int ScrollOffset { get; private set; } = 0;
+        public int ScrollOffset { get; set; } = 0;
 
         //长按购买相关
         private int holdingPurchaseIndex = -1;
@@ -33,8 +33,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         public const int MaxVisibleItems = 6;
         public const int ItemSlotHeight = 85;
 
+        //滚动条
+        private readonly DraedonScrollBar scrollBar = new();
+
         public int HoldingPurchaseIndex => holdingPurchaseIndex;
         public int HoldingPurchaseTimer => holdingPurchaseTimer;
+        public bool IsScrollBarDragging => scrollBar.IsDragging;
 
         public DraedonShopInteraction(Player player, List<ShopItem> shopItems) {
             this.player = player;
@@ -45,6 +49,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         /// 处理滚轮滚动
         /// </summary>
         public void HandleScroll() {
+            //如果正在拖动滚动条，不响应滚轮
+            if (scrollBar.IsDragging) return;
+
             int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
             if (scrollDelta != 0) {
                 int maxScroll = Math.Max(0, shopItems.Count - MaxVisibleItems);
@@ -54,6 +61,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.25f, Pitch = -0.3f });
                 }
             }
+        }
+
+        /// <summary>
+        /// 更新滚动条
+        /// </summary>
+        public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition, 
+            bool mouseLeftDown, bool mouseLeftRelease) {
+            if (shopItems.Count <= MaxVisibleItems) return;
+
+            int barHeight = MaxVisibleItems * ItemSlotHeight - 20;
+            int maxScroll = Math.Max(0, shopItems.Count - MaxVisibleItems);
+
+            scrollBar.Update(panelPosition, barHeight, ScrollOffset, maxScroll,
+                shopItems.Count, MaxVisibleItems, mousePosition, mouseLeftDown,
+                mouseLeftRelease, out int newScrollOffset);
+
+            ScrollOffset = newScrollOffset;
+        }
+
+        /// <summary>
+        /// 绘制滚动条
+        /// </summary>
+        public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, 
+            Vector2 panelPosition, float uiAlpha, float circuitPulseTimer) {
+            if (shopItems.Count <= MaxVisibleItems) return;
+
+            int barHeight = MaxVisibleItems * ItemSlotHeight - 20;
+            int maxScroll = Math.Max(0, shopItems.Count - MaxVisibleItems);
+
+            scrollBar.Draw(spriteBatch, panelPosition, barHeight, ScrollOffset, maxScroll,
+                shopItems.Count, MaxVisibleItems, uiAlpha, circuitPulseTimer);
         }
 
         /// <summary>
@@ -96,7 +134,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private void HandlePurchaseInput(int index) {
             if (Main.mouseLeft) {
                 if (Main.mouseLeftRelease) {
-                    //首次点击
+                    // 首次点击
                     SelectedIndex = index;
                     holdingPurchaseIndex = index;
                     holdingPurchaseTimer = 0;
@@ -105,18 +143,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     TryPurchaseItem(index);
                 }
                 else {
-                    //持续按住
+                    // 持续按住
                     if (holdingPurchaseIndex == index) {
                         holdingPurchaseTimer++;
 
-                        //达到长按阈值后开始连续购买
+                        // 达到长按阈值后开始连续购买
                         if (holdingPurchaseTimer >= HoldThreshold) {
                             if (holdingPurchaseTimer % purchaseCooldown == 0) {
                                 TryPurchaseItem(index);
                                 ConsecutivePurchaseCount++;
 
-                                //逐渐加速：每购买2次，间隔减少20%
-                                if (ConsecutivePurchaseCount % 2 == 0) {
+                                // 逐渐加速：每购买5次，间隔减少20%
+                                if (ConsecutivePurchaseCount % 5 == 0) {
                                     purchaseCooldown = Math.Max(
                                         MinPurchaseCooldown,
                                         (int)(purchaseCooldown * 0.8f)
@@ -126,7 +164,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                         }
                     }
                     else {
-                        //切换到不同物品，重置
+                        // 切换到不同物品，重置
                         holdingPurchaseIndex = index;
                         holdingPurchaseTimer = 0;
                         ConsecutivePurchaseCount = 0;
@@ -135,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 }
             }
             else {
-                //松开鼠标，重置长按状态
+                // 松开鼠标，重置长按状态
                 if (holdingPurchaseIndex == index) {
                     ResetHoldingState();
                 }
@@ -147,9 +185,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             ShopItem shopItem = shopItems[index];
 
-            //检查是否有足够的钱币
+            // 检查是否有足够的钱币
             if (player.BuyItem(shopItem.price)) {
-                //给予物品
+                // 给予物品
                 player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
                 SoundEngine.PlaySound(SoundID.Coins);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
@@ -177,6 +215,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             SelectedIndex = -1;
             ScrollOffset = 0;
             ResetHoldingState();
+            scrollBar.Reset();
         }
     }
 }

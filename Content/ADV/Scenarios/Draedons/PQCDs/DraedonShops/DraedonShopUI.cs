@@ -86,12 +86,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
 
-                //滚轮滚动
-                interaction.HandleScroll();
+                if (keyLeftPressState != KeyPressState.None) {
+                    //更新滚动条（优先处理）
+                    interaction.UpdateScrollBar(panelPosition, MousePosition.ToPoint(),
+                        Main.mouseLeft, Main.mouseLeftRelease);
+                }
 
-                //检测物品点击和悬停
-                Vector2 itemListPos = panelPosition + new Vector2(30, 120);
-                interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
+                //滚轮滚动（滚动条未拖动时才响应）
+                if (!interaction.IsScrollBarDragging) {
+                    interaction.HandleScroll();
+                }
+
+                //检测物品点击和悬停（滚动条未拖动时才响应）
+                if (!interaction.IsScrollBarDragging) {
+                    Vector2 itemListPos = panelPosition + new Vector2(30, 120);
+                    interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
+                }
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !DraedonCallUI.Instance.hoverInMainPage) {
                 _active = false;
@@ -107,9 +117,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
         private void CleanupEffects() {
             effects.Clear();
-            if (interaction != null) {
-                interaction.Reset();
-            }
+            interaction?.Reset();
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
