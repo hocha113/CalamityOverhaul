@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class TerrorBladeSwing : BaseKnife
     {
+        public override int TargetID => CWRItemOverride.GetCalItemID("TerrorBlade");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "TerrorBlade_Bar";
         public override string GlowTexturePath => CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow";
