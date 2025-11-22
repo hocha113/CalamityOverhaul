@@ -317,6 +317,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             IsGenerated = false;
         }
 
+        public override void NetSend(BinaryWriter writer) {
+            writer.Write(IsGenerated);
+            writer.Write(TargetPoints.Count);
+            for(int i = 0; i < TargetPoints.Count; i++) {
+                writer.Write(TargetPoints[i].TilePosition.X);
+                writer.Write(TargetPoints[i].TilePosition.Y);
+                writer.Write(TargetPoints[i].IsCompleted);
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader) {
+            IsGenerated = reader.ReadBoolean();
+            TargetPoints.Clear();
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++) {
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                bool isCompleted = reader.ReadBoolean();
+                SignalTowerTargetPoint point = new(new Point(x, y), PointRange, i) {
+                    IsCompleted = isCompleted
+                };
+                TargetPoints.Add(point);
+            }
+        }
+
         public override void SaveWorldData(TagCompound tag) {
             if (!IsGenerated) {
                 return;

@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float radius = Projectile.ai[0] == 1 ? 320 : 130;
+            float radius = Projectile.ai[0] == 1 ? 220 : 130;
             return VaultUtils.CircleIntersectsRectangle(Projectile.Center, radius * Projectile.localAI[0], targetHitbox);
         }
 

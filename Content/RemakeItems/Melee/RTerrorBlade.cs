@@ -42,8 +42,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.height = 80;
             Item.shoot = ModContent.ProjectileType<WraithBeam>();
             Item.shootSpeed = 20f;
-            Item.CWR().heldProjType = ModContent.ProjectileType<TerrorBladeHeld>();
-            Item.SetKnifeHeld<TerrorBladeSwing>();
+            Item.SetKnifeHeld<TerrorBladeHeld>();
         }
 
         public static void DrawFrightEnergyChargeBar(Player player, float alp, float charge) {
@@ -69,7 +68,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
     }
 
-    internal class TerrorBladeSwing : BaseKnife
+    internal class TerrorBladeHeld : BaseKnife
     {
         public override int TargetID => CWRItemOverride.GetCalItemID("TerrorBlade");
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
