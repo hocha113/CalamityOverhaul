@@ -74,13 +74,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     return false;
                 }
 
+                if (DSTPlayer.HasDeploySignaltowerQuestByWorld) {//如果世界中存在任务点则直接显示
+                    return SignalTowerTargetManager.TargetPoints.Count > 0;
+                }
+
                 ADVSave save = halibutPlayer.ADCSave;
                 if (save == null) {
                     return false;
                 }
 
-                //如果任务未接受或已完成则不显示
-                if (!save.DeploySignaltowerQuestAccepted || save.DeploySignaltowerQuestCompleted) {
+                //如果任务已完成则不显示
+                if (save.DeploySignaltowerQuestCompleted) {
+                    return false;
+                }
+
+                //如果任务未接受则不显示
+                if (!save.DeploySignaltowerQuestAccepted) {
                     return false;
                 }
 

@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.DeploySignaltowerQuestCompleted = true;
             }
+            DSTPlayer.HasDeploySignaltowerQuestByWorld = false;
             //开启与变节者的后续对话
             FirstMetTzeentch.Open();
         }

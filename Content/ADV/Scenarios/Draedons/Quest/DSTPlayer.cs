@@ -7,16 +7,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
 {
     internal class DSTPlayer : ModPlayer
     {
+        public static bool HasDeploySignaltowerQuestByWorld;
         public override void OnEnterWorld() {
             //神皇在上啊，保佑我别出bug
             if (Player.TryGetADVSave(out var save)) {
                 SignalTowerTargetPoint nearestTarget = SignalTowerTargetManager.GetNearestTarget(Player);
-                if (nearestTarget != null) {//如果存在目标点，则确保任务被接受且未完成
-                    save.DeploySignaltowerQuestAccepted = true;//确保任务被接受
-                    save.DeploySignaltowerQuestCompleted = false;//确保任务未完成
+                if (nearestTarget != null) {//如果存在目标点
+                    HasDeploySignaltowerQuestByWorld = true;
                 }
                 else {
-                    save.DeploySignaltowerQuestAccepted = false;//如果世界中没有保存的有目标点，设置任务未接受
+                    HasDeploySignaltowerQuestByWorld = false;//如果世界中没有保存的有目标点
+
                     if (InWorldBossPhase.Downed29.Invoke()//如果星流巨械被打败
                         && !save.DeploySignaltowerQuestCompleted//并且任务未完成
                         ) {

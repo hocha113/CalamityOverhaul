@@ -120,6 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 //延迟2秒后触发完成场景
                 if (questCompleteCheckTimer >= 120) {
                     save.DeploySignaltowerQuestCompleted = true;
+                    DSTPlayer.HasDeploySignaltowerQuestByWorld = false;
                     OnQuestComplete();
                     questCompleteCheckTimer = 0;
                 }
