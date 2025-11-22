@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.3f, phase0SwingSpeed: -0.1f
-                , phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f
+                , phase1SwingSpeed: 6.8f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwner();
         }

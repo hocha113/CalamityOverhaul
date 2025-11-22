@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 60;
+            Projectile.timeLeft = 90;
             Projectile.alpha = 255;
             Projectile.extraUpdates = 1;
             Projectile.penetrate = 16;

@@ -437,7 +437,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             if (targetNPC != -1 && Projectile.timeLeft < 220) {
                 NPC target = Main.npc[targetNPC];
-                Projectile.SmoothHomingBehavior(target.Center, 1.02f, 0.2f);
+                Projectile.SmoothHomingBehavior(target.Center, Projectile.numHits == 0 ? 1.02f : 1f, 0.2f);
 
                 //追踪粒子效果
                 if (Main.rand.NextBool(6)) {
