@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Items.Accessories;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             EbnPlayer ebnPlayer = player.GetModPlayer<EbnPlayer>();
 
             if (!ebnPlayer.IsEbn) return;
+            if (player.TryGetModPlayer<ProverbsPlayer>(out var proverbsPlayer)) {
+                if (!proverbsPlayer.HasProverbs || proverbsPlayer.HideVisual) {
+                    return;//需要戴着戒指才能触发以下效果
+                }
+            }
 
             //更新动画计时器
             auraAnimationTimer += 0.04f;
@@ -105,24 +111,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         Type = Main.rand.Next(3)
                     });
                 }
-            }
-        }
-
-        private static void DrawVoidRings(SpriteBatch sb, Vector2 center) {
-            Texture2D glow = CWRAsset.StarTexture_White.Value;
-
-            for (int i = 0; i < 3; i++) {
-                float radius = 150f + i * 50f;
-                float pulse = (float)Math.Sin(auraAnimationTimer * (1.5f + i * 0.3f)) * 0.3f + 0.7f;
-                float alpha = (0.15f - i * 0.03f) * pulse;
-                Color ringColor = Color.Red;
-
-                sb.Draw(glow, center, null,
-                    ringColor * alpha,
-                    auraAnimationTimer * (i % 2 == 0 ? 0.5f : -0.5f),
-                    glow.Size() / 2f,
-                    new Vector2(radius / glow.Width * 2.5f, radius / glow.Height * 2.5f),
-                    SpriteEffects.None, 0f);
             }
         }
 

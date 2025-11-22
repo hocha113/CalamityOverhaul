@@ -93,7 +93,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText EnchantTitle;
 
         public new void LoadUIData(TagCompound tag) {
-            tag.TryGet(Name + ":" + nameof(DrogOffset), out DrogOffset);
+            tag.TryGet(Name + ":" + nameof(DrawPosition), out DrawPosition);
+            if (DrawPosition == Vector2.Zero || DrawPosition == default) {
+                DrawPosition = new Vector2(168f, 320f);
+            }
+
             tag.TryGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
             if (tag.TryGet(Name + ":" + nameof(CurrentlyHeldItem), out TagCompound itemTag)) {
                 CurrentlyHeldItem = ItemIO.Load(itemTag);
@@ -104,7 +108,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public new void SaveUIData(TagCompound tag) {
-            tag[Name + ":" + nameof(DrogOffset)] = DrogOffset;
+            tag[Name + ":" + nameof(DrawPosition)] = DrawPosition;
             tag[Name + ":" + nameof(IsCollapsed)] = IsCollapsed;
             CurrentlyHeldItem ??= new Item();
             tag[Name + ":" + nameof(CurrentlyHeldItem)] = ItemIO.Save(CurrentlyHeldItem);
@@ -156,13 +160,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     DrogOffset = MousePosition.To(DrawPosition);
                 }
             }
-        }
 
-        public override void LogicUpdate() {
             if (DrawPosition == Vector2.Zero || DrawPosition == default) {
                 DrawPosition = new Vector2(168f, 320f);
             }
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 0, Main.screenWidth - CollapsedWidth);
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 0, Main.screenHeight - CollapsedHeight);
+        }
 
+        public override void LogicUpdate() {
             //根据折叠状态计算面板大小
             lerpProgress = MathHelper.SmoothStep(0f, 1f, CollapseProgress);
 
