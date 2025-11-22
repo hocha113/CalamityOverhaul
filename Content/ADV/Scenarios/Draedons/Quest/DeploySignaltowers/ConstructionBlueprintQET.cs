@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.UIHandles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -44,8 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 Main.combatText[combat].lifeTime = 300;
                 halibutPlayer.ADCSave.UseConstructionBlueprint = true;
             }
-            //显示配方UI
-            ConstructionBlueprintUI.ShowUI();
+            ConstructionBlueprintUI.Instance.Show();
             return true;
         }
     }

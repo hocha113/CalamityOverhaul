@@ -6329,6 +6329,7 @@ UI: {
 		// UITitle: 量子塔自我构建器
 		// MaterialsRequired: 所需材料:
 		// CloseHint: 点击关闭
+		// CraftingStation: 合成站点:
 	}
 }
 
