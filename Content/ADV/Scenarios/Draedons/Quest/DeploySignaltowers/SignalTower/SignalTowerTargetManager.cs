@@ -320,7 +320,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override void NetSend(BinaryWriter writer) {
             writer.Write(IsGenerated);
             writer.Write(TargetPoints.Count);
-            for(int i = 0; i < TargetPoints.Count; i++) {
+            for (int i = 0; i < TargetPoints.Count; i++) {
                 writer.Write(TargetPoints[i].TilePosition.X);
                 writer.Write(TargetPoints[i].TilePosition.Y);
                 writer.Write(TargetPoints[i].IsCompleted);

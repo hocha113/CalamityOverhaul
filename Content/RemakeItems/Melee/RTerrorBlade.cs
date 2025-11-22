@@ -1,7 +1,5 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -19,19 +17,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public const float TerrorBladeMaxRageEnergy = 100; //减少最大能量
         public static Asset<Texture2D> frightEnergyBarAsset;
         public static Asset<Texture2D> frightEnergyBackAsset;
-        
+
         void ICWRLoader.SetupData() {
             if (!Main.dedServ) {
                 frightEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBar");
                 frightEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBack");
             }
         }
-        
+
         void ICWRLoader.UnLoadData() {
             frightEnergyBarAsset = null;
             frightEnergyBackAsset = null;
         }
-        
+
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
         public static void SetDefaultsFunc(Item Item) {
@@ -86,7 +84,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         private int comboPhase; //连击阶段 0-2为普通攻击，3为终结技
         private bool isFinisher; //是否是终结技
         private float powerMomentum; //力量动量
-        
+
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 92;
             canDrawSlashTrail = true;
@@ -124,15 +122,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 //普通连击 - 快速流畅
                 SwingAIType = SwingAITypeEnum.None;
                 canDrawSlashTrail = true;
-                
+
                 SwingData.baseSwingSpeed = 4f + comboPhase * 0.2f; //连击加速
                 SwingData.starArg = 75 + comboPhase * 5;
                 SwingData.ler1_UpSpeedSengs = 0.14f + comboPhase * 0.02f;
 
                 if (Time == 0) {
-                    SoundEngine.PlaySound(SoundID.Item71 with { 
-                        Pitch = -0.2f + comboPhase * 0.15f, 
-                        Volume = 1.1f + comboPhase * 0.1f 
+                    SoundEngine.PlaySound(SoundID.Item71 with {
+                        Pitch = -0.2f + comboPhase * 0.15f,
+                        Volume = 1.1f + comboPhase * 0.1f
                     }, Owner.Center);
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Pitch = 0.2f }, Owner.Center);
                     powerMomentum = 8f + comboPhase * 2f;
@@ -141,7 +139,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 //连击粒子拖尾
                 if (Time % 2 == 0 && rotSpeed > 0.12f) {
                     Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(55, 55);
-                    Dust trail = Dust.NewDustPerfect(dustPos, DustID.RedTorch, 
+                    Dust trail = Dust.NewDustPerfect(dustPos, DustID.RedTorch,
                         -Projectile.velocity * 0.4f, 0, Color.DarkRed, 1.8f);
                     trail.noGravity = true;
                     trail.velocity += Owner.velocity * 0.3f;
@@ -153,7 +151,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 canDrawSlashTrail = false;
                 shootSengs = 0.25f;
                 maxSwingTime = 70;
-                
+
                 SwingData.starArg = 15;
                 SwingData.baseSwingSpeed = 2f;
                 SwingData.ler1_UpLengthSengs = 0.16f;
@@ -179,7 +177,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 if (Time % 2 == 0) {
                     float angle = Time * 0.25f;
                     Vector2 offset = angle.ToRotationVector2() * (70 + chargeProgress * 50);
-                    Dust charge = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Wraith, 
+                    Dust charge = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Wraith,
                         -offset * 0.1f, 0, Color.Purple, 2f + chargeProgress * 0.8f);
                     charge.noGravity = true;
                 }
@@ -295,22 +293,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 }
 
                 for (int i = 0; i < 15; i++) {
-                    Dust fire = Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(30, 30), 
+                    Dust fire = Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(30, 30),
                         DustID.RedTorch, Main.rand.NextVector2Circular(6, 6), 0, Color.DarkRed, 2f);
                     fire.noGravity = true;
                 }
             }
             else {
                 //普通连击击中
-                SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with { 
-                    Pitch = 0.3f + comboPhase * 0.1f, 
-                    Volume = 0.7f 
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with {
+                    Pitch = 0.3f + comboPhase * 0.1f,
+                    Volume = 0.7f
                 }, target.Center);
 
                 for (int i = 0; i < 8 + comboPhase * 2; i++) {
                     Vector2 vel = Main.rand.NextVector2Circular(5, 5);
-                    Dust hitDust = Dust.NewDustPerfect(target.Center, 
-                        Main.rand.NextBool() ? DustID.Wraith : DustID.RedTorch, 
+                    Dust hitDust = Dust.NewDustPerfect(target.Center,
+                        Main.rand.NextBool() ? DustID.Wraith : DustID.RedTorch,
                         vel, 0, default, 1.8f);
                     hitDust.noGravity = true;
                 }
@@ -319,7 +317,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (hit.Crit) {
                 //暴击额外粒子
                 for (int i = 0; i < 5; i++) {
-                    Dust crit = Dust.NewDustPerfect(target.Center, DustID.RedTorch, 
+                    Dust crit = Dust.NewDustPerfect(target.Center, DustID.RedTorch,
                         Main.rand.NextVector2Circular(5, 5), 0, Color.Red, 2.2f);
                     crit.noGravity = true;
                 }
