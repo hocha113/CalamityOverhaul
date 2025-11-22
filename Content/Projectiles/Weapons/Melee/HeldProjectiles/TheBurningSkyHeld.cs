@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
                 Projectile projectile = CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                     , 290f, 130f, 850f, 1100f, randomSpeed, ShootID
-                    , Projectile.damage / 6, 6f, Owner.whoAmI);
+                    , Projectile.damage, 6f, Owner.whoAmI);
                 if (Main.rand.NextBool(3)) {
                     projectile.Calamity().allProjectilesHome = true;
                 }
