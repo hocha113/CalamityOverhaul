@@ -10,7 +10,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static ThoriumMod.Tiles.Statues;
 
 namespace CalamityOverhaul.Content.ADV.Common
 {
@@ -86,10 +85,10 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
 
-            //计算UI位置(屏幕中央)
+            //计算UI位置
             DrawPosition = new Vector2(
                 (Main.screenWidth - UIWidth * expandProgress) / 2,
-                (Main.screenHeight - UIHeight * expandProgress) / 2
+                (Main.screenHeight - UIHeight * expandProgress)
             );
 
             //更新碰撞盒
@@ -389,8 +388,7 @@ namespace CalamityOverhaul.Content.ADV.Common
 
             //绘制合成站点
             materialPos.Y += 20;
-            string craftingStationText = GetCraftingStationText(cachedRecipe);
-            Utils.DrawBorderString(sb, craftingStationText, materialPos, new Color(255, 200, 100) * alpha, 0.75f);
+            DrawCraftingStation(sb, cachedRecipe, materialPos, alpha);
 
             //绘制结果物品
             Vector2 resultPos = DrawPosition + new Vector2(UIWidth * expandProgress - 150, 80);
@@ -402,9 +400,41 @@ namespace CalamityOverhaul.Content.ADV.Common
                 //获取合成台的物品ID
                 int itemType = TileLoader.GetItemDropFromTypeAndStyle(recipe.requiredTile[0]);
                 string tileName = VaultUtils.GetLocalizedItemName(itemType).Value;
-                return $"{CraftingStation.Value}: {tileName}";
+                return $"{CraftingStation.Value} {tileName}";
             }
             return CraftingStation.Value;
+        }
+
+        protected virtual void DrawCraftingStation(SpriteBatch sb, Recipe recipe, Vector2 position, float alpha) {
+            if (recipe.requiredTile.Count <= 0) {
+                //没有合成台要求,显示"手工"
+                Utils.DrawBorderString(sb, CraftingStation.Value, position, new Color(255, 200, 100) * alpha, 0.75f);
+                return;
+            }
+
+            //获取合成台物品
+            int tileType = recipe.requiredTile[0];
+            int itemType = TileLoader.GetItemDropFromTypeAndStyle(tileType);
+
+            if (itemType <= 0 || itemType >= ItemLoader.ItemCount) {
+                //无效的物品ID,只显示文本
+                string craftingStationText = GetCraftingStationText(recipe);
+                Utils.DrawBorderString(sb, craftingStationText, position, new Color(255, 200, 100) * alpha, 0.75f);
+                return;
+            }
+
+            //创建合成台物品实例
+            Item craftingStationItem = new Item(itemType);
+            Main.instance.LoadItem(itemType);
+
+            //绘制合成台图标
+            DrawItemIcon(sb, craftingStationItem, position + new Vector2(0, 24), alpha);
+
+            //绘制合成台名称
+            string stationName = craftingStationItem.Name;
+            string stationText = $"{CraftingStation.Value} {stationName}";
+            Vector2 textPos = position;
+            Utils.DrawBorderString(sb, stationText, textPos, new Color(255, 200, 100) * alpha, 0.85f);
         }
 
         protected virtual void DrawItemIcon(SpriteBatch sb, Item item, Vector2 position, float alpha) {
