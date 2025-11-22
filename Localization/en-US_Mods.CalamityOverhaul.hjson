@@ -2927,12 +2927,10 @@ RemakeItems: {
 		DisplayName: Devil's Devastation
 		Tooltip:
 			'''
-			Each swing generates a Joyous Halberd that floats above the player, 
-			flying towards the cursor and attaching to enemies to deal continuous damage.
-			A heavy slash releases three rounds of Painful Reincarnation, 
-			dealing multiple instances of piercing damage to enemies in its path.
-			Finally, six Crimson Devil Halberds are summoned at the cursor's location, 
-			which float for a while before flying towards the player.
+			Each swing generates a cluster of Halberds of Pleasure above the player that fly towards the cursor
+			Halberds stick to enemies on hit, dealing continuous damage
+			Large slashes launch three Cycles of Pain, dealing multiple piercing hits to enemies in their path
+			Finally, summons six Scarlet Demon Halberds at the cursor that float briefly before flying towards the player
 			'''
 	}
 
