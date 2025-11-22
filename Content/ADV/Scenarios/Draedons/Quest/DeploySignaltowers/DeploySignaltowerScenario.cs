@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    internal class DeploySignaltowerScenario : ADVScenarioBase, ILocalizedModType
+    internal class DeploySignaltowerScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public static bool Spawn { get; private set; }
         public static int RandTimer { get; private set; }
@@ -42,6 +42,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         private const string red = " ";
         private const string alt = " " + " ";
+
+        void IWorldInfo.OnWorldLoad() {
+            Spawn = false;
+            RandTimer = 0;
+        }
 
         public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");

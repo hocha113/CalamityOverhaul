@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
                     HasDeploySignaltowerQuestByWorld = false;//如果世界中没有保存的有目标点
 
                     if (InWorldBossPhase.Downed29.Invoke()//如果星流巨械被打败
+                        && save.ExoMechEndingDialogue//观看过首次的嘉登战败发言
                         && !save.DeploySignaltowerQuestCompleted//并且任务未完成
                         ) {
                         DeploySignaltowerScenario.SetTurnOn();//尝试让任务生成
