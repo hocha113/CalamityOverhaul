@@ -6,6 +6,7 @@ using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -146,13 +147,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private int guideAlphaTime;
         private const float GuideMaxDistance = 300f; //玩家距离小于此值时显示指示
 
+        //地面完整性检测
+        private bool isGroundIncomplete = false;
+        private readonly List<Point> incompleteGroundPositions = new();
+
         //本地化文本
         public static LocalizedText GuideText_NeedBlocks { get; private set; }
         public static LocalizedText GuideText_Ready { get; private set; }
+        public static LocalizedText GuideText_GroundIncomplete { get; private set; }
 
         public override void SetStaticDefaults() {
             GuideText_NeedBlocks = this.GetLocalization(nameof(GuideText_NeedBlocks), () => "需要 {0} 个星流镀板");
             GuideText_Ready = this.GetLocalization(nameof(GuideText_Ready), () => "准备就绪！");
+            GuideText_GroundIncomplete = this.GetLocalization(nameof(GuideText_GroundIncomplete), () => "地面不完整！");
         }
 
         public override void Update() {
@@ -171,10 +178,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             if (checkDelay >= CheckInterval) {
                 checkDelay = 0;
 
-                if (!isConstructing && CheckConstructionConditions()) {
-                    isConstructing = true;
-                    constructionTime = 0;
-                    SoundEngine.PlaySound(SoundID.Item4, PosInWorld);
+                //先检测地面完整性
+                if (!CheckGroundIntegrity()) {
+                    isGroundIncomplete = true;
+                    isConstructing = false;
+                }
+                else {
+                    isGroundIncomplete = false;
+
+                    if (!isConstructing && CheckConstructionConditions()) {
+                        isConstructing = true;
+                        constructionTime = 0;
+                        SoundEngine.PlaySound(SoundID.Item4, PosInWorld);
+                    }
                 }
             }
 
@@ -214,6 +230,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
+        /// <summary>
+        /// 检测地面完整性
+        /// 构建器下方5格必须是完整且存在的方块
+        /// </summary>
+        private bool CheckGroundIntegrity() {
+            incompleteGroundPositions.Clear();
+
+            int groundY = Position.Y + 2;//构建器下方一格
+
+            for (int offsetX = -2; offsetX <= 3; offsetX++) {
+                int checkX = Position.X + offsetX;
+                int checkY = groundY;
+
+                Tile tile = Framing.GetTileSafely(checkX, checkY);
+
+                //检测方块是否存在、是否完整（非半砖、无斜坡）
+                if (!tile.HasTile || tile.IsHalfBlock || tile.Slope != SlopeType.Solid) {
+                    incompleteGroundPositions.Add(new Point(checkX, checkY));
+                }
+            }
+
+            return incompleteGroundPositions.Count == 0;
+        }
+
         private bool CheckConstructionConditions() {
             if (VaultUtils.isClient) {
                 return false;
@@ -223,8 +263,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //构建器位于底部中间位置，需要检测周围6×14区域
             //构建器是2×2，位于底部中间（占用X: 2-3, Y: 12-13）
-            int baseX = Position.X - 2; //向左延伸2格
-            int baseY = Position.Y - 12; //向上延伸12格（总高14格）
+            int baseX = Position.X - 2;//向左延伸2格
+            int baseY = Position.Y - 12;//向上延伸12格（总高14格）
 
             //检测6×14区域是否都是StarflowPlatedBlock
             for (int x = 0; x < 6; x++) {
@@ -324,8 +364,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         public override void BackDraw(SpriteBatch spriteBatch) {
+            //优先显示地面不完整警告
+            if (isGroundIncomplete && showGuide) {
+                DrawGroundIncompleteWarning(spriteBatch);
+            }
             //绘制搭建指示
-            if (showGuide && !isConstructing) {
+            else if (showGuide && !isConstructing) {
                 DrawConstructionGuide(spriteBatch);
             }
 
@@ -337,6 +381,170 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         [VaultLoaden(CWRConstant.Item + "Placeable/")]
         public static Texture2D StarflowPlatedBlockAlt;//发现这个占位符纹理效果意外不错，于是便留着
+
+        /// <summary>
+        /// 绘制地面不完整警告
+        /// </summary>
+        private void DrawGroundIncompleteWarning(SpriteBatch spriteBatch) {
+            float alphaBase = 0.5f + 0.3f * MathF.Sin(guideAlphaTime * 0.08f);
+
+            //绘制不完整的地面方块标记
+            foreach (Point pos in incompleteGroundPositions) {
+                Vector2 drawPos = new Vector2(pos.X * 16, pos.Y * 16) - Main.screenPosition;
+
+                //红色警告边框
+                Color warningColor = Color.Red * alphaBase;
+                Color fillColor = new Color(255, 100, 100) * (alphaBase * 0.3f);
+
+                //绘制填充
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    drawPos,
+                    new Rectangle(0, 0, 1, 1),
+                    fillColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(16, 16),
+                    SpriteEffects.None,
+                    0f
+                );
+
+                //绘制闪烁的边框（4条线）
+                int borderThickness = 2;
+                //上边框
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    drawPos,
+                    new Rectangle(0, 0, 1, 1),
+                    warningColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(16, borderThickness),
+                    SpriteEffects.None,
+                    0f
+                );
+                //下边框
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    drawPos + new Vector2(0, 16 - borderThickness),
+                    new Rectangle(0, 0, 1, 1),
+                    warningColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(16, borderThickness),
+                    SpriteEffects.None,
+                    0f
+                );
+                //左边框
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    drawPos,
+                    new Rectangle(0, 0, 1, 1),
+                    warningColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(borderThickness, 16),
+                    SpriteEffects.None,
+                    0f
+                );
+                //右边框
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    drawPos + new Vector2(16 - borderThickness, 0),
+                    new Rectangle(0, 0, 1, 1),
+                    warningColor,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(borderThickness, 16),
+                    SpriteEffects.None,
+                    0f
+                );
+
+                //绘制X标记
+                float crossSize = 12f;
+                Vector2 crossCenter = drawPos + new Vector2(8, 8);
+
+                //对角线1
+                for (int i = 0; i < (int)crossSize; i++) {
+                    Vector2 pixelPos = crossCenter + new Vector2(-crossSize / 2 + i, -crossSize / 2 + i);
+                    spriteBatch.Draw(
+                        VaultAsset.placeholder2.Value,
+                        pixelPos,
+                        new Rectangle(0, 0, 1, 1),
+                        warningColor,
+                        0f,
+                        Vector2.Zero,
+                        2f,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+
+                //对角线2
+                for (int i = 0; i < (int)crossSize; i++) {
+                    Vector2 pixelPos = crossCenter + new Vector2(-crossSize / 2 + i, crossSize / 2 - i);
+                    spriteBatch.Draw(
+                        VaultAsset.placeholder2.Value,
+                        pixelPos,
+                        new Rectangle(0, 0, 1, 1),
+                        warningColor,
+                        0f,
+                        Vector2.Zero,
+                        2f,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+            }
+
+            //绘制警告文本
+            Vector2 textPos = new Vector2((Position.X) * 16, (Position.Y - 2) * 16) - Main.screenPosition;
+            float textAlpha = 0.9f + 0.1f * MathF.Sin(guideAlphaTime * 0.1f);
+
+            string warningText = GuideText_GroundIncomplete.Value;
+            Color textColor = Color.Red * textAlpha;
+            Color shadowColor = Color.Black * textAlpha * 0.7f;
+
+            //绘制阴影
+            Utils.DrawBorderString(spriteBatch, warningText, textPos + new Vector2(2, 2), shadowColor, 1.2f);
+            //绘制文本（带闪烁效果）
+            float flashEffect = 0.8f + 0.2f * MathF.Sin(guideAlphaTime * 0.15f);
+            Utils.DrawBorderString(spriteBatch, warningText, textPos, textColor * flashEffect, 1.2f);
+
+            //绘制地面检测区域边框
+            DrawGroundCheckArea(spriteBatch);
+        }
+
+        /// <summary>
+        /// 绘制地面检测区域边框
+        /// </summary>
+        private void DrawGroundCheckArea(SpriteBatch spriteBatch) {
+            int groundY = Position.Y + 2;
+            Vector2 topLeft = new Vector2((Position.X - 2) * 16, groundY * 16) - Main.screenPosition;
+            int width = 6 * 16;
+            int height = 16;
+            int borderThickness = 2;
+
+            float alpha = 0.7f + 0.3f * MathF.Sin(guideAlphaTime * 0.1f);
+            Color borderColor = Color.Red * alpha;
+
+            //上边框
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, -borderThickness),
+                new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
+                new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
+            //下边框
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, height),
+                new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
+                new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
+            //左边框
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, 0),
+                new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
+                new Vector2(borderThickness, height), SpriteEffects.None, 0f);
+            //右边框
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(width, 0),
+                new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
+                new Vector2(borderThickness, height), SpriteEffects.None, 0f);
+        }
 
         private void DrawConstructionGuide(SpriteBatch spriteBatch) {
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();

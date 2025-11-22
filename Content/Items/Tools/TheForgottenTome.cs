@@ -2,7 +2,6 @@
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -454,17 +453,17 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         private void DrawCenterGlow(SpriteBatch sb, Vector2 center) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
             float pulse = (float)Math.Sin(Timer * 0.4f) * 0.4f + 0.6f;
-            Color glowColor = new Color(220, 20, 20) * (auraIntensity * pulse);
-            Color darkGlow = new Color(100, 0, 0) * (auraIntensity * pulse * 0.8f);
+            Color glowColor = new Color(220, 20, 20, 0) * (auraIntensity * pulse);
+            Color darkGlow = new Color(100, 0, 0, 0) * (auraIntensity * pulse * 0.8f);
 
             for (int i = 0; i < 6; i++) {
-                float scale = 25f * (1f + i * 0.4f);
+                float scale = 5f * (1f + i * 0.4f);
                 float alpha = (1f - i / 6f) * auraIntensity;
                 Color color = Color.Lerp(glowColor, darkGlow, i / 6f);
-                sb.Draw(pixel, center - Main.screenPosition, null, color * alpha,
-                    0f, new Vector2(0.5f), new Vector2(scale), SpriteEffects.None, 0f);
+                sb.Draw(glow, center - Main.screenPosition, null, color * alpha,
+                    0f, glow.Size() / 2, scale, SpriteEffects.None, 0f);
             }
         }
     }

@@ -6255,6 +6255,7 @@ UI: {
 	CQETConstructorTP: {
 		GuideText_NeedBlocks: 需要 {0} 个星流电镀块
 		GuideText_Ready: 准备就绪！
+		GuideText_GroundIncomplete: 地面不完整！
 	}
 
 	DeploySignaltowerTrackerUI: {
@@ -6298,7 +6299,7 @@ UI: {
 	}
 
 	ConstructionBlueprintUI: {
-		UITitle: 量子塔自我构建器
+		UITitle: 自我搭建器(量子纠缠塔)
 		MaterialsRequired: 所需材料:
 		CloseHint: 点击关闭
 		CraftingStation: 合成站点:

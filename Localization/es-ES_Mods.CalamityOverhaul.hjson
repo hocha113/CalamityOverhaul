@@ -6283,6 +6283,7 @@ UI: {
 	CQETConstructorTP: {
 		// GuideText_NeedBlocks: Needs {0} Gausspulse Plating
 		// GuideText_Ready: Ready!
+		// GuideText_GroundIncomplete: The Ground Is Incomplete!
 	}
 
 	DeploySignaltowerTrackerUI: {
@@ -6326,10 +6327,10 @@ UI: {
 	}
 
 	ConstructionBlueprintUI: {
-		// UITitle: 量子塔自我构建器
-		// MaterialsRequired: 所需材料:
-		// CloseHint: 点击关闭
-		// CraftingStation: 合成站点:
+		// UITitle: Self-Constructor (Quantum Entanglement Tower)
+		// MaterialsRequired: Materials Required:
+		// CloseHint: Click to Close
+		// CraftingStation: Crafting Station:
 	}
 }
 

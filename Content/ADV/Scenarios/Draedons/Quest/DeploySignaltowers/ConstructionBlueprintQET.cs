@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using InnoVault.UIHandles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
