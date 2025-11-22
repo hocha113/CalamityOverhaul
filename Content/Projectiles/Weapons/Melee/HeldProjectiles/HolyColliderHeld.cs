@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 //生成强化的火焰冲击
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, unitToM2
-                , ModContent.ProjectileType<HolyColliderExFire>(), (int)(Projectile.damage * 1.5f), Projectile.knockBack * 2
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack * 2
                 , Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
 
                 //屏幕震动
-                Owner.CWR().GetScreenShake(15f);
+                Owner.CWR().GetScreenShake(12f);
 
                 //后坐力效果
                 Owner.velocity -= unitToM2 * 3f;
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             //生成火焰斩击
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, unitToM
-                , ModContent.ProjectileType<HolyColliderExFire>(), (int)(Projectile.damage * 1.2f), Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
 
             //小范围震动
             Owner.CWR().GetScreenShake(4f);
@@ -91,10 +91,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             weaponMomentum = MathHelper.Lerp(weaponMomentum, rotSpeed * 10f, 0.1f);
 
             if (Projectile.ai[0] == 1) {
-                //第一击 - 强力上挑
+                //第一击
                 SwingBehavior(starArg: 40, baseSwingSpeed: 5, ler1_UpLengthSengs: 0.14f, ler1_UpSpeedSengs: 0.14f, ler1_UpSizeSengs: 0.018f
                 , ler2_DownLengthSengs: 0.006f, ler2_DownSpeedSengs: 0.18f, ler2_DownSizeSengs: 0
-                , minClampLength: 160, maxClampLength: 240, ler1Time: 14, maxSwingTime: 32);
+                , minClampLength: 160, maxClampLength: 240, ler1Time: 0, maxSwingTime: 32);
                 maxSwingTime = 32;
 
                 //挥舞音效
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.localNPCHitCooldown = 6 * UpdateRate;
                 //蓄力重击
                 canDrawSlashTrail = false;
-                OtherMeleeSize = 1.35f;
+                OtherMeleeSize = 1.05f;
 
                 SwingBehavior(starArg: 40, baseSwingSpeed: 1.8f, ler1_UpLengthSengs: 0.16f, ler1_UpSpeedSengs: 0.16f, ler1_UpSizeSengs: 0.008f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.22f, ler2_DownSizeSengs: 0
