@@ -81,22 +81,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + alt, ADVAsset.DraedonADV, silhouette: false);
 
-            //构建对话流程
-            Add(DraedonName.Value, IntroLine1.Value);
-            Add(DraedonName.Value + alt, IntroLine2.Value);
-            Add(DraedonName.Value, IntroLine3.Value);
-            Add(DraedonName.Value, IntroLine4.Value);
-            Add(DraedonName.Value, IntroLine5.Value);
-            Add(DraedonName.Value, IntroLine6.Value);
-            Add(DraedonName.Value, IntroLine7.Value);
-            //触发信号塔图片展示
+            if (Main.LocalPlayer.TryGetADVSave(out var save)//获取玩家存档
+                && !save.DeploySignaltowerQuestDeclined//玩家未拒绝过任务
+                ) {
+                //构建对话流程
+                Add(DraedonName.Value, IntroLine1.Value);
+                Add(DraedonName.Value, IntroLine2.Value);
+                Add(DraedonName.Value, IntroLine3.Value);
+                Add(DraedonName.Value, IntroLine4.Value);
+                Add(DraedonName.Value, IntroLine5.Value);
+                Add(DraedonName.Value, IntroLine6.Value);
+                Add(DraedonName.Value, IntroLine7.Value);
+                //触发信号塔图片展示
 
-            //展示信号塔图片的对话，带展示动画
-            Add(DraedonName.Value + red, IntroLine8.Value, onStart: DeploySignaltowerRender.ShowTowerImage);
+                //展示信号塔图片的对话，带展示动画
+                Add(DraedonName.Value + red, IntroLine8.Value, onStart: DeploySignaltowerRender.ShowTowerImage);
 
-            Add(DraedonName.Value + alt, TechExplainLine1.Value);
-            Add(DraedonName.Value, TechExplainLine2.Value);
-            Add(DraedonName.Value + red, TaskLine.Value);
+                Add(DraedonName.Value, TechExplainLine1.Value);
+                Add(DraedonName.Value, TechExplainLine2.Value);
+                Add(DraedonName.Value + red, TaskLine.Value);
+            }
 
             //添加选择界面
             AddWithChoices(DraedonName.Value + red, AcceptPrompt.Value, [
@@ -107,7 +111,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         internal static void SetTurnOn() {
             Spawn = true;
-            RandTimer = Main.rand.Next(60 * 32, 60 * 50);//大概半分钟到一分钟之间触发
+            RandTimer = Main.rand.Next(60 * 32, 60 * 40);//大概半分钟到一分钟之间触发
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

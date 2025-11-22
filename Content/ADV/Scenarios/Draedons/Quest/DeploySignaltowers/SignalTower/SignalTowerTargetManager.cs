@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.UIHandles;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -137,7 +138,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 TargetPoints.Add(new SignalTowerTargetPoint(generatedPoints[i], PointRange, i));
             }
 
+            SetIsGenerated();
+        }
+
+        /// <summary>
+        /// 设置为已生成状态
+        /// </summary>
+        internal static void SetIsGenerated() {
             IsGenerated = true;
+            //重置信号塔追踪UI的Y轴位置
+            UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().SetDefScreenYValue();
             //标记接受任务
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
@@ -169,11 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 TargetPoints.Add(new SignalTowerTargetPoint(new Point(x, y), PointRange, i));
                 points.Add(new Point(x, y));
             }
-            IsGenerated = true;
-            //这里顺带让其他客户端也接受任务
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
-            }
+            SetIsGenerated();
             return points;
         }
 
