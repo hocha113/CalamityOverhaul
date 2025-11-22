@@ -1317,17 +1317,22 @@ Items: {
 			Наносит двойной урон Серной Ведьме
 			Атаки Серной Ведьмы могут нанести вам критический урон
 			'''
-		// L1: Deal double damage to the Brimstone Witch; her attacks may critically strike you.
+		/* L1:
+			'''
+			Deals double damage to the Brimstone Witch; 
+			her attacks have a chance to critically strike you
+			''' */
 		/* L2:
 			'''
-			If you are reading this, I am likely already gone.
-			This ring has been with me for as long as I can remember. 
-			Some said it was a symbol of misfortune; others, a key to salvation.
-			I never found the answer in my lifetime.
-			The gods never responded, and I do not know if this era has a future.
-			But I still wish to believe—now that the ring has fallen into your hands, it was not in vain.
-			Please, see the end of this world in my stead.
-			If one day, it can finally find peace... then... my life will not have been worthless.
+			If you are reading this, then I am likely already gone.
+			Throughout my long years, this ring was the only thing that felt truly cold.
+			But somewhere along the way, it absorbed a mortal's warmth... and became... too hot to let go.
+			I have returned to the Brimstone, reduced to the ashes of an era.
+			I should have departed with nothing, 
+			yet I found myself greedy for this singular warmth, wishing to preserve it.
+			Wear it.
+			And when you finally raise your blade against the gods...
+			Know that even if the world freezes over, I will still be burning at your fingertips.
 			''' */
 	}
 
@@ -1371,7 +1376,7 @@ Items: {
 		/* Tooltip:
 			'''
 			Place to construct a Quantum Entanglement Tower
-			Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Gausspulse Plating
+			Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Starflow Plated Blocks
 			''' */
 		// UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
 	}
@@ -1380,16 +1385,16 @@ Items: {
 		// DisplayName: Quantum Entanglement Tower
 		/* Tooltip:
 			'''
-			To be annihilated in sync, even across dimensions
-			"Draedon's crude imitation of causality"
+			An important communication device that acts as a lighthouse in subspace
+			"A wild child raises a torch in the forest, shouting I am here"
 			''' */
 	}
 
 	StarflowPlatedBlock: {
-		// DisplayName: Gausspulse Plating
+		// DisplayName: Starflow Plated Block
 		/* Tooltip:
 			'''
-			The cornerstone for building the Quantum Entanglement Tower
+			Basic material for building the [i:CalamityOverhaul/DeploySignaltower] Quantum Entanglement Tower
 			"Forging flowing starlight into an immortal foundation"
 			''' */
 	}
@@ -1399,15 +1404,19 @@ Items: {
 		/* Tooltip:
 			'''
 			Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
-			"Friendly reminder: Credit is not supported"
+			"Theoretically capable of issuing an Extermination Order, but authorization seems insufficient"
 			''' */
-		// NeedSignalTowersText: Entanglement network incomplete! System locked until all {0} signal towers are deployed.
-		// SignalTowerProgressText: Signal Tower Deployment: {0}/{1}
+		// NeedSignalTowersText: Quantum entanglement link incomplete! Requires all {0} Signal Towers to be deployed.
+		// SignalTowerProgressText: Signal Tower Deployment Progress: {0}/{1}
 	}
 
 	Unsunghero: {
-		// DisplayName: Unsunghero
-		// Tooltip: ""
+		// DisplayName: Unsung Hero
+		/* Tooltip:
+			'''
+			Increases maximum stealth by 10
+			Stealth generation speed will no longer reduce stealth damage
+			''' */
 	}
 }
 

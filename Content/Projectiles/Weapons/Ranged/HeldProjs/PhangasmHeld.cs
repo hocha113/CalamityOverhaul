@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class PhangasmBowHeld : BaseBow
+    internal class PhangasmHeld : BaseBow
     {
         public override string Texture => "CalamityMod/Items/Weapons/Ranged/Phangasm";
         public override void SetRangedProperty() {

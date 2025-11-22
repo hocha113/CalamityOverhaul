@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.CWR().heldProjType = ModContent.ProjectileType<PhangasmBowHeld>();
+            item.CWR().heldProjType = ModContent.ProjectileType<PhangasmHeld>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
     }
