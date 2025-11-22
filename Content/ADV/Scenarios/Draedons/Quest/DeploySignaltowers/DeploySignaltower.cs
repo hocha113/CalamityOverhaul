@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.Items.Placeable;
 using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.Audio;
@@ -8,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Items.Placeable
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     internal class DeploySignaltower : ModItem
     {
