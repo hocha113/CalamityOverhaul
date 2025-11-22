@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 && Time > 5 * UpdateRate && Time < 60 * UpdateRate && Time % 10 * UpdateRate == 0
                 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
-                , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
             }
         }
 
