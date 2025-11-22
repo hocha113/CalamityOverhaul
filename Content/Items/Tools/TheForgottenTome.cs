@@ -2,6 +2,7 @@
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanUseItem(Player player) {
+            if (player.CountProjectilesOfID<ForgottenTomeEffect>() > 0) {
+                return false;
+            }
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return false;
             }
