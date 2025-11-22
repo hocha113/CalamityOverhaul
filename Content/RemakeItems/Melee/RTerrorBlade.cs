@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 maxSwingTime = 70;
 
                 SwingData.starArg = 15;
-                SwingData.baseSwingSpeed = 2f;
+                SwingData.baseSwingSpeed = 1.8f;
                 SwingData.ler1_UpLengthSengs = 0.16f;
                 SwingData.ler1_UpSpeedSengs = 0.16f;
                 SwingData.ler1_UpSizeSengs = 0.085f;
@@ -520,7 +520,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 float progress = k / (float)Projectile.oldPos.Length;
                 float trailAlpha = (1f - progress) * (1f - Projectile.alpha / 255f);
 
-                Color trailColor = Color.Lerp(Color.Purple, Color.DarkRed, progress) * trailAlpha;
+                Color trailColor = Color.Lerp(Color.White, Color.WhiteSmoke, progress) * trailAlpha;
 
                 Main.EntitySpriteDraw(
                     mainValue,
@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             //光晕效果
             float alp = (1f - Projectile.alpha / 255f);
-            Color glowColor = Color.Lerp(Color.Purple, Color.Red, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f);
+            Color glowColor = Color.Lerp(Color.White, Color.WhiteSmoke, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f);
 
             Main.EntitySpriteDraw(
                 mainValue,
@@ -552,12 +552,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             );
 
             //主体绘制
-            Color mainColor = Color.Lerp(Color.DarkRed, Color.Purple, 0.5f);
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
                 rectangle,
-                mainColor * alp,
+                Color.White * alp,
                 Projectile.rotation - MathHelper.PiOver2,
                 origin,
                 Projectile.scale,
