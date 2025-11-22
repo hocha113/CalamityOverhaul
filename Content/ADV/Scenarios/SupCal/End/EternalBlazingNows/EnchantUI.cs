@@ -93,9 +93,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText EnchantTitle;
 
         public new void LoadUIData(TagCompound tag) {
-            tag.TryGet(nameof(DrogOffset), out DrogOffset);
-            tag.TryGet(nameof(IsCollapsed), out IsCollapsed);
-            if (tag.TryGet(nameof(CurrentlyHeldItem), out TagCompound itemTag)) {
+            tag.TryGet(Name + ":" + nameof(DrogOffset), out DrogOffset);
+            tag.TryGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
+            if (tag.TryGet(Name + ":" + nameof(CurrentlyHeldItem), out TagCompound itemTag)) {
                 CurrentlyHeldItem = ItemIO.Load(itemTag);
             }
             else {
@@ -104,10 +104,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         public new void SaveUIData(TagCompound tag) {
-            tag[nameof(DrogOffset)] = DrogOffset;
-            tag[nameof(IsCollapsed)] = IsCollapsed;
+            tag[Name + ":" + nameof(DrogOffset)] = DrogOffset;
+            tag[Name + ":" + nameof(IsCollapsed)] = IsCollapsed;
             CurrentlyHeldItem ??= new Item();
-            tag[nameof(CurrentlyHeldItem)] = ItemIO.Save(CurrentlyHeldItem);
+            tag[Name + ":" + nameof(CurrentlyHeldItem)] = ItemIO.Save(CurrentlyHeldItem);
         }
 
         public override void SetStaticDefaults() {

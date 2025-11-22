@@ -120,7 +120,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 //发射瞬间效果
                 if (Time == (int)(maxSwingTime * shootSengs)) {
                     SoundEngine.PlaySound(SoundID.Item96 with { Pitch = -0.3f, Volume = 1.2f }, Owner.Center);
-                    Owner.CWR().GetScreenShake(12f);
                 }
             }
             else {
@@ -166,7 +165,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 //气泡爆发音效
                 SoundEngine.PlaySound(SoundID.Item54, Owner.Center);
-                Owner.CWR().GetScreenShake(6f);
                 return;
             }
 
@@ -244,7 +242,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.ai[0] == 2) {
                 //终结技击中
                 SoundEngine.PlaySound(SoundID.Item96, target.Center);
-                Owner.CWR().GetScreenShake(10f);
 
                 //强力水花爆发
                 for (int i = 0; i < 25; i++) {
@@ -266,9 +263,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             else if (Projectile.ai[0] == 1) {
-                //强力上挑击中
-                Owner.CWR().GetScreenShake(5f);
-
                 for (int i = 0; i < 12; i++) {
                     Vector2 vel = Main.rand.NextVector2Circular(6, 6);
                     Dust water = Dust.NewDustPerfect(target.Center, DustID.DungeonWater, vel, 0, default, 2f);
@@ -288,9 +282,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             else {
-                //普通击中
-                Owner.CWR().GetScreenShake(2.5f);
-
                 for (int i = 0; i < 6; i++) {
                     Vector2 vel = Main.rand.NextVector2Circular(4, 4);
                     Dust splash = Dust.NewDustPerfect(target.Center, DustID.DungeonWater, vel, 0, default, 1.5f);

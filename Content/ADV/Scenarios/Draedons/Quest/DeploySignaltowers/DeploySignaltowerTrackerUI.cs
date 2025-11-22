@@ -39,11 +39,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         internal void SetDefScreenYValue() => screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
 
         public new void LoadUIData(TagCompound tag) {
-            tag.TryGet("screenYValue", out screenYValue);
+            tag.TryGet(Name + ":" + nameof(screenYValue), out screenYValue);
         }
 
         public new void SaveUIData(TagCompound tag) {
-            tag[nameof(screenYValue)] = screenYValue;
+            tag[Name + ":" + nameof(screenYValue)] = screenYValue;
         }
 
         public override void SetStaticDefaults() {

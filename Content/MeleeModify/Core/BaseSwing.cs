@@ -804,6 +804,12 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 Main.EntitySpriteDraw(glowTexValue.Value, trueDrawPos, new Rectangle?(rect)
                     , Color.White, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             }
+            PostDrawSwing(spriteBatch, texture, trueDrawPos, rect, color, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects);
+        }
+
+        public virtual void PostDrawSwing(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawRoting
+            , Rectangle rectangle, Color color, float roting, Vector2 drawOrigin, float scale, SpriteEffects spriteEffects) {
+
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {

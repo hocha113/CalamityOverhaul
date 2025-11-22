@@ -20,10 +20,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override void LoadWorldData(TagCompound tag) {
+            tag.TryGet("placeholder", out bool _);
             SaveMod.DoLoad<UIDataSave>();
         }
 
         public override void SaveWorldData(TagCompound tag) {
+            tag["placeholder"] = false;
             SaveMod.DoSave<UIDataSave>();
         }
     }

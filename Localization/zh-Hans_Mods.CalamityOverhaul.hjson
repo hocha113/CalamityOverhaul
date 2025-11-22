@@ -1801,6 +1801,7 @@ Projectiles: {
 	JusticeUnveiledCross.DisplayName: 正义显现
 	AncientStormLightning.DisplayName: 远古风暴闪电
 	AncientStormArc.DisplayName: 远古风暴闪电珠
+	TerrorSpirit.DisplayName: 惊惧怨灵
 }
 
 Configs: {
