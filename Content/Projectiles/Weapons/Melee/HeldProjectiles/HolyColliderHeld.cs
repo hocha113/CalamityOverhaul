@@ -112,6 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             else if (Projectile.ai[0] == 2) {
+                Projectile.localNPCHitCooldown = 6 * UpdateRate;
                 //蓄力重击
                 canDrawSlashTrail = false;
                 OtherMeleeSize = 1.35f;

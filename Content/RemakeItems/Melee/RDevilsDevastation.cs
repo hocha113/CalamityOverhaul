@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             if (InWorldBossPhase.Downed28.Invoke()) {
-                damage *= 1.25f;
+                damage *= 1.15f;
             }
         }
 
