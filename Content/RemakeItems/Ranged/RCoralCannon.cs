@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.UseSound = SoundID.Item61;
             item.autoReuse = true;
             item.shootSpeed = 10f;
-            item.SetHeldProj<CoralCannonHeldProj>();
+            item.SetHeldProj<CoralCannonHeld>();
         }
     }
 }

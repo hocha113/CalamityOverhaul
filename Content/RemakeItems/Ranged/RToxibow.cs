@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RToxibow : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<ToxibowHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<ToxibowHeld>();
     }
 }

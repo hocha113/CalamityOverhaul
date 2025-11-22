@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBrimstoneFury : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<BrimstoneFuryHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<BrimstoneFuryHeld>();
     }
 }

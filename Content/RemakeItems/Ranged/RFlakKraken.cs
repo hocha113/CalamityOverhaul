@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.damage = 84;
-            item.SetCartridgeGun<FlakKrakenHeldProj>(80);
+            item.SetCartridgeGun<FlakKrakenHeld>(80);
             item.CWR().Scope = true;
         }
     }

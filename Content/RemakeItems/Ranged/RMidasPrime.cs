@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RMidasPrime : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<MidasPrimeHeldProj>(30);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<MidasPrimeHeld>(30);
     }
 }

@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RTheBallista : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<TheBallistaHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<TheBallistaHeld>();
     }
 }

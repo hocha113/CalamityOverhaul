@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAuroraBlazer : CWRItemOverride
     {
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<AuroraBlazerHeldProj>(660);
+            item.SetCartridgeGun<AuroraBlazerHeld>(660);
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 16f;
             item.useAmmo = AmmoID.Bullet;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<SeadragonHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<SeadragonHeld>();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RMonsoon : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<MonsoonHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<MonsoonHeld>();
     }
 }

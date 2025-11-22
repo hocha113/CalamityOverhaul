@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = Terraria.Item.buyPrice(3, 53, 5, 0);
             Item.crit = 2;
             Item.CWR().Scope = true;
-            Item.SetCartridgeGun<MG42HeldProj>(220);
+            Item.SetCartridgeGun<MG42Held>(220);
         }
     }
 }

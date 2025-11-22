@@ -8,6 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Minishark;
 
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<MinisharkHeldProj>(160);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<MinisharkHeld>(160);
     }
 }

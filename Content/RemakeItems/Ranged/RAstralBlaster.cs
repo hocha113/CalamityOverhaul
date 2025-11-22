@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAstralBlaster : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<AstralBlasterHeldProj>(30);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<AstralBlasterHeld>(30);
     }
 }

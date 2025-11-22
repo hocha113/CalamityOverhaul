@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RStarSputter : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarSputterHeldProj>(42);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarSputterHeld>(42);
     }
 }

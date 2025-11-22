@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RShellshooter : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<ShellshooterHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<ShellshooterHeld>();
     }
 }

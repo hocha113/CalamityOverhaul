@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBarracudaGun : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<BarracudaGunHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<BarracudaGunHeld>();
     }
 }

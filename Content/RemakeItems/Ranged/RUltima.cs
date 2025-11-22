@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RUltima : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<UltimaHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<UltimaHeld>();
     }
 }

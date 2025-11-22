@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSulphuricAcidCannon : CWRItemOverride
     {
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<SulphuricAcidCannonHeldProj>(80);
+            item.SetCartridgeGun<SulphuricAcidCannonHeld>(80);
             item.useAmmo = AmmoID.Bullet;
         }
     }

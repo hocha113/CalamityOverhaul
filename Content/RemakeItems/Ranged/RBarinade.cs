@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBarinade : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<BarinadeHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<BarinadeHeld>();
     }
 }

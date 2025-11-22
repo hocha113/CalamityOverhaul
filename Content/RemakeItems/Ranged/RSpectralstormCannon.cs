@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSpectralstormCannon : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<SpectralstormCannonHeldProj>(180);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<SpectralstormCannonHeld>(180);
     }
 }

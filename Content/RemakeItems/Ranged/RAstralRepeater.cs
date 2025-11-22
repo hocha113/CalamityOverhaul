@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAstralRepeater : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<AstralRepeaterHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<AstralRepeaterHeld>();
     }
 }

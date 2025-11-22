@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.shootSpeed = 12;
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<AngelicShotgunHeldProj>(50);
+            item.SetCartridgeGun<AngelicShotgunHeld>(50);
         }
     }
 }

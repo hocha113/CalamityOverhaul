@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.Bullet;
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Bullet;
-            item.SetHeldProj<DeepcoreGK2HeldProj>();
+            item.SetHeldProj<DeepcoreGK2Held>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 220;
             item.CWR().Scope = true;

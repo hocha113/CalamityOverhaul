@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 6f;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<ThunderstormHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<ThunderstormHeld>();
             item.CWR().Scope = true;
         }
     }

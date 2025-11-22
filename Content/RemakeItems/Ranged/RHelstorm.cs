@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.PurificationPowder;
             item.shootSpeed = 11.5f;
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<HelstormHeldProj>(110);
+            item.SetCartridgeGun<HelstormHeld>(110);
         }
     }
 }

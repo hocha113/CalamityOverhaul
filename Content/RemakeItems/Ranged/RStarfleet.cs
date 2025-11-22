@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RStarfleet : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarfleetHeldProj>(60);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarfleetHeld>(60);
     }
 }

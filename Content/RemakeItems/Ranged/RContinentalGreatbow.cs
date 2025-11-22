@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RContinentalGreatbow : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<ContinentalGreatbowHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<ContinentalGreatbowHeld>();
     }
 }

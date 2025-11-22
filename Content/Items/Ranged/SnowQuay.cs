@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.damage = 22;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.2f };
-            Item.SetCartridgeGun<SnowQuayHeldProj>(200);
+            Item.SetCartridgeGun<SnowQuayHeld>(200);
             Item.value = Terraria.Item.buyPrice(0, 1, 75, 0);
         }
 

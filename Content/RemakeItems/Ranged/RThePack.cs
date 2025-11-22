@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RThePack : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ThePackHeldProj>(12);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ThePackHeld>(12);
     }
 }

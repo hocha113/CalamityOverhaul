@@ -8,6 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Megashark;
         public override bool IsVanilla => true;
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<MegasharkHeldProj>(260);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<MegasharkHeld>(260);
     }
 }

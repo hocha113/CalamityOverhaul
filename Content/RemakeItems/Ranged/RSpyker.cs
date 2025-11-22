@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSpyker : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<SpykerHeldProj>(60);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<SpykerHeld>(60);
     }
 }

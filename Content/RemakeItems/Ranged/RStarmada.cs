@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RStarmada : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarmadaHeldProj>(180);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<StarmadaHeld>(180);
     }
 }

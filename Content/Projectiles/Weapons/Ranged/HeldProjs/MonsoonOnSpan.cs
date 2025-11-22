@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class MonsoonOnSpan : BaseOnSpanProj
     {
-        protected override Color[] colors => new Color[] { Color.Blue, Color.DarkBlue, Color.LightGreen, Color.LawnGreen };
+        protected override Color[] colors => [Color.Blue, Color.DarkBlue, Color.LightGreen, Color.LawnGreen];
         protected override float halfSpreadAngleRate => 1.15f;
         protected override float edgeBlendLength => 0.17f;
         protected override float edgeBlendStrength => 9;

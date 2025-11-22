@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
             item.UseSound = SoundID.Item5;
-            item.CWR().heldProjType = ModContent.ProjectileType<ContagionHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<ContagionHeld>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
     }

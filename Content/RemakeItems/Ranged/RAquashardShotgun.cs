@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 22f;
             item.useAmmo = AmmoID.Bullet;
-            item.SetHeldProj<AquashardShotgunHeldProj>();
+            item.SetHeldProj<AquashardShotgunHeld>();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetDefaults(Item item) {
             item.damage = 820;
             item.useTime = 20;
-            item.SetCartridgeGun<RubicoPrimeHeldProj>(80);
+            item.SetCartridgeGun<RubicoPrimeHeld>(80);
         }
 
     }

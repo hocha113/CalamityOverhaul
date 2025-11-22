@@ -20,18 +20,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.noUseGraphic = true;
             item.knockBack = 5f;
             item.autoReuse = true;
-            item.shoot = ModContent.ProjectileType<DeathwindHeldProj>();
+            item.shoot = ModContent.ProjectileType<DeathwindHeld>();
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.SetHeldProj<DeathwindHeldProj>();
+            item.SetHeldProj<DeathwindHeld>();
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             item.Initialize();
             item.CWR().ai[1] = type;
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<DeathwindHeldProj>()] <= 0) {
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<DeathwindHeld>()] <= 0) {
                 item.CWR().ai[0] = Projectile.NewProjectile(source, position, Vector2.Zero
-                , ModContent.ProjectileType<DeathwindHeldProj>()
+                , ModContent.ProjectileType<DeathwindHeld>()
                 , damage, knockback, player.whoAmI);
             }
             return false;

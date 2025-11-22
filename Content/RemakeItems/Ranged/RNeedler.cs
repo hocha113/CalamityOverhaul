@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.damage = 40;
-            item.SetCartridgeGun<NeedlerHeldProj>(50);
+            item.SetCartridgeGun<NeedlerHeld>(50);
         }
     }
 }

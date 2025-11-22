@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 10f;
             item.useAmmo = AmmoID.Arrow;
             item.rare = ItemRarityID.Yellow;
-            item.CWR().heldProjType = ModContent.ProjectileType<MarksmanBowHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<MarksmanBowHeld>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
     }

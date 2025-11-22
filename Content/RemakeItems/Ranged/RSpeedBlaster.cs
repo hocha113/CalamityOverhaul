@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<SpeedBlasterHeldProj>(80);
+            item.SetCartridgeGun<SpeedBlasterHeld>(80);
         }
     }
 }

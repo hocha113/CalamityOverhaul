@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<LeviatitanHeldProj>(280);
+            item.SetCartridgeGun<LeviatitanHeld>(280);
         }
     }
 }

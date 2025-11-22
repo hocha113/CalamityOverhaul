@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Item.shootSpeed = 10f;
             Item.useAmmo = AmmoID.Arrow;
             Item.rare = ItemRarityID.Lime;
-            Item.SetHeldProj<BlossomFluxHeldProj>();
+            Item.SetHeldProj<BlossomFluxHeld>();
         }
     }
 }

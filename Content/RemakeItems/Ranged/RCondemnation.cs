@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RCondemnation : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<CondemnationHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<CondemnationHeld>();
     }
 }

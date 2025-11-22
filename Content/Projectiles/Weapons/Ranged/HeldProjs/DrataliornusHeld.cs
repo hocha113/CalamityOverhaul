@@ -1,0 +1,91 @@
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.RangedModify.Core;
+using Terraria;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+{
+    internal class DrataliornusHeld : BaseBow
+    {
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Drataliornus";
+        private int chargeIndex = 35;
+        public override void SetRangedProperty() {
+            CanRightClick = true;
+            DrawArrowMode = -36;
+            BowstringData.DeductRectangle = new Rectangle(6, 10, 2, 70);
+        }
+
+        public override void PostInOwner() {
+            if (!onFire && !onFireR) {
+                chargeIndex = 35;
+            }
+            if (onFire) {
+                BowArrowDrawNum = 1;
+            }
+            if (onFireR) {
+                BowArrowDrawNum = 5;
+            }
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
+                chargeIndex = 35;
+                if (!DownRight) {
+                    Owner.wingTime = 0;
+                }
+            }
+        }
+
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.useTime = chargeIndex;
+            }
+            else if (onFireR) {
+                Item.useTime = 46;
+                chargeIndex = 35;
+            }
+            AmmoTypes = CWRID.Proj_DrataliornusFlame;
+        }
+
+        public override void BowShoot() {
+            Vector2 speed = ShootVelocity;
+            float ai0 = 0f;
+            if (chargeIndex < 6) {
+                if (Main.rand.NextBool(2)) {
+                    ai0 = 2f;
+                    speed /= 2f;
+                    WeaponDamage /= 2;
+                }
+                else {
+                    ai0 = 1f;
+                }
+            }
+            FireOffsetPos = ShootVelocity.GetNormalVector() * Main.rand.Next(-20, 20);
+            int proj = Projectile.NewProjectile(Source, ShootPos + FireOffsetPos, speed
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0);
+            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
+
+        }
+
+        public override void PostBowShoot() {
+            if (onFire) {
+                chargeIndex--;
+                if (chargeIndex < 4) {
+                    chargeIndex = 4;
+                }
+            }
+        }
+
+        public override void BowShootR() {
+            const int numFlames = 5;
+            const float fifteenHundredthPi = 0.471238898f;
+            Vector2 spinningpoint = ShootVelocity;
+            spinningpoint.Normalize();
+            spinningpoint *= 36f;
+            for (int i = 0; i < numFlames; ++i) {
+                float piArrowOffset = i - (numFlames - 1) / 2;
+                Vector2 offsetSpawn = spinningpoint.RotatedBy(fifteenHundredthPi * piArrowOffset);
+                _ = Projectile.NewProjectile(Source, ShootPos + offsetSpawn, ShootVelocity
+                    , AmmoTypes, (int)(WeaponDamage * 0.75f), WeaponKnockback, Owner.whoAmI, 1, 0);
+            }
+        }
+    }
+}

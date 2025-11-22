@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Item.autoReuse = true;
             Item.shootSpeed = 6f;
             Item.useAmmo = AmmoID.Bullet;
-            Item.SetCartridgeGun<InfinityHeldProj>(900);
+            Item.SetCartridgeGun<InfinityHeld>(900);
             Item.CWR().Scope = true;
         }
     }

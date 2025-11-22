@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<SepticSkewerProj>();
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<SepticSkewerHeldProj>(8);
+            item.SetCartridgeGun<SepticSkewerHeld>(8);
         }
     }
 }

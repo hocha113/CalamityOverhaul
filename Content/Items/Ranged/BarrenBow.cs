@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(0, 2, 15, 0);
             Item.rare = ModContent.RarityType<PureGreen>();
-            Item.SetHeldProj<BarrenBowHeldProj>();
+            Item.SetHeldProj<BarrenBowHeld>();
         }
 
         public override void AddRecipes() {

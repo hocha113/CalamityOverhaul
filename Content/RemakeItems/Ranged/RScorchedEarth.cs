@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 12.6f;
             item.useAmmo = AmmoID.Rocket;
-            item.SetCartridgeGun<ScorchedEarthHeldProj>(4);
+            item.SetCartridgeGun<ScorchedEarthHeld>(4);
         }
     }
 }

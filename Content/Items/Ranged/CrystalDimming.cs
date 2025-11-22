@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.damage = 122;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.1f };
-            Item.SetCartridgeGun<CrystalDimmingHeldProj>(900);
+            Item.SetCartridgeGun<CrystalDimmingHeld>(900);
             Item.value = Item.buyPrice(0, 16, 75, 0);
         }
 

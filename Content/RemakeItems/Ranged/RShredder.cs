@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RShredder : CWRItemOverride
     {
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<ShredderHeldProj>(300);
+            item.SetCartridgeGun<ShredderHeld>(300);
             item.CWR().Scope = true;
         }
     }

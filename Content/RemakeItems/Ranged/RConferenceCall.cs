@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RConferenceCall : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ConferenceCallHeldProj>(85);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ConferenceCallHeld>(85);
     }
 }

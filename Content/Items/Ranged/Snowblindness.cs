@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.crit = 10;
             Item.useAmmo = AmmoID.Snowball;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetCartridgeGun<SnowblindnessHeldProj>(500);
+            Item.SetCartridgeGun<SnowblindnessHeld>(500);
         }
 
         public override void AddRecipes() {

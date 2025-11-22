@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 
         public override void SetDefaults(Item item) {
             item.damage = 20;
-            item.SetCartridgeGun<HandgunHeldProj>(15);
+            item.SetCartridgeGun<HandgunHeld>(15);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RCosmicBolter : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<CosmicBolterHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<CosmicBolterHeld>();
     }
 }

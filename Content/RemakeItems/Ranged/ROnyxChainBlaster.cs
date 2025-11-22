@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.damage = 58;
-            item.SetCartridgeGun<OnyxChainBlasterHeldProj>(100);
+            item.SetCartridgeGun<OnyxChainBlasterHeld>(100);
         }
         public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.1f;
     }

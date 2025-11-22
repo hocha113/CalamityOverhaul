@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         }
     }
 
-    internal class CrackshotColtHeld : MidasPrimeHeldProj
+    internal class CrackshotColtHeld : MidasPrimeHeld
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CrackshotColt";
     }

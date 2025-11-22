@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 28f;
             item.useAmmo = AmmoID.Arrow;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<TheStormHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<TheStormHeld>();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -42,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void HanderPlaySound() {
-            SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound() with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
         }
 
         public override void FiringShoot() {

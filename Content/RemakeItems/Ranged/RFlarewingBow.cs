@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RFlarewingBow : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<FlarewingBowHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<FlarewingBowHeld>();
     }
 }

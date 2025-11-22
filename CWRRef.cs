@@ -143,6 +143,31 @@ namespace CalamityOverhaul
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
         }
+        public static void SetBrimstoneBullets(this Projectile projectile, bool value) => projectile.Calamity().brimstoneBullets = value;
+        public static void SetDeepcoreBullet(this Projectile projectile, bool value) => projectile.Calamity().deepcoreBullet = value;
+        public static void SetAllProjectilesHome(this Projectile projectile, bool value) => projectile.Calamity().allProjectilesHome = value;
+        public static void SetBetterLifeBullet1(this Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet1 = value;
+        public static void SetBetterLifeBullet2(this Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet2 = value;
+        public static Vector2 GetCoinTossVelocity(Player player) => player.GetCoinTossVelocity();
+        public static bool GetAlchFlask(this Player player) => player.Calamity().alchFlask;
+        public static bool GetSpiritOrigin(this Player player) => player.Calamity().spiritOrigin;
+        public static void Spawn_PristineFury_Effect(Vector2 spawnPos, Vector2 vel) {
+            CritSpark spark = new(spawnPos, vel, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Color.OrangeRed, 0.9f, 18, 2f, 1.9f);
+            GeneralParticleHandler.SpawnParticle(spark);
+        }
+        public static void SetProjCGP(int proj) {
+            CalamityGlobalProjectile cgp = Main.projectile[proj].Calamity();
+            cgp.supercritHits = -1;
+            cgp.appliesSomaShred = true;
+        }
+        public static void Spawn_Effect_1(Vector2 spawnPos, Vector2 vel) {
+            Particle spark2 = new LineParticle(spawnPos, vel, false, Main.rand.Next(15, 25 + 1), Main.rand.NextFloat(1.5f, 2f), Main.rand.NextBool() ? Color.MediumOrchid : Color.DarkViolet);
+            GeneralParticleHandler.SpawnParticle(spark2);
+        }
+        public static void Spawn_Effect_2(Vector2 spawnPos, Vector2 vel, int sparkLifetime, float sparkScale, Color sparkColor) {
+            SparkParticle spark = new SparkParticle(spawnPos, vel, false, sparkLifetime, sparkScale, sparkColor);
+            GeneralParticleHandler.SpawnParticle(spark);
+        }
         public static bool GetDownedCalamitas() {
             return DownedBossSystem.downedCalamitas;
         }
@@ -155,6 +180,7 @@ namespace CalamityOverhaul
             }
             return false;
         }
+        public static SoundStyle GetSound(this string path) => new(path);
         public static bool GetDownedThanatos() => DownedBossSystem.downedThanatos;
         public static void SetSupCalPermafrost(NPC npc, bool value) {
             if (npc.ModNPC is SupremeCalamitas supCal) {

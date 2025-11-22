@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBladedgeGreatbow : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<BladedgeGreatbowHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<BladedgeGreatbowHeld>();
     }
 }

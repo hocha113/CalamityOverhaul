@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeld>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 5;
             item.CWR().Scope = true;

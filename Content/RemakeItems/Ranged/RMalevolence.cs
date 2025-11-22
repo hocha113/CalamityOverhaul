@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RMalevolence : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<MalevolenceHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<MalevolenceHeld>();
     }
 }

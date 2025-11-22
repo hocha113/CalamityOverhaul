@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.damage = 180;
-            item.SetHeldProj<TelluricGlareHeldProj>();
+            item.SetHeldProj<TelluricGlareHeld>();
         }
     }
 }

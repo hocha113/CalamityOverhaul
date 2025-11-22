@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.CWR().heldProjType = ModContent.ProjectileType<TheMaelstromHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<TheMaelstromHeld>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
     }

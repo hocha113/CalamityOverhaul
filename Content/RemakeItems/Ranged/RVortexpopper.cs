@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RVortexpopper : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<VortexpopperHeldProj>(85);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<VortexpopperHeld>(85);
     }
 }

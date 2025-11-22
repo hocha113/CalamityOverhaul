@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Arrow;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<PlanetaryAnnihilationHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<PlanetaryAnnihilationHeld>();
         }
     }
 }

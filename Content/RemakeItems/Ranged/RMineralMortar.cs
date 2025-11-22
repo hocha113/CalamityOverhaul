@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RMineralMortar : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<MineralMortarHeldProj>(8);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<MineralMortarHeld>(8);
     }
 }

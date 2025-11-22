@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.WoodenArrowFriendly;
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Arrow;
-            item.SetHeldProj<AlluvionHeldProj>();
+            item.SetHeldProj<AlluvionHeld>();
         }
     }
 }

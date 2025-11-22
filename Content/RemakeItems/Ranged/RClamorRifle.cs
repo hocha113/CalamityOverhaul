@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RClamorRifle : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ClamorRifleHeldProj>(45);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ClamorRifleHeld>(45);
     }
 }

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.Bullet;
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Bullet;
-            item.SetCartridgeGun<GoldenEagleHeldProj>(38);
+            item.SetCartridgeGun<GoldenEagleHeld>(38);
         }
     }
 }

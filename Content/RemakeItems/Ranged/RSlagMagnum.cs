@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetDefaults(Item item) {
             item.damage = 58;
             item.UseSound = CWRSound.Gun_Magnum_Shoot with { Volume = 0.35f };
-            item.SetCartridgeGun<SlagMagnumHeldProj>(8);
+            item.SetCartridgeGun<SlagMagnumHeld>(8);
         }
     }
 }

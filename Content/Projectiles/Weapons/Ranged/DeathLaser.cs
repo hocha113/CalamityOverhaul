@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.Kill();
                     return;
                 }
-                if (!Owner.Alives() || !(heldBow != null && heldBow.type == ModContent.ProjectileType<DeathwindHeldProj>())) {
+                if (!Owner.Alives() || !(heldBow != null && heldBow.type == ModContent.ProjectileType<DeathwindHeld>())) {
                     Projectile.Kill();
                     return;
                 }

@@ -21,10 +21,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.DamageType = DamageClass.Ranged;
             item.channel = true;
             item.autoReuse = true;
-            item.shoot = ModContent.ProjectileType<DaemonsFlameHeldProj>();
+            item.shoot = ModContent.ProjectileType<DaemonsFlameHeld>();
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.SetHeldProj<DaemonsFlameHeldProj>();
+            item.SetHeldProj<DaemonsFlameHeld>();
         }
     }
 }

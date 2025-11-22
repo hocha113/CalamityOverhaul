@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RUniversalGenesis : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<UniversalGenesisHeldProj>(80);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<UniversalGenesisHeld>(80);
     }
 }

@@ -8,6 +8,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     /// </summary>
     internal class RBulletFilledShotgun : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<BulletFilledShotgunHeldProj>(8);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<BulletFilledShotgunHeld>(8);
     }
 }

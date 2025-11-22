@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.shootSpeed = 13f;
             item.rare = ItemRarityID.Pink;
-            item.SetHeldProj<SeasSearingHeldProj>();
+            item.SetHeldProj<SeasSearingHeld>();
         }
     }
 }

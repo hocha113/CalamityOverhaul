@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 12;
-            item.SetHeldProj<PearlGodHeldProj>();
+            item.SetHeldProj<PearlGodHeld>();
         }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

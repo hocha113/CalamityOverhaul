@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RNitroExpressRifle : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<NitroExpressRifleHeldProj>(8);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<NitroExpressRifleHeld>(8);
     }
 }

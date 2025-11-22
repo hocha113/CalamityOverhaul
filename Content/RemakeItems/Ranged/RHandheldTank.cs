@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RHandheldTank : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<HandheldTankHeldProj>(12);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<HandheldTankHeld>(12);
     }
 }

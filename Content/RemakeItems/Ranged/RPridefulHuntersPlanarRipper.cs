@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override void SetDefaults(Item item) {
             item.damage = 45;
-            item.SetCartridgeGun<PridefulHuntersPlanarRipperHeldProj>(280);
+            item.SetCartridgeGun<PridefulHuntersPlanarRipperHeld>(280);
         }
     }
 }

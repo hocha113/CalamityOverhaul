@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.PurificationPowder;
             item.shootSpeed = 16f;
             item.useAmmo = AmmoID.Arrow;
-            item.CWR().heldProjType = ModContent.ProjectileType<NettlevineGreatbowHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<NettlevineGreatbowHeld>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
     }

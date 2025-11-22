@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RStormSurge : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetHeldProj<StormSurgeHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<StormSurgeHeld>();
     }
 }

@@ -5,6 +5,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RKarasawa : CWRItemOverride
     {
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<KarasawaHeldProj>(6);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<KarasawaHeld>(6);
     }
 }

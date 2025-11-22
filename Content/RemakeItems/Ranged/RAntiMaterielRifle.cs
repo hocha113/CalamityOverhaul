@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Bullet;
             item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<AntiMaterielRifleHeldProj>();
+            item.CWR().heldProjType = ModContent.ProjectileType<AntiMaterielRifleHeld>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 9;
             item.CWR().Scope = true;
