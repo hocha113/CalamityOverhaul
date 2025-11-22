@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 .AddIngredient<ShadowspecBar>(5)
                 .AddIngredient<DraedonsForge>()
                 .AddIngredient<DarkMatterCompressorItem>()
-                .AddTile(ModContent.TileType<DarkMatterCompressor>())
                 .Register();
         }
     }
