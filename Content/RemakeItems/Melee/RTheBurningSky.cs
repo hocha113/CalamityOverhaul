@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.value = Item.sellPrice(gold: 75);
             item.useStyle = ItemUseStyleID.Shoot;
             item.SetKnifeHeld<TheBurningSkyHeld>();
+            ItemMeleePrefixDic[item.type] = true;
         }
     }
 }

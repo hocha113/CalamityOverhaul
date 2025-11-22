@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
-            for (int i = 0; i < 9; ++i) {
+            for (int i = 0; i < 8; ++i) {
                 float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
                 Projectile projectile = CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                     , 290f, 130f, 850f, 1100f, randomSpeed, ShootID

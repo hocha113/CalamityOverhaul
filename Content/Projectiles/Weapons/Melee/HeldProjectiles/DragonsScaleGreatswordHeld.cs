@@ -22,13 +22,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailTopWidth = 86;
             ownerOrientationLock = true;
             SwingData.starArg = 48;
-            SwingData.baseSwingSpeed = 4.35f;
+            SwingData.baseSwingSpeed = 5;
             Length = 124;
         }
 
         public override bool PreInOwner() {
-            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: -0.1f
-                , phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.6f
+                , phase1SwingSpeed: 6.6f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwner();
         }

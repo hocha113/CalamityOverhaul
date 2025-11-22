@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.shoot = ModContent.ProjectileType<HolyColliderHeld>();
             Item.shootSpeed = 10f;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            ItemMeleePrefixDic[Item.type] = true;
         }
 
         internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source

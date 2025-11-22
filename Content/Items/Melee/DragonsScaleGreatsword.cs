@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.height = 54;
             Item.width = 54;
-            Item.damage = 232;
+            Item.damage = 556;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 20;
+            Item.useAnimation = Item.useTime = 16;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 2.5f;

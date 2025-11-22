@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<DevilsDevastationHeld>();
             Item.shootSpeed = 10f;
+            ItemMeleePrefixDic[Item.type] = true;
         }
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {

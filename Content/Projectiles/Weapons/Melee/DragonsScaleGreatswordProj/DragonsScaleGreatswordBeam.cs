@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextFloat(220 * CWRUtils.atoR, 320 * CWRUtils.atoR).ToRotationVector2() * Main.rand.Next(5, 11)
                     , ModContent.ProjectileType<SporeCloud>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
             }

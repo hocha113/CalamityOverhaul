@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 && Time > 5 * UpdateRate && Time < 60 * UpdateRate && Time % 10 * UpdateRate == 0
                 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
-                , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage / 8, Projectile.knockBack, Owner.whoAmI);
             }
         }
 
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 //增强刀刃弹幕，更快更强
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.08f) * 8
-                        , ModContent.ProjectileType<EXOathblade>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
+                        , ModContent.ProjectileType<EXOathblade>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, 1);
                 }
 
                 //添加击打音效
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 //终结技发射增强效果
                 for (int i = 0; i < 6; i++) {
                     Projectile.NewProjectile(Source, InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 4
-                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
                 }
                 return;
             }
