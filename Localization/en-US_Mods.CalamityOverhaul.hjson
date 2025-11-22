@@ -2951,15 +2951,13 @@ RemakeItems: {
 	}
 
 	RDragonRage: {
-		DisplayName: Dragon Rage
+		DisplayName: Dragon's Rage
 		Tooltip:
 			'''
-			Left-click performs a three-hit combo: an upward slash, a downward slash, a heavy slash, and a thrust.
-			The thrust has a longer attack range and triggers a violent dragon flame explosion upon hitting the target.
-			Right-click performs two powerful slashes, followed by continuous spinning of the blade, 
-			including a heavy upward slash, a heavy downward slash, and a spinning blade attack.
-			Using the left-click resets the right-click attack level.
-			"Three strikes and return, the wine is still warm."
+			Left click performs a combo of upward slash, downward slash, wide slash, and thrust
+			The thrust has extended range and triggers a violent dragonfire explosion on hit
+			Right click to continuously spin the blade, dealing high-frequency damage
+			"Returned after three strikes, the wine is still warm"
 			'''
 	}
 

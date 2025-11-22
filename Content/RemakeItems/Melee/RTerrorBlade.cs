@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 88;
-            Item.damage = 510;
+            Item.damage = 810;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 18;
             Item.useTime = 20;
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     ShootSpanPos,
                     velocity,
                     ModContent.ProjectileType<TerrorSpirit>(),
-                    (int)(Projectile.damage * 0.6f),
+                    (int)(Projectile.damage * 0.3f),
                     Projectile.knockBack * 0.5f,
                     Owner.whoAmI,
                     1, //状态：直线飞行
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                         Owner.Center,
                         velocity,
                         ModContent.ProjectileType<TerrorSpirit>(),
-                        Projectile.damage,
+                        Projectile.damage / 2,
                         Projectile.knockBack,
                         Owner.whoAmI,
                         0, //状态：追踪敌人
@@ -258,21 +258,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             SoundEngine.PlaySound(SoundID.Item20 with { MaxInstances = 6, Pitch = 0.2f }, Owner.Center);
-
-            for (int i = 0; i < 2; i++) {
-                Vector2 velocity = ShootVelocity.RotatedBy((-0.5f + i) * 0.2f) * 0.9f;
-                Projectile.NewProjectile(
-                    Source,
-                    ShootSpanPos,
-                    velocity,
-                    ModContent.ProjectileType<TerrorSpirit>(),
-                    (int)(Projectile.damage * 0.6f),
-                    Projectile.knockBack * 0.5f,
-                    Owner.whoAmI,
-                    1, //状态：直线飞行
-                    0
-                );
-            }
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
