@@ -6332,6 +6332,12 @@ UI: {
 		// CollapseHint: Collapse Enchant Menu
 		// EnchantTitle: Enchant
 	}
+
+	ConstructionBlueprintUI: {
+		// UITitle: 量子塔自我构建器
+		// MaterialsRequired: 所需材料:
+		// CloseHint: 点击关闭
+	}
 }
 
 ADV: {

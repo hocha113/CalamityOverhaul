@@ -44,6 +44,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 Main.combatText[combat].lifeTime = 300;
                 halibutPlayer.ADCSave.UseConstructionBlueprint = true;
             }
+            //显示配方UI
+            ConstructionBlueprintUI.ShowUI();
             return true;
         }
     }
