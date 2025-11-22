@@ -27,12 +27,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
-            DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
-            Add(R1.Value, L0.Value);
-            Add(R1.Value, L1.Value);
+            DialogueBoxBase.RegisterPortrait(R1.Value + " ", ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value + " " + " ", ADVAsset.Helen_naughtyADV);
+            Add(R1.Value + " ", L0.Value);
+            Add(R1.Value + " ", L1.Value);
             Add(R1.Value, L2.Value); //奖励
-            Add(R1.Value, L3.Value);
-            Add(R1.Value, L4.Value);
+            Add(R1.Value + " " + " ", L3.Value);
+            Add(R1.Value + " " + " ", L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
