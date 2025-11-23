@@ -14,11 +14,13 @@ using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -180,7 +182,14 @@ namespace CalamityOverhaul
             }
             return false;
         }
-        public static SoundStyle GetSound(this string path) => new(path);
+        public static SoundStyle GetSound(this string path) {
+            if (ModContent.HasAsset(path)) {
+                return new(path);
+            }
+            try {
+                return new(path, 3);
+            } catch { return CWRSound.None; }
+        }
         public static bool GetDownedThanatos() => DownedBossSystem.downedThanatos;
         public static void SetSupCalPermafrost(NPC npc, bool value) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
