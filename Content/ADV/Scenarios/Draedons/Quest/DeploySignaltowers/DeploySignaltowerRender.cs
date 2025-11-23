@@ -145,6 +145,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             //更新数据文本
             UpdateDataText();
+
+            //检查是否需要结束展示，这个检测是避免对话场景未正常结束时悬浮特效持续存在
+            if (!DraedonEffect.IsActive) {
+                Cleanup();
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -1104,13 +1109,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 Pitch = 0.5f,
                 MaxInstances = 1
             });
-        }
-
-        /// <summary>
-        /// 隐藏信号塔图片
-        /// </summary>
-        internal static void HideTowerImage() {
-            showingImage = false;
         }
 
         /// <summary>

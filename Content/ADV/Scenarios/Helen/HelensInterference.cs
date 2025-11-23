@@ -118,17 +118,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         private static void ReturnHeartcarverToPlayer() {
             Player player = Main.LocalPlayer;
             int heartcarverType = ModContent.ItemType<Heartcarver>();
-
-            //寻找空位并放入刻心者
-            int emptySlot = player.FindItemInInventoryOrOpenVoidBag(ItemID.None, out bool _);
-            if (emptySlot >= 0) {
-                player.inventory[emptySlot].SetDefaults(heartcarverType);
-                player.inventory[emptySlot].stack = 1;
-            }
-            else {
-                //如果背包满了，生成到地上
-                player.QuickSpawnItem(player.GetSource_Misc("HelensInterference"), heartcarverType, 1);
-            }
+            player.QuickSpawnItem(player.GetSource_Misc("HelensInterference"), heartcarverType, 1);
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
