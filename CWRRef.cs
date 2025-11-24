@@ -38,6 +38,7 @@ namespace CalamityOverhaul
         public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
         public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
         public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
+        public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
                 0 => ModContent.ProjectileType<SwordsplosionBlue>(),

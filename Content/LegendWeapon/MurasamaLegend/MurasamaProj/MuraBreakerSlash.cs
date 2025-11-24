@@ -1,14 +1,7 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs.AquaticScourge;
-using CalamityMod.NPCs.CalClone;
-using CalamityMod.NPCs.CeaselessVoid;
-using CalamityMod.NPCs.Polterghast;
-using CalamityMod.NPCs.Ravager;
-using CalamityMod.NPCs.SlimeGod;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -31,7 +24,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private const int maxFrame = 7;
         private const float baseSize = 0.8f;
         private int Level => MurasamaOverride.GetLevel(Item);
+
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
+
         public override void SetDefaults() {
             Projectile.width = 432;
             Projectile.height = 432;
@@ -67,29 +62,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 13; i++) {
-                    SparkleParticle impactParticle = new SparkleParticle(target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f)
-                    , Vector2.Zero, Color.LightCoral, Color.Red, Main.rand.NextFloat(1.1f, 1.7f), 8, 0, 2.5f);
-                    GeneralParticleHandler.SpawnParticle(impactParticle);
-                }
-                for (int j = 0; j < 33; j++) {
-                    AltSparkParticle spark = new AltSparkParticle(
-                        Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f)
-                        , Projectile.velocity.RotatedBy(0.5f * Math.Sign(Projectile.velocity.X)) * 3.2f
-                        , false, 13, Main.rand.NextFloat(1.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-            }
+            SpawnHitParticles(target);
+            SpawnHitSparks(Projectile);
 
             if (Projectile.numHits == 0) {
-                _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                    ? SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
-                    : SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
-
-                //设置玩家的不可击退性并给予玩家短暂的无敌帧
+                PlayHitSound(target);
                 Owner.GivePlayerImmuneState(30);
-
                 Vector2 ver = target.Center.To(Owner.Center).UnitVector();
 
                 if (CWRServerConfig.Instance.ScreenVibration) {
@@ -100,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
                 if (Item.CWR().ai[0] == 10 && MurasamaOverride.UnlockSkill3(Item)) {
                     SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with { Volume = 0.7f }, Projectile.Center);
-                    if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
+                    if (Projectile.IsOwnedByLocalPlayer()) {
                         int maxSpanNum = 13 + Level;
                         for (int i = 0; i < maxSpanNum; i++) {
                             Vector2 spanPos = Projectile.Center + VaultUtils.RandVr(1380, 2200);
@@ -108,11 +86,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                             Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
 
-                        //生成一个制造终结技核心效果的弹幕，这样的程序设计是为了减少耦合度
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Vector2.Zero,
                             ModContent.ProjectileType<EndSkillEffectStart>(), (int)(Projectile.damage * 0.7f), 0, Owner.whoAmI, 0, Owner.Center.X, Owner.Center.Y);
 
-                        Item.CWR().ai[0] = 0;//清零充能
+                        Item.CWR().ai[0] = 0;
                         CombatText.NewText(target.Hitbox, Color.Gold, "Finishing Blow!!!", true);
                     }
 
@@ -127,10 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    //给玩家一个合适的远离被击中目标的初始速度
                     Owner.velocity += ver * 10;
-
-                    //进行武器充能的操作
                     Item.Initialize();
                     Item.CWR().ai[0]++;
                     if (Item.CWR().ai[0] > 10) {
@@ -143,111 +117,169 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 OnHitNPCs.Add(target);
             }
         }
-        public bool IsBossActive() {
-            foreach (NPC npc in Main.npc) {
-                if (npc.active && npc.boss) {
-                    return true;
+
+        private void PlayHitSound(NPC target) {
+            SoundStyle sound = !CWRLoad.NPCValue.ISTheofSteel(target)
+                ? "CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound()
+                : "CalamityMod/Sounds/Item/MurasamaHitInorganic".GetSound();
+            SoundEngine.PlaySound(sound with { Pitch = 0.15f }, Projectile.Center);
+        }
+
+        private static void SpawnHitParticles(NPC target) {
+            if (Main.dedServ) {
+                return;
+            }
+
+            for (int i = 0; i < 13; i++) {
+                Vector2 particlePosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f);
+                float impactParticleScale = Main.rand.NextFloat(1.1f, 1.7f);
+                PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, Color.LightCoral, Color.Red, impactParticleScale, 8, 0, 2.5f);
+                PRTLoader.AddParticle(impactParticle);
+            }
+        }
+
+        private static void SpawnHitSparks(Projectile projectile) {
+            if (Main.dedServ) {
+                return;
+            }
+
+            for (int j = 0; j < 33; j++) {
+                Vector2 sparkPosition = projectile.Center + Main.rand.NextVector2Circular(projectile.width * 0.5f, projectile.height * 0.5f);
+                Vector2 sparkVelocity = projectile.velocity.RotatedBy(0.5f * Math.Sign(projectile.velocity.X)) * 3.2f;
+                Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
+
+                if (Main.rand.NextBool()) {
+                    PRT_Spark spark = new(sparkPosition, sparkVelocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
+                    PRTLoader.AddParticle(spark);
+                }
+                else {
+                    PRT_Line spark = new(sparkPosition, sparkVelocity, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
+                    PRTLoader.AddParticle(spark);
                 }
             }
-            return false;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             int level = MurasamaOverride.GetLevel(Item);
-            // boss存活时对非Boss单位造成2倍伤害
-            if (IsBossActive() && !target.boss) {
+
+            //boss存活时对非Boss单位造成2倍伤害
+            if (CWRWorld.HasBoss && !target.boss) {
                 modifiers.FinalDamage *= 2f;
             }
-            // 对飞眼怪仅造成30%伤害
+
+            //对飞眼怪仅造成15%伤害
             if (target.type == NPCID.Creeper) {
                 modifiers.FinalDamage *= 0.15f;
             }
-            // 对血肉蠕虫仅造成33%伤害
+
+            //对血肉蠕虫仅造成66%伤害
             if (CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type) || CWRLoad.targetNpcTypes17.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.66f;
             }
-            // 对骷髅王之手仅造成1倍伤害
+
+            //对骷髅王之手仅造成50%伤害并限制最大伤害
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.5f;
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
             }
-            // 对史神护卫仅造成1倍伤害
-            if (target.type == ModContent.NPCType<EbonianPaladin>() || target.type == ModContent.NPCType<CrimulanPaladin>()) {
+
+            //对史神护卫仅造成50%伤害
+            if (target.type == CWRID.NPC_EbonianPaladin || target.type == CWRID.NPC_CrimulanPaladin) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对史神小护卫仅造成50%伤害
-            if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
+
+            //对史神小护卫仅造成25%伤害
+            if (target.type == CWRID.NPC_SplitEbonianPaladin || target.type == CWRID.NPC_SplitCrimulanPaladin) {
                 modifiers.FinalDamage *= 0.25f;
             }
-            // 对肉山眼仅造成1倍伤害
+
+            //对肉山眼仅造成50%伤害
             if (target.type == NPCID.WallofFleshEye) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对灾眼兄弟仅造成1倍伤害
-            if (target.type == ModContent.NPCType<Cataclysm>() || target.type == ModContent.NPCType<Catastrophe>()) {
+
+            //对灾眼兄弟仅造成50%伤害
+            if (target.type == CWRID.NPC_ || target.type == CWRID.NPC_Catastrophe) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对石巨人之拳仅造成1倍伤害
-            if (target.type == NPCID.GolemFistLeft || target.type == NPCID.GolemFistLeft) {
+
+            //对石巨人之拳仅造成50%伤害
+            if (target.type == NPCID.GolemFistLeft || target.type == NPCID.GolemFistRight) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对毁灭魔像飞出的头仅造成1倍伤害
-            if (target.type == ModContent.NPCType<RavagerHead2>()) {
+
+            //对毁灭魔像飞出的头仅造成50%伤害
+            if (target.type == CWRID.NPC_RavagerHead2) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对暗能量仅造成1倍伤害
-            if (target.type == ModContent.NPCType<DarkEnergy>()) {
+
+            //对暗能量仅造成50%伤害
+            if (target.type == CWRID.NPC_DarkEnergy) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对幽花复制体仅造成1.5倍伤害
-            if (target.type == ModContent.NPCType<PolterghastHook>()) {
+
+            //对幽花复制体仅造成75%伤害
+            if (target.type == CWRID.NPC_PolterghastHook) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            // 对蠕虫只造成25%伤害
+
+            //对蠕虫只造成25%伤害
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.25f;
             }
-            // 对渊海灾虫仅造成15%伤害
+
+            //对渊海灾虫仅造成60%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.6f;
             }
-            if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+
+            //对渊海灾虫体节仅造成10%伤害
+            if (target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
                 modifiers.FinalDamage *= 0.1f;
             }
-            // 对塔纳托斯体节仅造成50%伤害
+
+            //对塔纳托斯体节造成2倍伤害
             if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2 || target.type == CWRLoad.ThanatosTail) {
                 modifiers.FinalDamage *= 2f;
             }
-            // 神明吞噬者头尾，塔纳托斯头，风编尾不受上述影响
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail
-                || target.type == CWRLoad.StormWeaverTail) {
+
+            //对神明吞噬者头尾、风编尾造成4倍伤害
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail || target.type == CWRLoad.StormWeaverTail) {
                 modifiers.FinalDamage *= 4f;
             }
-            // 对塔纳托斯头造成2.85倍伤害
+
+            //对塔纳托斯头造成11.4倍伤害
             if (target.type == CWRLoad.ThanatosHead) {
                 modifiers.FinalDamage *= 11.4f;
             }
-            // 对肉山仅造成1.5倍伤害
+
+            //对肉山造成1.5倍伤害
             if (target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            // 对双子魔眼造成2倍伤害
+
+            //对双子魔眼造成2倍伤害
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 2f;
             }
-            // 对毁灭魔像身体部位造成50%伤害
+
+            //对毁灭魔像身体部位造成50%伤害
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
                 || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对星流双子造成1.33倍伤害
+
+            //对星流双子造成1.33倍伤害
             if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 1.33f;
             }
-            // 对终灾造成1.33倍伤害
-            if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
+
+            //对终灾造成1.33倍伤害
+            if (target.type == CWRID.NPC_SupremeCalamitas) {
                 modifiers.FinalDamage *= 1.33f;
             }
+
+            //无视防御
             modifiers.DefenseEffectiveness *= 0f;
         }
 

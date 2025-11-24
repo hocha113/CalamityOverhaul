@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -15,6 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         private Vector2 breakOutVector;
         private int Time;
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -51,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.CWR().RisingDragonCharged = 0;
             }
 
-            if (Item.type != ModContent.ItemType<Murasama>()) {
+            if (Item.type != MurasamaOverride.ID) {
                 Projectile.Kill();
                 return;
             }
@@ -72,14 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     Projectile.ai[1] = 0;
                     Projectile.netUpdate = true;
                 }
-                //不要在服务器上执行粒子的生成代码浪费性能
-                if (!VaultUtils.isServer) {
-                    AltSparkParticle spark = new AltSparkParticle(
-                    Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
-                    , Projectile.velocity
-                    , false, 13, Main.rand.NextFloat(1.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                SpawnFlightParticles();
             }
             else if (Projectile.ai[0] == 1) {//在这阶段，刀会旋转着滞留在原地，在击中敌人后触发
                 Projectile.rotation += 0.1f;
@@ -99,67 +95,114 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
             else if (Projectile.ai[0] == 3) {//如果是该阶段，说明玩家试图触发升龙斩
-                Projectile.velocity *= 0.98f;
+                HandleRisingDragonDash(level);
+            }
 
-                //卸载掉玩家的所有钩爪
-                Owner.RemoveAllGrapplingHooks();
-                //卸载掉玩家的所有坐骑
-                Owner.mount.Dismount(Owner);
+            HandlePlayerInput();
 
-                Vector2 toBreakV = Owner.Center.To(Projectile.Center);
-                Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
-                Owner.velocity = breakOutVector;
-                if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕的代码只能交由主人玩家执行
-                    if (CWRServerConfig.Instance.LensEasing) {
-                        Main.SetCameraLerp(0.1f, 10);
-                    }
-                    float projToOwnerLeng = Projectile.Center.Distance(Owner.Center);
-                    if (projToOwnerLeng < 233) {
-                        Owner.GivePlayerImmuneState(5, true);
-                    }
-                    if (projToOwnerLeng < 33) {
-                        //murasama.CWR().ai[0]表示充能值，这里让其充能值越高，升龙斩造成的伤害便越高
-                        float sengs = getBrakSwingDamageSengsValue(level);
+            Time++;
+        }
 
-                        //如果此时爆发没有击中敌人，那么判断是否有Boss在场
-                        foreach (NPC n in Main.npc) {//如果Boss在场，不进行升龙，而是飞回玩家身上
-                            if (n.boss && n.active && n.position.To(Owner.position).LengthSquared() < 9000000) {
-                                if (Projectile.numHits == 0) {
-                                    sengs = 2;
-                                }
-                                else {
-                                    sengs *= 1.2f;
-                                }
-                                break;//不管如何，执行一次伤害二次调整后都需要跳出
-                            }
-                        }
-                        if (MurasamaOverride.NameIsVergil(Owner)) {
-                            SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.3f }, Projectile.Center);
-                        }
-                        Item.Initialize();
+        private void SpawnFlightParticles() {
+            if (Main.dedServ) {
+                return;
+            }
 
-                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * sengs);
-                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
-                        , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
+            Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f;
+            Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
 
-                        Projectile.Kill();
-                    }
+            if (Main.rand.NextBool()) {
+                PRT_Spark spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
+                PRTLoader.AddParticle(spark);
+            }
+            else {
+                PRT_Line spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
+                PRTLoader.AddParticle(spark);
+            }
+        }
+
+        private void HandleRisingDragonDash(int level) {
+            Projectile.velocity *= 0.98f;
+
+            //卸载掉玩家的所有钩爪
+            Owner.RemoveAllGrapplingHooks();
+            //卸载掉玩家的所有坐骑
+            Owner.mount.Dismount(Owner);
+
+            Vector2 toBreakV = Owner.Center.To(Projectile.Center);
+            Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
+            Owner.velocity = breakOutVector;
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                if (CWRServerConfig.Instance.LensEasing) {
+                    Main.SetCameraLerp(0.1f, 10);
                 }
 
-                if (!VaultUtils.isServer) {
-                    for (int i = 0; i < 3; i++) {
-                        SparkParticle spark = new SparkParticle(Owner.Center, toBreakV.UnitVector() * -0.1f, false, 9, 3.3f, Color.IndianRed * 0.1f);
-                        GeneralParticleHandler.SpawnParticle(spark);
-                    }
+                float projToOwnerLeng = Projectile.Center.Distance(Owner.Center);
+                if (projToOwnerLeng < 233) {
+                    Owner.GivePlayerImmuneState(5, true);
+                }
 
-                    AltSparkParticle spark2 = new AltSparkParticle(
-                    Owner.Center + Main.rand.NextVector2Circular(13, 23) + toBreakV.UnitVector() * 1.2f
-                    , toBreakV.UnitVector() * 23
-                    , false, 13, Main.rand.NextFloat(1.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
-                    GeneralParticleHandler.SpawnParticle(spark2);
+                if (projToOwnerLeng < 33) {
+                    ExecuteRisingDragonStrike(level);
                 }
             }
 
+            SpawnDashParticles(toBreakV);
+        }
+
+        private void ExecuteRisingDragonStrike(int level) {
+            float sengs = getBrakSwingDamageSengsValue(level);
+
+            //如果此时爆发没有击中敌人，那么判断是否有Boss在场
+            foreach (NPC n in Main.npc) {
+                if (n.boss && n.active && n.position.To(Owner.position).LengthSquared() < 9000000) {
+                    if (Projectile.numHits == 0) {
+                        sengs = 2;
+                    }
+                    else {
+                        sengs *= 1.2f;
+                    }
+                    break;
+                }
+            }
+
+            if (MurasamaOverride.NameIsVergil(Owner)) {
+                SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.3f }, Projectile.Center);
+            }
+
+            Item.Initialize();
+            int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * sengs);
+            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
+            , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
+
+            Projectile.Kill();
+        }
+
+        private void SpawnDashParticles(Vector2 toBreakV) {
+            if (Main.dedServ) {
+                return;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                PRT_Spark spark = new(Owner.Center, toBreakV.UnitVector() * -0.1f, false, 9, 3.3f, Color.IndianRed * 0.1f);
+                PRTLoader.AddParticle(spark);
+            }
+
+            Vector2 particlePosition = Owner.Center + Main.rand.NextVector2Circular(13, 23) + toBreakV.UnitVector() * 1.2f;
+            Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
+
+            if (Main.rand.NextBool()) {
+                PRT_Spark spark2 = new(particlePosition, toBreakV.UnitVector() * 23, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
+                PRTLoader.AddParticle(spark2);
+            }
+            else {
+                PRT_Line spark2 = new(particlePosition, toBreakV.UnitVector() * 23, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
+                PRTLoader.AddParticle(spark2);
+            }
+        }
+
+        private void HandlePlayerInput() {
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !VaultUtils.isServer) {
                 if (DownLeft && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
                     if (!MurasamaOverride.UnlockSkill1(Item)) {//在击败初期Boss之前不能使用这个技能
@@ -167,18 +210,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     }
 
                     if (Projectile.ai[1] > 0) {
-                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
+                        SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaSwing".GetSound() with { Pitch = -0.1f, Volume = 0.4f }, Projectile.Center);
                         Projectile.ai[0] = 3;
                     }
                     else {
-                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaSwing".GetSound() with { Pitch = -0.3f, Volume = 0.4f }, Projectile.Center);
                         Projectile.ai[0] = 2;
                     }
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
                 }
             }
-
-            Time++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
