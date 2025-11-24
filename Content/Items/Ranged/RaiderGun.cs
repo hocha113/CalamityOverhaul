@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             else {
                 if (RaiderGun.Dash) {
-                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound();
+                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound();
                     FireTime = 4;
                     GunPressure = 0.2f;
                     ControlForce = 0.02f;
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             else {
                 if (RaiderGun.Dash) {
-                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound();
+                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound();
                     FireTime = 20;
                     GunPressure = 0.3f;
                     ControlForce = 0.05f;

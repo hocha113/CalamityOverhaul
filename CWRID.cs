@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Armor.Plaguebringer;
@@ -23,6 +24,7 @@ using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
+using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Healing;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
@@ -143,6 +145,18 @@ namespace CalamityOverhaul
         public static int Proj_BarinadeArrow => ModContent.ProjectileType<BarinadeArrow>();
         public static int Proj_BoltArrow => ModContent.ProjectileType<BoltArrow>();
         public static int Proj_ => ModContent.ProjectileType<Nuke>();
+        public static int Proj_DarklightGreatswordSlashCreator => ModContent.ProjectileType<DarklightGreatswordSlashCreator>();
+        public static int Proj_DarkBeam => ModContent.ProjectileType<DarkBeam>();
+        public static int Proj_CometQuasherMeteor => ModContent.ProjectileType<CometQuasherMeteor>();
+        public static int Proj_DesertScourgeSpit => ModContent.ProjectileType<DesertScourgeSpit>();
+        public static int Proj_Razorwind => ModContent.ProjectileType<Razorwind>();
+        public static int Proj_Brimblast => ModContent.ProjectileType<Brimblast>();
+        public static int Proj_IceBombFriendly => ModContent.ProjectileType<IceBombFriendly>();
+        public static int Proj_AtaraxiaBoom => ModContent.ProjectileType<AtaraxiaBoom>();
+        public static int Proj_AtaraxiaMain => ModContent.ProjectileType<AtaraxiaMain>();
+        public static int Proj_AtaraxiaSide => ModContent.ProjectileType<AtaraxiaSide>();
+        public static int Proj_BrimstoneBoom => ModContent.ProjectileType<BrimstoneBoom>();
+        public static int Proj_AftershockRock => ModContent.ProjectileType<AftershockRock>();
         public static int Proj_UniversalGenesisStar => ModContent.ProjectileType<UniversalGenesisStar>();
         public static int Proj_UniversalGenesisStarcaller => ModContent.ProjectileType<UniversalGenesisStarcaller>();
         public static int Proj_UltimaBolt => ModContent.ProjectileType<UltimaBolt>();
@@ -245,7 +259,7 @@ namespace CalamityOverhaul
         public static int Tile_DraedonsForge => ModContent.TileType<DraedonsForge>();
         public static int Tile_SCalAltar => ModContent.TileType<SCalAltar>();
         public static int Tile_SCalAltarLarge => ModContent.TileType<SCalAltarLarge>();
-        public static int Buff_Plague => ModContent.BuffType<Plague>();
+        public static int Buff_ => ModContent.BuffType<Plague>();
         public static int Buff_BrutalCarnage => ModContent.BuffType<BrutalCarnage>();
         public static int Buff_ArmorCrunch => ModContent.BuffType<ArmorCrunch>();
         public static int Buff_GodSlayerInferno => ModContent.BuffType<GodSlayerInferno>();
@@ -257,5 +271,8 @@ namespace CalamityOverhaul
         public static int Buff_TemporalSadness => ModContent.BuffType<TemporalSadness>();
         public static int Buff_GlacialState => ModContent.BuffType<GlacialState>();
         public static int Buff_AstralInfectionDebuff => ModContent.BuffType<AstralInfectionDebuff>();
+        public static int Buff_BrimstoneFlames => ModContent.BuffType<BrimstoneFlames>();
+        public static int Dust_ => ModContent.DustType<AstralOrange>();
+        public static int Dust_AstralBlue => ModContent.DustType<AstralBlue>();
     }
 }

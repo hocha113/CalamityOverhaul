@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             Owner.CWR().GetScreenShake(4);
-            SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound(), Projectile.Center);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound(), Projectile.Center);
             CWRUtils.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<EarthRocketOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);

@@ -15,12 +15,12 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -129,6 +129,10 @@ namespace CalamityOverhaul
         public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
         public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f)
             => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
+        public static Projectile ProjectileBarrage(IEntitySource source, Vector2 originVec, Vector2 targetPos, bool fromRight, float xOffsetMin, float xOffsetMax
+            , float yOffsetMin, float yOffsetMax, float projSpeed, int projType, int damage, float knockback, int owner, bool clamped = false, float inaccuracyOffset = 5f)
+            => CalamityUtils.ProjectileBarrage(source, originVec, targetPos, fromRight, xOffsetMin, xOffsetMax
+                , yOffsetMin, yOffsetMax, projSpeed, projType, damage, knockback, owner, clamped, inaccuracyOffset);
         public static void SetDraedonDefeatTimer(NPC npc, float value) {
             if (npc.ModNPC is Draedon draedon) {
                 draedon.DefeatTimer = value;
@@ -142,6 +146,7 @@ namespace CalamityOverhaul
         }
         public static List<int> GetPierceResistExceptionList() => CalamityLists.projectileDestroyExceptionList;
         public static bool HasExo() => Draedon.ExoMechIsPresent;
+        public static int GetCalItemID(this string key) => CWRItemOverride.GetCalItemID(key);
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
         }
@@ -184,11 +189,9 @@ namespace CalamityOverhaul
         }
         public static SoundStyle GetSound(this string path) {
             if (ModContent.HasAsset(path)) {
-                return new(path);
+                return new SoundStyle(path);
             }
-            try {
-                return new(path, 3);
-            } catch { return CWRSound.None; }
+            return CWRSound.None;
         }
         public static bool GetDownedThanatos() => DownedBossSystem.downedThanatos;
         public static void SetSupCalPermafrost(NPC npc, bool value) {

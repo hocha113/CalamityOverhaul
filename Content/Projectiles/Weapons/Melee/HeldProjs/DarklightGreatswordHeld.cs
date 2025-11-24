@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +7,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class DarklightGreatswordHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<DarklightGreatsword>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "DarklightGreatsword_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
@@ -31,14 +27,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void Shoot() {
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + UnitToMouseV * 42
-                , UnitToMouseV * 7, ModContent.ProjectileType<DarkBeam>()
+                , UnitToMouseV * 7, CWRID.Proj_DarkBeam
                 , (int)(Projectile.damage * 0.8f), Projectile.knockBack * 0.8f, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(Main.rand.NextBool() ? BuffID.Frostburn2 : BuffID.OnFire3, 240);
-            int type = ModContent.ProjectileType<DarklightGreatswordSlashCreator>();
-            int damg = (int)(Owner.CalcIntDamage<MeleeDamageClass>(Item.damage) * 0.8f);
+            int type = CWRID.Proj_DarklightGreatswordSlashCreator;
+            int damg = (int)(Owner.GetTotalDamage<MeleeDamageClass>().ApplyTo(Item.damage) * 0.8f);
             float kack = Item.knockBack * 0.9f;
             if (Owner.ownedProjectileCounts[type] < 3) {
                 Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, Vector2.Zero, type

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void HanderPlaySound() {
-            SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound()
+            SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound()
                 with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f) }, Projectile.Center);
         }
 

@@ -1,7 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -11,7 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     internal class BrimstoneSwordHeld : BaseKnife
     {
         public override string Texture => "CalamityMod/Items/Weapons/Melee/BrimstoneSword";
-        public override int TargetID => ModContent.ItemType<BrimstoneSword>();
         private bool trueMelee;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 24;
@@ -37,11 +33,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
                 return;
             }
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
+            target.AddBuff(CWRID.Buff_BrimstoneFlames, 300);
             for (int i = 0; i < 6; i++) {
                 Vector2 spanPos = new(ShootSpanPos.X + Main.rand.Next(-60, 60), ShootSpanPos.Y);
                 Projectile.NewProjectile(Source, spanPos, new Vector2(Main.rand.Next(-20, 20), -12)
-                    , ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
+                    , CWRID.Proj_Brimblast, Projectile.damage, Projectile.knockBack, Main.myPlayer);
             }
         }
     }

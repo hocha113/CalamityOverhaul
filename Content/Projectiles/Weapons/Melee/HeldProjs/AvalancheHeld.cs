@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using System;
 using System.Linq;
 using Terraria;
@@ -12,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class AvalancheHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Avalanche>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 44;
@@ -37,8 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.numHits++;
             int totalProjectiles = 4;
             float radians = MathHelper.TwoPi / totalProjectiles;
-            int type = ModContent.ProjectileType<IceBombFriendly>();
-            int bombDamage = Owner.CalcIntDamage<MeleeDamageClass>(Item.damage);
+            int type = CWRID.Proj_IceBombFriendly;
+            int bombDamage = (int)Owner.GetTotalDamage<MeleeDamageClass>().ApplyTo(Item.damage);
             float velocity = 4f;
             double angleA = radians * 0.5;
             double angleB = MathHelper.ToRadians(90f) - angleA;
@@ -53,8 +49,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             int totalProjectiles = 4;
             float radians = MathHelper.TwoPi / totalProjectiles;
-            int type = ModContent.ProjectileType<IceBombFriendly>();
-            int bombDamage = Owner.CalcIntDamage<MeleeDamageClass>(Item.damage);
+            int type = CWRID.Proj_IceBombFriendly;
+            int bombDamage = (int)Owner.GetTotalDamage<MeleeDamageClass>().ApplyTo(Item.damage);
             float velocity = 4f;
             double angleA = radians * 0.5;
             double angleB = MathHelper.ToRadians(90f) - angleA;

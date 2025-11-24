@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,7 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class BrinyBaronHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<BrinyBaron>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         private float momentumPower; //动量力度
@@ -143,7 +140,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void Shoot() {
-            int type = ModContent.ProjectileType<Razorwind>();
+            int type = CWRID.Proj_Razorwind;
 
             if (Projectile.ai[0] == 1) {
                 type = ProjectileID.Bubble;

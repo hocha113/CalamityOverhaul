@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(CWRID.Buff_Plague, 300);
+            target.AddBuff(CWRID.Buff_, 300);
             for (int i = 0; i < 3; i++) {
                 int bee = Projectile.NewProjectile(Source, Owner.Center, Vector2.Zero, Owner.beeType(),
                     Owner.beeDamage(Item.damage / 3), Owner.beeKB(0f), Owner.whoAmI);
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(CWRID.Buff_Plague, 300);
+            target.AddBuff(CWRID.Buff_, 300);
             for (int i = 0; i < 3; i++) {
                 int bee = Projectile.NewProjectile(Source, Owner.Center, Vector2.Zero, Owner.beeType(),
                     Owner.beeDamage(Item.damage / 3), Owner.beeKB(0f), Owner.whoAmI);

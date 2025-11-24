@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// <summary>
         /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="TrueMeleeDamageClass"/>相关的乘算伤害
         /// </summary>
-        public static int ActualTrueMeleeDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage(CWRRef.GetTrueMeleeDamageClass()).Additive);
+        public static int ActualTrueMeleeDamage(Item item) => (int)(Main.LocalPlayer.GetTotalDamage(CWRRef.GetTrueMeleeDamageClass()).ApplyTo(GetOnDamage(item)));
         /// <summary>
         /// 获取时期对应的范围增幅
         /// </summary>

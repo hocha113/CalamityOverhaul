@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="RangedDamageClass"/>相关的乘算伤害
         /// </summary>
-        public static int ActualRangedDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive);
+        public static int ActualRangedDamage(Item item) => (int)(Main.LocalPlayer.GetTotalDamage<RangedDamageClass>().ApplyTo(GetOnDamage(item)));
         /// <summary>
         /// 获取时期对应的额外暴击
         /// </summary>

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,12 +7,15 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class BalefulHarvesterHeldThrow : BaseHeldProj
     {
+        public override LocalizedText DisplayName => ItemLoader.GetItem(CWRItemOverride.GetCalItemID("BalefulHarvester")).GetLocalization("DisplayName");
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
         public const float MaxChargeTime = 20f;
         private Item balefulHarvester => Owner.GetItem();
@@ -30,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.width = 16;
             Projectile.height = 16;
             Projectile.friendly = true;
-            Projectile.DamageType = GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
             Projectile.MaxUpdates = 3;
@@ -94,7 +96,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public void InOwner() {
             if (DownRight) {
-                if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
+                if (balefulHarvester.type != CWRItemOverride.GetCalItemID("BalefulHarvester")) {
                     Projectile.Kill();
                     return;
                 }

@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,7 +7,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class AstralBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<AstralBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "AstralBlade_Bar";
         public override void SetKnifeProperty() {
@@ -33,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override bool PreInOwner() {
-            int dustType = Main.rand.NextBool() ? ModContent.DustType<AstralOrange>() : ModContent.DustType<AstralBlue>();
+            int dustType = Main.rand.NextBool() ? CWRID.Dust_ : CWRID.Dust_AstralBlue;
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, dustType);
             if (d != null) {
                 d.customData = 0.03f;
@@ -42,21 +36,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
+            target.AddBuff(CWRID.Buff_AstralInfectionDebuff, 300);
 
             if (hit.Crit) {
-                Projectile star = CalamityUtils.ProjectileBarrage(Source, Owner.Center, target.Center
-                        , Main.rand.NextBool(), 800f, 800f, 800f, 800f, 10f, ModContent.ProjectileType<AstralStar>()
+                Projectile star = CWRRef.ProjectileBarrage(Source, Owner.Center, target.Center
+                        , Main.rand.NextBool(), 800f, 800f, 800f, 800f, 10f, CWRID.Proj_AstralStar
                         , (int)(hit.Damage * 0.4), 1f, Owner.whoAmI, true);
-                if (star.whoAmI.WithinBounds(Main.maxProjectiles)) {
-                    star.DamageType = DamageClass.Melee;
-                    star.ai[0] = 3f;
-                }
+                star.DamageType = DamageClass.Melee;
+                star.ai[0] = 3f;
             }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
+            target.AddBuff(CWRID.Buff_AstralInfectionDebuff, 300);
         }
     }
 }

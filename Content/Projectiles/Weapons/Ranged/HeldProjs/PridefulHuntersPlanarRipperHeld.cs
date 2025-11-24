@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Recoil = 1.3f;
                 RecoilRetroForceMagnitude = 8;
                 fireIndex = 0;
-                SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot".GetSound() with { Pitch = 0.8f, Volume = 0.5f });
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound() with { Pitch = 0.8f, Volume = 0.5f });
                 for (int i = 0; i < 15; i++) {
                     UpdateMagazineContents();
                     int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f)

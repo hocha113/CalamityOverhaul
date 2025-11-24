@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -8,7 +6,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
@@ -33,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeNoSpeedDamageClass();
             Projectile.ownerHitCheck = true;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 5;
@@ -53,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center
                     , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
-                SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 0.35f }, Projectile.Center);
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound() with { Pitch = 0.35f, Volume = 0.45f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f, Volume = 1.25f, MaxInstances = 2 }, Projectile.position);
                 Projectile.timeLeft = 30;
             }
