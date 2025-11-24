@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Item.rare = ItemRarityID.Red;
             Item.UseSound = SoundID.Item109;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<AccretionDiskEffect>();
+            Item.shoot = ModContent.ProjectileType<AccretionDisk>();
             Item.shootSpeed = 0f;
         }
 
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             //创建吸积盘投射物
             int proj = Projectile.NewProjectile(source, spawnPos, Vector2.Zero, type, damage, knockback, player.whoAmI);
             
-            if (Main.projectile[proj].ModProjectile is AccretionDiskEffect disk) {
+            if (Main.projectile[proj].ModProjectile is AccretionDisk disk) {
                 //配置吸积盘参数
                 disk.RotationSpeed = 1.5f;      //旋转速度
                 disk.InnerRadius = 0.2f;        //内半径

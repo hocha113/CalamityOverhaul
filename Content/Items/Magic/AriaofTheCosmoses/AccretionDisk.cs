@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// <summary>
     /// Îü»ıÅÌÌØĞ§äÖÈ¾Æ÷
     /// </summary>
-    internal class AccretionDiskEffect : ModProjectile, IPrimitiveDrawable
+    internal class AccretionDisk : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
