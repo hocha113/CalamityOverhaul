@@ -5,7 +5,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 包含AI的移动和行为逻辑。
+    /// 包含AI的移动和行为逻辑
     /// </summary>
     internal partial class HeadPrimeAI
     {

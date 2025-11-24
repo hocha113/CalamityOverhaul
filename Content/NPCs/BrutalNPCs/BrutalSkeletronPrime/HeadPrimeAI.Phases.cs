@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 包含AI的各个阶段逻辑。
+    /// 包含AI的各个阶段逻辑
     /// </summary>
     internal partial class HeadPrimeAI
     {

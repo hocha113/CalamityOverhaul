@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 包含AI的绘制和动画逻辑。
+    /// 包含AI的绘制和动画逻辑
     /// </summary>
     internal partial class HeadPrimeAI
     {

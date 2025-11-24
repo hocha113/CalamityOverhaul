@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 包含AI的主要逻辑和状态管理。
+    /// 包含AI的主要逻辑和状态管理
     /// </summary>
     internal partial class HeadPrimeAI
     {

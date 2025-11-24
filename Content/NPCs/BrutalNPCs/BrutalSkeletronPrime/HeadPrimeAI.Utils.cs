@@ -12,7 +12,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 包含AI的辅助方法和效果。
+    /// 包含AI的辅助方法和效果
     /// </summary>
     internal partial class HeadPrimeAI
     {

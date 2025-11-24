@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 存储AI相关字段和属性。
+    /// 存储AI相关字段和属性
     /// </summary>
     internal partial class HeadPrimeAI
     {

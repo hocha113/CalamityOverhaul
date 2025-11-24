@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 管理头部AI的数据、属性和资源加载。
+    /// 管理头部AI的数据、属性和资源加载
     /// </summary>
     internal partial class HeadPrimeAI : CWRNPCOverride
     {
