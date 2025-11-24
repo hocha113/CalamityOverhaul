@@ -1,15 +1,6 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs.AquaticScourge;
-using CalamityMod.NPCs.CalClone;
-using CalamityMod.NPCs.CeaselessVoid;
-using CalamityMod.NPCs.NormalNPCs;
-using CalamityMod.NPCs.Polterghast;
-using CalamityMod.NPCs.Ravager;
-using CalamityMod.NPCs.SlimeGod;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Particles;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -24,8 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraSlashDefault : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Murasama>();
-        public ref int HitCooldown => ref Owner.Calamity().murasamaHitCooldown;
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(MurasamaOverride.ID);
+        public ref int HitCooldown => ref Owner.GetMurasamaHitCooldown();
         public bool onspan;
         public bool CanAttemptDead;
         public bool Slashing = false;
@@ -42,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeNoSpeedDamageClass();
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 6;
             Projectile.frameCounter = 0;
@@ -65,14 +56,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public static float GetMuraSizeInMeleeSengs(Player player) {
             Item mura = player.GetItem();
-            if (mura.type == ModContent.ItemType<Murasama>()) {
+            if (mura.type == MurasamaOverride.ID) {
                 return MathHelper.Clamp(player.GetAdjustedItemScale(mura), 0.5f, 1.5f);
             }
             return 1f;
         }
 
         public override void AI() {
-            Projectile.Calamity().timesPierced = 0;
+            Projectile.SetProjtimesPierced(0);
             if (!onspan) {
                 Projectile.scale = MurasamaOverride.NameIsSam(Owner) ? 1.65f : MurasamaOverride.GetOnScale(Item);
                 Projectile.scale *= GetMuraSizeInMeleeSengs(base.Owner);
@@ -81,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 onspan = true;
             }
             if (Slash2) {
-                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
+                _ = SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaSwing".GetSound() with { Pitch = -0.1f, Volume = 0.2f }, Projectile.Center);
                 if (HitCooldown == 0) {
                     Slashing = true;
                 }
@@ -89,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash3) {
-                _ = SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = 0f }, Projectile.Center);
+                _ = SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaBigSwing".GetSound() with { Pitch = 0f, Volume = 0.25f }, Projectile.Center);
                 if (HitCooldown == 0) {
                     Slashing = true;
                 }
@@ -97,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash1) {
-                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.05f }, Projectile.Center);
+                _ = SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaSwing".GetSound() with { Pitch = -0.05f, Volume = 0.2f }, Projectile.Center);
                 if (HitCooldown == 0) {
                     Slashing = true;
                 }
@@ -162,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2f;
             }
             // 对红宝石，蓝宝石仅造成1.5倍
-            if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
+            if (target.type == CWRID.NPC_KingSlimeJewelRuby || target.type == CWRID.NPC_KingSlimeJewelSapphire) {
                 modifiers.FinalDamage *= 0.75f;
             }
             // 对飞眼怪仅造成50%伤害
@@ -178,11 +169,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对史神护卫仅造成1倍伤害
-            if (target.type == ModContent.NPCType<EbonianPaladin>() || target.type == ModContent.NPCType<CrimulanPaladin>()) {
+            if (target.type == CWRID.NPC_EbonianPaladin || target.type == CWRID.NPC_CrimulanPaladin) {
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对史神小护卫仅造成50%伤害
-            if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
+            if (target.type == CWRID.NPC_SplitEbonianPaladin || target.type == CWRID.NPC_SplitCrimulanPaladin) {
                 modifiers.FinalDamage *= 0.25f;
             }
             // 对肉山眼仅造成1倍伤害
@@ -190,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对灾眼兄弟仅造成1倍伤害
-            if (target.type == ModContent.NPCType<Cataclysm>() || target.type == ModContent.NPCType<Catastrophe>()) {
+            if (target.type == CWRID.NPC_ || target.type == CWRID.NPC_Catastrophe) {
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对石巨人之拳仅造成1倍伤害
@@ -198,15 +189,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对毁灭魔像飞出的头仅造成1倍伤害
-            if (target.type == ModContent.NPCType<RavagerHead2>()) {
+            if (target.type == CWRID.NPC_RavagerHead2) {
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对暗能量仅造成1倍伤害
-            if (target.type == ModContent.NPCType<DarkEnergy>()) {
+            if (target.type == CWRID.NPC_DarkEnergy) {
                 modifiers.FinalDamage *= 0.5f;
             }
             // 对幽花复制体仅造成1.5倍伤害
-            if (target.type == ModContent.NPCType<PolterghastHook>()) {
+            if (target.type == CWRID.NPC_PolterghastHook) {
                 modifiers.FinalDamage *= 0.75f;
             }
             // 对蠕虫只造成50%伤害
@@ -221,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.3f;
             }
-            if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+            if (target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
                 modifiers.FinalDamage *= 0.1f;
             }
             // 对塔纳托斯体节仅造成66%伤害
@@ -259,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.66f;
             }
             // 对终灾造成1.66倍伤害
-            if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
+            if (target.type == CWRID.NPC_SupremeCalamitas) {
                 modifiers.FinalDamage *= 1.66f;
             }
             modifiers.DefenseEffectiveness *= 0f;
@@ -305,19 +296,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
             _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                ? SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)
-                : SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
+                ? SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound() with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0, Volume = 0.45f }, Projectile.Center)
+                : SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitInorganic".GetSound() with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0, Volume = 0.55f }, Projectile.Center);
 
             for (int i = 0; i < 3; i++) {
                 Color impactColor = Slash3 ? Main.rand.NextBool(3) ? Color.LightCoral : Color.White : Main.rand.NextBool(4) ? Color.LightCoral : Color.Crimson;
                 float impactParticleScale = Main.rand.NextFloat(1f, 1.75f);
 
                 if (Slash3) {
-                    SparkleParticle impactParticle2 = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f), Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 4.5f);
-                    GeneralParticleHandler.SpawnParticle(impactParticle2);
+                    PRT_Sparkle impactParticle2 = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f), Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 4.5f);
+                    PRTLoader.AddParticle(impactParticle2);
                 }
-                SparkleParticle impactParticle = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f), Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 2.5f);
-                GeneralParticleHandler.SpawnParticle(impactParticle);
+                PRT_Sparkle impactParticle = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f), Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 2.5f);
+                PRTLoader.AddParticle(impactParticle);
             }
 
             float sparkCount = MathHelper.Clamp(Slash3 ? 18 - Projectile.numHits * 3 : 5 - Projectile.numHits * 2, 0, 18);
@@ -327,12 +318,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 float sparkScale2 = Main.rand.NextFloat(0.95f, 1.8f);
                 Color sparkColor2 = Slash3 ? Main.rand.NextBool(3) ? Color.Red : Color.IndianRed : Main.rand.NextBool() ? Color.Red : Color.Firebrick;
                 if (Main.rand.NextBool()) {
-                    AltSparkParticle spark = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime2 * (Slash3 ? 1.2f : 1f)), sparkScale2 * (Slash3 ? 1.4f : 1f), sparkColor2);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    PRT_Spark spark = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime2 * (Slash3 ? 1.2f : 1f)), sparkScale2 * (Slash3 ? 1.4f : 1f), sparkColor2);
+                    PRTLoader.AddParticle(spark);
                 }
                 else {
-                    LineParticle spark = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * (Projectile.frame == 7 ? 1f : 0.65f), false, (int)(sparkLifetime2 * (Projectile.frame == 7 ? 1.2f : 1f)), sparkScale2 * (Projectile.frame == 7 ? 1.4f : 1f), Main.rand.NextBool() ? Color.Red : Color.Firebrick);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    PRT_Line spark = new(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * (Projectile.frame == 7 ? 1f : 0.65f), false, (int)(sparkLifetime2 * (Projectile.frame == 7 ? 1.2f : 1f)), sparkScale2 * (Projectile.frame == 7 ? 0.86f : 0.6f), Main.rand.NextBool() ? Color.Red : Color.Firebrick);
+                    PRTLoader.AddParticle(spark);
                 }
             }
             float dustCount = MathHelper.Clamp(Slash3 ? 25 - Projectile.numHits * 3 : 12 - Projectile.numHits * 2, 0, 25);

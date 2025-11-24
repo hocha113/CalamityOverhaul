@@ -51,7 +51,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static Asset<Texture2D> MuraItemAsset { get; private set; }
         private static readonly string[] SamNameList = ["激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam"];
         private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
-        public override int TargetID => GetCalItemID("Murasama");
+        public static int ID => GetCalItemID("Murasama");
+        public override int TargetID => ID;
         #endregion
         /// <summary>
         /// 获取时期对应的伤害

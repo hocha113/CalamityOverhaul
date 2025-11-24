@@ -33,7 +33,7 @@ namespace CalamityOverhaul
         public static void SetBossRushActive(bool value) => BossRushEvent.BossRushActive = value;
         public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
         public static DamageClass GetTrueMeleeDamageClass() => ModContent.GetInstance<TrueMeleeDamageClass>();
-        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => CWRRef.GetTrueMeleeNoSpeedDamageClass();
         public static DamageClass GetMeleeRangedHybridDamageClass() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
         public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
         public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
@@ -150,6 +150,8 @@ namespace CalamityOverhaul
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
         }
+        public static void SetProjtimesPierced(this Projectile projectile, int value) => projectile.Calamity().timesPierced = value;
+        public static ref int GetMurasamaHitCooldown(this Player player) => ref player.Calamity().murasamaHitCooldown;
         public static void SetBrimstoneBullets(this Projectile projectile, bool value) => projectile.Calamity().brimstoneBullets = value;
         public static void SetDeepcoreBullet(this Projectile projectile, bool value) => projectile.Calamity().deepcoreBullet = value;
         public static void SetAllProjectilesHome(this Projectile projectile, bool value) => projectile.Calamity().allProjectilesHome = value;

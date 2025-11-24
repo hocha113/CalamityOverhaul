@@ -601,7 +601,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             modifiers.HitDirectionOverride = safeInSwingUnit.X > 0 ? 1 : -1;
             if (target.IsWormBody()) {
                 if (Projectile.DamageType != ModContent.GetInstance<TrueMeleeDamageClass>()
-                    && Projectile.DamageType != ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    && Projectile.DamageType != CWRRef.GetTrueMeleeNoSpeedDamageClass()) {
                     modifiers.FinalDamage /= 2;
                 }
                 modifiers.FinalDamage *= inWormBodysDamageFaul;

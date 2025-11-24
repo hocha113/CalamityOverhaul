@@ -1,16 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class DeathsAscensionHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<DeathsAscension>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";
         public override string gradientTexturePath => CWRConstant.ColorBar + "ExaltedOathblade_Bar";
         public override void SetKnifeProperty() {
@@ -35,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             for (int i = 0; i < 3; i++) {
                 Vector2 vr = ((-1 + i) * 0.2f).ToRotationVector2().RotatedBy(ToMouseA);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + vr * Length, vr * 16,
-                ModContent.ProjectileType<DeathsAscensionProjectile>(), (int)(Projectile.damage * 0.25f)
+                CWRID.Proj_DeathsAscensionProjectile, (int)(Projectile.damage * 0.25f)
                 , Projectile.knockBack / 2, Projectile.owner);
             }
         }

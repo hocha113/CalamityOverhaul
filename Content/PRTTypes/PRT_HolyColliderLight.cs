@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
+            Texture2D bloomTex = PRT_Light.BloomTex.Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 15f * SquishStrenght, 1f, MaxSquish);
 

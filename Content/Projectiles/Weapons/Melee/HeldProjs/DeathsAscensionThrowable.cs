@@ -1,7 +1,7 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -70,9 +70,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                         Main.SetCameraLerp(0.1f, 10);
                     }
                     for (int i = 0; i < 13; i++) {
-                        SparkParticle spark = new SparkParticle(Owner.Center, toProj.UnitVector() * 3
+                        PRT_Spark spark = new PRT_Spark(Owner.Center, toProj.UnitVector() * 3
                             , false, 9, 3.3f, Color.DarkBlue);
-                        GeneralParticleHandler.SpawnParticle(spark);
+                        PRTLoader.AddParticle(spark);
                     }
                     Projectile.velocity = Vector2.Zero;
                     Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.12f);
@@ -122,12 +122,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
             if (outFive) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
-                Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
                 Main.EntitySpriteDraw(color: Color.Fuchsia * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition
                     , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5 + MathHelper.Pi
                     , scale: Projectile.scale * 1.15f, effects: SpriteEffects.None);
-                Main.spriteBatch.ExitShaderRegion();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             }
         }
     }
