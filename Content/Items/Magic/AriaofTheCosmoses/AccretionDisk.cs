@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public ref float RotationSpeed => ref Projectile.ai[0];
         public ref float InnerRadius => ref Projectile.ai[1];
         public ref float OuterRadius => ref Projectile.ai[2];
-        
+
         private float time;
         private float brightness = 1f;
         private float distortionStrength = 0.15f;
-        
+
         //颜色配置
         private Color innerColor = new Color(255, 200, 100); //内圈 - 明亮的黄橙色
         private Color midColor = new Color(255, 120, 50);    //中圈 - 橙红色
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override void SetDefaults() {
             Projectile.width = 400;
             Projectile.height = 400;
-            Projectile.friendly = false; // 初始不造成伤害
+            Projectile.friendly = false; //初始不造成伤害
             Projectile.hostile = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
@@ -62,11 +62,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Projectile.alpha -= 5;
             }
             else if (isAttacking && Projectile.alpha > 50) {
-                Projectile.alpha = 50; // 攻击时保持可见
+                Projectile.alpha = 50; //攻击时保持可见
             }
-            
+
             time += 0.016f;
-            
+
             //默认参数设置
             if (RotationSpeed == 0) {
                 RotationSpeed = 1f;
@@ -77,34 +77,34 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (OuterRadius == 0) {
                 OuterRadius = 0.85f;
             }
-            
+
             //脉动效果
             float pulse = (float)Math.Sin(time * 2f) * 0.1f + 0.9f;
             brightness = pulse;
-            
+
             //旋转
             Projectile.rotation += 0.005f + (isAttacking ? RotationSpeed * 0.02f : 0);
-            
+
             //攻击模式下的行为
             if (isAttacking) {
-                // 追踪附近敌人
+                //追踪附近敌人
                 HomeInOnNearestEnemy();
-                
-                // 减速效果
+
+                //减速效果
                 Projectile.velocity *= 0.98f;
-                
-                // 生成轨迹粒子
+
+                //生成轨迹粒子
                 if (Main.rand.NextBool(2)) {
                     SpawnTrailParticles();
                 }
             }
             else {
-                // 蓄力模式生成环绕粒子
+                //蓄力模式生成环绕粒子
                 if (Projectile.timeLeft % 3 == 0 && !Main.dedServ) {
                     SpawnDiskParticles();
                 }
             }
-            
+
             //淡出效果
             if (Projectile.timeLeft < 60) {
                 Projectile.alpha += 4;
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
 
             //发光
-            Lighting.AddLight(Projectile.Center, 
+            Lighting.AddLight(Projectile.Center,
                 innerColor.ToVector3() * brightness * 0.8f * (1f - Projectile.alpha / 255f));
         }
 
@@ -145,17 +145,17 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             //在吸积盘边缘生成粒子
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float distance = Main.rand.NextFloat(InnerRadius, OuterRadius) * Projectile.width * 0.5f * Projectile.scale;
-            
+
             Vector2 offset = new Vector2(
                 (float)Math.Cos(angle) * distance,
                 (float)Math.Sin(angle) * distance
             );
-            
+
             Vector2 particlePos = Projectile.Center + offset;
             Vector2 particleVel = Vector2.Normalize(offset.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(1f, 3f);
-            
+
             int dustType = Main.rand.Next(new[] { 6, 259, 158 });
-            Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100, 
+            Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
                 Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f));
             dust.noGravity = true;
             dust.fadeIn = 1.2f;
@@ -167,13 +167,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(0, Projectile.width * 0.5f * Projectile.scale);
                 Vector2 offset = angle.ToRotationVector2() * distance;
-                
+
                 Vector2 particlePos = Projectile.Center + offset;
                 Vector2 particleVel = -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f);
 
                 int dustType = Main.rand.Next(new[] { 6, 259, 158, 234, 269 });
-                Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100, 
-                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()) * 0.8f, 
+                Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
+                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()) * 0.8f,
                     Main.rand.NextFloat(1.5f, 3f));
                 dust.noGravity = true;
             }
@@ -184,25 +184,25 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return false;
             }
 
-            // 圆形碰撞检测
+            //圆形碰撞检测
             float collisionRadius = Projectile.width * 0.5f * Projectile.scale * OuterRadius;
             return VaultUtils.CircleIntersectsRectangle(Projectile.Center, collisionRadius, targetHitbox);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            // 击中音效
-            SoundEngine.PlaySound(SoundID.Item14 with { 
-                Volume = 0.5f, 
-                Pitch = 0.3f 
+            //击中音效
+            SoundEngine.PlaySound(SoundID.Item14 with {
+                Volume = 0.5f,
+                Pitch = 0.3f
             }, Projectile.Center);
 
-            // 击中特效
+            //击中特效
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 15; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                     int dustType = Main.rand.Next(new[] { 6, 259, 158 });
-                    Dust dust = Dust.NewDustPerfect(target.Center, dustType, velocity, 100, 
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), 
+                    Dust dust = Dust.NewDustPerfect(target.Center, dustType, velocity, 100,
+                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
                         Main.rand.NextFloat(1.5f, 2.5f));
                     dust.noGravity = true;
                 }
@@ -210,11 +210,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         public override void OnKill(int timeLeft) {
-            // 死亡爆炸效果
+            //死亡爆炸效果
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with { 
-                    Volume = 0.7f, 
-                    Pitch = -0.2f 
+                SoundEngine.PlaySound(SoundID.Item62 with {
+                    Volume = 0.7f,
+                    Pitch = -0.2f
                 }, Projectile.Center);
 
                 int particleCount = (int)(30 * Projectile.scale);
@@ -223,8 +223,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 12f);
 
                     int dustType = Main.rand.Next(new[] { 6, 259, 158, 234, 269 });
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, velocity, 100, 
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), 
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, velocity, 100,
+                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
                         Main.rand.NextFloat(2f, 4f));
                     dust.noGravity = true;
                 }
@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private void DrawAccretionDisk() {
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            
+
 
             {
                 //准备渲染状态

@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float pulseIntensity = 0f;
 
         //颜色配置
-        private Color innerColor = new Color(255, 200, 100); //内圈 - 明亮的黄橙色
-        private Color midColor = new Color(255, 120, 50);    //中圈 - 橙红色
-        private Color outerColor = new Color(100, 50, 150);  //外圈 - 紫色
+        private Color innerColor = new Color(255, 200, 100); //内圈
+        private Color midColor = new Color(255, 120, 50);    //中圈
+        private Color outerColor = new Color(100, 50, 150);  //外圈
 
         private int gammaRayTimer = 0;
         private const int GammaRayInterval = 30; //伽马射线发射间隔
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             //蓄力完成后定期发射伽马射线
             if (ChargeProgress >= 0.8f) {
                 gammaRayTimer++;
-                if (gammaRayTimer >= GammaRayInterval) {
+                if (gammaRayTimer >= 8) {
                     ShootGammaRay();
                     gammaRayTimer = 0;
                 }
@@ -125,13 +125,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //播放射线音效
             SoundEngine.PlaySound(SoundID.Item72 with {
-                Volume = 0.5f,
-                Pitch = -0.3f
+                Volume = 0.6f,
+                Pitch = -0.2f
             }, Projectile.Center);
 
             //寻找最近的敌人
             NPC target = null;
-            float minDistance = 800f;
+            float minDistance = 900f;
 
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.CanBeChasedBy(Projectile)) {
@@ -146,9 +146,10 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
 
             //发射伽马射线
-            Vector2 shootDirection = Projectile.rotation.ToRotationVector2();
+            Vector2 shootDirection = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.2f);
 
-            int damage = (int)(Projectile.damage * 0.5f); //射线伤害为主体的50%
+            //射线伤害随蓄力进度提升
+            int damage = (int)(Projectile.damage * (0.4f + ChargeProgress * 0.3f));
 
             Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
@@ -161,11 +162,22 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             );
 
             //生成射线特效
-            for (int i = 0; i < 8; i++) {
-                Vector2 sparkVel = shootDirection.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f, 8f);
+            for (int i = 0; i < 12; i++) {
+                Vector2 sparkVel = shootDirection.RotatedByRandom(0.4f) * Main.rand.NextFloat(4f, 10f);
                 Dust spark = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, sparkVel, 100,
-                    Color.Cyan, Main.rand.NextFloat(1f, 1.5f));
+                    Color.Cyan, Main.rand.NextFloat(1.2f, 2f));
                 spark.noGravity = true;
+            }
+
+            //冲击波
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 offset = angle.ToRotationVector2() * 40f;
+
+                Dust shockwave = Dust.NewDustPerfect(Projectile.Center + offset, DustID.BlueTorch,
+                    offset.SafeNormalize(Vector2.Zero) * 3f, 100,
+                    Color.DeepSkyBlue, Main.rand.NextFloat(1.5f, 2f));
+                shockwave.noGravity = true;
             }
         }
 
@@ -264,7 +276,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         );
                     }
                 }
-                
+
 
                 spriteBatch.End();
             }
@@ -328,7 +340,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         );
                     }
                 }
-                
+
 
                 spriteBatch.End();
             }
