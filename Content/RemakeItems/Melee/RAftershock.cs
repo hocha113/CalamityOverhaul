@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

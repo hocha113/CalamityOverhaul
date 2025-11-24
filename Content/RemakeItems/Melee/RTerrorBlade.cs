@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
