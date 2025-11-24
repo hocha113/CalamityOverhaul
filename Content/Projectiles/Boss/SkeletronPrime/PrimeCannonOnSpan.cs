@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
 
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Color drawColor = Color.White;
+            Color drawColor = Color.IndianRed;
             drawColor.A = 0;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, drawColor
                 , Projectile.rotation, new Vector2(0, tex.Height / 2f), new Vector2(1000, scaleTimer * 0.02f), SpriteEffects.None, 0);

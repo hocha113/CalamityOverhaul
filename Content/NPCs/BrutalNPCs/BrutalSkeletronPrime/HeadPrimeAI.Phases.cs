@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[1] == 0f) {
                 npc.damage = 0;
                 npc.ai[2] += 1f;
-                float aiThreshold = Main.masterMode ? 300f : 600f;
+                float aiThreshold = Main.masterMode ? 600f : 800f;
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
 
-                float aiThreshold = Main.masterMode ? 300f : 400f;
+                float aiThreshold = Main.masterMode ? 200f : 300f;
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 0f;
