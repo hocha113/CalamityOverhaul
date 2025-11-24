@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class AbsoluteZeroHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<AbsoluteZero>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "AbsoluteZero_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
@@ -37,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Frostburn2, 300);
-            target.AddBuff(ModContent.BuffType<GlacialState>(), 60);
+            target.AddBuff(CWRID.Buff_GlacialState, 60);
             var source = Owner.GetSource_ItemUse(Item);
             int p = Projectile.NewProjectile(source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<DarkIceBomb>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
@@ -46,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(BuffID.Frostburn2, 300);
-            target.AddBuff(ModContent.BuffType<GlacialState>(), 60);
+            target.AddBuff(CWRID.Buff_GlacialState, 60);
             var source = Owner.GetSource_ItemUse(Item);
             int p = Projectile.NewProjectile(source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<DarkIceBomb>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
