@@ -1391,6 +1391,11 @@ Items: {
 			潜伏速度将不会降低潜伏伤害
 			'''
 	}
+
+	AriaofTheCosmos: {
+		// DisplayName: Ariaof The Cosmos
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1803,6 +1808,7 @@ Projectiles: {
 	AncientStormLightning.DisplayName: 远古风暴闪电
 	AncientStormArc.DisplayName: 远古风暴闪电珠
 	TerrorSpirit.DisplayName: 惊惧怨灵
+	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
 }
 
 Configs: {

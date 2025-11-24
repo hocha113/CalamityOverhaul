@@ -1397,6 +1397,11 @@ Items: {
 			Stealth generation speed will no longer reduce stealth damage
 			''' */
 	}
+
+	AriaofTheCosmos: {
+		// DisplayName: Ariaof The Cosmos
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1809,6 +1814,7 @@ Projectiles: {
 	// AncientStormLightning.DisplayName: Ancient Storm Lightning
 	// AncientStormArc.DisplayName: Ancient Storm Arc
 	// TerrorSpirit.DisplayName: Terror Spirit
+	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
 }
 
 Configs: {
