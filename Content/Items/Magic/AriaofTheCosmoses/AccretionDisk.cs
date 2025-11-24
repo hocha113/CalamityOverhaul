@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
     /// <summary>
-    /// 吸积盘特效渲染器
+    /// 吸积盘
     /// </summary>
     internal class AccretionDisk : ModProjectile, IPrimitiveDrawable
     {
@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private Color outerColor = new Color(100, 50, 150);  //外圈 - 紫色
 
         private bool isAttacking = false;
-        private Vector2 previousPosition;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Type] = 1;
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 2;
         }
 
         public override void AI() {
@@ -56,7 +55,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (Projectile.velocity.Length() > 0.1f && !isAttacking) {
                 isAttacking = true;
                 Projectile.friendly = true;
-                previousPosition = Projectile.Center;
             }
 
             //淡入效果
@@ -116,8 +114,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             //发光
             Lighting.AddLight(Projectile.Center, 
                 innerColor.ToVector3() * brightness * 0.8f * (1f - Projectile.alpha / 255f));
-
-            previousPosition = Projectile.Center;
         }
 
         private void HomeInOnNearestEnemy() {
@@ -211,14 +207,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     dust.noGravity = true;
                 }
             }
-
-            // 减少一些穿透
-            if (Projectile.penetrate > 0) {
-                Projectile.penetrate--;
-                if (Projectile.penetrate <= 0) {
-                    Projectile.Kill();
-                }
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -257,72 +245,151 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private void DrawAccretionDisk() {
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            //准备渲染状态
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            
 
-            Effect shader = EffectLoader.AccretionDisk.Value;
+            {
+                //准备渲染状态
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //计算实际渲染尺寸
-            float actualWidth = Projectile.width * Projectile.scale;
-            float actualHeight = Projectile.height * Projectile.scale;
+                Effect shader = EffectLoader.AccretionDisk.Value;
 
-            //世界空间到屏幕空间的变换矩阵
-            //这里不需要复杂的矩阵变换，shader中会处理纹理坐标
-            Matrix world = Matrix.Identity;
-            Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(
-                0, Main.screenWidth,
-                Main.screenHeight, 0,
-                -1, 1);
+                //计算实际渲染尺寸
+                float actualWidth = Projectile.width * Projectile.scale;
+                float actualHeight = Projectile.height * Projectile.scale;
 
-            //组合矩阵
-            Matrix finalMatrix = world * view * projection;
+                //世界空间到屏幕空间的变换矩阵
+                //这里不需要复杂的矩阵变换，shader中会处理纹理坐标
+                Matrix world = Matrix.Identity;
+                Matrix view = Main.GameViewMatrix.TransformationMatrix;
+                Matrix projection = Matrix.CreateOrthographicOffCenter(
+                    0, Main.screenWidth,
+                    Main.screenHeight, 0,
+                    -1, 1);
 
-            shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-            shader.Parameters["uTime"]?.SetValue(time);
-            shader.Parameters["rotationSpeed"]?.SetValue(RotationSpeed);
-            shader.Parameters["innerRadius"]?.SetValue(InnerRadius);
-            shader.Parameters["outerRadius"]?.SetValue(OuterRadius);
-            shader.Parameters["brightness"]?.SetValue(brightness);
-            shader.Parameters["distortionStrength"]?.SetValue(distortionStrength);
+                //组合矩阵
+                Matrix finalMatrix = world * view * projection;
 
-            //设置中心位置（用于shader计算）
-            Vector2 screenCenter = Projectile.Center - Main.screenPosition;
-            shader.Parameters["centerPos"]?.SetValue(screenCenter);
+                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
+                shader.Parameters["uTime"]?.SetValue(time);
+                shader.Parameters["rotationSpeed"]?.SetValue(RotationSpeed);
+                shader.Parameters["innerRadius"]?.SetValue(InnerRadius);
+                shader.Parameters["outerRadius"]?.SetValue(OuterRadius);
+                shader.Parameters["brightness"]?.SetValue(brightness);
+                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength);
+                shader.Parameters["noiseTexture"]?.SetValue(VaultAsset.placeholder2.Value);
 
-            //设置颜色
-            shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-            shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-            shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
+                //设置中心位置
+                Vector2 screenCenter = Projectile.Center - Main.screenPosition;
+                shader.Parameters["centerPos"]?.SetValue(screenCenter);
 
-            //设置噪声纹理
-            Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+                //设置颜色
+                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
+                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
+                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
 
-            shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
+                //设置噪声纹理
+                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
-            //计算绘制区域（屏幕空间）
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Vector2 drawOrigin = new Vector2(actualWidth, actualHeight) * 0.5f;
-            Rectangle sourceRect = new Rectangle(0, 0, (int)actualWidth, (int)actualHeight);
+                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
 
-            //绘制一个简单的四边形，shader会处理所有的视觉效果
-            //使用TransverseTwill作为基础纹理，但实际效果由shader生成
-            spriteBatch.Draw(
-                TransverseTwill,
-                drawPosition,
-                null, //使用完整纹理
-                Color.White * (1f - Projectile.alpha / 255f),
-                Projectile.rotation,
-                TransverseTwill.Size() * 0.5f, //使用纹理中心作为原点
-                new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height), //缩放到目标大小
-                SpriteEffects.None,
-                0
-            );
+                //计算绘制区域（屏幕空间）
+                Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+                Vector2 drawOrigin = new Vector2(actualWidth, actualHeight) * 0.5f;
+                Rectangle sourceRect = new Rectangle(0, 0, (int)actualWidth, (int)actualHeight);
 
-            //恢复默认渲染状态
-            spriteBatch.End();
+                for (int i = 0; i < 6; i++) {
+                    //绘制一个简单的四边形，shader会处理所有的视觉效果
+                    //使用TransverseTwill作为基础纹理，但实际效果由shader生成
+                    spriteBatch.Draw(
+                        TransverseTwill,
+                        drawPosition,
+                        null, //使用完整纹理
+                        Color.White * (1f - Projectile.alpha / 255f),
+                        Projectile.rotation + i * 0.1f,
+                        TransverseTwill.Size() * 0.5f, //使用纹理中心作为原点
+                        new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height) * (0.6f + 1 * 1.2f), //缩放到目标大小
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+                //恢复默认渲染状态
+                spriteBatch.End();
+            }
+
+            {
+                //准备渲染状态
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+                Effect shader = EffectLoader.AccretionDisk.Value;
+
+                //计算实际渲染尺寸
+                float actualWidth = Projectile.width * Projectile.scale;
+                float actualHeight = Projectile.height * Projectile.scale;
+
+                //世界空间到屏幕空间的变换矩阵
+                //这里不需要复杂的矩阵变换，shader中会处理纹理坐标
+                Matrix world = Matrix.Identity;
+                Matrix view = Main.GameViewMatrix.TransformationMatrix;
+                Matrix projection = Matrix.CreateOrthographicOffCenter(
+                    0, Main.screenWidth,
+                    Main.screenHeight, 0,
+                    -1, 1);
+
+                //组合矩阵
+                Matrix finalMatrix = world * view * projection;
+
+                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
+                shader.Parameters["uTime"]?.SetValue(time);
+                shader.Parameters["rotationSpeed"]?.SetValue(RotationSpeed);
+                shader.Parameters["innerRadius"]?.SetValue(InnerRadius);
+                shader.Parameters["outerRadius"]?.SetValue(OuterRadius);
+                shader.Parameters["brightness"]?.SetValue(brightness);
+                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength);
+                shader.Parameters["noiseTexture"]?.SetValue(TransverseTwill);
+
+                //设置中心位置
+                Vector2 screenCenter = Projectile.Center - Main.screenPosition;
+                shader.Parameters["centerPos"]?.SetValue(screenCenter);
+
+                //设置颜色
+                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
+                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
+                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
+
+                //设置噪声纹理
+                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+
+                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
+
+                //计算绘制区域（屏幕空间）
+                Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+                Vector2 drawOrigin = new Vector2(actualWidth, actualHeight) * 0.5f;
+                Rectangle sourceRect = new Rectangle(0, 0, (int)actualWidth, (int)actualHeight);
+
+                for (int i = 0; i < 6; i++) {
+                    //绘制一个简单的四边形，shader会处理所有的视觉效果
+                    //使用TransverseTwill作为基础纹理，但实际效果由shader生成
+                    spriteBatch.Draw(
+                        TransverseTwill,
+                        drawPosition,
+                        null, //使用完整纹理
+                        Color.White * (1f - Projectile.alpha / 255f),
+                        Projectile.rotation + i * 0.1f,
+                        TransverseTwill.Size() * 0.5f, //使用纹理中心作为原点
+                        new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height) * (0.8f + 1 * 0.2f), //缩放到目标大小
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+                //恢复默认渲染状态
+                spriteBatch.End();
+            }
         }
     }
 }

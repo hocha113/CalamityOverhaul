@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particlePos = ShootPos + offset;
                 Vector2 particleVel = Vector2.Zero;
 
-                Dust dust = Dust.NewDustPerfect(particlePos, 269, particleVel, 100, 
+                Dust dust = Dust.NewDustPerfect(particlePos, DustID.Sandnado, particleVel, 100, 
                     currentGlowColor * 0.6f, Main.rand.NextFloat(1.2f, 1.8f));
                 dust.noGravity = true;
                 dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2f;
@@ -206,11 +206,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             else if (chargeTime == Stage2) {
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.8f, Pitch = 0f }, Projectile.Center);
             }
-            else if (chargeTime >= Stage3) {
-                if (chargeTime % 20 == 0) {
-                    SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
-                }
-            }
         }
 
         private void ReleaseAttack() {
@@ -233,8 +228,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     disk.damage = finalDamage;
                     disk.knockBack = WeaponKnockback * (1f + chargeProgress);
                     disk.friendly = true;
-                    disk.penetrate = (int)(3 + chargeProgress * 7); // 最多穿透10次
-                    
+
                     // 设置生命时间
                     disk.timeLeft = (int)(120 + chargeProgress * 180); // 2-5秒
                     
