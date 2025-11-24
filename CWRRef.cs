@@ -33,7 +33,7 @@ namespace CalamityOverhaul
         public static void SetBossRushActive(bool value) => BossRushEvent.BossRushActive = value;
         public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
         public static DamageClass GetTrueMeleeDamageClass() => ModContent.GetInstance<TrueMeleeDamageClass>();
-        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => CWRRef.GetTrueMeleeNoSpeedDamageClass();
+        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
         public static DamageClass GetMeleeRangedHybridDamageClass() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
         public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
         public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;

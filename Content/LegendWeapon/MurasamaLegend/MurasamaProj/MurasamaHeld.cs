@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.UIHandles;
@@ -62,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 initialize = true;
             }
 
-            if (Item.type != ModContent.ItemType<Murasama>()) {//只需要判断原版的物品
+            if (Item.type != MurasamaOverride.ID) {//只需要判断原版的物品
                 Projectile.Kill();
                 return false;
             }
@@ -266,17 +265,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             bool tryGroundSmash = false;
-            // 专用键触发（向下键）
+            //专用键触发（向下键）
             if (fodingDownKey && MurasamaOverride.UnlockSkill2(Item) && noHasDownSkillProj
                 && noHasBreakOutProj && nolegendStart) {
                 tryGroundSmash = true;
             }
 
-            // 执行下砸
+            //执行下砸
             if (tryGroundSmash) {
                 Item.Initialize();
                 if (Item.CWR().ai[0] >= 1) {
-                    SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
+                    SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaBigSwing".GetSound() with { Pitch = -0.1f, Volume = 0.25f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + Level * 1f)), 0, Owner.whoAmI);

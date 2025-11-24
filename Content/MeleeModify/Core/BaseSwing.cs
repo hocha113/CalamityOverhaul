@@ -600,7 +600,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         public sealed override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             modifiers.HitDirectionOverride = safeInSwingUnit.X > 0 ? 1 : -1;
             if (target.IsWormBody()) {
-                if (Projectile.DamageType != ModContent.GetInstance<TrueMeleeDamageClass>()
+                if (Projectile.DamageType != CWRRef.GetTrueMeleeDamageClass()
                     && Projectile.DamageType != CWRRef.GetTrueMeleeNoSpeedDamageClass()) {
                     modifiers.FinalDamage /= 2;
                 }

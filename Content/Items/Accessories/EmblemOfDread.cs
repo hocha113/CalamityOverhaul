@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             if (target.life < KilllineByLife && hit.DamageType
-                == ModContent.GetInstance<TrueMeleeDamageClass>() && Main.rand.NextBool(8)) {
+                == CWRRef.GetTrueMeleeDamageClass() && Main.rand.NextBool(8)) {
                 HeavenfallLongbow.KillAction(target);
             }
         }

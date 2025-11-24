@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Lime;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = null;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.shoot = ModContent.ProjectileType<RebelBladeFlyAttcke>();
             Item.useTurn = true;
             Item.autoReuse = true;

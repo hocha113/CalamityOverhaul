@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetStaticDefaults() => ItemID.Sets.IsDrill[Type] = true;
         public override void SetDefaults() {
             Item.damage = 140;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.width = 20;
             Item.height = 12;
             Item.useTime = 4;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetStaticDefaults() => ItemID.Sets.IsDrill[Type] = true;
         public override void SetDefaults() {
             Item.damage = 2840;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.width = 20;
             Item.height = 12;
             Item.useTime = 3;

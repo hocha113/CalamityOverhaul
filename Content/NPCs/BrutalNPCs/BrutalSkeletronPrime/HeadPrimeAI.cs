@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
             }
             if (Vanilla_TwinsBossBag != null) {
-                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
+                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_DestroyerBossBag;
             }
             if (Vanilla_TwinsBossBag != null) {
                 TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             if (CalamityGlobalNPC.primeSaw != -1) {
                 if (Main.npc[CalamityGlobalNPC.primeSaw].active)
-                    sawAlive = true;
+                    laserAlive = true;
             }
             if (CalamityGlobalNPC.primeLaser != -1) {
                 if (Main.npc[CalamityGlobalNPC.primeLaser].active)

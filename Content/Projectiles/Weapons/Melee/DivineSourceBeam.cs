@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.penetrate = -1;
             Projectile.timeLeft = 30;
             Projectile.tileCollide = false;

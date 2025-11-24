@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
                 if (!tabControlMelee.Tab && (ccItem.DamageType == DamageClass.Melee
                             || ccItem.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()
-                            || ccItem.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                            || ccItem.DamageType == CWRRef.GetTrueMeleeDamageClass()
                             || ccItem.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass())) {
                     continue;
                 }

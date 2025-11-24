@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -26,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
             Projectile.penetrate = -1;

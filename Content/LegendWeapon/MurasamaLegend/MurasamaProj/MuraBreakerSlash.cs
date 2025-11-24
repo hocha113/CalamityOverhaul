@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.CeaselessVoid;
@@ -36,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void SetDefaults() {
             Projectile.width = 432;
             Projectile.height = 432;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;

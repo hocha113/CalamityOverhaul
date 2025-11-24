@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             ownerOrientationLock = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 14 * UpdateRate;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             SetKnifeProperty();
             VaultUtils.SafeLoadItem(TargetID);
         }
