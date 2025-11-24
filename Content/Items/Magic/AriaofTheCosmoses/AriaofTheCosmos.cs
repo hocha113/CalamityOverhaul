@@ -5,6 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
+    /// <summary>
+    /// 寰宇咏叹调
+    /// </summary>
     internal class AriaofTheCosmos : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
