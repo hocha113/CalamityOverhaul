@@ -1816,6 +1816,7 @@ Projectiles: {
 	// AncientStormArc.DisplayName: Ancient Storm Arc
 	// TerrorSpirit.DisplayName: Terror Spirit
 	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
+	// AccretionDisk.DisplayName: Accretion Disk
 }
 
 Configs: {

@@ -1809,6 +1809,7 @@ Projectiles: {
 	AncientStormArc.DisplayName: 远古风暴闪电珠
 	TerrorSpirit.DisplayName: 惊惧怨灵
 	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
+	// AccretionDisk.DisplayName: Accretion Disk
 }
 
 Configs: {
