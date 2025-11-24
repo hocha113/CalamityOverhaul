@@ -25,6 +25,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
+    /// <summary>
+    /// 一个用于访问Calamity Mod内部内容的静态类
+    /// </summary>
     internal static class CWRRef
     {
         public static bool GetDownedPrimordialWyrm() => DownedBossSystem.downedPrimordialWyrm;
