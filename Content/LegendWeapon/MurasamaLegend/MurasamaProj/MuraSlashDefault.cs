@@ -25,11 +25,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private const int FrameUpdateInterval = 3;
         private const int DefaultHitCooldown = 8;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(MurasamaOverride.ID);       
-        public ref int HitCooldown => ref Owner.GetMurasamaHitCooldown();        
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(MurasamaOverride.ID);
+        public ref int HitCooldown => ref Owner.GetMurasamaHitCooldown();
         public bool onspan;
         public bool CanAttemptDead;
-        public bool Slashing = false;        
+        public bool Slashing = false;
         public bool Slash1 => Projectile.frame == 10;
         public bool Slash2 => Projectile.frame == 0;
         public bool Slash3 => Projectile.frame == 6;
@@ -66,10 +66,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Vector2 origin = frame.Size() * 0.5f;
             SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Color drawColor = MurasamaOverride.NameIsVergil(Owner) ? Color.Blue : Color.White;
-            
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + Projectile.velocity * 0.3f + new Vector2(0, -32).RotatedBy(Projectile.rotation), 
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + Projectile.velocity * 0.3f + new Vector2(0, -32).RotatedBy(Projectile.rotation),
                 frame, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
-            
+
             return false;
         }
 
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         #region AI部分
         public override void AI() {
             Projectile.SetProjtimesPierced(0);
-            
+
             if (!onspan) {
                 InitializeProjectile();
             }
@@ -153,11 +153,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void HandlePlayerInput() {
             Vector2 playerRotatedPoint = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
-            
+
             if (Projectile.IsOwnedByLocalPlayer()) {
-                bool canChannel = Owner.channel && !Owner.noItems && !Owner.CCed 
+                bool canChannel = Owner.channel && !Owner.noItems && !Owner.CCed
                     && Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] <= 0;
-                
+
                 if (canChannel) {
                     HandleChannelMovement(Owner, playerRotatedPoint);
                 }
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void UpdateRotationAndPosition() {
             float velocityAngle = Projectile.velocity.ToRotation();
-            
+
             if (Slashing || Slash1) {
                 Projectile.rotation = velocityAngle + (Projectile.direction == -1).ToInt() * MathHelper.Pi;
             }
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void PlayHitSound(NPC target) {
             float pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0;
-            
+
             if (!CWRLoad.NPCValue.ISTheofSteel(target)) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound() with { Pitch = pitch, Volume = 0.45f }, Projectile.Center);
             }
@@ -250,12 +250,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             float point = 0;
             Vector2 unitOffset = new Vector2(0, -32).RotatedBy(Projectile.rotation);
             Vector2 orig = Owner.GetPlayerStabilityCenter() + unitOffset;
-            
+
             float collisionLength = Slash3 ? Slash3CollisionLength : NormalCollisionLength;
             float collisionWidth = Slash3 ? Slash3CollisionWidth : NormalCollisionWidth;
-            
+
             Vector2 endPos = orig + ToMouse.UnitVector() * (collisionLength * Projectile.scale);
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), 
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                 orig, endPos, collisionWidth * Projectile.scale, ref point);
         }
 
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             ApplyBaseDamageModifiers(target, ref modifiers);
             ApplyBossDamageModifiers(target, ref modifiers);
             ApplyWormDamageModifiers(target, ref modifiers);
-            
+
             //无视防御
             modifiers.DefenseEffectiveness *= 0f;
         }
@@ -422,7 +422,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 if (Owner.CWR().RisingDragonCharged > MurasamaOverride.GetOnRDCD(Item)) {
                     Owner.CWR().RisingDragonCharged = MurasamaOverride.GetOnRDCD(Item);
                 }
-                
+
                 int type = ModContent.ProjectileType<MurasamaHeld>();
                 foreach (var p in Main.projectile) {
                     if (p.type == type && p.ModProjectile is MurasamaHeld murasamaHeldProj) {
@@ -442,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     PRT_Sparkle impactParticle2 = new(particlePosition, Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 4.5f);
                     PRTLoader.AddParticle(impactParticle2);
                 }
-                
+
                 PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 2.5f);
                 PRTLoader.AddParticle(impactParticle);
             }
@@ -451,14 +451,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private void SpawnHitSparks(NPC target) {
             float sparkCount = MathHelper.Clamp(Slash3 ? 18 - Projectile.numHits * 3 : 5 - Projectile.numHits * 2, 0, 18);
             float rotationOffset = Slash2 ? -0.45f * Owner.direction : Slash3 ? 0 : Slash1 ? 0.45f * Owner.direction : 0;
-            
+
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 sparkVelocity = Projectile.velocity.RotatedBy(rotationOffset).RotatedByRandom(0.35f) * Main.rand.NextFloat(0.5f, 1.8f);
                 int sparkLifetime = Main.rand.Next(23, 35);
                 float sparkScale = Main.rand.NextFloat(0.95f, 1.8f);
                 Color sparkColor = Slash3 ? (Main.rand.NextBool(3) ? Color.Red : Color.IndianRed) : (Main.rand.NextBool() ? Color.Red : Color.Firebrick);
                 Vector2 sparkPosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f;
-                
+
                 if (Main.rand.NextBool()) {
                     PRT_Spark spark = new(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)), sparkScale * (Slash3 ? 1.4f : 1f), sparkColor);
                     PRTLoader.AddParticle(spark);
@@ -473,12 +473,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private void SpawnHitDust(NPC target) {
             float dustCount = MathHelper.Clamp(Slash3 ? 25 - Projectile.numHits * 3 : 12 - Projectile.numHits * 2, 0, 25);
             float rotationOffset = Slash2 ? -0.45f * Owner.direction : Slash3 ? 0 : Slash1 ? 0.45f * Owner.direction : 0;
-            
+
             for (int i = 0; i <= dustCount; i++) {
                 int dustID = Main.rand.NextBool(3) ? 182 : (Main.rand.NextBool() ? (Slash3 ? 309 : 296) : 90);
                 Vector2 dustPosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f);
                 Vector2 dustVelocity = Projectile.velocity.RotatedBy(rotationOffset).RotatedByRandom(0.55f) * Main.rand.NextFloat(0.3f, 1.1f);
-                
+
                 Dust dust = Dust.NewDustPerfect(dustPosition, dustID, dustVelocity);
                 dust.scale = Main.rand.NextFloat(0.9f, 2.4f);
                 dust.noGravity = true;

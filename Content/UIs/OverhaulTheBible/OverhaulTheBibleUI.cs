@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
