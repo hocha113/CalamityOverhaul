@@ -16,23 +16,38 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
         public override int TargetID => ModContent.ItemType<AriaofTheCosmos>();
 
+        // 左键相关
         private int chargeTime;
-        private int maxChargeTime = 180; // 3秒最大蓄力
-        private int minChargeTime = 30;  // 0.5秒最小蓄力
+        private int maxChargeTime = 180;
+        private int minChargeTime = 30;
         private float chargeProgress;
         private int accretionDiskIndex = -1;
         private bool isCharging;
         private bool hasReleasedAttack;
 
+        // 右键相关
+        private int chargeTimeR;
+        private int maxChargeTimeR = 180;
+        private int minChargeTimeR = 30;
+        private float chargeProgressR;
+        private int flattenedDiskIndex = -1;
+        private bool isChargingR;
+        private bool hasReleasedAttackR;
+
         // 蓄力阶段
-        private const int Stage1 = 60;  // 1秒 - 第一阶段
-        private const int Stage2 = 120; // 2秒 - 第二阶段
-        private const int Stage3 = 180; // 3秒 - 第三阶段（最大）
+        private const int Stage1 = 60;
+        private const int Stage2 = 120;
+        private const int Stage3 = 180;
 
         // 视觉效果参数
         private float glowIntensity;
         private float particleTimer;
         private Color currentGlowColor;
+
+        // 右键视觉效果参数
+        private float glowIntensityR;
+        private float particleTimerR;
+        private Color currentGlowColorR;
 
         public override void SetMagicProperty() {
             Recoil = 0;
@@ -46,10 +61,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             GunPressure = 0;
             EnableRecoilRetroEffect = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;
+            CanRightClick = true;
         }
 
         public override void PostInOwner() {
-            // 检测鼠标按住状态
+            // 左键逻辑
             if (onFire && !hasReleasedAttack) {
                 isCharging = true;
                 chargeTime++;
@@ -58,27 +74,41 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     chargeTime = maxChargeTime;
                 }
 
-                // 计算蓄力进度
                 chargeProgress = MathHelper.Clamp(chargeTime / (float)maxChargeTime, 0f, 1f);
-
-                // 更新视觉效果
                 UpdateChargeEffects();
-
-                // 生成或更新吸积盘
                 UpdateAccretionDisk();
-
-                // 播放蓄力音效
                 PlayChargeSound();
             }
             else if (!onFire && isCharging) {
-                // 释放攻击
                 ReleaseAttack();
                 hasReleasedAttack = true;
                 isCharging = false;
             }
-            else if (!onFire) {
-                // 重置状态
+            else if (!onFire && !onFireR) {
                 ResetCharge();
+            }
+
+            // 右键逻辑
+            if (onFireR && !hasReleasedAttackR) {
+                isChargingR = true;
+                chargeTimeR++;
+                
+                if (chargeTimeR > maxChargeTimeR) {
+                    chargeTimeR = maxChargeTimeR;
+                }
+
+                chargeProgressR = MathHelper.Clamp(chargeTimeR / (float)maxChargeTimeR, 0f, 1f);
+                UpdateChargeEffectsR();
+                UpdateFlattenedDisk();
+                PlayChargeSoundR();
+            }
+            else if (!onFireR && isChargingR) {
+                ReleaseAttackR();
+                hasReleasedAttackR = true;
+                isChargingR = false;
+            }
+            else if (!onFireR && !onFire) {
+                ResetChargeR();
             }
         }
 
@@ -329,35 +359,246 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             accretionDiskIndex = -1;
         }
 
+        // 右键蓄力相关方法
+        private void UpdateChargeEffectsR() {
+            glowIntensityR = MathHelper.Lerp(0.3f, 1.5f, chargeProgressR);
+
+            // 右键使用蓝色系
+            if (chargeTimeR < Stage1) {
+                currentGlowColorR = Color.Lerp(Color.Cyan, Color.DeepSkyBlue, chargeProgressR * 3f);
+            }
+            else if (chargeTimeR < Stage2) {
+                float stage2Progress = (chargeTimeR - Stage1) / (float)(Stage2 - Stage1);
+                currentGlowColorR = Color.Lerp(Color.DeepSkyBlue, Color.Blue, stage2Progress);
+            }
+            else {
+                float stage3Progress = (chargeTimeR - Stage2) / (float)(Stage3 - Stage2);
+                currentGlowColorR = Color.Lerp(Color.Blue, Color.Purple, stage3Progress);
+            }
+
+            particleTimerR++;
+            if (particleTimerR >= (5 - chargeProgressR * 3)) {
+                SpawnChargeParticlesR();
+                particleTimerR = 0;
+            }
+
+            if (chargeTimeR >= Stage2) {
+                Owner.GetModPlayer<CWRPlayer>().GetScreenShake(chargeProgressR * 1.5f);
+            }
+        }
+
+        private void SpawnChargeParticlesR() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            int particleCount = (int)(1 + chargeProgressR * 3);
+            for (int i = 0; i < particleCount; i++) {
+                Vector2 particlePos = ShootPos + Main.rand.NextVector2Circular(30, 30);
+                Vector2 particleVel = (ShootPos - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
+
+                int dustType = Main.rand.Next(new[] { 59, 60, 62, 135 });
+                Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100, 
+                    currentGlowColorR * 0.8f, Main.rand.NextFloat(1f, 2f));
+                dust.noGravity = true;
+                dust.fadeIn = 1.2f;
+            }
+
+            if (chargeTimeR >= Stage2 && chargeTimeR % 10 == 0) {
+                SpawnEnergyRingR();
+            }
+        }
+
+        private void SpawnEnergyRingR() {
+            int segments = 32;
+            float radius = 20 + chargeProgressR * 40;
+
+            for (int i = 0; i < segments; i++) {
+                float angle = MathHelper.TwoPi * i / segments;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+                Vector2 particlePos = ShootPos + offset;
+
+                Dust dust = Dust.NewDustPerfect(particlePos, DustID.BlueTorch, Vector2.Zero, 100, 
+                    currentGlowColorR * 0.6f, Main.rand.NextFloat(1.2f, 1.8f));
+                dust.noGravity = true;
+                dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2f;
+            }
+        }
+
+        private void UpdateFlattenedDisk() {
+            if (flattenedDiskIndex == -1 || !Main.projectile[flattenedDiskIndex].active 
+                || Main.projectile[flattenedDiskIndex].type != ModContent.ProjectileType<FlattenedAccretionDisk>()) {
+                
+                flattenedDiskIndex = Projectile.NewProjectile(
+                    Source,
+                    ShootPos,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<FlattenedAccretionDisk>(),
+                    0,
+                    0,
+                    Owner.whoAmI
+                );
+            }
+
+            if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
+                Projectile disk = Main.projectile[flattenedDiskIndex];
+                disk.Center = ShootPos;
+                disk.timeLeft = 10;
+                disk.rotation = ToMouseA;
+
+                if (disk.ModProjectile is FlattenedAccretionDisk flattenedDisk) {
+                    float sizeScale = MathHelper.Lerp(0.3f, 2.0f, chargeProgressR);
+                    disk.scale = sizeScale;
+                    flattenedDisk.RotationSpeed = MathHelper.Lerp(0.8f, 2.5f, chargeProgressR);
+                    flattenedDisk.FlattenAngle = MathHelper.Lerp(0.8f, 0.5f, chargeProgressR);
+                    flattenedDisk.ChargeProgress = chargeProgressR;
+                    disk.alpha = 0;
+                }
+            }
+        }
+
+        private void PlayChargeSoundR() {
+            if (chargeTimeR == 1) {
+                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
+            }
+            else if (chargeTimeR == Stage1) {
+                SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.7f, Pitch = -0.5f }, Projectile.Center);
+            }
+            else if (chargeTimeR == Stage2) {
+                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
+            }
+        }
+
+        private void ReleaseAttackR() {
+            if (chargeTimeR < minChargeTimeR) {
+                ResetChargeR();
+                return;
+            }
+
+            // 清理压扁吸积盘
+            if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
+                Main.projectile[flattenedDiskIndex].Kill();
+            }
+
+            // 播放释放音效
+            PlayReleaseSoundR();
+
+            // 生成释放特效
+            SpawnReleaseEffectR();
+
+            // 屏幕震动
+            Owner.GetModPlayer<CWRPlayer>().GetScreenShake(3f + chargeProgressR * 8f);
+
+            // 消耗魔力
+            int manaCost = (int)(Item.mana * 0.8f * (1f + chargeProgressR * 0.5f));
+            Owner.statMana -= manaCost;
+            if (Owner.statMana < 0) {
+                Owner.statMana = 0;
+            }
+
+            chargeTimeR = 0;
+            flattenedDiskIndex = -1;
+        }
+
+        private void PlayReleaseSoundR() {
+            float volume = 0.7f + chargeProgressR * 0.3f;
+            float pitch = 0.1f + chargeProgressR * 0.4f;
+
+            SoundEngine.PlaySound(SoundID.Item84 with { Volume = volume, Pitch = pitch }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Volume = volume * 0.5f, Pitch = pitch }, Projectile.Center);
+
+            if (chargeProgressR >= 0.66f) {
+                SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
+            }
+        }
+
+        private void SpawnReleaseEffectR() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            int particleCount = (int)(25 + chargeProgressR * 50);
+            
+            for (int i = 0; i < particleCount; i++) {
+                float angle = MathHelper.TwoPi * i / particleCount;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f + chargeProgressR * 8f);
+                velocity.Y *= 0.6f; // 保持压扁效果
+
+                int dustType = Main.rand.Next(new[] { 59, 60, 62, 135, 226 });
+                Dust dust = Dust.NewDustPerfect(ShootPos, dustType, velocity, 100, 
+                    currentGlowColorR, Main.rand.NextFloat(1.5f, 2.5f));
+                dust.noGravity = true;
+            }
+
+            // 生成扁平冲击波
+            for (int i = 0; i < 2; i++) {
+                int segments = 48;
+                float radius = 30f + i * 40f + chargeProgressR * 40f;
+
+                for (int j = 0; j < segments; j++) {
+                    float angle = MathHelper.TwoPi * j / segments;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    offset.Y *= 0.6f;
+                    Vector2 particlePos = ShootPos + offset;
+
+                    Dust dust = Dust.NewDustPerfect(particlePos, DustID.BlueTorch, Vector2.Zero, 100, 
+                        currentGlowColorR * 0.5f, 1.8f);
+                    dust.noGravity = true;
+                    dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2.5f;
+                }
+            }
+        }
+
+        private void ResetChargeR() {
+            chargeTimeR = 0;
+            chargeProgressR = 0;
+            glowIntensityR = 0;
+            particleTimerR = 0;
+            hasReleasedAttackR = false;
+            
+            if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
+                Main.projectile[flattenedDiskIndex].Kill();
+            }
+            flattenedDiskIndex = -1;
+        }
+
         public override void FiringShoot() {
             // 蓄力武器不使用默认射击
         }
 
+        public override void FiringShootR() {
+            // 右键蓄力武器不使用默认射击
+        }
+
         public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             base.PostGunDraw(drawPos, ref lightColor);
-            // 绘制蓄力发光效果
+            
             if (isCharging && glowIntensity > 0) {
-                DrawChargeGlow(drawPos);
+                DrawChargeGlow(drawPos, currentGlowColor, glowIntensity);
+            }
+            
+            if (isChargingR && glowIntensityR > 0) {
+                DrawChargeGlow(drawPos, currentGlowColorR, glowIntensityR);
             }
         }
 
-        private void DrawChargeGlow(Vector2 drawPos) {
+        private void DrawChargeGlow(Vector2 drawPos, Color glowColor, float intensity) {
             Texture2D glowTexture = TextureValue;
-            Color glowColor = currentGlowColor * glowIntensity * 0.8f;
-            glowColor.A = 0;
+            Color color = glowColor * intensity * 0.8f;
+            color.A = 0;
 
-            float pulseScale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.1f * chargeProgress;
+            float pulseScale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.1f * intensity;
 
             // 多层发光
             for (int i = 0; i < 3; i++) {
                 float scale = Projectile.scale * (1f + i * 0.15f) * pulseScale;
-                float alpha = glowIntensity * (1f - i * 0.3f);
+                float alpha = intensity * (1f - i * 0.3f);
 
                 Main.EntitySpriteDraw(
                     glowTexture,
                     drawPos,
                     null,
-                    glowColor * alpha,
+                    color * alpha,
                     Projectile.rotation,
                     glowTexture.Size() / 2,
                     scale,
@@ -369,6 +610,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void OnKill(int timeLeft) {
             ResetCharge();
+            ResetChargeR();
         }
     }
 }

@@ -1816,6 +1816,8 @@ Projectiles: {
 	// TerrorSpirit.DisplayName: Terror Spirit
 	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
 	// AccretionDisk.DisplayName: Accretion Disk
+	// FlattenedAccretionDisk.DisplayName: Flattened Accretion Disk
+	// GammaRayBeam.DisplayName: Gamma Ray Beam
 }
 
 Configs: {

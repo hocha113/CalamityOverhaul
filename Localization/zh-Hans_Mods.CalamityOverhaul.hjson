@@ -1810,6 +1810,8 @@ Projectiles: {
 	TerrorSpirit.DisplayName: 惊惧怨灵
 	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
 	// AccretionDisk.DisplayName: Accretion Disk
+	// FlattenedAccretionDisk.DisplayName: Flattened Accretion Disk
+	// GammaRayBeam.DisplayName: Gamma Ray Beam
 }
 
 Configs: {
