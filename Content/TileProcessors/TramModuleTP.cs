@@ -52,10 +52,6 @@ namespace CalamityOverhaul.Content.TileProcessors
         [VaultLoaden(CWRConstant.UI + "SupertableUIs/TexturePackButtons")]
         internal static Asset<Texture2D> truesFromeAsset = null;
 
-        //网络同步标记
-        private bool _needsSyncToServer;
-        private int _syncCooldown;
-
         #endregion
 
         #region 属性
@@ -101,12 +97,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             for (int i = 0; i < ITEM_COUNT; i++) {
                 items[i] = ItemIO.Receive(reader, true);
             }
-
-            //如果客户端正在使用此工作台的UI，更新UI显示
-            if (Main.LocalPlayer.CWR().TramTPContrType == WhoAmI &&
-                SupertableUI.Instance?.Active == true) {
-                SyncItemsToUI();
-            }
+            SyncItemsToUI();
         }
 
         public override void SaveData(TagCompound tag) {
@@ -176,6 +167,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 SupertableUI.TramTP = this;
                 //同步物品到UI
                 SyncItemsToUI();
+                SendData();
                 SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
             }
             else {
@@ -189,6 +181,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 SupertableUI.TramTP = this;
                 //同步物品到UI
                 SyncItemsToUI();
+                SendData();
                 SupertableUI.Instance.Active = true;
 
                 //打开背包UI
@@ -212,9 +205,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 SaveItemsFromUI();
                 modPlayer.TramTPContrType = -1;
                 SupertableUI.Instance.Active = false;
-
-                //请求同步到服务器
-                RequestNetworkSync();
+                SendData();
             }
         }
 
@@ -239,9 +230,6 @@ namespace CalamityOverhaul.Content.TileProcessors
             for (int i = 0; i < ITEM_COUNT && i < SupertableUI.Instance.Items.Length; i++) {
                 items[i] = SupertableUI.Instance.Items[i]?.Clone() ?? new Item();
             }
-
-            //标记需要网络同步
-            RequestNetworkSync();
         }
 
         /// <summary>
@@ -256,35 +244,6 @@ namespace CalamityOverhaul.Content.TileProcessors
                 }
                 Main.instance.LoadItem(item.type);
             }
-        }
-
-        #endregion
-
-        #region 网络同步
-
-        /// <summary>
-        /// 请求网络同步
-        /// </summary>
-        private void RequestNetworkSync() {
-            if (VaultUtils.isSinglePlayer) return;
-
-            _needsSyncToServer = true;
-            _syncCooldown = 5; //5帧后同步，避免频繁网络请求
-        }
-
-        /// <summary>
-        /// 执行网络同步
-        /// </summary>
-        private void PerformNetworkSync() {
-            if (!_needsSyncToServer) return;
-
-            if (_syncCooldown > 0) {
-                _syncCooldown--;
-                return;
-            }
-
-            SendData();
-            _needsSyncToServer = false;
         }
 
         #endregion
@@ -310,7 +269,6 @@ namespace CalamityOverhaul.Content.TileProcessors
 
             //服务端不需要处理视觉效果
             if (VaultUtils.isServer) {
-                PerformNetworkSync();
                 return;
             }
 
@@ -325,9 +283,6 @@ namespace CalamityOverhaul.Content.TileProcessors
 
             //检查距离和玩家状态，自动关闭UI
             CheckAutoClose(player, modPlayer);
-
-            //执行网络同步
-            PerformNetworkSync();
         }
 
         private void UpdateMouseOver() {

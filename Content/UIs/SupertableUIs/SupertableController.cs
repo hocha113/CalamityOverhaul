@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 _lastMatchedRecipeNames = null;
             }
 
-            //TODO: 网络同步
+            //网络同步
             if (syncNetwork) {
                 SyncToNetwork();
             }
@@ -112,10 +112,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         /// <summary>
-        /// 网络同步(待实现)
+        /// 网络同步
         /// </summary>
         private void SyncToNetwork() {
-            //TODO: 实现网络同步逻辑
+            SupertableUI.TramTP?.SendData();
         }
 
         /// <summary>

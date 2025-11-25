@@ -338,6 +338,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (_controller.TryTakeResult(ref Main.mouseItem)) {
                     SoundEngine.PlaySound(SoundID.Grab);
                     SoundEngine.PlaySound(SoundID.Research);
+                    TramTP?.SendData();
                 }
             }
         }
@@ -525,6 +526,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (TramTP != null && TramTP.Active) {
                 //定期保存UI中的物品数据回TileProcessor
                 TramTP.SaveItemsFromUI();
+                TramTP?.SendData();
             }
         }
 
