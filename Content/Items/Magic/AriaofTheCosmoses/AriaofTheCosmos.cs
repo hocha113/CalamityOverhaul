@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
 
         public override void SetDefaults() {
-            Item.damage = 85;
+            Item.damage = 1285;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 20;
             Item.width = 52;

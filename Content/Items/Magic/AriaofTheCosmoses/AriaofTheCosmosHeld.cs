@@ -1,8 +1,8 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -42,14 +42,18 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private const int Stage3 = 180;
 
         //视觉效果参数
-        private float glowIntensity;
         private float particleTimer;
         private Color currentGlowColor;
 
         //右键视觉效果参数
-        private float glowIntensityR;
         private float particleTimerR;
         private Color currentGlowColorR;
+
+        //技能相关
+        private int qSkillCooldown;
+        private int rSkillCooldown;
+        private const int QSkillMaxCooldown = 120;  // 2秒冷却
+        private const int RSkillMaxCooldown = 180;  // 3秒冷却
 
         public override void SetMagicProperty() {
             Recoil = 0;
@@ -67,6 +71,78 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         public override void PostInOwner() {
+            //技能冷却更新
+            if (qSkillCooldown > 0) {
+                qSkillCooldown--;
+            }
+            if (rSkillCooldown > 0) {
+                rSkillCooldown--;
+            }
+
+            //Q技能检测 - 星环守护
+            if (CWRKeySystem.AriaofTheCosmos_Q.JustPressed && qSkillCooldown <= 0) {
+                if (Owner.CountProjectilesOfID<AriaQSkill>() == 0) {
+                    int qSkillIndex = Projectile.NewProjectile(
+                        Source,
+                        Owner.Center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<AriaQSkill>(),
+                        WeaponDamage,
+                        WeaponKnockback,
+                        Owner.whoAmI
+                    );
+
+                    if (qSkillIndex >= 0) {
+                        qSkillCooldown = QSkillMaxCooldown;
+
+                        // 消耗魔力
+                        int manaCost = Item.mana * 2;
+                        Owner.statMana -= manaCost;
+                        if (Owner.statMana < 0) {
+                            Owner.statMana = 0;
+                        }
+
+                        // 播放激活音效
+                        SoundEngine.PlaySound(SoundID.Item109 with { 
+                            Volume = 0.8f, 
+                            Pitch = 0.3f 
+                        }, Projectile.Center);
+                    }
+                }
+            }
+
+            //R技能检测 - 伽马暴击
+            if (CWRKeySystem.AriaofTheCosmos_R.JustPressed && rSkillCooldown <= 0) {
+                if (Owner.CountProjectilesOfID<AriaRSkill>() == 0) {
+                    int rSkillIndex = Projectile.NewProjectile(
+                        Source,
+                        Owner.Center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<AriaRSkill>(),
+                        (int)(WeaponDamage * 1.5f),
+                        WeaponKnockback * 1.5f,
+                        Owner.whoAmI
+                    );
+
+                    if (rSkillIndex >= 0) {
+                        rSkillCooldown = RSkillMaxCooldown;
+
+                        // 消耗魔力
+                        int manaCost = Item.mana * 3;
+                        Owner.statMana -= manaCost;
+                        if (Owner.statMana < 0) {
+                            Owner.statMana = 0;
+                        }
+
+                        // 播放激活音效
+                        SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { 
+                            Volume = 0.9f, 
+                            Pitch = -0.3f 
+                        }, Projectile.Center);
+                    }
+                }
+            }
+
             //左键逻辑
             if (onFire && !hasReleasedAttack) {
                 isCharging = true;
@@ -115,9 +191,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void UpdateChargeEffects() {
-            //更新发光强度
-            glowIntensity = MathHelper.Lerp(0.3f, 1.5f, chargeProgress);
-
             //根据蓄力阶段改变颜色
             if (chargeTime < Stage1) {
                 //第一阶段 - 黄橙色
@@ -197,7 +270,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     ShootPos,
                     Vector2.Zero,
                     ModContent.ProjectileType<AccretionDisk>(),
-                    Owner.GetShootState().WeaponDamage,
+                    Owner.GetShootState().WeaponDamage * 2,
                     Owner.GetShootState().WeaponKnockback,
                     Owner.whoAmI
                 );
@@ -340,7 +413,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private void ResetCharge() {
             chargeTime = 0;
             chargeProgress = 0;
-            glowIntensity = 0;
             particleTimer = 0;
             hasReleasedAttack = false;
 
@@ -353,8 +425,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         //右键蓄力相关方法
         private void UpdateChargeEffectsR() {
-            glowIntensityR = MathHelper.Lerp(0.3f, 1.5f, chargeProgressR);
-
             //右键使用蓝色系
             if (chargeTimeR < Stage1) {
                 currentGlowColorR = Color.Lerp(Color.Cyan, Color.DeepSkyBlue, chargeProgressR * 3f);
@@ -577,7 +647,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private void ResetChargeR() {
             chargeTimeR = 0;
             chargeProgressR = 0;
-            glowIntensityR = 0;
             particleTimerR = 0;
             hasReleasedAttackR = false;
 
@@ -597,40 +666,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             base.PostGunDraw(drawPos, ref lightColor);
-
-            if (isCharging && glowIntensity > 0) {
-                DrawChargeGlow(drawPos, currentGlowColor, glowIntensity);
-            }
-
-            if (isChargingR && glowIntensityR > 0) {
-                DrawChargeGlow(drawPos, currentGlowColorR, glowIntensityR);
-            }
-        }
-
-        private void DrawChargeGlow(Vector2 drawPos, Color glowColor, float intensity) {
-            Texture2D glowTexture = TextureValue;
-            Color color = glowColor * intensity * 0.8f;
-            color.A = 0;
-
-            float pulseScale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.1f * intensity;
-
-            //多层发光
-            for (int i = 0; i < 3; i++) {
-                float scale = Projectile.scale * (1f + i * 0.15f) * pulseScale;
-                float alpha = intensity * (1f - i * 0.3f);
-
-                Main.EntitySpriteDraw(
-                    glowTexture,
-                    drawPos,
-                    null,
-                    color * alpha,
-                    Projectile.rotation,
-                    glowTexture.Size() / 2,
-                    scale,
-                    DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically,
-                    0
-                );
-            }
         }
 
         public override void OnKill(int timeLeft) {

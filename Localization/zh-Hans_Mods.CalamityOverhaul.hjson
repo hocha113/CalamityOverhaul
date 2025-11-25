@@ -1812,6 +1812,11 @@ Projectiles: {
 	// AccretionDisk.DisplayName: Accretion Disk
 	// FlattenedAccretionDisk.DisplayName: Flattened Accretion Disk
 	// GammaRayBeam.DisplayName: Gamma Ray Beam
+	// AriaQSkill.DisplayName: Aria Q Skill
+	// AriaQSkillBolt.DisplayName: Aria Q Skill Bolt
+	// AriaQSkillDisk.DisplayName: Aria Q Skill Disk
+	// AriaRSkill.DisplayName: Aria R Skill
+	// AriaRSkillBeam.DisplayName: Aria R Skill Beam
 }
 
 Configs: {
@@ -2030,6 +2035,8 @@ Keybinds: {
 	Halibut_Skill_R.DisplayName: 大比目鱼:向右切换技能
 	Pandemonium_Q.DisplayName: 万魔殿:硫磺火天罚
 	Pandemonium_R.DisplayName: 万魔殿:万魔终焉
+	// AriaofTheCosmos_Q.DisplayName: Ariaof The Cosmos_ Q
+	// AriaofTheCosmos_R.DisplayName: Ariaof The Cosmos_ R
 }
 
 TextContent: {
