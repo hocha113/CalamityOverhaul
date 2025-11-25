@@ -238,8 +238,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }, Projectile.Center);
 
             //击中特效
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 15; i++) {
+            if (!VaultUtils.isServer && Projectile.velocity.Length() < 2) {
+                for (int i = 0; i < 15 * Projectile.scale; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                     Color particleColor = Color.Lerp(innerColor, outerColor, Main.rand.NextFloat());
                     
@@ -254,6 +254,40 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         Main.rand.NextFloat(0.2f, 0.3f)
                     );
                     PRTLoader.AddParticle(particle);
+                }
+
+                //放射状冲击粒子
+                for (int i = 0; i < 24 * Projectile.scale; i++) {
+                    float angle = MathHelper.TwoPi * i / 24f;
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 13f);
+
+                    PRT_GammaImpact burst = new PRT_GammaImpact(
+                        Projectile.Center,
+                        velocity,
+                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(0.5f, 0.75f) * Projectile.scale,
+                        Main.rand.Next(30, 45),
+                        Main.rand.NextFloat(-0.4f, 0.4f),
+                        false,
+                        0.3f
+                    );
+                    PRTLoader.AddParticle(burst);
+                }
+
+                //内爆收缩粒子
+                for (int i = 0; i < 15 * Projectile.scale; i++) {
+                    Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(90f, 90f);
+                    Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f);
+
+                    BasePRT implosion = new PRT_Spark(
+                        spawnPos,
+                        velocity,
+                        false,
+                        Main.rand.Next(20, 30),
+                        Main.rand.NextFloat(1f, 1.8f),
+                        Color.White
+                    );
+                    PRTLoader.AddParticle(implosion);
                 }
             }
         }

@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -317,31 +319,21 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             int particleCount = (int)(30 + chargeProgress * 70);
 
-            for (int i = 0; i < particleCount; i++) {
-                float angle = MathHelper.TwoPi * i / particleCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 15f + chargeProgress * 10f);
+            //内爆收缩粒子
+            for (int i = 0; i < 15 + particleCount; i++) {
+                Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(90f, 90f);
+                Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f);
 
-                int dustType = Main.rand.Next(new[] { 6, 259, 158, 234, 269 });
-                Dust dust = Dust.NewDustPerfect(ShootPos, dustType, velocity, 100,
-                    currentGlowColor, Main.rand.NextFloat(1.5f, 3f));
-                dust.noGravity = true;
-            }
-
-            //生成冲击波
-            for (int i = 0; i < 3; i++) {
-                int segments = 48;
-                float radius = 30f + i * 50f + chargeProgress * 50f;
-
-                for (int j = 0; j < segments; j++) {
-                    float angle = MathHelper.TwoPi * j / segments;
-                    Vector2 offset = angle.ToRotationVector2() * radius;
-                    Vector2 particlePos = ShootPos + offset;
-
-                    Dust dust = Dust.NewDustPerfect(particlePos, DustID.Sandnado, Vector2.Zero, 100,
-                        currentGlowColor * 0.5f, 2f);
-                    dust.noGravity = true;
-                    dust.velocity = offset.SafeNormalize(Vector2.Zero) * 3f;
-                }
+                BasePRT implosion = new PRT_Spark(
+                    spawnPos,
+                    velocity,
+                    false,
+                    Main.rand.Next(20, 30),
+                    Main.rand.NextFloat(1f, 1.8f),
+                    Color.White,
+                    Owner
+                );
+                PRTLoader.AddParticle(implosion);
             }
         }
 
@@ -397,11 +389,18 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particlePos = ShootPos + Main.rand.NextVector2Circular(30, 30);
                 Vector2 particleVel = (ShootPos - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
 
-                int dustType = Main.rand.Next(new[] { 59, 60, 62, 135 });
-                Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
-                    currentGlowColorR * 0.8f, Main.rand.NextFloat(1f, 2f));
-                dust.noGravity = true;
-                dust.fadeIn = 1.2f;
+                //使用高级粒子系统 - 蓝色系
+                BasePRT particle = new PRT_AccretionDiskImpact(
+                    particlePos,
+                    particleVel,
+                    currentGlowColorR * 0.9f,
+                    Main.rand.NextFloat(0.4f, 0.8f),
+                    Main.rand.Next(15, 25),
+                    Main.rand.NextFloat(-0.15f, 0.15f),
+                    false,
+                    Main.rand.NextFloat(0.15f, 0.25f)
+                );
+                PRTLoader.AddParticle(particle);
             }
 
             if (chargeTimeR >= Stage2 && chargeTimeR % 10 == 0) {
@@ -417,11 +416,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 float angle = MathHelper.TwoPi * i / segments;
                 Vector2 offset = angle.ToRotationVector2() * radius;
                 Vector2 particlePos = ShootPos + offset;
+                Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2f;
 
-                Dust dust = Dust.NewDustPerfect(particlePos, DustID.BlueTorch, Vector2.Zero, 100,
-                    currentGlowColorR * 0.6f, Main.rand.NextFloat(1.2f, 1.8f));
-                dust.noGravity = true;
-                dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2f;
+                //使用高级粒子创建能量环 - 蓝色系
+                BasePRT particle = new PRT_AccretionDiskImpact(
+                    particlePos,
+                    particleVel,
+                    currentGlowColorR * 0.7f,
+                    Main.rand.NextFloat(0.5f, 0.9f),
+                    Main.rand.Next(20, 30),
+                    Main.rand.NextFloat(-0.2f, 0.2f),
+                    false,
+                    Main.rand.NextFloat(0.18f, 0.28f)
+                );
+                PRTLoader.AddParticle(particle);
             }
         }
 
@@ -524,10 +532,18 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f + chargeProgressR * 8f);
                 velocity.Y *= 0.6f; //保持压扁效果
 
-                int dustType = Main.rand.Next(new[] { 59, 60, 62, 135, 226 });
-                Dust dust = Dust.NewDustPerfect(ShootPos, dustType, velocity, 100,
-                    currentGlowColorR, Main.rand.NextFloat(1.5f, 2.5f));
-                dust.noGravity = true;
+                //使用高级粒子创建释放爆发效果
+                BasePRT particle = new PRT_AccretionDiskImpact(
+                    ShootPos,
+                    velocity,
+                    currentGlowColorR,
+                    Main.rand.NextFloat(0.6f, 1.2f),
+                    Main.rand.Next(25, 40),
+                    Main.rand.NextFloat(-0.3f, 0.3f),
+                    true,
+                    Main.rand.NextFloat(0.2f, 0.35f)
+                );
+                PRTLoader.AddParticle(particle);
             }
 
             //生成扁平冲击波
@@ -540,11 +556,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 offset = angle.ToRotationVector2() * radius;
                     offset.Y *= 0.6f;
                     Vector2 particlePos = ShootPos + offset;
+                    Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2.5f;
 
-                    Dust dust = Dust.NewDustPerfect(particlePos, DustID.BlueTorch, Vector2.Zero, 100,
-                        currentGlowColorR * 0.5f, 1.8f);
-                    dust.noGravity = true;
-                    dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2.5f;
+                    //扁平冲击波粒子
+                    BasePRT particle = new PRT_AccretionDiskImpact(
+                        particlePos,
+                        particleVel,
+                        currentGlowColorR * 0.6f,
+                        Main.rand.NextFloat(0.7f, 1.3f),
+                        Main.rand.Next(30, 45),
+                        Main.rand.NextFloat(-0.25f, 0.25f),
+                        false,
+                        Main.rand.NextFloat(0.22f, 0.32f)
+                    );
+                    PRTLoader.AddParticle(particle);
                 }
             }
         }
