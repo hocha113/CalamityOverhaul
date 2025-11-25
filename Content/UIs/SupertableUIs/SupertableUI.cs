@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 生命周期方法
 
-        void ICWRLoader.SetupData() {
+        void ICWRLoader.SetupData() {//不要试图在这个接口钩子里使用this，对于实例来讲，this只是接口自己new的实例，和UIHandleLoader管理的实例无关
             Instance._controller = new SupertableController();
             Instance._sidebarManager = new RecipeSidebarManager(Instance);
             Instance._recipeNavigator = new RecipeNavigator(Instance, Instance._controller);
@@ -89,6 +89,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Instance._quickActionsManager = new QuickActionsManager(Instance, Instance._controller);
 
             LoadRecipe();
+
+            // 初始化侧边栏的配方元素
+            Instance._sidebarManager.InitializeRecipeElements();
             Instance._recipeNavigator.LoadAllRecipes();
         }
 
@@ -173,6 +176,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 AllRecipes.RemoveRange(AllRecipesVanillaContentCount, AllRecipes.Count - AllRecipesVanillaContentCount);
             }
             SetZenithWorldRecipesData();
+            
+            // 重新初始化侧边栏配方元素
+            Instance?._sidebarManager?.InitializeRecipeElements();
             Instance?._recipeNavigator?.LoadAllRecipes();
         }
 
