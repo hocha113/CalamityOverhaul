@@ -1,4 +1,6 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -25,9 +27,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float distortionStrength = 0.15f;
 
         //颜色配置
-        private Color innerColor = new Color(255, 200, 100); //内圈 - 明亮的黄橙色
-        private Color midColor = new Color(255, 120, 50);    //中圈 - 橙红色
-        private Color outerColor = new Color(100, 50, 150);  //外圈 - 紫色
+        private Color innerColor = new Color(255, 200, 100); //内圈
+        private Color midColor = new Color(255, 120, 50);    //中圈
+        private Color outerColor = new Color(100, 50, 150);  //外圈
 
         private bool isAttacking = false;
 
@@ -100,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             else {
                 //蓄力模式生成环绕粒子
-                if (Projectile.timeLeft % 3 == 0 && !Main.dedServ) {
+                if (Projectile.timeLeft % 3 == 0 && !VaultUtils.isServer) {
                     SpawnDiskParticles();
                 }
             }
@@ -142,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void SpawnDiskParticles() {
-            //在吸积盘边缘生成粒子
+            //在吸积盘边缘生成高级粒子
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float distance = Main.rand.NextFloat(InnerRadius, OuterRadius) * Projectile.width * 0.5f * Projectile.scale;
 
@@ -154,11 +156,41 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 particlePos = Projectile.Center + offset;
             Vector2 particleVel = Vector2.Normalize(offset.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(1f, 3f);
 
-            int dustType = Main.rand.Next(new[] { 6, 259, 158 });
-            Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
-                Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f));
-            dust.noGravity = true;
-            dust.fadeIn = 1.2f;
+            //计算距离中心的比例来决定颜色
+            float distanceRatio = (distance - InnerRadius * Projectile.width * 0.5f * Projectile.scale) / 
+                                 ((OuterRadius - InnerRadius) * Projectile.width * 0.5f * Projectile.scale);
+            Color particleColor = Color.Lerp(innerColor, outerColor, distanceRatio);
+
+            //创建高级粒子
+            BasePRT particle = new PRT_AccretionDiskImpact(
+                particlePos,
+                particleVel,
+                particleColor,
+                Main.rand.NextFloat(0.3f, 0.6f),
+                Main.rand.Next(20, 35),
+                Main.rand.NextFloat(-0.1f, 0.1f),
+                false,
+                Main.rand.NextFloat(0.12f, 0.18f)
+            );
+            PRTLoader.AddParticle(particle);
+
+            //放射状冲击粒子
+            for (int i = 0; i < 24; i++) {
+                float angle2 = MathHelper.TwoPi * i / 24f;
+                Vector2 velocity = angle2.ToRotationVector2() * Main.rand.NextFloat(6f, 13f);
+
+                PRT_GammaImpact burst = new PRT_GammaImpact(
+                    Projectile.Center,
+                    velocity,
+                    Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.5f, 0.75f),
+                    Main.rand.Next(30, 45),
+                    Main.rand.NextFloat(-0.4f, 0.4f),
+                    false,
+                    0.3f
+                );
+                PRTLoader.AddParticle(burst);
+            }
         }
 
         private void SpawnTrailParticles() {
@@ -171,11 +203,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particlePos = Projectile.Center + offset;
                 Vector2 particleVel = -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f);
 
-                int dustType = Main.rand.Next(new[] { 6, 259, 158, 234, 269 });
-                Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
-                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()) * 0.8f,
-                    Main.rand.NextFloat(1.5f, 3f));
-                dust.noGravity = true;
+                Color particleColor = Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()) * 0.9f;
+
+                //创建高级拖尾粒子
+                BasePRT particle = new PRT_AccretionDiskImpact(
+                    particlePos,
+                    particleVel,
+                    particleColor,
+                    Main.rand.NextFloat(0.4f, 0.8f),
+                    Main.rand.Next(15, 25),
+                    Main.rand.NextFloat(-0.2f, 0.2f),
+                    false,
+                    Main.rand.NextFloat(0.15f, 0.25f)
+                );
+                PRTLoader.AddParticle(particle);
             }
         }
 
@@ -200,11 +241,19 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 15; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                    int dustType = Main.rand.Next(new[] { 6, 259, 158 });
-                    Dust dust = Dust.NewDustPerfect(target.Center, dustType, velocity, 100,
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(1.5f, 2.5f));
-                    dust.noGravity = true;
+                    Color particleColor = Color.Lerp(innerColor, outerColor, Main.rand.NextFloat());
+                    
+                    BasePRT particle = new PRT_AccretionDiskImpact(
+                        target.Center,
+                        velocity,
+                        particleColor,
+                        Main.rand.NextFloat(0.5f, 1.0f),
+                        Main.rand.Next(20, 35),
+                        Main.rand.NextFloat(-0.3f, 0.3f),
+                        false,
+                        Main.rand.NextFloat(0.2f, 0.3f)
+                    );
+                    PRTLoader.AddParticle(particle);
                 }
             }
         }
@@ -221,12 +270,19 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 for (int i = 0; i < particleCount; i++) {
                     float angle = MathHelper.TwoPi * i / particleCount;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 12f);
+                    Color particleColor = Color.Lerp(innerColor, outerColor, Main.rand.NextFloat());
 
-                    int dustType = Main.rand.Next(new[] { 6, 259, 158, 234, 269 });
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, velocity, 100,
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(2f, 4f));
-                    dust.noGravity = true;
+                    BasePRT particle = new PRT_AccretionDiskImpact(
+                        Projectile.Center,
+                        velocity,
+                        particleColor,
+                        Main.rand.NextFloat(0.6f, 1.2f),
+                        Main.rand.Next(25, 45),
+                        Main.rand.NextFloat(-0.4f, 0.4f),
+                        false,
+                        Main.rand.NextFloat(0.15f, 0.25f)
+                    );
+                    PRTLoader.AddParticle(particle);
                 }
             }
         }
@@ -244,8 +300,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         private void DrawAccretionDisk() {
             SpriteBatch spriteBatch = Main.spriteBatch;
-
-
 
             {
                 //准备渲染状态
