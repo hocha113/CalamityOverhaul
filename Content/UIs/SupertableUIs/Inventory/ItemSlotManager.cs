@@ -154,6 +154,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
         /// </summary>
         public ref Item[] Slots => ref _slots;
 
+        public Item[] GetSlots() => _slots;
+
         /// <summary>
         /// 直接访问预览槽位数组(用于兼容性)
         /// </summary>

@@ -14,6 +14,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
@@ -37,17 +38,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 核心组件
 
-        private SupertableController _controller;
-        private RecipeSidebarManager _sidebarManager;
-        private RecipeNavigator _recipeNavigator;
-        private DragController _dragController;
-        private QuickActionsManager _quickActionsManager;
-        
+        internal SupertableController _controller;
+        internal RecipeSidebarManager _sidebarManager;
+        internal RecipeNavigator _recipeNavigator;
+        internal DragController _dragController;
+        internal QuickActionsManager _quickActionsManager;
+
         /// <summary>
         /// 获取配方导航器（供侧边栏等组件使用）
         /// </summary>
         internal RecipeNavigator RecipeNavigator => _recipeNavigator;
-        
+
         /// <summary>
         /// 获取侧边栏管理器（供配方导航器等组件使用）
         /// </summary>
@@ -58,22 +59,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #region UI状态字段
 
         /// <summary>
-        /// 获取当前UI中的物品数组（这是一个副本，修改需要同步回TileProcessor）
+        /// 获取当前UI中的物品数组
         /// </summary>
-        public Item[] Items
-        {
-            get => _controller?.SlotManager?.Slots;
-            set
-            {
-                if (_controller?.SlotManager != null && value != null)
-                {
-                    //复制物品数组，避免直接引用
-                    for (int i = 0; i < value.Length && i < _controller.SlotManager.Slots.Length; i++)
-                    {
-                        _controller.SlotManager.Slots[i] = value[i]?.Clone() ?? new Item();
-                    }
-                }
-            }
+        public Item[] Items {
+            get => _controller.SlotManager.Slots;
+            set => _controller.SlotManager.Slots = value;
         }
 
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
@@ -97,6 +87,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 //如果设置为关闭，立即清除延迟并开始关闭动画
                 if (!value) {
                     _controller.AnimationController.RequestDelayedClose(0);
+                    TramTP?.CloseUI(player);
                 }
 
                 SyncToNetworkIfNeeded();
@@ -235,10 +226,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             //先处理拖拽，因为它可能会改变DrawPosition
             _dragController?.Update();
-            
+
             //如果正在拖拽，占用鼠标接口
-            if (_dragController != null && _dragController.IsDragging)
-            {
+            if (_dragController != null && _dragController.IsDragging) {
                 player.mouseInterface = true;
             }
 
@@ -248,19 +238,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             _sidebarManager?.Update();
             _recipeNavigator?.Update();
             _quickActionsManager?.Update();
-            
+
             //定期自动保存到TileProcessor
-            if (Active && TramTP != null)
-            {
+            if (Active && TramTP != null) {
                 _autoSaveTimer++;
-                if (_autoSaveTimer >= AUTO_SAVE_INTERVAL)
-                {
+                if (_autoSaveTimer >= AUTO_SAVE_INTERVAL) {
                     _autoSaveTimer = 0;
                     TramTP.SaveItemsFromUI();
                 }
             }
-            else
-            {
+            else {
                 _autoSaveTimer = 0;
             }
         }
@@ -534,10 +521,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 网络同步
 
-        private static void SyncToNetworkIfNeeded()
-        {
-            if (TramTP != null && TramTP.Active)
-            {
+        private static void SyncToNetworkIfNeeded() {
+            if (TramTP != null && TramTP.Active) {
                 //定期保存UI中的物品数据回TileProcessor
                 TramTP.SaveItemsFromUI();
             }

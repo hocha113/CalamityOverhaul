@@ -107,8 +107,6 @@ namespace CalamityOverhaul.Content.TileProcessors
                 SupertableUI.Instance?.Active == true) {
                 SyncItemsToUI();
             }
-
-            //服务端不需要再次发送数据（避免循环）
         }
 
         public override void SaveData(TagCompound tag) {
@@ -176,6 +174,8 @@ namespace CalamityOverhaul.Content.TileProcessors
             //如果已经在使用此工作台，切换UI状态
             if (modPlayer.TramTPContrType == WhoAmI) {
                 SupertableUI.TramTP = this;
+                //同步物品到UI
+                SyncItemsToUI();
                 SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
             }
             else {
@@ -187,6 +187,8 @@ namespace CalamityOverhaul.Content.TileProcessors
                 //绑定到新工作台
                 modPlayer.TramTPContrType = WhoAmI;
                 SupertableUI.TramTP = this;
+                //同步物品到UI
+                SyncItemsToUI();
                 SupertableUI.Instance.Active = true;
 
                 //打开背包UI
@@ -194,9 +196,6 @@ namespace CalamityOverhaul.Content.TileProcessors
                     Main.playerInventory = true;
                 }
             }
-
-            //同步物品到UI
-            SyncItemsToUI();
 
             //预加载原版物品纹理
             PreloadItemTextures();
@@ -225,13 +224,9 @@ namespace CalamityOverhaul.Content.TileProcessors
         private void SyncItemsToUI() {
             if (SupertableUI.Instance == null) return;
 
-            //创建物品副本，避免直接引用
-            Item[] uiItems = new Item[ITEM_COUNT];
             for (int i = 0; i < ITEM_COUNT; i++) {
-                uiItems[i] = items[i]?.Clone() ?? new Item();
+                SupertableUI.Instance.Items[i] = items[i]?.Clone() ?? new Item();
             }
-
-            SupertableUI.Instance.Items = uiItems;
         }
 
         /// <summary>
