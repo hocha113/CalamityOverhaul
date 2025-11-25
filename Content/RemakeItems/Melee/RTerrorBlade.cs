@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                         Owner.Center,
                         velocity,
                         ModContent.ProjectileType<TerrorSpirit>(),
-                        Projectile.damage / 2,
+                        Projectile.damage / 5,
                         Projectile.knockBack,
                         Owner.whoAmI,
                         0, //状态：追踪敌人
@@ -371,7 +371,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.timeLeft = 280;
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void AI() {
