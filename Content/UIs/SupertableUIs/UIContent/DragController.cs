@@ -19,46 +19,38 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         public bool IsDragging => _isDragging;
         public Rectangle DragArea => _dragArea;
 
-        public DragController(SupertableUI mainUI)
-        {
+        public DragController(SupertableUI mainUI) {
             _mainUI = mainUI;
         }
 
-        public void Update()
-        {
-            if (_globalDontDragTime > 0)
-            {
+        public void Update() {
+            if (_globalDontDragTime > 0) {
                 _globalDontDragTime--;
             }
 
             //检查鼠标是否在拖拽区域内
-            bool hoverDragHandle = 
+            bool hoverDragHandle =
                                    _mainUI.hoverInMainPage; //确保在主UI范围内
 
             //如果鼠标拿着物品且在材料格子区域，禁止拖拽
-            if (Main.mouseItem.type > ItemID.None && _mainUI.HoverInPutItemCellPage)
-            {
+            if (Main.mouseItem.type > ItemID.None && _mainUI.HoverInPutItemCellPage) {
                 _globalDontDragTime = 2;
                 _isDragging = false;
                 return;
             }
 
             //开始拖拽
-            if (hoverDragHandle && _mainUI.keyLeftPressState == KeyPressState.Pressed && !_isDragging)
-            {
+            if (hoverDragHandle && _mainUI.keyLeftPressState == KeyPressState.Pressed && !_isDragging) {
                 _isDragging = true;
                 _dragOffset = _mainUI.MousePosition - _mainUI.DrawPosition;
             }
 
             //拖拽过程
-            if (_isDragging)
-            {
-                if (_mainUI.keyLeftPressState == KeyPressState.Released)
-                {
+            if (_isDragging) {
+                if (_mainUI.keyLeftPressState == KeyPressState.Released) {
                     _isDragging = false;
                 }
-                else
-                {
+                else {
                     //直接根据鼠标位置和偏移计算新位置
                     Vector2 targetPos = _mainUI.MousePosition - _dragOffset;
                     _mainUI.DrawPosition = ClampToScreen(targetPos);
@@ -66,20 +58,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             }
         }
 
-        private Vector2 ClampToScreen(Vector2 position)
-        {
+        private Vector2 ClampToScreen(Vector2 position) {
             float x = MathHelper.Clamp(position.X, 0, Main.screenWidth - _mainUI.Texture.Width);
             float y = MathHelper.Clamp(position.Y, 0, Main.screenHeight - _mainUI.Texture.Height);
             return new Vector2(x, y);
         }
 
-        public void SetDontDragTime(int frames)
-        {
+        public void SetDontDragTime(int frames) {
             _globalDontDragTime = frames;
         }
 
-        public static void SetGlobalDontDragTime(int frames)
-        {
+        public static void SetGlobalDontDragTime(int frames) {
             _globalDontDragTime = frames;
         }
     }

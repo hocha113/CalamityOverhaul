@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             get => player.CWR().SupertableUIStartBool || _controller.AnimationController.OpenProgress > 0;
             set {
                 player.CWR().SupertableUIStartBool = value;
-                
+
                 //如果设置为关闭，立即清除延迟并开始关闭动画
                 if (!value) {
                     _controller.AnimationController.RequestDelayedClose(0);
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 AllRecipes.RemoveRange(AllRecipesVanillaContentCount, AllRecipes.Count - AllRecipesVanillaContentCount);
             }
             SetZenithWorldRecipesData();
-            
+
             //重新初始化侧边栏配方元素
             Instance?._sidebarManager?.InitializeRecipeElements();
             Instance?._recipeNavigator?.LoadAllRecipes();
@@ -204,10 +204,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             //先处理拖拽，因为它可能会改变DrawPosition
             _dragController?.Update();
-            
+
             //如果正在拖拽，占用鼠标接口
-            if (_dragController != null && _dragController.IsDragging)
-            {
+            if (_dragController != null && _dragController.IsDragging) {
                 player.mouseInterface = true;
             }
 
@@ -368,7 +367,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             DrawHoverTooltips();
         }
-        
+
         private void DrawCloseButton(SpriteBatch spriteBatch, float alpha) {
             Texture2D closeIcon = CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon");
             spriteBatch.Draw(closeIcon, DrawPosition, null, Color.White * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
