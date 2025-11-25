@@ -2,7 +2,9 @@
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    //RecipeData
+    /// <summary>
+    /// 配方数据
+    /// </summary>
     public class RecipeData
     {
         public int Target { get; set; }

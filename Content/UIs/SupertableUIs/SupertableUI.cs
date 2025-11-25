@@ -42,14 +42,25 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private RecipeNavigator _recipeNavigator;
         private DragController _dragController;
         private QuickActionsManager _quickActionsManager;
+        
+        /// <summary>
+        /// 获取配方导航器（供侧边栏等组件使用）
+        /// </summary>
+        internal RecipeNavigator RecipeNavigator => _recipeNavigator;
+        
+        /// <summary>
+        /// 获取侧边栏管理器（供配方导航器等组件使用）
+        /// </summary>
+        internal RecipeSidebarManager SidebarManager => _sidebarManager;
 
         #endregion
 
         #region UI状态字段
 
         public ref Item[] Items => ref _controller.SlotManager.Slots;
-
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/")]
+        public static Texture2D MainValue;
+        public override Texture2D Texture => MainValue;
 
         private GridCoordinate _hoveredCell;
         private Rectangle _gridRectangle;
