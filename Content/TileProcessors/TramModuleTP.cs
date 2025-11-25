@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 }
                 Main.instance.LoadItem(item.type);
             }
-            SupertableUI.Instance.items = items;
+            SupertableUI.Instance.Items = items;
             if (!VaultUtils.isSinglePlayer) {
                 SendData();
             }
@@ -68,8 +68,8 @@ namespace CalamityOverhaul.Content.TileProcessors
             for (int i = 0; i < itemCount_W_X_H; i++) {
                 items[i] = ItemIO.Receive(reader, true);
             }
-            SupertableUI.Instance.items = items;
-            SupertableUI.Instance.FinalizeCraftingResult(false);//不要进行网络发送，否则会迭代起来引发网络数据洪流
+            SupertableUI.Instance.Items = items;
+            SupertableUI.TramTP.SendData();//不要进行网络发送，否则会迭代起来引发网络数据洪流
         }
 
         public override void SaveData(TagCompound tag) {

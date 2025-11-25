@@ -116,14 +116,13 @@ namespace CalamityOverhaul.Content.Tiles
                 playerTramType = tram.WhoAmI;
                 SupertableUI.TramTP = tram;
                 SupertableUI.Instance.Active = true;
-                SupertableUI.Instance.downSengsTime = 5;
                 if (SupertableUI.Instance.Active && !Main.playerInventory) {
                     //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                     Main.playerInventory = true;
                 }
             }
 
-            foreach (var item in SupertableUI.Instance.items) {//这里给原版物品预加载一下纹理，如果有的话
+            foreach (var item in SupertableUI.Instance.Items) {//这里给原版物品预加载一下纹理，如果有的话
                 if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
                     continue;
                 }

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private const int ChargeTime = 60; //1秒蓄力
         private const int FireTime = 90; //1.5秒持续时间
         private const int BeamCount = 9; //射线数量
-        
+
         private List<int> beamIndices = new();
         private float chargeProgress;
         private bool isFiring;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void AI() {
             Player player = Main.player[Projectile.owner];
-            
+
             if (!player.active || player.dead) {
                 Projectile.Kill();
                 return;
@@ -71,15 +71,15 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //蓄力音效
             if (currentTime == 1) {
-                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { 
-                    Volume = 0.8f, 
-                    Pitch = -0.3f 
+                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
+                    Volume = 0.8f,
+                    Pitch = -0.3f
                 }, Projectile.Center);
             }
             else if (currentTime == ChargeTime / 2) {
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { 
-                    Volume = 0.9f, 
-                    Pitch = 0f 
+                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
+                    Volume = 0.9f,
+                    Pitch = 0f
                 }, Projectile.Center);
             }
 
@@ -100,20 +100,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //发光效果
             float lightIntensity = chargeProgress * 1.5f;
-            Lighting.AddLight(Projectile.Center, 
+            Lighting.AddLight(Projectile.Center,
                 new Vector3(0.3f, 0.6f, 1f) * lightIntensity);
         }
 
         private void FirePhase(Player player) {
             //播放发射音效
-            SoundEngine.PlaySound(SoundID.Item109 with { 
-                Volume = 1.2f, 
-                Pitch = 0.5f 
+            SoundEngine.PlaySound(SoundID.Item109 with {
+                Volume = 1.2f,
+                Pitch = 0.5f
             }, Projectile.Center);
-            
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { 
-                Volume = 1f, 
-                Pitch = 0.3f 
+
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
+                Volume = 1f,
+                Pitch = 0.3f
             }, Projectile.Center);
 
             //强烈屏幕震动
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             foreach (int beamIndex in beamIndices) {
                 if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
                     if (Main.projectile[beamIndex].timeLeft < 10)
-                    Main.projectile[beamIndex].timeLeft = 10;
+                        Main.projectile[beamIndex].timeLeft = 10;
                 }
             }
 
@@ -308,9 +308,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //消失特效
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with { 
-                    Volume = 0.7f, 
-                    Pitch = 0.4f 
+                SoundEngine.PlaySound(SoundID.Item62 with {
+                    Volume = 0.7f,
+                    Pitch = 0.4f
                 }, Projectile.Center);
 
                 for (int i = 0; i < 40; i++) {
@@ -374,11 +374,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float p = 0f;
             return Collision.CheckAABBvLineCollision(
-                targetHitbox.TopLeft(), 
-                targetHitbox.Size(), 
-                Projectile.Center, 
-                Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength, 
-                beamWidth * 1.2f, 
+                targetHitbox.TopLeft(),
+                targetHitbox.Size(),
+                Projectile.Center,
+                Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength,
+                beamWidth * 1.2f,
                 ref p);
         }
 
@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (Main.rand.NextBool(4)) {
                 Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.5f, beamWidth * 0.5f);
                 Vector2 sparkVel = Main.rand.NextVector2Circular(1.5f, 1.5f);
-                
+
                 BasePRT spark = new PRT_Spark(
                     sparkPos + sparkVel * 10,
                     sparkVel,
@@ -463,7 +463,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (Main.rand.NextBool(3)) {
                 Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.4f, beamWidth * 0.4f);
                 Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
-                
+
                 BasePRT line = new PRT_Line(
                     lineStart + lineVel * 10,
                     lineVel,
@@ -644,8 +644,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 float alpha = (1f - i * 0.35f) * pulseIntensity;
 
                 Color glowColor = Color.Lerp(
-                    new Color(100, 220, 255), 
-                    new Color(150, 180, 255), 
+                    new Color(100, 220, 255),
+                    new Color(150, 180, 255),
                     i / 5f) * alpha;
 
                 sb.Draw(

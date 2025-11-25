@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 particleVel = Vector2.Normalize(offset.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(1f, 3f);
 
             //计算距离中心的比例来决定颜色
-            float distanceRatio = (distance - InnerRadius * Projectile.width * 0.5f * Projectile.scale) / 
+            float distanceRatio = (distance - InnerRadius * Projectile.width * 0.5f * Projectile.scale) /
                                  ((OuterRadius - InnerRadius) * Projectile.width * 0.5f * Projectile.scale);
             Color particleColor = Color.Lerp(innerColor, outerColor, distanceRatio);
 
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 for (int i = 0; i < 15 * Projectile.scale; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                     Color particleColor = Color.Lerp(innerColor, outerColor, Main.rand.NextFloat());
-                    
+
                     BasePRT particle = new PRT_AccretionDiskImpact(
                         target.Center,
                         velocity,

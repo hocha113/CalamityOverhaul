@@ -298,8 +298,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             try {
                 return MSRef.FindMagicStorage(item, Position, maxFindChestMode);
-            }
-            catch {
+            } catch {
                 return null;
             }
         }
@@ -310,7 +309,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal object FindStorageTarget(Item item) {
             //优先尝试查找箱子
             Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
-            
+
             if (chest != null) {
                 return chest;
             }
@@ -645,8 +644,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             try {
                 return MSRef.FindMagicStorage(graspItem, targetMagicStoragePos, CollectorTP.maxFindChestMode);
-            }
-            catch {
+            } catch {
                 return null;
             }
         }
@@ -793,7 +791,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                     //查找存储目标（箱子或Magic Storage）
                     object storageTarget = collectorTP.FindStorageTarget(graspItem);
-                    
+
                     if (storageTarget is Chest chest) {
                         targetChestPos = new Point16(chest.x, chest.y);
                         targetMagicStoragePos = Point16.NegativeOne;
@@ -815,8 +813,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                                     break;
                                 }
                             }
-                        }
-                        catch {
+                        } catch {
                             //找不到Magic Storage，丢弃物品
                             VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
                             graspItem.TurnToAir();
@@ -909,8 +906,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                             if (magicStorage != null) {
                                 MSRef.DepositItemMethod?.Invoke(magicStorage, [graspItem]);
                             }
-                        }
-                        catch {
+                        } catch {
                             //失败则掉落物品
                             VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
                         }

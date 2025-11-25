@@ -2,7 +2,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -103,9 +102,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         }
 
                         // 播放激活音效
-                        SoundEngine.PlaySound(SoundID.Item109 with { 
-                            Volume = 0.8f, 
-                            Pitch = 0.3f 
+                        SoundEngine.PlaySound(SoundID.Item109 with {
+                            Volume = 0.8f,
+                            Pitch = 0.3f
                         }, Projectile.Center);
                     }
                 }
@@ -135,9 +134,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         }
 
                         // 播放激活音效
-                        SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { 
-                            Volume = 0.9f, 
-                            Pitch = -0.3f 
+                        SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
+                            Volume = 0.9f,
+                            Pitch = -0.3f
                         }, Projectile.Center);
                     }
                 }

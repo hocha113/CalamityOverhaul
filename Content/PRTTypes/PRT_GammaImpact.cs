@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_GammaImpact : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Flashimpact";
-        
+
         private Color initialColor;
         private float initialScale;
         private float rotationSpeed;
         private bool affectedByGravity;
         public int inOwner = -1;
-        
+
         //动画参数
         private const int FrameColumns = 4;
         private const int FrameRows = 2;
@@ -32,8 +32,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             int lifetime,
             float rotationSpeed = 0f,
             bool affectedByGravity = false,
-            float animSpeed = 0.15f)
-        {
+            float animSpeed = 0.15f) {
             Position = position;
             Velocity = velocity;
             initialColor = color;
@@ -47,18 +46,15 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
-        public override void SetProperty()
-        {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ai[0] = Main.rand.Next(TotalFrames); // 随机起始帧
         }
 
-        public override void AI()
-        {
+        public override void AI() {
             //更新动画帧
             ai[0] += animationSpeed;
-            if (ai[0] >= TotalFrames)
-            {
+            if (ai[0] >= TotalFrames) {
                 ai[0] = 0;
             }
 
@@ -69,8 +65,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity *= 0.95f;
 
             //重力影响
-            if (affectedByGravity && Velocity.Length() < 12f)
-            {
+            if (affectedByGravity && Velocity.Length() < 12f) {
                 Velocity.X *= 0.94f;
                 Velocity.Y += 0.25f;
             }
@@ -82,7 +77,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             //颜色渐变和淡出
             float fadeProgress = (float)Math.Pow(lifeProgress, 2);
             Color = Color.Lerp(initialColor, Color.Transparent, fadeProgress);
-            
+
             //添加亮度脉冲
             float pulse = (float)Math.Sin(Time * 0.3f) * 0.3f + 0.7f;
             Opacity = (1f - fadeProgress) * pulse;
@@ -92,15 +87,14 @@ namespace CalamityOverhaul.Content.PRTTypes
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch)
-        {
+        public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
-            
+
             //计算当前帧
             int currentFrame = (int)ai[0];
             int frameX = currentFrame % FrameColumns;
             int frameY = currentFrame / FrameColumns;
-            
+
             //计算帧的源矩形
             int frameWidth = texture.Width / FrameColumns;
             int frameHeight = texture.Height / FrameRows;
@@ -110,7 +104,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                 frameWidth,
                 frameHeight
             );
-            
+
             Vector2 origin = new Vector2(frameWidth, frameHeight) * 0.5f;
             Vector2 drawPosition = Position - Main.screenPosition;
 

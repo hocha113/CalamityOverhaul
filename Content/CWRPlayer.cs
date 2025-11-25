@@ -9,7 +9,6 @@ using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using CalamityOverhaul.OtherMods.HighFPSSupport;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -374,22 +373,9 @@ namespace CalamityOverhaul.Content
             //   SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             //}
 
-            CraftingSlotHighlighter.Instance.eyEBool = true;
-
-            if (SupertableUI.Instance != null) {
-                SupertableUI.Instance.Active = false;
-            }
-
-            if (RecipeUI.Instance != null) {
-                RecipeUI.Instance.index = 0;
-                RecipeUI.Instance.LoadPreviewItems();
-            }
-
             if (OverhaulTheBibleUI.Instance != null) {
                 OverhaulTheBibleUI.Instance.Active = false;
             }
-
-            SupertableUI.LoadenWorld();
 
             SpearOfLonginus.ZenithWorldAsset();
 

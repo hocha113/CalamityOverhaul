@@ -51,14 +51,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Projectile.ai[0] = 1;
 
                 //播放激活音效
-                SoundEngine.PlaySound(SoundID.Item109 with { 
-                    Volume = 0.9f, 
-                    Pitch = 0.3f 
+                SoundEngine.PlaySound(SoundID.Item109 with {
+                    Volume = 0.9f,
+                    Pitch = 0.3f
                 }, Projectile.Center);
 
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { 
-                    Volume = 0.8f, 
-                    Pitch = -0.2f 
+                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
+                    Volume = 0.8f,
+                    Pitch = -0.2f
                 }, Projectile.Center);
 
                 //生成激活特效
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //发光效果
             float pulseIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 
+            Lighting.AddLight(Projectile.Center,
                 new Vector3(1f, 0.8f, 0.3f) * pulseIntensity * 0.8f);
         }
 
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             for (int i = 0; i < MaxDiskCount; i++) {
                 float angle = MathHelper.TwoPi * i / MaxDiskCount;
                 Vector2 offset = angle.ToRotationVector2() * orbitRadius;
-                
+
                 int diskIndex = Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     player.Center + offset,
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     angle,
                     Projectile.whoAmI
                 );
-                
+
                 diskIndices[i] = diskIndex;
             }
         }
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
 
                 Projectile disk = Main.projectile[diskIndices[i]];
-                
+
                 //更新轨道角度
                 float currentAngle = disk.ai[0] + orbitSpeed;
                 disk.ai[0] = currentAngle;
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
                 //计算轨道位置
                 Vector2 targetPos = player.Center + currentAngle.ToRotationVector2() * currentRadius;
-                
+
                 //平滑移动
                 disk.Center = Vector2.Lerp(disk.Center, targetPos, 0.18f);
                 disk.timeLeft = 10; //保持存活
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
 
                 Projectile disk = Main.projectile[diskIndices[i]];
-                
+
                 //在吸积盘轨迹上生成粒子
                 if (Main.rand.NextBool(2)) {
                     BasePRT particle = new PRT_AccretionDiskImpact(
@@ -184,13 +184,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Projectile disk = Main.projectile[diskIndices[i]];
                 Vector2 direction = disk.Center - player.Center;
                 float distance = direction.Length();
-                
+
                 //在连接线上生成粒子
                 int particleCount = (int)(distance / 40f);
                 for (int j = 0; j < particleCount; j++) {
                     float progress = j / (float)particleCount;
                     Vector2 particlePos = player.Center + direction * progress;
-                    
+
                     BasePRT particle = new PRT_AccretionDiskImpact(
                         particlePos,
                         Vector2.Zero,
@@ -263,16 +263,16 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //播放消失音效
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with { 
-                    Volume = 0.7f, 
-                    Pitch = 0.2f 
+                SoundEngine.PlaySound(SoundID.Item62 with {
+                    Volume = 0.7f,
+                    Pitch = 0.2f
                 }, Projectile.Center);
 
                 //消失特效
                 for (int i = 0; i < 40; i++) {
                     Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(150f, 150f);
                     Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
-                    
+
                     BasePRT particle = new PRT_AccretionDiskImpact(
                         spawnPos,
                         velocity,
@@ -302,12 +302,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float time;
         private float brightness = 1f;
         private float distortionStrength = 0.12f;
-        
+
         //颜色配置
         private Color innerColor = new Color(255, 230, 150);
         private Color midColor = new Color(255, 180, 100);
         private Color outerColor = new Color(220, 130, 60);
-        
+
         private float attackCooldown;
         private const float MaxAttackCooldown = 45f; //1.5秒攻击间隔
         private float rotationSpeed = 2.5f;
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             //发射迷你追踪吸积盘
             Vector2 velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
-            
+
             int miniDisk = Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center,
@@ -398,9 +398,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             );
 
             //攻击音效
-            SoundEngine.PlaySound(SoundID.Item9 with { 
-                Volume = 0.5f, 
-                Pitch = 0.7f 
+            SoundEngine.PlaySound(SoundID.Item9 with {
+                Volume = 0.5f,
+                Pitch = 0.7f
             }, Projectile.Center);
 
             //攻击特效
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             float distance = Main.rand.NextFloat(0.3f, 0.7f) * Projectile.width * 0.5f * Projectile.scale;
             Vector2 offset = angle.ToRotationVector2() * distance;
             Vector2 particleVel = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * 0.8f;
-            
+
             BasePRT particle = new PRT_AccretionDiskImpact(
                 Projectile.Center + offset,
                 particleVel,
@@ -595,7 +595,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float time;
         private float brightness = 1f;
         private float rotationSpeed = 3f;
-        
+
         private Color innerColor = new Color(255, 230, 150);
         private Color midColor = new Color(255, 180, 100);
         private Color outerColor = new Color(220, 130, 60);
@@ -698,9 +698,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
 
             //击中音效
-            SoundEngine.PlaySound(SoundID.Item14 with { 
-                Volume = 0.4f, 
-                Pitch = 0.5f 
+            SoundEngine.PlaySound(SoundID.Item14 with {
+                Volume = 0.4f,
+                Pitch = 0.5f
             }, target.Center);
 
             //穿透伤害衰减

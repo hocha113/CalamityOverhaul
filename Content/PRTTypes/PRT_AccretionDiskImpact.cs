@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -33,8 +32,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             int lifetime,
             float rotationSpeed = 0f,
             bool affectedByGravity = false,
-            float animSpeed = 0.15f)
-        {
+            float animSpeed = 0.15f) {
             Position = position;
             Velocity = velocity;
             initialColor = color;
@@ -48,18 +46,15 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
-        public override void SetProperty()
-        {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ai[0] = Main.rand.Next(TotalFrames); // 随机起始帧
         }
 
-        public override void AI()
-        {
+        public override void AI() {
             //更新动画帧
             ai[0] += animationSpeed;
-            if (ai[0] >= TotalFrames)
-            {
+            if (ai[0] >= TotalFrames) {
                 ai[0] = 0;
             }
 
@@ -70,8 +65,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity *= 0.95f;
 
             //重力影响
-            if (affectedByGravity && Velocity.Length() < 12f)
-            {
+            if (affectedByGravity && Velocity.Length() < 12f) {
                 Velocity.X *= 0.94f;
                 Velocity.Y += 0.25f;
             }
@@ -88,14 +82,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             float pulse = (float)Math.Sin(Time * 0.3f) * 0.3f + 0.7f;
             Opacity = (1f - fadeProgress) * pulse;
 
-            if (inOwner >= 0)
-            {
+            if (inOwner >= 0) {
                 Position += Main.player[inOwner].CWR().PlayerPositionChange;
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch)
-        {
+        public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
 
             //计算当前帧

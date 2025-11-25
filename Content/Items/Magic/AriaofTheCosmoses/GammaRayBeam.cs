@@ -1,12 +1,12 @@
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using InnoVault.PRT;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (Main.rand.NextBool(6)) {
                 Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.4f, beamWidth * 0.4f);
                 Vector2 sparkVel = Main.rand.NextVector2Circular(1f, 1f);
-                
+
                 BasePRT spark = new PRT_Spark(
                     sparkPos,
                     sparkVel,
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (Main.rand.NextBool(5)) {
                 Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.3f, beamWidth * 0.3f);
                 Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-                
+
                 BasePRT line = new PRT_Line(
                     lineStart,
                     lineVel,
