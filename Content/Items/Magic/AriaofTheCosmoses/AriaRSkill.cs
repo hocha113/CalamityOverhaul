@@ -12,16 +12,16 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
     /// <summary>
-    /// 寰宇咏叹调R技能 - 伽马暴击
+    /// 寰宇咏叹调R技能，伽马射线爆
     /// 向鼠标方向释放多道伽马射线束，造成大范围毁灭性伤害
     /// </summary>
     internal class AriaRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private const int ChargeTime = 60; // 1秒蓄力
-        private const int FireTime = 90; // 1.5秒持续时间
-        private const int BeamCount = 9; // 射线数量
+        private const int ChargeTime = 60; //1秒蓄力
+        private const int FireTime = 90; //1.5秒持续时间
+        private const int BeamCount = 9; //射线数量
         
         private List<int> beamIndices = new();
         private float chargeProgress;
@@ -47,19 +47,19 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            // 跟随玩家
+            //跟随玩家
             Projectile.Center = player.Center;
 
-            // 蓄力阶段
+            //蓄力阶段
             if (Projectile.timeLeft > FireTime) {
                 ChargePhase(player);
             }
-            // 发射阶段
+            //发射阶段
             else if (!isFiring) {
                 FirePhase(player);
                 isFiring = true;
             }
-            // 维持阶段
+            //维持阶段
             else {
                 MaintainPhase(player);
             }
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             int currentTime = ChargeTime - (Projectile.timeLeft - FireTime);
             chargeProgress = MathHelper.Clamp(currentTime / (float)ChargeTime, 0f, 1f);
 
-            // 蓄力音效
+            //蓄力音效
             if (currentTime == 1) {
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { 
                     Volume = 0.8f, 
@@ -83,29 +83,29 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }, Projectile.Center);
             }
 
-            // 蓄力粒子
+            //蓄力粒子
             if (currentTime % 2 == 0) {
                 SpawnChargeParticles(player);
             }
 
-            // 蓄力能量环
+            //蓄力能量环
             if (currentTime % 8 == 0) {
                 SpawnChargeRing(player);
             }
 
-            // 屏幕震动
+            //屏幕震动
             if (chargeProgress > 0.5f) {
                 player.GetModPlayer<CWRPlayer>().GetScreenShake(chargeProgress * 3f);
             }
 
-            // 发光效果
+            //发光效果
             float lightIntensity = chargeProgress * 1.5f;
             Lighting.AddLight(Projectile.Center, 
                 new Vector3(0.3f, 0.6f, 1f) * lightIntensity);
         }
 
         private void FirePhase(Player player) {
-            // 播放发射音效
+            //播放发射音效
             SoundEngine.PlaySound(SoundID.Item109 with { 
                 Volume = 1.2f, 
                 Pitch = 0.5f 
@@ -116,12 +116,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Pitch = 0.3f 
             }, Projectile.Center);
 
-            // 强烈屏幕震动
+            //强烈屏幕震动
             player.GetModPlayer<CWRPlayer>().GetScreenShake(15f);
 
-            // 创建多道伽马射线
+            //创建多道伽马射线
             Vector2 mouseDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
-            float spreadAngle = MathHelper.ToRadians(45f); // 45度扩散角
+            float spreadAngle = MathHelper.ToRadians(45f); //45度扩散角
 
             for (int i = 0; i < BeamCount; i++) {
                 float angleOffset = MathHelper.Lerp(-spreadAngle / 2, spreadAngle / 2, i / (float)(BeamCount - 1));
@@ -141,12 +141,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 beamIndices.Add(beamIndex);
             }
 
-            // 发射特效
+            //发射特效
             SpawnFireEffect(player, mouseDirection);
         }
 
         private void MaintainPhase(Player player) {
-            // 维持射线存活
+            //维持射线存活
             foreach (int beamIndex in beamIndices) {
                 if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
                     if (Main.projectile[beamIndex].timeLeft < 10)
@@ -154,15 +154,15 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            // 持续粒子效果
+            //持续粒子效果
             if (Projectile.timeLeft % 3 == 0) {
                 SpawnMaintainParticles(player);
             }
 
-            // 发光
+            //发光
             Lighting.AddLight(Projectile.Center, new Vector3(0.5f, 0.8f, 1.2f) * 1.2f);
 
-            // 淡出效果
+            //淡出效果
             if (Projectile.timeLeft < 20) {
                 float fadeProgress = Projectile.timeLeft / 20f;
                 foreach (int beamIndex in beamIndices) {
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            // 爆发粒子
+            //爆发粒子
             for (int i = 0; i < 100; i++) {
                 float angle = MathHelper.TwoPi * i / 100f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 20f);
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 PRTLoader.AddParticle(particle);
             }
 
-            // 方向性冲击波
+            //方向性冲击波
             for (int ring = 0; ring < 3; ring++) {
                 int segments = 32;
                 float radius = 50f + ring * 80f;
@@ -299,14 +299,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         public override void OnKill(int timeLeft) {
-            // 清理所有射线
+            //清理所有射线
             foreach (int beamIndex in beamIndices) {
                 if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
                     Main.projectile[beamIndex].Kill();
                 }
             }
 
-            // 消失特效
+            //消失特效
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item62 with { 
                     Volume = 0.7f, 
@@ -411,16 +411,16 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 coreIntensity = 1.8f + pulse * 0.4f;
             }
 
-            // 生成能量粒子
+            //生成能量粒子
             SpawnEnergyParticles();
 
-            // 发光效果
+            //发光效果
             Lighting.AddLight(Projectile.Center,
                 0.3f * coreIntensity,
                 0.8f * coreIntensity,
                 1.2f * coreIntensity);
 
-            // 音效
+            //音效
             if (Projectile.timeLeft % 40 == 0) {
                 SoundEngine.PlaySound(SoundID.Item15 with {
                     Volume = 0.35f,
@@ -442,7 +442,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            // 星光闪烁
+            //星光闪烁
             if (Main.rand.NextBool(4)) {
                 Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.5f, beamWidth * 0.5f);
                 Vector2 sparkVel = Main.rand.NextVector2Circular(1.5f, 1.5f);
@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 PRTLoader.AddParticle(spark);
             }
 
-            // 能量流线
+            //能量流线
             if (Main.rand.NextBool(3)) {
                 Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.4f, beamWidth * 0.4f);
                 Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
@@ -481,14 +481,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            // 击中音效
+            //击中音效
             SoundEngine.PlaySound(SoundID.Item94 with {
                 Volume = 0.4f,
                 Pitch = 0.5f
             }, target.Center);
 
             if (!VaultUtils.isServer) {
-                // 伽马冲击粒子
+                //伽马冲击粒子
                 for (int i = 0; i < 10; i++) {
                     float angle = MathHelper.TwoPi * i / 10f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
@@ -506,7 +506,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     PRTLoader.AddParticle(impactBurst);
                 }
 
-                // 光芒粒子
+                //光芒粒子
                 for (int i = 0; i < 12; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(25f, 25f);
 
@@ -524,19 +524,19 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            // 穿透伤害衰减
+            //穿透伤害衰减
             Projectile.damage = (int)(Projectile.damage * 0.92f);
         }
 
         public override void OnKill(int timeLeft) {
-            // 消失爆炸效果
+            //消失爆炸效果
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item62 with {
                     Volume = 0.6f,
                     Pitch = 0.4f
                 }, Projectile.Center);
 
-                // 放射状粒子爆发
+                //放射状粒子爆发
                 for (int i = 0; i < 30; i++) {
                     float angle = MathHelper.TwoPi * i / 30f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 16f);
@@ -555,7 +555,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     PRTLoader.AddParticle(burst);
                 }
 
-                // 内爆收缩粒子
+                //内爆收缩粒子
                 for (int i = 0; i < 20; i++) {
                     Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(120f, 120f);
                     Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(12f, 22f);

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
     /// <summary>
-    /// 压扁的3D吸积盘 - 右键蓄力专用
+    /// 压扁的3D吸积盘
     /// </summary>
     internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable
     {
