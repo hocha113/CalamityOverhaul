@@ -439,7 +439,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 }
             }
             else if (Projectile.ai[0] == 6) {
-                modifiers.FinalDamage *= 1.25f;
                 if (isBrimstoneHeart) {
                     modifiers.FinalDamage *= 1.45f;
                     modifiers.DefenseEffectiveness *= 0f;
