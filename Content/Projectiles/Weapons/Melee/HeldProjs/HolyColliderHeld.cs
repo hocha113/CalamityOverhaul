@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.alpha = 255;
             Projectile.extraUpdates = 4;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 2 * UpdateRate;
+            Projectile.localNPCHitCooldown = -1;
             distanceToOwner = 32;
             drawTrailTopWidth = 70;
             canDrawSlashTrail = true;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
                 //生成强化的火焰冲击
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, unitToM2
-                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack * 2
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 4, Projectile.knockBack * 2
                 , Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
 
                 //屏幕震动
@@ -78,9 +78,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
             Vector2 unitToM = UnitToMouseV;
 
-            //生成火焰斩击
+            //生成火焰冲击
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, unitToM
-                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 5, Projectile.knockBack, Owner.whoAmI);
 
             //小范围震动
             Owner.CWR().GetScreenShake(4f);
@@ -112,7 +112,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 return;
             }
             else if (Projectile.ai[0] == 2) {
-                Projectile.localNPCHitCooldown = 6 * UpdateRate;
                 //蓄力重击
                 canDrawSlashTrail = false;
                 OtherMeleeSize = 1.05f;
@@ -182,7 +181,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Projectile.localNPCHitCooldown = target.IsWormBody() ? -1 : 2 * UpdateRate;
 
             //击中音效
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with { Pitch = 0.3f, Volume = 0.8f }, target.Center);

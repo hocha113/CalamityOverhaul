@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.height = 48;
             Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 45;
             distanceToOwner = 125;
             drawTrailTopWidth = 90;
             Length = 80;
@@ -101,6 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 }
             }
             else if (Projectile.ai[0] == 2) {
+                Projectile.localNPCHitCooldown = 30;
                 if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6) / speedUp;
@@ -127,6 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 }
             }
             else if (Projectile.ai[0] == 3) {
+                Projectile.localNPCHitCooldown = 15;
                 if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation());
                     speed = 1 + 0.6f / UpdateRate;
@@ -238,7 +240,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 canFormOwnerSetDir = false;
                 canSetOwnerArmBver = false;
                 Projectile.usesLocalNPCImmunity = true;
-                Projectile.localNPCHitCooldown = 6;
+                Projectile.localNPCHitCooldown = 15;
                 if (Time == 0) {
                     distanceToOwner = 155;
                     drawTrailTopWidth = 60;
