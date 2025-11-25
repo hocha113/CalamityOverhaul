@@ -5,15 +5,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     /// <summary>
     /// 网格坐标结构，提供索引和坐标之间的转换
     /// </summary>
-    public readonly struct GridCoordinate : IEquatable<GridCoordinate>
+    public readonly struct GridCoordinate(int x, int y) : IEquatable<GridCoordinate>
     {
-        public readonly int X;
-        public readonly int Y;
-
-        public GridCoordinate(int x, int y) {
-            X = x;
-            Y = y;
-        }
+        public readonly int X = x;
+        public readonly int Y = y;
 
         public GridCoordinate(Point point) : this(point.X, point.Y) { }
 

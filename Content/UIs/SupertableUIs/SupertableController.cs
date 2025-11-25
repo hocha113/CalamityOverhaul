@@ -8,7 +8,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
     /// 超级工作台主控制器，协调各个模块的工作
-    /// 这是重构后的核心类，采用了职责分离的设计
     /// </summary>
     public class SupertableController
     {
