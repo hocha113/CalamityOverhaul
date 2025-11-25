@@ -19,8 +19,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// 超级工作台UI - 重构版本
-    /// 使用新的模块化架构，职责分离，易于维护和扩展
+    /// 欧米茄物质聚合仪UI
     /// </summary>
     public class SupertableUI : UIHandle, ICWRLoader
     {
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             set {
                 player.CWR().SupertableUIStartBool = value;
                 
-                // 如果设置为关闭，立即清除延迟并开始关闭动画
+                //如果设置为关闭，立即清除延迟并开始关闭动画
                 if (!value) {
                     _controller.AnimationController.RequestDelayedClose(0);
                 }
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             LoadRecipe();
 
-            // 初始化侧边栏的配方元素
+            //初始化侧边栏的配方元素
             Instance._sidebarManager.InitializeRecipeElements();
             Instance._recipeNavigator.LoadAllRecipes();
         }
@@ -177,7 +176,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             SetZenithWorldRecipesData();
             
-            // 重新初始化侧边栏配方元素
+            //重新初始化侧边栏配方元素
             Instance?._sidebarManager?.InitializeRecipeElements();
             Instance?._recipeNavigator?.LoadAllRecipes();
         }
@@ -203,16 +202,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             int hoveredIndex = _hoveredCell.IsValid() ? _hoveredCell.ToIndex() : -1;
             _controller.UpdateAnimations(player.CWR().SupertableUIStartBool, hoveredIndex);
 
-            // 先处理拖拽，因为它可能会改变DrawPosition
+            //先处理拖拽，因为它可能会改变DrawPosition
             _dragController?.Update();
             
-            // 如果正在拖拽，占用鼠标接口
+            //如果正在拖拽，占用鼠标接口
             if (_dragController != null && _dragController.IsDragging)
             {
                 player.mouseInterface = true;
             }
 
-            // 然后处理其他输入
+            //然后处理其他输入
             HandleInput();
 
             _sidebarManager?.Update();
@@ -272,14 +271,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #region 输入处理
 
         private void HandleInput() {
-            // 处理关闭按钮 - 提高优先级
+            //处理关闭按钮 - 提高优先级
             if (OnCloseButton) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = SupertableConstants.SOUND_PITCH_CLOSE });
-                    // 立即关闭UI并触发关闭动画
+                    //立即关闭UI并触发关闭动画
                     Active = false;
-                    _controller.AnimationController.RequestDelayedClose(0); // 立即开始关闭动画
+                    _controller.AnimationController.RequestDelayedClose(0); //立即开始关闭动画
                     SyncToNetworkIfNeeded();
                 }
                 return;

@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 _globalDontDragTime--;
             }
 
-            // 检查鼠标是否在拖拽区域内
+            //检查鼠标是否在拖拽区域内
             bool hoverDragHandle = 
-                                   _mainUI.hoverInMainPage; // 确保在主UI范围内
+                                   _mainUI.hoverInMainPage; //确保在主UI范围内
 
-            // 如果鼠标拿着物品且在材料格子区域，禁止拖拽
+            //如果鼠标拿着物品且在材料格子区域，禁止拖拽
             if (Main.mouseItem.type > ItemID.None && _mainUI.HoverInPutItemCellPage)
             {
                 _globalDontDragTime = 2;
@@ -43,14 +43,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 return;
             }
 
-            // 开始拖拽
+            //开始拖拽
             if (hoverDragHandle && _mainUI.keyLeftPressState == KeyPressState.Pressed && !_isDragging)
             {
                 _isDragging = true;
                 _dragOffset = _mainUI.MousePosition - _mainUI.DrawPosition;
             }
 
-            // 拖拽过程
+            //拖拽过程
             if (_isDragging)
             {
                 if (_mainUI.keyLeftPressState == KeyPressState.Released)
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 }
                 else
                 {
-                    // 直接根据鼠标位置和偏移计算新位置
+                    //直接根据鼠标位置和偏移计算新位置
                     Vector2 targetPos = _mainUI.MousePosition - _dragOffset;
                     _mainUI.DrawPosition = ClampToScreen(targetPos);
                 }

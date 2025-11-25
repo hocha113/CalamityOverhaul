@@ -5,7 +5,7 @@ using System.Linq;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
     /*
-        // Draedon (introduction)
+        //Draedon (introduction)
         DraedonIntroductionText1: 你知道吗？这一刻已经等了太久了。
         DraedonIntroductionText2: 我对一切未知感到着迷，但最让我着迷的莫过于你的本质。
         DraedonIntroductionText3: 我将会向你展示，我那些超越神明的造物。
@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         DraedonIntroductionText5: 现在，选择吧。
         DraedonResummonText: 做出你的选择。
         DraedonBossRushText: 做出你的选择。你有20秒的时间。
-        // Draedon (Exo Mechs mid-battle dialogue)
+        //Draedon (Exo Mechs mid-battle dialogue)
         DraedonExoPhase1Text1: 时间与知识的积累带来的不断改进，正是我作品精华所在。
         DraedonExoPhase1Text2: 接近完美的方法，除此再无。
         DraedonExoPhase2Text1: 很好，很好，你的表现水平完全就在误差范围之内。
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         DraedonExoPhase6Text2: 我不会再让那些无用的计算干扰我对这场战斗的观察了。
         DraedonExoPhase6Text3: 我将向你展示，我终极造物的全部威力。
         DraedonAresEnrageText: 真是愚昧，你是无法逃跑的。
-        // Draedon (ending)
+        //Draedon (ending)
         DraedonEndText1: 一个未知因素——你，是一个特异点。
         DraedonEndText2: 你对这片大地和它的历史而言，只是外来之人，就和我一样。
         DraedonEndText3: ……很抱歉，但在看了这样一场“展示”之后，我必须得花点时间整理我的思绪。

@@ -45,19 +45,19 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 element.Update(_mainUI, this);
             }
 
-            // 修复侧边栏高度计算 - 应该是固定高度，用于显示区域
-            int visibleSlots = 7; // 一次显示7个配方
+            //修复侧边栏高度计算 - 应该是固定高度，用于显示区域
+            int visibleSlots = 7; //一次显示7个配方
             _sidebarHeight = visibleSlots * 64;
 
             MouseState currentMouseState = Mouse.GetState();
             int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
             _scrollValue -= scrollDelta;
             
-            // 修复滚动范围计算
+            //修复滚动范围计算
             int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
             _scrollValue = MathHelper.Clamp(_scrollValue, 0, maxScroll);
             
-            // 对齐到64的倍数，使滚动更流畅
+            //对齐到64的倍数，使滚动更流畅
             _scrollValue = ((int)_scrollValue / 64) * 64;
             _oldMouseState = currentMouseState;
 
@@ -105,10 +105,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         {
             if (element == null) return false;
             
-            // 获取元素相对于侧边栏的位置
+            //获取元素相对于侧边栏的位置
             Rectangle elementBounds = element.Hitbox;
             
-            // 检查是否与侧边栏的可见区域相交
+            //检查是否与侧边栏的可见区域相交
             return _hitbox.Intersects(elementBounds);
         }
         
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             _hitbox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 64, 64);
             Rectangle mouseRect = new Rectangle((int)mainUI.MousePosition.X, (int)mainUI.MousePosition.Y, 1, 1);
             
-            // 检查是否在侧边栏的可见区域内
+            //检查是否在侧边栏的可见区域内
             bool isInSidebarBounds = sidebar.IsElementVisible(this);
             bool isHovered = _hitbox.Intersects(mouseRect) && isInSidebarBounds;
 

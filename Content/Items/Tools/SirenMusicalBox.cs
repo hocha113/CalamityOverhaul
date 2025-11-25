@@ -858,14 +858,14 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //bool result = false;
             //foreach (var p in Main.ActivePlayers) {
-            //    if (p.Alives() && p.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
-            //        if (sirenMusicalBoxPlayer.IsCursed) {
-            //            result = true;
-            //        }
-            //    }
+            //   if (p.Alives() && p.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
+            //       if (sirenMusicalBoxPlayer.IsCursed) {
+            //           result = true;
+            //       }
+            //   }
             //}
             //if (!result) {
-            //    StopMusic();
+            //   StopMusic();
             //}
 
             //添加光照效果

@@ -573,54 +573,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //float lifeRatio = npc.life / (float)npc.lifeMax;
             //bool isEnraged = CalamityWorld.death || BossRushEvent.BossRushActive;
             //if (lifeRatio < 0.6f && (PrimaryAIState)ai[0] == PrimaryAIState.Battle) {
-            //    //切换到二阶段
-            //    ai[0] = (int)PrimaryAIState.EnragedBattle;
-            //    //重置所有计时器和状态
-            //    ai[1] = (int)AttackState.CircularShot;
-            //    ai[GlobalTimer] = 0;
-            //    ai[PositionalKey] = 0;
-            //    ai[AttackCounter] = 0;
-            //    ai[MirrorIndex] = 1;
-            //    ai[PhaseManager] = 0; //阶段管理器
-            //    //阶段转换演出
-            //    npc.dontTakeDamage = true;
-            //    SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-            //    NetAISend();
-            //    return false;
+            //   //切换到二阶段
+            //   ai[0] = (int)PrimaryAIState.EnragedBattle;
+            //   //重置所有计时器和状态
+            //   ai[1] = (int)AttackState.CircularShot;
+            //   ai[GlobalTimer] = 0;
+            //   ai[PositionalKey] = 0;
+            //   ai[AttackCounter] = 0;
+            //   ai[MirrorIndex] = 1;
+            //   ai[PhaseManager] = 0; //阶段管理器
+            //   //阶段转换演出
+            //   npc.dontTakeDamage = true;
+            //   SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+            //   NetAISend();
+            //   return false;
             //}
 
             //PrimaryAIState state = (PrimaryAIState)ai[0];
             //switch (state) {
-            //    case PrimaryAIState.Initialization:
-            //        ai[0] = (int)PrimaryAIState.Debut;
-            //        NetAISend();
-            //        break;
-            //    case PrimaryAIState.Debut:
-            //        HandleDebut();
-            //        break;
-            //    case PrimaryAIState.Battle:
-            //        HandleProtogenesisBattle(isEnraged, CWRWorld.Death);
-            //        break;
-            //    case PrimaryAIState.EnragedBattle:
-            //        //处理阶段转换时的无敌和回血演出
-            //        if (npc.dontTakeDamage) {
-            //            ai[GlobalTimer]++;
-            //            int healAmount = (int)(npc.lifeMax / 120f);
-            //            if (npc.life < npc.lifeMax * 0.7f) //回血到一个特定值
-            //            {
-            //                npc.life += healAmount;
-            //                CombatText.NewText(npc.Hitbox, Color.Lime, healAmount);
-            //            }
-            //            if (ai[GlobalTimer] > 120) {
-            //                npc.dontTakeDamage = false;
-            //                ai[GlobalTimer] = 0;
-            //            }
-            //            return false; //在演出期间不做任何事
-            //        }
-            //        return true;
-            //    case PrimaryAIState.Flee:
-            //        HandleFlee();
-            //        break;
+            //   case PrimaryAIState.Initialization:
+            //       ai[0] = (int)PrimaryAIState.Debut;
+            //       NetAISend();
+            //       break;
+            //   case PrimaryAIState.Debut:
+            //       HandleDebut();
+            //       break;
+            //   case PrimaryAIState.Battle:
+            //       HandleProtogenesisBattle(isEnraged, CWRWorld.Death);
+            //       break;
+            //   case PrimaryAIState.EnragedBattle:
+            //       //处理阶段转换时的无敌和回血演出
+            //       if (npc.dontTakeDamage) {
+            //           ai[GlobalTimer]++;
+            //           int healAmount = (int)(npc.lifeMax / 120f);
+            //           if (npc.life < npc.lifeMax * 0.7f) //回血到一个特定值
+            //           {
+            //               npc.life += healAmount;
+            //               CombatText.NewText(npc.Hitbox, Color.Lime, healAmount);
+            //           }
+            //           if (ai[GlobalTimer] > 120) {
+            //               npc.dontTakeDamage = false;
+            //               ai[GlobalTimer] = 0;
+            //           }
+            //           return false; //在演出期间不做任何事
+            //       }
+            //       return true;
+            //   case PrimaryAIState.Flee:
+            //       HandleFlee();
+            //       break;
             //}
 
             return true;

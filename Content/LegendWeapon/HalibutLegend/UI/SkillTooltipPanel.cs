@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Update() {
-            // 意图推断：判断鼠标是否仍在技能浏览区域
+            //意图推断：判断鼠标是否仍在技能浏览区域
             bool inBrowse = MouseInBrowseArea(out Rectangle browseRect);
             bool onPanel = IsMouseOnPanel();
             if (shouldShow) {
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //处理鼠标滚轮输入（仅在鼠标位于面板内部时，并且需要滚动）
             if (needScroll && IsMouseOnPanel()) {
-                int delta = PlayerInput.ScrollWheelDelta; // 上滚
+                int delta = PlayerInput.ScrollWheelDelta; //上滚
                 if (delta != 0) {//这里锁定正负1，避免有的人鼠标滚轮灵敏度过高
                     scrollVelocity -= Math.Sign(delta) * (ScrollSpeedPerNotch / 60f); //60 刻度分母
                 }

@@ -393,8 +393,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     //internal class AquaScepterHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.AquaScepter; }
     //internal class AquaScepterRItem : RMagicStaff
     //{
-    //   public override int TargetID => ItemID.AquaScepter;
-    //   public override string HeldProjName => "AquaScepter";
+    //  public override int TargetID => ItemID.AquaScepter;
+    //  public override string HeldProjName => "AquaScepter";
     //}
 
     internal class NettleBurstHeld() : BaseMagicStaff { public override int TargetID => ItemID.NettleBurst; }

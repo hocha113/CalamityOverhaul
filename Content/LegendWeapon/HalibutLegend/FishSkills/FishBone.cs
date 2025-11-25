@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bone.fadeIn = 1.2f;
             }
 
-            // 额外的骨质碎片
+            //额外的骨质碎片
             for (int i = 0; i < 8; i++) {
                 Dust shard = Dust.NewDustDirect(
                     position - new Vector2(10),

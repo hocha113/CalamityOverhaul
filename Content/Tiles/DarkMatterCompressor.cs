@@ -62,21 +62,21 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool RightClick(int i, int j) {
             //没做完，先藏起来
             //if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-            //   if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
-            //       ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;
-            //       if (playerContrType == compressor.WhoAmI && playerContrType >= 0) {
-            //           if (CompressorUI.Instance.compressorEntity == null) {
-            //               CompressorUI.Instance.compressorEntity = compressor;
-            //           }
-            //           CompressorUI.Instance.Active = !CompressorUI.Instance.Active;
-            //       }
-            //       else {
-            //           playerContrType = compressor.WhoAmI;
-            //           CompressorUI.Instance.compressorEntity = compressor;
-            //           CompressorUI.Instance.Active = true;
-            //       }
-            //   }
-            //   SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
+            //  if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
+            //      ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;
+            //      if (playerContrType == compressor.WhoAmI && playerContrType >= 0) {
+            //          if (CompressorUI.Instance.compressorEntity == null) {
+            //              CompressorUI.Instance.compressorEntity = compressor;
+            //          }
+            //          CompressorUI.Instance.Active = !CompressorUI.Instance.Active;
+            //      }
+            //      else {
+            //          playerContrType = compressor.WhoAmI;
+            //          CompressorUI.Instance.compressorEntity = compressor;
+            //          CompressorUI.Instance.Active = true;
+            //      }
+            //  }
+            //  SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
             //}
 
             return true;

@@ -151,13 +151,13 @@ namespace CalamityOverhaul.Content.ADV.Common
             float titleHeight = CalculateTitleHeight();
 
             //基础高度组成：
-            // - 顶部内边距: 8px
-            // - 标题高度: titleHeight
-            // - 分割线上方间距: 4px
-            // - 分割线到内容: 10px
-            // - 伤害贡献文本: ~15px
-            // - 需求文本: ~15px
-            // - 进度条: 14px
+            //- 顶部内边距: 8px
+            //- 标题高度: titleHeight
+            //- 分割线上方间距: 4px
+            //- 分割线到内容: 10px
+            //- 伤害贡献文本: ~15px
+            //- 需求文本: ~15px
+            //- 进度条: 14px
 
             float contentHeight = 8f + titleHeight + 4f + 10f + 15f + 15f + 14f;
 

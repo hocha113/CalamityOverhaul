@@ -43,12 +43,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         //颜色变换
         private Color[] tzeentchColors = new Color[]
         {
-            new Color(138, 43, 226),   // 蓝紫色
-            new Color(75, 0, 130),     // 靛蓝色
-            new Color(255, 0, 255),    // 品红色
-            new Color(0, 191, 255),    // 深天蓝
-            new Color(138, 43, 226),   // 紫罗兰
-            new Color(199, 21, 133),   // 中紫罗兰红
+            new Color(138, 43, 226),   //蓝紫色
+            new Color(75, 0, 130),     //靛蓝色
+            new Color(255, 0, 255),    //品红色
+            new Color(0, 191, 255),    //深天蓝
+            new Color(138, 43, 226),   //紫罗兰
+            new Color(199, 21, 133),   //中紫罗兰红
         };
 
         void ICWRLoader.LoadData() {
@@ -473,10 +473,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         //奸奇特有颜色
         private static readonly Color[] TzeentchColors =
         [
-            new Color(138, 43, 226),   // 蓝紫色
-            new Color(75, 0, 130),     // 靛蓝色
-            new Color(255, 0, 255),    // 品红色
-            new Color(0, 191, 255),    // 深天蓝
+            new Color(138, 43, 226),   //蓝紫色
+            new Color(75, 0, 130),     //靛蓝色
+            new Color(255, 0, 255),    //品红色
+            new Color(0, 191, 255),    //深天蓝
         ];
 
         internal static void Send() {

@@ -65,30 +65,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             int currentIndex = 0;
 
             Add(Rolename1.Value, Line1.Value);
-            currentIndex++; // 0
+            currentIndex++; //0
 
             Add(Rolename1.Value, Line2.Value);
-            currentIndex++; // 1
+            currentIndex++; //1
 
             Add(Rolename1.Value, Line3.Value);
-            currentIndex++; // 2
+            currentIndex++; //2
 
             //条件对话：只有在特定情况下才添加
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.HasHalubut) {
                 Add(Rolename2.Value, Line4.Value);
-                currentIndex++; // 3 (如果添加)
+                currentIndex++; //3 (如果添加)
             }
 
             Add(Rolename1.Value, Line5.Value);
-            currentIndex++; // 3 or 4
+            currentIndex++; //3 or 4
 
             //记录奖励对话的实际索引
             rewardLineIndex = currentIndex;
             Add(Rolename1.Value, Line6.Value);//奖励
-            currentIndex++; // 4 or 5
+            currentIndex++; //4 or 5
 
             Add(Rolename1.Value, Line7.Value);
-            currentIndex++; // 5 or 6
+            currentIndex++; //5 or 6
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {

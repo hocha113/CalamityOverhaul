@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     /// </summary>
     internal class EbnSceneEffect : ModSceneEffect
     {
-        public override int Music => -1; // 音乐在 EbnSkyEffect 里控制
+        public override int Music => -1; //音乐在 EbnSkyEffect 里控制
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
         public override bool IsSceneEffectActive(Player player) => EbnEffect.IsActive || EbnEffect.Sengs > 0f;
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(EbnSky.Name, isActive);
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             float baseRadius = 300 + (1f - EbnEffect.Sengs) * 1200;
             if (EbnEffect.IsContracting) {
                 //收缩时半径快速减小
-                baseRadius *= (1f - EbnEffect.ContractionProgress * 0.95f); // 收缩到原来的5%
+                baseRadius *= (1f - EbnEffect.ContractionProgress * 0.95f); //收缩到原来的5%
             }
 
             //只在效果激活时绘制火圈
@@ -105,10 +105,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 return;
             }
             SkyManager.Instance[Name] = this;
-            // 创建更加强烈的暗红滤镜效果
+            //创建更加强烈的暗红滤镜效果
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
-                .UseColor(0.15f, 0.03f, 0.05f)  // 更深的红暗色调
-                .UseOpacity(0.75f), EffectPriority.VeryHigh); // 更高的不透明度
+                .UseColor(0.15f, 0.03f, 0.05f)  //更深的红暗色调
+                .UseOpacity(0.75f), EffectPriority.VeryHigh); //更高的不透明度
         }
 
         public override void Activate(Vector2 position, params object[] args) {
@@ -126,14 +126,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             float skyIntensity = intensity;
 
-            // 绘制更深的暗红硫磺火背景，带有更强的颗粒感
+            //绘制更深的暗红硫磺火背景，带有更强的颗粒感
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
                 new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 new Color(25, 3, 2) * skyIntensity * 0.98f
             );
 
-            // 添加脉动的火焰光晕效果，模拟硫磺燃烧的波动
+            //添加脉动的火焰光晕效果，模拟硫磺燃烧的波动
             float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2.5f) * 0.4f + 0.6f;
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 new Color(45, 12, 5) * (skyIntensity * 0.25f * pulse)
             );
 
-            // 添加额外的红色闪烁层，模拟硫磺火焰的不稳定性
+            //添加额外的红色闪烁层，模拟硫磺火焰的不稳定性
             float flicker = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.15f + 0.85f;
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
@@ -222,24 +222,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool IsContracting = false;
         public static float ContractionProgress = 0f;
         private static int contractionTimer = 0;
-        private const int ContractionDuration = 180; // 3秒收缩时间
+        private const int ContractionDuration = 180; //3秒收缩时间
 
         //红屏效果相关
         public static bool IsRedScreenActive = false;
         public static float RedScreenProgress = 0f;
         private static int redScreenTimer = 0;
-        private const int RedScreenDuration = 120; // 2秒过渡到完全红屏
+        private const int RedScreenDuration = 120; //2秒过渡到完全红屏
 
         //最终淡出
         public static bool FinalFadeOut = false;
         private static int fadeOutTimer = 0;
-        private const int FadeOutDuration = 240; // 4秒完全淡出
+        private const int FadeOutDuration = 240; //4秒完全淡出
 
         //尾声淡入相关
         public static bool EpilogueFadeIn = false;
         public static float EpilogueFadeProgress = 0f;
         private static int epilogueFadeTimer = 0;
-        private const int EpilogueFadeDuration = 180; // 3秒淡入
+        private const int EpilogueFadeDuration = 180; //3秒淡入
         public static bool EpilogueComplete = false;
 
         public static bool Cek() {
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             if (Main.gameMenu) {
-                // 主菜单界面自动关闭效果
+                //主菜单界面自动关闭效果
                 IsActive = false;
                 return false;
             }
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                 //收缩完成后自动触发红屏
                 if (ContractionProgress >= 1f && !IsRedScreenActive) {
-                    //StartRedScreen(); // 由对话触发，不自动触发
+                    //StartRedScreen(); //由对话触发，不自动触发
                 }
             }
 
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 return;
             }
 
-            if (++CekTimer > 60 * 60 * 5) // 最多持续5分钟
+            if (++CekTimer > 60 * 60 * 5) //最多持续5分钟
             {
                 IsActive = false;
                 return;
@@ -391,17 +391,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //火圈收缩时减少粒子生成
             float particleMultiplier = IsContracting ? (1f - ContractionProgress * 0.8f) : 1f;
 
-            // 生成更密集的火焰粒子
+            //生成更密集的火焰粒子
             if (particleTimer % 1 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnIntenseBrimstoneFlames();
             }
 
-            // 生成大量灰烬和火星
+            //生成大量灰烬和火星
             if (particleTimer % 1 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnAshAndEmbers();
             }
 
-            // 频繁生成大型火焰爆发
+            //频繁生成大型火焰爆发
             if (particleTimer % 20 == 0 && Main.rand.NextFloat() < particleMultiplier) {
                 SpawnMassiveFlameBurst();
             }
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// 生成强烈的硫磺火焰粒子
         /// </summary>
         private static void SpawnIntenseBrimstoneFlames() {
-            // 在屏幕各处生成火焰粒子
+            //在屏幕各处生成火焰粒子
             for (int i = 0; i < 4; i++) {
                 Vector2 spawnPos = new Vector2(
                     Main.screenPosition.X + Main.rand.Next(-150, Main.screenWidth + 150),
@@ -464,7 +464,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         /// 生成灰烬和火星粒子
         /// </summary>
         private static void SpawnAshAndEmbers() {
-            // 生成密集的灰烬
+            //生成密集的灰烬
             for (int i = 0; i < 5; i++) {
                 Vector2 spawnPos = new Vector2(
                     Main.screenPosition.X + Main.rand.Next(-150, Main.screenWidth + 150),
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 PRTLoader.AddParticle(ashPRT);
             }
 
-            // 生成火星
+            //生成火星
             for (int i = 0; i < 3; i++) {
                 Vector2 sparkPos = new Vector2(
                     Main.screenPosition.X + Main.rand.Next(0, Main.screenWidth),
@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-30, 20)
             );
 
-            // 生成环形火焰爆发
+            //生成环形火焰爆发
             int flameCount = 12;
             for (int i = 0; i < flameCount; i++) {
                 float angle = MathHelper.TwoPi * i / flameCount + Main.rand.NextFloat(-0.4f, 0.4f);
@@ -553,7 +553,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 PRTLoader.AddParticle(burstFlame);
             }
 
-            // 额外的火星爆发
+            //额外的火星爆发
             for (int i = 0; i < 20; i++) {
                 Vector2 sparkVelocity = new Vector2(
                     Main.rand.NextFloat(-4f, 4f),

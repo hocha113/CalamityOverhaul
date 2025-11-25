@@ -222,10 +222,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float pulse = (float)Math.Sin(time * 30f) * 0.5f + 0.5f;
             float alpha = (255 - Projectile.alpha) / 255f;
 
-            // 绘制拖尾效果
+            //绘制拖尾效果
             DrawTrail(glow, alpha, time);
 
-            // 绘制主体
+            //绘制主体
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             Main.spriteBatch.Draw(glow, drawPos, null, Color.Red with { A = 0 } * 0.6f * alpha, time * 13f, glow.Size() / 2, Projectile.scale * 2.0f, 0, 0);
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void DrawTrail(Texture2D texture, float alpha, float time) {
-            // 绘制多层拖尾效果
+            //绘制多层拖尾效果
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float trailRotation = Projectile.oldRot[i];
 
-                // 外层拖尾 - 青色电弧
+                //外层拖尾 - 青色电弧
                 Color outerColor = Color.Lerp(Color.OrangeRed, Color.DarkRed, progress) with { A = 0 };
                 Main.spriteBatch.Draw(
                     texture,
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     0
                 );
 
-                // 中层拖尾 - 白色闪光
+                //中层拖尾 - 白色闪光
                 Color middleColor = Color.Lerp(Color.OrangeRed, Color.DarkRed, progress) with { A = 0 };
                 Main.spriteBatch.Draw(
                     texture,
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     0
                 );
 
-                // 内层拖尾 - 亮蓝核心
+                //内层拖尾 - 亮蓝核心
                 Color innerColor = Color.Lerp(Color.IndianRed, Color.DarkRed, progress) with { A = 0 };
                 Main.spriteBatch.Draw(
                     texture,
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     0
                 );
 
-                // 闪电特效 - 偶尔的强光脉冲
+                //闪电特效 - 偶尔的强光脉冲
                 if (i % 3 == 0) {
                     float sparkPulse = (float)Math.Sin(time * 40f + i) * 0.5f + 0.5f;
                     Main.spriteBatch.Draw(

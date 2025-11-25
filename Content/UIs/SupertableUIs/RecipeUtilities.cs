@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return new Item();
             }
 
-            // 尝试解析为数字ID
+            //尝试解析为数字ID
             if (int.TryParse(fullName, out int itemId)) {
                 if (loadVanillaTexture && !VaultUtils.isServer && itemId > ItemID.None) {
                     Main.instance.LoadItem(itemId);
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return new Item(itemId);
             }
 
-            // 解析模组物品
+            //解析模组物品
             string[] parts = fullName.Split('/');
             if (parts.Length != 2) {
                 return new Item();
@@ -100,11 +100,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return false;
             }
 
-            // 检查结果物品
+            //检查结果物品
             string targetItemFullName = recipeValues[^1];
             int targetItemId = VaultUtils.GetItemTypeFromFullName(targetItemFullName);
 
-            // 如果结果不是Null/Null但解析为None，则无效
+            //如果结果不是Null/Null但解析为None，则无效
             if (targetItemFullName != SupertableConstants.NULL_ITEM_KEY && targetItemId == ItemID.None) {
                 return false;
             }

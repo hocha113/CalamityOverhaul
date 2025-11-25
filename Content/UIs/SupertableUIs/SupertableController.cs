@@ -12,13 +12,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     /// </summary>
     public class SupertableController
     {
-        // 核心模块
+        //核心模块
         public ItemSlotManager SlotManager { get; private set; }
         public RecipeMatchingEngine RecipeEngine { get; private set; }
         public CraftingResultManager ResultManager { get; private set; }
         public UIAnimationController AnimationController { get; private set; }
 
-        // 状态缓存
+        //状态缓存
         private RecipeData _lastMatchedRecipe;
         private string[] _lastMatchedRecipeNames;
         private int[] _lastMatchedRecipeTypes;
@@ -46,16 +46,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             var matchResult = RecipeEngine.MatchRecipe(currentTypes);
 
             if (matchResult.IsMatch) {
-                // 计算可合成数量
+                //计算可合成数量
                 int maxCraftable = SlotManager.GetMinimumStackSize();
                 ResultManager.SetResult(matchResult.MatchedRecipe, maxCraftable);
 
-                // 缓存匹配结果
+                //缓存匹配结果
                 _lastMatchedRecipe = matchResult.MatchedRecipe;
                 _lastMatchedRecipeTypes = matchResult.MatchedRecipe.MaterialTypesCache;
                 _lastMatchedRecipeNames = RecipeUtilities.ConvertTypesToFullNames(_lastMatchedRecipeTypes);
 
-                // 更新预览
+                //更新预览
                 SlotManager.SetPreviewFromTypes(matchResult.MatchedRecipe.MaterialTypesCache);
             }
             else {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 _lastMatchedRecipeNames = null;
             }
 
-            // TODO: 网络同步
+            //TODO: 网络同步
             if (syncNetwork) {
                 SyncToNetwork();
             }
@@ -76,10 +76,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// </summary>
         public bool TryTakeResult(ref Item mouseItem) {
             if (ResultManager.TryTakeResult(ref mouseItem, out int takenAmount)) {
-                // 消耗材料
+                //消耗材料
                 SlotManager.ConsumeItems(takenAmount);
 
-                // 重新匹配配方
+                //重新匹配配方
                 UpdateRecipeMatching();
 
                 return true;
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// 网络同步(待实现)
         /// </summary>
         private void SyncToNetwork() {
-            // TODO: 实现网络同步逻辑
+            //TODO: 实现网络同步逻辑
         }
 
         /// <summary>

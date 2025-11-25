@@ -189,10 +189,10 @@ namespace CalamityOverhaul.Content
             }
             /// /修改天底的合成
             //{
-            //   if (recipe.HasResult(ItemType<Nadir>())) {
-            //       recipe.RemoveIngredient(CWRID.Item_AuricBar);//移除圣金源锭的配方
-            //       recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
-            //   }
+            //  if (recipe.HasResult(ItemType<Nadir>())) {
+            //      recipe.RemoveIngredient(CWRID.Item_AuricBar);//移除圣金源锭的配方
+            //      recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+            //  }
             //}
             //修改天顶剑的合成
             {
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content
                         recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                     }
                     //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                    //   recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                    //  recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
                     //}
                 }
                 if (CWRLoad.MetanovaBar > ItemID.None) {
@@ -276,10 +276,10 @@ namespace CalamityOverhaul.Content
         private static void AddResultContent() {
             //添加煤炭的合成
             //{//添加这个不是个好主意，因为这个"煤"应该不是木炭
-            //   Recipe.Create(ItemID.Coal)
-            //       .AddRecipeGroup(RecipeGroupID.Wood, 2)
-            //       .AddTile(TileID.Furnaces)
-            //       .Register();
+            //  Recipe.Create(ItemID.Coal)
+            //      .AddRecipeGroup(RecipeGroupID.Wood, 2)
+            //      .AddTile(TileID.Furnaces)
+            //      .Register();
             //}
             //添加染缸的合成
             {

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Crafting
                 return false;
             }
 
-            // 鼠标为空，直接取出
+            //鼠标为空，直接取出
             if (mouseItem.type == ItemID.None) {
                 mouseItem = _resultItem;
                 takenAmount = _resultItem.stack;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Crafting
                 return true;
             }
 
-            // 同类物品且可堆叠
+            //同类物品且可堆叠
             if (mouseItem.type == _resultItem.type && mouseItem.stack < mouseItem.maxStack) {
                 int availableSpace = mouseItem.maxStack - mouseItem.stack;
                 int amountToTake = Math.Min(_resultItem.stack, availableSpace);

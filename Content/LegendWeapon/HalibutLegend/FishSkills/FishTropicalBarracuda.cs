@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int schoolSize = 3 + HalibutData.GetDomainLayer() / 2;
 
             //随机选择一个边缘方向
-            int edge = Main.rand.Next(4); // 0=左, 1=右, 2=上, 3=下
+            int edge = Main.rand.Next(4); //0=左, 1=右, 2=上, 3=下
             Vector2 spawnSide = GetSpawnEdge(edge, player);
             Vector2 targetSide = GetTargetEdge(edge, player);
 
@@ -95,10 +95,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float offset = 100f;
 
             return edge switch {
-                0 => new Vector2(Main.screenPosition.X - offset, screenCenter.Y), // 左
-                1 => new Vector2(Main.screenPosition.X + Main.screenWidth + offset, screenCenter.Y), // 右
-                2 => new Vector2(screenCenter.X, Main.screenPosition.Y - offset), // 上
-                3 => new Vector2(screenCenter.X, Main.screenPosition.Y + Main.screenHeight + offset), // 下
+                0 => new Vector2(Main.screenPosition.X - offset, screenCenter.Y), //左
+                1 => new Vector2(Main.screenPosition.X + Main.screenWidth + offset, screenCenter.Y), //右
+                2 => new Vector2(screenCenter.X, Main.screenPosition.Y - offset), //上
+                3 => new Vector2(screenCenter.X, Main.screenPosition.Y + Main.screenHeight + offset), //下
                 _ => screenCenter
             };
         }
@@ -108,10 +108,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float offset = 100f;
 
             return edge switch {
-                0 => new Vector2(Main.screenPosition.X + Main.screenWidth + offset, screenCenter.Y), // 左->右
-                1 => new Vector2(Main.screenPosition.X - offset, screenCenter.Y), // 右->左
-                2 => new Vector2(screenCenter.X, Main.screenPosition.Y + Main.screenHeight + offset), // 上->下
-                3 => new Vector2(screenCenter.X, Main.screenPosition.Y - offset), // 下->上
+                0 => new Vector2(Main.screenPosition.X + Main.screenWidth + offset, screenCenter.Y), //左->右
+                1 => new Vector2(Main.screenPosition.X - offset, screenCenter.Y), //右->左
+                2 => new Vector2(screenCenter.X, Main.screenPosition.Y + Main.screenHeight + offset), //上->下
+                3 => new Vector2(screenCenter.X, Main.screenPosition.Y - offset), //下->上
                 _ => screenCenter
             };
         }
@@ -121,8 +121,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float offset = (index - total / 2f) * (spread / total);
 
             return edge switch {
-                0 or 1 => basePos + new Vector2(0, offset), // 垂直散布
-                2 or 3 => basePos + new Vector2(offset, 0), // 水平散布
+                0 or 1 => basePos + new Vector2(0, offset), //垂直散布
+                2 or 3 => basePos + new Vector2(offset, 0), //水平散布
                 _ => basePos
             };
         }

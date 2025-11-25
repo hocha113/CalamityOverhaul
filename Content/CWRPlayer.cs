@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content
             }
 
             //if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
-            //   SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
+            //  SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             //}
 
             if (OverhaulTheBibleUI.Instance != null) {

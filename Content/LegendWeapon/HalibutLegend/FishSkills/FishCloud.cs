@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override int UnlockFishID => ItemID.Cloudfish;
 
-        public override int DefaultCooldown => 60 * (25 - HalibutData.GetDomainLayer() * 2); // 25-2*领域 秒冷却
+        public override int DefaultCooldown => 60 * (25 - HalibutData.GetDomainLayer() * 2); //25-2*领域 秒冷却
         public override int ResearchDuration => 60 * 16;
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = MaxDuration + 120; // 额外时间用于消散
+            Projectile.timeLeft = MaxDuration + 120; //额外时间用于消散
 
             //初始化云朵翻滚参数
             for (int i = 0; i < cloudRollOffsets.Length; i++) {
@@ -156,15 +156,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Vector2 spawnOffset = new Vector2(
                     (float)Math.Cos(angle) * distance,
-                    (float)Math.Sin(angle) * distance * 0.55f // 扁平分布
+                    (float)Math.Sin(angle) * distance * 0.55f //扁平分布
                 );
 
                 cloudFishParticles.Add(new CloudFishParticle {
                     Position = Projectile.Center + spawnOffset,
                     Velocity = Main.rand.NextVector2Circular(2f, 1f),
-                    Scale = Main.rand.NextFloat(0.8f, 1.25f), // 增大基础尺寸
+                    Scale = Main.rand.NextFloat(0.8f, 1.25f), //增大基础尺寸
                     Rotation = angle,
-                    Alpha = 0f, // 初始透明，逐渐淡入
+                    Alpha = 0f, //初始透明，逐渐淡入
                     FishID = i,
                     BehaviorRandomness = Main.rand.NextFloat(0.85f, 1.25f),
                     PhaseOffset = Main.rand.NextFloat(MathHelper.TwoPi),
@@ -425,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private void RidingPhase() {
             cloudAlpha = 1f;
-            cloudScale = 1f + (float)Math.Sin(LifeTimer * 0.08f) * 0.06f; // 轻微呼吸效果
+            cloudScale = 1f + (float)Math.Sin(LifeTimer * 0.08f) * 0.06f; //轻微呼吸效果
 
             //计算朝向光标的方向
             Vector2 toMouse = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -686,8 +686,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //使用翻滚偏移创建动态效果
                 float rollOffset = cloudRollOffsets[i];
-                float radiusX = 55f + (float)Math.Sin(rollOffset) * 15f; // 横向半径大
-                float radiusY = 25f + (float)Math.Cos(rollOffset * 1.3f) * 8f; // 纵向半径小（扁平）
+                float radiusX = 55f + (float)Math.Sin(rollOffset) * 15f; //横向半径大
+                float radiusY = 25f + (float)Math.Cos(rollOffset * 1.3f) * 8f; //纵向半径小（扁平）
 
                 Vector2 cloudPartPos = center + new Vector2(
                     (float)Math.Cos(angle + LifeTimer * 0.015f) * radiusX,
@@ -716,7 +716,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         cloudColor * layerAlpha,
                         layerRotation,
                         FishCloud.Fog.Size() / 2f,
-                        new Vector2(layerScale, layerScale * 0.75f), // X轴较大，Y轴较小（扁平）
+                        new Vector2(layerScale, layerScale * 0.75f), //X轴较大，Y轴较小（扁平）
                         SpriteEffects.None,
                         0f
                     );
@@ -736,7 +736,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Color.White * coreAlpha,
                     coreRotation,
                     FishCloud.Fog.Size() / 2f,
-                    new Vector2(coreScale, coreScale * 0.6f), // 扁平核心
+                    new Vector2(coreScale, coreScale * 0.6f), //扁平核心
                     SpriteEffects.None,
                     0f
                 );
@@ -791,9 +791,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpriteEffects fx = dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
                 float rot = fish.Rotation + (dir > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-                float alpha = fish.Alpha * (0.6f + 0.4f * cloudAlpha); // 独立透明度，不完全受云体影响
+                float alpha = fish.Alpha * (0.6f + 0.4f * cloudAlpha); //独立透明度，不完全受云体影响
 
-                // 拖尾
+                //拖尾
                 if (fish.Velocity.Length() > 4f) {
                     for (int t = 1; t <= 3; t++) {
                         Vector2 trail = -fish.Velocity.SafeNormalize(Vector2.Zero) * t * 7f;
@@ -801,9 +801,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         sb.Draw(tex, pos + trail, src, fish.Color * trailA, rot, origin, fish.Scale * (0.9f - t * 0.05f), fx, 0f);
                     }
                 }
-                // 主体
+                //主体
                 sb.Draw(tex, pos, src, fish.Color * alpha, rot, origin, fish.Scale, fx, 0f);
-                // 发光层
+                //发光层
                 float speedGlow = fish.Velocity.Length();
                 if (speedGlow > 5f) {
                     float gA = (speedGlow - 5f) / 4f * 0.4f * alpha;

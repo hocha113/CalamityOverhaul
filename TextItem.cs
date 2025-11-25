@@ -43,7 +43,7 @@ namespace CalamityOverhaul
         }
 
         //public override void SetStaticDefaults() {
-        //   VaultUtils.LoadenNPCStaticImmunityData(NPCID.TheDestroyer, [NPCID.TheDestroyerBody, NPCID.TheDestroyerTail], 10);
+        //  VaultUtils.LoadenNPCStaticImmunityData(NPCID.TheDestroyer, [NPCID.TheDestroyerBody, NPCID.TheDestroyerTail], 10);
         //}
 
         public override void SetDefaults() {
@@ -68,19 +68,19 @@ namespace CalamityOverhaul
             //player.velocity.Domp();
             //bool news = player.PressKey();
             //if (news && !old) {
-            //   if (Main.HoverItem.type < ItemID.Count) {
-            //       Main.HoverItem.type.Domp();
-            //   }
-            //   else {
-            //       ItemLoader.GetItem(Main.HoverItem.type).FullName.Domp();
-            //   }
+            //  if (Main.HoverItem.type < ItemID.Count) {
+            //      Main.HoverItem.type.Domp();
+            //  }
+            //  else {
+            //      ItemLoader.GetItem(Main.HoverItem.type).FullName.Domp();
+            //  }
             //}
             //old = news;
             //int num = 0;
             //foreach (var proj in Main.ActiveProjectiles) {
-            //   if (proj.type == ProjectileID.PinkLaser || proj.type == ProjectileID.DeathLaser || proj.type == ModContent.ProjectileType<DestroyerCursedLaser>() || proj.type == ModContent.ProjectileType<DestroyerElectricLaser>()) {
-            //       num++;
-            //   }
+            //  if (proj.type == ProjectileID.PinkLaser || proj.type == ProjectileID.DeathLaser || proj.type == ModContent.ProjectileType<DestroyerCursedLaser>() || proj.type == ModContent.ProjectileType<DestroyerElectricLaser>()) {
+            //      num++;
+            //  }
             //}
             //num.Domp();
         }
@@ -101,24 +101,24 @@ namespace CalamityOverhaul
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
             //ScenarioManager.Reset<SupCalDefeat>();
             //ScenarioManager.Start<SupCalDefeat>();
-            // 带专辑封面和自定义风格
+            //带专辑封面和自定义风格
             //MusicToast.ShowMusic(
-            //    title: "雨湿的窗边",
-            //    artist: "腐姫",
-            //    albumCover: ADVAsset.FUJI,
-            //    style: MusicToast.MusicStyle.RedNeon,
-            //    displayDuration: 450//7.5秒
+            //   title: "雨湿的窗边",
+            //   artist: "腐姫",
+            //   albumCover: ADVAsset.FUJI,
+            //   style: MusicToast.MusicStyle.RedNeon,
+            //   displayDuration: 450//7.5秒
             //);
             //EbnSkyEffect.IsActive = true;
             //显示成就提示 - 硫磺火风格
             //AchievementToast.ShowAchievement(
-            //    ItemID.None,
-            //    "BE结局：永恒燃烧的现在",
-            //    "往日被烈火所吞噬，以异类之躯触及永恒",
-            //    AchievementToast.ToastStyle.Brimstone
+            //   ItemID.None,
+            //   "BE结局：永恒燃烧的现在",
+            //   "往日被烈火所吞噬，以异类之躯触及永恒",
+            //   AchievementToast.ToastStyle.Brimstone
             //);
             //if (CWRMod.Instance.coralite == null) {
-            //   return true;
+            //  return true;
             //}
 
             //Point16 point = Main.MouseWorld.ToTileCoordinates16();
@@ -126,50 +126,50 @@ namespace CalamityOverhaul
             //MagikeCrossed.GetData(point).Domp();
 
             //for (int i = 0; i < 66; i++) {
-            //    Vector2 spawnPos = player.position + new Vector2(Main.rand.Next(229), Main.rand.Next(229));
-            //    PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
+            //   Vector2 spawnPos = player.position + new Vector2(Main.rand.Next(229), Main.rand.Next(229));
+            //   PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
             //}
 
             //Main.MouseWorld.ToTileCoordinates16().Domp();
             //if (player.altFunctionUse == 2) {
-            //   MySaveStructure.DoSave<MySaveStructure>();
+            //  MySaveStructure.DoSave<MySaveStructure>();
             //}
             //else {
-            //   MySaveStructure.DoLoad<MySaveStructure>();
+            //  MySaveStructure.DoLoad<MySaveStructure>();
             //}
             //RocketHut.DoLoad<RocketHut>();
             /*
             //VaultUtils.TryKillChest(Main.MouseWorld.ToTileCoordinates16(), out var items);
             //foreach (var item in items) {
-            //   VaultUtils.SpwanItem(player.FromObjectGetParent(), Main.MouseWorld.GetRectangle(32), item);
+            //  VaultUtils.SpwanItem(player.FromObjectGetParent(), Main.MouseWorld.GetRectangle(32), item);
             //}
             //if (Main.MouseWorld.ToTileCoordinates16().TryFindClosestChest(out var c)) {
-            //   Item item = new Item(ItemID.Mushroom);
-            //   if (c.CanItemBeAddedToChest(item)) {
-            //       c.AddItem(item, true);
-            //   }
+            //  Item item = new Item(ItemID.Mushroom);
+            //  if (c.CanItemBeAddedToChest(item)) {
+            //      c.AddItem(item, true);
+            //  }
             //}
             //List<TileProcessor> tps = [];
             //foreach (var p in TileProcessorLoader.TP_InWorld) {
-            //   if (!p.Active || p.ID != TileProcessorLoader.GetModuleID<WGGCollectorTP>()) {
-            //       continue;
-            //   }
-            //   tps.Add(p);
+            //  if (!p.Active || p.ID != TileProcessorLoader.GetModuleID<WGGCollectorTP>()) {
+            //      continue;
+            //  }
+            //  tps.Add(p);
             //}
 
             //if (tpIndex < tps.Count) {
-            //   player.Center = tps[tpIndex].CenterInWorld;
-            //   tpIndex++;
+            //  player.Center = tps[tpIndex].CenterInWorld;
+            //  tpIndex++;
             //}
             //else {
-            //   tpIndex = 0;
+            //  tpIndex = 0;
             //}
             //int num = 0;
             //foreach (var p in Main.ActiveProjectiles) {
-            //   if (p.type != ModContent.ProjectileType<WGGCollectorArm>()) {
-            //       continue;
-            //   }
-            //   num++;
+            //  if (p.type != ModContent.ProjectileType<WGGCollectorArm>()) {
+            //      continue;
+            //  }
+            //  num++;
             //}
             //num.Domp();
             //IndustrializationGen.SpawnWGGCollectorTile();
@@ -178,28 +178,28 @@ namespace CalamityOverhaul
             //(Main.MouseWorld / 16).ToPoint().Domp();
             //bool copy = false;
             //if (copy) {
-            //   JunkmanBase.InitializeData();
-            //   Point startPoint = new Point(4202, 985);
-            //   Point endPoint = new Point(4392, 1024);
-            //   int heiget = Math.Abs(startPoint.Y - endPoint.Y);
-            //   int wid = Math.Abs(startPoint.X - endPoint.X);
-            //   using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
-            //       writer.Write(wid * heiget);
-            //       for (int x = 0; x < wid; x++) {
-            //           for (int y = 0; y < heiget; y++) {
-            //               Point offsetPoint = new Point(x, y);
-            //               JunkmanBase.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
-            //           }
-            //       }
-            //   }
+            //  JunkmanBase.InitializeData();
+            //  Point startPoint = new Point(4202, 985);
+            //  Point endPoint = new Point(4392, 1024);
+            //  int heiget = Math.Abs(startPoint.Y - endPoint.Y);
+            //  int wid = Math.Abs(startPoint.X - endPoint.X);
+            //  using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
+            //      writer.Write(wid * heiget);
+            //      for (int x = 0; x < wid; x++) {
+            //          for (int y = 0; y < heiget; y++) {
+            //              Point offsetPoint = new Point(x, y);
+            //              JunkmanBase.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
+            //          }
+            //      }
+            //  }
             //}
             //else {
-            //   using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
-            //       int count = reader.ReadInt32();
-            //       for (int x = 0; x < count; x++) {
-            //           JunkmanBase.ReadTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
-            //       }
-            //   }
+            //  using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
+            //      int count = reader.ReadInt32();
+            //      for (int x = 0; x < count; x++) {
+            //          JunkmanBase.ReadTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
+            //      }
+            //  }
             //}
             //JunkmanBase.Spawn();*/
             return true;
@@ -208,14 +208,14 @@ namespace CalamityOverhaul
 
     //internal class MySaveStructure : SaveStructure
     //{
-    //   public override string SavePath => Path.Combine(VaultSave.RootPath, "Structure", Mod.Name, $"JunkmanBase.nbt");
-    //   public override void SaveData(TagCompound tag) {
-    //       SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
-    //   }
+    //  public override string SavePath => Path.Combine(VaultSave.RootPath, "Structure", Mod.Name, $"JunkmanBase.nbt");
+    //  public override void SaveData(TagCompound tag) {
+    //      SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
+    //  }
 
-    //   public override void LoadData(TagCompound tag) {
-    //       LoadRegion(tag, Main.MouseWorld.ToTileCoordinates16());
-    //       TagCache.Invalidate(SavePath);
-    //   }
+    //  public override void LoadData(TagCompound tag) {
+    //      LoadRegion(tag, Main.MouseWorld.ToTileCoordinates16());
+    //      TagCache.Invalidate(SavePath);
+    //  }
     //}
 }

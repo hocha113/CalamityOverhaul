@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             hp.SparklingVolleyActive = true;
             hp.SparklingVolleyTimer = 0;
-            hp.SparklingFishCount = (4 + HalibutData.GetDomainLayer()); //  4+领域数量鱼
+            hp.SparklingFishCount = (4 + HalibutData.GetDomainLayer()); // 4+领域数量鱼
             hp.SparklingNextFireIndex = 0;
             hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
 

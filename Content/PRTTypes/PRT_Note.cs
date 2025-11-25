@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             //旋转动画
             Rotation = Velocity.ToRotation();
 
-            // 轻微的上下浮动
+            //轻微的上下浮动
             pulseTimer += 0.1f;
             float verticalWave = MathF.Sin(pulseTimer + floatOffset) * 0.5f;
             Velocity.Y += verticalWave * 0.01f;

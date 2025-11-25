@@ -114,31 +114,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float orbitRadius = 0f;
         private float randOrbitRadius = 0f;
         private bool isOrbiting = false;
-        private int orbitDuration = 0; // 环绕持续时间
+        private int orbitDuration = 0; //环绕持续时间
 
         //冲刺参数
         private bool isDashing = false;
         private Vector2 dashDirection = Vector2.Zero;
         private float dashSpeed = 0f;
         private int dashCooldown = 0;
-        private int totalDashes = 0; // 总冲刺次数
+        private int totalDashes = 0; //总冲刺次数
 
         //朝向和旋转
         private float desiredRotation = 0f;
         private float rotationSpeed = 0.2f;
 
         //智能决策参数
-        private int noActionTimer = 0; // 无有效行动计时器
-        private const int MaxNoActionTime = 180; // 最大无行动时间（3秒）
-        private const int MinOrbitTime = 60; // 最小环绕时间（1秒）
-        private const int MaxOrbitTime = 150; // 最大环绕时间（2.5秒）
+        private int noActionTimer = 0; //无有效行动计时器
+        private const int MaxNoActionTime = 180; //最大无行动时间（3秒）
+        private const int MinOrbitTime = 60; //最小环绕时间（1秒）
+        private const int MaxOrbitTime = 150; //最大环绕时间（2.5秒）
 
         //动画参数
-        private float frameTransition = 0f; // 帧过渡进度 (0-1)
-        private int targetMinFrame = 0; // 目标最小帧
-        private const float TransitionSpeed = 0.15f; // 过渡速度
-        private const int PreDashTime = 12; // 冲刺前蓄力时间（帧）
-        private const int PostDashTime = 20; // 冲刺后恢复时间（帧）
+        private float frameTransition = 0f; //帧过渡进度 (0-1)
+        private int targetMinFrame = 0; //目标最小帧
+        private const float TransitionSpeed = 0.15f; //过渡速度
+        private const int PreDashTime = 12; //冲刺前蓄力时间（帧）
+        private const int PostDashTime = 20; //冲刺后恢复时间（帧）
 
         //状态枚举
         private enum EyeState
@@ -199,19 +199,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     OrbitingAI();
                     break;
                 case EyeState.PreDash:
-                    targetMinFrame = 2; // 开始张嘴
+                    targetMinFrame = 2; //开始张嘴
                     PreDashAI();
                     break;
                 case EyeState.Dashing:
-                    targetMinFrame = 2; // 保持张嘴
+                    targetMinFrame = 2; //保持张嘴
                     DashingAI();
                     break;
                 case EyeState.PostDash:
-                    targetMinFrame = 2; // 保持张嘴一小段时间
+                    targetMinFrame = 2; //保持张嘴一小段时间
                     PostDashAI();
                     break;
                 case EyeState.Returning:
-                    targetMinFrame = 0; // 开始闭嘴
+                    targetMinFrame = 0; //开始闭嘴
                     ReturningAI();
                     break;
             }
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //无行动超时保护 - 强制冲刺
             if (noActionTimer > MaxNoActionTime && currentState == EyeState.Orbiting) {
                 if (targetNPC >= 0 && Main.npc[targetNPC].active) {
-                    StartDash(Main.npc[targetNPC], true); // 强制冲刺
+                    StartDash(Main.npc[targetNPC], true); //强制冲刺
                 }
             }
 
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private void UpdateFrameTransition() {
             //计算当前帧过渡进度
-            float targetTransition = targetMinFrame / 2f; // 0或1 (因为minFrame是0或2)
+            float targetTransition = targetMinFrame / 2f; //0或1 (因为minFrame是0或2)
             frameTransition = MathHelper.Lerp(frameTransition, targetTransition, TransitionSpeed);
 
             //根据过渡进度计算实际的最小帧
@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 计算冲刺概率
         /// </summary>
         private float CalculateDashChance(NPC target, float distanceToTarget) {
-            float baseChance = 0.02f; // 基础概率 2%
+            float baseChance = 0.02f; //基础概率 2%
 
             //环绕时间越长，冲刺概率越高
             if (orbitDuration > MinOrbitTime) {
@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //强制冲刺条件：环绕时间过长
             if (orbitDuration > MaxOrbitTime) {
-                return 1.0f; // 100%冲刺
+                return 1.0f; //100%冲刺
             }
 
             //距离因素：最佳冲刺距离（150-300）时概率更高
@@ -429,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //位置因素：当在目标后方时更容易冲刺
             Vector2 toTarget = target.Center - Projectile.Center;
             float alignmentWithVelocity = Vector2.Dot(toTarget.SafeNormalize(Vector2.Zero), target.velocity.SafeNormalize(Vector2.Zero));
-            if (alignmentWithVelocity > 0.5f) { // 在目标前进方向前方
+            if (alignmentWithVelocity > 0.5f) { //在目标前进方向前方
                 baseChance += 0.1f;
             }
 
@@ -437,13 +437,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void StartDash(NPC target, bool forced = false) {
-            AIState = (float)EyeState.PreDash; // 先进入蓄力状态
+            AIState = (float)EyeState.PreDash; //先进入蓄力状态
             AITimer = 0;
             totalDashes++;
-            noActionTimer = 0; // 重置无行动计时器
+            noActionTimer = 0; //重置无行动计时器
 
             //计算冲刺方向（预判目标移动）
-            float predictionFactor = forced ? 25f : 20f; // 强制冲刺时预判更多
+            float predictionFactor = forced ? 25f : 20f; //强制冲刺时预判更多
             Vector2 predictedPos = target.Center + target.velocity * predictionFactor;
             dashDirection = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
 
@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 AITimer = 0;
                 orbitDuration = 0;
                 isOrbiting = true;
-                noActionTimer = 0; // 重置无行动计时器
+                noActionTimer = 0; //重置无行动计时器
             }
 
             //超时保护，避免永久停留在返回状态
@@ -583,10 +583,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //根据状态调整旋转速度
             float currentRotSpeed = rotationSpeed;
             if (isDashing) {
-                currentRotSpeed = 0.4f; // 冲刺时更快转向
+                currentRotSpeed = 0.4f; //冲刺时更快转向
             }
             else if (isOrbiting) {
-                currentRotSpeed = 0.15f; // 环绕时较慢转向，更优雅
+                currentRotSpeed = 0.15f; //环绕时较慢转向，更优雅
             }
 
             //应用旋转
@@ -721,7 +721,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float trailAlpha = trailProgress * 0.5f * fadeAlpha;
 
                 if (showTrail) {
-                    trailAlpha *= 1.5f; // 冲刺相关状态时更亮
+                    trailAlpha *= 1.5f; //冲刺相关状态时更亮
                 }
 
                 Color trailColor = new Color(200, 50, 50) * trailAlpha;
@@ -763,7 +763,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color glowColor = new Color(255, 100, 100, 0) * 0.4f * fadeAlpha;
 
                 if (isDashing) {
-                    glowColor *= 1.5f; // 冲刺时更亮
+                    glowColor *= 1.5f; //冲刺时更亮
                 }
 
                 Main.EntitySpriteDraw(

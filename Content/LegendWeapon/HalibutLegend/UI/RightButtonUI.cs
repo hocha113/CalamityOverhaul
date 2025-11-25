@@ -42,17 +42,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            // 根据是否能继续向右滚动来调整颜色
+            //根据是否能继续向右滚动来调整颜色
             int maxOffset = Math.Max(0, HalibutUIPanel.Instance.halibutUISkillSlots.Count - HalibutUIPanel.maxVisibleSlots);
             bool canScroll = HalibutUIPanel.Instance.scrollOffset < maxOffset;
             Color buttonColor = canScroll ? Color.White : Color.Gray * 0.5f;
 
-            // 绘制发光效果
+            //绘制发光效果
             if (canScroll) {
                 spriteBatch.Draw(RightButton, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
             }
 
-            // 绘制按钮
+            //绘制按钮
             spriteBatch.Draw(RightButton, DrawPosition, null, buttonColor);
         }
     }

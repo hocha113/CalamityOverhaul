@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                 }
                 //Projectile projectile = ((Projectile)Entity);
                 //if (projectile != null)
-                //   Rotation = projectile.rotation;
+                //  Rotation = projectile.rotation;
             }
         }
 

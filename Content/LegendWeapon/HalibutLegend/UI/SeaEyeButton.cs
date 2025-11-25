@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 });
             }
 
-            // 通用：轻微的回响消失
+            //通用：轻微的回响消失
             SoundEngine.PlaySound(SoundID.MenuClose with {
                 Volume = 0.2f,
                 Pitch = -0.4f,

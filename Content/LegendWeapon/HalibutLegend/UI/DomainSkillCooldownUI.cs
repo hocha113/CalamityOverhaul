@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private readonly Dictionary<DomainSkill, int> _maxCooldown = new();
         private readonly List<CooldownIcon> _activeIcons = new();
 
-        // 抖动强度记录（0-1），独立于图标实例，避免列表重建丢失
+        //抖动强度记录（0-1），独立于图标实例，避免列表重建丢失
         private readonly Dictionary<DomainSkill, float> _shakeStrength = new();
 
         //出现/消失整体动画
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             public float RemainingRatio; //剩余比例(0-1) 1=刚开始冷却
             public Vector2 DrawPos; //左上角屏幕坐标
             public float LocalAppear; //个体出现动画 0-1
-            public float Shake; // 当前帧抖动强度 0-1（由外部字典赋值）
+            public float Shake; //当前帧抖动强度 0-1（由外部字典赋值）
         }
 
         public override bool Active => _panelAppear > 0.01f || HasAnyCooldown();
@@ -69,12 +69,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            // 按键触发抖动：如果处于冷却且试图使用
+            //按键触发抖动：如果处于冷却且试图使用
             if (hp.RestartFishCooldown > 0 && CWRKeySystem.Halibut_Restart.JustPressed) TriggerShake(DomainSkill.Restart);
             if (hp.SuperpositionCooldown > 0 && CWRKeySystem.Halibut_Superposition.JustPressed) TriggerShake(DomainSkill.Superposition);
             if (hp.FishTeleportCooldown > 0 && CWRKeySystem.Halibut_Teleport.JustPressed) TriggerShake(DomainSkill.Teleport);
 
-            // 衰减 shake 值
+            //衰减 shake 值
             DecayShake(DomainSkill.Restart);
             DecayShake(DomainSkill.Superposition);
             DecayShake(DomainSkill.Teleport);
@@ -120,18 +120,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private void TriggerShake(DomainSkill skill) {
             if (!_shakeStrength.TryGetValue(skill, out float v) || v < 0.6f) {
-                // 重置或强化为高值
+                //重置或强化为高值
                 _shakeStrength[skill] = 1f;
             }
             else {
-                // 若正在抖动，稍微叠加但不超过1
+                //若正在抖动，稍微叠加但不超过1
                 _shakeStrength[skill] = MathHelper.Clamp(v + 0.25f, 0f, 1f);
             }
         }
 
         private void DecayShake(DomainSkill skill) {
             if (_shakeStrength.TryGetValue(skill, out float v)) {
-                v *= 0.82f; // 指数衰减
+                v *= 0.82f; //指数衰减
                 if (v < 0.02f) v = 0f;
                 _shakeStrength[skill] = v;
             }

@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.ADV
         /// </summary>
         public enum RewardStyle
         {
-            Ocean,      // 海洋风格（默认）
-            Brimstone,  // 硫磺火风格
-            Draedon     // 嘉登科技风格
+            Ocean,      //海洋风格（默认）
+            Brimstone,  //硫磺火风格
+            Draedon     //嘉登科技风格
         }
 
         public class RewardEntry
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.ADV
             if (current?.StyleProvider != null) {
                 return current.StyleProvider();
             }
-            return RewardStyle.Ocean; // 默认海洋风格
+            return RewardStyle.Ocean; //默认海洋风格
         }
 
         public override void Update() {

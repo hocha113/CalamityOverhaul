@@ -51,8 +51,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         //技能相关
         private int qSkillCooldown;
         private int rSkillCooldown;
-        private const int QSkillMaxCooldown = 120;  // 2秒冷却
-        private const int RSkillMaxCooldown = 180;  // 3秒冷却
+        private const int QSkillMaxCooldown = 120;  //2秒冷却
+        private const int RSkillMaxCooldown = 180;  //3秒冷却
 
         public override void SetMagicProperty() {
             Recoil = 0;
@@ -94,14 +94,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     if (qSkillIndex >= 0) {
                         qSkillCooldown = QSkillMaxCooldown;
 
-                        // 消耗魔力
+                        //消耗魔力
                         int manaCost = Item.mana * 2;
                         Owner.statMana -= manaCost;
                         if (Owner.statMana < 0) {
                             Owner.statMana = 0;
                         }
 
-                        // 播放激活音效
+                        //播放激活音效
                         SoundEngine.PlaySound(SoundID.Item109 with {
                             Volume = 0.8f,
                             Pitch = 0.3f
@@ -126,14 +126,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     if (rSkillIndex >= 0) {
                         rSkillCooldown = RSkillMaxCooldown;
 
-                        // 消耗魔力
+                        //消耗魔力
                         int manaCost = Item.mana * 3;
                         Owner.statMana -= manaCost;
                         if (Owner.statMana < 0) {
                             Owner.statMana = 0;
                         }
 
-                        // 播放激活音效
+                        //播放激活音效
                         SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
                             Volume = 0.9f,
                             Pitch = -0.3f

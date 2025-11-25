@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            ai[0] = Main.rand.Next(TotalFrames); // 随机起始帧
+            ai[0] = Main.rand.Next(TotalFrames); //随机起始帧
         }
 
         public override void AI() {

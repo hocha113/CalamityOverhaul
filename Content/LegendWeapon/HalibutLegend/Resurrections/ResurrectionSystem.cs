@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     throw new ArgumentException("The maximum value must be greater than 0");
                 }
                 maxValue = value;
-                // 如果当前值超过新的最大值，则裁剪
+                //如果当前值超过新的最大值，则裁剪
                 if (currentValue > maxValue) {
                     SetValue(maxValue);
                 }
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             if (triggerEvents && Math.Abs(oldValue - currentValue) > 0.001f) {
                 OnValueChanged?.Invoke(oldValue, currentValue);
 
-                // 检查特殊状态
+                //检查特殊状态
                 if (currentValue >= maxValue && oldValue < maxValue) {
                     OnMaxValueReached?.Invoke();
                 }
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     OnValueZero?.Invoke();
                 }
 
-                // 检查阈值触发
+                //检查阈值触发
                 CheckThresholds(oldValue, currentValue);
             }
         }
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// <param name="triggerEvents">是否触发事件（默认true）</param>
         public void Reset(bool triggerEvents = true) {
             SetValue(0f, triggerEvents);
-            // 重置阈值触发记录
+            //重置阈值触发记录
             triggeredThresholds.Clear();
         }
 
@@ -215,12 +215,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 return;
             }
 
-            // 应用复苏速度
+            //应用复苏速度
             if (Math.Abs(resurrectionRate) > 0.001f) {
                 AddValue(resurrectionRate, true);
             }
 
-            // 检查危险区域状态
+            //检查危险区域状态
             CheckDangerZone();
         }
 
@@ -232,22 +232,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             bool isInDangerZone = ratio >= 0.7f;
             bool isInCriticalZone = ratio >= 0.9f;
 
-            // 进入极危区域
+            //进入极危区域
             if (isInCriticalZone && !wasInCriticalZone) {
                 wasInCriticalZone = true;
                 OnEnterCriticalZone?.Invoke();
             }
-            // 离开极危区域
+            //离开极危区域
             else if (!isInCriticalZone && wasInCriticalZone) {
                 wasInCriticalZone = false;
             }
 
-            // 进入危险区域
+            //进入危险区域
             if (isInDangerZone && !wasInDangerZone) {
                 wasInDangerZone = true;
                 OnEnterDangerZone?.Invoke();
             }
-            // 离开危险区域
+            //离开危险区域
             else if (!isInDangerZone && wasInDangerZone) {
                 wasInDangerZone = false;
                 OnLeaveDangerZone?.Invoke();
@@ -292,14 +292,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             foreach (var kvp in thresholdCallbacks) {
                 float threshold = kvp.Key;
 
-                // 向上穿越阈值
+                //向上穿越阈值
                 if (oldRatio < threshold && newRatio >= threshold) {
                     if (!triggeredThresholds.Contains(threshold)) {
                         triggeredThresholds.Add(threshold);
                         kvp.Value?.Invoke();
                     }
                 }
-                // 向下穿越阈值（重置触发状态）
+                //向下穿越阈值（重置触发状态）
                 else if (oldRatio >= threshold && newRatio < threshold) {
                     triggeredThresholds.Remove(threshold);
                 }
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 isEnabled = tag.GetBool("IsEnabled");
             }
 
-            // 清空阈值触发记录
+            //清空阈值触发记录
             triggeredThresholds.Clear();
         }
         #endregion

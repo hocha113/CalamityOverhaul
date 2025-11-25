@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     }
 
                     //计算心脏的缩放值（基于生命值百分比）
-                    float targetScale = 0.5f + fillPercent * 0.5f; // 范围：0.5 到 1.0
+                    float targetScale = 0.5f + fillPercent * 0.5f; //范围：0.5 到 1.0
 
                     //添加心跳动画（仅对有生命值的心脏）
                     if (fillPercent > 0 && fillPercent < 1f) {
@@ -428,7 +428,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
 
                 //计算星星的缩放值（基于魔力值百分比）
-                float targetScale = 0.5f + fillPercent * 0.5f; // 范围：0.5 到 1.0
+                float targetScale = 0.5f + fillPercent * 0.5f; //范围：0.5 到 1.0
 
                 //添加闪烁动画（仅对有魔力值的星星）
                 if (fillPercent > 0 && fillPercent < 1f) {

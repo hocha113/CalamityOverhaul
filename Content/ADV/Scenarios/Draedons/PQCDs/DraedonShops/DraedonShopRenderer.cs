@@ -61,31 +61,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 PanelHeight
             );
 
-            // 深度阴影
+            //深度阴影
             Rectangle shadow = panelRect;
             shadow.Offset(6, 8);
             spriteBatch.Draw(pixel, shadow, Color.Black * (animation.UIAlpha * 0.7f));
 
-            // 主背景渐变
+            //主背景渐变
             DrawGradientBackground(spriteBatch, panelRect, pixel);
 
-            // 全息闪烁叠加
+            //全息闪烁叠加
             float flicker = (float)Math.Sin(animation.HologramFlicker * 1.5f) * 0.5f + 0.5f;
             spriteBatch.Draw(pixel, panelRect, new Color(15, 30, 45) * (animation.UIAlpha * 0.25f * flicker));
 
-            // 六角网格
+            //六角网格
             DrawHexGrid(spriteBatch, panelRect, pixel);
 
-            // 扫描线
+            //扫描线
             DrawScanLines(spriteBatch, panelRect, pixel);
 
-            // 内部脉冲发光
+            //内部脉冲发光
             float innerPulse = (float)Math.Sin(animation.CircuitPulseTimer * 1.3f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-5, -5);
             spriteBatch.Draw(pixel, inner, new Color(40, 180, 255) * (animation.UIAlpha * 0.12f * innerPulse));
 
-            // 科技边框
+            //科技边框
             DrawTechFrame(spriteBatch, panelRect, innerPulse, pixel);
         }
 
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         private void DrawHexGrid(SpriteBatch spriteBatch, Rectangle rect, Texture2D pixel) {
-            // 水平网格线
+            //水平网格线
             int hexRows = 12;
             float hexHeight = rect.Height / (float)hexRows;
 
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 spriteBatch.Draw(pixel, new Rectangle(rect.X + 15, (int)y, rect.Width - 30, 1), gridColor);
             }
 
-            // 垂直网格线
+            //垂直网格线
             int hexCols = 15;
             float hexWidth = rect.Width / (float)hexCols;
             for (int col = 0; col < hexCols; col++) {
@@ -155,13 +155,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private void DrawTechFrame(SpriteBatch spriteBatch, Rectangle rect, float pulse, Texture2D pixel) {
             Color borderColor = Color.Lerp(new Color(40, 160, 240), new Color(80, 200, 255), pulse) * (animation.UIAlpha * 0.9f);
 
-            // 外边框
+            //外边框
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 4), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 4, rect.Width, 4), borderColor * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 4, rect.Height), borderColor * 0.9f);
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - 4, rect.Y, 4, rect.Height), borderColor * 0.9f);
 
-            // 内发光边框
+            //内发光边框
             Rectangle inner = rect;
             inner.Inflate(-8, -8);
             Color innerGlow = new Color(100, 200, 255) * (animation.UIAlpha * 0.25f * pulse);
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 2, inner.Height), innerGlow * 0.9f);
             spriteBatch.Draw(pixel, new Rectangle(inner.Right - 2, inner.Y, 2, inner.Height), innerGlow * 0.9f);
 
-            // 角落电路装饰
+            //角落电路装饰
             DrawCornerCircuit(spriteBatch, new Vector2(rect.X + 15, rect.Y + 15), animation.UIAlpha);
             DrawCornerCircuit(spriteBatch, new Vector2(rect.Right - 15, rect.Y + 15), animation.UIAlpha);
             DrawCornerCircuit(spriteBatch, new Vector2(rect.X + 15, rect.Bottom - 15), animation.UIAlpha * 0.7f);
@@ -190,12 +190,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            // 标题
+            //标题
             string title = "DRAEDON QUANTUM STORE";
             Vector2 titleSize = font.MeasureString(title) * 1.3f;
             Vector2 titlePos = panelPosition + new Vector2((PanelWidth - titleSize.X) / 2f, 25);
 
-            // 标题发光效果
+            //标题发光效果
             Color glowColor = new Color(80, 220, 255) * (animation.UIAlpha * 0.9f);
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
@@ -204,14 +204,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, 1.3f);
 
-            // 分隔线
+            //分隔线
             Vector2 lineStart = panelPosition + new Vector2(40, 75);
             Vector2 lineEnd = lineStart + new Vector2(PanelWidth - 80, 0);
             DrawGradientLine(spriteBatch, lineStart, lineEnd,
                 new Color(60, 160, 240) * (animation.UIAlpha * 0.9f),
                 new Color(60, 160, 240) * (animation.UIAlpha * 0.1f), 2f);
 
-            // 货币显示
+            //货币显示
             DrawCurrencyDisplay(spriteBatch, panelPosition);
         }
 
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 currencyPos = panelPosition + new Vector2(40, 85);
 
-            // 计算玩家总货币
+            //计算玩家总货币
             long totalCopper = CalculateTotalCurrency();
 
             int platinum = (int)(totalCopper / 1000000);
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             int silver = (int)(totalCopper % 10000 / 100);
             int copper = (int)(totalCopper % 100);
 
-            // FUNDS文字
+            //FUNDS文字
             string fundsText = "FUNDS: ";
             float pulse = (float)Math.Sin(animation.CoinDisplayPulse) * 0.5f + 0.5f;
             Color fundsTitleColor = Color.Lerp(new Color(200, 220, 255), new Color(255, 255, 255), pulse * 0.3f) * animation.UIAlpha;
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             float coinScale = 0.8f;
             float spacing = 8f;
 
-            // 绘制各种货币
+            //绘制各种货币
             if (platinum > 0) {
                 DrawCoinWithAmount(spriteBatch, coinPos, ItemID.PlatinumCoin, platinum, coinScale, animation.UIAlpha, pulse);
                 coinPos.X += GetCoinDisplayWidth(platinum, coinScale) + spacing;
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             float iconScale = Math.Min(24f / coinFrame.Width, 24f / coinFrame.Height) * scale;
             Vector2 iconPos = position + new Vector2(12, 12);
 
-            // 货币发光效果
+            //货币发光效果
             Color glowColor = GetCoinGlowColor(coinType, pulse) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             spriteBatch.Draw(coinTexture, iconPos, coinFrame, Color.White * alpha, 0f,
                 coinFrame.Size() / 2f, iconScale, SpriteEffects.None, 0f);
 
-            // 绘制数量文字
+            //绘制数量文字
             string amountText = amount.ToString();
             Vector2 textPos = position + new Vector2(26, 4);
             Color textColor = Color.Lerp(Color.White, GetCoinColor(coinType), 0.4f) * alpha;
@@ -370,29 +370,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             bool isHolding = interaction.HoldingPurchaseIndex == currentItemIndex && interaction.HoldingPurchaseTimer > 0;
 
-            // 槽位背景和边框
+            //槽位背景和边框
             DrawSlotBackground(spriteBatch, slotRect, isHovered, isSelected, isHolding, hoverProgress, pixel);
 
-            // 长按购买进度条
+            //长按购买进度条
             if (isHolding && interaction.HoldingPurchaseTimer < 20) {
                 DrawHoldProgressBar(spriteBatch, slotRect, pixel);
             }
 
-            // 连续购买计数显示
+            //连续购买计数显示
             if (isHolding && interaction.ConsecutivePurchaseCount > 0 && interaction.HoldingPurchaseTimer >= 20) {
                 DrawPurchaseCounter(spriteBatch, slotRect);
             }
 
-            // 物品图标
+            //物品图标
             DrawItemIcon(spriteBatch, shopItem, position, hoverProgress);
 
-            // 物品名称
+            //物品名称
             DrawItemName(spriteBatch, shopItem, position, hoverProgress);
 
-            // 价格显示
+            //价格显示
             DrawPriceDisplay(spriteBatch, shopItem, position, hoverProgress);
 
-            // 数据流效果
+            //数据流效果
             DrawDataStreamEffect(spriteBatch, position, hoverProgress, pixel);
         }
 
@@ -417,7 +417,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             spriteBatch.Draw(pixel, slotRect, slotColor);
 
-            // 槽位边框
+            //槽位边框
             float borderPulse = (float)Math.Sin(animation.CircuitPulseTimer * 1.5f + slotRect.Y * 0.01f) * 0.5f + 0.5f;
 
             if (isHolding && interaction.HoldingPurchaseTimer >= 20) {
@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             spriteBatch.Draw(pixel, new Rectangle(slotRect.X, slotRect.Y, slotRect.Width, 2), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(slotRect.X, slotRect.Bottom - 2, slotRect.Width, 2), borderColor * 0.7f);
 
-            // 悬停发光效果
+            //悬停发光效果
             if (hoverProgress > 0.01f) {
                 Rectangle glowRect = slotRect;
                 glowRect.Inflate(2, 2);

@@ -294,7 +294,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 return;
             }
 
-            // 准备轨迹点
+            //准备轨迹点
             Vector2[] positions = new Vector2[Projectile.oldPos.Length];
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -303,11 +303,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
             }
 
-            // 创建或更新 Trail
+            //创建或更新 Trail
             Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
             Trail.TrailPositions = positions;
 
-            // 使用 InnoVault 的绘制方法
+            //使用 InnoVault 的绘制方法
             Effect effect = EffectLoader.GradientTrail.Value;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
@@ -460,7 +460,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 return;
             }
 
-            // 准备轨迹点
+            //准备轨迹点
             Vector2[] positions = new Vector2[Projectile.oldPos.Length];
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -469,11 +469,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
             }
 
-            // 创建或更新 Trail
+            //创建或更新 Trail
             Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
             Trail.TrailPositions = positions;
 
-            // 使用 InnoVault 的绘制方法
+            //使用 InnoVault 的绘制方法
             Effect effect = EffectLoader.GradientTrail.Value;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
