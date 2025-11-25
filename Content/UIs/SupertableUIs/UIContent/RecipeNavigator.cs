@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 
             LoadPreviewRecipe();
             
-            // 同步更新侧边栏的选中状态
+            //同步更新侧边栏的选中状态
             SyncToSidebar();
         }
         
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             {
                 if (SupertableUI.AllRecipes[i] == recipeData)
                 {
-                    SetRecipeIndex(i, syncToSidebar: false); // 从侧边栏调用，不需要反向同步
+                    SetRecipeIndex(i, syncToSidebar: false); //从侧边栏调用，不需要反向同步
                     return;
                 }
             }
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             {
                 sidebarManager.SelectedRecipe = sidebarManager.RecipeElements[CurrentIndex];
                 
-                // 自动滚动到选中的配方
+                //自动滚动到选中的配方
                 sidebarManager.ScrollToRecipe(CurrentIndex);
             }
         }

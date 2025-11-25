@@ -57,10 +57,26 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region UI状态字段
 
-        public ref Item[] Items => ref _controller.SlotManager.Slots;
-        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/")]
-        public static Texture2D MainValue;
-        public override Texture2D Texture => MainValue;
+        /// <summary>
+        /// 获取当前UI中的物品数组（这是一个副本，修改需要同步回TileProcessor）
+        /// </summary>
+        public Item[] Items
+        {
+            get => _controller?.SlotManager?.Slots;
+            set
+            {
+                if (_controller?.SlotManager != null && value != null)
+                {
+                    //复制物品数组，避免直接引用
+                    for (int i = 0; i < value.Length && i < _controller.SlotManager.Slots.Length; i++)
+                    {
+                        _controller.SlotManager.Slots[i] = value[i]?.Clone() ?? new Item();
+                    }
+                }
+            }
+        }
+
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
 
         private GridCoordinate _hoveredCell;
         private Rectangle _gridRectangle;
@@ -204,6 +220,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 更新逻辑
 
+        private int _autoSaveTimer;
+        private const int AUTO_SAVE_INTERVAL = 300; //每300帧（5秒）自动保存一次
+
         public override void Update() {
             if (_controller == null) return;
 
@@ -211,13 +230,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             UpdateHoveredCell();
 
             int hoveredIndex = _hoveredCell.IsValid() ? _hoveredCell.ToIndex() : -1;
+            //这里用 player.CWR().SupertableUIStartBool 而不是他妈的 Active
             _controller.UpdateAnimations(player.CWR().SupertableUIStartBool, hoveredIndex);
 
             //先处理拖拽，因为它可能会改变DrawPosition
             _dragController?.Update();
-
+            
             //如果正在拖拽，占用鼠标接口
-            if (_dragController != null && _dragController.IsDragging) {
+            if (_dragController != null && _dragController.IsDragging)
+            {
                 player.mouseInterface = true;
             }
 
@@ -227,6 +248,21 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             _sidebarManager?.Update();
             _recipeNavigator?.Update();
             _quickActionsManager?.Update();
+            
+            //定期自动保存到TileProcessor
+            if (Active && TramTP != null)
+            {
+                _autoSaveTimer++;
+                if (_autoSaveTimer >= AUTO_SAVE_INTERVAL)
+                {
+                    _autoSaveTimer = 0;
+                    TramTP.SaveItemsFromUI();
+                }
+            }
+            else
+            {
+                _autoSaveTimer = 0;
+            }
         }
 
         private void UpdateUIPositions() {
@@ -498,20 +534,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 网络同步
 
-        private void SyncToNetworkIfNeeded() {
-            if (TramTP != null && TramTP.Active) {
-                if (TramTP.items == null) {
-                    TramTP.items = _controller.SlotManager.Slots;
-                }
-                else {
-                    for (int i = 0; i < _controller.SlotManager.Slots.Length; i++) {
-                        _controller.SlotManager.Slots[i] = TramTP.items[i];
-                    }
-                }
-
-                if (!VaultUtils.isSinglePlayer) {
-                    TramTP.SendData();
-                }
+        private static void SyncToNetworkIfNeeded()
+        {
+            if (TramTP != null && TramTP.Active)
+            {
+                //定期保存UI中的物品数据回TileProcessor
+                TramTP.SaveItemsFromUI();
             }
         }
 

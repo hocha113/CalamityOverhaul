@@ -97,38 +97,22 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
+            //获取图块的左上角位置
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return true;
             }
-
+            
+            //播放交互音效
             SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.3f });
-
+            
+            //获取对应的 TileProcessor
             if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                 return true;
             }
-
-            ref int playerTramType = ref Main.LocalPlayer.CWR().TramTPContrType;
-            if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
-                SupertableUI.TramTP ??= tram;
-                SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
-            }
-            else {
-                playerTramType = tram.WhoAmI;
-                SupertableUI.TramTP = tram;
-                SupertableUI.Instance.Active = true;
-                if (SupertableUI.Instance.Active && !Main.playerInventory) {
-                    //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
-                    Main.playerInventory = true;
-                }
-            }
-
-            foreach (var item in SupertableUI.Instance.Items) {//这里给原版物品预加载一下纹理，如果有的话
-                if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
-                    continue;
-                }
-                Main.instance.LoadItem(item.type);
-            }
-
+            
+            //打开UI
+            tram.OpenUI(Main.LocalPlayer);
+            
             return true;
         }
 

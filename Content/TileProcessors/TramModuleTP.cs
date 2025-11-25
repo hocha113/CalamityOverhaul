@@ -15,48 +15,80 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.TileProcessors
 {
+    /// <summary>
+    /// 转化物质工作台的 TileProcessor
+    /// 负责管理工作台的物品存储、网络同步和UI交互
+    /// </summary>
     public class TramModuleTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<TransmutationOfMatter>();
-        private const int maxleng = 120;
-        private float snegs;
-        private int Time;
-        private bool mouseOnTile;
+
+        #region 常量定义
+
+        private const int MAX_INTERACTION_DISTANCE = 120;
+        private const int ITEM_COUNT = 81;
+        private const int ANIMATION_FRAME_COUNT = 10;
+        private const int ANIMATION_FRAME_DURATION = 6;
+
+        #endregion
+
+        #region 字段
+
+        //物品存储
+        public Item[] items;
+
+        //动画和视觉效果
+        private float _uiPromptProgress;
+        private int _animationTimer;
+        private bool _isMouseOver;
         internal bool drawGlow;
         internal Color gloaColor;
-        private int gloawTime;
+        private int _glowTimer;
         internal int frame;
+
+        //资源
         [VaultLoaden(CWRConstant.Asset + "Tiles/TransmutationOfMatter")]
         internal static Asset<Texture2D> modeuleBodyAsset = null;
         [VaultLoaden(CWRConstant.UI + "SupertableUIs/TexturePackButtons")]
         internal static Asset<Texture2D> truesFromeAsset = null;
-        public Item[] items;
-        public const int itemCount_W_X_H = 81;
+
+        //网络同步标记
+        private bool _needsSyncToServer;
+        private int _syncCooldown;
+
+        #endregion
+
+        #region 属性
+
         internal Vector2 Center => PosInWorld + new Vector2(TransmutationOfMatter.Width, TransmutationOfMatter.Height) * 8;
-        private void initializeItems() {
-            items = new Item[itemCount_W_X_H];
+
+        /// <summary>
+        /// 检查是否有玩家正在使用此工作台
+        /// </summary>
+        public bool IsInUse => GetActivePlayer() != null;
+
+        #endregion
+
+        #region 生命周期
+
+        public override void SetProperty() {
+            InitializeItems();
+        }
+
+        private void InitializeItems() {
+            items = new Item[ITEM_COUNT];
             for (int i = 0; i < items.Length; i++) {
                 items[i] = new Item();
             }
         }
 
-        public override void SetProperty() => initializeItems();
+        #endregion
 
-        internal void TPEntityLoadenItems() {
-            foreach (var item in items) {//这里给原版物品预加载一下纹理，如果有的话
-                if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
-                    continue;
-                }
-                Main.instance.LoadItem(item.type);
-            }
-            SupertableUI.Instance.Items = items;
-            if (!VaultUtils.isSinglePlayer) {
-                SendData();
-            }
-        }
+        #region 数据同步
 
         public override void SendData(ModPacket data) {
-            for (int i = 0; i < itemCount_W_X_H; i++) {
+            //发送物品数据
+            for (int i = 0; i < ITEM_COUNT; i++) {
                 if (items[i] == null) {
                     items[i] = new Item(0);
                 }
@@ -65,16 +97,23 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            for (int i = 0; i < itemCount_W_X_H; i++) {
+            //接收物品数据
+            for (int i = 0; i < ITEM_COUNT; i++) {
                 items[i] = ItemIO.Receive(reader, true);
             }
-            SupertableUI.Instance.Items = items;
-            SupertableUI.TramTP.SendData();//不要进行网络发送，否则会迭代起来引发网络数据洪流
+
+            //如果客户端正在使用此工作台的UI，更新UI显示
+            if (Main.LocalPlayer.CWR().TramTPContrType == WhoAmI &&
+                SupertableUI.Instance?.Active == true) {
+                SyncItemsToUI();
+            }
+
+            //服务端不需要再次发送数据（避免循环）
         }
 
         public override void SaveData(TagCompound tag) {
             try {
-                List<TagCompound> itemTags = [];
+                List<TagCompound> itemTags = new List<TagCompound>();
                 for (int i = 0; i < items.Length; i++) {
                     if (items[i] == null) {
                         items[i] = new Item(0);
@@ -82,131 +121,367 @@ namespace CalamityOverhaul.Content.TileProcessors
                     itemTags.Add(ItemIO.Save(items[i]));
                 }
                 tag["itemTags"] = itemTags;
-            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.SaveData An Error Has Cccurred: {ex.Message}"); }
-        }
-
-        private void OldLoadData(TagCompound tag) {
-            try {
-                if (!tag.TryGet("SupertableUI_ItemDate", out Item[] loadSupUIItems)) {
-                    return;
-                }
-
-                for (int i = 0; i < loadSupUIItems.Length; i++) {
-                    if (loadSupUIItems[i] == null) {
-                        loadSupUIItems[i] = new Item(0);
-                    }
-                }
-
-                items = loadSupUIItems;
-            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.OldLoadData An Error Has Cccurred: {ex.Message}"); }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"TramModuleTP.SaveData Error: {ex.Message}");
+            }
         }
 
         public override void LoadData(TagCompound tag) {
             try {
-                //这一段用于适配老存档，防止新版本让老存档物品数据丢失
-                OldLoadData(tag);
+                //兼容旧版本数据
+                LoadLegacyData(tag);
 
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
 
-                List<Item> resultItems = [];
+                List<Item> loadedItems = new List<Item>();
                 for (int i = 0; i < itemTags.Count; i++) {
-                    var itemTag = itemTags[i];
-                    resultItems.Add(ItemIO.Load(itemTag));
+                    loadedItems.Add(ItemIO.Load(itemTags[i]));
                 }
 
-                items = [.. resultItems];
-            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.LoadData An Error Has Cccurred: {ex.Message}"); }
+                items = loadedItems.ToArray();
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"TramModuleTP.LoadData Error: {ex.Message}");
+            }
         }
 
+        private void LoadLegacyData(TagCompound tag) {
+            try {
+                if (tag.TryGet("SupertableUI_ItemDate", out Item[] loadSupUIItems)) {
+                    for (int i = 0; i < loadSupUIItems.Length; i++) {
+                        if (loadSupUIItems[i] == null) {
+                            loadSupUIItems[i] = new Item(0);
+                        }
+                    }
+                    items = loadSupUIItems;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"TramModuleTP.LoadLegacyData Error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region UI交互
+
+        /// <summary>
+        /// 打开UI并绑定此工作台
+        /// </summary>
+        public void OpenUI(Player player) {
+            if (player == null || !player.active) return;
+
+            CWRPlayer modPlayer = player.CWR();
+
+            //如果已经在使用此工作台，切换UI状态
+            if (modPlayer.TramTPContrType == WhoAmI) {
+                SupertableUI.TramTP = this;
+                SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
+            }
+            else {
+                //如果正在使用其他工作台，先保存那个工作台的数据
+                if (modPlayer.TramTPContrType >= 0 && SupertableUI.TramTP != null) {
+                    SupertableUI.TramTP.SaveItemsFromUI();
+                }
+
+                //绑定到新工作台
+                modPlayer.TramTPContrType = WhoAmI;
+                SupertableUI.TramTP = this;
+                SupertableUI.Instance.Active = true;
+
+                //打开背包UI
+                if (!Main.playerInventory) {
+                    Main.playerInventory = true;
+                }
+            }
+
+            //同步物品到UI
+            SyncItemsToUI();
+
+            //预加载原版物品纹理
+            PreloadItemTextures();
+        }
+
+        /// <summary>
+        /// 关闭UI并保存数据
+        /// </summary>
+        public void CloseUI(Player player) {
+            if (player == null) return;
+
+            CWRPlayer modPlayer = player.CWR();
+            if (modPlayer.TramTPContrType == WhoAmI) {
+                SaveItemsFromUI();
+                modPlayer.TramTPContrType = -1;
+                SupertableUI.Instance.Active = false;
+
+                //请求同步到服务器
+                RequestNetworkSync();
+            }
+        }
+
+        /// <summary>
+        /// 将物品数据同步到UI
+        /// </summary>
+        private void SyncItemsToUI() {
+            if (SupertableUI.Instance == null) return;
+
+            //创建物品副本，避免直接引用
+            Item[] uiItems = new Item[ITEM_COUNT];
+            for (int i = 0; i < ITEM_COUNT; i++) {
+                uiItems[i] = items[i]?.Clone() ?? new Item();
+            }
+
+            SupertableUI.Instance.Items = uiItems;
+        }
+
+        /// <summary>
+        /// 从UI保存物品数据
+        /// </summary>
+        public void SaveItemsFromUI() {
+            if (SupertableUI.Instance?.Items == null) return;
+
+            //复制UI中的物品回TileProcessor
+            for (int i = 0; i < ITEM_COUNT && i < SupertableUI.Instance.Items.Length; i++) {
+                items[i] = SupertableUI.Instance.Items[i]?.Clone() ?? new Item();
+            }
+
+            //标记需要网络同步
+            RequestNetworkSync();
+        }
+
+        /// <summary>
+        /// 预加载物品纹理
+        /// </summary>
+        private void PreloadItemTextures() {
+            if (VaultUtils.isServer) return;
+
+            foreach (var item in items) {
+                if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
+                    continue;
+                }
+                Main.instance.LoadItem(item.type);
+            }
+        }
+
+        #endregion
+
+        #region 网络同步
+
+        /// <summary>
+        /// 请求网络同步
+        /// </summary>
+        private void RequestNetworkSync() {
+            if (VaultUtils.isSinglePlayer) return;
+
+            _needsSyncToServer = true;
+            _syncCooldown = 5; //5帧后同步，避免频繁网络请求
+        }
+
+        /// <summary>
+        /// 执行网络同步
+        /// </summary>
+        private void PerformNetworkSync() {
+            if (!_needsSyncToServer) return;
+
+            if (_syncCooldown > 0) {
+                _syncCooldown--;
+                return;
+            }
+
+            SendData();
+            _needsSyncToServer = false;
+        }
+
+        #endregion
+
+        #region 更新逻辑
+
         public override void Update() {
-            VaultUtils.ClockFrame(ref frame, 6, 10);
-            Time++;
+            //更新动画帧
+            VaultUtils.ClockFrame(ref frame, ANIMATION_FRAME_DURATION, ANIMATION_FRAME_COUNT);
+            _animationTimer++;
+
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {
                 return;
             }
 
-            if (mouseOnTile || snegs > 0) {
+            //更新光照效果
+            if (_isMouseOver || _uiPromptProgress > 0) {
                 Lighting.AddLight(Center, Color.White.ToVector3());
             }
 
             CWRPlayer modPlayer = player.CWR();
 
+            //服务端不需要处理视觉效果
             if (VaultUtils.isServer) {
+                PerformNetworkSync();
                 return;
             }
 
-            Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
-            mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
+            //更新鼠标悬停状态
+            UpdateMouseOver();
 
-            float leng = PosInWorld.Distance(player.Center);
-            drawGlow = leng < maxleng && mouseOnTile && !SupertableUI.Instance.Active;
+            //更新发光效果
+            UpdateGlowEffect(player);
+
+            //更新UI提示动画
+            UpdateUIPrompt(modPlayer);
+
+            //检查距离和玩家状态，自动关闭UI
+            CheckAutoClose(player, modPlayer);
+
+            //执行网络同步
+            PerformNetworkSync();
+        }
+
+        private void UpdateMouseOver() {
+            Rectangle tileRect = new Rectangle(
+                Position.X * 16,
+                Position.Y * 16,
+                TransmutationOfMatter.Width * 16,
+                TransmutationOfMatter.Height * 16
+            );
+
+            _isMouseOver = tileRect.Intersects(new Rectangle(
+                (int)Main.MouseWorld.X,
+                (int)Main.MouseWorld.Y,
+                1, 1
+            ));
+        }
+
+        private void UpdateGlowEffect(Player player) {
+            float distance = PosInWorld.Distance(player.Center);
+            drawGlow = distance < MAX_INTERACTION_DISTANCE &&
+                      _isMouseOver &&
+                      !SupertableUI.Instance.Active;
+
             if (drawGlow) {
-                gloawTime++;
-                gloaColor = Color.AliceBlue * MathF.Abs(MathF.Sin(gloawTime * 0.04f));
+                _glowTimer++;
+                gloaColor = Color.AliceBlue * MathF.Abs(MathF.Sin(_glowTimer * 0.04f));
             }
             else {
-                gloawTime = 0;
+                _glowTimer = 0;
             }
+        }
 
+        private void UpdateUIPrompt(CWRPlayer modPlayer) {
             if (modPlayer.InspectOmigaTime > 0) {
-                if (snegs < 1) {
-                    snegs += 0.1f;
+                if (_uiPromptProgress < 1f) {
+                    _uiPromptProgress += 0.1f;
                 }
             }
             else {
-                if (snegs > 0) {
-                    snegs -= 0.1f;
-                    if (snegs < 0) {
-                        snegs = 0;
-                    }
+                if (_uiPromptProgress > 0f) {
+                    _uiPromptProgress -= 0.1f;
+                    _uiPromptProgress = Math.Max(0f, _uiPromptProgress);
                 }
             }
+        }
 
-            if (!modPlayer.SupertableUIStartBool) {
-                return;
-            }
+        private void CheckAutoClose(Player player, CWRPlayer modPlayer) {
+            if (!modPlayer.SupertableUIStartBool) return;
 
-            if ((leng >= maxleng || player.dead) && modPlayer.TramTPContrType == WhoAmI) {
-                modPlayer.SupertableUIStartBool = false;
-                modPlayer.TramTPContrType = -1;
-                TPEntityLoadenItems();
+            float distance = PosInWorld.Distance(player.Center);
+
+            if ((distance >= MAX_INTERACTION_DISTANCE || player.dead) &&
+                modPlayer.TramTPContrType == WhoAmI) {
+                CloseUI(player);
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
         }
 
+        #endregion
+
+        #region 销毁处理
+
         public override void OnKill() {
-            CWRPlayer modPlayer = Main.LocalPlayer.CWR();
-            if (modPlayer.TramTPContrType == WhoAmI) {
-                modPlayer.SupertableUIStartBool = false;
-                modPlayer.TramTPContrType = -1;
+            //如果有玩家正在使用此工作台，关闭UI
+            Player activePlayer = GetActivePlayer();
+            if (activePlayer != null) {
+                CloseUI(activePlayer);
             }
+
+            //掉落物品
             if (!VaultUtils.isClient) {
-                foreach (var item in items) {
-                    if (item.IsAir) {
-                        continue;
-                    }
-                    int type = Item.NewItem(new EntitySource_WorldGen(), Center, item);
-                    if (VaultUtils.isServer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
-                }
+                DropItems();
             }
-            initializeItems();
+
+            //重置物品数组
+            InitializeItems();
         }
 
+        /// <summary>
+        /// 掉落所有物品
+        /// </summary>
+        private void DropItems() {
+            foreach (var item in items) {
+                if (item == null || item.IsAir) {
+                    continue;
+                }
+
+                int itemIndex = Item.NewItem(
+                    new EntitySource_WorldGen(),
+                    Center,
+                    item.type,
+                    item.stack
+                );
+
+                if (VaultUtils.isServer && itemIndex >= 0) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
+                }
+            }
+        }
+
+        #endregion
+
+        #region 辅助方法
+
+        /// <summary>
+        /// 获取正在使用此工作台的玩家
+        /// </summary>
+        private Player GetActivePlayer() {
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player p = Main.player[i];
+                if (p != null && p.active && p.CWR().TramTPContrType == WhoAmI) {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region 渲染
+
         public override void Draw(SpriteBatch spriteBatch) {
-            if (snegs <= 0) {
+            if (_uiPromptProgress <= 0f || truesFromeAsset?.Value == null) {
                 return;
             }
-            float truesTime = MathF.Sin(Time * 0.14f);
-            Rectangle rec = new Rectangle(0, 0, truesFromeAsset.Width() / 2, truesFromeAsset.Height() / 2);
-            Vector2 pos = Center + new Vector2(0, -40) - new Vector2(2, truesTime * 8);
-            pos -= Main.screenPosition;
-            spriteBatch.Draw(truesFromeAsset.Value, pos, rec, Color.Gold * snegs
-                , MathHelper.Pi, rec.Size() / 2, 1f + truesTime * 0.1f, SpriteEffects.None, 0);
+
+            float pulseTime = MathF.Sin(_animationTimer * 0.14f);
+            Rectangle sourceRect = new Rectangle(
+                0, 0,
+                truesFromeAsset.Width() / 2,
+                truesFromeAsset.Height() / 2
+            );
+
+            Vector2 drawPos = Center + new Vector2(0, -40) - new Vector2(2, pulseTime * 8);
+            drawPos -= Main.screenPosition;
+
+            spriteBatch.Draw(
+                truesFromeAsset.Value,
+                drawPos,
+                sourceRect,
+                Color.Gold * _uiPromptProgress,
+                MathHelper.Pi,
+                sourceRect.Size() / 2,
+                1f + pulseTime * 0.1f,
+                SpriteEffects.None,
+                0f
+            );
         }
+
+        #endregion
     }
 }
