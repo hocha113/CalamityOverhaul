@@ -114,9 +114,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 网络同步
         /// </summary>
-        private void SyncToNetwork() {
-            SupertableUI.TramTP?.SendData();
-        }
+        private void SyncToNetwork() => SupertableUI.SyncToNetworkIfNeeded();//完美的同步
 
         /// <summary>
         /// 重置所有状态

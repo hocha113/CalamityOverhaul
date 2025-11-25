@@ -522,7 +522,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region 网络同步
 
-        private static void SyncToNetworkIfNeeded() {
+        public static void SyncToNetworkIfNeeded() {
             if (TramTP != null && TramTP.Active) {
                 //定期保存UI中的物品数据回TileProcessor
                 TramTP.SaveItemsFromUI();
