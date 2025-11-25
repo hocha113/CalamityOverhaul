@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 2;
+            Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.alpha = 255;
@@ -42,7 +42,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            Projectile.timeLeft = 2;
             //¸úËæÍæ¼Ò
             Projectile.Center = Owner.Center;
 
