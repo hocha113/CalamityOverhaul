@@ -14,56 +14,73 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 
         private Vector2 _dragOffset;
         private bool _isDragging;
+        private Rectangle _dragArea;
 
-        public DragController(SupertableUI mainUI) {
+        public bool IsDragging => _isDragging;
+        public Rectangle DragArea => _dragArea;
+
+        public DragController(SupertableUI mainUI)
+        {
             _mainUI = mainUI;
         }
 
-        public void Update() {
-            if (_globalDontDragTime > 0) {
+        public void Update()
+        {
+            if (_globalDontDragTime > 0)
+            {
                 _globalDontDragTime--;
             }
 
-            Vector2 dragHandlePos = _mainUI.DrawPosition + SupertableConstants.DRAG_BUTTON_OFFSET;
-            Rectangle dragRect = new Rectangle((int)dragHandlePos.X, (int)dragHandlePos.Y, 50, 50);
-            bool hoverDragHandle = dragRect.Intersects(_mainUI.MouseHitBox) && _globalDontDragTime <= 0;
+            // 检查鼠标是否在拖拽区域内
+            bool hoverDragHandle = 
+                                   _mainUI.hoverInMainPage; // 确保在主UI范围内
 
-            if (Main.mouseItem.type > ItemID.None && _mainUI.HoverInPutItemCellPage) {
+            // 如果鼠标拿着物品且在材料格子区域，禁止拖拽
+            if (Main.mouseItem.type > ItemID.None && _mainUI.HoverInPutItemCellPage)
+            {
                 _globalDontDragTime = 2;
                 _isDragging = false;
                 return;
             }
 
-            if (hoverDragHandle && _mainUI.keyLeftPressState == KeyPressState.Pressed && !_isDragging) {
+            // 开始拖拽
+            if (hoverDragHandle && _mainUI.keyLeftPressState == KeyPressState.Pressed && !_isDragging)
+            {
                 _isDragging = true;
-                _dragOffset = _mainUI.MousePosition - dragHandlePos;
+                _dragOffset = _mainUI.MousePosition - _mainUI.DrawPosition;
             }
 
-            if (_isDragging) {
-                if (_mainUI.keyLeftPressState == KeyPressState.Released) {
+            // 拖拽过程
+            if (_isDragging)
+            {
+                if (_mainUI.keyLeftPressState == KeyPressState.Released)
+                {
                     _isDragging = false;
                 }
-                else {
-                    Vector2 targetPos = _mainUI.MousePosition - _dragOffset - SupertableConstants.DRAG_BUTTON_OFFSET;
+                else
+                {
+                    // 直接根据鼠标位置和偏移计算新位置
+                    Vector2 targetPos = _mainUI.MousePosition - _dragOffset;
                     _mainUI.DrawPosition = ClampToScreen(targetPos);
                 }
             }
         }
 
-        private Vector2 ClampToScreen(Vector2 position) {
+        private Vector2 ClampToScreen(Vector2 position)
+        {
             float x = MathHelper.Clamp(position.X, 0, Main.screenWidth - _mainUI.Texture.Width);
             float y = MathHelper.Clamp(position.Y, 0, Main.screenHeight - _mainUI.Texture.Height);
             return new Vector2(x, y);
         }
 
-        public void SetDontDragTime(int frames) {
+        public void SetDontDragTime(int frames)
+        {
             _globalDontDragTime = frames;
         }
 
-        public static void SetGlobalDontDragTime(int frames) {
+        public static void SetGlobalDontDragTime(int frames)
+        {
             _globalDontDragTime = frames;
         }
-
-        public bool IsDragging => _isDragging;
     }
 }
