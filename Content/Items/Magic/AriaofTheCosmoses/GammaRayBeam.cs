@@ -4,13 +4,16 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using InnoVault.PRT;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
     /// <summary>
     /// 伽马射线
     /// </summary>
-    internal class GammaRayBeam : ModProjectile
+    internal class GammaRayBeam : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -101,8 +104,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }, Projectile.Center);
             }
 
-            Vector2 toMus = Main.player[Projectile.owner].Center.To(Main.MouseWorld);
-            Projectile.Center = Main.player[Projectile.owner].Center;
+            Vector2 toMus = ToMouse;
+            Projectile.Center = Owner.Center;
             if (Projectile.localAI[0] == 0) {
                 Projectile.localAI[0] = Projectile.rotation - toMus.ToRotation();
             }
@@ -114,31 +117,37 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //核心能量粒子
-            if (Main.rand.NextBool(2)) {
-                Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.5f, beamWidth * 0.5f);
-                Dust dust = Dust.NewDustPerfect(particlePos, DustID.Electric, Vector2.Zero, 100,
-                    Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 2f));
-                dust.noGravity = true;
-                dust.fadeIn = 1.5f;
-            }
-
-            //外围电弧
-            if (Main.rand.NextBool(3)) {
-                Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth, beamWidth);
-                Vector2 particleVel = -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.3f);
-                Dust dust = Dust.NewDustPerfect(particlePos, DustID.BlueTorch, particleVel, 100,
-                    Color.Lerp(Color.DeepSkyBlue, Color.Blue, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f));
-                dust.noGravity = true;
-            }
-
             //星光闪烁
+            if (Main.rand.NextBool(6)) {
+                Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.4f, beamWidth * 0.4f);
+                Vector2 sparkVel = Main.rand.NextVector2Circular(1f, 1f);
+                
+                BasePRT spark = new PRT_Spark(
+                    sparkPos,
+                    sparkVel,
+                    false,
+                    Main.rand.Next(10, 18),
+                    Main.rand.NextFloat(0.8f, 1.3f),
+                    Color.White,
+                    Owner
+                );
+                PRTLoader.AddParticle(spark);
+            }
+
+            //能量流动线条
             if (Main.rand.NextBool(5)) {
-                Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.3f, beamWidth * 0.3f);
-                Dust spark = Dust.NewDustPerfect(sparkPos, DustID.GemDiamond, Vector2.Zero, 100,
-                    Color.White, Main.rand.NextFloat(0.8f, 1.3f));
-                spark.noGravity = true;
-                spark.fadeIn = 1.2f;
+                Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.3f, beamWidth * 0.3f);
+                Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
+                
+                BasePRT line = new PRT_Line(
+                    lineStart,
+                    lineVel,
+                    false,
+                    Main.rand.Next(12, 20),
+                    Main.rand.NextFloat(0.5f, 1f),
+                    Color.Lerp(Color.Cyan, new Color(150, 220, 255), Main.rand.NextFloat())
+                );
+                PRTLoader.AddParticle(line);
             }
         }
 
@@ -154,26 +163,59 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }, Projectile.Center);
 
             if (!VaultUtils.isServer) {
-                //爆发粒子
-                for (int i = 0; i < 15; i++) {
-                    float angle = MathHelper.TwoPi * i / 15f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
+                //爆发冲击粒子
+                for (int i = 0; i < 12; i++) {
+                    float angle = MathHelper.TwoPi * i / 12f;
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);
 
-                    Dust dust = Dust.NewDustPerfect(target.Center, DustID.Electric, velocity, 100,
+                    BasePRT impactBurst = new PRT_GammaImpact(
+                        target.Center,
+                        velocity,
                         Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(1.5f, 2.5f));
-                    dust.noGravity = true;
+                        Main.rand.NextFloat(0.2f, 1.2f),
+                        Main.rand.Next(20, 35),
+                        Main.rand.NextFloat(-0.3f, 0.3f),
+                        false,
+                        0.25f
+                    );
+                    PRTLoader.AddParticle(impactBurst);
                 }
 
-                //冲击波
+                float rand = Main.rand.NextFloat(MathHelper.TwoPi);
+                //光芒粒子
+                for (int i = 0; i < 15; i++) {
+                    float angle = MathHelper.TwoPi * i / 15f + rand;
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(23f, 37f);
+
+                    BasePRT light = new PRT_Light(
+                        target.Center,
+                        velocity,
+                        Main.rand.NextFloat(0.8f, 1.5f),
+                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
+                        Main.rand.Next(25, 40),
+                        1.5f,
+                        2f,
+                        hueShift: 0.02f
+                    );
+                    PRTLoader.AddParticle(light);
+                }
+
+                //冲击波环
                 for (int i = 0; i < 20; i++) {
                     float angle = MathHelper.TwoPi * i / 20f;
                     Vector2 offset = angle.ToRotationVector2() * 30f;
+                    Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * 5f;
 
-                    Dust shockwave = Dust.NewDustPerfect(target.Center + offset, DustID.BlueTorch,
-                        offset.SafeNormalize(Vector2.Zero) * 4f, 100,
-                        Color.DeepSkyBlue, 1.5f);
-                    shockwave.noGravity = true;
+                    BasePRT shock = new PRT_Spark(
+                        target.Center + offset,
+                        velocity,
+                        false,
+                        Main.rand.Next(15, 25),
+                        Main.rand.NextFloat(1f, 1.5f),
+                        new Color(100, 200, 255),
+                        Owner
+                    );
+                    PRTLoader.AddParticle(shock);
                 }
             }
 
@@ -189,27 +231,40 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Pitch = 0.3f
                 }, Projectile.Center);
 
-                //放射状爆发
-                for (int i = 0; i < 30; i++) {
-                    float angle = MathHelper.TwoPi * i / 30f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
+                //放射状冲击粒子
+                for (int i = 0; i < 24; i++) {
+                    float angle = MathHelper.TwoPi * i / 24f;
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 13f);
 
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center,
-                        Main.rand.NextBool() ? DustID.Electric : DustID.BlueTorch,
-                        velocity, 100,
+                    PRT_GammaImpact burst = new PRT_GammaImpact(
+                        Projectile.Center,
+                        velocity,
                         Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(1.5f, 2.8f));
-                    dust.noGravity = true;
+                        Main.rand.NextFloat(0.5f, 0.75f),
+                        Main.rand.Next(30, 45),
+                        Main.rand.NextFloat(-0.4f, 0.4f),
+                        false,
+                        0.3f
+                    );
+                    burst.inOwner = Owner.whoAmI;
+                    PRTLoader.AddParticle(burst);
                 }
 
-                //内爆收缩效果
+                //内爆收缩粒子
                 for (int i = 0; i < 15; i++) {
-                    Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(80f, 80f);
-                    Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
+                    Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(90f, 90f);
+                    Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f);
 
-                    Dust implosion = Dust.NewDustPerfect(spawnPos, DustID.GemDiamond, velocity, 100,
-                        Color.White, Main.rand.NextFloat(1f, 1.8f));
-                    implosion.noGravity = true;
+                    BasePRT implosion = new PRT_Spark(
+                        spawnPos,
+                        velocity,
+                        false,
+                        Main.rand.Next(20, 30),
+                        Main.rand.NextFloat(1f, 1.8f),
+                        Color.White,
+                        Owner
+                    );
+                    PRTLoader.AddParticle(implosion);
                 }
             }
         }
