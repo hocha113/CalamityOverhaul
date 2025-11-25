@@ -1827,12 +1827,10 @@ Projectiles: {
 	AncientStormLightning.DisplayName: Ancient Storm Lightning
 	AncientStormArc.DisplayName: Ancient Storm Arc
 	TerrorSpirit.DisplayName: Terror Spirit
-	AccretionDiskEffect.DisplayName: Accretion Disk Effect
 	AccretionDisk.DisplayName: Accretion Disk
 	FlattenedAccretionDisk.DisplayName: Flattened Accretion Disk
 	GammaRayBeam.DisplayName: Gamma Ray Beam
 	AriaQSkill.DisplayName: Aria Q Skill
-	AriaQSkillBolt.DisplayName: Aria Q Skill Bolt
 	AriaQSkillDisk.DisplayName: Aria Q Skill Disk
 	AriaRSkill.DisplayName: Aria R Skill
 	AriaRSkillBeam.DisplayName: Aria R Skill Beam

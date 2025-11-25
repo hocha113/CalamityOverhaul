@@ -1,7 +1,7 @@
 ﻿displayName = Calamity Overhaul
 modReferences = CalamityMod@2.0.5, InnoVault@1.9.72
 sortAfter = CalamityMod, InnoVault
-weakReferences = ThoriumMod, BossChecklist
+weakReferences = ThoriumMod, BossChecklist, MagicStorage
 homepage = https://calamity-overhaul.cc
 author = HoCha113
 version = 0.8037

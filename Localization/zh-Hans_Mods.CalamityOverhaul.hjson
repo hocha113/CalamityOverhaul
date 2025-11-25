@@ -1393,8 +1393,8 @@ Items: {
 	}
 
 	AriaofTheCosmos: {
-		// DisplayName: Ariaof The Cosmos
-		// Tooltip: ""
+		DisplayName: 寰宇咏叹调
+		Tooltip: ""
 	}
 }
 
@@ -1808,16 +1808,14 @@ Projectiles: {
 	AncientStormLightning.DisplayName: 远古风暴闪电
 	AncientStormArc.DisplayName: 远古风暴闪电珠
 	TerrorSpirit.DisplayName: 惊惧怨灵
-	// AccretionDiskEffect.DisplayName: Accretion Disk Effect
-	// AccretionDisk.DisplayName: Accretion Disk
-	// FlattenedAccretionDisk.DisplayName: Flattened Accretion Disk
-	// GammaRayBeam.DisplayName: Gamma Ray Beam
-	// AriaQSkill.DisplayName: Aria Q Skill
-	// AriaQSkillBolt.DisplayName: Aria Q Skill Bolt
-	// AriaQSkillDisk.DisplayName: Aria Q Skill Disk
-	// AriaRSkill.DisplayName: Aria R Skill
-	// AriaRSkillBeam.DisplayName: Aria R Skill Beam
-	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
+	AccretionDisk.DisplayName: 吸积盘
+	FlattenedAccretionDisk.DisplayName: 吸积盘
+	GammaRayBeam.DisplayName: 伽马射线
+	AriaQSkill.DisplayName: 星环护卫
+	AriaQSkillDisk.DisplayName: 星环护卫
+	AriaRSkill.DisplayName: 星环护卫
+	AriaRSkillBeam.DisplayName: 蓝色伽马射线
+	AriaQSkillMiniDisk.DisplayName: 星环护卫
 }
 
 Configs: {
@@ -2036,8 +2034,8 @@ Keybinds: {
 	Halibut_Skill_R.DisplayName: 大比目鱼:向右切换技能
 	Pandemonium_Q.DisplayName: 万魔殿:硫磺火天罚
 	Pandemonium_R.DisplayName: 万魔殿:万魔终焉
-	// AriaofTheCosmos_Q.DisplayName: Ariaof The Cosmos_ Q
-	// AriaofTheCosmos_R.DisplayName: Ariaof The Cosmos_ R
+	AriaofTheCosmos_Q.DisplayName: 寰宇咏叹调:星环护卫
+	AriaofTheCosmos_R.DisplayName: 寰宇咏叹调:伽马射线爆
 }
 
 TextContent: {

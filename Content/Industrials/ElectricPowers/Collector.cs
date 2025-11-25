@@ -249,14 +249,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                 if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
                     ItemFilter = item.Clone();
-                    // 深拷贝过滤数据
+                    //深拷贝过滤数据
                     var sourceData = item.GetGlobalItem<ItemFilterData>();
                     var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
                     targetData.SetItems(sourceData.Items);
                 }
             }
 
-            // 播放音效（所有客户端）
+            //播放音效（所有客户端）
             SoundEngine.PlaySound(CWRSound.Select with {
                 Pitch = changed && TagItemSign > ItemID.None ? -0.2f : 0.2f
             });
@@ -270,12 +270,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Chest FindChest(Item item) {
             Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
 
-            // 只在服务器端显示提示
+            //只在服务器端显示提示
             if (chest == null && textIdleTime <= 0 && !VaultUtils.isClient) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
 
-                // 生成视觉提示粒子（客户端也会同步看到）
+                //生成视觉提示粒子（客户端也会同步看到）
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 220; i++) {
                         Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             bool needsSync = false;
             int armType = ModContent.ProjectileType<CollectorArm>();
 
-            // 检查并生成三个机械臂
+            //检查并生成三个机械臂
             if (!IsArmValid(ArmIndex0)) {
                 ArmIndex0 = Projectile.NewProjectileDirect(
                     this.FromObjectGetParent(), ArmPos, Vector2.Zero,
@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 dontSpawnArmTime--;
             }
 
-            // 检查机械臂总数限制
+            //检查机械臂总数限制
             if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
                 if (textIdleTime <= 0) {
                     CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
@@ -356,10 +356,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            // 生成机械臂
+            //生成机械臂
             SpawnArmsIfNeeded();
 
-            // 检查能量状态
+            //检查能量状态
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            // 只绘制属于当前收集器的机械臂
+            //只绘制属于当前收集器的机械臂
             int armType = ModContent.ProjectileType<CollectorArm>();
 
             foreach (var proj in Main.ActiveProjectiles) {
@@ -427,12 +427,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     /// </summary>
     internal enum ArmState : byte
     {
-        Idle = 0,           // 待机
-        Searching = 1,      // 搜索目标
-        MovingToItem = 2,   // 移动到物品
-        Grasping = 3,       // 抓取物品
-        MovingToChest = 4,  // 移动到箱子
-        Depositing = 5      // 存放物品
+        Idle = 0,           //待机
+        Searching = 1,      //搜索目标
+        MovingToItem = 2,   //移动到物品
+        Grasping = 3,       //抓取物品
+        MovingToChest = 4,  //移动到箱子
+        Depositing = 5      //存放物品
     }
 
     internal class CollectorArm : ModProjectile
@@ -445,16 +445,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
         private static Asset<Texture2D> clampGlow = null;
 
-        // 核心引用
+        //核心引用
         internal CollectorTP collectorTP;
         internal Vector2 startPos;
         private Item graspItem;
         private bool initialized;
 
-        // 箱子缓存（使用坐标而不是直接引用）
+        //箱子缓存（使用坐标而不是直接引用）
         private Point16 targetChestPos = Point16.NegativeOne;
 
-        // 物理模拟参数
+        //物理模拟参数
         private Vector2 velocity;
         private Vector2 targetPosition;
         private const float SpringStiffness = 0.15f;
@@ -462,21 +462,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private const float MaxSpeed = 16f;
         private const float ArrivalThreshold = 8f;
 
-        // 视觉效果参数（仅客户端）
+        //视觉效果参数（仅客户端）
         private float clampOpenness = 0f;
         private float shakeIntensity = 0f;
         private int particleTimer = 0;
         private float rotationVelocity = 0f;
 
-        // 状态机
+        //状态机
         private ArmState currentState = ArmState.Idle;
         private int stateTimer = 0;
         private int targetItemWhoAmI = -1;
 
-        // 搜索冷却（避免频繁搜索）
+        //搜索冷却（避免频繁搜索）
         private int searchCooldown = 0;
 
-        // 不重要物品列表
+        //不重要物品列表
         private readonly static HashSet<int> unimportances = [
             ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple,
             ItemID.Star, ItemID.SoulCake
@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             foreach (var item in Main.ActiveItems) {
                 if (!IsValidTarget(item)) continue;
 
-                // 检查过滤器
+                //检查过滤器
                 if (collectorTP.TagItemSign == itemFilterType) {
                     var filterData = collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>();
                     if (!filterData.Items.Contains(item.type)) {
@@ -540,7 +540,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     continue;
                 }
 
-                // 提前检查箱子（避免抓取后无处存放）
+                //提前检查箱子（避免抓取后无处存放）
                 if (collectorTP.FindChest(item) == null) {
                     continue;
                 }
@@ -563,7 +563,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (unimportances.Contains(item.type)) return false;
 
             int targetCollector = item.CWR().TargetByCollector;
-            // 只接受未被锁定或被自己锁定的物品
+            //只接受未被锁定或被自己锁定的物品
             if (targetCollector >= 0 && targetCollector != Projectile.identity) return false;
 
             return true;
@@ -584,21 +584,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
             Vector2 toTarget = target - Projectile.Center;
 
-            // 弹簧力
+            //弹簧力
             Vector2 springForce = toTarget * SpringStiffness * speedMultiplier;
             velocity += springForce;
 
-            // 阻尼
+            //阻尼
             velocity *= Damping;
 
-            // 限速
+            //限速
             if (velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
                 velocity = Vector2.Normalize(velocity) * MaxSpeed;
             }
 
             Projectile.Center += velocity;
 
-            // 平滑旋转
+            //平滑旋转
             if (velocity.LengthSquared() > 0.1f) {
                 float targetRotation = velocity.ToRotation();
                 float rotationDiff = MathHelper.WrapAngle(targetRotation - Projectile.rotation);
@@ -632,7 +632,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.1f);
             shakeIntensity *= 0.9f;
 
-            // 每30帧且冷却结束后搜索
+            //每30帧且冷却结束后搜索
             if (stateTimer >= 30 && searchCooldown == 0 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
                 if (!VaultUtils.isClient) {
                     TransitionToState(ArmState.Searching);
@@ -644,7 +644,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         private void State_Searching() {
-            // 只在服务器端搜索
+            //只在服务器端搜索
             if (!VaultUtils.isClient) {
                 Item foundItem = FindNearestItem();
 
@@ -652,19 +652,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     targetItemWhoAmI = foundItem.whoAmI;
                     foundItem.CWR().TargetByCollector = Projectile.identity;
 
-                    // 消耗能量
+                    //消耗能量
                     collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
                     collectorTP.SendData();
 
                     TransitionToState(ArmState.MovingToItem);
                 }
                 else {
-                    searchCooldown = 60; // 设置搜索冷却
+                    searchCooldown = 60; //设置搜索冷却
                     TransitionToState(ArmState.Idle);
                 }
             }
 
-            // 播放音效（所有客户端）
+            //播放音效（所有客户端）
             if (stateTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
             }
@@ -711,14 +711,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             SpawnMechanicalParticles(intensive: true);
 
-            // 抓取完成（仅服务器端处理物品）
+            //抓取完成（仅服务器端处理物品）
             if (stateTimer > 12) {
                 if (!VaultUtils.isClient) {
                     graspItem = targetItem.Clone();
                     targetItem.TurnToAir();
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
 
-                    // 查找并缓存箱子坐标
+                    //查找并缓存箱子坐标
                     Chest chest = collectorTP.FindChest(graspItem);
                     if (chest != null) {
                         targetChestPos = new Point16(chest.x, chest.y);
@@ -726,14 +726,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         TransitionToState(ArmState.MovingToChest);
                     }
                     else {
-                        // 找不到箱子，放弃物品
+                        //找不到箱子，放弃物品
                         VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
                         graspItem.TurnToAir();
                         TransitionToState(ArmState.Idle);
                     }
                 }
 
-                // 音效和特效（所有客户端）
+                //音效和特效（所有客户端）
                 if (stateTimer == 13) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center);
 
@@ -757,7 +757,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             Chest targetChest = GetTargetChest();
             if (targetChest == null) {
-                // 箱子失效
+                //箱子失效
                 if (!VaultUtils.isClient) {
                     VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
                     graspItem.TurnToAir();
@@ -787,7 +787,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SpawnMechanicalParticles(intensive: true);
 
             if (stateTimer > 10) {
-                // 只在服务器端处理物品存储
+                //只在服务器端处理物品存储
                 if (!VaultUtils.isClient) {
                     Chest targetChest = GetTargetChest();
                     if (targetChest != null) {
@@ -802,7 +802,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     }
                 }
 
-                // 音效（所有客户端）
+                //音效（所有客户端）
                 if (stateTimer == 11) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
                 }
@@ -822,7 +822,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 targetChestPos = Point16.NegativeOne;
             }
 
-            // 只在服务器端触发网络更新
+            //只在服务器端触发网络更新
             if (!VaultUtils.isClient) {
                 Projectile.netUpdate = true;
             }
@@ -898,7 +898,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            // 状态机驱动
+            //状态机驱动
             switch (currentState) {
                 case ArmState.Idle:
                     State_Idle();
@@ -936,22 +936,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
 
-            // 添加抖动效果
+            //添加抖动效果
             if (shakeIntensity > 0.01f) {
                 end += Main.rand.NextVector2Circular(shakeIntensity * 2, shakeIntensity * 2);
             }
 
-            // 动态贝塞尔曲线控制点
+            //动态贝塞尔曲线控制点
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
 
-            // 根据速度添加动态弯曲
+            //根据速度添加动态弯曲
             float velocityInfluence = velocity.Length() * 2f;
             bendHeight += velocityInfluence;
 
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            // 计算曲线长度
+            //计算曲线长度
             int sampleCount = 60;
             float curveLength = 0f;
             Vector2 prev = start;
@@ -981,7 +981,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             float clampRot = Projectile.rotation;
 
-            // 绘制机械臂
+            //绘制机械臂
             for (int i = 0; i < segmentCount; i++) {
                 Vector2 pos = points[i];
                 Vector2 next = points[i + 1];
@@ -993,14 +993,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     clampRot = direction.ToRotation();
                 }
 
-                // 添加轻微的缩放动画
+                //添加轻微的缩放动画
                 float scale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i * 0.5f) * 0.02f;
 
                 Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
                     , new Vector2(tex.Width / 2f, tex.Height), scale, SpriteEffects.None, 0f);
             }
 
-            // 绘制夹子
+            //绘制夹子
             int clampFrame = clampOpenness > 0.5f ? 0 : 1;
 
             Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
@@ -1013,7 +1013,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 , Color.White * (0.7f + shakeIntensity * 0.3f), clampRot + MathHelper.PiOver2
                 , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
 
-            // 绘制抓取的物品
+            //绘制抓取的物品
             if (graspItem != null && !graspItem.IsAir) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
                     , Projectile.Center - Main.screenPosition, 1f
