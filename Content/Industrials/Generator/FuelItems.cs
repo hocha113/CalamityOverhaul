@@ -480,7 +480,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             
             // === 木桶和容器 ===
             { ItemID.Barrel, 100 },
-            { ItemID.Keg, 140 },
             
             // === 更多火把品种 ===
             { ItemID.IceTorch, 20 },
