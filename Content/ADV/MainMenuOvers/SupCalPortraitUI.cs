@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
     {
         #region 数据字段
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
         /// <summary>
         /// 立绘表情类型枚举
@@ -304,15 +305,8 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 if (_transitionProgress < 1f) {
                     _transitionProgress += 0.04f;
                 }
-                if (ShouldShowIcon()) {
-                    if (_portraitAlpha < 1f) {
-                        _portraitAlpha += 0.05f;
-                    }
-                }
-                else {
-                    if (_portraitAlpha > 0.3f) {
-                        _portraitAlpha -= 0.05f;
-                    }
+                if (_portraitAlpha < 1f) {
+                    _portraitAlpha += 0.05f;
                 }
             }
             else {

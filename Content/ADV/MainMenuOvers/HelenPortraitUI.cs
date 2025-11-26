@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
     {
         #region 数据字段
         public static HelenPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<HelenPortraitUI>();
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
         private bool _unlocked = false; //是否已解锁
         private float _unlockProgress = 0f; //解锁进度动画
