@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         //面板尺寸
         private const float PanelWidth = 440f;
         private const float PanelHeight = 300f;
-        
+
         //动画变量
         private float scanLineTimer = 0f;
         private float emberGlow = 0f;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private float rustGridPhase = 0f;
         private float powerFlowTimer = 0f;
         private float sparkTimer = 0f;
-        
+
         //粒子系统
         private readonly List<EmberPRT> embers = new();
         private int emberSpawnTimer = 0;
@@ -38,16 +38,16 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private int ashSpawnTimer = 0;
         private readonly List<DraedonDataPRT> dataParticles = new();
         private int dataParticleTimer = 0;
-        
+
         //UI淡入淡出
         private float uiFadeAlpha = 0f;
         private float targetAlpha = 0f;
-        
+
         //拖拽功能
         private bool isDragging = false;
         private Vector2 dragOffset = Vector2.Zero;
         private Rectangle titleBarRect;
-        
+
         //鼠标交互
         private Rectangle panelRect;
         private Rectangle fuelSlotRect;
@@ -57,9 +57,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private bool hoveringTempBar = false;
         private bool hoveringPowerBar = false;
         private bool hoveringTitleBar = false;
-        
+
         private ThermalData ThermalData => GeneratorTP?.MachineData as ThermalData;
-        
+
         //本地化文本
         protected static LocalizedText TitleText;
         protected static LocalizedText FuelLabel;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         protected static LocalizedText InsertFuelHint;
         protected static LocalizedText TemperatureUnit;
         protected static LocalizedText PowerUnit;
-        
+
         public override Texture2D Texture => VaultAsset.placeholder2.Value;
 
         public override void SetStaticDefaults() {
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void UpdateElement() {
             //处理拖拽
             HandleDragging();
-            
+
             //限制面板位置在屏幕内
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, Main.screenHeight - PanelHeight / 2 - 10);
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             rustGridPhase += 0.012f;
             powerFlowTimer += 0.06f;
             sparkTimer += 0.095f;
-            
+
             if (scanLineTimer > MathHelper.TwoPi) scanLineTimer -= MathHelper.TwoPi;
             if (emberGlow > MathHelper.TwoPi) emberGlow -= MathHelper.TwoPi;
             if (heatPulse > MathHelper.TwoPi) heatPulse -= MathHelper.TwoPi;
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             //更新UI透明度
             targetAlpha = IsActive ? 1f : 0f;
             uiFadeAlpha = MathHelper.Lerp(uiFadeAlpha, targetAlpha, 0.15f);
-            
+
             if (uiFadeAlpha < 0.01f && !IsActive) {
                 return;
             }
@@ -125,10 +125,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             //计算面板区域
             Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
-            
+
             //计算标题栏区域（用于拖拽）
             titleBarRect = new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 60);
-            
+
             //计算子区域
             fuelSlotRect = new Rectangle((int)(topLeft.X + 45), (int)(topLeft.Y + 90), 90, 90);
             temperatureBarRect = new Rectangle((int)(topLeft.X + 180), (int)(topLeft.Y + 70), 45, 190);
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         private void HandleDragging() {
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
-            
+
             //开始拖拽
             if (panelRect.Contains(mousePos.ToPoint()) && !hoveringFuelSlot && !hoveringTempBar && !hoveringPowerBar
                 && keyLeftPressState == KeyPressState.Pressed && !isDragging) {
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 dragOffset = DrawPosition - mousePos;
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
             }
-            
+
             //执行拖拽
             if (isDragging) {
                 DrawPosition = mousePos + dragOffset;
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (uiFadeAlpha < 0.3f) return;
 
             Vector2 panelCenter = DrawPosition;
-            
+
             //余烬粒子
             emberSpawnTimer++;
             if (emberSpawnTimer >= 4 && embers.Count < 40) {
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             foreach (var ember in embers) {
                 ember.Draw(spriteBatch, uiFadeAlpha * 0.95f);
             }
-            
+
             //绘制UI元素
             DrawFuelSlot(spriteBatch);
             DrawTemperatureBar(spriteBatch);
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             string title = TitleText.Value;
             Vector2 titlePos = new Vector2(panelRect.Center.X, panelRect.Y + 30);
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.95f;
-            
+
             //发光描边
             Color glowColor = new Color(255, 140, 80) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
@@ -368,9 +368,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 Vector2 offset = angle.ToRotationVector2() * 2.5f;
                 Utils.DrawBorderString(sb, title, titlePos - titleSize / 2 + offset, glowColor, 0.95f);
             }
-            
+
             Utils.DrawBorderString(sb, title, titlePos - titleSize / 2, new Color(220, 180, 160) * alpha, 0.95f);
-            
+
             //拖拽提示
             if (hoverInMainPage && !isDragging) {
                 Color hintColor = new Color(200, 180, 140) * (alpha * 0.6f);
@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 //锈色网格线
                 Color gridColor = new Color(80, 40, 25) * (alpha * 0.05f * brightness);
                 sb.Draw(px, new Rectangle(rect.X + 20, (int)y, rect.Width - 40, 1), new Rectangle(0, 0, 1, 1), gridColor);
-                
+
                 //随机杂点
                 if (Main.rand.NextBool(5)) {
                     int spotX = rect.X + Main.rand.Next(20, rect.Width - 20);
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         private void DrawWastelandFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            
+
             //外框，锈橙色
             Color rustEdge = Color.Lerp(new Color(140, 70, 40), new Color(200, 110, 60), pulse) * (alpha * 0.75f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 5), new Rectangle(0, 0, 1, 1), rustEdge);
@@ -476,7 +476,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             string label = FuelLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.75f;
             Vector2 labelPos = new Vector2(fuelSlotRect.Center.X - labelSize.X / 2, fuelSlotRect.Y - 26);
-            
+
             Color labelGlow = new Color(220, 140, 80) * (alpha * 0.5f);
             Utils.DrawBorderString(sb, label, labelPos + new Vector2(1.5f, 1.5f), labelGlow, 0.75f);
             Utils.DrawBorderString(sb, label, labelPos, new Color(240, 200, 160) * alpha, 0.75f);
@@ -485,7 +485,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None) {
                 Main.instance.LoadItem(ThermalData.FuelItem.type);
                 VaultUtils.SimpleDrawItem(sb, ThermalData.FuelItem.type, fuelSlotRect.Center.ToVector2(), 55, 1f, 0, Color.White * alpha);
-                
+
                 if (ThermalData.FuelItem.stack > 1) {
                     string stackText = ThermalData.FuelItem.stack.ToString();
                     Vector2 stackSize = FontAssets.ItemStack.Value.MeasureString(stackText);
@@ -499,20 +499,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (ThermalData.TemperatureTransfer > 0) {
                 float burnProgress = ThermalData.TemperatureTransfer / ThermalData.MaxTemperatureTransfer;
                 Color fireGlow = Color.Lerp(new Color(255, 100, 30), new Color(255, 180, 80), (float)Math.Sin(powerFlowTimer * 2.5f) * 0.5f + 0.5f);
-                
+
                 //多层火焰光晕
                 for (int i = 0; i < 4; i++) {
                     float glowSize = 0.08f + i * 0.02f;
                     float layerAlpha = alpha * 0.2f * burnProgress / (i + 1);
-                    sb.Draw(CWRAsset.SoftGlow.Value, fuelSlotRect.Center.ToVector2(), null, 
-                        fireGlow with { A = 0 } * layerAlpha, 
+                    sb.Draw(CWRAsset.SoftGlow.Value, fuelSlotRect.Center.ToVector2(), null,
+                        fireGlow with { A = 0 } * layerAlpha,
                         0f, CWRAsset.SoftGlow.Size() / 2, new Vector2(fuelSlotRect.Width * glowSize, fuelSlotRect.Height * glowSize), SpriteEffects.None, 0f);
                 }
-                
+
                 //边缘火花
                 float sparkIntensity = (float)Math.Sin(sparkTimer * 3f) * 0.5f + 0.5f;
                 Color sparkColor = new Color(255, 200, 100) * (alpha * burnProgress * sparkIntensity * 0.3f);
-                sb.Draw(px, new Rectangle(fuelSlotRect.X - 2, fuelSlotRect.Y - 2, fuelSlotRect.Width + 4, fuelSlotRect.Height + 4), 
+                sb.Draw(px, new Rectangle(fuelSlotRect.X - 2, fuelSlotRect.Y - 2, fuelSlotRect.Width + 4, fuelSlotRect.Height + 4),
                     new Rectangle(0, 0, 1, 1), sparkColor);
             }
         }
@@ -530,11 +530,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             float tempRatio = MathHelper.Clamp(ThermalData.Temperature / ThermalData.MaxTemperature, 0f, 1f);
             int maxFillHeight = temperatureBarRect.Height - 14; //减去上下边距（7*2）
             int fillHeight = (int)(maxFillHeight * tempRatio);
-            
+
             //确保填充区域不超出边界
             fillHeight = Math.Min(fillHeight, maxFillHeight);
             fillHeight = Math.Max(fillHeight, 0);
-            
+
             Rectangle fillRect = new Rectangle(
                 temperatureBarRect.X + 7,
                 temperatureBarRect.Bottom - fillHeight - 7,
@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 for (int i = 0; i < fillSegments; i++) {
                     float t = i / (float)fillSegments;
                     float t2 = (i + 1) / (float)fillSegments;
-                    
+
                     int y1 = fillRect.Y + (int)(t * fillRect.Height);
                     int y2 = fillRect.Y + (int)(t2 * fillRect.Height);
                     Rectangle segRect = new(fillRect.X, y1, fillRect.Width, Math.Max(1, y2 - y1));
@@ -556,10 +556,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     Color lowTemp = new Color(80, 50, 30);
                     Color midTemp = new Color(180, 80, 40);
                     Color highTemp = new Color(255, 140, 60);
-                    
+
                     Color color1 = Color.Lerp(lowTemp, midTemp, (1f - t) * tempRatio);
                     Color color2 = tempRatio > 0.6f ? Color.Lerp(color1, highTemp, (tempRatio - 0.6f) / 0.4f) : color1;
-                    
+
                     float pulse = (float)Math.Sin(powerFlowTimer * 1.8f + t * 4f) * 0.25f + 0.75f;
                     sb.Draw(px, segRect, new Rectangle(0, 0, 1, 1), color2 * (alpha * pulse));
                 }
@@ -585,7 +585,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             string label = TemperatureLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.65f;
             Vector2 labelPos = new Vector2(temperatureBarRect.Center.X - labelSize.X / 2, temperatureBarRect.Y - 26);
-            
+
             Color labelGlow = new Color(220, 140, 80) * (alpha * 0.5f);
             Utils.DrawBorderString(sb, label, labelPos + new Vector2(1.5f, 1.5f), labelGlow, 0.65f);
             Utils.DrawBorderString(sb, label, labelPos, new Color(240, 200, 160) * alpha, 0.65f);
@@ -595,13 +595,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 string tempText = $"{(int)ThermalData.Temperature}/{(int)ThermalData.MaxTemperature}{TemperatureUnit.Value}";
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(tempText) * 0.8f;
                 Vector2 textPos = new Vector2(Main.mouseX + 18, Main.mouseY + 18);
-                
+
                 //工业风格提示框
                 Rectangle tooltipBg = new Rectangle((int)textPos.X - 10, (int)textPos.Y - 6, (int)textSize.X + 20, (int)textSize.Y + 12);
                 sb.Draw(px, tooltipBg, new Rectangle(0, 0, 1, 1), new Color(15, 10, 8) * 0.95f);
                 sb.Draw(px, new Rectangle(tooltipBg.X, tooltipBg.Y, tooltipBg.Width, 3), new Rectangle(0, 0, 1, 1), new Color(180, 100, 50) * 0.8f);
                 sb.Draw(px, new Rectangle(tooltipBg.X, tooltipBg.Y, 3, tooltipBg.Height), new Rectangle(0, 0, 1, 1), new Color(180, 100, 50) * 0.8f);
-                
+
                 Utils.DrawBorderString(sb, tempText, textPos, new Color(255, 220, 180), 0.8f);
             }
         }
@@ -619,11 +619,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             float powerRatio = MathHelper.Clamp(ThermalData.UEvalue / ThermalData.MaxUEValue, 0f, 1f);
             int maxFillHeight = powerBarRect.Height - 14; //减去上下边距（7*2）
             int fillHeight = (int)(maxFillHeight * powerRatio);
-            
+
             //确保填充区域不超出边界
             fillHeight = Math.Min(fillHeight, maxFillHeight);
             fillHeight = Math.Max(fillHeight, 0);
-            
+
             Rectangle fillRect = new Rectangle(
                 powerBarRect.X + 7,
                 powerBarRect.Bottom - fillHeight - 7,
@@ -637,7 +637,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 for (int i = 0; i < fillSegments; i++) {
                     float t = i / (float)fillSegments;
                     float t2 = (i + 1) / (float)fillSegments;
-                    
+
                     int y1 = fillRect.Y + (int)(t * fillRect.Height);
                     int y2 = fillRect.Y + (int)(t2 * fillRect.Height);
                     Rectangle segRect = new(fillRect.X, y1, fillRect.Width, Math.Max(1, y2 - y1));
@@ -645,7 +645,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     Color powerLow = new Color(120, 80, 40);
                     Color powerHigh = new Color(220, 160, 80);
                     Color color = Color.Lerp(powerLow, powerHigh, 1f - t);
-                    
+
                     float pulse = (float)Math.Sin(powerFlowTimer * 2.5f - t * 5f) * 0.3f + 0.7f;
                     sb.Draw(px, segRect, new Rectangle(0, 0, 1, 1), color * (alpha * pulse));
                 }
@@ -674,7 +674,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             string label = PowerLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.75f;
             Vector2 labelPos = new Vector2(powerBarRect.Center.X - labelSize.X / 2, powerBarRect.Y - 26);
-            
+
             Color labelGlow = new Color(220, 140, 80) * (alpha * 0.5f);
             Utils.DrawBorderString(sb, label, labelPos + new Vector2(1.5f, 1.5f), labelGlow, 0.75f);
             Utils.DrawBorderString(sb, label, labelPos, new Color(240, 200, 160) * alpha, 0.75f);
@@ -684,27 +684,27 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 string powerText = $"{(int)ThermalData.UEvalue}/{(int)ThermalData.MaxUEValue} {PowerUnit.Value}";
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(powerText) * 0.8f;
                 Vector2 textPos = new Vector2(Main.mouseX + 18, Main.mouseY + 18);
-                
+
                 //工业风格提示框
                 Rectangle tooltipBg = new Rectangle((int)textPos.X - 10, (int)textPos.Y - 6, (int)textSize.X + 20, (int)textSize.Y + 12);
                 sb.Draw(px, tooltipBg, new Rectangle(0, 0, 1, 1), new Color(15, 10, 8) * 0.95f);
                 sb.Draw(px, new Rectangle(tooltipBg.X, tooltipBg.Y, tooltipBg.Width, 3), new Rectangle(0, 0, 1, 1), new Color(180, 100, 50) * 0.8f);
                 sb.Draw(px, new Rectangle(tooltipBg.X, tooltipBg.Y, 3, tooltipBg.Height), new Rectangle(0, 0, 1, 1), new Color(180, 100, 50) * 0.8f);
-                
+
                 Utils.DrawBorderString(sb, powerText, textPos, new Color(255, 220, 180), 0.8f);
             }
         }
 
         private void DrawStatusText(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
-            
+
             //中央信息面板
             Vector2 infoCenter = new Vector2(panelRect.Center.X, panelRect.Y + 175);
-            
+
             //运行状态
             string statusLabel = StatusLabel.Value;
             Vector2 statusLabelPos = new Vector2(infoCenter.X - 95, infoCenter.Y);
-            
+
             Color labelGlow = new Color(200, 120, 70) * (alpha * 0.5f);
             Utils.DrawBorderString(sb, statusLabel, statusLabelPos + new Vector2(1.2f, 1.2f), labelGlow, 0.75f);
             Utils.DrawBorderString(sb, statusLabel, statusLabelPos, new Color(220, 180, 140) * alpha, 0.75f);
@@ -713,11 +713,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             string statusText = isActive ? ActiveText.Value : IdleText.Value;
             Color statusColor = isActive ? new Color(255, 180, 100) : new Color(160, 140, 120);
             Vector2 statusTextPos = new Vector2(infoCenter.X + 15, infoCenter.Y);
-            
+
             if (isActive) {
                 float blink = (float)Math.Sin(powerFlowTimer * 5f) * 0.35f + 0.65f;
                 statusColor *= blink;
-                
+
                 //活跃状态发光
                 for (int i = 0; i < 3; i++) {
                     float glowAngle = MathHelper.TwoPi * i / 3f + powerFlowTimer;
@@ -725,7 +725,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     Utils.DrawBorderString(sb, statusText, statusTextPos + glowOffset, statusColor * (alpha * 0.3f), 0.75f);
                 }
             }
-            
+
             Utils.DrawBorderString(sb, statusText, statusTextPos, statusColor * alpha, 0.75f);
 
             //效率指示
@@ -734,10 +734,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 string effText = string.Format(EfficiencyText.Value, (int)(efficiency * 100));
                 Vector2 effPos = new Vector2(infoCenter.X, infoCenter.Y + 30);
                 Vector2 effSize = FontAssets.MouseText.Value.MeasureString(effText) * 0.7f;
-                
+
                 Color effColor = Color.Lerp(new Color(180, 140, 100), new Color(255, 200, 120), efficiency);
                 Color effGlow = effColor * (alpha * 0.4f);
-                
+
                 Utils.DrawBorderString(sb, effText, effPos - effSize / 2 + new Vector2(1.2f, 1.2f), effGlow, 0.7f);
                 Utils.DrawBorderString(sb, effText, effPos - effSize / 2, effColor * alpha, 0.7f);
             }
@@ -747,11 +747,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 string hint = InsertFuelHint.Value;
                 Vector2 hintPos = new Vector2(panelRect.Center.X, panelRect.Bottom - 25);
                 Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.65f;
-                
+
                 float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f) * 0.4f + 0.6f;
                 Color hintColor = new Color(240, 180, 120) * (alpha * blink);
                 Color hintGlow = new Color(200, 140, 80) * (alpha * blink * 0.5f);
-                
+
                 Utils.DrawBorderString(sb, hint, hintPos - hintSize / 2 + new Vector2(1.5f, 1.5f), hintGlow, 0.65f);
                 Utils.DrawBorderString(sb, hint, hintPos - hintSize / 2, hintColor, 0.65f);
             }

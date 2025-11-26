@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             else {
                 Open = !Open;
             }
-            
+
             ids = true;
         }
 
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
 
             //开始拖拽
-            if (hoveringPanel && !hoveringItemSlot && !hoveringBatterySlot && !hoveringEnergyBar && !hoveringChargeBar 
+            if (hoveringPanel && !hoveringItemSlot && !hoveringBatterySlot && !hoveringEnergyBar && !hoveringChargeBar
                 && UIHandleLoader.keyLeftPressState == KeyPressState.Pressed && !isDragging) {
                 isDragging = true;
                 dragOffset = DrawPosition - mousePos;

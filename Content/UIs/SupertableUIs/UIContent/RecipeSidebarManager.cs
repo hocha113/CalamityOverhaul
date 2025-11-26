@@ -115,28 +115,27 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         /// 获取侧边栏的可见区域
         /// </summary>
         public Rectangle VisibleArea => _hitbox;
-        
+
         /// <summary>
         /// 滚动到指定配方索引
         /// </summary>
-        public void ScrollToRecipe(int index)
-        {
+        public void ScrollToRecipe(int index) {
             if (index < 0 || index >= RecipeElements.Count) return;
-            
+
             //计算目标配方的位置
             int targetPosition = index * 64;
-            
+
             //确保目标配方在可见区域内
             int visibleSlots = 7;
             int halfVisible = visibleSlots / 2;
-            
+
             //尝试将选中的配方放在可见区域的中间
             int desiredScroll = targetPosition - (halfVisible * 64);
-            
+
             //限制滚动范围
             int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
             _scrollValue = MathHelper.Clamp(desiredScroll, 0, maxScroll);
-            
+
             //对齐到64的倍数
             _scrollValue = ((int)_scrollValue / 64) * 64;
         }
@@ -164,31 +163,26 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             float targetScale = 1f;
             Color targetColor = Color.Azure * 0.2f;
 
-            if (isHovered)
-            {
+            if (isHovered) {
                 UIHandle.player.mouseInterface = true;
 
-                if (sidebar.HoveredRecipe != this)
-                {
+                if (sidebar.HoveredRecipe != this) {
                     SoundEngine.PlaySound(SoundID.Grab with { Pitch = -0.6f, Volume = 0.4f });
                     sidebar.HoveredRecipe = this;
                 }
 
-                if (mainUI.keyLeftPressState == KeyPressState.Pressed)
-                {
-                    if (sidebar.SelectedRecipe != this)
-                    {
+                if (mainUI.keyLeftPressState == KeyPressState.Pressed) {
+                    if (sidebar.SelectedRecipe != this) {
                         sidebar.SelectedRecipe = this;
                         SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.6f, Volume = 0.8f });
-                        
+
                         //同步更新主面板的配方导航器
                         mainUI.RecipeNavigator?.SetRecipeByData(RecipeData);
                     }
                 }
 
                 Item item = new Item(RecipeData.Target);
-                if (item.type > ItemID.None)
-                {
+                if (item.type > ItemID.None) {
                     CWRUI.HoverItem = item;
                     CWRUI.DontSetHoverItem = true;
                 }
@@ -197,8 +191,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 targetColor = Color.LightGoldenrodYellow;
             }
 
-            if (sidebar.SelectedRecipe == this)
-            {
+            if (sidebar.SelectedRecipe == this) {
                 targetScale = 1.2f;
                 targetColor = Color.Gold;
             }

@@ -100,55 +100,48 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             }
 
             LoadPreviewRecipe();
-            
+
             //同步更新侧边栏的选中状态
             SyncToSidebar();
         }
-        
+
         /// <summary>
         /// 设置当前配方索引（由外部调用，如侧边栏选择）
         /// </summary>
-        public void SetRecipeIndex(int index, bool syncToSidebar = false)
-        {
+        public void SetRecipeIndex(int index, bool syncToSidebar = false) {
             if (index < 0 || index >= _recipeTargets.Count) return;
-            
+
             CurrentIndex = index;
             LoadPreviewRecipe();
-            
-            if (syncToSidebar)
-            {
+
+            if (syncToSidebar) {
                 SyncToSidebar();
             }
         }
-        
+
         /// <summary>
         /// 根据配方数据设置索引
         /// </summary>
-        public void SetRecipeByData(RecipeData recipeData)
-        {
+        public void SetRecipeByData(RecipeData recipeData) {
             if (recipeData == null) return;
-            
-            for (int i = 0; i < SupertableUI.AllRecipes.Count; i++)
-            {
-                if (SupertableUI.AllRecipes[i] == recipeData)
-                {
+
+            for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {
+                if (SupertableUI.AllRecipes[i] == recipeData) {
                     SetRecipeIndex(i, syncToSidebar: false); //从侧边栏调用，不需要反向同步
                     return;
                 }
             }
         }
-        
+
         /// <summary>
         /// 同步选中状态到侧边栏
         /// </summary>
-        private void SyncToSidebar()
-        {
+        private void SyncToSidebar() {
             var sidebarManager = _mainUI.SidebarManager;
-            
-            if (sidebarManager != null && CurrentIndex >= 0 && CurrentIndex < sidebarManager.RecipeElements.Count)
-            {
+
+            if (sidebarManager != null && CurrentIndex >= 0 && CurrentIndex < sidebarManager.RecipeElements.Count) {
                 sidebarManager.SelectedRecipe = sidebarManager.RecipeElements[CurrentIndex];
-                
+
                 //自动滚动到选中的配方
                 sidebarManager.ScrollToRecipe(CurrentIndex);
             }

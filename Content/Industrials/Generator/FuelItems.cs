@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.AshWoodPlatform, 7 },
             { ItemID.LivingWoodPlatform, 10 },
             { ItemID.SlimePlatform, 20 },
-            
+
             { ItemID.EbonwoodFence, 6 },
             { ItemID.RichMahoganyFence, 7 },
             { ItemID.PearlwoodFence, 8 },

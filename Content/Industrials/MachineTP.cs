@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
-using CalamityOverhaul.Content.Industrials.Modifys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileProcessors;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -101,18 +100,18 @@ namespace CalamityOverhaul.Content.Tiles
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return true;
             }
-            
+
             //播放交互音效
             SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.3f });
-            
+
             //获取对应的 TileProcessor
             if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                 return true;
             }
-            
+
             //打开UI
             tram.OpenUI(Main.LocalPlayer);
-            
+
             return true;
         }
 
