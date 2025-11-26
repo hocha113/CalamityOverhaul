@@ -6335,6 +6335,20 @@ UI: {
 			PowerUnit: UE
 		}
 	}
+
+	ChargingStationUI: {
+		TitleText: 充能站
+		ItemSlotLabel: 充能物品
+		BatterySlotLabel: 电池
+		StationEnergyLabel: 站点能量
+		ItemChargeLabel: 物品电量
+		StatusLabel: 状态:
+		ChargingText: 充能中
+		IdleText: 待机
+		InsertItemHint: 放入需要充能的物品
+		InsertBatteryHint: 放入嘉登能量电池
+		EnergyUnit: UE
+	}
 }
 
 ADV: {

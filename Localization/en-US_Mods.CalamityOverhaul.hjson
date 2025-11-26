@@ -6374,6 +6374,20 @@ UI: {
 			PowerUnit: UE
 		}
 	}
+
+	ChargingStationUI: {
+		TitleText: Charging Station
+		ItemSlotLabel: Charging Item
+		BatterySlotLabel: Battery
+		StationEnergyLabel: Station Energy
+		ItemChargeLabel: Item Charge
+		StatusLabel: Status:
+		ChargingText: Charging
+		IdleText: Idle
+		InsertItemHint: Insert item to charge
+		InsertBatteryHint: Insert Draedon Power Cell
+		EnergyUnit: UE
+	}
 }
 
 ADV: {
