@@ -39,6 +39,18 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             return false;
         }
 
+        public bool Update() {
+            Life++;
+            float t = Life / MaxLife;
+            Pos.Y -= RiseSpeed * (0.7f + (float)Math.Sin(t * Math.PI) * 0.3f);
+            Pos.X += (float)Math.Sin(Life * 0.04f + Seed) * Drift * 1.5f;
+
+            if (Life >= MaxLife) {
+                return true;
+            }
+            return false;
+        }
+
         public void Draw(SpriteBatch sb, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float t = Life / MaxLife;

@@ -6319,6 +6319,22 @@ UI: {
 		CloseHint: 点击关闭
 		CraftingStation: 合成站点:
 	}
+
+	Generator: {
+		ThermalGeneratorUI: {
+			TitleText: 热能发电机
+			FuelLabel: 燃料
+			TemperatureLabel: 温度
+			PowerLabel: 电力
+			StatusLabel: 状态:
+			ActiveText: 运行中
+			IdleText: 待机
+			EfficiencyText: 效率: {0}%
+			InsertFuelHint: 点击放入/取出燃料
+			TemperatureUnit: °C
+			PowerUnit: UE
+		}
+	}
 }
 
 ADV: {

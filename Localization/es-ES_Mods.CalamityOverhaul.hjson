@@ -6347,6 +6347,22 @@ UI: {
 		// CloseHint: Click to Close
 		// CraftingStation: Crafting Station:
 	}
+
+	Generator: {
+		ThermalGeneratorUI: {
+			// TitleText: Thermal Generator
+			// FuelLabel: Fuel
+			// TemperatureLabel: Temperature
+			// PowerLabel: Power
+			// StatusLabel: Status:
+			// ActiveText: Active
+			// IdleText: Idle
+			// EfficiencyText: Efficiency: {0}%
+			// InsertFuelHint: Click to Insert/Extract Fuel
+			// TemperatureUnit: °C
+			// PowerUnit: UE
+		}
+	}
 }
 
 ADV: {
