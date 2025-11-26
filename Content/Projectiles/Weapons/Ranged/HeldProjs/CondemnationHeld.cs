@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -28,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             ForcedConversionTargetAmmoFunc = () => true;
             ISForcedConversionDrawAmmoInversion = true;
-            ToTargetAmmo = CWRID.Proj_TheArrowPunishment;
+            ToTargetAmmo = ModContent.ProjectileType<TheArrowPunishment>();
         }
 
         public override void PostInOwner() {

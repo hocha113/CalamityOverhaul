@@ -37,14 +37,12 @@ using CalamityMod.Projectiles.Rogue;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
     /// <summary>
     /// 所有用于引用外部模组内部内容的ID集中地
-    /// 当然也包括部分自身内容
     /// </summary>
     internal static class CWRID
     {
@@ -230,7 +228,6 @@ namespace CalamityOverhaul
         public static int Proj_BrimstoneBolt => ModContent.ProjectileType<BrimstoneBolt>();
         public static int Proj_ClamorRifleProj => ModContent.ProjectileType<ClamorRifleProj>();
         public static int Proj_ClaretCannonProj => ModContent.ProjectileType<ClaretCannonProj>();
-        public static int Proj_TheArrowPunishment => ModContent.ProjectileType<TheArrowPunishment>();
         public static int Proj_CondemnationArrowHoming => ModContent.ProjectileType<CondemnationArrowHoming>();
         public static int Proj_FlurrystormIceChunk => ModContent.ProjectileType<FlurrystormIceChunk>();
         public static int Proj_SquirrelSquireAcorn => ModContent.ProjectileType<SquirrelSquireAcorn>();
