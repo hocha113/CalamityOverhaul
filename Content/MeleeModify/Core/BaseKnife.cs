@@ -135,10 +135,6 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
                 PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
                 KnifeHitNPC(target, hit, damageDone);
-                Owner.wingTime += Owner.wingTimeMax * 0.2f;
-                if (Owner.wingTime > Owner.wingTimeMax) {
-                    Owner.wingTime = Owner.wingTimeMax;
-                }
             }
         }
         /// <summary>
