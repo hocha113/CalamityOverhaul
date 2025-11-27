@@ -5736,6 +5736,38 @@ NPCModifys: {
 			它让我褪色，像一颗没人要的焉蘑菇
 			'''
 	}
+
+	ModifyWITCH: {
+		Homeless0: 抱歉，我什么也给不了你。或许你可以尝试重铸一些东西，然后再来找我……
+		Homeless1: 你这儿有地方住吗？我是说……我准备在这周围扎营
+		Homeless2: 你知道过去那个时代的人们是怎么生活的吗？他们没有房子，只能住在大树洞里，但你至少给我找个树洞住，好吗？
+		Homeless3: 没有空闲的房子吗？什么……要我付租金？
+		L0: 我付不起房租，但如果你有什么已逝的亲人想让我试试……什么，你不想？
+		L1: 我从来不相信灵魂一说，如果任何试图复活死者的行为只会带来更大的灾难
+		L2:
+			'''
+			在上世纪，我曾处理过一个事件，那是一个灵异小镇
+			如果你走在街上，会看到两旁挤满了你死去的亲人朋友
+			他们会向你伸手、求救，请求你带他们离开……
+			我尝试过将我的‘母亲’带回来，但回来的不是她，是一只在完美模仿她的鬼	
+			'''
+		L3:
+			'''
+			有些时候我真觉得你还需要练练，你还是凡人的躯体，这样下去可成不了事
+			我见过太多像你这样的人，最终都死在了追求力量的路上
+			'''
+		L4:
+			'''
+			我知道你对我的魔法感兴趣，但那些其实……并不是魔法
+			它们是灵异力量，接触灵异的人都无法善终，我希望你远离这些
+			'''
+		BloodMoon0: 这非自然的血红夜幕啊。一点也不如我硫磺火焰的颜色
+		BloodMoon1: 我无法在这样的夜晚工作。星星似乎都因为恐惧而缩小了
+		Night0: 夜晚是闹鬼的时刻，我可不想在这种时候待在外面
+		Night1: 在很久以前我每晚都要占卜一下才能睡去，直到一次我连续七晚都占卜到我将在第八晚死去
+		SeaKing: 海王总是以一种十分悲缅的眼神看着我，他似乎不希望我死去，我无法理解他对我有如此深的同情
+		Party: 很抱歉，我拒绝任何形式的跳舞邀请，我的舞伴往往成为了焦尸
+	}
 }
 
 Arcanes: {
@@ -6831,7 +6863,7 @@ ADV: {
 
 	ExoMechdusaSum: {
 		DraedonName: 嘉登
-		IntroLine1: 你知道吗？这一刻已经等了太久了
+		IntroLine1: 你知道吗？这一刻我已经等了太久了
 		IntroLine2: 我对一切未知感到着迷，但最让我着迷的莫过于你的本质
 		IntroLine3: 我将会向你展示，我那些超越神明的造物
 		IntroLine4: 而你，则将在战斗中向我展示你的本质
@@ -7016,23 +7048,57 @@ ADV: {
 	}
 
 	SupCalDisplayTextByBossRush: {
-		SummonBossRush: 呵……你身上的气息和记忆，让我想起了早已死去的那个人
+		SummonBossRush: ……你身上的气息和记忆，让我想起了早已死去的那个人
 		SummonBossRushWithProverbs: 那枚戒指，连我这样的残影，也感到了它的颤动呢
 		StartBossRush: 我不过是金源魄的灵异产物，但有的事情，我也必须完成
 		BH2BossRush: 你的实力确实不差，但还不够
 		BH3BossRush: 往日之影……早已化作灰烬，随风散在你走过的道路上，呵呵……
 		BrothersBossRush: 这些灵魂……是影子的影子。越是复制，越显得悲哀，不是吗？
 		Phase2BossRush: 即便是被复制的生命，也有需要拼尽全力的理由
-		BH4BossRush: 站住！让我好好看看你，到底能否承担一个时代重量！
+		BH4BossRush: 站住！
 		SeekerRingBossRush: 你的力量，与她记忆中的那个人太相似了，是巧合吗？
-		BH5BossRush: 作为灵异产物，我被创造，就是为了迎接今日这场战斗
-		Sepulcher2BossRush: 最后的试炼就在此刻……让我看看，你是否有资格替她继续前行
+		BH5BossRush: 我的存在，就是为了迎接今日这场战斗
+		Sepulcher2BossRush: 最后的试炼就在此刻……
 		Desperation1BossRush: 即使只是残片……
 		Desperation2BossRush: 别以为胜利已定……
 		Desperation3BossRush: 呵……影子的寿命，本就脆弱到可笑……
 		Desperation4BossRush: 你赢了……但她的道路，还远远没有结束
 		Acceptance1BossRush: 这大概，就是我的最终归宿吧
 		Acceptance2BossRush: 祝你好运，杂鱼
+	}
+
+	SupCalDisplayTextNormal: {
+		SummonText: 你享受地狱之旅么？
+		SummonRematchText: 如果你想感受一下四级烫伤的话，你可算是找对人了
+		StartText: 真奇怪，你应该已经死了才对……
+		StartRematchText: 他日若你魂销魄散，你会介意我将你的骨头和血肉融入我的造物中吗？
+		BH2Text: 距离你上次勉强才击败我的克隆体也没过多久那玩意就是个失败品，不是么？
+		BH2RematchText: 你离胜利还差得远着呢
+		BH3Text: 你驾驭着强大的力量，但你使用这股力量只为了自己的私欲
+		BH3RematchText: 自我上一次能在如此有趣的靶子假人身上测试我的魔法，已经过了很久了
+		BrothersText: 你想见见我的家人吗？听上去挺可怕，不是么？
+		BrothersRematchText: 只是单有过去形态的空壳罢了，或许在其中依然残存他们的些许灵魂也说不定
+		Phase2Text: 你将痛不欲生
+		Phase2RematchText: 再一次，我们开始吧
+		BH4Text: 别想着逃跑只要你还活着，痛苦就不会离你而去
+		BH4RematchText: 我挺好奇，自我们第一次交手后，你曾否在梦魇中见到过这些？
+		SeekerRingText: 一个后起之人，只识杀戮与偷窃，但却以此得到力量我想想，这让我想起了谁……？
+		SeekerRingRematchText: 起码你的技术没有退步
+		BH5Text: 这场战斗的输赢对你而言毫无意义！那你又有什么理由干涉这一切！
+		BH5RematchText: 这难道不令人激动么？
+		Sepulcher2Text: 我们两人里只有一个可以活下来，但如果那个人是你，这一切还有什么意义？!
+		Sepulcher2RematchText: 注意一下，那个会自己爬的坟墓来了，这是最后一次
+		Desperation1Text: 给我停下！
+		Desperation2Text: 如果我在这里失败，我就再无未来可言
+		Desperation3Text: 一旦你战胜了我，你就只剩下一条道路
+		Desperation4Text: 而那条道路……同样也无未来可言
+		Acceptance1Text: 哪怕他抛弃了一切，他的力量也不会消失
+		Acceptance2Text: 我已没有余力去怨恨他了，对你也是如此……
+		Acceptance3Text: 现在，一切都取决于你
+		Desperation1RematchText: 了不起的表现，我认可你的胜利
+		Desperation2RematchText: 毫无疑问，你会遇见比我更加强大的敌人
+		Desperation3RematchText: 我相信你不会犯下和他一样的错误
+		Desperation4RematchText: 至于你的未来会变成什么样子，我很期待
 	}
 
 	FirstMetTzeentch: {

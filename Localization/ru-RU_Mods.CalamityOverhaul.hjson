@@ -5852,6 +5852,38 @@ NPCModifys: {
 			Она заставляет меня увядать… как сморщенный гриб, который никому не нужен.
 			'''
 	}
+
+	ModifyWITCH: {
+		// Homeless0: Sorry, I have nothing to give you. Perhaps you could try reforging something, then come back to me...
+		// Homeless1: Do you have a place to stay here? I mean... I'm prepared to set up camp around here otherwise.
+		// Homeless2: Do you know how people lived in the past era? They had no houses, only hollowed-out trees. But could you at least find me a tree hollow, please?
+		// Homeless3: No vacant houses? What... you expect me to pay rent?
+		// L0: I can't afford rent, but if you have any deceased relatives you want me to try and... what, you don't?
+		// L1: I have never believed in souls. Any attempt to resurrect the dead only invites greater catastrophe.
+		/* L2:
+			'''
+			In the last century, I handled an incident involving a haunted town.
+			If you walked down the street, you would see it crowded with your dead friends and family on both sides.
+			They would reach out to you, cry for help, begging you to take them away...
+			I tried to bring my 'mother' back once. But what returned wasn't her. It was a ghost perfectly mimicking her.
+			''' */
+		/* L3:
+			'''
+			Sometimes I really think you still need practice. You possess a mortal body; you won't accomplish anything like this.
+			I have seen too many people like you who eventually died on their path to power.
+			''' */
+		/* L4:
+			'''
+			I know you are interested in my magic, but those are actually... not magic.
+			They are occult powers. Those who touch the supernatural meet no good end. I hope you stay away from them.
+			''' */
+		// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
+		// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
+		// Night0: Night is when the spirits are restless. I have no desire to be outside at such a time.
+		// Night1: Long ago, I had to perform a divination every night before I could sleep. Until once, for seven consecutive nights, I divined that I would die on the eighth.
+		// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
+		// Party: I apologize, but I refuse any invitation to dance. My partners tend to end up as charred corpses.
+	}
 }
 
 Arcanes: {
@@ -7149,6 +7181,40 @@ ADV: {
 		// Desperation4BossRush: You’ve won… but her journey is far from over.
 		// Acceptance1BossRush: Perhaps… this is where I was always meant to end.
 		// Acceptance2BossRush: Good luck… small fry.
+	}
+
+	SupCalDisplayTextNormal: {
+		// SummonText: Do you enjoy going through hell?
+		// SummonRematchText: If you're looking for fourth-degree burns, you've got the right person.
+		// StartText: How strange, you should be dead...
+		// StartRematchText: When the time comes that your soul is gone, would you mind if I grafted your flesh and bone into my creations?
+		// BH2Text: It was not long ago you barely defeated my clone. That failure of a creation...
+		// BH2RematchText: You are still nowhere near victory.
+		// BH3Text: You harness great power, but you use it for yourself.
+		// BH3RematchText: It has been some time since I have had such a... fascinating test dummy to practice my magic on.
+		// BrothersText: Do you want to meet my family? Horrible, isn't it?
+		// BrothersRematchText: Empty shells of their former selves. Perhaps a sliver of their souls still remains.
+		// Phase2Text: You will suffer greatly.
+		// Phase2RematchText: Once again, let us begin.
+		// BH4Text: Do not think about running. As long as you live, the pain will not leave you.
+		// BH4RematchText: I wonder, have you seen these in your nightmares since our first battle?
+		// SeekerRingText: An upstart who recklessly steals and kills, yet obtains power... I wonder, who does this remind me of...?
+		// SeekerRingRematchText: At least your skill has not deteriorated.
+		// BH5Text: The outcome of this battle is irrelevant to you! Why do you even bother interfering?!
+		// BH5RematchText: Isn't this exciting?
+		// Sepulcher2Text: Only one of us will survive this, but if it is you, what meaning is there in that?!
+		// Sepulcher2RematchText: Pay attention, the crawling tomb is here. This is the last time.
+		// Desperation1Text: Just stop!
+		// Desperation2Text: If I lose here, I have no future.
+		// Desperation3Text: Once you defeat me, you will have only one path remaining.
+		// Desperation4Text: And that path... is also devoid of a future.
+		// Acceptance1Text: Even if he has abandoned everything, his power will not vanish.
+		// Acceptance2Text: I have no energy left to resent him. And the same goes for you...
+		// Acceptance3Text: Now, everything depends on you.
+		// Desperation1RematchText: Impressive performance. I acknowledge your victory.
+		// Desperation2RematchText: Without a doubt, you will encounter enemies far stronger than I.
+		// Desperation3RematchText: I trust you will not make the same mistakes he did.
+		// Desperation4RematchText: As for what your future holds... I look forward to seeing it.
 	}
 
 	FirstMetTzeentch: {
