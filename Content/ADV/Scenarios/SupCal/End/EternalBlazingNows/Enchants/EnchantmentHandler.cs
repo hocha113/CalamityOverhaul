@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             if (CurrentItem == null || CurrentItem.IsAir) {
                 return [];
             }
-            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.EnchantmentList;
+            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.GetValidEnchantmentsForItem(CurrentItem);
             return validEnchantments;
         }
 
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             }
 
             //获取可用附魔列表并检查目标附魔是否在其中
-            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.EnchantmentList;
+            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.GetValidEnchantmentsForItem(item);
             return validEnchantments.Contains(enchantment);
         }
 
