@@ -81,15 +81,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     return false;
                 }
                 //已拒绝直接不显示
-                if (hp.ADCSave.FishoilQuestDeclined) {
+                if (hp.ADVSave.FishoilQuestDeclined) {
                     return false;
                 }
                 //未接受不显示
-                if (!hp.ADCSave.FishoilQuestAccepted) {
+                if (!hp.ADVSave.FishoilQuestAccepted) {
                     return false;
                 }
                 //已完成后直接隐藏
-                if (hp.ADCSave.FishoilQuestCompleted) {
+                if (hp.ADVSave.FishoilQuestCompleted) {
                     closing = true;//强行设置开始关闭
                     return hideProgress < 1f;
                 }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
         public void OpenPersistent() {
             //已经完成或已拒绝不再打开，防止多人模式或重新加载后无意义显示
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp) && (hp.ADCSave.FishoilQuestCompleted || hp.ADCSave.FishoilQuestDeclined)) {
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp) && (hp.ADVSave.FishoilQuestCompleted || hp.ADVSave.FishoilQuestDeclined)) {
                 return;
             }
             if (RequiredItems.Count == 0) {
@@ -271,19 +271,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
 
             //快速放入逻辑
-            if (!hp.ADCSave.FishoilQuestCompleted && !closing && interactive && hoverQuickPut && keyLeftPressState == KeyPressState.Pressed) {
+            if (!hp.ADVSave.FishoilQuestCompleted && !closing && interactive && hoverQuickPut && keyLeftPressState == KeyPressState.Pressed) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 QuickDepositInventoryFish();
             }
 
             //拒绝任务
-            if (!hp.ADCSave.FishoilQuestCompleted && interactive && hoverDecline && keyLeftPressState == KeyPressState.Pressed) {
-                hp.ADCSave.FishoilQuestDeclined = true;
+            if (!hp.ADVSave.FishoilQuestCompleted && interactive && hoverDecline && keyLeftPressState == KeyPressState.Pressed) {
+                hp.ADVSave.FishoilQuestDeclined = true;
                 SoundEngine.PlaySound(SoundID.MenuClose);
             }
 
             //完成检测
-            if (!hp.ADCSave.FishoilQuestCompleted) {
+            if (!hp.ADVSave.FishoilQuestCompleted) {
                 bool allDone = true;
                 foreach (var s in RequiredItems) {
                     if (!s.IsSatisfied) {
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     }
                 }
                 if (allDone) {
-                    hp.ADCSave.FishoilQuestCompleted = true;
+                    hp.ADVSave.FishoilQuestCompleted = true;
                     GiveReward();
                 }
             }
@@ -440,7 +440,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             //底部提示/完成
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
                 Vector2 tipPos = new Vector2(panelRect.X + Padding, panelRect.Bottom - 54);
-                if (!hp.ADCSave.FishoilQuestCompleted) {
+                if (!hp.ADVSave.FishoilQuestCompleted) {
                     Utils.DrawBorderString(sb, SubmitHint.Value, tipPos, new Color(120, 200, 235) * (ca * 0.7f * elementAlpha), 0.6f);
                 }
                 else {
@@ -450,7 +450,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
 
             //按钮
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted && !closing) {
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADVSave.FishoilQuestCompleted && !closing) {
                 DrawButton(sb, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca * elementAlpha, new Color(30, 90, 120));
                 DrawButton(sb, declineButtonRect, DeclineText.Value, hoverDecline, ca * elementAlpha, new Color(100, 40, 40));
             }

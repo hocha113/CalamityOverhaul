@@ -142,11 +142,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     continue;
                 }
 
-                if (!halibutPlayer.ADCSave.SupCalChoseToFight) {
+                if (!halibutPlayer.ADVSave.SupCalChoseToFight) {
                     continue;
                 }
 
-                if (halibutPlayer.ADCSave.SupCalDefeat) {
+                if (halibutPlayer.ADVSave.SupCalDefeat) {
                     continue;//已经击败过，不再触发
                 }
 

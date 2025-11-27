@@ -173,12 +173,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             }
 
             //检查是否接受了任务
-            if (!halibutPlayer.ADCSave.SupCalYharonQuestAccepted || halibutPlayer.ADCSave.SupCalYharonQuestDeclined) {
+            if (!halibutPlayer.ADVSave.SupCalYharonQuestAccepted || halibutPlayer.ADVSave.SupCalYharonQuestDeclined) {
                 return false;
             }
 
             //检查是否已完成
-            if (halibutPlayer.ADCSave.SupCalYharonQuestReward) {
+            if (halibutPlayer.ADVSave.SupCalYharonQuestReward) {
                 return false;
             }
 
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             }
 
             //标记任务完成
-            halibutPlayer.ADCSave.SupCalYharonQuestReward = true;
+            halibutPlayer.ADVSave.SupCalYharonQuestReward = true;
 
             //延迟触发奖励场景
             SupCalYharonQuestReward.Spawned = true;

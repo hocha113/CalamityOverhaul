@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return false;
             }
-            ADVSave save = halibutPlayer.ADCSave;
+            ADVSave save = halibutPlayer.ADVSave;
             if (save == null) {
                 return false;
             }
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return resetFieldCount;
             }
 
-            ADVSave save = halibutPlayer.ADCSave;
+            ADVSave save = halibutPlayer.ADVSave;
             if (save == null) {
                 return resetFieldCount;
             }

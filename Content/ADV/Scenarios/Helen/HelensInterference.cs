@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             protected override void OnScenarioComplete() {
                 //标记选择了继续
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    halibutPlayer.ADCSave.HelenInterferenceContinue = true;
+                    halibutPlayer.ADVSave.HelenInterferenceContinue = true;
                 }
             }
         }
@@ -365,8 +365,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             protected override void OnScenarioComplete() {
                 //标记任务被拒绝
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    halibutPlayer.ADCSave.SupCalDoGQuestDeclined = true;
-                    halibutPlayer.ADCSave.HelenInterferenceStop = true;
+                    halibutPlayer.ADVSave.SupCalDoGQuestDeclined = true;
+                    halibutPlayer.ADVSave.HelenInterferenceStop = true;
                 }
 
                 //播放销毁音效

@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             if (FirstMetSupCal.ThisIsToFight && npc.type == CWRID.NPC_SupremeCalamitas) {
                 Player player = Main.LocalPlayer;
                 if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    if (halibutPlayer.ADCSave.SupCalChoseToFight) {
+                    if (halibutPlayer.ADVSave.SupCalChoseToFight) {
                         Spawned = true;
                         RandomTimer = 60 * Main.rand.Next(2, 4);
                     }

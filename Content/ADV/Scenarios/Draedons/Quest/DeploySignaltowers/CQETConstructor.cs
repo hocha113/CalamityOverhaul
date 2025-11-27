@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public static LocalizedText RecipeCondition(out Func<bool> condition) {
             condition = new Func<bool>(() =>
             Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
-            && halibutPlayer.ADCSave.UseConstructionBlueprint);
+            && halibutPlayer.ADVSave.UseConstructionBlueprint);
             return UseConstructionBlueprint;
         }
         public override void AddRecipes() {

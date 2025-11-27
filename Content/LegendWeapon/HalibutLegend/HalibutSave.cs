@@ -78,11 +78,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
                     //保存深渊复苏系统数据
                     tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
-                    tag["ADCSave"] = hPlayer.ADCSave.SaveData();
+                    tag["ADCSave"] = hPlayer.ADVSave.SaveData();
                     tag["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
 
                     //检查是否达成永恒燃烧的现在结局并解锁主菜单立绘
-                    if (hPlayer.ADCSave.EternalBlazingNow) {
+                    if (hPlayer.ADVSave.EternalBlazingNow) {
                         MenuSave.UnlockEternalBlazingNowPortrait(Player);
                     }
                 }
@@ -125,9 +125,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                     //加载ADCSave数据
                     if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
-                        halibutPlayer.ADCSave.LoadData(adcTag);
+                        halibutPlayer.ADVSave.LoadData(adcTag);
                         //检查是否已达成永恒燃烧的现在结局
-                        if (halibutPlayer.ADCSave.EternalBlazingNow) {
+                        if (halibutPlayer.ADVSave.EternalBlazingNow) {
                             MenuSave.UnlockEternalBlazingNowPortrait(Player);
                         }
                     }

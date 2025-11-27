@@ -147,13 +147,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 return false;
             }
 
-            if (!halibutPlayer.ADCSave.SupCalQuestReward//先完成前置任务
-                || halibutPlayer.ADCSave.SupCalDoGQuestDeclined//且未拒绝当前任务
+            if (!halibutPlayer.ADVSave.SupCalQuestReward//先完成前置任务
+                || halibutPlayer.ADVSave.SupCalDoGQuestDeclined//且未拒绝当前任务
                 ) {
                 return false;
             }
 
-            if (halibutPlayer.ADCSave.SupCalDoGQuestReward) {
+            if (halibutPlayer.ADVSave.SupCalDoGQuestReward) {
                 return false;//任务已经完成
             }
 
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             }
 
             //标记任务完成
-            halibutPlayer.ADCSave.SupCalDoGQuestReward = true;
+            halibutPlayer.ADVSave.SupCalDoGQuestReward = true;
 
             //延迟触发奖励场景
             SupCalDoGQuestReward.Spawned = true;

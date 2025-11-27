@@ -28,31 +28,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             }
 
             //如果玩家已经接受/拒绝/完成了任务，就不再显示UI
-            if (halibutPlayer.ADCSave.SupCalYharonQuestAccepted) {
+            if (halibutPlayer.ADVSave.SupCalYharonQuestAccepted) {
                 return false;
             }
 
             //前置任务必须完成
-            if (!halibutPlayer.ADCSave.SupCalDoGQuestReward) {
+            if (!halibutPlayer.ADVSave.SupCalDoGQuestReward) {
                 return false;
             }
 
             Item heldItem = Main.LocalPlayer.GetItem();
             return heldItem.type == ModContent.ItemType<OniMachete>()
-                && halibutPlayer.ADCSave.SupCalDoGQuestReward
-                && !halibutPlayer.ADCSave.SupCalYharonQuestReward
-                && !halibutPlayer.ADCSave.SupCalYharonQuestDeclined;
+                && halibutPlayer.ADVSave.SupCalDoGQuestReward
+                && !halibutPlayer.ADVSave.SupCalYharonQuestReward
+                && !halibutPlayer.ADVSave.SupCalYharonQuestDeclined;
         }
 
         protected override void OnQuestAccepted() {
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.SupCalYharonQuestAccepted = true;
+                halibutPlayer.ADVSave.SupCalYharonQuestAccepted = true;
             }
         }
 
         protected override void OnQuestDeclined() {
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.SupCalYharonQuestDeclined = true;
+                halibutPlayer.ADVSave.SupCalYharonQuestDeclined = true;
             }
         }
     }

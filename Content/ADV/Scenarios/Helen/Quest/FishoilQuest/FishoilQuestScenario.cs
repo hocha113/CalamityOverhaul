@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
         private void OnAccept() {
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.FishoilQuestAccepted = true;
+                halibutPlayer.ADVSave.FishoilQuestAccepted = true;
                 FishoilQuestUI.Instance.OpenPersistent();
             }
             scenarioStarted = false;
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
         private void OnDecline() {
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.FishoilQuestDeclined = true;
+                halibutPlayer.ADVSave.FishoilQuestDeclined = true;
             }
             scenarioStarted = false;
             Complete();

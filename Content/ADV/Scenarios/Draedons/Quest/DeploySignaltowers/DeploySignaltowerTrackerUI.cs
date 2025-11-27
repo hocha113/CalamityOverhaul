@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     return SignalTowerTargetManager.TargetPoints.Count > 0;
                 }
 
-                ADVSave save = halibutPlayer.ADCSave;
+                ADVSave save = halibutPlayer.ADVSave;
                 if (save == null) {
                     return false;
                 }
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 return (0, DeploySignaltowerCheck.TargetTowerCount, false);
             }
 
-            ADVSave save = halibutPlayer.ADCSave;
+            ADVSave save = halibutPlayer.ADVSave;
             if (save == null) {
                 return (0, DeploySignaltowerCheck.TargetTowerCount, false);
             }

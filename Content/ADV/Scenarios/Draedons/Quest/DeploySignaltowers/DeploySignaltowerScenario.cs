@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         private void OnDeclineQuest() {
             //标记拒绝任务
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.DeploySignaltowerQuestDeclined = true;
+                halibutPlayer.ADVSave.DeploySignaltowerQuestDeclined = true;
             }
 
             //完成当前场景

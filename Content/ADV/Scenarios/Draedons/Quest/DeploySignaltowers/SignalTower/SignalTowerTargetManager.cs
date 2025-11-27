@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().SetDefScreenYValue();
             //标记接受任务
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.DeploySignaltowerQuestAccepted = true;
+                halibutPlayer.ADVSave.DeploySignaltowerQuestAccepted = true;
             }
         }
 

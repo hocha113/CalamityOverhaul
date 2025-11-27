@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 return;
             }
 
-            ADVSave save = halibutPlayer.ADCSave;
+            ADVSave save = halibutPlayer.ADVSave;
             if (save == null) {
                 return;
             }
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 return;
             }
 
-            ADVSave save = halibutPlayer.ADCSave;
+            ADVSave save = halibutPlayer.ADVSave;
             if (save == null) {
                 return;
             }

@@ -166,11 +166,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             }
 
             //检查是否接受了任务
-            if (!halibutPlayer.ADCSave.SupCalQuestAccepted || halibutPlayer.ADCSave.SupCalQuestDeclined) {
+            if (!halibutPlayer.ADVSave.SupCalQuestAccepted || halibutPlayer.ADVSave.SupCalQuestDeclined) {
                 return false;
             }
 
-            if (halibutPlayer.ADCSave.SupCalQuestReward) {
+            if (halibutPlayer.ADVSave.SupCalQuestReward) {
                 return false;//任务已经完成
             }
 
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             }
 
             //标记任务完成
-            halibutPlayer.ADCSave.SupCalQuestReward = true;
+            halibutPlayer.ADVSave.SupCalQuestReward = true;
 
             //延迟触发奖励场景
             SupCalQuestReward.Spawned = true;

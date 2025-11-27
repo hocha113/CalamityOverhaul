@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         #endregion
 
         #region ADV场景数据
-        public ADVSave ADCSave { get; private set; } = new();
+        public ADVSave ADVSave { get; private set; } = new();
         #endregion
 
         #region 闪光皇后
@@ -346,7 +346,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             if (Player.whoAmI == Main.myPlayer) {//关于ADV场景的更新只在本地玩家上进行
                 foreach (var scenario in ADVScenarioBase.Instances) {
-                    scenario.Update(ADCSave, this);
+                    scenario.Update(ADVSave, this);
                 }
             }
 
@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
 
             if (HasHalubut) {//只要拥有大比目鱼，就标记已经捕获过
-                ADCSave.HasCaughtHalibut = true;
+                ADVSave.HasCaughtHalibut = true;
             }
 
             if (!HeldHalibut && Main.myPlayer == Player.whoAmI) {

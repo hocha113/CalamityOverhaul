@@ -262,7 +262,7 @@ namespace CalamityOverhaul
         internal static bool TryGetADVSave(this Player player, out ADVSave save) {
             save = null;
             if (player.TryGetHalibutPlayer(out var halibutPlayer)) {
-                save = halibutPlayer.ADCSave;
+                save = halibutPlayer.ADVSave;
                 return save != null;
             }
             return false;
