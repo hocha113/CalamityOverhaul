@@ -84,15 +84,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             //准备轨迹点 - 根据方向翻转处理
             Vector2[] positions = new Vector2[ControlPoints.Length];
             bool facingLeft = Projectile.velocity.X < 0;
-            
+
             for (int i = 0; i < ControlPoints.Length; i++) {
                 Vector2 offset = ControlPoints[i] + ControlPoints[i].SafeNormalize(Vector2.Zero) * (Projectile.scale - 1f) * 70f;
-                
+
                 // 如果朝左，需要水平翻转控制点
                 if (facingLeft) {
                     offset.X = -offset.X;
                 }
-                
+
                 positions[i] = offset + Projectile.Center + new Vector2(0, -60);
             }
 

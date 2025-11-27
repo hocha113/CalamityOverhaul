@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using InnoVault.Trails;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 {
