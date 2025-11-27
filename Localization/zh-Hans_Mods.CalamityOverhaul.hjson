@@ -6973,6 +6973,13 @@ ADV: {
 		AchievementTooltip: 往日被烈火所吞噬，以异类之躯触及永恒
 	}
 
+	SCalAltarScenario: {
+		Rolename1: 硫火女巫
+		L1: 现在还不是时候，你的前方还有另一个挡路的敌人
+		L2: 去把你那堆机械玩具拼好，再把他打倒
+		L3: ……怎么？需要我再说一遍吗？
+	}
+
 	SupCalDisplayText: {
 		SummonWithProverbs: 你竟然真的戴着那个戒指来了……既然如此，我便不会再留情
 		SummonWithoutProverbs: 哈哈哈……这一刻，我已经期待许久
@@ -7002,6 +7009,26 @@ ADV: {
 		Acceptance2Text: 或许，你真的能终结这个该死的时代
 	}
 
+	SupCalDisplayTextByBossRush: {
+		SummonBossRush: 呵……你身上的气息和记忆，让我想起了早已死去的那个人
+		SummonBossRushWithProverbs: 那枚戒指，连我这样的残影，也感到了它的颤动呢
+		StartBossRush: 我不过是金源魄的灵异产物，但有的事情，我也必须完成
+		BH2BossRush: 你的实力确实不差，但还不够
+		BH3BossRush: 往日之影……早已化作灰烬，随风散在你走过的道路上，呵呵……
+		BrothersBossRush: 这些灵魂……是影子的影子。越是复制，越显得悲哀，不是吗？
+		Phase2BossRush: 即便是被复制的生命，也有需要拼尽全力的理由
+		BH4BossRush: 站住！让我好好看看你，到底能否承担一个时代重量！
+		SeekerRingBossRush: 你的力量，与她记忆中的那个人太相似了，是巧合吗？
+		BH5BossRush: 作为灵异产物，我被创造，就是为了迎接今日这场战斗
+		Sepulcher2BossRush: 最后的试炼就在此刻……让我看看，你是否有资格替她继续前行
+		Desperation1BossRush: 即使只是残片……
+		Desperation2BossRush: 别以为胜利已定……
+		Desperation3BossRush: 呵……影子的寿命，本就脆弱到可笑……
+		Desperation4BossRush: 你赢了……但她的道路，还远远没有结束
+		Acceptance1BossRush: 这大概，就是我的最终归宿吧
+		Acceptance2BossRush: 祝你好运，杂鱼
+	}
+
 	FirstMetTzeentch: {
 		L1: 嘘——别回头
 		L2: 我一直在看你搭建这些小玩意儿
@@ -7026,33 +7053,6 @@ ADV: {
 		Choice3_R3: 只是……大多数结局都不太愉快
 		EndLine1: 那么，我们会再见的
 		EndLine2: 很快
-	}
-
-	SCalAltarScenario: {
-		Rolename1: 硫火女巫
-		L1: 现在还不是时候，你的前方还有另一个挡路的敌人
-		L2: 去把你那堆机械玩具拼好，再把他打倒
-		L3: ……怎么？需要我再说一遍吗？
-	}
-
-	SupCalDisplayTextByBossRush: {
-		SummonBossRush: 呵……你身上的气息和记忆，让我想起了早已死去的那个人
-		SummonBossRushWithProverbs: 那枚戒指，连我这样的残影，也感到了它的颤动呢
-		StartBossRush: 我不过是金源魄的灵异产物，但有的事情，我也必须完成
-		BH2BossRush: 你的实力确实不差，但还不够
-		BH3BossRush: 往日之影……早已化作灰烬，随风散在你走过的道路上，呵呵……
-		BrothersBossRush: 这些灵魂……是影子的影子。越是复制，越显得悲哀，不是吗？
-		Phase2BossRush: 即便是被复制的生命，也有需要拼尽全力的理由
-		BH4BossRush: 站住！让我好好看看你，到底能否承担一个时代重量！
-		SeekerRingBossRush: 你的力量，与她记忆中的那个人太相似了，是巧合吗？
-		BH5BossRush: 作为灵异产物，我被创造，就是为了迎接今日这场战斗
-		Sepulcher2BossRush: 最后的试炼就在此刻……让我看看，你是否有资格替她继续前行
-		Desperation1BossRush: 即使只是残片……
-		Desperation2BossRush: 别以为胜利已定……
-		Desperation3BossRush: 呵……影子的寿命，本就脆弱到可笑……
-		Desperation4BossRush: 你赢了……但她的道路，还远远没有结束
-		Acceptance1BossRush: 这大概，就是我的最终归宿吧
-		Acceptance2BossRush: 祝你好运，杂鱼
 	}
 
 	DyeProtest: {

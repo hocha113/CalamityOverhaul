@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants
 {
     /// <summary>
     /// 永恒燃烧的如今
@@ -52,15 +52,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static float CollapsedWidth = 60f; //折叠后的宽度
         public static float CollapsedHeight = 80f; //折叠后的高度
 
-        //当前状态
-        public static Item CurrentlyHeldItem = new Item();
-        public static int EnchantIndex = 0;
-        public static Enchantment? SelectedEnchantment = null;
-
-        //附魔等待时间相关
-        public static bool IsEnchanting = false;
-        public static float EnchantProgress = 0f;
-        public static float EnchantDuration = 180f; //3秒附魔时间
+        //炼铸逻辑处理器
+        private readonly static EnchantmentHandler EnchantmentHandler = new();
 
         //按钮点击冷却
         public static float TopButtonClickCountdown = 0f;
@@ -99,40 +92,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             tag.TryGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
-            if (tag.TryGet(Name + ":" + nameof(CurrentlyHeldItem), out TagCompound itemTag)) {
-                CurrentlyHeldItem = ItemIO.Load(itemTag);
+            if (tag.TryGet(Name + ":" + "CurrentlyHeldItem", out TagCompound itemTag)) {
+                EnchantmentHandler.CurrentItem = ItemIO.Load(itemTag);
             }
             else {
-                CurrentlyHeldItem = new Item();
+                EnchantmentHandler.CurrentItem = new Item();
             }
         }
 
         public new void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(DrawPosition)] = DrawPosition;
             tag[Name + ":" + nameof(IsCollapsed)] = IsCollapsed;
-            CurrentlyHeldItem ??= new Item();
-            tag[Name + ":" + nameof(CurrentlyHeldItem)] = ItemIO.Save(CurrentlyHeldItem);
+            EnchantmentHandler.CurrentItem ??= new Item();
+            tag[Name + ":" + "CurrentlyHeldItem"] = ItemIO.Save(EnchantmentHandler.CurrentItem);
         }
 
         public override void SetStaticDefaults() {
             ExpandHint = this.GetLocalization(nameof(ExpandHint), () => "展开炼铸界面");
             CollapseHint = this.GetLocalization(nameof(CollapseHint), () => "收起炼铸界面");
             EnchantTitle = this.GetLocalization(nameof(EnchantTitle), () => "炼铸");
+
+            //订阅炼铸处理器事件
+            EnchantmentHandler.OnEnchantStart += OnEnchantStart;
+            EnchantmentHandler.OnEnchantComplete += OnEnchantComplete;
         }
 
         public override void Update() {
-            if (!Active) {
-                if (!CurrentlyHeldItem.IsAir) {
-                    player.QuickSpawnItem(player.GetSource_Misc(CurrentlyHeldItem.Name), CurrentlyHeldItem, CurrentlyHeldItem.stack);
-                    CurrentlyHeldItem.TurnToAir();
-                }
-
-                EnchantIndex = 0;
-                IsEnchanting = false;
-                EnchantProgress = 0f;
-                return;
-            }
-
             Vector2 backgroundScale = Vector2.One * UIScale;
             float currentWidth = MathHelper.Lerp(392 * backgroundScale.X, CollapsedWidth, lerpProgress);
             float currentHeight = MathHelper.Lerp(324 * backgroundScale.Y, CollapsedHeight, lerpProgress);
@@ -202,15 +187,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (heatWavePhase > MathHelper.TwoPi) heatWavePhase -= MathHelper.TwoPi;
             if (infernoPulse > MathHelper.TwoPi) infernoPulse -= MathHelper.TwoPi;
 
-            //更新附魔进度
-            if (IsEnchanting) {
-                EnchantProgress += 1f;
-
-                //附魔完成
-                if (EnchantProgress >= EnchantDuration) {
-                    CompleteEnchantment();
-                }
-            }
+            //更新炼铸逻辑
+            EnchantmentHandler.Update();
+            EnchantmentHandler.UpdateSelectedEnchantment();
 
             //更新粒子
             UpdateParticles();
@@ -298,8 +277,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 return;
             }
 
-            //选择附魔
-            IEnumerable<Enchantment> possibleEnchantments = SelectEnchantment();
+            //获取可用附魔
+            IEnumerable<Enchantment> possibleEnchantments = EnchantmentHandler.GetAvailableEnchantments();
 
             //物品槽位置
             Vector2 itemSlotDrawPosition = UITopLeft + new Vector2(36f, 46f) * backgroundScale;
@@ -317,7 +296,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DrawAndInteractWithButtons(spriteBatch, possibleEnchantments, topButtonPos, bottomButtonPos, backgroundScale);
 
             //绘制附魔信息
-            if (SelectedEnchantment.HasValue) {
+            if (EnchantmentHandler.SelectedEnchantment.HasValue) {
                 //绘制附魔名称
                 DrawEnchantmentName(spriteBatch, UITopLeft + new Vector2(300f, 70f) * backgroundScale);
 
@@ -326,15 +305,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 DrawEnchantmentDescription(spriteBatch, descriptionDrawPositionTopLeft);
 
                 //绘制附魔图标
-                if (!string.IsNullOrEmpty(SelectedEnchantment.Value.IconTexturePath)) {
+                if (!string.IsNullOrEmpty(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath)) {
                     Vector2 iconDrawPositionTopLeft = UITopLeft + new Vector2(226f, 56f) * UIScale;
-                    Texture2D iconTexture = ModContent.Request<Texture2D>(SelectedEnchantment.Value.IconTexturePath).Value;
+                    Texture2D iconTexture = ModContent.Request<Texture2D>(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath).Value;
                     DrawIcon(spriteBatch, iconDrawPositionTopLeft, iconTexture);
                 }
             }
 
             //处理附魔按钮点击
-            if (isHoveringOverEnchantIcon && !IsEnchanting) {
+            if (isHoveringOverEnchantIcon && !EnchantmentHandler.IsEnchanting) {
                 if (Main.mouseLeft && Main.mouseLeftRelease) {
                     InteractWithEnchantIcon();
                     EnchantButtonClickCountdown = 15f;
@@ -342,7 +321,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
 
             //绘制附魔进度
-            if (IsEnchanting) {
+            if (EnchantmentHandler.IsEnchanting) {
                 DrawEnchantProgress(spriteBatch, UIHitBox);
             }
         }
@@ -503,7 +482,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         private void DrawEnchantProgress(SpriteBatch spriteBatch, Rectangle panelRect) {
             //绘制进度条
-            float progress = EnchantProgress / EnchantDuration;
+            float progress = EnchantmentHandler.EnchantProgress / EnchantmentHandler.EnchantDuration;
             Rectangle progressBarBg = new Rectangle(
                 panelRect.X + 50,
                 panelRect.Bottom - 40,
@@ -567,7 +546,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             );
 
             //检测鼠标悬停
-            if (MouseHitBox.Intersects(enchantIconArea) && !IsEnchanting) {
+            if (MouseHitBox.Intersects(enchantIconArea) && !EnchantmentHandler.IsEnchanting) {
                 enchantIconTexture = CalamitasCurseUI_ButtonHovered.Value;
                 isHoveringOverEnchantIcon = true;
             }
@@ -585,13 +564,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             spriteBatch.Draw(itemSlotTexture, itemSlotDrawPosition, null, Color.White, 0f, Vector2.Zero, itemSlotScale, SpriteEffects.None, 0f);
 
             //绘制物品
-            if (!CurrentlyHeldItem.IsAir) {
+            if (!EnchantmentHandler.CurrentItem.IsAir) {
                 float inventoryScale = Main.inventoryScale;
-                Texture2D itemTexture = TextureAssets.Item[CurrentlyHeldItem.type].Value;
+                Texture2D itemTexture = TextureAssets.Item[EnchantmentHandler.CurrentItem.type].Value;
                 Rectangle itemFrame = itemTexture.Frame(1, 1, 0, 0);
-                bool hasMultipleFrames = Main.itemAnimations[CurrentlyHeldItem.type] != null;
+                bool hasMultipleFrames = Main.itemAnimations[EnchantmentHandler.CurrentItem.type] != null;
                 if (hasMultipleFrames)
-                    itemFrame = Main.itemAnimations[CurrentlyHeldItem.type].GetFrame(itemTexture);
+                    itemFrame = Main.itemAnimations[EnchantmentHandler.CurrentItem.type].GetFrame(itemTexture);
 
                 float baseScale = UIScale * 1.5f; //增大物品显示
 
@@ -602,8 +581,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 itemScale *= inventoryScale * baseScale;
                 Vector2 itemDrawPos = itemSlotDrawPosition + Vector2.One * 24f * baseScale;
 
-                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, CurrentlyHeldItem.GetAlpha(Color.White), 0f, itemFrame.Size() * 0.5f, itemScale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, CurrentlyHeldItem.GetColor(Color.White), 0f, itemFrame.Size() * 0.5f, itemScale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, EnchantmentHandler.CurrentItem.GetAlpha(Color.White), 0f, itemFrame.Size() * 0.5f, itemScale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(itemTexture, itemDrawPos, itemFrame, EnchantmentHandler.CurrentItem.GetColor(Color.White), 0f, itemFrame.Size() * 0.5f, itemScale, SpriteEffects.None, 0f);
             }
 
             spriteBatch.Draw(enchantIconTexture, enchantIconDrawPosition, null, Color.White, 0f, Vector2.Zero, enchantButtonScale, SpriteEffects.None, 0f);
@@ -635,20 +614,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             if (hoveringOverBottomArrow)
                 bottomArrowTexture = CalamitasCurseUI_ArrowDownHovered.Value;
 
-            if (EnchantIndex > 0)
+            if (EnchantmentHandler.SelectedEnchantmentIndex > 0)
                 spriteBatch.Draw(topArrowTexture, topButtonTopLeft, null, Color.White, 0f, Vector2.Zero, arrowScale, SpriteEffects.None, 0f);
-            if (EnchantIndex < possibleEnchantments.Count() - 1)
+            if (EnchantmentHandler.SelectedEnchantmentIndex < possibleEnchantments.Count() - 1)
                 spriteBatch.Draw(bottomArrowTexture, bottomButtonTopLeft, null, Color.White, 0f, Vector2.Zero, arrowScale, SpriteEffects.None, 0f);
 
-            if (Main.mouseLeft && Main.mouseLeftRelease && !IsEnchanting) {
-                if (hoveringOverTopArrow && EnchantIndex > 0) {
-                    EnchantIndex--;
+            if (Main.mouseLeft && Main.mouseLeftRelease && !EnchantmentHandler.IsEnchanting) {
+                if (hoveringOverTopArrow && EnchantmentHandler.SelectPreviousEnchantment()) {
                     TopButtonClickCountdown = 15f;
                     SoundEngine.PlaySound(SoundID.MenuTick);
                 }
 
-                if (hoveringOverBottomArrow && EnchantIndex < possibleEnchantments.Count() - 1) {
-                    EnchantIndex++;
+                if (hoveringOverBottomArrow && EnchantmentHandler.SelectNextEnchantment()) {
                     BottomButtonClickCountdown = 15f;
                     SoundEngine.PlaySound(SoundID.MenuTick);
                 }
@@ -656,21 +633,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         private void DrawEnchantmentName(SpriteBatch spriteBatch, Vector2 nameDrawCenter) {
+            if (!EnchantmentHandler.SelectedEnchantment.HasValue)
+                return;
+
             //增大附魔名称字体
             Vector2 scale = new Vector2(1.0f, 0.95f) * UIScale;
-            string enchName = SelectedEnchantment.Value.Name.ToString();
+            string enchName = EnchantmentHandler.SelectedEnchantment.Value.Name.ToString();
             float textWidth = FontAssets.MouseText.Value.MeasureString(enchName).X * scale.X;
-            Color drawColor = SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment) ? Color.White : Color.Orange;
+            Color drawColor = EnchantmentHandler.SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment) ? Color.White : Color.Orange;
             nameDrawCenter.X -= textWidth * 0.5f;
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, enchName, nameDrawCenter, drawColor, 0f, Vector2.Zero, scale);
         }
 
         private void DrawEnchantmentDescription(SpriteBatch spriteBatch, Point descriptionDrawPositionTopLeft) {
+            if (!EnchantmentHandler.SelectedEnchantment.HasValue)
+                return;
+
             Vector2 vectorDrawPosition = descriptionDrawPositionTopLeft.ToVector2();
             //增大描述文字大小
             Vector2 scale = new Vector2(0.95f, 0.95f) * MathHelper.Clamp(UIScale, 0.85f, 1f) * UIScale;
 
-            string unifiedDescription = SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
+            string unifiedDescription = EnchantmentHandler.SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
             foreach (string line in Utils.WordwrapString(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
                 if (string.IsNullOrEmpty(line))
                     continue;
@@ -697,68 +680,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
-        public static IEnumerable<Enchantment> SelectEnchantment() {
-            //获取所有可用附魔
-            IEnumerable<Enchantment> possibleEnchantments = EnchantmentManager.GetValidEnchantmentsForItem(CurrentlyHeldItem);
-
-            SelectedEnchantment = null;
-            if (possibleEnchantments.Any())
-                SelectedEnchantment = possibleEnchantments.ElementAt(EnchantIndex);
-
-            return possibleEnchantments;
-        }
-
         public static void InteractWithItemSlot() {
-            if (!CurrentlyHeldItem.IsAir) {
-                Main.HoverItem = CurrentlyHeldItem.Clone();
+            if (!EnchantmentHandler.CurrentItem.IsAir) {
+                Main.HoverItem = EnchantmentHandler.CurrentItem.Clone();
                 Main.instance.MouseTextHackZoom(string.Empty);
             }
 
-            if (Main.mouseLeftRelease && Main.mouseLeft && !IsEnchanting) {
-                EnchantIndex = 0;
-                Utils.Swap(ref Main.mouseItem, ref CurrentlyHeldItem);
+            if (Main.mouseLeftRelease && Main.mouseLeft && !EnchantmentHandler.IsEnchanting) {
+                EnchantmentHandler.SwapItem(ref Main.mouseItem);
                 SoundEngine.PlaySound(SoundID.Grab);
             }
         }
 
         public static void InteractWithEnchantIcon() {
-            if (CurrentlyHeldItem.IsAir)
+            if (EnchantmentHandler.CurrentItem.IsAir)
                 return;
 
-            if (!SelectedEnchantment.HasValue)
+            if (!EnchantmentHandler.SelectedEnchantment.HasValue)
                 return;
 
-            //开始附魔等待
-            IsEnchanting = true;
-            EnchantProgress = 0f;
-
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = -0.3f }, player.Center);
+            //开始炼铸
+            EnchantmentHandler.StartEnchanting(player);
         }
 
-        private static void CompleteEnchantment() {
-            if (!SelectedEnchantment.HasValue || CurrentlyHeldItem.IsAir)
-                return;
+        private static void OnEnchantStart(Item item, Enchantment enchantment) {
+            //炼铸开始时的额外逻辑
+            //我暂时想不到有什么需要做的
+        }
 
-            int oldPrefix = CurrentlyHeldItem.prefix;
-            CurrentlyHeldItem.SetDefaults(CurrentlyHeldItem.type);
-            CurrentlyHeldItem.Prefix(oldPrefix);
-            CurrentlyHeldItem = CurrentlyHeldItem.Clone();
-
-            if (SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment)) {
-                CurrentlyHeldItem.Calamity().AppliedEnchantment = null;
-            }
-            else {
-                CurrentlyHeldItem.Calamity().AppliedEnchantment = SelectedEnchantment.Value;
-            }
-
-
-            EnchantIndex = 0;
-            IsEnchanting = false;
-            EnchantProgress = 0f;
-
-            //播放完成音效
-            SoundStyle enchantSound = new("CalamityMod/Sounds/Custom/WeaponEnchant");
-            SoundEngine.PlaySound(enchantSound with { Volume = 0.8f }, player.Center);
+        private static void OnEnchantComplete(Item item, Enchantment enchantment) {
+            //炼铸完成时的额外逻辑
+            //我暂时想不到有什么需要做的
         }
 
         #endregion
