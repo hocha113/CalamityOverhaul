@@ -1,10 +1,12 @@
-﻿using CalamityOverhaul.Content.RemakeItems;
+﻿using CalamityMod;
+using CalamityOverhaul.Content.RemakeItems;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.MeleeModify.Core
 {
@@ -129,6 +131,9 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
         public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (onHitNPCs.TryAdd(target.whoAmI, target)) {
+                ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
+                NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+                PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
                 KnifeHitNPC(target, hit, damageDone);
                 Owner.wingTime += Owner.wingTimeMax * 0.2f;
                 if (Owner.wingTime > Owner.wingTimeMax) {
