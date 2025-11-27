@@ -119,21 +119,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 boss.Center = Projectile.Center;
                 boss.damage = 0;
 
-                if (CalamityGlobalNPC.primeCannon != -1) {
-                    if (Main.npc[CalamityGlobalNPC.primeCannon].active)
-                        Main.npc[CalamityGlobalNPC.primeCannon].Center = Projectile.Center;
+                if (CWRWorld.primeCannon != -1) {
+                    if (Main.npc[CWRWorld.primeCannon].active)
+                        Main.npc[CWRWorld.primeCannon].Center = Projectile.Center;
                 }
-                if (CalamityGlobalNPC.primeVice != -1) {
-                    if (Main.npc[CalamityGlobalNPC.primeVice].active)
-                        Main.npc[CalamityGlobalNPC.primeVice].Center = Projectile.Center;
+                if (CWRWorld.primeVice != -1) {
+                    if (Main.npc[CWRWorld.primeVice].active)
+                        Main.npc[CWRWorld.primeVice].Center = Projectile.Center;
                 }
-                if (CalamityGlobalNPC.primeSaw != -1) {
-                    if (Main.npc[CalamityGlobalNPC.primeSaw].active)
-                        Main.npc[CalamityGlobalNPC.primeSaw].Center = Projectile.Center;
+                if (CWRWorld.primeSaw != -1) {
+                    if (Main.npc[CWRWorld.primeSaw].active)
+                        Main.npc[CWRWorld.primeSaw].Center = Projectile.Center;
                 }
-                if (CalamityGlobalNPC.primeLaser != -1) {
-                    if (Main.npc[CalamityGlobalNPC.primeLaser].active)
-                        Main.npc[CalamityGlobalNPC.primeLaser].Center = Projectile.Center;
+                if (CWRWorld.primeLaser != -1) {
+                    if (Main.npc[CWRWorld.primeLaser].active)
+                        Main.npc[CWRWorld.primeLaser].Center = Projectile.Center;
                 }
 
                 if (!VaultUtils.isServer) {

@@ -1,4 +1,3 @@
-using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
@@ -207,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             int type = ProjectileID.RocketSkeleton;
-            int damage = SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
             float rocketSpeed = 10f;
             Vector2 cannonSpreadTargetDist = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * rocketSpeed;
             int numProj = bossRush ? 5 : 3;
@@ -379,7 +378,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             if (p.dead || !p.active) {
                                 continue;
                             }
-                            p.Calamity().infiniteFlight = true;
+                            p.SetPlayerInfiniteFlight(true);
                         }
                     }
 

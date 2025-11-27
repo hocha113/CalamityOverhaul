@@ -1,4 +1,3 @@
-using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Materials;
@@ -62,17 +61,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             LeadingConditionRule rule = new LeadingConditionRule(new DropInDeathMode());
-            rule.Add(ModContent.ItemType<CommandersChainsaw>(), 4);
-            rule.Add(ModContent.ItemType<HyperionBarrage>(), 4);
-            rule.Add(ModContent.ItemType<CommandersStaff>(), 4);
-            rule.Add(ModContent.ItemType<CommandersClaw>(), 4);
-            rule.Add(ModContent.ItemType<RaiderGun>(), 4);
+            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersChainsaw>(), 4));
+            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HyperionBarrage>(), 4));
+            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersStaff>(), 4));
+            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CommandersClaw>(), 4));
+            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<RaiderGun>(), 4));
             npcLoot.Add(rule);
             LeadingConditionRule rule2 = new LeadingConditionRule(new DropInMachineRebellion());
-            rule2.Add(ModContent.ItemType<SoulofFrightEX>());
-            rule2.Add(ModContent.ItemType<SoulofMightEX>());
-            rule2.Add(ModContent.ItemType<SoulofSightEX>());
-            rule2.Add(ModContent.ItemType<MetalMusicBox>(), dropRateInt: 5);
+            rule2.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SoulofFrightEX>()));
+            rule2.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SoulofMightEX>()));
+            rule2.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SoulofSightEX>()));
+            rule2.OnSuccess(ItemDropRule.Common(ModContent.ItemType<MetalMusicBox>(), 5));
             npcLoot.Add(rule2);
         }
 

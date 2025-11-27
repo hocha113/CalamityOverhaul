@@ -219,5 +219,9 @@ namespace CalamityOverhaul
         public static Type GetItem_SHPC_Type() => typeof(SHPC);
         public static Type GetNPC_WITCH_Type() => typeof(WITCH);
         public static Type GetNPC_SupCal_Type() => typeof(SupremeCalamitas);
+        public static bool GetEarlyHardmodeProgressionReworkBool() => CalamityServerConfig.Instance.EarlyHardmodeProgressionRework;
+        public static bool GetAfterimages() => CalamityClientConfig.Instance.Afterimages;
+        public static int GetProjectileDamage(NPC npc, int projType) => npc.GetProjectileDamage(projType);
+        public static void SetPlayerInfiniteFlight(this Player player, bool value) => player.Calamity().infiniteFlight = value;
     }
 }

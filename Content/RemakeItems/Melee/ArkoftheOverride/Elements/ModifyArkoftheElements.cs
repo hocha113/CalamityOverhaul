@@ -636,7 +636,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         }
 
         private void DrawAfterimages(Texture2D glowmask, Vector2 position, Vector2 origin, float angleShift, float extraAngle, SpriteEffects flip, Color lightColor, float scale) {
-            if (CalamityConfig.Instance.Afterimages && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type]) {
+            if (CWRRef.GetAfterimages() && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type]) {
                 for (int i = 0; i < Projectile.oldRot.Length; ++i) {
                     Color color = Main.hslToRgb((i / (float)Projectile.oldRot.Length) * 0.1f, 1, 0.6f + (Charge > 0 ? 0.3f : 0f));
                     float afterimageRotation = Projectile.oldRot[i] + angleShift + extraAngle;

@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -16,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private static Asset<Texture2D> Probe { get; set; }
         [VaultLoaden(CWRConstant.NPC + "BTD/")]
         private static Asset<Texture2D> Probe_Glow { get; set; }
-        public static int ReelBackTime => BossRushEvent.BossRushActive ? 30 : 60;
+        public static int ReelBackTime => CWRRef.GetBossRushActive() ? 30 : 60;
         public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
@@ -69,11 +66,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             switch (state) {
                 case 0f: //靠近预热
-                    npc.velocity = Vector2.Lerp(npc.velocity, npc.SafeDirectionTo(destination) * hoverSpeed, 0.1f);
+                    npc.velocity = Vector2.Lerp(npc.velocity, npc.To(destination).UnitVector() * hoverSpeed, 0.1f);
                     npc.rotation = npc.AngleTo(target.Center);
 
                     if (npc.WithinRange(destination, npc.velocity.Length() * 1.65f)) {
-                        npc.velocity = npc.SafeDirectionTo(target.Center) * -7f;
+                        npc.velocity = npc.To(target.Center).UnitVector() * -7f;
                         state = 1f;
                         attackTimer = 0f;
                         npc.netUpdate = true;
@@ -91,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
                     //被攻击则提前打断蓄力
                     if (npc.justHit && attackTimer < ReelBackTime * 0.6f) {
-                        npc.velocity = -npc.SafeDirectionTo(target.Center) * 4f;
+                        npc.velocity = -npc.To(target.Center).UnitVector() * 4f;
                         state = 3f; //进入短暂停顿
                         attackTimer = 0f;
                         npc.netUpdate = true;
@@ -101,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     if (attackTimer >= ReelBackTime) {
                         //冲刺方向扰动
                         float dashAngleOffset = Main.rand.NextFloat(-0.12f, 0.12f);
-                        Vector2 dashDir = npc.SafeDirectionTo(target.Center).RotatedBy(dashAngleOffset);
+                        Vector2 dashDir = npc.To(target.Center).UnitVector().RotatedBy(dashAngleOffset);
                         npc.velocity = dashDir * hoverSpeed;
 
                         npc.oldPos = new Vector2[npc.oldPos.Length];
@@ -144,17 +141,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
         private void SpawnPinkLaser() {
             //我真的非常厌恶这些莫名其妙的伤害计算，泰拉的伤害计算就是一堆非常庞大的垃圾堆
-            int damage = npc.GetProjectileDamage(ProjectileID.PinkLaser);
+            int damage = CWRRef.GetProjectileDamage(npc, ProjectileID.PinkLaser);
             //仅在启用 EarlyHardmodeProgressionRework 且非 BossRush 模式时调整伤害
-            if (CalamityConfig.Instance.EarlyHardmodeProgressionRework && !BossRushEvent.BossRushActive) {
+            if (CWRRef.GetEarlyHardmodeProgressionReworkBool() && !CWRRef.GetBossRushActive()) {
                 //计算击败的机械 Boss 数量
                 int downedMechBosses = (NPC.downedMechBoss1 ? 1 : 0) + (NPC.downedMechBoss2 ? 1 : 0) + (NPC.downedMechBoss3 ? 1 : 0);
                 //根据击败的机械 Boss 数量调整伤害
                 if (downedMechBosses == 0) {
-                    damage = (int)(damage * CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert);
+                    damage = (int)(damage * 0.9f);
                 }
                 else if (downedMechBosses == 1) {
-                    damage = (int)(damage * CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert);
+                    damage = (int)(damage * 0.95f);
                 }
                 //如果击败了 2 个或更多机械 Boss，不调整伤害
             }

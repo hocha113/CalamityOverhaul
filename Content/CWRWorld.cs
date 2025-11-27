@@ -40,9 +40,31 @@ namespace CalamityOverhaul.Content
         internal static bool Death => CalamityWorld.death || BossRush;
         internal static bool Revenge => CalamityWorld.revenge || BossRush;
 
+        internal static int primeLaser = -1;
+        internal static int primeCannon = -1;
+        internal static int primeVice = -1;
+        internal static int primeSaw = -1;
+
         internal static List<IWorldInfo> WorldInfos { get; private set; }
 
         internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
+
+        public static void ChekNPCIndexByType(ref int index, int npcID) {
+            if (index < 0) {
+                return;
+            }
+            if (index.TryGetNPC(out var npc) || npc.type != npcID) {
+                return;
+            }
+            index = -1;
+        }
+
+        public static void ChekPrimeArm() {
+            ChekNPCIndexByType(ref primeLaser, NPCID.PrimeLaser);
+            ChekNPCIndexByType(ref primeCannon, NPCID.PrimeCannon);
+            ChekNPCIndexByType(ref primeVice, NPCID.PrimeVice);
+            ChekNPCIndexByType(ref primeSaw, NPCID.PrimeSaw);
+        }
 
         public override void Load() {
             VaultUtils.InvasionEvent += IsAcidRainEventIsOngoing;
@@ -132,6 +154,7 @@ namespace CalamityOverhaul.Content
             }
 
             UpdateMachineRebellion();
+            ChekPrimeArm();
 
             HasBoss = false;
             foreach (var n in Main.ActiveNPCs) {

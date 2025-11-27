@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
             }
 
             //如果目标距离过远，重新选择最近的玩家
-            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles) {
+            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > 3200f) {
                 npc.TargetClosest();
             }
 

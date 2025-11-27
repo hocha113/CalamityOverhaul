@@ -49,16 +49,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.spriteDirection = -(int)npc.ai[0];
             npc.damage = 0;
             if (npc.type == NPCID.PrimeLaser) {
-                CalamityGlobalNPC.primeLaser = npc.whoAmI;
+                CWRWorld.primeLaser = npc.whoAmI;
             }
             else if (npc.type == NPCID.PrimeCannon) {
-                CalamityGlobalNPC.primeCannon = npc.whoAmI;
+                CWRWorld.primeCannon = npc.whoAmI;
             }
             else if (npc.type == NPCID.PrimeSaw) {
-                CalamityGlobalNPC.primeSaw = npc.whoAmI;
+                CWRWorld.primeSaw = npc.whoAmI;
             }
             else if (npc.type == NPCID.PrimeVice) {
-                CalamityGlobalNPC.primeVice = npc.whoAmI;
+                CWRWorld.primeVice = npc.whoAmI;
             }
             HeadPrimeAI.FindPlayer(npc);
             HeadPrimeAI.CheakDead(npc, head);

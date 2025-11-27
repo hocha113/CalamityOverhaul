@@ -636,7 +636,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             }
 
             //--- 3. 绘制残影 ---
-            if (CalamityConfig.Instance.Afterimages) {
+            if (CWRRef.GetAfterimages()) {
                 //绘制身体残影
                 for (int i = 1; i < afterimageAmt; i += 2) {
                     Color afterimageColor = npc.GetAlpha(drawColor) * ((afterimageAmt - i) / (float)afterimageAmt) * 0.5f;

@@ -395,7 +395,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                     , slashColor, Time * MathHelper.ToRadians(42f), smallSlashTexture.Size() * 0.5f, 1f, SpriteEffects.None);
             }
 
-            if (!CalamityConfig.Instance.Afterimages) {
+            if (!CWRRef.GetAfterimages()) {
                 return false;
             }
 
@@ -764,7 +764,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                     , Color.LightGoldenrodYellow, Projectile.rotation, outline.Size() * 0.5f, 1f, SpriteEffects.None);
             }
 
-            if (!CalamityConfig.Instance.Afterimages) {
+            if (!CWRRef.GetAfterimages()) {
                 return false;
             }
 

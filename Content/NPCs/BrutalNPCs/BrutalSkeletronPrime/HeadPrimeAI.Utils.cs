@@ -1,7 +1,3 @@
-using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
-using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -20,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (!Main.expertMode) {
                 return true;
             }//如果不是专家模式，就不要使用重做后的绘制
-            if (CalamityWorld.revenge || CalamityWorld.death || BossRushEvent.BossRushActive || CWRWorld.MachineRebellion) {
+            if (CWRWorld.Revenge || CWRWorld.Death || CWRRef.GetBossRushActive() || CWRWorld.MachineRebellion) {
                 return false;
             }//如果没有开启任何难度，也不要使用重做后的绘制
             return true;
@@ -30,16 +26,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {
                 npc.TargetClosest();
             }
-            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles) {
+            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > 3200f) {
                 npc.TargetClosest();
             }
         }
 
         internal static int SetMultiplier(int num) {
-            if (!BossRushEvent.BossRushActive) {
-                if (CalamityConfig.Instance.EarlyHardmodeProgressionRework) {
-                    double firstMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert;
-                    double secondMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert;
+            if (!CWRRef.GetBossRushActive()) {
+                if (CWRRef.GetEarlyHardmodeProgressionReworkBool()) {
+                    double firstMechMultiplier = 0.9f;
+                    double secondMechMultiplier = 0.95f;
                     if (!NPC.downedMechBossAny) {
                         num = (int)(num * firstMechMultiplier);
                     }
@@ -47,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         num = (int)(num * secondMechMultiplier);
                     }
                 }
-                if (CalamityWorld.death) {
+                if (CWRWorld.Revenge) {
                     num = (int)(num * 0.75f);
                 }
             }
@@ -72,20 +68,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         internal static void CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive) {
             cannonAlive = viceAlive = sawAlive = laserAlive = false;
-            if (CalamityGlobalNPC.primeCannon != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeCannon].active)
+            if (CWRWorld.primeCannon != -1) {
+                if (Main.npc[CWRWorld.primeCannon].active)
                     cannonAlive = true;
             }
-            if (CalamityGlobalNPC.primeVice != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeVice].active)
+            if (CWRWorld.primeVice != -1) {
+                if (Main.npc[CWRWorld.primeVice].active)
                     viceAlive = true;
             }
-            if (CalamityGlobalNPC.primeSaw != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeSaw].active)
+            if (CWRWorld.primeSaw != -1) {
+                if (Main.npc[CWRWorld.primeSaw].active)
                     laserAlive = true;
             }
-            if (CalamityGlobalNPC.primeLaser != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeLaser].active)
+            if (CWRWorld.primeLaser != -1) {
+                if (Main.npc[CWRWorld.primeLaser].active)
                     sawAlive = true;
             }
         }
@@ -104,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         internal static void SendExtraAI(NPC npc) {
             if (VaultUtils.isServer) {
-                npc.SyncExtraAI();
+                //TODO
             }
         }
 

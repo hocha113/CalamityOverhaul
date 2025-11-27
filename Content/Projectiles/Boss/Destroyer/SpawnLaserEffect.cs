@@ -1,6 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Boss;
 using Terraria;
@@ -87,15 +85,15 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             //我真的非常厌恶这些莫名其妙的伤害计算，泰拉的伤害计算就是一堆非常庞大的垃圾堆
             int damage = thisBody.GetProjectileDamage(projectileType);
             //仅在启用 EarlyHardmodeProgressionRework 且非 BossRush 模式时调整伤害
-            if (CalamityConfig.Instance.EarlyHardmodeProgressionRework && !BossRushEvent.BossRushActive) {
+            if (CWRRef.GetEarlyHardmodeProgressionReworkBool() && !CWRRef.GetBossRushActive()) {
                 //计算击败的机械 Boss 数量
                 int downedMechBosses = (NPC.downedMechBoss1 ? 1 : 0) + (NPC.downedMechBoss2 ? 1 : 0) + (NPC.downedMechBoss3 ? 1 : 0);
                 //根据击败的机械 Boss 数量调整伤害
                 if (downedMechBosses == 0) {
-                    damage = (int)(damage * CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert);
+                    damage = (int)(damage * 0.9f);
                 }
                 else if (downedMechBosses == 1) {
-                    damage = (int)(damage * CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert);
+                    damage = (int)(damage * 0.95f);
                 }
                 //如果击败了 2 个或更多机械 Boss，不调整伤害
             }

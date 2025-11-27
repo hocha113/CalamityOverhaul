@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //确定攻击模式
             bool fireSlower = false;
             if (laserAlive) {
-                if (Main.npc[CalamityGlobalNPC.primeLaser].ai[2] == 1f)
+                if (Main.npc[CWRWorld.primeLaser].ai[2] == 1f)
                     fireSlower = true;
             }
             else {

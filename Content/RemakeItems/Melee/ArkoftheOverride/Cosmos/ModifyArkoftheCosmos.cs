@@ -887,7 +887,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             Vector2 drawOrigin = new Vector2(flipped ? sword.Width : 0f, sword.Height);
             Vector2 drawOffset = OwnerConter + Projectile.rotation.ToRotationVector2() * 10f - Main.screenPosition;
 
-            if (CalamityConfig.Instance.Afterimages && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type] && Combo == 0f) {
+            if (CWRRef.GetAfterimages() && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type] && Combo == 0f) {
                 DrawAfterimages(glowmask, drawOffset, Projectile.rotation, drawOrigin, Projectile.scale, flip, Projectile.oldRot.Length, Charge);
             }
 
@@ -915,7 +915,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             Vector2 backScissorOrigin = new Vector2(flipped ? 90 : 44f, 86);
             Vector2 backScissorDrawPosition = OwnerConter + Projectile.rotation.ToRotationVector2() * 10f + (Projectile.rotation.ToRotationVector2() * 56f + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 11 * Owner.direction) * Projectile.scale - Main.screenPosition;
 
-            if (CalamityConfig.Instance.Afterimages && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type]) {
+            if (CWRRef.GetAfterimages() && SwingTimer > ProjectileID.Sets.TrailCacheLength[Projectile.type]) {
                 DrawAfterimages(ArkoftheAsset.SunderingScissorsGlow.Value, drawOffset, Projectile.rotation, drawOrigin, Projectile.scale, flip, Projectile.oldRot.Length, Charge);
             }
 
