@@ -320,7 +320,7 @@ namespace CalamityOverhaul
         public static int Buff_AstralInfectionDebuff => ModContent.BuffType<AstralInfectionDebuff>();
         public static int Buff_BrimstoneFlames => ModContent.BuffType<BrimstoneFlames>();
         public static int Dust_ => ModContent.DustType<AstralOrange>();
-        public static int Dust_Brimstone => CWRID.Dust_Brimstone;
+        public static int Dust_Brimstone => (int)CalamityDusts.Brimstone;
         public static int Dust_AstralBlue => ModContent.DustType<AstralBlue>();
         public static int ItemGroup_RogueWeapon => (int)CalamityResearchSorting.RogueWeapon;
     }
