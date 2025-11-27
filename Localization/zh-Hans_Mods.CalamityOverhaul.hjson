@@ -1394,7 +1394,13 @@ Items: {
 
 	AriaofTheCosmos: {
 		DisplayName: 寰宇咏叹调
-		Tooltip: ""
+		Tooltip:
+			'''
+			左键长按可以凝聚出强大的类星体，释放后对敌人造成毁灭性的伤害
+			右键可以释放出一个微型黑洞，成型后发射出大量伽马射线
+			按下[AriaofTheCosmosQSkill]召唤星环护卫
+			按下[AriaofTheCosmosRSkill]生成伽马射线爆发
+			'''
 	}
 }
 

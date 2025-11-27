@@ -1420,8 +1420,14 @@ Items: {
 	}
 
 	AriaofTheCosmos: {
-		// DisplayName: Ariaof The Cosmos
-		// Tooltip: ""
+		// DisplayName: Aria of the Cosmos
+		/* Tooltip:
+			'''
+			Hold left-click to charge a powerful quasar, dealing devastating damage upon release
+			Right-click to release a miniature black hole that fires a barrage of gamma rays once formed
+			Press [AriaofTheCosmosQSkill] to summon a Star Ring Guardian
+			Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
+			''' */
 	}
 }
 
@@ -2074,8 +2080,8 @@ Keybinds: {
 	// Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
 	// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
 	// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
-	// AriaofTheCosmos_Q.DisplayName: Ariaof The Cosmos_ Q
-	// AriaofTheCosmos_R.DisplayName: Ariaof The Cosmos_ R
+	// AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
+	// AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
 }
 
 TextContent: {

@@ -26,9 +26,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             "0", "0", "0", "0", "CalamityMod/AshesofAnnihilation", "0", "0", "0", "0",
             "CalamityOverhaul/Pandemonium"
         ];
-        public override bool IsLoadingEnabled(Mod mod) {
-            return true;
-        }
+
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
             SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);

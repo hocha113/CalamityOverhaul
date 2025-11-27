@@ -1,4 +1,7 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,6 +13,21 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     internal class AriaofTheCosmos : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
+        public readonly static string[] FullItems = ["0", "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0",
+            "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0",
+            "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/Rock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock",
+            "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0",
+            "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0", "0",
+            "CalamityOverhaul/AriaofTheCosmos"
+        ];
+
+        public override void SetStaticDefaults() {
+            SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);
+        }
 
         public override void SetDefaults() {
             Item.damage = 1285;
@@ -30,6 +48,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Item.shootSpeed = 0f;
             Item.channel = true;
             Item.SetHeldProj<AriaofTheCosmosHeld>();
+            Item.CWR().OmigaSnyContent = FullItems;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.InsertHotkeyBinding(CWRKeySystem.AriaofTheCosmos_Q, "AriaofTheCosmosQSkill", CWRLocText.Instance.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.AriaofTheCosmos_R, "AriaofTheCosmosRSkill", CWRLocText.Instance.Notbound.Value);
         }
     }
 }
