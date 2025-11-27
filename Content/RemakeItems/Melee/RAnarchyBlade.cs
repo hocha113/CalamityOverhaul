@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -22,7 +21,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 122;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.shoot = ModContent.ProjectileType<AnarchyBeam>();
             Item.shootSpeed = 15;

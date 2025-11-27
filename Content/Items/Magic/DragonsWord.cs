@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.rare = ItemRarityID.Red;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item92;
-            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
+            Item.value = Item.buyPrice(0, 85, 5, 5);
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DragonsWord;

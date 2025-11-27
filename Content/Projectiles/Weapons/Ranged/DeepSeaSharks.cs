@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.timeLeft = 360;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;
@@ -32,9 +29,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<AnnihilatingUniverseHeldProj>();
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Arrow;
-            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
-            Item.rare = ModContent.RarityType<PureGreen>();
-            Item.Calamity().canFirePointBlankShots = true;
+            Item.value = Item.buyPrice(220, 25, 5, 5); ;
+            Item.rare = ItemRarityID.Red;
+            Item.SetItemCanFirePointBlankShots(true);
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_AnnihilatingUniverse;
         }
 

@@ -3,7 +3,6 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Cooldowns;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
-using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -449,7 +448,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

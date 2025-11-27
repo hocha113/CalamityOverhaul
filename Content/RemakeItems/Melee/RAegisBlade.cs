@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.Audio;
@@ -31,9 +30,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.shootSpeed = 8f;
-            Item.shoot = ProjectileID.PurificationPowder;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
-            Item.rare = ItemRarityID.Yellow;
             Item.SetKnifeHeld<AegisBladeHeld>();
         }
 

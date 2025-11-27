@@ -1,14 +1,12 @@
-﻿using CalamityMod.Items.Armor.Tarragon;
-using CalamityOverhaul.Content.RemakeItems.Armor.Core;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.RemakeItems.Armor.Core;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     internal class ModifyTarragon : BaseRangedArmor
     {
-        public override int TargetID => ModContent.ItemType<TarragonHeadRanged>();
-        public override int BodyID => ModContent.ItemType<TarragonBreastplate>();
-        public override int LegsID => ModContent.ItemType<TarragonLeggings>();
+        public override int TargetID => "TarragonHeadRanged".GetCalItemID();
+        public override int BodyID => "TarragonBreastplate".GetCalItemID();
+        public override int LegsID => "TarragonLeggings".GetCalItemID();
         public override float KreloadTimeIncreaseValue => 0.3f;
     }
 }

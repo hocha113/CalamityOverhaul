@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
 using Terraria;
 using Terraria.ID;
 
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.useTime = 0;
             item.damage = BaseDamage;
             item.CWR().Scope = true;
-            item.Calamity().canFirePointBlankShots = true;
+            item.SetItemCanFirePointBlankShots(true);
             item.SetCartridgeGun<SniperRifleHeldProj>(4);
         }
 

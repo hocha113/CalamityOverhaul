@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = 3;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 5;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

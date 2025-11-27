@@ -1,14 +1,12 @@
-﻿using CalamityMod.Items.Armor.Hydrothermic;
-using CalamityOverhaul.Content.RemakeItems.Armor.Core;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.RemakeItems.Armor.Core;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     internal class ModifyHydrothermic : BaseRangedArmor
     {
-        public override int TargetID => ModContent.ItemType<HydrothermicHeadRanged>();
-        public override int BodyID => ModContent.ItemType<HydrothermicArmor>();
-        public override int LegsID => ModContent.ItemType<HydrothermicSubligar>();
+        public override int TargetID => "HydrothermicHeadRanged".GetCalItemID();
+        public override int BodyID => "HydrothermicArmor".GetCalItemID();
+        public override int LegsID => "HydrothermicSubligar".GetCalItemID();
         public override float KreloadTimeIncreaseValue => 0.24f;
     }
 }

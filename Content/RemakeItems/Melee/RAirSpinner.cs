@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -25,7 +24,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<RAirSpinnerYoyo>();
             item.shootSpeed = 14f;
             item.rare = ItemRarityID.Orange;
-            item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
         }
     }
 }

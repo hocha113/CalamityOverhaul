@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Rarities;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
@@ -72,8 +69,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<HeavenfallLongbowHeldProj>();
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Arrow;
-            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
-            Item.rare = ModContent.RarityType<PureGreen>();
+            Item.value = Item.buyPrice(990, 25, 5, 5);
+            Item.rare = ItemRarityID.Red;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_HeavenfallLongbow;
         }
 
@@ -155,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            _ = SoundEngine.PlaySound(CommonCalamitySounds.PlasmaBoltSound, player.Center);
+            _ = SoundEngine.PlaySound("CalamityMod/Sounds/Item/PlasmaBolt".GetSound() with { Volume = 0.8f }, player.Center);
             float rot = 0;
             for (int j = 0; j < 500; j++) {
                 rot += MathHelper.TwoPi / 500f;

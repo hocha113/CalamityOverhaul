@@ -49,7 +49,8 @@ namespace CalamityOverhaul
         public static int Item_Heresy => ModContent.ItemType<Heresy>();
         public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
-        public static int Item_Rock => ModContent.ItemType<Rock>();
+        public static int Item_ => ModContent.ItemType<Rock>();
+        public static int Item_WaveSkipper => ModContent.ItemType<WaveSkipper>();
         public static int Item_ExoPrism => ModContent.ItemType<ExoPrism>();
         public static int Item_DraedonsForge => ModContent.ItemType<CalamityMod.Items.Placeables.Furniture.CraftingStations.DraedonsForge>();
         public static int Item_RogueEmblem => ModContent.ItemType<RogueEmblem>();
@@ -159,6 +160,11 @@ namespace CalamityOverhaul
         public static int Proj_BarinadeArrow => ModContent.ProjectileType<BarinadeArrow>();
         public static int Proj_BoltArrow => ModContent.ProjectileType<BoltArrow>();
         public static int Proj_ => ModContent.ProjectileType<Nuke>();
+        public static int Proj_MythrilFlare => ModContent.ProjectileType<MythrilFlare>();
+        public static int Proj_Brimlash2 => ModContent.ProjectileType<Brimlash2>();
+        public static int Proj_BrimlashProj => ModContent.ProjectileType<BrimlashProj>();
+        public static int Proj_BalefulHarvesterProjectile => ModContent.ProjectileType<BalefulHarvesterProjectile>();
+        public static int Proj_WaveSkipperProjectile => ModContent.ProjectileType<WaveSkipperProjectile>();
         public static int Proj_DeathsAscensionProjectile => ModContent.ProjectileType<DeathsAscensionProjectile>();
         public static int Proj_DarklightGreatswordSlashCreator => ModContent.ProjectileType<DarklightGreatswordSlashCreator>();
         public static int Proj_DarkBeam => ModContent.ProjectileType<DarkBeam>();
@@ -287,6 +293,8 @@ namespace CalamityOverhaul
         public static int Buff_AstralInfectionDebuff => ModContent.BuffType<AstralInfectionDebuff>();
         public static int Buff_BrimstoneFlames => ModContent.BuffType<BrimstoneFlames>();
         public static int Dust_ => ModContent.DustType<AstralOrange>();
+        public static int Dust_Brimstone => (int)CalamityDusts.Brimstone;
         public static int Dust_AstralBlue => ModContent.DustType<AstralBlue>();
+        public static int ItemGroup_RogueWeapon => (int)CalamityResearchSorting.RogueWeapon;
     }
 }

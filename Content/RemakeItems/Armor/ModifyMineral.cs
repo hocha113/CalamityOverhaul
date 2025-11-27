@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Others;
 using Terraria;
 using Terraria.ID;
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
                 if (player.whoAmI == Main.myPlayer && player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                     for (int i = 0; i < 10; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                    , player.Center + VaultUtils.RandVr(124), player.velocity / 2, ModContent.ProjectileType<MythrilFlare>(), 30, 2, player.whoAmI);
+                    , player.Center + VaultUtils.RandVr(124), player.velocity / 2, CWRID.Proj_MythrilFlare, 30, 2, player.whoAmI);
                         Main.projectile[proj].DamageType = DamageClass.Ranged;
                     }
                 }

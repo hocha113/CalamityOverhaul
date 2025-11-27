@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.UIs.OverhaulTheBible;
+﻿using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -22,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
-            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
+            Item.value = Item.buyPrice(0, 25, 5, 5);
             Item.rare = ItemRarityID.Orange;
             Item.useTime = Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.HoldUp;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             AIType = ProjectileID.BulletHighVelocity;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 600;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

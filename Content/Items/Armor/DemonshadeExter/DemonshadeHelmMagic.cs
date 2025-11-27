@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Armor.Demonshade;
+﻿using CalamityMod.Items.Armor.Demonshade;
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
             Item.width = 18;
             Item.height = 18;
             Item.defense = 35;
-            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
+            Item.value = 122000;
             Item.rare = ModContent.RarityType<HotPink>();
         }
 

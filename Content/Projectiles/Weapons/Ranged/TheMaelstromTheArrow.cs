@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles;
-using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -23,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Opacity = 0f;
             Projectile.MaxUpdates = 3;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

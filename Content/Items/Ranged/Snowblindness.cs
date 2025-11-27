@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,14 +18,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.knockBack = 1.5f;
             Item.value = Terraria.Item.buyPrice(0, 8, 3, 5);
-            Item.rare = ModContent.RarityType<DarkOrange>();
+            Item.rare = ItemRarityID.Red;
             Item.UseSound = CWRSound.Gun_Snowblindness_Shoot with { Volume = 0.3f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 28f;
             Item.crit = 10;
             Item.useAmmo = AmmoID.Snowball;
-            Item.Calamity().canFirePointBlankShots = true;
+            Item.SetItemCanFirePointBlankShots(true);
             Item.SetCartridgeGun<SnowblindnessHeld>(500);
         }
 

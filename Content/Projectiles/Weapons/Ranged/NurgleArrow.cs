@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.MaxUpdates = 3;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.timeLeft = 420;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

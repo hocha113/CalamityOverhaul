@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.CalPlayer;
 using CalamityMod.Events;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs.ExoMechs;
@@ -21,6 +22,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -223,5 +225,11 @@ namespace CalamityOverhaul
         public static bool GetAfterimages() => CalamityClientConfig.Instance.Afterimages;
         public static int GetProjectileDamage(NPC npc, int projType) => npc.GetProjectileDamage(projType);
         public static void SetPlayerInfiniteFlight(this Player player, bool value) => player.Calamity().infiniteFlight = value;
+        public static bool GetPlayerStealthStrikeAvailable(this Player player) => player.Calamity().StealthStrikeAvailable();
+        public static void SetProjStealthStrike(this Projectile projectile, bool value) => projectile.Calamity().stealthStrike = value;
+        public static void HorsemansBladeOnHit(Player player, int targetIdx, int damage, float knockback
+            , int extraUpdateAmt = 0, int type = ProjectileID.FlamingJack)
+            => CalamityPlayer.HorsemansBladeOnHit(player, targetIdx, damage, knockback, extraUpdateAmt, type);
+        public static void SetItemCanFirePointBlankShots(this Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
     }
 }

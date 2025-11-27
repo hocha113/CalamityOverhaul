@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,8 +43,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 44;
-            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.value = Item.buyPrice(6, 15, 5, 5);
+            Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
             Item.DamageType = CWRLoad.RogueDamageClass;
@@ -56,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= ChargeGrade + 1;

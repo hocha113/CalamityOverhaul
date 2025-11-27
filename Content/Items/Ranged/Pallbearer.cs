@@ -1,8 +1,6 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -36,7 +34,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 6.5f;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.UseSound = null;
             Item.autoReuse = true;
@@ -184,7 +181,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bowstringPullback = 0f;
             ChargeLevel = 0f;
 
-            if (DownLeft && Owner.HasAmmo(Owner.ActiveItem())) {
+            if (DownLeft && Owner.HasAmmo(Owner.GetItem())) {
                 State = CrossbowState.Loading;
                 StateTimer = 0;
                 SoundEngine.PlaySound(SoundID.Item149, Owner.Center);
@@ -265,7 +262,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!Projectile.IsOwnedByLocalPlayer())
                 return;
 
-            Owner.PickAmmo(Owner.ActiveItem(), out int projToShoot, out float speed,
+            Owner.PickAmmo(Owner.GetItem(), out int projToShoot, out float speed,
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
             float mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
@@ -665,7 +662,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.extraUpdates = (int)(1 + ChargeLevel);
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
-            Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
+            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {
@@ -779,7 +776,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             //能量波纹
             if (ChargeLevel > 0.5f) {
                 for (int i = 0; i < 3; i++) {
-                    LineParticle line = new LineParticle(
+                    PRT_Line line = new PRT_Line(
                         target.Center,
                         Main.rand.NextVector2Circular(8f, 8f),
                         false,
@@ -787,7 +784,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                         1.2f + ChargeLevel * 0.8f,
                         Color.OrangeRed
                     );
-                    GeneralParticleHandler.SpawnParticle(line);
+                    PRTLoader.AddParticle(line);
                 }
             }
         }
@@ -920,7 +917,16 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size(), null, ChargeLevel + 1f);
+            return ChekHitbox(targetHitbox.TopLeft(), targetHitbox.Size(), ChargeLevel + 1f);
+        }
+
+        public bool ChekHitbox(Vector2 targetTopLeft, Vector2 targetHitboxDimensions, float scale = 1f) {
+            Vector2 lineDirection = Projectile.velocity;
+            lineDirection = lineDirection.SafeNormalize(Vector2.UnitY);
+            Vector2 start = Projectile.Center - lineDirection * Projectile.height * 0.5f * scale;
+            Vector2 end = Projectile.Center + lineDirection * Projectile.height * 0.5f * scale;
+            float value = 0f;
+            return Collision.CheckAABBvLineCollision(targetTopLeft, targetHitboxDimensions, start, end, Projectile.width * scale, ref value);
         }
     }
 }

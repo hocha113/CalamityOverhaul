@@ -1,8 +1,4 @@
-﻿using CalamityMod.CalPlayer;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using CalamityOverhaul.Content.PRTTypes;
@@ -45,7 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 8f;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shootSpeed = 15;
             Item.SetKnifeHeld<BalefulHarvesterHeld>();
@@ -106,7 +101,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BalefulHarvesterHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<BalefulHarvester>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Aftershock_Bar";
         public override void SetKnifeProperty() {
             drawTrailHighlight = false;
@@ -128,14 +122,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            int type = Main.rand.NextBool() ? ModContent.ProjectileType<BalefulHarvesterProjectile>() : ProjectileID.FlamingJack;
-            CalamityPlayer.HorsemansBladeOnHit(Owner, -1, (int)(Item.damage * 1.5f), Item.knockBack, 0, type);
+            int type = Main.rand.NextBool() ? CWRID.Proj_BalefulHarvesterProjectile : ProjectileID.FlamingJack;
+            CWRRef.HorsemansBladeOnHit(Owner, -1, (int)(Item.damage * 1.5f), Item.knockBack, 0, type);
             target.AddBuff(BuffID.OnFire3, 300);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            int type = Main.rand.NextBool() ? ModContent.ProjectileType<BalefulHarvesterProjectile>() : ProjectileID.FlamingJack;
-            CalamityPlayer.HorsemansBladeOnHit(Owner, target.whoAmI, (int)(Item.damage * 1.5f), Item.knockBack, 0, type);
+            int type = Main.rand.NextBool() ? CWRID.Proj_BalefulHarvesterProjectile : ProjectileID.FlamingJack;
+            CWRRef.HorsemansBladeOnHit(Owner, target.whoAmI, (int)(Item.damage * 1.5f), Item.knockBack, 0, type);
             target.AddBuff(BuffID.OnFire3, 300);
         }
 

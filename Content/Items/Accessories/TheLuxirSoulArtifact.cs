@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.DamageModify;
@@ -31,7 +30,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
-            Item.value = CalamityGlobalItem.RarityCalamityRedBuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
             Item.accessory = true;
         }

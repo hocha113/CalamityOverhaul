@@ -1,8 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
-using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -38,9 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.knockBack = 6f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityLimeBuyPrice;
-            Item.rare = ItemRarityID.Lime;
-            Item.shoot = ModContent.ProjectileType<BrimlashProj>();
             Item.shootSpeed = 10f;
             Item.SetKnifeHeld<BrimlashHeld>();
         }
@@ -58,7 +51,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BrimlashHeld : BaseKnife
     {
-        public override int TargetID => CWRItemOverride.GetCalItemID("Brimlash");
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override string GlowTexturePath => CWRConstant.Item_Melee + "BrimlashGlow";
         public override void SetKnifeProperty() {
@@ -77,7 +69,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void MeleeEffect() {
             if (Main.rand.NextBool(3)) {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, (int)CalamityDusts.Brimstone);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, CWRID.Dust_Brimstone);
             }
         }
 
@@ -94,27 +86,27 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
 
                 if (Main.rand.NextBool(6)) {
-                    Owner.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 20);
+                    Owner.AddBuff(CWRID.Buff_BrimstoneFlames, 20);
                 }
 
                 float randRot = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 5; i++) {
                     Vector2 vr = (MathHelper.TwoPi / 5f * i + randRot).ToRotationVector2() * 15;
-                    Projectile.NewProjectile(Source, Owner.Center, vr, ModContent.ProjectileType<Brimlash2>()
+                    Projectile.NewProjectile(Source, Owner.Center, vr, CWRID.Proj_Brimlash2
                         , Projectile.damage / 3, Projectile.knockBack / 2, Owner.whoAmI);
                 }
                 return;
             }
             Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                , ModContent.ProjectileType<BrimlashProj>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_BrimlashProj, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
+            target.AddBuff(CWRID.Buff_BrimstoneFlames, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
+            target.AddBuff(CWRID.Buff_BrimstoneFlames, 300);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;

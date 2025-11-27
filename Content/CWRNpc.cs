@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content
                 }
                 else {
                     if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_Rock);
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_);
                         if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }

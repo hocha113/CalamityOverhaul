@@ -1,14 +1,12 @@
-﻿using CalamityMod.Items.Armor.Bloodflare;
-using CalamityOverhaul.Content.RemakeItems.Armor.Core;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.RemakeItems.Armor.Core;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     internal class ModifyBloodflare : BaseRangedArmor
     {
-        public override int TargetID => ModContent.ItemType<BloodflareHeadRanged>();
-        public override int BodyID => ModContent.ItemType<BloodflareBodyArmor>();
-        public override int LegsID => ModContent.ItemType<BloodflareCuisses>();
+        public override int TargetID => "BloodflareHeadRanged".GetCalItemID();
+        public override int BodyID => "BloodflareBodyArmor".GetCalItemID();
+        public override int LegsID => "BloodflareCuisses".GetCalItemID();
         public override float KreloadTimeIncreaseValue => 0.3f;
     }
 }

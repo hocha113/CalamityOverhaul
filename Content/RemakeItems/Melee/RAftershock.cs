@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.DataStructures;
@@ -29,7 +28,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 7.5f;
-            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
             Item.UseSound = null;
             Item.autoReuse = true;

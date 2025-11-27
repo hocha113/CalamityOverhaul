@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityMod.Tiles.Furniture.CraftingStations;
+﻿using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using InnoVault.GameSystem;
 using Terraria;
@@ -27,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 44;
-            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
+            Item.value = Item.buyPrice(0, 25, 5, 5);
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<CosmicCalamityProjectile>();
             Item.shootSpeed = 12f;
@@ -36,12 +32,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.Calamity().StealthStrikeAvailable()) {
+            if (player.GetPlayerStealthStrikeAvailable()) {
                 int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<CosmicCalamityProjectile>(), damage * 2, knockback, player.whoAmI);
-                Main.projectile[proj].Calamity().stealthStrike = true;
+                Main.projectile[proj].SetProjStealthStrike(true);
                 Main.projectile[proj].timeLeft = 600;
                 Main.projectile[proj].scale = 1.2f;
                 return false;
@@ -51,8 +47,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<CosmiliteBar>(12).
-                AddIngredient<WaveSkipper>().
+                AddIngredient(CWRID.Item_CosmiliteBar, 12).
+                AddIngredient(CWRID.Item_WaveSkipper).
                 AddTile(ModContent.TileType<CosmicAnvil>()).
                 Register();
         }
