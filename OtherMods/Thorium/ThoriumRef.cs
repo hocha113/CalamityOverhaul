@@ -13,12 +13,17 @@ namespace CalamityOverhaul.OtherMods.Thorium
     internal static class ThoriumRef
     {
         public static void Load() {
-            if (ModLoader.TryGetMod("ThoriumMod", out Mod mod)) {
-                VaultHook.Add(ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(mod), "SheathData")
-                    .GetMethod("MeleeButNotValidItem", BindingFlags.Static | BindingFlags.Public), On_MeleeButNotValidItem);
-                VaultHook.Add(ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(mod), "SheathData")
-                    .GetMethod("ValidItem", BindingFlags.Static | BindingFlags.Public), On_ValidItem);
+            if (!ModLoader.TryGetMod("ThoriumMod", out Mod mod)) {
+                return;
             }
+            var type = ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(mod), "SheathData");
+            if (type == null) {
+                return;
+            }
+            var meth = type.GetMethod("MeleeButNotValidItem", BindingFlags.Static | BindingFlags.Public);
+            VaultHook.Add(meth, On_MeleeButNotValidItem);
+            meth = type.GetMethod("ValidItem", BindingFlags.Static | BindingFlags.Public);
+            VaultHook.Add(meth, On_ValidItem);
         }
 
         public static bool On_ValidItem(Func<Item, bool> orig, Item item) {
@@ -44,7 +49,9 @@ namespace CalamityOverhaul.OtherMods.Thorium
     {
         public override void Load() {
             if (ModLoader.HasMod("ThoriumMod")) {
-                ThoriumRef.Load();
+                try {
+                    ThoriumRef.Load();
+                } catch (Exception ex) { CWRMod.Instance.Logger.Error($"ThoriumRefLoader.Load An Error Has Cccurred: {ex.Message}"); }
             }
         }
 
