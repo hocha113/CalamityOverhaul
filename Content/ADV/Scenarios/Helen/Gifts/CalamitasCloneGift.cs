@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
-using CalamityMod.NPCs.CalClone;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class CalamitasCloneGift : GiftScenarioBase
     {
         public override string Key => nameof(CalamitasCloneGift);
-        public override int TargetBossID => ModContent.NPCType<CalamitasClone>();
+        public override int TargetBossID => CWRID.NPC_CalamitasClone;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -50,7 +48,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<Brimlish>(), 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(CWRID.Item_Brimlish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {

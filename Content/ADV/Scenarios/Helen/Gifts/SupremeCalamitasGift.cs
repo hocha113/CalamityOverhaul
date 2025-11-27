@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class SupremeCalamitasGift : GiftScenarioBase
     {
         public override string Key => nameof(SupremeCalamitasGift);
-        public override int TargetBossID => ModContent.NPCType<SupremeCalamitas>();
+        public override int TargetBossID => CWRID.NPC_SupremeCalamitas;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

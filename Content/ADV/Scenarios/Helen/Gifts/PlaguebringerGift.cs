@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.PlaguebringerGoliath;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class PlaguebringerGift : GiftScenarioBase
     {
         public override string Key => nameof(PlaguebringerGift);
-        public override int TargetBossID => ModContent.NPCType<PlaguebringerGoliath>();
+        public override int TargetBossID => CWRID.NPC_PlaguebringerGoliath;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

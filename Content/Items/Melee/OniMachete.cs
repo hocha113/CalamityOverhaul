@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -104,7 +103,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 Dust dust = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -136,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                     Dust ring = Dust.NewDustPerfect(
                         spawnPos,
-                        (int)CalamityDusts.Brimstone,
+                        CWRID.Dust_Brimstone,
                         angle.ToRotationVector2() * 4f,
                         0,
                         default,
@@ -258,7 +257,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(2)) {
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f),
                     0,
                     default,
@@ -310,7 +309,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -341,7 +340,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -371,7 +370,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 Dust ring = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -745,7 +744,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (glowIntensity > 0.7f && Main.rand.NextBool(3)) {
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     Main.rand.NextVector2Circular(2f, 2f),
                     0,
                     default,
@@ -1164,7 +1163,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = toTarget.RotatedByRandom(0.7f) * Main.rand.NextFloat(8f, 18f);
                 Dust brimstone = Dust.NewDustPerfect(
                     throwOrigin,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1194,7 +1193,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = angle.ToRotationVector2() * 10f;
                 Dust ring = Dust.NewDustPerfect(
                     throwOrigin,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1324,7 +1323,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.position,
                 Projectile.width,
                 Projectile.height,
-                (int)CalamityDusts.Brimstone,
+                CWRID.Dust_Brimstone,
                 Scale: Main.rand.NextFloat(1f, 1.5f)
             );
             brimstone.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
@@ -1336,7 +1335,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(50f, 50f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1365,7 +1364,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Projectile.position,
                     Projectile.width,
                     Projectile.height,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     Scale: Main.rand.NextFloat(2f, 3f)
                 );
                 brimstone.velocity = Projectile.velocity * 0.4f;
@@ -1393,7 +1392,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Projectile.position,
                     Projectile.width,
                     Projectile.height,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     0, 0, 0,
                     default,
                     Main.rand.NextFloat(2f, 3.5f)
@@ -1423,7 +1422,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = Projectile.velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.6f, 1.8f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1451,7 +1450,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 3; i++) {
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     -Projectile.velocity * 0.4f + Main.rand.NextVector2Circular(4f, 4f),
                     0,
                     default,
@@ -1485,7 +1484,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1515,7 +1514,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = angle.ToRotationVector2() * 10f;
                 Dust ring = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1544,7 +1543,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1572,7 +1571,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-18f, -6f));
                 Dust ember = Dust.NewDustPerfect(
                     position,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1590,7 +1589,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                     Dust ring = Dust.NewDustPerfect(
                         spawnPos,
-                        (int)CalamityDusts.Brimstone,
+                        CWRID.Dust_Brimstone,
                         angle.ToRotationVector2() * 5f,
                         0,
                         default,
@@ -1622,7 +1621,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
                 Dust brimstone = Dust.NewDustPerfect(
                     target.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -1656,7 +1655,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,

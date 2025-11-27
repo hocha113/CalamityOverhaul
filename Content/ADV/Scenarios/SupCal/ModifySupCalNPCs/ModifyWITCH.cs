@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
                 VaultHook.Add(meth, OnCanTownNPCSpawnHook);
             }
         }
-        
+
         //临时钩子，后续改用前置实现
         private static bool OnCanTownNPCSpawnHook(OnCanTownNPCSpawnDelegate orig, object obj, int numTownNPCs) {
             if (Main.player.Any(p => p.Alives() && EbnPlayer.OnEbn(p))) {//如果有玩家达成永恒燃烧的现在结局
@@ -91,11 +91,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
 
             if (NPC.AnyNPCs(CWRID.NPC_SEAHOE)) {
                 randChat.Add(SeaKing.Value, 1.45);
-            }                
+            }
 
             if (BirthdayParty.PartyIsUp) {
                 randChat.Add(Party.Value, 5.5);
-            } 
+            }
 
             chat = randChat;
         }

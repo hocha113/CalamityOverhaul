@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
 using CalamityMod.Projectiles.Melee;
 using Terraria;
 using Terraria.Audio;
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.Kill();
             }
             Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.5f / 255f, (255 - Projectile.alpha) * 0.05f / 255f, (255 - Projectile.alpha) * 0.05f / 255f);
-            int brimDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, (int)CalamityDusts.Brimstone, 0f, 0f, 100, default, 1f);
+            int brimDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, CWRID.Dust_Brimstone, 0f, 0f, 100, default, 1f);
             Main.dust[brimDust].noGravity = true;
             Main.dust[brimDust].velocity *= 0.5f;
             Main.dust[brimDust].velocity += Projectile.velocity * 0.1f;
@@ -62,11 +61,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             for (int i = 4; i < 31; i = inc + 1) {
                 float dustX = Projectile.oldVelocity.X * (30f / i);
                 float dustY = Projectile.oldVelocity.Y * (30f / i);
-                int deathDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - dustX, Projectile.oldPosition.Y - dustY), 8, 8, (int)CalamityDusts.Brimstone, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.8f);
+                int deathDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - dustX, Projectile.oldPosition.Y - dustY), 8, 8, CWRID.Dust_Brimstone, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.8f);
                 Main.dust[deathDust].noGravity = true;
                 Dust dust = Main.dust[deathDust];
                 dust.velocity *= 0.5f;
-                deathDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - dustX, Projectile.oldPosition.Y - dustY), 8, 8, (int)CalamityDusts.Brimstone, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.4f);
+                deathDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - dustX, Projectile.oldPosition.Y - dustY), 8, 8, CWRID.Dust_Brimstone, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.4f);
                 dust = Main.dust[deathDust];
                 dust.velocity *= 0.05f;
                 inc = i;

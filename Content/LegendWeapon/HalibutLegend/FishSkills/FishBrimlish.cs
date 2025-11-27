@@ -1,4 +1,3 @@
-using CalamityMod.Dusts;
 using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -325,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = toTarget.RotatedByRandom(0.8f) * Main.rand.NextFloat(8f, 20f);
                 Dust brimstone = Dust.NewDustPerfect(
                     mouthPos,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -367,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnBrimstoneAmbient() {
             Dust brimstone = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                (int)CalamityDusts.Brimstone,
+                CWRID.Dust_Brimstone,
                 Main.rand.NextVector2Circular(1.5f, 1.5f),
                 0,
                 default,
@@ -381,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -399,7 +398,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = -Projectile.rotation.ToRotationVector2().RotatedByRandom(0.3f) * Main.rand.NextFloat(2f, 5f);
                 Dust brimstone = Dust.NewDustPerfect(
                     mouthPos + Main.rand.NextVector2Circular(10f, 10f),
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -430,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.4f) * Main.rand.NextFloat(6f, 12f);
                 Dust brimstone = Dust.NewDustPerfect(
                     mouthPos,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -460,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -680,7 +679,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.position,
                     Projectile.width,
                     Projectile.height,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     0, 0, 0,
                     default,
                     Main.rand.NextFloat(1.5f, 2.5f)
@@ -711,7 +710,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -745,7 +744,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.UI.CalamitasEnchants;
+﻿using CalamityMod.UI.CalamitasEnchants;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

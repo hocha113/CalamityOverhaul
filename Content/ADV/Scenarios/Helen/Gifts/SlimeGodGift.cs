@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.SlimeGod;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class SlimeGodGift : GiftScenarioBase
     {
         public override string Key => nameof(SlimeGodGift);
-        public override int TargetBossID => ModContent.NPCType<SlimeGodCore>();
+        public override int TargetBossID => CWRID.NPC_SlimeGodCore;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             for (int k = 0; k < 32; k++) {
                 Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                    , (int)CalamityDusts.Brimstone, Projectile.oldVelocity.X * 0.15f, Projectile.oldVelocity.Y * 0.15f);
+                    , CWRID.Dust_Brimstone, Projectile.oldVelocity.X * 0.15f, Projectile.oldVelocity.Y * 0.15f);
             }
         }
 

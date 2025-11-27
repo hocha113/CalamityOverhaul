@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
 using CalamityMod.Projectiles.Melee;
 using Terraria;
 using Terraria.ID;
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             if (Main.rand.NextBool(4)) {
                 _ = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                    , (int)CalamityDusts.Brimstone, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                    , CWRID.Dust_Brimstone, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
             }
             if (Projectile.spriteDirection == -1) {
                 Projectile.rotation -= MathHelper.ToRadians(90f);
@@ -54,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void OnKill(int timeLeft) {
             for (int k = 0; k < 5; k++) {
                 _ = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                    , (int)CalamityDusts.Brimstone, Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
+                    , CWRID.Dust_Brimstone, Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
             }
         }
 

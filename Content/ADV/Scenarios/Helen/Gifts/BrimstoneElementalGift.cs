@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.BrimstoneElemental;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class BrimstoneElementalGift : GiftScenarioBase
     {
         public override string Key => nameof(BrimstoneElementalGift);
-        public override int TargetBossID => ModContent.NPCType<BrimstoneElemental>();
+        public override int TargetBossID => CWRID.NPC_BrimstoneElemental;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }

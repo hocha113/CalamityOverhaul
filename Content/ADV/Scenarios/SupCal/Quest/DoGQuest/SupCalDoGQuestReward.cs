@@ -1,4 +1,3 @@
-using CalamityMod.NPCs.DevourerofGods;
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Melee;
@@ -128,9 +127,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     {
         internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
-        internal override int TargetNPCType => ModContent.NPCType<DevourerofGodsHead>();
+        internal override int TargetNPCType => CWRID.NPC_DevourerofGodsHead;
 
-        internal override HashSet<int> OtherNPCType => [ModContent.NPCType<DevourerofGodsBody>(), ModContent.NPCType<DevourerofGodsTail>()];
+        internal override HashSet<int> OtherNPCType => [CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail];
 
         internal override int[] TargetWeaponTypes => new[] { ModContent.ItemType<Heartcarver>() };
 
@@ -179,7 +178,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public override string LocalizationCategory => "UI";
         public static DoGQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<DoGQuestTrackerUI>();
 
-        public override int TargetNPCType => ModContent.NPCType<DevourerofGodsHead>();
+        public override int TargetNPCType => CWRID.NPC_DevourerofGodsHead;
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀神明吞噬者");

@@ -1,4 +1,3 @@
-using CalamityMod.Dusts;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -111,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 Dust ring = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
@@ -134,7 +133,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, 10f);
                 Dust flame = Dust.NewDustPerfect(
                     spawnPos,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-12f, -6f)),
                     0,
                     default,
@@ -168,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using InnoVault.GameSystem;
 using Terraria;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
 
                 Dust dust = Dust.NewDustPerfect(
                     player.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,

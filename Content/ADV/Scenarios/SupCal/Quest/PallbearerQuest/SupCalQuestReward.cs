@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.NPCs.Providence;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -96,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 3) {//在Line4时发放奖励
-                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofAnnihilation>(), 199, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(CWRID.Item_AshesofAnnihilation, 199, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -148,7 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     {
         internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
-        internal override int TargetNPCType => ModContent.NPCType<Providence>();
+        internal override int TargetNPCType => CWRID.NPC_Providence;
 
         internal override int[] TargetWeaponTypes => new[] { ModContent.ItemType<Pallbearer>() };
 
@@ -199,7 +197,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public override string LocalizationCategory => "UI";
         public static PallbearerQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestTrackerUI>();
 
-        public override int TargetNPCType => ModContent.NPCType<Providence>();
+        public override int TargetNPCType => CWRID.NPC_Providence;
 
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀亵渎天神");

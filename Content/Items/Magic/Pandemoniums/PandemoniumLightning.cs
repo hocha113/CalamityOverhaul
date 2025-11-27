@@ -1,4 +1,3 @@
-using CalamityMod.Dusts;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -87,14 +86,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             //电弧粒子效果
             if (Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, (int)CalamityDusts.Brimstone, Main.rand.NextVector2Circular(2f, 2f), 100, Color.Cyan, 1.2f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, Main.rand.NextVector2Circular(2f, 2f), 100, Color.Cyan, 1.2f);
                 d.noGravity = true;
             }
 
             //闪电特效
             if (Main.rand.NextBool(5)) {
                 Vector2 lightningPos = Projectile.Center + Main.rand.NextVector2Circular(40f, 40f);
-                Dust d = Dust.NewDustPerfect(lightningPos, (int)CalamityDusts.Brimstone, Vector2.Zero, 100, Color.White, 1.5f);
+                Dust d = Dust.NewDustPerfect(lightningPos, CWRID.Dust_Brimstone, Vector2.Zero, 100, Color.White, 1.5f);
                 d.noGravity = true;
                 d.fadeIn = 1.3f;
             }
@@ -168,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //生成闪电弧特效
             for (int i = 0; i < 20; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, (int)CalamityDusts.Brimstone, vel, 100, Color.Cyan, Main.rand.NextFloat(1.5f, 2.5f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, vel, 100, Color.Cyan, Main.rand.NextFloat(1.5f, 2.5f));
                 d.noGravity = true;
             }
 
@@ -183,7 +182,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     Vector2 linePos = Vector2.Lerp(Projectile.Center, lineEnd, progress);
                     linePos += Main.rand.NextVector2Circular(10f, 10f);
 
-                    Dust d = Dust.NewDustPerfect(linePos, (int)CalamityDusts.Brimstone, Vector2.Zero, 100, Color.White, 0.8f);
+                    Dust d = Dust.NewDustPerfect(linePos, CWRID.Dust_Brimstone, Vector2.Zero, 100, Color.White, 0.8f);
                     d.noGravity = true;
                     d.fadeIn = 0.5f;
                 }
@@ -197,7 +196,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //大范围闪电爆发
             for (int i = 0; i < 40; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(12f, 12f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, (int)CalamityDusts.Brimstone, vel, 100, Color.Cyan, Main.rand.NextFloat(2f, 3f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, vel, 100, Color.Cyan, Main.rand.NextFloat(2f, 3f));
                 d.noGravity = true;
             }
 
@@ -205,7 +204,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 15f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, (int)CalamityDusts.Brimstone, vel, 100, Color.White, 1.5f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, vel, 100, Color.White, 1.5f);
                 d.noGravity = true;
             }
         }

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -265,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Vector2 vel = (pos - Projectile.Center).SafeNormalize(Vector2.Zero) * (5f + tier * 2.5f);
 
                 //硫磺火粒子
-                Dust d = Dust.NewDustPerfect(Projectile.Center, (int)CalamityDusts.Brimstone, vel, 100, default, 2.5f + tier * 0.5f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, vel, 100, default, 2.5f + tier * 0.5f);
                 d.noGravity = true;
                 d.fadeIn = 1.5f;
             }
@@ -284,7 +283,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     float radius = 40f + j * 30f + tier * 50f;
                     Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * radius;
 
-                    Dust ring = Dust.NewDustPerfect(spawnPos, (int)CalamityDusts.Brimstone,
+                    Dust ring = Dust.NewDustPerfect(spawnPos, CWRID.Dust_Brimstone,
                         angle.ToRotationVector2() * 5f, 0, default, 2.5f);
                     ring.noGravity = true;
                 }
@@ -455,7 +454,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 if (orb.Life > orb.MaxLife || distanceToCenter < 50f) {
                     //硫磺火汇聚效果
                     for (int j = 0; j < 6; j++) {
-                        Dust d = Dust.NewDustPerfect(orb.Position, (int)CalamityDusts.Brimstone,
+                        Dust d = Dust.NewDustPerfect(orb.Position, CWRID.Dust_Brimstone,
                             Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.5f);
                         d.noGravity = true;
                     }
@@ -820,7 +819,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
                 Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(5f, 10f);
 
-                Dust d = Dust.NewDustPerfect(spawnPos, (int)CalamityDusts.Brimstone, velocity, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
+                Dust d = Dust.NewDustPerfect(spawnPos, CWRID.Dust_Brimstone, velocity, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
                 d.noGravity = true;
                 d.fadeIn = 1.3f;
             }

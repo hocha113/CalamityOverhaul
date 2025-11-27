@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //计算鼠标相对于玩家的方向
             Vector2 mouseWorld = Main.MouseWorld;
             Vector2 mouseDirection = mouseWorld - Player.Center;
-            
+
             if (mouseDirection.LengthSquared() < 1f) {
                 //鼠标太接近玩家中心，不更新方向
                 return;
@@ -354,9 +354,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //计算方向变化的角度差
             float directionDot = Vector2.Dot(mouseDirection, _lastSyncedMouseDirection);
-            
+
             //只有当角度差超过阈值时才同步
-            if (directionDot >= 1f || (_lastSyncedMouseDirection != Vector2.Zero && 
+            if (directionDot >= 1f || (_lastSyncedMouseDirection != Vector2.Zero &&
                 Math.Acos(MathHelper.Clamp(directionDot, -1f, 1f)) < MIN_DIRECTION_CHANGE_THRESHOLD)) {
                 return;
             }

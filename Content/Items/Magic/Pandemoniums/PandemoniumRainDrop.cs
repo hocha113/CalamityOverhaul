@@ -1,4 +1,3 @@
-using CalamityMod.Dusts;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -52,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (Main.rand.NextBool(2)) {
                 Dust d = Dust.NewDustPerfect(
                     Projectile.Center + Projectile.velocity * -0.3f,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     Projectile.velocity * -0.2f,
                     100,
                     default,
@@ -108,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust d = Dust.NewDustPerfect(
                     Projectile.Center,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     vel,
                     100,
                     default,
@@ -207,7 +206,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //Áò»Ç»ðÁ£×Ó
             if (Main.rand.NextBool(3)) {
                 Vector2 spawnPos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                Dust d = Dust.NewDustPerfect(spawnPos, (int)CalamityDusts.Brimstone, Vector2.UnitY * -2f, 100, default, 1.2f);
+                Dust d = Dust.NewDustPerfect(spawnPos, CWRID.Dust_Brimstone, Vector2.UnitY * -2f, 100, default, 1.2f);
                 d.noGravity = true;
             }
 

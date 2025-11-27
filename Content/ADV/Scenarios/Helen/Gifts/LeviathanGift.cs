@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Leviathan;
-using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Terraria;
 using Terraria.ID;
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
     internal class LeviathanGift : GiftScenarioBase
     {
         public override string Key => nameof(LeviathanGift);
-        public override int TargetBossID => ModContent.NPCType<Leviathan>();
+        public override int TargetBossID => CWRID.NPC_Leviathan;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             }
         }
         protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
-            return !NPC.AnyNPCs(ModContent.NPCType<Anahita>());//确保阿纳希塔也嘎了
+            return !NPC.AnyNPCs(CWRID.NPC_Anahita);//确保阿纳希塔也嘎了
         }
         protected override bool IsGiftCompleted(ADVSave save) {
             return save.LeviathanGift;

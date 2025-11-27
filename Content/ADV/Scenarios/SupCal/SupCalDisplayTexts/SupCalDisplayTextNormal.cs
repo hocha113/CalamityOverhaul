@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
 
         private void LoadLocalization() {
             //初始化本地化文本 - 使用原版台词作为占位符
-            
+
             //召唤文本
             SummonText = this.GetLocalization(nameof(SummonText), () => "你享受地狱之旅么？");
             SummonRematchText = this.GetLocalization(nameof(SummonRematchText), () => "如果你想感受一下四级烫伤的话，你可算是找对人了");

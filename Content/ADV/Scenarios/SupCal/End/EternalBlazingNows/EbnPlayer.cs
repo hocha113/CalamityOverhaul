@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -185,7 +184,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 modifiers.FinalDamage *= 0f;
                 //闪避特效
                 for (int i = 0; i < 15; i++) {
-                    Dust d = Dust.NewDustPerfect(Player.Center, (int)CalamityDusts.Brimstone,
+                    Dust d = Dust.NewDustPerfect(Player.Center, CWRID.Dust_Brimstone,
                         Main.rand.NextVector2Circular(6f, 6f), 100, default, 2f);
                     d.noGravity = true;
                 }
@@ -201,7 +200,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //硫磺火爆炸
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
-                    Dust d = Dust.NewDustPerfect(target.Center, (int)CalamityDusts.Brimstone, vel,
+                    Dust d = Dust.NewDustPerfect(target.Center, CWRID.Dust_Brimstone, vel,
                         100, default, 1.5f);
                     d.noGravity = true;
                 }

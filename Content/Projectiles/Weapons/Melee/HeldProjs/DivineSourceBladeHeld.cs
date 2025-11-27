@@ -45,18 +45,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 5f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            if (Time % (6 * UpdateRate) == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                int types = ModContent.ProjectileType<DivineSourceBeam>();
+                Vector2 vector2 = Owner.Center.To(Main.MouseWorld).UnitVector() * 3;
+                Vector2 position = Owner.Center;
+                Projectile.NewProjectile(
+                    Source, position, vector2, types
+                    , (int)(Item.damage * 1.25f)
+                    , Item.knockBack
+                    , Owner.whoAmI);
+            }
             return base.PreInOwner();
         }
 
         public override void Shoot() {
-            int types = ModContent.ProjectileType<DivineSourceBeam>();
-            Vector2 vector2 = Owner.Center.To(Main.MouseWorld).UnitVector() * 3;
-            Vector2 position = Owner.Center;
-            Projectile.NewProjectile(
-                Source, position, vector2, types
-                , (int)(Item.damage * 1.25f)
-                , Item.knockBack
-                , Owner.whoAmI);
             int type = ModContent.ProjectileType<DivineSourceBladeProjectile>();
             Projectile proj = Projectile.NewProjectileDirect(Source, ShootSpanPos, ShootVelocity, type, Projectile.damage, 0, Owner.whoAmI);
             proj.SetArrowRot();

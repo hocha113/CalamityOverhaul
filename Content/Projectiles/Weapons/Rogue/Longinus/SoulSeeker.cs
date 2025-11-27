@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -53,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 5; i++) {
-                int brimDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, (int)CalamityDusts.Brimstone, 0f, 0f, 100, default, 2f);
+                int brimDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, CWRID.Dust_Brimstone, 0f, 0f, 100, default, 2f);
                 Main.dust[brimDust].velocity *= 3f;
                 if (Main.rand.NextBool()) {
                     Main.dust[brimDust].scale = 0.5f;
@@ -61,10 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                 }
             }
             for (int j = 0; j < 10; j++) {
-                int brimDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, (int)CalamityDusts.Brimstone, 0f, 0f, 100, default, 3f);
+                int brimDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, CWRID.Dust_Brimstone, 0f, 0f, 100, default, 3f);
                 Main.dust[brimDust2].noGravity = true;
                 Main.dust[brimDust2].velocity *= 5f;
-                brimDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, (int)CalamityDusts.Brimstone, 0f, 0f, 100, default, 2f);
+                brimDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, CWRID.Dust_Brimstone, 0f, 0f, 100, default, 2f);
                 Main.dust[brimDust2].velocity *= 2f;
             }
         }

@@ -1,4 +1,3 @@
-using CalamityMod.Dusts;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -405,7 +404,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 Dust brimstone = Dust.NewDustPerfect(
                     pos,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     Vector2.UnitY * Main.rand.NextFloat(-3f, -1f),
                     0,
                     default,
@@ -439,7 +438,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 Dust brimstone = Dust.NewDustPerfect(
                     centerPos,
-                    (int)CalamityDusts.Brimstone,
+                    CWRID.Dust_Brimstone,
                     velocity,
                     0,
                     default,
