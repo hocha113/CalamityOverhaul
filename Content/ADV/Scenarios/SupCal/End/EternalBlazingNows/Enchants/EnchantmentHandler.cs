@@ -278,6 +278,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             else {
                 item.Calamity().AppliedEnchantment = enchantment;
                 enchantment.CreationEffect?.Invoke(item);
+
+                if (EnchantmentManager.ItemUpgradeRelationship.TryGetValue(item.type, out var newID)) {
+                    //重置为升级后的物品
+                    item.SetDefaults(newID);
+                    item.Prefix(oldPrefix);
+                }
             }
         }
 
