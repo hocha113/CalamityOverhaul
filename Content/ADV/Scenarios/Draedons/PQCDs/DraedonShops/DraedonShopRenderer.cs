@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
         private const int PanelWidth = 680;
         private const int PanelHeight = 640;
-        private const float TechSideMargin = 35f;
 
         public DraedonShopRenderer(Player player, List<ShopItem> shopItems,
             DraedonShopAnimation animation, DraedonShopInteraction interaction) {
