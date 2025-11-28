@@ -21,20 +21,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
-        public static LocalizedText L4 { get; private set; }
-        public static LocalizedText L5 { get; private set; }
-        public static LocalizedText L6 { get; private set; }
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老核弹");
 
             L0 = this.GetLocalization(nameof(L0), () => "......");
-            L1 = this.GetLocalization(nameof(L1), () => "你身上的气息......很特别");
-            L2 = this.GetLocalization(nameof(L2), () => "在这片被遗忘的深渊中,我已经沉睡了太久");
-            L3 = this.GetLocalization(nameof(L3), () => "但我能感受到,你与那些贪婪的入侵者不同");
-            L4 = this.GetLocalization(nameof(L4), () => "硫磺的毒雾也无法遮蔽你内心的纯净");
-            L5 = this.GetLocalization(nameof(L5), () => "去吧,年轻的冒险者。证明你的勇气");
-            L6 = this.GetLocalization(nameof(L6), () => "如果你真的拥有挑战深渊的资格,那就让我见识一下吧");
+            L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
+            L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
+            L3 = this.GetLocalization(nameof(L3), () => "我们可以做个交易");
         }
 
         protected override void Build() {
@@ -45,9 +39,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             Add(OldDukeName.Value, L1.Value);
             Add(OldDukeName.Value, L2.Value);
             Add(OldDukeName.Value, L3.Value);
-            Add(OldDukeName.Value, L4.Value);
-            Add(OldDukeName.Value, L5.Value);
-            Add(OldDukeName.Value, L6.Value);
         }
 
         protected override void OnScenarioComplete() {
