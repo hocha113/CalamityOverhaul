@@ -33,11 +33,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
             L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
             L3 = this.GetLocalization(nameof(L3), () => "我们可以合作");
-            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集这种海洋残片");
+            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集这种海洋残片");//使用奖励框给予玩家一个海洋残片作为样本
             L5 = this.GetLocalization(nameof(L5), () => "如果你可以帮我找来更多，我会给予相应的报酬");
-            C1 = this.GetLocalization(nameof(C1), () => "接受合作");
-            C2 = this.GetLocalization(nameof(C2), () => "拒绝合作");
-            C3 = this.GetLocalization(nameof(C3), () => "拒绝合作并拔出武器");
+            C1 = this.GetLocalization(nameof(C1), () => "接受合作");//接受合作，解锁老公爵商店，钓鱼现在可以钓到海洋残片
+            C2 = this.GetLocalization(nameof(C2), () => "拒绝合作");//拒绝合作，结束对话，老公爵离开，不会进入战斗，下次召唤时还会被询问是否合作
+            C3 = this.GetLocalization(nameof(C3), () => "拒绝合作并拔出武器");//拒绝合作并拔出武器，进入战斗，以后的召唤将直接进入战斗
         }
 
         protected override void Build() {

@@ -1429,6 +1429,11 @@ Items: {
 			Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
 			''' */
 	}
+
+	Oceanfragments: {
+		// DisplayName: Oceanfragments
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -7263,6 +7268,11 @@ ADV: {
 			// L1: 没必要一见面就拔刀相向
 			// L2: 我年纪大了，不想打架
 			// L3: 我们可以做个交易
+			// L4: 我一直在收集这种海洋残片
+			// L5: 如果你可以帮我找来更多，我会给予相应的报酬
+			// C1: 接受合作
+			// C2: 拒绝合作
+			// C3: 拒绝合作并拔出武器
 		}
 	}
 }
