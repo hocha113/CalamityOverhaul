@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Projectiles.Rogue;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -24,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Item.width = Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(0, 2, 15, 0);
-            Item.rare = ModContent.RarityType<Turquoise>();
+            Item.rare = ItemRarityID.LightRed;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -72,14 +68,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            if (projectile.type == ModContent.ProjectileType<StellarContemptEcho>()
-                || projectile.type == ModContent.ProjectileType<GalaxySmasherEcho>()
-                || projectile.type == ModContent.ProjectileType<TriactisHammerProj>()
-                || projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
-                return true;
-            }
-
-            if (projectile.type == ModContent.ProjectileType<ExorcismProj>() && projectile.Calamity().stealthStrike) {
+            if (projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
                 return true;
             }
 
@@ -117,12 +106,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 );
             }
 
-            //命中闪光特效（弱化）
+            //命中闪光特效
             for (int i = 0; i < 2; i++) {
                 float angle = MathHelper.TwoPi * i / 2f;
                 Vector2 direction = angle.ToRotationVector2();
 
-                //金色光线爆发（减少数量）
+                //金色光线爆发
                 for (int j = 0; j < 3; j++) {
                     Vector2 velocity = direction * Main.rand.NextFloat(2f, 5f);
                     Dust light = Dust.NewDustPerfect(
@@ -138,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //环形冲击波粒子（减少数量）
+            //环形冲击波粒子
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
                 Vector2 velocity = angle.ToRotationVector2() * 5f;
@@ -153,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 ring.noGravity = true;
             }
 
-            //命中音效（降低音量）
+            //命中音效
             SoundEngine.PlaySound(SoundID.Item4 with {
                 Volume = 0.3f,
                 Pitch = 0.5f

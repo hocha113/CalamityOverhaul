@@ -127,31 +127,31 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         private void InitializeExplosionEffects() {
-            //生成初始冲击波（减少数量）
+            //生成初始冲击波
             for (int i = 0; i < 2; i++) {
                 explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 10f));
             }
 
-            //生成火花效果（减少数量）
+            //生成火花效果
             for (int i = 0; i < 50; i++) {
                 float angle = MathHelper.TwoPi * i / 50f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 24f);
                 impactSparks.Add(new ImpactSpark(Projectile.Center, velocity));
             }
 
-            //大量粒子爆发（减少数量）
+            //大量粒子爆发
             SpawnExplosionParticles(60);
         }
 
         private void TriggerMainImpact() {
-            //主要冲击（弱化）
+            //主要冲击
             if (CWRServerConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                     Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
-            //音效（降低音量）
+            //音效
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
                 Volume = 1.0f,
                 Pitch = -0.3f
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         private void TriggerSecondaryImpact() {
-            //次级冲击（弱化）
+            //次级冲击
             if (CWRServerConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                     Main.rand.NextVector2Unit(), 10f, 6f, 20, 1000f, FullName);
