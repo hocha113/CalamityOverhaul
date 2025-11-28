@@ -7112,37 +7112,37 @@ ADV: {
 	}
 
 	SupCalDisplayTextNormal: {
-		SummonText: Do you enjoy going through hell?
-		SummonRematchText: If you're looking for fourth-degree burns, you've got the right person.
-		StartText: How strange, you should be dead...
-		StartRematchText: When the time comes that your soul is gone, would you mind if I grafted your flesh and bone into my creations?
-		BH2Text: It was not long ago you barely defeated my clone. That failure of a creation...
-		BH2RematchText: You are still nowhere near victory.
-		BH3Text: You harness great power, but you use it for yourself.
-		BH3RematchText: It has been some time since I have had such a... fascinating test dummy to practice my magic on.
-		BrothersText: Do you want to meet my family? Horrible, isn't it?
-		BrothersRematchText: Empty shells of their former selves. Perhaps a sliver of their souls still remains.
-		Phase2Text: You will suffer greatly.
+		SummonText: This sea of brimstone fire... even a vengeful spirit would feel the scorch, wouldn't they?
+		SummonRematchText: Prove it to me. Survive.
+		StartText: Mortal shells are always so fragile in this heat... or perhaps, you can surprise me?
+		StartRematchText: Not burnt to cinders yet? Then let us begin again, until you are forged into steel... or reduced to ash.
+		BH2Text: You have not yet collapsed within the flames... you burn slower than I imagined.
+		BH2RematchText: I admit you possess some courage, but your skill is still far from sufficient.
+		BH3Text: You traveled all this way, just to subject that mortal frame to pain?
+		BH3RematchText: The last time I rained down such calamity was a century ago. Do you wish to experience it as well?
+		BrothersText: They once burned everything for the sake of that path... Now, let these ashes measure your worth.
+		BrothersRematchText: Perhaps they are merely empty shells with a sliver of soul, but they are more than enough to deal with you.
+		Phase2Text: From here on... the flames will no longer be restrained. Do not die too quickly.
 		Phase2RematchText: Once again, let us begin.
-		BH4Text: Do not think about running. As long as you live, the pain will not leave you.
-		BH4RematchText: I wonder, have you seen these in your nightmares since our first battle?
-		SeekerRingText: An upstart who recklessly steals and kills, yet obtains power... I wonder, who does this remind me of...?
-		SeekerRingRematchText: At least your skill has not deteriorated.
-		BH5Text: The outcome of this battle is irrelevant to you! Why do you even bother interfering?!
-		BH5RematchText: Isn't this exciting?
-		Sepulcher2Text: Only one of us will survive this, but if it is you, what meaning is there in that?!
-		Sepulcher2RematchText: Pay attention, the crawling tomb is here. This is the last time.
-		Desperation1Text: Just stop!
-		Desperation2Text: If I lose here, I have no future.
-		Desperation3Text: Once you defeat me, you will have only one path remaining.
-		Desperation4Text: And that path... is also devoid of a future.
-		Acceptance1Text: Even if he has abandoned everything, his power will not vanish.
-		Acceptance2Text: I have no energy left to resent him. And the same goes for you...
-		Acceptance3Text: Now, everything depends on you.
-		Desperation1RematchText: Impressive performance. I acknowledge your victory.
-		Desperation2RematchText: Without a doubt, you will encounter enemies far stronger than I.
-		Desperation3RematchText: I trust you will not make the same mistakes he did.
-		Desperation4RematchText: As for what your future holds... I look forward to seeing it.
+		BH4Text: Do not think you can escape my grasp!
+		BH4RematchText: I am curious... did you learn anything from our first encounter?
+		SeekerRingText: How did you dodge that? This is not how it should go... Stop!
+		SeekerRingRematchText: At least my judgment was not mistaken...
+		BH5Text: I admit the battle thus far was mere child's play. Now, I will give it my all!
+		BH5RematchText: ...Isn't this exciting?
+		Sepulcher2Text: If only one of us can survive this... who do you think I *wish* it to be?
+		Sepulcher2RematchText: Pay attention. The crawling tomb approaches... and it hungers for a new tenant.
+		Desperation1Text: Just STOP!
+		Desperation2Text: If I fail here, then what was the point of it all?!
+		Desperation3Text: Someone has already walked your path to its end. It is a dead end... What makes you think *you* can be different?!
+		Desperation4Text: If you merely repeat his madness, you will be nothing more than fresh ash among these embers!
+		Acceptance1Text: I burned myself into this inhuman form, solely to find that one glimmer of hope...
+		Acceptance2Text: I have no strength left to stand...
+		Acceptance3Text: An aberration like you... perhaps you truly can carve out... a future even I have never seen.
+		Desperation1RematchText: An impressive performance. You fought well.
+		Desperation2RematchText: Without a doubt, your strength grows with every passing moment.
+		Desperation3RematchText: I truly hope you will not repeat our mistakes.
+		Desperation4RematchText: If you can forge a new path... then there is still hope for everything.
 	}
 
 	FirstMetTzeentch: {
