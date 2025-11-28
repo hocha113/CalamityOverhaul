@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.Items;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.OldDukeShops;
@@ -17,6 +18,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 
         //设置默认对话框样式为硫磺海风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
+
+        /// <summary>
+        /// 玩家选择结果：0=未选择，1=接受合作，2=拒绝合作，3=拒绝并战斗
+        /// </summary>
+        public static int PlayerChoice = 0;
 
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
@@ -45,7 +51,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         public static LocalizedText C3Response { get; private set; }
 
         void IWorldInfo.OnWorldLoad() {
-            //重置相关状态
+            //重置选择状态
+            PlayerChoice = 0;
         }
 
         public override void SetStaticDefaults() {
@@ -56,9 +63,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
             L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
             L3 = this.GetLocalization(nameof(L3), () => "我们可以合作");
-            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集海洋残片");
+            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集这种海洋残片");
             L5 = this.GetLocalization(nameof(L5), () => "如果你可以帮我找来更多，我会给予相应的报酬");
-            L6 = this.GetLocalization(nameof(L6), () => "这是一份样本");
+            L6 = this.GetLocalization(nameof(L6), () => "作为见面礼，这是一份样本");
 
             //比目鱼台词
             HL1 = this.GetLocalization(nameof(HL1), () => "老教授......?不过他看起来不认识我了");
@@ -76,6 +83,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         protected override void OnScenarioStart() {
             //开启硫磺海效果
             OldDukeEffect.IsActive = true;
+            //重置选择
+            PlayerChoice = 0;
         }
 
         protected override void Build() {
@@ -127,35 +136,39 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
                     new Choice(C2.Value, Choice2),
                     new Choice(C3.Value, Choice3),
                 ],
-                onStart: Give,
+                onStart: GiveOceanFragment,
                 styleOverride: () => SulfseaDialogueBox.Instance,
                 choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Sulfsea
             );
         }
 
-        public static void Give() {
+        /// <summary>
+        /// 给予海洋残片样本
+        /// </summary>
+        public static void GiveOceanFragment() {
             ADVRewardPopup.ShowReward(
-                        ModContent.ItemType<Oceanfragments>(),
-                        1,
-                        "",
-                        appearDuration: 24,
-                        holdDuration: -1,
-                        giveDuration: 16,
-                        requireClick: true,
-                        anchorProvider: () => {
-                            var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                            if (rect == Rectangle.Empty) {
-                                return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                            }
-                            return new Vector2(rect.Center.X, rect.Y - 70f);
-                        },
-                        offset: Vector2.Zero,
-                        styleProvider: () => ADVRewardPopup.RewardStyle.Sulfsea
-                    );
+                ModContent.ItemType<Oceanfragments>(),
+                1,
+                "",
+                appearDuration: 24,
+                holdDuration: -1,
+                giveDuration: 16,
+                requireClick: true,
+                anchorProvider: () => {
+                    var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                    if (rect == Rectangle.Empty) {
+                        return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                    }
+                    return new Vector2(rect.Center.X, rect.Y - 70f);
+                },
+                offset: Vector2.Zero,
+                styleProvider: () => ADVRewardPopup.RewardStyle.Sulfsea
+            );
         }
 
         //选项1：接受合作
         public void Choice1() {
+            PlayerChoice = 1;
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
             Complete();
         }
@@ -170,16 +183,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //解锁老公爵商店
+                //保存状态：接受合作
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     halibutPlayer.ADVSave.OldDukeCooperationAccepted = true;
+                    halibutPlayer.ADVSave.OldDukeCooperationDeclined = false;
+                    halibutPlayer.ADVSave.OldDukeChoseToFight = false;
                 }
 
-                //启用商店UI
-                OldDukeShopUI.Instance.Active = true;
-
-                //老公爵离开
-                LetOldDukeLeave();
+                //通知NPC执行离开AI
+                //NPC会在ModifyOldDuke中检测PlayerChoice并执行相应AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
@@ -188,6 +200,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 
         //选项2：拒绝合作
         public void Choice2() {
+            PlayerChoice = 2;
             ScenarioManager.Start<FirstMetOldDuke_Choice2>();
             Complete();
         }
@@ -202,15 +215,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //标记拒绝合作（但没有战斗，下次还可以选择）
+                //保存状态：拒绝合作（但没有战斗，下次还可以选择）
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     halibutPlayer.ADVSave.OldDukeCooperationDeclined = true;
-                    //重置FirstMetOldDuke标记，允许下次触发
-                    halibutPlayer.ADVSave.FirstMetOldDuke = false;
+                    halibutPlayer.ADVSave.OldDukeCooperationAccepted = false;
+                    halibutPlayer.ADVSave.OldDukeChoseToFight = false;
                 }
 
-                //老公爵离开
-                LetOldDukeLeave();
+                //通知NPC执行离开AI
+                //NPC会在ModifyOldDuke中检测PlayerChoice并执行相应AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
@@ -219,6 +232,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 
         //选项3：拒绝合作并拔出武器
         public void Choice3() {
+            PlayerChoice = 3;
             ScenarioManager.Start<FirstMetOldDuke_Choice3>();
             Complete();
         }
@@ -233,38 +247,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //标记选择战斗，以后直接进入战斗
+                //保存状态：选择战斗，以后直接进入战斗
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     halibutPlayer.ADVSave.OldDukeChoseToFight = true;
+                    halibutPlayer.ADVSave.OldDukeCooperationAccepted = false;
+                    halibutPlayer.ADVSave.OldDukeCooperationDeclined = false;
                 }
 
-                //进入战斗（不需要让老公爵离开，直接开打）
-                //老公爵NPC应该已经存在，只需要让他进入战斗状态
+                //通知NPC开始战斗
+                //NPC会在ModifyOldDuke中检测PlayerChoice=3并恢复战斗AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
-            }
-        }
-
-        //让老公爵离开的辅助方法
-        private static void LetOldDukeLeave() {
-            //查找老公爵NPC并让他消失
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == CWRID.NPC_OldDuke) {
-                    //播放消失音效
-                    Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath6 with { Volume = 0.5f, Pitch = -0.3f }, npc.Center);
-
-                    //生成一些粒子效果
-                    for (int j = 0; j < 30; j++) {
-                        Dust.NewDust(npc.position, npc.width, npc.height, Terraria.ID.DustID.GreenTorch,
-                            Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, 3f), 100, default, Main.rand.NextFloat(1f, 2f));
-                    }
-
-                    //让NPC消失
-                    npc.active = false;
-                    npc.netUpdate = true;
-                }
             }
         }
 
@@ -274,7 +268,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            
+            //场景触发逻辑移至ModifyOldDuke中处理
         }
     }
 }

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
+using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;
@@ -31,6 +32,7 @@ namespace CalamityOverhaul
         SignalTowerTargetManager,
         SetNPCLoot,
         EbnTag,
+        OldDukeEffect,
     }
 
     public static class CWRNetWork
@@ -71,6 +73,7 @@ namespace CalamityOverhaul
             TzeentchEffect.NetHandle(type, reader, whoAmI);
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
             ADVSave.NetHandle(type, reader, whoAmI);
+            OldDukeEffect.NetHandle(type, reader, whoAmI);
         }
     }
 }
