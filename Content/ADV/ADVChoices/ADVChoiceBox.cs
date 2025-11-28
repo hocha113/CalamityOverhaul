@@ -29,7 +29,8 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             Default,    //默认深蓝科技风格
             Brimstone,  //硫磺火风格
             Draedon,    //嘉登科技风格
-            Tzeentch    //奸奇魔法风格
+            Tzeentch,   //奸奇魔法风格
+            Sulfsea     //硫磺海风格
         }
 
         private readonly List<Choice> choices = new();
@@ -111,6 +112,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             inst.styleInstances[ChoiceBoxStyle.Brimstone] = new BrimstoneChoiceBoxStyle();
             inst.styleInstances[ChoiceBoxStyle.Draedon] = new DraedonChoiceBoxStyle();
             inst.styleInstances[ChoiceBoxStyle.Tzeentch] = new TzeentchChoiceBoxStyle();
+            inst.styleInstances[ChoiceBoxStyle.Sulfsea] = new SulfseaChoiceBoxStyle();
             inst.currentStyle = inst.styleInstances[ChoiceBoxStyle.Default];
         }
 

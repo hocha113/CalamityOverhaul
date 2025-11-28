@@ -14,13 +14,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
-        public static LocalizedText HelenName { get; private set; }
-
         //对话台词
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
+        public static LocalizedText L4 { get; private set; }
+        public static LocalizedText L5 { get; private set; }
+        //选项
+        public static LocalizedText C1 { get; private set; }
+        public static LocalizedText C2 { get; private set; }
+        public static LocalizedText C3 { get; private set; }
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老核弹");
@@ -28,7 +32,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             L0 = this.GetLocalization(nameof(L0), () => "......");
             L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
             L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
-            L3 = this.GetLocalization(nameof(L3), () => "我们可以做个交易");
+            L3 = this.GetLocalization(nameof(L3), () => "我们可以合作");
+            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集这种海洋残片");
+            L5 = this.GetLocalization(nameof(L5), () => "如果你可以帮我找来更多，我会给予相应的报酬");
+            C1 = this.GetLocalization(nameof(C1), () => "接受合作");
+            C2 = this.GetLocalization(nameof(C2), () => "拒绝合作");
+            C3 = this.GetLocalization(nameof(C3), () => "拒绝合作并拔出武器");
         }
 
         protected override void Build() {

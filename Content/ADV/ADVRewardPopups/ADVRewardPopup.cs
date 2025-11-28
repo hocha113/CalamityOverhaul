@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
         {
             Ocean,      //海洋风格（默认）
             Brimstone,  //硫磺火风格
-            Draedon     //嘉登科技风格
+            Draedon,    //嘉登科技风格
+            Sulfsea     //硫磺海风格
         }
 
         public class RewardEntry
@@ -95,6 +96,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             inst.styleInstances[RewardStyle.Ocean] = new OceanRewardStyle();
             inst.styleInstances[RewardStyle.Brimstone] = new BrimstoneRewardStyle();
             inst.styleInstances[RewardStyle.Draedon] = new DraedonRewardStyle();
+            inst.styleInstances[RewardStyle.Sulfsea] = new SulfseaRewardStyle();
             inst.currentStyle = inst.styleInstances[RewardStyle.Ocean];
         }
 
