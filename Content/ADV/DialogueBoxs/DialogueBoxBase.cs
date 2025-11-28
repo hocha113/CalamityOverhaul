@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {

@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;

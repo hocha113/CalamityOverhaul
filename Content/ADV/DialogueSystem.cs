@@ -1,4 +1,6 @@
-﻿using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV
 {

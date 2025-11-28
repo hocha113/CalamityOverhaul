@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV;
+﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

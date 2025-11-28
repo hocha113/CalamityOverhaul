@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
 {
     internal class ADVRewardPopup : UIHandle, ILocalizedModType
     {
@@ -953,8 +954,6 @@ namespace CalamityOverhaul.Content.ADV
                 Utils.DrawBorderString(spriteBatch, hint, hp, hintColor, 0.7f);
             }
         }
-
-        //去他妈的吧，最好别动这些粒子，我写得很累
 
         #region 海洋粒子类
         private class Bubble(Vector2 p)

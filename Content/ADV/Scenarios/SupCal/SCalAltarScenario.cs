@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using System;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

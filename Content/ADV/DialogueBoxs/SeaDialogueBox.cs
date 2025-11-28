@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
     /// 特化的深海风格 GalGame 对话框
@@ -314,24 +314,16 @@ namespace CalamityOverhaul.Content.ADV
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
             }
         }
-        private class BubbleFx
+        private class BubbleFx(Vector2 start)
         {
-            public Vector2 Pos;
-            public float Radius;
-            public float RiseSpeed;
-            public float Drift;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public BubbleFx(Vector2 start) {
-                Pos = start;
-                Radius = Main.rand.NextFloat(3f, 7f);
-                RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f);
-                Drift = Main.rand.NextFloat(-0.18f, 0.18f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(90f, 160f);
-                Seed = Main.rand.NextFloat(10f);
-            }
+            public Vector2 Pos = start;
+            public float Radius = Main.rand.NextFloat(3f, 7f);
+            public float RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f);
+            public float Drift = Main.rand.NextFloat(-0.18f, 0.18f);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(90f, 160f);
+            public float Seed = Main.rand.NextFloat(10f);
+
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 float t = Life / MaxLife;

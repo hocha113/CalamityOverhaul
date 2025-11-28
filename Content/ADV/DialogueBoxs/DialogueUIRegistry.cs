@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
     /// 管理当前使用的对话框类型，允许更换不同风格实现
