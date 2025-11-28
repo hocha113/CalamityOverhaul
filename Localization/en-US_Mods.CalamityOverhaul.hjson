@@ -6426,6 +6426,11 @@ UI: {
 		InsertBatteryHint: Insert Draedon Power Cell
 		EnergyUnit: UE
 	}
+
+	SulfseaDialogueBox: {
+		ContinueHint: 继续
+		FastHint: 加速
+	}
 }
 
 ADV: {
@@ -7173,4 +7178,14 @@ ADV: {
 	}
 
 	GiveBlazingBud.MessageText: The burning embers whisper in the wind, and a strange flower drifts into your hands…
+
+	FirstMetOldDuke: {
+		FirstMetOldDuke: {
+			OldDukeName: 老核弹
+			L0: ......
+			L1: 没必要一见面就拔刀相向
+			L2: 我年纪大了，不想打架
+			L3: 我们可以做个交易
+		}
+	}
 }

@@ -115,8 +115,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
             }
 
             //自定义帧计数
-            npc.frameCounter += 0.1f;
-            if (npc.frameCounter >= Main.npcFrameCount[npc.type]) {
+            npc.frameCounter += 0.06f;
+            if (npc.frameCounter >= Main.npcFrameCount[npc.type] - 1) {
                 npc.frameCounter = 0;
             }
 

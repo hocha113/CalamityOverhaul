@@ -73,7 +73,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float left = panelPos.X + BubbleSideMargin * scaleW;
                 float right = panelPos.X + panelSize.X - BubbleSideMargin * scaleW;
                 Vector2 start = new(Main.rand.NextFloat(left, right), panelPos.Y + panelSize.Y - 10f);
-                bubbles.Add(new BubblePRT(start));
+                var bb = new BubblePRT(start);
+                bb.CoreColor = Color.LightYellow;
+                bb.RimColor = Color.LimeGreen;
+                bubbles.Add(bb);
             }
             for (int i = bubbles.Count - 1; i >= 0; i--) {
                 if (bubbles[i].Update(panelPos, panelSize, BubbleSideMargin)) {
