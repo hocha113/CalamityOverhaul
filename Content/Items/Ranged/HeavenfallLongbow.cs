@@ -68,7 +68,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<HeavenfallLongbowHeldProj>();
             Item.shootSpeed = 20f;
-            Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(990, 25, 5, 5);
             Item.rare = ItemRarityID.Red;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_HeavenfallLongbow;

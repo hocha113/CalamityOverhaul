@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -27,9 +28,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         private float abyssPulse = 0f; //深渊呼吸相位
 
         //视觉粒子
-        private readonly List<StarFx> starFx = [];
+        private readonly List<SeaStarPRT> starFx = [];
         private int starSpawnTimer = 0;
-        private readonly List<BubbleFx> bubbles = [];
+        private readonly List<BubblePRT> bubbles = [];
         private int bubbleSpawnTimer = 0;
         private const float BubbleSideMargin = 34f; //泡泡水平边距控制
 
@@ -49,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (Active && starSpawnTimer >= 30 && starFx.Count < 10) {
                 starSpawnTimer = 0;
                 Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(BubbleSideMargin, panelSize.X - BubbleSideMargin), Main.rand.NextFloat(56f, panelSize.Y - 56f));
-                starFx.Add(new StarFx(p));
+                starFx.Add(new SeaStarPRT(p));
             }
             for (int i = starFx.Count - 1; i >= 0; i--) {
                 if (starFx[i].Update(panelPos, panelSize)) {
@@ -65,10 +66,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float left = panelPos.X + BubbleSideMargin * scaleW;
                 float right = panelPos.X + panelSize.X - BubbleSideMargin * scaleW;
                 Vector2 start = new(Main.rand.NextFloat(left, right), panelPos.Y + panelSize.Y - 10f);
-                bubbles.Add(new BubbleFx(start));
+                bubbles.Add(new BubblePRT(start));
             }
             for (int i = bubbles.Count - 1; i >= 0; i--) {
-                if (bubbles[i].Update(panelPos, panelSize)) {
+                if (bubbles[i].Update(panelPos, panelSize, BubbleSideMargin)) {
                     bubbles.RemoveAt(i);
                 }
             }
@@ -104,10 +105,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             spriteBatch.Draw(vaule, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
             foreach (var b in bubbles) {
-                b.Draw(spriteBatch, alpha * 0.9f);
+                b.DrawEnhanced(spriteBatch, alpha * 0.9f);
             }
             foreach (var s in starFx) {
-                s.Draw(spriteBatch, alpha * 0.45f);
+                s.DrawEnhanced(spriteBatch, alpha * 0.45f);
             }
             if (current == null || contentAlpha <= 0.01f) {
                 return;
@@ -283,69 +284,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
                 spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
-            }
-        }
-        #endregion
-
-        #region 粒子内部类
-        private class StarFx(Vector2 p)
-        {
-            public Vector2 Pos = p;
-            public float BaseRadius = Main.rand.NextFloat(2f, 4f);
-            public float Rot = Main.rand.NextFloat(MathHelper.TwoPi);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(60f, 140f);
-            public float Seed = Main.rand.NextFloat(10f);
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++; Rot += 0.02f; float t = Life / MaxLife;
-                float drift = (float)Math.Sin((Life + Seed * 20f) * 0.03f) * 6f; Pos.X += drift * 0.02f; if (Life >= MaxLife) return true;
-                if (Pos.X < panelPos.X - 40 || Pos.X > panelPos.X + panelSize.X + 40 || Pos.Y < panelPos.Y - 40 || Pos.Y > panelPos.Y + panelSize.Y + 40)
-                    return true;
-                return false;
-            }
-            public void Draw(SpriteBatch sb, float alpha) {
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
-                float scale = BaseRadius * (0.6f + (float)Math.Sin((Life + Seed * 33f) * 0.08f) * 0.4f);
-                Color c = Color.Gold * (0.7f * fade);
-                Texture2D px = VaultAsset.placeholder2.Value;
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
-            }
-        }
-        private class BubbleFx(Vector2 start)
-        {
-            public Vector2 Pos = start;
-            public float Radius = Main.rand.NextFloat(3f, 7f);
-            public float RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f);
-            public float Drift = Main.rand.NextFloat(-0.18f, 0.18f);
-            public float Life = 0f;
-            public float MaxLife = Main.rand.NextFloat(90f, 160f);
-            public float Seed = Main.rand.NextFloat(10f);
-
-            public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++;
-                float t = Life / MaxLife;
-                Pos.Y -= RiseSpeed * (0.85f + (float)Math.Sin(t * Math.PI) * 0.25f);
-                Pos.X += (float)Math.Sin(Life * 0.045f + Seed) * Drift;
-                float left = panelPos.X + BubbleSideMargin * 0.7f;
-                float right = panelPos.X + panelSize.X - BubbleSideMargin * 0.7f;
-                if (Pos.X < left) Pos.X = left; if (Pos.X > right)
-                    Pos.X = right;
-                if (Life >= MaxLife || Pos.Y < panelPos.Y + 24f)
-                    return true;
-                return false;
-            }
-            public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
-                float t = Life / MaxLife;
-                float fade = (float)Math.Sin(t * Math.PI);
-                float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 15f) * 0.1f) * 0.18f);
-                Color core = new Color(140, 230, 255) * (alpha * 0.55f * fade);
-                Color rim = new Color(30, 100, 150) * (alpha * 0.4f * fade);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), rim, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 1.8f, scale * 0.55f), SpriteEffects.None, 0f);
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f);
             }
         }
         #endregion
