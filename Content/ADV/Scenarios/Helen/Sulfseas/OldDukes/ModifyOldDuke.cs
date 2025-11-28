@@ -4,6 +4,7 @@ using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 {
@@ -28,6 +29,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         private bool isFirstMeet = false;
         private bool firstMeetCompleted = false;
         private bool hasTriggeredScenario = false;
+
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//没做完，禁用
+        }
 
         public override void SetProperty() {
             

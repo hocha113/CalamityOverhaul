@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
-using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.Items;
-using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.OldDukeShops;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
@@ -14,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
 {
     internal class FirstMetOldDuke : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        public override string LocalizationCategory => "ADV.FirstMetOldDuke";
+        public override string LocalizationCategory => "ADV";
 
         //设置默认对话框样式为硫磺海风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
@@ -49,6 +47,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
         public static LocalizedText C1Response { get; private set; }
         public static LocalizedText C2Response { get; private set; }
         public static LocalizedText C3Response { get; private set; }
+
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//没做完，禁用
+        }
 
         void IWorldInfo.OnWorldLoad() {
             //重置选择状态
