@@ -5777,35 +5777,35 @@ NPCModifys: {
 	}
 
 	ModifyWITCH: {
-		Homeless0: Sorry, I have nothing to give you. Perhaps you could try reforging something, then come back to me...
-		Homeless1: Do you have a place to stay here? I mean... I'm prepared to set up camp around here otherwise.
-		Homeless2: Do you know how people lived in the past era? They had no houses, only hollowed-out trees. But could you at least find me a tree hollow, please?
-		Homeless3: No vacant houses? What... you expect me to pay rent?
-		L0: I can't afford rent, but if you have any deceased relatives you want me to try and... what, you don't?
+		Homeless0: Apologies, I have nothing to offer you. Perhaps you could try reforging some items, then return to me...
+		Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
+		Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
+		Homeless3: No vacant housing? What... you expect me to pay rent?
+		L0: I cannot afford rent, but if you have any deceased relatives you wish for me to attempt... what? You refuse?
 		L1: I have never believed in souls. Any attempt to resurrect the dead only invites greater catastrophe.
 		L2:
 			'''
-			In the last century, I handled an incident involving a haunted town.
-			If you walked down the street, you would see it crowded with your dead friends and family on both sides.
-			They would reach out to you, cry for help, begging you to take them away...
-			I tried to bring my 'mother' back once. But what returned wasn't her. It was a ghost perfectly mimicking her.
+			In the last century, I stepped into a town swallowed by the supernatural.
+			The streets were lined with dead 'friends and family,' smiling, waving, crying for help...
+			I once tried to bring back my 'mother' from there.
+			She looked exactly as she did in life, her voice flawless... until I realized she had no heartbeat, and she found amusement in that.
 			'''
 		L3:
 			'''
-			Sometimes I really think you still need practice. You possess a mortal body; you won't accomplish anything like this.
-			I have seen too many people like you who eventually died on their path to power.
+			I feel you are sometimes overly confident. You will achieve nothing at this rate.
+			I have seen too many like you perish on their quest for power.
 			'''
 		L4:
 			'''
-			I know you are interested in my magic, but those are actually... not magic.
-			They are occult powers. Those who touch the supernatural meet no good end. I hope you stay away from them.
+			I know you are interested in my magic, but it is... not magic.
+			It is occult power. Those who touch the supernatural meet no good end. I suggest you stay away from it.
 			'''
 		BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
 		BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
-		Night0: Night is when the spirits are restless. I have no desire to be outside at such a time.
-		Night1: Long ago, I had to perform a divination every night before I could sleep. Until once, for seven consecutive nights, I divined that I would die on the eighth.
+		Night0: Night is when the spirits haunt. I have no desire to be outside at such a time.
+		Night1: Long ago, I performed a divination every night before sleep. Until once, for seven consecutive nights, I foresaw that I would die on the eighth.
 		SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
-		Party: I apologize, but I refuse any invitation to dance. My partners tend to end up as charred corpses.
+		Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
 	}
 }
 
