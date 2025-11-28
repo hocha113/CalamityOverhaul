@@ -73,6 +73,9 @@ namespace CalamityOverhaul.Content.ADV
         public bool ExoMechThirdDefeat;//玩家是否观看过机甲嘉登的第三次战败对话
         public int ExoMechDefeatCount;//玩家击败机甲的次数
         public bool FirstMetOldDuke;
+        public bool OldDukeCooperationAccepted;//玩家是否接受了老公爵的合作
+        public bool OldDukeCooperationDeclined;//玩家是否拒绝了老公爵的合作
+        public bool OldDukeChoseToFight;//玩家是否选择与老公爵战斗
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
