@@ -1,10 +1,9 @@
-﻿using CalamityOverhaul.Common;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
-namespace CalamityOverhaul
+namespace CalamityOverhaul.Common
 {
     internal class FixLavaRendering : ICWRLoader
     {

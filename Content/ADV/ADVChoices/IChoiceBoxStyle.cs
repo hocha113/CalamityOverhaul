@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
+namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
     /// <summary>
     /// 选项框样式接口
