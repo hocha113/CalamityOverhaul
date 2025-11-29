@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
     {
         public bool IsDragging { get; private set; }
         private Rectangle indicatorRect;
-        private static int offsetX => 550;
-        private static int offsetY => 140;
+        private const int offsetX = 550;
+        private const int offsetY = 140;
         /// <summary>
         /// 更新滚动条状态
         /// </summary>

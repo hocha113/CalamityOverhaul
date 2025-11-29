@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         public float CurrencyDisplayPulse { get; private set; } = 0f;
 
         //槽位悬停动画
-        public float[] SlotHoverProgress { get; private set; } = new float[20];//支持20个可见槽位
+        public float[] SlotHoverProgress { get; private set; } = new float[short.MaxValue];
 
         /// <summary>
         /// 更新UI激活状态

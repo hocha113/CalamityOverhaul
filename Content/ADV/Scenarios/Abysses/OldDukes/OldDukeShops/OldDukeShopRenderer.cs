@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         #region 标题绘制
         private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.DeathText.Value;
-            string title = "Old Duke's Treasure";
+            string title = OldDukeShopUI.TitleText.Value;
             float titleSclse = 1f;
             Vector2 titlePos = panelPosition + new Vector2(400, 35);
             Vector2 titleSize = font.MeasureString(title) * titleSclse;
@@ -210,8 +210,90 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, titleSclse);
 
+            //绘制关闭按钮
+            DrawCloseButton(spriteBatch, panelPosition);
+
             //分割线
             DrawHeaderDivider(spriteBatch, panelPosition);
+        }
+
+        /// <summary>
+        /// 绘制关闭按钮
+        /// </summary>
+        private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            
+            Vector2 closeButtonPos = panelPosition + new Vector2(580 - OldDukeShopInteraction.CloseButtonSize - 15, 15);
+            Rectangle closeButtonRect = new Rectangle(
+                (int)closeButtonPos.X,
+                (int)closeButtonPos.Y,
+                OldDukeShopInteraction.CloseButtonSize,
+                OldDukeShopInteraction.CloseButtonSize
+            );
+
+            bool isHovered = interaction.IsCloseButtonHovered;
+            float hoverProgress = isHovered ? 1f : 0f;
+
+            //按钮背景
+            Color bgBase = new Color(30, 40, 15) * (animation.UIAlpha * 0.6f);
+            Color bgHover = new Color(80, 50, 40) * (animation.UIAlpha * 0.8f);
+            Color buttonBg = Color.Lerp(bgBase, bgHover, hoverProgress);
+            spriteBatch.Draw(pixel, closeButtonRect, new Rectangle(0, 0, 1, 1), buttonBg);
+
+            //悬停时的发光效果
+            if (isHovered) {
+                float glowPulse = (float)Math.Sin(animation.SulfurPulse * 2f) * 0.5f + 0.5f;
+                Color glowColor = new Color(180, 90, 70) * (animation.UIAlpha * 0.3f * glowPulse);
+                Rectangle glowRect = closeButtonRect;
+                glowRect.Inflate(3, 3);
+                spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor);
+            }
+
+            //按钮边框
+            Color edgeColor = Color.Lerp(
+                new Color(70, 100, 35) * (animation.UIAlpha * 0.6f),
+                new Color(180, 90, 70) * (animation.UIAlpha * 0.9f),
+                hoverProgress
+            );
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, closeButtonRect.Width, 2), 
+                new Rectangle(0, 0, 1, 1), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Bottom - 2, closeButtonRect.Width, 2), 
+                new Rectangle(0, 0, 1, 1), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, 2, closeButtonRect.Height), 
+                new Rectangle(0, 0, 1, 1), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height), 
+                new Rectangle(0, 0, 1, 1), edgeColor);
+
+            //绘制X符号
+            Vector2 center = new Vector2(closeButtonRect.X + closeButtonRect.Width / 2f, closeButtonRect.Y + closeButtonRect.Height / 2f);
+            float xSize = 12f + hoverProgress * 2f;
+            float thickness = 2.5f + hoverProgress * 0.5f;
+            
+            Color xColor = Color.Lerp(
+                new Color(140, 170, 75) * animation.UIAlpha,
+                new Color(220, 110, 90) * animation.UIAlpha,
+                hoverProgress
+            );
+
+            //左上到右下的线
+            Vector2 start1 = center + new Vector2(-xSize, -xSize);
+            Vector2 end1 = center + new Vector2(xSize, xSize);
+            DrawXLine(spriteBatch, start1, end1, xColor, thickness, pixel);
+
+            //右上到左下的线
+            Vector2 start2 = center + new Vector2(xSize, -xSize);
+            Vector2 end2 = center + new Vector2(-xSize, xSize);
+            DrawXLine(spriteBatch, start2, end2, xColor, thickness, pixel);
+        }
+
+        private static void DrawXLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness, Texture2D pixel) {
+            Vector2 edge = end - start;
+            float length = edge.Length();
+            if (length < 0.1f) return;
+            
+            float rotation = edge.ToRotation();
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation,
+                Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0);
         }
 
         private void DrawHeaderDivider(SpriteBatch spriteBatch, Vector2 panelPosition) {

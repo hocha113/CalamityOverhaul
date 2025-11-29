@@ -17,12 +17,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private readonly Player player;
         private readonly List<OldDukeShopItem> shopItems;
 
-        //选择和悬停状态
+        //选中和悬停状态
         public int SelectedIndex { get; set; } = -1;
         public int HoveredIndex { get; private set; } = -1;
         public int ScrollOffset { get; set; } = 0;
 
-        //长按连续购买
+        //长按购买逻辑
         private int holdingPurchaseIndex = -1;
         private int holdingPurchaseTimer = 0;
         private int purchaseCooldown = 30;
@@ -31,12 +31,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private const int HoldThreshold = 20;
         public int ConsecutivePurchaseCount { get; private set; } = 0;
 
-        //UI尺寸常量 - 使用不同的布局
-        public const int MaxVisibleItems = 7;//显示更多物品
+        //UI尺寸常量 
+        public const int MaxVisibleItems = 7;//显示项数量
         public const int ItemSlotHeight = 78;//稍微小一点的高度
 
         //滚动条
         private readonly OldDukeScrollBar scrollBar = new();
+
+        //关闭按钮
+        public bool IsCloseButtonHovered { get; private set; } = false;
+        public const int CloseButtonSize = 32;
 
         public int HoldingPurchaseIndex => holdingPurchaseIndex;
         public int HoldingPurchaseTimer => holdingPurchaseTimer;
@@ -48,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// 处理鼠标滚轮
+        /// 处理滚轮滚动
         /// </summary>
         public void HandleScroll() {
             //如果滚动条正在拖动，不响应滚轮
@@ -94,6 +98,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             scrollBar.Draw(spriteBatch, panelPosition, barHeight, ScrollOffset, maxScroll,
                 shopItems.Count, MaxVisibleItems, uiAlpha, sulfurPulseTimer);
+        }
+
+        /// <summary>
+        /// 更新关闭按钮交互
+        /// </summary>
+        public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, bool mouseLeftRelease) {
+            Rectangle closeButtonRect = new Rectangle(
+                (int)(panelPosition.X + 580 - CloseButtonSize - 15),
+                (int)(panelPosition.Y + 15),
+                CloseButtonSize,
+                CloseButtonSize
+            );
+
+            bool wasHovered = IsCloseButtonHovered;
+            IsCloseButtonHovered = closeButtonRect.Contains(mousePoint);
+
+            //悬停音效
+            if (IsCloseButtonHovered && !wasHovered) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.3f });
+            }
+
+            //点击关闭
+            if (IsCloseButtonHovered && mouseLeftRelease) {
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -149,13 +181,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                     if (holdingPurchaseIndex == index) {
                         holdingPurchaseTimer++;
 
-                        //达到阈值后开始连续购买
+                        //达到阈值，开始连续购买
                         if (holdingPurchaseTimer >= HoldThreshold) {
                             if (holdingPurchaseTimer % purchaseCooldown == 0) {
                                 TryPurchaseItem(index);
                                 ConsecutivePurchaseCount++;
 
-                                //逐渐加速，每连续5次，冷却减少20%
+                                //逐渐加速，每购买5次，冷却减少20%
                                 if (ConsecutivePurchaseCount % 5 == 0) {
                                     purchaseCooldown = Math.Max(
                                         MinPurchaseCooldown,
@@ -209,12 +241,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 //给予物品
                 player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
 
-                //播放音效
+                //购买音效
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.7f, Pitch = -0.1f });
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.2f });
             }
             else {
-                //货币不足音效
+                //玩家不足音效
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f, Volume = 0.8f });
             }
         }
@@ -236,6 +268,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             HoveredIndex = -1;
             SelectedIndex = -1;
             ScrollOffset = 0;
+            IsCloseButtonHovered = false;
             ResetHoldingState();
             scrollBar.Reset();
         }

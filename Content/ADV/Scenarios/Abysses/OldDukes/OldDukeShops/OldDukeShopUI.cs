@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         public string LocalizationCategory => "UI";
+        public static LocalizedText TitleText;
         public static LocalizedText CurrencyName;
         public static LocalizedText HintTooltip;
 
@@ -41,6 +42,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private OldDukeShopRenderer renderer;
 
         public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "老公爵的店铺");
             CurrencyName = this.GetLocalization(nameof(CurrencyName), () => "海洋残片");
             HintTooltip = this.GetLocalization(nameof(HintTooltip), () => "滚动/拖动条");
         }
@@ -95,6 +97,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
 
+                //优先检测关闭按钮
+                if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, keyLeftPressState == KeyPressState.Pressed)) {
+                    _active = false;
+                    return;
+                }
+
                 if (keyLeftPressState != KeyPressState.None) {
                     //更新滚动条（优先处理）
                     interaction.UpdateScrollBar(panelPosition, MousePosition.ToPoint(),
@@ -112,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                     interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
                 }
             }
-            else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f) {
+            else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
                 _active = false;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
             }

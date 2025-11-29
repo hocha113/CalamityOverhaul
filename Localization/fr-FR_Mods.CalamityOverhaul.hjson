@@ -6388,6 +6388,7 @@ UI: {
 	}
 
 	OldDukeShopUI: {
+		// TitleText: 老公爵的店铺
 		// CurrencyName: 海洋残片
 		// HintTooltip: 滚动/拖动条
 	}
