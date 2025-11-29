@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
 {

@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             var inst = Instance;
 
             if (text == null && itemId > ItemID.None) {
-                text = itemId < ItemID.Count ? 
+                text = itemId < ItemID.Count ?
                     Language.GetText("ItemName." + ItemID.Search.GetName(itemId)).Value
                     : ItemLoader.GetItem(itemId).GetLocalization("DisplayName").Value;
             }

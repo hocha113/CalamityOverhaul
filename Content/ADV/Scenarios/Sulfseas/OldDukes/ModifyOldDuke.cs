@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes
         }
 
         public override void SetProperty() {
-            
+
         }
 
         public override bool FindFrame(int frameHeight) {

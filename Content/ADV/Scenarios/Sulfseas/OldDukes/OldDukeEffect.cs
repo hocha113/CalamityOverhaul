@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes
         public override void PostUpdateEverything() {
             if (IsActive) {
                 ActiveTimer++;
-                
+
                 //播放硫磺海音乐
                 Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
 

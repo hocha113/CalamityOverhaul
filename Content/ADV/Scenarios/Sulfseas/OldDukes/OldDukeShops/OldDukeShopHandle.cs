@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
 {

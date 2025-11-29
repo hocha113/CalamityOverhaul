@@ -1,5 +1,4 @@
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
 {
