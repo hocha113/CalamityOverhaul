@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
+namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes
 {
     internal class OldDukeEffect : ModSystem
     {

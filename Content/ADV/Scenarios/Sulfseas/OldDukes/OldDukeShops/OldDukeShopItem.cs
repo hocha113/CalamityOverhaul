@@ -1,6 +1,6 @@
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.OldDukeShops
+namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
 {
     /// <summary>
     /// 老公爵商店物品数据

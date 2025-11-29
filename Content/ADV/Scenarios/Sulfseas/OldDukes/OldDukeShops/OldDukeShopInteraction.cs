@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.Items;
+using CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.Items;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -7,7 +7,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.OldDukeShops
+namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
 {
     /// <summary>
     /// 老公爵商店交互逻辑处理器

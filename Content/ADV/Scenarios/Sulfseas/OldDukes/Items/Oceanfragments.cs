@@ -1,9 +1,9 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.OldDukeShops;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.Items
+namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.Items
 {
     internal class Oceanfragments : ModItem
     {

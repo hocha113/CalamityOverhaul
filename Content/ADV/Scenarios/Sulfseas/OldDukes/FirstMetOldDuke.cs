@@ -1,14 +1,14 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
-using CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes.Items;
+using CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.Items;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Sulfseas.OldDukes
+namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes
 {
     internal class FirstMetOldDuke : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
