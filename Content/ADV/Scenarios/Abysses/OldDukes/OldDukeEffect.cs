@@ -634,12 +634,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     Send();
                 }
             }
-            else {
-                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                    IsActive = false;
-                    Send();
-                }
-            }
 
             if (IsActive) {
                 ActiveTimer++;

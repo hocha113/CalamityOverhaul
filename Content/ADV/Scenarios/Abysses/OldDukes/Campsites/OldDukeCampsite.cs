@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -38,8 +40,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         public static LocalizedText TitleText;
 
+        /// <summary>
+        /// 玩家进入营地事件
+        /// </summary>
+        public static event Action<Vector2> OnEnterCampsite;
+
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "老公爵营地");
+        }
+
+        public override void OnModUnload() {
+            OnEnterCampsite = null;
         }
 
         public override void PostUpdateEverything() {
@@ -63,25 +74,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //播放交互音效
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
 
-            //标记首次营地对话已完成（完成任务）
-            if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                if (!save.OldDukeFirstCampsiteDialogueCompleted) {
-                    save.OldDukeFirstCampsiteDialogueCompleted = true;
-                }
+            if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
+                return;
             }
 
-            //TODO: 这里触发对话系统
-            //DialogueSystem.StartDialogue("OldDuke_Greeting");
-
-            //临时：显示文字
-            if (Main.netMode != NetmodeID.Server) {
-                CombatText.NewText(
-                    Main.LocalPlayer.Hitbox,
-                    new Color(150, 230, 180),
-                    OldDukeCampsiteRenderer.GreetingText.Value,
-                    true
-                );
+            //首次营地对话
+            if (!save.OldDukeFirstCampsiteDialogueCompleted) {
+                save.OldDukeFirstCampsiteDialogueCompleted = true;
+                
+                //触发首次对话场景
+                ScenarioManager.Reset<Quest.FindFragments.FirstCampsiteDialogue>();
+                ScenarioManager.Start<Quest.FindFragments.FirstCampsiteDialogue>();
+                FindFragmentUI.Instance.SetDefScreenYValue();
+                return;
             }
+
+            //后续交互对话
+            ScenarioManager.Reset<Quest.FindFragments.CampsiteInteractionDialogue>();
+            ScenarioManager.Start<Quest.FindFragments.CampsiteInteractionDialogue>();
         }
 
         /// <summary>
@@ -125,9 +135,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             interactPromptAlpha = MathHelper.Clamp(interactPromptAlpha, 0f, 1f);
 
-            //播放进入营地音效
+            //触发进入营地事件
             if (isPlayerNearby && !wasNearby) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.3f, Pitch = -0.5f }, CampsitePosition);
+                OnEnterCampsite?.Invoke(CampsitePosition);
             }
         }
 

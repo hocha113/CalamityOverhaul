@@ -101,6 +101,16 @@ namespace CalamityOverhaul.Content.ADV
         public bool OldDukeFirstCampsiteDialogueCompleted;
 
         /// <summary>
+        /// 是否已触发寻找海洋碎片任务
+        /// </summary>
+        public bool OldDukeFindFragmentsQuestTriggered;
+
+        /// <summary>
+        /// 是否已完成寻找海洋碎片任务
+        /// </summary>
+        public bool OldDukeFindFragmentsQuestCompleted;
+
+        /// <summary>
         /// 获取老公爵交互状态
         /// </summary>
         public OldDukeInteractionState OldDukeState {

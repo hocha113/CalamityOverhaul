@@ -6443,6 +6443,17 @@ UI: {
 		// QuestCompleteText: 任务完成！
 		// HoldFragmentHintText: 持有海洋碎片可查看方向
 	}
+
+	FindFragmentUI: {
+		// QuestTitle: 深渊在呼唤
+		// DamageContribution: 收集进度
+		// RequiredContribution: 目标: 收集880块海洋残片
+		// ObjectiveText: 目标
+		// CollectFragmentsText: 收集海洋残片
+		// CurrentFragmentsText: 当前拥有
+		// ReturnToCampsiteText: 返回营地提交
+		// QuestCompleteText: 任务完成！
+	}
 }
 
 ADV: {
@@ -7220,5 +7231,29 @@ ADV: {
 		}
 
 		// OldDukeCampsite.TitleText: 老公爵营地
+	}
+
+	CampsiteInteractionDialogue: {
+		// OldDukeName: 老公爵
+		// GreetingLine: 你需要什么？
+		// Choice1Text: 我来找你交易一下
+		// Choice2Text: 你要的东西我都弄来了
+		// Choice3Text: 我只是来溜达一圈
+		// Choice2DisabledHint: 海洋残片不足
+		// Choice1Response: 看看我这里有什么吧
+		// Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
+		// Choice3Response: ......
+		// QuestCompleteLine: 感谢你的帮助
+	}
+
+	FirstCampsiteDialogue: {
+		// OldDukeName: 老公爵
+		// L0: 你来了
+		// L1: 我收集这些残片已经很久了
+		// L2: 这些残片很诡异，它们总像是...入侵进这个世界的产物
+		// L3: 我希望你能明白我的意思，我的直觉告诉我它们本应是无形之物，只是选择了某种可以被泰拉生物理解的形态
+		// L4: 总之...我想要解读它们，但数量还不够
+		// L5: 我希望你能帮我收集足够多的海洋残片
+		// L6: 我将给予你相应的报酬
 	}
 }

@@ -41,7 +41,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
         public static LocalizedText QuestCompleteText { get; private set; }
         public static LocalizedText HoldFragmentHintText { get; private set; }
 
-        internal void SetDefScreenYValue() => screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+        private bool initialize;
+        internal void SetDefScreenYValue() => initialize = true;
 
         public new void LoadUIData(TagCompound tag) {
             tag.TryGet(Name + ":" + nameof(screenYValue), out screenYValue);
@@ -129,6 +130,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
         }
 
         protected override void DrawPanel(SpriteBatch spriteBatch, float alpha) {
+            if (initialize) {
+                initialize = false;
+                screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+            }
+
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
