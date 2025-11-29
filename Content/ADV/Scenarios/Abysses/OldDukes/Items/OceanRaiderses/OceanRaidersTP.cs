@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
+using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -24,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         //机器常量
         internal const int consumeUE = 8;
         internal const int fishingTime = 180; //3秒钓一次鱼
-        internal const int maxStorageItems = 40; //最多存储40组物品
+        internal const int maxStorageSlots = 360; //20x18格存储空间
 
         //机器状态
         internal int frame;
@@ -197,8 +198,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
 
-            //添加新物品
-            if (storedItems.Count < maxStorageItems && stack > 0) {
+            //添加新物品（检查是否超过最大格数）
+            if (storedItems.Count < maxStorageSlots && stack > 0) {
                 Item newItem = new Item();
                 newItem.SetDefaults(itemType);
                 newItem.stack = stack;
@@ -330,14 +331,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             foreach (var particle in fishingParticles) {
                 particle.Draw(spriteBatch);
             }
-
-            //绘制存储信息
-            if (storedItems.Count > 0 && InScreen) {
-                Vector2 textPos = CenterInWorld - new Vector2(0, 80) - Main.screenPosition;
-                string text = $"Stored: {storedItems.Count}/{maxStorageItems}";
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text
-                    , textPos.X, textPos.Y, Color.White, Color.Black, Vector2.Zero, 0.8f);
-            }
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
@@ -345,14 +338,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
-            //右键取出所有物品
-            if (storedItems.Count > 0 && !VaultUtils.isClient) {
-                foreach (var item in storedItems) {
-                    player.QuickSpawnItem(player.FromObjectGetParent(), item);
-                }
-                storedItems.Clear();
-                SendData();
-                SoundEngine.PlaySound(SoundID.Grab, player.Center);
+            //右键打开专属箱子UI
+            if (player.whoAmI == Main.myPlayer) {
+                OceanRaidersUI.Instance.Open(this);
             }
             return true;
         }

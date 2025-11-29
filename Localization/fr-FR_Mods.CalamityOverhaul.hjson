@@ -6423,6 +6423,11 @@ UI: {
 		// ReturnToCampsiteText: 返回营地提交
 		// QuestCompleteText: 任务完成！
 	}
+
+	OceanRaidersUI: {
+		// TitleText: 海洋吞噬者存储
+		// StorageText: 存储空间
+	}
 }
 
 ADV: {
