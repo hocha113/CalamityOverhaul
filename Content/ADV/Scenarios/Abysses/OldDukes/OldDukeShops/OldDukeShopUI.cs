@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     /// <summary>
     /// 老公爵商店UI
     /// </summary>
-    internal class OldDukeShopUI : UIHandle
+    internal class OldDukeShopUI : UIHandle, ILocalizedModType
     {
         public static OldDukeShopUI Instance => UIHandleLoader.GetUIHandleOfType<OldDukeShopUI>();
 
@@ -20,6 +22,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             get => _active || animation.UIAlpha > 0f;
             set => _active = value;
         }
+
+        public string LocalizationCategory => "UI";
+        public static LocalizedText CurrencyName;
+        public static LocalizedText HintTooltip;
 
         //UI尺寸
         private const int PanelWidth = 580;
@@ -33,6 +39,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private readonly OldDukeShopEffects effects = new();
         private OldDukeShopInteraction interaction;
         private OldDukeShopRenderer renderer;
+
+        public override void SetStaticDefaults() {
+            CurrencyName = this.GetLocalization(nameof(CurrencyName), () => "海洋残片");
+            HintTooltip = this.GetLocalization(nameof(HintTooltip), () => "滚动/拖动条");
+        }
 
         public override void Update() {
             //更新动画进度

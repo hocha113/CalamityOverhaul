@@ -6386,6 +6386,11 @@ UI: {
 		// ContinueHint: 继续
 		// FastHint: 加速
 	}
+
+	OldDukeShopUI: {
+		// CurrencyName: 海洋残片
+		// HintTooltip: 滚动/拖动条
+	}
 }
 
 ADV: {

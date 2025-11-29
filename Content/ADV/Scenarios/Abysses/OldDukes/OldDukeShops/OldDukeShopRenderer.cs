@@ -195,9 +195,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.DeathText.Value;
             string title = "Old Duke's Treasure";
-
-            Vector2 titlePos = panelPosition + new Vector2(290, 35);
-            Vector2 titleSize = font.MeasureString(title) * 0.55f;
+            float titleSclse = 1f;
+            Vector2 titlePos = panelPosition + new Vector2(400, 35);
+            Vector2 titleSize = font.MeasureString(title) * titleSclse;
             titlePos.X -= titleSize.X / 2f;
 
             //标题发光效果
@@ -205,10 +205,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = ang.ToRotationVector2() * 2.5f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, glowColor * 0.6f, 0.55f);
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, glowColor * 0.6f, titleSclse);
             }
 
-            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, 0.55f);
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, titleSclse);
 
             //分割线
             DrawHeaderDivider(spriteBatch, panelPosition);
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             Utils.DrawBorderString(spriteBatch, countText, textPos, Color.White * animation.UIAlpha, 1f);
 
             //货币名称
-            string currencyName = "Ocean Fragments";
+            string currencyName = OldDukeShopUI.CurrencyName.Value;
             Vector2 nameSize = font.MeasureString(currencyName) * 0.7f;
             Vector2 namePos = currencyPos + new Vector2(40, 26);
             Utils.DrawBorderString(spriteBatch, currencyName, namePos, new Color(140, 170, 75) * animation.UIAlpha, 0.7f);
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             if (shopItems.Count <= OldDukeShopInteraction.MaxVisibleItems) return;
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string hint = "Scroll / Drag Bar";
+            string hint = OldDukeShopUI.HintTooltip.Value;
             Vector2 hintSize = font.MeasureString(hint) * 0.65f;
             Vector2 hintPos = panelPosition + new Vector2(290 - hintSize.X / 2f, 685);
 
