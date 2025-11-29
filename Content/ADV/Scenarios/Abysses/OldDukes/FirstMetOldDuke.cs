@@ -48,10 +48,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText C2Response { get; private set; }
         public static LocalizedText C3Response { get; private set; }
 
-        public override bool IsLoadingEnabled(Mod mod) {
-            return false;//没做完，禁用
-        }
-
         void IWorldInfo.OnWorldLoad() {
             //重置选择状态
             PlayerChoice = 0;

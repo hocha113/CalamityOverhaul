@@ -30,10 +30,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         private bool firstMeetCompleted = false;
         private bool hasTriggeredScenario = false;
 
-        public override bool IsLoadingEnabled(Mod mod) {
-            return false;//没做完，禁用
-        }
-
         public override void SetProperty() {
 
         }

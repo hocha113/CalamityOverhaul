@@ -9,10 +9,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items
     {
         public override string Texture => CWRConstant.Item_Other + "Oceanfragments";
 
-        public override bool IsLoadingEnabled(Mod mod) {
-            return false;//没做完，禁用
-        }
-
         public override void SetDefaults() {
             Item.useTime = Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.HoldUp;
