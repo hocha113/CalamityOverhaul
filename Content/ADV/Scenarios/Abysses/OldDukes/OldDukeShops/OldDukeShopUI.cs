@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     /// <summary>
     /// 老公爵商店UI

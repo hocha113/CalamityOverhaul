@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     internal class OldDukeShopHandle
     {

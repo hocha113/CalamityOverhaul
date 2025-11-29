@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.Items;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     /// <summary>
     /// ¿œπ´æÙ…ÃµÍ‰÷»æ∆˜

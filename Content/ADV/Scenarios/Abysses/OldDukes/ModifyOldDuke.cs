@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes.OldDukeShops;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using Terraria;
@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Sulfseas.OldDukes
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
     internal class ModifyOldDuke : NPCOverride
     {
