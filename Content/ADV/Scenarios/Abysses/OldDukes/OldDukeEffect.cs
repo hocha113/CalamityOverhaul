@@ -703,25 +703,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(0, 100)
             );
 
-            Vector2 velocity = new Vector2(
-                Main.rand.NextFloat(-0.3f, 0.3f),
-                Main.rand.NextFloat(-1.5f, -0.8f)
-            );
-
-            Color bubbleColor = Main.rand.NextBool(3) 
-                ? new Color(120, 220, 140, 180)
-                : new Color(150, 200, 100, 200);
-
-            PRT_Light toxicBubble = new PRT_Light(
+            PRT_ToxicBubble toxicBubble = new PRT_ToxicBubble(
                 spawnPos,
-                velocity,
+                new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-1.5f, -0.8f)),
                 Main.rand.NextFloat(0.8f, 1.6f),
-                bubbleColor,
-                Main.rand.Next(120, 200),
-                0.6f,
-                0.8f,
-                2f,
-                0.01f
+                Main.rand.Next(120, 200)
             );
             PRTLoader.AddParticle(toxicBubble);
         }
@@ -736,21 +722,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             );
 
             Vector2 velocity = Main.rand.NextVector2Circular(0.8f, 0.8f);
+            float depth = Main.rand.NextFloat(0.3f, 1f);
 
-            Color mistColor = Main.rand.NextBool() 
-                ? new Color(80, 140, 90, 100)
-                : new Color(100, 160, 80, 120);
-
-            PRT_Light acidMist = new PRT_Light(
+            PRT_ToxicMist acidMist = new PRT_ToxicMist(
                 spawnPos,
                 velocity,
                 Main.rand.NextFloat(2.5f, 4.5f),
-                mistColor,
                 Main.rand.Next(150, 250),
-                0.4f,
-                1.2f,
-                4f,
-                0.005f
+                depth
             );
             PRTLoader.AddParticle(acidMist);
         }
@@ -796,19 +775,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             Vector2 velocity = targetDirection.RotatedByRandom(0.8f) * Main.rand.NextFloat(1f, 2.5f);
 
-            Color corrosionColor = Main.rand.Next(3) switch {
-                0 => new Color(90, 180, 100),
-                1 => new Color(70, 160, 85),
-                _ => new Color(110, 200, 115)
-            };
-
-            PRT_Spark corrosionSpark = new PRT_Spark(
+            PRT_AcidSplash corrosionSpark = new PRT_AcidSplash(
                 spawnPos,
                 velocity,
-                false,
-                Main.rand.Next(100, 180),
                 Main.rand.NextFloat(0.7f, 1.4f),
-                corrosionColor
+                Main.rand.Next(100, 180),
+                false //从边缘飞入不受重力影响
             );
             PRTLoader.AddParticle(corrosionSpark);
         }
@@ -822,40 +794,53 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.25f, 0.75f)
             );
 
+            //生成主波纹
+            PRT_CorrosionWave mainWave = new PRT_CorrosionWave(
+                waveCenter,
+                0.2f,
+                1f,
+                90,
+                Main.rand.NextFloat(MathHelper.TwoPi)
+            );
+            PRTLoader.AddParticle(mainWave);
+
+            //生成次级波纹
+            for (int i = 0; i < 2; i++) {
+                PRT_CorrosionWave secondaryWave = new PRT_CorrosionWave(
+                    waveCenter,
+                    0.1f,
+                    0.6f,
+                    70,
+                    Main.rand.NextFloat(MathHelper.TwoPi)
+                );
+                PRTLoader.AddParticle(secondaryWave);
+            }
+
+            //环形酸液飞溅
             int waveCount = 16;
             for (int i = 0; i < waveCount; i++) {
                 float angle = MathHelper.TwoPi * i / waveCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
 
-                Color waveColor = Color.Lerp(
-                    new Color(100, 190, 110),
-                    new Color(80, 170, 90),
-                    Main.rand.NextFloat()
-                );
-
-                PRT_Spark waveSpark = new PRT_Spark(
+                PRT_AcidSplash waveSplash = new PRT_AcidSplash(
                     waveCenter,
                     velocity,
-                    false,
-                    Main.rand.Next(70, 120),
                     Main.rand.NextFloat(1f, 2f),
-                    waveColor
+                    Main.rand.Next(70, 120),
+                    false
                 );
-                PRTLoader.AddParticle(waveSpark);
+                PRTLoader.AddParticle(waveSplash);
             }
 
-            PRT_Light centerGlow = new PRT_Light(
+            //中心发光核心
+            PRT_SulfuricCore centerCore = new PRT_SulfuricCore(
                 waveCenter,
-                Vector2.Zero,
-                Main.rand.NextFloat(2f, 3.5f),
-                new Color(120, 210, 130),
-                90,
-                0.8f,
-                2f,
-                hueShift: 0.015f
+                Main.rand.NextFloat(0.15f, 0.5f),
+                60
             );
-            PRTLoader.AddParticle(centerGlow);
+            PRTLoader.AddParticle(centerCore);
 
+            //播放水泡音效
             if (Main.rand.NextBool(4)) {
                 SoundEngine.PlaySound(SoundID.Item21 with { 
                     Volume = 0.3f, 
@@ -874,73 +859,82 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.2f, 0.8f)
             );
 
-            int burstCount = 20;
+            //爆发核心
+            PRT_SulfuricCore burstCore = new PRT_SulfuricCore(
+                burstCenter,
+                Main.rand.NextFloat(0.2f, 0.5f),
+                90
+            );
+            PRTLoader.AddParticle(burstCore);
+
+            //外圈快速扩散的毒液飞溅
+            int burstCount = 24;
             for (int i = 0; i < burstCount; i++) {
-                float angle = MathHelper.TwoPi * i / burstCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
+                float angle = MathHelper.TwoPi * i / burstCount + Main.rand.NextFloat(-0.1f, 0.1f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
 
-                Color burstColor = Main.rand.NextBool() 
-                    ? new Color(110, 200, 120)
-                    : new Color(90, 180, 100);
-
-                PRT_Spark burstSpark = new PRT_Spark(
+                PRT_AcidSplash burstSplash = new PRT_AcidSplash(
                     burstCenter + Main.rand.NextVector2Circular(10f, 10f),
                     velocity,
-                    true,
-                    Main.rand.Next(60, 110),
-                    Main.rand.NextFloat(1.2f, 2f),
-                    burstColor
+                    Main.rand.NextFloat(0.2f, 0.4f),
+                    Main.rand.Next(6, 11),
+                    true //受重力影响
                 );
-                PRTLoader.AddParticle(burstSpark);
+                PRTLoader.AddParticle(burstSplash);
             }
 
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(-0.3f, 0.3f);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 2.5f);
-
-                PRT_Light mistBurst = new PRT_Light(
+            //多层扩散波纹
+            for (int i = 0; i < 3; i++) {
+                PRT_CorrosionWave burstWave = new PRT_CorrosionWave(
                     burstCenter,
+                    0.5f + i * 0.3f,
+                    2f + i * 0.6f,
+                    80 - i * 10,
+                    Main.rand.NextFloat(MathHelper.TwoPi)
+                );
+                PRTLoader.AddParticle(burstWave);
+            }
+
+            //内圈酸雾扩散
+            for (int i = 0; i < 12; i++) {
+                float angle = MathHelper.TwoPi * i / 12f + Main.rand.NextFloat(-0.3f, 0.3f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
+
+                PRT_ToxicMist mistBurst = new PRT_ToxicMist(
+                    burstCenter + Main.rand.NextVector2Circular(15f, 15f),
                     velocity,
-                    Main.rand.NextFloat(2f, 3.5f),
-                    new Color(85, 150, 95, 150),
-                    Main.rand.Next(100, 160),
-                    0.5f,
-                    1.5f,
-                    3.5f,
-                    0.008f
+                    Main.rand.NextFloat(2f, 4f),
+                    Main.rand.Next(10, 16),
+                    Main.rand.NextFloat(0.6f, 1f)
                 );
                 PRTLoader.AddParticle(mistBurst);
             }
 
-            PRT_Light centralBurst = new PRT_Light(
-                burstCenter,
-                Vector2.Zero,
-                Main.rand.NextFloat(3f, 5f),
-                new Color(130, 220, 140),
-                70,
-                1f,
-                2.5f,
-                hueShift: 0.02f
-            );
-            PRTLoader.AddParticle(centralBurst);
+            //细小的腐蚀碎片
+            for (int i = 0; i < 30; i++) {
+                Vector2 fragmentVelocity = Main.rand.NextVector2Circular(6f, 6f);
 
-            for (int i = 0; i < 25; i++) {
-                Vector2 fragmentVelocity = Main.rand.NextVector2Circular(5f, 5f);
-
-                PRT_Spark fragment = new PRT_Spark(
+                PRT_AcidSplash fragment = new PRT_AcidSplash(
                     burstCenter + Main.rand.NextVector2Circular(20f, 20f),
                     fragmentVelocity,
-                    true,
+                    Main.rand.NextFloat(0.5f, 1f),
                     Main.rand.Next(50, 100),
-                    Main.rand.NextFloat(0.6f, 1.2f),
-                    new Color(95, 185, 105)
+                    true
                 );
                 PRTLoader.AddParticle(fragment);
             }
 
+            //音效：硫酸沸腾声
             SoundEngine.PlaySound(SoundID.Item95 with { 
                 Volume = 0.5f, 
                 Pitch = -0.3f,
+                MaxInstances = 2
+            }, burstCenter);
+            
+            //额外的爆炸音效
+            SoundEngine.PlaySound(SoundID.Item14 with { 
+                Volume = 0.4f, 
+                Pitch = -0.6f,
                 MaxInstances = 2
             }, burstCenter);
         }
