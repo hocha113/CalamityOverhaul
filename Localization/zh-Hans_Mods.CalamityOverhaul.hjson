@@ -1407,6 +1407,14 @@ Items: {
 		DisplayName: 海洋残片
 		Tooltip: 一种神秘的小物件，老公爵可能会对它感兴趣
 	}
+
+	OceanRaiders: {
+		WorkingText: 正在工作中...
+		NoWaterText: 需要放置在水域上方才能工作！
+		NoEnergyText: 能量不足！
+		DisplayName: 海洋吞噬者
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

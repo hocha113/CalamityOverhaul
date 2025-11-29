@@ -1434,6 +1434,14 @@ Items: {
 		// DisplayName: Oceanfragments
 		// Tooltip: ""
 	}
+
+	OceanRaiders: {
+		// WorkingText: 正在工作中...
+		// NoWaterText: 需要放置在水域上方才能工作！
+		// NoEnergyText: 能量不足！
+		// DisplayName: Ocean Raiders
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
