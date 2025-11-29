@@ -4,7 +4,6 @@ using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
@@ -38,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (isFirstMeet && !firstMeetCompleted) {
                 //初见场景下使用自定义帧动画
                 npc.frameCounter += 0.08f;
-                npc.frameCounter %= Main.npcFrameCount[npc.type];
+                npc.frameCounter %= (Main.npcFrameCount[npc.type] - 1);//这里使用一个减1是避免张嘴动画
                 int frame = (int)npc.frameCounter;
                 npc.frame.Y = frame * frameHeight;
                 return false;
@@ -49,7 +48,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override bool AI() {
             npc.TargetClosest();
             Player target = Main.player[npc.target];
-            SetTog(target);
+            
+            //检查并更新初见场景状态
+            UpdateFirstMeetState(target);
+            
             //如果是初见场景,执行特殊AI
             if (isFirstMeet && !firstMeetCompleted) {
                 return FirstMeetAI();
@@ -59,22 +61,46 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             return base.AI();
         }
 
-        public void SetTog(Player target) {
-            //检查是否为初见场景
-            if (target.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                if (!halibutPlayer.ADVSave.FirstMetOldDuke && !halibutPlayer.ADVSave.OldDukeChoseToFight) {
-                    //首次相遇且未选择战斗
+        /// <summary>
+        /// 更新初见场景状态
+        /// </summary>
+        private void UpdateFirstMeetState(Player target) {
+            if (!target.TryGetADVSave(out var save)) {
+                return;
+            }
+
+            OldDukeInteractionState state = save.OldDukeState;
+
+            //根据保存的状态决定是否触发初见场景
+            switch (state) {
+                case OldDukeInteractionState.NotMet:
+                    //首次相遇，触发初见场景
                     isFirstMeet = true;
                     firstMeetCompleted = false;
+                    //标记已遇见（设置为Met状态）
+                    save.OldDukeState = OldDukeInteractionState.Met;
+                    break;
 
-                    //标记已遇见（由场景触发后设置）
-                    halibutPlayer.ADVSave.FirstMetOldDuke = true;
-                }
-                else if (halibutPlayer.ADVSave.OldDukeChoseToFight) {
-                    //之前选择了战斗，直接进入战斗
+                case OldDukeInteractionState.DeclinedCooperation:
+                    //拒绝了合作但没有战斗，可以重新触发对话
+                    isFirstMeet = true;
+                    firstMeetCompleted = false;
+                    break;
+
+                case OldDukeInteractionState.ChoseToFight:
+                case OldDukeInteractionState.AcceptedCooperation:
+                    //已选择战斗或已接受合作，不再触发初见场景
                     isFirstMeet = false;
                     firstMeetCompleted = true;
-                }
+                    break;
+
+                case OldDukeInteractionState.Met:
+                    //已遇见但未做选择，继续初见场景
+                    if (!hasTriggeredScenario) {
+                        isFirstMeet = true;
+                        firstMeetCompleted = false;
+                    }
+                    break;
             }
         }
 
@@ -159,27 +185,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             //检查对话是否结束并根据玩家选择决定下一步
             if (!OldDukeEffect.IsActive && Timer > 60) {
                 //对话结束，根据玩家选择执行相应逻辑
-                int playerChoice = FirstMetOldDuke.PlayerChoice;
+                OldDukeInteractionState playerChoice = FirstMetOldDuke.CurrentPlayerChoice;
 
-                if (playerChoice == 1) {
-                    //选择1：接受合作 - 离开
-                    State = (float)OldDukeAIState.LeavingDive;
-                    Timer = 0;
-                    SubState = 0;
-                    SoundEngine.PlaySound(SoundID.Splash, npc.Center);
-                }
-                else if (playerChoice == 2) {
-                    //选择2：拒绝合作 - 离开
-                    State = (float)OldDukeAIState.LeavingDive;
-                    Timer = 0;
-                    SubState = 0;
-                    SoundEngine.PlaySound(SoundID.Splash, npc.Center);
-                }
-                else if (playerChoice == 3) {
-                    //选择3：拒绝并战斗 - 开始战斗
-                    State = (float)OldDukeAIState.StartBattle;
-                    Timer = 0;
-                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = -0.2f }, npc.Center);
+                switch (playerChoice) {
+                    case OldDukeInteractionState.AcceptedCooperation:
+                        //接受合作 - 离开
+                        State = (float)OldDukeAIState.LeavingDive;
+                        Timer = 0;
+                        SubState = 0;
+                        SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        break;
+
+                    case OldDukeInteractionState.DeclinedCooperation:
+                        //拒绝合作 - 离开
+                        State = (float)OldDukeAIState.LeavingDive;
+                        Timer = 0;
+                        SubState = 0;
+                        SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        break;
+
+                    case OldDukeInteractionState.ChoseToFight:
+                        //选择战斗 - 开始战斗
+                        State = (float)OldDukeAIState.StartBattle;
+                        Timer = 0;
+                        SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = -0.2f }, npc.Center);
+                        break;
                 }
             }
         }
@@ -230,9 +260,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     npc.netUpdate = true;
 
                     //如果接受了合作，打开商店UI
-                    if (FirstMetOldDuke.PlayerChoice == 1) {
-                        if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                            if (halibutPlayer.ADVSave.OldDukeCooperationAccepted) {
+                    if (FirstMetOldDuke.CurrentPlayerChoice == OldDukeInteractionState.AcceptedCooperation) {
+                        if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                            if (save.OldDukeCooperationAccepted) {
                                 OldDukeShopUI.Instance.Active = true;
                             }
                         }

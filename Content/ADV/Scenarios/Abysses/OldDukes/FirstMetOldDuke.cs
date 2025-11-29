@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
         /// <summary>
-        /// 玩家选择结果：0=未选择，1=接受合作，2=拒绝合作，3=拒绝并战斗
+        /// 当前玩家的选择（临时变量，用于NPC AI判断）
         /// </summary>
-        public static int PlayerChoice = 0;
+        public static OldDukeInteractionState CurrentPlayerChoice { get; set; } = OldDukeInteractionState.NotMet;
 
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText L4 { get; private set; }
         public static LocalizedText L5 { get; private set; }
         public static LocalizedText L6 { get; private set; }
+
+        public static LocalizedText B1 { get; private set; }
 
         //比目鱼台词（如果有比目鱼）
         public static LocalizedText HL1 { get; private set; }
@@ -50,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         void IWorldInfo.OnWorldLoad() {
             //重置选择状态
-            PlayerChoice = 0;
+            CurrentPlayerChoice = OldDukeInteractionState.NotMet;
         }
 
         public override void SetStaticDefaults() {
@@ -61,9 +63,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
             L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
             L3 = this.GetLocalization(nameof(L3), () => "我们可以合作");
-            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集这种海洋残片");
+            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集海洋残片");
             L5 = this.GetLocalization(nameof(L5), () => "如果你可以帮我找来更多，我会给予相应的报酬");
-            L6 = this.GetLocalization(nameof(L6), () => "作为见面礼，这是一份样本");
+            L6 = this.GetLocalization(nameof(L6), () => "这是一份样本");
+
+            B1 = this.GetLocalization(nameof(B1), () => "你改主意了吗？");
 
             //比目鱼台词
             HL1 = this.GetLocalization(nameof(HL1), () => "老教授......?不过他看起来不认识我了");
@@ -82,13 +86,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             //开启硫磺海效果
             OldDukeEffect.IsActive = true;
             //重置选择
-            PlayerChoice = 0;
+            CurrentPlayerChoice = OldDukeInteractionState.NotMet;
         }
 
         protected override void Build() {
             //注册立绘（老公爵暂时没有专属立绘，使用null）
             DialogueBoxBase.RegisterPortrait(OldDukeName.Value, texture: null);
             DialogueBoxBase.SetPortraitStyle(OldDukeName.Value, silhouette: true);
+
+            //检查是否已经拒绝过合作，这里直接跳转到选项部分
+            if (Main.LocalPlayer.TryGetADVSave(out var save) && save.OldDukeCooperationDeclined) {
+                //添加选项
+                AddWithChoices(
+                    OldDukeName.Value,
+                    B1.Value,
+                    [
+                        new Choice(C1.Value, Choice1),
+                    new Choice(C2.Value, Choice2),
+                    new Choice(C3.Value, Choice3),
+                    ],
+                    onStart: null,//不要重复给东西
+                    styleOverride: () => SulfseaDialogueBox.Instance,
+                    choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Sulfsea
+                );
+                return;
+            }
 
             //检查是否有比目鱼
             bool hasHalibut = false;
@@ -166,7 +188,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项1：接受合作
         public void Choice1() {
-            PlayerChoice = 1;
+            CurrentPlayerChoice = OldDukeInteractionState.AcceptedCooperation;
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
             Complete();
         }
@@ -182,14 +204,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             protected override void OnScenarioComplete() {
                 //保存状态：接受合作
-                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    halibutPlayer.ADVSave.OldDukeCooperationAccepted = true;
-                    halibutPlayer.ADVSave.OldDukeCooperationDeclined = false;
-                    halibutPlayer.ADVSave.OldDukeChoseToFight = false;
+                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                    save.OldDukeState = OldDukeInteractionState.AcceptedCooperation;
                 }
-
-                //通知NPC执行离开AI
-                //NPC会在ModifyOldDuke中检测PlayerChoice并执行相应AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
@@ -198,7 +215,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项2：拒绝合作
         public void Choice2() {
-            PlayerChoice = 2;
+            CurrentPlayerChoice = OldDukeInteractionState.DeclinedCooperation;
             ScenarioManager.Start<FirstMetOldDuke_Choice2>();
             Complete();
         }
@@ -214,14 +231,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             protected override void OnScenarioComplete() {
                 //保存状态：拒绝合作（但没有战斗，下次还可以选择）
-                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    halibutPlayer.ADVSave.OldDukeCooperationDeclined = true;
-                    halibutPlayer.ADVSave.OldDukeCooperationAccepted = false;
-                    halibutPlayer.ADVSave.OldDukeChoseToFight = false;
+                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                    save.OldDukeState = OldDukeInteractionState.DeclinedCooperation;
                 }
-
-                //通知NPC执行离开AI
-                //NPC会在ModifyOldDuke中检测PlayerChoice并执行相应AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
@@ -230,7 +242,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项3：拒绝合作并拔出武器
         public void Choice3() {
-            PlayerChoice = 3;
+            CurrentPlayerChoice = OldDukeInteractionState.ChoseToFight;
             ScenarioManager.Start<FirstMetOldDuke_Choice3>();
             Complete();
         }
@@ -246,14 +258,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             protected override void OnScenarioComplete() {
                 //保存状态：选择战斗，以后直接进入战斗
-                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    halibutPlayer.ADVSave.OldDukeChoseToFight = true;
-                    halibutPlayer.ADVSave.OldDukeCooperationAccepted = false;
-                    halibutPlayer.ADVSave.OldDukeCooperationDeclined = false;
+                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                    save.OldDukeState = OldDukeInteractionState.ChoseToFight;
                 }
-
-                //通知NPC开始战斗
-                //NPC会在ModifyOldDuke中检测PlayerChoice=3并恢复战斗AI
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;

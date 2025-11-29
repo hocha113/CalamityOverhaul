@@ -6,6 +6,23 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
 {
+    /// <summary>
+    /// 老公爵交互状态枚举
+    /// </summary>
+    public enum OldDukeInteractionState
+    {
+        /// <summary>未遇见</summary>
+        NotMet = 0,
+        /// <summary>已遇见但未做选择</summary>
+        Met = 1,
+        /// <summary>接受合作</summary>
+        AcceptedCooperation = 2,
+        /// <summary>拒绝合作（可重新选择）</summary>
+        DeclinedCooperation = 3,
+        /// <summary>选择战斗（永久战斗）</summary>
+        ChoseToFight = 4
+    }
+
     public class ADVSave
     {
         public bool HasCaughtHalibut;
@@ -72,10 +89,44 @@ namespace CalamityOverhaul.Content.ADV
         public bool ExoMechSecondDefeat;//玩家是否观看过机甲嘉登的第二次战败对话
         public bool ExoMechThirdDefeat;//玩家是否观看过机甲嘉登的第三次战败对话
         public int ExoMechDefeatCount;//玩家击败机甲的次数
-        public bool FirstMetOldDuke;
-        public bool OldDukeCooperationAccepted;//玩家是否接受了老公爵的合作
-        public bool OldDukeCooperationDeclined;//玩家是否拒绝了老公爵的合作
-        public bool OldDukeChoseToFight;//玩家是否选择与老公爵战斗
+
+        /// <summary>
+        /// 老公爵交互状态
+        /// </summary>
+        public int OldDukeInteraction;
+
+        /// <summary>
+        /// 获取老公爵交互状态
+        /// </summary>
+        public OldDukeInteractionState OldDukeState {
+            get => (OldDukeInteractionState)OldDukeInteraction;
+            set => OldDukeInteraction = (int)value;
+        }
+
+        /// <summary>
+        /// 是否首次遇见老公爵
+        /// </summary>
+        public bool FirstMetOldDuke => OldDukeState != OldDukeInteractionState.NotMet;
+
+        /// <summary>
+        /// 是否接受了与老公爵的合作
+        /// </summary>
+        public bool OldDukeCooperationAccepted => OldDukeState == OldDukeInteractionState.AcceptedCooperation;
+
+        /// <summary>
+        /// 是否拒绝了与老公爵的合作（但可重新选择）
+        /// </summary>
+        public bool OldDukeCooperationDeclined => OldDukeState == OldDukeInteractionState.DeclinedCooperation;
+
+        /// <summary>
+        /// 是否选择与老公爵战斗（永久战斗状态）
+        /// </summary>
+        public bool OldDukeChoseToFight => OldDukeState == OldDukeInteractionState.ChoseToFight;
+
+        /// <summary>
+        /// 是否可以重新触发老公爵对话（拒绝合作但未战斗）
+        /// </summary>
+        public bool CanRetriggerOldDukeDialogue => OldDukeState == OldDukeInteractionState.DeclinedCooperation;
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
