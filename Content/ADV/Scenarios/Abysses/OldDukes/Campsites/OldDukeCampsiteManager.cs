@@ -55,7 +55,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 OldDukeCampsite.GenerateCampsite(position.Value);
             }
             else {
-                //如果找不到合适位置，记录警告但不生成营地
+                //如果找不到合适位置，则在世界右上角生成
+                OldDukeCampsite.GenerateCampsite(new Vector2(Main.maxTilesX - 400, Main.maxTilesY / 8));
             }
         }
 
