@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             }
 
             //更新槽位悬停动画
-            animation.UpdateSlotHoverAnimations(interaction.HoveredIndex);
+            animation.UpdateSlotHoverAnimations(interaction.HoveredIndex, interaction.ScrollOffset);
         }
 
         private void UpdateInteraction(Vector2 panelPosition) {

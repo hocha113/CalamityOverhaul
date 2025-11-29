@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText L6 { get; private set; }
 
         public static LocalizedText B1 { get; private set; }
+        public static LocalizedText B2 { get; private set; }
 
         //比目鱼台词（如果有比目鱼）
         public static LocalizedText HL1 { get; private set; }
@@ -68,6 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             L6 = this.GetLocalization(nameof(L6), () => "这是一份样本");
 
             B1 = this.GetLocalization(nameof(B1), () => "你改主意了吗？");
+            B2 = this.GetLocalization(nameof(B2), () => "那么再见");
 
             //比目鱼台词
             HL1 = this.GetLocalization(nameof(HL1), () => "老教授......?不过他看起来不认识我了");
@@ -102,8 +104,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     B1.Value,
                     [
                         new Choice(C1.Value, Choice1),
-                    new Choice(C2.Value, Choice2),
-                    new Choice(C3.Value, Choice3),
+                        new Choice(C2.Value, Choice2),
+                        new Choice(C3.Value, Choice3),
                     ],
                     onStart: null,//不要重复给东西
                     styleOverride: () => SulfseaDialogueBox.Instance,
@@ -189,6 +191,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项1：接受合作
         public void Choice1() {
             CurrentPlayerChoice = OldDukeInteractionState.AcceptedCooperation;
+            ScenarioManager.Reset<FirstMetOldDuke_Choice1>();
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
             Complete();
         }
@@ -216,6 +219,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项2：拒绝合作
         public void Choice2() {
             CurrentPlayerChoice = OldDukeInteractionState.DeclinedCooperation;
+            ScenarioManager.Reset<FirstMetOldDuke_Choice2>();
             ScenarioManager.Start<FirstMetOldDuke_Choice2>();
             Complete();
         }
@@ -226,6 +230,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
             protected override void Build() {
+                if (Main.LocalPlayer.TryGetADVSave(out var save) && save.OldDukeCooperationDeclined) {
+                    Add(OldDukeName.Value, B2.Value);
+                    return;
+                }
                 Add(OldDukeName.Value, C2Response.Value);
             }
 
@@ -243,6 +251,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项3：拒绝合作并拔出武器
         public void Choice3() {
             CurrentPlayerChoice = OldDukeInteractionState.ChoseToFight;
+            ScenarioManager.Reset<FirstMetOldDuke_Choice3>();
             ScenarioManager.Start<FirstMetOldDuke_Choice3>();
             Complete();
         }

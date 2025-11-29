@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 npc.velocity.X = (float)System.Math.Sin(Timer * 0.1f) * 3f;
 
                 //旋转效果
-                npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+                npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
 
                 //生成水花粒子
                 if (Timer % 5 == 0) {
