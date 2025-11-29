@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
@@ -36,6 +38,41 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             //稀有物品
             shopItems.Add(new OldDukeShopItem(ItemID.ReefBlock, 99, 2));
             shopItems.Add(new OldDukeShopItem(ItemID.Seaweed, 20, 1));
+
+            var rareDrops = GetNPCDrops(CWRID.NPC_OldDuke, true);
+            foreach (var id in rareDrops) {
+                Item item = new Item(id);
+                shopItems.Add(new OldDukeShopItem(id, 1, (int)MathHelper.Clamp(item.value / 6000, 1, 9999)));
+            }
+        }
+
+        /// <summary>
+        /// 获取指定NPC的所有掉落物品ID
+        /// </summary>
+        /// <param name="npcId">NPC的ID</param>
+        /// <param name="includeGlobalRules">是否包含全局掉落规则</param>
+        /// <returns>掉落物品ID的集合</returns>
+        public static HashSet<int> GetNPCDrops(int npcId, bool includeGlobalRules = false) {
+            HashSet<int> drops = new HashSet<int>();
+
+            // 从游戏数据库获取该NPC的掉落规则
+            List<IItemDropRule> dropRules = Main.ItemDropsDB.GetRulesForNPCID(npcId, includeGlobalRules);
+
+            // 创建掉落率信息列表
+            List<DropRateInfo> dropRateInfoList = new List<DropRateInfo>();
+            DropRateInfoChainFeed ratesInfo = new DropRateInfoChainFeed(1f);
+
+            // 解析每个掉落规则
+            foreach (IItemDropRule rule in dropRules) {
+                rule.ReportDroprates(dropRateInfoList, ratesInfo);
+            }
+
+            // 收集所有物品ID
+            foreach (DropRateInfo dropRateInfo in dropRateInfoList) {
+                drops.Add(dropRateInfo.itemId);
+            }
+
+            return drops;
         }
     }
 }

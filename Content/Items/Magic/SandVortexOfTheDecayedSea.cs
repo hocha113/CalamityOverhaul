@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.shootSpeed = 6;
             Item.UseSound = SoundID.Item20;
             Item.rare = ItemRarityID.Red;
-            Item.value = Item.buyPrice(0, 2, 0, 5);
+            Item.value = Item.buyPrice(1, 2, 0, 5);
             Item.SetHeldProj<SandVortexOfTheDecayedSeaHeld>();
         }
     }
