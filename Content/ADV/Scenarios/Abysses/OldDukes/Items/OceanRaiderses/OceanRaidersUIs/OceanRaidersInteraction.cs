@@ -85,6 +85,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 if (HoveredSlot != -1) break;
             }
 
+            if (HoveredSlot >= 0 && HoveredSlot < machine.storedItems.Count) {
+                Main.HoverItem = machine.storedItems[HoveredSlot];
+                Main.hoverItemName = machine.storedItems[HoveredSlot].Name;
+            }
+
             //´¦ÀíÍÏ×§Âß¼­
             HandleDragAndDrop();
         }

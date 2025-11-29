@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             }
 
             //检查机器是否仍然有效
-            if (currentMachine == null || !currentMachine.Active) {
+            if (currentMachine == null || !currentMachine.Active || currentMachine.CenterInWorld.To(player.Center).Length() > 220) {
                 _active = false;
                 return;
             }
@@ -123,10 +123,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
 
                 //处理槽位交互
-                if (keyLeftPressState != KeyPressState.None) {
-                    Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
-                    interaction.UpdateSlotInteraction(MousePosition.ToPoint(), storageStartPos);
-                }
+                Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
+                interaction.UpdateSlotInteraction(MousePosition.ToPoint(), storageStartPos);
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
                 _active = false;

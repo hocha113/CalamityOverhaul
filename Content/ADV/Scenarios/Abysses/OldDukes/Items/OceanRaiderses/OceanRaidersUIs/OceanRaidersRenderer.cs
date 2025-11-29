@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         private const int SlotSize = 32;
         private const int SlotPadding = 4;
         private const int SlotsPerRow = 20;
-        private const int SlotRows = 18;
+        private const int SlotRows = 17;
         private const int HeaderHeight = 80; //标题区域高度
         private const int StorageStartX = 20; //存储区左边距
         private const int StorageStartY = HeaderHeight + 10; //存储区顶部边距
