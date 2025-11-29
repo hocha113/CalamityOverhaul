@@ -1,5 +1,4 @@
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
@@ -46,53 +45,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 尝试在地图右侧海岸生成营地
+        /// 尝试生成营地
         /// </summary>
         private static void TryGenerateCampsite() {
-            //在世界右侧寻找合适的位置
-            int worldRightEdge = Main.maxTilesX - 200;//距离右侧边缘200格
+            //使用位置查找器寻找最佳位置
+            Vector2? position = CampsiteLocationFinder.FindBestLocation();
 
-            //从地表向下搜索
-            int startY = (int)(Main.worldSurface * 0.35f);//从地表上方开始
-            int endY = (int)(Main.worldSurface * 1.2f);//到地表下方
-
-            for (int y = startY; y < endY; y++) {
-                Tile tile = Main.tile[worldRightEdge, y];
-                if (tile == null) {
-                    continue;
-                }
-
-                //检查是否是实心地面
-                if (tile.HasTile && Main.tileSolid[tile.TileType]) {
-                    //检查上方是否有足够空间
-                    bool hasSpace = true;
-                    for (int checkY = y - 1; checkY >= y - 10; checkY--) {
-                        Tile checkTile = Main.tile[worldRightEdge, checkY];
-                        if (checkTile != null && checkTile.HasTile && Main.tileSolid[checkTile.TileType]) {
-                            hasSpace = false;
-                            break;
-                        }
-                    }
-
-                    if (hasSpace) {
-                        //找到合适位置，生成营地
-                        Vector2 campsitePosition = new Vector2(
-                            worldRightEdge * 16 + 8,//转换为像素坐标，并居中
-                            y * 16 - 32//稍微抬高一点
-                        );
-
-                        OldDukeCampsite.GenerateCampsite(campsitePosition);
-                        return;
-                    }
-                }
+            if (position.HasValue) {
+                OldDukeCampsite.GenerateCampsite(position.Value);
             }
-
-            //如果没找到合适位置，使用默认位置
-            Vector2 defaultPos = new Vector2(
-                (Main.maxTilesX - 200) * 16,
-                (int)(Main.worldSurface * 16) - 64
-            );
-            OldDukeCampsite.GenerateCampsite(defaultPos);
+            else {
+                //如果找不到合适位置，记录警告但不生成营地
+            }
         }
 
         public override void OnWorldUnload() {

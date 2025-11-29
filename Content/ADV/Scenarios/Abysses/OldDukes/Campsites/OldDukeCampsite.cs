@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
@@ -9,15 +10,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     /// <summary>
     /// 老公爵营地
     /// </summary>
-    internal class OldDukeCampsite : ModSystem
+    [VaultLoaden("@CalamityMod/NPCs/OldDuke/")]
+    internal class OldDukeCampsite : ModSystem, ILocalizedModType
     {
         //反射加载老公爵贴图，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
-        [VaultLoaden("@CalamityMod/NPCs/OldDuke/OldDuke")]
         public static Texture2D OldDuke;
+        //老公爵的头像图标
+        public static Texture2D OldDuke_Head_Boss;
 
         //营地数据
         public static bool IsGenerated { get; private set; }
         public static Vector2 CampsitePosition { get; private set; }
+
+        public string LocalizationCategory => "ADV.OldDukeCampsite";
 
         //动画状态
         private static int animationFrame;
@@ -28,7 +33,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         //交互状态
         private static bool isPlayerNearby;
         private static float interactPromptAlpha;
-        private const float InteractDistance = 120f;//交互距离（像素）
+        private const float InteractDistance = 220f;//交互距离（像素）
+
+        public static LocalizedText TitleText;
+
+        public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "老公爵营地");
+        }
 
         public override void PostUpdateEverything() {
             if (!IsGenerated) {
