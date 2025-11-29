@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,12 +12,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items
             Item.useTime = Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.width = Item.height = 32;
+            Item.maxStack = 9999;
             Item.value = 6000;
             Item.rare = ItemRarityID.Green;
         }
 
         public override bool? UseItem(Player player) {
-            OldDukeShopUI.Instance.Active = !OldDukeShopUI.Instance.Active;
             return true;
         }
     }

@@ -6419,7 +6419,7 @@ UI: {
 	FindFragmentUI: {
 		// QuestTitle: 深渊在呼唤
 		// DamageContribution: 收集进度
-		// RequiredContribution: 目标: 收集880块海洋残片
+		// RequiredContribution: 目标: 收集777块海洋残片
 		// ObjectiveText: 目标
 		// CollectFragmentsText: 收集海洋残片
 		// CurrentFragmentsText: 当前拥有

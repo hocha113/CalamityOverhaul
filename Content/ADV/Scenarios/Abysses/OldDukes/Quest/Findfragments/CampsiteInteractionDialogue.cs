@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             else {
                 //任务进行中，显示选项
                 int fragmentCount = GetFragmentCount();
-                bool hasEnoughFragments = fragmentCount >= 880;
+                bool hasEnoughFragments = fragmentCount >= 777;
 
                 AddWithChoices(
                     OldDukeName.Value,
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
             protected override void OnScenarioComplete() {
                 //消耗海洋残片
-                ConsumeFragments(880);
+                ConsumeFragments(777);
 
                 //标记任务完成
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {

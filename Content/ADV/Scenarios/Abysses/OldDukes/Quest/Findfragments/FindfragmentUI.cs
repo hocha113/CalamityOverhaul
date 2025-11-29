@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         protected override void SetupLocalizedTexts() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "深渊在呼唤");
             DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "收集进度");
-            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "目标: 收集880块海洋残片");
+            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "目标: 收集777块海洋残片");
         }
 
         public override bool CanOpne {
@@ -92,11 +92,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
 
         protected override (float current, float total, bool isActive) GetTrackingData() {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
-                return (0, 880, false);
+                return (0, 777, false);
             }
 
             float current = GetFragmentCount();
-            float total = 880f;
+            float total = 777;
             bool isActive = save.OldDukeFindFragmentsQuestTriggered && !save.OldDukeFindFragmentsQuestCompleted;
 
             return (current, total, isActive);
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         }
 
         protected override float GetRequiredContribution() {
-            return 880f;
+            return 777;
         }
 
         protected override void UpdatePanelHeight() {
@@ -348,10 +348,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
 
             //当前数量
             Vector2 countPos = startPos + new Vector2(0, 18);
-            string countText = $"{CurrentFragmentsText.Value}: {fragmentCount}/880";
+            string countText = $"{CurrentFragmentsText.Value}: {fragmentCount}/777";
             
             Color countColor;
-            if (fragmentCount >= 880) {
+            if (fragmentCount >= 777) {
                 float pulse = (float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f;
                 countColor = Color.LimeGreen * (alpha * pulse);
             }
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             Utils.DrawBorderString(spriteBatch, countText, countPos, countColor, textScale);
 
             //返回提示
-            if (fragmentCount >= 880) {
+            if (fragmentCount >= 777) {
                 Vector2 returnPos = countPos + new Vector2(0, 18);
                 float blink = (float)Math.Sin(pulseTimer * 4f) * 0.5f + 0.5f;
                 Color returnColor = new Color(160, 220, 100) * (alpha * blink);
