@@ -7288,4 +7288,11 @@ ADV: {
 		// C2Response: ......那我就先离开了，如果你改变主意，随时可以再来找我
 		// C3Response: ......看来你执意如此，那就让我来称量称量你吧
 	}
+
+	OldDukeCampsite: {
+		OldDukeCampsiteRenderer: {
+			// InteractHint: "[右键] 对话"
+			// GreetingText: 嗯？你好啊...
+		}
+	}
 }
