@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
@@ -48,10 +47,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override bool AI() {
             npc.TargetClosest();
             Player target = Main.player[npc.target];
-            
+
             //检查并更新初见场景状态
             UpdateFirstMeetState(target);
-            
+
             //如果是初见场景,执行特殊AI
             if (isFirstMeet && !firstMeetCompleted) {
                 return FirstMeetAI();

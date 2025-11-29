@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void AI() {
             //颜色渐变到更深的绿色
             Color = Color.Lerp(acidColor, new Color(60, 120, 70), LifetimeCompletion);
-            
+
             //透明度变化
             Opacity = 1f - (float)Math.Pow(LifetimeCompletion, 2);
 

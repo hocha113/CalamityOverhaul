@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                 burstPhase = 2;
                 float fadeProgress = (progress - 0.4f) / 0.6f;
                 Opacity = (float)Math.Sin((1f - fadeProgress) * MathHelper.PiOver2);
-                
+
                 //脉动效果
                 float pulse = MathF.Sin(Time * pulseSpeed) * 0.1f + 1f;
                 Scale = MathHelper.Lerp(maxPulseScale, maxPulseScale * 0.5f, fadeProgress) * pulse;
@@ -87,11 +87,11 @@ namespace CalamityOverhaul.Content.PRTTypes
                 case 0: //膨胀阶段，明亮的核心
                     DrawExpandingCore(spriteBatch, texture, drawPos, origin);
                     break;
-                    
+
                 case 1: //闪光阶段，强烈的光芒
                     DrawFlashCore(spriteBatch, texture, drawPos, origin);
                     break;
-                    
+
                 case 2: //脉动阶段，柔和的余辉
                     DrawPulsingCore(spriteBatch, texture, drawPos, origin);
                     break;
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private void DrawPulsingCore(SpriteBatch sb, Texture2D tex, Vector2 pos, Vector2 origin) {
             //柔和的脉动光晕
             float pulse = MathF.Sin(Time * pulseSpeed * 2f) * 0.3f + 0.7f;
-            
+
             for (int i = 0; i < 4; i++) {
                 float ringScale = Scale * (1f + i * 0.25f * pulse);
                 float ringAlpha = Opacity * (1f - i * 0.25f);

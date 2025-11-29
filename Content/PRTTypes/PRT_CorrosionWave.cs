@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             );
 
             //Ëæ»ú¸¯Ê´ÑÕÉ«
-            waveColor = Main.rand.NextBool() 
+            waveColor = Main.rand.NextBool()
                 ? new Color(90, 180, 100)
                 : new Color(110, 200, 115);
             glowColor = new Color(150, 230, 160);

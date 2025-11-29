@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         public void UpdateSlotHoverAnimations(int hoveredIndex, int scrollOffset) {
             //hoveredIndex 是全局索引，需要转换为可见槽位索引
             int visibleSlotIndex = hoveredIndex >= 0 ? hoveredIndex - scrollOffset : -1;
-            
+
             for (int i = 0; i < SlotHoverProgress.Length; i++) {
                 float target = i == visibleSlotIndex ? 1f : 0f;
                 SlotHoverProgress[i] = MathHelper.Lerp(SlotHoverProgress[i], target, 0.15f);

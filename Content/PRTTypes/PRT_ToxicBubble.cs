@@ -24,13 +24,13 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity = velocity;
             Scale = scale;
             Lifetime = lifetime;
-            
+
             //随机毒绿色调
-            coreColor = Main.rand.NextBool() 
+            coreColor = Main.rand.NextBool()
                 ? new Color(120, 220, 140, 120)
                 : new Color(150, 200, 100, 140);
             rimColor = new Color(180, 240, 160, 200);
-            
+
             floatWobble = Main.rand.NextFloat(MathHelper.TwoPi);
             shimmerTimer = Main.rand.NextFloat(MathHelper.TwoPi);
         }
@@ -72,12 +72,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             if (isPopping) {
                 //气泡扁平化
                 Scale *= 1.05f;
-                
+
                 //生成破裂飞溅粒子
                 if (Main.rand.NextBool(3)) {
                     Vector2 splashVel = Main.rand.NextVector2Circular(2f, 2f);
                     splashVel.Y -= 1f;
-                    
+
                     PRT_AcidSplash splash = new PRT_AcidSplash(
                         Position,
                         splashVel,
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 origin = texture.Size() / 2f;
 
             //破裂时的扁平化效果
-            Vector2 scaleVector = isPopping 
+            Vector2 scaleVector = isPopping
                 ? new Vector2(Scale * (1f + popProgress * 0.5f), Scale * (1f - popProgress * 0.3f))
                 : new Vector2(Scale);
 

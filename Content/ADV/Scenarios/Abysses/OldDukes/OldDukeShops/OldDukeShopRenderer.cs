@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         /// </summary>
         private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             Vector2 closeButtonPos = panelPosition + new Vector2(580 - OldDukeShopInteraction.CloseButtonSize - 15, 15);
             Rectangle closeButtonRect = new Rectangle(
                 (int)closeButtonPos.X,
@@ -255,20 +255,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 new Color(180, 90, 70) * (animation.UIAlpha * 0.9f),
                 hoverProgress
             );
-            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, closeButtonRect.Width, 2), 
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, closeButtonRect.Width, 2),
                 new Rectangle(0, 0, 1, 1), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Bottom - 2, closeButtonRect.Width, 2), 
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Bottom - 2, closeButtonRect.Width, 2),
                 new Rectangle(0, 0, 1, 1), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, 2, closeButtonRect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, 2, closeButtonRect.Height),
                 new Rectangle(0, 0, 1, 1), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height),
                 new Rectangle(0, 0, 1, 1), edgeColor);
 
             //»æÖÆX·ûºÅ
             Vector2 center = new Vector2(closeButtonRect.X + closeButtonRect.Width / 2f, closeButtonRect.Y + closeButtonRect.Height / 2f);
             float xSize = 12f + hoverProgress * 2f;
             float thickness = 2.5f + hoverProgress * 0.5f;
-            
+
             Color xColor = Color.Lerp(
                 new Color(140, 170, 75) * animation.UIAlpha,
                 new Color(220, 110, 90) * animation.UIAlpha,
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 0.1f) return;
-            
+
             float rotation = edge.ToRotation();
             spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation,
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0);

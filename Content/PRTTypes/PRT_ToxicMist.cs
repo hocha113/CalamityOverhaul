@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             //速度衰减（雾气漂浮）
             Velocity *= 0.98f;
-            
+
             //轻微上升（毒气特性）
             Velocity.Y -= 0.02f * depthLayer;
         }
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Texture2D bloomTexture = BloomTex.Value;
 
             Vector2 drawPos = Position - Main.screenPosition;
-            
+
             //计算当前帧
             int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameCount));
             animationFrame = Math.Clamp(animationFrame, 0, FrameCount - 1);

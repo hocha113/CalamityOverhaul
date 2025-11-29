@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Color waveColor = sulfurColors[colorIndex];
 
                 int y = (int)(Main.screenHeight * (0.2f + i * 0.2f));
-                
+
                 //绘制波动的毒液线
                 for (int x = 0; x < Main.screenWidth; x += 8) {
                     float waveOffset = (float)Math.Sin((x * 0.01f) + toxicWaveTimer * 2f) * 20f;
@@ -599,7 +599,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
     {
         public static bool IsActive;
         public static int ActiveTimer;
-        
+
         private int toxicBubbleTimer = 0;
         private int acidMistTimer = 0;
         private int corrosionTimer = 0;
@@ -643,7 +643,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             if (IsActive) {
                 ActiveTimer++;
-                
+
                 toxicBubbleTimer++;
                 acidMistTimer++;
                 corrosionTimer++;
@@ -842,8 +842,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             //播放水泡音效
             if (Main.rand.NextBool(4)) {
-                SoundEngine.PlaySound(SoundID.Item21 with { 
-                    Volume = 0.3f, 
+                SoundEngine.PlaySound(SoundID.Item21 with {
+                    Volume = 0.3f,
                     Pitch = -0.4f,
                     MaxInstances = 3
                 }, waveCenter);
@@ -925,15 +925,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             //音效：硫酸沸腾声
-            SoundEngine.PlaySound(SoundID.Item95 with { 
-                Volume = 0.5f, 
+            SoundEngine.PlaySound(SoundID.Item95 with {
+                Volume = 0.5f,
                 Pitch = -0.3f,
                 MaxInstances = 2
             }, burstCenter);
-            
+
             //额外的爆炸音效
-            SoundEngine.PlaySound(SoundID.Item14 with { 
-                Volume = 0.4f, 
+            SoundEngine.PlaySound(SoundID.Item14 with {
+                Volume = 0.4f,
                 Pitch = -0.6f,
                 MaxInstances = 2
             }, burstCenter);
