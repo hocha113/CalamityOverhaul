@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (tile.TileType == TileID.Grass || tile.TileType == TileID.Sand) {
                 return 50;
             }
-            
+
             if (tile.TileType == TileID.Dirt || tile.TileType == TileID.Stone) {
                 return 20;
             }
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 for (int offsetY = -5; offsetY <= 5; offsetY += 2) {
                     int checkX = tileX + offsetX;
                     int checkY = tileY + offsetY;
-                    
+
                     if (checkX >= 0 && checkX < Main.maxTilesX && checkY >= 0 && checkY < Main.maxTilesY) {
                         Tile checkTile = Main.tile[checkX, checkY];
                         if (checkTile != null && checkTile.LiquidAmount > 0) {

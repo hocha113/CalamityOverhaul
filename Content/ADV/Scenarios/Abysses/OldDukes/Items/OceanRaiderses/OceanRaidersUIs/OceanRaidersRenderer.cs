@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -331,7 +330,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 if (item != null && item.type > ItemID.None && item.stack > 0) {
                     //预加载物品纹理
                     Main.instance.LoadItem(item.type);
-                    
+
                     //绘制物品图标
                     Texture2D itemTexture = TextureAssets.Item[item.type].Value;
                     float scale = Math.Min(SlotSize * 0.9f / itemTexture.Width, SlotSize * 0.9f / itemTexture.Height);

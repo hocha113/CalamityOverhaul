@@ -1,6 +1,8 @@
 using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
 using System;
 using Terraria;
@@ -68,7 +70,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
             if (questCompleted) {
                 //任务已完成，显示简单对话
-                Add(OldDukeName.Value, QuestCompleteLine.Value);
+                AddWithChoices(
+                    OldDukeName.Value,
+                    QuestCompleteLine.Value,
+                    [
+                        new Choice(Choice1Text.Value, Choice1),
+                        new Choice(Choice3Text.Value, Choice3),
+                    ],
+                    styleOverride: () => SulfseaDialogueBox.Instance,
+                    choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Sulfsea
+                );
             }
             else {
                 //任务进行中，显示选项
@@ -175,8 +186,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
                     save.OldDukeFindFragmentsQuestCompleted = true;
                 }
 
-                //TODO: 给予奖励
-                //可以在这里给予玩家奖励物品
+                //给予奖励
+                ADVRewardPopup.ShowReward(
+                    ModContent.ItemType<OceanRaiders>(),
+                    1,
+                    "",
+                    appearDuration: 24,
+                    holdDuration: -1,
+                    giveDuration: 16,
+                    requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f);
+                    },
+                    offset: Vector2.Zero,
+                    styleProvider: () => ADVRewardPopup.RewardStyle.Sulfsea
+                );
 
                 OldDukeEffect.IsActive = false;
             }

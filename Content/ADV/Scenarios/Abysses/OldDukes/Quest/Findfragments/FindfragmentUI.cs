@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             //当前数量
             Vector2 countPos = startPos + new Vector2(0, 18);
             string countText = $"{CurrentFragmentsText.Value}: {fragmentCount}/777";
-            
+
             Color countColor;
             if (fragmentCount >= 777) {
                 float pulse = (float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f;

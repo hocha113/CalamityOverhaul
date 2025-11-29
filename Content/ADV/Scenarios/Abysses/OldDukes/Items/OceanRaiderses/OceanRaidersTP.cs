@@ -8,7 +8,6 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -24,8 +23,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         //机器常量
         internal const int consumeUE = 8;
-        internal const int fishingTime = 180; //3秒钓一次鱼
-        internal const int maxStorageSlots = 360; //20x18格存储空间
+        internal const int fishingTime = 60; //1秒钓一次鱼
+        internal const int maxStorageSlots = 340; //20x17格存储空间
 
         //机器状态
         internal int frame;

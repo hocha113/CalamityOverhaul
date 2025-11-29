@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //计算方向
             Vector2 directionToCampsite = campsiteWorldPos - player.Center;
             float distance = directionToCampsite.Length();
-            
+
             //如果玩家非常接近营地，不显示指示器
             if (distance < 300f) {
                 return;
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawSulfurIndicator(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance) {
             float rotation = direction.ToRotation();
-            
+
             //脉冲效果
             float pulse = (float)Math.Sin(pulseTimer * 2.2f) * 0.5f + 0.5f;
             float glow = (float)Math.Sin(glowTimer * 1.8f) * 0.5f + 0.5f;
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawGlowRing(SpriteBatch spriteBatch, Vector2 position, float rotation, float pulse, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             float glowSize = 35f + pulse * 12f;
             Color glowColor = new Color(100, 140, 50) * (alpha * 0.25f * (0.6f + pulse * 0.4f));
 
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawDashedArrow(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             float arrowLength = 65f + pulse * 8f;
             int dashCount = 8;
             float dashLength = arrowLength / dashCount;
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             for (int i = 0; i < dashCount; i++) {
                 //添加波动效果
                 float waveOffset = (float)Math.Sin(wavePhase + i * 0.4f) * 2f;
-                
+
                 float t = i / (float)dashCount;
                 float segmentStart = t * arrowLength;
                 float actualDashLength = dashLength - dashGap;
@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawArrowHead(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float glow, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             float arrowLength = 65f + pulse * 8f;
             Vector2 arrowTipPos = startPos + direction * arrowLength;
 
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 0.1f) return;
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            
+
             //计算文字位置（在箭头旁边）
             Vector2 perpendicular = new Vector2(-direction.Y, direction.X);
             Vector2 textPos = position + perpendicular * 28f;
@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //硫磺海风格背景
             Color bgColor = new Color(12, 18, 8) * (alpha * 0.85f);
             Color borderColor = new Color(100, 140, 50) * (alpha * 0.75f);
@@ -418,12 +418,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             for (int i = 0; i < particleCount; i++) {
                 float angle = wavePhase + i * MathHelper.TwoPi / particleCount;
                 float distance = 22f + (float)Math.Sin(pulseTimer * 1.5f + i) * 4f;
-                
+
                 Vector2 particlePos = position + angle.ToRotationVector2() * distance;
                 float particleSize = 2f + (float)Math.Sin(glowTimer * 2f + i) * 1f;
-                
+
                 Color particleColor = new Color(140, 180, 70) * (alpha * 0.5f);
-                
+
                 spriteBatch.Draw(
                     pixel,
                     particlePos,
@@ -441,12 +441,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             for (int i = 0; i < 3; i++) {
                 float trailOffset = -15f - i * 8f;
                 Vector2 trailPos = position + rotation.ToRotationVector2() * trailOffset;
-                
+
                 float trailSize = 3f - i * 0.8f;
                 float trailAlpha = alpha * (0.4f - i * 0.1f);
-                
+
                 Color trailColor = new Color(100, 140, 50) * trailAlpha;
-                
+
                 spriteBatch.Draw(
                     pixel,
                     trailPos,

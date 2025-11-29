@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public static LocalizedText WorkingText { get; private set; }
         public static LocalizedText NoWaterText { get; private set; }
         public static LocalizedText NoEnergyText { get; private set; }
-        
+
         public override void SetStaticDefaults() {
             WorkingText = this.GetLocalization(nameof(WorkingText), () => "正在工作中...");
             NoWaterText = this.GetLocalization(nameof(NoWaterText), () => "需要放置在水域上方才能工作！");
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.LightPurple;
+            Item.rare = ItemRarityID.Lime;
             Item.createTile = ModContent.TileType<OceanRaidersTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 1200;

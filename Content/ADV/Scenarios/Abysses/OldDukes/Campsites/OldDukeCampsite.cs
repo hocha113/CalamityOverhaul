@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static int animationTimer;
         private const int FrameDuration = 8;//每帧持续时间
         private const int TotalFrames = 6;//使用前6帧
-        
+
         //交互状态
         private static bool isPlayerNearby;
         private static float interactPromptAlpha;
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //首次营地对话
             if (!save.OldDukeFirstCampsiteDialogueCompleted) {
                 save.OldDukeFirstCampsiteDialogueCompleted = true;
-                
+
                 //触发首次对话场景
                 ScenarioManager.Reset<Quest.FindFragments.FirstCampsiteDialogue>();
                 ScenarioManager.Start<Quest.FindFragments.FirstCampsiteDialogue>();

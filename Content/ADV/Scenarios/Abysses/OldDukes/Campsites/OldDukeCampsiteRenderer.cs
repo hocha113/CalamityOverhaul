@@ -4,9 +4,7 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -184,7 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             string iconText = "¨‹";
             Vector2 iconSize = font.MeasureString(iconText) * 0.7f;
             Vector2 iconPos = textPos + new Vector2(0, textSize.Y / 2 + 8);
-            Utils.DrawBorderString(sb, iconText, iconPos - iconSize / 2, 
+            Utils.DrawBorderString(sb, iconText, iconPos - iconSize / 2,
                 new Color(150, 230, 180) * (alpha * iconPulse), 0.7f);
         }
 
@@ -223,7 +221,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Scale = Main.rand.NextFloat(0.6f, 1.2f);
                 Life = 0f;
                 MaxLife = Main.rand.NextFloat(60f, 120f);
-                Color = Main.rand.NextBool() 
+                Color = Main.rand.NextBool()
                     ? new Color(120, 220, 140, 180)
                     : new Color(150, 200, 100, 200);
             }

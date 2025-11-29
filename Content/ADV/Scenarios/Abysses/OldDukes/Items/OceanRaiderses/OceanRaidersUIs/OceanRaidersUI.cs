@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             if (machine == null) return;
             currentMachine = machine;
             _active = true;
-            
+
             //初始化组件
             if (interaction == null || renderer == null) {
                 interaction = new OceanRaidersInteraction(player, machine);
