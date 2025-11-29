@@ -59,11 +59,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     toxicBubbles.RemoveAt(i);
                 }
             }
-
-            //检测右键交互
-            if (OldDukeCampsite.CanInteract() && Main.mouseRight && Main.mouseRightRelease) {
-                TriggerInteraction();
-            }
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
@@ -205,27 +200,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
 
             toxicBubbles.Add(new ToxicBubblePRT(spawnPos));
-        }
-
-        /// <summary>
-        /// 触发交互
-        /// </summary>
-        private static void TriggerInteraction() {
-            //播放交互音效
-            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
-
-            //TODO: 这里触发对话系统
-            //DialogueSystem.StartDialogue("OldDuke_Greeting");
-
-            //临时：显示文字
-            if (Main.netMode != NetmodeID.Server) {
-                CombatText.NewText(
-                    Main.LocalPlayer.Hitbox,
-                    new Color(150, 230, 180),
-                    GreetingText.Value,
-                    true
-                );
-            }
         }
 
         /// <summary>

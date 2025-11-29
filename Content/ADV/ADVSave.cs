@@ -89,11 +89,16 @@ namespace CalamityOverhaul.Content.ADV
         public bool ExoMechSecondDefeat;//玩家是否观看过机甲嘉登的第二次战败对话
         public bool ExoMechThirdDefeat;//玩家是否观看过机甲嘉登的第三次战败对话
         public int ExoMechDefeatCount;//玩家击败机甲的次数
-
+        #region 老公爵相关
         /// <summary>
         /// 老公爵交互状态
         /// </summary>
         public int OldDukeInteraction;
+
+        /// <summary>
+        /// 是否已完成首次营地对话（用于寻找营地任务）
+        /// </summary>
+        public bool OldDukeFirstCampsiteDialogueCompleted;
 
         /// <summary>
         /// 获取老公爵交互状态
@@ -127,6 +132,7 @@ namespace CalamityOverhaul.Content.ADV
         /// 是否可以重新触发老公爵对话（拒绝合作但未战斗）
         /// </summary>
         public bool CanRetriggerOldDukeDialogue => OldDukeState == OldDukeInteractionState.DeclinedCooperation;
+        #endregion
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];

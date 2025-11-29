@@ -48,6 +48,39 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             UpdateAnimation();
             CheckPlayerProximity();
+
+            //检测右键交互
+            if (CanInteract() && Main.mouseRight && Main.mouseRightRelease) {
+                TriggerInteraction();
+            }
+        }
+
+        /// <summary>
+        /// 触发交互
+        /// </summary>
+        private static void TriggerInteraction() {
+            //播放交互音效
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
+
+            //标记首次营地对话已完成（完成任务）
+            if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                if (!save.OldDukeFirstCampsiteDialogueCompleted) {
+                    save.OldDukeFirstCampsiteDialogueCompleted = true;
+                }
+            }
+
+            //TODO: 这里触发对话系统
+            //DialogueSystem.StartDialogue("OldDuke_Greeting");
+
+            //临时：显示文字
+            if (Main.netMode != NetmodeID.Server) {
+                CombatText.NewText(
+                    Main.LocalPlayer.Hitbox,
+                    new Color(150, 230, 180),
+                    OldDukeCampsiteRenderer.GreetingText.Value,
+                    true
+                );
+            }
         }
 
         /// <summary>

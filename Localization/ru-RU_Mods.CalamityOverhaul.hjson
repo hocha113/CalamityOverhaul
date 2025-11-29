@@ -6519,6 +6519,18 @@ UI: {
 		// CurrencyName: 海洋残片
 		// HintTooltip: 滚动/拖动条
 	}
+
+	FindCampsiteUI: {
+		// QuestTitle: 深渊在呼唤
+		// DamageContribution: 任务进度
+		// RequiredContribution: 目标: 找到并与老公爵对话
+		// ObjectiveText: 目标
+		// LocationText: 前往老公爵营地
+		// DistanceText: 距离
+		// InteractText: 与老公爵对话
+		// QuestCompleteText: 任务完成！
+		// HoldFragmentHintText: 持有海洋碎片可查看方向
+	}
 }
 
 ADV: {
