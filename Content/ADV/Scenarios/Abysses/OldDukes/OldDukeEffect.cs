@@ -788,30 +788,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.25f, 0.75f)
             );
 
-            //生成主波纹
-            PRT_CorrosionWave mainWave = new PRT_CorrosionWave(
-                waveCenter,
-                0.2f,
-                1f,
-                90,
-                Main.rand.NextFloat(MathHelper.TwoPi)
-            );
-            PRTLoader.AddParticle(mainWave);
-
-            //生成次级波纹
-            for (int i = 0; i < 2; i++) {
-                PRT_CorrosionWave secondaryWave = new PRT_CorrosionWave(
-                    waveCenter,
-                    0.1f,
-                    0.6f,
-                    70,
-                    Main.rand.NextFloat(MathHelper.TwoPi)
-                );
-                PRTLoader.AddParticle(secondaryWave);
-            }
-
             //环形酸液飞溅
-            int waveCount = 16;
+            int waveCount = 8;
             for (int i = 0; i < waveCount; i++) {
                 float angle = MathHelper.TwoPi * i / waveCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
@@ -821,7 +799,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     velocity,
                     Main.rand.NextFloat(1f, 2f),
                     Main.rand.Next(70, 120),
-                    false
+                    true
                 );
                 PRTLoader.AddParticle(waveSplash);
             }
@@ -860,34 +838,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 90
             );
             PRTLoader.AddParticle(burstCore);
-
-            //外圈快速扩散的毒液飞溅
-            int burstCount = 24;
-            for (int i = 0; i < burstCount; i++) {
-                float angle = MathHelper.TwoPi * i / burstCount + Main.rand.NextFloat(-0.1f, 0.1f);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
-
-                PRT_AcidSplash burstSplash = new PRT_AcidSplash(
-                    burstCenter + Main.rand.NextVector2Circular(10f, 10f),
-                    velocity,
-                    Main.rand.NextFloat(0.2f, 0.4f),
-                    Main.rand.Next(6, 11),
-                    true //受重力影响
-                );
-                PRTLoader.AddParticle(burstSplash);
-            }
-
-            //多层扩散波纹
-            for (int i = 0; i < 3; i++) {
-                PRT_CorrosionWave burstWave = new PRT_CorrosionWave(
-                    burstCenter,
-                    0.5f + i * 0.3f,
-                    2f + i * 0.6f,
-                    80 - i * 10,
-                    Main.rand.NextFloat(MathHelper.TwoPi)
-                );
-                PRTLoader.AddParticle(burstWave);
-            }
 
             //内圈酸雾扩散
             for (int i = 0; i < 12; i++) {
