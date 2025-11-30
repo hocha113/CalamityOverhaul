@@ -206,15 +206,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 player.CWR().DontSwitchWeaponTime = 2;
 
                 //优先检测关闭按钮
-                if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition,
+                if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, 
                     keyLeftPressState == KeyPressState.Pressed)) {
                     Close();
                     return;
                 }
 
-                //处理槽位交互
+                //处理槽位交互（传递完整的按键状态）
                 Vector2 storageStartPos = panelPosition + new Vector2(20, 90);
-                interaction.UpdateSlotInteraction(MousePosition.ToPoint(), storageStartPos);
+                interaction.UpdateSlotInteraction(
+                    MousePosition.ToPoint(), 
+                    storageStartPos,
+                    keyLeftPressState == KeyPressState.Pressed,
+                    keyLeftPressState == KeyPressState.Held,
+                    keyRightPressState == KeyPressState.Pressed,
+                    keyRightPressState == KeyPressState.Held
+                );
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
                 Close();

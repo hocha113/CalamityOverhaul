@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// <summary>
         /// 绘制所有特效
         /// </summary>
-        public void DrawEffects(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, float uiAlpha) {
+        public void DrawEffects(SpriteBatch spriteBatch, float uiAlpha) {
             foreach (var dust in dustParticles) {
                 dust.Draw(spriteBatch, uiAlpha);
             }
@@ -87,11 +87,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
             public bool ShouldRemove() => Life <= 0;
 
-            public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, float uiAlpha) {
+            public void Draw(SpriteBatch spriteBatch, float uiAlpha) {
                 Texture2D pixel = VaultAsset.placeholder2.Value;
                 Color drawColor = new Color(139, 87, 42) * (Alpha * uiAlpha * 0.3f);
                 spriteBatch.Draw(pixel, Position - Main.screenPosition, null, drawColor,
-                    0f, Vector2.One * 0.5f, Scale * 3f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0f);
+                    0f, Vector2.One * 0.5f, Scale * 3f, SpriteEffects.None, 0f);
             }
         }
     }
