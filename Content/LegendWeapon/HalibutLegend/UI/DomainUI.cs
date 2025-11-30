@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f, Pitch = -0.3f });
             //生成锁定粒子效果
             for (int i = 0; i < 20; i++) {
-                float angle = (i / 20f) * MathHelper.TwoPi;
+                float angle = i / 20f * MathHelper.TwoPi;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
                 lockParticles.Add(new LockParticle(halibutCenter, velocity, new Color(200, 100, 100)));
             }
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.2f });
             //生成解锁粒子效果
             for (int i = 0; i < 15; i++) {
-                float angle = (i / 15f) * MathHelper.TwoPi;
+                float angle = i / 15f * MathHelper.TwoPi;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 2.5f);
                 lockParticles.Add(new LockParticle(halibutCenter, velocity, new Color(100, 255, 150)));
             }
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override void Update() {
             if (Eyes.Count == 0) {
                 for (int i = 0; i < MaxEyes; i++) {
-                    float angle = (i / (float)MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
+                    float angle = i / (float)MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
                     Eyes.Add(new SeaEyeButton(i, angle));
                 }
             }
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             for (int i = 0; i < 12; i++) {
-                float angle = (i / 12f) * MathHelper.TwoPi;
+                float angle = i / 12f * MathHelper.TwoPi;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
 
                 //根据死机状态使用不同颜色
@@ -640,8 +640,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //绘制扫描线效果
             int scanLineCount = 8;
             for (int i = 0; i < scanLineCount; i++) {
-                float lineY = panelRect.Y + (panelRect.Height / (float)scanLineCount) * i;
-                float lineOffset = ((Main.GlobalTimeWrappedHourly * 2f + i * 0.3f) % 1f) * panelRect.Height;
+                float lineY = panelRect.Y + panelRect.Height / (float)scanLineCount * i;
+                float lineOffset = (Main.GlobalTimeWrappedHourly * 2f + i * 0.3f) % 1f * panelRect.Height;
                 Rectangle scanLine = new Rectangle(
                     panelRect.X,
                     (int)(lineY + lineOffset) % (panelRect.Y + panelRect.Height),
@@ -803,7 +803,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //锁孔（小矩形）
             Rectangle lockHole = new Rectangle(
                 (int)(center.X - size * 0.08f),
-                (int)(center.Y),
+                (int)center.Y,
                 (int)(size * 0.16f),
                 (int)(size * 0.2f)
             );
@@ -814,10 +814,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             int segments = 12;
             float arcRadius = size * 0.28f;
             for (int i = 0; i <= segments; i++) {
-                float angle = MathHelper.Pi + (i / (float)segments) * MathHelper.Pi;
+                float angle = MathHelper.Pi + i / (float)segments * MathHelper.Pi;
                 Vector2 pos1 = center + new Vector2(0, -size * 0.1f) + angle.ToRotationVector2() * arcRadius;
                 if (i > 0) {
-                    float prevAngle = MathHelper.Pi + ((i - 1) / (float)segments) * MathHelper.Pi;
+                    float prevAngle = MathHelper.Pi + (i - 1) / (float)segments * MathHelper.Pi;
                     Vector2 pos0 = center + new Vector2(0, -size * 0.1f) + prevAngle.ToRotationVector2() * arcRadius;
                     DrawLine(spriteBatch, pos0, pos1, color, size * 0.12f);
                 }
@@ -838,7 +838,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float thickness = 2f;
             float dashLength = 10f;
             float gapLength = 6f;
-            float offset = (Main.GlobalTimeWrappedHourly * 60f) % (dashLength + gapLength);
+            float offset = Main.GlobalTimeWrappedHourly * 60f % (dashLength + gapLength);
 
             Color warningColor = new Color(255, 100, 100) * alpha;
 
@@ -996,12 +996,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Texture2D halibutTex = TextureAssets.Item[HalibutOverride.ID].Value;
             float halibutAlpha = contentFadeProgress * alpha;
             for (int i = 0; i < 2; i++) {
-                float glowScale = (HalibutSize / halibutTex.Width) * (1.2f + i * 0.15f) * halibutPulse;
+                float glowScale = HalibutSize / halibutTex.Width * (1.2f + i * 0.15f) * halibutPulse;
                 Color glowColor = Color.Lerp(new Color(100, 200, 255), new Color(80, 160, 240), i / 2f);
                 glowColor *= halibutAlpha * (0.3f - i * 0.1f);
                 spriteBatch.Draw(halibutTex, halibutCenter, null, glowColor, halibutRotation + i * 0.1f, halibutTex.Size() / 2, glowScale, SpriteEffects.None, 0f);
             }
-            float mainScale = (HalibutSize / halibutTex.Width) * halibutPulse;
+            float mainScale = HalibutSize / halibutTex.Width * halibutPulse;
             Color mainColor = Color.White * halibutAlpha;
             spriteBatch.Draw(halibutTex, halibutCenter, null, mainColor, halibutRotation, halibutTex.Size() / 2, mainScale, SpriteEffects.None, 0f);
             if (ActiveEyeCount > 0 && expandProgress >= 1f) {

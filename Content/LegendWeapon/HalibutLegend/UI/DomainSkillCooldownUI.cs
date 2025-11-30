@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Current = current,
                 Max = max,
                 RemainingRatio = remainingRatio,
-                LocalAppear = (remainingRatio >= 0.999f) ? 0f : 1f
+                LocalAppear = remainingRatio >= 0.999f ? 0f : 1f
             });
         }
 
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //抖动偏移：使用快速sin + 轻微乱序(基于技能枚举) 制造更自然的警告感
                 Vector2 shakeOffset = Vector2.Zero;
                 if (icon.Shake > 0f) {
-                    float t = (float)Main.GameUpdateCount * 0.4f;
+                    float t = Main.GameUpdateCount * 0.4f;
                     float phase = (int)icon.Skill * 1.7f; //枚举区分
                     float amp = 4f * icon.Shake; //最大4px
                     shakeOffset.X = (float)Math.Sin(t * 5f + phase) * amp;
