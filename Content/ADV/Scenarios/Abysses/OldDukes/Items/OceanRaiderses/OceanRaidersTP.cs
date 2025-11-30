@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         //机器常量
         internal const int consumeUE = 8;
-        internal const int fishingTime = 60; //1秒钓一次鱼
-        internal const int maxStorageSlots = 340; //20x17格存储空间
+        internal const int fishingTime = 60;
+        internal const int maxStorageSlots = 340;
 
         //机器状态
         internal int frame;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         internal bool isWorking;
         internal bool hasWater;
         internal float glowIntensity;
-        internal Vector2 intakeCenter; //吸入口中心位置
+        internal Vector2 intakeCenter;
 
         //存储物品列表
         internal List<Item> storedItems = new();
@@ -42,10 +42,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         //吸入效果粒子
         internal List<FishingParticle> fishingParticles = new();
 
+        //视觉效果管理器
+        private OceanRaidersVortexEffect vortexEffect;
+
         public override void SetBattery() {
             IdleDistance = 4000;
             storedItems = new List<Item>();
             fishingParticles = new List<FishingParticle>();
+            vortexEffect = new OceanRaidersVortexEffect(this);
         }
 
         public override void SendData(ModPacket data) {
@@ -108,8 +112,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         private bool CheckWaterBelow() {
             //检查机器下方是否有水
-            int checkDistance = 32; //检查32格深度
-            Point startPoint = (Position + new Point16(3, 6)).ToPoint(); //从底部中心开始检查
+            int checkDistance = 32;
+            Point startPoint = (Position + new Point16(3, 6)).ToPoint();
 
             for (int y = 0; y < checkDistance; y++) {
                 for (int x = -2; x <= 2; x++) {
@@ -127,7 +131,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             if (VaultUtils.isClient) return;
 
             //创建钓鱼尝试
-            int power = 50 + Main.rand.Next(30); //钓鱼竿力量
+            int power = 50 + Main.rand.Next(30);
 
             //获取可能的钓鱼物品
             List<int> possibleCatches = GetPossibleCatches(power);
@@ -260,7 +264,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             intakeCenter = CenterInWorld + new Vector2(0, 32);
 
             //更新动画
-            frame = 0;//固定为0帧，因为目前纹理只有一帧动画，等以后做了多帧后再改这里
+            frame = 0;
             //检查水源
             hasWater = CheckWaterBelow();
 
@@ -276,6 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
 
                 UpdateParticles();
+                vortexEffect?.Update();
                 return;
             }
 
@@ -301,23 +306,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             //更新粒子效果
             UpdateParticles();
+
+            //更新水龙卷效果
+            vortexEffect?.Update();
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            //绘制吸入口的水龙卷效果
-            if (!isWorking || VaultUtils.isServer) return;
-
-            float vortexIntensity = MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.3f + 0.7f;
-            Color vortexColor = new Color(100, 200, 255) * (0.4f * vortexIntensity * glowIntensity);
-
-            for (int i = 0; i < 8; i++) {
-                float rotation = (Main.GlobalTimeWrappedHourly * 2f + i * MathHelper.PiOver4) % MathHelper.TwoPi;
-                float radius = 40f + MathF.Sin(Main.GlobalTimeWrappedHourly * 4f + i) * 10f;
-                Vector2 offset = rotation.ToRotationVector2() * radius;
-                Vector2 drawPos = intakeCenter + offset - Main.screenPosition;
-
-                Dust.NewDustPerfect(drawPos, DustID.Water, Vector2.Zero, 0, vortexColor, 1.5f);
-            }
+            //绘制水龙卷效果
+            vortexEffect?.DrawVortex(spriteBatch);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

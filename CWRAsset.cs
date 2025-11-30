@@ -48,6 +48,8 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fog = null;
         [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Cyclone = null;
+        [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> DiffusionCircle = null;
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> ThunderTrail = null;//这个纹理来自珊瑚石，谢谢你瓶中微光 :)
