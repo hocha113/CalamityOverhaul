@@ -1,7 +1,9 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
 using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +46,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         //视觉效果管理器
         private OceanRaidersVortexEffect vortexEffect;
+
+        //音效系统
+        private SlotId vortexSoundSlot;
+        private SoundStyle vortexSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
+            IsLooped = true,
+            MaxInstances = 8,
+            Volume = 0.6f
+        };
 
         public override void SetBattery() {
             IdleDistance = 4000;
@@ -262,7 +272,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                     Type = (FishingParticleType)Main.rand.Next(3),
                     Scale = Main.rand.NextFloat(0.6f, 1.2f),
                     Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                    Life = Main.rand.Next(180, 300)
+                    Life = Main.rand.Next(260, 300)
                 };
 
                 fishingParticles.Add(particle);
@@ -288,6 +298,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             return Vector2.Zero;
         }
 
+        //循环音效更新回调
+        private bool LoopingSoundUpdate(ActiveSound soundInstance) {
+            //根据工作强度调整音调和音量
+            float workIntensity = isWorking ? glowIntensity : 0f;
+            soundInstance.Pitch = (-0.3f + workIntensity * 0.6f) * 1.8f;
+            soundInstance.Position = intakeCenter;
+            soundInstance.Volume = workIntensity * 0.8f;
+            return Active && hasWater;
+        }
+
+        //更新音效系统
+        private void UpdateSoundEffects() {
+            if (VaultUtils.isServer) return;
+
+            if (isWorking && hasWater) {
+                //播放循环的水龙卷音效
+                if (!SoundEngine.TryGetActiveSound(vortexSoundSlot, out var activeSound)) {
+                    vortexSoundSlot = SoundEngine.PlaySound(vortexSoundStyle, intakeCenter, LoopingSoundUpdate);
+                }
+            }
+        }
+
         public override void UpdateMachine() {
             //更新吸入口位置
             intakeCenter = CenterInWorld + new Vector2(0, 32);
@@ -310,6 +342,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
                 UpdateParticles();
                 vortexEffect?.Update();
+                UpdateSoundEffects();
                 return;
             }
 
@@ -324,7 +357,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 fishingTimer = 0;
 
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Splash with { Pitch = -0.2f, Volume = 0.5f }, intakeCenter);
+                    //播放钓到鱼的音效
+                    SoundEngine.PlaySound(SoundID.Splash with { 
+                        Pitch = -0.2f, 
+                        Volume = 0.5f 
+                    }, intakeCenter);
+                    
+                    //随机播放水泡音效
+                    if (Main.rand.NextBool(3)) {
+                        SoundEngine.PlaySound(SoundID.Item21 with { 
+                            Pitch = Main.rand.NextFloat(-0.3f, 0.1f),
+                            Volume = 0.3f 
+                        }, intakeCenter);
+                    }
                 }
             }
 
@@ -338,6 +383,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             //更新水龙卷效果
             vortexEffect?.Update();
+
+            //更新音效系统
+            UpdateSoundEffects();
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
@@ -362,6 +410,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             //右键打开专属箱子UI
             if (player.whoAmI == Main.myPlayer) {
                 OceanRaidersUI.Instance.Open(this);
+                //播放UI打开音效
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { 
+                    Pitch = -0.1f,
+                    Volume = 0.7f 
+                }, player.Center);
             }
             return true;
         }

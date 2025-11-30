@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             float distanceToTarget = Vector2.Distance(Position, targetPos);
             
             //距离吸入口100像素内进入水龙卷效果
-            if (distanceToTarget < 100f) {
+            if (distanceToTarget < (Life > 60 ? 100f : 300)) {
                 inVortex = true;
                 vortexCenter = targetPos;
                 spiralAngle = (Position - targetPos).ToRotation();
