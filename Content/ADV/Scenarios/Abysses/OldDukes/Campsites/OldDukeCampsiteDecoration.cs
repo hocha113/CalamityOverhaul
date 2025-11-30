@@ -1,4 +1,5 @@
 using InnoVault.RenderHandles;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -141,6 +142,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 放置老箱子到营地
         /// </summary>
         private static void PlaceOldChest(Vector2 campsiteCenter) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
             //箱子放在营地左侧较远的位置
             Vector2 chestOffset = new Vector2(-320f, 20f);
             Vector2 searchPos = campsiteCenter + chestOffset;
@@ -155,11 +160,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
                 Tile tile = Main.tile[baseTileX, y];
                 if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
-                    //找到地面，在上方放置箱子
+                    //找到地面在上方放置箱子
                     int chestTileX = baseTileX - 2;
                     int chestTileY = y - 1;
 
-                    //清理箱子放置区域，箱子是6x4格
+                    //清理箱子放置区域箱子是6x4格
                     for (int cx = 0; cx < 6; cx++) {
                         for (int cy = 0; cy < 4; cy++) {
                             int clearX = chestTileX + cx;
@@ -182,60 +187,74 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                         if (baseX >= 0 && baseX < Main.maxTilesX && baseY >= 0 && baseY < Main.maxTilesY) {
                             Tile baseTile = Main.tile[baseX, baseY];
                             baseTile.Slope = SlopeType.Solid;
-                            WorldGen.PlaceTile(baseX, baseY, TileID.Stone, true, true);
+                            WorldGen.PlaceTile(baseX, baseY, CWRID.Tile_SulphurousSand, true, true);
                         }
                     }
 
-                    //放置老箱子
+                    //放置老箱子（箱子的原点在3,3位置）
                     int chestType = ModContent.TileType<Items.OldDuchests.OldDuchestTile>();
-                    WorldGen.PlaceTile(chestTileX + 3, chestTileY, chestType, true, false, -1, 0);
+                    int placeX = chestTileX + 3;
+                    int placeY = chestTileY;
 
-                    //填充箱子内容
-                    FillChestWithItems(chestTileX + 3, chestTileY);
+                    WorldGen.PlaceTile(placeX, placeY, chestType, true, false, -1, 0);
+
+                    //获取箱子左上角位置并创建TP实体
+                    if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
+                        TileProcessorLoader.AddInWorld(chestType, point, null);
+
+                        //填充箱子内容
+                        if (TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
+                            FillChestWithItems(chestTP);
+                        }
+
+                        //网络同步
+                        if (Main.netMode == NetmodeID.Server) {
+                            NetMessage.SendObjectPlacement(-1, placeX, placeY, chestType, 0, 0, -1, -1);
+                            TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, chestType, point);
+                        }
+                    }
+
                     break;
                 }
             }
         }
 
         /// <summary>
-        /// 向箱子中填充随机物品
+        /// 向箱子TP实体中填充随机物品
         /// </summary>
-        private static void FillChestWithItems(int tileX, int tileY) {
-            //查找箱子实体
-            int chestIndex = Chest.FindChest(tileX, tileY);
-            if (chestIndex < 0) {
+        private static void FillChestWithItems(Items.OldDuchests.OldDuchestTP chestTP) {
+            if (chestTP == null) {
                 return;
             }
 
-            Chest chest = Main.chest[chestIndex];
-            if (chest == null) {
-                return;
-            }
+            //清空现有物品
+            chestTP.storedItems.Clear();
 
-            int slot = 0;
-
-            //添加钱币，金额随机
+            //添加钱币金额随机
             int coinAmount = Main.rand.Next(50, 200);
             int platinumCoins = coinAmount / 100;
             int goldCoins = (coinAmount % 100) / 10;
             int silverCoins = coinAmount % 10;
 
             if (platinumCoins > 0) {
-                chest.item[slot].SetDefaults(ItemID.PlatinumCoin);
-                chest.item[slot].stack = platinumCoins;
-                slot++;
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.PlatinumCoin);
+                coin.stack = platinumCoins;
+                chestTP.storedItems.Add(coin);
             }
 
             if (goldCoins > 0) {
-                chest.item[slot].SetDefaults(ItemID.GoldCoin);
-                chest.item[slot].stack = goldCoins;
-                slot++;
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.GoldCoin);
+                coin.stack = goldCoins;
+                chestTP.storedItems.Add(coin);
             }
 
             if (silverCoins > 0) {
-                chest.item[slot].SetDefaults(ItemID.SilverCoin);
-                chest.item[slot].stack = silverCoins;
-                slot++;
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.SilverCoin);
+                coin.stack = silverCoins;
+                chestTP.storedItems.Add(coin);
             }
 
             //获取老公爵掉落物品
@@ -244,7 +263,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             //随机选择3到5个物品
             int itemCount = Main.rand.Next(3, 6);
-            for (int i = 0; i < itemCount && slot < 40; i++) {
+            for (int i = 0; i < itemCount && chestTP.storedItems.Count < 240; i++) {
                 if (dropList.Count == 0) {
                     break;
                 }
@@ -253,16 +272,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 int itemType = dropList[randomIndex];
                 dropList.RemoveAt(randomIndex);
 
-                chest.item[slot].SetDefaults(itemType);
-                chest.item[slot].stack = 1;
-                slot++;
-            }
-
-            //添加一些海洋残片作为奖励
-            if (slot < 40) {
-                chest.item[slot].SetDefaults(ModContent.ItemType<Items.Oceanfragments>());
-                chest.item[slot].stack = Main.rand.Next(5, 15);
-                slot++;
+                Item item = new Item();
+                item.SetDefaults(itemType);
+                item.stack = 1;
+                chestTP.storedItems.Add(item);
             }
 
             //添加一些海洋主题的消耗品
@@ -276,12 +289,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             ];
 
             int extraItemCount = Main.rand.Next(2, 4);
-            for (int i = 0; i < extraItemCount && slot < 40; i++) {
+            for (int i = 0; i < extraItemCount && chestTP.storedItems.Count < 240; i++) {
                 int itemType = oceanItems[Main.rand.Next(oceanItems.Length)];
-                chest.item[slot].SetDefaults(itemType);
-                chest.item[slot].stack = Main.rand.Next(3, 10);
-                slot++;
+                Item item = new Item();
+                item.SetDefaults(itemType);
+                item.stack = Main.rand.Next(3, 10);
+                chestTP.storedItems.Add(item);
             }
+
+            //保存数据到TP
+            chestTP.SendData();
         }
 
         /// <summary>
@@ -464,7 +481,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 0f
             );
 
-            //添加旗帜的飘动感，绘制稍微透明的重影
+            //添加旗帜的飘动感绘制稍微透明的重影
             for (int i = 1; i <= 2; i++) {
                 float offsetAmount = i * 3f;
                 float alpha = 0.3f / i;
