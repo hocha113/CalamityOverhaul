@@ -2,7 +2,10 @@ using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
@@ -25,27 +28,36 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public int BubbleSpawnTimer;
         }
 
+        //旗杆位置信息
+        private class FlagpoleData
+        {
+            public Vector2 WorldPosition;
+            public float SwayTimer;
+        }
+
         private static readonly List<PotData> pots = [];
-        private static bool potsPositionSet;
+        private static readonly List<FlagpoleData> flagpoles = [];
+        private static bool decorationsPositionSet;
 
         /// <summary>
-        /// 设置锅的位置
+        /// 设置装饰物的位置
         /// 在营地生成时自动调用
         /// </summary>
         public static void SetupPotPosition(Vector2 campsiteCenter) {
-            if (potsPositionSet) {
+            if (decorationsPositionSet) {
                 return;
             }
 
             pots.Clear();
+            flagpoles.Clear();
 
             //定义多个锅的相对偏移位置
-            //主要布置在老公爵前方和两侧，避免被遮挡
+            //主要布置在老公爵前方和两侧避免被遮挡
             Vector2[] potOffsets = [
-                new Vector2(220f, 40f),  //右前方
-                new Vector2(-240f, 35f), //左前方
-                new Vector2(280f, 50f),  //右侧远处
-                new Vector2(-160f, 55f)   //左侧
+                new Vector2(220f, 40f),
+                new Vector2(-240f, 35f),
+                new Vector2(280f, 50f),
+                new Vector2(-160f, 55f)
             ];
 
             foreach (var offset in potOffsets) {
@@ -70,7 +82,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     }
                 }
 
-                //如果找到地面或使用默认位置，添加这个锅
                 if (foundGround || true) {
                     PotData pot = new PotData {
                         WorldPosition = finalPos,
@@ -82,7 +93,195 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            potsPositionSet = true;
+            //定义旗杆的相对偏移位置
+            //放置在营地的高处和侧面
+            Vector2[] flagpoleOffsets = [
+                new Vector2(-180f, -20f),
+                new Vector2(200f, -15f)
+            ];
+
+            foreach (var offset in flagpoleOffsets) {
+                Vector2 searchPos = campsiteCenter + offset;
+                int tileX = (int)(searchPos.X / 16f);
+                int tileY = (int)(searchPos.Y / 16f) - 60;
+
+                Vector2 finalPos = searchPos;
+                bool foundGround = false;
+
+                //向下搜索最近的实心地面
+                for (int y = tileY; y < tileY + 125; y++) {
+                    if (y < 0 || y >= Main.maxTilesY) {
+                        continue;
+                    }
+
+                    Tile tile = Main.tile[tileX, y];
+                    if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
+                        finalPos = new Vector2(tileX * 16f + 8f, y * 16f);
+                        foundGround = true;
+                        break;
+                    }
+                }
+
+                if (foundGround) {
+                    FlagpoleData flagpole = new FlagpoleData {
+                        WorldPosition = finalPos,
+                        SwayTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi)
+                    };
+                    flagpoles.Add(flagpole);
+                }
+            }
+
+            //放置老箱子
+            PlaceOldChest(campsiteCenter);
+
+            decorationsPositionSet = true;
+        }
+
+        /// <summary>
+        /// 放置老箱子到营地
+        /// </summary>
+        private static void PlaceOldChest(Vector2 campsiteCenter) {
+            //箱子放在营地左侧较远的位置
+            Vector2 chestOffset = new Vector2(-320f, 20f);
+            Vector2 searchPos = campsiteCenter + chestOffset;
+            int baseTileX = (int)(searchPos.X / 16f);
+            int baseTileY = (int)(searchPos.Y / 16f) - 60;
+
+            //向下搜索地面
+            for (int y = baseTileY; y < baseTileY + 125; y++) {
+                if (y < 0 || y >= Main.maxTilesY) {
+                    continue;
+                }
+
+                Tile tile = Main.tile[baseTileX, y];
+                if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
+                    //找到地面，在上方放置箱子
+                    int chestTileX = baseTileX - 2;
+                    int chestTileY = y - 1;
+
+                    //清理箱子放置区域，箱子是6x4格
+                    for (int cx = 0; cx < 6; cx++) {
+                        for (int cy = 0; cy < 4; cy++) {
+                            int clearX = chestTileX + cx;
+                            int clearY = chestTileY - cy;
+
+                            if (clearX >= 0 && clearX < Main.maxTilesX && clearY >= 0 && clearY < Main.maxTilesY) {
+                                Tile clearTile = Main.tile[clearX, clearY];
+                                if (clearTile != null && clearTile.HasTile) {
+                                    WorldGen.KillTile(clearX, clearY, false, false, true);
+                                }
+                            }
+                        }
+                    }
+
+                    //确保底座是实心的
+                    for (int bx = 0; bx < 6; bx++) {
+                        int baseX = chestTileX + bx;
+                        int baseY = chestTileY + 1;
+
+                        if (baseX >= 0 && baseX < Main.maxTilesX && baseY >= 0 && baseY < Main.maxTilesY) {
+                            Tile baseTile = Main.tile[baseX, baseY];
+                            baseTile.Slope = SlopeType.Solid;
+                            WorldGen.PlaceTile(baseX, baseY, TileID.Stone, true, true);
+                        }
+                    }
+
+                    //放置老箱子
+                    int chestType = ModContent.TileType<Items.OldDuchests.OldDuchestTile>();
+                    WorldGen.PlaceTile(chestTileX + 3, chestTileY, chestType, true, false, -1, 0);
+
+                    //填充箱子内容
+                    FillChestWithItems(chestTileX + 3, chestTileY);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 向箱子中填充随机物品
+        /// </summary>
+        private static void FillChestWithItems(int tileX, int tileY) {
+            //查找箱子实体
+            int chestIndex = Chest.FindChest(tileX, tileY);
+            if (chestIndex < 0) {
+                return;
+            }
+
+            Chest chest = Main.chest[chestIndex];
+            if (chest == null) {
+                return;
+            }
+
+            int slot = 0;
+
+            //添加钱币，金额随机
+            int coinAmount = Main.rand.Next(50, 200);
+            int platinumCoins = coinAmount / 100;
+            int goldCoins = (coinAmount % 100) / 10;
+            int silverCoins = coinAmount % 10;
+
+            if (platinumCoins > 0) {
+                chest.item[slot].SetDefaults(ItemID.PlatinumCoin);
+                chest.item[slot].stack = platinumCoins;
+                slot++;
+            }
+
+            if (goldCoins > 0) {
+                chest.item[slot].SetDefaults(ItemID.GoldCoin);
+                chest.item[slot].stack = goldCoins;
+                slot++;
+            }
+
+            if (silverCoins > 0) {
+                chest.item[slot].SetDefaults(ItemID.SilverCoin);
+                chest.item[slot].stack = silverCoins;
+                slot++;
+            }
+
+            //获取老公爵掉落物品
+            HashSet<int> oldDukeDrops = OldDukeShops.OldDukeShopHandle.GetNPCDrops(CWRID.NPC_OldDuke, true);
+            List<int> dropList = oldDukeDrops.ToList();
+
+            //随机选择3到5个物品
+            int itemCount = Main.rand.Next(3, 6);
+            for (int i = 0; i < itemCount && slot < 40; i++) {
+                if (dropList.Count == 0) {
+                    break;
+                }
+
+                int randomIndex = Main.rand.Next(dropList.Count);
+                int itemType = dropList[randomIndex];
+                dropList.RemoveAt(randomIndex);
+
+                chest.item[slot].SetDefaults(itemType);
+                chest.item[slot].stack = 1;
+                slot++;
+            }
+
+            //添加一些海洋残片作为奖励
+            if (slot < 40) {
+                chest.item[slot].SetDefaults(ModContent.ItemType<Items.Oceanfragments>());
+                chest.item[slot].stack = Main.rand.Next(5, 15);
+                slot++;
+            }
+
+            //添加一些海洋主题的消耗品
+            int[] oceanItems = [
+                ItemID.Coral,
+                ItemID.Starfish,
+                ItemID.Seashell,
+                ItemID.SharkFin,
+                ItemID.GillsPotion,
+                ItemID.SonarPotion
+            ];
+
+            int extraItemCount = Main.rand.Next(2, 4);
+            for (int i = 0; i < extraItemCount && slot < 40; i++) {
+                int itemType = oceanItems[Main.rand.Next(oceanItems.Length)];
+                chest.item[slot].SetDefaults(itemType);
+                chest.item[slot].stack = Main.rand.Next(3, 10);
+                slot++;
+            }
         }
 
         /// <summary>
@@ -90,12 +289,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 在营地清除时调用
         /// </summary>
         public static void ResetDecoration() {
-            potsPositionSet = false;
+            decorationsPositionSet = false;
             pots.Clear();
+            flagpoles.Clear();
         }
 
         public override void UpdateBySystem(int index) {
-            if (!OldDukeCampsite.IsGenerated || !potsPositionSet) {
+            if (!OldDukeCampsite.IsGenerated || !decorationsPositionSet) {
                 return;
             }
 
@@ -103,13 +303,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var pot in pots) {
                 UpdatePot(pot);
             }
+
+            //更新旗杆摇摆
+            foreach (var flagpole in flagpoles) {
+                flagpole.SwayTimer += 0.02f;
+                if (flagpole.SwayTimer > MathHelper.TwoPi) {
+                    flagpole.SwayTimer -= MathHelper.TwoPi;
+                }
+            }
         }
 
         /// <summary>
         /// 更新单个锅的状态
         /// </summary>
         private void UpdatePot(PotData pot) {
-            //更新动画计时器
             pot.GlowTimer += 0.025f;
             pot.BubbleTimer += 0.035f;
             pot.SteamTimer += 0.028f;
@@ -118,21 +325,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (pot.BubbleTimer > MathHelper.TwoPi) pot.BubbleTimer -= MathHelper.TwoPi;
             if (pot.SteamTimer > MathHelper.TwoPi) pot.SteamTimer -= MathHelper.TwoPi;
 
-            //生成蒸汽粒子
             pot.SteamSpawnTimer++;
             if (pot.SteamSpawnTimer >= 10 && pot.SteamParticles.Count < 12) {
                 pot.SteamSpawnTimer = 0;
                 SpawnSteamParticle(pot);
             }
 
-            //生成气泡粒子
             pot.BubbleSpawnTimer++;
             if (pot.BubbleSpawnTimer >= 15 && pot.BubbleParticles.Count < 6) {
                 pot.BubbleSpawnTimer = 0;
                 SpawnBubbleParticle(pot);
             }
 
-            //更新粒子
             for (int i = pot.SteamParticles.Count - 1; i >= 0; i--) {
                 if (pot.SteamParticles[i].Update()) {
                     pot.SteamParticles.RemoveAt(i);
@@ -147,7 +351,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
-            if (!OldDukeCampsite.IsGenerated || !potsPositionSet) {
+            if (!OldDukeCampsite.IsGenerated || !decorationsPositionSet) {
                 return;
             }
 
@@ -158,23 +362,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var pot in pots) {
                 Vector2 screenPos = pot.WorldPosition - Main.screenPosition;
 
-                //检查是否在屏幕范围内
                 if (!VaultUtils.IsPointOnScreen(screenPos, 200)) {
                     continue;
                 }
 
-                //绘制气泡背景层
                 foreach (var particle in pot.BubbleParticles) {
                     particle.Draw(spriteBatch);
                 }
 
-                //绘制锅
                 DrawPot(spriteBatch, screenPos, pot);
 
-                //绘制蒸汽前景层
                 foreach (var particle in pot.SteamParticles) {
                     particle.Draw(spriteBatch);
                 }
+            }
+
+            //绘制所有旗杆
+            foreach (var flagpole in flagpoles) {
+                Vector2 screenPos = flagpole.WorldPosition - Main.screenPosition;
+
+                if (!VaultUtils.IsPointOnScreen(screenPos, 200)) {
+                    continue;
+                }
+
+                DrawFlagpole(spriteBatch, screenPos, flagpole);
             }
 
             Main.spriteBatch.End();
@@ -191,11 +402,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Texture2D potTexture = OldDukeCampsite.OldPot;
             Vector2 origin = potTexture.Size() / 2f;
 
-            //底部发光效果模拟火光
             float glowIntensity = (MathF.Sin(pot.GlowTimer * 3f) * 0.5f + 0.5f) * 0.6f;
             Color fireGlow = new Color(255, 120, 60) with { A = 0 };
 
-            //绘制火光层
             for (int i = 0; i < 3; i++) {
                 float glowScale = 1.1f + i * 0.08f;
                 float glowAlpha = glowIntensity * (1f - i * 0.3f);
@@ -214,7 +423,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 );
             }
 
-            //绘制锅主体
             sb.Draw(
                 potTexture,
                 screenPos,
@@ -227,8 +435,53 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 0f
             );
 
-            //绘制热气波动效果
             DrawHeatWave(sb, screenPos, pot);
+        }
+
+        /// <summary>
+        /// 绘制旗杆
+        /// </summary>
+        private void DrawFlagpole(SpriteBatch sb, Vector2 screenPos, FlagpoleData flagpole) {
+            if (OldDukeCampsite.Oldflagpole == null) {
+                return;
+            }
+
+            Texture2D flagTexture = OldDukeCampsite.Oldflagpole;
+            Vector2 origin = new Vector2(flagTexture.Width / 2f, flagTexture.Height);
+
+            //风吹摇摆效果
+            float swayAmount = MathF.Sin(flagpole.SwayTimer * 2f) * 0.08f;
+
+            sb.Draw(
+                flagTexture,
+                screenPos,
+                null,
+                Color.White,
+                swayAmount,
+                origin,
+                1f,
+                SpriteEffects.None,
+                0f
+            );
+
+            //添加旗帜的飘动感，绘制稍微透明的重影
+            for (int i = 1; i <= 2; i++) {
+                float offsetAmount = i * 3f;
+                float alpha = 0.3f / i;
+                Vector2 offset = new Vector2(-offsetAmount * MathF.Sin(swayAmount), 0);
+
+                sb.Draw(
+                    flagTexture,
+                    screenPos + offset,
+                    null,
+                    Color.White * alpha,
+                    swayAmount,
+                    origin,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
 
         /// <summary>
@@ -237,7 +490,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private void DrawHeatWave(SpriteBatch sb, Vector2 screenPos, PotData pot) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //在锅上方绘制扭曲的热浪线条
             for (int i = 0; i < 3; i++) {
                 float t = i / 3f;
                 float yOffset = -20f - i * 8f;
@@ -266,7 +518,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private void SpawnSteamParticle(PotData pot) {
             Vector2 spawnPos = pot.WorldPosition;
-            //在锅的上方随机位置生成
             spawnPos += new Vector2(
                 Main.rand.NextFloat(-12f, 12f),
                 -24f + Main.rand.NextFloat(-4f, 4f)
@@ -280,7 +531,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private void SpawnBubbleParticle(PotData pot) {
             Vector2 spawnPos = pot.WorldPosition;
-            //在锅内部生成气泡
             spawnPos += new Vector2(
                 Main.rand.NextFloat(-10f, 10f),
                 Main.rand.NextFloat(-8f, 0f)
@@ -316,7 +566,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Rotation = Main.rand.NextFloat(0f, MathHelper.TwoPi);
                 RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
 
-                //黄色到淡黄绿色的蒸汽
                 Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Yellow, Color.YellowGreen);
             }
 
@@ -325,14 +574,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Position += Velocity;
                 Rotation += RotationSpeed;
 
-                //横向飘动
                 Velocity.X += MathF.Sin(Life * 0.08f) * 0.03f;
 
-                //向上减速
                 Velocity.Y *= 0.98f;
                 Velocity.X *= 0.99f;
 
-                //逐渐扩散
                 Scale += 0.008f;
 
                 return Life >= MaxLife;
@@ -343,7 +589,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 float alpha = MathF.Sin((Life / MaxLife) * MathHelper.Pi);
                 Vector2 screenPos = Position - Main.screenPosition;
 
-                //绘制蒸汽云团
                 sb.Draw(
                     pixel,
                     screenPos,
@@ -356,7 +601,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f
                 );
 
-                //中心高光
                 sb.Draw(
                     pixel,
                     screenPos,
@@ -394,7 +638,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Life = 0f;
                 MaxLife = Main.rand.NextFloat(20f, 35f);
 
-                //淡绿色的毒液气泡
                 Color = Main.rand.NextBool()
                     ? new Color(140, 200, 120, 200)
                     : new Color(160, 220, 140, 220);
@@ -404,10 +647,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Life++;
                 Position += Velocity;
 
-                //上升时左右摆动
                 Velocity.X += MathF.Sin(Life * 0.15f) * 0.01f;
 
-                //速度衰减
                 Velocity *= 0.98f;
 
                 return Life >= MaxLife;
@@ -418,7 +659,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 float alpha = MathF.Sin((Life / MaxLife) * MathHelper.Pi);
                 Vector2 screenPos = Position - Main.screenPosition;
 
-                //外圈
                 sb.Draw(
                     pixel,
                     screenPos,
@@ -431,7 +671,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f
                 );
 
-                //内核
                 sb.Draw(
                     pixel,
                     screenPos,
@@ -444,7 +683,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f
                 );
 
-                //高光
                 Vector2 highlightOffset = new Vector2(-Scale * 1.5f, -Scale * 1.5f);
                 sb.Draw(
                     pixel,
