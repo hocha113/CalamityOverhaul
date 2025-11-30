@@ -28,6 +28,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public bool IsCloseButtonHovered { get; private set; } = false;
         public const int CloseButtonSize = 32;
 
+        //音效冷却
+        private int soundCooldown = 0;
+        private const int SoundCooldownMax = 15;
+        private int lastQuickTransferSlot = -1;
+
         public OldDuchestInteraction(Player player, OldDuchestUI ui) {
             this.player = player;
             this.ui = ui;
@@ -58,6 +63,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// </summary>
         public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos, 
             bool leftPressed, bool leftHeld, bool rightPressed, bool rightHeld) {
+            //更新音效冷却
+            if (soundCooldown > 0) {
+                soundCooldown--;
+            }
+
             HoveredSlot = -1;
 
             //计算鼠标所在的槽位
@@ -79,7 +89,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 if (HoveredSlot != -1) break;
             }
 
-            if (HoveredSlot == -1) return;
+            if (HoveredSlot == -1) {
+                lastQuickTransferSlot = -1;
+                return;
+            }
 
             //获取当前槽位的物品
             Item slotItem = ui.GetItem(HoveredSlot);
@@ -92,6 +105,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (shiftPressed && leftPressed) {
                 QuickTransferToInventory(HoveredSlot);
                 return;
+            }
+
+            //重置快速转移槽位记录
+            if (!shiftPressed) {
+                lastQuickTransferSlot = -1;
             }
 
             //左键点击交互
@@ -124,7 +142,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     Main.mouseItem = slotItem.Clone();
                     ui.SetItem(HoveredSlot, new Item());
-                    SoundEngine.PlaySound(SoundID.Grab);
+                    PlaySound(SoundID.Grab);
                 }
             }
             else {
@@ -133,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     //槽位为空，放下手上的物品
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem.TurnToAir();
-                    SoundEngine.PlaySound(SoundID.Grab);
+                    PlaySound(SoundID.Grab);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
                     //相同物品，尝试堆叠
@@ -148,14 +166,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     }
                     
                     ui.SetItem(HoveredSlot, slotItem);
-                    SoundEngine.PlaySound(SoundID.Grab);
+                    PlaySound(SoundID.Grab);
                 }
                 else {
                     //不同物品，交换
                     Item temp = slotItem.Clone();
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem = temp;
-                    SoundEngine.PlaySound(SoundID.Grab);
+                    PlaySound(SoundID.Grab);
                 }
             }
         }
@@ -179,7 +197,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         ui.SetItem(HoveredSlot, slotItem);
                     }
                     
-                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.1f });
+                    PlaySound(SoundID.Grab, 0.1f);
                 }
             }
             else {
@@ -194,7 +212,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         Main.mouseItem.TurnToAir();
                     }
                     
-                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.1f });
+                    PlaySound(SoundID.Grab, 0.1f);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
                     //相同物品，添加一个
@@ -206,7 +224,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     }
                     
                     ui.SetItem(HoveredSlot, slotItem);
-                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.1f });
+                    PlaySound(SoundID.Grab, 0.1f);
                 }
             }
         }
@@ -253,16 +271,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             Item leftover = player.GetItem(player.whoAmI, item.Clone(), 
                 GetItemSettings.InventoryUIToInventorySettings);
             
+            bool success = false;
+            bool partialSuccess = false;
+
             if (leftover == null || leftover.stack == 0) {
                 //完全添加成功
                 ui.SetItem(slotIndex, new Item());
-                SoundEngine.PlaySound(SoundID.Grab);
+                success = true;
             }
-            else {
+            else if (leftover.stack < item.stack) {
                 //部分添加
                 item.stack = leftover.stack;
                 ui.SetItem(slotIndex, item);
-                SoundEngine.PlaySound(SoundID.Grab with { Pitch = -0.2f });
+                partialSuccess = true;
+            }
+
+            //只有在操作成功且音效冷却结束时才播放音效
+            if ((success || partialSuccess) && CanPlaySound()) {
+                if (success) {
+                    PlayQuickTransferSound();
+                }
+                else if (partialSuccess) {
+                    PlayQuickTransferSound(-0.2f);
+                }
+            }
+
+            //记录本次快速转移的槽位
+            if (success || partialSuccess) {
+                lastQuickTransferSlot = slotIndex;
             }
         }
 
@@ -274,6 +310,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (targetItem == null || targetItem.type == ItemID.None || targetItem.stack >= targetItem.maxStack) {
                 return;
             }
+
+            bool gathered = false;
 
             //从其他槽位收集相同物品
             for (int i = 0; i < TotalSlots; i++) {
@@ -294,11 +332,40 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     else {
                         ui.SetItem(i, otherItem);
                     }
+
+                    gathered = true;
                 }
             }
 
-            ui.SetItem(targetSlot, targetItem);
-            SoundEngine.PlaySound(SoundID.Grab);
+            if (gathered) {
+                ui.SetItem(targetSlot, targetItem);
+                PlaySound(SoundID.Grab);
+            }
+        }
+
+        /// <summary>
+        /// 播放音效
+        /// </summary>
+        private void PlaySound(SoundStyle sound, float pitch = 0f) {
+            if (CanPlaySound()) {
+                SoundEngine.PlaySound(sound with { Pitch = pitch });
+                soundCooldown = SoundCooldownMax;
+            }
+        }
+
+        /// <summary>
+        /// 播放快速转移音效
+        /// </summary>
+        private void PlayQuickTransferSound(float pitch = 0f) {
+            SoundEngine.PlaySound(SoundID.Grab with { Pitch = pitch });
+            soundCooldown = SoundCooldownMax;
+        }
+
+        /// <summary>
+        /// 检查是否可以播放音效
+        /// </summary>
+        private bool CanPlaySound() {
+            return soundCooldown <= 0;
         }
 
         /// <summary>
@@ -307,6 +374,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public void Reset() {
             HoveredSlot = -1;
             IsCloseButtonHovered = false;
+            soundCooldown = 0;
+            lastQuickTransferSlot = -1;
         }
     }
 }
