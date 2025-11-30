@@ -16,12 +16,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     [VaultLoaden("@CalamityMod/NPCs/OldDuke/")]
     internal class OldDukeCampsite : ModSystem, ILocalizedModType
     {
-        //反射加载老公爵贴图，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
+        //反射加载老公爵纹理，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
         public static Texture2D OldDuke;
         //老公爵的头像图标
         public static Texture2D OldDuke_Head_Boss;
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
-        public static Texture2D OldPot;//反射加载老公爵营地的锅贴图，大小宽46像素高48像素，适合放地上用于丰富营地场景
+        public static Texture2D OldPot;//反射加载老公爵营地的锅纹理，大小宽46像素高48像素，适合放地上用于丰富营地场景
+        [VaultLoaden(CWRConstant.ADV + "Abysse/")]
+        public static Texture2D Oldflagpole;//反射加载老公爵营地的气质纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
 
         //营地数据
         public static bool IsGenerated { get; private set; }
