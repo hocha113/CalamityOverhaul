@@ -260,6 +260,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //获取老公爵掉落物品
             HashSet<int> oldDukeDrops = OldDukeShops.OldDukeShopHandle.GetNPCDrops(CWRID.NPC_OldDuke, true);
             List<int> dropList = oldDukeDrops.ToList();
+            List<int> dropList2 = [];
+            foreach (int drop in dropList) {
+                Item item = new Item(drop);
+                if (item.value > 6000 * 30) {
+                    dropList2.Add(drop);
+                }
+            }
+            dropList = dropList2;
 
             //随机选择3到5个物品
             int itemCount = Main.rand.Next(3, 6);
@@ -272,7 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 int itemType = dropList[randomIndex];
                 dropList.RemoveAt(randomIndex);
 
-                Item item = new Item();
+                Item item = new();
                 item.SetDefaults(itemType);
                 item.stack = 1;
                 chestTP.storedItems.Add(item);
