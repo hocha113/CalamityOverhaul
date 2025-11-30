@@ -452,6 +452,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (CrabulonPlayer != null) {
                 CrabulonPlayer.IsMount = false;
             }
+
+            ushort border = 560;//边界距离，防止跑出地图
+            npc.position.X = MathHelper.Clamp(npc.position.X, border, Main.maxTilesX * 16 - border);
+            npc.position.Y = MathHelper.Clamp(npc.position.Y, border, Main.maxTilesY * 16 - border);
+
             if (!MountAI()) {
                 return false;
             }
