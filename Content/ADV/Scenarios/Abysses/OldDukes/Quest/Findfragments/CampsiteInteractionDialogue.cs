@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         }
 
         protected override void OnScenarioComplete() {
-            OldDukeEffect.IsActive = false;
+            
         }
     }
 }
