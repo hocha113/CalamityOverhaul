@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static Texture2D OldDuke;
         //老公爵的头像图标
         public static Texture2D OldDuke_Head_Boss;
+        [VaultLoaden(CWRConstant.ADV + "Abysse/")]
+        public static Texture2D OldPot;//反射加载老公爵营地的锅贴图，大小宽46像素高48像素，适合放地上用于丰富营地场景
 
         //营地数据
         public static bool IsGenerated { get; private set; }
