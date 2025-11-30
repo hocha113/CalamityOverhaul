@@ -147,19 +147,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 绘制外发光环
         /// </summary>
         private static void DrawGlowRing(SpriteBatch spriteBatch, Vector2 position, float rotation, float pulse, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Texture2D pixel = CWRAsset.SoftGlow.Value;
 
-            float glowSize = 35f + pulse * 12f;
-            Color glowColor = new Color(100, 140, 50) * (alpha * 0.25f * (0.6f + pulse * 0.4f));
+            float glowSize = 5.5f + pulse * 1.2f;
+            Color glowColor = new Color(100, 140, 50, 0) * (alpha * 0.25f * (0.6f + pulse * 0.4f));
 
             spriteBatch.Draw(
                 pixel,
                 position,
-                new Rectangle(0, 0, 1, 1),
+                null,
                 glowColor,
                 0f,
-                new Vector2(0.5f),
-                new Vector2(glowSize),
+                pixel.Size() / 2,
+                glowSize,
                 SpriteEffects.None,
                 0f
             );

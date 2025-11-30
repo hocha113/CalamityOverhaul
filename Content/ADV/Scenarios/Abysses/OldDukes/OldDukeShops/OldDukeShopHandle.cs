@@ -42,7 +42,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             var rareDrops = GetNPCDrops(CWRID.NPC_OldDuke, true);
             foreach (var id in rareDrops) {
                 Item item = new Item(id);
-                shopItems.Add(new OldDukeShopItem(id, 1, (int)MathHelper.Clamp(item.value / 6000, 1, 9999)));
+                int value = (int)MathHelper.Clamp(item.value / 6000, 1, 9999);
+                if (value <= 3) {
+                    continue;
+                }
+                shopItems.Add(new OldDukeShopItem(id, 1, value));
             }
         }
 

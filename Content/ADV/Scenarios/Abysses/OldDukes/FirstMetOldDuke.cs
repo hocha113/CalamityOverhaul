@@ -92,9 +92,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         protected override void Build() {
-            //注册立绘（老公爵暂时没有专属立绘，使用null）
-            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, texture: null);
-            DialogueBoxBase.SetPortraitStyle(OldDukeName.Value, silhouette: true);
+            //注册立绘
+            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, ADVAsset.OldDuke);
 
             //检查是否已经拒绝过合作，这里直接跳转到选项部分
             if (Main.LocalPlayer.TryGetADVSave(out var save) && save.OldDukeCooperationDeclined) {
