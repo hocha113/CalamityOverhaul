@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         //机器常量
         internal const int consumeUE = 8;
-        internal const int fishingTime = 60;
+        internal const int fishingTime = 12;
         internal const int maxStorageSlots = 340;
 
         //机器状态
@@ -352,11 +352,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             //钓鱼计时
             if (++fishingTimer >= fishingTime) {
-                PerformFishing();
-                MachineData.UEvalue -= consumeUE;
                 fishingTimer = 0;
+                MachineData.UEvalue -= consumeUE;
 
-                if (!VaultUtils.isServer) {
+                PerformFishing();
+
+                if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
                     //播放钓到鱼的音效
                     SoundEngine.PlaySound(SoundID.Splash with {
                         Pitch = -0.2f,
