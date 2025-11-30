@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
     {
         //宽6格，高4格，共两帧，第一帧为关闭状态，第二帧为打开状态
         public override string Texture => CWRConstant.Item_Placeable + "OldDuchestTile";
-        
+
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -107,9 +107,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             Player player = Main.LocalPlayer;
             if (player.whoAmI == Main.myPlayer) {
                 //播放箱子打开音效
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen with { 
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen with {
                     Pitch = -0.2f,
-                    Volume = 0.6f 
+                    Volume = 0.6f
                 }, new Vector2(i * 16, j * 16));
 
                 //打开UI

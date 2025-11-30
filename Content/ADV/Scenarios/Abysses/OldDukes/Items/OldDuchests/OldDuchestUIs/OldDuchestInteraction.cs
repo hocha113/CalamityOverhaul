@@ -1,4 +1,3 @@
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -128,9 +127,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (item == null || item.type <= ItemID.None || item.stack <= 0) return;
 
             //尝试添加到玩家背包
-            Item leftover = player.GetItem(player.whoAmI, item.Clone(), 
+            Item leftover = player.GetItem(player.whoAmI, item.Clone(),
                 GetItemSettings.InventoryUIToInventorySettings);
-            
+
             if (leftover == null || leftover.stack == 0) {
                 //完全添加成功，移除槽位物品
                 ui.SetItem(slotIndex, new Item());
@@ -151,7 +150,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             //交换物品
             Item fromItem = ui.GetItem(fromIndex);
             Item toItem = ui.GetItem(toIndex);
-            
+
             ui.SetItem(fromIndex, toItem);
             ui.SetItem(toIndex, fromItem);
         }

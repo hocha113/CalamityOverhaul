@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     usedSlots++;
                 }
             }
-            
+
             string infoText = $"{OldDuchestUI.StorageText.Value}: {usedSlots}/{SlotsPerRow * SlotRows}";
             Vector2 infoSize = font.MeasureString(infoText) * 0.8f;
             Vector2 infoPos = panelPosition + new Vector2(PanelWidth / 2 - infoSize.X / 2, PanelHeight);

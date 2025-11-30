@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "老箱子");
             StorageText = this.GetLocalization(nameof(StorageText), () => "储物空间");
-            
+
             //初始化物品列表
             for (int i = 0; i < TotalSlots; i++) {
                 items.Add(new Item());
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// </summary>
         public void Close() {
             _active = false;
-            
+
             if (CurrentChest != null) {
                 CurrentChest.SaveItemsFromUI();
                 CurrentChest.CloseUI(player);
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 player.CWR().DontSwitchWeaponTime = 2;
 
                 //优先检测关闭按钮
-                if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, 
+                if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition,
                     keyLeftPressState == KeyPressState.Pressed)) {
                     Close();
                     return;

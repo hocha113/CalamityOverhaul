@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             //更新光照
             if (glowIntensity > 0.01f) {
                 float pulsePulse = MathF.Sin(glowTimer * 0.05f) * 0.3f + 0.7f;
-                Lighting.AddLight(CenterInWorld, 
+                Lighting.AddLight(CenterInWorld,
                     new Color(139, 87, 42).ToVector3() * glowIntensity * pulsePulse);
             }
         }
@@ -118,9 +118,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (player == null || !player.active) return;
 
             isOpen = true;
-            SoundEngine.PlaySound(SoundID.MenuOpen with { 
+            SoundEngine.PlaySound(SoundID.MenuOpen with {
                 Pitch = -0.2f,
-                Volume = 0.6f 
+                Volume = 0.6f
             }, CenterInWorld);
 
             //更新图格帧为打开状态
@@ -134,9 +134,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (player == null) return;
 
             isOpen = false;
-            SoundEngine.PlaySound(SoundID.MenuClose with { 
+            SoundEngine.PlaySound(SoundID.MenuClose with {
                 Pitch = -0.3f,
-                Volume = 0.5f 
+                Volume = 0.5f
             }, CenterInWorld);
 
             //保存UI数据
