@@ -459,6 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 }
             }
             ResetState();
+            CloseEyes(Player);
         }
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
             CloseEyes(Player);
@@ -485,6 +486,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
             halibutSave.InitializeEyes(activeIndices);
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ResurrectionSystem.ResurrectionRate = 0f;
+            }
         }
         #endregion
 
