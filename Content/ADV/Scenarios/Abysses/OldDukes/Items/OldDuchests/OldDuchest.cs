@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }, new Vector2(i * 16, j * 16));
 
                 //打开UI
-                OldDuchests.OldDuchestUIs.OldDuchestUI.Instance.Open(point);
+                OldDuchestUIs.OldDuchestUI.Instance.Open(point);
             }
 
             return true;
