@@ -2621,27 +2621,27 @@ Legend: {
 		}
 
 		ResurrectionUI: {
-			// TitleText: Abyssal Resurrection State
-			// LinePercentFormat: Completion : {0:F1}%
-			// LineValueFormat: Resonance Value : {0:F1} / {1:F1}
-			// LineRateFormat: Flow Rate : {0:F3}/s
-			// HeaderSummaryText: Current Phenomenon Analysis
-			// RateLevelVeryLow: Dormant
-			// RateLevelLow: Faint
-			// RateLevelMedium: Active
-			// RateLevelHigh: Intense
-			// RateLevelDanger: Cataclysmic
-			// Phase1: The depths stir in silence; all remains within mortal grasp.
-			// Phase2: Gentle tremors echo through the tide — the pulse begins to breathe.
-			// Phase3: The abyss murmurs; unseen currents claw at the edges of control.
-			// Phase4: Pressure mounts, and the veil of the domain begins to waver.
-			// Phase5: The threshold breaks — the abyss gazes back.
-			// Trend1: Still and silent
-			// Trend2: Slowly awakening
-			// Trend3: Rising with rhythm
-			// Trend4: Swelling in fervor
-			// Trend5: Spiraling toward collapse
-			// SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
+			// TitleText: Abyssal Resurrection Status
+			// LinePercentFormat: Assimilation : {0:F1}%
+			// LineValueFormat: Value : {0:F1} / {1:F1}
+			// LineRateFormat: Rate : {0:F3}/s
+			// HeaderSummaryText: Mental State Diagnosis
+			// RateLevelVeryLow: Dead Silence
+			// RateLevelLow: Whispering
+			// RateLevelMedium: Restless
+			// RateLevelHigh: Seething
+			// RateLevelDanger: Torrential
+			// Phase1: The Abyss remains dormant. All is calm.
+			// Phase2: Phantom tides echo in your ears; a chill creeps into your extremities.
+			// Phase3: Hallucinations intensify. Crushing deep-sea pressure builds behind your eyes and heart.
+			// Phase4: The logic of reality crumbles. Your very existence is being overwritten by a cold, unseen terror.
+			// Phase5: Threshold breached. Humanity dissolves; you are becoming one with the Sea of Corpses.
+			// Trend1: Stagnant
+			// Trend2: Seeping
+			// Trend3: Rising
+			// Trend4: Flooding
+			// Trend5: Catastrophic Collapse
+			// SummaryFormat: Diagnosis: {0} [Erosion Trend: {1}]
 		}
 	}
 
