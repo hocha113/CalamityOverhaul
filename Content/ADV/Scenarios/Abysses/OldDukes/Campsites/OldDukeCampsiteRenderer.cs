@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f,
                     origin,
                     glowScale,
-                    SpriteEffects.None,
+                    SpriteEffects.FlipHorizontally,
                     0f
                 );
             }
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 0f,
                 origin,
                 breathScale,
-                SpriteEffects.None,
+                SpriteEffects.FlipHorizontally,
                 0f
             );
         }

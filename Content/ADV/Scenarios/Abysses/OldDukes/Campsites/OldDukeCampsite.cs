@@ -155,6 +155,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             IsGenerated = true;
             FindCampsiteUI.Instance.SetDefScreenYValue();
 
+            //设置装饰物品位置
+            OldDukeCampsiteDecoration.SetupPotPosition(position);
+
             //播放生成音效
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, position);
         }
@@ -168,6 +171,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             animationTimer = 0;
             isPlayerNearby = false;
             interactPromptAlpha = 0f;
+
+            //重置装饰状态
+            OldDukeCampsiteDecoration.ResetDecoration();
         }
 
         /// <summary>
