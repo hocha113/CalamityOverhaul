@@ -40,6 +40,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         //任务完成后的对话
         public static LocalizedText QuestCompleteLine { get; private set; }
 
+        //任务完成后的对话
+        public static LocalizedText B1 { get; private set; }
+
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
 
@@ -54,7 +57,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "很好，这些碎片足够了。这是你应得的奖励");
             Choice3Response = this.GetLocalization(nameof(Choice3Response), () => "......");
 
-            QuestCompleteLine = this.GetLocalization(nameof(QuestCompleteLine), () => "感谢你的帮助");
+            QuestCompleteLine = this.GetLocalization(nameof(QuestCompleteLine), () => "嗯...你有什么新发现吗？我现在很忙");
+
+            B1 = this.GetLocalization(nameof(B1), () => "我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的");
         }
 
         protected override void Build() {
@@ -162,6 +167,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
         //选项2：提交海洋残片
         private void Choice2() {
+            //消耗海洋残片
+            ConsumeFragments(777);
             ScenarioManager.Reset<CampsiteInteractionDialogue_Choice2>();
             ScenarioManager.Start<CampsiteInteractionDialogue_Choice2>();
             Complete();
@@ -173,13 +180,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
             protected override void Build() {
-                Add(OldDukeName.Value, Choice2Response.Value);
+                Add(OldDukeName.Value, Choice2Response.Value, onStart: Give);
+                Add(OldDukeName.Value, B1.Value);
             }
 
-            protected override void OnScenarioComplete() {
-                //消耗海洋残片
-                ConsumeFragments(777);
-
+            private static void Give() {
                 //标记任务完成
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                     save.OldDukeFindFragmentsQuestCompleted = true;
@@ -204,7 +209,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
                     offset: Vector2.Zero,
                     styleProvider: () => ADVRewardPopup.RewardStyle.Sulfsea
                 );
+            }
 
+            protected override void OnScenarioComplete() {
                 OldDukeEffect.IsActive = false;
             }
         }

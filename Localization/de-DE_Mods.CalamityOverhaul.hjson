@@ -7265,6 +7265,7 @@ ADV: {
 		// Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
 		// Choice3Response: ......
 		// QuestCompleteLine: 感谢你的帮助
+		// B1: 我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的
 	}
 
 	FirstCampsiteDialogue: {

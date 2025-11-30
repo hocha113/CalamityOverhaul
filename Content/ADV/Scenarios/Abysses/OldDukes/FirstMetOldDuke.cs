@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             //比目鱼台词
             HL1 = this.GetLocalization(nameof(HL1), () => "老教授......?不过他看起来不认识我了");
-            HL2 = this.GetLocalization(nameof(HL2), () => "他的话是可信的，我们硫磺海大学的同事，他是海洋考古学领域的泰斗");
+            HL2 = this.GetLocalization(nameof(HL2), () => "他的话是可信的，我们是硫磺海大学的同事，他是海洋考古学领域的泰斗");
 
             C1 = this.GetLocalization(nameof(C1), () => "接受合作");
             C2 = this.GetLocalization(nameof(C2), () => "拒绝合作");

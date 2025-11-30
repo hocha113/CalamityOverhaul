@@ -7188,57 +7188,58 @@ ADV: {
 	GiveBlazingBud.MessageText: 焚烧的余烬随风低语，一朵奇异的花飘落到你手中……
 
 	FirstMetOldDuke: {
-		// OldDukeName: 老公爵
-		// HelenName: 比目鱼
-		// L0: ......
-		// L1: 没必要一见面就拔刀相向
-		// L2: 我年纪大了，不想打架
-		// L3: 我们可以合作
-		// L4: 我一直在收集海洋残片
-		// L5: 如果你可以帮我找来更多，我会给予相应的报酬
-		// L6: 这是一份样本
-		// B1: 你改主意了吗？
-		// B2: 那么再见
-		// HL1: 老教授......?不过他看起来不认识我了
-		// HL2: 他的话是可信的，我们硫磺海大学的同事，他是海洋考古学领域的泰斗
-		// C1: 接受合作
-		// C2: 拒绝合作
-		// C3: 拒绝合作并拔出武器
-		// C1Response: 很好，希望我们能有一个愉快的合作
-		// C2Response: ......那我就先离开了，如果你改变主意，随时可以再来找我
-		// C3Response: ......看来你执意如此，那就让我来称量称量你吧
+		OldDukeName: 老公爵
+		HelenName: 比目鱼
+		L0: ......
+		L1: 没必要一见面就拔刀相向
+		L2: 我年纪大了，不想打架
+		L3: 我们可以合作
+		L4: 我一直在收集海洋残片
+		L5: 如果你可以帮我找来更多，我会给予相应的报酬
+		L6: 这是一份样本
+		B1: 你改主意了吗？
+		B2: 那么再见
+		HL1: 老教授......?不过他看起来不认识我了
+		HL2: 他的话是可信的，我们是硫磺海大学的同事，他是海洋考古学领域的泰斗
+		C1: 接受合作
+		C2: 拒绝合作
+		C3: 拒绝合作并拔出武器
+		C1Response: 希望我们合作愉快，容我离开去准备一下，你稍后可以来找我
+		C2Response: ......那我就先离开了，如果你改变主意，随时可以再来找我
+		C3Response: ......看来你执意如此，那就让我来称量称量你吧
 	}
 
 	OldDukeCampsite: {
 		OldDukeCampsiteRenderer: {
-			// InteractHint: "[右键] 对话"
-			// GreetingText: 嗯？你好啊...
+			InteractHint: "[右键] 对话"
+			GreetingText: 嗯？你好啊...
 		}
 
-		// OldDukeCampsite.TitleText: 老公爵营地
+		OldDukeCampsite.TitleText: 老公爵营地
 	}
 
 	CampsiteInteractionDialogue: {
-		// OldDukeName: 老公爵
-		// GreetingLine: 你需要什么？
-		// Choice1Text: 我来找你交易一下
-		// Choice2Text: 你要的东西我都弄来了
-		// Choice3Text: 我只是来溜达一圈
-		// Choice2DisabledHint: 海洋残片不足
-		// Choice1Response: 看看我这里有什么吧
-		// Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
-		// Choice3Response: ......
-		// QuestCompleteLine: 感谢你的帮助
+		OldDukeName: 老公爵
+		GreetingLine: 你需要什么？
+		Choice1Text: 我来找你交易一下
+		Choice2Text: 你要的东西我都弄来了
+		Choice3Text: 我只是来溜达一圈
+		Choice2DisabledHint: 海洋残片不足
+		Choice1Response: 看看我这里有什么吧
+		Choice2Response: 很好，这些碎片足够了。这是我最近研究的一台机器，你应该会喜欢
+		Choice3Response: ......
+		QuestCompleteLine: 嗯...你有什么新发现吗？我现在很忙
+		B1: 我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的
 	}
 
 	FirstCampsiteDialogue: {
-		// OldDukeName: 老公爵
-		// L0: 你来了
-		// L1: 我收集这些残片已经很久了
-		// L2: 这些残片很诡异，它们总像是...入侵进这个世界的产物
-		// L3: 我希望你能明白我的意思，我的直觉告诉我它们本应是无形之物，只是选择了某种可以被泰拉生物理解的形态
-		// L4: 总之...我想要解读它们，但数量还不够
-		// L5: 我希望你能帮我收集足够多的海洋残片
-		// L6: 我将给予你相应的报酬
+		OldDukeName: 老公爵
+		L0: 你来了
+		L1: 我收集这些残片已经很久了
+		L2: 这些残片很诡异，它们总像是...入侵进这个世界的产物
+		L3: 我希望你能明白我的意思，我的直觉告诉我它们本应是无形之物，只是选择了某种可以被泰拉生物理解的形态
+		L4: 总之...我想要解读它们，但数量还不够
+		L5: 我希望你能帮我收集足够多的海洋残片
+		L6: 我将给予你相应的报酬
 	}
 }
