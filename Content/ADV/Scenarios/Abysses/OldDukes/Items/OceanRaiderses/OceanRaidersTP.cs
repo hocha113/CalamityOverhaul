@@ -175,10 +175,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 catches.Add(ItemID.Sextant);
             }
 
-            //添加灾厄物品支持
-            if (CWRMod.Instance.calamity != null) {
-                catches.Add(ModContent.ItemType<Oceanfragments>());
-            }
+            catches.Add(ModContent.ItemType<Oceanfragments>());
 
             return catches;
         }
