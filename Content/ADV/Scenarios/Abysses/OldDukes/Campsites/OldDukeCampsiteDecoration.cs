@@ -41,6 +41,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static bool decorationsPositionSet;
 
         /// <summary>
+        /// 获取所有锅的位置列表
+        /// </summary>
+        public static List<Vector2> GetPotPositions() {
+            List<Vector2> positions = [];
+            foreach (var pot in pots) {
+                positions.Add(pot.WorldPosition);
+            }
+            return positions;
+        }
+
+        /// <summary>
         /// 设置装饰物的位置
         /// 在营地生成时自动调用
         /// </summary>
@@ -373,6 +384,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     pot.BubbleParticles.RemoveAt(i);
                 }
             }
+
+            Lighting.AddLight(pot.WorldPosition, TorchID.Yellow);
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
@@ -562,6 +575,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
 
             pot.BubbleParticles.Add(new BubbleParticlePRT(spawnPos));
+        }
+
+        /// <summary>
+        /// 老公爵营地装饰物品
+        /// </summary>
+        public static void Decorate(Vector2 position) {
+            //在这里添加老公爵营地的装饰物品生成逻辑
+            //可以是NPC、环境物品、地面装饰等
         }
 
         /// <summary>

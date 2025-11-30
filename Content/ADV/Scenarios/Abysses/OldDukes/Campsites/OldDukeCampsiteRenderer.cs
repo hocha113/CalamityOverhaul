@@ -28,20 +28,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         //发光效果
         private float glowTimer;
 
-        //老公爵游走AI
-        private Vector2 oldDukePosition;
-        private Vector2 oldDukeVelocity;
-        private Vector2 wanderTarget;
-        private int wanderTimer;
-        private const float WanderRadius = 180f;
-        private const float MoveSpeed = 1.2f;
-        private const float MaxSpeed = 2.8f;
-        private float swimPhase;
-        private bool facingLeft;
+        //老公爵实体
+        private OldDukeEntity oldDukeEntity;
+        private bool entityInitialized;
 
         //对话状态
         private bool inDialogue;
-        private Vector2 dialogueTargetPos;
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 对话");
@@ -53,23 +45,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
+            //初始化老公爵实体
+            if (!entityInitialized) {
+                oldDukeEntity = new OldDukeEntity(OldDukeCampsite.CampsitePosition);
+                oldDukeEntity.SetPotPositions(OldDukeCampsiteDecoration.GetPotPositions());
+                entityInitialized = true;
+            }
+
             //更新发光计时器
             glowTimer += 0.03f;
             if (glowTimer > MathHelper.TwoPi) {
                 glowTimer -= MathHelper.TwoPi;
             }
 
-            //更新游走动画相位
-            swimPhase += 0.08f;
-            if (swimPhase > MathHelper.TwoPi) {
-                swimPhase -= MathHelper.TwoPi;
-            }
-
             //检测对话状态
             inDialogue = OldDukeEffect.IsActive;
 
-            //更新老公爵位置
-            UpdateOldDukeMovement();
+            //更新老公爵实体
+            Vector2 dialogueTarget = Vector2.Zero;
+            if (inDialogue) {
+                Player player = Main.LocalPlayer;
+                if (player != null && player.active) {
+                    dialogueTarget = player.Center + new Vector2(0, -200f);
+                }
+            }
+
+            oldDukeEntity?.Update(inDialogue, dialogueTarget);
 
             //生成毒泡粒子
             bubbleSpawnTimer++;
@@ -86,136 +87,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 更新老公爵移动逻辑
-        /// </summary>
-        private void UpdateOldDukeMovement() {
-            Vector2 campsiteCenter = OldDukeCampsite.CampsitePosition;
-
-            //首次初始化位置
-            if (oldDukePosition == Vector2.Zero) {
-                oldDukePosition = campsiteCenter;
-                GenerateNewWanderTarget(campsiteCenter);
-            }
-
-            if (inDialogue) {
-                //对话模式：移动到玩家上方
-                Player player = Main.LocalPlayer;
-                if (player != null && player.active) {
-                    dialogueTargetPos = player.Center + new Vector2(0, -200f);
-
-                    //平滑移动到目标位置
-                    Vector2 toTarget = dialogueTargetPos - oldDukePosition;
-                    float distance = toTarget.Length();
-
-                    if (distance > 5f) {
-                        Vector2 direction = toTarget.SafeNormalize(Vector2.Zero);
-                        float approachSpeed = MathHelper.Clamp(distance * 0.08f, 0.5f, 3.5f);
-
-                        oldDukeVelocity = Vector2.Lerp(oldDukeVelocity, direction * approachSpeed, 0.15f);
-
-                        //限制速度
-                        if (oldDukeVelocity.Length() > MaxSpeed * 1.2f) {
-                            oldDukeVelocity = oldDukeVelocity.SafeNormalize(Vector2.Zero) * MaxSpeed * 1.2f;
-                        }
-                    }
-                    else {
-                        //到达目标位置后保持轻微漂浮
-                        oldDukeVelocity *= 0.88f;
-                        Vector2 floatOffset = new Vector2(
-                            MathF.Sin(swimPhase) * 0.3f,
-                            MathF.Cos(swimPhase * 0.7f) * 0.2f
-                        );
-                        oldDukePosition += floatOffset;
-                    }
-
-                    //更新朝向
-                    if (Math.Abs(oldDukeVelocity.X) > 0.1f) {
-                        facingLeft = oldDukeVelocity.X < 0;
-                    }
-                }
-            }
-            else {
-                //游走模式：在营地范围内随机移动
-                wanderTimer++;
-
-                //到达目标或超时后重新选择目标
-                float distanceToTarget = Vector2.Distance(oldDukePosition, wanderTarget);
-                if (distanceToTarget < 30f || wanderTimer > 180) {
-                    GenerateNewWanderTarget(campsiteCenter);
-                    wanderTimer = 0;
-                }
-
-                //向目标移动
-                Vector2 toTarget = wanderTarget - oldDukePosition;
-                Vector2 direction = toTarget.SafeNormalize(Vector2.Zero);
-
-                //加速度控制，更自然的加减速
-                float desiredSpeed = MoveSpeed * (0.6f + MathF.Sin(swimPhase * 0.5f) * 0.4f);
-                Vector2 desiredVelocity = direction * desiredSpeed;
-
-                oldDukeVelocity = Vector2.Lerp(oldDukeVelocity, desiredVelocity, 0.08f);
-
-                //限制速度
-                if (oldDukeVelocity.Length() > MaxSpeed) {
-                    oldDukeVelocity = oldDukeVelocity.SafeNormalize(Vector2.Zero) * MaxSpeed;
-                }
-
-                //添加游泳波动
-                Vector2 swimWave = new Vector2(
-                    MathF.Sin(swimPhase * 1.2f) * 0.4f,
-                    MathF.Cos(swimPhase * 0.8f) * 0.3f
-                );
-                oldDukeVelocity += swimWave;
-
-                //更新朝向
-                if (Math.Abs(toTarget.X) > 5f) {
-                    facingLeft = toTarget.X < 0;
-                }
-            }
-
-            //应用速度
-            oldDukePosition += oldDukeVelocity;
-
-            //速度衰减
-            oldDukeVelocity *= 0.96f;
-
-            //边界限制（保持在营地范围内）
-            Vector2 toCampsite = oldDukePosition - campsiteCenter;
-            float distanceFromCenter = toCampsite.Length();
-
-            if (distanceFromCenter > WanderRadius) {
-                //超出范围，推回范围内
-                Vector2 pushBack = toCampsite.SafeNormalize(Vector2.Zero) * (distanceFromCenter - WanderRadius);
-                oldDukePosition -= pushBack * 0.2f;
-
-                //如果远离中心，设置新目标朝向中心
-                if (!inDialogue && distanceFromCenter > WanderRadius * 1.2f) {
-                    wanderTarget = campsiteCenter + Main.rand.NextVector2Circular(WanderRadius * 0.5f, WanderRadius * 0.5f);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 生成新的游走目标点
-        /// </summary>
-        private void GenerateNewWanderTarget(Vector2 center) {
-            //在营地范围内随机选择一个点
-            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float distance = Main.rand.NextFloat(WanderRadius * 0.3f, WanderRadius * 0.85f);
-
-            wanderTarget = center + angle.ToRotationVector2() * distance;
-
-            //稍微偏向上方，避免贴地
-            wanderTarget.Y -= Main.rand.NextFloat(20f, 60f);
-        }
-
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
-            if (!OldDukeCampsite.IsGenerated) {
+            if (!OldDukeCampsite.IsGenerated || oldDukeEntity == null) {
                 return;
             }
 
-            Vector2 screenPos = oldDukePosition - Main.screenPosition;
+            Vector2 screenPos = oldDukeEntity.Position - Main.screenPosition;
 
             //检查是否在屏幕内
             if (!VaultUtils.IsPointOnScreen(screenPos, 400)) {
@@ -243,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 绘制老公爵
         /// </summary>
         private void DrawOldDuke(SpriteBatch sb, Vector2 screenPos) {
-            if (OldDukeCampsite.OldDuke == null) {
+            if (OldDukeCampsite.OldDuke == null || oldDukeEntity == null) {
                 return;
             }
 
@@ -251,23 +128,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Vector2 origin = frame.Size() / 2f;
 
             //轻微呼吸效果
-            float breathScale = 1f + MathF.Sin(glowTimer * 1.5f) * 0.03f;
+            float breathScale = 1f + MathF.Sin(glowTimer * 1.5f) * 0.01f;
 
-            //游泳时的上下波动
-            float swimBob = MathF.Sin(swimPhase) * 3f;
-            Vector2 bobOffset = new Vector2(0, swimBob);
+            //游泳波动偏移
+            Vector2 bobOffset = oldDukeEntity.GetSwimBobOffset();
 
-            //游泳时的轻微倾斜
-            float swimTilt = 0f;
-            if (!inDialogue && oldDukeVelocity.Length() > 0.5f) {
-                swimTilt = MathHelper.Clamp(oldDukeVelocity.Y * 0.08f, -0.15f, 0.15f);
-            }
+            //游泳倾斜
+            float swimTilt = oldDukeEntity.GetSwimTilt();
 
             //绘制底层发光（硫磺海风格）
             float glowIntensity = (MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f) * 0.4f;
             Color glowColor = new Color(100, 200, 120) with { A = 0 };
 
-            SpriteEffects flip = facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            SpriteEffects flip = oldDukeEntity.FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             for (int i = 0; i < 3; i++) {
                 float glowScale = breathScale * (1.2f + i * 0.1f);
@@ -290,7 +163,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 OldDukeCampsite.OldDuke,
                 screenPos + bobOffset,
                 frame,
-                Color.White,
+                Lighting.GetColor((oldDukeEntity.Position / 16).ToPoint()),
                 swimTilt,
                 origin,
                 breathScale,
@@ -352,8 +225,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 生成毒泡粒子
         /// </summary>
         private void SpawnToxicBubble() {
+            if (oldDukeEntity == null) {
+                return;
+            }
+
             //在老公爵当前位置周围生成
-            Vector2 spawnPos = oldDukePosition;
+            Vector2 spawnPos = oldDukeEntity.Position;
             spawnPos += new Vector2(
                 Main.rand.NextFloat(-80f, 80f),
                 Main.rand.NextFloat(-60f, 60f)
