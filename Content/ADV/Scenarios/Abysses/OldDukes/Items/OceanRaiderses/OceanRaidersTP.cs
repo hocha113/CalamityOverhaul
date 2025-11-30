@@ -358,16 +358,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
                 if (!VaultUtils.isServer) {
                     //播放钓到鱼的音效
-                    SoundEngine.PlaySound(SoundID.Splash with { 
-                        Pitch = -0.2f, 
-                        Volume = 0.5f 
+                    SoundEngine.PlaySound(SoundID.Splash with {
+                        Pitch = -0.2f,
+                        Volume = 0.5f
                     }, intakeCenter);
-                    
+
                     //随机播放水泡音效
                     if (Main.rand.NextBool(3)) {
-                        SoundEngine.PlaySound(SoundID.Item21 with { 
+                        SoundEngine.PlaySound(SoundID.Item21 with {
                             Pitch = Main.rand.NextFloat(-0.3f, 0.1f),
-                            Volume = 0.3f 
+                            Volume = 0.3f
                         }, intakeCenter);
                     }
                 }
@@ -411,9 +411,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             if (player.whoAmI == Main.myPlayer) {
                 OceanRaidersUI.Instance.Open(this);
                 //播放UI打开音效
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { 
+                SoundEngine.PlaySound(CWRSound.ButtonZero with {
                     Pitch = -0.1f,
-                    Volume = 0.7f 
+                    Volume = 0.7f
                 }, player.Center);
             }
             return true;
