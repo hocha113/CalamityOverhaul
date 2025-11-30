@@ -246,6 +246,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                         new Color(80, 180, 240),
                         layerProgress
                     ) * alpha;
+
                     drawColor.A = 0;
 
                     //»æÖÆ
