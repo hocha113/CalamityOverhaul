@@ -237,26 +237,55 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
 
-            //生成新粒子
-            if (isWorking && particleTimer++ % 3 == 0) {
+            //生成新粒子（增加生成频率）
+            if (isWorking && particleTimer++ % 8 == 0 && fishingParticles.Count < 20) {
                 SpawnFishingParticle();
             }
         }
 
         private void SpawnFishingParticle() {
-            //在吸入口周围生成粒子
-            Vector2 spawnPos = intakeCenter + Main.rand.NextVector2Circular(80, 40);
-            spawnPos.Y += Main.rand.NextFloat(20, 60);
+            //从水下随机位置生成粒子
+            Vector2 waterSurfacePos = FindWaterSurface();
+            if (waterSurfacePos == Vector2.Zero) return;
 
-            FishingParticle particle = new FishingParticle {
-                Position = spawnPos,
-                Type = (FishingParticleType)Main.rand.Next(3),
-                Scale = Main.rand.NextFloat(0.6f, 1.2f),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                Life = Main.rand.Next(60, 120)
-            };
+            //在水域深处随机位置生成
+            Vector2 spawnPos = waterSurfacePos + new Vector2(
+                Main.rand.NextFloat(-70f, 70f),
+                Main.rand.NextFloat(40f, 120f)
+            );
 
-            fishingParticles.Add(particle);
+            //确保生成位置在水中
+            Tile tile = Framing.GetTileSafely(spawnPos);
+            if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
+                FishingParticle particle = new FishingParticle {
+                    Position = spawnPos,
+                    Type = (FishingParticleType)Main.rand.Next(3),
+                    Scale = Main.rand.NextFloat(0.6f, 1.2f),
+                    Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                    Life = Main.rand.Next(180, 300)
+                };
+
+                fishingParticles.Add(particle);
+            }
+        }
+
+        //查找水面位置
+        private Vector2 FindWaterSurface() {
+            Point startPoint = (Position + new Point16(3, 6)).ToPoint();
+
+            for (int y = 0; y < 32; y++) {
+                for (int x = -2; x <= 2; x++) {
+                    Tile tile = Framing.GetTileSafely(startPoint.X + x, startPoint.Y + y);
+                    if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
+                        return new Vector2(
+                            (startPoint.X + x) * 16 + 8,
+                            (startPoint.Y + y) * 16 + 8
+                        );
+                    }
+                }
+            }
+
+            return Vector2.Zero;
         }
 
         public override void UpdateMachine() {
