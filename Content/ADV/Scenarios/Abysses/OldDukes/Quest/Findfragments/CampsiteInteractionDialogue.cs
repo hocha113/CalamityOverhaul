@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
         protected override void Build() {
             //注册老公爵立绘
-            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, ADVAsset.OldDuke);
+            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, ADVAsset.OldDuke, null, true);
 
             //检查任务是否已完成
             bool questCompleted = false;
