@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Tiles;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.IO;
 using Terraria;
@@ -20,8 +19,6 @@ namespace CalamityOverhaul.Content.TileProcessors
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
-        [VaultLoaden(CWRConstant.Asset + "TileModules/BloodAltarEffect")]
-        public static Asset<Texture2D> BloodAltarEffect = null;
         public static int targetFuncsWhoAmi;
         public static int startPlayerWhoAmI;
         public static bool OnBoolMoon;
