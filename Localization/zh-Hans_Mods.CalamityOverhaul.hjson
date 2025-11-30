@@ -1415,6 +1415,12 @@ Items: {
 		DisplayName: 海洋吞噬者
 		Tooltip: ""
 	}
+
+	OldDuchest: {
+		StorageText: 大型储物箱
+		DisplayName: 老箱子
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -6438,6 +6444,11 @@ UI: {
 	OceanRaidersUI: {
 		// TitleText: 海洋吞噬者存储
 		// StorageText: 存储空间
+	}
+
+	OldDuchestUI: {
+		// TitleText: 老箱子
+		// StorageText: 储物空间
 	}
 }
 
