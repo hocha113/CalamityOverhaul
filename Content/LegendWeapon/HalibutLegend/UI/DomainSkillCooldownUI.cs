@@ -5,7 +5,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent; //FontAssets
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
