@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
     /// </summary>
     internal class HighlightButton
     {
-        [VaultLoaden("@CalamityOverhaul/Assets/UIs/SupertableUIs/Eye")]
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye")]
         private static Asset<Texture2D> _eyeAsset = null;
 
         private readonly SupertableUI _mainUI;
