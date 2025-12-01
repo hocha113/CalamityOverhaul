@@ -1,12 +1,13 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
-    internal class ModifyOldDuke : NPCOverride
+    internal class ModifyOldDuke : NPCOverride, ILocalizedModType
     {
         public override int TargetID => CWRID.NPC_OldDuke;
 
@@ -23,13 +24,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         private ref float Timer => ref ai[1];
         private ref float SubState => ref ai[2];
 
+        public string LocalizationCategory => "NPCModifys";
+
+        public static LocalizedText LeavingDiveText { get; private set; }
+
+        private bool IsLeavingDive;
+
         //场景控制标记
         private bool isFirstMeet = false;
         private bool firstMeetCompleted = false;
         private bool hasTriggeredScenario = false;
 
-        public override void SetProperty() {
+        public override bool CanOverride() {
+            if (CWRRef.GetBossRushActive()) {
+                return false;//在Boss Rush模式下不覆盖AI
+            }
+            return base.CanOverride();
+        }
 
+        public override void SetStaticDefaults() {
+            LeavingDiveText = this.GetLocalization(nameof(LeavingDiveText), () => "老公爵潜入了水中...");
+        }
+
+        public override void SetProperty() {
+            IsLeavingDive = false;
         }
 
         public override bool FindFrame(int frameHeight) {
@@ -44,16 +62,42 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             return base.FindFrame(frameHeight);
         }
 
+        public override bool? CheckDead() {
+            //这里的修改用于制作一个效果：
+            //老公爵不会被玩家杀死，每次被击败都只是潜入海中离开
+            IsLeavingDive = true;
+            npc.life = npc.lifeMax;
+            npc.dontTakeDamage = true;
+            npc.DropItem();
+            CWRRef.SetDownedBoomerDuke(true);//标记老公爵已被击败
+            if (VaultUtils.isServer) {//同步世界数据
+                NetMessage.SendData(MessageID.WorldData);
+            }
+            VaultUtils.Text(LeavingDiveText.Value, Color.YellowGreen);
+            foreach (var g in Main.gore) {
+                g.active = false;//清除老公爵的残骸，避免影响潜入效果
+            }
+            return false;
+        }
+
         public override bool AI() {
+            if (IsLeavingDive) {
+                State = (float)OldDukeAIState.LeavingDive;
+                return StorylineAI();
+            }
+
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
             //检查并更新初见场景状态
             UpdateFirstMeetState(target);
 
-            //如果是初见场景,执行特殊AI
-            if (isFirstMeet && !firstMeetCompleted) {
-                return FirstMeetAI();
+            OldDukeAIState currentState = (OldDukeAIState)State;
+            
+            if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
+                || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
+                ) {
+                return StorylineAI();
             }
 
             //否则执行原版AI
@@ -103,7 +147,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
         }
 
-        private bool FirstMeetAI() {
+        private bool StorylineAI() {
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
@@ -257,15 +301,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     CompleteFirstMeet();
                     npc.active = false;
                     npc.netUpdate = true;
-
-                    //如果接受了合作，打开商店UI
-                    if (FirstMetOldDuke.CurrentPlayerChoice == OldDukeInteractionState.AcceptedCooperation) {
-                        if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                            if (save.OldDukeCooperationAccepted) {
-                                OldDukeShopUI.Instance.Active = true;
-                            }
-                        }
-                    }
+                    IsLeavingDive = false;
                 }
             }
         }

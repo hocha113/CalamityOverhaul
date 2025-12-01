@@ -189,6 +189,8 @@ namespace CalamityOverhaul
         public static void SetDownedCalamitas(bool value) {
             DownedBossSystem.downedCalamitas = value;
         }
+        public static void SetDownedBoomerDuke(bool value) => DownedBossSystem.downedBoomerDuke = value;
+        public static bool GetDownedBoomerDuke() => DownedBossSystem.downedBoomerDuke;
         public static bool GetSupCalPermafrost(NPC npc) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 return supCal.permafrost;

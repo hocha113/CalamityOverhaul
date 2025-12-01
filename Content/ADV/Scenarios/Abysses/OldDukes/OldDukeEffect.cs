@@ -126,9 +126,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             //绘制毒雾层（多层次）
             DrawToxicMists(spriteBatch);
 
-            //绘制上升的酸液气泡
-            DrawAcidBubbles(spriteBatch);
-
             //绘制腐蚀斑块
             DrawCorrosionPatches(spriteBatch);
 
@@ -263,60 +260,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     SpriteEffects.None,
                     0f
                 );
-            }
-        }
-
-        private void DrawAcidBubbles(SpriteBatch sb) {
-            if (CWRAsset.TileHightlight == null || CWRAsset.TileHightlight.IsDisposed) {
-                return;
-            }
-
-            Texture2D bubbleTex = CWRAsset.TileHightlight.Value;
-            int frameWidth = bubbleTex.Width / 3;
-            int frameHeight = bubbleTex.Height / 3;
-
-            for (int i = 0; i < bubbles.Length; i++) {
-                AcidBubble bubble = bubbles[i];
-                if (!bubble.IsActive) {
-                    continue;
-                }
-
-                int currentFrame = (int)(bubble.AnimProgress * 9);
-                if (currentFrame >= 9) {
-                    currentFrame = 8;
-                }
-
-                int frameX = (currentFrame % 3) * frameWidth;
-                int frameY = (currentFrame / 3) * frameHeight;
-                Rectangle sourceRect = new Rectangle(frameX, frameY, frameWidth, frameHeight);
-
-                Vector2 drawPos = bubble.Position - Main.screenPosition;
-
-                //气泡颜色随波动变化
-                float colorShift = (float)Math.Sin(acidPulseTimer * 2f + i * 0.5f) * 0.5f + 0.5f;
-                Color bubbleColor = Color.Lerp(
-                    new Color(120, 220, 140, 200),
-                    new Color(150, 200, 100, 220),
-                    colorShift
-                );
-
-                float alpha = (float)Math.Sin(bubble.AnimProgress * MathHelper.Pi) * intensity * 0.7f;
-                float scale = bubble.Scale * (1f + (float)Math.Sin(bubble.AnimProgress * MathHelper.Pi * 3f) * 0.15f);
-
-                //绘制多层气泡效果
-                for (int z = 0; z < 3; z++) {
-                    sb.Draw(
-                        bubbleTex,
-                        drawPos,
-                        sourceRect,
-                        bubbleColor * alpha * (1f - z * 0.3f),
-                        bubble.Rotation + z * 0.2f,
-                        new Vector2(frameWidth, frameHeight) * 0.5f,
-                        scale + z * 0.15f,
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
             }
         }
 
@@ -645,7 +588,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 //生成毒泡
                 if (toxicBubbleTimer % 3 == 0) {
-                    SpawnToxicBubbles();
+                    int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
+                    if (index.TryGetNPC(out var npc) && npc.friendly) {
+                        SpawnToxicBubbles();
+                    }
                 }
 
                 //生成酸雾
@@ -670,7 +616,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 //播放硫磺海音乐
                 if (!CWRRef.GetBossRushActive()) {
-                    Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
+                    int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
+                    if (index.TryGetNPC(out var npc) && npc.friendly) {
+                        Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
+                    }
                 }
 
                 //超时保护（3分钟）

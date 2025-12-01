@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         //动画相位
         public float SwimPhase;
 
+        public float Sengs;
+
         //移动目标
         private Vector2 currentTarget;
         private int targetTimer;
@@ -90,9 +92,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 UpdateNormalBehavior();
             }
 
+            UpdateWannaToFight();
             ApplyVelocity();
             ConstrainPosition();
             UpdateFacing();
+        }
+
+        private void UpdateWannaToFight() {
+            if (OldDukeCampsite.WannaToFight) {
+                if (Sengs > 0f) {
+                    Sengs -= 0.1f;
+                    int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
+                    if (index.TryGetNPC(out var npc)) {
+                        npc.Center = Position;
+                    }
+                }
+            }
+            else {
+                if (Sengs < 1f) {
+                    Sengs += 0.1f;
+                }
+            }
         }
 
         /// <summary>

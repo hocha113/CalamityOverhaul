@@ -1,15 +1,17 @@
 using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFragments
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
     /// <summary>
     /// 营地交互对话，三个选项
@@ -30,6 +32,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
         public static LocalizedText Choice3Text { get; private set; }
+        public static LocalizedText Choice4Text { get; private set; }
         public static LocalizedText Choice2DisabledHint { get; private set; }
 
         //选项回应
@@ -42,6 +45,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
         //任务完成后的对话
         public static LocalizedText B1 { get; private set; }
+        public static LocalizedText Choice4_R1 { get; private set; }
+        public static LocalizedText Choice4_R2 { get; private set; }
+        public static LocalizedText Choice4_R3 { get; private set; }
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
@@ -51,6 +57,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "我来找你交易一下");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "你要的东西我都弄来了");
             Choice3Text = this.GetLocalization(nameof(Choice3Text), () => "我只是来溜达一圈");
+            Choice4Text = this.GetLocalization(nameof(Choice4Text), () => "我要和你切磋一下");
             Choice2DisabledHint = this.GetLocalization(nameof(Choice2DisabledHint), () => "海洋残片不足");
 
             Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "看看我这里有什么吧");
@@ -60,6 +67,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             QuestCompleteLine = this.GetLocalization(nameof(QuestCompleteLine), () => "嗯...你有什么新发现吗？我现在很忙");
 
             B1 = this.GetLocalization(nameof(B1), () => "我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的");
+            Choice4_R1 = this.GetLocalization(nameof(Choice4_R1), () => "我虽然老了，但年轻时候的技巧可还没落下");
+            Choice4_R2 = this.GetLocalization(nameof(Choice4_R2), () => "那就来吧");
+            Choice4_R3 = this.GetLocalization(nameof(Choice4_R3), () => "你找我练习战斗技巧并不是个明智的举动...");
         }
 
         protected override void Build() {
@@ -79,6 +89,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
                     QuestCompleteLine.Value,
                     [
                         new Choice(Choice1Text.Value, Choice1),
+                        new Choice(Choice4Text.Value, Choice4),
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     styleOverride: () => SulfseaDialogueBox.Instance,
@@ -96,6 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
                     [
                         new Choice(Choice1Text.Value, Choice1),
                         new Choice(Choice2Text.Value, Choice2, enabled: hasEnoughFragments, disabledHint: hasEnoughFragments ? string.Empty : Choice2DisabledHint.Value),
+                        new Choice(Choice4Text.Value, Choice4),
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     styleOverride: () => SulfseaDialogueBox.Instance,
@@ -234,6 +246,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
             protected override void OnScenarioComplete() {
                 OldDukeEffect.IsActive = false;
+            }
+        }
+
+        //选项4：切磋
+        private void Choice4() {
+            ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
+            ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
+            Complete();
+        }
+
+        private class CampsiteInteractionDialogue_Choice4 : ADVScenarioBase
+        {
+            public override string Key => nameof(CampsiteInteractionDialogue_Choice4);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
+
+            protected override void Build() {
+                List<LocalizedText> localizedTexts = [Choice4_R1, Choice4_R2, Choice4_R3];
+                Add(OldDukeName.Value, localizedTexts[Main.rand.Next(localizedTexts.Count)].Value);
+            }
+
+            protected override void OnScenarioComplete() {
+                if (VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke)) {
+                    OldDukeCampsite.WannaToFight = true;
+                    OldDukeEffect.IsActive = false;
+                }
             }
         }
 

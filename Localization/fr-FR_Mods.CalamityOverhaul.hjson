@@ -5776,6 +5776,8 @@ NPCModifys: {
 		// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
 		// Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
 	}
+
+	// ModifyOldDuke.LeavingDiveText: 老公爵潜入了水中...
 }
 
 Arcanes: {
@@ -7224,12 +7226,16 @@ ADV: {
 		// Choice1Text: 我来找你交易一下
 		// Choice2Text: 你要的东西我都弄来了
 		// Choice3Text: 我只是来溜达一圈
+		// Choice4Text: 我要和你切磋一下
 		// Choice2DisabledHint: 海洋残片不足
 		// Choice1Response: 看看我这里有什么吧
 		// Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
 		// Choice3Response: ......
 		// QuestCompleteLine: 感谢你的帮助
 		// B1: 我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的
+		// Choice4_R1: 我虽然老了，但年轻时候的技巧可还没落下
+		// Choice4_R2: 那就来吧
+		// Choice4_R3: 你找我练习战斗技巧并不是个明智的举动...
 	}
 
 	FirstCampsiteDialogue: {

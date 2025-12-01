@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+using Humanizer;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -27,6 +28,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         //营地数据
         public static bool IsGenerated { get; private set; }
+        /// <summary>
+        /// 是否在和老公爵切磋
+        /// </summary>
+        public static bool WannaToFight { get; set; }
         public static Vector2 CampsitePosition { get; private set; }
 
         public string LocalizationCategory => "ADV.OldDukeCampsite";
@@ -64,10 +69,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             UpdateAnimation();
             CheckPlayerProximity();
+            CheckWannaToFight();
 
             //检测右键交互
             if (CanInteract() && Main.mouseRight && Main.mouseRightRelease) {
                 TriggerInteraction();
+            }
+        }
+
+        private static void CheckWannaToFight() {
+            if (WannaToFight) {//检测是否在和老公爵切磋
+                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
+                    WannaToFight = false;//老公爵已被击败，重置切磋状态
+                    OldDukeEffect.IsActive = false;//停止硫磺海效果
+                }
             }
         }
 
@@ -94,8 +109,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
 
             //后续交互对话
-            ScenarioManager.Reset<Quest.FindFragments.CampsiteInteractionDialogue>();
-            ScenarioManager.Start<Quest.FindFragments.CampsiteInteractionDialogue>();
+            ScenarioManager.Reset<CampsiteInteractionDialogue>();
+            ScenarioManager.Start<CampsiteInteractionDialogue>();
         }
 
         /// <summary>
