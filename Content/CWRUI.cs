@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
@@ -36,12 +38,16 @@ namespace CalamityOverhaul.Content
             try {
                 UIHandleLoader.GetUIHandleOfType<EnchantUI>().SaveUIData(tag);
                 UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().SaveUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<FindCampsiteUI>().SaveUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<FindFragmentUI>().SaveUIData(tag);
             } catch { }
         }
         public override void LoadData(TagCompound tag) {
             try {
                 UIHandleLoader.GetUIHandleOfType<EnchantUI>().LoadUIData(tag);
                 UIHandleLoader.GetUIHandleOfType<DeploySignaltowerTrackerUI>().LoadUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<FindCampsiteUI>().LoadUIData(tag);
+                UIHandleLoader.GetUIHandleOfType<FindFragmentUI>().LoadUIData(tag);
             } catch { }
         }
     }
