@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -72,6 +73,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             CampsitePosition = Vector2.Zero;
             if (tag.TryGet(nameof(CampsitePosition), out Vector2 pos)) {
                 CampsitePosition = pos;
+            }
+        }
+
+        public override void NetSend(BinaryWriter writer) {
+            writer.Write(IsGenerated);
+            if (IsGenerated) {
+                writer.WriteVector2(CampsitePosition);
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader) {
+            IsGenerated = reader.ReadBoolean();
+            if (IsGenerated) {
+                CampsitePosition = reader.ReadVector2();
             }
         }
 
