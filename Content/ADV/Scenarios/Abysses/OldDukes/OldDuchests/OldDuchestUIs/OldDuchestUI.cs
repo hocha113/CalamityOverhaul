@@ -61,12 +61,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// <summary>
         /// 打开UI并绑定箱子
         /// </summary>
-        public void Open(Point16 position) {
-            if (!InnoVault.TileProcessors.TileProcessorLoader.ByPositionGetTP(position, out OldDuchestTP chest)) {
-                return;
-            }
-
-            chestPosition = position;
+        public void Open(OldDuchestTP chest) {
+            chestPosition = chest.Position;
             CurrentChest = chest;
             _active = true;
 

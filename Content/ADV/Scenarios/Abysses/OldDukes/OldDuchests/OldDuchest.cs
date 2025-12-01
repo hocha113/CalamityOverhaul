@@ -89,8 +89,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             return false;
         }
 
-        public override bool CanDrop(int i, int j) => false;
-
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
@@ -99,25 +97,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             b = 0.1f;
         }
 
-        public override bool RightClick(int i, int j) {
-            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                return false;
-            }
-
-            Player player = Main.LocalPlayer;
-            if (player.whoAmI == Main.myPlayer) {
-                //播放箱子打开音效
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen with {
-                    Pitch = -0.2f,
-                    Volume = 0.6f
-                }, new Vector2(i * 16, j * 16));
-
-                //打开UI
-                OldDuchestUIs.OldDuchestUI.Instance.Open(point);
-            }
-
-            return true;
-        }
+        public override bool CanDrop(int i, int j) => false;
 
         public override void MouseOver(int i, int j) {
             Player player = Main.LocalPlayer;

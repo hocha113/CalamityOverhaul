@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -121,14 +120,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 if (tag.ContainsKey("hasBeenOpened")) {
                     hasBeenOpened = tag.GetBool("hasBeenOpened");
                 }
-
-                //加载后检查是否需要刷新
-                if (isInCampsite) {
-                    int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
-                    if (lastRefreshCycle != currentCycle && !hasBeenOpened) {
-                        RefreshLoot(currentCycle);
-                    }
-                }
             } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OldDuchestTP.LoadData Error: {ex.Message}");
             }
@@ -136,7 +127,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
         public override void Initialize() {
             CheckIfInCampsite();
-            InitializeCampsiteChest();
+            if (TrackItem == null) {
+                hasBeenOpened = false;
+                InitializeCampsiteChest();
+            }
+        }
+
+        public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            if (player.whoAmI == Main.myPlayer) {
+                //播放箱子打开音效
+                SoundEngine.PlaySound(SoundID.MenuOpen with {
+                    Pitch = -0.2f,
+                    Volume = 0.6f
+                }, new Vector2(i * 16, j * 16));
+
+                //打开UI
+                OldDuchestUI.Instance.Open(this);
+            }
+            return null;
         }
 
         public override void Update() {
@@ -157,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             //营地箱子定期刷新检查
             if (isInCampsite && !isOpen) {
                 int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
-                if (lastRefreshCycle != currentCycle) {
+                if (lastRefreshCycle != currentCycle && hasBeenOpened) {
                     RefreshLoot(currentCycle);
                 }
             }
@@ -276,23 +284,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// 掉落所有物品
         /// </summary>
         private void DropItems() {
+            VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, new Item(ModContent.ItemType<OldDuchest>()));
             foreach (var item in storedItems) {
-                if (item == null || item.IsAir) {
+                if (!item.Alives()) {
                     continue;
                 }
 
-                int itemIndex = Item.NewItem(
-                    new EntitySource_TileBreak(Position.X, Position.Y),
-                    CenterInWorld,
-                    item.type,
-                    item.stack,
-                    false,
-                    item.prefix
-                );
-
-                if (VaultUtils.isServer && itemIndex >= 0) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
-                }
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, item.Clone());
             }
         }
 
@@ -328,6 +326,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// 刷新战利品
         /// </summary>
         private void RefreshLoot(int refreshCycle) {
+            if (VaultUtils.isClient) {
+                return;
+            }
             storedItems.Clear();
             storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot(refreshCycle);
             lastRefreshCycle = refreshCycle;
