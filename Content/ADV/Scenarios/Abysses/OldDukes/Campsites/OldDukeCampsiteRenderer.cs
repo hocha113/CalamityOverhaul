@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     /// <summary>
     /// 老公爵营地渲染器
     /// </summary>
-    internal class OldDukeCampsiteRenderer : RenderHandle, ILocalizedModType
+    internal class OldDukeCampsiteRenderer : RenderHandle, ILocalizedModType, IWorldInfo
     {
         public string LocalizationCategory => "ADV.OldDukeCampsite";
 
@@ -40,13 +40,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             GreetingText = this.GetLocalization(nameof(GreetingText), () => "嗯？你好啊...");
         }
 
+        void IWorldInfo.OnWorldLoad() {
+            entityInitialized = true;
+        }
+
+        public void SetEntityInitialized(bool value) => entityInitialized = value;
+
         public override void UpdateBySystem(int index) {
             if (!OldDukeCampsite.IsGenerated) {
                 return;
             }
 
             //初始化老公爵实体
-            if (!entityInitialized) {
+            if (!entityInitialized && OldDukeCampsite.CampsitePosition != Vector2.Zero) {
                 oldDukeEntity = new OldDukeEntity(OldDukeCampsite.CampsitePosition);
                 oldDukeEntity.SetPotPositions(OldDukeCampsiteDecoration.GetPotPositions());
                 entityInitialized = true;

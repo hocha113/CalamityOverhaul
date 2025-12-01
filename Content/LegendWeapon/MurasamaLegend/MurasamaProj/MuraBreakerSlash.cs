@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             SoundStyle sound = !CWRLoad.NPCValue.ISTheofSteel(target)
                 ? "CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound()
                 : "CalamityMod/Sounds/Item/MurasamaHitInorganic".GetSound();
-            SoundEngine.PlaySound(sound with { Pitch = 0.15f }, Projectile.Center);
+            SoundEngine.PlaySound(sound with { Pitch = 0.15f, Volume = 0.6f }, Projectile.Center);
         }
 
         private static void SpawnHitParticles(NPC target) {
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             for (int i = 0; i < 13; i++) {
                 Vector2 particlePosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f);
-                float impactParticleScale = Main.rand.NextFloat(1.1f, 1.7f);
+                float impactParticleScale = Main.rand.NextFloat(0.4f, 0.82f);
                 PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, Color.LightCoral, Color.Red, impactParticleScale, 8, 0, 2.5f);
                 PRTLoader.AddParticle(impactParticle);
             }

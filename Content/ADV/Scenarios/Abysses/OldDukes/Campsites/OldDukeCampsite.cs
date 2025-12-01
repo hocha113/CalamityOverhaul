@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     /// 老公爵营地
     /// </summary>
     [VaultLoaden("@CalamityMod/NPCs/OldDuke/")]
-    internal class OldDukeCampsite : ModSystem, ILocalizedModType
+    internal class OldDukeCampsite : ModSystem, ILocalizedModType, IWorldInfo
     {
         //反射加载老公爵纹理，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
         public static Texture2D OldDuke;
@@ -60,6 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
 
+        /*
         public override void SaveWorldData(TagCompound tag) {
             tag[nameof(IsGenerated)] = IsGenerated;
             tag[nameof(CampsitePosition)] = CampsitePosition;
@@ -75,6 +76,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 CampsitePosition = pos;
             }
         }
+        */
 
         public override void NetSend(BinaryWriter writer) {
             writer.Write(IsGenerated);
@@ -96,6 +98,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         public override void OnModUnload() {
             OnEnterCampsite = null;
+        }
+
+        public override void OnWorldLoad() {
+            IsGenerated = false;
+            CampsitePosition = Vector2.Zero;
         }
 
         public override void PostUpdateEverything() {
@@ -132,6 +139,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             if (OldDukeEffect.IsActive) {
                 return;//如果硫磺海效果已经启用，就不要进行交互
+            }
+
+            if (Main.LocalPlayer.mouseInterface) {
+                return;//鼠标正在交互状态下，就不要进行交互
             }
 
             //播放交互音效

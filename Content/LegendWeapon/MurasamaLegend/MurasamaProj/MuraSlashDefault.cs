@@ -411,7 +411,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             UpdateRisingDragonCharge();
             PlayHitSound(target);
-            SpawnHitParticles(target);
+            if (Projectile.numHits == 0) {
+                SpawnHitParticles(target);
+            }
             SpawnHitSparks(target);
             SpawnHitDust(target);
         }

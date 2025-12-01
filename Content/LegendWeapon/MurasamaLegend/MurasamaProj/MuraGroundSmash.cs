@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }, Projectile.Center);
 
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaBigSwing".GetSound() with {
-                    Volume = 0.8f,
+                    Volume = 0.6f,
                     Pitch = -0.2f
                 }, Projectile.Center);
 
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }, impactPosition);
 
             SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitInorganic".GetSound() with {
-                Volume = 1f,
+                Volume = 0.6f,
                 Pitch = -0.4f
             }, impactPosition);
 

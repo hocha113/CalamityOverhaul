@@ -1,3 +1,4 @@
+using InnoVault.RenderHandles;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -18,8 +19,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             //检查是否应该生成营地
             if (!hasTriedGenerate && ShouldGenerateCampsite(player)) {
-                TryGenerateCampsite();
                 hasTriedGenerate = true;
+                TryGenerateCampsite();
+                ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
             }
         }
 
