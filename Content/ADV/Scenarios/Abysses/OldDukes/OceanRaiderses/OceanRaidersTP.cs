@@ -71,8 +71,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             //发送存储物品数据
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
-                data.Write(item.type);
-                data.Write(item.stack);
+                if (item == null) {
+                    ItemIO.Send(new Item(), data, true);
+                }
+                else {
+                    ItemIO.Send(item, data, true);
+                }
             }
         }
 
@@ -86,37 +90,46 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             int count = reader.ReadInt32();
             storedItems.Clear();
             for (int i = 0; i < count; i++) {
-                int type = reader.ReadInt32();
-                int stack = reader.ReadInt32();
-                Item item = new Item();
-                item.SetDefaults(type);
-                item.stack = stack;
+                Item item = ItemIO.Receive(reader, true);
                 storedItems.Add(item);
             }
         }
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            //保存存储的物品
-            tag["itemCount"] = storedItems.Count;
-            for (int i = 0; i < storedItems.Count; i++) {
-                tag[$"item{i}_type"] = storedItems[i].type;
-                tag[$"item{i}_stack"] = storedItems[i].stack;
+            try {
+                //保存存储的物品
+                List<TagCompound> itemTags = new();
+                foreach (var item in storedItems) {
+                    if (item == null) {
+                        itemTags.Add(ItemIO.Save(new Item()));
+                    }
+                    else {
+                        itemTags.Add(ItemIO.Save(item));
+                    }
+                }
+                tag["itemTags"] = itemTags;
+            }
+            catch (Exception ex) {
+                VaultMod.Instance.Logger.Error($"OceanRaidersTP.SaveData Error: {ex.Message}");
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            //加载存储的物品
-            storedItems.Clear();
-            int count = tag.GetInt("itemCount");
-            for (int i = 0; i < count; i++) {
-                if (tag.ContainsKey($"item{i}_type")) {
-                    Item item = new Item();
-                    item.SetDefaults(tag.GetInt($"item{i}_type"));
-                    item.stack = tag.GetInt($"item{i}_stack");
-                    storedItems.Add(item);
+            try {
+                //加载存储的物品
+                if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
+                    return;
                 }
+
+                storedItems.Clear();
+                foreach (var itemTag in itemTags) {
+                    storedItems.Add(ItemIO.Load(itemTag));
+                }
+            }
+            catch (Exception ex) {
+                VaultMod.Instance.Logger.Error($"OceanRaidersTP.LoadData Error: {ex.Message}");
             }
         }
 

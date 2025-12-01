@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public override int TargetTileID => ModContent.TileType<OldDuchestTile>();
 
         //存储常量
-        private const int STORAGE_SLOTS = 240; //20x12格大型存储空间
         private const int MAX_INTERACTION_DISTANCE = 9000;
 
         //存储物品列表
@@ -34,25 +33,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
         //每日刷新相关
         private bool isInCampsite = false;
-        private int lastRefreshDay = -1;
+        private int lastRefreshCycle = -1;
         private bool hasBeenOpened = false;
 
         public override void SetProperty() {
             storedItems = new List<Item>();
-            CheckIfInCampsite();
-            InitializeCampsiteChest();
         }
 
         public override void SendData(ModPacket data) {
             //发送存储物品数据
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
-                ItemIO.Send(item, data, true);
+                if (item == null) {
+                    ItemIO.Send(new Item(), data, true);
+                }
+                else {
+                    ItemIO.Send(item, data, true);
+                }
             }
 
-            //发送每日刷新相关数据
+            //发送刷新相关数据
             data.Write(isInCampsite);
-            data.Write(lastRefreshDay);
+            data.Write(lastRefreshCycle);
             data.Write(hasBeenOpened);
         }
 
@@ -65,71 +67,81 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 storedItems.Add(item);
             }
 
-            //接收每日刷新相关数据
+            //接收刷新相关数据
             isInCampsite = reader.ReadBoolean();
-            lastRefreshDay = reader.ReadInt32();
+            lastRefreshCycle = reader.ReadInt32();
             hasBeenOpened = reader.ReadBoolean();
+
+            //同步到UI
+            SyncItemsToUI();
         }
 
         public override void SaveData(TagCompound tag) {
-            //保存存储的物品
-            tag["itemCount"] = storedItems.Count;
-            for (int i = 0; i < storedItems.Count; i++) {
-                tag[$"item{i}_type"] = storedItems[i].type;
-                tag[$"item{i}_stack"] = storedItems[i].stack;
-                if (storedItems[i].prefix != 0) {
-                    tag[$"item{i}_prefix"] = storedItems[i].prefix;
+            try {
+                //保存存储的物品
+                List<TagCompound> itemTags = [];
+                foreach (var item in storedItems) {
+                    if (item == null) {
+                        itemTags.Add(ItemIO.Save(new Item()));
+                    }
+                    else {
+                        itemTags.Add(ItemIO.Save(item));
+                    }
                 }
-            }
+                tag["itemTags"] = itemTags;
 
-            //保存每日刷新数据
-            tag["isInCampsite"] = isInCampsite;
-            tag["lastRefreshDay"] = lastRefreshDay;
-            tag["hasBeenOpened"] = hasBeenOpened;
+                //保存刷新数据
+                tag["isInCampsite"] = isInCampsite;
+                tag["lastRefreshCycle"] = lastRefreshCycle;
+                tag["hasBeenOpened"] = hasBeenOpened;
+            }
+            catch (Exception ex) {
+                VaultMod.Instance.Logger.Error($"OldDuchestTP.SaveData Error: {ex.Message}");
+            }
         }
 
         public override void LoadData(TagCompound tag) {
-            //加载存储的物品
-            storedItems.Clear();
-            int count = tag.GetInt("itemCount");
-            for (int i = 0; i < count; i++) {
-                if (tag.ContainsKey($"item{i}_type")) {
-                    Item item = new Item();
-                    item.SetDefaults(tag.GetInt($"item{i}_type"));
-                    item.stack = tag.GetInt($"item{i}_stack");
-                    if (tag.ContainsKey($"item{i}_prefix")) {
-                        item.prefix = tag.GetByte($"item{i}_prefix");
+            try {
+                //加载存储的物品
+                if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
+                    return;
+                }
+
+                storedItems.Clear();
+                foreach (var itemTag in itemTags) {
+                    storedItems.Add(ItemIO.Load(itemTag));
+                }
+
+                //加载刷新数据
+                if (tag.ContainsKey("isInCampsite")) {
+                    isInCampsite = tag.GetBool("isInCampsite");
+                }
+                if (tag.ContainsKey("lastRefreshCycle")) {
+                    lastRefreshCycle = tag.GetInt("lastRefreshCycle");
+                }
+                if (tag.ContainsKey("hasBeenOpened")) {
+                    hasBeenOpened = tag.GetBool("hasBeenOpened");
+                }
+
+                //加载后检查是否需要刷新
+                if (isInCampsite) {
+                    int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
+                    if (lastRefreshCycle != currentCycle && !hasBeenOpened) {
+                        RefreshLoot(currentCycle);
                     }
-                    storedItems.Add(item);
                 }
             }
-
-            //加载每日刷新数据
-            if (tag.ContainsKey("isInCampsite")) {
-                isInCampsite = tag.GetBool("isInCampsite");
-            }
-            if (tag.ContainsKey("lastRefreshDay")) {
-                lastRefreshDay = tag.GetInt("lastRefreshDay");
-            }
-            if (tag.ContainsKey("hasBeenOpened")) {
-                hasBeenOpened = tag.GetBool("hasBeenOpened");
-            }
-
-            //加载后检查是否需要刷新
-            if (isInCampsite) {
-                int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
-                if (lastRefreshDay != currentDay && !hasBeenOpened) {
-                    RefreshDailyLoot(currentDay);
-                }
+            catch (Exception ex) {
+                VaultMod.Instance.Logger.Error($"OldDuchestTP.LoadData Error: {ex.Message}");
             }
         }
 
-        public override void Update() {
-            Player player = Main.LocalPlayer;
-            if (!player.active || Main.myPlayer != player.whoAmI) {
-                return;
-            }
+        public override void Initialize() {
+            CheckIfInCampsite();
+            InitializeCampsiteChest();
+        }
 
+        public override void Update() {
             //更新发光效果
             if (isOpen) {
                 glowIntensity = Math.Min(1f, glowIntensity + 0.1f);
@@ -140,15 +152,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             }
 
             //检查距离自动关闭
-            if (isOpen && player.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
-                CloseUI(player);
+            if (isOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
+                CloseUI(Main.LocalPlayer);
             }
 
-            //营地箱子每日刷新检查
+            //营地箱子定期刷新检查
             if (isInCampsite && !isOpen) {
-                int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
-                if (lastRefreshDay != currentDay && !hasBeenOpened) {
-                    RefreshDailyLoot(currentDay);
+                int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
+                if (lastRefreshCycle != currentCycle) {
+                    RefreshLoot(currentCycle);
                 }
             }
 
@@ -308,19 +320,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
 
-            int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
-            if (lastRefreshDay != currentDay) {
-                RefreshDailyLoot(currentDay);
+            int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
+            if (lastRefreshCycle != currentCycle) {
+                RefreshLoot(currentCycle);
             }
         }
 
         /// <summary>
-        /// 刷新每日战利品
+        /// 刷新战利品
         /// </summary>
-        private void RefreshDailyLoot(int dailySeed) {
+        private void RefreshLoot(int refreshCycle) {
             storedItems.Clear();
-            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot(dailySeed);
-            lastRefreshDay = dailySeed;
+            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot(refreshCycle);
+            lastRefreshCycle = refreshCycle;
             hasBeenOpened = false;
             SendData();
         }

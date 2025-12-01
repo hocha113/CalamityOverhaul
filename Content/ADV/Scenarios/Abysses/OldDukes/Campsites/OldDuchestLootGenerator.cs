@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
@@ -16,32 +14,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static readonly Random rand = new Random();
 
         /// <summary>
+        /// 6分钟 = 360秒 = 21600帧
+        /// </summary>
+        internal static int RefreshInterval => 21600;
+
+        /// <summary>
         /// 生成每日刷新的箱子内容
         /// </summary>
         public static List<Item> GenerateDailyLoot(int seed) {
-            Random dailyRand = new Random(seed);
+
             List<Item> loot = [];
 
             //钱币奖励
-            AddCoinReward(loot, dailyRand);
+            AddCoinReward(loot, rand);
 
             //老公爵相关掉落物
-            AddOldDukeDrops(loot, dailyRand);
+            AddOldDukeDrops(loot, rand);
 
             //海洋主题物品
-            AddOceanThemeItems(loot, dailyRand);
+            AddOceanThemeItems(loot, rand);
 
             //随机药水和消耗品
-            AddPotionsAndConsumables(loot, dailyRand);
+            AddPotionsAndConsumables(loot, rand);
 
             //稀有材料
-            if (dailyRand.NextDouble() < 0.3) {
-                AddRareMaterials(loot, dailyRand);
+            if (rand.NextDouble() < 0.3) {
+                AddRareMaterials(loot, rand);
             }
 
             //特殊武器装备
-            if (dailyRand.NextDouble() < 0.2) {
-                AddSpecialWeapons(loot, dailyRand);
+            if (rand.NextDouble() < 0.2) {
+                AddSpecialWeapons(loot, rand);
             }
 
             return loot;
@@ -332,11 +335,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 获取基于日期的种子
+        /// 根据游戏时间生成种子
+        /// 每6分钟(21600游戏帧)刷新一次
         /// </summary>
-        public static int GetDailySeed() {
-            DateTime today = DateTime.Today;
-            return today.Year * 10000 + today.Month * 100 + today.Day;
+        public static int GetGameTimeSeed() {
+            uint currentGameTime = Main.GameUpdateCount;
+            int refreshCycle = (int)(currentGameTime / RefreshInterval);
+            return refreshCycle;
+        }
+
+        /// <summary>
+        /// 获取距离下次刷新的剩余时间(秒)
+        /// </summary>
+        public static int GetTimeUntilNextRefresh() {
+            uint currentGameTime = Main.GameUpdateCount;
+            int remainingFrames = (int)(RefreshInterval - (currentGameTime % RefreshInterval));
+            return remainingFrames / 60; //转换为秒
         }
     }
 }
