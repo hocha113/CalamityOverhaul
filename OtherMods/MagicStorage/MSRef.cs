@@ -1,5 +1,6 @@
 ﻿using MagicStorage.Common.Systems;
 using MagicStorage.Components;
+using System;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
 
         [JITWhenModsEnabled("MagicStorage")]
         internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {//所以，对外返回obj，或者是其他不需要引用外部程序集的已有类型，这样才能避免触发编译错误
-            if (CWRMod.Instance.magicStorage == null) {
+            if (CWRMod.Instance.magicStorage == null || CWRMod.Instance.magicStorage.Version < new Version(0, 7, 0, 11)) {//0.7.0.11
                 return null;
             }
             //在一定范围内查找 Magic Storage 的存储核心
