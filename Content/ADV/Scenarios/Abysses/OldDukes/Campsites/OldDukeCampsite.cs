@@ -230,6 +230,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //设置装饰物品位置
             OldDukeCampsiteDecoration.SetupPotPosition(position);
 
+            //调整营地位置的Y值，使其更合理
+            var list = OldDukeCampsiteDecoration.GetPotPositions();
+            float y = 0;
+            foreach (var value in list) {
+                y += value.Y;
+            }
+            y /= list.Count;
+            //将营地Y位置限制在锅位置的上下120像素范围内
+            CampsitePosition = new Vector2(CampsitePosition.X, MathHelper.Clamp(CampsitePosition.Y, y - 120, y + 120));
+
             //播放生成音效
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, position);
         }

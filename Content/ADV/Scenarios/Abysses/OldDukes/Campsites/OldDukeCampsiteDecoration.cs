@@ -102,13 +102,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var offset in potOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - 60;
+                int tileY = (int)(searchPos.Y / 16f) - 260;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + 125; y++) {
+                for (int y = tileY; y < tileY + 325; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
@@ -142,13 +142,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var offset in flagpoleOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - 60;
+                int tileY = (int)(searchPos.Y / 16f) - 260;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + 125; y++) {
+                for (int y = tileY; y < tileY + 325; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
