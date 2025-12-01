@@ -266,83 +266,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            //清空现有物品
-            chestTP.storedItems.Clear();
-
-            //添加钱币金额随机
-            int coinAmount = Main.rand.Next(50, 200);
-            int platinumCoins = coinAmount / 100;
-            int goldCoins = (coinAmount % 100) / 10;
-            int silverCoins = coinAmount % 10;
-
-            if (platinumCoins > 0) {
-                Item coin = new Item();
-                coin.SetDefaults(ItemID.PlatinumCoin);
-                coin.stack = platinumCoins;
-                chestTP.storedItems.Add(coin);
-            }
-
-            if (goldCoins > 0) {
-                Item coin = new Item();
-                coin.SetDefaults(ItemID.GoldCoin);
-                coin.stack = goldCoins;
-                chestTP.storedItems.Add(coin);
-            }
-
-            if (silverCoins > 0) {
-                Item coin = new Item();
-                coin.SetDefaults(ItemID.SilverCoin);
-                coin.stack = silverCoins;
-                chestTP.storedItems.Add(coin);
-            }
-
-            //获取老公爵掉落物品
-            HashSet<int> oldDukeDrops = OldDukeShops.OldDukeShopHandle.GetNPCDrops(CWRID.NPC_OldDuke, true);
-            List<int> dropList = oldDukeDrops.ToList();
-            List<int> dropList2 = [];
-            foreach (int drop in dropList) {
-                Item item = new Item(drop);
-                if (item.value > 6000 * 30) {
-                    dropList2.Add(drop);
-                }
-            }
-            dropList = dropList2;
-
-            //随机选择3到5个物品
-            int itemCount = Main.rand.Next(3, 6);
-            for (int i = 0; i < itemCount && chestTP.storedItems.Count < 240; i++) {
-                if (dropList.Count == 0) {
-                    break;
-                }
-
-                int randomIndex = Main.rand.Next(dropList.Count);
-                int itemType = dropList[randomIndex];
-                dropList.RemoveAt(randomIndex);
-
-                Item item = new();
-                item.SetDefaults(itemType);
-                item.stack = 1;
-                chestTP.storedItems.Add(item);
-            }
-
-            //添加一些海洋主题的消耗品
-            int[] oceanItems = [
-                ItemID.Coral,
-                ItemID.Starfish,
-                ItemID.Seashell,
-                ItemID.SharkFin,
-                ItemID.GillsPotion,
-                ItemID.SonarPotion
-            ];
-
-            int extraItemCount = Main.rand.Next(2, 4);
-            for (int i = 0; i < extraItemCount && chestTP.storedItems.Count < 240; i++) {
-                int itemType = oceanItems[Main.rand.Next(oceanItems.Length)];
-                Item item = new Item();
-                item.SetDefaults(itemType);
-                item.stack = Main.rand.Next(3, 10);
-                chestTP.storedItems.Add(item);
-            }
+            //使用战利品生成器生成初始内容
+            int initialSeed = OldDuchestLootGenerator.GetDailySeed();
+            chestTP.storedItems = OldDuchestLootGenerator.GenerateDailyLoot(initialSeed);
 
             //保存数据到TP
             chestTP.SendData();

@@ -1,0 +1,342 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
+{
+    /// <summary>
+    /// 老箱子战利品生成器
+    /// 负责生成营地内老箱子的每日刷新内容
+    /// </summary>
+    internal static class OldDuchestLootGenerator
+    {
+        private static readonly Random rand = new Random();
+
+        /// <summary>
+        /// 生成每日刷新的箱子内容
+        /// </summary>
+        public static List<Item> GenerateDailyLoot(int seed) {
+            Random dailyRand = new Random(seed);
+            List<Item> loot = [];
+
+            //钱币奖励
+            AddCoinReward(loot, dailyRand);
+
+            //老公爵相关掉落物
+            AddOldDukeDrops(loot, dailyRand);
+
+            //海洋主题物品
+            AddOceanThemeItems(loot, dailyRand);
+
+            //随机药水和消耗品
+            AddPotionsAndConsumables(loot, dailyRand);
+
+            //稀有材料
+            if (dailyRand.NextDouble() < 0.3) {
+                AddRareMaterials(loot, dailyRand);
+            }
+
+            //特殊武器装备
+            if (dailyRand.NextDouble() < 0.2) {
+                AddSpecialWeapons(loot, dailyRand);
+            }
+
+            return loot;
+        }
+
+        /// <summary>
+        /// 添加钱币奖励
+        /// </summary>
+        private static void AddCoinReward(List<Item> loot, Random random) {
+            int coinAmount = random.Next(80, 300);
+            int platinumCoins = coinAmount / 100;
+            int goldCoins = (coinAmount % 100) / 10;
+            int silverCoins = coinAmount % 10;
+
+            if (platinumCoins > 0) {
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.PlatinumCoin);
+                coin.stack = platinumCoins;
+                loot.Add(coin);
+            }
+
+            if (goldCoins > 0) {
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.GoldCoin);
+                coin.stack = goldCoins;
+                loot.Add(coin);
+            }
+
+            if (silverCoins > 0) {
+                Item coin = new Item();
+                coin.SetDefaults(ItemID.SilverCoin);
+                coin.stack = silverCoins;
+                loot.Add(coin);
+            }
+        }
+
+        /// <summary>
+        /// 添加老公爵掉落物
+        /// </summary>
+        private static void AddOldDukeDrops(List<Item> loot, Random random) {
+            HashSet<int> oldDukeDrops = OldDukeShops.OldDukeShopHandle.GetNPCDrops(CWRID.NPC_OldDuke, true);
+            List<int> qualityDrops = [];
+
+            //筛选高价值物品
+            foreach (int drop in oldDukeDrops) {
+                Item item = new Item(drop);
+                if (item.value > 6000 * 30) {
+                    qualityDrops.Add(drop);
+                }
+            }
+
+            if (qualityDrops.Count == 0) {
+                return;
+            }
+
+            //随机选择3到6个物品
+            int itemCount = random.Next(3, 7);
+            for (int i = 0; i < itemCount && loot.Count < 240; i++) {
+                if (qualityDrops.Count == 0) {
+                    break;
+                }
+
+                int randomIndex = random.Next(qualityDrops.Count);
+                int itemType = qualityDrops[randomIndex];
+                qualityDrops.RemoveAt(randomIndex);
+
+                Item item = new Item();
+                item.SetDefaults(itemType);
+                item.stack = 1;
+
+                //如果是武器类添加随机词缀
+                if (IsWeapon(item)) {
+                    item.prefix = GetRandomWeaponPrefix(random);
+                }
+                //如果是装备类添加随机词缀
+                else if (IsEquipment(item)) {
+                    item.prefix = GetRandomEquipmentPrefix(random);
+                }
+
+                loot.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// 添加海洋主题物品
+        /// </summary>
+        private static void AddOceanThemeItems(List<Item> loot, Random random) {
+            int[] basicOceanItems = [
+                ItemID.Coral,
+                ItemID.Starfish,
+                ItemID.Seashell,
+                ItemID.SharkFin,
+                ItemID.GillsPotion,
+                ItemID.SonarPotion,
+                ItemID.WaterWalkingPotion,
+                ItemID.FlipperPotion
+            ];
+
+            int itemCount = random.Next(2, 5);
+            for (int i = 0; i < itemCount && loot.Count < 240; i++) {
+                int itemType = basicOceanItems[random.Next(basicOceanItems.Length)];
+                Item item = new Item();
+                item.SetDefaults(itemType);
+                item.stack = random.Next(3, 15);
+                loot.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// 添加药水和消耗品
+        /// </summary>
+        private static void AddPotionsAndConsumables(List<Item> loot, Random random) {
+            int[] usefulPotions = [
+                ItemID.GreaterHealingPotion,
+                ItemID.GreaterManaPotion,
+                ItemID.IronskinPotion,
+                ItemID.RegenerationPotion,
+                ItemID.SwiftnessPotion,
+                ItemID.EndurancePotion,
+                ItemID.LifeforcePotion,
+                ItemID.RagePotion,
+                ItemID.WrathPotion,
+                ItemID.ObsidianSkinPotion,
+                ItemID.InfernoPotion,
+                ItemID.SummoningPotion,
+                ItemID.ArcheryPotion
+            ];
+
+            int potionCount = random.Next(3, 6);
+            for (int i = 0; i < potionCount && loot.Count < 240; i++) {
+                int potionType = usefulPotions[random.Next(usefulPotions.Length)];
+                Item potion = new Item();
+                potion.SetDefaults(potionType);
+                potion.stack = random.Next(5, 20);
+                loot.Add(potion);
+            }
+
+            //钓鱼饵料
+            if (random.NextDouble() < 0.6) {
+                int[] baitItems = [
+                    ItemID.MasterBait,
+                    ItemID.JourneymanBait,
+                    ItemID.ApprenticeBait
+                ];
+                int baitType = baitItems[random.Next(baitItems.Length)];
+                Item bait = new Item();
+                bait.SetDefaults(baitType);
+                bait.stack = random.Next(10, 30);
+                loot.Add(bait);
+            }
+        }
+
+        /// <summary>
+        /// 添加稀有材料
+        /// </summary>
+        private static void AddRareMaterials(List<Item> loot, Random random) {
+            int[] rareMaterials = [
+                ItemID.SoulofLight,
+                ItemID.SoulofNight,
+                ItemID.SoulofFlight,
+                ItemID.SoulofSight,
+                ItemID.SoulofMight,
+                ItemID.SoulofFright,
+                ItemID.CrystalShard,
+                ItemID.Ectoplasm,
+                ItemID.ChlorophyteBar,
+                ItemID.HallowedBar,
+                ItemID.ShroomiteBar,
+                ItemID.SpectreBar
+            ];
+
+            int materialCount = random.Next(1, 3);
+            for (int i = 0; i < materialCount && loot.Count < 240; i++) {
+                int materialType = rareMaterials[random.Next(rareMaterials.Length)];
+                Item material = new Item();
+                material.SetDefaults(materialType);
+                material.stack = random.Next(5, 25);
+                loot.Add(material);
+            }
+        }
+
+        /// <summary>
+        /// 添加特殊武器装备
+        /// </summary>
+        private static void AddSpecialWeapons(List<Item> loot, Random random) {
+            int[] specialWeapons = [
+                ItemID.FlowerofFrost,
+                ItemID.Uzi,
+                ItemID.ChainGun,
+                ItemID.VenusMagnum,
+                ItemID.Shotgun,
+                ItemID.TacticalShotgun,
+                ItemID.SniperRifle,
+                ItemID.Tsunami,
+                ItemID.RazorbladeTyphoon,
+                ItemID.BubbleGun,
+                ItemID.ToxicFlask,
+                ItemID.NailGun,
+                ItemID.PiranhaGun,
+                ItemID.Flairon
+            ];
+
+            int weaponType = specialWeapons[random.Next(specialWeapons.Length)];
+            Item weapon = new Item();
+            weapon.SetDefaults(weaponType);
+
+            //为武器添加随机词缀
+            if (IsWeapon(weapon)) {
+                weapon.prefix = GetRandomWeaponPrefix(random);
+            }
+
+            loot.Add(weapon);
+        }
+
+        /// <summary>
+        /// 判断物品是否为武器
+        /// </summary>
+        private static bool IsWeapon(Item item) {
+            return item.damage > 0;
+        }
+
+        /// <summary>
+        /// 判断物品是否为装备
+        /// </summary>
+        private static bool IsEquipment(Item item) {
+            return item.accessory || item.defense > 0;
+        }
+
+        /// <summary>
+        /// 获取随机武器词缀
+        /// </summary>
+        private static int GetRandomWeaponPrefix(Random random) {
+            //高品质武器词缀
+            int[] godlyPrefixes = [
+                PrefixID.Legendary,
+                PrefixID.Unreal,
+                PrefixID.Godly,
+                PrefixID.Demonic,
+                PrefixID.Ruthless
+            ];
+
+            //良好武器词缀
+            int[] goodPrefixes = [
+                PrefixID.Deadly,
+                PrefixID.Rapid,
+                PrefixID.Murderous,
+                PrefixID.Zealous,
+                PrefixID.Superior
+            ];
+
+            //根据随机数决定词缀品质
+            double roll = random.NextDouble();
+
+            if (roll < 0.15) {
+                //15%概率获得顶级词缀
+                return godlyPrefixes[random.Next(godlyPrefixes.Length)];
+            }
+            else if (roll < 0.5) {
+                //35%概率获得良好词缀
+                return goodPrefixes[random.Next(goodPrefixes.Length)];
+            }
+            else {
+                //50%概率无词缀或普通词缀
+                return random.NextDouble() < 0.3 ? PrefixID.Keen : 0;
+            }
+        }
+
+        /// <summary>
+        /// 获取随机装备词缀
+        /// </summary>
+        private static int GetRandomEquipmentPrefix(Random random) {
+            int[] equipmentPrefixes = [
+                PrefixID.Menacing,
+                PrefixID.Lucky,
+                PrefixID.Quick,
+                PrefixID.Violent,
+                PrefixID.Warding,
+                PrefixID.Armored,
+                PrefixID.Jagged,
+                PrefixID.Spiked,
+                PrefixID.Angry,
+                PrefixID.Brisk
+            ];
+
+            return random.NextDouble() < 0.6
+                ? equipmentPrefixes[random.Next(equipmentPrefixes.Length)]
+                : 0;
+        }
+
+        /// <summary>
+        /// 获取基于日期的种子
+        /// </summary>
+        public static int GetDailySeed() {
+            DateTime today = DateTime.Today;
+            return today.Year * 10000 + today.Month * 100 + today.Day;
+        }
+    }
+}

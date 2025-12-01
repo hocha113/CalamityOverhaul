@@ -32,8 +32,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         private float glowIntensity = 0f;
         internal bool isOpen = false;
 
+        //每日刷新相关
+        private bool isInCampsite = false;
+        private int lastRefreshDay = -1;
+        private bool hasBeenOpened = false;
+
         public override void SetProperty() {
             storedItems = new List<Item>();
+            CheckIfInCampsite();
+            InitializeCampsiteChest();
         }
 
         public override void SendData(ModPacket data) {
@@ -42,6 +49,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             foreach (var item in storedItems) {
                 ItemIO.Send(item, data, true);
             }
+
+            //发送每日刷新相关数据
+            data.Write(isInCampsite);
+            data.Write(lastRefreshDay);
+            data.Write(hasBeenOpened);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
@@ -52,6 +64,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 Item item = ItemIO.Receive(reader, true);
                 storedItems.Add(item);
             }
+
+            //接收每日刷新相关数据
+            isInCampsite = reader.ReadBoolean();
+            lastRefreshDay = reader.ReadInt32();
+            hasBeenOpened = reader.ReadBoolean();
         }
 
         public override void SaveData(TagCompound tag) {
@@ -64,6 +81,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     tag[$"item{i}_prefix"] = storedItems[i].prefix;
                 }
             }
+
+            //保存每日刷新数据
+            tag["isInCampsite"] = isInCampsite;
+            tag["lastRefreshDay"] = lastRefreshDay;
+            tag["hasBeenOpened"] = hasBeenOpened;
         }
 
         public override void LoadData(TagCompound tag) {
@@ -79,6 +101,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         item.prefix = tag.GetByte($"item{i}_prefix");
                     }
                     storedItems.Add(item);
+                }
+            }
+
+            //加载每日刷新数据
+            if (tag.ContainsKey("isInCampsite")) {
+                isInCampsite = tag.GetBool("isInCampsite");
+            }
+            if (tag.ContainsKey("lastRefreshDay")) {
+                lastRefreshDay = tag.GetInt("lastRefreshDay");
+            }
+            if (tag.ContainsKey("hasBeenOpened")) {
+                hasBeenOpened = tag.GetBool("hasBeenOpened");
+            }
+
+            //加载后检查是否需要刷新
+            if (isInCampsite) {
+                int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
+                if (lastRefreshDay != currentDay && !hasBeenOpened) {
+                    RefreshDailyLoot(currentDay);
                 }
             }
         }
@@ -103,6 +144,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 CloseUI(player);
             }
 
+            //营地箱子每日刷新检查
+            if (isInCampsite && !isOpen) {
+                int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
+                if (lastRefreshDay != currentDay && !hasBeenOpened) {
+                    RefreshDailyLoot(currentDay);
+                }
+            }
+
             //更新光照
             if (glowIntensity > 0.01f) {
                 float pulsePulse = MathF.Sin(glowTimer * 0.05f) * 0.3f + 0.7f;
@@ -118,6 +167,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (player == null || !player.active) return;
 
             isOpen = true;
+            
+            //标记营地箱子已被打开
+            if (isInCampsite) {
+                hasBeenOpened = true;
+                SendData();
+            }
+
             SoundEngine.PlaySound(SoundID.MenuOpen with {
                 Pitch = -0.2f,
                 Volume = 0.6f
@@ -228,6 +284,45 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
                 }
             }
+        }
+
+        /// <summary>
+        /// 检查箱子是否在营地内
+        /// </summary>
+        private void CheckIfInCampsite() {
+            if (!Campsites.OldDukeCampsite.IsGenerated) {
+                isInCampsite = false;
+                return;
+            }
+
+            Vector2 campsitePos = Campsites.OldDukeCampsite.CampsitePosition;
+            float distance = Vector2.Distance(CenterInWorld, campsitePos);
+            isInCampsite = distance < 600f;
+        }
+
+        /// <summary>
+        /// 初始化营地箱子内容
+        /// </summary>
+        private void InitializeCampsiteChest() {
+            if (!isInCampsite) {
+                return;
+            }
+
+            int currentDay = Campsites.OldDuchestLootGenerator.GetDailySeed();
+            if (lastRefreshDay != currentDay) {
+                RefreshDailyLoot(currentDay);
+            }
+        }
+
+        /// <summary>
+        /// 刷新每日战利品
+        /// </summary>
+        private void RefreshDailyLoot(int dailySeed) {
+            storedItems.Clear();
+            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot(dailySeed);
+            lastRefreshDay = dailySeed;
+            hasBeenOpened = false;
+            SendData();
         }
     }
 }
