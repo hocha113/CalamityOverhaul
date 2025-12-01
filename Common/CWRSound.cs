@@ -86,5 +86,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle ToMount = new SoundStyle(CWRConstant.Asset + "Sounds/ToMount");
         public static SoundStyle Hajm = new SoundStyle(CWRConstant.Asset + "Sounds/Hajm");
         public static SoundStyle None = new SoundStyle(CWRConstant.Asset + "Sounds/None");
+        public static SoundStyle OldDuchestClose = new SoundStyle(CWRConstant.Asset + "Sounds/OldDuchestClose");
+        public static SoundStyle OldDuchestOpen = new SoundStyle(CWRConstant.Asset + "Sounds/OldDuchestOpen");
     }
 }

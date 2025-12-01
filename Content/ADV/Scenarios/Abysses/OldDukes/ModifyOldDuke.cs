@@ -1,4 +1,5 @@
-﻿using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -88,6 +89,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             npc.TargetClosest();
             Player target = Main.player[npc.target];
+
+            if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight) {
+                npc.active = false;
+                npc.netUpdate = true;
+                IsLeavingDive = false;
+                if (target.Alives()) {
+                    ScenarioManager.Reset<ComeCampsiteFindMe>();
+                    ScenarioManager.Start<ComeCampsiteFindMe>();
+                }
+                return false;
+            }
 
             //检查并更新初见场景状态
             UpdateFirstMeetState(target);

@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             Vector2 playerScreenPos = new Vector2(Main.screenWidth / 2 + 300, Main.screenHeight / 2);
             Vector2 campsiteWorldPos = OldDukeCampsite.CampsitePosition;
-            Vector2 campsiteScreenPos = campsiteWorldPos - Main.screenPosition;
 
             //º∆À„∑ΩœÚ
             Vector2 directionToCampsite = campsiteWorldPos - player.Center;

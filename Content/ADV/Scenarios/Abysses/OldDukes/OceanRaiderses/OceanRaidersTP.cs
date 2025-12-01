@@ -421,12 +421,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             //右键打开专属箱子UI
             if (player.whoAmI == Main.myPlayer) {
-                OceanRaidersUI.Instance.Open(this);
-                //播放UI打开音效
-                SoundEngine.PlaySound(CWRSound.ButtonZero with {
-                    Pitch = -0.1f,
-                    Volume = 0.7f
-                }, player.Center);
+                OceanRaidersUI.Instance.Interactive(this);
             }
             return true;
         }

@@ -135,14 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             if (player.whoAmI == Main.myPlayer) {
-                //播放箱子打开音效
-                SoundEngine.PlaySound(SoundID.MenuOpen with {
-                    Pitch = -0.2f,
-                    Volume = 0.6f
-                }, new Vector2(i * 16, j * 16));
-
-                //打开UI
-                OldDuchestUI.Instance.Open(this);
+                OldDuchestUI.Instance.Interactive(this);
             }
             return null;
         }

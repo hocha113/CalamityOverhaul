@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        private class CampsiteInteractionDialogue_Choice1 : ADVScenarioBase
+        internal class CampsiteInteractionDialogue_Choice1 : ADVScenarioBase
         {
             public override string Key => nameof(CampsiteInteractionDialogue_Choice1);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        private class CampsiteInteractionDialogue_Choice2 : ADVScenarioBase
+        internal class CampsiteInteractionDialogue_Choice2 : ADVScenarioBase
         {
             public override string Key => nameof(CampsiteInteractionDialogue_Choice2);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        private class CampsiteInteractionDialogue_Choice3 : ADVScenarioBase
+        internal class CampsiteInteractionDialogue_Choice3 : ADVScenarioBase
         {
             public override string Key => nameof(CampsiteInteractionDialogue_Choice3);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        private class CampsiteInteractionDialogue_Choice4 : ADVScenarioBase
+        internal class CampsiteInteractionDialogue_Choice4 : ADVScenarioBase
         {
             public override string Key => nameof(CampsiteInteractionDialogue_Choice4);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;

@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public Vector2 CalculatePanelPosition() {
             float slideOffset = (1f - animation.PanelSlideProgress) * 100f;
             return new Vector2(
-                Main.screenWidth / 2 - PanelWidth / 2,
+                0,
                 Main.screenHeight / 2 - PanelHeight / 2 + slideOffset
             );
         }

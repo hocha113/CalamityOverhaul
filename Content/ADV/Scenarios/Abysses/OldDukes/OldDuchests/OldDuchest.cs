@@ -67,7 +67,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            Main.tileSolidTop[Type] = true;
             AddMapEntry(new Color(139, 87, 42), VaultUtils.GetLocalizedItemName<OldDuchest>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);

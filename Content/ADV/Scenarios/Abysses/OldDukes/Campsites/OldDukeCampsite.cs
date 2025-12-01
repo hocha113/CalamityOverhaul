@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
@@ -25,12 +26,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
         public static Texture2D Oldflagpole;//反射加载老公爵营地的气质纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
 
-        //营地数据
+        /// <summary>
+        /// 营地是否已生成
+        /// </summary>
         public static bool IsGenerated { get; private set; }
         /// <summary>
         /// 是否在和老公爵切磋
         /// </summary>
         public static bool WannaToFight { get; set; }
+        /// <summary>
+        /// 营地位置
+        /// </summary>
         public static Vector2 CampsitePosition { get; private set; }
 
         public string LocalizationCategory => "ADV.OldDukeCampsite";
@@ -52,6 +58,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 玩家进入营地事件
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
+
+        public override void SaveWorldData(TagCompound tag) {
+            tag[nameof(IsGenerated)] = IsGenerated;
+            tag[nameof(CampsitePosition)] = CampsitePosition;
+        }
+
+        public override void LoadWorldData(TagCompound tag) {
+            IsGenerated = false;
+            if (tag.TryGet(nameof(IsGenerated), out bool value)) {
+                IsGenerated = value;
+            }
+            CampsitePosition = Vector2.Zero;
+            if (tag.TryGet(nameof(CampsitePosition), out Vector2 pos)) {
+                CampsitePosition = pos;
+            }
+        }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "老公爵营地");
@@ -89,6 +111,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 触发交互
         /// </summary>
         private static void TriggerInteraction() {
+            if (Main.mapFullscreen) {
+                return;//玩家如果展开了全屏地图，就不要进行交互
+            }
+
             //播放交互音效
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
 

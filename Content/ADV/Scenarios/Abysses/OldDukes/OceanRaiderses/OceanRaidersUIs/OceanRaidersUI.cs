@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -50,22 +51,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         /// <summary>
         /// 打开UI并绑定机器
         /// </summary>
-        public void Open(OceanRaidersTP machine) {
+        public void Interactive(OceanRaidersTP machine) {
             if (machine == null) return;
-            currentMachine = machine;
-            _active = true;
 
-            //初始化组件
-            if (interaction == null || renderer == null) {
-                interaction = new OceanRaidersInteraction(player, machine);
-                renderer = new OceanRaidersRenderer(player, machine, animation, interaction);
+            if (currentMachine != machine) {
+                currentMachine = machine;
+                _active = true;
+
+                //初始化组件
+                if (interaction == null || renderer == null) {
+                    interaction = new OceanRaidersInteraction(player, machine);
+                    renderer = new OceanRaidersRenderer(player, machine, animation, interaction);
+                }
+                else {
+                    interaction.UpdateMachine(machine);
+                    renderer.UpdateMachine(machine);
+                }
             }
             else {
-                interaction.UpdateMachine(machine);
-                renderer.UpdateMachine(machine);
+                _active = !_active;
             }
 
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = -0.2f });
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
         }
 
         public override void Update() {

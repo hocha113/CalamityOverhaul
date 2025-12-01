@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -61,24 +62,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// <summary>
         /// 打开UI并绑定箱子
         /// </summary>
-        public void Open(OldDuchestTP chest) {
-            chestPosition = chest.Position;
-            CurrentChest = chest;
-            _active = true;
+        public void Interactive(OldDuchestTP chest) {
+            if (CurrentChest != chest) {
+                CurrentChest = chest;
+                chestPosition = chest.Position;
+                _active = true;
 
-            //初始化组件
-            if (interaction == null || renderer == null) {
-                interaction = new OldDuchestInteraction(player, this);
-                renderer = new OldDuchestRenderer(player, this, animation, interaction);
+                //初始化组件
+                if (interaction == null || renderer == null) {
+                    interaction = new OldDuchestInteraction(player, this);
+                    renderer = new OldDuchestRenderer(player, this, animation, interaction);
+                }
+
+                //加载箱子数据
+                LoadItems(chest.storedItems);
+
+                //通知箱子打开
+                chest.OpenUI(player);
+                SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f });
             }
-
-            //加载箱子数据
-            LoadItems(chest.storedItems);
-
-            //通知箱子打开
-            chest.OpenUI(player);
-
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = -0.2f });
+            else {
+                if (_active) {
+                    Close();
+                    SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f });
+                }
+                else {
+                    _active = true;
+                    //通知箱子打开
+                    chest.OpenUI(player);
+                    SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f });
+                }
+            }
         }
 
         /// <summary>
@@ -138,8 +152,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 CurrentChest.SaveItemsFromUI();
                 CurrentChest.CloseUI(player);
             }
-
-            SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
         }
 
         public override void Update() {
