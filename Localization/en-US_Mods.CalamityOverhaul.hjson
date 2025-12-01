@@ -7240,69 +7240,69 @@ ADV: {
 	GiveBlazingBud.MessageText: The burning embers whisper in the wind, and a strange flower drifts into your hands…
 
 	FirstMetOldDuke: {
-		OldDukeName: 老公爵
-		HelenName: 比目鱼
+		OldDukeName: Old Duke
+		HelenName: Halibut
 		L0: ......
-		L1: 收起杀气吧，后生。没必要一见面就兵戎相见
-		L2: 我年纪大了，那套打打杀杀的把戏，我已经厌倦了
-		L3: 我们可以合作
-		L4: 我正在搜集一种特殊的东西，海洋残片
-		L5: 如果你能替我找来更多，我会让你觉得物超所值
-		L6: 这是一份样本
-		B1: 你改主意了吗？
-		B2: 那么再见
-		HL1: 老教授......?不过他看起来不认识我了
-		HL2: 他的话是可信的，我们是硫磺海大学的同事，他是海洋考古学领域的泰斗
-		C1: 接受合作
-		C2: 拒绝合作
-		C3: 拒绝合作并拔出武器
-		C1Response: 很好，希望我们能有一个愉快的合作
-		C2Response: ......那我就先离开了，如果你想通了，随时欢迎
-		C3Response: ......既然你执意如此，那就让我来称量称量你吧
+		L1: Sheathe your bloodlust, youngster. There is no need for swords to be drawn the moment we meet.
+		L2: I am old. I have grown weary of such violent games.
+		L3: We can cooperate.
+		L4: I am collecting something special: Ocean Scraps.
+		L5: If you can find more for me, I will make it well worth your while.
+		L6: Here is a sample.
+		B1: Have you changed your mind?
+		B2: Farewell, then.
+		HL1: The old professor...? Though, he doesn't seem to recognize me.
+		HL2: His words are credible. We were colleagues at Sulphurous Sea University. He is a titan in the field of marine archaeology.
+		C1: Accept cooperation
+		C2: Refuse cooperation
+		C3: Refuse and draw weapon
+		C1Response: Excellent. I hope we have a pleasant partnership.
+		C2Response: ...Then I shall take my leave. If you think it through, you are welcome anytime.
+		C3Response: ...It seems you insist. Then let me measure your worth.
 	}
 
 	OldDukeCampsite: {
 		OldDukeCampsiteRenderer: {
-			InteractHint: "[右键] 对话"
-			GreetingText: 嗯？你好啊...
+			InteractHint: "[Right Click] Talk"
+			GreetingText: Hm? Hello there...
 		}
 
-		OldDukeCampsite.TitleText: 老公爵营地
+		OldDukeCampsite.TitleText: Old Duke's Campsite
 	}
 
 	CampsiteInteractionDialogue: {
-		OldDukeName: 老公爵
-		GreetingLine: 你需要什么？
-		Choice1Text: 我来找你交易一下
-		Choice2Text: 你要的东西我都弄来了
-		Choice3Text: 我只是来溜达一圈
-		Choice4Text: 我要和你切磋一下
-		Choice2DisabledHint: 海洋残片不足
-		Choice1Response: 看看我这里有什么吧
-		Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
+		OldDukeName: Old Duke
+		GreetingLine: What do you require?
+		Choice1Text: I am here to trade.
+		Choice2Text: I brought the things you wanted.
+		Choice3Text: Just wandering around.
+		Choice4Text: I want to spar with you.
+		Choice2DisabledHint: Insufficient Ocean Scraps
+		Choice1Response: See what I have here.
+		Choice2Response: Good. These scraps are sufficient. This is your due reward.
 		Choice3Response: ......
-		QuestCompleteLine: 感谢你的帮助
-		B1: 我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的
-		Choice4_R1: 我虽然老了，但年轻时候的技巧可还没落下
-		Choice4_R2: 那就让我看看，你最近有没有长进
-		Choice4_R3: 把我当磨刀石并不是个明智的举动...
+		QuestCompleteLine: Thank you for your help.
+		B1: I will spend the next few days deciphering these scraps. I will notify you once I am finished.
+		Choice4_R1: I may be old, but I haven't lost the skills of my youth.
+		Choice4_R2: Then let us see if you have improved recently.
+		Choice4_R3: Using me as a whetstone is not a wise move...
 	}
 
 	FirstCampsiteDialogue: {
-		OldDukeName: 老公爵
-		L0: 你来了
-		L1: 我收集这些残片，已经有些年头了
-		L2: 它们很……诡异。不像是自然演化的产物，倒像是某种“入侵”进这个世界的异物
-		L3: 我希望你能明白我的意思，我的直觉告诉我它们本应是无形之物，只是选择了某种可以被泰拉生物理解的形态
-		L4: 总之...我想要解读它们，但数量还不够
-		L5: 我希望你能帮我收集足够多的海洋残片
-		L6: 我将给予你相应的报酬
+		OldDukeName: Old Duke
+		L0: You've come.
+		L1: I have been collecting these scraps for quite some years.
+		L2: They are... peculiar. They do not look like products of natural evolution, but rather foreign objects that "invaded" this world.
+		L3: I hope you understand what I mean. My intuition tells me they should have been formless things, merely choosing a form that Terrarian creatures could comprehend.
+		L4: Regardless... I wish to decipher them, but I lack sufficient quantity.
+		L5: I hope you can help me collect enough Ocean Scraps.
+		L6: I will provide you with appropriate compensation.
 	}
 
 	ComeCampsiteFindMe: {
-		OldDukeName: 老公爵
-		B1: ……有空就来喝杯茶吧
-		C1: 有正事找你
-		C2: 我只是想钓着玩玩……
+		OldDukeName: Old Duke
+		B1: ...Come have a cup of tea when you have time.
+		C1: I have business with you.
+		C2: I was just fishing for fun...
 	}
 }

@@ -7153,16 +7153,16 @@ ADV: {
 		BH4RematchText: 我很好奇，我们的第一次交手，是否让你长了记性？
 		SeekerRingText: 你是怎么躲开的？情况不应该这样……给我停下!
 		SeekerRingRematchText: 起码我的眼光没有看错……
-		BH5Text: 我承认刚刚的战斗只不过是小打小闹，现在我将会全力以赴！
-		BH5RematchText: ……这难道不令人激动么？
+		BH5Text: 我承认刚刚的战斗只不过是小打小闹，现在我将全力以赴！
+		BH5RematchText: 这难道不令人激动么？
 		Sepulcher2Text: 如果我们之中只有一个人可以活下来，你觉得我会希望是谁？
 		Sepulcher2RematchText: 注意了，那个会自己爬的坟墓来了……它正渴望着新的住客
 		Desperation1Text: 给我停下！
 		Desperation2Text: 如果我在这里失败，那又有什么意义！
 		Desperation3Text: 你的路已经有人走到了尽头，那是一条死路……你凭什么认为你能不同？！
 		Desperation4Text: 若你只是重复他的疯狂，最终也不过是这些余烬中的一捧新灰罢了！
-		Acceptance1Text: 我把自己烧成了这副非人的模样，只为寻找那一线生机……
-		Acceptance2Text: 我已没有余力站起来了……
+		Acceptance1Text: 我把自己烧成了这副非人的模样，只为寻找那一线生机
+		Acceptance2Text: 咳咳……我已没有余力站起来了……
 		Acceptance3Text: 若是你这样的异类……或许真的能开辟出……我也未曾见过的未来
 		Desperation1RematchText: 了不起的表现，你发挥的很好
 		Desperation2RematchText: 毫无疑问，你的实力每时每刻都在增长
