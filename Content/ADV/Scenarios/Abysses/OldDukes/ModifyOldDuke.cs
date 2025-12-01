@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using CalamityOverhaul.OtherMods.BossChecklist;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -95,6 +96,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Player target = Main.player[npc.target];
 
             if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight) {
+                BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
@@ -315,6 +317,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 if (npc.alpha >= 255) {
                     //完成离开
                     CompleteFirstMeet();
+                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
                     npc.active = false;
                     npc.netUpdate = true;
                     IsLeavingDive = false;
