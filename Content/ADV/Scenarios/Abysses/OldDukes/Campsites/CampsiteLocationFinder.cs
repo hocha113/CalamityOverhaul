@@ -13,19 +13,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 寻找最佳营地位置
         /// </summary>
         public static Vector2? FindBestLocation() {
-            //第一阶段：在世界海岸区域搜索
-            Vector2? position = SearchInCoastalArea();
+            //首先检测硫磺海的位置
+            bool sulphurSeaOnLeft = IsSulphurousSeaOnLeft();
+            
+            //第一阶段：在硫磺海海岸区域搜索
+            Vector2? position = SearchInSulphurousSeaCoast(sulphurSeaOnLeft);
             if (position.HasValue) {
                 return position;
             }
 
-            //第二阶段：扩大搜索范围
-            position = SearchInExtendedArea();
+            //第二阶段：扩大硫磺海区域搜索范围
+            position = SearchInExtendedSulphurousArea(sulphurSeaOnLeft);
             if (position.HasValue) {
                 return position;
             }
 
-            //第三阶段：在玩家附近寻找
+            //第三阶段：在玩家附近寻找硫磺海地形
             position = SearchNearPlayer();
             if (position.HasValue) {
                 return position;
@@ -35,11 +38,66 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 在海岸区域搜索最佳位置
+        /// 检测硫磺海是否在地图左侧
         /// </summary>
-        private static Vector2? SearchInCoastalArea() {
-            int searchStartX = Main.maxTilesX - 400;
-            int searchEndX = Main.maxTilesX - 150;
+        private static bool IsSulphurousSeaOnLeft() {
+            int leftCheckStart = 100;
+            int leftCheckEnd = 400;
+            int rightCheckStart = Main.maxTilesX - 400;
+            int rightCheckEnd = Main.maxTilesX - 100;
+            int checkY = (int)(Main.worldSurface * 0.7f);
+
+            int leftSulphurCount = CountSulphurousTiles(leftCheckStart, leftCheckEnd, checkY, 50);
+            int rightSulphurCount = CountSulphurousTiles(rightCheckStart, rightCheckEnd, checkY, 50);
+
+            //哪边硫磺海物块更多，硫磺海就在哪边
+            return leftSulphurCount > rightSulphurCount;
+        }
+
+        /// <summary>
+        /// 统计指定区域内的硫磺海物块数量
+        /// </summary>
+        private static int CountSulphurousTiles(int startX, int endX, int centerY, int searchRadius) {
+            int count = 0;
+            
+            for (int x = startX; x < endX; x += 5) {
+                for (int y = centerY - searchRadius; y < centerY + searchRadius; y += 5) {
+                    if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY) {
+                        continue;
+                    }
+
+                    Tile tile = Main.tile[x, y];
+                    if (tile != null && tile.HasTile && IsSulphurousTile(tile.TileType)) {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// 检查图格是否是硫磺海物块
+        /// </summary>
+        private static bool IsSulphurousTile(int tileType) {
+            return tileType == CWRID.Tile_SulphurousSand || tileType == CWRID.Tile_SulphurousSandstone;
+        }
+
+        /// <summary>
+        /// 在硫磺海海岸区域搜索最佳位置
+        /// </summary>
+        private static Vector2? SearchInSulphurousSeaCoast(bool seaOnLeft) {
+            int searchStartX, searchEndX;
+            
+            if (seaOnLeft) {
+                searchStartX = 150;
+                searchEndX = 400;
+            }
+            else {
+                searchStartX = Main.maxTilesX - 400;
+                searchEndX = Main.maxTilesX - 150;
+            }
+
             int startY = (int)(Main.worldSurface * 0.4f);
             int endY = (int)(Main.worldSurface * 1.1f);
 
@@ -47,11 +105,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 在扩展区域搜索
+        /// 在扩展的硫磺海区域搜索
         /// </summary>
-        private static Vector2? SearchInExtendedArea() {
-            int searchStartX = Main.maxTilesX - 500;
-            int searchEndX = Main.maxTilesX - 150;
+        private static Vector2? SearchInExtendedSulphurousArea(bool seaOnLeft) {
+            int searchStartX, searchEndX;
+            
+            if (seaOnLeft) {
+                searchStartX = 100;
+                searchEndX = 500;
+            }
+            else {
+                searchStartX = Main.maxTilesX - 500;
+                searchEndX = Main.maxTilesX - 100;
+            }
+
             int startY = (int)(Main.worldSurface * 0.4f);
             int endY = (int)(Main.worldSurface * 1.1f);
 
@@ -59,7 +126,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 在玩家附近搜索
+        /// 在玩家附近寻找硫磺海地形
         /// </summary>
         private static Vector2? SearchNearPlayer() {
             Player player = Main.LocalPlayer;
@@ -70,13 +137,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             int playerTileX = (int)(player.Center.X / 16);
             int playerTileY = (int)(player.Center.Y / 16);
 
-            for (int offsetX = 0; offsetX < 100; offsetX += 10) {
-                for (int offsetY = -50; offsetY < 50; offsetY += 5) {
-                    int checkX = playerTileX + offsetX;
-                    int checkY = playerTileY + offsetY;
-                    Vector2? candidatePos = ValidateLocation(checkX, checkY);
-                    if (candidatePos.HasValue) {
-                        return candidatePos;
+            //优先搜索玩家周围的硫磺海地形
+            for (int radius = 50; radius < 200; radius += 20) {
+                for (int offsetX = -radius; offsetX <= radius; offsetX += 10) {
+                    for (int offsetY = -50; offsetY < 50; offsetY += 5) {
+                        int checkX = playerTileX + offsetX;
+                        int checkY = playerTileY + offsetY;
+                        
+                        Vector2? candidatePos = ValidateLocation(checkX, checkY);
+                        if (candidatePos.HasValue) {
+                            return candidatePos;
+                        }
                     }
                 }
             }
@@ -126,6 +197,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return null;
             }
 
+            //优先选择硫磺海物块
+            bool isSulphurousTile = IsSulphurousTile(tile.TileType);
+
             //不能是危险的方块类型
             if (IsDangerousTile(tile)) {
                 return null;
@@ -155,11 +229,45 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return null;
             }
 
+            //如果不是硫磺海物块，检查周围是否有硫磺海物块
+            if (!isSulphurousTile && !HasNearbySulphurousTiles(tileX, tileY)) {
+                return null;
+            }
+
             //通过所有检查，返回像素坐标
             return new Vector2(
                 tileX * 16 + 8,
                 tileY * 16 - 48
             );
+        }
+
+        /// <summary>
+        /// 检查周围是否有硫磺海物块
+        /// </summary>
+        private static bool HasNearbySulphurousTiles(int tileX, int tileY) {
+            const int checkRadius = 10;
+            int sulphurCount = 0;
+            int totalChecks = 0;
+
+            for (int offsetX = -checkRadius; offsetX <= checkRadius; offsetX += 2) {
+                for (int offsetY = -checkRadius; offsetY <= checkRadius; offsetY += 2) {
+                    int checkX = tileX + offsetX;
+                    int checkY = tileY + offsetY;
+
+                    if (checkX < 0 || checkX >= Main.maxTilesX || checkY < 0 || checkY >= Main.maxTilesY) {
+                        continue;
+                    }
+
+                    totalChecks++;
+                    Tile checkTile = Main.tile[checkX, checkY];
+                    if (checkTile != null && checkTile.HasTile && IsSulphurousTile(checkTile.TileType)) {
+                        sulphurCount++;
+                    }
+                }
+            }
+
+            //如果周围至少有20%是硫磺海物块，则认为在硫磺海区域
+            return totalChecks > 0 && (float)sulphurCount / totalChecks >= 0.2f;
         }
 
         #region 位置验证辅助方法
@@ -307,6 +415,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //周围水量评分
             score += ScoreByNearbyWater(tileX, tileY);
 
+            //硫磺海物块密度评分
+            score += ScoreBySulphurousDensity(tileX, tileY);
+
             return score;
         }
 
@@ -325,6 +436,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Tile tile = Main.tile[tileX, tileY];
             if (tile == null || !tile.HasTile) {
                 return 0;
+            }
+
+            //硫磺海物块优先级最高
+            if (IsSulphurousTile(tile.TileType)) {
+                return 100;
             }
 
             if (tile.TileType == TileID.Grass || tile.TileType == TileID.Sand) {
@@ -359,6 +475,40 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
 
             return -waterCount * 2;
+        }
+
+        /// <summary>
+        /// 根据周围硫磺海物块密度评分（密度越高越好）
+        /// </summary>
+        private static int ScoreBySulphurousDensity(int tileX, int tileY) {
+            const int checkRadius = 15;
+            int sulphurCount = 0;
+            int totalChecks = 0;
+
+            for (int offsetX = -checkRadius; offsetX <= checkRadius; offsetX += 3) {
+                for (int offsetY = -checkRadius; offsetY <= checkRadius; offsetY += 3) {
+                    int checkX = tileX + offsetX;
+                    int checkY = tileY + offsetY;
+
+                    if (checkX < 0 || checkX >= Main.maxTilesX || checkY < 0 || checkY >= Main.maxTilesY) {
+                        continue;
+                    }
+
+                    totalChecks++;
+                    Tile checkTile = Main.tile[checkX, checkY];
+                    if (checkTile != null && checkTile.HasTile && IsSulphurousTile(checkTile.TileType)) {
+                        sulphurCount++;
+                    }
+                }
+            }
+
+            if (totalChecks == 0) {
+                return 0;
+            }
+
+            //硫磺海密度越高，分数越高
+            float density = (float)sulphurCount / totalChecks;
+            return (int)(density * 150);
         }
 
         #endregion

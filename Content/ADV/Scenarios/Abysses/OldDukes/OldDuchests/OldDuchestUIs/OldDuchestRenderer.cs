@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public Vector2 CalculatePanelPosition() {
             float slideOffset = (1f - animation.PanelSlideProgress) * 100f;
             return new Vector2(
-                0,
+                Main.screenWidth - PanelWidth,
                 Main.screenHeight / 2 - PanelHeight / 2 + slideOffset
             );
         }
@@ -158,16 +158,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             Item item = ui.GetItem(index);
             if (item != null && item.type > ItemID.None && item.stack > 0) {
                 Main.instance.LoadItem(item.type);
-                Texture2D itemTexture = TextureAssets.Item[item.type].Value;
-                float scale = Math.Min(SlotSize * 0.9f / itemTexture.Width, SlotSize * 0.9f / itemTexture.Height);
+                float scale = SlotSize * 0.9f / 32f;
                 Vector2 itemPos = position + new Vector2(SlotSize / 2);
 
                 if (isHovered) {
                     scale *= 1f + hoverProgress * 0.15f;
                 }
 
-                spriteBatch.Draw(itemTexture, itemPos, null, Color.White * animation.UIAlpha,
-                    0f, itemTexture.Size() / 2, scale, SpriteEffects.None, 0);
+                VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos, itemWidth: 32, size: scale);
 
                 if (item.stack > 1) {
                     string stackText = item.stack.ToString();

@@ -130,6 +130,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;//玩家如果展开了全屏地图，就不要进行交互
             }
 
+            if (OldDukeEffect.IsActive) {
+                return;//如果硫磺海效果已经启用，就不要进行交互
+            }
+
             //播放交互音效
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
 
