@@ -225,9 +225,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
 
             //更新样式动画
-            if (currentStyle != null) {
-                currentStyle.Update(panelRect, Active, closing);
-            }
+            currentStyle?.Update(panelRect, Active, closing);
 
             //动画更新
             if (!closing && showProgress < 1f) {
