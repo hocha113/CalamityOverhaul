@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.OtherMods.MagicStorage;
+﻿using CalamityOverhaul.OtherMods.MagicStorage;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -11,480 +8,12 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
-    internal class Collector : ModItem
-    {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/Collector";
-        internal static LocalizedText Text1;
-        internal static LocalizedText Text2;
-        internal static LocalizedText Text3;
-        public override void SetStaticDefaults() {
-            Text1 = this.GetLocalization(nameof(Text1), () => "Excessive Quantity!");
-            Text2 = this.GetLocalization(nameof(Text2), () => "There are no boxes around!");
-            Text3 = this.GetLocalization(nameof(Text3), () => "Lack of Electricity!");
-        }
-        public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
-            Item.maxStack = 9999;
-            Item.useTurn = true;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 40, 0);
-            Item.rare = ItemRarityID.LightRed;
-            Item.createTile = ModContent.TileType<CollectorTile>();
-            Item.CWR().StorageUE = true;
-            Item.CWR().ConsumeUseUE = 800;
-        }
-
-        public override void AddRecipes() {
-            CreateRecipe().
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(20).
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 8).
-                AddIngredient(ItemID.Hook, 3).
-                AddTile(TileID.Anvils).
-                Register();
-        }
-    }
-
-    internal class CollectorTile : ModTile
-    {
-        public override string Texture => CWRConstant.Asset + "ElectricPowers/CollectorTile";
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorStartTile")]
-        public static Asset<Texture2D> startAsset = null;
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorStartTileGlow")]
-        public static Asset<Texture2D> startGlowAsset = null;
-        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorTileGlow")]
-        public static Asset<Texture2D> tileGlowAsset = null;
-        public override void SetStaticDefaults() {
-            Main.tileLighted[Type] = true;
-            Main.tileFrameImportant[Type] = true;
-            Main.tileNoAttach[Type] = true;
-            Main.tileLavaDeath[Type] = false;
-            Main.tileWaterDeath[Type] = false;
-            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<Collector>());
-
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 5;
-            TileObjectData.newTile.Origin = new Point16(1, 3);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
-            TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
-                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateWidth = 16;
-            TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.addTile(Type);
-        }
-
-        public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
-            return false;
-        }
-
-        public override bool CanDrop(int i, int j) => false;
-
-        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<Collector>());
-
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                return false;
-            }
-            if (!TileProcessorLoader.ByPositionGetTP(point, out CollectorTP collector)) {
-                return false;
-            }
-
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            frameYPos += collector.frame * 18 * 5;
-            Texture2D tex = collector.workState ? TextureAssets.Tile[Type].Value : startAsset.Value;
-            Texture2D glow = collector.workState ? tileGlowAsset.Value : startGlowAsset.Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            Color drawColor = Lighting.GetColor(i, j);
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                spriteBatch.Draw(glow, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            return false;
-        }
-    }
-
-    internal class CollectorTP : BaseBattery
-    {
-        public override int TargetTileID => ModContent.TileType<CollectorTile>();
-        public override int TargetItem => ModContent.ItemType<Collector>();
-        public override bool ReceivedEnergy => true;
-        public override float MaxUEValue => 800;
-        internal const int maxFindChestMode = 600;
-        internal const int killerArmDistance = 2400;
-        public Vector2 ArmPos => CenterInWorld + new Vector2(0, 14);
-        private int textIdleTime;
-        internal int frame;
-        internal bool workState;
-        internal bool BatteryPrompt;
-        internal Item ItemFilter;
-        internal int TagItemSign;
-        internal int dontSpawnArmTime;
-        internal int consumeUE = 8;
-        internal int ArmIndex0 = -1;
-        internal int ArmIndex1 = -1;
-        internal int ArmIndex2 = -1;
-        internal float hoverSengs;
-
-        public override void SetBattery() {
-            ItemFilter = new Item();
-            DrawExtendMode = 2200;
-        }
-
-        public override void SendData(ModPacket data) {
-            base.SendData(data);
-            ItemIO.Send(ItemFilter, data);
-            data.Write(TagItemSign);
-            data.Write(BatteryPrompt);
-            data.Write(workState);
-            data.Write(ArmIndex0);
-            data.Write(ArmIndex1);
-            data.Write(ArmIndex2);
-        }
-
-        public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            base.ReceiveData(reader, whoAmI);
-            ItemFilter = ItemIO.Receive(reader);
-            TagItemSign = reader.ReadInt32();
-            BatteryPrompt = reader.ReadBoolean();
-            workState = reader.ReadBoolean();
-            ArmIndex0 = reader.ReadInt32();
-            ArmIndex1 = reader.ReadInt32();
-            ArmIndex2 = reader.ReadInt32();
-        }
-
-        public override void SaveData(TagCompound tag) {
-            base.SaveData(tag);
-
-            ItemFilter ??= new Item();
-            tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
-
-            string result = TagItemSign < ItemID.Count
-                ? TagItemSign.ToString()
-                : ItemLoader.GetItem(TagItemSign).FullName;
-            tag["_TagItemFullName"] = result;
-        }
-
-        public override void LoadData(TagCompound tag) {
-            base.LoadData(tag);
-
-            if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
-                ItemFilter = ItemIO.Load(value);
-            }
-            else {
-                ItemFilter = new Item();
-            }
-
-            if (tag.TryGet("_TagItemFullName", out string fullName)) {
-                TagItemSign = VaultUtils.GetItemTypeFromFullName(fullName);
-            }
-            else {
-                TagItemSign = ItemID.None;
-            }
-        }
-
-        private void FindFrame() {
-            int maxFrame = workState ? 7 : 24;
-            if (!workState && frame == 23) {
-                frame = 0;
-                workState = true;
-                if (!VaultUtils.isClient) {
-                    SendData();
-                }
-                SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
-            }
-            VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
-        }
-
-        internal static bool IsArmValid(int armIndex) {
-            if (armIndex < 0) return false;
-            Projectile projectile = Main.projectile.FindByIdentity(armIndex);
-            return projectile.Alives() && projectile.type == ModContent.ProjectileType<CollectorArm>();
-        }
-
-        public override bool? RightClick(int i, int j, Tile tile, Player player) {
-            Item item = player.GetItem();
-            bool changed = false;
-
-            if (!item.Alives()) {
-                if (TagItemSign != ItemID.None) {
-                    TagItemSign = ItemID.None;
-                    changed = true;
-                }
-            }
-            else if (TagItemSign > ItemID.None && TagItemSign == item.type) {
-                TagItemSign = ItemID.None;
-                changed = true;
-            }
-            else {
-                TagItemSign = item.type;
-                changed = true;
-
-                if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
-                    ItemFilter = item.Clone();
-                    //深拷贝过滤数据
-                    var sourceData = item.GetGlobalItem<ItemFilterData>();
-                    var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
-                    targetData.SetItems(sourceData.Items);
-                }
-            }
-
-            //播放音效（所有客户端）
-            SoundEngine.PlaySound(CWRSound.Select with {
-                Pitch = changed && TagItemSign > ItemID.None ? -0.2f : 0.2f
-            });
-
-            if (changed) {
-                SendData();
-            }
-            return false;
-        }
-
-        internal Chest FindChest(Item item) {
-            Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
-
-            //只在服务器端显示提示
-            if (chest == null && textIdleTime <= 0 && !VaultUtils.isClient) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
-                textIdleTime = 300;
-
-                //生成视觉提示粒子（客户端也会同步看到）
-                if (Main.netMode != NetmodeID.Server) {
-                    for (int i = 0; i < 220; i++) {
-                        Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
-                        int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
-                        Main.dust[dust].noGravity = true;
-                    }
-                }
-            }
-            return chest;
-        }
-
-        /// <summary>
-        /// 尝试查找Magic Storage存储核心
-        /// </summary>
-        internal object FindMagicStorage(Item item) {
-            if (!ModLoader.HasMod("MagicStorage")) {
-                return null;
-            }
-
-            try {
-                return MSRef.FindMagicStorage(item, Position, maxFindChestMode);
-            } catch {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 查找存储目标（箱子或Magic Storage）
-        /// </summary>
-        internal object FindStorageTarget(Item item) {
-            //优先尝试查找箱子
-            Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
-
-            if (chest != null) {
-                return chest;
-            }
-
-            //如果没有箱子，尝试查找Magic Storage
-            object magicStorage = FindMagicStorage(item);
-            if (magicStorage != null) {
-                return magicStorage;
-            }
-
-            //都找不到，显示提示
-            if (textIdleTime <= 0 && !VaultUtils.isClient) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
-                textIdleTime = 300;
-
-                if (Main.netMode != NetmodeID.Server) {
-                    for (int i = 0; i < 220; i++) {
-                        Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
-                        int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
-                        Main.dust[dust].noGravity = true;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 检查并生成机械臂（仅服务器端）
-        /// </summary>
-        private void SpawnArmsIfNeeded() {
-            if (VaultUtils.isClient) return;
-            if (ArmPos.FindClosestPlayer(killerArmDistance) == null) return;
-            if (dontSpawnArmTime > 0) return;
-
-            bool needsSync = false;
-            int armType = ModContent.ProjectileType<CollectorArm>();
-
-            //检查并生成三个机械臂
-            if (!IsArmValid(ArmIndex0)) {
-                ArmIndex0 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 0
-                ).identity;
-                needsSync = true;
-            }
-
-            if (!IsArmValid(ArmIndex1)) {
-                ArmIndex1 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 1
-                ).identity;
-                needsSync = true;
-            }
-
-            if (!IsArmValid(ArmIndex2)) {
-                ArmIndex2 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 2
-                ).identity;
-                needsSync = true;
-            }
-
-            if (needsSync) {
-                SendData();
-            }
-        }
-
-        public override void UpdateMachine() {
-            FindFrame();
-            consumeUE = 8;
-
-            if (!workState) {
-                return;
-            }
-
-            hoverSengs = HoverTP
-                ? Math.Min(hoverSengs + 0.1f, 1f)
-                : Math.Max(hoverSengs - 0.1f, 0f);
-
-            if (textIdleTime > 0) {
-                textIdleTime--;
-            }
-            if (dontSpawnArmTime > 0) {
-                dontSpawnArmTime--;
-            }
-
-            //检查机械臂总数限制
-            if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
-                if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
-                    textIdleTime = 300;
-                }
-                return;
-            }
-
-            //生成机械臂
-            SpawnArmsIfNeeded();
-
-            //检查能量状态
-            BatteryPrompt = MachineData.UEvalue < consumeUE;
-            if (BatteryPrompt && textIdleTime <= 0) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
-                textIdleTime = 300;
-            }
-        }
-
-        public override void PreTileDraw(SpriteBatch spriteBatch) {
-            //只绘制属于当前收集器的机械臂
-            int armType = ModContent.ProjectileType<CollectorArm>();
-
-            foreach (var proj in Main.ActiveProjectiles) {
-                if (proj.type != armType) continue;
-
-                int armSlot = (int)proj.ai[1];
-                bool belongsToThis = (armSlot == 0 && ArmIndex0 == proj.identity)
-                    || (armSlot == 1 && ArmIndex1 == proj.identity)
-                    || (armSlot == 2 && ArmIndex2 == proj.identity);
-
-                if (belongsToThis) {
-                    ((CollectorArm)proj.ModProjectile).DoDraw(Lighting.GetColor(proj.Center.ToTileCoordinates()));
-                }
-            }
-        }
-
-        public override void FrontDraw(SpriteBatch spriteBatch) {
-            if (TagItemSign > ItemID.None) {
-                VaultUtils.SimpleDrawItem(Main.spriteBatch, TagItemSign
-                    , CenterInWorld - Main.screenPosition + new Vector2(0, 32)
-                    , itemWidth: 32, 0, 0, Lighting.GetColor(Position.ToPoint()));
-            }
-
-            if (TagItemSign == ModContent.ItemType<ItemFilter>() && hoverSengs > 0.01f) {
-                var filterItems = ItemFilter.GetGlobalItem<ItemFilterData>().Items;
-                if (filterItems.Count > 0) {
-                    const float maxRadius = 150f;
-                    float currentRadius = maxRadius * hoverSengs;
-                    float angleIncrement = MathHelper.TwoPi / filterItems.Count;
-
-                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
-
-                    for (int i = 0; i < filterItems.Count; i++) {
-                        int itemType = filterItems[i];
-                        if (itemType <= ItemID.None) continue;
-
-                        float currentAngle = angleIncrement * i - MathHelper.PiOver2;
-                        Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
-                        Vector2 itemPos = drawCenter + offset;
-
-                        Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
-                        float scale = hoverSengs * 1.25f;
-
-                        VaultUtils.SafeLoadItem(itemType);
-                        VaultUtils.SimpleDrawItem(Main.spriteBatch, itemType, itemPos, itemWidth: 32, scale, 0, drawColor);
-                    }
-                }
-            }
-
-            DrawChargeBar();
-        }
-    }
-
-    /// <summary>
-    /// 机械臂状态枚举
-    /// </summary>
-    internal enum ArmState : byte
-    {
-        Idle = 0,           //待机
-        Searching = 1,      //搜索目标
-        MovingToItem = 2,   //移动到物品
-        Grasping = 3,       //抓取物品
-        MovingToChest = 4,  //移动到箱子
-        Depositing = 5      //存放物品
-    }
-
     internal class CollectorArm : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -512,7 +41,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private const float SpringStiffness = 0.15f;
         private const float Damping = 0.85f;
         private const float MaxSpeed = 16f;
-        private const float ArrivalThreshold = 8f;
+        private const float ArrivalThreshold = 18f; //增加到达阈值，防止越过目标
 
         //视觉效果参数（仅客户端）
         private float clampOpenness = 0f;
@@ -527,6 +56,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         //搜索冷却（避免频繁搜索）
         private int searchCooldown = 0;
+
+        //钱币吸附参数
+        private const float CoinMagnetRange = 200f; //钱币吸附范围（单位：像素）
+        private bool isCollectingCoins = false; //当前是否在收集钱币
+        private List<int> magnetizedCoins = new List<int>(); //被吸附的钱币列表
 
         //不重要物品列表
         private readonly static HashSet<int> unimportances = [
@@ -571,6 +105,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             isMagicStorageTarget = reader.ReadBoolean();
 
             graspItem = ItemIO.Receive(reader, true);
+        }
+
+        /// <summary>
+        /// 检查物品是否为钱币
+        /// </summary>
+        private static bool IsCoin(Item item) {
+            return item.type == ItemID.CopperCoin || 
+                   item.type == ItemID.SilverCoin || 
+                   item.type == ItemID.GoldCoin || 
+                   item.type == ItemID.PlatinumCoin;
         }
 
         /// <summary>
@@ -624,6 +168,103 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (targetCollector >= 0 && targetCollector != Projectile.identity) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 吸附并合并周围的钱币（仅服务器端调用）
+        /// </summary>
+        private void MagnetizeNearbyCoins(Vector2 targetCenter) {
+            if (VaultUtils.isClient) return;
+
+            magnetizedCoins.Clear();
+            
+            //查找周围的所有钱币
+            foreach (var coin in Main.ActiveItems) {
+                if (!coin.active || coin.IsAir) continue;
+                if (!IsCoin(coin)) continue;
+                
+                //检查距离
+                float distance = Vector2.Distance(coin.Center, targetCenter);
+                if (distance > CoinMagnetRange) continue;
+
+                //检查是否已被其他收集器锁定
+                int targetCollector = coin.CWR().TargetByCollector;
+                if (targetCollector >= 0 && targetCollector != Projectile.identity) continue;
+
+                //锁定这个钱币
+                coin.CWR().TargetByCollector = Projectile.identity;
+                magnetizedCoins.Add(coin.whoAmI);
+            }
+
+            //播放吸附音效
+            if (magnetizedCoins.Count > 0) {
+                SoundEngine.PlaySound(SoundID.CoinPickup with { 
+                    Volume = 0.4f, 
+                    Pitch = 0.2f 
+                }, targetCenter);
+            }
+        }
+
+        /// <summary>
+        /// 合并所有被吸附的钱币到抓取物品中
+        /// </summary>
+        private void MergeMagnetizedCoins() {
+            if (VaultUtils.isClient) return;
+            if (magnetizedCoins.Count == 0) return;
+
+            long totalValue = graspItem.IsACoin ? GetCoinValue(graspItem) * graspItem.stack : 0;
+
+            //收集所有钱币的总价值
+            foreach (int coinWhoAmI in magnetizedCoins) {
+                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) continue;
+                
+                Item coin = Main.item[coinWhoAmI];
+                if (!coin.active || coin.IsAir) continue;
+
+                totalValue += GetCoinValue(coin) * coin.stack;
+                coin.TurnToAir();
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, coinWhoAmI);
+            }
+
+            //将总价值转换回最优钱币组合
+            if (totalValue > 0) {
+                graspItem = ConvertValueToCoin(totalValue);
+                graspItem.CWR().TargetByCollector = Projectile.identity;
+            }
+
+            magnetizedCoins.Clear();
+        }
+
+        /// <summary>
+        /// 获取钱币的单位价值
+        /// </summary>
+        private static int GetCoinValue(Item coin) {
+            return coin.type switch {
+                ItemID.CopperCoin => 1,
+                ItemID.SilverCoin => 100,
+                ItemID.GoldCoin => 10000,
+                ItemID.PlatinumCoin => 1000000,
+                _ => 0
+            };
+        }
+
+        /// <summary>
+        /// 将价值转换为最优钱币物品
+        /// </summary>
+        private static Item ConvertValueToCoin(long value) {
+            //优先使用大面值钱币
+            if (value >= 1000000) {
+                return new Item(ItemID.PlatinumCoin, (int)(value / 1000000));
+            }
+            else if (value >= 10000) {
+                return new Item(ItemID.GoldCoin, (int)(value / 10000));
+            }
+            else if (value >= 100) {
+                return new Item(ItemID.SilverCoin, (int)(value / 100));
+            }
+            else {
+                return new Item(ItemID.CopperCoin, (int)value);
+            }
         }
 
         /// <summary>
@@ -723,6 +364,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     targetItemWhoAmI = foundItem.whoAmI;
                     foundItem.CWR().TargetByCollector = Projectile.identity;
 
+                    //检查是否为钱币，如果是则标记为钱币收集模式
+                    isCollectingCoins = IsCoin(foundItem);
+
+                    //如果是钱币，立即吸附周围的钱币
+                    if (isCollectingCoins) {
+                        MagnetizeNearbyCoins(foundItem.Center);
+                    }
+
                     //消耗能量
                     collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
                     collectorTP.SendData();
@@ -748,18 +397,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             Item targetItem = Main.item[targetItemWhoAmI];
-            if (!IsValidTarget(targetItem) || (targetItem.CWR().TargetByCollector != Projectile.identity && targetItem.CWR().TargetByCollector != -1)) {
+            if (!IsValidTarget(targetItem) || targetItem.CWR().TargetByCollector != Projectile.identity && targetItem.CWR().TargetByCollector != -1) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
 
             targetPosition = targetItem.Center;
-            SpringPhysicsMove(targetPosition, 1.2f);
+            
+            //计算到目标的距离
+            float distanceToTarget = Projectile.Distance(targetPosition);
+            
+            //根据距离调整速度倍率，距离越近速度越慢，防止越过
+            float speedMultiplier = MathHelper.Clamp(distanceToTarget / ArrivalThreshold, 0.3f, 1.2f);
+            
+            SpringPhysicsMove(targetPosition, speedMultiplier);
             SpawnMechanicalParticles();
 
             clampOpenness = MathHelper.Lerp(clampOpenness, 0.8f, 0.15f);
 
-            if (Projectile.Distance(targetPosition) < ArrivalThreshold) {
+            if (distanceToTarget < ArrivalThreshold) {
                 TransitionToState(ArmState.Grasping);
             }
         }
@@ -778,7 +434,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             shakeIntensity = 1.5f;
 
             targetPosition = targetItem.Center;
-            SpringPhysicsMove(targetPosition, 0.5f);
+            //抓取时保持在目标位置，速度倍率降低
+            SpringPhysicsMove(targetPosition, 0.3f);
 
             SpawnMechanicalParticles(intensive: true);
 
@@ -788,6 +445,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     graspItem = targetItem.Clone();
                     targetItem.TurnToAir();
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
+
+                    //如果是钱币收集模式，合并所有吸附的钱币
+                    if (isCollectingCoins) {
+                        MergeMagnetizedCoins();
+                    }
 
                     //查找存储目标（箱子或Magic Storage）
                     object storageTarget = collectorTP.FindStorageTarget(graspItem);
@@ -947,6 +609,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 targetChestPos = Point16.NegativeOne;
                 targetMagicStoragePos = Point16.NegativeOne;
                 isMagicStorageTarget = false;
+                isCollectingCoins = false;
+                magnetizedCoins.Clear();
             }
 
             //只在服务器端触发网络更新
