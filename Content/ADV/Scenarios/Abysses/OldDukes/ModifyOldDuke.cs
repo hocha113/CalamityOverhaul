@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using InnoVault.GameSystem;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText LeavingDiveText { get; private set; }
 
         private bool IsLeavingDive;
+        private bool CanDraw;
 
         //场景控制标记
         private bool isFirstMeet = false;
@@ -49,6 +51,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         public override void SetProperty() {
             IsLeavingDive = false;
+            CanDraw = false;
         }
 
         public override bool FindFrame(int frameHeight) {
@@ -82,6 +85,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         public override bool AI() {
+            CanDraw = true;
             if (IsLeavingDive) {
                 State = (float)OldDukeAIState.LeavingDive;
                 return StorylineAI();
@@ -366,6 +370,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             firstMeetCompleted = true;
             isFirstMeet = false;
             hasTriggeredScenario = false;
+        }
+
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!CanDraw) {
+                return false;
+            }
+            return base.Draw(spriteBatch, screenPos, drawColor);
         }
     }
 }
