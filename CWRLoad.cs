@@ -694,9 +694,6 @@ namespace CalamityOverhaul
             else if (ammoItem.type == ItemID.MiniNukeII) {
                 ammoTypes = ProjectileID.MiniNukeRocketII;
             }
-            else if (ammoItem.type == ItemID.TungstenBullet) {
-                ammoTypes = ProjectileType<TungstenBulletProj>();
-            }
         }
     }
 }

@@ -6,6 +6,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
     internal class HoverHook : MenuOverride
     {
         public override void PostDrawModMenu(GameTime gameTime, Color color, float logoRotation, float logoScale) {
+            if (!VaultLoad.LoadenContent) {
+                return;
+            }
             if (SupCalPortraitUI.Instance.Active) {
                 SupCalPortraitUI.Instance.Update();
                 SupCalPortraitUI.Instance.Draw(Main.spriteBatch);

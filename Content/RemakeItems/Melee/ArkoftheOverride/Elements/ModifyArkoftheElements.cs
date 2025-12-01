@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
     {
         public override int TargetID => GetCalItemID("ArkoftheElements");
         public override bool CanLoadLocalization => false;
+        public override bool DrawingInfo => false;
         public override void SetDefaults(Item item) {
             item.damage = 400;
             item.DamageType = DamageClass.Melee;

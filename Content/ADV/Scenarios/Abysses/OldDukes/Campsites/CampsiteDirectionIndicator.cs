@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            Vector2 playerScreenPos = new Vector2(Main.screenWidth / 2 + 300, Main.screenHeight / 2);
+            Vector2 playerScreenPos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
             Vector2 campsiteWorldPos = OldDukeCampsite.CampsitePosition;
 
             //计算方向
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             directionToCampsite.Normalize();
 
             //计算箭头起始位置（距离玩家一定距离）
-            Vector2 arrowStartOffset = directionToCampsite * 80f;
+            Vector2 arrowStartOffset = directionToCampsite * 180f;
             Vector2 arrowStartPos = playerScreenPos + arrowStartOffset;
 
             //绘制指示器
@@ -127,14 +127,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //绘制外发光
             DrawGlowRing(spriteBatch, position, rotation, pulse, indicatorAlpha);
 
+            //绘制距离文字
+            DrawDistanceText(spriteBatch, position, distance, indicatorAlpha);
+
             //绘制虚线箭头
             DrawDashedArrow(spriteBatch, position, direction, rotation, pulse, indicatorAlpha);
 
             //绘制箭头头部
             DrawArrowHead(spriteBatch, position, direction, rotation, pulse, glow, indicatorAlpha);
-
-            //绘制距离文字
-            DrawDistanceText(spriteBatch, position, direction, distance, indicatorAlpha);
 
             //绘制装饰性粒子效果
             DrawToxicParticles(spriteBatch, position, rotation, indicatorAlpha);
@@ -228,8 +228,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 绘制箭头头部
         /// </summary>
         private static void DrawArrowHead(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float glow, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
             float arrowLength = 65f + pulse * 8f;
             Vector2 arrowTipPos = startPos + direction * arrowLength;
 
@@ -256,8 +254,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 绘制三角形（箭头头部）
         /// </summary>
         private static void DrawTriangle(SpriteBatch spriteBatch, Vector2 position, float rotation, float length, float width, Color color) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
             //绘制三角形的三条边
             Vector2 tip = position;
             Vector2 direction = rotation.ToRotationVector2();
@@ -312,12 +308,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 绘制距离文字
         /// </summary>
-        private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance, float alpha) {
+        private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, float distance, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
             //计算文字位置（在箭头旁边）
-            Vector2 perpendicular = new Vector2(-direction.Y, direction.X);
-            Vector2 textPos = position + perpendicular * 28f;
+            Vector2 textPos = position + new Vector2(0, 28);
 
             //格式化距离
             int distanceInTiles = (int)(distance / 16f);

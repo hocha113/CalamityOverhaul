@@ -45,6 +45,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static readonly List<FlagpoleData> flagpoles = [];
         private static bool decorationsPositionSet;
 
+        private const int upOffsetValue = 660;
+
         /// <summary>
         /// 获取所有锅的位置列表
         /// </summary>
@@ -102,19 +104,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var offset in potOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - 260;
+                int tileY = (int)(searchPos.Y / 16f) - upOffsetValue;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + 325; y++) {
+                for (int y = tileY; y < tileY + upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
 
                     Tile tile = Main.tile[tileX, y];
-                    if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
+                    if (tile != null && tile.HasSolidTile()) {
                         finalPos = new Vector2(tileX * 16f + 8f, y * 16f - 16f);
                         foundGround = true;
                         break;
@@ -142,19 +144,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var offset in flagpoleOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - 260;
+                int tileY = (int)(searchPos.Y / 16f) - upOffsetValue;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + 325; y++) {
+                for (int y = tileY; y < tileY + upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
 
                     Tile tile = Main.tile[tileX, y];
-                    if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
+                    if (tile != null && tile.HasSolidTile() && tile.Slope == SlopeType.Solid) {
                         finalPos = new Vector2(tileX * 16f + 8f, y * 16f);
                         foundGround = true;
                         break;
@@ -188,16 +190,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Vector2 chestOffset = new Vector2(-320f, 20f);
             Vector2 searchPos = campsiteCenter + chestOffset;
             int baseTileX = (int)(searchPos.X / 16f);
-            int baseTileY = (int)(searchPos.Y / 16f) - 60;
+            int baseTileY = (int)(searchPos.Y / 16f) - upOffsetValue;
 
             //向下搜索地面
-            for (int y = baseTileY; y < baseTileY + 125; y++) {
+            for (int y = baseTileY; y < baseTileY + upOffsetValue * 2; y++) {
                 if (y < 0 || y >= Main.maxTilesY) {
                     continue;
                 }
 
                 Tile tile = Main.tile[baseTileX, y];
-                if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType]) {
+                if (tile != null && tile.HasSolidTile()) {
                     //找到地面在上方放置箱子
                     int chestTileX = baseTileX - 2;
                     int chestTileY = y - 1;
