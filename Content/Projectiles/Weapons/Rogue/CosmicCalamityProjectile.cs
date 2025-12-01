@@ -1,9 +1,7 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Graphics.Primitives;
-using CalamityMod.NPCs.DevourerofGods;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -15,10 +13,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 {
-    internal class CosmicCalamityProjectile : ModProjectile
+    internal class CosmicCalamityProjectile : ModProjectile, IPrimitiveDrawable
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 2.5f };
         public override string Texture => CWRConstant.Item + "Rogue/CosmicCalamity";
+        private Trail Trail;
         public int Time = 0;
         public int TimeUnderground = 0;
         public Vector2 NPCDestination;
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             }
 
             //如果时间超过某个值，执行相关行为
-            if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {
+            if (Time > (Projectile.GetProjStealthStrike() ? 0 : 60)) {
                 TrackNearestNPC();
                 UpdateUndergroundBehavior();
             }
@@ -146,7 +145,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                if (Projectile.Calamity().stealthStrike) {
+                if (Projectile.GetProjStealthStrike()) {
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, MathHelper.PiOver4.ToRotationVector2() * 13
                         , ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center
@@ -168,17 +167,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                         }
                     }
                     SoundEngine.PlaySound(BelCanto, Projectile.Center);
-                    target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 1300);
-                    Projectile.Explode(190, DevourerofGodsHead.DeathExplosionSound with { Volume = 0.8f });
+                    target.AddBuff(CWRID.Buff_GodSlayerInferno, 1300);
+                    Projectile.Explode(190, "CalamityMod/Sounds/NPCKilled/DevourerDeathImpact".GetSound() with { Volume = 0.8f });
                     Projectile.Kill();
                 }
                 else {
-                    Projectile.Explode(90, DevourerofGodsHead.DeathAnimationSound with { Volume = 0.8f });
-                    target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+                    Projectile.Explode(90, "CalamityMod/Sounds/NPCKilled/DevourerDeath".GetSound() with { Volume = 0.8f });
+                    target.AddBuff(CWRID.Buff_GodSlayerInferno, 300);
                 }
             }
 
-            if (!Projectile.Calamity().stealthStrike) {
+            if (!Projectile.GetProjStealthStrike()) {
                 BasePRT pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f
                     , Projectile.velocity / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
                 PRTLoader.AddParticle(pulse);
@@ -219,24 +218,54 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             return false;
         }
 
-        internal Color ColorFunction(float completionRatio) {
+        internal Color GetColorFunc(Vector2 completionRatio) {
             float amount = MathHelper.Lerp(0.65f, 1f, (float)Math.Cos((0f - Main.GlobalTimeWrappedHourly) * 3f) * 0.5f + 0.5f);
-            float num = Utils.GetLerpValue(1f, 0.64f, completionRatio, clamped: true) * Projectile.Opacity;
+            float num = Utils.GetLerpValue(1f, 0.64f, completionRatio.X, clamped: true) * Projectile.Opacity;
             Color value = Color.Lerp(Main.hslToRgb(1, 1f, 0.8f), Color.PaleTurquoise
-                , (float)Math.Sin(completionRatio * MathF.PI * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
+                , (float)Math.Sin(completionRatio.X * MathF.PI * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
             return Color.Lerp(Color.White, value, amount) * num;
         }
 
-        internal float WidthFunction(float completionRatio) {
+        internal float GetWidthFunc(float completionRatio) {
             float amount = (float)Math.Pow(1f - completionRatio, 3.0);
             return MathHelper.Lerp(0f, 22f * Projectile.scale * Projectile.Opacity, amount);
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(WidthFunction, ColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Projectile.oldPos == null || Projectile.oldPos.Length == 0) {
+                return;
+            }
 
+            //准备轨迹点
+            Vector2[] positions = new Vector2[Projectile.oldPos.Length];
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    Projectile.oldPos[i] = Projectile.Center;
+                }
+                positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
+            }
+
+            //创建或更新 Trail
+            Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
+            Trail.TrailPositions = positions;
+
+            //使用 InnoVault 的绘制方法
+            Effect effect = EffectLoader.GradientTrail.Value;
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DragonRage_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);

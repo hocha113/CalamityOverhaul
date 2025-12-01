@@ -233,5 +233,6 @@ namespace CalamityOverhaul
             , int extraUpdateAmt = 0, int type = ProjectileID.FlamingJack)
             => CalamityPlayer.HorsemansBladeOnHit(player, targetIdx, damage, knockback, extraUpdateAmt, type);
         public static void SetItemCanFirePointBlankShots(this Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
+        public static bool GetProjStealthStrike(this Projectile projectile) => projectile.Calamity().stealthStrike;
     }
 }
