@@ -34,7 +34,6 @@ using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;

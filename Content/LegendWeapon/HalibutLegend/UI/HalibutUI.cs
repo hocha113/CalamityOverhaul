@@ -60,13 +60,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DomainUI.Instance.Update();
             ResurrectionUI.Instance.Update();//更新复苏条
 
-            //技能快捷切换
-            HandleSkillSwitching();
-
             //反正这样加载是没问题的，你就看跑不跑得起来吧！
             if (FishSkill != null && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.SkillID = FishSkill.ID;
             }
+        }
+
+        public override void LogicUpdate() {
+            //技能快捷切换
+            HandleSkillSwitching();
         }
 
         /// <summary>
