@@ -96,7 +96,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Player target = Main.player[npc.target];
 
             if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight) {
-                BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                if (BCKRef.Has) {
+                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                }
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
@@ -317,7 +319,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 if (npc.alpha >= 255) {
                     //完成离开
                     CompleteFirstMeet();
-                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                    if (BCKRef.Has) {
+                        BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                    }
                     npc.active = false;
                     npc.netUpdate = true;
                     IsLeavingDive = false;
