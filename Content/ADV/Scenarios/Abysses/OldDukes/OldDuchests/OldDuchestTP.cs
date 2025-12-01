@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
             storedItems.Clear();
-            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot(refreshCycle);
+            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot();
             lastRefreshCycle = refreshCycle;
             hasBeenOpened = false;
             SendData();

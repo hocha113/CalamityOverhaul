@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             UpdateFirstMeetState(target);
 
             OldDukeAIState currentState = (OldDukeAIState)State;
-            
+
             if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
                 || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
                 ) {

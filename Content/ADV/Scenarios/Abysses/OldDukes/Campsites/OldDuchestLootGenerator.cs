@@ -16,12 +16,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 6分钟 = 360秒 = 21600帧
         /// </summary>
-        internal static int RefreshInterval => 21600;
+        internal const int RefreshInterval = 21600;
 
         /// <summary>
         /// 生成每日刷新的箱子内容
         /// </summary>
-        public static List<Item> GenerateDailyLoot(int seed) {
+        public static List<Item> GenerateDailyLoot() {
 
             List<Item> loot = [];
 

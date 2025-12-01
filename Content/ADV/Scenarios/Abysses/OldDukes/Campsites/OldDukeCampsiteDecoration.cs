@@ -265,9 +265,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            //使用战利品生成器生成初始内容
-            int initialSeed = OldDuchestLootGenerator.GetGameTimeSeed();
-            chestTP.storedItems = OldDuchestLootGenerator.GenerateDailyLoot(initialSeed);
+            chestTP.storedItems = OldDuchestLootGenerator.GenerateDailyLoot();
 
             //保存数据到TP
             chestTP.SendData();
