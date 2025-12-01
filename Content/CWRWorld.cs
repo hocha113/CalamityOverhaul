@@ -49,21 +49,28 @@ namespace CalamityOverhaul.Content
 
         internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
 
-        public static void ChekNPCIndexByType(ref int index, int npcID) {
-            if (index < 0) {
+        public static void CheckNPCIndexByType(ref int index, int npcID) {
+            if (index < 0)
+                return;
+
+            //若获取失败，NPC无效
+            if (!index.TryGetNPC(out var npc)) {
+                index = -1;
                 return;
             }
-            if (index.TryGetNPC(out var npc) || npc.type != npcID) {
+
+            //NPC 已死亡或类型不匹配
+            if (!npc.Alives() || npc.type != npcID) {
+                index = -1;
                 return;
             }
-            index = -1;
         }
 
         public static void ChekPrimeArm() {
-            ChekNPCIndexByType(ref primeLaser, NPCID.PrimeLaser);
-            ChekNPCIndexByType(ref primeCannon, NPCID.PrimeCannon);
-            ChekNPCIndexByType(ref primeVice, NPCID.PrimeVice);
-            ChekNPCIndexByType(ref primeSaw, NPCID.PrimeSaw);
+            CheckNPCIndexByType(ref primeLaser, NPCID.PrimeLaser);
+            CheckNPCIndexByType(ref primeCannon, NPCID.PrimeCannon);
+            CheckNPCIndexByType(ref primeVice, NPCID.PrimeVice);
+            CheckNPCIndexByType(ref primeSaw, NPCID.PrimeSaw);
         }
 
         public override void Load() {
