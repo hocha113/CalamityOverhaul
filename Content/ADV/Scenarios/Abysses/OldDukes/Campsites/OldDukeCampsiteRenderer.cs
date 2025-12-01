@@ -72,6 +72,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             oldDukeEntity?.Update(inDialogue, dialogueTarget);
 
+            //通知锅的访问状态
+            if (oldDukeEntity != null) {
+                OldDukeCampsiteDecoration.NotifyPotVisit(
+                    oldDukeEntity.Position,
+                    oldDukeEntity.IsVisitingPot(),
+                    oldDukeEntity.GetCurrentTarget()
+                );
+            }
+
             //生成毒泡粒子
             bubbleSpawnTimer++;
             if (bubbleSpawnTimer >= 15 && toxicBubbles.Count < 12) {

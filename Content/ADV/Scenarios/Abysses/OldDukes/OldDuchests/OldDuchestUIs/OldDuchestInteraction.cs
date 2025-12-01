@@ -96,6 +96,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
             //获取当前槽位的物品
             Item slotItem = ui.GetItem(HoveredSlot);
+            if (slotItem.Alives()) {
+                Main.HoverItem = slotItem;
+                Main.hoverItemName = slotItem.Name;
+            }
 
             //检查Shift键状态
             KeyboardState keyboard = Keyboard.GetState();

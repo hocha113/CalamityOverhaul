@@ -350,5 +350,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             float swimBob = MathF.Sin(SwimPhase) * 3f;
             return new Vector2(0, swimBob);
         }
+
+        /// <summary>
+        /// 判断是否正在访问锅
+        /// </summary>
+        public bool IsVisitingPot() => currentState == BehaviorState.VisitPot;
+
+        /// <summary>
+        /// 获取当前目标位置
+        /// </summary>
+        public Vector2 GetCurrentTarget() => currentTarget;
     }
 }

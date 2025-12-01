@@ -27,6 +27,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public List<BubbleParticlePRT> BubbleParticles = [];
             public int SteamSpawnTimer;
             public int BubbleSpawnTimer;
+            
+            //老公爵交互状态
+            public bool IsBeingVisited;
+            public float InteractionIntensity;
+            public float BouncePhase;
+            public int ExtraSteamSpawnTimer;
         }
 
         //旗杆位置信息
@@ -49,6 +55,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 positions.Add(pot.WorldPosition);
             }
             return positions;
+        }
+
+        /// <summary>
+        /// 通知锅被老公爵访问
+        /// </summary>
+        public static void NotifyPotVisit(Vector2 oldDukePosition, bool isVisiting, Vector2 targetPosition) {
+            foreach (var pot in pots) {
+                float distance = Vector2.Distance(pot.WorldPosition, oldDukePosition);
+                float targetDistance = Vector2.Distance(pot.WorldPosition, targetPosition);
+                
+                //检测是否是被访问的锅
+                if (isVisiting && targetDistance < 100f && distance < 150f) {
+                    pot.IsBeingVisited = true;
+                    //根据距离计算交互强度
+                    float distanceFactor = 1f - MathHelper.Clamp(distance / 150f, 0f, 1f);
+                    pot.InteractionIntensity = MathHelper.Lerp(pot.InteractionIntensity, distanceFactor, 0.1f);
+                }
+                else {
+                    pot.IsBeingVisited = false;
+                    pot.InteractionIntensity = MathHelper.Lerp(pot.InteractionIntensity, 0f, 0.05f);
+                }
+            }
         }
 
         /// <summary>
@@ -361,18 +389,45 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (pot.BubbleTimer > MathHelper.TwoPi) pot.BubbleTimer -= MathHelper.TwoPi;
             if (pot.SteamTimer > MathHelper.TwoPi) pot.SteamTimer -= MathHelper.TwoPi;
 
-            pot.SteamSpawnTimer++;
-            if (pot.SteamSpawnTimer >= 10 && pot.SteamParticles.Count < 12) {
-                pot.SteamSpawnTimer = 0;
-                SpawnSteamParticle(pot);
+            //更新跳动相位
+            if (pot.IsBeingVisited) {
+                pot.BouncePhase += 0.2f * (0.5f + pot.InteractionIntensity * 1.5f);
+            }
+            else {
+                pot.BouncePhase += 0.05f;
+            }
+            if (pot.BouncePhase > MathHelper.TwoPi) {
+                pot.BouncePhase -= MathHelper.TwoPi;
             }
 
+            //基础蒸汽生成
+            pot.SteamSpawnTimer++;
+            int baseSpawnRate = pot.IsBeingVisited ? 6 : 10;
+            int maxSteamCount = pot.IsBeingVisited ? 24 : 12;
+            
+            if (pot.SteamSpawnTimer >= baseSpawnRate && pot.SteamParticles.Count < maxSteamCount) {
+                pot.SteamSpawnTimer = 0;
+                SpawnSteamParticle(pot, false);
+                
+                //交互时额外生成强力蒸汽
+                if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
+                    if (Main.rand.NextBool(2)) {
+                        SpawnSteamParticle(pot, true);
+                    }
+                }
+            }
+
+            //气泡生成
             pot.BubbleSpawnTimer++;
-            if (pot.BubbleSpawnTimer >= 15 && pot.BubbleParticles.Count < 6) {
+            int bubbleSpawnRate = pot.IsBeingVisited ? 8 : 15;
+            int maxBubbleCount = pot.IsBeingVisited ? 10 : 6;
+            
+            if (pot.BubbleSpawnTimer >= bubbleSpawnRate && pot.BubbleParticles.Count < maxBubbleCount) {
                 pot.BubbleSpawnTimer = 0;
                 SpawnBubbleParticle(pot);
             }
 
+            //更新粒子
             for (int i = pot.SteamParticles.Count - 1; i >= 0; i--) {
                 if (pot.SteamParticles[i].Update()) {
                     pot.SteamParticles.RemoveAt(i);
@@ -440,9 +495,40 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Texture2D potTexture = OldDukeCampsite.OldPot;
             Vector2 origin = potTexture.Size() / 2f;
 
-            float glowIntensity = (MathF.Sin(pot.GlowTimer * 3f) * 0.5f + 0.5f) * 0.6f;
+            //跳动效果偏移
+            float bounceOffset = 0f;
+            if (pot.IsBeingVisited && pot.InteractionIntensity > 0.3f) {
+                bounceOffset = MathF.Sin(pot.BouncePhase * 2f) * 4f * pot.InteractionIntensity;
+            }
+            Vector2 bounceVector = new Vector2(0, bounceOffset);
+
+            //基础发光强度
+            float baseGlowIntensity = (MathF.Sin(pot.GlowTimer * 3f) * 0.5f + 0.5f) * 0.6f;
+            //交互时增强发光
+            float glowIntensity = baseGlowIntensity * (1f + pot.InteractionIntensity * 1.8f);
             Color fireGlow = new Color(255, 120, 60) with { A = 0 };
 
+            //交互时的额外光晕层
+            if (pot.IsBeingVisited && pot.InteractionIntensity > 0.2f) {
+                for (int i = 0; i < 2; i++) {
+                    float extraGlowScale = 1.4f + i * 0.15f;
+                    float extraGlowAlpha = pot.InteractionIntensity * 0.3f * (1f - i * 0.4f);
+                    
+                    sb.Draw(
+                        potTexture,
+                        screenPos + bounceVector,
+                        null,
+                        new Color(255, 180, 100) with { A = 0 } * extraGlowAlpha,
+                        0f,
+                        origin,
+                        extraGlowScale,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+            }
+
+            //基础发光层
             for (int i = 0; i < 3; i++) {
                 float glowScale = 1.1f + i * 0.08f;
                 float glowAlpha = glowIntensity * (1f - i * 0.3f);
@@ -450,7 +536,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
                 sb.Draw(
                     potTexture,
-                    screenPos + glowOffset,
+                    screenPos + bounceVector + glowOffset,
                     null,
                     fireGlow * glowAlpha,
                     0f,
@@ -461,19 +547,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 );
             }
 
+            //锅主体轻微摇晃效果
+            float potRotation = 0f;
+            if (pot.IsBeingVisited && pot.InteractionIntensity > 0.4f) {
+                potRotation = MathF.Sin(pot.BouncePhase * 3f) * 0.15f * pot.InteractionIntensity;
+            }
+
             sb.Draw(
                 potTexture,
-                screenPos,
+                screenPos + bounceVector,
                 null,
                 Color.White,
-                0f,
+                potRotation,
                 origin,
                 1f,
                 SpriteEffects.None,
                 0f
             );
 
-            DrawHeatWave(sb, screenPos, pot);
+            DrawHeatWave(sb, screenPos + bounceVector, pot);
         }
 
         /// <summary>
@@ -489,12 +581,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             //风吹摇摆效果
             float swayAmount = MathF.Sin(flagpole.SwayTimer * 2f) * 0.08f;
+            Color lc = Lighting.GetColor((flagpole.WorldPosition / 16).ToPoint());
 
             sb.Draw(
                 flagTexture,
                 screenPos,
                 null,
-                Color.White,
+                lc,
                 swayAmount,
                 origin,
                 1f,
@@ -512,7 +605,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     flagTexture,
                     screenPos + offset,
                     null,
-                    Color.White * alpha,
+                    lc * alpha,
                     swayAmount,
                     origin,
                     1f,
@@ -554,14 +647,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 生成蒸汽粒子
         /// </summary>
-        private void SpawnSteamParticle(PotData pot) {
+        private void SpawnSteamParticle(PotData pot, bool isEnhanced = false) {
             Vector2 spawnPos = pot.WorldPosition;
             spawnPos += new Vector2(
                 Main.rand.NextFloat(-12f, 12f),
                 -24f + Main.rand.NextFloat(-4f, 4f)
             );
 
-            pot.SteamParticles.Add(new SteamParticlePRT(spawnPos));
+            pot.SteamParticles.Add(new SteamParticlePRT(spawnPos, isEnhanced, pot.InteractionIntensity));
         }
 
         /// <summary>
@@ -599,20 +692,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public float Rotation;
             public float RotationSpeed;
             public Color Color;
+            public bool IsEnhanced;
 
-            public SteamParticlePRT(Vector2 startPos) {
+            public SteamParticlePRT(Vector2 startPos, bool enhanced = false, float intensity = 0f) {
                 Position = startPos;
-                Velocity = new Vector2(
-                    Main.rand.NextFloat(-0.5f, 0.5f),
-                    Main.rand.NextFloat(-1.5f, -0.8f)
-                );
-                Scale = Main.rand.NextFloat(0.4f, 0.8f);
+                IsEnhanced = enhanced;
+                
+                if (IsEnhanced) {
+                    //增强蒸汽速度更快范围更广
+                    Velocity = new Vector2(
+                        Main.rand.NextFloat(-1.2f, 1.2f),
+                        Main.rand.NextFloat(-2.5f, -1.5f)
+                    );
+                    Scale = Main.rand.NextFloat(0.7f, 1.3f);
+                    MaxLife = Main.rand.NextFloat(35f, 55f);
+                    RotationSpeed = Main.rand.NextFloat(-0.08f, 0.08f);
+                }
+                else {
+                    Velocity = new Vector2(
+                        Main.rand.NextFloat(-0.5f, 0.5f),
+                        Main.rand.NextFloat(-1.5f, -0.8f)
+                    );
+                    Scale = Main.rand.NextFloat(0.4f, 0.8f);
+                    MaxLife = Main.rand.NextFloat(45f, 75f);
+                    RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
+                }
+                
                 Life = 0f;
-                MaxLife = Main.rand.NextFloat(45f, 75f);
                 Rotation = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
 
-                Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Yellow, Color.YellowGreen);
+                //根据交互强度调整颜色
+                if (IsEnhanced) {
+                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), 
+                        Color.Yellow, Color.Orange, Color.YellowGreen);
+                }
+                else {
+                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), 
+                        Color.Yellow, Color.YellowGreen);
+                }
             }
 
             public bool Update() {
@@ -622,10 +739,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
                 Velocity.X += MathF.Sin(Life * 0.08f) * 0.03f;
 
-                Velocity.Y *= 0.98f;
+                Velocity.Y *= IsEnhanced ? 0.96f : 0.98f;
                 Velocity.X *= 0.99f;
 
-                Scale += 0.008f;
+                Scale += IsEnhanced ? 0.012f : 0.008f;
 
                 return Life >= MaxLife;
             }
@@ -635,11 +752,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 float alpha = MathF.Sin((Life / MaxLife) * MathHelper.Pi);
                 Vector2 screenPos = Position - Main.screenPosition;
 
+                float drawAlpha = IsEnhanced ? alpha * 0.7f : alpha * 0.5f;
+
                 sb.Draw(
                     pixel,
                     screenPos,
                     null,
-                    Color with { A = 0 } * (alpha * 0.5f),
+                    Color with { A = 0 } * drawAlpha,
                     Rotation,
                     pixel.Size() / 2,
                     Scale,
