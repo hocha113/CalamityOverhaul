@@ -1,4 +1,3 @@
-using InnoVault.RenderHandles;
 using Terraria;
 using Terraria.ModLoader;
 

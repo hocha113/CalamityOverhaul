@@ -1,11 +1,8 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
-using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

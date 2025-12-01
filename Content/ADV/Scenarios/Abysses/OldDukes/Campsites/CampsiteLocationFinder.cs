@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static Vector2? FindBestLocation() {
             //首先检测硫磺海的位置
             bool sulphurSeaOnLeft = IsSulphurousSeaOnLeft();
-            
+
             //第一阶段：在硫磺海海岸区域搜索
             Vector2? position = SearchInSulphurousSeaCoast(sulphurSeaOnLeft);
             if (position.HasValue) {
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static int CountSulphurousTiles(int startX, int endX, int centerY, int searchRadius) {
             int count = 0;
-            
+
             for (int x = startX; x < endX; x += 5) {
                 for (int y = centerY - searchRadius; y < centerY + searchRadius; y += 5) {
                     if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY) {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static Vector2? SearchInSulphurousSeaCoast(bool seaOnLeft) {
             int searchStartX, searchEndX;
-            
+
             if (seaOnLeft) {
                 searchStartX = 150;
                 searchEndX = 400;
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static Vector2? SearchInExtendedSulphurousArea(bool seaOnLeft) {
             int searchStartX, searchEndX;
-            
+
             if (seaOnLeft) {
                 searchStartX = 100;
                 searchEndX = 500;
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     for (int offsetY = -50; offsetY < 50; offsetY += 5) {
                         int checkX = playerTileX + offsetX;
                         int checkY = playerTileY + offsetY;
-                        
+
                         Vector2? candidatePos = ValidateLocation(checkX, checkY);
                         if (candidatePos.HasValue) {
                             return candidatePos;
