@@ -3,7 +3,6 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public List<BubbleParticlePRT> BubbleParticles = [];
             public int SteamSpawnTimer;
             public int BubbleSpawnTimer;
-            
+
             //老公爵交互状态
             public bool IsBeingVisited;
             public float InteractionIntensity;
@@ -64,7 +63,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var pot in pots) {
                 float distance = Vector2.Distance(pot.WorldPosition, oldDukePosition);
                 float targetDistance = Vector2.Distance(pot.WorldPosition, targetPosition);
-                
+
                 //检测是否是被访问的锅
                 if (isVisiting && targetDistance < 100f && distance < 150f) {
                     pot.IsBeingVisited = true;
@@ -330,11 +329,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             pot.SteamSpawnTimer++;
             int baseSpawnRate = pot.IsBeingVisited ? 6 : 10;
             int maxSteamCount = pot.IsBeingVisited ? 24 : 12;
-            
+
             if (pot.SteamSpawnTimer >= baseSpawnRate && pot.SteamParticles.Count < maxSteamCount) {
                 pot.SteamSpawnTimer = 0;
                 SpawnSteamParticle(pot, false);
-                
+
                 //交互时额外生成强力蒸汽
                 if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
                     if (Main.rand.NextBool(2)) {
@@ -347,7 +346,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             pot.BubbleSpawnTimer++;
             int bubbleSpawnRate = pot.IsBeingVisited ? 8 : 15;
             int maxBubbleCount = pot.IsBeingVisited ? 10 : 6;
-            
+
             if (pot.BubbleSpawnTimer >= bubbleSpawnRate && pot.BubbleParticles.Count < maxBubbleCount) {
                 pot.BubbleSpawnTimer = 0;
                 SpawnBubbleParticle(pot);
@@ -439,7 +438,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 for (int i = 0; i < 2; i++) {
                     float extraGlowScale = 1.4f + i * 0.15f;
                     float extraGlowAlpha = pot.InteractionIntensity * 0.3f * (1f - i * 0.4f);
-                    
+
                     sb.Draw(
                         potTexture,
                         screenPos + bounceVector,
@@ -623,7 +622,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public SteamParticlePRT(Vector2 startPos, bool enhanced = false, float intensity = 0f) {
                 Position = startPos;
                 IsEnhanced = enhanced;
-                
+
                 if (IsEnhanced) {
                     //增强蒸汽速度更快范围更广
                     Velocity = new Vector2(
@@ -643,17 +642,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     MaxLife = Main.rand.NextFloat(45f, 75f);
                     RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
                 }
-                
+
                 Life = 0f;
                 Rotation = Main.rand.NextFloat(0f, MathHelper.TwoPi);
 
                 //根据交互强度调整颜色
                 if (IsEnhanced) {
-                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), 
+                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(),
                         Color.Yellow, Color.Orange, Color.YellowGreen);
                 }
                 else {
-                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), 
+                    Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(),
                         Color.Yellow, Color.YellowGreen);
                 }
             }

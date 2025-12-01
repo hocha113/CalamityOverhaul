@@ -94,8 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 tag["isInCampsite"] = isInCampsite;
                 tag["lastRefreshCycle"] = lastRefreshCycle;
                 tag["hasBeenOpened"] = hasBeenOpened;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OldDuchestTP.SaveData Error: {ex.Message}");
             }
         }
@@ -130,8 +129,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         RefreshLoot(currentCycle);
                     }
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OldDuchestTP.LoadData Error: {ex.Message}");
             }
         }
@@ -179,7 +177,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (player == null || !player.active) return;
 
             isOpen = true;
-            
+
             //标记营地箱子已被打开
             if (isInCampsite) {
                 hasBeenOpened = true;

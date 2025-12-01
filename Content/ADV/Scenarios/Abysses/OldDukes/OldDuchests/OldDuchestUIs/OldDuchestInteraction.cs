@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// <summary>
         /// 更新槽位交互
         /// </summary>
-        public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos, 
+        public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos,
             bool leftPressed, bool leftHeld, bool rightPressed, bool rightHeld) {
             //更新音效冷却
             if (soundCooldown > 0) {
@@ -161,14 +161,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     //相同物品，尝试堆叠
                     int spaceLeft = slotItem.maxStack - slotItem.stack;
                     int amountToAdd = Math.Min(spaceLeft, Main.mouseItem.stack);
-                    
+
                     slotItem.stack += amountToAdd;
                     Main.mouseItem.stack -= amountToAdd;
-                    
+
                     if (Main.mouseItem.stack <= 0) {
                         Main.mouseItem.TurnToAir();
                     }
-                    
+
                     ui.SetItem(HoveredSlot, slotItem);
                     PlaySound(SoundID.Grab);
                 }
@@ -193,14 +193,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     Main.mouseItem = slotItem.Clone();
                     Main.mouseItem.stack = halfStack;
                     slotItem.stack -= halfStack;
-                    
+
                     if (slotItem.stack <= 0) {
                         ui.SetItem(HoveredSlot, new Item());
                     }
                     else {
                         ui.SetItem(HoveredSlot, slotItem);
                     }
-                    
+
                     PlaySound(SoundID.Grab, 0.1f);
                 }
             }
@@ -211,22 +211,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     ui.GetItem(HoveredSlot).stack = 1;
                     Main.mouseItem.stack--;
-                    
+
                     if (Main.mouseItem.stack <= 0) {
                         Main.mouseItem.TurnToAir();
                     }
-                    
+
                     PlaySound(SoundID.Grab, 0.1f);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
                     //相同物品，添加一个
                     slotItem.stack++;
                     Main.mouseItem.stack--;
-                    
+
                     if (Main.mouseItem.stack <= 0) {
                         Main.mouseItem.TurnToAir();
                     }
-                    
+
                     ui.SetItem(HoveredSlot, slotItem);
                     PlaySound(SoundID.Grab, 0.1f);
                 }
@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                 ui.GetItem(HoveredSlot).stack = 1;
                 Main.mouseItem.stack--;
-                
+
                 if (Main.mouseItem.stack <= 0) {
                     Main.mouseItem.TurnToAir();
                 }
@@ -253,11 +253,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 //相同物品，添加一个
                 slotItem.stack++;
                 Main.mouseItem.stack--;
-                
+
                 if (Main.mouseItem.stack <= 0) {
                     Main.mouseItem.TurnToAir();
                 }
-                
+
                 ui.SetItem(HoveredSlot, slotItem);
             }
         }
@@ -272,9 +272,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (item == null || item.type <= ItemID.None || item.stack <= 0) return;
 
             //尝试添加到玩家背包
-            Item leftover = player.GetItem(player.whoAmI, item.Clone(), 
+            Item leftover = player.GetItem(player.whoAmI, item.Clone(),
                 GetItemSettings.InventoryUIToInventorySettings);
-            
+
             bool success = false;
             bool partialSuccess = false;
 

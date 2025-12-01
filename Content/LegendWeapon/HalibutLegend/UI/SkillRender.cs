@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static float cachedScale = 1.5f;
         private static float cachedYOffset = 0f;
         private static float cachedRingRotation = 0f;
-        
+
         //技能名称动画状态
         private static float cachedNameAlpha = 1f;
         private static float cachedNameScale = 1f;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 cachedAlpha = t;
                 cachedScale = MathHelper.Lerp(0.5f, 1.5f, CWRUtils.EaseOutBack(t));
                 cachedYOffset = MathHelper.Lerp(-20f, 0f, CWRUtils.EaseOutCubic(t));
-                
+
                 //名称动画 - 稍微延迟，从下方飞入
                 float nameT = Math.Max(0, (t - 0.3f) / 0.7f);
                 cachedNameAlpha = CWRUtils.EaseOutCubic(nameT);
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 cachedAlpha = 1f;
                 cachedScale = 1.5f + MathF.Sin(t * MathHelper.TwoPi * 2f) * 0.1f;//轻微缩放
                 cachedYOffset = MathF.Sin(t * MathHelper.TwoPi) * 3f;//轻微浮动
-                
+
                 //名称动画 - 悬停并波动
                 cachedNameAlpha = 1f;
                 cachedNameScale = 1f + MathF.Sin(t * MathHelper.TwoPi * 1.5f) * 0.05f;
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 cachedAlpha = 1f - t;
                 cachedScale = MathHelper.Lerp(1.5f, 2f, CWRUtils.EaseInCubic(t));
                 cachedYOffset = MathHelper.Lerp(0f, 20f, CWRUtils.EaseInCubic(t));
-                
+
                 //名称动画 - 淡出并上升
                 cachedNameAlpha = MathHelper.Lerp(1f, 0f, CWRUtils.EaseInCubic(t));
                 cachedNameScale = MathHelper.Lerp(1f, 1.3f, CWRUtils.EaseInCubic(t));
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //计算名称位置
             Vector2 namePos = iconScreenPos + new Vector2(0, -55 + cachedNameYOffset);
-            
+
             //使用MouseText字体
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 nameSize = font.MeasureString(skillName);
@@ -179,11 +179,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float glowRadius = i * 2.5f;
                 float glowAlpha = cachedNameAlpha * (0.4f - i * 0.1f);
                 Color glowColor = Color.Lerp(Color.AliceBlue, Color.CadetBlue, i / 3f) * glowAlpha;
-                
+
                 for (int j = 0; j < 8; j++) {
                     float angle = MathHelper.TwoPi * j / 8f;
                     Vector2 offset = angle.ToRotationVector2() * glowRadius;
-                    spriteBatch.DrawString(font, skillName, namePos + offset, 
+                    spriteBatch.DrawString(font, skillName, namePos + offset,
                         glowColor, 0f, nameOrigin, cachedNameScale * 0.9f, SpriteEffects.None, 0);
                 }
             }
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float highlightAlpha = cachedNameAlpha * 0.6f * (0.5f + 0.5f * MathF.Sin(cachedNameWavePhase));
             Color highlightColor = Color.White * highlightAlpha;
             Vector2 highlightOffset = new Vector2(0, -1.5f);
-            spriteBatch.DrawString(font, skillName, namePos + highlightOffset, 
+            spriteBatch.DrawString(font, skillName, namePos + highlightOffset,
                 highlightColor, 0f, nameOrigin, cachedNameScale * 0.95f, SpriteEffects.None, 0);
 
             //绘制装饰性星星粒子
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float starX = namePos.X + Main.rand.NextFloat(-nameSize.X / 2, nameSize.X / 2);
                 float starY = namePos.Y + Main.rand.NextFloat(-8, 8);
                 Vector2 starPos = new Vector2(starX, starY);
-                
+
                 int dust = Dust.NewDust(starPos, 1, 1, DustID.GoldCoin, 0, -1f, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].velocity *= 0.3f;
@@ -214,32 +214,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 绘制波浪渐变文字（逐字符渐变）
         /// </summary>
-        private static void DrawWaveText(SpriteBatch spriteBatch, DynamicSpriteFont font, 
+        private static void DrawWaveText(SpriteBatch spriteBatch, DynamicSpriteFont font,
             string text, Vector2 position, Vector2 origin) {
-            
+
             Vector2 currentPos = position - origin * cachedNameScale;
-            
+
             for (int i = 0; i < text.Length; i++) {
                 string character = text[i].ToString();
                 Vector2 charSize = font.MeasureString(character);
-                
+
                 //计算每个字符的波浪偏移
                 float waveOffset = MathF.Sin(cachedNameWavePhase + i * 0.3f) * 2f;
                 Vector2 charPos = currentPos + new Vector2(0, waveOffset);
-                
+
                 //计算渐变色
                 float colorPhase = (cachedNameWavePhase + i * 0.2f) % MathHelper.TwoPi;
                 float colorLerp = (MathF.Sin(colorPhase) + 1f) / 2f;
                 Color charColor = Color.Lerp(Color.AliceBlue, Color.White, colorLerp) * cachedNameAlpha;
-                
+
                 //绘制字符阴影
-                spriteBatch.DrawString(font, character, charPos + new Vector2(1.5f, 1.5f), 
+                spriteBatch.DrawString(font, character, charPos + new Vector2(1.5f, 1.5f),
                     Color.Black * cachedNameAlpha * 0.7f, 0f, Vector2.Zero, cachedNameScale, SpriteEffects.None, 0);
-                
+
                 //绘制字符主体
-                spriteBatch.DrawString(font, character, charPos, 
+                spriteBatch.DrawString(font, character, charPos,
                     charColor, 0f, Vector2.Zero, cachedNameScale, SpriteEffects.None, 0);
-                
+
                 currentPos.X += charSize.X * cachedNameScale;
             }
         }

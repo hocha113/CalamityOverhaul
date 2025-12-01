@@ -109,8 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                     }
                 }
                 tag["itemTags"] = itemTags;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OceanRaidersTP.SaveData Error: {ex.Message}");
             }
         }
@@ -127,8 +126,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 foreach (var itemTag in itemTags) {
                     storedItems.Add(ItemIO.Load(itemTag));
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OceanRaidersTP.LoadData Error: {ex.Message}");
             }
         }
