@@ -306,6 +306,7 @@ namespace CalamityOverhaul
         public static int Tile_SCalAltar => ModContent.TileType<SCalAltar>();
         public static int Tile_SCalAltarLarge => ModContent.TileType<SCalAltarLarge>();
         public static int Tile_SulphurousSand => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSand>();
+        public static int Tile_SulphurousSandstone => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSandstone>();
         public static int Buff_ => ModContent.BuffType<Plague>();
         public static int Buff_MarkedforDeath => ModContent.BuffType<MarkedforDeath>();
         public static int Buff_BrutalCarnage => ModContent.BuffType<BrutalCarnage>();

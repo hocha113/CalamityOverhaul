@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 寻找最佳营地位置
         /// </summary>
         public static Vector2? FindBestLocation() {
-            //第一阶段：在世界右侧海岸区域搜索
+            //第一阶段：在世界海岸区域搜索
             Vector2? position = SearchInCoastalArea();
             if (position.HasValue) {
                 return position;
