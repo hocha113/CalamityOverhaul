@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -48,6 +49,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText Choice4_R1 { get; private set; }
         public static LocalizedText Choice4_R2 { get; private set; }
         public static LocalizedText Choice4_R3 { get; private set; }
+
+        /// <summary>
+        /// 是否在对话开始时给予玩家一杯茶
+        /// </summary>
+        public static bool GiveTeaOnStart = false;
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
@@ -92,6 +98,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                         new Choice(Choice4Text.Value, Choice4),
                         new Choice(Choice3Text.Value, Choice3),
                     ],
+                    onStart: GiveTea,
                     styleOverride: () => SulfseaDialogueBox.Instance,
                     choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Sulfsea
                 );
@@ -110,10 +117,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                         new Choice(Choice4Text.Value, Choice4),
                         new Choice(Choice3Text.Value, Choice3),
                     ],
+                    onStart: GiveTea,
                     styleOverride: () => SulfseaDialogueBox.Instance,
                     choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Sulfsea
                 );
             }
+        }
+
+        private static void GiveTea() {
+            if (!GiveTeaOnStart) {
+                return;
+            }
+            GiveTeaOnStart = false;
+            //给一杯茶
+            ADVRewardPopup.ShowReward(
+                ItemID.Teacup,
+                1,
+                "",
+                appearDuration: 24,
+                holdDuration: -1,
+                giveDuration: 16,
+                requireClick: true,
+                anchorProvider: () => {
+                    var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                    if (rect == Rectangle.Empty) {
+                        return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                    }
+                    return new Vector2(rect.Center.X, rect.Y - 70f);
+                },
+                offset: Vector2.Zero,
+                styleProvider: () => ADVRewardPopup.RewardStyle.Sulfsea
+            );
         }
 
         /// <summary>

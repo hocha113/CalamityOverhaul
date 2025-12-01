@@ -1,8 +1,11 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -47,6 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         private void Choice1() {
             Main.LocalPlayer.Teleport(OldDukeCampsite.CampsitePosition + new Vector2(0, -50), 999);
+            CampsiteInteractionDialogue.GiveTeaOnStart = true;
             ScenarioManager.Reset<CampsiteInteractionDialogue>();
             ScenarioManager.Start<CampsiteInteractionDialogue>();
             Complete();
