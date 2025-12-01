@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
         public static Texture2D OldPot;//反射加载老公爵营地的锅纹理，大小宽46像素高48像素，适合放地上用于丰富营地场景
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
-        public static Texture2D Oldflagpole;//反射加载老公爵营地的气质纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
+        public static Texture2D Oldflagpole;//反射加载老公爵营地的旗帜纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
 
         /// <summary>
         /// 营地是否已生成

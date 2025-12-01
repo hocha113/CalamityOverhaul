@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
 using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
