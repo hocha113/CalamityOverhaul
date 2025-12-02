@@ -135,21 +135,45 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float topNameOffset = 10f;
             float textBlockOffsetY = Padding + 36;
             if (hasPortrait) {
-                float availHeight = panelRect.Height - 54f;
-                float maxPortraitHeight = Math.Clamp(availHeight, 90f, 260f);
-                Texture2D ptex = speakerPortrait.Texture;
-                float scaleBase = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
-                float scale = scaleBase * portraitAppearScale;
-                Vector2 pSize = ptex.Size() * scale;
-                Vector2 pPos = new(panelRect.X + Padding + PortraitInnerPadding, panelRect.Y + panelRect.Height - pSize.Y - Padding - 10f);
-                DrawPortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 8), (int)(pPos.Y - 8), (int)(pSize.X + 16), (int)(pSize.Y + 16)), alpha * speakerPortrait.Fade * portraitExtraAlpha);
+                //使用基类的统一计算方法
+                PortraitSizeInfo sizeInfo = CalculatePortraitSize(
+                    speakerPortrait,
+                    panelRect,
+                    portraitAppearScale,
+                    panelRect.Height - 54f,
+                    Math.Clamp(panelRect.Height - 54f, 90f, 260f)
+                );
+
+                //绘制头像边框
+                DrawPortraitFrame(spriteBatch, 
+                    new Rectangle(
+                        (int)(sizeInfo.DrawPosition.X - 8), 
+                        (int)(sizeInfo.DrawPosition.Y - 8), 
+                        (int)(sizeInfo.DrawSize.X + 16), 
+                        (int)(sizeInfo.DrawSize.Y + 16)
+                    ), 
+                    alpha * speakerPortrait.Fade * portraitExtraAlpha);
+
+                //计算绘制颜色
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
                 if (speakerPortrait.Silhouette) {
                     drawColor = new Color(10, 30, 40) * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.9f;
                 }
-                spriteBatch.Draw(ptex, pPos, null, drawColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+                //使用基类的统一绘制方法
+                DrawPortrait(spriteBatch, speakerPortrait, sizeInfo, drawColor);
+
+                //深海边缘光效
                 Color rim = new Color(140, 230, 255) * (contentAlpha * 0.4f * (float)Math.Sin(panelPulseTimer * 1.2f + speakerPortrait.Fade) * speakerPortrait.Fade + 0.4f * speakerPortrait.Fade) * portraitExtraAlpha;
-                DrawGlowRect(spriteBatch, new Rectangle((int)pPos.X - 4, (int)pPos.Y - 4, (int)pSize.X + 8, (int)pSize.Y + 8), rim);
+                DrawGlowRect(spriteBatch, 
+                    new Rectangle(
+                        (int)sizeInfo.DrawPosition.X - 4, 
+                        (int)sizeInfo.DrawPosition.Y - 4, 
+                        (int)sizeInfo.DrawSize.X + 8, 
+                        (int)sizeInfo.DrawSize.Y + 8
+                    ), 
+                    rim);
+
                 leftOffset += PortraitWidth + 20f;
             }
             if (current != null && !string.IsNullOrEmpty(current.Speaker)) {

@@ -538,6 +538,129 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift)
                 || keyRightPressState == KeyPressState.Held;
         }
+        #region 头像绘制辅助系统
+
+        /// <summary>
+        /// 头像尺寸信息结构体
+        /// </summary>
+        protected struct PortraitSizeInfo
+        {
+            /// <summary>
+            /// 计算后的缩放值
+            /// </summary>
+            public float Scale;
+
+            /// <summary>
+            /// 绘制后的实际尺寸
+            /// </summary>
+            public Vector2 DrawSize;
+
+            /// <summary>
+            /// 绘制位置
+            /// </summary>
+            public Vector2 DrawPosition;
+
+            /// <summary>
+            /// 用于绘制的源矩形（考虑裁剪）
+            /// </summary>
+            public Rectangle? SourceRectangle;
+
+            /// <summary>
+            /// 纹理的实际尺寸（考虑裁剪）
+            /// </summary>
+            public Vector2 TextureSize;
+        }
+
+        /// <summary>
+        /// 计算头像的绘制信息
+        /// </summary>
+        /// <param name="portraitData">头像数据</param>
+        /// <param name="panelRect">面板矩形</param>
+        /// <param name="appearScale">出现动画缩放</param>
+        /// <param name="availHeight">可用高度</param>
+        /// <param name="maxPortraitHeight">最大头像高度</param>
+        /// <returns>头像尺寸信息</returns>
+        protected virtual PortraitSizeInfo CalculatePortraitSize(
+            PortraitData portraitData,
+            Rectangle panelRect,
+            float appearScale = 1f,
+            float? availHeight = null,
+            float? maxPortraitHeight = null)
+        {
+            if (portraitData?.Texture == null)
+            {
+                return default;
+            }
+
+            Texture2D ptex = portraitData.Texture;
+            Rectangle? sourceRect = portraitData.SourceRect;
+
+            //确定纹理的实际尺寸
+            Vector2 textureSize = sourceRect.HasValue
+                ? new Vector2(sourceRect.Value.Width, sourceRect.Value.Height)
+                : ptex.Size();
+
+            //计算可用高度和最大头像高度
+            float actualAvailHeight = availHeight ?? (panelRect.Height - 60f);
+            float actualMaxHeight = maxPortraitHeight ?? Math.Clamp(actualAvailHeight, 95f, 270f);
+
+            //计算基础缩放
+            float scaleBase = Math.Min(PortraitWidth / textureSize.X, actualMaxHeight / textureSize.Y);
+            float finalScale = scaleBase * appearScale;
+
+            //计算绘制后的尺寸
+            Vector2 drawSize = textureSize * finalScale;
+
+            //计算绘制位置
+            Vector2 drawPosition = new Vector2(
+                panelRect.X + Padding + PortraitInnerPadding,
+                panelRect.Y + panelRect.Height - drawSize.Y - Padding - 12f
+            );
+
+            return new PortraitSizeInfo
+            {
+                Scale = finalScale,
+                DrawSize = drawSize,
+                DrawPosition = drawPosition,
+                SourceRectangle = sourceRect,
+                TextureSize = textureSize
+            };
+        }
+
+        /// <summary>
+        /// 绘制头像（使用统一的裁剪逻辑）
+        /// </summary>
+        /// <param name="spriteBatch">精灵批次</param>
+        /// <param name="portraitData">头像数据</param>
+        /// <param name="sizeInfo">尺寸信息</param>
+        /// <param name="drawColor">绘制颜色</param>
+        /// <param name="rotation">旋转角度</param>
+        protected virtual void DrawPortrait(
+            SpriteBatch spriteBatch,
+            PortraitData portraitData,
+            PortraitSizeInfo sizeInfo,
+            Color drawColor,
+            float rotation = 0f)
+        {
+            if (portraitData?.Texture == null)
+            {
+                return;
+            }
+
+            spriteBatch.Draw(
+                portraitData.Texture,
+                sizeInfo.DrawPosition,
+                sizeInfo.SourceRectangle,
+                drawColor,
+                rotation,
+                Vector2.Zero,
+                sizeInfo.Scale,
+                SpriteEffects.None,
+                0f
+            );
+        }
+
+        #endregion
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {
                 return;
@@ -557,9 +680,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float contentAlpha = contentFade * alpha;
 
             //绘制全身立绘(在对话框之前绘制，作为背景层)
-            if (activeFullBodyPortrait != null) {
-                activeFullBodyPortrait.Draw(spriteBatch, alpha);
-            }
+            activeFullBodyPortrait?.Draw(spriteBatch, alpha);
 
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
         }

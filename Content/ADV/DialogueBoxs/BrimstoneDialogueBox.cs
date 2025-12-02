@@ -181,28 +181,45 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float textBlockOffsetY = Padding + 38;
 
             if (hasPortrait) {
-                float availHeight = panelRect.Height - 60f;
-                float maxPortraitHeight = Math.Clamp(availHeight, 95f, 270f);
-                Texture2D ptex = speakerPortrait.Texture;
-                float scaleBase = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
-                float scale = scaleBase * portraitAppearScale;
-                Vector2 pSize = ptex.Size() * scale;
-                Vector2 pPos = new(panelRect.X + Padding + PortraitInnerPadding, panelRect.Y + panelRect.Height - pSize.Y - Padding - 12f);
+                //使用基类的统一计算方法
+                PortraitSizeInfo sizeInfo = CalculatePortraitSize(
+                    speakerPortrait,
+                    panelRect,
+                    portraitAppearScale,
+                    panelRect.Height - 60f,
+                    Math.Clamp(panelRect.Height - 60f, 95f, 270f)
+                );
 
-                DrawBrimstonePortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 9), (int)(pPos.Y - 9), (int)(pSize.X + 18), (int)(pSize.Y + 18))
-                    , alpha * speakerPortrait.Fade * portraitExtraAlpha);
-
+                //绘制头像边框
+                DrawBrimstonePortraitFrame(spriteBatch, 
+                    new Rectangle(
+                        (int)(sizeInfo.DrawPosition.X - 9), 
+                        (int)(sizeInfo.DrawPosition.Y - 9), 
+                        (int)(sizeInfo.DrawSize.X + 18), 
+                        (int)(sizeInfo.DrawSize.Y + 18)
+                    ),
+                    alpha * speakerPortrait.Fade * portraitExtraAlpha);
+             
+                //计算绘制颜色
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
                 if (speakerPortrait.Silhouette) {
                     drawColor = new Color(40, 10, 5) * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.85f;
                 }
 
-                spriteBatch.Draw(ptex, pPos, null, drawColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                //使用基类的统一绘制方法
+                DrawPortrait(spriteBatch, speakerPortrait, sizeInfo, drawColor);
 
                 //火焰边缘光效
                 float flamePulse = (float)Math.Sin(flameTimer * 1.8f + speakerPortrait.Fade) * 0.5f + 0.5f;
                 Color flameRim = new Color(255, 120, 60) * (contentAlpha * 0.5f * flamePulse * speakerPortrait.Fade) * portraitExtraAlpha;
-                DrawFlameGlow(spriteBatch, new Rectangle((int)pPos.X - 5, (int)pPos.Y - 5, (int)pSize.X + 10, (int)pSize.Y + 10), flameRim);
+                DrawFlameGlow(spriteBatch, 
+                    new Rectangle(
+                        (int)sizeInfo.DrawPosition.X - 5, 
+                        (int)sizeInfo.DrawPosition.Y - 5, 
+                        (int)sizeInfo.DrawSize.X + 10, 
+                        (int)sizeInfo.DrawSize.Y + 10
+                    ), 
+                    flameRim);
 
                 leftOffset += PortraitWidth + 22f;
             }

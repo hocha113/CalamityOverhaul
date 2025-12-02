@@ -225,25 +225,41 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             float textBlockOffsetY = Padding + 40;
 
             if (hasPortrait) {
-                float availHeight = panelRect.Height - 65f;
-                float maxPortraitHeight = Math.Clamp(availHeight, 90f, 280f);
-                Texture2D ptex = speakerPortrait.Texture;
-                float scaleBase = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
-                float scale = scaleBase * portraitAppearScale;
-                Vector2 pSize = ptex.Size() * scale;
-
-                //立绘位置添加扭曲效果
-                float warpOffsetX = (float)Math.Sin(warpTimer * 1.3f + speakerPortrait.Fade) * 2f;
-                float warpOffsetY = (float)Math.Cos(warpTimer * 0.9f + speakerPortrait.Fade) * 1.5f;
-                Vector2 pPos = new(
-                    panelRect.X + Padding + PortraitInnerPadding + warpOffsetX,
-                    panelRect.Y + panelRect.Height - pSize.Y - Padding - 14f + warpOffsetY
+                // 使用基类的统一计算方法
+                PortraitSizeInfo sizeInfo = CalculatePortraitSize(
+                    speakerPortrait,
+                    panelRect,
+                    portraitAppearScale,
+                    panelRect.Height - 65f,
+                    Math.Clamp(panelRect.Height - 65f, 90f, 280f)
                 );
 
+                // 立绘位置添加扭曲效果
+                float warpOffsetX = (float)Math.Sin(warpTimer * 1.3f + speakerPortrait.Fade) * 2f;
+                float warpOffsetY = (float)Math.Cos(warpTimer * 0.9f + speakerPortrait.Fade) * 1.5f;
+                
+                //应用扭曲偏移到绘制位置
+                Vector2 warpedPosition = sizeInfo.DrawPosition + new Vector2(warpOffsetX, warpOffsetY);
+                PortraitSizeInfo warpedSizeInfo = new PortraitSizeInfo
+                {
+                    Scale = sizeInfo.Scale,
+                    DrawSize = sizeInfo.DrawSize,
+                    DrawPosition = warpedPosition,
+                    SourceRectangle = sizeInfo.SourceRectangle,
+                    TextureSize = sizeInfo.TextureSize
+                };
+
+                //绘制头像边框
                 DrawTzeentchPortraitFrame(spriteBatch,
-                    new Rectangle((int)(pPos.X - 10), (int)(pPos.Y - 10), (int)(pSize.X + 20), (int)(pSize.Y + 20)),
+                    new Rectangle(
+                        (int)(warpedPosition.X - 10), 
+                        (int)(warpedPosition.Y - 10), 
+                        (int)(sizeInfo.DrawSize.X + 20), 
+                        (int)(sizeInfo.DrawSize.Y + 20)
+                    ),
                     alpha * speakerPortrait.Fade * portraitExtraAlpha);
 
+                // 计算绘制颜色
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
                 if (speakerPortrait.Silhouette) {
                     //奸奇的剪影带有魔法色彩
@@ -251,14 +267,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                     drawColor = tzeentchShadow * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.85f;
                 }
 
-                spriteBatch.Draw(ptex, pPos, null, drawColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                //使用基类的统一绘制方法
+                DrawPortrait(spriteBatch, speakerPortrait, warpedSizeInfo, drawColor);
 
                 //魔法光环效果
                 float magicPulse = (float)Math.Sin(arcanePhase * 1.9f + speakerPortrait.Fade) * 0.5f + 0.5f;
                 Color magicRim = Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), magicPulse);
                 magicRim *= contentAlpha * 0.6f * magicPulse * speakerPortrait.Fade * portraitExtraAlpha;
                 DrawMagicGlow(spriteBatch,
-                    new Rectangle((int)pPos.X - 6, (int)pPos.Y - 6, (int)pSize.X + 12, (int)pSize.Y + 12),
+                    new Rectangle(
+                        (int)warpedPosition.X - 6, 
+                        (int)warpedPosition.Y - 6, 
+                        (int)sizeInfo.DrawSize.X + 12, 
+                        (int)sizeInfo.DrawSize.Y + 12
+                    ),
                     magicRim);
 
                 leftOffset += PortraitWidth + 24f;
