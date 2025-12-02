@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     [VaultLoaden("@CalamityMod/NPCs/OldDuke/")]
     internal class OldDukeCampsite : ModSystem, ILocalizedModType, IWorldInfo
     {
+        //头像矩形区域
+        public readonly static Rectangle PortraitRec = new(128, 26, 78, 94);
         //反射加载老公爵纹理，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
         public static Texture2D OldDuke;
         //老公爵的头像图标

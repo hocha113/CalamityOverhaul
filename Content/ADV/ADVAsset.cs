@@ -60,8 +60,6 @@ namespace CalamityOverhaul.Content.ADV
         [VaultLoaden(CWRConstant.ADV)]
         public static Texture2D FUJI = null;
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
-        public static Texture2D OldDuke = null;
-        [VaultLoaden(CWRConstant.ADV + "Abysse/")]
         public static Texture2D Floatsland = null;
     }
 }

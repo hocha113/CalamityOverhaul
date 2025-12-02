@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         protected override void Build() {
             //注册老公爵立绘
-            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, ADVAsset.OldDuke, null, true);
+            DialogueBoxBase.RegisterPortrait(OldDukeName.Value, OldDukeCampsite.OldDuke, OldDukeCampsite.PortraitRec, null, true);
 
             //检查任务是否已完成
             bool questCompleted = false;

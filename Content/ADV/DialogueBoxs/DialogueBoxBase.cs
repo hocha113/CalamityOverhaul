@@ -585,10 +585,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Rectangle panelRect,
             float appearScale = 1f,
             float? availHeight = null,
-            float? maxPortraitHeight = null)
-        {
-            if (portraitData?.Texture == null)
-            {
+            float? maxPortraitHeight = null) {
+            if (portraitData?.Texture == null) {
                 return default;
             }
 
@@ -617,8 +615,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 panelRect.Y + panelRect.Height - drawSize.Y - Padding - 12f
             );
 
-            return new PortraitSizeInfo
-            {
+            return new PortraitSizeInfo {
                 Scale = finalScale,
                 DrawSize = drawSize,
                 DrawPosition = drawPosition,
@@ -628,7 +625,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
 
         /// <summary>
-        /// 绘制头像（使用统一的裁剪逻辑）
+        /// 绘制头像
         /// </summary>
         /// <param name="spriteBatch">精灵批次</param>
         /// <param name="portraitData">头像数据</param>
@@ -640,10 +637,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             PortraitData portraitData,
             PortraitSizeInfo sizeInfo,
             Color drawColor,
-            float rotation = 0f)
-        {
-            if (portraitData?.Texture == null)
-            {
+            float rotation = 0f) {
+            if (portraitData?.Texture == null) {
                 return;
             }
 
