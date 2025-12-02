@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
 
         /// <summary>
-        /// 更新解码文本
+        /// 更新解码文本（带乱码效果）
         /// </summary>
         private static void UpdateDecodedText() {
             if (string.IsNullOrEmpty(targetText)) {
@@ -264,18 +264,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 float charProgress = charDecodeProgress[i];
 
                 if (charProgress >= 0.9f) {
+                    //字符已完全解码，哈哈哈哈哈哈我看懂啦道爷我成啦哈哈哈哈哈哈哈哈哈
                     sb.Append(targetText[i]);
                 }
                 else if (charProgress > 0.1f) {
+                    //解码中，显示多层乱码效果
                     if (charProgress > 0.7f) {
+                        //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
                         if (Main.rand.NextBool(3)) {
                             sb.Append(targetText[i]);
                         }
                         else {
+                            //使用相似度更高的乱码
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
                         }
                     }
                     else if (charProgress > 0.4f) {
+                        //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
                         if (Main.rand.NextBool(4)) {
                             sb.Append(targetText[i]);
                         }
@@ -284,6 +289,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                         }
                     }
                     else {
+                        //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
                         if (Main.rand.NextBool(2)) {
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
@@ -293,6 +299,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     }
                 }
                 else {
+                    //尚未开始解码，全是火星文噜噜噜噜
                     if (Main.rand.NextBool(4)) {
                         sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                     }
@@ -337,7 +344,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             float alpha = mainIconFade * 0.85f;
             Color iconColor = GetIconColor(currentMainIcon);
 
-            //绘制外层光晕（多层）
+            //绘制外层光晕
             for (int i = 0; i < 3; i++) {
                 float glowScale = scale * (1.3f + i * 0.15f);
                 float glowAlpha = alpha * (0.3f - i * 0.08f) * mainIconGlow;
@@ -396,7 +403,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             if (player == null || !player.active) return;
 
             int[] otherIndices = GetOtherIconIndices(currentMainIcon);
-            Vector2[] sideOffsets = new Vector2[] { leftSideIconOffset, rightSideIconOffset };
+            Vector2[] sideOffsets = [leftSideIconOffset, rightSideIconOffset];
 
             for (int i = 0; i < 2; i++) {
                 if (sideIconFade[i] < 0.01f) continue;
