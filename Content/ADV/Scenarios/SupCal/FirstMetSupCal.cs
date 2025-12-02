@@ -180,7 +180,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void Build() => Add(Rolename2.Value, Choice1Response.Value);
             protected override void OnScenarioComplete() {
-                CWRRef.SummonSupCal(Main.LocalPlayer.Center);
+                //确保至尊灾厄不存在，才进行召唤
+                if (!NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
+                    CWRRef.SummonSupCal(Main.LocalPlayer.Center);
+                }
 
                 //标记玩家选择了战斗
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {

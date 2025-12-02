@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     QuestCompleteLine.Value,
                     [
                         new Choice(Choice1Text.Value, Choice1),
-                        new Choice(Choice4Text.Value, Choice4),
+                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//真的有可能触发这个no enabled可能性吗？
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     [
                         new Choice(Choice1Text.Value, Choice1),
                         new Choice(Choice2Text.Value, Choice2, enabled: hasEnoughFragments, disabledHint: hasEnoughFragments ? string.Empty : Choice2DisabledHint.Value),
-                        new Choice(Choice4Text.Value, Choice4),
+                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//真的有可能触发这个no enabled可能性吗？
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                if (VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke)) {
+                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke) && VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke)) {
                     OldDukeCampsite.WannaToFight = true;
                     OldDukeEffect.IsActive = false;
                 }
