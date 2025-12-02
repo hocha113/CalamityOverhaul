@@ -276,21 +276,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 触发交互
+        /// 检查是否可以触发交互
         /// </summary>
-        private static void TriggerInteraction() {
+        /// <returns></returns>
+        private static bool CanTriggerInteraction() {
             if (Main.mapFullscreen) {
-                return;//玩家如果展开了全屏地图，就不要进行交互
+                return false;//玩家如果展开了全屏地图，就不要进行交互
             }
 
             if (OldDukeEffect.IsActive) {
-                return;//如果硫磺海效果已经启用，就不要进行交互
+                return false;//如果硫磺海效果已经启用，就不要进行交互
             }
 
             if (Main.LocalPlayer.mouseInterface) {
-                return;//鼠标正在交互状态下，就不要进行交互
+                return false;//鼠标正在交互状态下，就不要进行交互
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// 触发交互
+        /// </summary>
+        private static void TriggerInteraction() {
             //播放交互音效
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
 
@@ -426,7 +434,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 检查是否可以交互
         /// </summary>
-        public static bool CanInteract() => isPlayerNearby && interactPromptAlpha > 0.5f;
+        public static bool CanInteract() => isPlayerNearby && interactPromptAlpha > 0.5f && CanTriggerInteraction();
 
         public override void Unload() {
             ClearCampsite();
