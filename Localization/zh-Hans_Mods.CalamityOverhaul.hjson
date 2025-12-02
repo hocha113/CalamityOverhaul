@@ -1413,13 +1413,21 @@ Items: {
 		NoWaterText: 需要放置在水域上方才能工作！
 		NoEnergyText: 能量不足！
 		DisplayName: 海洋吞噬者
-		Tooltip: ""
+		Tooltip:
+			'''
+			消耗电力从水域中提取资源
+			右键打开内部存储箱
+			'''
 	}
 
 	OldDuchest: {
 		StorageText: 大型储物箱
 		DisplayName: 老箱子
-		Tooltip: ""
+		Tooltip:
+			'''
+			一个容量巨大的储物箱
+			"老公爵从前的储物箱，如果他在附近，他可能会往里面扔些东西"
+			'''
 	}
 }
 
@@ -6438,24 +6446,25 @@ UI: {
 	}
 
 	FindFragmentUI: {
-		// QuestTitle: 深渊在呼唤
-		// DamageContribution: 收集进度
-		// RequiredContribution: 目标: 收集777块海洋残片
-		// ObjectiveText: 目标
-		// CollectFragmentsText: 收集海洋残片
-		// CurrentFragmentsText: 当前拥有
-		// ReturnToCampsiteText: 返回营地提交
-		// QuestCompleteText: 任务完成！
+		// QuestTitle: The Abyss Beckons
+		// DamageContribution: Collection Progress
+		// RequiredContribution: Objective: Collect 777 Ocean Scraps
+		// ObjectiveText: Objective
+		// CollectFragmentsText: Collect Ocean Scraps
+		// CurrentFragmentsText: Currently Held
+		// ReturnToCampsiteText: Return to campsite to submit
+		// QuestCompleteText: Quest Complete!
+		// HintText: Fish or loot creatures in the Ocean
 	}
 
 	OceanRaidersUI: {
-		// TitleText: 海洋吞噬者存储
-		// StorageText: 存储空间
+		// TitleText: Ocean Devourer Storage
+		// StorageText: Storage
 	}
 
 	OldDuchestUI: {
-		// TitleText: 老箱子
-		// StorageText: 储物空间
+		// TitleText: Old Chest
+		// StorageText: Storage Space
 	}
 }
 

@@ -1425,22 +1425,30 @@ Items: {
 	}
 
 	Oceanfragments: {
-		// DisplayName: Oceanfragments
-		// Tooltip: ""
+		// DisplayName: Ocean Scraps
+		// Tooltip: A mysterious trinket. The Old Duke might be interested in it.
 	}
 
 	OceanRaiders: {
-		// WorkingText: 正在工作中...
-		// NoWaterText: 需要放置在水域上方才能工作！
-		// NoEnergyText: 能量不足！
-		// DisplayName: Ocean Raiders
-		// Tooltip: ""
+		// WorkingText: Working...
+		// NoWaterText: Must be placed above water to operate!
+		// NoEnergyText: Insufficient Power!
+		// DisplayName: Ocean Devourer
+		/* Tooltip:
+			'''
+			Consumes power to extract resources from water bodies
+			Right-click to open internal storage
+			''' */
 	}
 
 	OldDuchest: {
-		// StorageText: 大型储物箱
+		// StorageText: Large Storage Chest
 		// DisplayName: Old Duchest
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			A storage chest with immense capacity
+			"The Old Duke's former chest. If he is nearby, he might toss some things inside."
+			''' */
 	}
 }
 
@@ -6439,47 +6447,48 @@ UI: {
 	}
 
 	SulfseaDialogueBox: {
-		// ContinueHint: 继续
-		// FastHint: 加速
+		// ContinueHint: Continue
+		// FastHint: Accelerate
 	}
 
 	OldDukeShopUI: {
-		// TitleText: 老公爵的店铺
-		// CurrencyName: 海洋残片
-		// HintTooltip: 滚动/拖动条
+		// TitleText: Old Duke's Shop
+		// CurrencyName: Ocean Scraps
+		// HintTooltip: Scroll/Drag Bar
 	}
 
 	FindCampsiteUI: {
-		// QuestTitle: 深渊在呼唤
-		// DamageContribution: 任务进度
-		// RequiredContribution: 目标: 找到并与老公爵对话
-		// ObjectiveText: 目标
-		// LocationText: 前往老公爵营地
-		// DistanceText: 距离
-		// InteractText: 与老公爵对话
-		// QuestCompleteText: 任务完成！
-		// HoldFragmentHintText: 持有海洋碎片可查看方向
+		// QuestTitle: The Abyss Beckons
+		// DamageContribution: Quest Progress
+		// RequiredContribution: Objective: Find and speak to the Old Duke
+		// ObjectiveText: Objective
+		// LocationText: Go to the Old Duke's Campsite
+		// DistanceText: Distance
+		// InteractText: Speak to the Old Duke
+		// QuestCompleteText: Quest Complete!
+		// HoldFragmentHintText: Hold Ocean Scraps to view direction
 	}
 
 	FindFragmentUI: {
-		// QuestTitle: 深渊在呼唤
-		// DamageContribution: 收集进度
-		// RequiredContribution: 目标: 收集777块海洋残片
-		// ObjectiveText: 目标
-		// CollectFragmentsText: 收集海洋残片
-		// CurrentFragmentsText: 当前拥有
-		// ReturnToCampsiteText: 返回营地提交
-		// QuestCompleteText: 任务完成！
+		// QuestTitle: The Abyss Beckons
+		// DamageContribution: Collection Progress
+		// RequiredContribution: Objective: Collect 777 Ocean Scraps
+		// ObjectiveText: Objective
+		// CollectFragmentsText: Collect Ocean Scraps
+		// CurrentFragmentsText: Currently Held
+		// ReturnToCampsiteText: Return to campsite to submit
+		// QuestCompleteText: Quest Complete!
+		// HintText: Fish or loot creatures in the Ocean
 	}
 
 	OceanRaidersUI: {
-		// TitleText: 海洋吞噬者存储
-		// StorageText: 存储空间
+		// TitleText: Ocean Devourer Storage
+		// StorageText: Storage
 	}
 
 	OldDuchestUI: {
-		// TitleText: 老箱子
-		// StorageText: 储物空间
+		// TitleText: Old Chest
+		// StorageText: Storage Space
 	}
 }
 

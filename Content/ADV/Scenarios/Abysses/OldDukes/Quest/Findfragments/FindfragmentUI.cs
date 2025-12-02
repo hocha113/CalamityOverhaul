@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         public static LocalizedText CurrentFragmentsText { get; private set; }
         public static LocalizedText ReturnToCampsiteText { get; private set; }
         public static LocalizedText QuestCompleteText { get; private set; }
+        public static LocalizedText HintText { get; private set; }
 
         public override void SetStaticDefaults() {
             base.SetStaticDefaults();
@@ -35,6 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             CurrentFragmentsText = this.GetLocalization(nameof(CurrentFragmentsText), () => "当前拥有");
             ReturnToCampsiteText = this.GetLocalization(nameof(ReturnToCampsiteText), () => "返回营地提交");
             QuestCompleteText = this.GetLocalization(nameof(QuestCompleteText), () => "任务完成！");
+            HintText = this.GetLocalization(nameof(HintText), () => "钓鱼或者搜刮海洋区域的生物");
         }
 
         protected override void SetupLocalizedTexts() {
@@ -127,6 +129,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
                 float blink = (float)Math.Sin(pulseTimer * 4f) * 0.5f + 0.5f;
                 Color returnColor = new Color(160, 220, 100) * (alpha * blink);
                 Utils.DrawBorderString(spriteBatch, $"> {ReturnToCampsiteText.Value} <", returnPos, returnColor, textScale * 1.1f);
+            }
+            else {
+                Vector2 hintPos = countPos + new Vector2(0, 18);
+                Color hintColor = new Color(140, 170, 75) * (alpha * 0.7f);
+                Utils.DrawBorderString(spriteBatch, HintText.Value, hintPos, hintColor, textScale);
             }
 
             //进度条
