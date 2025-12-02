@@ -99,9 +99,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
-                if (!VaultUtils.isServer) {
+                if (VaultUtils.isSinglePlayer) {
                     ScenarioManager.Reset<ComeCampsiteFindMe>();
                     ScenarioManager.Start<ComeCampsiteFindMe>();
+                }
+                else if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
+                    packet.Send();
                 }
                 return false;
             }
@@ -222,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 npc.velocity *= 0.9f;
 
                 //触发对话场景（只触发一次）
-                if (!hasTriggeredScenario && Main.myPlayer == npc.target) {
+                if (!hasTriggeredScenario) {
                     hasTriggeredScenario = true;
                     OldDukeEffect.IsActive = true;
                     OldDukeEffect.Send();

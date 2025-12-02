@@ -39,6 +39,7 @@ namespace CalamityOverhaul
         OldDukeCampsiteDecorationsSync,
         OldDukeCampsiteSync,
         SpwanOldDuke,
+        StartCampsiteFindMeScenario,
     }
 
     public static class CWRNetWork
@@ -84,6 +85,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.OldDukeCampsiteDecorationsSync) {
                 OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);
+            }
+            else if (type == CWRMessageType.StartCampsiteFindMeScenario) {
+                ScenarioManager.Reset<ComeCampsiteFindMe>(); ScenarioManager.Start<ComeCampsiteFindMe>();
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

@@ -249,6 +249,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, CampsitePosition);
         }
 
+        public static void TeleportToCampsite(Player player) {
+            if (!IsGenerated) {
+                return;
+            }
+            if (!player.Alives()) {
+                return;
+            }
+            var playePos = CampsitePosition + new Vector2(0, -50);
+            var potPoss = OldDukeCampsiteDecoration.GetPotPositions();
+            if (potPoss.Count > 0) {
+                playePos = potPoss[Main.rand.Next(potPoss.Count)] + new Vector2(0, -16);
+            }
+            player.Teleport(playePos, 999);
+            CampsiteInteractionDialogue.GiveTeaOnStart = true;
+        }
+
         private static void CheckWannaToFight() {
             if (WannaToFight) {//检测是否在和老公爵切磋
                 if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {

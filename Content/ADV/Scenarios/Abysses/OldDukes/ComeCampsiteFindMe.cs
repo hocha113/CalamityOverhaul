@@ -46,8 +46,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         private void Choice1() {
-            Main.LocalPlayer.Teleport(OldDukeCampsite.CampsitePosition + new Vector2(0, -50), 999);
-            CampsiteInteractionDialogue.GiveTeaOnStart = true;
+            OldDukeCampsite.TeleportToCampsite(Main.LocalPlayer);
             ScenarioManager.Reset<CampsiteInteractionDialogue>();
             ScenarioManager.Start<CampsiteInteractionDialogue>();
             Complete();
