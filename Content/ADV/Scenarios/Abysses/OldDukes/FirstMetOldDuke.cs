@@ -88,6 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         protected override void OnScenarioStart() {
             //开启硫磺海效果
             OldDukeEffect.IsActive = true;
+            OldDukeEffect.Send();
             //重置选择
             CurrentPlayerChoice = OldDukeInteractionState.NotMet;
         }
@@ -213,6 +214,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
+                OldDukeEffect.Send();
             }
         }
 
@@ -245,6 +247,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
+                OldDukeEffect.Send();
             }
         }
 
@@ -273,12 +276,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
+                OldDukeEffect.Send();
             }
         }
 
         protected override void OnScenarioComplete() {
             //场景完成时停止硫磺海效果
             OldDukeEffect.IsActive = false;
+            OldDukeEffect.Send();
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

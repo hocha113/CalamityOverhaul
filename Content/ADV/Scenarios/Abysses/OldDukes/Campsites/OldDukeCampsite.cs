@@ -140,8 +140,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //检查是否应该生成营地
             if (!hasTriedGenerate && ShouldGenerateCampsite(player)) {
                 hasTriedGenerate = true;
-                TryGenerateCampsite();
-                ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
+                RequestCampsiteGeneration();
             }
         }
 
@@ -167,9 +166,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 尝试生成营地
+        /// 请求生成营地（客户端发送给服务器或单人直接生成）
         /// </summary>
-        private static void TryGenerateCampsite() {
+        private static void RequestCampsiteGeneration() {
+            if (VaultUtils.isSinglePlayer) {
+                TryGenerateCampsite();
+            }
+            else if (VaultUtils.isClient) {
+                SendGenerationRequest();
+            }
+        }
+
+        /// <summary>
+        /// 客户端发送生成请求给服务器
+        /// </summary>
+        private static void SendGenerationRequest() {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.OldDukeCampsiteGenerationRequest);
+            packet.Send();
+        }
+
+        /// <summary>
+        /// 尝试生成营地（服务器或单人执行）
+        /// </summary>
+        public static void TryGenerateCampsite() {
+            if (VaultUtils.isClient) {
+                return;//客户端不要自己生成营地中心
+            }
+
             //使用位置查找器寻找最佳位置
             Vector2? position = CampsiteLocationFinder.FindBestLocation();
 
@@ -178,8 +202,53 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
             else {
                 //如果找不到合适位置，则在世界右上角生成
-                GenerateCampsite(new Vector2(Main.maxTilesX - 400, Main.maxTilesY / 8));
+                GenerateCampsite(new Vector2((Main.maxTilesX - 400) * 16, (Main.maxTilesY / 8) * 16));
             }
+
+            if (VaultUtils.isServer) {
+                SyncCampsiteToClients();
+            }
+        }
+
+        /// <summary>
+        /// 服务器同步营地数据给所有客户端
+        /// </summary>
+        private static void SyncCampsiteToClients() {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+            packet.Write(IsGenerated);
+            if (IsGenerated) {
+                packet.WriteVector2(CampsitePosition);
+            }
+            packet.Send();
+        }
+
+        /// <summary>
+        /// 客户端接收营地同步数据
+        /// </summary>
+        internal static void ReceiveCampsiteSync(BinaryReader reader) {
+            bool wasGenerated = IsGenerated;
+            IsGenerated = reader.ReadBoolean();
+            
+            if (IsGenerated) {
+                CampsitePosition = reader.ReadVector2();
+                
+                if (!wasGenerated) {
+                    OnCampsiteGenerated();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 营地生成后的初始化操作
+        /// </summary>
+        private static void OnCampsiteGenerated() {
+            FindCampsiteUI.Instance.SetDefScreenYValue();
+            ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
+            OldDukeCampsiteDecoration.SetupPotPosition(CampsitePosition);
+            
+            //播放生成音效
+            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, CampsitePosition);
         }
 
         private static void CheckWannaToFight() {
@@ -187,6 +256,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
                     WannaToFight = false;//老公爵已被击败，重置切磋状态
                     OldDukeEffect.IsActive = false;//停止硫磺海效果
+                    OldDukeEffect.Send();
                 }
             }
         }
@@ -287,23 +357,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             CampsitePosition = position;
             IsGenerated = true;
-            FindCampsiteUI.Instance.SetDefScreenYValue();
 
             //设置装饰物品位置
             OldDukeCampsiteDecoration.SetupPotPosition(position);
 
             //调整营地位置的Y值，使其更合理
             var list = OldDukeCampsiteDecoration.GetPotPositions();
-            float y = 0;
-            foreach (var value in list) {
-                y += value.Y;
+            if (list.Count > 0) {
+                float y = 0;
+                foreach (var value in list) {
+                    y += value.Y;
+                }
+                y /= list.Count;
+                //将营地Y位置限制在锅位置的上下120像素范围内
+                CampsitePosition = new Vector2(CampsitePosition.X, MathHelper.Clamp(CampsitePosition.Y, y - 120, y + 120));
             }
-            y /= list.Count;
-            //将营地Y位置限制在锅位置的上下120像素范围内
-            CampsitePosition = new Vector2(CampsitePosition.X, MathHelper.Clamp(CampsitePosition.Y, y - 120, y + 120));
 
-            //播放生成音效
-            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, position);
+            if (VaultUtils.isClient) {
+                OnCampsiteGenerated();
+            }
         }
 
         /// <summary>

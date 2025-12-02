@@ -225,6 +225,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 if (!hasTriggeredScenario && Main.myPlayer == npc.target) {
                     hasTriggeredScenario = true;
                     OldDukeEffect.IsActive = true;
+                    OldDukeEffect.Send();
                     ScenarioManager.Reset<FirstMetOldDuke>();
                     ScenarioManager.Start<FirstMetOldDuke>();
                 }

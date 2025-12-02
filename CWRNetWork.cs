@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
@@ -33,6 +34,8 @@ namespace CalamityOverhaul
         SetNPCLoot,
         EbnTag,
         OldDukeEffect,
+        OldDukeCampsiteGenerationRequest,
+        OldDukeCampsiteSync,
     }
 
     public static class CWRNetWork
@@ -67,6 +70,13 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.SetNPCLoot) {
                 CWRNpc.HandleSetNPCLoot(reader, whoAmI);
             }
+            else if (type == CWRMessageType.OldDukeCampsiteGenerationRequest) {
+                OldDukeCampsite.TryGenerateCampsite();
+            }
+            else if (type == CWRMessageType.OldDukeCampsiteSync) {
+                OldDukeCampsite.ReceiveCampsiteSync(reader);
+            }
+
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             HalibutPlayer.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);

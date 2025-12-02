@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
         protected override void OnScenarioStart() {
             OldDukeEffect.IsActive = true;
+            OldDukeEffect.Send();
         }
 
         protected override void OnScenarioComplete() {
@@ -64,6 +65,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             }
 
             OldDukeEffect.IsActive = false;
+            OldDukeEffect.Send();
         }
     }
 }
