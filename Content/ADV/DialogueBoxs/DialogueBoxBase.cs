@@ -166,6 +166,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             public bool Silhouette;
             public float Fade;
             public float TargetFade;
+            /// <summary>
+            /// 用于纹理裁剪的源矩形区域，如果为 null 则绘制整个纹理
+            /// </summary>
+            public Rectangle? SourceRect;
         }
         protected static readonly Dictionary<string, PortraitData> portraits = new(StringComparer.Ordinal);
         protected float portraitFadeSpeed = 0.15f;
@@ -183,6 +187,35 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             RegisterPortrait(speaker, tex, baseColor, silhouette);
         }
+
+        /// <summary>
+        /// 注册头像
+        /// </summary>
+        /// <param name="speaker">说话者标识符</param>
+        /// <param name="texturePath">纹理路径</param>
+        /// <param name="sourceRect">用于裁剪的矩形区域，允许从帧图中截取特定部分</param>
+        /// <param name="baseColor">基础颜色</param>
+        /// <param name="silhouette">是否显示为剪影</param>
+        public static void RegisterPortrait(string speaker, string texturePath, Rectangle sourceRect, Color? baseColor = null, bool silhouette = false) {
+            if (string.IsNullOrWhiteSpace(speaker) || string.IsNullOrWhiteSpace(texturePath)) {
+                return;
+            }
+            Texture2D tex;
+            try {
+                tex = ModContent.Request<Texture2D>(texturePath, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            } catch {
+                return;
+            }
+            RegisterPortrait(speaker, tex, sourceRect, baseColor, silhouette);
+        }
+
+        /// <summary>
+        /// 注册头像
+        /// </summary>
+        /// <param name="speaker">说话者标识符</param>
+        /// <param name="texture">纹理对象</param>
+        /// <param name="baseColor">基础颜色</param>
+        /// <param name="silhouette">是否显示为剪影</param>
         public static void RegisterPortrait(string speaker, Texture2D texture, Color? baseColor = null, bool silhouette = false) {
             if (string.IsNullOrWhiteSpace(speaker)) {
                 return;
@@ -196,7 +229,33 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             pd.Silhouette = silhouette;
             pd.Fade = 0f;
             pd.TargetFade = 0f;
+            pd.SourceRect = null; //不裁剪，使用完整纹理
         }
+
+        /// <summary>
+        /// 注册头像
+        /// </summary>
+        /// <param name="speaker">说话者标识符</param>
+        /// <param name="texture">纹理对象</param>
+        /// <param name="sourceRect">用于裁剪的矩形区域，允许从帧图中截取特定部分</param>
+        /// <param name="baseColor">基础颜色</param>
+        /// <param name="silhouette">是否显示为剪影</param>
+        public static void RegisterPortrait(string speaker, Texture2D texture, Rectangle sourceRect, Color? baseColor = null, bool silhouette = false) {
+            if (string.IsNullOrWhiteSpace(speaker)) {
+                return;
+            }
+            if (!portraits.TryGetValue(speaker, out var pd)) {
+                pd = new PortraitData();
+                portraits.Add(speaker, pd);
+            }
+            pd.Texture = texture;
+            pd.BaseColor = baseColor ?? Color.White;
+            pd.Silhouette = silhouette;
+            pd.Fade = 0f;
+            pd.TargetFade = 0f;
+            pd.SourceRect = sourceRect;
+        }
+
         public static void SetPortraitStyle(string speaker, Color? baseColor = null, bool? silhouette = null) {
             if (!portraits.TryGetValue(speaker, out var pd)) {
                 return;
