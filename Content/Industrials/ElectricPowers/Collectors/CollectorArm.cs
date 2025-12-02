@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private const float SpringStiffness = 0.15f;
         private const float Damping = 0.85f;
         private const float MaxSpeed = 16f;
-        private const float ArrivalThreshold = 18f; //增加到达阈值，防止越过目标
+        private const float ArrivalThreshold = 32f; //增加到达阈值，防止越过目标
 
         //视觉效果参数（仅客户端）
         private float clampOpenness = 0f;
