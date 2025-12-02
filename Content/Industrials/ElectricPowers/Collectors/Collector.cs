@@ -1,22 +1,14 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.OtherMods.MagicStorage;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors

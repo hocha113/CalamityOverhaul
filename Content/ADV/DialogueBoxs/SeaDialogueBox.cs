@@ -145,13 +145,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 );
 
                 //绘制头像边框
-                DrawPortraitFrame(spriteBatch, 
+                DrawPortraitFrame(spriteBatch,
                     new Rectangle(
-                        (int)(sizeInfo.DrawPosition.X - 8), 
-                        (int)(sizeInfo.DrawPosition.Y - 8), 
-                        (int)(sizeInfo.DrawSize.X + 16), 
+                        (int)(sizeInfo.DrawPosition.X - 8),
+                        (int)(sizeInfo.DrawPosition.Y - 8),
+                        (int)(sizeInfo.DrawSize.X + 16),
                         (int)(sizeInfo.DrawSize.Y + 16)
-                    ), 
+                    ),
                     alpha * speakerPortrait.Fade * portraitExtraAlpha);
 
                 //计算绘制颜色
@@ -165,13 +165,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
                 //深海边缘光效
                 Color rim = new Color(140, 230, 255) * (contentAlpha * 0.4f * (float)Math.Sin(panelPulseTimer * 1.2f + speakerPortrait.Fade) * speakerPortrait.Fade + 0.4f * speakerPortrait.Fade) * portraitExtraAlpha;
-                DrawGlowRect(spriteBatch, 
+                DrawGlowRect(spriteBatch,
                     new Rectangle(
-                        (int)sizeInfo.DrawPosition.X - 4, 
-                        (int)sizeInfo.DrawPosition.Y - 4, 
-                        (int)sizeInfo.DrawSize.X + 8, 
+                        (int)sizeInfo.DrawPosition.X - 4,
+                        (int)sizeInfo.DrawPosition.Y - 4,
+                        (int)sizeInfo.DrawSize.X + 8,
                         (int)sizeInfo.DrawSize.Y + 8
-                    ), 
+                    ),
                     rim);
 
                 leftOffset += PortraitWidth + 20f;

@@ -191,15 +191,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 );
 
                 //绘制头像边框
-                DrawBrimstonePortraitFrame(spriteBatch, 
+                DrawBrimstonePortraitFrame(spriteBatch,
                     new Rectangle(
-                        (int)(sizeInfo.DrawPosition.X - 9), 
-                        (int)(sizeInfo.DrawPosition.Y - 9), 
-                        (int)(sizeInfo.DrawSize.X + 18), 
+                        (int)(sizeInfo.DrawPosition.X - 9),
+                        (int)(sizeInfo.DrawPosition.Y - 9),
+                        (int)(sizeInfo.DrawSize.X + 18),
                         (int)(sizeInfo.DrawSize.Y + 18)
                     ),
                     alpha * speakerPortrait.Fade * portraitExtraAlpha);
-             
+
                 //计算绘制颜色
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
                 if (speakerPortrait.Silhouette) {
@@ -212,13 +212,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 //火焰边缘光效
                 float flamePulse = (float)Math.Sin(flameTimer * 1.8f + speakerPortrait.Fade) * 0.5f + 0.5f;
                 Color flameRim = new Color(255, 120, 60) * (contentAlpha * 0.5f * flamePulse * speakerPortrait.Fade) * portraitExtraAlpha;
-                DrawFlameGlow(spriteBatch, 
+                DrawFlameGlow(spriteBatch,
                     new Rectangle(
-                        (int)sizeInfo.DrawPosition.X - 5, 
-                        (int)sizeInfo.DrawPosition.Y - 5, 
-                        (int)sizeInfo.DrawSize.X + 10, 
+                        (int)sizeInfo.DrawPosition.X - 5,
+                        (int)sizeInfo.DrawPosition.Y - 5,
+                        (int)sizeInfo.DrawSize.X + 10,
                         (int)sizeInfo.DrawSize.Y + 10
-                    ), 
+                    ),
                     flameRim);
 
                 leftOffset += PortraitWidth + 22f;

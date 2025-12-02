@@ -237,11 +237,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 // 立绘位置添加扭曲效果
                 float warpOffsetX = (float)Math.Sin(warpTimer * 1.3f + speakerPortrait.Fade) * 2f;
                 float warpOffsetY = (float)Math.Cos(warpTimer * 0.9f + speakerPortrait.Fade) * 1.5f;
-                
+
                 //应用扭曲偏移到绘制位置
                 Vector2 warpedPosition = sizeInfo.DrawPosition + new Vector2(warpOffsetX, warpOffsetY);
-                PortraitSizeInfo warpedSizeInfo = new PortraitSizeInfo
-                {
+                PortraitSizeInfo warpedSizeInfo = new PortraitSizeInfo {
                     Scale = sizeInfo.Scale,
                     DrawSize = sizeInfo.DrawSize,
                     DrawPosition = warpedPosition,
@@ -252,9 +251,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 //绘制头像边框
                 DrawTzeentchPortraitFrame(spriteBatch,
                     new Rectangle(
-                        (int)(warpedPosition.X - 10), 
-                        (int)(warpedPosition.Y - 10), 
-                        (int)(sizeInfo.DrawSize.X + 20), 
+                        (int)(warpedPosition.X - 10),
+                        (int)(warpedPosition.Y - 10),
+                        (int)(sizeInfo.DrawSize.X + 20),
                         (int)(sizeInfo.DrawSize.Y + 20)
                     ),
                     alpha * speakerPortrait.Fade * portraitExtraAlpha);
@@ -276,9 +275,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 magicRim *= contentAlpha * 0.6f * magicPulse * speakerPortrait.Fade * portraitExtraAlpha;
                 DrawMagicGlow(spriteBatch,
                     new Rectangle(
-                        (int)warpedPosition.X - 6, 
-                        (int)warpedPosition.Y - 6, 
-                        (int)sizeInfo.DrawSize.X + 12, 
+                        (int)warpedPosition.X - 6,
+                        (int)warpedPosition.Y - 6,
+                        (int)sizeInfo.DrawSize.X + 12,
                         (int)sizeInfo.DrawSize.Y + 12
                     ),
                     magicRim);

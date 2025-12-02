@@ -111,9 +111,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         /// 检查物品是否为钱币
         /// </summary>
         private static bool IsCoin(Item item) {
-            return item.type == ItemID.CopperCoin || 
-                   item.type == ItemID.SilverCoin || 
-                   item.type == ItemID.GoldCoin || 
+            return item.type == ItemID.CopperCoin ||
+                   item.type == ItemID.SilverCoin ||
+                   item.type == ItemID.GoldCoin ||
                    item.type == ItemID.PlatinumCoin;
         }
 
@@ -177,12 +177,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             if (VaultUtils.isClient) return;
 
             magnetizedCoins.Clear();
-            
+
             //查找周围的所有钱币
             foreach (var coin in Main.ActiveItems) {
                 if (!coin.active || coin.IsAir) continue;
                 if (!IsCoin(coin)) continue;
-                
+
                 //检查距离
                 float distance = Vector2.Distance(coin.Center, targetCenter);
                 if (distance > CoinMagnetRange) continue;
@@ -198,9 +198,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             //播放吸附音效
             if (magnetizedCoins.Count > 0) {
-                SoundEngine.PlaySound(SoundID.CoinPickup with { 
-                    Volume = 0.4f, 
-                    Pitch = 0.2f 
+                SoundEngine.PlaySound(SoundID.CoinPickup with {
+                    Volume = 0.4f,
+                    Pitch = 0.2f
                 }, targetCenter);
             }
         }
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //收集所有钱币的总价值
             foreach (int coinWhoAmI in magnetizedCoins) {
                 if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) continue;
-                
+
                 Item coin = Main.item[coinWhoAmI];
                 if (!coin.active || coin.IsAir) continue;
 
@@ -403,13 +403,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             targetPosition = targetItem.Center;
-            
+
             //计算到目标的距离
             float distanceToTarget = Projectile.Distance(targetPosition);
-            
+
             //根据距离调整速度倍率，距离越近速度越慢，防止越过
             float speedMultiplier = MathHelper.Clamp(distanceToTarget / ArrivalThreshold, 0.3f, 1.2f);
-            
+
             SpringPhysicsMove(targetPosition, speedMultiplier);
             SpawnMechanicalParticles();
 
