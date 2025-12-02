@@ -4,7 +4,6 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -111,8 +110,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
         /// 绘制任务进行中的内容
         /// </summary>
         private void DrawQuestInProgress(SpriteBatch spriteBatch, Vector2 startPos, float alpha, float textScale) {
-            var font = FontAssets.MouseText.Value;
-
             //目标文本
             string objectiveText = $"{ObjectiveText.Value}: {LocationText.Value}";
             Color objectiveColor = new Color(200, 220, 150) * alpha;
