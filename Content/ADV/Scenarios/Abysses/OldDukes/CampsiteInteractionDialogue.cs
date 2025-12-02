@@ -319,9 +319,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 if (VaultUtils.isSinglePlayer) {
                     return VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke);
                 }
-                else if (VaultUtils.isClient) {
+                else {
                     var netMessage = CWRMod.Instance.GetPacket();
-                    netMessage.Write((byte)CWRMessageType.SpwanOldDuke);
+                    netMessage.Write((byte)CWRMessageType.SpwanOldDukeWannaToFight);
+                    netMessage.Write(Main.myPlayer);
                     netMessage.Send();
                 }
                 

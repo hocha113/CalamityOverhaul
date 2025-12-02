@@ -2,6 +2,7 @@
 using CalamityOverhaul.OtherMods.BossChecklist;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -31,7 +32,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         public static LocalizedText LeavingDiveText { get; private set; }
 
-        private bool IsLeavingDive;
+        private static bool IsLeavingDive;
         private bool CanDraw;
 
         //场景控制标记
@@ -85,6 +86,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             return false;
         }
 
+        internal static void StartCampsiteFindMeScenarioNetWork(BinaryReader reader, int whoAmI) {
+            int npcIndex = reader.ReadInt32();
+            if (npcIndex.TryGetNPC(out var npc)) {
+                if (BCKRef.Has) {
+                    BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
+                }
+                npc.active = false;
+                npc.netUpdate = true;
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
+                    packet.Write(npc.whoAmI);
+                    packet.Send(-1, whoAmI);
+                }
+                else {
+                    ScenarioManager.Reset<ComeCampsiteFindMe>();
+                    ScenarioManager.Start<ComeCampsiteFindMe>();
+                }
+            }
+            IsLeavingDive = false;
+        }
+
+        internal static void SpwanOldDukeByWannaToFightNetWork(BinaryReader reader, int whoAmI) {
+            int playerIndex = reader.ReadInt32();
+            Player player = Main.player[playerIndex];
+            OldDukeCampsite.WannaToFight = true;
+            OldDukeEffect.IsActive = false;
+            OldDukeEffect.Send();
+            NPC.NewNPC(NPC.GetBossSpawnSource(player.whoAmI), (int)player.Center.X, (int)player.Center.Y - 200, CWRID.NPC_OldDuke);
+        }
+
         public override bool AI() {
             CanDraw = true;
             if (IsLeavingDive) {
@@ -92,27 +124,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return StorylineAI();
             }
 
-            if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight) {
+            npc.TargetClosest();
+            Player target = Main.player[npc.target];
+
+            if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight && target.whoAmI == Main.myPlayer && !VaultUtils.isServer) {
                 if (BCKRef.Has) {
                     BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
                 }
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
-                if (VaultUtils.isSinglePlayer) {
-                    ScenarioManager.Reset<ComeCampsiteFindMe>();
-                    ScenarioManager.Start<ComeCampsiteFindMe>();
-                }
-                else if (VaultUtils.isServer) {
+                ScenarioManager.Reset<ComeCampsiteFindMe>();
+                ScenarioManager.Start<ComeCampsiteFindMe>();
+                if (VaultUtils.isClient) {//客户端发送网络请求
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
+                    packet.Write(npc.whoAmI);
                     packet.Send();
                 }
                 return false;
             }
-
-            npc.TargetClosest();
-            Player target = Main.player[npc.target];
 
             //检查并更新初见场景状态
             UpdateFirstMeetState(target);
@@ -126,7 +157,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             //否则执行原版AI
-            return base.AI();
+            return true;
         }
 
         /// <summary>

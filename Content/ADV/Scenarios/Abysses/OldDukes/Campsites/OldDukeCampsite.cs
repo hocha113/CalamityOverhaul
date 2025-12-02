@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             CheckWannaToFight();
 
             //检测右键交互
-            if (CanInteract() && Main.mouseRight && Main.mouseRightRelease) {
+            if (CanInteract() && CanTriggerInteraction() && Main.mouseRight && Main.mouseRightRelease) {
                 TriggerInteraction();
             }
         }
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             isPlayerNearby = distance < InteractDistance;
 
             //交互提示淡入淡出
-            if (isPlayerNearby) {
+            if (isPlayerNearby && CanTriggerInteraction()) {
                 if (interactPromptAlpha < 1f) {
                     interactPromptAlpha += 0.05f;
                 }
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 检查是否可以交互
         /// </summary>
-        public static bool CanInteract() => isPlayerNearby && interactPromptAlpha > 0.5f && CanTriggerInteraction();
+        public static bool CanInteract() => isPlayerNearby && interactPromptAlpha > 0.5f;
 
         public override void Unload() {
             ClearCampsite();

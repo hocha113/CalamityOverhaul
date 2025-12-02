@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content;
+﻿using CalamityMod.NPCs.OldDuke;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
@@ -38,7 +39,7 @@ namespace CalamityOverhaul
         OldDukeCampsiteGenerationRequest,
         OldDukeCampsiteDecorationsSync,
         OldDukeCampsiteSync,
-        SpwanOldDuke,
+        SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
     }
 
@@ -80,14 +81,14 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.OldDukeCampsiteSync) {
                 OldDukeCampsite.ReceiveCampsiteSync(reader);
             }
-            else if (type == CWRMessageType.SpwanOldDuke) {
-                VaultUtils.TrySpawnBossWithNet(whoAmI.TryGetPlayer(out var p) ? p : Main.player[0], CWRID.NPC_OldDuke);
+            else if (type == CWRMessageType.SpwanOldDukeWannaToFight) {
+                ModifyOldDuke.SpwanOldDukeByWannaToFightNetWork(reader, whoAmI);
             }
             else if (type == CWRMessageType.OldDukeCampsiteDecorationsSync) {
                 OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);
             }
             else if (type == CWRMessageType.StartCampsiteFindMeScenario) {
-                ScenarioManager.Reset<ComeCampsiteFindMe>(); ScenarioManager.Start<ComeCampsiteFindMe>();
+                ModifyOldDuke.StartCampsiteFindMeScenarioNetWork(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
