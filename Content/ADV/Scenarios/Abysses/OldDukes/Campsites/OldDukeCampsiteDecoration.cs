@@ -1,3 +1,4 @@
+using InnoVault.PRT;
 using InnoVault.RenderHandles;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,6 +33,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public float InteractionIntensity;
             public float BouncePhase;
             public int ExtraSteamSpawnTimer;
+
+            //水下状态
+            public bool IsUnderwater;
+            public int WaterBubbleSpawnTimer;
         }
 
         //旗杆位置信息
@@ -314,6 +319,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (pot.BubbleTimer > MathHelper.TwoPi) pot.BubbleTimer -= MathHelper.TwoPi;
             if (pot.SteamTimer > MathHelper.TwoPi) pot.SteamTimer -= MathHelper.TwoPi;
 
+            //检测锅是否在水下
+            pot.IsUnderwater = CheckPotUnderwater(pot.WorldPosition);
+
             //更新跳动相位
             if (pot.IsBeingVisited) {
                 pot.BouncePhase += 0.2f * (0.5f + pot.InteractionIntensity * 1.5f);
@@ -325,47 +333,110 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 pot.BouncePhase -= MathHelper.TwoPi;
             }
 
-            //基础蒸汽生成
-            pot.SteamSpawnTimer++;
-            int baseSpawnRate = pot.IsBeingVisited ? 6 : 10;
-            int maxSteamCount = pot.IsBeingVisited ? 24 : 12;
+            //根据是否在水下生成不同的粒子
+            if (pot.IsUnderwater) {
+                //水下生成泡泡
+                pot.WaterBubbleSpawnTimer++;
+                int bubbleRate = pot.IsBeingVisited ? 4 : 8;
+                
+                if (pot.WaterBubbleSpawnTimer >= bubbleRate) {
+                    pot.WaterBubbleSpawnTimer = 0;
+                    SpawnWaterBubble(pot);
+                    
+                    //交互时额外生成泡泡
+                    if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f && Main.rand.NextBool(2)) {
+                        SpawnWaterBubble(pot);
+                    }
+                }
+            }
+            else {
+                //非水下生成蒸汽
+                pot.SteamSpawnTimer++;
+                int baseSpawnRate = pot.IsBeingVisited ? 6 : 10;
+                int maxSteamCount = pot.IsBeingVisited ? 24 : 12;
 
-            if (pot.SteamSpawnTimer >= baseSpawnRate && pot.SteamParticles.Count < maxSteamCount) {
-                pot.SteamSpawnTimer = 0;
-                SpawnSteamParticle(pot, false);
+                if (pot.SteamSpawnTimer >= baseSpawnRate && pot.SteamParticles.Count < maxSteamCount) {
+                    pot.SteamSpawnTimer = 0;
+                    SpawnSteamParticle(pot, false);
 
-                //交互时额外生成强力蒸汽
-                if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
-                    if (Main.rand.NextBool(2)) {
-                        SpawnSteamParticle(pot, true);
+                    //交互时额外生成强力蒸汽
+                    if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
+                        if (Main.rand.NextBool(2)) {
+                            SpawnSteamParticle(pot, true);
+                        }
+                    }
+                }
+
+                //气泡生成
+                pot.BubbleSpawnTimer++;
+                int bubbleSpawnRate = pot.IsBeingVisited ? 8 : 15;
+                int maxBubbleCount = pot.IsBeingVisited ? 10 : 6;
+
+                if (pot.BubbleSpawnTimer >= bubbleSpawnRate && pot.BubbleParticles.Count < maxBubbleCount) {
+                    pot.BubbleSpawnTimer = 0;
+                    SpawnBubbleParticle(pot);
+                }
+
+                //更新气泡粒子
+                for (int i = pot.BubbleParticles.Count - 1; i >= 0; i--) {
+                    if (pot.BubbleParticles[i].Update()) {
+                        pot.BubbleParticles.RemoveAt(i);
                     }
                 }
             }
 
-            //气泡生成
-            pot.BubbleSpawnTimer++;
-            int bubbleSpawnRate = pot.IsBeingVisited ? 8 : 15;
-            int maxBubbleCount = pot.IsBeingVisited ? 10 : 6;
-
-            if (pot.BubbleSpawnTimer >= bubbleSpawnRate && pot.BubbleParticles.Count < maxBubbleCount) {
-                pot.BubbleSpawnTimer = 0;
-                SpawnBubbleParticle(pot);
-            }
-
-            //更新粒子
+            //更新蒸汽粒子
             for (int i = pot.SteamParticles.Count - 1; i >= 0; i--) {
                 if (pot.SteamParticles[i].Update()) {
                     pot.SteamParticles.RemoveAt(i);
                 }
             }
 
-            for (int i = pot.BubbleParticles.Count - 1; i >= 0; i--) {
-                if (pot.BubbleParticles[i].Update()) {
-                    pot.BubbleParticles.RemoveAt(i);
+            Lighting.AddLight(pot.WorldPosition, TorchID.Yellow);
+        }
+
+        /// <summary>
+        /// 检测锅是否在水下
+        /// </summary>
+        private static bool CheckPotUnderwater(Vector2 position) {
+            Point tileCoord = (position / 16).ToPoint();
+            
+            //检查锅的上方是否有水
+            for (int y = -2; y <= 0; y++) {
+                Tile tile = Framing.GetTileSafely(tileCoord.X, tileCoord.Y + y);
+                if (tile.LiquidAmount > 128 && tile.LiquidType == LiquidID.Water) {
+                    return true;
                 }
             }
+            
+            return false;
+        }
 
-            Lighting.AddLight(pot.WorldPosition, TorchID.Yellow);
+        /// <summary>
+        /// 生成水泡泡
+        /// </summary>
+        private static void SpawnWaterBubble(PotData pot) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Vector2 spawnPos = pot.WorldPosition + new Vector2(
+                Main.rand.NextFloat(-16f, 16f),
+                Main.rand.NextFloat(-8f, 8f)
+            );
+
+            Vector2 velocity = new Vector2(
+                Main.rand.NextFloat(-0.5f, 0.5f),
+                Main.rand.NextFloat(-2f, -1f)
+            );
+
+            float scale = Main.rand.NextFloat(0.3f, 0.6f);
+            if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
+                scale *= 1.3f;
+            }
+
+            PRTLoader.NewParticle<Industrials.Generator.Hydroelectrics.PRT_WaterBubble>(
+                spawnPos, velocity, Color.White, scale);
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
@@ -489,8 +560,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 SpriteEffects.None,
                 0f
             );
-
-            DrawHeatWave(sb, screenPos + bounceVector, pot);
         }
 
         /// <summary>
@@ -534,35 +603,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     swayAmount,
                     origin,
                     1f,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-        }
-
-        /// <summary>
-        /// 绘制热气波动效果
-        /// </summary>
-        private void DrawHeatWave(SpriteBatch sb, Vector2 screenPos, PotData pot) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            for (int i = 0; i < 3; i++) {
-                float t = i / 3f;
-                float yOffset = -20f - i * 8f;
-                float wavePhase = pot.SteamTimer + t * MathHelper.Pi;
-                float xOffset = MathF.Sin(wavePhase) * 6f;
-
-                Vector2 wavePos = screenPos + new Vector2(xOffset, yOffset);
-                Color waveColor = new Color(255, 200, 150) * (0.15f * (1f - t * 0.5f));
-
-                sb.Draw(
-                    pixel,
-                    wavePos,
-                    new Rectangle(0, 0, 1, 1),
-                    waveColor,
-                    0f,
-                    new Vector2(0.5f),
-                    new Vector2(20f - i * 4f, 1.5f),
                     SpriteEffects.None,
                     0f
                 );

@@ -1,10 +1,12 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -34,6 +36,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         private bool isInCampsite = false;
         private int lastRefreshCycle = -1;
         private bool hasBeenOpened = false;
+
+        //水下状态
+        public bool isUnderwater = false;
 
         public override void SetProperty() {
             storedItems = new List<Item>();
@@ -150,6 +155,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 glowIntensity = Math.Max(0f, glowIntensity - 0.05f);
             }
 
+            //检测箱子是否在水下
+            isUnderwater = CheckChestUnderwater();
+
             //检查距离自动关闭
             if (isOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
                 CloseUI(Main.LocalPlayer);
@@ -172,6 +180,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
+        /// 检测箱子是否在水下
+        /// </summary>
+        private bool CheckChestUnderwater() {
+            Point tileCoord = (CenterInWorld / 16).ToPoint();
+            
+            //检查箱子上方是否有水
+            for (int y = -3; y <= 0; y++) {
+                for (int x = -2; x <= 2; x++) {
+                    Tile tile = Framing.GetTileSafely(tileCoord.X + x, tileCoord.Y + y);
+                    if (tile.LiquidAmount > 128 && tile.LiquidType == LiquidID.Water) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        /// <summary>
         /// 打开UI
         /// </summary>
         public void OpenUI(Player player) {
@@ -185,13 +212,58 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 SendData();
             }
 
-            SoundEngine.PlaySound(SoundID.MenuOpen with {
-                Pitch = -0.2f,
-                Volume = 0.6f
-            }, CenterInWorld);
+            //如果在水下，播放水泡音效并生成泡泡
+            if (isUnderwater) {
+                SoundEngine.PlaySound(SoundID.Splash with {
+                    Pitch = -0.1f,
+                    Volume = 0.7f
+                }, CenterInWorld);
+
+                //生成一波泡泡效果
+                SpawnOpenBubbles();
+            }
 
             //更新图格帧为打开状态
             UpdateTileFrame(true);
+        }
+
+        /// <summary>
+        /// 生成打开箱子时的泡泡
+        /// </summary>
+        private void SpawnOpenBubbles() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            //生成15到25个泡泡
+            int bubbleCount = Main.rand.Next(15, 26);
+            
+            for (int i = 0; i < bubbleCount; i++) {
+                Vector2 spawnPos = CenterInWorld + new Vector2(
+                    Main.rand.NextFloat(-40f, 40f),
+                    Main.rand.NextFloat(-20f, 20f)
+                );
+
+                Vector2 velocity = new Vector2(
+                    Main.rand.NextFloat(-1.5f, 1.5f),
+                    Main.rand.NextFloat(-3f, -1.5f)
+                );
+
+                float scale = Main.rand.NextFloat(0.6f, 1.2f);
+
+                PRTLoader.NewParticle<Industrials.Generator.Hydroelectrics.PRT_WaterBubble>(
+                    spawnPos, velocity, Color.White, scale);
+            }
+
+            //额外生成一些水粒子
+            for (int i = 0; i < 8; i++) {
+                Vector2 dustVel = new Vector2(
+                    Main.rand.NextFloat(-2f, 2f),
+                    Main.rand.NextFloat(-3f, -1f)
+                );
+                Dust.NewDust(CenterInWorld - new Vector2(32, 16), 64, 32, 
+                    DustID.Water, dustVel.X, dustVel.Y, 100, default, 1.5f);
+            }
         }
 
         /// <summary>
@@ -201,10 +273,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             if (player == null) return;
 
             isOpen = false;
-            SoundEngine.PlaySound(SoundID.MenuClose with {
-                Pitch = -0.3f,
-                Volume = 0.5f
-            }, CenterInWorld);
 
             //保存UI数据
             if (OldDuchestUI.Instance.CurrentChest == this) {

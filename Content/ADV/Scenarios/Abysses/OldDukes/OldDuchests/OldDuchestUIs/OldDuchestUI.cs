@@ -78,18 +78,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
                 //通知箱子打开
                 chest.OpenUI(player);
-                SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f });
+                SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0});
             }
             else {
                 if (_active) {
                     Close();
-                    SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f });
+                    SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = chest.isUnderwater ? -0.4f : 0 });
                 }
                 else {
                     _active = true;
                     //通知箱子打开
                     chest.OpenUI(player);
-                    SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f });
+                    SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0 });
                 }
             }
         }
