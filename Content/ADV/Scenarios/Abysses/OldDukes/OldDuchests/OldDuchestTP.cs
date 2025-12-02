@@ -194,8 +194,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         closeTimer = 60;
                         //更新图格帧为打开状态
                         UpdateTileFrame(true);
-                        SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);                       
-                    }                   
+                        SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
+                    }
                 }
                 if (closeTimer > 0) {
                     if (--closeTimer == 0) {

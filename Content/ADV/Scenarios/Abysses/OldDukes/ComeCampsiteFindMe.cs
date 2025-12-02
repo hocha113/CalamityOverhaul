@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
 
-        public static LocalizedText B1 { get; private set; }       
+        public static LocalizedText B1 { get; private set; }
         public static LocalizedText C1 { get; private set; }
         public static LocalizedText C2 { get; private set; }
         public static LocalizedText B1_NO { get; private set; }
