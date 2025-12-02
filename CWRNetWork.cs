@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.OldDuke;
-using CalamityOverhaul.Content;
+﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
@@ -12,7 +11,6 @@ using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul

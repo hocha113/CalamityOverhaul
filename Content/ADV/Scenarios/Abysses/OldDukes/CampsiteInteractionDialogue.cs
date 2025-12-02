@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     netMessage.Write(Main.myPlayer);
                     netMessage.Send();
                 }
-                
+
                 return true;
             }
         }

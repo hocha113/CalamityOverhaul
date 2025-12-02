@@ -104,11 +104,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             if (currentMainIcon >= 0 || sideIconFade[0] > 0.01f || sideIconFade[1] > 0.01f) {
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                
+
                 DrawSideIcons(spriteBatch, main);
                 DrawMainIcon(spriteBatch, main);
                 DrawMechDescription(spriteBatch, main);
-                
+
                 Main.spriteBatch.End();
             }
         }
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// </summary>
         private static void UpdateMainIconAnimation() {
             mainIconRotation = 0f;
-            
+
             if (targetMainIcon != currentMainIcon) {
                 if (currentMainIcon >= 0 && mainIconFade > 0f) {
                     mainIconFade -= FadeSpeed * 1.5f;

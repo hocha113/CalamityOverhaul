@@ -229,10 +229,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         internal static void ReceiveCampsiteSync(BinaryReader reader) {
             bool wasGenerated = IsGenerated;
             IsGenerated = reader.ReadBoolean();
-            
+
             if (IsGenerated) {
                 CampsitePosition = reader.ReadVector2();
-                
+
                 if (!wasGenerated) {
                     OnCampsiteGenerated();
                 }

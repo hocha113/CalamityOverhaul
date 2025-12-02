@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
 using System;
 using Terraria;
 using Terraria.ModLoader;

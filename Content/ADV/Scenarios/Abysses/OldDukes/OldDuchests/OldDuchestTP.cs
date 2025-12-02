@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// </summary>
         private bool CheckChestUnderwater() {
             Point tileCoord = (CenterInWorld / 16).ToPoint();
-            
+
             //检查箱子上方是否有水
             for (int y = -3; y <= 0; y++) {
                 for (int x = -2; x <= 2; x++) {
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     }
                 }
             }
-            
+
             return false;
         }
 
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
             //生成15到25个泡泡
             int bubbleCount = Main.rand.Next(15, 26);
-            
+
             for (int i = 0; i < bubbleCount; i++) {
                 Vector2 spawnPos = CenterInWorld + new Vector2(
                     Main.rand.NextFloat(-40f, 40f),
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     Main.rand.NextFloat(-2f, 2f),
                     Main.rand.NextFloat(-3f, -1f)
                 );
-                Dust.NewDust(CenterInWorld - new Vector2(32, 16), 64, 32, 
+                Dust.NewDust(CenterInWorld - new Vector2(32, 16), 64, 32,
                     DustID.Water, dustVel.X, dustVel.Y, 100, default, 1.5f);
             }
         }

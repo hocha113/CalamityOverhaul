@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static void SyncDecorationsToClients() {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeCampsiteDecorationsSync);
-            
+
             //写入锅的数量和位置
             packet.Write(pots.Count);
             foreach (var pot in pots) {
@@ -407,11 +407,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 //水下生成泡泡
                 pot.WaterBubbleSpawnTimer++;
                 int bubbleRate = pot.IsBeingVisited ? 4 : 8;
-                
+
                 if (pot.WaterBubbleSpawnTimer >= bubbleRate) {
                     pot.WaterBubbleSpawnTimer = 0;
                     SpawnWaterBubble(pot);
-                    
+
                     //交互时额外生成泡泡
                     if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f && Main.rand.NextBool(2)) {
                         SpawnWaterBubble(pot);
@@ -469,7 +469,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static bool CheckPotUnderwater(Vector2 position) {
             Point tileCoord = (position / 16).ToPoint();
-            
+
             //检查锅的上方是否有水
             for (int y = -2; y <= 0; y++) {
                 Tile tile = Framing.GetTileSafely(tileCoord.X, tileCoord.Y + y);
@@ -477,7 +477,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     return true;
                 }
             }
-            
+
             return false;
         }
 
