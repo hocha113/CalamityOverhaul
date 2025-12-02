@@ -57,6 +57,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static LocalizedText TitleText;
 
         /// <summary>
+        /// 是否已经尝试生成营地
+        /// </summary>
+        private bool hasTriedGenerate;
+
+        /// <summary>
         /// 玩家进入营地事件
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
@@ -106,6 +111,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             CampsitePosition = Vector2.Zero;
         }
 
+        public override void OnWorldUnload() {
+            hasTriedGenerate = false;
+            ClearCampsite();
+        }
+
         public override void PostUpdateEverything() {
             if (!IsGenerated) {
                 return;
@@ -118,6 +128,57 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //检测右键交互
             if (CanInteract() && Main.mouseRight && Main.mouseRightRelease) {
                 TriggerInteraction();
+            }
+        }
+
+        public override void PostUpdatePlayers() {
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active) {
+                return;
+            }
+
+            //检查是否应该生成营地
+            if (!hasTriedGenerate && ShouldGenerateCampsite(player)) {
+                hasTriedGenerate = true;
+                TryGenerateCampsite();
+                ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
+            }
+        }
+
+        /// <summary>
+        /// 检查是否应该生成营地
+        /// </summary>
+        private static bool ShouldGenerateCampsite(Player player) {
+            if (!player.TryGetADVSave(out var save)) {
+                return false;
+            }
+
+            //检查玩家是否已经同意合作
+            if (!save.OldDukeCooperationAccepted) {
+                return false;
+            }
+
+            //检查营地是否已经生成
+            if (IsGenerated) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 尝试生成营地
+        /// </summary>
+        private static void TryGenerateCampsite() {
+            //使用位置查找器寻找最佳位置
+            Vector2? position = CampsiteLocationFinder.FindBestLocation();
+
+            if (position.HasValue) {
+                GenerateCampsite(position.Value);
+            }
+            else {
+                //如果找不到合适位置，则在世界右上角生成
+                GenerateCampsite(new Vector2(Main.maxTilesX - 400, Main.maxTilesY / 8));
             }
         }
 
