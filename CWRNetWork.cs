@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -36,6 +37,7 @@ namespace CalamityOverhaul
         OldDukeEffect,
         OldDukeCampsiteGenerationRequest,
         OldDukeCampsiteSync,
+        SpwanOldDuke,
     }
 
     public static class CWRNetWork
@@ -75,6 +77,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.OldDukeCampsiteSync) {
                 OldDukeCampsite.ReceiveCampsiteSync(reader);
+            }
+            else if (type == CWRMessageType.SpwanOldDuke) {
+                VaultUtils.TrySpawnBossWithNet(whoAmI.TryGetPlayer(out var p) ? p : Main.player[0], CWRID.NPC_OldDuke);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

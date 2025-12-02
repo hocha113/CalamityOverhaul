@@ -304,28 +304,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke) && VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke)) {
+                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke) && SpwanOldDuke()) {
                     OldDukeCampsite.WannaToFight = true;
                     OldDukeEffect.IsActive = false;
                     OldDukeEffect.Send();
                 }
             }
 
-            //private static bool SpwanOldDuke() {
-            //    if (CWRMod.Instance.calamity is null) {
-            //        return false;
-            //    }
-                
-            //    if (VaultUtils.isSinglePlayer) {
-            //        return VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke);
-            //    }
+            private static bool SpwanOldDuke() {
+                if (CWRMod.Instance.calamity is null) {
+                    return false;
+                }
 
-            //    var netMessage = CWRMod.Instance.calamity.GetPacket();
-            //    netMessage.Write((byte)14);//14 == CalamityModMessageType.ServersideSpawnOldDuke
-            //    netMessage.Write((byte)Main.myPlayer);
-            //    netMessage.Send();
-            //    return true;
-            //}
+                if (VaultUtils.isSinglePlayer) {
+                    return VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke);
+                }
+                else if (VaultUtils.isClient) {
+                    var netMessage = CWRMod.Instance.GetPacket();
+                    netMessage.Write((byte)CWRMessageType.SpwanOldDuke);
+                    netMessage.Send();
+                }
+                
+                return true;
+            }
         }
 
         protected override void OnScenarioStart() {

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -49,10 +48,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
                 if (item == null) {
-                    ItemIO.Send(new Item(), data, true);
+                    ItemIO.Send(new Item(), data, true, true);
                 }
                 else {
-                    ItemIO.Send(item, data, true);
+                    ItemIO.Send(item, data, true, true);
                 }
             }
 
@@ -67,8 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             int count = reader.ReadInt32();
             storedItems.Clear();
             for (int i = 0; i < count; i++) {
-                Item item = ItemIO.Receive(reader, true);
-                storedItems.Add(item);
+                storedItems.Add(ItemIO.Receive(reader, true, true));
             }
 
             //接收刷新相关数据

@@ -245,8 +245,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static void OnCampsiteGenerated() {
             FindCampsiteUI.Instance.SetDefScreenYValue();
             ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
-            OldDukeCampsiteDecoration.SetupPotPosition(CampsitePosition);
-            
             //播放生成音效
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, CampsitePosition);
         }
