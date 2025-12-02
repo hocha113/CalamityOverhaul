@@ -36,6 +36,7 @@ namespace CalamityOverhaul
         EbnTag,
         OldDukeEffect,
         OldDukeCampsiteGenerationRequest,
+        OldDukeCampsiteDecorationsSync,
         OldDukeCampsiteSync,
         SpwanOldDuke,
     }
@@ -80,6 +81,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.SpwanOldDuke) {
                 VaultUtils.TrySpawnBossWithNet(whoAmI.TryGetPlayer(out var p) ? p : Main.player[0], CWRID.NPC_OldDuke);
+            }
+            else if (type == CWRMessageType.OldDukeCampsiteDecorationsSync) {
+                OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

@@ -92,9 +92,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return StorylineAI();
             }
 
-            npc.TargetClosest();
-            Player target = Main.player[npc.target];
-
             if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight) {
                 if (BCKRef.Has) {
                     BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
@@ -102,12 +99,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
-                if (target.Alives()) {
+                if (!VaultUtils.isServer) {
                     ScenarioManager.Reset<ComeCampsiteFindMe>();
                     ScenarioManager.Start<ComeCampsiteFindMe>();
                 }
                 return false;
             }
+
+            npc.TargetClosest();
+            Player target = Main.player[npc.target];
 
             //检查并更新初见场景状态
             UpdateFirstMeetState(target);

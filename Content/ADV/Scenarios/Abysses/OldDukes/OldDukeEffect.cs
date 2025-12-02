@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -555,16 +556,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeEffect);
             packet.Write(IsActive);
+            packet.Write(OldDukeCampsite.WannaToFight);
             packet.Send();
         }
 
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type == CWRMessageType.OldDukeEffect) {
                 IsActive = reader.ReadBoolean();
+                OldDukeCampsite.WannaToFight = reader.ReadBoolean();
                 if (VaultUtils.isServer) {
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.OldDukeEffect);
                     packet.Write(IsActive);
+                    packet.Write(OldDukeCampsite.WannaToFight);
                     packet.Send(-1, whoAmI);
                 }
             }

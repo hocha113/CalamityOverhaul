@@ -4,6 +4,7 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -86,7 +87,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 设置装饰物的位置
+        /// 设置装饰物的位置（服务器端执行）
         /// 在营地生成时自动调用
         /// </summary>
         public static void SetupPotPosition(Vector2 campsiteCenter) {
@@ -94,6 +95,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
+            //只在服务器端执行实际的位置查找
+            if (VaultUtils.isServer || VaultUtils.isSinglePlayer) {
+                FindAndPlaceDecorations(campsiteCenter);
+            }
+
+            decorationsPositionSet = true;
+        }
+
+        /// <summary>
+        /// 查找并放置装饰物（服务器端）
+        /// </summary>
+        private static void FindAndPlaceDecorations(Vector2 campsiteCenter) {
             pots.Clear();
             flagpoles.Clear();
 
@@ -140,7 +153,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
 
             //定义旗杆的相对偏移位置
-            //放置在营地的高处和侧面
             Vector2[] flagpoleOffsets = [
                 new Vector2(-180f, -20f),
                 new Vector2(200f, -15f)
@@ -180,6 +192,67 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //放置老箱子
             PlaceOldChest(campsiteCenter);
 
+            //服务器端同步装饰物位置给所有客户端
+            if (VaultUtils.isServer) {
+                SyncDecorationsToClients();
+            }
+        }
+
+        /// <summary>
+        /// 服务器同步装饰物位置给所有客户端
+        /// </summary>
+        private static void SyncDecorationsToClients() {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.OldDukeCampsiteDecorationsSync);
+            
+            //写入锅的数量和位置
+            packet.Write(pots.Count);
+            foreach (var pot in pots) {
+                packet.WriteVector2(pot.WorldPosition);
+                packet.Write(pot.GlowTimer);
+                packet.Write(pot.BubbleTimer);
+                packet.Write(pot.SteamTimer);
+            }
+
+            //写入旗杆的数量和位置
+            packet.Write(flagpoles.Count);
+            foreach (var flagpole in flagpoles) {
+                packet.WriteVector2(flagpole.WorldPosition);
+                packet.Write(flagpole.SwayTimer);
+            }
+
+            packet.Send();
+        }
+
+        /// <summary>
+        /// 客户端接收装饰物位置数据
+        /// </summary>
+        internal static void ReceiveDecorationsSync(BinaryReader reader) {
+            pots.Clear();
+            flagpoles.Clear();
+
+            //读取锅的数据
+            int potCount = reader.ReadInt32();
+            for (int i = 0; i < potCount; i++) {
+                PotData pot = new PotData {
+                    WorldPosition = reader.ReadVector2(),
+                    GlowTimer = reader.ReadSingle(),
+                    BubbleTimer = reader.ReadSingle(),
+                    SteamTimer = reader.ReadSingle()
+                };
+                pots.Add(pot);
+            }
+
+            //读取旗杆的数据
+            int flagpoleCount = reader.ReadInt32();
+            for (int i = 0; i < flagpoleCount; i++) {
+                FlagpoleData flagpole = new FlagpoleData {
+                    WorldPosition = reader.ReadVector2(),
+                    SwayTimer = reader.ReadSingle()
+                };
+                flagpoles.Add(flagpole);
+            }
+
             decorationsPositionSet = true;
         }
 
@@ -187,10 +260,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 放置老箱子到营地
         /// </summary>
         private static void PlaceOldChest(Vector2 campsiteCenter) {
-            if (VaultUtils.isClient) {
-                return;
-            }
-
             //箱子放在营地左侧较远的位置
             Vector2 chestOffset = new Vector2(-320f, 20f);
             Vector2 searchPos = campsiteCenter + chestOffset;
@@ -245,17 +314,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
                     //获取箱子左上角位置并创建TP实体
                     if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
-                        TileProcessorLoader.AddInWorld(chestType, point, null);
+                        var tp = TileProcessorLoader.AddInWorld(chestType, point, null);
 
                         //填充箱子内容
-                        if (TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
+                        if (tp != null && TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
                             FillChestWithItems(chestTP);
                         }
 
-                        //网络同步
+                        //网络同步使用原版的物块同步
                         if (Main.netMode == NetmodeID.Server) {
                             NetMessage.SendObjectPlacement(-1, placeX, placeY, chestType, 0, 0, -1, -1);
-                            TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, chestType, point);
+                            //箱子TP实体的同步已经在TP内部实现无需额外处理
                         }
                     }
 
