@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.OtherMods.ImproveGame;
+namespace CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 
 public static class QotUtils
 {

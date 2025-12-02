@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.OtherMods.ImproveGame;
+namespace CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 
 public class ItemTypeData(Item item) : TagSerializable
 {

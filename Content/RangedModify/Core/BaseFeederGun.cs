@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.UI;
-using CalamityOverhaul.OtherMods.ImproveGame;
+using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using System;
 using System.IO;
 using Terraria;
