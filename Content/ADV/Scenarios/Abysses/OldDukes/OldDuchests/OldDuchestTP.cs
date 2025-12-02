@@ -1,3 +1,5 @@
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -30,6 +32,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         private int glowTimer = 0;
         private float glowIntensity = 0f;
         internal bool isOpen = false;
+        private int closeTimer = 0;
 
         //每日刷新相关
         private bool isInCampsite = false;
@@ -158,14 +161,48 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
             //检查距离自动关闭
             if (isOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
-                CloseUI(Main.LocalPlayer);
+                OldDuchestUI.Instance.Close();
+                SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
             //营地箱子定期刷新检查
             if (isInCampsite && !isOpen) {
-                int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
+                int currentCycle = OldDuchestLootGenerator.GetGameTimeSeed();
                 if (lastRefreshCycle != currentCycle && hasBeenOpened) {
                     RefreshLoot(currentCycle);
+                }
+
+                bool updateAdd = false;
+                //移除营地附近的掉落物品
+                foreach (var i in Main.ActiveItems) {
+                    float distance = i.DistanceSQ(CenterInWorld);
+                    if (distance > 90000) {
+                        continue;//只移除营地附近的掉落物品
+                    }
+                    i.position += i.To(CenterInWorld).UnitVector() * 6;
+                    if (distance < 16) {
+                        StackAddItem(i);
+                        i.TurnToAir();
+                        updateAdd = true;
+                    }
+                }
+                if (updateAdd) {
+                    //同步到UI
+                    SyncItemsToUI();
+                    SendData();
+                    if (closeTimer <= 0) {
+                        closeTimer = 60;
+                        //更新图格帧为打开状态
+                        UpdateTileFrame(true);
+                        SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);                       
+                    }                   
+                }
+                if (closeTimer > 0) {
+                    if (--closeTimer == 0) {
+                        //更新图格帧为关闭状态
+                        UpdateTileFrame(false);
+                        SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
+                    }
                 }
             }
 
@@ -175,6 +212,35 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 Lighting.AddLight(CenterInWorld,
                     new Color(139, 87, 42).ToVector3() * glowIntensity * pulsePulse);
             }
+        }
+
+        public void StackAddItem(Item item) {
+            if (!item.Alives()) {
+                return;
+            }
+
+            Item toAdd = item.Clone();
+
+            //1.先尝试堆叠到已有相同类型的物品
+            for (int i = 0; i < storedItems.Count && toAdd.stack > 0; i++) {
+                Item slot = storedItems[i];
+                if (slot == null || slot.IsAir) {
+                    continue;
+                }
+
+                if (slot.type == toAdd.type && slot.stack < slot.maxStack) {
+                    int transferable = Math.Min(toAdd.stack, slot.maxStack - slot.stack);
+                    slot.stack += transferable;
+                    toAdd.stack -= transferable;
+                }
+            }
+
+            if (storedItems.Count > 239) {
+                toAdd.SpwanItem(this.FromObjectGetParent(), CenterInWorld);
+                return;
+            }
+
+            storedItems.Add(toAdd);
         }
 
         /// <summary>
@@ -329,6 +395,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             //关闭UI
             if (isOpen && OldDuchestUI.Instance.CurrentChest == this) {
                 OldDuchestUI.Instance.Close();
+                SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
             //掉落物品
@@ -357,12 +424,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// 检查箱子是否在营地内
         /// </summary>
         private void CheckIfInCampsite() {
-            if (!Campsites.OldDukeCampsite.IsGenerated) {
+            if (!OldDukeCampsite.IsGenerated) {
                 isInCampsite = false;
                 return;
             }
 
-            Vector2 campsitePos = Campsites.OldDukeCampsite.CampsitePosition;
+            Vector2 campsitePos = OldDukeCampsite.CampsitePosition;
             float distance = Vector2.Distance(CenterInWorld, campsitePos);
             isInCampsite = distance < 600f;
         }
@@ -375,7 +442,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
 
-            int currentCycle = Campsites.OldDuchestLootGenerator.GetGameTimeSeed();
+            int currentCycle = OldDuchestLootGenerator.GetGameTimeSeed();
             if (lastRefreshCycle != currentCycle) {
                 RefreshLoot(currentCycle);
             }

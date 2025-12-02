@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         private float bubbleTimer;
 
         //初始化标志
-        private bool initialize;
+        private bool initialize = true;
 
         /// <summary>
         /// 设置默认屏幕Y值
@@ -65,7 +65,9 @@ namespace CalamityOverhaul.Content.ADV.Common
             //初始化屏幕位置
             if (initialize) {
                 initialize = false;
-                screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+                if (screenYValue == 0) {
+                    screenYValue = Main.screenHeight / 2f - currentPanelHeight / 2f;
+                }
             }
 
             Texture2D pixel = VaultAsset.placeholder2.Value;

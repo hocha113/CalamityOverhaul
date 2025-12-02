@@ -6454,6 +6454,7 @@ UI: {
 		CurrentFragmentsText: 当前拥有
 		ReturnToCampsiteText: 返回营地提交
 		QuestCompleteText: 任务完成！
+		HintText: 钓鱼或者搜刮海洋区域的生物
 	}
 
 	OceanRaidersUI: {
@@ -7278,5 +7279,6 @@ ADV: {
 		B1: ……有空就来喝杯茶吧
 		C1: 有正事找你
 		C2: 我只是想钓着玩玩……
+		B1_NO: 你先找来我这里吧，认一下路
 	}
 }

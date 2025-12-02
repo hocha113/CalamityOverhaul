@@ -7391,5 +7391,6 @@ ADV: {
 		// B1: ...Come have a cup of tea when you have time.
 		// C1: I have business with you.
 		// C2: I was just fishing for fun...
+		// B1_NO: Come find me first. You'd best learn the path.
 	}
 }

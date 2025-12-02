@@ -146,11 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         /// </summary>
         public void Close() {
             _active = false;
-
-            if (CurrentChest != null) {
-                CurrentChest.SaveItemsFromUI();
-                CurrentChest.CloseUI(player);
-            }
+            CurrentChest?.CloseUI(player);
         }
 
         public override void Update() {
@@ -216,6 +212,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition,
                     keyLeftPressState == KeyPressState.Pressed)) {
                     Close();
+                    SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = CurrentChest.isUnderwater ? -0.4f : 0 });
                     return;
                 }
 
@@ -232,11 +229,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
                 Close();
+                SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = CurrentChest.isUnderwater ? -0.4f : 0 });
             }
 
             //ESC¹Ø±Õ
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
                 Close();
+                SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = CurrentChest.isUnderwater ? -0.4f : 0 });
             }
         }
 

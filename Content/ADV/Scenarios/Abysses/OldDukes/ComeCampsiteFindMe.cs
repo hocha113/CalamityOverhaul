@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -17,13 +18,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
 
-        public static LocalizedText B1 { get; private set; }
+        public static LocalizedText B1 { get; private set; }       
         public static LocalizedText C1 { get; private set; }
         public static LocalizedText C2 { get; private set; }
+        public static LocalizedText B1_NO { get; private set; }
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
             B1 = this.GetLocalization(nameof(B1), () => "有事就来营地找我");
+            B1_NO = this.GetLocalization(nameof(B1_NO), () => "你先找来我这里吧，认一下路");
             C1 = this.GetLocalization(nameof(C1), () => "有事");
             C2 = this.GetLocalization(nameof(C2), () => "我只是钓来玩玩");
         }
@@ -31,6 +34,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         protected override void Build() {
             //注册老公爵立绘
             DialogueBoxBase.RegisterPortrait(OldDukeName.Value, OldDukeCampsite.OldDuke, OldDukeCampsite.PortraitRec, null, true);
+
+            if (FindCampsiteUI.Instance.CanOpne) {
+                //任务未完成，提示去找营地
+                Add(OldDukeName.Value, B1_NO.Value, onComplete: () => OldDukeEffect.IsActive = false);
+                return;
+            }
 
             //任务已完成，显示简单对话
             AddWithChoices(

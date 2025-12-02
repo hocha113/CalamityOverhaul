@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
@@ -328,11 +329,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         #endregion
 
         #region 货币显示
+        private long CalculateTotalCurrency() {
+            long totalCopper = 0;
+            CalculateInventory(player.inventory, ref totalCopper);
+            CalculateInventory(player.bank.item, ref totalCopper);
+            CalculateInventory(player.bank2.item, ref totalCopper);
+            CalculateInventory(player.bank3.item, ref totalCopper);
+            CalculateInventory(player.bank4.item, ref totalCopper);
+            return totalCopper;
+        }
+
+        private static void CalculateInventory(Item[] items, ref long totalCopper) {
+            if (items == null) return;
+
+            for (int i = 0; i < items.Length; i++) {
+                Item item = items[i];
+                if (!item.Alives()) continue;
+
+                if (item.type == ModContent.ItemType<Oceanfragments>()) totalCopper += item.stack;
+            }
+        }
+
         private void DrawCurrencyDisplay(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
             //获取海洋残片数量
-            int oceanFragmentCount = player.CountItem(ModContent.ItemType<Oceanfragments>());
+            int oceanFragmentCount = (int)CalculateTotalCurrency();
 
             //绘制货币图标和数量
             Vector2 currencyPos = panelPosition + new Vector2(40, 100);
