@@ -37,34 +37,43 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         public static LocalizedText AresDescription { get; private set; }
         public static LocalizedText ArtemisApolloDescription { get; private set; }
 
-        //图标动画状态
-        private static int currentIconIndex = -1;
-        private static int targetIconIndex = -1;
-        private static float iconFadeProgress = 0f;
-        private static float iconScaleProgress = 0f;
-        private static float iconRotation = 0f;
-        private static float iconGlowIntensity = 0f;
+        //主图标动画状态（顶部）
+        private static int currentMainIcon = -1;
+        private static int targetMainIcon = -1;
+        private static float mainIconFade = 0f;
+        private static float mainIconScale = 0f;
+        private static float mainIconRotation = 0f;
+        private static float mainIconGlow = 0f;
+
+        //侧边图标动画状态（左下和右下）
+        private static float[] sideIconFade = new float[2];
+        private static float[] sideIconScale = new float[2];
+        private static float[] sideIconRotation = new float[2];
 
         //文本解码动画状态
         private static float textDecodeProgress = 0f;
         private static string decodedText = "";
         private static string targetText = "";
         private static float textFadeProgress = 0f;
-        private static float[] charDecodeProgress;//每个字符的独立解码进度
-        private static int decodeUpdateTimer = 0;//用于控制乱码更新频率
+        private static float[] charDecodeProgress;
+        private static int decodeUpdateTimer = 0;
 
         //动画参数
         private const float FadeSpeed = 0.08f;
         private const float ScaleSpeed = 0.12f;
-        private const float TextDecodeSpeed = 0.03f;//解码速度，逼养的0.03还不够慢就吃屎去吧
-        private const float TextFadeSpeed = 0.04f;//稍微减慢淡入速度
-        private const float IconBaseScale = 2.2f;
-        private const float IconMaxScale = 3.6f;
-        private const int GlitchUpdateInterval = 2;//乱码更新间隔，单位帧
+        private const float TextDecodeSpeed = 0.03f;
+        private const float TextFadeSpeed = 0.04f;
+        private const float MainIconBaseScale = 2.2f;
+        private const float MainIconMaxScale = 3.6f;
+        private const float SideIconBaseScale = 1.2f;
+        private const float SideIconMaxScale = 1.8f;
+        private const int GlitchUpdateInterval = 2;
 
-        //图标位置偏移，在玩家头顶
-        private static Vector2 iconOffset = new Vector2(0, -120f);
-        private static Vector2 textOffset = new Vector2(0, -100f);//文本相对图标的偏移，这里是偏移到上方位置
+        //图标位置偏移
+        private readonly static Vector2 mainIconOffset = new Vector2(0, -120f);
+        private readonly static Vector2 textOffset = new Vector2(0, -100f);
+        private readonly static Vector2 leftSideIconOffset = new Vector2(-180f, 0f);
+        private readonly static Vector2 rightSideIconOffset = new Vector2(180f, 0f);
 
         //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
@@ -85,81 +94,103 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
 
         public override void UpdateBySystem(int index) {
-            //更新图标动画
-            UpdateIconAnimation();
-
-            //更新文本解码动画
+            UpdateMainIconAnimation();
+            UpdateSideIconsAnimation();
             UpdateTextDecoding();
-
-            //更新科技粒子
             UpdateTechParticles();
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
-            //绘制机甲图标和特效
-            if (currentIconIndex >= 0 && iconFadeProgress > 0.01f) {
+            if (currentMainIcon >= 0 || sideIconFade[0] > 0.01f || sideIconFade[1] > 0.01f) {
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                DrawMechIcon(spriteBatch, main);
+                
+                DrawSideIcons(spriteBatch, main);
+                DrawMainIcon(spriteBatch, main);
                 DrawMechDescription(spriteBatch, main);
+                
                 Main.spriteBatch.End();
             }
         }
 
         /// <summary>
-        /// 更新图标动画状态
+        /// 更新主图标动画状态
         /// </summary>
-        private static void UpdateIconAnimation() {
-            iconRotation = 0f;
-            //处理图标切换
-            if (targetIconIndex != currentIconIndex) {
-                //淡出当前图标
-                if (currentIconIndex >= 0 && iconFadeProgress > 0f) {
-                    iconFadeProgress -= FadeSpeed * 1.5f;
-                    iconScaleProgress -= ScaleSpeed * 1.2f;
+        private static void UpdateMainIconAnimation() {
+            mainIconRotation = 0f;
+            
+            if (targetMainIcon != currentMainIcon) {
+                if (currentMainIcon >= 0 && mainIconFade > 0f) {
+                    mainIconFade -= FadeSpeed * 1.5f;
+                    mainIconScale -= ScaleSpeed * 1.2f;
 
-                    if (iconFadeProgress <= 0f) {
-                        currentIconIndex = targetIconIndex;
-                        iconFadeProgress = 0f;
-                        iconScaleProgress = 0f;
-                        iconRotation = 0f;
-
-                        //重置文本动画
+                    if (mainIconFade <= 0f) {
+                        currentMainIcon = targetMainIcon;
+                        mainIconFade = 0f;
+                        mainIconScale = 0f;
+                        mainIconRotation = 0f;
                         ResetTextAnimation();
                     }
                 }
                 else {
-                    //直接切换到新图标
-                    currentIconIndex = targetIconIndex;
-                    iconFadeProgress = 0f;
-                    iconScaleProgress = 0f;
-                    iconRotation = 0f;
-
-                    //重置文本动画
+                    currentMainIcon = targetMainIcon;
+                    mainIconFade = 0f;
+                    mainIconScale = 0f;
+                    mainIconRotation = 0f;
                     ResetTextAnimation();
                 }
             }
 
-            //淡入目标图标
-            if (currentIconIndex >= 0 && currentIconIndex == targetIconIndex) {
-                iconFadeProgress = Math.Min(iconFadeProgress + FadeSpeed, 1f);
-                iconScaleProgress = Math.Min(iconScaleProgress + ScaleSpeed, 1f);
+            if (currentMainIcon >= 0 && currentMainIcon == targetMainIcon) {
+                mainIconFade = Math.Min(mainIconFade + FadeSpeed, 1f);
+                mainIconScale = Math.Min(mainIconScale + ScaleSpeed, 1f);
             }
 
-            //持续旋转和光效脉冲
-            if (currentIconIndex >= 0) {
-                //光效脉冲
-                iconGlowIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+            if (currentMainIcon >= 0) {
+                mainIconGlow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
             }
 
-            //生成科技粒子
-            if (currentIconIndex >= 0 && iconFadeProgress > 0.5f) {
+            if (currentMainIcon >= 0 && mainIconFade > 0.5f) {
                 particleSpawnTimer++;
                 if (particleSpawnTimer >= 3) {
                     particleSpawnTimer = 0;
-                    SpawnTechParticle();
+                    SpawnTechParticle(mainIconOffset);
                 }
             }
+        }
+
+        /// <summary>
+        /// 更新侧边图标动画状态
+        /// </summary>
+        private static void UpdateSideIconsAnimation() {
+            if (currentMainIcon < 0) {
+                //没有选中任何选项，淡出所有侧边图标
+                for (int i = 0; i < 2; i++) {
+                    sideIconFade[i] = Math.Max(sideIconFade[i] - FadeSpeed * 1.5f, 0f);
+                    sideIconScale[i] = Math.Max(sideIconScale[i] - ScaleSpeed * 1.2f, 0f);
+                }
+                return;
+            }
+
+            for (int i = 0; i < 2; i++) {
+                //淡入侧边图标
+                sideIconFade[i] = Math.Min(sideIconFade[i] + FadeSpeed * 0.8f, 0.7f);
+                sideIconScale[i] = Math.Min(sideIconScale[i] + ScaleSpeed * 0.8f, 1f);
+                sideIconRotation[i] = 0f;//别转
+            }
+        }
+
+        /// <summary>
+        /// 获取其他两个图标的索引
+        /// </summary>
+        private static int[] GetOtherIconIndices(int mainIndex) {
+            List<int> indices = new List<int>();
+            for (int i = 0; i < 3; i++) {
+                if (i != mainIndex) {
+                    indices.Add(i);
+                }
+            }
+            return indices.ToArray();
         }
 
         /// <summary>
@@ -169,10 +200,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             textDecodeProgress = 0f;
             textFadeProgress = 0f;
             decodedText = "";
-            targetText = GetDescriptionText(currentIconIndex);
+            targetText = GetDescriptionText(currentMainIcon);
             decodeUpdateTimer = 0;
 
-            //初始化每个字符的解码进度
             if (!string.IsNullOrEmpty(targetText)) {
                 charDecodeProgress = new float[targetText.Length];
                 for (int i = 0; i < charDecodeProgress.Length; i++) {
@@ -185,21 +215,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// 更新文本解码动画
         /// </summary>
         private static void UpdateTextDecoding() {
-            if (currentIconIndex < 0 || iconFadeProgress < 0.5f) {
+            if (currentMainIcon < 0 || mainIconFade < 0.5f) {
                 return;
             }
 
-            //文本淡入
             textFadeProgress = Math.Min(textFadeProgress + TextFadeSpeed, 1f);
 
-            //解码进度
             if (textDecodeProgress < 1f) {
                 textDecodeProgress = Math.Min(textDecodeProgress + TextDecodeSpeed, 1f);
 
-                //更新每个字符的独立解码进度
                 if (charDecodeProgress != null) {
                     for (int i = 0; i < charDecodeProgress.Length; i++) {
-                        //每个字符有延迟启动效果
                         float charStartProgress = (float)i / charDecodeProgress.Length;
                         if (textDecodeProgress > charStartProgress) {
                             float localProgress = (textDecodeProgress - charStartProgress) / (1f - charStartProgress);
@@ -208,7 +234,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     }
                 }
 
-                //控制乱码更新频率
                 decodeUpdateTimer++;
                 if (decodeUpdateTimer >= GlitchUpdateInterval) {
                     decodeUpdateTimer = 0;
@@ -216,13 +241,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 }
             }
             else if (decodedText != targetText) {
-                //完全解码后，直接显示完整文本
                 decodedText = targetText;
             }
         }
 
         /// <summary>
-        /// 更新解码文本（带乱码效果）
+        /// 更新解码文本
         /// </summary>
         private static void UpdateDecodedText() {
             if (string.IsNullOrEmpty(targetText)) {
@@ -240,23 +264,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 float charProgress = charDecodeProgress[i];
 
                 if (charProgress >= 0.9f) {
-                    //字符已完全解码，哈哈哈哈哈哈我看懂啦道爷我成啦哈哈哈哈哈哈哈哈哈
                     sb.Append(targetText[i]);
                 }
                 else if (charProgress > 0.1f) {
-                    //解码中，显示多层乱码效果
                     if (charProgress > 0.7f) {
-                        //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
                         if (Main.rand.NextBool(3)) {
                             sb.Append(targetText[i]);
                         }
                         else {
-                            //使用相似度更高的乱码
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
                         }
                     }
                     else if (charProgress > 0.4f) {
-                        //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
                         if (Main.rand.NextBool(4)) {
                             sb.Append(targetText[i]);
                         }
@@ -265,7 +284,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                         }
                     }
                     else {
-                        //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
                         if (Main.rand.NextBool(2)) {
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
@@ -275,7 +293,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     }
                 }
                 else {
-                    //尚未开始解码，全是火星文噜噜噜噜
                     if (Main.rand.NextBool(4)) {
                         sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                     }
@@ -301,40 +318,35 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
 
         /// <summary>
-        /// 绘制机甲图标
+        /// 绘制主图标（顶部）
         /// </summary>
-        private static void DrawMechIcon(SpriteBatch spriteBatch, Main main) {
+        private static void DrawMainIcon(SpriteBatch spriteBatch, Main main) {
+            if (currentMainIcon < 0 || mainIconFade < 0.01f) return;
+
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) return;
 
-            //获取对应的图标纹理
-            Texture2D iconTexture = GetIconTexture(currentIconIndex);
+            Texture2D iconTexture = GetIconTexture(currentMainIcon);
             if (iconTexture == null) return;
 
-            //计算世界坐标位置
-            Vector2 worldPos = player.Center + iconOffset;
+            Vector2 worldPos = player.Center + mainIconOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            //计算缩放
-            float easedScale = CWRUtils.EaseOutBack(iconScaleProgress);
-            float scale = MathHelper.Lerp(IconBaseScale, IconMaxScale, easedScale);
-
-            //计算透明度
-            float alpha = iconFadeProgress * 0.85f;
-
-            //获取图标颜色
-            Color iconColor = GetIconColor(currentIconIndex);
+            float easedScale = CWRUtils.EaseOutBack(mainIconScale);
+            float scale = MathHelper.Lerp(MainIconBaseScale, MainIconMaxScale, easedScale);
+            float alpha = mainIconFade * 0.85f;
+            Color iconColor = GetIconColor(currentMainIcon);
 
             //绘制外层光晕（多层）
             for (int i = 0; i < 3; i++) {
                 float glowScale = scale * (1.3f + i * 0.15f);
-                float glowAlpha = alpha * (0.3f - i * 0.08f) * iconGlowIntensity;
+                float glowAlpha = alpha * (0.3f - i * 0.08f) * mainIconGlow;
                 spriteBatch.Draw(
                     iconTexture,
                     screenPos,
                     null,
                     iconColor * glowAlpha,
-                    iconRotation * 0.5f,
+                    mainIconRotation * 0.5f,
                     iconTexture.Size() * 0.5f,
                     glowScale,
                     SpriteEffects.None,
@@ -342,7 +354,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 );
             }
 
-            //绘制科技扫描线效果
             DrawScanLines(spriteBatch, screenPos, iconTexture.Size() * scale, alpha, iconColor);
 
             //绘制主图标
@@ -351,7 +362,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 screenPos,
                 null,
                 Color.White * alpha,
-                iconRotation * 0.3f,
+                mainIconRotation * 0.3f,
                 iconTexture.Size() * 0.5f,
                 scale,
                 SpriteEffects.None,
@@ -359,21 +370,79 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             );
 
             //绘制内层高光
-            float highlightAlpha = alpha * iconGlowIntensity * 0.6f;
+            float highlightAlpha = alpha * mainIconGlow * 0.6f;
             spriteBatch.Draw(
                 iconTexture,
                 screenPos,
                 null,
                 Color.White * highlightAlpha,
-                iconRotation * 0.3f,
+                mainIconRotation * 0.3f,
                 iconTexture.Size() * 0.5f,
                 scale * 0.9f,
                 SpriteEffects.None,
                 0f
             );
 
-            //绘制科技粒子
             DrawTechParticles(spriteBatch, screenPos);
+        }
+
+        /// <summary>
+        /// 绘制侧边图标（左下和右下）
+        /// </summary>
+        private static void DrawSideIcons(SpriteBatch spriteBatch, Main main) {
+            if (currentMainIcon < 0) return;
+
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active) return;
+
+            int[] otherIndices = GetOtherIconIndices(currentMainIcon);
+            Vector2[] sideOffsets = new Vector2[] { leftSideIconOffset, rightSideIconOffset };
+
+            for (int i = 0; i < 2; i++) {
+                if (sideIconFade[i] < 0.01f) continue;
+
+                int iconIndex = otherIndices[i];
+                Texture2D iconTexture = GetIconTexture(iconIndex);
+                if (iconTexture == null) continue;
+
+                Vector2 worldPos = player.Center + sideOffsets[i];
+                Vector2 screenPos = worldPos - Main.screenPosition;
+
+                float easedScale = CWRUtils.EaseOutBack(sideIconScale[i]);
+                float scale = MathHelper.Lerp(SideIconBaseScale, SideIconMaxScale, easedScale);
+                float alpha = sideIconFade[i];
+                Color iconColor = GetIconColor(iconIndex);
+
+                //绘制光晕
+                for (int j = 0; j < 2; j++) {
+                    float glowScale = scale * (1.2f + j * 0.15f);
+                    float glowAlpha = alpha * (0.25f - j * 0.1f);
+                    spriteBatch.Draw(
+                        iconTexture,
+                        screenPos,
+                        null,
+                        iconColor * glowAlpha,
+                        sideIconRotation[i],
+                        iconTexture.Size() * 0.5f,
+                        glowScale,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+
+                //绘制主体
+                spriteBatch.Draw(
+                    iconTexture,
+                    screenPos,
+                    null,
+                    Color.White * alpha,
+                    sideIconRotation[i],
+                    iconTexture.Size() * 0.5f,
+                    scale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
 
         /// <summary>
@@ -389,25 +458,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //计算文本位置
-            Vector2 worldPos = player.Center + iconOffset + textOffset;
+            Vector2 worldPos = player.Center + mainIconOffset + textOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            //计算文本尺寸
             float textScale = 1.5f;
             Vector2 textSize = font.MeasureString(decodedText) * textScale;
-            Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, textSize.Y);//向上偏移文本高度
+            Vector2 textPos = screenPos - new Vector2(textSize.X * 0.5f, textSize.Y);
 
-            float alpha = textFadeProgress * iconFadeProgress * 0.9f;
-            Color iconColor = GetIconColor(currentIconIndex);
+            float alpha = textFadeProgress * mainIconFade * 0.9f;
+            Color iconColor = GetIconColor(currentMainIcon);
 
-            //绘制背景面板
             DrawTextBackground(spriteBatch, textPos, textSize, alpha, iconColor);
-
-            //绘制扫描线效果
             DrawTextScanLines(spriteBatch, textPos, textSize, alpha, iconColor);
-
-            //绘制噪点效果
             DrawTextNoise(spriteBatch, textPos, textSize, alpha);
 
             //绘制文本光晕
@@ -418,7 +480,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     iconColor * (alpha * 0.4f), textScale);
             }
 
-            //绘制主文本
             Color textColor = Color.Lerp(Color.White, iconColor, 0.3f);
             Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, textScale);
         }
@@ -437,10 +498,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 (int)(size.Y + 20)
             );
 
-            //半透明深色背景
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(10, 15, 25) * (alpha * 0.85f));
 
-            //发光边框
             Color edgeColor = color * (alpha * 0.6f);
             sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 3), edgeColor);
             sb.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 3, bgRect.Width, 3), edgeColor * 0.7f);
@@ -560,9 +619,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// </summary>
         private static Color GetIconColor(int index) {
             return index switch {
-                0 => new Color(255, 80, 80),//阿瑞斯 - 红色
-                1 => new Color(100, 255, 150),//塔纳托斯 - 绿色
-                2 => new Color(80, 200, 255),//双子 - 蓝色
+                0 => new Color(255, 80, 80),
+                1 => new Color(100, 255, 150),
+                2 => new Color(80, 200, 255),
                 _ => Color.White
             };
         }
@@ -621,7 +680,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        private static void SpawnTechParticle() {
+        private static void SpawnTechParticle(Vector2 iconOffset) {
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) return;
 
@@ -632,7 +691,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             float distance = Main.rand.NextFloat(20f, 40f);
             Vector2 spawnPos = screenPos + angle.ToRotationVector2() * distance;
 
-            Color particleColor = GetIconColor(currentIconIndex);
+            Color particleColor = GetIconColor(currentMainIcon);
             techParticles.Add(new TechParticle(spawnPos, particleColor));
         }
 
@@ -643,7 +702,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 }
             }
 
-            //限制粒子数量
             while (techParticles.Count > 30) {
                 techParticles.RemoveAt(0);
             }
@@ -660,18 +718,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// 注册悬停效果，管理音效和动画
         /// </summary>
         internal static void RegisterHoverEffects() {
-            //重置上次悬停状态
             lastHoveredChoice = -1;
-            currentIconIndex = -1;
-            targetIconIndex = -1;
-            iconFadeProgress = 0f;
-            iconScaleProgress = 0f;
-            iconRotation = 0f;
-            iconGlowIntensity = 0f;
+            currentMainIcon = -1;
+            targetMainIcon = -1;
+            mainIconFade = 0f;
+            mainIconScale = 0f;
+            mainIconRotation = 0f;
+            mainIconGlow = 0f;
+            sideIconFade = new float[2];
+            sideIconScale = new float[2];
+            sideIconRotation = new float[2];
             techParticles.Clear();
             particleSpawnTimer = 0;
 
-            //订阅悬停变化事件
             ADVChoiceBox.OnHoverChanged += OnChoiceHoverChanged;
         }
 
@@ -682,9 +741,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             //如果悬停到新的启用选项上，避免重复触发
             if (e.CurrentIndex >= 0 && e.CurrentChoice != null && e.CurrentChoice.Enabled && e.CurrentIndex != lastHoveredChoice) {
                 lastHoveredChoice = e.CurrentIndex;
-
-                //设置目标图标索引
-                targetIconIndex = e.CurrentIndex;
+                targetMainIcon = e.CurrentIndex;
 
                 //播放对应机甲的悬停音效
                 SoundStyle hoverSound = e.CurrentIndex switch {
@@ -721,7 +778,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             //如果离开了选项，悬停到空白处
             if (e.CurrentIndex < 0 && e.PreviousIndex >= 0) {
                 lastHoveredChoice = -1;
-                targetIconIndex = -1;
+                targetMainIcon = -1;
 
                 //播放离开音效
                 SoundEngine.PlaySound(SoundID.MenuClose with {
@@ -735,10 +792,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// 清理资源，当场景结束时调用
         /// </summary>
         internal static void Cleanup() {
-            currentIconIndex = -1;
-            targetIconIndex = -1;
-            iconFadeProgress = 0f;
-            iconScaleProgress = 0f;
+            currentMainIcon = -1;
+            targetMainIcon = -1;
+            mainIconFade = 0f;
+            mainIconScale = 0f;
+            sideIconFade = new float[2];
+            sideIconScale = new float[2];
             techParticles.Clear();
             ADVChoiceBox.OnHoverChanged -= OnChoiceHoverChanged;
         }
