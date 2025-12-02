@@ -192,6 +192,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项1：接受合作
         public void Choice1() {
             CurrentPlayerChoice = OldDukeInteractionState.AcceptedCooperation;
+            OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice1>();
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
             Complete();
@@ -221,6 +222,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项2：拒绝合作
         public void Choice2() {
             CurrentPlayerChoice = OldDukeInteractionState.DeclinedCooperation;
+            OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice2>();
             ScenarioManager.Start<FirstMetOldDuke_Choice2>();
             Complete();
@@ -254,6 +256,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //选项3：拒绝合作并拔出武器
         public void Choice3() {
             CurrentPlayerChoice = OldDukeInteractionState.ChoseToFight;
+            OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice3>();
             ScenarioManager.Start<FirstMetOldDuke_Choice3>();
             Complete();

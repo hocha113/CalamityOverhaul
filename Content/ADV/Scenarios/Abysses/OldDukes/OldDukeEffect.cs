@@ -557,6 +557,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             packet.Write((byte)CWRMessageType.OldDukeEffect);
             packet.Write(IsActive);
             packet.Write(OldDukeCampsite.WannaToFight);
+            packet.Write((byte)FirstMetOldDuke.CurrentPlayerChoice);
             packet.Send();
         }
 
@@ -564,11 +565,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (type == CWRMessageType.OldDukeEffect) {
                 IsActive = reader.ReadBoolean();
                 OldDukeCampsite.WannaToFight = reader.ReadBoolean();
+                FirstMetOldDuke.CurrentPlayerChoice = (OldDukeInteractionState)reader.ReadByte();
                 if (VaultUtils.isServer) {
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.OldDukeEffect);
                     packet.Write(IsActive);
                     packet.Write(OldDukeCampsite.WannaToFight);
+                    packet.Write((byte)FirstMetOldDuke.CurrentPlayerChoice);
                     packet.Send(-1, whoAmI);
                 }
             }
