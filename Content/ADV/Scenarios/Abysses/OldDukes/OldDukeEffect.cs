@@ -830,6 +830,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 Pitch = -0.6f,
                 MaxInstances = 2
             }, burstCenter);
+
+            if (!VaultUtils.isClient && NPC.FindFirstNPC(CWRID.NPC_OldDuke).TryGetNPC(out var boss)) {
+                Projectile.NewProjectile(boss.FromObjectGetParent(), burstCenter, Vector2.Zero, ModContent.ProjectileType<SulfuricacidExplosion>(), 120, 2, -1);
+            }
         }
 
         public override void Unload() {

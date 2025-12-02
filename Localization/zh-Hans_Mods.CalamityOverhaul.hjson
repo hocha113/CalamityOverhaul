@@ -1841,6 +1841,7 @@ Projectiles: {
 	AriaRSkill.DisplayName: 星环护卫
 	AriaRSkillBeam.DisplayName: 蓝色伽马射线
 	AriaQSkillMiniDisk.DisplayName: 星环护卫
+	SulfuricacidExplosion.DisplayName: 硫酸爆炸
 }
 
 Configs: {

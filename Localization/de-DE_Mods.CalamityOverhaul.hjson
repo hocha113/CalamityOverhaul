@@ -1847,6 +1847,7 @@ Projectiles: {
 	// AriaRSkill.DisplayName: Aria R Skill
 	// AriaRSkillBeam.DisplayName: Aria R Skill Beam
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
+	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 }
 
 Configs: {
