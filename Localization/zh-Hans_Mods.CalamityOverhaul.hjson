@@ -6446,25 +6446,24 @@ UI: {
 	}
 
 	FindFragmentUI: {
-		// QuestTitle: The Abyss Beckons
-		// DamageContribution: Collection Progress
-		// RequiredContribution: Objective: Collect 777 Ocean Scraps
-		// ObjectiveText: Objective
-		// CollectFragmentsText: Collect Ocean Scraps
-		// CurrentFragmentsText: Currently Held
-		// ReturnToCampsiteText: Return to campsite to submit
-		// QuestCompleteText: Quest Complete!
-		// HintText: Fish or loot creatures in the Ocean
+		QuestTitle: 深渊在呼唤
+		DamageContribution: 收集进度
+		RequiredContribution: 目标: 收集777块海洋残片
+		ObjectiveText: 目标
+		CollectFragmentsText: 收集海洋残片
+		CurrentFragmentsText: 当前拥有
+		ReturnToCampsiteText: 返回营地提交
+		QuestCompleteText: 任务完成！
 	}
 
 	OceanRaidersUI: {
-		// TitleText: Ocean Devourer Storage
-		// StorageText: Storage
+		TitleText: 海洋吞噬者存储
+		StorageText: 存储空间
 	}
 
 	OldDuchestUI: {
-		// TitleText: Old Chest
-		// StorageText: Storage Space
+		TitleText: 老箱子
+		StorageText: 储物空间
 	}
 }
 
