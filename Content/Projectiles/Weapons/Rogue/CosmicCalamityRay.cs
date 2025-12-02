@@ -1,19 +1,20 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using InnoVault.Trails;
+using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using System;
 using Terraria;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 {
-    internal class CosmicCalamityRay : ModProjectile
+    internal class CosmicCalamityRay : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
         internal Vector2[] RayPoint;
+        private Trail Trail;
         internal const int pointNum = 100;
         public override bool ShouldUpdatePosition() => false;
 
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.damage = (int)(Projectile.damage * 0.98f);
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 300);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
@@ -79,21 +80,44 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
+        internal float GetWidthFunc(float completionRatio) {
+            return MathF.Sin(MathHelper.Pi * MathHelper.Clamp(completionRatio, 0f, 1f)) * Projectile.scale * Projectile.width * 6;
+        }
 
-        public Color PrimitiveColorFunction(float completionRatio) {
-            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
+        internal Color GetColorFunc(Vector2 completionRatio) {
+            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio.X * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
             Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, new Color(119, 210, 255), Color.Blue, new Color(247, 119, 255));
             return color;
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            if (RayPoint != null) {
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-                PrimitiveRenderer.RenderTrail(RayPoint, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (RayPoint == null || RayPoint.Length == 0) {
+                return;
             }
+
+            //创建或更新 Trail
+            Trail ??= new Trail(RayPoint, GetWidthFunc, GetColorFunc);
+            Trail.TrailPositions = RayPoint;
+
+            //使用 InnoVault 的绘制方法
+            Effect effect = EffectLoader.GradientTrail.Value;
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Extra_193.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DragonRage_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            for (int i = 0; i < 3; i++) {
+                Trail?.DrawTrail(effect);
+            }
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
             return false;
         }
     }
