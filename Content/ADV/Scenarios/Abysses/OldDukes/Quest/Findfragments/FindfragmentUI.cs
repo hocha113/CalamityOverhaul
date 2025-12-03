@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
+using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -62,14 +63,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         /// <summary>
         /// 获取玩家背包中的海洋残片数量
         /// </summary>
-        private static int GetFragmentCount() {
+        public static int GetFragmentCount() {
             int count = 0;
             Player player = Main.LocalPlayer;
             int fragmentType = ModContent.ItemType<Oceanfragments>();
 
-            for (int i = 0; i < player.inventory.Length; i++) {
-                if (player.inventory[i].type == fragmentType) {
-                    count += player.inventory[i].stack;
+            var bigBags = player.GetBigBagItems() ?? [];
+            //依次从各个储物位置消耗
+            Item[][] inventories = [
+                player.inventory,
+                    player.bank.item,
+                    player.bank2.item,
+                    player.bank3.item,
+                    player.bank4.item,
+                    [.. bigBags],
+                ];
+
+            foreach (var inventorie in inventories) {
+                for (int i = 0; i < inventorie.Length; i++) {
+                    if (inventorie[i].type == fragmentType) {
+                        count += inventorie[i].stack;
+                    }
                 }
             }
 

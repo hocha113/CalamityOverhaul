@@ -5,6 +5,8 @@ using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -105,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
             else {
                 //任务进行中，显示选项
-                int fragmentCount = GetFragmentCount();
+                int fragmentCount = FindFragmentUI.GetFragmentCount();
                 bool hasEnoughFragments = fragmentCount >= 777;
 
                 AddWithChoices(
@@ -151,38 +153,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 获取玩家背包中的海洋残片数量
-        /// </summary>
-        private static int GetFragmentCount() {
-            int count = 0;
-            Player player = Main.LocalPlayer;
-            int fragmentType = ModContent.ItemType<Oceanfragments>();
-
-            for (int i = 0; i < player.inventory.Length; i++) {
-                if (player.inventory[i].type == fragmentType) {
-                    count += player.inventory[i].stack;
-                }
-            }
-
-            return count;
-        }
-
-        /// <summary>
         /// 消耗海洋残片
         /// </summary>
         private static void ConsumeFragments(int amount) {
             Player player = Main.LocalPlayer;
             int fragmentType = ModContent.ItemType<Oceanfragments>();
             int remaining = amount;
+            var bigBags = player.GetBigBagItems() ?? [];
+            //依次从各个储物位置消耗
+            Item[][] inventories = [
+                player.inventory,
+                    player.bank.item,
+                    player.bank2.item,
+                    player.bank3.item,
+                    player.bank4.item,
+                    [.. bigBags],
+                ];
 
-            for (int i = 0; i < player.inventory.Length && remaining > 0; i++) {
-                if (player.inventory[i].type == fragmentType) {
-                    int toConsume = Math.Min(player.inventory[i].stack, remaining);
-                    player.inventory[i].stack -= toConsume;
-                    remaining -= toConsume;
+            foreach (var inventorie in inventories) {
+                for (int i = 0; i < inventorie.Length && remaining > 0; i++) {
+                    if (inventorie[i].type == fragmentType) {
+                        int toConsume = Math.Min(inventorie[i].stack, remaining);
+                        inventorie[i].stack -= toConsume;
+                        remaining -= toConsume;
 
-                    if (player.inventory[i].stack <= 0) {
-                        player.inventory[i].TurnToAir();
+                        if (inventorie[i].stack <= 0) {
+                            inventorie[i].TurnToAir();
+                        }
                     }
                 }
             }

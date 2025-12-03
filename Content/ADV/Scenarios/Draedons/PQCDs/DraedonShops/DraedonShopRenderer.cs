@@ -1,3 +1,4 @@
+using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -266,6 +267,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             CalculateInventory(player.bank2.item, ref totalCopper);
             CalculateInventory(player.bank3.item, ref totalCopper);
             CalculateInventory(player.bank4.item, ref totalCopper);
+            var bigBags = player.GetBigBagItems() ?? [];
+            CalculateInventory([.. bigBags], ref totalCopper);
             return totalCopper;
         }
 

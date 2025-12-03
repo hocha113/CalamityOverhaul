@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -25,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         //长按购买逻辑
         private int holdingPurchaseIndex = -1;
         private int holdingPurchaseTimer = 0;
-        private int purchaseCooldown = 30;
+        private int purchaseCooldown = 20;
         private const int InitialPurchaseCooldown = 30;
         private const int MinPurchaseCooldown = 2;
         private const int HoldThreshold = 20;
@@ -220,20 +222,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             OldDukeShopItem shopItem = shopItems[index];
 
             //检查是否有足够的海洋残片
-            int oceanFragmentCount = player.CountItem(ModContent.ItemType<Oceanfragments>());
+            int oceanFragmentCount = FindFragmentUI.GetFragmentCount();
 
             if (oceanFragmentCount >= shopItem.price) {
-                //消耗海洋残片 - 循环删除直到达到所需数量
+                //消耗海洋残片，从所有储物位置循环删除直到达到所需数量
                 int remainingToConsume = shopItem.price;
-                for (int i = 0; i < player.inventory.Length && remainingToConsume > 0; i++) {
-                    Item invItem = player.inventory[i];
-                    if (invItem.type == ModContent.ItemType<Oceanfragments>()) {
-                        int consumeAmount = Math.Min(invItem.stack, remainingToConsume);
-                        invItem.stack -= consumeAmount;
-                        remainingToConsume -= consumeAmount;
 
-                        if (invItem.stack <= 0) {
-                            invItem.TurnToAir();
+                var bigBags = player.GetBigBagItems() ?? [];
+                //依次从各个储物位置消耗
+                Item[][] inventories = [
+                    player.inventory,
+                    player.bank.item,
+                    player.bank2.item,
+                    player.bank3.item,
+                    player.bank4.item,
+                    [.. bigBags],
+                ];
+
+                foreach (Item[] inventory in inventories) {
+                    if (remainingToConsume <= 0) break;
+                    if (inventory == null) continue;
+
+                    for (int i = 0; i < inventory.Length && remainingToConsume > 0; i++) {
+                        Item invItem = inventory[i];
+                        if (invItem.type == ModContent.ItemType<Oceanfragments>()) {
+                            int consumeAmount = Math.Min(invItem.stack, remainingToConsume);
+                            invItem.stack -= consumeAmount;
+                            remainingToConsume -= consumeAmount;
+
+                            if (invItem.stack <= 0) {
+                                invItem.TurnToAir();
+                            }
                         }
                     }
                 }

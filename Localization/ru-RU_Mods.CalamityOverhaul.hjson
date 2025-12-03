@@ -7368,7 +7368,7 @@ ADV: {
 		// Choice1Response: See what I have here.
 		// Choice2Response: Good. These scraps are sufficient. This is your due reward.
 		// Choice3Response: ......
-		// QuestCompleteLine: Thank you for your help.
+		// QuestCompleteLine: Hmm... Do you have any new discoveries? I am very busy right now.
 		// B1: I will spend the next few days deciphering these scraps. I will notify you once I am finished.
 		// Choice4_R1: I may be old, but I haven't lost the skills of my youth.
 		// Choice4_R2: Then let us see if you have improved recently.
