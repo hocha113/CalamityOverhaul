@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText Choice2Text { get; private set; }
         public static LocalizedText Choice3Text { get; private set; }
         public static LocalizedText Choice4Text { get; private set; }
+        public static LocalizedText Choice5Text { get; private set; }
         public static LocalizedText Choice2DisabledHint { get; private set; }
 
         //选项回应
@@ -66,6 +67,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "你要的东西我都弄来了");
             Choice3Text = this.GetLocalization(nameof(Choice3Text), () => "我只是来溜达一圈");
             Choice4Text = this.GetLocalization(nameof(Choice4Text), () => "我要和你切磋一下");
+            Choice5Text = this.GetLocalization(nameof(Choice5Text), () => "和我聊聊你的过去吧");
             Choice2DisabledHint = this.GetLocalization(nameof(Choice2DisabledHint), () => "海洋残片不足");
 
             Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "看看我这里有什么吧");
@@ -98,6 +100,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     [
                         new Choice(Choice1Text.Value, Choice1),
                         new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//真的有可能触发这个no enabled可能性吗？
+                        new Choice(Choice5Text.Value, Choice5),
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,
@@ -325,6 +328,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
                 return true;
             }
+        }
+
+        //选项5：聊天
+        private void Choice5() {
+            ScenarioManager.Reset<CampsiteChatDialogue>();
+            ScenarioManager.Start<CampsiteChatDialogue>();
+            Complete();
         }
 
         protected override void OnScenarioStart() {
