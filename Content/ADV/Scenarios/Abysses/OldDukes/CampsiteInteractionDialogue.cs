@@ -99,8 +99,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     QuestCompleteLine.Value,
                     [
                         new Choice(Choice1Text.Value, Choice1),
-                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//真的有可能触发这个no enabled可能性吗？
                         new Choice(Choice5Text.Value, Choice5),
+                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//真的有可能触发这个no enabled可能性吗？
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,

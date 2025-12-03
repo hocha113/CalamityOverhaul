@@ -7364,6 +7364,7 @@ ADV: {
 		// Choice2Text: I brought the things you wanted.
 		// Choice3Text: Just wandering around.
 		// Choice4Text: I want to spar with you.
+		// Choice5Text: Tell me about your past.
 		// Choice2DisabledHint: Insufficient Ocean Scraps
 		// Choice1Response: See what I have here.
 		// Choice2Response: Good. These scraps are sufficient. This is your due reward.
@@ -7373,6 +7374,70 @@ ADV: {
 		// Choice4_R1: I may be old, but I haven't lost the skills of my youth.
 		// Choice4_R2: Then let us see if you have improved recently.
 		// Choice4_R3: Using me as a whetstone is not a wise move...
+
+		CampsiteChatDialogue: {
+			// OldDukeName: Old Duke
+			// GreetingLine: Want to chat?
+			// Choice_BackToMain: Change topic
+			// Choice_EndConversation: That is all
+			// Choice_PastStory: About your current state
+			// Choice_Research: What are you piecing together?
+			// Choice_SulfurSeaHistory: The truth of this sea
+			// Choice_AboutFragments: About those fragments
+			// Choice_PersonalLife: You don't look so good
+			// Choice_Farewell: Goodbye
+			// Past_Intro: That is a past deliberately wiped away. Or perhaps, there are few fish left who know of it.
+			// Past_University: We were arrogant then, thinking we could measure the whole world with a ruler. Until we dug up something... illogical at the bottom of the abyss.
+			// Past_Prime: That thing could not be killed, nor destroyed. It was not a living creature.
+			// Past_Accident: There were no survivors in that incident. When I was being assimilated by that coldness, I made a manic decision.
+			// Past_Mutation: Since there was no escape, I joined it. I forced it into my body. Since then, I am not truly alive, nor can I die.
+			// Past_Exile: It is just as well. This body is strong enough to suppress this sea.
+			// Past_Reflection: I just want to guard this sea. If those things try to crawl out of the abyss, that will be the moment I risk total resurgence and death to stop them.
+			// Research_Intro: I am trying to reconstruct a story, or rather, recover a lost form of experience.
+			// Research_CurrentWork: These fragments cling to memories of the past. They record how that ancient civilization sought a path to survival in a desperate situation.
+			// Research_Breakthrough: To fight that kind of terror, brute force is useless. You must find their 'killing rules' and exploit them.
+			// Research_Difficulties: But deciphering them is dangerous. These fragments are mediums themselves. Stare at them too long, and you might hear sounds you shouldn't.
+			// Research_Theory: If I can assemble all the pieces, perhaps I can find a way to permanently seal the source of the abyss.
+			// Choice_Research_Details: What do you mean by 'killing rules'?
+			// Choice_Research_Help: What do I need to do?
+			// Choice_Research_Back: Sounds crazy
+			// Research_Details1: For example, there are things you cannot look at, names you cannot speak. Once a medium is triggered, death is inevitable. That civilization tried to bind gods with rules.
+			// Research_Details2: They even built massive containers, attempting to imprison those things. Unfortunately, the containers leaked.
+			// Research_Help: Help me find more fragments. The rest of my life will be spent researching this.
+			// History_Intro: The Sulphurous Sea is merely a facade. This is the residue left after the encroachment of that thing's domain.
+			// History_Origin: This was once the Sapphire Sea, until the source went out of control.
+			// History_Civilization: That ancient civilization was powerful. They learned to utilize that eerie power. They built cities, like dancing on a powder keg.
+			// History_Cataclysm: Naturally, the balance broke. Some terror revived, and all living things were erased in an instant, becoming part of this dead silence.
+			// History_Ruins: What you see now is merely the residue after that event. The water changed color because it died. Completely died.
+			// History_Warning: If you ever see the dead waving at you, or hear familiar calls... remember, that is just this sea of corpses mimicking the living.
+			// Choice_History_MoreRuins: Where is the most dangerous place?
+			// Choice_History_Dangers: Are there any countermeasures?
+			// Choice_History_Back: Unsettling
+			// History_MoreRuins1: At the very bottom of that corpse sea. There is a door. Do not knock. No one can handle what is locked behind it, unless that tyrant comes.
+			// History_MoreRuins2: There are still unopened rooms in those sunken ruins. They are secret chambers cast from special heavy metals, designed to cut off the perception of those things.
+			// History_Dangers1: Aside from the mutated walking dead, beware of things you cannot see. Sometimes, the fatal strike is invisible.
+			// History_Dangers2: Do not trust your eyes. Do not respond to inexplicable calls. In that sea of corpses, the living are the anomalies.
+			// Fragments_Intro: Ocean Scraps... in my eyes, they are bloodstained archives.
+			// Fragments_Nature: They are the residue of a phenomenon. Like compressed curses.
+			// Fragments_Power: Each fragment is a 'medium'. Alone, they may be harmless, but when enough gather, they create a collision of eerie forces.
+			// Fragments_Collection: They are scattered across every corner of the dead sea—some buried under ruins, others grown into the flesh of creatures.
+			// Fragments_Purpose: I am still piecing them together, trying to reconstruct the source of that disaster. Only by figuring out how that thing killed can I find a way to imprison it.
+			// Personal_Intro: Getting by.
+			// Personal_Daily: I spend most of my time sleeping to reduce fluctuations in my consciousness. If my emotions get too intense, the thing inside me gets... restless.
+			// Personal_Loneliness: Solitude is good. If it gets too lively around here, it must be because 'they' have come. I am used to being a lone fish. It is safer for me, and for the world.
+			// Personal_Memories: My memory is blurry. Sometimes I cannot tell which memories are mine, and which are... the memories of other individuals remaining in this body.
+			// Personal_Hope: Seeing you reminds me of myself back then. Ignorant and fearless. I hope you don't end up like me, turning yourself into this shape.
+			// Choice_Personal_Tea: What are you drinking?
+			// Choice_Personal_Past: Are you still considered... a fish?
+			// Choice_Personal_Back: Take care
+			// Personal_Tea1: This is brewed from several special plants in the abyss. The taste... is like rotting mud.
+			// Personal_Tea2: Want a cup? It will calm you down like a dead fish.
+			// Personal_Past1: Who knows? Maybe the real me died long ago, and I am just a... ghost with the Old Duke's memories? Every death triggers a restart, returning to the moment before death.
+			// Personal_Past2: But I still remember the feeling of sunlight on my face, the touch of books. As long as I remember these, I consider myself alive.
+			// Personal_Past3: If not for that accident... I would probably be lying peacefully in a grave by now. Instead of being like this, unable to die even if I wanted to.
+			// Farewell_Normal: Let's leave it at that. Come find me if you need anything.
+			// Farewell_Friendly: Be careful, youngster. In this world, a peaceful end is a luxury.
+		}
 	}
 
 	FirstCampsiteDialogue: {

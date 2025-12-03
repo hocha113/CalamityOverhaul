@@ -145,15 +145,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return false;
             }
 
-            //检查并更新初见场景状态
-            UpdateFirstMeetState(target);
+            if (!OldDukeCampsite.WannaToFight) {
+                //检查并更新初见场景状态
+                UpdateFirstMeetState(target);
 
-            OldDukeAIState currentState = (OldDukeAIState)State;
+                OldDukeAIState currentState = (OldDukeAIState)State;
 
-            if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
-                || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
-                ) {
-                return StorylineAI();
+                if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
+                    || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
+                    ) {
+                    return StorylineAI();
+                }
             }
 
             //否则执行原版AI

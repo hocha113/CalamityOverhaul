@@ -7252,6 +7252,7 @@ ADV: {
 		Choice2Text: 你要的东西我都弄来了
 		Choice3Text: 我只是来溜达一圈
 		Choice4Text: 我要和你切磋一下
+		Choice5Text: 和我聊聊你的过去吧
 		Choice2DisabledHint: 海洋残片不足
 		Choice1Response: 看看我这里有什么吧
 		Choice2Response: 很好，这些碎片足够了。这是你应得的奖励
@@ -7261,6 +7262,70 @@ ADV: {
 		Choice4_R1: 我虽然老了，但年轻时候的技巧可还没落下
 		Choice4_R2: 那就让我看看，你最近有没有长进
 		Choice4_R3: 把我当磨刀石并不是个明智的举动...
+
+		CampsiteChatDialogue: {
+			OldDukeName: 老公爵
+			GreetingLine: 想聊点什么？
+			Choice_BackToMain: 换个话题
+			Choice_EndConversation: 就这样吧
+			Choice_PastStory: 关于你现在的状态
+			Choice_Research: 你在拼凑什么？
+			Choice_SulfurSeaHistory: 这片海域的真相
+			Choice_AboutFragments: 关于那些残片
+			Choice_PersonalLife: 你的状态看起来不太好
+			Choice_Farewell: 就这样吧
+			Past_Intro: 那是一段被刻意抹去的过往。或者说知晓这些的鱼已经没剩几条了
+			Past_University: 那时候我们太傲慢了，妄图用科学去解释一切。直到我们在深渊底部挖出了......不合逻辑的东西。
+			Past_Prime: 那东西杀不死，灭不掉。它不是生物。
+			Past_Accident: 那起事件中没有幸存者。我被那股阴冷同化时，我做了一个癫狂的决定。
+			Past_Mutation: 既然无法逃脱，那就加入。我把它强吞进了身体里。自那以后，我不算是活着，也没法死去
+			Past_Exile: 也好，这副身躯，刚好能镇得住这片海。
+			Past_Reflection: 我只想守着这片海了，那些东西试图从深渊里出来的时候，就是我拼个彻底复苏身死的时候。
+			Research_Intro: 我在试图还原一个故事，或者说，找回一种失传的经验。
+			Research_CurrentWork: 这些残片上附着着过去的记忆。它们记录了那个古文明是如何在绝境中寻找生路的。
+			Research_Breakthrough: 想要对抗那种恐怖，仅仅靠武力是没用的，必须找到它们的'猎杀规律'，然后加以利用。
+			Research_Difficulties: 但解读它们很危险。这些残片本身就是一种媒介，盯着它们看太久，你可能会听到不该听的声音。
+			Research_Theory: 如果能凑齐所有的碎片，或许我就能找到彻底封死深渊源头的方法。
+			Choice_Research_Details: 什么叫'猎杀规律'？
+			Choice_Research_Help: 需要我做什么？
+			Choice_Research_Back: 听起来很疯狂
+			Research_Details1: 比如，有些东西你不能看，有些名字你不能念。一旦触发了某种媒介，死亡就是必然的。那个文明试图用规则去束缚神明。
+			Research_Details2: 他们甚至制造了巨大的容器，试图将那些东西关押。可惜容器漏了。
+			Research_Help: 帮我寻找更多的碎片。我的余生都会用来研究这些
+			History_Intro: 硫磺海只是表象。这里是那个东西的领域侵染后留下的残余。
+			History_Origin: 这里曾是晶蓝之海，直到源头失控了。
+			History_Civilization: 那个古文明很强大，他们学会了利用那种诡异的力量。他们建立城市，就像是在火药桶上跳舞。
+			History_Cataclysm: 自然，平衡打破了。某种恐怖复苏了，所有活物都被瞬间抹杀，成了这片死寂的一部分。
+			History_Ruins: 现在你看到的这一切，不过是那场事件后的残留。海水变色是因为它死了，彻底死了。
+			History_Warning: 如果你未来会看到死去的人向你招手，或者听到熟悉的呼唤......记住，那只是那片尸海在模仿活人。
+			Choice_History_MoreRuins: 哪里最危险？
+			Choice_History_Dangers: 具体有什么对策？
+			Choice_History_Back: 令人不安
+			History_MoreRuins1: 在那片尸海的最底层。那里有一扇门，别去敲门，门后面关着的东西，没人处理得了，除非让那个暴君来。
+			History_MoreRuins2: 那些沉沦的废墟里还有一些没打开的房间。那是用特殊的沉重金属铸造的密室，那是为了隔绝那些东西的感知。
+			History_Dangers1: 除了那些变异的行尸走肉，还要小心看不见的东西。有时候，必死的袭击是无形的。
+			History_Dangers2: 不要相信你的眼睛，不要回应莫名的呼唤。在那个尸海里，活物才是异类。
+			Fragments_Intro: 海洋残片在我眼里，它们是沾着血的档案。
+			Fragments_Nature: 它们是某种现象的残留物。像是被压缩的诅咒。
+			Fragments_Power: 每一片碎片都是一个'媒介'。单独看或许无害，但当足够多的碎片聚集在一起时，它们会产生某种诡异力量的碰撞。
+			Fragments_Collection: 它们散落在死寂之海的各个角落——有些被埋在废墟下，有些则长在了生物的血肉里。
+			Fragments_Purpose: 我还在拼凑它们，试图还原那场灾难的源头。只有弄清楚当初那个东西是怎么杀人的，我才能找到关押它的办法。
+			Personal_Intro: 还凑活。
+			Personal_Daily: 大部分时间我都在沉睡，减少意识的波动。情绪太激动的话，我体内的东西会......躁动不安。
+			Personal_Loneliness: 孤独是好事。如果这周围太热闹，那一定是因为'它们'来了。我习惯了一条鱼呆着，这对我，对世界，都安全。
+			Personal_Memories: 记忆已经很模糊了。有时候我分不清哪些是我的记忆，哪些是......这副身体里残留的别的个体的记忆。
+			Personal_Hope: 看到你，我想起了当年的我。无知者无畏。希望你不需要像我一样，把自己变成这种样子。
+			Choice_Personal_Tea: 你喝的是什么？
+			Choice_Personal_Past: 你还算是一条...鱼吗？
+			Choice_Personal_Back: 保重
+			Personal_Tea1: 这是用深渊里的几种特殊植物熬的，味道...像是腐烂的泥土味。
+			Personal_Tea2: 不来一杯吗？能让你冷静得像条死鱼。
+			Personal_Past1: 也许真正的我早就死了，现在的只是拥有他记忆的......一只厉鬼？每次死亡都会重启，回到死前的时候
+			Personal_Past2: 但我还记得阳光照在脸上的感觉，还记得书本的触感。只要还记得这些，我就当自己还活着。
+			Personal_Past3: 如果没有那次事故......我大概已经安详地躺在坟墓里了吧。而不是像现在这样，想死都难。
+			Farewell_Normal: 那就这样吧，有事再来找我。
+			Farewell_Friendly: 小心点，后生。在这个世道，能善终是一种奢望。
+		}
 	}
 
 	FirstCampsiteDialogue: {

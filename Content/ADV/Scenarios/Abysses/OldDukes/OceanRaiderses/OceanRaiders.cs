@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
@@ -44,17 +43,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             , Color alphaColor, float rotation, float scale, int whoAmI) {
             spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition, null, Color.White
                 , rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
-        }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<DubiousPlating>(30)
-                .AddIngredient<MysteriousCircuitry>(30)
-                .AddIngredient(ItemID.Wood, 100)
-                .AddIngredient(ItemID.FishingPotion, 5)
-                .AddIngredient(ItemID.CratePotion, 5)
-                .AddTile(TileID.MythrilAnvil)
-                .Register();
         }
     }
 }
