@@ -58,6 +58,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 entityInitialized = true;
             }
 
+            if (oldDukeEntity.Position.To(OldDukeCampsite.CampsitePosition).LengthSquared() > 1200 * 1200) {
+                oldDukeEntity = new OldDukeEntity(OldDukeCampsite.CampsitePosition);
+                oldDukeEntity.SetPotPositions(OldDukeCampsiteDecoration.GetPotPositions());
+                oldDukeEntity.Position = OldDukeCampsite.CampsitePosition;
+            }
+
             //更新发光计时器
             glowTimer += 0.03f;
             if (glowTimer > MathHelper.TwoPi) {

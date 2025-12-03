@@ -57,11 +57,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static LocalizedText TitleText;
 
         /// <summary>
-        /// 是否已经尝试生成营地
-        /// </summary>
-        private bool hasTriedGenerate;
-
-        /// <summary>
         /// 玩家进入营地事件
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
@@ -107,12 +102,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         public override void OnWorldLoad() {
-            IsGenerated = false;
-            CampsitePosition = Vector2.Zero;
+            ClearCampsite();
         }
 
         public override void OnWorldUnload() {
-            hasTriedGenerate = false;
             ClearCampsite();
         }
 
@@ -138,8 +131,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
 
             //检查是否应该生成营地
-            if (!hasTriedGenerate && ShouldGenerateCampsite(player)) {
-                hasTriedGenerate = true;
+            if (ShouldGenerateCampsite(player)) {
                 RequestCampsiteGeneration();
             }
         }
@@ -148,17 +140,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 检查是否应该生成营地
         /// </summary>
         private static bool ShouldGenerateCampsite(Player player) {
+            //检查营地是否已经生成
+            if (IsGenerated) {
+                return false;
+            }
+
             if (!player.TryGetADVSave(out var save)) {
                 return false;
             }
 
             //检查玩家是否已经同意合作
             if (!save.OldDukeCooperationAccepted) {
-                return false;
-            }
-
-            //检查营地是否已经生成
-            if (IsGenerated) {
                 return false;
             }
 
@@ -409,6 +401,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             animationTimer = 0;
             isPlayerNearby = false;
             interactPromptAlpha = 0f;
+            CampsitePosition = Vector2.Zero;
 
             //重置装饰状态
             OldDukeCampsiteDecoration.ResetDecoration();

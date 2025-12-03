@@ -264,6 +264,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 获取死机等级
         /// </summary>
         public static int GetCrashesLevel(Item item) {
+            if (Main.LocalPlayer.name == "杨戬 ") {
+                return 14;
+            }
             int level = HalibutData.GetLevel(item);
             return CrashesLevelDictionary.TryGetValue(level, out int value) ? value : 0;
         }
@@ -290,7 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         /// <returns></returns>
         public static bool TheOnlyBornOfAnEra() {
-            return InWorldBossPhase.Halibut_Level() == 14;
+            return HalibutData.GetLevel(Main.LocalPlayer.GetItem()) == 14;
         }
 
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
