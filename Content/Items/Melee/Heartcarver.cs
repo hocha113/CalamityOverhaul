@@ -1,6 +1,7 @@
-﻿using CalamityMod.Particles;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -331,15 +332,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
 
-                AltSparkParticle spark = new AltSparkParticle(
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     Owner.Center,
                     velocity,
                     false,
                     20,
                     Main.rand.NextFloat(2f, 3f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
+                ); 
+                PRTLoader.AddParticle(spark);
             }
         }
 
@@ -540,10 +541,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 3;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
+            Projectile.ArmorPenetration = 32767;
         }
 
         public override void AI() {
@@ -752,7 +754,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //追踪敌人
             NPC target = Projectile.Center.FindClosestNPC(800);
-            if (target != null && Projectile.timeLeft < 570) {
+            if (target != null && Projectile.timeLeft < 570 && Projectile.numHits == 0) {
                 Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.08f);
             }
             else {
@@ -858,7 +860,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //额外发光粒子
             for (int i = 0; i < 8; i++) {
-                AltSparkParticle spark = new AltSparkParticle(
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     Projectile.Center,
                     Main.rand.NextVector2Circular(8f, 8f),
                     false,
@@ -866,7 +868,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Main.rand.NextFloat(1.5f, 2.5f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
                 );
-                GeneralParticleHandler.SpawnParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
         }
 

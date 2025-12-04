@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.StatDebuffs;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR)
+            if (modifiers.SuperArmor || target.defense > 999)
                 return;
             modifiers.DefenseEffectiveness *= 0f;
         }
@@ -42,12 +40,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             OnHitEffects(target.Center, hit.Crit);
-            target.AddBuff(ModContent.BuffType<MarkedforDeath>(), 300);
+            target.AddBuff(CWRID.Buff_MarkedforDeath, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             OnHitEffects(target.Center, true);
-            target.AddBuff(ModContent.BuffType<MarkedforDeath>(), 300);
+            target.AddBuff(CWRID.Buff_MarkedforDeath, 300);
         }
 
         private void OnHitEffects(Vector2 targetPos, bool crit) {

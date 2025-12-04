@@ -7,6 +7,7 @@ using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
+using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Particles;
@@ -234,5 +235,12 @@ namespace CalamityOverhaul
             => CalamityPlayer.HorsemansBladeOnHit(player, targetIdx, damage, knockback, extraUpdateAmt, type);
         public static void SetItemCanFirePointBlankShots(this Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
         public static bool GetProjStealthStrike(this Projectile projectile) => projectile.Calamity().stealthStrike;
+        public static void OldDukeOnKill(NPC npc) {
+            AcidRainEvent.AccumulatedKillPoints = 0;
+            AcidRainEvent.UpdateInvasion(win: true);
+            if (npc.ModNPC is not null && npc.ModNPC is OldDuke oldDuke) {
+                oldDuke.OnKill();
+            }            
+        }
     }
 }

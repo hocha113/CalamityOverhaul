@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
 
             if (Main.rand.NextBool()) {
-                PRT_Spark spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
+                PRT_SparkAlpha spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
                 PRTLoader.AddParticle(spark);
             }
             else {

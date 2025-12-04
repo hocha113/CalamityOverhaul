@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 float angle = MathHelper.TwoPi * i / particleCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 25f);
 
-                PRT_Spark spark = new PRT_Spark(
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     impactPosition,
                     velocity,
                     false,
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
                                   Main.rand.NextFloat(3f, 7f);
 
-                PRT_Spark spark = new PRT_Spark(
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     spawnPos,
                     velocity,
                     false,
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             //下落轨迹粒子
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = Main.rand.NextVector2Circular(22f, 22f);
-                PRT_Spark spark = new PRT_Spark(
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     Projectile.Center + offset,
                     -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f),
                     false,

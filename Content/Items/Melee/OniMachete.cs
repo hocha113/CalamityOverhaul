@@ -46,6 +46,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
+        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers) {
+            target.defense = Math.Max(0, target.defense - 10);
+            if (modifiers.SuperArmor || target.defense > 999)
+                return;
+            modifiers.DefenseEffectiveness *= 0f;
+        }
+
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             SpawnSummonEffect(target.Center);
         }

@@ -1217,11 +1217,11 @@ Items: {
 		DisplayName: Pallbearer
 		Tooltip:
 			'''
-			Hold left click to charge, then release to fire the Arrow of the Pallbearer.
-			The longer you charge, the stronger the arrow becomes.
-			Right click to throw the crossbow, if it hits an enemy, 
-			your next shot will be greatly empowered.
-			“Also known as the Coffin Bearer.”
+			Hold left-click to charge, releasing to fire a Pallbearer Arrow
+			The longer the charge, the more powerful the arrow
+			Right-click to throw the crossbow
+			Hitting an enemy significantly empowers the next arrow and accelerates charge speed
+			"Also known as the Coffin Carrier"
 			'''
 	}
 

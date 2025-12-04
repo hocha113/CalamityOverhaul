@@ -151,6 +151,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
+            if (Projectile.extraUpdates == 0 && Owner.CWR().PallbearerNextArrowDamageMult > 1) {
+                Projectile.extraUpdates = 2;
+                Projectile.netUpdate = true;
+            }
+
             if (DownLeft) {
                 Projectile.timeLeft = 60;
             }
@@ -265,7 +270,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Owner.PickAmmo(Owner.GetItem(), out int projToShoot, out float speed,
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
-            float mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
+            float mult = Owner.CWR().PallbearerNextArrowDamageMult;
             float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; //最高250% * 触发加成
             int finalDamage = (int)(damage * damageMultiplier);
 
@@ -283,7 +288,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             //使用后重置加成
             if (mult > 1) {
-                Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1;
+                Owner.CWR().PallbearerNextArrowDamageMult = 1;
+                Projectile.extraUpdates = 0;
+                Projectile.netUpdate = true;
                 //反馈特效
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
                 if (!Main.dedServ) {
@@ -415,7 +422,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Vector2 origin = frame.Size() / 2f;
             SpriteEffects fx = Owner.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-            Main.EntitySpriteDraw(texture, drawPos, frame, lightColor, Projectile.rotation, origin, Projectile.scale, fx, 0);
+            Main.EntitySpriteDraw(texture, drawPos, frame, Projectile.extraUpdates == 0 ? lightColor : Color.Red, Projectile.rotation, origin, Projectile.scale, fx, 0);
 
             if (State == CrossbowState.Charged && ChargeLevel > 0.3f) {
                 Color glowColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);

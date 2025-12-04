@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Vector2 sparkPosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f;
 
                 if (Main.rand.NextBool()) {
-                    PRT_Spark spark = new(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)), sparkScale * (Slash3 ? 1.4f : 1f), sparkColor);
+                    PRT_SparkAlpha spark = new(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)), sparkScale * (Slash3 ? 1.4f : 1f), sparkColor);
                     PRTLoader.AddParticle(spark);
                 }
                 else {

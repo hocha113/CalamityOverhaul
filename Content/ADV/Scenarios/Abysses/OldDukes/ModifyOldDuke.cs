@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.CampsiteInteractionDialogue;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
@@ -74,11 +75,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             IsLeavingDive = true;
             npc.life = npc.lifeMax;
             npc.dontTakeDamage = true;
-            npc.DropItem();
-            CWRRef.SetDownedBoomerDuke(true);//标记老公爵已被击败
-            if (VaultUtils.isServer) {//同步世界数据
-                NetMessage.SendData(MessageID.WorldData);
+            if (!VaultUtils.isClient) {
+                npc.DropItem();
             }
+            CWRRef.OldDukeOnKill(npc);
             VaultUtils.Text(LeavingDiveText.Value, Color.YellowGreen);
             foreach (var g in Main.gore) {
                 g.active = false;//清除老公爵的残骸，避免影响潜入效果
@@ -101,8 +101,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     packet.Send(-1, whoAmI);
                 }
                 else {
-                    ScenarioManager.Reset<ComeCampsiteFindMe>();
-                    ScenarioManager.Start<ComeCampsiteFindMe>();
+                    if (CWRWorld.IsAcidRainEventIsOngoing()) {
+                        ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
+                        ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
+                    }
+                    else {
+                        ScenarioManager.Reset<ComeCampsiteFindMe>();
+                        ScenarioManager.Start<ComeCampsiteFindMe>();
+                    }
                 }
             }
             IsLeavingDive = false;
@@ -131,11 +137,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 if (BCKRef.Has) {
                     BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
                 }
+
                 npc.active = false;
                 npc.netUpdate = true;
                 IsLeavingDive = false;
-                ScenarioManager.Reset<ComeCampsiteFindMe>();
-                ScenarioManager.Start<ComeCampsiteFindMe>();
+
+                if (CWRWorld.IsAcidRainEventIsOngoing()) {
+                    ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
+                    ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
+                }
+                else {
+                    ScenarioManager.Reset<ComeCampsiteFindMe>();
+                    ScenarioManager.Start<ComeCampsiteFindMe>();
+                }
+
                 if (VaultUtils.isClient) {//客户端发送网络请求
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.StartCampsiteFindMeScenario);
@@ -155,6 +170,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
                     ) {
                     return StorylineAI();
+                }
+            }
+
+            foreach (var p in Main.ActiveProjectiles) {
+                if (p.type == CWRID.Proj_OverlyDramaticDukeSummoner) {
+                    p.active = false;
+                    p.netUpdate = true;
                 }
             }
 
