@@ -169,6 +169,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 stack = Main.rand.Next(1, 4);
             }
 
+            //防止出现不合理的物品数量
+            if (ContentSamples.ItemsByType.TryGetValue(caughtItem, out var item)) {
+                stack = (int)MathHelper.Clamp(stack, 1, item.maxStack);
+            }
+
             AddItemToStorage(caughtItem, stack);
         }
 

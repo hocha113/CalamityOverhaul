@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public static LocalizedText TitleText;
         public static LocalizedText StorageText;
 
-        //UI尺寸 - 与Renderer保持一致
+        //UI尺寸
         private const int PanelWidth = 760;
         private const int PanelHeight = 700;
         private const int HeaderHeight = 80;
@@ -122,16 +122,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
 
-                //优先检测关闭按钮
+                //优先检查关闭按钮
                 if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, keyLeftPressState == KeyPressState.Pressed)) {
                     _active = false;
                     SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
                     return;
                 }
 
-                //处理槽位交互
+                //更新槽位交互
                 Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
-                interaction.UpdateSlotInteraction(MousePosition.ToPoint(), storageStartPos);
+                interaction.UpdateSlotInteraction(
+                    MousePosition.ToPoint(), 
+                    storageStartPos,
+                    keyLeftPressState == KeyPressState.Pressed,
+                    Main.mouseLeft,
+                    keyRightPressState == KeyPressState.Pressed,
+                    Main.mouseRight
+                );
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
                 _active = false;

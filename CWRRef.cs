@@ -237,11 +237,14 @@ namespace CalamityOverhaul
         public static void SetItemCanFirePointBlankShots(this Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
         public static bool GetProjStealthStrike(this Projectile projectile) => projectile.Calamity().stealthStrike;
         public static void OldDukeOnKill(NPC npc) {
-            AcidRainEvent.AccumulatedKillPoints = 0;
-            AcidRainEvent.UpdateInvasion(win: true);
+            StopAcidRain();
             if (npc.ModNPC is not null && npc.ModNPC is OldDuke oldDuke) {
                 oldDuke.OnKill();
             }
+        }
+        public static void StopAcidRain() {
+            AcidRainEvent.AccumulatedKillPoints = 0;
+            AcidRainEvent.UpdateInvasion(win: true);
         }
         public static void StarRT(Projectile projectile, Entity target) {
             if (!VaultUtils.isServer) {

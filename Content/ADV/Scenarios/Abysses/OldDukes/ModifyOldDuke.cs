@@ -435,6 +435,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         private void CompleteFirstMeet() {
+            CWRRef.StopAcidRain();
             firstMeetCompleted = true;
             isFirstMeet = false;
             hasTriggeredScenario = false;
