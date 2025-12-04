@@ -558,7 +558,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2.45f;
+            Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1.5f;
             if (State == BoomerangState.Throwing) {
                 State = BoomerangState.Returning;
                 ReturnProgress = 0f;
