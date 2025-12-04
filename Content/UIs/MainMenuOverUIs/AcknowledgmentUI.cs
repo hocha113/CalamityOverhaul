@@ -303,6 +303,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "阿萨德沃荣托" + DonorText,
             "冰冷小龙" + DonorText,
             "心酱" + DonorText,
+            "LEI雷克斯" + DonorText,
+            "尼古丁真" + DonorText,
             "圣盗杰布微明" + DonorText,
             "柳冠希" + DonorText,
             "天空之城" + DonorText,
