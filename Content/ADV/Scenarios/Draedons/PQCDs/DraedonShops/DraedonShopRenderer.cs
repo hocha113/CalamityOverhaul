@@ -261,31 +261,63 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         private long CalculateTotalCurrency() {
-            long totalCopper = 0;           
+            long totalCopper = 0;
+
+            //安全获取大容器物品
+            Item[] bigBagItems = player.GetBigBagItems()?.ToArray();
+
+            //计算各个背包中的钱币
             CalculateInventory(player.inventory, ref totalCopper);
             CalculateInventory(player.bank.item, ref totalCopper);
             CalculateInventory(player.bank2.item, ref totalCopper);
             CalculateInventory(player.bank3.item, ref totalCopper);
             CalculateInventory(player.bank4.item, ref totalCopper);
-            var bigBags = player.GetBigBagItems() ?? [];
-            CalculateInventory([.. bigBags], ref totalCopper);
-            if (totalCopper < 0) {
-                totalCopper = 0;
+            
+            //安全处理大容器物品
+            if (bigBagItems != null && bigBagItems.Length > 0) {
+                CalculateInventory(bigBagItems, ref totalCopper);
             }
-            return totalCopper;
+
+            //防止溢出或负数
+            return Math.Max(0, totalCopper);
         }
 
         private static void CalculateInventory(Item[] items, ref long totalCopper) {
-            if (items == null) return;
+            if (items == null || items.Length == 0) {
+                return;
+            }
 
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
-                if (!item.Alives()) continue;
+                
+                //使用更严格的有效性检查
+                if (item == null || !item.active || item.type == ItemID.None || item.stack <= 0) {
+                    continue;
+                }
 
-                if (item.type == ItemID.CopperCoin) totalCopper += item.stack;
-                if (item.type == ItemID.SilverCoin) totalCopper += item.stack * 100;
-                if (item.type == ItemID.GoldCoin) totalCopper += item.stack * 10000;
-                if (item.type == ItemID.PlatinumCoin) totalCopper += item.stack * 1000000;
+                //使用Item.IsACoin判断钱币类型
+                if (!item.IsACoin) {
+                    continue;
+                }
+
+                //根据钱币类型累加价值（使用long防止溢出）
+                long coinValue = item.type switch {
+                    ItemID.CopperCoin => 1L,
+                    ItemID.SilverCoin => 100L,
+                    ItemID.GoldCoin => 10000L,
+                    ItemID.PlatinumCoin => 1000000L,
+                    _ => 0L
+                };
+
+                //检查是否会溢出
+                long itemTotal = coinValue * item.stack;
+                if (totalCopper > long.MaxValue - itemTotal) {
+                    //防止溢出，直接设置为最大值
+                    totalCopper = long.MaxValue;
+                    return;
+                }
+
+                totalCopper += itemTotal;
             }
         }
 
