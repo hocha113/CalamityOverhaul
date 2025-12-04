@@ -4610,34 +4610,6 @@ RemakeItems: {
 			'''
 	}
 
-	RAestheticus: {
-		DisplayName: 美学魔杖
-		Tooltip:
-			'''
-			发射爆炸水晶减速敌人
-			受所有的伤害属性加成
-			'''
-	}
-
-	REyeofMagnus: {
-		DisplayName: 马格努斯之眼
-		Tooltip:
-			'''
-			发射能够削减敌人防护能力的星光射线
-			击中敌人时会回复生命值和魔力值
-			受所有的伤害属性加成
-			'''
-	}
-
-	RLunicEye: {
-		DisplayName: 星光之眼
-		Tooltip:
-			'''
-			发射能够削减敌人防护能力的星光射线
-			受所有的伤害属性加成
-			'''
-	}
-
 	RAdamantiteRepeater: {
 		DisplayName: 精金连弩
 		Tooltip:

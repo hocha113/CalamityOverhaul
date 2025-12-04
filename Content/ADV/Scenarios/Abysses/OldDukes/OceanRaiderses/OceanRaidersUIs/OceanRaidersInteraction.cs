@@ -1,8 +1,8 @@
+using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Microsoft.Xna.Framework.Input;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs
 {

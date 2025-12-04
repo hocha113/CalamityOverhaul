@@ -4589,34 +4589,6 @@ RemakeItems: {
 			'''
 	}
 
-	RAestheticus: {
-		DisplayName: Aestheticus
-		Tooltip:
-			'''
-			Fires crystals that explode and slow enemies down
-			This weapon scales with all your damage stats at once
-			'''
-	}
-
-	REyeofMagnus: {
-		DisplayName: Eye of Magnus
-		Tooltip:
-			'''
-			Fires powerful homing beams that reduce enemy protection
-			Heals mana and health on hit
-			This weapon scales with all your damage stats at once
-			'''
-	}
-
-	RLunicEye: {
-		DisplayName: Lunic Eye
-		Tooltip:
-			'''
-			Fires homing lunic beams that reduce enemy protection
-			This weapon scales with all your damage stats at once
-			'''
-	}
-
 	RAdamantiteRepeater: {
 		DisplayName: Arbalète en adamantite
 		Tooltip:

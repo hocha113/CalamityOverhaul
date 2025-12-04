@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 //更新槽位交互
                 Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
                 interaction.UpdateSlotInteraction(
-                    MousePosition.ToPoint(), 
+                    MousePosition.ToPoint(),
                     storageStartPos,
                     keyLeftPressState == KeyPressState.Pressed,
                     Main.mouseLeft,
