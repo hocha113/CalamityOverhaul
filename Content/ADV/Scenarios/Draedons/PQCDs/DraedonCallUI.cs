@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops;
 using InnoVault.UIHandles;
@@ -384,7 +385,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             statusText = ConnectedText.Value;
 
             //播放完成音效
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.8f, Pitch = 0.5f });
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.8f, Pitch = 0.5f });
 
             ExoMechdusaSum.SimpleMode = true;
             NPC.NewNPC(Main.LocalPlayer.FromObjectGetParent(), (int)Main.LocalPlayer.Center.X, (int)Main.LocalPlayer.Center.Y - 260, CWRID.NPC_Draedon);

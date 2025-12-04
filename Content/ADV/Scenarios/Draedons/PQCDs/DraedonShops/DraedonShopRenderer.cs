@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             //计算玩家总货币
             long totalCopper = CalculateTotalCurrency();
-
+           
             int platinum = (int)(totalCopper / 1000000);
             int gold = (int)(totalCopper % 1000000 / 10000);
             int silver = (int)(totalCopper % 10000 / 100);
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         private long CalculateTotalCurrency() {
-            long totalCopper = 0;
+            long totalCopper = 0;           
             CalculateInventory(player.inventory, ref totalCopper);
             CalculateInventory(player.bank.item, ref totalCopper);
             CalculateInventory(player.bank2.item, ref totalCopper);
@@ -269,6 +269,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             CalculateInventory(player.bank4.item, ref totalCopper);
             var bigBags = player.GetBigBagItems() ?? [];
             CalculateInventory([.. bigBags], ref totalCopper);
+            if (totalCopper < 0) {
+                totalCopper = 0;
+            }
             return totalCopper;
         }
 

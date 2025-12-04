@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -103,15 +104,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
                 }
             }
-            else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !DraedonCallUI.Instance.hoverInMainPage) {
+            else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !DraedonCallUI.Instance.hoverInMainPage && !player.mouseInterface) {
                 _active = false;
-                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = 0.2f });
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
             }
 
             //ESC¹Ø±Õ
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
                 _active = false;
-                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = 0.2f });
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
             }
         }
 
