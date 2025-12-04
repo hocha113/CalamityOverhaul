@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 if (Time == 0) {
                     Time2 = 0;
                     Time = 40;
-                    SoundEngine.PlaySound(HeavenlyGale.FireSound with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
+                    SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound() with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
                 }
 
                 if (Time > 16 && ++Time2 > 3) {

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Particles;
+﻿using CalamityMod.Particles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -53,12 +52,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+            target.AddBuff(CWRID.Buff_GlacialState, 30);
             target.AddBuff(BuffID.Frostburn2, 180);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+            target.AddBuff(CWRID.Buff_GlacialState, 30);
             target.AddBuff(BuffID.Frostburn2, 180);
             if (Projectile.hostile && VaultUtils.isClient)
                 return;

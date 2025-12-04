@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.DevourerofGods;
-using CalamityOverhaul.Content.Items.Rogue;
+﻿using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -66,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                                 BasePRT pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f * slp2, 50);
                                 PRTLoader.AddParticle(pulse2);
                             }
-                            SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
+                            SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeathImpact".GetSound(), Projectile.Center);
                             SoundEngine.PlaySound(SpearOfLonginus.BelCanto, Projectile.Center);
                             SpanPrmst = false;
                             Projectile.Explode(620);
@@ -110,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                             PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
                             PRTLoader.AddParticle(spark2);
                         }
-                        SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
+                        SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeathImpact".GetSound(), Projectile.Center);
                         SpanPrmst = false;
                         Projectile.Explode(320);
                     }

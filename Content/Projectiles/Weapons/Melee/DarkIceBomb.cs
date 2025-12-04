@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Particles;
+﻿using CalamityMod.Particles;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -77,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.numHits == 0) {
                 Projectile.numHits++;
                 target.AddBuff(BuffID.Frostburn2, 180);
-                target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+                target.AddBuff(CWRID.Buff_GlacialState, 30);
 
                 Projectile.Explode(192, SoundID.Item27);
                 SpanIceEffect();

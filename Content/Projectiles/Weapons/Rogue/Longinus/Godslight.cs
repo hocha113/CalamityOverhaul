@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -105,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.damage = (int)(Projectile.damage * 0.98f);
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+            target.AddBuff(CWRID.Buff_GodSlayerInferno, 300);
         }
 
         public override void OnKill(int timeLeft) => SpanDeadLightPenms();

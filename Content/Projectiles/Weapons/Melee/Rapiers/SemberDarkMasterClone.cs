@@ -1,9 +1,8 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Projectiles.Others;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         [VaultLoaden("@CalamityMod/Items/Weapons/Melee/TheDarkMaster")]
         private static Asset<Texture2D> swordAsset = null;
         public override void SetDefaults() {
-            Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
+            Projectile.CloneDefaults(CWRID.Proj_DarkMasterClone);
             if (playerClone == null) {
                 playerClone = new Player();
             }
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
             Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3());
 
-            if (Item.type != ModContent.ItemType<TheDarkMaster>()
+            if (Item.type != CWRItemOverride.GetCalItemID("TheDarkMaster")
                 || Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
                 || !Owner.active || Owner.CCed || Owner == null) {
                 if (Projectile.ai[0] == 1) {
@@ -54,9 +53,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             if (Projectile.ai[2] == 0) {
                 float angle = MathHelper.TwoPi * Main.rand.NextFloat(0f, 1f);
                 Vector2 angleVec = angle.ToRotationVector2();
-                Particle smoke = new HeavySmokeParticle(Projectile.Center, angleVec * Main.rand.NextFloat(1f, 2f)
+                PRT_Smoke smoke = new PRT_Smoke(Projectile.Center, angleVec * Main.rand.NextFloat(1f, 2f)
                     , Color.Black, 30, Main.rand.NextFloat(0.25f, 1f), 0.5f, 0.1f);
-                GeneralParticleHandler.SpawnParticle(smoke);
+                PRTLoader.AddParticle(smoke);
             }
 
             if (DownLeft) {
@@ -71,8 +70,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Projectile.direction = Math.Sign(direction.X);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, direction * 16
-                        , ModContent.ProjectileType<DarkMasterBeam>(), (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 1, 1);
-                    Main.projectile[proj].Calamity().allProjectilesHome = true;
+                        , CWRID.Proj_DarkMasterBeam, (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 1, 1);
+                    Main.projectile[proj].SetAllProjectilesHome(true);
                 }
                 Projectile.ai[1] = 0;
             }
@@ -112,6 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
             playerClone.bodyFrame = Owner.bodyFrame;
             playerClone.legFrame = Owner.legFrame;
+            playerClone.heldProj = -1;
 
             playerClone.direction = Math.Sign(Projectile.DirectionTo(InMousePos).X);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, playerClone, Projectile.position, 0f, playerClone.fullRotationOrigin, 0f, 1f);

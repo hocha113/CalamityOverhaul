@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
@@ -43,16 +42,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition, null, Color.White
                     , rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
             }
-        }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<DubiousPlating>(15)
-                .AddIngredient<MysteriousCircuitry>(15)
-                .AddIngredient(ItemID.IronBar, 10)
-                .AddIngredient(ItemID.Wood, 50)
-                .AddTile(TileID.Anvils)
-                .Register();
         }
     }
 

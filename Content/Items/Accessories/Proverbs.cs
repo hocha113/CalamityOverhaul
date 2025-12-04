@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -33,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
-            player.buffImmune[ModContent.BuffType<VulnerabilityHex>()] = true;
+            player.buffImmune[CWRID.Buff_VulnerabilityHex] = true;
             player.buffImmune[BuffID.OnFire] = true;
             player.buffImmune[BuffID.OnFire3] = true;
             player.GetModPlayer<ProverbsPlayer>().HasProverbs = true;
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (HasProverbs || IsEbn) {
-                target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+                target.AddBuff(CWRID.Buff_VulnerabilityHex, 300);
             }
             if (IsEbn && target.life <= 0 && target.lifeMax > 500 && Main.rand.NextBool(6) && !CWRRef.GetBossRushActive()) {//击杀概率掉落湮灭灰烬
                 VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(CWRID.Item_AshesofAnnihilation));
@@ -77,13 +76,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone) {
             if (HasProverbs || IsEbn) {
-                target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+                target.AddBuff(CWRID.Buff_VulnerabilityHex, 300);
             }
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone) {
             if (HasProverbs || IsEbn) {
-                target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+                target.AddBuff(CWRID.Buff_VulnerabilityHex, 300);
             }
         }
 
@@ -153,11 +152,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+            target.AddBuff(CWRID.Buff_VulnerabilityHex, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 300);
+            target.AddBuff(CWRID.Buff_VulnerabilityHex, 300);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

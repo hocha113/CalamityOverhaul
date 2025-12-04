@@ -764,7 +764,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         protected override void OnScenarioComplete() {
-            
+
         }
     }
 }

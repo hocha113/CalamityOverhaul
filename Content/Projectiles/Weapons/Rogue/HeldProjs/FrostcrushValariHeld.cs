@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Projectiles.Rogue;
+﻿using CalamityMod.Projectiles.Rogue;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -66,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             }
             target.AddBuff(BuffID.Frostburn2, 120);
             if (stealthStrike) {
-                target.AddBuff(ModContent.BuffType<GlacialState>(), 45);
+                target.AddBuff(CWRID.Buff_GlacialState, 45);
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Frostburn, 180);
-            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+            target.AddBuff(CWRID.Buff_GlacialState, 30);
 
         }
 

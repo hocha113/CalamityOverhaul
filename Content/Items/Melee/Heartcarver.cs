@@ -339,7 +339,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     20,
                     Main.rand.NextFloat(2f, 3f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
-                ); 
+                );
                 PRTLoader.AddParticle(spark);
             }
         }

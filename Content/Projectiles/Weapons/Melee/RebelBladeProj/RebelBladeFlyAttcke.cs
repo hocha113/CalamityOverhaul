@@ -1,7 +1,7 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -33,8 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
         }
 
         public override void AI() {
-            Projectile.Calamity().timesPierced = 0;
-
+            Projectile.SetProjtimesPierced(0);
             if (Projectile.localAI[1] <= 0) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
@@ -100,8 +99,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                     int sparkLifetime = Main.rand.Next(22, 36);
                     Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
                     Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
-                    SparkParticle spark = new SparkParticle(Projectile.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    PRT_Spark spark = new PRT_Spark(Projectile.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                    PRTLoader.AddParticle(spark);
                 }
             }
         }

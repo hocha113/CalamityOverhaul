@@ -141,6 +141,9 @@ namespace CalamityOverhaul
         public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
         public static int Item_CosmiliteBar => ModContent.ItemType<CosmiliteBar>();
         public static int NPC_ => ModContent.NPCType<Cataclysm>();
+        public static int NPC_SepulcherHead => ModContent.NPCType<SepulcherHead>();
+        public static int NPC_SepulcherBody => ModContent.NPCType<SepulcherBody>();
+        public static int NPC_SepulcherTail => ModContent.NPCType<SepulcherTail>();
         public static int NPC_Yharon => ModContent.NPCType<Yharon>();
         public static int NPC_SlimeGodCore => ModContent.NPCType<SlimeGodCore>();
         public static int NPC_Providence => ModContent.NPCType<Providence>();
@@ -186,6 +189,8 @@ namespace CalamityOverhaul
         public static int Proj_BarinadeArrow => ModContent.ProjectileType<BarinadeArrow>();
         public static int Proj_BoltArrow => ModContent.ProjectileType<BoltArrow>();
         public static int Proj_ => ModContent.ProjectileType<Nuke>();
+        public static int Proj_DarkMasterBeam => ModContent.ProjectileType<DarkMasterBeam>();
+        public static int Proj_DarkMasterClone => ModContent.ProjectileType<DarkMasterClone>();
         public static int Proj_OverlyDramaticDukeSummoner => ModContent.ProjectileType<OverlyDramaticDukeSummoner>();
         public static int Proj_MythrilFlare => ModContent.ProjectileType<MythrilFlare>();
         public static int Proj_Brimlash2 => ModContent.ProjectileType<Brimlash2>();
@@ -309,6 +314,8 @@ namespace CalamityOverhaul
         public static int Tile_SulphurousSand => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSand>();
         public static int Tile_SulphurousSandstone => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSandstone>();
         public static int Buff_ => ModContent.BuffType<Plague>();
+        public static int Buff_ElementalMix => ModContent.BuffType<ElementalMix>();
+        public static int Buff_VulnerabilityHex => ModContent.BuffType<VulnerabilityHex>();
         public static int Buff_MarkedforDeath => ModContent.BuffType<MarkedforDeath>();
         public static int Buff_BrutalCarnage => ModContent.BuffType<BrutalCarnage>();
         public static int Buff_ArmorCrunch => ModContent.BuffType<ArmorCrunch>();

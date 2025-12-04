@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -34,9 +33,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             return true;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(ModContent.BuffType<ElementalMix>(), 160);
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(CWRID.Buff_ElementalMix, 160);
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<ElementalMix>(), 60);
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(CWRID.Buff_ElementalMix, 60);
 
         private void DrawLine(List<Vector2> list) {
             Texture2D texture = TextureAssets.FishingLine.Value;
