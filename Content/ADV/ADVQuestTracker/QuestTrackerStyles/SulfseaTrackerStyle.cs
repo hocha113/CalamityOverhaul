@@ -117,6 +117,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                 float offset = (bubbleTimer + i * MathHelper.PiOver2) % MathHelper.TwoPi;
                 float yPos = rect.Y + 20 + (float)Math.Sin(offset) * 15f + i * 30f;
                 float xPos = rect.X + 15 + i * 60f;
+                xPos *= (rect.Width / 220f);
 
                 if (yPos > rect.Y + 10 && yPos < rect.Bottom - 10) {
                     float bubbleSize = 3f + (float)Math.Sin(offset * 2f) * 1.5f;

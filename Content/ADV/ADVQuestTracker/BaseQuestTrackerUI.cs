@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             TextDrawConfig config,
             Action<SpriteBatch, string, Vector2, Color, float, float, int> lineEffect = null) {
             var font = FontAssets.MouseText.Value;
-            List<string> lines = WrapText(config.Text, font, config.MaxWidth, config.Scale);
+            List<string> lines = WrapText(config.Text, font, config.MaxWidth - 20, config.Scale);
 
             float currentY = config.Position.Y;
             float lineSpacing = font.MeasureString("A").Y * config.Scale * 0.9f;

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.ADV.UIEffect;
+using MagicStorage.Common.Systems.RecurrentRecipes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -115,10 +116,16 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
 
             //»æÖÆÁ£×Ó
             foreach (var node in circuitNodes) {
+                var origX = node.Pos.X;
+                node.Pos.X *= (panelRect.Width / 220f);
                 node.Draw(spriteBatch, alpha * 0.85f);
+                node.Pos.X = origX;
             }
             foreach (var particle in dataParticles) {
+                var origX = particle.Pos.X;
+                particle.Pos.X *= (panelRect.Width / 220f);
                 particle.Draw(spriteBatch, alpha * 0.75f);
+                particle.Pos.X = origX;
             }
         }
 
