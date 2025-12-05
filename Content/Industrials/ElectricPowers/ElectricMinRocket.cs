@@ -112,9 +112,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             //玩家飞行控制
-            Owner.noFallDmg = true;
             Owner.gravity = 0f;
             Owner.maxFallSpeed = 100f;
+            Owner.fallStart2 = Owner.fallStart = (int)(Owner.position.Y / 16f);
 
             Projectile.timeLeft = 2;
             Owner.Center = Projectile.Center;

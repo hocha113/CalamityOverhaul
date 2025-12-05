@@ -400,6 +400,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             //如果没有找到可跟随的玩家，则原地减速并进入站立动画
             if (!Owner.Alives()) {
+                CloseMount();//取消可能的骑乘状态
                 npc.velocity.X *= 0.9f;
                 //使用站立动画
                 npc.ai[0] = 0f;
@@ -607,11 +608,20 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public Vector2 GetMountPos() => npc.Top + new Vector2(0, ai[9] > 0 ? ai[9] : npc.gfxOffY);
 
+        public void CloseMount() {
+            Mount = false;
+            DontMount = 30;
+            MountACrabulon = false;
+            Owner.fullRotation = 0;
+            Owner.velocity.Y -= 5;
+            SendNetWork();
+        }
+
         public bool MountAI() {
             if (DontMount > 0) {
                 DontMount--;
             }
-
+            
             if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
 
@@ -626,6 +636,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 Owner.mount.Dismount(Owner);
 
                 Owner.Center = GetMountPos();
+
+                Owner.fallStart2 = Owner.fallStart = (int)(Owner.position.Y / 16f);
 
                 if (ai[9] > 0) {
                     ai[9]--;
@@ -688,13 +700,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 }
 
                 if (Owner.whoAmI == Main.myPlayer && hoverNPC && rightPressed) {
-                    Mount = false;
-                    DontMount = 30;
-                    MountACrabulon = false;
-
-                    Owner.fullRotation = 0;
-                    Owner.velocity.Y -= 5;
-                    SendNetWork();
+                    CloseMount();
                 }
 
                 if (dontTurnTo <= 0f) {

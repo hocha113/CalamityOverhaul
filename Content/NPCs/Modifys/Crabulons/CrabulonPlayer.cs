@@ -1,5 +1,6 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,23 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             modPlayer.CustomCooldownCounter = 90;
         }
         public override void PostUpdate() {
-            if (!IsMount) {
+            if (IsMount) {
+                if (Player.CountProjectilesOfID<ElectricMinRocketHeld>() > 0) {
+                    foreach (var p in Main.ActiveProjectiles) {
+                        if (p.owner == Player.whoAmI && p.type == ModContent.ProjectileType<ElectricMinRocketHeld>()) {
+                            p.Kill();
+                        }
+                    }
+                }
+            }
+            else {
                 ModifyCrabulon.mountPlayerHeldProj = -1;
                 MountCrabulon = null;
                 if (oldIsMount) {
                     CloseDuringDash(Player);
                 }
             }
+
             oldIsMount = IsMount;
 
             ModifyCrabulons.Clear();

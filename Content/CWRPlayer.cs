@@ -4,12 +4,14 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.OtherMods.HighFPSSupport;
+using InnoVault;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -610,6 +612,17 @@ namespace CalamityOverhaul.Content
             if (SoulfireExplosion) {
                 NetworkText networkText = CWRLocText.Instance.SoulfireExplosion_DeadLang_Text.ToNetworkText(Player.name);
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
+            }
+            if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
+                foreach (var n in Main.ActiveNPCs) {
+                    if (n.boss && n.type == CWRID.NPC_Crabulon && n.TryGetOverride<ModifyCrabulon>(out var modify)) {
+                        modify.CloseMount();
+                    }
+                }
+                crabulonPlayer.IsMount = false;
+                ModifyCrabulon.mountPlayerHeldProj = -1;
+                crabulonPlayer.MountCrabulon = null;
+                CrabulonPlayer.CloseDuringDash(Player);
             }
             return true;
         }
