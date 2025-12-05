@@ -5,7 +5,6 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -96,15 +95,62 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             return 777;
         }
 
+        protected override float CalculateContentHeight() {
+            const float titleScale = 0.72f;
+            const float textScale = 0.62f;
+
+            float topPadding = 8f;
+            float titleHeight = CalculateTextHeight(QuestTitle.Value, titleScale);
+            float titleBottomMargin = 4f;
+            float dividerHeight = 2f;
+            float dividerBottomMargin = 12f;
+
+            //根据任务完成状态计算不同的内容高度
+            bool questCompleted = Main.LocalPlayer.TryGetADVSave(out var save)
+                && save.OldDukeFindFragmentsQuestCompleted;
+
+            float contentBlockHeight;
+
+            if (questCompleted) {
+                //完成状态
+                float completeTextHeight = CalculateTextHeight(QuestCompleteText.Value, textScale * 1.2f);
+                float progressBarHeight = 6f;
+
+                contentBlockHeight = completeTextHeight + 5f + progressBarHeight;
+            }
+            else {
+                //进行中状态
+                string objectiveText = $"{ObjectiveText.Value}: {CollectFragmentsText.Value}";
+                float objHeight = CalculateTextHeight(objectiveText, textScale);
+
+                string countText = $"{CurrentFragmentsText.Value}: 777/777"; //使用最大值占位
+                float countHeight = CalculateTextHeight(countText, textScale);
+
+                //提示文本（两种状态取较大的）
+                float hintHeight1 = CalculateTextHeight($"> {ReturnToCampsiteText.Value} <", textScale * 1.1f);
+                float hintHeight2 = CalculateTextHeight(HintText.Value, textScale);
+                float hintHeight = Math.Max(hintHeight1, hintHeight2);
+
+                contentBlockHeight = objHeight
+                    + countHeight
+                    + hintHeight;
+            }
+
+            return topPadding
+                + titleHeight + titleBottomMargin
+                + dividerHeight + dividerBottomMargin
+                + contentBlockHeight;
+        }
+
         protected override void UpdatePanelHeight() {
             base.UpdatePanelHeight();
             currentPanelHeight += 50f;
         }
 
         /// <summary>
-        /// 重写标题行绘制，添加发光效果
+        /// 重写标题行效果，添加发光效果
         /// </summary>
-        protected override void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
+        protected override void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
             //标题发光效果
             Color titleGlow = new Color(140, 180, 70) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
@@ -150,30 +196,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             int fragmentCount = GetFragmentCount();
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
 
-            //目标文本
+            //目标文本（使用换行接口）
             string objectiveText = $"{ObjectiveText.Value}: {CollectFragmentsText.Value}";
-            Utils.DrawBorderString(spriteBatch, objectiveText, startPos, textColor, textScale);
+            float objHeight = DrawObjectiveText(spriteBatch, objectiveText, startPos, alpha, textScale);
 
             //当前数量
-            Vector2 countPos = startPos + new Vector2(0, 18);
+            Vector2 countPos = startPos + new Vector2(0, objHeight + 3);
             string countText = $"{CurrentFragmentsText.Value}: {fragmentCount}/777";
 
             Color countColor = fragmentCount >= 777
                 ? Color.LimeGreen * (alpha * ((float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f))
                 : textColor;
 
-            Utils.DrawBorderString(spriteBatch, countText, countPos, countColor, textScale);
+            float countHeight = DrawWrappedText(spriteBatch, countText, countPos, countColor, textScale, alpha);
 
             //返回提示或收集提示
-            Vector2 hintPos = countPos + new Vector2(0, 18);
+            Vector2 hintPos = countPos + new Vector2(0, countHeight + 3);
             if (fragmentCount >= 777) {
                 float blink = (float)Math.Sin(pulseTimer * 4f) * 0.5f + 0.5f;
                 Color returnColor = new Color(160, 220, 100) * (alpha * blink);
-                Utils.DrawBorderString(spriteBatch, $"> {ReturnToCampsiteText.Value} <", hintPos, returnColor, textScale * 1.1f);
+                DrawWrappedText(spriteBatch, $"> {ReturnToCampsiteText.Value} <", hintPos, returnColor, textScale * 1.1f, alpha);
             }
             else {
-                Color hintColor = new Color(140, 170, 75) * (alpha * 0.7f);
-                Utils.DrawBorderString(spriteBatch, HintText.Value, hintPos, hintColor, textScale);
+                DrawHintText(spriteBatch, HintText.Value, hintPos, new Color(140, 170, 75), alpha, textScale);
             }
 
             //进度条
@@ -185,9 +230,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             float pulse = (float)Math.Sin(pulseTimer * 2f) * 0.3f + 0.7f;
             Color completeColor = Color.Lerp(new Color(180, 220, 100), Color.LimeGreen, pulse) * alpha;
 
-            Utils.DrawBorderString(spriteBatch, QuestCompleteText.Value, startPos, completeColor, textScale * 1.2f);
+            float completeHeight = DrawWrappedText(spriteBatch, QuestCompleteText.Value, startPos, completeColor, textScale * 1.2f, alpha);
 
-            Vector2 progressBarPos = startPos + new Vector2(0, 35);
+            Vector2 progressBarPos = startPos + new Vector2(0, completeHeight + 5);
             DrawProgressBar(spriteBatch, progressBarPos, alpha);
         }
     }

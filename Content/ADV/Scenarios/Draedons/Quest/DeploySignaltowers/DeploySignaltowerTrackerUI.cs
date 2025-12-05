@@ -101,16 +101,70 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             return 1.0f; //信号塔任务需要完成全部
         }
 
+        protected override float CalculateContentHeight() {
+            const float titleScale = 0.72f;
+            const float textScale = 0.62f;
+
+            float topPadding = 8f;
+            float titleHeight = CalculateTextHeight(QuestTitle.Value, titleScale);
+            float titleBottomMargin = 4f;
+            float dividerHeight = 2f;
+            float dividerBottomMargin = 12f;
+
+            //根据是否有最近目标计算不同的内容高度
+            SignalTowerTargetPoint nearestTarget = SignalTowerTargetManager.GetNearestTarget(Main.LocalPlayer);
+            float contentBlockHeight;
+
+            if (nearestTarget != null) {
+                //目标信息文本
+                string targetText = $"{NearestTargetText.Value}: {NodeText.Value.Replace("[NUM]", (nearestTarget.Index + 1).ToString())}";
+                float targetTextHeight = CalculateTextHeight(targetText, textScale);
+
+                //距离/状态文本
+                bool playerInRange = nearestTarget.IsPlayerInRange(Main.LocalPlayer);
+                string distanceText = playerInRange
+                    ? $"{StatusText.Value}: {InRangeText.Value}"
+                    : $"{DistanceText.Value}: 0m"; //使用占位符计算高度
+                float distanceTextHeight = CalculateTextHeight(distanceText, textScale * 0.9f);
+
+                //进度文本
+                float progressTextHeight = FontAssets.MouseText.Value.MeasureString("A").Y * textScale;
+
+                //进度条
+                float progressBarHeight = 6f;
+
+                contentBlockHeight = targetTextHeight
+                    + distanceTextHeight
+                    + progressTextHeight
+                    + progressBarHeight;
+            }
+            else {
+                //任务完成状态
+                float completeTextHeight = CalculateTextHeight(QuestCompleteText.Value, textScale * 1.2f);
+                float numberTextHeight = FontAssets.MouseText.Value.MeasureString("A").Y * 0.7f;
+                float progressBarHeight = 6f;
+
+                contentBlockHeight = completeTextHeight
+                    + numberTextHeight
+                    + progressBarHeight;
+            }
+
+            return topPadding
+                + titleHeight + titleBottomMargin
+                + dividerHeight + dividerBottomMargin
+                + contentBlockHeight;
+        }
+
         protected override void UpdatePanelHeight() {
             base.UpdatePanelHeight();
             currentPanelHeight += 30f; //为额外信息增加高度
         }
 
         /// <summary>
-        /// 重写标题行绘制，添加强化发光效果
+        /// 重写标题行效果，添加强化发光效果
         /// </summary>
-        protected override void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
-            // 标题加强发光效果
+        protected override void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
+            //标题加强发光效果
             Color titleGlow = new Color(80, 200, 255) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
                 float a = MathHelper.TwoPi * i / 4f;
@@ -123,7 +177,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         protected override void DrawContent(SpriteBatch spriteBatch, float alpha) {
-            var font = FontAssets.MouseText.Value;
             const float titleScale = 0.72f;
             const float textScale = 0.62f;
 
@@ -147,7 +200,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         private void DrawTargetInfo(SpriteBatch spriteBatch, Vector2 startPos, SignalTowerTargetPoint target, float alpha, float textScale) {
-            var font = FontAssets.MouseText.Value;
             bool playerInRange = target.IsPlayerInRange(Main.LocalPlayer);
 
             Vector2 targetInfoPos = startPos + new Vector2(0, 12);
@@ -158,10 +210,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 ? Color.Lerp(new Color(255, 200, 100), Color.LimeGreen, 0.5f) * alpha
                 : new Color(255, 200, 100) * alpha;
 
-            Utils.DrawBorderString(spriteBatch, targetText, targetInfoPos, targetTextColor, textScale);
+            float targetTextHeight = DrawWrappedText(spriteBatch, targetText, targetInfoPos, targetTextColor, textScale, alpha);
 
             //距离或状态
-            Vector2 distancePos = targetInfoPos + new Vector2(0, 15);
+            Vector2 distancePos = targetInfoPos + new Vector2(0, targetTextHeight + 3);
             string distanceText;
             Color distanceColor;
 
@@ -179,10 +231,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 distanceColor = new Color(200, 230, 255) * alpha;
             }
 
-            Utils.DrawBorderString(spriteBatch, distanceText, distancePos, distanceColor, textScale * 0.9f);
+            float distanceTextHeight = DrawWrappedText(spriteBatch, distanceText, distancePos, distanceColor, textScale * 0.9f, alpha);
 
             //进度文本
-            Vector2 progressTextPos = distancePos + new Vector2(0, 15);
+            Vector2 progressTextPos = distancePos + new Vector2(0, distanceTextHeight + 3);
             DrawContributionText(spriteBatch, progressTextPos, alpha, textScale);
 
             //进度条
@@ -191,14 +243,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         private void DrawQuestComplete(SpriteBatch spriteBatch, Vector2 startPos, float alpha, float textScale) {
             Vector2 progressTextPos = startPos + new Vector2(0, 12);
-            Utils.DrawBorderString(spriteBatch, QuestCompleteText.Value, progressTextPos,
-                Color.Gold * alpha, textScale * 1.2f);
 
-            Vector2 numberPos = progressTextPos + new Vector2(0, 20);
+            //完成文本
+            float completeTextHeight = DrawWrappedText(
+                spriteBatch,
+                QuestCompleteText.Value,
+                progressTextPos,
+                Color.Gold * alpha,
+                textScale * 1.2f,
+                alpha
+            );
+
+            Vector2 numberPos = progressTextPos + new Vector2(0, completeTextHeight + 5);
             string numberText = $"{DeploySignaltowerCheck.DeployedTowerCount}/{DeploySignaltowerCheck.TargetTowerCount}";
-            Utils.DrawBorderString(spriteBatch, numberText, numberPos, Color.LimeGreen * alpha, 0.7f);
+            DrawWrappedText(spriteBatch, numberText, numberPos, Color.LimeGreen * alpha, 0.7f, alpha);
 
-            DrawProgressBar(spriteBatch, progressTextPos + new Vector2(0, 45), alpha);
+            DrawProgressBar(spriteBatch, numberPos + new Vector2(0, 20), alpha);
         }
 
         protected override void DrawContributionText(SpriteBatch spriteBatch, Vector2 position, float alpha, float textScale) {

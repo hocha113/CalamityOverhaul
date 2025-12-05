@@ -195,29 +195,72 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
+        /// 计算文本换行后的高度（不实际绘制）
+        /// </summary>
+        protected virtual float CalculateTextHeight(string text, float scale = 0.75f, float maxWidth = -1f) {
+            if (string.IsNullOrEmpty(text)) {
+                return 0f;
+            }
+
+            var font = FontAssets.MouseText.Value;
+            if (maxWidth <= 0) {
+                maxWidth = PanelWidth - 20f;
+            }
+
+            List<string> lines = WrapText(text, font, maxWidth, scale);
+            float lineSpacing = font.MeasureString("A").Y * scale * 0.9f;
+
+            return lines.Count * lineSpacing;
+        }
+
+        /// <summary>
         /// 计算标题换行后需要的高度
         /// </summary>
         protected virtual float CalculateTitleHeight() {
-            var font = FontAssets.MouseText.Value;
             const float titleScale = 0.75f;
-            const float maxTitleWidth = PanelWidth - 20f;
+            return CalculateTextHeight(QuestTitle.Value, titleScale);
+        }
 
-            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
+        /// <summary>
+        /// 计算内容区域的总高度（子类可重写以自定义计算）
+        /// </summary>
+        protected virtual float CalculateContentHeight() {
+            const float textScale = 0.65f;
 
-            float totalHeight = 0f;
-            foreach (string line in titleLines) {
-                totalHeight += font.MeasureString(line).Y * titleScale * 0.9f;
-            }
+            //计算各部分高度
+            float topPadding = 8f;
+            float titleHeight = CalculateTitleHeight();
+            float titleBottomMargin = 2f;
+            float dividerHeight = 2f;
+            float dividerBottomMargin = 8f;
 
-            return totalHeight;
+            //贡献度文本
+            float contributionTextHeight = FontAssets.MouseText.Value.MeasureString("A").Y * textScale;
+            float contributionBottomMargin = 15f;
+
+            //需求文本
+            float requirementHeight = CalculateTextHeight(RequiredContribution.Value, 0.6f);
+            float requirementBottomMargin = 2f;
+
+            //进度条
+            float progressBarHeight = 6f;
+            float bottomPadding = 8f;
+
+            //总高度
+            return topPadding
+                + titleHeight + titleBottomMargin
+                + dividerHeight + dividerBottomMargin
+                + contributionTextHeight + contributionBottomMargin
+                + requirementHeight + requirementBottomMargin
+                + progressBarHeight
+                + bottomPadding;
         }
 
         /// <summary>
         /// 根据内容动态调整面板高度
         /// </summary>
         protected virtual void UpdatePanelHeight() {
-            float titleHeight = CalculateTitleHeight();
-            float contentHeight = 8f + titleHeight + 4f + 10f + 15f + 15f + 14f;
+            float contentHeight = CalculateContentHeight();
             currentPanelHeight = Math.Clamp(contentHeight, MinPanelHeight, MaxPanelHeight);
         }
 
@@ -316,6 +359,71 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
+        /// 文本绘制配置结构体
+        /// </summary>
+        protected struct TextDrawConfig
+        {
+            public string Text;
+            public Vector2 Position;
+            public Color Color;
+            public float Scale;
+            public float Alpha;
+            public float MaxWidth;
+
+            public TextDrawConfig(string text, Vector2 position, Color color, float scale = 0.75f, float alpha = 1f, float maxWidth = -1f) {
+                Text = text;
+                Position = position;
+                Color = color;
+                Scale = scale;
+                Alpha = alpha;
+                MaxWidth = maxWidth <= 0 ? PanelWidth - 20f : maxWidth;
+            }
+        }
+
+        /// <summary>
+        /// 绘制带换行的文本，返回绘制的总高度
+        /// </summary>
+        /// <param name="spriteBatch">SpriteBatch</param>
+        /// <param name="config">文本绘制配置</param>
+        /// <param name="lineEffect">可选的每行文本效果回调</param>
+        /// <returns>绘制的总高度</returns>
+        protected virtual float DrawWrappedText(
+            SpriteBatch spriteBatch,
+            TextDrawConfig config,
+            Action<SpriteBatch, string, Vector2, Color, float, float, int> lineEffect = null) {
+            var font = FontAssets.MouseText.Value;
+            List<string> lines = WrapText(config.Text, font, config.MaxWidth, config.Scale);
+
+            float currentY = config.Position.Y;
+            float lineSpacing = font.MeasureString("A").Y * config.Scale * 0.9f;
+
+            for (int i = 0; i < lines.Count; i++) {
+                Vector2 linePos = new Vector2(config.Position.X, currentY);
+                Color lineColor = config.Color * config.Alpha;
+
+                //如果提供了自定义效果，先执行
+                lineEffect?.Invoke(spriteBatch, lines[i], linePos, lineColor, config.Scale, config.Alpha, i);
+
+                //绘制主文本（如果lineEffect为null或子类重写时仍需要基础绘制）
+                if (lineEffect == null) {
+                    Utils.DrawBorderString(spriteBatch, lines[i], linePos, lineColor, config.Scale);
+                }
+
+                currentY += lineSpacing;
+            }
+
+            return currentY - config.Position.Y;
+        }
+
+        /// <summary>
+        /// 简化的文本绘制方法（无自定义效果）
+        /// </summary>
+        protected float DrawWrappedText(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale = 0.75f, float alpha = 1f, float maxWidth = -1f) {
+            var config = new TextDrawConfig(text, position, color, scale, alpha, maxWidth);
+            return DrawWrappedText(spriteBatch, config);
+        }
+
+        /// <summary>
         /// 绘制标题，支持换行和自定义效果
         /// </summary>
         /// <param name="spriteBatch">SpriteBatch</param>
@@ -324,39 +432,45 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// <param name="titleScale">标题缩放</param>
         /// <returns>标题总高度</returns>
         protected virtual float DrawTitle(SpriteBatch spriteBatch, Vector2 titlePos, float alpha, float titleScale = 0.72f) {
-            var font = FontAssets.MouseText.Value;
-            const float maxTitleWidth = PanelWidth - 20f;
             Color titleColor = currentStyle?.GetTitleColor(alpha) ?? Color.White * alpha;
 
-            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
-            float currentY = titlePos.Y;
+            var config = new TextDrawConfig(
+                QuestTitle.Value,
+                titlePos,
+                titleColor,
+                titleScale,
+                alpha
+            );
 
-            foreach (string line in titleLines) {
-                Vector2 linePos = new Vector2(titlePos.X, currentY);
-                
-                //调用可被子类重写的单行绘制方法，允许添加特殊效果
-                DrawTitleLine(spriteBatch, line, linePos, titleColor, titleScale, alpha);
-                
-                currentY += font.MeasureString(line).Y * titleScale * 0.9f;
-            }
-
-            return currentY - titlePos.Y;
+            return DrawWrappedText(spriteBatch, config, DrawTitleLineEffect);
         }
 
         /// <summary>
-        /// 绘制标题的单行文本，子类可重写以添加特殊效果（如发光效果）
+        /// 标题行效果（子类可重写以添加特殊效果如发光）
         /// </summary>
-        /// <param name="spriteBatch">SpriteBatch</param>
-        /// <param name="text">要绘制的文本</param>
-        /// <param name="position">绘制位置</param>
-        /// <param name="color">文本颜色</param>
-        /// <param name="scale">缩放</param>
-        /// <param name="alpha">透明度</param>
-        protected virtual void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
+        protected virtual void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
             //默认实现，简单绘制
             Utils.DrawBorderString(spriteBatch, text, position, color, scale);
         }
 
+        /// <summary>
+        /// 绘制任务信息文本（带自动换行）
+        /// </summary>
+        protected float DrawObjectiveText(SpriteBatch spriteBatch, string text, Vector2 position, float alpha, float textScale = 0.62f) {
+            Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
+            return DrawWrappedText(spriteBatch, text, position, textColor, textScale, alpha);
+        }
+
+        /// <summary>
+        /// 绘制提示文本（带自动换行和可选颜色）
+        /// </summary>
+        protected float DrawHintText(SpriteBatch spriteBatch, string text, Vector2 position, Color? customColor, float alpha, float textScale = 0.62f) {
+            Color textColor = customColor ?? (currentStyle?.GetTextColor(alpha) ?? Color.White * alpha);
+            textColor *= alpha * 0.7f;
+            return DrawWrappedText(spriteBatch, text, position, textColor, textScale, alpha);
+        }
+
+        //这个鸡巴不能删，这个删了啥都没了
         public override void Draw(SpriteBatch spriteBatch) {
             if (slideProgress < 0.01f) {
                 return;
@@ -381,7 +495,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
 
-            //标题
+            //标题（使用新的接口，自动支持换行）
             Vector2 titlePos = DrawPosition + new Vector2(Padding, 8);
             float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
@@ -394,14 +508,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             Vector2 contributionTextPos = dividerStart + new Vector2(0, 8);
             DrawContributionText(spriteBatch, contributionTextPos, alpha, textScale);
 
-            //需求文本
+            //需求文本（使用新接口，自动换行）
             Vector2 requirementPos = contributionTextPos + new Vector2(0, 15);
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
-            Utils.DrawBorderString(spriteBatch, RequiredContribution.Value, requirementPos,
-                textColor * 0.8f, 0.6f);
+            float reqHeight = DrawWrappedText(spriteBatch, RequiredContribution.Value, requirementPos, textColor * 0.8f, 0.6f, alpha);
 
             //进度条
-            DrawProgressBar(spriteBatch, requirementPos + new Vector2(0, 14), alpha);
+            DrawProgressBar(spriteBatch, requirementPos + new Vector2(0, reqHeight + 2), alpha);
         }
 
         /// <summary>

@@ -4,7 +4,6 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -86,15 +85,63 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
             return 1.0f;
         }
 
+        protected override float CalculateContentHeight() {
+            const float titleScale = 0.72f;
+            const float textScale = 0.62f;
+
+            float topPadding = 8f;
+            float titleHeight = CalculateTextHeight(QuestTitle.Value, titleScale);
+            float titleBottomMargin = 4f;
+            float dividerHeight = 2f;
+            float dividerBottomMargin = 12f;
+
+            //根据任务完成状态计算不同的内容高度
+            bool questCompleted = Main.LocalPlayer.TryGetADVSave(out var save)
+                && save.OldDukeFirstCampsiteDialogueCompleted;
+
+            float contentBlockHeight;
+
+            if (questCompleted) {
+                //完成状态
+                float completeTextHeight = CalculateTextHeight(QuestCompleteText.Value, textScale);
+                float progressBarHeight = 6f;
+
+                contentBlockHeight = completeTextHeight + 5f + progressBarHeight;
+            }
+            else {
+                //进行中状态
+                string objectiveText = $"{ObjectiveText.Value}: {LocationText.Value}";
+                float objHeight = CalculateTextHeight(objectiveText, textScale);
+
+                //距离文本
+                string distanceText = $"{DistanceText.Value}: 9999m"; //使用占位符
+                float distanceHeight = CalculateTextHeight(distanceText, textScale);
+
+                //提示文本（两种状态取较大的）
+                float hintHeight1 = CalculateTextHeight($"> {InteractText.Value} <", textScale);
+                float hintHeight2 = CalculateTextHeight(HoldFragmentHintText.Value, textScale);
+                float hintHeight = Math.Max(hintHeight1, hintHeight2);
+
+                contentBlockHeight = objHeight
+                    + distanceHeight
+                    + hintHeight;
+            }
+
+            return topPadding
+                + titleHeight + titleBottomMargin
+                + dividerHeight + dividerBottomMargin
+                + contentBlockHeight;
+        }
+
         protected override void UpdatePanelHeight() {
             base.UpdatePanelHeight();
             currentPanelHeight += 50f;
         }
 
         /// <summary>
-        /// 重写标题行绘制，添加发光效果
+        /// 重写标题行效果，添加发光效果
         /// </summary>
-        protected override void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
+        protected override void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
             //标题发光效果
             Color titleGlow = new Color(140, 180, 70) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
@@ -112,7 +159,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
                 return;
             }
 
-            var font = FontAssets.MouseText.Value;
             const float titleScale = 0.72f;
             const float textScale = 0.62f;
 
@@ -142,11 +188,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
 
             //目标文本
             string objectiveText = $"{ObjectiveText.Value}: {LocationText.Value}";
-            Utils.DrawBorderString(spriteBatch, objectiveText, startPos, textColor, textScale);
+            float objHeight = DrawObjectiveText(spriteBatch, objectiveText, startPos, alpha, textScale);
 
             //距离信息
+            float currentY = objHeight + 3;
             if (OldDukeCampsite.IsGenerated) {
-                Vector2 distancePos = startPos + new Vector2(0, 18);
+                Vector2 distancePos = startPos + new Vector2(0, currentY);
                 float distance = Vector2.Distance(Main.LocalPlayer.Center, OldDukeCampsite.CampsitePosition) / 16f;
                 string distanceText = $"{DistanceText.Value}: {(int)distance}m";
 
@@ -154,18 +201,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
                     ? Color.LimeGreen * (alpha * ((float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f))
                     : textColor;
 
-                Utils.DrawBorderString(spriteBatch, distanceText, distancePos, distanceColor, textScale);
+                float distHeight = DrawWrappedText(spriteBatch, distanceText, distancePos, distanceColor, textScale, alpha);
+                currentY += distHeight + 3;
 
                 //交互提示
-                Vector2 hintPos = distancePos + new Vector2(0, 18);
+                Vector2 hintPos = startPos + new Vector2(0, currentY);
                 if (OldDukeCampsite.CanInteract()) {
                     float blink = (float)Math.Sin(pulseTimer * 4f) * 0.5f + 0.5f;
                     Color interactColor = new Color(160, 220, 100) * (alpha * blink);
-                    Utils.DrawBorderString(spriteBatch, $"> {InteractText.Value} <", hintPos, interactColor, textScale * 1.1f);
+                    DrawWrappedText(spriteBatch, $"> {InteractText.Value} <", hintPos, interactColor, textScale * 1.1f, alpha);
                 }
                 else {
-                    Color hintColor = new Color(140, 170, 75) * (alpha * 0.7f);
-                    Utils.DrawBorderString(spriteBatch, HoldFragmentHintText.Value, hintPos, hintColor, textScale);
+                    DrawHintText(spriteBatch, HoldFragmentHintText.Value, hintPos, new Color(140, 170, 75), alpha, textScale);
                 }
             }
 
@@ -178,9 +225,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
             float pulse = (float)Math.Sin(pulseTimer * 2f) * 0.3f + 0.7f;
             Color completeColor = Color.Lerp(new Color(180, 220, 100), Color.LimeGreen, pulse) * alpha;
 
-            Utils.DrawBorderString(spriteBatch, QuestCompleteText.Value, startPos, completeColor, textScale * 1.2f);
+            float completeHeight = DrawWrappedText(spriteBatch, QuestCompleteText.Value, startPos, completeColor, textScale * 1.2f, alpha);
 
-            Vector2 progressBarPos = startPos + new Vector2(0, 35);
+            Vector2 progressBarPos = startPos + new Vector2(0, completeHeight + 5);
             DrawProgressBar(spriteBatch, progressBarPos, alpha);
         }
 
