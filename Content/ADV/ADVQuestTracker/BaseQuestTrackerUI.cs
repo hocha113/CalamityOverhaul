@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 绘制内容（子类可重写以自定义布局）
+        /// 绘制内容，子类可重写以自定义布局
         /// </summary>
         protected virtual void DrawContent(SpriteBatch spriteBatch, float alpha) {
             var font = FontAssets.MouseText.Value;
