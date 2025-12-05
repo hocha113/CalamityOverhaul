@@ -43,37 +43,38 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         }
 
         public override void UpdateParticles(Vector2 basePos, float panelFade) {
-            if (!Main.gameMenu) {
-                var panelRect = basePos.GetRectangle(220, 120);
-                var panelSize = new Vector2(220, 120);
+            if (Main.gameMenu) {
+                return;
+            }
+            var panelRect = basePos.GetRectangle(220, 120);
+            var panelSize = new Vector2(220, 120);
 
-                //数据粒子刷新
-                dataParticleSpawnTimer++;
-                if (dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
-                    dataParticleSpawnTimer = 0;
-                    Vector2 p = basePos + new Vector2(Main.rand.NextFloat(TechSideMargin, panelSize.X - TechSideMargin), Main.rand.NextFloat(40f, panelSize.Y - 40f));
-                    dataParticles.Add(new DraedonDataPRT(p));
+            //数据粒子刷新
+            dataParticleSpawnTimer++;
+            if (dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
+                dataParticleSpawnTimer = 0;
+                Vector2 p = basePos + new Vector2(Main.rand.NextFloat(TechSideMargin, panelSize.X - TechSideMargin), Main.rand.NextFloat(40f, panelSize.Y - 40f));
+                dataParticles.Add(new DraedonDataPRT(p));
+            }
+            for (int i = dataParticles.Count - 1; i >= 0; i--) {
+                if (dataParticles[i].Update(basePos, panelSize)) {
+                    dataParticles.RemoveAt(i);
                 }
-                for (int i = dataParticles.Count - 1; i >= 0; i--) {
-                    if (dataParticles[i].Update(basePos, panelSize)) {
-                        dataParticles.RemoveAt(i);
-                    }
-                }
+            }
 
-                //电路节点刷新
-                circuitNodeSpawnTimer++;
-                if (circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8) {
-                    circuitNodeSpawnTimer = 0;
-                    float scaleW = Main.UIScale;
-                    float left = basePos.X + TechSideMargin * scaleW;
-                    float right = basePos.X + panelSize.X - TechSideMargin * scaleW;
-                    Vector2 start = new(Main.rand.NextFloat(left, right), basePos.Y + Main.rand.NextFloat(40f, panelSize.Y - 40f));
-                    circuitNodes.Add(new CircuitNodePRT(start));
-                }
-                for (int i = circuitNodes.Count - 1; i >= 0; i--) {
-                    if (circuitNodes[i].Update(basePos, panelSize)) {
-                        circuitNodes.RemoveAt(i);
-                    }
+            //电路节点刷新
+            circuitNodeSpawnTimer++;
+            if (circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8) {
+                circuitNodeSpawnTimer = 0;
+                float scaleW = Main.UIScale;
+                float left = basePos.X + TechSideMargin * scaleW;
+                float right = basePos.X + panelSize.X - TechSideMargin * scaleW;
+                Vector2 start = new(Main.rand.NextFloat(left, right), basePos.Y + Main.rand.NextFloat(40f, panelSize.Y - 40f));
+                circuitNodes.Add(new CircuitNodePRT(start));
+            }
+            for (int i = circuitNodes.Count - 1; i >= 0; i--) {
+                if (circuitNodes[i].Update(basePos, panelSize)) {
+                    circuitNodes.RemoveAt(i);
                 }
             }
         }

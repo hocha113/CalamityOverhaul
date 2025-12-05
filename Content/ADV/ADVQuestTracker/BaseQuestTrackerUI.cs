@@ -399,14 +399,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// </summary>
         protected virtual void UpdateCollapseButton() {
             int buttonSize = 20;
-            
+
             //计算按钮X位置的平滑过渡
             float expandedX = DrawPosition.X + PanelWidth - buttonSize - 10;
             float collapsedX = DrawPosition.X + 10;
             float buttonX = MathHelper.Lerp(expandedX, collapsedX, CWRUtils.EaseInOutCubic(buttonPositionProgress));
-            
+
             int buttonY = (int)(DrawPosition.Y + 8);
-            
+
             collapseButtonRect = new Rectangle((int)buttonX, buttonY, buttonSize, buttonSize);
         }
 
@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// </summary>
         protected virtual void HandleCollapseButtonInteraction() {
             collapseButtonHovered = collapseButtonRect.Contains(Main.MouseScreen.ToPoint());
-            
+
             if (collapseButtonHovered && keyLeftPressState == KeyPressState.Pressed) {
                 isCollapsed = !isCollapsed;
                 SoundEngine.PlaySound(SoundID.MenuTick);
@@ -561,31 +561,32 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// <summary>
         /// 绘制折叠按钮
         /// </summary>
-        protected virtual void DrawCollapseButton(SpriteBatch spriteBatch, float alpha)
-        {
+        protected virtual void DrawCollapseButton(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //获取样式颜色
             Color styleColor = currentStyle?.GetTitleColor(alpha) ?? new Color(100, 220, 255) * alpha;
             Color edgeColor = currentStyle?.GetNumberColor(1f, 1f, alpha) ?? Color.White * alpha;
-            
-            //按钮背景
-            float hoverBrightness = collapseButtonHovered ? 1.2f : 0.8f;
-            Color buttonBgColor = styleColor * hoverBrightness * 0.6f;
+
+            //按钮背景使用更柔和的颜色
+            float hoverBrightness = collapseButtonHovered ? 0.5f : 0.3f;
+            Color buttonBgColor = Color.Lerp(styleColor, new Color(20, 30, 45), 0.6f) * (alpha * hoverBrightness);
             spriteBatch.Draw(pixel, collapseButtonRect, new Rectangle(0, 0, 1, 1), buttonBgColor);
 
             //按钮发光效果
-            if (collapseButtonHovered)
-            {
-                float glowIntensity = (float)Math.Sin(buttonGlowPulse * 2f) * 0.3f + 0.5f;
+            if (collapseButtonHovered) {
+                float glowIntensity = (float)Math.Sin(buttonGlowPulse * 2f) * 0.2f + 0.3f;
                 Color glowColor = styleColor with { A = 0 };
                 Rectangle glowRect = collapseButtonRect;
                 glowRect.Inflate(2, 2);
-                spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor * (glowIntensity * 0.4f));
+                spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor * (glowIntensity * 0.25f));
             }
 
-            //按钮边框使用样式边缘色
-            Color buttonBorderColor = Color.Lerp(edgeColor, styleColor, 0.3f);
+            //按钮边框使用更低饱和度的颜色
+            Color buttonBorderColor = Color.Lerp(styleColor, edgeColor, 0.5f) * alpha;
+            if (collapseButtonHovered) {
+                buttonBorderColor = Color.Lerp(buttonBorderColor, styleColor, 0.3f);
+            }
             DrawButtonBorder(spriteBatch, collapseButtonRect, buttonBorderColor);
 
             //绘制箭头
@@ -596,83 +597,76 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// <summary>
         /// 绘制按钮边框
         /// </summary>
-        protected virtual void DrawButtonBorder(SpriteBatch spriteBatch, Rectangle rect, Color color)
-        {
+        protected virtual void DrawButtonBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int thickness = 1;
-            
+
             //上
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), 
-                new Rectangle(0, 0, 1, 1), color);
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness),
+                new Rectangle(0, 0, 1, 1), color * 0.7f);
             //下
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), 
-                new Rectangle(0, 0, 1, 1), color * 0.8f);
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness),
+                new Rectangle(0, 0, 1, 1), color * 0.5f);
             //左
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), 
-                new Rectangle(0, 0, 1, 1), color * 0.9f);
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height),
+                new Rectangle(0, 0, 1, 1), color * 0.6f);
             //右
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), 
-                new Rectangle(0, 0, 1, 1), color * 0.9f);
+            spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height),
+                new Rectangle(0, 0, 1, 1), color * 0.6f);
         }
 
         /// <summary>
         /// 绘制折叠箭头
         /// </summary>
-        protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha, Color styleColor)
-        {
+        protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha, Color styleColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
-            //箭头颜色使用样式颜色
-            Color arrowColor = Color.Lerp(Color.White, styleColor, 0.4f) * alpha;
-            
-            if (collapseButtonHovered)
-            {
-                arrowColor = Color.Lerp(arrowColor, Color.White, 0.3f);
+
+            //箭头颜色使用更柔和的色调
+            Color arrowColor = Color.Lerp(new Color(140, 160, 180), styleColor, 0.25f) * alpha;
+
+            if (collapseButtonHovered) {
+                arrowColor = Color.Lerp(arrowColor, styleColor, 0.4f);
             }
-            
+
             //根据折叠状态决定箭头方向使用平滑过渡
-            float targetRotation = isCollapsed ? 0f : MathHelper.Pi;
             float currentRotation = MathHelper.Lerp(0f, MathHelper.Pi, CWRUtils.EaseInOutCubic(buttonPositionProgress));
-            
+
             //箭头顶点
             Vector2 arrowTip = center + new Vector2(5, 0).RotatedBy(currentRotation);
             Vector2 arrowLeft = center + new Vector2(-4, -4).RotatedBy(currentRotation);
             Vector2 arrowRight = center + new Vector2(-4, 4).RotatedBy(currentRotation);
-            
+
             //绘制箭头线条
-            float lineThickness = collapseButtonHovered ? 2f : 1.5f;
+            float lineThickness = collapseButtonHovered ? 1.8f : 1.4f;
             DrawArrowLine(spriteBatch, arrowLeft, arrowTip, arrowColor, lineThickness);
             DrawArrowLine(spriteBatch, arrowRight, arrowTip, arrowColor, lineThickness);
-            
-            //添加箭头发光效果
-            if (collapseButtonHovered)
-            {
+
+            //添加箭头发光效果降低强度
+            if (collapseButtonHovered) {
                 Color glowColor = styleColor with { A = 0 };
-                float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.5f + 0.5f;
-                DrawArrowLine(spriteBatch, arrowLeft, arrowTip, glowColor * (glowPulse * 0.6f), lineThickness * 2f);
-                DrawArrowLine(spriteBatch, arrowRight, arrowTip, glowColor * (glowPulse * 0.6f), lineThickness * 2f);
+                float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.4f;
+                DrawArrowLine(spriteBatch, arrowLeft, arrowTip, glowColor * (glowPulse * 0.3f), lineThickness * 1.8f);
+                DrawArrowLine(spriteBatch, arrowRight, arrowTip, glowColor * (glowPulse * 0.3f), lineThickness * 1.8f);
             }
         }
 
         /// <summary>
         /// 绘制箭头线条
         /// </summary>
-        protected virtual void DrawArrowLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness)
-        {
+        protected virtual void DrawArrowLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
-            
-            if (length < 1f)
-            {
+
+            if (length < 1f) {
                 return;
             }
-            
+
             float rotation = edge.ToRotation();
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation, 
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation,
                 new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
-        
+
         /// <summary>
         /// 绘制内容，子类可重写以自定义布局
         /// </summary>
