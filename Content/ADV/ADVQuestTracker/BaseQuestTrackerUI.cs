@@ -5,7 +5,9 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -56,6 +58,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected float borderGlow = 1f;
         protected float warningPulse = 0f;
 
+        //折叠状态
+        protected bool isCollapsed = false;
+        protected float collapseProgress = 0f;
+        protected const float CollapseAnimationSpeed = 0.12f;
+        protected Rectangle collapseButtonRect;
+        protected bool collapseButtonHovered = false;
+
         //伤害数据
         protected float cachedContribution = 0f;
         protected const float UpdateInterval = 0.5f;
@@ -82,6 +91,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// </summary>
         public new void LoadUIData(TagCompound tag) {
             tag.TryGet(Name + ":" + nameof(screenYValue), out screenYValue);
+            tag.TryGet(Name + ":" + nameof(isCollapsed), out isCollapsed);
             LoadUI(tag);
         }
 
@@ -98,6 +108,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// </summary>
         public new void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(screenYValue)] = screenYValue;
+            tag[Name + ":" + nameof(isCollapsed)] = isCollapsed;
             SaveUI(tag);
         }
 
@@ -286,13 +297,17 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             //更新面板高度
             UpdatePanelHeight();
 
-            //展开/收起动画
+            //展开收起动画
             float targetSlide = CanOpne ? 1f : 0f;
             slideProgress = MathHelper.Lerp(slideProgress, targetSlide, 0.15f);
 
             if (slideProgress < 0.01f) {
                 return;
             }
+
+            //折叠动画
+            float targetCollapse = isCollapsed ? 1f : 0f;
+            collapseProgress = MathHelper.Lerp(collapseProgress, targetCollapse, CollapseAnimationSpeed);
 
             //动画更新
             pulseTimer += 0.03f;
@@ -310,7 +325,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             cachedContribution = MathHelper.Clamp(cachedContribution, 0, 1f);
 
-            //如果贡献度低，闪烁警告
+            //如果贡献度低闪烁警告
             float requiredContribution = GetRequiredContribution();
             if (cachedContribution < requiredContribution * 0.5f) {
                 warningPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f;
@@ -319,14 +334,23 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 warningPulse = 0f;
             }
 
+            //计算面板实际宽度
+            float actualPanelWidth = MathHelper.Lerp(PanelWidth, 40f, CWRUtils.EaseInOutCubic(collapseProgress));
+
             //设置UI位置
             float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, CWRUtils.EaseOutCubic(slideProgress));
             DrawPosition = new Vector2(offsetX, ScreenY);
-            Size = new Vector2(PanelWidth, currentPanelHeight);
-            UIHitBox = DrawPosition.GetRectangle((int)PanelWidth, (int)currentPanelHeight);
+            Size = new Vector2(actualPanelWidth, currentPanelHeight);
+            UIHitBox = DrawPosition.GetRectangle((int)actualPanelWidth, (int)currentPanelHeight);
+
+            //更新折叠按钮位置
+            UpdateCollapseButton();
+
+            //处理折叠按钮交互
+            HandleCollapseButtonInteraction();
 
             //处理拖拽
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && !collapseButtonHovered;
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Held) {
                     if (!dragBool) {
@@ -356,6 +380,29 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             //更新样式动画
             currentStyle?.Update(UIHitBox, Active);
             currentStyle?.UpdateParticles(DrawPosition, overlappingAlpha);
+        }
+
+        /// <summary>
+        /// 更新折叠按钮位置
+        /// </summary>
+        protected virtual void UpdateCollapseButton() {
+            int buttonSize = 20;
+            int buttonX = (int)(DrawPosition.X + (isCollapsed ? 10 : PanelWidth - buttonSize - 10));
+            int buttonY = (int)(DrawPosition.Y + 8);
+            
+            collapseButtonRect = new Rectangle(buttonX, buttonY, buttonSize, buttonSize);
+        }
+
+        /// <summary>
+        /// 处理折叠按钮交互
+        /// </summary>
+        protected virtual void HandleCollapseButtonInteraction() {
+            collapseButtonHovered = collapseButtonRect.Contains(Main.MouseScreen.ToPoint());
+            
+            if (collapseButtonHovered && keyLeftPressState == KeyPressState.Pressed) {
+                isCollapsed = !isCollapsed;
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            }
         }
 
         /// <summary>
@@ -484,9 +531,99 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 currentStyle.DrawFrame(spriteBatch, UIHitBox, alpha, borderGlow);
             }
 
-            DrawContent(spriteBatch, alpha);
+            //绘制折叠按钮
+            DrawCollapseButton(spriteBatch, alpha);
+
+            //折叠状态下不绘制内容
+            if (collapseProgress < 0.99f) {
+                float contentAlpha = alpha * (1f - CWRUtils.EaseInOutCubic(collapseProgress));
+                DrawContent(spriteBatch, contentAlpha);
+            }
         }
 
+        /// <summary>
+        /// 绘制折叠按钮
+        /// </summary>
+        protected virtual void DrawCollapseButton(SpriteBatch spriteBatch, float alpha)
+        {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            
+            //按钮背景
+            Color buttonBgColor = currentStyle?.GetTitleColor(alpha) ?? Color.White * alpha;
+            buttonBgColor *= collapseButtonHovered ? 0.8f : 0.5f;
+            spriteBatch.Draw(pixel, collapseButtonRect, new Rectangle(0, 0, 1, 1), buttonBgColor);
+
+            //按钮边框
+            Color buttonBorderColor = Color.White * alpha;
+            DrawButtonBorder(spriteBatch, collapseButtonRect, buttonBorderColor);
+
+            //绘制箭头
+            Vector2 buttonCenter = collapseButtonRect.Center.ToVector2();
+            DrawCollapseArrow(spriteBatch, buttonCenter, alpha);
+        }
+
+        /// <summary>
+        /// 绘制按钮边框
+        /// </summary>
+        protected virtual void DrawButtonBorder(SpriteBatch spriteBatch, Rectangle rect, Color color)
+        {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int thickness = 1;
+            
+            //上
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), 
+                new Rectangle(0, 0, 1, 1), color);
+            //下
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), 
+                new Rectangle(0, 0, 1, 1), color);
+            //左
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), 
+                new Rectangle(0, 0, 1, 1), color);
+            //右
+            spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), 
+                new Rectangle(0, 0, 1, 1), color);
+        }
+
+        /// <summary>
+        /// 绘制折叠箭头
+        /// </summary>
+        protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha)
+        {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Color arrowColor = Color.White * alpha;
+            
+            //根据折叠状态决定箭头方向
+            float arrowRotation = isCollapsed ? 0f : MathHelper.Pi;
+            
+            //箭头主干
+            Vector2 arrowTip = center + new Vector2(4, 0).RotatedBy(arrowRotation);
+            Vector2 arrowLeft = center + new Vector2(-3, -4).RotatedBy(arrowRotation);
+            Vector2 arrowRight = center + new Vector2(-3, 4).RotatedBy(arrowRotation);
+            
+            //绘制箭头线条
+            DrawArrowLine(spriteBatch, arrowLeft, arrowTip, arrowColor, 1.5f);
+            DrawArrowLine(spriteBatch, arrowRight, arrowTip, arrowColor, 1.5f);
+        }
+
+        /// <summary>
+        /// 绘制箭头线条
+        /// </summary>
+        protected virtual void DrawArrowLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness)
+        {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Vector2 edge = end - start;
+            float length = edge.Length();
+            
+            if (length < 1f)
+            {
+                return;
+            }
+            
+            float rotation = edge.ToRotation();
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation, 
+                new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
+        }
+        
         /// <summary>
         /// 绘制内容，子类可重写以自定义布局
         /// </summary>
