@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.ADV.UIEffect;
-using MagicStorage.Common.Systems.RecurrentRecipes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

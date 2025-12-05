@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataClient);
             packet.Write(pots.Count);
-            for(int i = 0; i < pots.Count; i++) {
+            for (int i = 0; i < pots.Count; i++) {
                 packet.WriteVector2(pots[i]);
             }
             pots = OldDukeCampsiteDecoration.GetFlagpolesPositions();
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
             int potCount = reader.ReadInt32();
             OldDukeCampsiteDecoration.pots.Clear();
-            for(int i = 0; i < potCount; i++) {
+            for (int i = 0; i < potCount; i++) {
                 OldDukeCampsiteDecoration.PotData pot = new() {
                     WorldPosition = reader.ReadVector2(),
                     GlowTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi),

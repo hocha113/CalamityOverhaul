@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.OtherMods.HighFPSSupport;
-using InnoVault;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -719,7 +719,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 老公爵营地装饰物品
         /// </summary>
         public static void Decorate(Vector2 position) {
-            
+
         }
 
         /// <summary>
