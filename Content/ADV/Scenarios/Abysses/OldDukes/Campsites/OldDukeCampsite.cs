@@ -149,6 +149,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return false;
             }
 
+            //检查玩家是否已经完成碎片任务
+            if (save.OldDukeFindFragmentsQuestTriggered || save.OldDukeFindFragmentsQuestCompleted) {
+                return true;
+            }
+
             //检查玩家是否已经同意合作
             if (!save.OldDukeCooperationAccepted) {
                 return false;
