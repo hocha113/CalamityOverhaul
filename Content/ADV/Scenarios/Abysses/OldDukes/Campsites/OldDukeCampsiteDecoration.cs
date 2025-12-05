@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
     internal class OldDukeCampsiteDecoration : RenderHandle
     {
         //多个锅的位置信息
-        private class PotData
+        internal class PotData
         {
             public Vector2 WorldPosition;
             public float GlowTimer;
@@ -41,15 +41,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         //旗杆位置信息
-        private class FlagpoleData
+        internal class FlagpoleData
         {
             public Vector2 WorldPosition;
             public float SwayTimer;
         }
 
-        private static readonly List<PotData> pots = [];
-        private static readonly List<FlagpoleData> flagpoles = [];
-        private static bool decorationsPositionSet;
+        internal static readonly List<PotData> pots = [];
+        internal static readonly List<FlagpoleData> flagpoles = [];
+        internal static bool decorationsPositionSet;
 
         private const int upOffsetValue = 660;
 
@@ -59,6 +59,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static List<Vector2> GetPotPositions() {
             List<Vector2> positions = [];
             foreach (var pot in pots) {
+                positions.Add(pot.WorldPosition);
+            }
+            return positions;
+        }
+
+        /// <summary>
+        /// 获取所有旗杆的位置列表
+        /// </summary>
+        public static List<Vector2> GetFlagpolesPositions() {
+            List<Vector2> positions = [];
+            foreach (var pot in flagpoles) {
                 positions.Add(pot.WorldPosition);
             }
             return positions;
@@ -708,15 +719,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 老公爵营地装饰物品
         /// </summary>
         public static void Decorate(Vector2 position) {
-            //在这里添加老公爵营地的装饰物品生成逻辑
-            //可以是NPC、环境物品、地面装饰等
+            
         }
 
         /// <summary>
         /// 蒸汽粒子
         /// 从锅中升起的热蒸汽效果
         /// </summary>
-        private class SteamParticlePRT
+        internal class SteamParticlePRT
         {
             public Vector2 Position;
             public Vector2 Velocity;
@@ -818,7 +828,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 气泡粒子
         /// 锅内沸腾的气泡效果
         /// </summary>
-        private class BubbleParticlePRT
+        internal class BubbleParticlePRT
         {
             public Vector2 Position;
             public Vector2 Velocity;

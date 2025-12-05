@@ -37,6 +37,9 @@ namespace CalamityOverhaul
         OldDukeCampsiteGenerationRequest,
         OldDukeCampsiteDecorationsSync,
         OldDukeCampsiteSync,
+        RequestOldDukeCampsiteData,
+        HandleOldDukeCampsiteDataServer,
+        HandleOldDukeCampsiteDataClient,
         SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
     }
@@ -78,6 +81,12 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.OldDukeCampsiteSync) {
                 OldDukeCampsite.ReceiveCampsiteSync(reader);
+            }
+            else if (type == CWRMessageType.HandleOldDukeCampsiteDataServer) {
+                OldDukeCampsite.HandleOldDukeCampsiteDataServer(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.HandleOldDukeCampsiteDataClient) {
+                OldDukeCampsite.HandleOldDukeCampsiteDataClient(reader, whoAmI);
             }
             else if (type == CWRMessageType.SpwanOldDukeWannaToFight) {
                 ModifyOldDuke.SpwanOldDukeByWannaToFightNetWork(reader, whoAmI);

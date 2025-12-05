@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV
@@ -11,6 +12,7 @@ namespace CalamityOverhaul.Content.ADV
             if (Player.TryGetADVSave(out var save) && save.EternalBlazingNow) {
                 save.SendEbnData(Player);
             }
+            OldDukeCampsite.RequestOldDukeCampsiteData();
         }
 
         public override void PostUpdate() {

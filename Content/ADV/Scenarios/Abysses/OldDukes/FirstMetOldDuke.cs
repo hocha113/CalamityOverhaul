@@ -18,11 +18,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         //设置默认对话框样式为硫磺海风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
-        /// <summary>
-        /// 当前玩家的选择（临时变量，用于NPC AI判断）
-        /// </summary>
-        public static OldDukeInteractionState CurrentPlayerChoice { get; set; } = OldDukeInteractionState.NotMet;
-
         //角色名称
         public static LocalizedText OldDukeName { get; private set; }
         public static LocalizedText HelenName { get; private set; }
@@ -51,11 +46,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText C1Response { get; private set; }
         public static LocalizedText C2Response { get; private set; }
         public static LocalizedText C3Response { get; private set; }
-
-        void IWorldInfo.OnWorldLoad() {
-            //重置选择状态
-            CurrentPlayerChoice = OldDukeInteractionState.NotMet;
-        }
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
@@ -89,8 +79,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             //开启硫磺海效果
             OldDukeEffect.IsActive = true;
             OldDukeEffect.Send();
-            //重置选择
-            CurrentPlayerChoice = OldDukeInteractionState.NotMet;
         }
 
         protected override void Build() {
@@ -191,7 +179,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项1：接受合作
         public void Choice1() {
-            CurrentPlayerChoice = OldDukeInteractionState.AcceptedCooperation;
+            //保存状态：接受合作
+            if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                save.OldDukeState = OldDukeInteractionState.AcceptedCooperation;
+            }
             OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice1>();
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
@@ -208,11 +199,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //保存状态：接受合作
-                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                    save.OldDukeState = OldDukeInteractionState.AcceptedCooperation;
-                }
-
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
                 OldDukeEffect.Send();
@@ -221,7 +207,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项2：拒绝合作
         public void Choice2() {
-            CurrentPlayerChoice = OldDukeInteractionState.DeclinedCooperation;
+            //保存状态：拒绝合作（但没有战斗，下次还可以选择）
+            if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                save.OldDukeState = OldDukeInteractionState.DeclinedCooperation;
+            }
             OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice2>();
             ScenarioManager.Start<FirstMetOldDuke_Choice2>();
@@ -242,11 +231,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //保存状态：拒绝合作（但没有战斗，下次还可以选择）
-                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                    save.OldDukeState = OldDukeInteractionState.DeclinedCooperation;
-                }
-
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
                 OldDukeEffect.Send();
@@ -255,7 +239,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         //选项3：拒绝合作并拔出武器
         public void Choice3() {
-            CurrentPlayerChoice = OldDukeInteractionState.ChoseToFight;
+            //保存状态：选择战斗，以后直接进入战斗
+            if (Main.LocalPlayer.TryGetADVSave(out var save)) {
+                save.OldDukeState = OldDukeInteractionState.ChoseToFight;
+            }
             OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice3>();
             ScenarioManager.Start<FirstMetOldDuke_Choice3>();
@@ -272,11 +259,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //保存状态：选择战斗，以后直接进入战斗
-                if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                    save.OldDukeState = OldDukeInteractionState.ChoseToFight;
-                }
-
                 //停止硫磺海效果
                 OldDukeEffect.IsActive = false;
                 OldDukeEffect.Send();

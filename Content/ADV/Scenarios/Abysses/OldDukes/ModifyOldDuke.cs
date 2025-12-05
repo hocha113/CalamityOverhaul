@@ -307,9 +307,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             npc.spriteDirection = npc.direction = target.Center.X < npc.Center.X ? 1 : -1;
 
             //检查对话是否结束并根据玩家选择决定下一步
-            if (!OldDukeEffect.IsActive && Timer > 60) {
+            if (!OldDukeEffect.IsActive && Timer > 60 && target.TryGetADVSave(out var save)) {
                 //对话结束，根据玩家选择执行相应逻辑
-                OldDukeInteractionState playerChoice = FirstMetOldDuke.CurrentPlayerChoice;
+                OldDukeInteractionState playerChoice = save.OldDukeState;
 
                 switch (playerChoice) {
                     case OldDukeInteractionState.AcceptedCooperation:

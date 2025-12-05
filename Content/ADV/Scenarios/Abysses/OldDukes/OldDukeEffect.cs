@@ -557,7 +557,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             packet.Write((byte)CWRMessageType.OldDukeEffect);
             packet.Write(IsActive);
             packet.Write(OldDukeCampsite.WannaToFight);
-            packet.Write((byte)FirstMetOldDuke.CurrentPlayerChoice);
+            packet.Write(Main.myPlayer);
+
+            OldDukeInteractionState state = OldDukeInteractionState.NotMet;
+            if (Main.myPlayer.TryGetPlayer(out var player) && player.TryGetADVSave(out var save)) {
+                state = save.OldDukeState;
+            }
+
+            packet.Write((byte)state);
             packet.Send();
         }
 
@@ -565,13 +572,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (type == CWRMessageType.OldDukeEffect) {
                 IsActive = reader.ReadBoolean();
                 OldDukeCampsite.WannaToFight = reader.ReadBoolean();
-                FirstMetOldDuke.CurrentPlayerChoice = (OldDukeInteractionState)reader.ReadByte();
+                int playerIndex = reader.ReadInt32();
+
+                OldDukeInteractionState state = (OldDukeInteractionState)reader.ReadByte();
+                if (playerIndex.TryGetPlayer(out var player) && player.TryGetADVSave(out var save)) {
+                    save.OldDukeState = state;
+                }
+
                 if (VaultUtils.isServer) {
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.OldDukeEffect);
                     packet.Write(IsActive);
                     packet.Write(OldDukeCampsite.WannaToFight);
-                    packet.Write((byte)FirstMetOldDuke.CurrentPlayerChoice);
+                    packet.Write(playerIndex);
+                    packet.Write((byte)state);
                     packet.Send(-1, whoAmI);
                 }
             }

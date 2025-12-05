@@ -184,6 +184,71 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+        /// 请求公爵营地装饰数据（客户端发送给服务器）
+        /// </summary>
+        internal static void RequestOldDukeCampsiteData() {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataServer);
+            packet.Send();
+        }
+
+        /// <summary>
+        /// 处理公爵营地装饰数据请求（服务器接收并发送给客户端）
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        internal static void HandleOldDukeCampsiteDataServer(BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            var pots = OldDukeCampsiteDecoration.GetPotPositions();
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataClient);
+            packet.Write(pots.Count);
+            for(int i = 0; i < pots.Count; i++) {
+                packet.WriteVector2(pots[i]);
+            }
+            pots = OldDukeCampsiteDecoration.GetFlagpolesPositions();
+            packet.Write(pots.Count);
+            for (int i = 0; i < pots.Count; i++) {
+                packet.WriteVector2(pots[i]);
+            }
+            packet.Send(whoAmI);
+        }
+
+        /// <summary>
+        /// 处理公爵营地装饰数据（客户端接收）
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        internal static void HandleOldDukeCampsiteDataClient(BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+            int potCount = reader.ReadInt32();
+            OldDukeCampsiteDecoration.pots.Clear();
+            for(int i = 0; i < potCount; i++) {
+                OldDukeCampsiteDecoration.PotData pot = new() {
+                    WorldPosition = reader.ReadVector2(),
+                    GlowTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi),
+                    BubbleTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi),
+                    SteamTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi)
+                };
+                OldDukeCampsiteDecoration.pots.Add(pot);
+            }
+            int flagpoleCount = reader.ReadInt32();
+            OldDukeCampsiteDecoration.flagpoles.Clear();
+            for (int i = 0; i < flagpoleCount; i++) {
+                OldDukeCampsiteDecoration.FlagpoleData flagpole = new() {
+                    WorldPosition = reader.ReadVector2(),
+                    SwayTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi)
+                };
+                OldDukeCampsiteDecoration.flagpoles.Add(flagpole);
+            }
+            OldDukeCampsiteDecoration.decorationsPositionSet = true;
+        }
+
+        /// <summary>
         /// 尝试生成营地（服务器或单人执行）
         /// </summary>
         public static void TryGenerateCampsite() {
