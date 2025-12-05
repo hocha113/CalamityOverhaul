@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
         public override bool CanOpne {
             get {
+                if (CWRWorld.HasBoss) {
+                    return false;//因为是剧情任务，战斗中设置不打开
+                }
+
                 if (Main.LocalPlayer == null || !Main.LocalPlayer.active) {
                     return false;
                 }
