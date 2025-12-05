@@ -178,6 +178,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 客户端发送生成请求给服务器
         /// </summary>
         private static void SendGenerationRequest() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeCampsiteGenerationRequest);
             packet.Send();
@@ -187,6 +190,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 请求公爵营地装饰数据（客户端发送给服务器）
         /// </summary>
         internal static void RequestOldDukeCampsiteData() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataServer);
             packet.Send();
@@ -327,6 +333,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             CampsiteInteractionDialogue.GiveTeaOnStart = true;
         }
 
+        /// <summary>
+        /// 检测是否在和老公爵切磋
+        /// </summary>
         private static void CheckWannaToFight() {
             if (WannaToFight) {//检测是否在和老公爵切磋
                 if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
@@ -410,6 +419,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             float distance = Vector2.Distance(player.Center, CampsitePosition);
             bool wasNearby = isPlayerNearby;
             isPlayerNearby = distance < InteractDistance;
+            var entity = ModContent.GetInstance<OldDukeCampsiteRenderer>().oldDukeEntity;
+            if (entity is not null && entity.Position.To(player.Center).Length() < InteractDistance) {
+                isPlayerNearby = true;
+            }
 
             //交互提示淡入淡出
             if (isPlayerNearby && CanTriggerInteraction()) {

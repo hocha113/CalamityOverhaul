@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private float glowTimer;
 
         //老公爵实体
-        private OldDukeEntity oldDukeEntity;
+        internal OldDukeEntity oldDukeEntity;
         private bool entityInitialized;
 
         //对话状态
