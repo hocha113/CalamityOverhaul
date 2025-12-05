@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 简化的文本绘制方法（无自定义效果）
+        /// 简化的文本绘制方法
         /// </summary>
         protected float DrawWrappedText(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale = 0.75f, float alpha = 1f, float maxWidth = -1f) {
             var config = new TextDrawConfig(text, position, color, scale, alpha, maxWidth);
@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 标题行效果（子类可重写以添加特殊效果如发光）
+        /// 标题行效果
         /// </summary>
         protected virtual void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
             //默认实现，简单绘制
@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 绘制任务信息文本（带自动换行）
+        /// 绘制任务信息文本，带自动换行
         /// </summary>
         protected float DrawObjectiveText(SpriteBatch spriteBatch, string text, Vector2 position, float alpha, float textScale = 0.62f) {
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 绘制提示文本（带自动换行和可选颜色）
+        /// 绘制提示文本，带自动换行和可选颜色
         /// </summary>
         protected float DrawHintText(SpriteBatch spriteBatch, string text, Vector2 position, Color? customColor, float alpha, float textScale = 0.62f) {
             Color textColor = customColor ?? (currentStyle?.GetTextColor(alpha) ?? Color.White * alpha);
@@ -495,7 +495,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
 
-            //标题（使用新的接口，自动支持换行）
+            //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding, 8);
             float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             Vector2 contributionTextPos = dividerStart + new Vector2(0, 8);
             DrawContributionText(spriteBatch, contributionTextPos, alpha, textScale);
 
-            //需求文本（使用新接口，自动换行）
+            //需求文本
             Vector2 requirementPos = contributionTextPos + new Vector2(0, 15);
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
             float reqHeight = DrawWrappedText(spriteBatch, RequiredContribution.Value, requirementPos, textColor * 0.8f, 0.6f, alpha);
@@ -518,7 +518,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 绘制贡献度文本（提取出来方便子类重写）
+        /// 绘制贡献度文本
         /// </summary>
         protected virtual void DrawContributionText(SpriteBatch spriteBatch, Vector2 position, float alpha, float textScale) {
             var font = FontAssets.MouseText.Value;
