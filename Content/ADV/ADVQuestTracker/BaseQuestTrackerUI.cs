@@ -315,6 +315,48 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             currentStyle?.UpdateParticles(DrawPosition, overlappingAlpha);
         }
 
+        /// <summary>
+        /// 绘制标题，支持换行和自定义效果
+        /// </summary>
+        /// <param name="spriteBatch">SpriteBatch</param>
+        /// <param name="titlePos">标题起始位置</param>
+        /// <param name="alpha">透明度</param>
+        /// <param name="titleScale">标题缩放</param>
+        /// <returns>标题总高度</returns>
+        protected virtual float DrawTitle(SpriteBatch spriteBatch, Vector2 titlePos, float alpha, float titleScale = 0.72f) {
+            var font = FontAssets.MouseText.Value;
+            const float maxTitleWidth = PanelWidth - 20f;
+            Color titleColor = currentStyle?.GetTitleColor(alpha) ?? Color.White * alpha;
+
+            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
+            float currentY = titlePos.Y;
+
+            foreach (string line in titleLines) {
+                Vector2 linePos = new Vector2(titlePos.X, currentY);
+                
+                //调用可被子类重写的单行绘制方法，允许添加特殊效果
+                DrawTitleLine(spriteBatch, line, linePos, titleColor, titleScale, alpha);
+                
+                currentY += font.MeasureString(line).Y * titleScale * 0.9f;
+            }
+
+            return currentY - titlePos.Y;
+        }
+
+        /// <summary>
+        /// 绘制标题的单行文本，子类可重写以添加特殊效果（如发光效果）
+        /// </summary>
+        /// <param name="spriteBatch">SpriteBatch</param>
+        /// <param name="text">要绘制的文本</param>
+        /// <param name="position">绘制位置</param>
+        /// <param name="color">文本颜色</param>
+        /// <param name="scale">缩放</param>
+        /// <param name="alpha">透明度</param>
+        protected virtual void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
+            //默认实现，简单绘制
+            Utils.DrawBorderString(spriteBatch, text, position, color, scale);
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (slideProgress < 0.01f) {
                 return;
@@ -338,22 +380,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             var font = FontAssets.MouseText.Value;
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
-            const float maxTitleWidth = PanelWidth - 20f;
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding, 8);
-            Color titleColor = currentStyle?.GetTitleColor(alpha) ?? Color.White * alpha;
-
-            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTitleWidth, titleScale);
-            float currentY = titlePos.Y;
-
-            foreach (string line in titleLines) {
-                Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, currentY), titleColor, titleScale);
-                currentY += font.MeasureString(line).Y * titleScale * 0.9f;
-            }
+            float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
             //分割线
-            float titleHeight = currentY - titlePos.Y;
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 2);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             currentStyle?.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);

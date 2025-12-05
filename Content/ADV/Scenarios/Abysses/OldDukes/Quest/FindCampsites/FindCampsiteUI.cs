@@ -91,6 +91,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
             currentPanelHeight += 50f;
         }
 
+        /// <summary>
+        /// 重写标题行绘制，添加发光效果
+        /// </summary>
+        protected override void DrawTitleLine(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha) {
+            //标题发光效果
+            Color titleGlow = new Color(140, 180, 70) * (alpha * 0.6f);
+            for (int i = 0; i < 4; i++) {
+                float a = MathHelper.TwoPi * i / 4f;
+                Vector2 off = a.ToRotationVector2() * 1.5f;
+                Utils.DrawBorderString(spriteBatch, text, position + off, titleGlow * 0.5f, scale);
+            }
+
+            //绘制主文本
+            Utils.DrawBorderString(spriteBatch, text, position, color, scale);
+        }
+
         protected override void DrawContent(SpriteBatch spriteBatch, float alpha) {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
                 return;
@@ -100,22 +116,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCamp
             const float titleScale = 0.72f;
             const float textScale = 0.62f;
 
-            //绘制标题
+            //使用基类的标题绘制接口，自动支持换行和特殊效果
             Vector2 titlePos = DrawPosition + new Vector2(10, 8);
-            Color titleColor = currentStyle?.GetTitleColor(alpha) ?? new Color(160, 190, 80) * alpha;
-
-            //标题发光效果
-            Color titleGlow = new Color(140, 180, 70) * (alpha * 0.6f);
-            for (int i = 0; i < 4; i++) {
-                float a = MathHelper.TwoPi * i / 4f;
-                Vector2 off = a.ToRotationVector2() * 1.5f;
-                Utils.DrawBorderString(spriteBatch, QuestTitle.Value, titlePos + off, titleGlow * 0.5f, titleScale);
-            }
-
-            Utils.DrawBorderString(spriteBatch, QuestTitle.Value, titlePos, titleColor, titleScale);
+            float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
             //绘制分隔线
-            float titleHeight = font.MeasureString(QuestTitle.Value).Y * titleScale;
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 4);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             currentStyle?.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
