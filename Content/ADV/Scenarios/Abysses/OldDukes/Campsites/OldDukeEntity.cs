@@ -116,7 +116,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (OldDukeCampsite.WannaToFight) {
                 if (Sengs > 0f) {
                     Sengs -= 0.1f;
-                    if (NPC.FindFirstNPC(CWRID.NPC_OldDuke).TryGetNPC(out var npc)) {
+                    bool playerNearby = false;
+                    Player player = Position.FindClosestPlayer();
+                    if (player is not null && player.To(Position).Length() < 1200) {
+                        playerNearby = true;
+                    }
+                    if (playerNearby && NPC.FindFirstNPC(CWRID.NPC_OldDuke).TryGetNPC(out var npc)) {
                         npc.Center = Position;
                     }
                 }
