@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.Common;
+using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;

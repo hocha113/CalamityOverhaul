@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Common
+namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 {
     /// <summary>
     /// 任务接受UI的通用基类，用于显示任务详情和接受/拒绝选项

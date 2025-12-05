@@ -1,10 +1,11 @@
-﻿using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
     /// <summary>
     /// 寻找海洋碎片任务追踪UI
     /// </summary>
-    internal class FindFragmentUI : BaseSulfurQuestTrackerUI
+    internal class FindFragmentUI : BaseQuestTrackerUI
     {
         public static FindFragmentUI Instance => UIHandleLoader.GetUIHandleOfType<FindFragmentUI>();
 
@@ -28,6 +29,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         public static LocalizedText ReturnToCampsiteText { get; private set; }
         public static LocalizedText QuestCompleteText { get; private set; }
         public static LocalizedText HintText { get; private set; }
+
+        protected override QuestTrackerStyle GetQuestStyle() => QuestTrackerStyle.Sulfsea;
 
         public override void SetStaticDefaults() {
             base.SetStaticDefaults();
@@ -69,15 +72,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             int fragmentType = ModContent.ItemType<Oceanfragments>();
 
             var bigBags = player.GetBigBagItems() ?? [];
-            //依次从各个储物位置消耗
             Item[][] inventories = [
                 player.inventory,
-                    player.bank.item,
-                    player.bank2.item,
-                    player.bank3.item,
-                    player.bank4.item,
-                    [.. bigBags],
-                ];
+                player.bank.item,
+                player.bank2.item,
+                player.bank3.item,
+                player.bank4.item,
+                [.. bigBags],
+            ];
 
             foreach (var inventorie in inventories) {
                 for (int i = 0; i < inventorie.Length; i++) {
@@ -99,53 +101,74 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             currentPanelHeight += 50f;
         }
 
-        protected override void DrawQuestContent(SpriteBatch spriteBatch, Vector2 startPos, float alpha, float textScale) {
+        protected override void DrawContent(SpriteBatch spriteBatch, float alpha) {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
                 return;
             }
 
             bool questCompleted = save.OldDukeFindFragmentsQuestCompleted;
 
+            var font = FontAssets.MouseText.Value;
+            const float titleScale = 0.72f;
+            const float textScale = 0.62f;
+
+            //绘制标题
+            Vector2 titlePos = DrawPosition + new Vector2(10, 8);
+            Color titleColor = currentStyle?.GetTitleColor(alpha) ?? new Color(160, 190, 80) * alpha;
+
+            //标题发光效果
+            Color titleGlow = new Color(140, 180, 70) * (alpha * 0.6f);
+            for (int i = 0; i < 4; i++) {
+                float a = MathHelper.TwoPi * i / 4f;
+                Vector2 off = a.ToRotationVector2() * 1.5f;
+                Utils.DrawBorderString(spriteBatch, QuestTitle.Value, titlePos + off, titleGlow * 0.5f, titleScale);
+            }
+
+            Utils.DrawBorderString(spriteBatch, QuestTitle.Value, titlePos, titleColor, titleScale);
+
+            //绘制分隔线
+            float titleHeight = font.MeasureString(QuestTitle.Value).Y * titleScale;
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 4);
+            Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
+            currentStyle?.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
+
+            //绘制任务内容
+            Vector2 contentPos = dividerStart + new Vector2(0, 12);
             if (questCompleted) {
-                DrawQuestCompleted(spriteBatch, startPos, alpha, textScale);
+                DrawQuestCompleted(spriteBatch, contentPos, alpha, textScale);
             }
             else {
-                DrawQuestInProgress(spriteBatch, startPos, alpha, textScale);
+                DrawQuestInProgress(spriteBatch, contentPos, alpha, textScale);
             }
         }
 
         private void DrawQuestInProgress(SpriteBatch spriteBatch, Vector2 startPos, float alpha, float textScale) {
+            var font = FontAssets.MouseText.Value;
             int fragmentCount = GetFragmentCount();
+            Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
 
             //目标文本
             string objectiveText = $"{ObjectiveText.Value}: {CollectFragmentsText.Value}";
-            Color objectiveColor = new Color(200, 220, 150) * alpha;
-            Utils.DrawBorderString(spriteBatch, objectiveText, startPos, objectiveColor, textScale);
+            Utils.DrawBorderString(spriteBatch, objectiveText, startPos, textColor, textScale);
 
             //当前数量
             Vector2 countPos = startPos + new Vector2(0, 18);
             string countText = $"{CurrentFragmentsText.Value}: {fragmentCount}/777";
 
-            Color countColor;
-            if (fragmentCount >= 777) {
-                float pulse = (float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f;
-                countColor = Color.LimeGreen * (alpha * pulse);
-            }
-            else {
-                countColor = new Color(180, 200, 130) * alpha;
-            }
+            Color countColor = fragmentCount >= 777
+                ? Color.LimeGreen * (alpha * ((float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f))
+                : textColor;
 
             Utils.DrawBorderString(spriteBatch, countText, countPos, countColor, textScale);
 
-            //返回提示
+            //返回提示或收集提示
+            Vector2 hintPos = countPos + new Vector2(0, 18);
             if (fragmentCount >= 777) {
-                Vector2 returnPos = countPos + new Vector2(0, 18);
                 float blink = (float)Math.Sin(pulseTimer * 4f) * 0.5f + 0.5f;
                 Color returnColor = new Color(160, 220, 100) * (alpha * blink);
-                Utils.DrawBorderString(spriteBatch, $"> {ReturnToCampsiteText.Value} <", returnPos, returnColor, textScale * 1.1f);
+                Utils.DrawBorderString(spriteBatch, $"> {ReturnToCampsiteText.Value} <", hintPos, returnColor, textScale * 1.1f);
             }
             else {
-                Vector2 hintPos = countPos + new Vector2(0, 18);
                 Color hintColor = new Color(140, 170, 75) * (alpha * 0.7f);
                 Utils.DrawBorderString(spriteBatch, HintText.Value, hintPos, hintColor, textScale);
             }
