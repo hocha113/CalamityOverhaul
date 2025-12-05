@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
+using CalamityOverhaul.OtherMods.NoxusBoss;
 using InnoVault.GameSystem;
 using Terraria;
 
@@ -16,6 +17,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         /// 是否等待机甲选择UI生成完毕
         /// </summary>
         public static bool AwaitSummonUIbeenGenerated;
+        public override bool CanOverride() {
+            if (NoxusRef.DraedonNPCIsCompatible()) {
+                return false;//兼容模式下不覆盖AI
+            }
+            return true;
+        }
         public override void SetProperty() {
             timer = 0;
             defeat = false;
