@@ -163,11 +163,13 @@ namespace CalamityOverhaul.Content
             UpdateMachineRebellion();
             ChekPrimeArm();
 
-            HasBoss = false;
-            foreach (var n in Main.ActiveNPCs) {
-                if (n.boss) {
-                    HasBoss = true;
-                    break;
+            HasBoss = BossRush;
+            if (!HasBoss) {
+                foreach (var n in Main.ActiveNPCs) {
+                    if (n.boss && !n.friendly) {
+                        HasBoss = true;
+                        break;
+                    }
                 }
             }
         }
