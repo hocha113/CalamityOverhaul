@@ -23,13 +23,6 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
                 if (!InWorldBossPhase.Downed29.Invoke()) {
                     return false;//需要星流巨械被打败
                 }
-                int solyn = -1;
-                if (CWRMod.Instance.noxusBoss.TryFind<ModNPC>("Solyn", out var solynNPC) && solynNPC is not null) {
-                    solyn = solynNPC.Type;//找到索林NPC的ID
-                }
-                if (solyn < NPCID.None || !NPC.AnyNPCs(solyn)) {//如果索林在场，则启用兼容模式
-                    return false;
-                }
                 Type type = ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(CWRMod.Instance.noxusBoss), "MarsCombatEvent");
                 if (type == null) {
                     return false;
