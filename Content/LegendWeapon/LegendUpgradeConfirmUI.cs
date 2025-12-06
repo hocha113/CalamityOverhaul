@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Vector2 titlePos = DrawPosition + new Vector2(Padding, Padding);
             string title = TitleText.Value;
 
-            //标题发光 - 金色主题
+            //标题发光
             float titleGlow = (float)Math.Sin(titleGlowPhase) * 0.3f + 0.7f;
             Color glowColor = Color.Gold * alpha * titleGlow * 0.8f;
             for (int i = 0; i < 4; i++) {
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private static void DrawLegendFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //外框 - 金色主题
+            //外框
             Color outerEdge = Color.Lerp(new Color(180, 140, 60), new Color(255, 215, 100), pulse) * (alpha * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.8f);
