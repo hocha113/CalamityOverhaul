@@ -1,4 +1,10 @@
-﻿namespace CalamityOverhaul.OtherMods.ImproveGame
+﻿using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.OtherMods.ImproveGame
 {
     internal class FishingEventSystem : ICWRLoader
     {
@@ -30,6 +36,25 @@
         //    if (itemType == ItemID.OldShoe || itemType == ItemID.TinCan) {
         //        argsType.GetProperty("Cancel").SetValue(argsObj, true);
         //    }
+        //}
+
+        //void ICWRLoader.SetupData() {
+        //    if (!ModLoader.TryGetMod("ImproveGame", out Mod improveGame))
+        //        return;
+
+        //    // 定义委托签名并转换
+        //    improveGame.Call("RegisterFishingEvent", (Delegate)OnFishingCallback);
+        //}
+
+        //private void OnFishingCallback(TileEntity fisher, Player player, ref int itemType, ref int itemStack, ref bool cancel) {
+        //    // 直接通过 ref 参数修改
+        //    itemType = ItemID.IronCrate;
+
+        //    if (itemType == ItemID.OldShoe)
+        //        cancel = true;
+
+        //    if (itemStack > 0)
+        //        itemStack *= 2;
         //}
     }
 }
