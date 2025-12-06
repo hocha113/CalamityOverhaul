@@ -592,11 +592,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         public override void PostUpdateEverything() {
-            if (!IsActive) {
-                if (Main.LocalPlayer.TryGetADVSave(out var save) && !save.OldDukeChoseToFight && NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                    IsActive = true;
-                    Send();
-                }
+            if (!IsActive
+                && Main.LocalPlayer.TryGetADVSave(out var save)
+                && !save.OldDukeChoseToFight
+                && NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
+                IsActive = true;
+                Send();
             }
 
             if (IsActive) {
