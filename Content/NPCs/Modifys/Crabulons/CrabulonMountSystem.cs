@@ -219,10 +219,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (!owner.Owner.controlDown || Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {
                 return;
             }
-
-            npc.velocity.Y += 0.2f;
-            if (npc.velocity.Y < 12) {
-                npc.velocity.Y = 12;
+            if (!owner.Owner.controlJump) {
+                npc.velocity.Y += 0.2f;
+                if (npc.velocity.Y < 12) {
+                    npc.velocity.Y = 12;
+                }
             }
         }
 

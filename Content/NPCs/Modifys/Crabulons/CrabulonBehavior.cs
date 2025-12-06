@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             UpdateTimers();
             physics.UpdateGroundDistance();
             CheckHover();
+            //检查并修正卡入位置
+            physics.CheckAndFixStuckPosition();
         }
 
         //处理主AI逻辑，这部分在骑乘状态下会被跳过
