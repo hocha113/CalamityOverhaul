@@ -48,7 +48,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
             RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "目标: 收集777块海洋残片");
         }
 
-        public override bool CanOpne => !CWRWorld.HasBoss && FindfragmentFish.CanAttemptQuestFishing(player);
+        public override bool CanOpne => !CWRWorld.HasBoss && CanAttemptQuestFishing(player);
+
+        /// <summary>
+        /// 是否可以尝试关于海洋残片的任务钓鱼
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool CanAttemptQuestFishing(Player player) {
+            if (player == null || !player.active) {
+                return false;
+            }
+
+            if (!player.TryGetADVSave(out var save)) {
+                return false;
+            }
+
+            //只有在任务触发后且未完成前显示
+            if (!save.OldDukeFindFragmentsQuestTriggered) {
+                return false;
+            }
+
+            if (save.OldDukeFindFragmentsQuestCompleted) {
+                return false;
+            }
+
+            return true;
+        }
 
         protected override (float current, float total, bool isActive) GetTrackingData() {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
