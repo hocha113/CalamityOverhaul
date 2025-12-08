@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
@@ -175,11 +174,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f + 0.5f;
                 Color glowColor = node.IsCompleted ? new Color(100, 255, 120) : new Color(255, 180, 100);
 
-                // 简单的发光效果
                 Rectangle glowRect = nodeRect;
                 glowRect.Inflate(2, 2);
                 spriteBatch.Draw(pixel, glowRect, glowColor * (0.3f * glowPulse));
             }
+
+            //绘制任务图标
+            DrawQuestIcon(spriteBatch, node, drawPos, scale);
 
             //绘制节点边框
             int borderWidth = 2;
@@ -256,7 +257,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawFlowingGradient(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, float length, float rotation, int lineWidth) {
             //创建持续流动的渐变效果，从起点流向终点
             int segments = Math.Max((int)(length / 12f), 3);
-            
+
             //流动偏移，确保是从0到1的连续运动
             float flowProgress = (flowTimer * 0.2f) % 1f;
 
@@ -264,13 +265,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float t = (float)i / segments;
                 float dist = t * length;
                 Vector2 pos = start + new Vector2(dist, 0).RotatedBy(rotation);
-                
+
                 // 计算流动亮度
                 float wave = (float)Math.Sin((t - flowProgress) * MathHelper.TwoPi * 2f);
                 float brightness = (wave * 0.5f + 0.5f);
-                
+
                 Color color = Color.Lerp(new Color(150, 80, 40), new Color(255, 180, 80), brightness);
-                
+
                 spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, (int)(length / segments) + 1, lineWidth),
                     color, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
@@ -280,7 +281,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             for (int i = 0; i < pulseCount; i++) {
                 float t = ((flowTimer * 0.5f + i * (1f / pulseCount)) % 1f);
                 Vector2 pos = Vector2.Lerp(start, end, t);
-                
+
                 float size = 4f + (float)Math.Sin(flowTimer * 5f) * 2f;
                 spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), Color.White, rotation,
                     new Vector2(0.5f, 0.5f), new Vector2(size * 2f, size), SpriteEffects.None, 0f);
@@ -321,8 +322,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int padding = 20;
             return new Rectangle(
                 panelRect.X + panelRect.Width / 2 - 60,
-                panelRect.Bottom - padding - 40, 
-                120, 
+                panelRect.Bottom - padding - 40,
+                120,
                 35
             );
         }
@@ -416,26 +417,26 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     //绘制奖励物品图标
                     Rectangle rewardRect = new Rectangle(rewardX, currentY, 32, 32);
                     Color rewardColor = reward.Claimed ? new Color(100, 100, 110) : new Color(255, 200, 120);
-                    
+
                     // 绘制背景框
                     spriteBatch.Draw(pixel, rewardRect, rewardColor * (alpha * 0.3f));
-                    
+
                     // 尝试绘制真实物品图标
                     Main.instance.LoadItem(reward.ItemType);
                     Texture2D itemTexture = TextureAssets.Item[reward.ItemType].Value;
                     if (itemTexture != null) {
-                        Rectangle frame = Main.itemAnimations[reward.ItemType] != null 
-                            ? Main.itemAnimations[reward.ItemType].GetFrame(itemTexture) 
+                        Rectangle frame = Main.itemAnimations[reward.ItemType] != null
+                            ? Main.itemAnimations[reward.ItemType].GetFrame(itemTexture)
                             : itemTexture.Frame();
-                        
+
                         float scale = 1f;
                         if (frame.Width > 32 || frame.Height > 32) {
                             scale = 32f / Math.Max(frame.Width, frame.Height);
                         }
-                        
+
                         Vector2 itemPos = new Vector2(rewardRect.X + 16, rewardRect.Y + 16);
                         Vector2 origin = frame.Size() / 2f;
-                        
+
                         spriteBatch.Draw(itemTexture, itemPos, frame, Color.White * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
                     }
 
@@ -481,10 +482,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawQuestTypeIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale) {
             //根据任务类型绘制不同的标记
             string typeIcon = node.QuestType switch {
-                QuestType.Main => "!",
-                QuestType.Side => "?",
-                QuestType.Daily => "D",
-                QuestType.Achievement => "★",
+                QuestType.Main => "⚔️",
+                QuestType.Side => "👣",
+                QuestType.Daily => "⏳",
+                QuestType.Achievement => "🏆",
                 _ => "?"
             };
 
@@ -496,8 +497,46 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 _ => Color.White
             };
 
-            Vector2 iconPos = center - new Vector2(0, 8 * scale);
+            Vector2 iconPos = center - new Vector2(12) * scale;
             Utils.DrawBorderString(spriteBatch, typeIcon, iconPos, iconColor, 0.9f * scale, 0.5f, 0.5f);
+        }
+
+        private void DrawQuestIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale) {
+            Texture2D iconTexture = node.GetIconTexture();
+            if (iconTexture == null) return;
+
+            Rectangle? sourceRect = node.GetIconSourceRect(iconTexture);
+            if (!sourceRect.HasValue) return;
+
+            //计算图标绘制区域(节点内部，留出边距)
+            int iconSize = (int)(40 * scale);
+            Rectangle iconDrawRect = new Rectangle(
+                (int)(center.X - iconSize / 2),
+                (int)(center.Y - iconSize / 2),
+                iconSize,
+                iconSize
+            );
+
+            //计算缩放以适应图标区域
+            float iconScale = 1f;
+            Rectangle frame = sourceRect.Value;
+            if (frame.Width > iconSize || frame.Height > iconSize) {
+                iconScale = iconSize / (float)Math.Max(frame.Width, frame.Height);
+            }
+
+            //确定颜色(未解锁时变暗)
+            Color iconColor = node.IsUnlocked ? Color.White : new Color(100, 100, 110);
+
+            //已完成时添加绿色调
+            if (node.IsCompleted) {
+                iconColor = new Color(200, 255, 200);
+            }
+
+            //绘制图标
+            Vector2 iconPos = new Vector2(iconDrawRect.X + iconDrawRect.Width / 2, iconDrawRect.Y + iconDrawRect.Height / 2);
+            Vector2 origin = frame.Size() / 2f;
+
+            spriteBatch.Draw(iconTexture, iconPos, frame, iconColor, 0f, origin, iconScale, SpriteEffects.None, 0f);
         }
 
         private void DrawCornerMark(SpriteBatch spriteBatch, Vector2 pos, float alpha) {

@@ -1,5 +1,8 @@
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -9,50 +12,82 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     {
         private readonly static Dictionary<string, QuestNode> _quests = [];
         public static IReadOnlyCollection<QuestNode> AllQuests => _quests.Values;
+
         /// <summary>
         /// 节点ID
         /// </summary>
         public virtual string ID => Name;
+
         /// <summary>
         /// 节点名称
         /// </summary>
         public LocalizedText DisplayName { get; private set; }
+
         /// <summary>
         /// 节点描述
         /// </summary>
         public LocalizedText Description { get; private set; }
+
         /// <summary>
         /// 详细任务描述
         /// </summary>
         public LocalizedText DetailedDescription { get; private set; }
+
         /// <summary>
         /// 节点在图表中的位置
         /// </summary>
         public Vector2 Position;
+
         /// <summary>
         /// 前置任务ID列表
         /// </summary>
         public List<string> ParentIDs = new();
+
         /// <summary>
         /// 子任务ID列表
         /// </summary>
         public List<string> ChildIDs = new();
+
+        /// <summary>
+        /// 图标类型
+        /// </summary>
+        public QuestIconType IconType = QuestIconType.Texture;
+
         /// <summary>
         /// 图标纹理路径
         /// </summary>
         public string IconTexturePath;
+
+        /// <summary>
+        /// 图标物品ID(当IconType为Item时使用)
+        /// </summary>
+        public int IconItemType;
+
+        /// <summary>
+        /// 图标NPC类型(当IconType为NPC时使用)
+        /// </summary>
+        public int IconNPCType;
+
+        /// <summary>
+        /// 缓存的图标纹理
+        /// </summary>
+        private Asset<Texture2D> _iconTextureCache;
+
         /// <summary>
         /// 任务奖励列表
         /// </summary>
         public List<QuestReward> Rewards = new();
+
         /// <summary>
         /// 任务目标列表
         /// </summary>
         public List<QuestObjective> Objectives = new();
+
         /// <summary>
         /// 任务类型
         /// </summary>
         public QuestType QuestType;
+
         /// <summary>
         /// 任务难度
         /// </summary>
@@ -70,11 +105,95 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
         public string LocalizationCategory => "QuestLogs.QuestNode";
 
+        /// <summary>
+        /// 获取任务图标纹理
+        /// </summary>
+        public Texture2D GetIconTexture() {
+            switch (IconType) {
+                case QuestIconType.Item:
+                    if (IconItemType > 0) {
+                        Main.instance.LoadItem(IconItemType);
+                        return TextureAssets.Item[IconItemType]?.Value;
+                    }
+                    break;
+
+                case QuestIconType.NPC:
+                    if (IconNPCType > 0) {
+                        Main.instance.LoadNPC(IconNPCType);
+                        return TextureAssets.Npc[IconNPCType]?.Value;
+                    }
+                    break;
+
+                case QuestIconType.Texture:
+                    if (!string.IsNullOrEmpty(IconTexturePath)) {
+                        if (_iconTextureCache == null || !_iconTextureCache.IsLoaded) {
+                            _iconTextureCache = ModContent.Request<Texture2D>(IconTexturePath);
+                        }
+                        return _iconTextureCache?.Value;
+                    }
+                    break;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 获取图标源矩形(用于动画帧)
+        /// </summary>
+        public Rectangle? GetIconSourceRect(Texture2D texture) {
+            if (texture == null) return null;
+
+            switch (IconType) {
+                case QuestIconType.Item:
+                    if (IconItemType > 0 && Main.itemAnimations[IconItemType] != null) {
+                        return Main.itemAnimations[IconItemType].GetFrame(texture);
+                    }
+                    return texture.Frame();
+
+                case QuestIconType.NPC:
+                    if (IconNPCType > 0) {
+                        //NPC使用第一帧
+                        return texture.Frame(1, Main.npcFrameCount[IconNPCType], 0, 0);
+                    }
+                    return texture.Frame();
+
+                case QuestIconType.Texture:
+                    return texture.Frame();
+            }
+
+            return texture.Frame();
+        }
+
+        /// <summary>
+        /// 设置物品图标
+        /// </summary>
+        public void SetItemIcon(int itemType) {
+            IconType = QuestIconType.Item;
+            IconItemType = itemType;
+        }
+
+        /// <summary>
+        /// 设置NPC图标
+        /// </summary>
+        public void SetNPCIcon(int npcType) {
+            IconType = QuestIconType.NPC;
+            IconNPCType = npcType;
+        }
+
+        /// <summary>
+        /// 设置纹理图标
+        /// </summary>
+        public void SetTextureIcon(string texturePath) {
+            IconType = QuestIconType.Texture;
+            IconTexturePath = texturePath;
+        }
+
         public static QuestNode GetQuest(string id) => _quests.TryGetValue(id, out var quest) ? quest : null;
         public static QuestNode GetQuest<T>() where T : QuestNode => GetQuest(typeof(T).Name);
 
         public override void Unload() {
             _quests.Clear();
+            _iconTextureCache = null;
         }
 
         protected sealed override void VaultRegister() {
@@ -106,6 +225,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public virtual void OnUpdate() { }
 
         public virtual void OnLoad() { }
+    }
+
+    /// <summary>
+    /// 图标类型枚举
+    /// </summary>
+    public enum QuestIconType
+    {
+        /// <summary>
+        /// 使用纹理文件
+        /// </summary>
+        Texture,
+        /// <summary>
+        /// 使用物品图标
+        /// </summary>
+        Item,
+        /// <summary>
+        /// 使用NPC图标
+        /// </summary>
+        NPC
     }
 
     /// <summary>
