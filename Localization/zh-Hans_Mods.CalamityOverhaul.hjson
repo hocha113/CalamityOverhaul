@@ -7320,3 +7320,19 @@ ADV: {
 		B1_NO: 你先找来我这里吧，认一下路
 	}
 }
+
+QuestLogs: {
+	QuestNode: {
+		FirstQuest: {
+			DisplayName: 欢迎来到灾厄世界!
+			Description: 点击领取初始道具
+			DetailedDescription: 点击领取初始道具
+		}
+
+		MiningQuest: {
+			DisplayName: 矿工时间
+			Description: 获得十块铜矿
+			DetailedDescription: 获得十块铜矿
+		}
+	}
+}

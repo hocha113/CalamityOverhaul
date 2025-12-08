@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.QuestLogs.Core;
-using CalamityOverhaul.Content.QuestLogs.QLNodes;
 using CalamityOverhaul.Content.QuestLogs.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public IQuestLogStyle CurrentStyle { get; set; } = new HotwindQuestLogStyle();
 
-        public List<QuestNode> Nodes { get; set; } = new();
+        public IReadOnlyCollection<QuestNode> Nodes => QuestNode.AllQuests;
 
         private Vector2 panOffset;
         private float zoom = 1f;
@@ -56,16 +55,11 @@ namespace CalamityOverhaul.Content.QuestLogs
             panelRect = new Rectangle(0, 0, 800, 600);
         }
 
-        public static void Add(QuestNode questNode) {
-            Instance.Nodes.Add(questNode);
-        }
-
         public override void LogicUpdate() {
             //更新启动器位置和状态
             if (Main.playerInventory) {
                 if (launcher.IsHovered) {
                     if (keyLeftPressState == KeyPressState.Pressed) {
-                        QLNodeContent.Setup();
                         visible = !visible;
                         if (!visible) {
                             //关闭时同时关闭详情面板
@@ -251,10 +245,10 @@ namespace CalamityOverhaul.Content.QuestLogs
         private void ClaimRewards(QuestNode node) {
             if (node.Rewards == null) return;
 
+            Player player = Main.LocalPlayer;
             foreach (var reward in node.Rewards) {
                 if (!reward.Claimed) {
-                    //这里添加实际给予玩家物品的逻辑
-                    //Item.NewItem(null, player.Center, reward.ItemType, reward.Amount);
+                    player.QuickSpawnItem(player.GetSource_GiftOrReward(), reward.ItemType, reward.Amount);
                     reward.Claimed = true;
                 }
             }
@@ -288,11 +282,11 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制连接线
             foreach (var node in Nodes) {
                 foreach (var parentID in node.ParentIDs) {
-                    var parent = Nodes.Find(n => n.ID == parentID);
+                    var parent = QuestNode.GetQuest(parentID);
                     if (parent != null) {
                         Vector2 start = GetNodeScreenPos(parent.Position);
                         Vector2 end = GetNodeScreenPos(node.Position);
-                        CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked);
+                        CurrentStyle.DrawConnection(spriteBatch, start, end, parent.IsUnlocked);
                     }
                 }
             }

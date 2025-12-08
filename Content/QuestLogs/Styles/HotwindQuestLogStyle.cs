@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制节点名称
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + size / 2 + 8);
-            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.Name) * 0.75f;
+            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value) * 0.75f;
 
             Color textColor = node.IsCompleted ? new Color(140, 255, 160) :
                              (node.IsUnlocked ? new Color(255, 200, 140) : new Color(140, 140, 150));
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 textColor = Color.White;
             }
 
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, node.Name,
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, node.DisplayName?.Value,
                 namePos.X, namePos.Y, textColor, Color.Black, nameSize / 2, 0.75f);
         }
 
@@ -408,8 +408,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制任务标题
             Vector2 titlePos = new Vector2(panelRect.X + padding, currentY);
             Color titleColor = node.IsCompleted ? new Color(140, 255, 160) : new Color(255, 200, 140);
-            Utils.DrawBorderString(spriteBatch, node.Name, titlePos, titleColor * alpha, 1.2f);
-            currentY += (int)(FontAssets.MouseText.Value.MeasureString(node.Name).Y * 1.2f) + 10;
+            Utils.DrawBorderString(spriteBatch, node.DisplayName?.Value, titlePos, titleColor * alpha, 1.2f);
+            currentY += (int)(FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value).Y * 1.2f) + 10;
 
             //绘制分隔线
             Rectangle divider = new Rectangle(panelRect.X + padding, currentY, panelRect.Width - padding * 2, 2);
@@ -417,7 +417,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             currentY += 15;
 
             //绘制任务描述
-            string description = string.IsNullOrEmpty(node.DetailedDescription) ? node.Description : node.DetailedDescription;
+            string description = string.IsNullOrEmpty(node.DetailedDescription?.Value) ? node.Description?.Value : node.DetailedDescription?.Value;
             Vector2 descPos = new Vector2(panelRect.X + padding, currentY);
             Utils.DrawBorderString(spriteBatch, description, descPos, Color.White * alpha, 0.85f);
             currentY += (int)(FontAssets.MouseText.Value.MeasureString(description).Y * 0.85f) + 20;
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         private void DrawQuestTypeIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale) {
             //根据任务类型绘制不同的标记
-            string typeIcon = node.Type switch {
+            string typeIcon = node.QuestType switch {
                 QuestType.Main => "!",
                 QuestType.Side => "?",
                 QuestType.Daily => "D",
@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 _ => "?"
             };
 
-            Color iconColor = node.Type switch {
+            Color iconColor = node.QuestType switch {
                 QuestType.Main => new Color(255, 80, 80),
                 QuestType.Side => new Color(80, 180, 255),
                 QuestType.Daily => new Color(255, 200, 80),

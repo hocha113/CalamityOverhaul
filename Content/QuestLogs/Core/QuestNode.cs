@@ -1,25 +1,30 @@
 using System.Collections.Generic;
+using Terraria;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs.Core
 {
-    public class QuestNode
+    public abstract class QuestNode : VaultType<QuestNode>, ILocalizedModType
     {
+        private readonly static Dictionary<string, QuestNode> _quests = [];
+        public static IReadOnlyCollection<QuestNode> AllQuests => _quests.Values;
         /// <summary>
         /// 节点ID
         /// </summary>
-        public string ID;
+        public virtual string ID => Name;
         /// <summary>
         /// 节点名称
         /// </summary>
-        public string Name;
+        public LocalizedText DisplayName { get; private set; }
         /// <summary>
         /// 节点描述
         /// </summary>
-        public string Description;
+        public LocalizedText Description { get; private set; }
         /// <summary>
         /// 详细任务描述
         /// </summary>
-        public string DetailedDescription;
+        public LocalizedText DetailedDescription { get; private set; }
         /// <summary>
         /// 节点在图表中的位置
         /// </summary>
@@ -32,14 +37,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// 子任务ID列表
         /// </summary>
         public List<string> ChildIDs = new();
-        /// <summary>
-        /// 是否已完成
-        /// </summary>
-        public bool IsCompleted;
-        /// <summary>
-        /// 是否已解锁
-        /// </summary>
-        public bool IsUnlocked;
         /// <summary>
         /// 图标纹理路径
         /// </summary>
@@ -55,11 +52,55 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>
         /// 任务类型
         /// </summary>
-        public QuestType Type;
+        public QuestType QuestType;
         /// <summary>
         /// 任务难度
         /// </summary>
         public QuestDifficulty Difficulty;
+
+        public bool IsCompleted {
+            get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted;
+            set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted = value;
+        }
+
+        public bool IsUnlocked {
+            get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked;
+            set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked = value;
+        }
+
+        public string LocalizationCategory => "QuestLogs.QuestNode";
+
+        public static QuestNode GetQuest(string id) => _quests.TryGetValue(id, out var quest) ? quest : null;
+        public static QuestNode GetQuest<T>() where T : QuestNode => GetQuest(typeof(T).Name);
+
+        public override void Unload() {
+            _quests.Clear();
+        }
+
+        protected sealed override void VaultRegister() {
+            ModTypeLookup<QuestNode>.Register(this);
+            Instances.Add(this);
+            _quests.TryAdd(ID, this);
+        }
+
+        public override void VaultSetup() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => Name);
+            Description = this.GetLocalization(nameof(Description), () => " ");
+            DetailedDescription = this.GetLocalization(nameof(DetailedDescription), () => " ");
+
+            OnLoad();
+
+            for (int i = 0; i < Rewards.Count; i++) {
+                Rewards[i].Initialize(this, i);
+            }
+            for (int i = 0; i < Objectives.Count; i++) {
+                Objectives[i].Initialize(this, i);
+            }
+
+            SetStaticDefaults();
+        }
+
+        public virtual void OnLoad() { }
     }
 
     /// <summary>
@@ -76,13 +117,35 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// </summary>
         public int Amount;
         /// <summary>
-        /// 是否已领取
-        /// </summary>
-        public bool Claimed;
-        /// <summary>
         /// 奖励描述
         /// </summary>
-        public string Description;
+        public LocalizedText Description;
+
+        private QuestNode _node;
+        private int _index;
+
+        public void Initialize(QuestNode node, int index) {
+            _node = node;
+            _index = index;
+        }
+
+        /// <summary>
+        /// 是否已领取
+        /// </summary>
+        public bool Claimed {
+            get {
+                if (_node == null) return false;
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(_node.ID);
+                if (data.RewardsClaimed.Count <= _index) return false;
+                return data.RewardsClaimed[_index];
+            }
+            set {
+                if (_node == null) return;
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(_node.ID);
+                while (data.RewardsClaimed.Count <= _index) data.RewardsClaimed.Add(false);
+                data.RewardsClaimed[_index] = value;
+            }
+        }
     }
 
     /// <summary>
@@ -93,15 +156,38 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>
         /// 目标描述
         /// </summary>
-        public string Description;
-        /// <summary>
-        /// 当前进度
-        /// </summary>
-        public int CurrentProgress;
+        public LocalizedText Description;
         /// <summary>
         /// 所需进度
         /// </summary>
         public int RequiredProgress;
+
+        private QuestNode _node;
+        private int _index;
+
+        public void Initialize(QuestNode node, int index) {
+            _node = node;
+            _index = index;
+        }
+
+        /// <summary>
+        /// 当前进度
+        /// </summary>
+        public int CurrentProgress {
+            get {
+                if (_node == null) return 0;
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(_node.ID);
+                if (data.ObjectiveProgress.Count <= _index) return 0;
+                return data.ObjectiveProgress[_index];
+            }
+            set {
+                if (_node == null) return;
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(_node.ID);
+                while (data.ObjectiveProgress.Count <= _index) data.ObjectiveProgress.Add(0);
+                data.ObjectiveProgress[_index] = value;
+            }
+        }
+
         /// <summary>
         /// 是否已完成
         /// </summary>
@@ -113,10 +199,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     /// </summary>
     public enum QuestType
     {
-        Main,//主线任务
-        Side,//支线任务
-        Daily,//每日任务
-        Achievement//成就任务
+        Main,
+        Side,
+        Daily,
+        Achievement
     }
 
     /// <summary>
@@ -124,10 +210,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     /// </summary>
     public enum QuestDifficulty
     {
-        Easy,//简单
-        Normal,//普通
-        Hard,//困难
-        Expert,//专家
-        Master//大师
+        Easy,
+        Normal,
+        Hard,
+        Expert,
+        Master
     }
 }

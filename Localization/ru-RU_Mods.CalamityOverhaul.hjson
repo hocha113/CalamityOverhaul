@@ -7432,3 +7432,19 @@ ADV: {
 		// B1_NO: Come find me first. You'd best learn the path.
 	}
 }
+
+QuestLogs: {
+	QuestNode: {
+		FirstQuest: {
+			// DisplayName: FirstQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		MiningQuest: {
+			// DisplayName: MiningQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+	}
+}
