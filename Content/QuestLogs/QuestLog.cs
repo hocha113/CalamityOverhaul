@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.QuestLogs.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -14,6 +15,8 @@ namespace CalamityOverhaul.Content.QuestLogs
 {
     public class QuestLog : UIHandle
     {
+        [VaultLoaden(CWRConstant.UI)]
+        public static Asset<Texture2D> QuestLogStart;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
         public override bool Active => visible || Main.playerInventory;//保持激活以便绘制启动器
