@@ -1,11 +1,8 @@
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
@@ -71,7 +68,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             Texture2D iconTexture = QuestLog.QuestLogStart.Value;
-            
+
             //计算帧索引
             //第0帧:关闭状态
             //第1帧:打开状态
@@ -94,9 +91,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制阴影
             Vector2 shadowOffset = new Vector2(3, 3);
             Color shadowColor = Color.Black * 0.6f;
-            spriteBatch.Draw(iconTexture, new Vector2(IconRect.X, IconRect.Y) + shadowOffset, 
-                sourceRect, shadowColor, 0f, Vector2.Zero, 
-                new Vector2((float)IconRect.Width / iconTexture.Width, (float)IconRect.Height / frameHeight), 
+            spriteBatch.Draw(iconTexture, new Vector2(IconRect.X, IconRect.Y) + shadowOffset,
+                sourceRect, shadowColor, 0f, Vector2.Zero,
+                new Vector2((float)IconRect.Width / iconTexture.Width, (float)IconRect.Height / frameHeight),
                 SpriteEffects.None, 0f);
 
             //绘制主图标
@@ -115,7 +112,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 IconRect.Y + IconRect.Height / 2f
             );
 
-            spriteBatch.Draw(iconTexture, drawPos, sourceRect, drawColor, 0f, 
+            spriteBatch.Draw(iconTexture, drawPos, sourceRect, drawColor, 0f,
                 new Vector2(iconTexture.Width / 2f, frameHeight / 2f),
                 scale, SpriteEffects.None, 0f);
 
@@ -131,14 +128,14 @@ namespace CalamityOverhaul.Content.QuestLogs
             for (int i = 0; i < glowLayers; i++) {
                 float layerScale = baseScale * (1.2f + i * 0.15f);
                 float layerAlpha = glowIntensity * (0.4f - i * 0.1f);
-                
+
                 //使用脉冲效果
                 float pulse = (float)Math.Sin(pulseTimer + i * 0.5f) * 0.5f + 0.5f;
                 layerAlpha *= pulse;
 
                 //橙色发光
                 Color glowColor = new Color(255, 180, 100) * layerAlpha;
-                
+
                 spriteBatch.Draw(texture, position, sourceRect, glowColor, 0f,
                     new Vector2(texture.Width / 2f, sourceRect.Height / 2f),
                     layerScale, SpriteEffects.None, 0f);

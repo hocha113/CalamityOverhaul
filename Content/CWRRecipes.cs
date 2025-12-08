@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,6 +125,8 @@ namespace CalamityOverhaul.Content
         }
 
         private static void ModifyResultContent(Recipe recipe) {
+            recipe.AddOnCraftCallback(QLPlayer.CraftedItem);
+
             //修改雪境暴徒的合成
             {
                 if (recipe.HasResult(CWRID.Item_SnowRuffianMask)) {//面具

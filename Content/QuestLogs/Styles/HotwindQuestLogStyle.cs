@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.QuestLogs.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -7,16 +6,14 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
-    public class ThermalQuestLogStyle : IQuestLogStyle
+    public class HotwindQuestLogStyle : IQuestLogStyle
     {
         //动画计时器
-        private float glowTimer;
         private float flowTimer;
         private float pulseTimer;
         private float bloomTimer;
 
         public void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
-            glowTimer += 0.018f;
             pulseTimer += 0.025f;
             bloomTimer += 0.015f;
 
@@ -76,23 +73,23 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect) {
             //创建纵向多层渐变泛光效果，从左到右流动
             int bloomLayers = 4;
-            
+
             for (int layer = 0; layer < bloomLayers; layer++) {
                 //每层有不同的速度和相位偏移
                 float layerSpeed = 0.8f + layer * 0.15f;
                 float layerOffset = (bloomTimer * layerSpeed + layer * 1.2f) % MathHelper.TwoPi;
-                
+
                 //使用平滑的往复运动而非简单的正弦
                 float rawPosition = (float)Math.Sin(layerOffset);
                 float bloomPosition = rawPosition * 0.5f + 0.5f;
-                
+
                 //计算泛光中心X位置
                 int centerX = panelRect.X + (int)(bloomPosition * panelRect.Width);
-                
+
                 //绘制渐变泛光柱
                 int bloomWidth = 120 + layer * 30;
                 int bloomSteps = 50;
-                
+
                 for (int i = 0; i < bloomSteps; i++) {
                     float t = i / (float)bloomSteps;
                     //计算距离中心的归一化距离
@@ -100,25 +97,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     //使用更平滑的衰减曲线
                     float alpha = 1f - distance;
                     alpha = (float)Math.Pow(alpha, 3.5);
-                    
+
                     int x = centerX - bloomWidth / 2 + (int)(t * bloomWidth);
-                    
+
                     //确保不超出面板范围
                     if (x < panelRect.X || x >= panelRect.Right) continue;
-                    
+
                     int width = Math.Max(1, bloomWidth / bloomSteps);
                     Rectangle bloomRect = new Rectangle(x, panelRect.Y, width, panelRect.Height);
-                    
+
                     //多层动态颜色渐变
                     Color bloomColor1 = new Color(255, 100, 30);
                     Color bloomColor2 = new Color(255, 160, 60);
                     Color bloomColor3 = new Color(255, 200, 100);
                     Color bloomColor4 = new Color(255, 140, 50);
-                    
+
                     //根据层数和位置创建复杂的颜色混合
                     float colorPhase = (t + layer * 0.25f) % 1f;
                     Color finalColor;
-                    
+
                     if (layer % 2 == 0) {
                         if (colorPhase < 0.5f) {
                             finalColor = Color.Lerp(bloomColor1, bloomColor2, colorPhase * 2f);
@@ -135,7 +132,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                             finalColor = Color.Lerp(bloomColor3, bloomColor1, (colorPhase - 0.5f) * 2f);
                         }
                     }
-                    
+
                     //添加基于位置的亮度变化
                     float brightnessVariation = (float)Math.Sin(colorPhase * MathHelper.TwoPi + bloomTimer * 2f) * 0.15f + 1f;
                     finalColor = new Color(
@@ -143,7 +140,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                         (int)(finalColor.G * brightnessVariation),
                         (int)(finalColor.B * brightnessVariation)
                     );
-                    
+
                     //每层的基础透明度递减
                     float layerAlpha = 0.12f - layer * 0.025f;
                     spriteBatch.Draw(pixel, bloomRect, finalColor * (alpha * layerAlpha));
@@ -157,7 +154,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Rectangle nodeRect = new Rectangle((int)drawPos.X - size / 2, (int)drawPos.Y - size / 2, size, size);
 
             //根据任务状态确定颜色
-            Color baseColor = node.IsCompleted ? new Color(80, 200, 100) : 
+            Color baseColor = node.IsCompleted ? new Color(80, 200, 100) :
                              (node.IsUnlocked ? new Color(255, 140, 60) : new Color(100, 100, 110));
 
             if (isHovered) {
@@ -176,7 +173,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             if (node.IsUnlocked || node.IsCompleted) {
                 float glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f + 0.5f;
                 Color glowColor = node.IsCompleted ? new Color(100, 255, 120) : new Color(255, 180, 100);
-                
+
                 for (int i = 0; i < 4; i++) {
                     float angle = MathHelper.TwoPi * i / 4f;
                     Vector2 offset = angle.ToRotationVector2() * (3f * glowPulse);
@@ -190,7 +187,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int borderWidth = 2;
             Color edgeColor = node.IsCompleted ? new Color(120, 255, 140) :
                              (node.IsUnlocked ? new Color(255, 160, 80) : new Color(120, 120, 130));
-            
+
             if (isHovered) {
                 edgeColor = Color.White;
                 borderWidth = 3;
@@ -207,15 +204,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制节点名称
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + size / 2 + 8);
             Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.Name) * 0.75f;
-            
+
             Color textColor = node.IsCompleted ? new Color(140, 255, 160) :
                              (node.IsUnlocked ? new Color(255, 200, 140) : new Color(140, 140, 150));
-            
+
             if (isHovered) {
                 textColor = Color.White;
             }
 
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, node.Name, 
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, node.Name,
                 namePos.X, namePos.Y, textColor, Color.Black, nameSize / 2, 0.75f);
         }
 
@@ -230,16 +227,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //加粗的连接线宽度
             int lineWidth = 8;
-            
+
             //绘制外层阴影
             Color shadowColor = Color.Black * 0.4f;
-            spriteBatch.Draw(pixel, start + new Vector2(2, 2).RotatedBy(rotation), 
-                new Rectangle(0, 0, (int)length, lineWidth), shadowColor, rotation, 
+            spriteBatch.Draw(pixel, start + new Vector2(2, 2).RotatedBy(rotation),
+                new Rectangle(0, 0, (int)length, lineWidth), shadowColor, rotation,
                 new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             //绘制基础暗色背景层
             Color lineColor = isUnlocked ? new Color(60, 45, 30) : new Color(40, 40, 45);
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth), 
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth),
                 lineColor * 0.9f, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             if (isUnlocked) {
@@ -249,7 +246,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 //绘制外发光效果
                 Color glowColor = new Color(255, 140, 60) * 0.3f;
                 int glowWidth = lineWidth + 6;
-                spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, glowWidth), 
+                spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, glowWidth),
                     glowColor, rotation, new Vector2(0, glowWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
             else {
@@ -303,19 +300,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 //绘制主渐变层
                 Vector2 segmentPos = start + direction * (length * segmentStart);
                 int mainWidth = lineWidth - 2;
-                
+
                 float baseAlpha = 0.75f;
                 //根据流动位置调整透明度，创建拖尾效果
                 float positionAlpha = (float)Math.Sin(flowPosition * MathHelper.Pi);
                 float finalAlpha = baseAlpha + positionAlpha * 0.25f;
-                
-                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, mainWidth), 
+
+                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, mainWidth),
                     segmentColor * finalAlpha, rotation, new Vector2(0, mainWidth / 2f), 1f, SpriteEffects.None, 0f);
 
                 //添加内部高光层
                 int highlightWidth = mainWidth - 2;
                 Color highlightColor = Color.Lerp(segmentColor, Color.White, 0.4f);
-                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, highlightWidth), 
+                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, highlightWidth),
                     highlightColor * (finalAlpha * 0.5f), rotation, new Vector2(0, highlightWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
 
@@ -325,19 +322,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 //每个脉冲有不同的相位
                 float pulsePhase = (i / (float)pulseCount + flowProgress) % 1f;
                 Vector2 pulsePos = start + (end - start) * pulsePhase;
-                
+
                 //使用正弦函数创建渐隐渐现效果
                 float pulseAlpha = (float)Math.Sin(pulsePhase * MathHelper.Pi);
                 pulseAlpha = (float)Math.Pow(pulseAlpha, 1.5f);
 
                 //核心亮点
                 Color pulseColor = new Color(255, 240, 200) * (pulseAlpha * 0.9f);
-                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), pulseColor, 
+                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), pulseColor,
                     rotation, new Vector2(0, 0.5f), new Vector2(16, 6), SpriteEffects.None, 0f);
 
                 //外层光晕
                 Color glowColor = new Color(255, 200, 120) * (pulseAlpha * 0.6f);
-                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), glowColor, 
+                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), glowColor,
                     rotation, new Vector2(0, 0.5f), new Vector2(24, 10), SpriteEffects.None, 0f);
             }
         }
@@ -352,9 +349,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             for (int i = 0; i < dashCount; i++) {
                 float dashStart = i * totalLength;
                 Vector2 dashPos = start + new Vector2(dashStart, 0).RotatedBy(rotation);
-                
+
                 Color dashColor = new Color(70, 70, 80) * 0.6f;
-                spriteBatch.Draw(pixel, dashPos, new Rectangle(0, 0, dashLength, lineWidth), 
+                spriteBatch.Draw(pixel, dashPos, new Rectangle(0, 0, dashLength, lineWidth),
                     dashColor, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
         }
@@ -392,7 +389,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制边框
             float pulse = (float)Math.Sin(pulseTimer * 2.5f) * 0.5f + 0.5f;
             Color edgeColor = Color.Lerp(new Color(255, 120, 40), new Color(255, 180, 100), pulse) * alpha;
-            
+
             int border = 4;
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, border), edgeColor);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - border, panelRect.Width, border), edgeColor * 0.8f);
@@ -427,14 +424,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制任务目标
             if (node.Objectives != null && node.Objectives.Count > 0) {
-                Utils.DrawBorderString(spriteBatch, "任务目标:", new Vector2(panelRect.X + padding, currentY), 
+                Utils.DrawBorderString(spriteBatch, "任务目标:", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 200, 140) * alpha, 0.9f);
                 currentY += 25;
 
                 foreach (var objective in node.Objectives) {
                     string objText = $"• {objective.Description} ({objective.CurrentProgress}/{objective.RequiredProgress})";
                     Color objColor = objective.IsCompleted ? new Color(140, 255, 160) : Color.White;
-                    Utils.DrawBorderString(spriteBatch, objText, new Vector2(panelRect.X + padding + 10, currentY), 
+                    Utils.DrawBorderString(spriteBatch, objText, new Vector2(panelRect.X + padding + 10, currentY),
                         objColor * alpha, 0.8f);
                     currentY += 22;
                 }
@@ -443,7 +440,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制任务奖励
             if (node.Rewards != null && node.Rewards.Count > 0) {
-                Utils.DrawBorderString(spriteBatch, "任务奖励:", new Vector2(panelRect.X + padding, currentY), 
+                Utils.DrawBorderString(spriteBatch, "任务奖励:", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 200, 140) * alpha, 0.9f);
                 currentY += 25;
 
@@ -470,14 +467,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制领取按钮(如果任务已完成但未领取奖励)
             if (node.IsCompleted && node.Rewards != null && node.Rewards.Exists(r => !r.Claimed)) {
-                Rectangle buttonRect = new Rectangle(panelRect.X + panelRect.Width / 2 - 60, 
+                Rectangle buttonRect = new Rectangle(panelRect.X + panelRect.Width / 2 - 60,
                     panelRect.Bottom - padding - 40, 120, 35);
-                
+
                 bool hoverButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
                 Color buttonColor = hoverButton ? new Color(255, 180, 100) : new Color(200, 120, 60);
-                
+
                 spriteBatch.Draw(pixel, buttonRect, buttonColor * alpha);
-                
+
                 //按钮边框
                 int btnBorder = 2;
                 Color btnEdge = new Color(255, 200, 120) * alpha;

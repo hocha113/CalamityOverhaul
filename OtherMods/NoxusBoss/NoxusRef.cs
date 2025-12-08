@@ -2,9 +2,6 @@
 using CalamityOverhaul.Content;
 using System;
 using System.Reflection;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.OtherMods.NoxusBoss
 {

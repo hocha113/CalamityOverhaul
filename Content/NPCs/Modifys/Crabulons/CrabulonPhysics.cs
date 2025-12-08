@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public float GroundClearance { get; private set; }
         public float JumpHeightUpdate { get; set; }
         public float JumpHeightSetFrame { get; set; }
-        
+
         //位置修正相关
         private int stuckCheckTimer = 0;
         private Vector2 lastValidPosition;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 Vector2 checkPos = startPos + new Vector2(0, GroundClearance);
                 Point16 tileCoords16 = checkPos.ToTileCoordinates16();
                 Point tileCoords = new Point(tileCoords16.X, tileCoords16.Y);
-                
+
                 if (!WorldGen.InWorld(tileCoords.X, tileCoords.Y)) {
                     break;
                 }
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
                 GroundClearance += CrabulonConstants.GroundCheckInterval;
             }
-            
+
             //如果没找到地面，设置为最大值
             if (!foundGround) {
                 GroundClearance = CrabulonConstants.MaxGroundDistance;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (npc.noTileCollide || !npc.collideX) {
                 return;
             }
-            
+
             //使用方向感知检测
             int direction = Math.Sign(npc.velocity.X);
             if (direction == 0) {
@@ -107,11 +107,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 Vector2 checkPos = checkStart + new Vector2(0, y);
                 Point16 tileCoords16 = checkPos.ToTileCoordinates16();
                 Point tileCoords = new Point(tileCoords16.X, tileCoords16.Y);
-                
+
                 if (!WorldGen.InWorld(tileCoords.X, tileCoords.Y)) {
                     continue;
                 }
-                
+
                 Tile checkTile = Framing.GetTileSafely(tileCoords);
                 if (checkTile.HasTile) {
                     hasGroundAhead = true;
@@ -138,11 +138,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
                 //检查这个高度前方是否有足够空间
                 Vector2 forwardPos = checkPos + new Vector2(direction * (npc.width / 2f + 4), 0);
-                
+
                 //确保前方和上方都有空间
                 bool hasSpace = !Collision.SolidCollision(forwardPos, npc.width / 2, npc.height);
                 bool hasHeadroom = !Collision.SolidCollision(checkPos + new Vector2(0, -npc.height / 2), npc.width, npc.height / 2);
-                
+
                 if (hasSpace && hasHeadroom) {
                     foundHeight = i;
                 }
@@ -160,14 +160,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         private void PerformStepClimb(int heightLevel) {
             //记录当前位置为有效位置
             lastValidPosition = npc.position;
-            
+
             //设置攀爬参数
             JumpHeightUpdate = heightLevel * CrabulonConstants.StepCheckInterval;
             JumpHeightSetFrame = CrabulonConstants.MountTimeout;
-            
+
             //给一个小的向上速度，但不要太大
             npc.velocity.Y = -4f;
-            
+
             //标记需要网络同步
             npc.netUpdate = true;
         }
@@ -218,11 +218,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         //卡入方块检测和修正
         public void CheckAndFixStuckPosition() {
             stuckCheckTimer++;
-            
+
             if (stuckCheckTimer < StuckCheckInterval) {
                 return;
             }
-            
+
             stuckCheckTimer = 0;
 
             //检查NPC是否卡在方块中
@@ -231,9 +231,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 if (TryFixStuckPosition()) {
                     return;
                 }
-                
+
                 //如果修正失败，回退到上次有效位置
-                if (lastValidPosition != Vector2.Zero && 
+                if (lastValidPosition != Vector2.Zero &&
                     !Collision.SolidCollision(lastValidPosition, npc.width, npc.height)) {
                     npc.position = lastValidPosition;
                     npc.velocity = Vector2.Zero;

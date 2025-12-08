@@ -592,7 +592,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         public override void PostUpdateEverything() {
-            if (!IsActive 
+            if (!IsActive
                 && !CWRRef.GetBossRushActive()
                 && Main.LocalPlayer.TryGetADVSave(out var save)
                 && !save.OldDukeChoseToFight
