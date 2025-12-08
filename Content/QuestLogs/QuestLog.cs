@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.QuestLogs
         private const int DetailPanelWidth = 500;
         private const int DetailPanelHeight = 600;
 
+        //节点悬停相关
+        private QuestNode hoveredNode;
+
         public QuestLog() {
             //初始化一些测试节点
             Nodes.Add(new QuestNode { 
@@ -136,8 +139,10 @@ namespace CalamityOverhaul.Content.QuestLogs
                 launcherHovered = launcherRect.Contains(Main.MouseScreen.ToPoint());
 
                 if (launcherHovered) {
-                    Main.LocalPlayer.mouseInterface = true;
-                    if (Main.mouseLeft && Main.mouseLeftRelease) {
+                    player.mouseInterface = true;
+                    
+                    //使用UIHandle的keyLeftPressState接口
+                    if (keyLeftPressState == KeyPressState.Pressed) {
                         visible = !visible;
                         if (visible) {
                             //打开时居中
@@ -154,7 +159,8 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
             else {
-                if (visible && Main.keyState.IsKeyDown(Keys.Escape)) {
+                //使用键盘输入检测关闭
+                if (visible && Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape)) {
                     if (showDetailPanel) {
                         //如果详情面板开启，先关闭详情面板
                         showDetailPanel = false;
@@ -171,9 +177,14 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             if (!visible) return;
 
+            //更新主UI碰撞箱
+            UIHitBox = panelRect;
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+
             //阻止鼠标穿透
-            if (panelRect.Contains(Main.MouseScreen.ToPoint())) {
-                Main.LocalPlayer.mouseInterface = true;
+            if (hoverInMainPage) {
+                player.mouseInterface = true;
+                player.CWR().DontSwitchWeaponTime = 2;
             }
 
             //如果详情面板开启，优先处理详情面板交互
@@ -182,8 +193,8 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            //处理地图拖拽
-            if (panelRect.Contains(Main.MouseScreen.ToPoint())) {
+            //处理地图拖拽和缩放
+            if (hoverInMainPage) {
                 //滚轮缩放
                 int scroll = Mouse.GetState().ScrollWheelValue;
                 if (scroll != oldScrollWheelValue) {
@@ -192,48 +203,55 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
                 oldScrollWheelValue = scroll;
 
-                if (Main.mouseLeft) {
-                    if (!isDraggingMap) {
-                        //检查是否点击了节点
-                        bool clickedNode = false;
-                        foreach(var node in Nodes) {
-                            Vector2 nodePos = GetNodeScreenPos(node.Position);
-                            float nodeSize = 24 * zoom;
-                            if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
-                                clickedNode = true;
-                                //打开详情面板
-                                selectedNode = node;
-                                showDetailPanel = true;
-                                SoundEngine.PlaySound(SoundID.MenuTick);
-                        
-                                //计算详情面板位置(居中)
-                                detailPanelRect = new Rectangle(
-                                    (Main.screenWidth - DetailPanelWidth) / 2,
-                                    (Main.screenHeight - DetailPanelHeight) / 2,
-                                    DetailPanelWidth,
-                                    DetailPanelHeight
-                                );
-                                break;
-                            }
-                        }
-
-                        if (!clickedNode) {
-                            isDraggingMap = true;
-                            dragStartMousePos = Main.MouseScreen;
-                            dragStartPanOffset = panOffset;
-                        }
-                    }
-                    else {
-                        Vector2 diff = Main.MouseScreen - dragStartMousePos;
-                        panOffset = dragStartPanOffset + diff;
+                //检测节点悬停
+                hoveredNode = null;
+                foreach(var node in Nodes) {
+                    Vector2 nodePos = GetNodeScreenPos(node.Position);
+                    float nodeSize = 24 * zoom;
+                    if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
+                        hoveredNode = node;
+                        break;
                     }
                 }
-                else {
+
+                //使用UIHandle的keyLeftPressState处理点击
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    if (hoveredNode != null) {
+                        //点击了节点，打开详情面板
+                        selectedNode = hoveredNode;
+                        showDetailPanel = true;
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                        
+                        //计算详情面板位置(居中)
+                        detailPanelRect = new Rectangle(
+                            (Main.screenWidth - DetailPanelWidth) / 2,
+                            (Main.screenHeight - DetailPanelHeight) / 2,
+                            DetailPanelWidth,
+                            DetailPanelHeight
+                        );
+                    }
+                    else {
+                        //没点击节点，开始拖拽地图
+                        isDraggingMap = true;
+                        dragStartMousePos = Main.MouseScreen;
+                        dragStartPanOffset = panOffset;
+                    }
+                }
+
+                //处理拖拽
+                if (keyLeftPressState == KeyPressState.Held && isDraggingMap) {
+                    Vector2 diff = Main.MouseScreen - dragStartMousePos;
+                    panOffset = dragStartPanOffset + diff;
+                }
+
+                //释放拖拽
+                if (keyLeftPressState == KeyPressState.Released) {
                     isDraggingMap = false;
                 }
             }
             else {
                 isDraggingMap = false;
+                hoveredNode = null;
                 oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
             }
         }
@@ -243,7 +261,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //阻止鼠标穿透
             if (detailPanelRect.Contains(Main.MouseScreen.ToPoint())) {
-                Main.LocalPlayer.mouseInterface = true;
+                player.mouseInterface = true;
             }
 
             //检查关闭按钮点击
@@ -254,9 +272,11 @@ namespace CalamityOverhaul.Content.QuestLogs
                 30
             );
 
-            if (closeButtonRect.Contains(Main.MouseScreen.ToPoint())) {
-                Main.LocalPlayer.mouseInterface = true;
-                if (Main.mouseLeft && Main.mouseLeftRelease) {
+            bool hoverCloseButton = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
+            if (hoverCloseButton) {
+                player.mouseInterface = true;
+                //使用UIHandle的keyLeftPressState接口
+                if (keyLeftPressState == KeyPressState.Pressed) {
                     showDetailPanel = false;
                     selectedNode = null;
                     SoundEngine.PlaySound(SoundID.MenuClose);
@@ -264,7 +284,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //检查领取奖励按钮点击
-            if (selectedNode != null && selectedNode.IsCompleted && selectedNode.Rewards != null) {
+            //这里他妈的要做一次NUll检查，难道这个 selectedNode 可能为null就这么难理解吗
+            if (selectedNode is not null && selectedNode.IsCompleted && selectedNode.Rewards != null) {
                 Rectangle buttonRect = new Rectangle(
                     detailPanelRect.X + detailPanelRect.Width / 2 - 60,
                     detailPanelRect.Bottom - 60,
@@ -272,10 +293,11 @@ namespace CalamityOverhaul.Content.QuestLogs
                     35
                 );
 
-                if (buttonRect.Contains(Main.MouseScreen.ToPoint())) {
-                    Main.LocalPlayer.mouseInterface = true;
-                    if (Main.mouseLeft && Main.mouseLeftRelease) {
-                        //领取奖励逻辑
+                bool hoverRewardButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
+                if (hoverRewardButton) {
+                    player.mouseInterface = true;
+                    //使用UIHandle的keyLeftPressState接口
+                    if (keyLeftPressState == KeyPressState.Pressed) {
                         ClaimRewards(selectedNode);
                         SoundEngine.PlaySound(SoundID.Grab);
                     }
@@ -289,7 +311,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             foreach (var reward in node.Rewards) {
                 if (!reward.Claimed) {
                     //这里添加实际给予玩家物品的逻辑
-                    //Item.NewItem(null, Main.LocalPlayer.Center, reward.ItemType, reward.Amount);
+                    //Item.NewItem(null, player.Center, reward.ItemType, reward.Amount);
                     reward.Claimed = true;
                 }
             }
@@ -334,8 +356,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制节点
             foreach (var node in Nodes) {
                 Vector2 nodePos = GetNodeScreenPos(node.Position);
-                float nodeSize = 24 * zoom;
-                bool hovered = Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize; 
+                bool hovered = hoveredNode == node;
                 CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered);
             }
 
