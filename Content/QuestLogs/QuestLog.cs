@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
@@ -12,7 +16,7 @@ namespace CalamityOverhaul.Content.QuestLogs
     {
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
-        public override bool Active => visible || Main.playerInventory; //保持激活以便绘制启动器
+        public override bool Active => visible || Main.playerInventory;//保持激活以便绘制启动器
         private bool visible;
 
         public IQuestLogStyle CurrentStyle { get; set; } = new ThermalQuestLogStyle();
@@ -31,22 +35,104 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         private int oldScrollWheelValue;
 
+        //任务详情面板相关
+        private QuestNode selectedNode;
+        private bool showDetailPanel;
+        private float detailPanelAlpha;
+        private Rectangle detailPanelRect;
+        private const int DetailPanelWidth = 500;
+        private const int DetailPanelHeight = 600;
+
         public QuestLog() {
             //初始化一些测试节点
-            Nodes.Add(new QuestNode { ID = "1", Name = "启程", Description = "开始你的旅程", Position = new Vector2(0, 0), IsUnlocked = true });
-            Nodes.Add(new QuestNode { ID = "2", Name = "挖掘", Description = "获得第一块矿石", Position = new Vector2(100, 0), ParentIDs = new List<string> { "1" } });
-            Nodes.Add(new QuestNode { ID = "3", Name = "制作", Description = "制作工作台", Position = new Vector2(200, 50), ParentIDs = new List<string> { "2" } });
-            Nodes.Add(new QuestNode { ID = "4", Name = "战斗", Description = "击败史莱姆", Position = new Vector2(200, -50), ParentIDs = new List<string> { "2" } });
+            Nodes.Add(new QuestNode { 
+                ID = "1", 
+                Name = "启程", 
+                Description = "开始你的旅程", 
+                DetailedDescription = "欢迎来到灾厄全知领域！这是你的第一个任务，完成它来熟悉系统。",
+                Position = new Vector2(0, 0), 
+                IsUnlocked = true,
+                Type = QuestType.Main,
+                Difficulty = QuestDifficulty.Easy,
+                Objectives = new List<QuestObjective> {
+                    new QuestObjective { Description = "探索世界", CurrentProgress = 0, RequiredProgress = 1 }
+                },
+                Rewards = new List<QuestReward> {
+                    new QuestReward { ItemType = ItemID.Wood, Amount = 50, Description = "木材奖励" }
+                }
+            });
+            
+            Nodes.Add(new QuestNode { 
+                ID = "2", 
+                Name = "挖掘", 
+                Description = "获得第一块矿石", 
+                DetailedDescription = "挖掘是生存的基础，去地下寻找有用的矿石吧。",
+                Position = new Vector2(150, 0), 
+                ParentIDs = new List<string> { "1" },
+                Type = QuestType.Main,
+                Difficulty = QuestDifficulty.Easy,
+                Objectives = new List<QuestObjective> {
+                    new QuestObjective { Description = "获得铜矿", CurrentProgress = 0, RequiredProgress = 10 }
+                },
+                Rewards = new List<QuestReward> {
+                    new QuestReward { ItemType = ItemID.CopperPickaxe, Amount = 1, Description = "铜镐奖励" }
+                }
+            });
+            
+            Nodes.Add(new QuestNode { 
+                ID = "3", 
+                Name = "制作", 
+                Description = "制作工作台", 
+                DetailedDescription = "工作台是所有制作的基础，学会如何制作它。",
+                Position = new Vector2(300, 80), 
+                ParentIDs = new List<string> { "2" },
+                Type = QuestType.Side,
+                Difficulty = QuestDifficulty.Normal,
+                Objectives = new List<QuestObjective> {
+                    new QuestObjective { Description = "制作工作台", CurrentProgress = 0, RequiredProgress = 1 }
+                },
+                Rewards = new List<QuestReward> {
+                    new QuestReward { ItemType = ItemID.Wood, Amount = 100, Description = "木材奖励" }
+                }
+            });
+            
+            Nodes.Add(new QuestNode { 
+                ID = "4", 
+                Name = "战斗", 
+                Description = "击败史莱姆", 
+                DetailedDescription = "学习战斗技巧，击败你的第一个敌人。",
+                Position = new Vector2(300, -80), 
+                ParentIDs = new List<string> { "2" },
+                Type = QuestType.Main,
+                Difficulty = QuestDifficulty.Normal,
+                Objectives = new List<QuestObjective> {
+                    new QuestObjective { Description = "击败史莱姆", CurrentProgress = 0, RequiredProgress = 5 }
+                },
+                Rewards = new List<QuestReward> {
+                    new QuestReward { ItemType = ItemID.Gel, Amount = 20, Description = "凝胶奖励" }
+                }
+            });
             
             //设置初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
         }
 
         public override void Update() {
-            //更新启动器位置 (在背包右侧)
+            //更新详情面板透明度
+            if (showDetailPanel) {
+                if (detailPanelAlpha < 1f) {
+                    detailPanelAlpha += 0.1f;
+                }
+            }
+            else {
+                if (detailPanelAlpha > 0f) {
+                    detailPanelAlpha -= 0.1f;
+                }
+            }
+
+            //更新启动器位置(在背包右侧)
             if (Main.playerInventory) {
-                //简单的定位
-                launcherRect = new Rectangle(Main.screenWidth / 2 + 120, Main.screenHeight / 5 - 20, 40, 40);
+                launcherRect = new Rectangle(Main.screenWidth / 2 + 120, Main.screenHeight / 5 - 20, 48, 48);
                 launcherHovered = launcherRect.Contains(Main.MouseScreen.ToPoint());
 
                 if (launcherHovered) {
@@ -58,18 +144,28 @@ namespace CalamityOverhaul.Content.QuestLogs
                             panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
                             panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
                         }
+                        else {
+                            //关闭时同时关闭详情面板
+                            showDetailPanel = false;
+                            selectedNode = null;
+                        }
+                        SoundEngine.PlaySound(visible ? SoundID.MenuOpen : SoundID.MenuClose);
                     }
                 }
             }
             else {
-                //背包关闭时，如果任务书是依附于背包的，则关闭
-                //这里假设任务书是独立的，但启动器只在背包显示
-                //如果用户希望任务书像FTB那样独立存在，可以不关闭
-                //但为了体验一致性，如果通过背包打开，通常随背包关闭
-                //不过FTB任务书通常有快捷键打开
-                //暂时保持打开状态直到手动关闭或按ESC
                 if (visible && Main.keyState.IsKeyDown(Keys.Escape)) {
-                    visible = false;
+                    if (showDetailPanel) {
+                        //如果详情面板开启，先关闭详情面板
+                        showDetailPanel = false;
+                        selectedNode = null;
+                        SoundEngine.PlaySound(SoundID.MenuClose);
+                    }
+                    else {
+                        //否则关闭主面板
+                        visible = false;
+                        SoundEngine.PlaySound(SoundID.MenuClose);
+                    }
                 }
             }
 
@@ -78,6 +174,12 @@ namespace CalamityOverhaul.Content.QuestLogs
             //阻止鼠标穿透
             if (panelRect.Contains(Main.MouseScreen.ToPoint())) {
                 Main.LocalPlayer.mouseInterface = true;
+            }
+
+            //如果详情面板开启，优先处理详情面板交互
+            if (showDetailPanel && detailPanelAlpha > 0.5f) {
+                UpdateDetailPanel();
+                return;
             }
 
             //处理地图拖拽
@@ -92,12 +194,25 @@ namespace CalamityOverhaul.Content.QuestLogs
 
                 if (Main.mouseLeft) {
                     if (!isDraggingMap) {
-                        //检查是否点击了节点，如果点击了节点则不拖拽地图(后续添加节点交互)
+                        //检查是否点击了节点
                         bool clickedNode = false;
                         foreach(var node in Nodes) {
                             Vector2 nodePos = GetNodeScreenPos(node.Position);
-                            if (Vector2.Distance(Main.MouseScreen, nodePos) < 20 * zoom) {
+                            float nodeSize = 24 * zoom;
+                            if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
                                 clickedNode = true;
+                                //打开详情面板
+                                selectedNode = node;
+                                showDetailPanel = true;
+                                SoundEngine.PlaySound(SoundID.MenuTick);
+                        
+                                //计算详情面板位置(居中)
+                                detailPanelRect = new Rectangle(
+                                    (Main.screenWidth - DetailPanelWidth) / 2,
+                                    (Main.screenHeight - DetailPanelHeight) / 2,
+                                    DetailPanelWidth,
+                                    DetailPanelHeight
+                                );
                                 break;
                             }
                         }
@@ -119,8 +234,64 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
             else {
                 isDraggingMap = false;
-                //确保滚轮值同步，防止下次进入时跳变
                 oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+            }
+        }
+
+        private void UpdateDetailPanel() {
+            if (selectedNode == null) return;
+
+            //阻止鼠标穿透
+            if (detailPanelRect.Contains(Main.MouseScreen.ToPoint())) {
+                Main.LocalPlayer.mouseInterface = true;
+            }
+
+            //检查关闭按钮点击
+            Rectangle closeButtonRect = new Rectangle(
+                detailPanelRect.Right - 40,
+                detailPanelRect.Y + 10,
+                30,
+                30
+            );
+
+            if (closeButtonRect.Contains(Main.MouseScreen.ToPoint())) {
+                Main.LocalPlayer.mouseInterface = true;
+                if (Main.mouseLeft && Main.mouseLeftRelease) {
+                    showDetailPanel = false;
+                    selectedNode = null;
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                }
+            }
+
+            //检查领取奖励按钮点击
+            if (selectedNode != null && selectedNode.IsCompleted && selectedNode.Rewards != null) {
+                Rectangle buttonRect = new Rectangle(
+                    detailPanelRect.X + detailPanelRect.Width / 2 - 60,
+                    detailPanelRect.Bottom - 60,
+                    120,
+                    35
+                );
+
+                if (buttonRect.Contains(Main.MouseScreen.ToPoint())) {
+                    Main.LocalPlayer.mouseInterface = true;
+                    if (Main.mouseLeft && Main.mouseLeftRelease) {
+                        //领取奖励逻辑
+                        ClaimRewards(selectedNode);
+                        SoundEngine.PlaySound(SoundID.Grab);
+                    }
+                }
+            }
+        }
+
+        private void ClaimRewards(QuestNode node) {
+            if (node.Rewards == null) return;
+
+            foreach (var reward in node.Rewards) {
+                if (!reward.Claimed) {
+                    //这里添加实际给予玩家物品的逻辑
+                    //Item.NewItem(null, Main.LocalPlayer.Center, reward.ItemType, reward.Amount);
+                    reward.Claimed = true;
+                }
             }
         }
 
@@ -136,18 +307,15 @@ namespace CalamityOverhaul.Content.QuestLogs
             //开启剪裁，防止节点画出面板
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
             
-            //保存当前的批次设置
             spriteBatch.End();
             
-            //计算剪裁矩形 (需要适应UI缩放)
+            //计算剪裁矩形(需要适应UI缩放)
             Vector2 pos = Vector2.Transform(new Vector2(panelRect.X, panelRect.Y), Main.UIScaleMatrix);
             Vector2 size = Vector2.Transform(new Vector2(panelRect.Width, panelRect.Height), Main.UIScaleMatrix) - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
             Rectangle scissorRect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
             Rectangle origRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            //限制在屏幕范围内
             scissorRect = Rectangle.Intersect(scissorRect, spriteBatch.GraphicsDevice.Viewport.Bounds);
             
-            //重新开始绘制，应用剪裁
             spriteBatch.GraphicsDevice.ScissorRectangle = scissorRect;
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
 
@@ -166,15 +334,46 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制节点
             foreach (var node in Nodes) {
                 Vector2 nodePos = GetNodeScreenPos(node.Position);
-                //简单的悬停检测
-                bool hovered = Vector2.Distance(Main.MouseScreen, nodePos) < 20 * zoom; 
+                float nodeSize = 24 * zoom;
+                bool hovered = Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize; 
                 CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered);
             }
 
             spriteBatch.End();
             spriteBatch.GraphicsDevice.ScissorRectangle = origRect;
-            //恢复默认绘制设置
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+
+            //绘制详情面板
+            if (showDetailPanel && selectedNode != null && detailPanelAlpha > 0.01f) {
+                CurrentStyle.DrawQuestDetail(spriteBatch, selectedNode, detailPanelRect, detailPanelAlpha);
+                
+                //绘制关闭按钮
+                DrawCloseButton(spriteBatch);
+            }
+        }
+
+        private void DrawCloseButton(SpriteBatch spriteBatch) {
+            Rectangle closeButtonRect = new Rectangle(
+                detailPanelRect.Right - 40,
+                detailPanelRect.Y + 10,
+                30,
+                30
+            );
+
+            bool hovered = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
+            Color buttonColor = hovered ? new Color(255, 100, 100) : new Color(200, 80, 80);
+            
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            spriteBatch.Draw(pixel, closeButtonRect, buttonColor * detailPanelAlpha);
+
+            //绘制X符号
+            string closeText = "×";
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(closeText);
+            Vector2 textPos = new Vector2(
+                closeButtonRect.X + closeButtonRect.Width / 2,
+                closeButtonRect.Y + closeButtonRect.Height / 2
+            );
+            Utils.DrawBorderString(spriteBatch, closeText, textPos, Color.White * detailPanelAlpha, 1.2f, 0.5f, 0.5f);
         }
 
         private Vector2 GetNodeScreenPos(Vector2 nodePos) {

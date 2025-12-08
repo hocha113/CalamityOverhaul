@@ -15,5 +15,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         void DrawLauncher(SpriteBatch spriteBatch, Vector2 position, bool isHovered);
         //获取面板内边距
         Vector4 GetPadding();
+        //绘制任务详情面板
+        void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha);
     }
 }
