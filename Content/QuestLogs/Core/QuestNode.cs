@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// 当任务解锁时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsUnlocked"/>
         /// </summary>
         protected virtual void OnUnlock() {
-            
+
         }
 
         /// <summary>

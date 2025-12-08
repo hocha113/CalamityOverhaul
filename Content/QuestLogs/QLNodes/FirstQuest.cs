@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.QuestLogs.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
