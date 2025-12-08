@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ItemID.CopperPickaxe;
             Position = new Vector2(150, 0);
-            ParentIDs.Add(nameof(FirstQuest));
+            AddParent<FirstQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Easy;
 
             Objectives.Add(new QuestObjective {
                 Description = this.GetLocalization("QuestObjective.Description", () => "收集十块铜矿"),
-                RequiredProgress = 15
+                RequiredProgress = 10
             });
 
             Rewards.Add(new QuestReward {
@@ -37,9 +37,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             // 检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
-
-                // 播放完成音效或提示
-                CombatText.NewText(player.getRect(), Color.Green, "任务完成: " + DisplayName.Value);
             }
         }
     }

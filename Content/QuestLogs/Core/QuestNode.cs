@@ -98,7 +98,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// </summary>
         public bool IsCompleted {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted;
-            set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted = value;
+            set {
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID);
+                if (data.IsCompleted != value) {
+                    data.IsCompleted = value;
+                    if (value) {
+                        OnCompletion();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -106,10 +114,64 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// </summary>
         public bool IsUnlocked {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked;
-            set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked = value;
+            set {
+                var data = Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID);
+                if (data.IsUnlocked != value) {
+                    data.IsUnlocked = value;
+                    if (value) {
+                        OnUnlock();
+                    }
+                }
+            }
         }
 
         public string LocalizationCategory => "QuestLogs.QuestNode";
+
+        /// <summary>
+        /// 当任务完成时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsCompleted"/>
+        /// </summary>
+        protected virtual void OnCompletion() {
+            //播放完成音效或提示
+            if (Main.LocalPlayer.active) {
+                CombatText.NewText(Main.LocalPlayer.getRect(), Color.Green, "任务完成: " + DisplayName.Value);
+            }
+
+            //尝试解锁子任务
+            foreach (var quest in AllQuests) {
+                //如果是子任务，或者将当前任务作为前置的任务
+                if (ChildIDs.Contains(quest.ID) || quest.ParentIDs.Contains(ID)) {
+                    quest.CheckUnlock();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当任务解锁时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsUnlocked"/>
+        /// </summary>
+        protected virtual void OnUnlock() {
+            
+        }
+
+        /// <summary>
+        /// 检查是否满足解锁条件
+        /// </summary>
+        public void CheckUnlock() {
+            if (IsUnlocked) return;
+
+            // 检查所有前置任务是否完成
+            bool allParentsCompleted = true;
+            foreach (var parentID in ParentIDs) {
+                var parent = GetQuest(parentID);
+                if (parent == null || !parent.IsCompleted) {
+                    allParentsCompleted = false;
+                    break;
+                }
+            }
+
+            if (allParentsCompleted) {
+                IsUnlocked = true;
+            }
+        }
 
         /// <summary>
         /// 获取任务图标纹理
@@ -194,6 +256,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             IconTexturePath = texturePath;
         }
 
+        /// <summary>
+        /// 添加前置任务
+        /// </summary>
+        protected void AddParent<T>() where T : QuestNode {
+            ParentIDs.Add(typeof(T).Name);
+        }
+
+        /// <summary>
+        /// 添加子任务
+        /// </summary>
+        protected void AddChild<T>() where T : QuestNode {
+            ChildIDs.Add(typeof(T).Name);
+        }
+
         public static QuestNode GetQuest(string id) => _quests.TryGetValue(id, out var quest) ? quest : null;
         public static QuestNode GetQuest<T>() where T : QuestNode => GetQuest(typeof(T).Name);
 
@@ -212,15 +288,21 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             DisplayName = this.GetLocalization(nameof(DisplayName), () => Name);
             Description = this.GetLocalization(nameof(Description), () => " ");
             DetailedDescription = this.GetLocalization(nameof(DetailedDescription), () => " ");
-
+            SetStaticDefaults();
             for (int i = 0; i < Rewards.Count; i++) {
                 Rewards[i].Initialize(this, i);
             }
             for (int i = 0; i < Objectives.Count; i++) {
                 Objectives[i].Initialize(this, i);
             }
+            PostSetup();
+        }
 
-            SetStaticDefaults();
+        /// <summary>
+        /// 在 <see cref="SetStaticDefaults"/> 之后调用，用于执行依赖于其他任务的初始化逻辑
+        /// </summary>
+        public virtual void PostSetup() {
+
         }
 
         /// <summary>

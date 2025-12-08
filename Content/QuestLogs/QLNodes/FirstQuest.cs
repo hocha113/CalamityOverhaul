@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Objectives.Add(new QuestObjective {
                 Description = this.GetLocalization("QuestObjective.Description", () => "点击领取"),
-                RequiredProgress = 10
+                RequiredProgress = 1
             });
 
             Rewards.Add(new QuestReward {
@@ -24,25 +24,16 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 Description = this.GetLocalization("QuestReward.Description", () => "点击领取")
             });
 
-            ChildIDs.Add(nameof(MiningQuest));
+            AddChild<MiningQuest>();
         }
 
         public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int currentWood = player.CountItem(ItemID.Wood);
-
             // 更新进度
-            Objectives[0].CurrentProgress = currentWood;
+            Objectives[0].CurrentProgress = 1;
 
             // 检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
-
-                // 解锁后续任务
-                GetQuest<MiningQuest>().IsUnlocked = true;
-
-                // 播放完成音效或提示
-                CombatText.NewText(player.getRect(), Color.Green, "任务完成: " + DisplayName.Value);
             }
         }
     }
