@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     public class FirstQuest : QuestNode
     {
-        public override void OnLoad() {
+        public override void SetStaticDefaults() {
             IconTexturePath = "CalamityOverhaul/icon_small";
             Position = new Vector2(0, 0);
             QuestType = QuestType.Main;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             ChildIDs.Add(nameof(MiningQuest));
         }
 
-        public override void OnUpdate() {
+        public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int currentWood = player.CountItem(ItemID.Wood);
 

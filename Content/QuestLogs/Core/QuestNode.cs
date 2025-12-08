@@ -93,11 +93,17 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// </summary>
         public QuestDifficulty Difficulty;
 
+        /// <summary>
+        /// 任务是否已完成
+        /// </summary>
         public bool IsCompleted {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted;
             set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted = value;
         }
 
+        /// <summary>
+        /// 任务是否已解锁
+        /// </summary>
         public bool IsUnlocked {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked;
             set => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked = value;
@@ -207,8 +213,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             Description = this.GetLocalization(nameof(Description), () => " ");
             DetailedDescription = this.GetLocalization(nameof(DetailedDescription), () => " ");
 
-            OnLoad();
-
             for (int i = 0; i < Rewards.Count; i++) {
                 Rewards[i].Initialize(this, i);
             }
@@ -220,11 +224,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         /// <summary>
-        /// 每帧更新逻辑，用于检查任务完成条件
+        /// 每帧更新逻辑，用于检查任务完成条件，更新于玩家状态后
         /// </summary>
-        public virtual void OnUpdate() { }
+        public virtual void UpdateByPlayer() { }
 
-        public virtual void OnLoad() { }
+        /// <summary>
+        /// 玩家合成物品时调用
+        /// </summary>
+        /// <param name="recipe"></param>
+        /// <param name="item"></param>
+        /// <param name="consumedItems"></param>
+        /// <param name="destinationStack"></param>
+        public virtual void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) { }
     }
 
     /// <summary>

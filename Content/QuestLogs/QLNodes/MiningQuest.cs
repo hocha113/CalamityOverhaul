@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     public class MiningQuest : QuestNode
     {
-        public override void OnLoad() {
+        public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ItemID.CopperPickaxe;
             Position = new Vector2(150, 0);
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
         }
 
-        public override void OnUpdate() {
+        public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int currentOre = player.CountItem(ItemID.CopperOre);
 

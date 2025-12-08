@@ -44,13 +44,18 @@ namespace CalamityOverhaul.Content.QuestLogs
         public override void PostUpdate() {
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.IsUnlocked && !quest.IsCompleted) {
-                    quest.OnUpdate();
+                    quest.UpdateByPlayer();
                 }
             }
         }
 
         public static void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             //玩家合成物品时调用
+            foreach (var quest in QuestNode.AllQuests) {
+                if (quest.IsUnlocked && !quest.IsCompleted) {
+                    quest.UpdateByPlayer();
+                }
+            }
         }
     }
 }
