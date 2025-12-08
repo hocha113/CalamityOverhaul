@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
             glowTimer += 0.018f;
             pulseTimer += 0.025f;
-            bloomTimer += 0.012f;
+            bloomTimer += 0.015f;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 spriteBatch.Draw(pixel, gradRect, gradColor * 0.3f);
             }
 
-            //绘制渐变屏幕泛光动画
+            //绘制纵向渐变屏幕泛光动画
             DrawBloomEffect(spriteBatch, pixel, panelRect);
 
             //绘制脉冲光效
@@ -74,46 +74,78 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect) {
-            //创建多层渐变泛光效果，从上到下流动
-            int bloomLayers = 3;
+            //创建纵向多层渐变泛光效果，从左到右流动
+            int bloomLayers = 4;
             
             for (int layer = 0; layer < bloomLayers; layer++) {
-                float layerOffset = (bloomTimer + layer * 0.4f) % MathHelper.TwoPi;
-                float bloomPosition = (float)Math.Sin(layerOffset) * 0.5f + 0.5f;
+                //每层有不同的速度和相位偏移
+                float layerSpeed = 0.8f + layer * 0.15f;
+                float layerOffset = (bloomTimer * layerSpeed + layer * 1.2f) % MathHelper.TwoPi;
                 
-                //计算泛光中心位置
-                int centerY = panelRect.Y + (int)(bloomPosition * panelRect.Height);
+                //使用平滑的往复运动而非简单的正弦
+                float rawPosition = (float)Math.Sin(layerOffset);
+                float bloomPosition = rawPosition * 0.5f + 0.5f;
                 
-                //绘制渐变泛光带
-                int bloomHeight = 80 + layer * 20;
-                int bloomSteps = 40;
+                //计算泛光中心X位置
+                int centerX = panelRect.X + (int)(bloomPosition * panelRect.Width);
+                
+                //绘制渐变泛光柱
+                int bloomWidth = 120 + layer * 30;
+                int bloomSteps = 50;
                 
                 for (int i = 0; i < bloomSteps; i++) {
                     float t = i / (float)bloomSteps;
-                    float distance = Math.Abs(t - 0.5f) * 2f;//距离中心的归一化距离
-                    float alpha = 1f - distance;//中心最亮，边缘淡出
-                    alpha = (float)Math.Pow(alpha, 2.5);//使用幂函数使过渡更柔和
+                    //计算距离中心的归一化距离
+                    float distance = Math.Abs(t - 0.5f) * 2f;
+                    //使用更平滑的衰减曲线
+                    float alpha = 1f - distance;
+                    alpha = (float)Math.Pow(alpha, 3.5);
                     
-                    int y = centerY - bloomHeight / 2 + (int)(t * bloomHeight);
+                    int x = centerX - bloomWidth / 2 + (int)(t * bloomWidth);
                     
                     //确保不超出面板范围
-                    if (y < panelRect.Y || y >= panelRect.Bottom) continue;
+                    if (x < panelRect.X || x >= panelRect.Right) continue;
                     
-                    int height = Math.Max(1, bloomHeight / bloomSteps);
-                    Rectangle bloomRect = new Rectangle(panelRect.X, y, panelRect.Width, height);
+                    int width = Math.Max(1, bloomWidth / bloomSteps);
+                    Rectangle bloomRect = new Rectangle(x, panelRect.Y, width, panelRect.Height);
                     
-                    //多层颜色渐变
-                    Color bloomColor1 = new Color(255, 120, 40);
-                    Color bloomColor2 = new Color(255, 180, 80);
-                    Color bloomColor3 = new Color(255, 140, 60);
+                    //多层动态颜色渐变
+                    Color bloomColor1 = new Color(255, 100, 30);
+                    Color bloomColor2 = new Color(255, 160, 60);
+                    Color bloomColor3 = new Color(255, 200, 100);
+                    Color bloomColor4 = new Color(255, 140, 50);
                     
-                    Color finalColor = layer switch {
-                        0 => Color.Lerp(bloomColor1, bloomColor2, t),
-                        1 => Color.Lerp(bloomColor2, bloomColor3, t),
-                        _ => Color.Lerp(bloomColor3, bloomColor1, t)
-                    };
+                    //根据层数和位置创建复杂的颜色混合
+                    float colorPhase = (t + layer * 0.25f) % 1f;
+                    Color finalColor;
                     
-                    float layerAlpha = 0.08f - layer * 0.02f;
+                    if (layer % 2 == 0) {
+                        if (colorPhase < 0.5f) {
+                            finalColor = Color.Lerp(bloomColor1, bloomColor2, colorPhase * 2f);
+                        }
+                        else {
+                            finalColor = Color.Lerp(bloomColor2, bloomColor3, (colorPhase - 0.5f) * 2f);
+                        }
+                    }
+                    else {
+                        if (colorPhase < 0.5f) {
+                            finalColor = Color.Lerp(bloomColor4, bloomColor3, colorPhase * 2f);
+                        }
+                        else {
+                            finalColor = Color.Lerp(bloomColor3, bloomColor1, (colorPhase - 0.5f) * 2f);
+                        }
+                    }
+                    
+                    //添加基于位置的亮度变化
+                    float brightnessVariation = (float)Math.Sin(colorPhase * MathHelper.TwoPi + bloomTimer * 2f) * 0.15f + 1f;
+                    finalColor = new Color(
+                        (int)(finalColor.R * brightnessVariation),
+                        (int)(finalColor.G * brightnessVariation),
+                        (int)(finalColor.B * brightnessVariation)
+                    );
+                    
+                    //每层的基础透明度递减
+                    float layerAlpha = 0.12f - layer * 0.025f;
                     spriteBatch.Draw(pixel, bloomRect, finalColor * (alpha * layerAlpha));
                 }
             }
@@ -188,7 +220,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public void DrawConnection(SpriteBatch spriteBatch, Vector2 start, Vector2 end, bool isUnlocked) {
-            flowTimer += 0.03f;
+            flowTimer += 0.025f;
             if (flowTimer > MathHelper.TwoPi) flowTimer -= MathHelper.TwoPi;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -197,7 +229,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             float rotation = diff.ToRotation();
 
             //加粗的连接线宽度
-            int lineWidth = 6;
+            int lineWidth = 8;
             
             //绘制外层阴影
             Color shadowColor = Color.Black * 0.4f;
@@ -205,18 +237,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 new Rectangle(0, 0, (int)length, lineWidth), shadowColor, rotation, 
                 new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
-            //基础连接线
-            Color lineColor = isUnlocked ? new Color(80, 60, 40) : new Color(50, 50, 55);
+            //绘制基础暗色背景层
+            Color lineColor = isUnlocked ? new Color(60, 45, 30) : new Color(40, 40, 45);
             spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth), 
-                lineColor * 0.8f, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
+                lineColor * 0.9f, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             if (isUnlocked) {
-                //绘制中心渐变流动动画
+                //绘制主动流动的渐变动画
                 DrawFlowingGradient(spriteBatch, pixel, start, end, length, rotation, lineWidth);
 
                 //绘制外发光效果
-                Color glowColor = new Color(255, 160, 80) * 0.25f;
-                int glowWidth = lineWidth + 4;
+                Color glowColor = new Color(255, 140, 60) * 0.3f;
+                int glowWidth = lineWidth + 6;
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, glowWidth), 
                     glowColor, rotation, new Vector2(0, glowWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
@@ -227,64 +259,93 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         private void DrawFlowingGradient(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, float length, float rotation, int lineWidth) {
-            //创建多段渐变流动效果
-            int segments = (int)(length / 15f);
-            segments = Math.Max(segments, 2);
+            //创建持续流动的渐变效果，从起点流向终点
+            int segments = Math.Max((int)(length / 12f), 3);
+            Vector2 direction = (end - start) / length;
+
+            //流动偏移，确保是从0到1的连续运动
+            float flowProgress = (flowTimer * 0.2f) % 1f;
 
             for (int i = 0; i < segments; i++) {
                 float segmentStart = i / (float)segments;
                 float segmentEnd = (i + 1) / (float)segments;
                 float segmentLength = length * (segmentEnd - segmentStart);
 
-                //计算流动偏移
-                float flowOffset = (flowTimer + i * 0.3f) % MathHelper.TwoPi;
-                float flowIntensity = (float)Math.Sin(flowOffset) * 0.5f + 0.5f;
+                //计算当前段在流动动画中的位置
+                float segmentCenter = (segmentStart + segmentEnd) * 0.5f;
+                float flowPosition = (segmentCenter + flowProgress) % 1f;
 
-                //渐变颜色
-                Color color1 = new Color(255, 120, 40);
-                Color color2 = new Color(255, 180, 80);
-                Color color3 = new Color(255, 140, 60);
+                //创建多重渐变颜色系统
+                Color[] gradientColors = new Color[] {
+                    new Color(255, 80, 20),//深橙红
+                    new Color(255, 140, 40),//橙色
+                    new Color(255, 200, 80),//金橙色
+                    new Color(255, 160, 50),//亮橙色
+                    new Color(255, 100, 30)//回到深橙
+                };
 
-                //使用三色渐变创建流动感
-                float gradientPos = (segmentStart + flowIntensity * 0.3f) % 1f;
-                Color segmentColor;
+                //使用平滑插值计算颜色
+                float colorIndex = flowPosition * (gradientColors.Length - 1);
+                int index1 = (int)colorIndex;
+                int index2 = (index1 + 1) % gradientColors.Length;
+                float blend = colorIndex - index1;
+
+                Color segmentColor = Color.Lerp(gradientColors[index1], gradientColors[index2], blend);
+
+                //添加亮度脉冲效果
+                float brightnessPulse = (float)Math.Sin(flowPosition * MathHelper.TwoPi * 2f + flowTimer) * 0.2f + 1f;
+                segmentColor = new Color(
+                    (int)(segmentColor.R * brightnessPulse),
+                    (int)(segmentColor.G * brightnessPulse),
+                    (int)(segmentColor.B * brightnessPulse)
+                );
+
+                //绘制主渐变层
+                Vector2 segmentPos = start + direction * (length * segmentStart);
+                int mainWidth = lineWidth - 2;
                 
-                if (gradientPos < 0.33f) {
-                    segmentColor = Color.Lerp(color1, color2, gradientPos / 0.33f);
-                }
-                else if (gradientPos < 0.66f) {
-                    segmentColor = Color.Lerp(color2, color3, (gradientPos - 0.33f) / 0.33f);
-                }
-                else {
-                    segmentColor = Color.Lerp(color3, color1, (gradientPos - 0.66f) / 0.34f);
-                }
-
-                //绘制渐变段
-                Vector2 segmentPos = start + end.DirectionFrom(start) * (length * segmentStart);
-                int centerWidth = lineWidth - 2;
+                float baseAlpha = 0.75f;
+                //根据流动位置调整透明度，创建拖尾效果
+                float positionAlpha = (float)Math.Sin(flowPosition * MathHelper.Pi);
+                float finalAlpha = baseAlpha + positionAlpha * 0.25f;
                 
-                float alpha = 0.6f + flowIntensity * 0.3f;
-                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, centerWidth), 
-                    segmentColor * alpha, rotation, new Vector2(0, centerWidth / 2f), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, mainWidth), 
+                    segmentColor * finalAlpha, rotation, new Vector2(0, mainWidth / 2f), 1f, SpriteEffects.None, 0f);
+
+                //添加内部高光层
+                int highlightWidth = mainWidth - 2;
+                Color highlightColor = Color.Lerp(segmentColor, Color.White, 0.4f);
+                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, highlightWidth), 
+                    highlightColor * (finalAlpha * 0.5f), rotation, new Vector2(0, highlightWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
 
-            //添加闪烁的能量点
-            int particleCount = (int)(length / 40f);
-            for (int i = 0; i < particleCount; i++) {
-                float t = ((i / (float)particleCount + flowTimer * 0.15f) % 1f);
-                Vector2 particlePos = start + (end - start) * t;
-                float particleAlpha = (float)Math.Sin(t * MathHelper.Pi);
+            //添加流动的能量脉冲点
+            int pulseCount = Math.Max((int)(length / 60f), 2);
+            for (int i = 0; i < pulseCount; i++) {
+                //每个脉冲有不同的相位
+                float pulsePhase = (i / (float)pulseCount + flowProgress) % 1f;
+                Vector2 pulsePos = start + (end - start) * pulsePhase;
+                
+                //使用正弦函数创建渐隐渐现效果
+                float pulseAlpha = (float)Math.Sin(pulsePhase * MathHelper.Pi);
+                pulseAlpha = (float)Math.Pow(pulseAlpha, 1.5f);
 
-                Color particleColor = new Color(255, 220, 180) * (particleAlpha * 0.8f);
-                spriteBatch.Draw(pixel, particlePos, new Rectangle(0, 0, 1, 1), particleColor, 
-                    rotation, new Vector2(0, 0.5f), new Vector2(8, 4), SpriteEffects.None, 0f);
+                //核心亮点
+                Color pulseColor = new Color(255, 240, 200) * (pulseAlpha * 0.9f);
+                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), pulseColor, 
+                    rotation, new Vector2(0, 0.5f), new Vector2(16, 6), SpriteEffects.None, 0f);
+
+                //外层光晕
+                Color glowColor = new Color(255, 200, 120) * (pulseAlpha * 0.6f);
+                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), glowColor, 
+                    rotation, new Vector2(0, 0.5f), new Vector2(24, 10), SpriteEffects.None, 0f);
             }
         }
 
         private void DrawDashedLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, float length, float rotation, int lineWidth) {
             //绘制虚线效果表示未解锁
-            int dashLength = 12;
-            int gapLength = 8;
+            int dashLength = 14;
+            int gapLength = 10;
             int totalLength = dashLength + gapLength;
             int dashCount = (int)(length / totalLength);
 
@@ -292,7 +353,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float dashStart = i * totalLength;
                 Vector2 dashPos = start + new Vector2(dashStart, 0).RotatedBy(rotation);
                 
-                Color dashColor = new Color(80, 80, 90) * 0.5f;
+                Color dashColor = new Color(70, 70, 80) * 0.6f;
                 spriteBatch.Draw(pixel, dashPos, new Rectangle(0, 0, dashLength, lineWidth), 
                     dashColor, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
