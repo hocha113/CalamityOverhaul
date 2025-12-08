@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         void DrawNode(SpriteBatch spriteBatch, QuestNode node, Vector2 drawPos, float scale, bool isHovered);
         //绘制连接线
         void DrawConnection(SpriteBatch spriteBatch, Vector2 start, Vector2 end, bool isUnlocked);
-        //绘制启动按钮
-        void DrawLauncher(SpriteBatch spriteBatch, Vector2 position, bool isHovered);
         //获取面板内边距
         Vector4 GetPadding();
         //绘制任务详情面板

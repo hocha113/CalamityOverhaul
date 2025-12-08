@@ -359,48 +359,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
         }
 
-        public void DrawLauncher(SpriteBatch spriteBatch, Vector2 position, bool isHovered) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle rect = new Rectangle((int)position.X, (int)position.Y, 48, 48);
-            
-            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.04f) * 0.5f + 0.5f;
-            Color bgColor = isHovered ? new Color(255, 140, 60) : new Color(180, 80, 40);
-            
-            //绘制阴影
-            Rectangle shadowRect = rect;
-            shadowRect.Offset(3, 3);
-            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.6f);
-
-            //绘制背景
-            spriteBatch.Draw(pixel, rect, bgColor * (0.7f + pulse * 0.2f));
-
-            //绘制发光效果
-            if (isHovered) {
-                Color glowColor = new Color(255, 180, 100) * (0.5f * pulse);
-                for (int i = 0; i < 4; i++) {
-                    float angle = MathHelper.TwoPi * i / 4f;
-                    Vector2 offset = angle.ToRotationVector2() * 4f;
-                    Rectangle glowRect = rect;
-                    glowRect.Offset((int)offset.X, (int)offset.Y);
-                    spriteBatch.Draw(pixel, glowRect, glowColor);
-                }
-            }
-
-            //绘制边框
-            int border = 3;
-            Color edgeColor = isHovered ? new Color(255, 200, 120) : new Color(255, 140, 80);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, border), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), edgeColor * 0.8f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, border, rect.Height), edgeColor * 0.9f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), edgeColor * 0.9f);
-
-            //绘制简单的图标或文字
-            string text = "Quest";
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.8f;
-            Vector2 textPos = new Vector2(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
-            Utils.DrawBorderString(spriteBatch, text, textPos, Color.White, 0.8f, 0.5f, 0.5f);
-        }
-
         public Vector4 GetPadding() {
             return new Vector4(15, 35, 15, 15);//Left, Top, Right, Bottom
         }

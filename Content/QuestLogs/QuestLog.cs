@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static Asset<Texture2D> QuestLogStart;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
-        public override bool Active => visible || Main.playerInventory;//保持激活以便绘制启动器
+        public override bool Active => Main.playerInventory;//打开背包时才能显示
         private bool visible;
 
         public IQuestLogStyle CurrentStyle { get; set; } = new ThermalQuestLogStyle();
@@ -33,9 +33,6 @@ namespace CalamityOverhaul.Content.QuestLogs
         private Vector2 dragStartPanOffset;
 
         private Rectangle panelRect;
-        private Rectangle launcherRect;
-        private bool launcherHovered;
-
         private int oldScrollWheelValue;
 
         //任务详情面板相关
@@ -49,7 +46,13 @@ namespace CalamityOverhaul.Content.QuestLogs
         //节点悬停相关
         private QuestNode hoveredNode;
 
+        //启动图标
+        private QuestLogLauncher launcher;
+
         public QuestLog() {
+            //初始化启动图标
+            launcher = new QuestLogLauncher();
+
             //初始化一些测试节点
             Nodes.Add(new QuestNode { 
                 ID = "1", 
@@ -136,28 +139,25 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //更新启动器位置(在背包右侧)
+            //更新启动器位置和状态
             if (Main.playerInventory) {
-                launcherRect = new Rectangle(Main.screenWidth / 2 + 120, Main.screenHeight / 5 - 20, 48, 48);
-                launcherHovered = launcherRect.Contains(Main.MouseScreen.ToPoint());
-
-                if (launcherHovered) {
+                Vector2 launcherPos = new Vector2(Main.screenWidth / 3, Main.screenHeight / 54);
+                launcher.Update(launcherPos, visible);
+                //打开时居中
+                panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
+                panelRect.Y = (Main.screenHeight - panelRect.Height);
+                if (launcher.IsHovered) {
                     player.mouseInterface = true;
                     
                     //使用UIHandle的keyLeftPressState接口
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         visible = !visible;
-                        if (visible) {
-                            //打开时居中
-                            panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
-                            panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
-                        }
-                        else {
+                        if (!visible) {
                             //关闭时同时关闭详情面板
                             showDetailPanel = false;
                             selectedNode = null;
                         }
-                        SoundEngine.PlaySound(visible ? SoundID.MenuOpen : SoundID.MenuClose);
+                        launcher.PlayClickSound(visible);
                     }
                 }
             }
@@ -287,7 +287,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //检查领取奖励按钮点击
-            //这里他妈的要做一次NUll检查，难道这个 selectedNode 可能为null就这么难理解吗
             if (selectedNode is not null && selectedNode.IsCompleted && selectedNode.Rewards != null) {
                 Rectangle buttonRect = new Rectangle(
                     detailPanelRect.X + detailPanelRect.Width / 2 - 60,
@@ -321,8 +320,9 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            //绘制启动图标
             if (Main.playerInventory) {
-                CurrentStyle.DrawLauncher(spriteBatch, new Vector2(launcherRect.X, launcherRect.Y), launcherHovered);
+                launcher.Draw(spriteBatch, visible);
             }
 
             if (!visible) return;
