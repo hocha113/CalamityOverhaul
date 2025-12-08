@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 //检测节点悬停
                 hoveredNode = null;
                 foreach (var node in Nodes) {
-                    Vector2 nodePos = GetNodeScreenPos(node.Position);
+                    Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                     float nodeSize = 24 * zoom;
                     if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
                         hoveredNode = node;
@@ -274,16 +274,16 @@ namespace CalamityOverhaul.Content.QuestLogs
                 foreach (var parentID in node.ParentIDs) {
                     var parent = QuestNode.GetQuest(parentID);
                     if (parent != null) {
-                        Vector2 start = GetNodeScreenPos(parent.Position);
-                        Vector2 end = GetNodeScreenPos(node.Position);
-                        CurrentStyle.DrawConnection(spriteBatch, start, end, parent.IsUnlocked);
+                        Vector2 start = GetNodeScreenPos(parent.CalculatedPosition);
+                        Vector2 end = GetNodeScreenPos(node.CalculatedPosition);
+                        CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked);
                     }
                 }
             }
 
             //绘制节点
             foreach (var node in Nodes) {
-                Vector2 nodePos = GetNodeScreenPos(node.Position);
+                Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                 bool hovered = hoveredNode == node;
                 CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered);
             }

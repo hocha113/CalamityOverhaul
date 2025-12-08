@@ -7367,7 +7367,37 @@ QuestLogs: {
 			// Description: " "
 			// DetailedDescription: " "
 			// QuestObjective.Description: 收集十块铜矿
-			// QuestReward.Description: 五个铜锭
+
+			QuestReward: {
+				// Description: 五个铜锭
+				// Description2: 一把铁镐
+			}
+		}
+
+		MiningQuestII: {
+			// DisplayName: 矿工时间 II
+			// Description: 收集五十块铁矿
+			// QuestObjective.Description: 收集五十块铁矿
+
+			QuestReward: {
+				// Description: 五十个铁锭
+				// Description2: 一把金镐
+			}
+
+			// DetailedDescription: " "
+		}
+
+		MiningQuestIII: {
+			// DisplayName: 矿工时间 III
+			// Description: 收集一百块金矿
+			// QuestObjective.Description: 收集一百块金矿
+
+			QuestReward: {
+				// Description: 一百个金锭
+				// Description2: 一把铂金镐
+			}
+
+			// DetailedDescription: " "
 		}
 	}
 }

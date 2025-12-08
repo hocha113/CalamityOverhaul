@@ -21,22 +21,37 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>
         /// 节点名称
         /// </summary>
-        public LocalizedText DisplayName { get; private set; }
+        public LocalizedText DisplayName { get; protected set; }
 
         /// <summary>
         /// 节点描述
         /// </summary>
-        public LocalizedText Description { get; private set; }
+        public LocalizedText Description { get; protected set; }
 
         /// <summary>
         /// 详细任务描述
         /// </summary>
-        public LocalizedText DetailedDescription { get; private set; }
+        public LocalizedText DetailedDescription { get; protected set; }
 
         /// <summary>
-        /// 节点在图表中的位置
+        /// 节点在图表中的位置(相对于父节点)
         /// </summary>
         public Vector2 Position;
+
+        /// <summary>
+        /// 获取节点的绝对位置
+        /// </summary>
+        public Vector2 CalculatedPosition {
+            get {
+                if (ParentIDs.Count > 0) {
+                    var parent = GetQuest(ParentIDs[0]);
+                    if (parent != null) {
+                        return parent.CalculatedPosition + Position;
+                    }
+                }
+                return Position;
+            }
+        }
 
         /// <summary>
         /// 前置任务ID列表
@@ -285,10 +300,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         public override void VaultSetup() {
-            DisplayName = this.GetLocalization(nameof(DisplayName), () => Name);
-            Description = this.GetLocalization(nameof(Description), () => " ");
-            DetailedDescription = this.GetLocalization(nameof(DetailedDescription), () => " ");
             SetStaticDefaults();
+            DisplayName ??= this.GetLocalization(nameof(DisplayName), () => Name);
+            Description ??= this.GetLocalization(nameof(Description), () => " ");
+            DetailedDescription ??= this.GetLocalization(nameof(DetailedDescription), () => " ");
             for (int i = 0; i < Rewards.Count; i++) {
                 Rewards[i].Initialize(this, i);
             }
