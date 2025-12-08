@@ -100,6 +100,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             SetStaticDefaults();
         }
 
+        /// <summary>
+        /// 每帧更新逻辑，用于检查任务完成条件
+        /// </summary>
+        public virtual void OnUpdate() { }
+
         public virtual void OnLoad() { }
     }
 

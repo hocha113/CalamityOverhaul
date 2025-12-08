@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
@@ -174,13 +175,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f + 0.5f;
                 Color glowColor = node.IsCompleted ? new Color(100, 255, 120) : new Color(255, 180, 100);
 
-                for (int i = 0; i < 4; i++) {
-                    float angle = MathHelper.TwoPi * i / 4f;
-                    Vector2 offset = angle.ToRotationVector2() * (3f * glowPulse);
-                    Rectangle glowRect = nodeRect;
-                    glowRect.Offset((int)offset.X, (int)offset.Y);
-                    spriteBatch.Draw(pixel, glowRect, glowColor * (0.3f * glowPulse));
-                }
+                // 简单的发光效果
+                Rectangle glowRect = nodeRect;
+                glowRect.Inflate(2, 2);
+                spriteBatch.Draw(pixel, glowRect, glowColor * (0.3f * glowPulse));
             }
 
             //绘制节点边框
@@ -258,84 +256,34 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawFlowingGradient(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, float length, float rotation, int lineWidth) {
             //创建持续流动的渐变效果，从起点流向终点
             int segments = Math.Max((int)(length / 12f), 3);
-            Vector2 direction = (end - start) / length;
-
+            
             //流动偏移，确保是从0到1的连续运动
             float flowProgress = (flowTimer * 0.2f) % 1f;
 
             for (int i = 0; i < segments; i++) {
-                float segmentStart = i / (float)segments;
-                float segmentEnd = (i + 1) / (float)segments;
-                float segmentLength = length * (segmentEnd - segmentStart);
-
-                //计算当前段在流动动画中的位置
-                float segmentCenter = (segmentStart + segmentEnd) * 0.5f;
-                float flowPosition = (segmentCenter + flowProgress) % 1f;
-
-                //创建多重渐变颜色系统
-                Color[] gradientColors = new Color[] {
-                    new Color(255, 80, 20),//深橙红
-                    new Color(255, 140, 40),//橙色
-                    new Color(255, 200, 80),//金橙色
-                    new Color(255, 160, 50),//亮橙色
-                    new Color(255, 100, 30)//回到深橙
-                };
-
-                //使用平滑插值计算颜色
-                float colorIndex = flowPosition * (gradientColors.Length - 1);
-                int index1 = (int)colorIndex;
-                int index2 = (index1 + 1) % gradientColors.Length;
-                float blend = colorIndex - index1;
-
-                Color segmentColor = Color.Lerp(gradientColors[index1], gradientColors[index2], blend);
-
-                //添加亮度脉冲效果
-                float brightnessPulse = (float)Math.Sin(flowPosition * MathHelper.TwoPi * 2f + flowTimer) * 0.2f + 1f;
-                segmentColor = new Color(
-                    (int)(segmentColor.R * brightnessPulse),
-                    (int)(segmentColor.G * brightnessPulse),
-                    (int)(segmentColor.B * brightnessPulse)
-                );
-
-                //绘制主渐变层
-                Vector2 segmentPos = start + direction * (length * segmentStart);
-                int mainWidth = lineWidth - 2;
-
-                float baseAlpha = 0.75f;
-                //根据流动位置调整透明度，创建拖尾效果
-                float positionAlpha = (float)Math.Sin(flowPosition * MathHelper.Pi);
-                float finalAlpha = baseAlpha + positionAlpha * 0.25f;
-
-                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, mainWidth),
-                    segmentColor * finalAlpha, rotation, new Vector2(0, mainWidth / 2f), 1f, SpriteEffects.None, 0f);
-
-                //添加内部高光层
-                int highlightWidth = mainWidth - 2;
-                Color highlightColor = Color.Lerp(segmentColor, Color.White, 0.4f);
-                spriteBatch.Draw(pixel, segmentPos, new Rectangle(0, 0, (int)segmentLength, highlightWidth),
-                    highlightColor * (finalAlpha * 0.5f), rotation, new Vector2(0, highlightWidth / 2f), 1f, SpriteEffects.None, 0f);
+                float t = (float)i / segments;
+                float dist = t * length;
+                Vector2 pos = start + new Vector2(dist, 0).RotatedBy(rotation);
+                
+                // 计算流动亮度
+                float wave = (float)Math.Sin((t - flowProgress) * MathHelper.TwoPi * 2f);
+                float brightness = (wave * 0.5f + 0.5f);
+                
+                Color color = Color.Lerp(new Color(150, 80, 40), new Color(255, 180, 80), brightness);
+                
+                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, (int)(length / segments) + 1, lineWidth),
+                    color, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
 
             //添加流动的能量脉冲点
             int pulseCount = Math.Max((int)(length / 60f), 2);
             for (int i = 0; i < pulseCount; i++) {
-                //每个脉冲有不同的相位
-                float pulsePhase = (i / (float)pulseCount + flowProgress) % 1f;
-                Vector2 pulsePos = start + (end - start) * pulsePhase;
-
-                //使用正弦函数创建渐隐渐现效果
-                float pulseAlpha = (float)Math.Sin(pulsePhase * MathHelper.Pi);
-                pulseAlpha = (float)Math.Pow(pulseAlpha, 1.5f);
-
-                //核心亮点
-                Color pulseColor = new Color(255, 240, 200) * (pulseAlpha * 0.9f);
-                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), pulseColor,
-                    rotation, new Vector2(0, 0.5f), new Vector2(16, 6), SpriteEffects.None, 0f);
-
-                //外层光晕
-                Color glowColor = new Color(255, 200, 120) * (pulseAlpha * 0.6f);
-                spriteBatch.Draw(pixel, pulsePos, new Rectangle(0, 0, 1, 1), glowColor,
-                    rotation, new Vector2(0, 0.5f), new Vector2(24, 10), SpriteEffects.None, 0f);
+                float t = ((flowTimer * 0.5f + i * (1f / pulseCount)) % 1f);
+                Vector2 pos = Vector2.Lerp(start, end, t);
+                
+                float size = 4f + (float)Math.Sin(flowTimer * 5f) * 2f;
+                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), Color.White, rotation,
+                    new Vector2(0.5f, 0.5f), new Vector2(size * 2f, size), SpriteEffects.None, 0f);
             }
         }
 
@@ -358,6 +306,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         public Vector4 GetPadding() {
             return new Vector4(15, 35, 15, 15);//Left, Top, Right, Bottom
+        }
+
+        public Rectangle GetCloseButtonRect(Rectangle panelRect) {
+            return new Rectangle(
+                panelRect.Right - 40,
+                panelRect.Y + 10,
+                30,
+                30
+            );
+        }
+
+        public Rectangle GetRewardButtonRect(Rectangle panelRect) {
+            int padding = 20;
+            return new Rectangle(
+                panelRect.X + panelRect.Width / 2 - 60,
+                panelRect.Bottom - padding - 40, 
+                120, 
+                35
+            );
         }
 
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
@@ -446,10 +413,31 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
                 int rewardX = panelRect.X + padding + 10;
                 foreach (var reward in node.Rewards) {
-                    //绘制奖励物品图标(简化版本，这里可以根据实际情况扩展)
+                    //绘制奖励物品图标
                     Rectangle rewardRect = new Rectangle(rewardX, currentY, 32, 32);
                     Color rewardColor = reward.Claimed ? new Color(100, 100, 110) : new Color(255, 200, 120);
-                    spriteBatch.Draw(pixel, rewardRect, rewardColor * (alpha * 0.6f));
+                    
+                    // 绘制背景框
+                    spriteBatch.Draw(pixel, rewardRect, rewardColor * (alpha * 0.3f));
+                    
+                    // 尝试绘制真实物品图标
+                    Main.instance.LoadItem(reward.ItemType);
+                    Texture2D itemTexture = TextureAssets.Item[reward.ItemType].Value;
+                    if (itemTexture != null) {
+                        Rectangle frame = Main.itemAnimations[reward.ItemType] != null 
+                            ? Main.itemAnimations[reward.ItemType].GetFrame(itemTexture) 
+                            : itemTexture.Frame();
+                        
+                        float scale = 1f;
+                        if (frame.Width > 32 || frame.Height > 32) {
+                            scale = 32f / Math.Max(frame.Width, frame.Height);
+                        }
+                        
+                        Vector2 itemPos = new Vector2(rewardRect.X + 16, rewardRect.Y + 16);
+                        Vector2 origin = frame.Size() / 2f;
+                        
+                        spriteBatch.Draw(itemTexture, itemPos, frame, Color.White * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
+                    }
 
                     //绘制奖励数量
                     string amountText = $"x{reward.Amount}";
@@ -467,8 +455,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制领取按钮(如果任务已完成但未领取奖励)
             if (node.IsCompleted && node.Rewards != null && node.Rewards.Exists(r => !r.Claimed)) {
-                Rectangle buttonRect = new Rectangle(panelRect.X + panelRect.Width / 2 - 60,
-                    panelRect.Bottom - padding - 40, 120, 35);
+                Rectangle buttonRect = GetRewardButtonRect(panelRect);
 
                 bool hoverButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
                 Color buttonColor = hoverButton ? new Color(255, 180, 100) : new Color(200, 120, 60);

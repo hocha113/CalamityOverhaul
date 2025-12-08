@@ -42,7 +42,11 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void PostUpdate() {
-
+            foreach (var quest in QuestNode.AllQuests) {
+                if (quest.IsUnlocked && !quest.IsCompleted) {
+                    quest.OnUpdate();
+                }
+            }
         }
 
         public static void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {

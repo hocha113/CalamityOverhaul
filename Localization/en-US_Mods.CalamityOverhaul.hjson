@@ -7361,12 +7361,16 @@ QuestLogs: {
 			DisplayName: FirstQuest
 			Description: " "
 			DetailedDescription: " "
+			QuestObjective.Description: 点击领取
+			QuestReward.Description: 点击领取
 		}
 
 		MiningQuest: {
 			DisplayName: MiningQuest
 			Description: " "
 			DetailedDescription: " "
+			QuestObjective.Description: 收集十块铜矿
+			QuestReward.Description: 五个铜锭
 		}
 	}
 }

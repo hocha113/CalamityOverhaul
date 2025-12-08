@@ -14,5 +14,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         Vector4 GetPadding();
         //绘制任务详情面板
         void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha);
+        //获取关闭按钮区域
+        Rectangle GetCloseButtonRect(Rectangle panelRect);
+        //获取领取奖励按钮区域
+        Rectangle GetRewardButtonRect(Rectangle panelRect);
     }
 }

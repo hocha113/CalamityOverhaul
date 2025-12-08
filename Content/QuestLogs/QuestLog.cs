@@ -203,12 +203,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //检查关闭按钮点击
-            Rectangle closeButtonRect = new Rectangle(
-                detailPanelRect.Right - 40,
-                detailPanelRect.Y + 10,
-                30,
-                30
-            );
+            Rectangle closeButtonRect = CurrentStyle.GetCloseButtonRect(detailPanelRect);
 
             bool hoverCloseButton = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
             if (hoverCloseButton) {
@@ -222,13 +217,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //检查领取奖励按钮点击
-            if (selectedNode is not null && selectedNode.IsCompleted && selectedNode.Rewards != null) {
-                Rectangle buttonRect = new Rectangle(
-                    detailPanelRect.X + detailPanelRect.Width / 2 - 60,
-                    detailPanelRect.Bottom - 60,
-                    120,
-                    35
-                );
+            if (selectedNode is not null && selectedNode.IsCompleted && selectedNode.Rewards != null && selectedNode.Rewards.Exists(r => !r.Claimed)) {
+                Rectangle buttonRect = CurrentStyle.GetRewardButtonRect(detailPanelRect);
 
                 bool hoverRewardButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
                 if (hoverRewardButton) {
