@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (death || Main.masterMode) {
-                    if (++calNPC.newAI[1] > 90 && !VaultUtils.isClient) {
+                    if (++calNPC.newAI[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
                         float baseDashSpeed = 20f;
@@ -119,7 +119,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         calNPC.newAI[2] = 60;
                         calNPC.newAI[1] = 0;
                         npc.netUpdate = true;
-                        SendExtraAI(npc);
                     }
                 }
             }
