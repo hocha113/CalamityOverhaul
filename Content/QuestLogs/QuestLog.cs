@@ -18,8 +18,12 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static Asset<Texture2D> QuestLogStart;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
-        public override bool Active => Main.playerInventory;//打开背包时才能显示
+        public override bool Active => visible || openScale > 0.01f || Main.playerInventory;
         private bool visible;
+        public float MainPanelAlpha => mainPanelAlpha;
+        private float mainPanelAlpha;
+        private float openScale;
+        private Rectangle mainCloseButtonRect;
 
         public IQuestLogStyle CurrentStyle { get; set; } = new HotwindQuestLogStyle();
 
@@ -36,6 +40,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         //任务详情面板相关
         private QuestNode selectedNode;
+        private QuestNode selectedNodeTransfers;
         private bool showDetailPanel;
         private float detailPanelAlpha;
         private Rectangle detailPanelRect;
@@ -89,6 +94,16 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void Update() {
+            //更新动画状态
+            if (visible) {
+                openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
+            }
+            else {
+                openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 0f, 0.14f);
+            }
+
             //更新详情面板透明度
             if (showDetailPanel) {
                 if (detailPanelAlpha < 1f) {
@@ -105,15 +120,16 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (Main.playerInventory) {
                 Vector2 launcherPos = new Vector2(Main.screenWidth / 3, Main.screenHeight / 54);
                 launcher.Update(launcherPos, visible);
-                //打开时居中
-                panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
-                panelRect.Y = (Main.screenHeight - panelRect.Height);
                 if (launcher.IsHovered) {
                     player.mouseInterface = true;
                 }
             }
 
-            if (!visible) return;
+            if (openScale <= 0.01f && !visible) return;
+
+            //打开时居中
+            panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
+            panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
 
             //更新主UI碰撞箱
             UIHitBox = panelRect;
@@ -123,6 +139,16 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (hoverInMainPage) {
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
+            }
+
+            //关闭按钮逻辑
+            mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
+            if (mainCloseButtonRect.Contains(MouseHitBox.Location)) {
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    visible = false;
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                }
             }
 
             //如果详情面板开启，优先处理详情面板交互
@@ -250,9 +276,12 @@ namespace CalamityOverhaul.Content.QuestLogs
                 launcher.Draw(spriteBatch, visible);
             }
 
-            if (!visible) return;
+            if (openScale <= 0.01f && !visible) return;
 
             CurrentStyle.DrawBackground(spriteBatch, this, panelRect);
+
+            //绘制主面板关闭按钮
+            DrawMainCloseButton(spriteBatch);
 
             //开启剪裁，防止节点画出面板
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
@@ -276,7 +305,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     if (parent != null) {
                         Vector2 start = GetNodeScreenPos(parent.CalculatedPosition);
                         Vector2 end = GetNodeScreenPos(node.CalculatedPosition);
-                        CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked);
+                        CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked, mainPanelAlpha);
                     }
                 }
             }
@@ -285,7 +314,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             foreach (var node in Nodes) {
                 Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                 bool hovered = hoveredNode == node;
-                CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered);
+                CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered, mainPanelAlpha);
             }
 
             spriteBatch.End();
@@ -293,12 +322,36 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
 
             //绘制详情面板
-            if (showDetailPanel && selectedNode != null && detailPanelAlpha > 0.01f) {
-                CurrentStyle.DrawQuestDetail(spriteBatch, selectedNode, detailPanelRect, detailPanelAlpha);
-
+            if (showDetailPanel || detailPanelAlpha > 0.01f) {
+                if (selectedNode is not null) {
+                    selectedNodeTransfers = selectedNode;
+                }
+                if (selectedNodeTransfers is not null) {
+                    CurrentStyle.DrawQuestDetail(spriteBatch, selectedNodeTransfers, detailPanelRect, detailPanelAlpha);
+                }
                 //绘制关闭按钮
                 DrawCloseButton(spriteBatch);
             }
+            else {
+                selectedNodeTransfers = null;
+            }
+        }
+
+        private void DrawMainCloseButton(SpriteBatch spriteBatch) {
+            bool hovered = mainCloseButtonRect.Contains(Main.MouseScreen.ToPoint());
+            Color buttonColor = hovered ? new Color(255, 100, 100) : new Color(200, 80, 80);
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            spriteBatch.Draw(pixel, mainCloseButtonRect, buttonColor * mainPanelAlpha);
+
+            //绘制X符号
+            string closeText = "×";
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(closeText);
+            Vector2 textPos = new Vector2(
+                mainCloseButtonRect.X + mainCloseButtonRect.Width / 2,
+                mainCloseButtonRect.Y + mainCloseButtonRect.Height / 2
+            );
+            Utils.DrawBorderString(spriteBatch, closeText, textPos, Color.White * mainPanelAlpha, 1.2f, 0.5f, 0.5f);
         }
 
         private void DrawCloseButton(SpriteBatch spriteBatch) {

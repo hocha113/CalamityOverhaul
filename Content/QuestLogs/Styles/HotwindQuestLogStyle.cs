@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制深色阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 6);
-            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.6f);
+            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.6f * log.MainPanelAlpha);
 
             //绘制半透明黑色背景
-            spriteBatch.Draw(pixel, panelRect, Color.Black * 0.85f);
+            spriteBatch.Draw(pixel, panelRect, Color.Black * 0.85f * log.MainPanelAlpha);
 
             //绘制内部渐变效果
             int gradientSteps = 20;
@@ -35,42 +35,42 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 int height = Math.Max(1, panelRect.Height / gradientSteps);
                 Rectangle gradRect = new Rectangle(panelRect.X, y, panelRect.Width, height);
                 Color gradColor = Color.Lerp(new Color(20, 10, 5), new Color(40, 20, 10), t);
-                spriteBatch.Draw(pixel, gradRect, gradColor * 0.3f);
+                spriteBatch.Draw(pixel, gradRect, gradColor * 0.3f * log.MainPanelAlpha);
             }
 
             //绘制纵向渐变屏幕泛光动画
-            DrawBloomEffect(spriteBatch, pixel, panelRect);
+            DrawBloomEffect(spriteBatch, pixel, panelRect, log.MainPanelAlpha);
 
             //绘制脉冲光效
             float pulse = (float)Math.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(255, 140, 60) * (0.08f * pulse);
+            Color pulseColor = new Color(255, 140, 60) * (0.08f * pulse * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, panelRect, pulseColor);
 
             //绘制边框
             int border = 3;
             Color edgeColor = Color.Lerp(new Color(255, 120, 40), new Color(255, 180, 100), pulse);
-            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, border), edgeColor * 0.95f);
-            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - border, panelRect.Width, border), edgeColor * 0.75f);
-            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f);
-            spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - border, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, border), edgeColor * 0.95f * log.MainPanelAlpha);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - border, panelRect.Width, border), edgeColor * 0.75f * log.MainPanelAlpha);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f * log.MainPanelAlpha);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - border, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f * log.MainPanelAlpha);
 
             //绘制内边框发光
             Rectangle innerRect = panelRect;
             innerRect.Inflate(-6, -6);
-            Color innerGlow = new Color(255, 140, 60) * (0.15f * pulse);
+            Color innerGlow = new Color(255, 140, 60) * (0.15f * pulse * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Y, innerRect.Width, 1), innerGlow);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Bottom - 1, innerRect.Width, 1), innerGlow * 0.7f);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Y, 1, innerRect.Height), innerGlow * 0.85f);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.Right - 1, innerRect.Y, 1, innerRect.Height), innerGlow * 0.85f);
 
             //绘制角落装饰
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Y + 12), pulse);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Y + 12), pulse);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Bottom - 12), pulse * 0.7f);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Bottom - 12), pulse * 0.7f);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Y + 12), pulse, log.MainPanelAlpha);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Y + 12), pulse, log.MainPanelAlpha);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha);
         }
 
-        private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect) {
+        private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alphaMult) {
             //创建纵向多层渐变泛光效果，从左到右流动
             int bloomLayers = 4;
 
@@ -143,12 +143,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
                     //每层的基础透明度递减
                     float layerAlpha = 0.12f - layer * 0.025f;
-                    spriteBatch.Draw(pixel, bloomRect, finalColor * (alpha * layerAlpha));
+                    spriteBatch.Draw(pixel, bloomRect, finalColor * (alpha * layerAlpha * alphaMult));
                 }
             }
         }
 
-        public void DrawNode(SpriteBatch spriteBatch, QuestNode node, Vector2 drawPos, float scale, bool isHovered) {
+        public void DrawNode(SpriteBatch spriteBatch, QuestNode node, Vector2 drawPos, float scale, bool isHovered, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int size = (int)(48 * scale);
             Rectangle nodeRect = new Rectangle((int)drawPos.X - size / 2, (int)drawPos.Y - size / 2, size, size);
@@ -164,10 +164,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制节点阴影
             Rectangle shadowRect = nodeRect;
             shadowRect.Offset(4, 4);
-            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.5f);
+            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.5f * alpha);
 
             //绘制节点背景
-            spriteBatch.Draw(pixel, nodeRect, baseColor * 0.7f);
+            spriteBatch.Draw(pixel, nodeRect, baseColor * 0.7f * alpha);
 
             //绘制节点发光效果
             if (node.IsUnlocked || node.IsCompleted) {
@@ -176,11 +176,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
                 Rectangle glowRect = nodeRect;
                 glowRect.Inflate(2, 2);
-                spriteBatch.Draw(pixel, glowRect, glowColor * (0.3f * glowPulse));
+                spriteBatch.Draw(pixel, glowRect, glowColor * (0.3f * glowPulse * alpha));
             }
 
             //绘制任务图标
-            DrawQuestIcon(spriteBatch, node, drawPos, scale);
+            DrawQuestIcon(spriteBatch, node, drawPos, scale, alpha);
 
             //绘制节点边框
             int borderWidth = 2;
@@ -192,13 +192,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 borderWidth = 3;
             }
 
-            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, nodeRect.Width, borderWidth), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Bottom - borderWidth, nodeRect.Width, borderWidth), edgeColor * 0.8f);
-            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f);
-            spriteBatch.Draw(pixel, new Rectangle(nodeRect.Right - borderWidth, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f);
+            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, nodeRect.Width, borderWidth), edgeColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Bottom - borderWidth, nodeRect.Width, borderWidth), edgeColor * 0.8f * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(nodeRect.Right - borderWidth, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
 
             //绘制任务类型图标
-            DrawQuestTypeIcon(spriteBatch, node, drawPos, scale);
+            DrawQuestTypeIcon(spriteBatch, node, drawPos, scale, alpha);
 
             //绘制节点名称
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + size / 2 + 8);
@@ -212,10 +212,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
 
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, node.DisplayName?.Value,
-                namePos.X, namePos.Y, textColor, Color.Black, nameSize / 2, 0.75f);
+                namePos.X, namePos.Y, textColor * alpha, Color.Black * alpha, nameSize / 2, 0.75f);
         }
 
-        public void DrawConnection(SpriteBatch spriteBatch, Vector2 start, Vector2 end, bool isUnlocked) {
+        public void DrawConnection(SpriteBatch spriteBatch, Vector2 start, Vector2 end, bool isUnlocked, float alpha) {
             flowTimer += 0.025f;
             if (flowTimer > MathHelper.TwoPi) flowTimer -= MathHelper.TwoPi;
 
@@ -230,31 +230,31 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制外层阴影
             Color shadowColor = Color.Black * 0.4f;
             spriteBatch.Draw(pixel, start + new Vector2(2, 2).RotatedBy(rotation),
-                new Rectangle(0, 0, (int)length, lineWidth), shadowColor, rotation,
+                new Rectangle(0, 0, (int)length, lineWidth), shadowColor * alpha, rotation,
                 new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             //绘制基础暗色背景层
             Color lineColor = isUnlocked ? new Color(60, 45, 30) : new Color(40, 40, 45);
             spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth),
-                lineColor * 0.9f, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
+                lineColor * 0.9f * alpha, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             if (isUnlocked) {
                 //绘制主动流动的渐变动画
-                DrawFlowingGradient(spriteBatch, pixel, start, end, length, rotation, lineWidth);
+                DrawFlowingGradient(spriteBatch, pixel, start, end, length, rotation, lineWidth, alpha);
 
                 //绘制外发光效果
                 Color glowColor = new Color(255, 140, 60) * 0.3f;
                 int glowWidth = lineWidth + 6;
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, glowWidth),
-                    glowColor, rotation, new Vector2(0, glowWidth / 2f), 1f, SpriteEffects.None, 0f);
+                    glowColor * alpha, rotation, new Vector2(0, glowWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
             else {
                 //未解锁状态的暗淡虚线效果
-                DrawDashedLine(spriteBatch, pixel, start, length, rotation, lineWidth);
+                DrawDashedLine(spriteBatch, pixel, start, length, rotation, lineWidth, alpha);
             }
         }
 
-        private void DrawFlowingGradient(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, float length, float rotation, int lineWidth) {
+        private void DrawFlowingGradient(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, float length, float rotation, int lineWidth, float alpha) {
             //创建持续流动的渐变效果，从起点流向终点
             int segments = Math.Max((int)(length / 12f), 3);
 
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Color color = Color.Lerp(new Color(150, 80, 40), new Color(255, 180, 80), brightness);
 
                 spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, (int)(length / segments) + 1, lineWidth),
-                    color, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
+                    color * alpha, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
 
             //添加流动的能量脉冲点
@@ -283,12 +283,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Vector2 pos = Vector2.Lerp(start, end, t);
 
                 float size = 4f + (float)Math.Sin(flowTimer * 5f) * 2f;
-                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), Color.White, rotation,
+                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), Color.White * alpha, rotation,
                     new Vector2(0.5f, 0.5f), new Vector2(size * 2f, size), SpriteEffects.None, 0f);
             }
         }
 
-        private void DrawDashedLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, float length, float rotation, int lineWidth) {
+        private void DrawDashedLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, float length, float rotation, int lineWidth, float alpha) {
             //绘制虚线效果表示未解锁
             int dashLength = 14;
             int gapLength = 10;
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float dashStart = i * totalLength;
                 Vector2 dashPos = start + new Vector2(dashStart, 0).RotatedBy(rotation);
 
-                Color dashColor = new Color(70, 70, 80) * 0.6f;
+                Color dashColor = new Color(70, 70, 80) * 0.6f * alpha;
                 spriteBatch.Draw(pixel, dashPos, new Rectangle(0, 0, dashLength, lineWidth),
                     dashColor, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
             }
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
         }
 
-        private void DrawQuestTypeIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale) {
+        private void DrawQuestTypeIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale, float alpha) {
             //根据任务类型绘制不同的标记
             string typeIcon = node.QuestType switch {
                 QuestType.Main => "⚔️",
@@ -498,10 +498,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             };
 
             Vector2 iconPos = center - new Vector2(12) * scale;
-            Utils.DrawBorderString(spriteBatch, typeIcon, iconPos, iconColor, 0.9f * scale, 0.5f, 0.5f);
+            Utils.DrawBorderString(spriteBatch, typeIcon, iconPos, iconColor * alpha, 0.9f * scale, 0.5f, 0.5f);
         }
 
-        private void DrawQuestIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale) {
+        private void DrawQuestIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale, float alpha) {
             Texture2D iconTexture = node.GetIconTexture();
             if (iconTexture == null) return;
 
@@ -536,13 +536,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Vector2 iconPos = new Vector2(iconDrawRect.X + iconDrawRect.Width / 2, iconDrawRect.Y + iconDrawRect.Height / 2);
             Vector2 origin = frame.Size() / 2f;
 
-            spriteBatch.Draw(iconTexture, iconPos, frame, iconColor, 0f, origin, iconScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(iconTexture, iconPos, frame, iconColor * alpha, 0f, origin, iconScale, SpriteEffects.None, 0f);
         }
 
-        private void DrawCornerMark(SpriteBatch spriteBatch, Vector2 pos, float alpha) {
+        private void DrawCornerMark(SpriteBatch spriteBatch, Vector2 pos, float pulse, float alphaMult) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float size = 7f;
-            Color markColor = new Color(255, 150, 70) * alpha;
+            Color markColor = new Color(255, 150, 70) * (pulse * alphaMult);
 
             //绘制十字形装饰
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), markColor, 0f,
