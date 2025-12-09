@@ -9,10 +9,12 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    public class QuestLog : UIHandle
+    public class QuestLog : UIHandle, ILocalizedModType
     {
         [VaultLoaden(CWRConstant.UI)]
         public static Asset<Texture2D> QuestLogStart = null;
@@ -50,14 +52,31 @@ namespace CalamityOverhaul.Content.QuestLogs
         //节点悬停相关
         private QuestNode hoveredNode;
 
+        //进度条相关
+        public bool ShowProgressBar { get; set; } = true;
+
+        public string LocalizationCategory => "UI";
+
         //启动图标
         private QuestLogLauncher launcher;
+
+        public static LocalizedText ObjectiveText;
+        public static LocalizedText RewardText;
+        public static LocalizedText ReceiveAwardText;
+        public static LocalizedText ProgressText;
 
         public QuestLog() {
             //初始化启动图标
             launcher = new QuestLogLauncher();
             //设置初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
+        }
+
+        public override void SetStaticDefaults() {
+            ObjectiveText = this.GetLocalization(nameof(ObjectiveText), () => "任务目标");
+            RewardText = this.GetLocalization(nameof(RewardText), () => "任务奖励");
+            ReceiveAwardText = this.GetLocalization(nameof(ReceiveAwardText), () => "领取奖励");
+            ProgressText = this.GetLocalization(nameof(ProgressText), () => "任务完成比例");
         }
 
         public override void LogicUpdate() {
@@ -344,6 +363,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             else {
                 selectedNodeTransfers = null;
             }
+
+            //绘制进度条
+            CurrentStyle.DrawProgressBar(spriteBatch, this, panelRect);
         }
 
         private void DrawMainCloseButton(SpriteBatch spriteBatch) {

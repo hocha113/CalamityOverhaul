@@ -19,5 +19,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         Rectangle GetCloseButtonRect(Rectangle panelRect);
         //获取领取奖励按钮区域
         Rectangle GetRewardButtonRect(Rectangle panelRect);
+        //绘制进度条
+        void DrawProgressBar(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect);
     }
 }

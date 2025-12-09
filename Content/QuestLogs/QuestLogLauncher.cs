@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 string text = unclaimedCount > 99 ? "99+" : unclaimedCount.ToString();
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
                 float maxDim = Math.Max(textSize.X, textSize.Y);
-                float bgSize = Math.Max(18, maxDim + 6);
+                float bgSize = Math.Max(6, maxDim);
 
                 //红点位置在图标右上角
                 Vector2 badgeCenter = new Vector2(IconRect.Right - 4, IconRect.Top + 4);
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 Texture2D pixel = VaultAsset.placeholder2.Value;
 
                 //绘制红点背景
-                spriteBatch.Draw(pixel, badgeRect, Color.IndianRed);
+                spriteBatch.Draw(pixel, badgeRect, new Color(255, 200, 100));
 
                 //绘制红点边框
                 int border = 1;

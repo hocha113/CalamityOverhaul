@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles;
+ï»¿using CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -16,35 +16,35 @@ using static CalamityOverhaul.Content.ADV.Common.BaseDamageTracker;
 namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 {
     /// <summary>
-    /// ÈÎÎñ×·×ÙUI·ç¸ñÃ¶¾Ù
+    /// ä»»åŠ¡è¿½è¸ªUIé£æ ¼æšä¸¾
     /// </summary>
     public enum QuestTrackerStyle
     {
-        Brimstone,  //Áò»Ç»ğ·ç¸ñ
-        Draedon,    //¼ÎµÇ¿Æ¼¼·ç¸ñ
-        Sulfsea     //Áò»Çº£·ç¸ñ
+        Brimstone,  //ç¡«ç£ºç«é£æ ¼
+        Draedon,    //å˜‰ç™»ç§‘æŠ€é£æ ¼
+        Sulfsea     //ç¡«ç£ºæµ·é£æ ¼
     }
 
     /// <summary>
-    /// ÈÎÎñ×·×ÙUIµÄÍ¨ÓÃ»ùÀà
+    /// ä»»åŠ¡è¿½è¸ªUIçš„é€šç”¨åŸºç±»
     /// </summary>
     internal abstract class BaseQuestTrackerUI : UIHandle, ILocalizedModType
     {
         public virtual string LocalizationCategory => "UI";
 
-        //±¾µØ»¯ÎÄ±¾
+        //æœ¬åœ°åŒ–æ–‡æœ¬
         protected LocalizedText QuestTitle { get; set; }
         protected LocalizedText DamageContribution { get; set; }
         protected LocalizedText RequiredContribution { get; set; }
 
-        //UI²ÎÊı
+        //UIå‚æ•°
         protected const float PanelWidth = 220f;
         protected const float MinPanelHeight = 90f;
         protected const float MaxPanelHeight = 150f;
         protected float currentPanelHeight = MinPanelHeight;
         protected const float Padding = 10f;
 
-        //Î»ÖÃºÍÍÏ×§
+        //ä½ç½®å’Œæ‹–æ‹½
         private bool dragBool;
         private float dragOffset;
         protected float screenYValue = 0;
@@ -52,13 +52,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual float ScreenX => 0f;
         protected virtual float ScreenY => screenYValue;
 
-        //¶¯»­²ÎÊı
+        //åŠ¨ç”»å‚æ•°
         protected float slideProgress = 0f;
         protected float pulseTimer = 0f;
         protected float borderGlow = 1f;
         protected float warningPulse = 0f;
 
-        //ÕÛµş×´Ì¬
+        //æŠ˜å çŠ¶æ€
         protected bool isCollapsed = false;
         protected float collapseProgress = 0f;
         protected const float CollapseAnimationSpeed = 0.12f;
@@ -67,29 +67,29 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected float buttonPositionProgress = 0f;
         protected float buttonGlowPulse = 0f;
 
-        //ÉËº¦Êı¾İ
+        //ä¼¤å®³æ•°æ®
         protected float cachedContribution = 0f;
         protected const float UpdateInterval = 0.5f;
         protected float updateTimer = 0f;
 
-        //Åö×²¼ì²âÓë°ëÍ¸Ã÷»¯
+        //ç¢°æ’æ£€æµ‹ä¸åŠé€æ˜åŒ–
         protected bool isOverlappingWithNPC = false;
         protected float overlappingAlpha = 1f;
         protected const float MinOverlappingAlpha = 0.3f;
         protected const float AlphaTransitionSpeed = 0.1f;
 
-        //ÑùÊ½ÏµÍ³
+        //æ ·å¼ç³»ç»Ÿ
         protected QuestTrackerStyle currentStyleType = QuestTrackerStyle.Brimstone;
         protected IQuestTrackerStyle currentStyle;
         protected readonly Dictionary<QuestTrackerStyle, IQuestTrackerStyle> styleInstances = new();
 
         /// <summary>
-        /// ÉèÖÃÄ¬ÈÏÆÁÄ»YÖµ
+        /// è®¾ç½®é»˜è®¤å±å¹•Yå€¼
         /// </summary>
         internal void SetDefScreenYValue() => initialize = true;
 
         /// <summary>
-        /// ¼ÓÔØUIÊı¾İ
+        /// åŠ è½½UIæ•°æ®
         /// </summary>
         public new void LoadUIData(TagCompound tag) {
             tag.TryGet(Name + ":" + nameof(screenYValue), out screenYValue);
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¼ÓÔØUIÊı¾İ
+        /// åŠ è½½UIæ•°æ®
         /// </summary>
         /// <param name="tag"></param>
         public virtual void LoadUI(TagCompound tag) {
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ±£´æUIÊı¾İ
+        /// ä¿å­˜UIæ•°æ®
         /// </summary>
         public new void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(screenYValue)] = screenYValue;
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ±£´æUIÊı¾İ
+        /// ä¿å­˜UIæ•°æ®
         /// </summary>
         /// <param name="tag"></param>
         public virtual void SaveUI(TagCompound tag) {
@@ -123,24 +123,24 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°Ó¦Ê¹ÓÃµÄ·ç¸ñ£¨×ÓÀà¿ÉÖØĞ´£©
+        /// è·å–å½“å‰åº”ä½¿ç”¨çš„é£æ ¼ï¼ˆå­ç±»å¯é‡å†™ï¼‰
         /// </summary>
         protected virtual QuestTrackerStyle GetQuestStyle() => QuestTrackerStyle.Brimstone;
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÉËº¦×·×ÙÊı¾İ
+        /// è·å–å½“å‰ä¼¤å®³è¿½è¸ªæ•°æ®
         /// </summary>
         protected abstract (float current, float total, bool isActive) GetTrackingData();
 
         /// <summary>
-        /// Ä¿±êNPCÀàĞÍ£¨Èç¹û²»ĞèÒªNPC×·×Ù£¬·µ»Ø-1£©
+        /// ç›®æ ‡NPCç±»å‹ï¼ˆå¦‚æœä¸éœ€è¦NPCè¿½è¸ªï¼Œè¿”å›-1ï¼‰
         /// </summary>
         public abstract int TargetNPCType { get; }
 
         public override bool Active => slideProgress > 0f || CanOpne;
 
         /// <summary>
-        /// ÊÇ·ñ¿ÉÒÔ´ò¿ªUIÃæ°å
+        /// æ˜¯å¦å¯ä»¥æ‰“å¼€UIé¢æ¿
         /// </summary>
         public virtual bool CanOpne {
             get {
@@ -158,14 +158,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »ñÈ¡ĞèÇóµÄÉËº¦¹±Ï×¶ÈãĞÖµ
+        /// è·å–éœ€æ±‚çš„ä¼¤å®³è´¡çŒ®åº¦é˜ˆå€¼
         /// </summary>
         protected abstract float GetRequiredContribution();
 
         public override void SetStaticDefaults() {
             SetupLocalizedTexts();
 
-            //³õÊ¼»¯ÑùÊ½ÊµÀı
+            //åˆå§‹åŒ–æ ·å¼å®ä¾‹
             styleInstances[QuestTrackerStyle.Brimstone] = new BrimstoneTrackerStyle();
             styleInstances[QuestTrackerStyle.Draedon] = new DraedonTrackerStyle();
             styleInstances[QuestTrackerStyle.Sulfsea] = new SulfseaTrackerStyle();
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected abstract void SetupLocalizedTexts();
 
         /// <summary>
-        /// ¼ì²âUIÃæ°åÊÇ·ñÓëÄ¿±êNPCÅö×²ÏäÖØµş
+        /// æ£€æµ‹UIé¢æ¿æ˜¯å¦ä¸ç›®æ ‡NPCç¢°æ’ç®±é‡å 
         /// </summary>
         protected virtual bool CheckNPCOverlap() {
             if (CurrentDamageTrackerInstance?.NPC == null || !CurrentDamageTrackerInstance.NPC.active) {
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¼ÆËãÎÄ±¾»»ĞĞºóµÄ¸ß¶È£¨²»Êµ¼Ê»æÖÆ£©
+        /// è®¡ç®—æ–‡æœ¬æ¢è¡Œåçš„é«˜åº¦ï¼ˆä¸å®é™…ç»˜åˆ¶ï¼‰
         /// </summary>
         protected virtual float CalculateTextHeight(string text, float scale = 0.75f, float maxWidth = -1f) {
             if (string.IsNullOrEmpty(text)) {
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¼ÆËã±êÌâ»»ĞĞºóĞèÒªµÄ¸ß¶È
+        /// è®¡ç®—æ ‡é¢˜æ¢è¡Œåéœ€è¦çš„é«˜åº¦
         /// </summary>
         protected virtual float CalculateTitleHeight() {
             const float titleScale = 0.75f;
@@ -235,31 +235,31 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¼ÆËãÄÚÈİÇøÓòµÄ×Ü¸ß¶È£¨×ÓÀà¿ÉÖØĞ´ÒÔ×Ô¶¨Òå¼ÆËã£©
+        /// è®¡ç®—å†…å®¹åŒºåŸŸçš„æ€»é«˜åº¦ï¼ˆå­ç±»å¯é‡å†™ä»¥è‡ªå®šä¹‰è®¡ç®—ï¼‰
         /// </summary>
         protected virtual float CalculateContentHeight() {
             const float textScale = 0.65f;
 
-            //¼ÆËã¸÷²¿·Ö¸ß¶È
+            //è®¡ç®—å„éƒ¨åˆ†é«˜åº¦
             float topPadding = 8f;
             float titleHeight = CalculateTitleHeight();
             float titleBottomMargin = 2f;
             float dividerHeight = 2f;
             float dividerBottomMargin = 8f;
 
-            //¹±Ï×¶ÈÎÄ±¾
+            //è´¡çŒ®åº¦æ–‡æœ¬
             float contributionTextHeight = FontAssets.MouseText.Value.MeasureString("A").Y * textScale;
             float contributionBottomMargin = 15f;
 
-            //ĞèÇóÎÄ±¾
+            //éœ€æ±‚æ–‡æœ¬
             float requirementHeight = CalculateTextHeight(RequiredContribution.Value, 0.6f);
             float requirementBottomMargin = 2f;
 
-            //½ø¶ÈÌõ
+            //è¿›åº¦æ¡
             float progressBarHeight = 6f;
             float bottomPadding = 8f;
 
-            //×Ü¸ß¶È
+            //æ€»é«˜åº¦
             return topPadding
                 + titleHeight + titleBottomMargin
                 + dividerHeight + dividerBottomMargin
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¸ù¾İÄÚÈİ¶¯Ì¬µ÷ÕûÃæ°å¸ß¶È
+        /// æ ¹æ®å†…å®¹åŠ¨æ€è°ƒæ•´é¢æ¿é«˜åº¦
         /// </summary>
         protected virtual void UpdatePanelHeight() {
             float contentHeight = CalculateContentHeight();
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         public override void Update() {
-            //³õÊ¼»¯ÆÁÄ»Î»ÖÃ
+            //åˆå§‹åŒ–å±å¹•ä½ç½®
             if (initialize) {
                 initialize = false;
                 if (screenYValue == 0) {
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //ÇĞ»»ÑùÊ½
+            //åˆ‡æ¢æ ·å¼
             QuestTrackerStyle targetStyle = GetQuestStyle();
             if (targetStyle != currentStyleType) {
                 currentStyleType = targetStyle;
@@ -296,10 +296,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //¸üĞÂÃæ°å¸ß¶È
+            //æ›´æ–°é¢æ¿é«˜åº¦
             UpdatePanelHeight();
 
-            //Õ¹¿ªÊÕÆğ¶¯»­
+            //å±•å¼€æ”¶èµ·åŠ¨ç”»
             float targetSlide = CanOpne ? 1f : 0f;
             slideProgress = MathHelper.Lerp(slideProgress, targetSlide, 0.15f);
 
@@ -307,25 +307,25 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 return;
             }
 
-            //ÕÛµş¶¯»­
+            //æŠ˜å åŠ¨ç”»
             float targetCollapse = isCollapsed ? 1f : 0f;
             collapseProgress = MathHelper.Lerp(collapseProgress, targetCollapse, CollapseAnimationSpeed);
 
-            //°´Å¥Î»ÖÃ¹ı¶É¶¯»­
+            //æŒ‰é’®ä½ç½®è¿‡æ¸¡åŠ¨ç”»
             float targetButtonPos = isCollapsed ? 1f : 0f;
             buttonPositionProgress = MathHelper.Lerp(buttonPositionProgress, targetButtonPos, 0.15f);
 
-            //°´Å¥·¢¹âÂö³å
+            //æŒ‰é’®å‘å…‰è„‰å†²
             buttonGlowPulse += 0.05f;
             if (buttonGlowPulse > MathHelper.TwoPi) {
                 buttonGlowPulse -= MathHelper.TwoPi;
             }
 
-            //¶¯»­¸üĞÂ
+            //åŠ¨ç”»æ›´æ–°
             pulseTimer += 0.03f;
             borderGlow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.3f + 0.7f;
 
-            //¸üĞÂÉËº¦Êı¾İÏÔÊ¾
+            //æ›´æ–°ä¼¤å®³æ•°æ®æ˜¾ç¤º
             updateTimer += 0.016f;
             if (updateTimer >= UpdateInterval) {
                 updateTimer = 0f;
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             cachedContribution = MathHelper.Clamp(cachedContribution, 0, 1f);
 
-            //Èç¹û¹±Ï×¶ÈµÍÉÁË¸¾¯¸æ
+            //å¦‚æœè´¡çŒ®åº¦ä½é—ªçƒè­¦å‘Š
             float requiredContribution = GetRequiredContribution();
             if (cachedContribution < requiredContribution * 0.5f) {
                 warningPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f;
@@ -346,22 +346,22 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 warningPulse = 0f;
             }
 
-            //¼ÆËãÃæ°åÊµ¼Ê¿í¶È
+            //è®¡ç®—é¢æ¿å®é™…å®½åº¦
             float actualPanelWidth = MathHelper.Lerp(PanelWidth, 40f, CWRUtils.EaseInOutCubic(collapseProgress));
 
-            //ÉèÖÃUIÎ»ÖÃ
+            //è®¾ç½®UIä½ç½®
             float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, CWRUtils.EaseOutCubic(slideProgress));
             DrawPosition = new Vector2(offsetX, ScreenY);
             Size = new Vector2(actualPanelWidth, currentPanelHeight);
             UIHitBox = DrawPosition.GetRectangle((int)actualPanelWidth, (int)currentPanelHeight);
 
-            //¸üĞÂÕÛµş°´Å¥Î»ÖÃ
+            //æ›´æ–°æŠ˜å æŒ‰é’®ä½ç½®
             UpdateCollapseButton();
 
-            //´¦ÀíÕÛµş°´Å¥½»»¥
+            //å¤„ç†æŠ˜å æŒ‰é’®äº¤äº’
             HandleCollapseButtonInteraction();
 
-            //´¦ÀíÍÏ×§
+            //å¤„ç†æ‹–æ‹½
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && !collapseButtonHovered;
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Held) {
@@ -379,28 +379,28 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //ÏŞÖÆY×ø±ê·¶Î§
+            //é™åˆ¶Yåæ ‡èŒƒå›´
             screenYValue = MathHelper.Clamp(screenYValue, 0, Main.screenHeight - currentPanelHeight);
 
-            //¼ì²âÊÇ·ñÓëNPCÅö×²ÏäÖØµş
+            //æ£€æµ‹æ˜¯å¦ä¸NPCç¢°æ’ç®±é‡å 
             isOverlappingWithNPC = CheckNPCOverlap();
 
-            //Æ½»¬¹ı¶ÉÍ¸Ã÷¶È
+            //å¹³æ»‘è¿‡æ¸¡é€æ˜åº¦
             float targetAlpha = isOverlappingWithNPC ? MinOverlappingAlpha : 1f;
             overlappingAlpha = MathHelper.Lerp(overlappingAlpha, targetAlpha, AlphaTransitionSpeed);
 
-            //¸üĞÂÑùÊ½¶¯»­
+            //æ›´æ–°æ ·å¼åŠ¨ç”»
             currentStyle?.Update(UIHitBox, Active);
             currentStyle?.UpdateParticles(DrawPosition, overlappingAlpha);
         }
 
         /// <summary>
-        /// ¸üĞÂÕÛµş°´Å¥Î»ÖÃ
+        /// æ›´æ–°æŠ˜å æŒ‰é’®ä½ç½®
         /// </summary>
         protected virtual void UpdateCollapseButton() {
             int buttonSize = 20;
 
-            //¼ÆËã°´Å¥XÎ»ÖÃµÄÆ½»¬¹ı¶É
+            //è®¡ç®—æŒ‰é’®Xä½ç½®çš„å¹³æ»‘è¿‡æ¸¡
             float expandedX = DrawPosition.X + PanelWidth - buttonSize - 10;
             float collapsedX = DrawPosition.X + 10;
             float buttonX = MathHelper.Lerp(expandedX, collapsedX, CWRUtils.EaseInOutCubic(buttonPositionProgress));
@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ´¦ÀíÕÛµş°´Å¥½»»¥
+        /// å¤„ç†æŠ˜å æŒ‰é’®äº¤äº’
         /// </summary>
         protected virtual void HandleCollapseButtonInteraction() {
             collapseButtonHovered = collapseButtonRect.Contains(Main.MouseScreen.ToPoint());
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ÎÄ±¾»æÖÆÅäÖÃ½á¹¹Ìå
+        /// æ–‡æœ¬ç»˜åˆ¶é…ç½®ç»“æ„ä½“
         /// </summary>
         protected struct TextDrawConfig
         {
@@ -445,12 +445,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »æÖÆ´ø»»ĞĞµÄÎÄ±¾£¬·µ»Ø»æÖÆµÄ×Ü¸ß¶È
+        /// ç»˜åˆ¶å¸¦æ¢è¡Œçš„æ–‡æœ¬ï¼Œè¿”å›ç»˜åˆ¶çš„æ€»é«˜åº¦
         /// </summary>
         /// <param name="spriteBatch">SpriteBatch</param>
-        /// <param name="config">ÎÄ±¾»æÖÆÅäÖÃ</param>
-        /// <param name="lineEffect">¿ÉÑ¡µÄÃ¿ĞĞÎÄ±¾Ğ§¹û»Øµ÷</param>
-        /// <returns>»æÖÆµÄ×Ü¸ß¶È</returns>
+        /// <param name="config">æ–‡æœ¬ç»˜åˆ¶é…ç½®</param>
+        /// <param name="lineEffect">å¯é€‰çš„æ¯è¡Œæ–‡æœ¬æ•ˆæœå›è°ƒ</param>
+        /// <returns>ç»˜åˆ¶çš„æ€»é«˜åº¦</returns>
         protected virtual float DrawWrappedText(
             SpriteBatch spriteBatch,
             TextDrawConfig config,
@@ -465,10 +465,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 Vector2 linePos = new Vector2(config.Position.X, currentY);
                 Color lineColor = config.Color * config.Alpha;
 
-                //Èç¹ûÌá¹©ÁË×Ô¶¨ÒåĞ§¹û£¬ÏÈÖ´ĞĞ
+                //å¦‚æœæä¾›äº†è‡ªå®šä¹‰æ•ˆæœï¼Œå…ˆæ‰§è¡Œ
                 lineEffect?.Invoke(spriteBatch, lines[i], linePos, lineColor, config.Scale, config.Alpha, i);
 
-                //»æÖÆÖ÷ÎÄ±¾£¨Èç¹ûlineEffectÎªnull»ò×ÓÀàÖØĞ´Ê±ÈÔĞèÒª»ù´¡»æÖÆ£©
+                //ç»˜åˆ¶ä¸»æ–‡æœ¬ï¼ˆå¦‚æœlineEffectä¸ºnullæˆ–å­ç±»é‡å†™æ—¶ä»éœ€è¦åŸºç¡€ç»˜åˆ¶ï¼‰
                 if (lineEffect == null) {
                     Utils.DrawBorderString(spriteBatch, lines[i], linePos, lineColor, config.Scale);
                 }
@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ¼ò»¯µÄÎÄ±¾»æÖÆ·½·¨
+        /// ç®€åŒ–çš„æ–‡æœ¬ç»˜åˆ¶æ–¹æ³•
         /// </summary>
         protected float DrawWrappedText(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale = 0.75f, float alpha = 1f, float maxWidth = -1f) {
             var config = new TextDrawConfig(text, position, color, scale, alpha, maxWidth);
@@ -488,13 +488,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »æÖÆ±êÌâ£¬Ö§³Ö»»ĞĞºÍ×Ô¶¨ÒåĞ§¹û
+        /// ç»˜åˆ¶æ ‡é¢˜ï¼Œæ”¯æŒæ¢è¡Œå’Œè‡ªå®šä¹‰æ•ˆæœ
         /// </summary>
         /// <param name="spriteBatch">SpriteBatch</param>
-        /// <param name="titlePos">±êÌâÆğÊ¼Î»ÖÃ</param>
-        /// <param name="alpha">Í¸Ã÷¶È</param>
-        /// <param name="titleScale">±êÌâËõ·Å</param>
-        /// <returns>±êÌâ×Ü¸ß¶È</returns>
+        /// <param name="titlePos">æ ‡é¢˜èµ·å§‹ä½ç½®</param>
+        /// <param name="alpha">é€æ˜åº¦</param>
+        /// <param name="titleScale">æ ‡é¢˜ç¼©æ”¾</param>
+        /// <returns>æ ‡é¢˜æ€»é«˜åº¦</returns>
         protected virtual float DrawTitle(SpriteBatch spriteBatch, Vector2 titlePos, float alpha, float titleScale = 0.72f) {
             Color titleColor = currentStyle?.GetTitleColor(alpha) ?? Color.White * alpha;
 
@@ -510,15 +510,15 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ±êÌâĞĞĞ§¹û
+        /// æ ‡é¢˜è¡Œæ•ˆæœ
         /// </summary>
         protected virtual void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
-            //Ä¬ÈÏÊµÏÖ£¬¼òµ¥»æÖÆ
+            //é»˜è®¤å®ç°ï¼Œç®€å•ç»˜åˆ¶
             Utils.DrawBorderString(spriteBatch, text, position, color, scale);
         }
 
         /// <summary>
-        /// »æÖÆÈÎÎñĞÅÏ¢ÎÄ±¾£¬´ø×Ô¶¯»»ĞĞ
+        /// ç»˜åˆ¶ä»»åŠ¡ä¿¡æ¯æ–‡æœ¬ï¼Œå¸¦è‡ªåŠ¨æ¢è¡Œ
         /// </summary>
         protected float DrawObjectiveText(SpriteBatch spriteBatch, string text, Vector2 position, float alpha, float textScale = 0.62f) {
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »æÖÆÌáÊ¾ÎÄ±¾£¬´ø×Ô¶¯»»ĞĞºÍ¿ÉÑ¡ÑÕÉ«
+        /// ç»˜åˆ¶æç¤ºæ–‡æœ¬ï¼Œå¸¦è‡ªåŠ¨æ¢è¡Œå’Œå¯é€‰é¢œè‰²
         /// </summary>
         protected float DrawHintText(SpriteBatch spriteBatch, string text, Vector2 position, Color? customColor, float alpha, float textScale = 0.62f) {
             Color textColor = customColor ?? (currentStyle?.GetTextColor(alpha) ?? Color.White * alpha);
@@ -534,7 +534,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             return DrawWrappedText(spriteBatch, text, position, textColor, textScale, alpha);
         }
 
-        //Õâ¸ö¼¦°Í²»ÄÜÉ¾£¬Õâ¸öÉ¾ÁËÉ¶¶¼Ã»ÁË
+        //è¿™ä¸ªé¸¡å·´ä¸èƒ½åˆ ï¼Œè¿™ä¸ªåˆ äº†å•¥éƒ½æ²¡äº†
         public override void Draw(SpriteBatch spriteBatch) {
             if (slideProgress < 0.01f) {
                 return;
@@ -542,16 +542,16 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             float alpha = Math.Min(slideProgress * 2f, 1f) * overlappingAlpha;
 
-            //Ê¹ÓÃÑùÊ½»æÖÆÃæ°å
+            //ä½¿ç”¨æ ·å¼ç»˜åˆ¶é¢æ¿
             if (currentStyle != null) {
                 currentStyle.DrawPanel(spriteBatch, UIHitBox, alpha);
                 currentStyle.DrawFrame(spriteBatch, UIHitBox, alpha, borderGlow);
             }
 
-            //»æÖÆÕÛµş°´Å¥
+            //ç»˜åˆ¶æŠ˜å æŒ‰é’®
             DrawCollapseButton(spriteBatch, alpha);
 
-            //ÕÛµş×´Ì¬ÏÂ²»»æÖÆÄÚÈİ
+            //æŠ˜å çŠ¶æ€ä¸‹ä¸ç»˜åˆ¶å†…å®¹
             if (collapseProgress < 0.99f) {
                 float contentAlpha = alpha * (1f - CWRUtils.EaseInOutCubic(collapseProgress));
                 DrawContent(spriteBatch, contentAlpha);
@@ -559,21 +559,21 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// »æÖÆÕÛµş°´Å¥
+        /// ç»˜åˆ¶æŠ˜å æŒ‰é’®
         /// </summary>
         protected virtual void DrawCollapseButton(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //»ñÈ¡ÑùÊ½ÑÕÉ«
+            //è·å–æ ·å¼é¢œè‰²
             Color styleColor = currentStyle?.GetTitleColor(alpha) ?? new Color(100, 220, 255) * alpha;
             Color edgeColor = currentStyle?.GetNumberColor(1f, 1f, alpha) ?? Color.White * alpha;
 
-            //°´Å¥±³¾°Ê¹ÓÃ¸üÈáºÍµÄÑÕÉ«
+            //æŒ‰é’®èƒŒæ™¯ä½¿ç”¨æ›´æŸ”å’Œçš„é¢œè‰²
             float hoverBrightness = collapseButtonHovered ? 0.5f : 0.3f;
             Color buttonBgColor = Color.Lerp(styleColor, new Color(20, 30, 45), 0.6f) * (alpha * hoverBrightness);
             spriteBatch.Draw(pixel, collapseButtonRect, new Rectangle(0, 0, 1, 1), buttonBgColor);
 
-            //°´Å¥·¢¹âĞ§¹û
+            //æŒ‰é’®å‘å…‰æ•ˆæœ
             if (collapseButtonHovered) {
                 float glowIntensity = (float)Math.Sin(buttonGlowPulse * 2f) * 0.2f + 0.3f;
                 Color glowColor = styleColor with { A = 0 };
@@ -582,123 +582,94 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor * (glowIntensity * 0.25f));
             }
 
-            //°´Å¥±ß¿òÊ¹ÓÃ¸üµÍ±¥ºÍ¶ÈµÄÑÕÉ«
+            //æŒ‰é’®è¾¹æ¡†ä½¿ç”¨æ›´ä½é¥±å’Œåº¦çš„é¢œè‰²
             Color buttonBorderColor = Color.Lerp(styleColor, edgeColor, 0.5f) * alpha;
             if (collapseButtonHovered) {
                 buttonBorderColor = Color.Lerp(buttonBorderColor, styleColor, 0.3f);
             }
             DrawButtonBorder(spriteBatch, collapseButtonRect, buttonBorderColor);
 
-            //»æÖÆ¼ıÍ·
+            //ç»˜åˆ¶ç®­å¤´
             Vector2 buttonCenter = collapseButtonRect.Center.ToVector2();
             DrawCollapseArrow(spriteBatch, buttonCenter, alpha, styleColor);
         }
 
         /// <summary>
-        /// »æÖÆ°´Å¥±ß¿ò
+        /// ç»˜åˆ¶æŒ‰é’®è¾¹æ¡†
         /// </summary>
         protected virtual void DrawButtonBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int thickness = 1;
 
-            //ÉÏ
+            //ä¸Š
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness),
                 new Rectangle(0, 0, 1, 1), color * 0.7f);
-            //ÏÂ
+            //ä¸‹
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness),
                 new Rectangle(0, 0, 1, 1), color * 0.5f);
-            //×ó
+            //å·¦
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.6f);
-            //ÓÒ
+            //å³
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.6f);
         }
 
         /// <summary>
-        /// »æÖÆÕÛµş¼ıÍ·
+        /// ç»˜åˆ¶æŠ˜å ç®­å¤´
         /// </summary>
         protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha, Color styleColor) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //¼ıÍ·ÑÕÉ«Ê¹ÓÃ¸üÈáºÍµÄÉ«µ÷
-            Color arrowColor = Color.Lerp(new Color(140, 160, 180), styleColor, 0.25f) * alpha;
+            //ç®­å¤´é¢œè‰²ä½¿ç”¨æ›´æŸ”å’Œçš„è‰²è°ƒ
+            Color arrowColor = Color.Lerp(new Color(140, 160, 180), styleColor, 0.65f) * alpha;
 
             if (collapseButtonHovered) {
                 arrowColor = Color.Lerp(arrowColor, styleColor, 0.4f);
             }
 
-            //¸ù¾İÕÛµş×´Ì¬¾ö¶¨¼ıÍ··½ÏòÊ¹ÓÃÆ½»¬¹ı¶É
-            float currentRotation = MathHelper.Lerp(0f, MathHelper.Pi, CWRUtils.EaseInOutCubic(buttonPositionProgress));
-
-            //¼ıÍ·¶¥µã
-            Vector2 arrowTip = center + new Vector2(5, 0).RotatedBy(currentRotation);
-            Vector2 arrowLeft = center + new Vector2(-4, -4).RotatedBy(currentRotation);
-            Vector2 arrowRight = center + new Vector2(-4, 4).RotatedBy(currentRotation);
-
-            //»æÖÆ¼ıÍ·ÏßÌõ
+            //ç»˜åˆ¶ç®­å¤´çº¿æ¡
             float lineThickness = collapseButtonHovered ? 1.8f : 1.4f;
-            DrawArrowLine(spriteBatch, arrowLeft, arrowTip, arrowColor, lineThickness);
-            DrawArrowLine(spriteBatch, arrowRight, arrowTip, arrowColor, lineThickness);
+            Utils.DrawBorderString(spriteBatch, isCollapsed ? "â—€" : "â–¶", center, arrowColor, lineThickness, 0.5f, 0.5f);
 
-            //Ìí¼Ó¼ıÍ··¢¹âĞ§¹û½µµÍÇ¿¶È
+            //æ·»åŠ ç®­å¤´å‘å…‰æ•ˆæœé™ä½å¼ºåº¦
             if (collapseButtonHovered) {
                 Color glowColor = styleColor with { A = 0 };
                 float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.4f;
-                DrawArrowLine(spriteBatch, arrowLeft, arrowTip, glowColor * (glowPulse * 0.3f), lineThickness * 1.8f);
-                DrawArrowLine(spriteBatch, arrowRight, arrowTip, glowColor * (glowPulse * 0.3f), lineThickness * 1.8f);
+                Utils.DrawBorderString(spriteBatch, isCollapsed ? "â—€" : "â–¶", center, glowColor * (glowPulse * 0.3f), lineThickness * 1.1f, 0.5f, 0.5f);
             }
         }
 
         /// <summary>
-        /// »æÖÆ¼ıÍ·ÏßÌõ
-        /// </summary>
-        protected virtual void DrawArrowLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Vector2 edge = end - start;
-            float length = edge.Length();
-
-            if (length < 1f) {
-                return;
-            }
-
-            float rotation = edge.ToRotation();
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation,
-                new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        /// »æÖÆÄÚÈİ£¬×ÓÀà¿ÉÖØĞ´ÒÔ×Ô¶¨Òå²¼¾Ö
+        /// ç»˜åˆ¶å†…å®¹ï¼Œå­ç±»å¯é‡å†™ä»¥è‡ªå®šä¹‰å¸ƒå±€
         /// </summary>
         protected virtual void DrawContent(SpriteBatch spriteBatch, float alpha) {
             var font = FontAssets.MouseText.Value;
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
 
-            //±êÌâ
+            //æ ‡é¢˜
             Vector2 titlePos = DrawPosition + new Vector2(Padding, 8);
             float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
-            //·Ö¸îÏß
+            //åˆ†å‰²çº¿
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 2);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             currentStyle?.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
 
-            //ÉËº¦¹±Ï×¶ÈÎÄ±¾
+            //ä¼¤å®³è´¡çŒ®åº¦æ–‡æœ¬
             Vector2 contributionTextPos = dividerStart + new Vector2(0, 8);
             DrawContributionText(spriteBatch, contributionTextPos, alpha, textScale);
 
-            //ĞèÇóÎÄ±¾
+            //éœ€æ±‚æ–‡æœ¬
             Vector2 requirementPos = contributionTextPos + new Vector2(0, 15);
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
             float reqHeight = DrawWrappedText(spriteBatch, RequiredContribution.Value, requirementPos, textColor * 0.8f, 0.6f, alpha);
 
-            //½ø¶ÈÌõ
+            //è¿›åº¦æ¡
             DrawProgressBar(spriteBatch, requirementPos + new Vector2(0, reqHeight + 2), alpha);
         }
 
         /// <summary>
-        /// »æÖÆ¹±Ï×¶ÈÎÄ±¾
+        /// ç»˜åˆ¶è´¡çŒ®åº¦æ–‡æœ¬
         /// </summary>
         protected virtual void DrawContributionText(SpriteBatch spriteBatch, Vector2 position, float alpha, float textScale) {
             var font = FontAssets.MouseText.Value;
@@ -707,7 +678,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             string contributionText = $"{DamageContribution.Value}: ";
             Utils.DrawBorderString(spriteBatch, contributionText, position, textColor, textScale);
 
-            //°Ù·Ö±ÈÏÔÊ¾
+            //ç™¾åˆ†æ¯”æ˜¾ç¤º
             Vector2 percentPos = position + new Vector2(font.MeasureString(contributionText).X * textScale, 0);
             string percentText = $"{cachedContribution:P1}";
 
@@ -728,7 +699,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             currentStyle?.DrawProgressBar(spriteBatch, barRect, cachedContribution, alpha);
 
-            //ĞèÇó±ê¼ÇÏß
+            //éœ€æ±‚æ ‡è®°çº¿
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float requiredX = position.X + barWidth * GetRequiredContribution();
             Rectangle requirementLine = new Rectangle((int)requiredX - 1, (int)position.Y, 2, (int)barHeight);
@@ -736,7 +707,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// ½«ÎÄ±¾°´¿í¶È×Ô¶¯»»ĞĞ
+        /// å°†æ–‡æœ¬æŒ‰å®½åº¦è‡ªåŠ¨æ¢è¡Œ
         /// </summary>
         protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
             List<string> lines = new();
@@ -753,7 +724,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 Vector2 testSize = font.MeasureString(testLine) * scale;
 
                 if (testSize.X > maxWidth && !string.IsNullOrEmpty(currentLine)) {
-                    //µ±Ç°ĞĞÒÑÂú£¬±£´æ²¢¿ªÊ¼ĞÂĞĞ
+                    //å½“å‰è¡Œå·²æ»¡ï¼Œä¿å­˜å¹¶å¼€å§‹æ–°è¡Œ
                     lines.Add(currentLine);
                     currentLine = word;
                 }
@@ -762,7 +733,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //Ìí¼Ó×îºóÒ»ĞĞ
+            //æ·»åŠ æœ€åä¸€è¡Œ
             if (!string.IsNullOrEmpty(currentLine)) {
                 lines.Add(currentLine);
             }

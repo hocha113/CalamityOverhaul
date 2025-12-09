@@ -6462,6 +6462,13 @@ UI: {
 		// TitleText: Old Chest
 		// StorageText: Storage Space
 	}
+
+	QuestLog: {
+		// ObjectiveText: 任务目标
+		// RewardText: 任务奖励
+		// ReceiveAwardText: 领取奖励
+		// ProgressText: 任务完成比例
+	}
 }
 
 ADV: {

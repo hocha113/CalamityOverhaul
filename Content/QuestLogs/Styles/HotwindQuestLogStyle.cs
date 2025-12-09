@@ -2,8 +2,10 @@ using CalamityOverhaul.Content.QuestLogs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
@@ -305,7 +307,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public Vector4 GetPadding() {
-            return new Vector4(15, 35, 15, 15);//Left, Top, Right, Bottom
+            return new Vector4(15, 35, 15, 15);
         }
 
         public Rectangle GetCloseButtonRect(Rectangle panelRect) {
@@ -391,7 +393,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制任务目标
             if (node.Objectives != null && node.Objectives.Count > 0) {
-                Utils.DrawBorderString(spriteBatch, "任务目标:", new Vector2(panelRect.X + padding, currentY),
+                Utils.DrawBorderString(spriteBatch, QuestLog.ObjectiveText.Value + ":", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 200, 140) * alpha, 0.9f);
                 currentY += 25;
 
@@ -447,7 +449,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制任务奖励
             if (node.Rewards != null && node.Rewards.Count > 0) {
-                Utils.DrawBorderString(spriteBatch, "任务奖励:", new Vector2(panelRect.X + padding, currentY),
+                Utils.DrawBorderString(spriteBatch, QuestLog.RewardText.Value + ":", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 200, 140) * alpha, 0.9f);
                 currentY += 25;
 
@@ -516,10 +518,84 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - btnBorder, buttonRect.Y, btnBorder, buttonRect.Height), btnEdge);
 
                 //按钮文字
-                string btnText = "领取奖励";
+                string btnText = QuestLog.ReceiveAwardText.Value;
                 Vector2 btnTextSize = FontAssets.MouseText.Value.MeasureString(btnText) * 0.85f;
                 Vector2 btnTextPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
                 Utils.DrawBorderString(spriteBatch, btnText, btnTextPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
+            }
+        }
+
+        public void DrawProgressBar(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float alpha = log.MainPanelAlpha;
+
+            //计算进度
+            int total = 0;
+            int completed = 0;
+            foreach (var node in QuestNode.AllQuests) {
+                total++;
+                if (node.IsCompleted) completed++;
+            }
+            float progress = total > 0 ? (float)completed / total : 0f;
+
+            //进度条区域
+            int barHeight = log.ShowProgressBar ? 24 : 8;
+            int barWidth = panelRect.Width - 40;
+            Rectangle barRect = new Rectangle(panelRect.X + 20, panelRect.Bottom + 10, barWidth, barHeight);
+
+            //绘制背景
+            spriteBatch.Draw(pixel, barRect, Color.Black * 0.7f * alpha);
+
+            //绘制边框
+            Color borderColor = new Color(255, 140, 60) * alpha;
+            int border = 2;
+            spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, barRect.Width, border), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Bottom - border, barRect.Width, border), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, border, barRect.Height), borderColor);
+            spriteBatch.Draw(pixel, new Rectangle(barRect.Right - border, barRect.Y, border, barRect.Height), borderColor);
+
+            //绘制进度填充
+            if (total > 0) {
+                int fillWidth = (int)((barWidth - border * 2) * progress);
+                Rectangle fillRect = new Rectangle(barRect.X + border, barRect.Y + border, fillWidth, barHeight - border * 2);
+
+                //渐变填充
+                Color fillColor = new Color(255, 180, 60) * 0.6f * alpha;
+                spriteBatch.Draw(pixel, fillRect, fillColor);
+
+                //流光效果
+                float flow = (flowTimer * 2f) % 1f;
+                int flowX = fillRect.X + (int)(flow * fillRect.Width);
+                if (flowX < fillRect.Right) {
+                    spriteBatch.Draw(pixel, new Rectangle(flowX, fillRect.Y, 2, fillRect.Height), Color.White * 0.5f * alpha);
+                }
+            }
+
+            if (log.ShowProgressBar) {
+                //绘制文字
+                string text = $"{QuestLog.ProgressText.Value}: {completed}/{total} ({(int)(progress * 100)}%)";
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.8f;
+                Vector2 textPos = new Vector2(
+                    barRect.X + barRect.Width / 2 - textSize.X / 2,
+                    barRect.Y + barRect.Height / 2 - textSize.Y / 2 + 2
+                );
+                Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.8f);
+            }
+
+            //绘制切换按钮(小箭头)
+            Rectangle toggleRect = new Rectangle(barRect.Right + 5, barRect.Y + barHeight / 2 - 10, 20, 20);
+            bool hoverToggle = toggleRect.Contains(Main.MouseScreen.ToPoint());
+            Color toggleColor = hoverToggle ? new Color(255, 200, 100) : new Color(200, 150, 80);
+
+            Utils.DrawBorderString(spriteBatch, log.ShowProgressBar ? "▲" : "▼", toggleRect.TopLeft(), toggleColor * alpha, 1f);
+
+            //处理点击
+            if (hoverToggle) {
+                Main.LocalPlayer.mouseInterface = true;
+                if (Main.mouseLeft && Main.mouseLeftRelease) {
+                    log.ShowProgressBar = !log.ShowProgressBar;
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                }
             }
         }
 

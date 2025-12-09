@@ -6439,6 +6439,13 @@ UI: {
 		TitleText: 老箱子
 		StorageText: 储物空间
 	}
+
+	QuestLog: {
+		// ObjectiveText: 任务目标
+		// RewardText: 任务奖励
+		// ReceiveAwardText: 领取奖励
+		// ProgressText: 任务完成比例
+	}
 }
 
 ADV: {
