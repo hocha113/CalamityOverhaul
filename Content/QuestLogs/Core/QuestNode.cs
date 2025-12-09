@@ -308,6 +308,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 Rewards[i].Initialize(this, i);
             }
             for (int i = 0; i < Objectives.Count; i++) {
+                //如果没有指定目标物品，且任务图标为物品，则默认使用任务图标物品
+                if (Objectives[i].TargetItemID == 0 && IconType == QuestIconType.Item && IconItemType > 0) {
+                    Objectives[i].TargetItemID = IconItemType;
+                }
                 Objectives[i].Initialize(this, i);
             }
             PostSetup();
@@ -417,6 +421,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// 所需进度
         /// </summary>
         public int RequiredProgress;
+        /// <summary>
+        /// 目标物品ID
+        /// </summary>
+        public int TargetItemID;
 
         private QuestNode _node;
         private int _index;

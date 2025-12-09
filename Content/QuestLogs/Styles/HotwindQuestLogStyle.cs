@@ -400,6 +400,46 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Color objColor = objective.IsCompleted ? new Color(140, 255, 160) : Color.White;
                     Utils.DrawBorderString(spriteBatch, objText, new Vector2(panelRect.X + padding + 10, currentY),
                         objColor * alpha, 0.8f);
+
+                    //如果存在目标物品，绘制图标
+                    if (objective.TargetItemID > 0) {
+                        //计算图标位置(文本右侧)
+                        Vector2 textSize = FontAssets.MouseText.Value.MeasureString(objText) * 0.8f;
+                        Rectangle itemRect = new Rectangle(
+                            (int)(panelRect.X + padding + 10 + textSize.X + 10),
+                            currentY - 4,
+                            24,
+                            24
+                        );
+
+                        //绘制背景
+                        spriteBatch.Draw(pixel, itemRect, new Color(0, 0, 0, 100) * alpha);
+
+                        //绘制物品
+                        Main.instance.LoadItem(objective.TargetItemID);
+                        Texture2D itemTex = TextureAssets.Item[objective.TargetItemID].Value;
+                        if (itemTex != null) {
+                            Rectangle frame = Main.itemAnimations[objective.TargetItemID] != null
+                                ? Main.itemAnimations[objective.TargetItemID].GetFrame(itemTex)
+                                : itemTex.Frame();
+
+                            float scale = 1f;
+                            if (frame.Width > 20 || frame.Height > 20) {
+                                scale = 20f / Math.Max(frame.Width, frame.Height);
+                            }
+
+                            Vector2 origin = frame.Size() / 2f;
+                            Vector2 drawPos = itemRect.Center.ToVector2();
+                            spriteBatch.Draw(itemTex, drawPos, frame, Color.White * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
+                        }
+
+                        //悬停检测
+                        if (itemRect.Contains(Main.MouseScreen.ToPoint()) && ContentSamples.ItemsByType.TryGetValue(objective.TargetItemID, out var item)) {
+                            Main.HoverItem = item;
+                            Main.hoverItemName = item.Name;
+                        }
+                    }
+
                     currentY += 22;
                 }
                 currentY += 10;
@@ -417,8 +457,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Rectangle rewardRect = new Rectangle(rewardX, currentY, 32, 32);
                     Color rewardColor = reward.Claimed ? new Color(100, 100, 110) : new Color(255, 200, 120);
 
-                    if (rewardRect.Contains(Main.MouseScreen.ToPoint()) 
-                        && ContentSamples.ItemsByType.TryGetValue(reward.ItemType, out var item)) {
+                    if (rewardRect.Contains(Main.MouseScreen.ToPoint()) && ContentSamples.ItemsByType.TryGetValue(reward.ItemType, out var item)) {
                         Main.HoverItem = item;
                         Main.hoverItemName = item.Name;
                     }
