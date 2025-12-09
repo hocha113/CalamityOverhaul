@@ -619,22 +619,43 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// 绘制折叠箭头
         /// </summary>
         protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha, Color styleColor) {
-            //箭头颜色使用更柔和的色调
-            Color arrowColor = Color.Lerp(new Color(140, 160, 180), styleColor, 0.65f) * alpha;
+            center += new Vector2(2, 4);
+            //箭头颜色更亮，提高可见度
+            Color arrowColor = Color.Lerp(new Color(180, 200, 220), styleColor, 0.5f) * alpha;
 
             if (collapseButtonHovered) {
-                arrowColor = Color.Lerp(arrowColor, styleColor, 0.4f);
+                arrowColor = Color.Lerp(arrowColor, Color.White, 0.3f);
             }
 
-            //绘制箭头线条
-            float lineThickness = collapseButtonHovered ? 1.8f : 1.4f;
-            Utils.DrawBorderString(spriteBatch, isCollapsed ? "◀" : "▶", center, arrowColor, lineThickness, 0.5f, 0.5f);
+            //字体箭头符号
+            string arrowSymbol = isCollapsed ? "◀" : "▶";
+            var font = FontAssets.MouseText.Value;
+            
+            //测量文本尺寸以正确居中
+            Vector2 textSize = font.MeasureString(arrowSymbol);
+            float scale = collapseButtonHovered ? 1.1f : 1f;
+            Vector2 scaledSize = textSize * scale;
+            
+            //计算居中位置
+            Vector2 drawPos = center - scaledSize / 2f;
+            
+            //绘制箭头主体
+            Utils.DrawBorderString(spriteBatch, arrowSymbol, drawPos, arrowColor, scale);
 
-            //添加箭头发光效果降低强度
+            //添加箭头发光效果
             if (collapseButtonHovered) {
-                Color glowColor = styleColor with { A = 0 };
-                float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.4f;
-                Utils.DrawBorderString(spriteBatch, isCollapsed ? "◀" : "▶", center, glowColor * (glowPulse * 0.3f), lineThickness * 1.1f, 0.5f, 0.5f);
+                Color glowColor = Color.Lerp(styleColor, Color.White, 0.4f) with { A = 0 };
+                float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.5f;
+                
+                //绘制多层发光
+                for (int i = 0; i < 2; i++) {
+                    float glowScale = scale * (1f + i * 0.08f);
+                    float glowAlpha = glowPulse * (0.4f - i * 0.15f);
+                    Vector2 glowSize = textSize * glowScale;
+                    Vector2 glowPos = center - glowSize / 2f;
+                    
+                    Utils.DrawBorderString(spriteBatch, arrowSymbol, glowPos, glowColor * glowAlpha, glowScale);
+                }
             }
         }
 
