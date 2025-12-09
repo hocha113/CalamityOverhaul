@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityOverhaul.Content.ADV.Scenarios;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;

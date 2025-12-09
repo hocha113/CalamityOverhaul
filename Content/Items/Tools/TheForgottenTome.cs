@@ -2,6 +2,7 @@
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using System;

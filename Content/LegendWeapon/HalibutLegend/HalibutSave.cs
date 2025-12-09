@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.MainMenuOvers;
+﻿using CalamityOverhaul.Content.ADV.MainMenuOvers;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System.Collections.Generic;
