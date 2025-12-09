@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             return ScenarioManager.Start<CalamitasCloneGift>();
         }
         protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
-            return !SupCalEffect.IsActive;
+            return !SupCalEffect.IsActive;//防止冲突
         }
     }
 }
