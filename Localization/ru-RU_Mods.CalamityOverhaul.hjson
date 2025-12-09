@@ -7728,5 +7728,69 @@ QuestLogs: {
 			// QuestReward.Description: 20个圣金源锭
 			// DetailedDescription: " "
 		}
+
+		BatteryQuest: {
+			// DisplayName: 能源储存
+			// Description: 制作热能电池
+			// QuestObjective.Description: 获得热能电池
+			// QuestReward.Description: 50个电线
+			// DetailedDescription: " "
+		}
+
+		HydroelectricQuest: {
+			// DisplayName: 水力发电
+			// Description: 制作一台水力发电机
+			// QuestObjective.Description: 获得水力发电机
+			// QuestReward.Description: 水桶
+			// DetailedDescription: " "
+		}
+
+		IndustrialStartQuest: {
+			// DisplayName: 工业起步
+			// Description: 制作一台风力发电机
+			// QuestObjective.Description: 获得风力发电机
+			// QuestReward.Description: 10个铁锭
+			// DetailedDescription: " "
+		}
+
+		ItemFilterQuest: {
+			// DisplayName: 物品筛选
+			// Description: 制作一个物品过滤器
+			// QuestObjective.Description: 获得物品过滤器
+			// QuestReward.Description: 2个箱子
+			// DetailedDescription: " "
+		}
+
+		MiningMachineQuest: {
+			// DisplayName: 自动化挖掘
+			// Description: 制作一台采矿机
+			// QuestObjective.Description: 获得采矿机
+			// QuestReward.Description: 5个洞穴探险药水
+			// DetailedDescription: " "
+		}
+
+		PipelineQuest: {
+			// DisplayName: 能源传输
+			// Description: 制作通用能源管道
+			// QuestObjective.Description: 获得通用能源管道
+			// QuestReward.Description: 20个通用能源管道
+			// DetailedDescription: " "
+		}
+
+		TeslaTowerQuest: {
+			// DisplayName: 特斯拉塔
+			// Description: 制作一座特斯拉电磁塔
+			// QuestObjective.Description: 获得特斯拉电磁塔
+			// QuestReward.Description: 20个可疑镀层
+			// DetailedDescription: " "
+		}
+
+		ThermalPowerQuest: {
+			// DisplayName: 火力发电
+			// Description: 制作一台火力发电机
+			// QuestObjective.Description: 获得火力发电机
+			// QuestReward.Description: 50个煤炭
+			// DetailedDescription: " "
+		}
 	}
 }
