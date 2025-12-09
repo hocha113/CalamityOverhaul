@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             UpdateRisingDragonCharge();
             PlayHitSound(target);
-            if (Projectile.numHits == 0) {
+            if (Projectile.numHits % 2 == 0) {
                 SpawnHitParticles(target);
             }
             SpawnHitSparks(target);
@@ -437,15 +437,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private void SpawnHitParticles(NPC target) {
             for (int i = 0; i < 3; i++) {
                 Color impactColor = Slash3 ? (Main.rand.NextBool(3) ? Color.LightCoral : Color.White) : (Main.rand.NextBool(4) ? Color.LightCoral : Color.Crimson);
-                float impactParticleScale = Main.rand.NextFloat(1f, 1.75f);
+                float impactParticleScale = Main.rand.NextFloat(0.6f, 0.85f);
                 Vector2 particlePosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f);
 
                 if (Slash3) {
-                    PRT_Sparkle impactParticle2 = new(particlePosition, Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 4.5f);
+                    PRT_Sparkle impactParticle2 = new(particlePosition, Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 2.5f);
                     PRTLoader.AddParticle(impactParticle2);
                 }
 
-                PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 2.5f);
+                PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 1.5f);
                 PRTLoader.AddParticle(impactParticle);
             }
         }

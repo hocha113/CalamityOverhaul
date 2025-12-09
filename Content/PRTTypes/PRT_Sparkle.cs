@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Texture2D starTexture = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D starTexture = TexValue;
             Texture2D bloomTexture = PRT_Light.BloomTex.Value;
             float properBloomSize = (float)starTexture.Height / bloomTexture.Height;
 
