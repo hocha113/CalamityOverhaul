@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.QuestLogs
     public class QuestLog : UIHandle
     {
         [VaultLoaden(CWRConstant.UI)]
-        public static Asset<Texture2D> QuestLogStart;
+        public static Asset<Texture2D> QuestLogStart = null;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
         public override bool Active => visible || openScale > 0.01f || Main.playerInventory;
