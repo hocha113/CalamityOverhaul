@@ -91,6 +91,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     }
                 }
             }
+            CurrentStyle?.UpdateStyle();
         }
 
         public override void Update() {
@@ -163,7 +164,15 @@ namespace CalamityOverhaul.Content.QuestLogs
                 int scroll = Mouse.GetState().ScrollWheelValue;
                 if (scroll != oldScrollWheelValue) {
                     float zoomChange = (scroll - oldScrollWheelValue) > 0 ? 0.1f : -0.1f;
-                    zoom = MathHelper.Clamp(zoom + zoomChange, 0.5f, 2.0f);
+                    float oldZoom = zoom;
+                    float newZoom = MathHelper.Clamp(zoom + zoomChange, 0.5f, 2.0f);
+
+                    if (oldZoom != newZoom) {
+                        Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2, panelRect.Y + panelRect.Height / 2);
+                        Vector2 relativeMouse = Main.MouseScreen - center;
+                        panOffset = relativeMouse - (relativeMouse - panOffset) * (newZoom / oldZoom);
+                        zoom = newZoom;
+                    }
                 }
                 oldScrollWheelValue = scroll;
 

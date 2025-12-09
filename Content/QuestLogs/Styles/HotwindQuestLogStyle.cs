@@ -13,10 +13,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private float pulseTimer;
         private float bloomTimer;
 
-        public void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
+        public void UpdateStyle() {
+            flowTimer += 0.025f;
+            if (flowTimer > MathHelper.TwoPi) flowTimer -= MathHelper.TwoPi;
             pulseTimer += 0.025f;
             bloomTimer += 0.015f;
+        }
 
+        public void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //绘制深色阴影
@@ -197,9 +201,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
             spriteBatch.Draw(pixel, new Rectangle(nodeRect.Right - borderWidth, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
 
-            //绘制任务类型图标
-            DrawQuestTypeIcon(spriteBatch, node, drawPos, scale, alpha);
-
             //绘制节点名称
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + size / 2 + 8);
             Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value) * 0.75f;
@@ -216,9 +217,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         public void DrawConnection(SpriteBatch spriteBatch, Vector2 start, Vector2 end, bool isUnlocked, float alpha) {
-            flowTimer += 0.025f;
-            if (flowTimer > MathHelper.TwoPi) flowTimer -= MathHelper.TwoPi;
-
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 diff = end - start;
             float length = diff.Length();
@@ -477,28 +475,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Vector2 btnTextPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
                 Utils.DrawBorderString(spriteBatch, btnText, btnTextPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
             }
-        }
-
-        private void DrawQuestTypeIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale, float alpha) {
-            //根据任务类型绘制不同的标记
-            string typeIcon = node.QuestType switch {
-                QuestType.Main => "⚔️",
-                QuestType.Side => "👣",
-                QuestType.Daily => "⏳",
-                QuestType.Achievement => "🏆",
-                _ => "?"
-            };
-
-            Color iconColor = node.QuestType switch {
-                QuestType.Main => new Color(255, 80, 80),
-                QuestType.Side => new Color(80, 180, 255),
-                QuestType.Daily => new Color(255, 200, 80),
-                QuestType.Achievement => new Color(255, 220, 100),
-                _ => Color.White
-            };
-
-            Vector2 iconPos = center - new Vector2(12) * scale;
-            Utils.DrawBorderString(spriteBatch, typeIcon, iconPos, iconColor * alpha, 0.9f * scale, 0.5f, 0.5f);
         }
 
         private void DrawQuestIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale, float alpha) {

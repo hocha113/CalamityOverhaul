@@ -4,6 +4,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 {
     public interface IQuestLogStyle
     {
+        void UpdateStyle();
         //绘制主背景
         void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect);
         //绘制节点
