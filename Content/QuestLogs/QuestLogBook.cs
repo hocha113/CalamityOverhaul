@@ -11,15 +11,13 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
+    [VaultLoaden(CWRConstant.Item + "Tools")]
     internal class QuestLogBook : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Tools/OverhaulTheBibleBook_Close";
-        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Close")]
-        private static Asset<Texture2D> OverhaulTheBibleBook_Close = null;
-        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open1")]
-        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Dark = null;
-        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open2")]
-        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Light = null;
+        public override string Texture => CWRConstant.Item + "Tools/QuestLogBook_Close";
+        private static Asset<Texture2D> QuestLogBook_Close = null;
+        private static Asset<Texture2D> QuestLogBook_Open1 = null;
+        private static Asset<Texture2D> QuestLogBook_Open2 = null;
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
@@ -34,14 +32,14 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             if (OverhaulTheBibleUI.Instance.Active) {
-                TextureAssets.Item[Type] = OverhaulTheBibleBook_Open_Dark;
-                spriteBatch.Draw(OverhaulTheBibleBook_Open_Dark.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                TextureAssets.Item[Type] = QuestLogBook_Open1;
+                spriteBatch.Draw(QuestLogBook_Open1.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
                 Color sengsColor = Color.White * Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
-                spriteBatch.Draw(OverhaulTheBibleBook_Open_Light.Value, position, null, sengsColor, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(QuestLogBook_Open2.Value, position, null, sengsColor, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
             }
             else {
-                TextureAssets.Item[Type] = OverhaulTheBibleBook_Close;
-                spriteBatch.Draw(OverhaulTheBibleBook_Close.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                TextureAssets.Item[Type] = QuestLogBook_Close;
+                spriteBatch.Draw(QuestLogBook_Close.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
             }
             return false;
         }

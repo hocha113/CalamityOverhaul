@@ -204,9 +204,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, new Rectangle(nodeRect.X, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
             spriteBatch.Draw(pixel, new Rectangle(nodeRect.Right - borderWidth, nodeRect.Y, borderWidth, nodeRect.Height), edgeColor * 0.9f * alpha);
 
+            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value) * 0.75f;
             //绘制节点名称
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + size / 2 + 8);
-            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value) * 0.75f;
 
             Color textColor = node.IsCompleted ? new Color(140, 255, 160) :
                              (node.IsUnlocked ? new Color(255, 200, 140) : new Color(140, 140, 150));
