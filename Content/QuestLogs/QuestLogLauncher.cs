@@ -1,8 +1,10 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
@@ -119,6 +121,49 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制额外的发光效果(当打开且悬停时)
             if (glowIntensity > 0.01f) {
                 DrawGlowEffect(spriteBatch, iconTexture, sourceRect, drawPos, scale);
+            }
+
+            DrawNotificationBadge(spriteBatch);
+        }
+
+        private void DrawNotificationBadge(SpriteBatch spriteBatch) {
+            int unclaimedCount = 0;
+            foreach (var quest in QuestNode.AllQuests) {
+                if (quest.IsCompleted && quest.Rewards != null) {
+                    foreach (var reward in quest.Rewards) {
+                        if (!reward.Claimed) {
+                            unclaimedCount++;
+                        }
+                    }
+                }
+            }
+
+            if (unclaimedCount > 0) {
+                string text = unclaimedCount > 99 ? "99+" : unclaimedCount.ToString();
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
+                float maxDim = Math.Max(textSize.X, textSize.Y);
+                float bgSize = Math.Max(18, maxDim + 6);
+
+                //红点位置在图标右上角
+                Vector2 badgeCenter = new Vector2(IconRect.Right - 4, IconRect.Top + 4);
+                Rectangle badgeRect = new Rectangle((int)(badgeCenter.X - bgSize / 2), (int)(badgeCenter.Y - bgSize / 2), (int)bgSize, (int)bgSize);
+
+                Texture2D pixel = VaultAsset.placeholder2.Value;
+
+                //绘制红点背景
+                spriteBatch.Draw(pixel, badgeRect, Color.IndianRed);
+
+                //绘制红点边框
+                int border = 1;
+                Color borderColor = Color.OrangeRed;
+                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Y, badgeRect.Width, border), borderColor);
+                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Bottom - border, badgeRect.Width, border), borderColor);
+                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Y, border, badgeRect.Height), borderColor);
+                spriteBatch.Draw(pixel, new Rectangle(badgeRect.Right - border, badgeRect.Y, border, badgeRect.Height), borderColor);
+
+                //绘制数字
+                Vector2 textPos = new Vector2(badgeRect.X + badgeRect.Width / 2 - textSize.X / 2, badgeRect.Y + badgeRect.Height / 2 - textSize.Y / 2);
+                Utils.DrawBorderString(spriteBatch, text, textPos, Color.White, 0.75f);
             }
         }
 
