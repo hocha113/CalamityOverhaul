@@ -9,6 +9,7 @@ using CalamityMod.Items.Armor.SnowRuffian;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using CalamityMod.Items.Fishing.SunkenSeaCatches;
+using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
 using CalamityMod.Items.Weapons.Magic;
@@ -60,6 +61,9 @@ namespace CalamityOverhaul
         public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
         public static int Item_ => ModContent.ItemType<Rock>();
+        public static int Item_LoreAwakening => ModContent.ItemType<LoreAwakening>();
+        public static int Item_SquirrelSquireStaff => ModContent.ItemType<SquirrelSquireStaff>();
+        public static int Item_ThrowingBrick => ModContent.ItemType<ThrowingBrick>();
         public static int Item_Brimlish => ModContent.ItemType<Brimlish>();
         public static int Item_WaveSkipper => ModContent.ItemType<WaveSkipper>();
         public static int Item_ExoPrism => ModContent.ItemType<ExoPrism>();

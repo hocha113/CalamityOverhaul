@@ -17,11 +17,36 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.Torch,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "点击领取")
-            });
+            Rewards.Add(new QuestReward { ItemType = ItemID.CopperBroadsword, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.CopperBow, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.AmethystStaff, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.CopperHammer, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.WoodenArrow, Amount = 100 });
+            Rewards.Add(new QuestReward { ItemType = CWRID.Item_SquirrelSquireStaff, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = CWRID.Item_ThrowingBrick, Amount = 150 });
+
+            Rewards.Add(new QuestReward { ItemType = ItemID.ManaCrystal, Amount = 1 });
+
+            Rewards.Add(new QuestReward { ItemType = ItemID.Bomb, Amount = 10 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.Rope, Amount = 50 });
+
+            Rewards.Add(new QuestReward { ItemType = ItemID.MiningPotion, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.SpelunkerPotion, Amount = 2 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.SwiftnessPotion, Amount = 3 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.GillsPotion, Amount = 2 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.ShinePotion, Amount = 1 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.RecallPotion, Amount = 3 });
+
+            Rewards.Add(new QuestReward { ItemType = ItemID.Torch, Amount = 25 });
+            Rewards.Add(new QuestReward { ItemType = ItemID.Chest, Amount = 3 });
+
+            Rewards.Add(new QuestReward { ItemType = CWRID.Item_LoreAwakening, Amount = 1 });
+
+            if (ModLoader.TryGetMod("MagicStorage", out Mod magicStorage)) {
+                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("StorageHeart").Type, Amount = 1 });
+                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("StorageUnit").Type, Amount = 4 });
+                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("CraftingAccess").Type, Amount = 1 });
+            }
 
             AddChild<MiningQuest>();
         }
