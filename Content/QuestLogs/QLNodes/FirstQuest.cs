@@ -52,10 +52,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            // 更新进度
+            //更新进度
             Objectives[0].CurrentProgress = 1;
 
-            // 检查完成
+            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }

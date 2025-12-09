@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
@@ -416,10 +417,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Rectangle rewardRect = new Rectangle(rewardX, currentY, 32, 32);
                     Color rewardColor = reward.Claimed ? new Color(100, 100, 110) : new Color(255, 200, 120);
 
-                    // 绘制背景框
+                    if (rewardRect.Contains(Main.MouseScreen.ToPoint()) 
+                        && ContentSamples.ItemsByType.TryGetValue(reward.ItemType, out var item)) {
+                        Main.HoverItem = item;
+                        Main.hoverItemName = item.Name;
+                    }
+
+                    //绘制背景框
                     spriteBatch.Draw(pixel, rewardRect, rewardColor * (alpha * 0.3f));
 
-                    // 尝试绘制真实物品图标
+                    //绘制真实物品图标
                     Main.instance.LoadItem(reward.ItemType);
                     Texture2D itemTexture = TextureAssets.Item[reward.ItemType].Value;
                     if (itemTexture != null) {
