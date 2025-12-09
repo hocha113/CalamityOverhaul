@@ -333,6 +333,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <param name="consumedItems"></param>
         /// <param name="destinationStack"></param>
         public virtual void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) { }
+
+        /// <summary>
+        /// NPC死亡时调用
+        /// </summary>
+        public virtual void OnKillByNPC(NPC npc) { }
     }
 
     /// <summary>
