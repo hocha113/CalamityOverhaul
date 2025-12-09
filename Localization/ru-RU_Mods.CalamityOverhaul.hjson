@@ -7624,5 +7624,109 @@ QuestLogs: {
 			// QuestReward.Description: 神锤
 			// DetailedDescription: " "
 		}
+
+		CeaselessVoidQuest: {
+			// DisplayName: 无尽虚空
+			// Description: 击败无尽虚空
+			// QuestObjective.Description: 击败无尽虚空
+			// QuestReward.Description: 5个暗物质
+			// DetailedDescription: " "
+		}
+
+		DevourerofGodsQuest: {
+			// DisplayName: 神明吞噬者
+			// Description: 击败神明吞噬者
+			// QuestObjective.Description: 击败神明吞噬者
+			// QuestReward.Description: 30个神宇金锭
+			// DetailedDescription: " "
+		}
+
+		DragonfollyQuest: {
+			// DisplayName: 痴愚金龙
+			// Description: 击败痴愚金龙
+			// QuestObjective.Description: 击败痴愚金龙
+			// QuestReward.Description: 10个闪耀金羽
+			// DetailedDescription: " "
+		}
+
+		ExoMechsQuest: {
+			// DisplayName: 星流巨械
+			// Description: 击败星流巨械
+			// QuestObjective.Description: 击败星流巨械
+			// QuestReward.Description: 20个星流棱晶
+			// DetailedDescription: " "
+		}
+
+		OldDukeQuest: {
+			// DisplayName: 硫海遗爵
+			// Description: 击败硫海遗爵
+			// QuestObjective.Description: 击败硫海遗爵
+			// QuestReward.Description: 20个腐蚀化石
+			// DetailedDescription: " "
+		}
+
+		PolterghastQuest: {
+			// DisplayName: 噬魂幽花
+			// Description: 击败噬魂幽花
+			// QuestObjective.Description: 击败噬魂幽花
+			// QuestReward.Description: 10个幽花之魂
+			// DetailedDescription: " "
+		}
+
+		PrimordialWyrmQuest: {
+			// DisplayName: 始源妖龙
+			// Description: 击败始源妖龙
+			// QuestObjective.Description: 击败始源妖龙
+			// QuestReward.Description: 大比目鱼炮
+			// DetailedDescription: " "
+		}
+
+		ProfanedGuardiansQuest: {
+			// DisplayName: 亵渎使徒
+			// Description: 击败亵渎使徒
+			// QuestObjective.Description: 击败亵渎使徒
+			// QuestReward.Description: 3个亵渎碎片
+			// DetailedDescription: " "
+		}
+
+		ProvidenceQuest: {
+			// DisplayName: 亵渎天神
+			// Description: 击败亵渎天神
+			// QuestObjective.Description: 击败亵渎天神
+			// QuestReward.Description: 20个圣神晶石
+			// DetailedDescription: " "
+		}
+
+		SignusQuest: {
+			// DisplayName: 西格纳斯
+			// Description: 击败西格纳斯
+			// QuestObjective.Description: 击败西格纳斯
+			// QuestReward.Description: 5个扭曲虚空
+			// DetailedDescription: " "
+		}
+
+		StormWeaverQuest: {
+			// DisplayName: 风暴编织者
+			// Description: 击败风暴编织者
+			// QuestObjective.Description: 击败风暴编织者
+			// QuestReward.Description: 5个装甲外壳
+			// DetailedDescription: " "
+		}
+
+		SupremeCalamitasQuest: {
+			// DisplayName: 至尊灾厄
+			// Description: 击败至尊灾厄
+			// QuestObjective.Description: 击败至尊灾厄
+			// QuestReward.Description: 20个灭世余灰
+			// DetailedDescription: " "
+		}
+
+		YharonQuest: {
+			// DisplayName: 丛林龙,犽戎
+			// Description: 击败丛林龙,犽戎
+			// QuestObjective.Description: 击败丛林龙,犽戎
+			// QuestReward.Description: 20个圣金源锭
+			// DetailedDescription: " "
+		}
 	}
 }
