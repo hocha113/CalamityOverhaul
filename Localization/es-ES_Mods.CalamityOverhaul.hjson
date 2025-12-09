@@ -7391,5 +7391,149 @@ QuestLogs: {
 
 			// DetailedDescription: " "
 		}
+
+		BrimstoneElementalQuest: {
+			// DisplayName: 硫磺火元素
+			// Description: 击败硫磺火元素
+			// QuestObjective.Description: 击败硫磺火元素
+			// QuestReward.Description: 10个暗影之魂
+			// DetailedDescription: " "
+		}
+
+		CalamitasCloneQuest: {
+			// DisplayName: 灾厄之影
+			// Description: 击败灾厄之影
+			// QuestObjective.Description: 击败灾厄之影
+			// QuestReward.Description: 10个灾厄尘
+			// DetailedDescription: " "
+		}
+
+		CrabulonQuest: {
+			// DisplayName: 菌生蟹
+			// Description: 击败菌生蟹
+			// QuestObjective.Description: 击败菌生蟹
+			// QuestReward.Description: 50个发光蘑菇
+			// DetailedDescription: " "
+		}
+
+		CryogenQuest: {
+			// DisplayName: 极地冰灵
+			// Description: 击败极地冰灵
+			// QuestObjective.Description: 击败极地冰灵
+			// QuestReward.Description: 10个光明之魂
+			// DetailedDescription: " "
+		}
+
+		DesertScourgeQuest: {
+			// DisplayName: 荒漠灾虫
+			// Description: 击败荒漠灾虫
+			// QuestObjective.Description: 击败荒漠灾虫
+			// QuestReward.Description: 10个胜利碎片
+			// DetailedDescription: " "
+		}
+
+		EaterofWorldsQuest: {
+			// DisplayName: 世界吞噬者/克苏鲁之脑
+			// Description: 击败世界吞噬者或克苏鲁之脑
+			// QuestObjective.Description: 击败世界吞噬者或克苏鲁之脑
+			// QuestReward.Description: 20个暗影鳞片/组织样本
+			// DetailedDescription: " "
+		}
+
+		EyeofCthulhuQuest: {
+			// DisplayName: 克苏鲁之眼
+			// Description: 击败克苏鲁之眼
+			// QuestObjective.Description: 击败克苏鲁之眼
+			// QuestReward.Description: 20个魔矿/猩红矿
+			// DetailedDescription: " "
+		}
+
+		GolemQuest: {
+			// DisplayName: 石巨人
+			// Description: 击败石巨人
+			// QuestObjective.Description: 击败石巨人
+			// QuestReward.Description: 10个甲虫外壳
+			// DetailedDescription: " "
+		}
+
+		HiveMindQuest: {
+			// DisplayName: 腐巢意志/血肉宿主
+			// Description: 击败腐巢意志或血肉宿主
+			// QuestObjective.Description: 击败腐巢意志或血肉宿主
+			// QuestReward.Description: 10个魔矿锭/猩红矿锭
+			// DetailedDescription: " "
+		}
+
+		KingSlimeQuest: {
+			// DisplayName: 史莱姆王
+			// Description: 击败史莱姆王
+			// QuestObjective.Description: 击败史莱姆王
+			// QuestReward.Description: 5金币
+			// DetailedDescription: " "
+		}
+
+		LunaticCultistQuest: {
+			// DisplayName: 拜月教邪教徒
+			// Description: 击败拜月教邪教徒
+			// QuestObjective.Description: 击败拜月教邪教徒
+			// QuestReward.Description: 5个日耀碎片
+			// DetailedDescription: " "
+		}
+
+		MechanicalBossesQuest: {
+			// DisplayName: 机械三王
+			// Description: 击败所有机械Boss
+			// QuestObjective.Description: 击败所有机械Boss
+			// QuestReward.Description: 20个神圣锭
+			// DetailedDescription: " "
+		}
+
+		MoonLordQuest: {
+			// DisplayName: 月球领主
+			// Description: 击败月球领主
+			// QuestObjective.Description: 击败月球领主
+			// QuestReward.Description: 月球领主纪念章
+			// DetailedDescription: " "
+		}
+
+		PlaguebringerGoliathQuest: {
+			// DisplayName: 瘟疫使者歌莉娅
+			// Description: 击败瘟疫使者歌莉娅
+			// QuestObjective.Description: 击败瘟疫使者歌莉娅
+			// QuestReward.Description: 20个瘟疫细胞罐
+			// DetailedDescription: " "
+		}
+
+		PlanteraQuest: {
+			// DisplayName: 世纪之花
+			// Description: 击败世纪之花
+			// QuestObjective.Description: 击败世纪之花
+			// QuestReward.Description: 50个叶绿矿
+			// DetailedDescription: " "
+		}
+
+		SkeletronQuest: {
+			// DisplayName: 骷髅王
+			// Description: 击败骷髅王
+			// QuestObjective.Description: 击败骷髅王
+			// QuestReward.Description: 50个骨头
+			// DetailedDescription: " "
+		}
+
+		SlimeGodQuest: {
+			// DisplayName: 史莱姆之神
+			// Description: 击败史莱姆之神
+			// QuestObjective.Description: 击败史莱姆之神
+			// QuestReward.Description: 100个凝胶
+			// DetailedDescription: " "
+		}
+
+		WallofFleshQuest: {
+			// DisplayName: 血肉墙
+			// Description: 击败血肉墙
+			// QuestObjective.Description: 击败血肉墙
+			// QuestReward.Description: 神锤
+			// DetailedDescription: " "
+		}
 	}
 }
