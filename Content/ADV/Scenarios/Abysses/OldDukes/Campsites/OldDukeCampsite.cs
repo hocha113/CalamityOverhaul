@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+using CalamityOverhaul.OtherMods.NoxusBoss;
+using CalamityOverhaul.OtherMods.SubWorld;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -145,6 +147,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return false;
             }
 
+            //检查是否在子世界中
+            if (SubWorldRef.AnyActiveSubWorld()) {
+                return false;
+            }
+
+            //检查玩家是否有有效存档数据
             if (!player.TryGetADVSave(out var save)) {
                 return false;
             }

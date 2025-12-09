@@ -48,6 +48,7 @@ namespace CalamityOverhaul
         internal Mod luminance = null;
         internal Mod woTM = null;
         internal Mod noxusBoss = null;
+        internal Mod subworldLibrary = null;
 
         #endregion
 
@@ -113,6 +114,7 @@ namespace CalamityOverhaul
             luminance = null;
             woTM = null;
             noxusBoss = null;
+            subworldLibrary = null;
         }
 
         public void FindMod() {
@@ -145,6 +147,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("Luminance", out luminance);
             ModLoader.TryGetMod("WoTM", out woTM);
             ModLoader.TryGetMod("NoxusBoss", out noxusBoss);
+            ModLoader.TryGetMod("SubworldLibrary", out subworldLibrary);
         }
     }
 }

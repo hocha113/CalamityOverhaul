@@ -35,5 +35,21 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
                 return false;
             }
         }
+
+        internal static bool AnyActiveSubWorld() {
+            try {
+                if (CWRMod.Instance.subworldLibrary == null) {
+                    return false;
+                }
+                if (CWRMod.Instance.noxusBoss == null) {
+                    return false;
+                }
+                return (bool)CWRMod.Instance.subworldLibrary.Call("AnyActive", CWRMod.Instance.noxusBoss);
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"NoxusRef.AnyActiveSubWorld An Error Has Cccurred: {ex.Message}");
+                VaultUtils.Text("CWRMod Error: NoxusRef.AnyActiveSubWorld An Error Has Occurred! See Log For Details.", Color.Red);
+                return false;
+            }
+        }
     }
 }
