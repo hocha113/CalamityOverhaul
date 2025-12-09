@@ -10,6 +10,9 @@ namespace CalamityOverhaul.OtherMods.SubWorld
         /// </summary>
         /// <returns></returns>
         internal static bool AnyActiveSubWorld() {
+            if (CWRMod.Instance.subworldLibrary is null) {
+                return false;
+            }
             try {
                 bool result = false;
                 foreach (var mod in ModLoader.Mods) {
