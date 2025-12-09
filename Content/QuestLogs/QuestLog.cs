@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
         public override bool Active => visible || openScale > 0.01f || Main.playerInventory;
-        private bool visible;
+        internal bool visible;
         public float MainPanelAlpha => mainPanelAlpha;
         private float mainPanelAlpha;
         private float openScale;

@@ -1430,6 +1430,11 @@ Items: {
 			"老公爵从前的储物箱，如果他在附近，他可能会往里面扔些东西"
 			'''
 	}
+
+	QuestLogBook: {
+		// DisplayName: Quest Log Book
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

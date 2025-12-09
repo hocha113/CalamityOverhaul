@@ -1457,6 +1457,11 @@ Items: {
 			"The Old Duke's former chest. If he is nearby, he might toss some things inside."
 			''' */
 	}
+
+	QuestLogBook: {
+		// DisplayName: Quest Log Book
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

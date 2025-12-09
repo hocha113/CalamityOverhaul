@@ -12,6 +12,7 @@ using CalamityMod.Items.Fishing.SunkenSeaCatches;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
+using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
@@ -141,6 +142,7 @@ namespace CalamityOverhaul
         public static int Item_DeathhailStaff => ModContent.ItemType<DeathhailStaff>();
         public static int Item_StaffoftheMechworm => ModContent.ItemType<StaffoftheMechworm>();
         public static int Item_Eradicator => ModContent.ItemType<Eradicator>();
+        public static int Item_StarterBag => ModContent.ItemType<StarterBag>();
         public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
         public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
         public static int Item_CosmiliteBar => ModContent.ItemType<CosmiliteBar>();
