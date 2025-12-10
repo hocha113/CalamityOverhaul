@@ -3,6 +3,7 @@ using CalamityMod.CalPlayer;
 using CalamityMod.Events;
 using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.NPCs;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
@@ -238,6 +239,9 @@ namespace CalamityOverhaul
         public static bool GetProjStealthStrike(this Projectile projectile) => projectile.Calamity().stealthStrike;
         public static void OldDukeOnKill(NPC npc) {
             StopAcidRain();
+            CalamityGlobalNPC.SetNewBossJustDowned(npc);
+            DownedBossSystem.downedBoomerDuke = true;
+            AcidRainEvent.OldDukeHasBeenEncountered = true;
             if (npc.ModNPC is not null && npc.ModNPC is OldDuke oldDuke) {
                 oldDuke.OnKill();
             }
