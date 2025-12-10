@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         public void DrawBackground(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
+            bool nightMode = log.NightMode;
 
             //绘制深色阴影
             Rectangle shadowRect = panelRect;
@@ -34,27 +35,34 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, panelRect, Color.Black * 0.85f * log.MainPanelAlpha);
 
             //绘制内部渐变效果
+            Color gradStart = nightMode ? new Color(5, 10, 20) : new Color(20, 10, 5);
+            Color gradEnd = nightMode ? new Color(10, 20, 40) : new Color(40, 20, 10);
+
             int gradientSteps = 20;
             for (int i = 0; i < gradientSteps; i++) {
                 float t = i / (float)gradientSteps;
                 int y = panelRect.Y + (int)(t * panelRect.Height);
                 int height = Math.Max(1, panelRect.Height / gradientSteps);
                 Rectangle gradRect = new Rectangle(panelRect.X, y, panelRect.Width, height);
-                Color gradColor = Color.Lerp(new Color(20, 10, 5), new Color(40, 20, 10), t);
+                Color gradColor = Color.Lerp(gradStart, gradEnd, t);
                 spriteBatch.Draw(pixel, gradRect, gradColor * 0.3f * log.MainPanelAlpha);
             }
 
             //绘制纵向渐变屏幕泛光动画
-            DrawBloomEffect(spriteBatch, pixel, panelRect, log.MainPanelAlpha);
+            DrawBloomEffect(spriteBatch, pixel, panelRect, log.MainPanelAlpha, nightMode);
 
             //绘制脉冲光效
             float pulse = (float)Math.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(255, 140, 60) * (0.08f * pulse * log.MainPanelAlpha);
+            Color pulseBase = nightMode ? new Color(60, 140, 255) : new Color(255, 140, 60);
+            Color pulseColor = pulseBase * (0.08f * pulse * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, panelRect, pulseColor);
 
             //绘制边框
             int border = 3;
-            Color edgeColor = Color.Lerp(new Color(255, 120, 40), new Color(255, 180, 100), pulse);
+            Color edgeStart = nightMode ? new Color(40, 120, 255) : new Color(255, 120, 40);
+            Color edgeEnd = nightMode ? new Color(100, 180, 255) : new Color(255, 180, 100);
+            Color edgeColor = Color.Lerp(edgeStart, edgeEnd, pulse);
+            
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, border), edgeColor * 0.95f * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - border, panelRect.Width, border), edgeColor * 0.75f * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f * log.MainPanelAlpha);
@@ -63,20 +71,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //绘制内边框发光
             Rectangle innerRect = panelRect;
             innerRect.Inflate(-6, -6);
-            Color innerGlow = new Color(255, 140, 60) * (0.15f * pulse * log.MainPanelAlpha);
+            Color innerGlow = pulseBase * (0.15f * pulse * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Y, innerRect.Width, 1), innerGlow);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Bottom - 1, innerRect.Width, 1), innerGlow * 0.7f);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Y, 1, innerRect.Height), innerGlow * 0.85f);
             spriteBatch.Draw(pixel, new Rectangle(innerRect.Right - 1, innerRect.Y, 1, innerRect.Height), innerGlow * 0.85f);
 
             //绘制角落装饰
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Y + 12), pulse, log.MainPanelAlpha);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Y + 12), pulse, log.MainPanelAlpha);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha);
-            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Y + 12), pulse, log.MainPanelAlpha, nightMode);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Y + 12), pulse, log.MainPanelAlpha, nightMode);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha, nightMode);
+            DrawCornerMark(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Bottom - 12), pulse * 0.7f, log.MainPanelAlpha, nightMode);
         }
 
-        private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alphaMult) {
+        private void DrawBloomEffect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alphaMult, bool nightMode) {
             //创建纵向多层渐变泛光效果，从左到右流动
             int bloomLayers = 4;
 
@@ -113,10 +121,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Rectangle bloomRect = new Rectangle(x, panelRect.Y, width, panelRect.Height);
 
                     //多层动态颜色渐变
-                    Color bloomColor1 = new Color(255, 100, 30);
-                    Color bloomColor2 = new Color(255, 160, 60);
-                    Color bloomColor3 = new Color(255, 200, 100);
-                    Color bloomColor4 = new Color(255, 140, 50);
+                    Color bloomColor1 = nightMode ? new Color(30, 100, 255) : new Color(255, 100, 30);
+                    Color bloomColor2 = nightMode ? new Color(60, 160, 255) : new Color(255, 160, 60);
+                    Color bloomColor3 = nightMode ? new Color(100, 200, 255) : new Color(255, 200, 100);
+                    Color bloomColor4 = nightMode ? new Color(50, 140, 255) : new Color(255, 140, 50);
 
                     //根据层数和位置创建复杂的颜色混合
                     float colorPhase = (t + layer * 0.25f) % 1f;
@@ -645,10 +653,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(iconTexture, iconPos, frame, iconColor * alpha, 0f, origin, iconScale, SpriteEffects.None, 0f);
         }
 
-        private void DrawCornerMark(SpriteBatch spriteBatch, Vector2 pos, float pulse, float alphaMult) {
+        private void DrawCornerMark(SpriteBatch spriteBatch, Vector2 pos, float pulse, float alphaMult, bool nightMode) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float size = 7f;
-            Color markColor = new Color(255, 150, 70) * (pulse * alphaMult);
+            Color markColor = nightMode ? new Color(70, 150, 255) : new Color(255, 150, 70);
+            markColor *= (pulse * alphaMult);
 
             //绘制十字形装饰
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), markColor, 0f,
@@ -659,6 +668,98 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //中心点
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), markColor * 0.7f, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size * 0.4f, size * 0.4f), SpriteEffects.None, 0f);
+        }
+
+        public Rectangle GetStyleSwitchButtonRect(Rectangle panelRect) {
+            return new Rectangle(
+                panelRect.X + 15,
+                panelRect.Bottom - 45,
+                30,
+                30
+            );
+        }
+
+        public void DrawStyleSwitchButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle buttonRect = GetStyleSwitchButtonRect(panelRect);
+            Vector2 center = buttonRect.Center.ToVector2();
+
+            // 绘制背景
+            Color bgColor = isHovered ? new Color(100, 100, 120) : new Color(60, 60, 70);
+            spriteBatch.Draw(pixel, buttonRect, bgColor * alpha);
+
+            // 绘制边框
+            Color borderColor = isHovered ? Color.White : new Color(180, 180, 200);
+            int border = 2;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+
+            // 绘制图标 (类似书本或层叠页面)
+            Color iconColor = isHovered ? Color.White : new Color(220, 220, 220);
+            
+            // 后页
+            Rectangle page1 = new Rectangle(0, 0, 16, 20);
+            spriteBatch.Draw(pixel, center + new Vector2(2, -2), page1, iconColor * 0.5f * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
+            
+            // 前页
+            Rectangle page2 = new Rectangle(0, 0, 16, 20);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2), page2, iconColor * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
+            
+            // 页面纹理
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, -5), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 0), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 5), new Rectangle(0,0, 6, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+        }
+
+        public Rectangle GetNightModeButtonRect(Rectangle panelRect) {
+            return new Rectangle(
+                panelRect.X + 55,
+                panelRect.Bottom - 45,
+                30,
+                30
+            );
+        }
+
+        public void DrawNightModeButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha, bool isNightMode) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle buttonRect = GetNightModeButtonRect(panelRect);
+            Vector2 center = buttonRect.Center.ToVector2();
+
+            // 绘制背景
+            Color bgColor = isHovered ? new Color(80, 80, 100) : new Color(40, 40, 50);
+            spriteBatch.Draw(pixel, buttonRect, bgColor * alpha);
+
+            // 绘制边框
+            Color borderColor = isHovered ? Color.White : new Color(150, 150, 170);
+            int border = 2;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+
+            // 绘制图标 (月亮/太阳)
+            Color iconColor = isHovered ? Color.White : new Color(255, 255, 200);
+            
+            if (isNightMode) {
+                // 月亮图标
+                // 绘制一个圆形
+                spriteBatch.Draw(pixel, center, new Rectangle(0,0, 16, 16), iconColor * alpha, 0f, new Vector2(8, 8), 1f, SpriteEffects.None, 0f);
+                // 绘制遮罩圆形形成月牙
+                spriteBatch.Draw(pixel, center + new Vector2(4, -2), new Rectangle(0,0, 14, 14), bgColor * alpha, 0f, new Vector2(7, 7), 1f, SpriteEffects.None, 0f);
+            } else {
+                // 太阳图标
+                // 中心圆
+                spriteBatch.Draw(pixel, center, new Rectangle(0,0, 10, 10), iconColor * alpha, 0f, new Vector2(5, 5), 1f, SpriteEffects.None, 0f);
+                // 光芒
+                float time = Main.GameUpdateCount * 0.02f;
+                for(int i=0; i<8; i++) {
+                    float rot = i * MathHelper.PiOver4 + time;
+                    Vector2 offset = new Vector2(0, -9).RotatedBy(rot);
+                    spriteBatch.Draw(pixel, center + offset, new Rectangle(0,0, 2, 4), iconColor * alpha, rot, new Vector2(1, 2), 1f, SpriteEffects.None, 0f);
+                }
+            }
         }
 
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) {

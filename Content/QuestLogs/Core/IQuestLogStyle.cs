@@ -29,5 +29,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         Rectangle GetResetViewButtonRect(Rectangle panelRect);
         //绘制重置视图按钮
         void DrawResetViewButton(SpriteBatch spriteBatch, Rectangle panelRect, Vector2 directionToCenter, bool isHovered, float alpha);
+        
+        //获取样式切换按钮区域
+        Rectangle GetStyleSwitchButtonRect(Rectangle panelRect);
+        //绘制样式切换按钮
+        void DrawStyleSwitchButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha);
+
+        //获取夜间模式按钮区域
+        Rectangle GetNightModeButtonRect(Rectangle panelRect);
+        //绘制夜间模式按钮
+        void DrawNightModeButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha, bool isNightMode);
     }
 }

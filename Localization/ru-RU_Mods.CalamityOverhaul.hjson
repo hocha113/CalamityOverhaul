@@ -6574,6 +6574,8 @@ UI: {
 		// ReceiveAwardText: 领取奖励
 		// ProgressText: 任务完成比例
 		// QuickReceiveAwardText: 一键领取
+		// StyleSwitchText: 切换风格
+		// NightModeText: 夜间模式
 	}
 }
 

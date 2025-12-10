@@ -55,6 +55,8 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         //进度条相关
         public bool ShowProgressBar { get; set; } = true;
+        //夜间模式
+        public bool NightMode { get; set; } = false;
 
         public string LocalizationCategory => "UI";
 
@@ -66,12 +68,22 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ReceiveAwardText;
         public static LocalizedText QuickReceiveAwardText;
         public static LocalizedText ProgressText;
+        public static LocalizedText StyleSwitchText;
+        public static LocalizedText NightModeText;
+
+        private List<IQuestLogStyle> availableStyles;
+        private int currentStyleIndex;
 
         public QuestLog() {
             //初始化启动图标
             launcher = new QuestLogLauncher();
             //设置初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
+            
+            availableStyles = [
+                new HotwindQuestLogStyle()
+            ];
+            CurrentStyle = availableStyles[0];
         }
 
         public override void SetStaticDefaults() {
@@ -80,6 +92,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             ReceiveAwardText = this.GetLocalization(nameof(ReceiveAwardText), () => "领取奖励");
             QuickReceiveAwardText = this.GetLocalization(nameof(QuickReceiveAwardText), () => "一键领取");
             ProgressText = this.GetLocalization(nameof(ProgressText), () => "任务完成比例");
+            StyleSwitchText = this.GetLocalization(nameof(StyleSwitchText), () => "切换风格");
+            NightModeText = this.GetLocalization(nameof(NightModeText), () => "夜间模式");
         }
 
         public override void LogicUpdate() {
@@ -225,6 +239,29 @@ namespace CalamityOverhaul.Content.QuestLogs
                             ResetView();
                             SoundEngine.PlaySound(SoundID.MenuTick);
                         }
+                    }
+                }
+
+                //处理样式切换按钮
+                Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
+                if (styleRect.Contains(Main.MouseScreen.ToPoint())) {
+                    player.mouseInterface = true;
+                    hoveredOtherButton = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        currentStyleIndex = (currentStyleIndex + 1) % availableStyles.Count;
+                        CurrentStyle = availableStyles[currentStyleIndex];
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                    }
+                }
+
+                //处理夜间模式按钮
+                Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
+                if (nightRect.Contains(Main.MouseScreen.ToPoint())) {
+                    player.mouseInterface = true;
+                    hoveredOtherButton = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        NightMode = !NightMode;
+                        SoundEngine.PlaySound(SoundID.MenuTick);
                     }
                 }
 
@@ -440,6 +477,16 @@ namespace CalamityOverhaul.Content.QuestLogs
                 Vector2 direction = -panOffset; // 指向中心的方向
                 CurrentStyle.DrawResetViewButton(spriteBatch, panelRect, direction, hovered, mainPanelAlpha);
             }
+
+            //绘制样式切换按钮
+            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
+            bool styleHovered = styleRect.Contains(Main.MouseScreen.ToPoint());
+            CurrentStyle.DrawStyleSwitchButton(spriteBatch, panelRect, styleHovered, mainPanelAlpha);
+
+            //绘制夜间模式按钮
+            Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
+            bool nightHovered = nightRect.Contains(Main.MouseScreen.ToPoint());
+            CurrentStyle.DrawNightModeButton(spriteBatch, panelRect, nightHovered, mainPanelAlpha, NightMode);
         }
 
         private void DrawMainCloseButton(SpriteBatch spriteBatch) {
