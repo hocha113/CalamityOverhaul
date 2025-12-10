@@ -13,13 +13,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
                 return;
             }
 
-            if (Main.rand.NextBool(6)) {
+            if (Main.rand.NextBool(4)) {
                 itemDrop = ModContent.ItemType<Oceanfragments>();
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.life <= 0 && target.lifeMax > 100 && Main.rand.NextBool(8) && OldDukeCampsite.IsGenerated && Player.ZoneBeach) {//击杀概率掉落海洋残片
+            if (target.life <= 0 && target.lifeMax > 100 && Main.rand.NextBool(4) && OldDukeCampsite.IsGenerated && Player.ZoneBeach) {//击杀概率掉落海洋残片
                 VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(ModContent.ItemType<Oceanfragments>()));
             }
         }
