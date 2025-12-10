@@ -29,9 +29,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 if (sc == null) return false;
                 Register(sc);
             }
-            //如果对话框处于激活状态或者选项框处于激活状态，则认为场景未结束
-            if (IsActive()) {
-                return false;
+            if (active != null && (DialogueUIRegistry.Current?.Active ?? false)) {
+                return false;//已有场景在运行
             }
             active = sc;
             sc.Start();

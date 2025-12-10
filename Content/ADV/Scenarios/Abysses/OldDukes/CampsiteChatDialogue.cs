@@ -266,18 +266,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        internal class CampsiteChatDialogue_Research : ADVScenarioBase
+        internal class CampsiteChatDialogue_Research : ADVScenarioBase, IWorldInfo
         {
             public override string LocalizationCategory => "ADV.CampsiteInteractionDialogue";
             public override string Key => nameof(CampsiteChatDialogue_Research);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
-
+            public static bool SimpleMode;
+            void IWorldInfo.OnWorldLoad() {
+                SimpleMode = false;
+            }
             protected override void Build() {
-                Add(OldDukeName.Value, Research_Intro.Value);
-                Add(OldDukeName.Value, Research_CurrentWork.Value);
-                Add(OldDukeName.Value, Research_Breakthrough.Value);
-                Add(OldDukeName.Value, Research_Difficulties.Value);
-
+                if (!SimpleMode) {//简易模式下跳过前言
+                    Add(OldDukeName.Value, Research_Intro.Value);
+                    Add(OldDukeName.Value, Research_CurrentWork.Value);
+                    Add(OldDukeName.Value, Research_Breakthrough.Value);
+                    Add(OldDukeName.Value, Research_Difficulties.Value);
+                }
+                SimpleMode = false;//重置简易模式
                 //研究子选项
                 AddWithChoices(
                     OldDukeName.Value,
@@ -343,6 +348,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             private void BackToResearch() {
                 Complete();
+                CampsiteChatDialogue_Research.SimpleMode = true;
                 ScenarioManager.Reset<CampsiteChatDialogue_Research>();
                 ScenarioManager.Start<CampsiteChatDialogue_Research>();
             }
@@ -383,6 +389,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             private void BackToResearch() {
                 Complete();
+                CampsiteChatDialogue_Research.SimpleMode = true;
                 ScenarioManager.Reset<CampsiteChatDialogue_Research>();
                 ScenarioManager.Start<CampsiteChatDialogue_Research>();
             }
@@ -407,19 +414,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             Complete();
         }
 
-        internal class CampsiteChatDialogue_History : ADVScenarioBase
+        internal class CampsiteChatDialogue_History : ADVScenarioBase, IWorldInfo
         {
             public override string LocalizationCategory => "ADV.CampsiteInteractionDialogue";
             public override string Key => nameof(CampsiteChatDialogue_History);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
-
+            public static bool SimpleMode;
+            void IWorldInfo.OnWorldLoad() {
+                SimpleMode = false;
+            }
             protected override void Build() {
-                Add(OldDukeName.Value, History_Intro.Value);
-                Add(OldDukeName.Value, History_Origin.Value);
-                Add(OldDukeName.Value, History_Civilization.Value);
-                Add(OldDukeName.Value, History_Cataclysm.Value);
-                Add(OldDukeName.Value, History_Ruins.Value);
-
+                if (!SimpleMode) {//简易模式下跳过前言
+                    Add(OldDukeName.Value, History_Intro.Value);
+                    Add(OldDukeName.Value, History_Origin.Value);
+                    Add(OldDukeName.Value, History_Civilization.Value);
+                    Add(OldDukeName.Value, History_Cataclysm.Value);
+                    Add(OldDukeName.Value, History_Ruins.Value);
+                }
+                SimpleMode = false;//重置简易模式
                 //历史子选项
                 AddWithChoices(
                     OldDukeName.Value,
@@ -485,6 +497,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             private void BackToHistory() {
                 Complete();
+                CampsiteChatDialogue_History.SimpleMode = true;
                 ScenarioManager.Reset<CampsiteChatDialogue_History>();
                 ScenarioManager.Start<CampsiteChatDialogue_History>();
             }
@@ -527,6 +540,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             private void BackToHistory() {
                 Complete();
+                CampsiteChatDialogue_History.SimpleMode = true;
                 ScenarioManager.Reset<CampsiteChatDialogue_History>();
                 ScenarioManager.Start<CampsiteChatDialogue_History>();
             }
