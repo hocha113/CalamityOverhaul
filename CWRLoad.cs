@@ -472,6 +472,7 @@ namespace CalamityOverhaul
                 ItemType<Dragonfruit>(),
                 ItemType<LoreCynosure>(),
                 ItemID.BloodMoonStarter,
+                CWRID.Item_,
             ];
             #endregion
 

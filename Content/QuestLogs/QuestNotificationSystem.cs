@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             float padding = 10;
 
             //计算位置(屏幕右侧)
-            float x = Main.screenWidth - (width + 20) * progress;
+            float x = Main.screenWidth - width * progress;
             float y = Main.screenHeight * 0.4f; //屏幕高度的40%处
 
             Rectangle panelRect = new Rectangle((int)x, (int)y, (int)width, (int)height);

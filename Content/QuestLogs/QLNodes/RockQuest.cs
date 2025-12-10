@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Objectives.Add(new QuestObjective {
                 Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
-                RequiredProgress = 10
+                RequiredProgress = 1
             });
 
             Rewards.Add(new QuestReward {
@@ -64,8 +64,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int currentOre = player.CountItem(CWRID.Item_);
-
+            int currentOre = player.CountItem(CWRID.Item_, 64);
             // 更新进度
             Objectives[0].CurrentProgress = currentOre;
 
