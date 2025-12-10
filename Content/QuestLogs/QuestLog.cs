@@ -199,12 +199,43 @@ namespace CalamityOverhaul.Content.QuestLogs
 
                 //检测节点悬停
                 hoveredNode = null;
-                foreach (var node in Nodes) {
-                    Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
-                    float nodeSize = 24 * zoom;
-                    if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
-                        hoveredNode = node;
-                        break;
+
+                bool hoveredOtherButton = false;
+
+                //处理一键领取按钮
+                if (HasUnclaimedRewards()) {
+                    Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
+                    if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
+                        player.mouseInterface = true;
+                        hoveredOtherButton = true;
+                        if (keyLeftPressState == KeyPressState.Pressed) {
+                            ClaimAllRewards();
+                            SoundEngine.PlaySound(SoundID.Grab);
+                        }
+                    }
+                }
+
+                //处理重置视图按钮
+                if (panOffset.Length() > 100f) {
+                    Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
+                    if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
+                        player.mouseInterface = true;
+                        hoveredOtherButton = true;
+                        if (keyLeftPressState == KeyPressState.Pressed) {
+                            ResetView();
+                            SoundEngine.PlaySound(SoundID.MenuTick);
+                        }
+                    }
+                }
+
+                if (!hoveredOtherButton) {
+                    foreach (var node in Nodes) {
+                        Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
+                        float nodeSize = 24 * zoom;
+                        if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
+                            hoveredNode = node;
+                            break;
+                        }
                     }
                 }
 
@@ -241,30 +272,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 //释放拖拽
                 if (keyLeftPressState == KeyPressState.Released) {
                     isDraggingMap = false;
-                }
-
-                //处理一键领取按钮
-                if (HasUnclaimedRewards()) {
-                    Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
-                    if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
-                        player.mouseInterface = true;
-                        if (keyLeftPressState == KeyPressState.Pressed) {
-                            ClaimAllRewards();
-                            SoundEngine.PlaySound(SoundID.Grab);
-                        }
-                    }
-                }
-
-                //处理重置视图按钮
-                if (panOffset.Length() > 100f) {
-                    Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
-                    if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
-                        player.mouseInterface = true;
-                        if (keyLeftPressState == KeyPressState.Pressed) {
-                            ResetView();
-                            SoundEngine.PlaySound(SoundID.MenuTick);
-                        }
-                    }
                 }
             }
             else {
@@ -420,7 +427,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             CurrentStyle.DrawProgressBar(spriteBatch, this, panelRect);
 
             //绘制一键领取按钮
-            if (HasUnclaimedRewards()) {
+            if (!showDetailPanel && HasUnclaimedRewards()) {
                 Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
                 bool hovered = claimRect.Contains(Main.MouseScreen.ToPoint());
                 CurrentStyle.DrawClaimAllButton(spriteBatch, panelRect, hovered, mainPanelAlpha);

@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float dist = t * length;
                 Vector2 pos = start + new Vector2(dist, 0).RotatedBy(rotation);
 
-                // 计算流动亮度
+                //计算流动亮度
                 float wave = (float)Math.Sin((t - flowProgress) * MathHelper.TwoPi * 2f);
                 float brightness = (wave * 0.5f + 0.5f);
 
@@ -664,7 +664,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) {
             return new Rectangle(
                 panelRect.X + panelRect.Width / 2 - 70,
-                panelRect.Bottom - 70,
+                panelRect.Bottom - 60,
                 140,
                 35
             );
@@ -674,49 +674,127 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle buttonRect = GetClaimAllButtonRect(panelRect);
 
-            Color buttonColor = isHovered ? new Color(100, 255, 120) : new Color(60, 180, 80);
-            spriteBatch.Draw(pixel, buttonRect, buttonColor * alpha);
+            //动态脉冲
+            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f;
 
-            // 边框
+            //背景渐变
+            Color colorTop = isHovered ? new Color(155, 150, 70) : new Color(255, 150, 70);
+            Color colorBottom = isHovered ? new Color(155, 200, 120) : new Color(255, 200, 120);
+
+            //绘制渐变背景
+            int steps = 110;
+            for (int i = 0; i < steps; i++) {
+                float t = i / (float)steps;
+                int y = (int)(buttonRect.Y + (float)(t * buttonRect.Height));
+                int h = Math.Max(1, buttonRect.Height / steps);
+                Color c = Color.Lerp(colorTop, colorBottom, t);
+                spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, y, buttonRect.Width, h), c * alpha * 0.8f);
+            }
+
+            //绘制发光边框
+            Color glowColor = Color.Lerp(new Color(150, 255, 150), new Color(255, 255, 200), pulse);
+            if (isHovered) glowColor = Color.White;
+
+            //内发光
+            Rectangle innerRect = buttonRect;
+            innerRect.Inflate(-2, -2);
+            spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Y, innerRect.Width, 1), glowColor * alpha * 0.5f);
+            spriteBatch.Draw(pixel, new Rectangle(innerRect.X, innerRect.Bottom - 1, innerRect.Width, 1), glowColor * alpha * 0.5f);
+
+            //外边框装饰
             int border = 2;
-            Color edgeColor = new Color(200, 255, 200) * alpha;
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), edgeColor);
-            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), glowColor * alpha);
 
-            // 文字
+            //角落装饰
+            int cornerSize = 6;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, cornerSize, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, cornerSize), glowColor * alpha);
+
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - cornerSize, buttonRect.Y, cornerSize, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, cornerSize), glowColor * alpha);
+
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, cornerSize, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - cornerSize, border, cornerSize), glowColor * alpha);
+
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - cornerSize, buttonRect.Bottom - border, cornerSize, border), glowColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Bottom - cornerSize, border, cornerSize), glowColor * alpha);
+
+            //文字
             string text = QuestLog.QuickReceiveAwardText.Value;
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f;
             Vector2 textPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
-            Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
+
+            //文字发光
+            if (isHovered) {
+                Utils.DrawBorderString(spriteBatch, text, textPos, new Color(200, 255, 200) * alpha, 0.85f, 0.5f, 0.5f);
+            }
+            else {
+                Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
+            }
         }
 
         public Rectangle GetResetViewButtonRect(Rectangle panelRect) {
             return new Rectangle(
-                panelRect.Right - 40,
-                panelRect.Bottom - 40,
-                30,
-                30
+                panelRect.Right - 45,
+                panelRect.Bottom - 45,
+                36,
+                36
             );
         }
 
         public void DrawResetViewButton(SpriteBatch spriteBatch, Rectangle panelRect, Vector2 directionToCenter, bool isHovered, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle buttonRect = GetResetViewButtonRect(panelRect);
-
-            Color buttonColor = isHovered ? new Color(255, 200, 100) : new Color(200, 150, 80);
-            spriteBatch.Draw(pixel, buttonRect, buttonColor * alpha);
-
-            // 箭头
-            float rotation = directionToCenter.ToRotation();
             Vector2 center = buttonRect.Center.ToVector2();
-            
-            // 绘制指向中心的箭头
-            spriteBatch.Draw(pixel, center, new Rectangle(0,0, 14, 2), Color.White * alpha, rotation, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
-            
-            // 箭头头部
-            spriteBatch.Draw(pixel, center + new Vector2(6, 0).RotatedBy(rotation), new Rectangle(0,0, 6, 6), Color.White * alpha, rotation + MathHelper.PiOver4, new Vector2(3, 3), 1f, SpriteEffects.None, 0f);
+
+            //绘制背景阴影
+            Rectangle shadowRect = buttonRect;
+            shadowRect.Offset(2, 2);
+            spriteBatch.Draw(pixel, shadowRect, Color.Black * 0.5f * alpha);
+
+            //绘制主体
+            Color baseColor = isHovered ? new Color(255, 220, 150) : new Color(200, 150, 80);
+            spriteBatch.Draw(pixel, buttonRect, baseColor * 0.8f * alpha);
+
+            //绘制边框
+            Color borderColor = new Color(255, 240, 200);
+            int border = 2;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
+
+            //绘制指南针刻度装饰
+            float time = Main.GameUpdateCount * 0.02f;
+            for (int i = 0; i < 4; i++) {
+                float rot = i * MathHelper.PiOver2 + time;
+                Vector2 offset = new Vector2(0, -14).RotatedBy(rot);
+                spriteBatch.Draw(pixel, center + offset, new Rectangle(0, 0, 2, 4), Color.White * 0.5f * alpha, rot, new Vector2(1, 2), 1f, SpriteEffects.None, 0f);
+            }
+
+            //箭头
+            float rotation = directionToCenter.ToRotation();
+            float arrowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.2f + 1f;
+
+            //箭头主体
+            Color arrowColor = isHovered ? Color.White : new Color(255, 255, 220);
+
+            //绘制箭头杆
+            spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 16, 3), arrowColor * alpha, rotation, new Vector2(0, 1.5f), 1f, SpriteEffects.None, 0f);
+
+            //绘制箭头头部 (三角形)
+            float headSize = 8f * arrowPulse;
+            Vector2 headPos = center + new Vector2(8, 0).RotatedBy(rotation);
+
+            //使用两个旋转的矩形模拟箭头头部
+            spriteBatch.Draw(pixel, headPos, new Rectangle(0, 0, (int)headSize, 2), arrowColor * alpha, rotation + MathHelper.Pi * 0.75f, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, headPos, new Rectangle(0, 0, (int)headSize, 2), arrowColor * alpha, rotation - MathHelper.Pi * 0.75f, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
+
+            //中心点
+            spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 4, 4), Color.Red * alpha, 0f, new Vector2(2, 2), 1f, SpriteEffects.None, 0f);
         }
     }
 }
