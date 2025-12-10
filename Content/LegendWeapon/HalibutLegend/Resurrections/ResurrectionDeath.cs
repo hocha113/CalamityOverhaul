@@ -244,16 +244,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 float pullProgress = progress / 0.4f;
 
                 //向玩家下方拉扯（模拟被深渊吞噬）
-                Player.velocity.Y += pullProgress * 0.5f;
-                Player.velocity.X *= 0.95f;
+                Player.velocity.Y += pullProgress * 0.8f; //增加拉扯力度
+                Player.velocity.X *= 0.9f; //更强的减速
 
                 //强烈震动
                 screenShakeIntensity = MathHelper.Lerp(15f, 10f, pullProgress);
-                shadowDistortionIntensity = 1f + pullProgress;
+                shadowDistortionIntensity = 1f + pullProgress * 1.5f;
 
                 //大量粒子
                 if (stateTimer % 2 == 0) {
                     SpawnAbyssParticle(Player.Center, large: true);
+                    //额外生成一些向上的气泡粒子
+                    if (Main.rand.NextBool(3)) {
+                        Dust.NewDust(Player.position, Player.width, Player.height, DustID.BubbleBlock, 0, -2f, 100, default, 1.5f);
+                    }
                 }
 
                 //玩家开始变透明
@@ -264,14 +268,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 float dissolveProgress = (progress - 0.4f) / 0.3f;
 
                 //玩家继续变透明
-                playerAlphaMultiplier = 0.7f - dissolveProgress * 0.5f;
+                playerAlphaMultiplier = 0.7f - dissolveProgress * 0.6f; //变得更透明
 
                 //减速
-                Player.velocity *= 0.9f;
+                Player.velocity *= 0.85f;
 
                 //视觉效果
                 screenShakeIntensity = MathHelper.Lerp(10f, 5f, dissolveProgress);
-                shadowDistortionIntensity = 2f + dissolveProgress;
+                shadowDistortionIntensity = 2.5f + dissolveProgress * 2f; //更强的扭曲
 
                 //持续粒子
                 if (stateTimer % 3 == 0) {
@@ -285,6 +289,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                             Volume = 1.0f,
                             Pitch = -1.0f
                         }, Player.Center);
+                        //添加一个冲击波效果
+                        for (int i = 0; i < 20; i++) {
+                            Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
+                            Dust.NewDust(Player.Center, 0, 0, DustID.Shadowflame, velocity.X, velocity.Y, 100, Color.Black, 2f);
+                        }
                     }
                     midPhaseSoundPlayed = true; //只记录中段音效播放
                 }
@@ -294,11 +303,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 float fadeProgress = (progress - 0.7f) / 0.3f;
 
                 //玩家几乎透明
-                playerAlphaMultiplier = 0.2f - fadeProgress * 0.2f;
+                playerAlphaMultiplier = 0.1f - fadeProgress * 0.1f;
 
                 //淡出效果
                 screenShakeIntensity = MathHelper.Lerp(5f, 0f, fadeProgress);
-                shadowDistortionIntensity = MathHelper.Lerp(3f, 0f, fadeProgress);
+                shadowDistortionIntensity = MathHelper.Lerp(4.5f, 0f, fadeProgress);
 
                 //在70%时执行死亡
                 if (progress >= 0.7f && !hasExecutedDeath) {
@@ -358,10 +367,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             //杀死玩家
             Player.KillMe(damageSource, Player.statLife + 1, 0, false);
-
-            if (!VaultUtils.isClient) {
-                //SpawnAbyssSpirit();//没做完，暂时取消
-            }
 
             //生成死亡特效
             if (!VaultUtils.isServer) {
@@ -446,6 +451,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             if (system == null) {
                 return;
             }
+            //如果复苏值过高，重置为保留值
             if (system.CurrentValue >= system.MaxValue * 0.95f) {
                 float retainedValue = system.MaxValue * ResurrectionRetainRatio;
                 system.SetValue(retainedValue, triggerEvents: false);
@@ -458,19 +464,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     });
                 }
             }
+            
             ResetState();
             CloseEyes(Player);
+            
+            //双重保险：强制重置复苏速度
+            if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ResurrectionSystem.ResurrectionRate = 0f;
+            }
         }
+
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
             CloseEyes(Player);
         }
+
         public static void CloseEyes(Player player) {
             if (!player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
                 return;
             }
 
+            //使用新的IsCrashed方法，传入player实例，确保在服务器上也能正确判断
             foreach (var save in halibutSave.activationSequence) {
-                if (save.IsCrashed) {
+                if (save.IsCrashedState(player)) {
                     continue;//死机状态的眼睛不受影响
                 }
                 save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值

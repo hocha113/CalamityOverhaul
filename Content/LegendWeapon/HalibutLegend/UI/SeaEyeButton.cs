@@ -37,14 +37,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 判断当前眼睛是否处于死机状态
         /// </summary>
-        public bool IsCrashed {
-            get {
-                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    return false;
-                }
-                int crashLevel = halibutPlayer.CrashesLevel();
-                return LayerNumberDisplay <= crashLevel;
+        public bool IsCrashed => IsCrashedState(Main.LocalPlayer);
+
+        public bool IsCrashedState(Player player) {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return false;
             }
+            int crashLevel = halibutPlayer.CrashesLevel();
+            return LayerNumberDisplay <= crashLevel;
         }
 
         public SeaEyeButton(int index, float angle) {
