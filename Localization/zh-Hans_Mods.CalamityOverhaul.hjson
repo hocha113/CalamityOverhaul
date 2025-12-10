@@ -7821,7 +7821,7 @@ QuestLogs: {
 			QuestReward.Description: 五块古恒石
 			DisplayName: 古恒石
 			Description: 获得古恒石
-			DetailedDescription: 一块看似普通的石头，却见证了无数次Boss Rush的轮回。它是永恒毅力的象征。
+			DetailedDescription: 一块看似普通的石头，却见证了无数次终末的轮回。它是永恒毅力的象征。
 		}
 
 		TerminusQuest: {
@@ -7829,7 +7829,7 @@ QuestLogs: {
 			QuestReward.Description: 大量血珠
 			DisplayName: 终末石
 			Description: 获得终末石
-			DetailedDescription: 开启Boss Rush挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
+			DetailedDescription: 开启终末挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
 		}
 
 		TransmutationOfMatterQuest: {
@@ -7838,6 +7838,14 @@ QuestLogs: {
 			DisplayName: 物质转化台
 			Description: 获得物质转化台
 			DetailedDescription: 炼金术的终极形态。这台机器能打破等价交换的原则，将物质随意转化，甚至无中生有。
+		}
+
+		HeavenfallLongbowQuest: {
+			QuestObjective.Description: 获得无尽弓
+			QuestReward.Description: 五块无尽锭
+			DisplayName: 无尽弓
+			Description: 获得无尽弓
+			DetailedDescription: 射杀过神明的长弓。现在将重现于世
 		}
 	}
 }

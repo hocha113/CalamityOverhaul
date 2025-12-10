@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = CWRID.Item_Terminus;
-            Position = new Vector2(0, -150);
+            Position = new Vector2(0, -300);
             AddParent<FirstQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;

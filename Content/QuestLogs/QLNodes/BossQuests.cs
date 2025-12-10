@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.KingSlime;
-            Position = new Vector2(0, 150);
+            Position = new Vector2(0, 300);
             AddParent<FirstQuest>();
 
             QuestType = QuestType.Main;

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ItemID.CopperPickaxe;
-            Position = new Vector2(150, 0);
+            Position = new Vector2(300, 0);
             AddParent<FirstQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Easy;

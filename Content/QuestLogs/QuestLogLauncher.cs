@@ -148,18 +148,10 @@ namespace CalamityOverhaul.Content.QuestLogs
                 Vector2 badgeCenter = new Vector2(IconRect.Right - 4, IconRect.Top + 4);
                 Rectangle badgeRect = new Rectangle((int)(badgeCenter.X - bgSize / 2), (int)(badgeCenter.Y - bgSize / 2), (int)bgSize, (int)bgSize);
 
-                Texture2D pixel = VaultAsset.placeholder2.Value;
-
-                //ªÊ÷∆∫Ïµ„±≥æ∞
-                spriteBatch.Draw(pixel, badgeRect, new Color(255, 200, 100));
-
-                //ªÊ÷∆∫Ïµ„±ﬂøÚ
-                int border = 1;
-                Color borderColor = Color.OrangeRed;
-                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Y, badgeRect.Width, border), borderColor);
-                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Bottom - border, badgeRect.Width, border), borderColor);
-                spriteBatch.Draw(pixel, new Rectangle(badgeRect.X, badgeRect.Y, border, badgeRect.Height), borderColor);
-                spriteBatch.Draw(pixel, new Rectangle(badgeRect.Right - border, badgeRect.Y, border, badgeRect.Height), borderColor);
+                Texture2D value = CWRAsset.SoftGlow.Value;
+                for (int i = 0; i < 6; i++) {
+                    spriteBatch.Draw(value, badgeCenter, null, Color.Red with { A = 0 }, 0, value.Size() / 2, 0.6f * (1 + i * 0.02f), SpriteEffects.None, 0);
+                }
 
                 //ªÊ÷∆ ˝◊÷
                 Vector2 textPos = new Vector2(badgeRect.X + badgeRect.Width / 2 - textSize.X / 2, badgeRect.Y + badgeRect.Height / 2 - textSize.Y / 2);

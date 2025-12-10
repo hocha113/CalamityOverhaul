@@ -386,9 +386,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制任务描述
             string description = string.IsNullOrEmpty(node.DetailedDescription?.Value) ? node.Description?.Value : node.DetailedDescription?.Value;
-            Vector2 descPos = new Vector2(panelRect.X + padding, currentY);
-            Utils.DrawBorderString(spriteBatch, description, descPos, Color.White * alpha, 0.85f);
-            currentY += (int)(FontAssets.MouseText.Value.MeasureString(description).Y * 0.85f) + 20;
+            if (!string.IsNullOrEmpty(description)) {
+                int maxTextWidth = panelRect.Width - padding * 2;
+                string[] lines = Utils.WordwrapString(description, FontAssets.MouseText.Value, (int)(maxTextWidth / 0.85f), 99, out int lineCount);
+                foreach (string line in lines) {
+                    if (string.IsNullOrEmpty(line)) {
+                        continue;
+                    }
+                    Utils.DrawBorderString(spriteBatch, line.TrimEnd('-', ' '), new Vector2(panelRect.X + padding, currentY), Color.White * alpha, 0.85f);
+                    currentY += (int)(FontAssets.MouseText.Value.MeasureString(line).Y * 0.85f) + 4;
+                }
+                currentY += 10;
+            }
 
             //绘制任务目标
             if (node.Objectives != null && node.Objectives.Count > 0) {

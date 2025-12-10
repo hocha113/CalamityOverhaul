@@ -1,4 +1,6 @@
 using CalamityOverhaul.Content.QuestLogs.Core;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -59,6 +61,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) {
+            Texture2D value = CWRAsset.SoftGlow.Value;
+            for (int i = 0; i < 6; i++) {
+                spriteBatch.Draw(value, drawPos, null, Color.Gold with { A = 0 } * alpha, 0, value.Size() / 2, scale * (2 + i * 0.2f), SpriteEffects.None, 0);
+            }
+            return true;
         }
     }
 }

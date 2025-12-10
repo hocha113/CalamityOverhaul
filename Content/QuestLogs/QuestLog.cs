@@ -317,8 +317,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.End();
 
             //计算剪裁矩形(需要适应UI缩放)
-            Vector2 pos = Vector2.Transform(new Vector2(panelRect.X, panelRect.Y), Main.UIScaleMatrix);
-            Vector2 size = Vector2.Transform(new Vector2(panelRect.Width, panelRect.Height), Main.UIScaleMatrix) - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
+            int margin = 4;//界面的边框为4像素宽
+            Vector2 pos = Vector2.Transform(new Vector2(panelRect.X + margin, panelRect.Y + margin), Main.UIScaleMatrix);
+            Vector2 size = Vector2.Transform(new Vector2(panelRect.Width - margin * 2, panelRect.Height - margin * 2), Main.UIScaleMatrix) - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
             Rectangle scissorRect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
             Rectangle origRect = spriteBatch.GraphicsDevice.ScissorRectangle;
             scissorRect = Rectangle.Intersect(scissorRect, spriteBatch.GraphicsDevice.Viewport.Bounds);
@@ -342,7 +343,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             foreach (var node in Nodes) {
                 Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
                 bool hovered = hoveredNode == node;
-                CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered, mainPanelAlpha);
+                if (node.PreDraw(spriteBatch, nodePos, zoom, hovered, mainPanelAlpha)) {
+                    CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered, mainPanelAlpha);
+                }
+                node.PostDraw(spriteBatch, nodePos, zoom, hovered, mainPanelAlpha);
             }
 
             spriteBatch.End();

@@ -141,6 +141,38 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
+    internal class HeavenfallLongbowQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<HeavenfallLongbow>();
+            Position = new Vector2(-200, -150);
+            AddParent<InfiniteIngotQuest>();
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽弓"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            Player player = Main.LocalPlayer;
+            int count = player.CountItem(ModContent.ItemType<HeavenfallLongbow>());
+            Objectives[0].CurrentProgress = count;
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+    }
+
     internal class AnnihilatingUniverseQuest : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -306,8 +338,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronStarIngot>();
-            Position = new Vector2(-200, -150);
-            AddParent<InfiniteIngotQuest>();
+            Position = new Vector2(-200, 0);
+            AddParent<TransmutationOfMatterQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -338,7 +370,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronBow>();
-            Position = new Vector2(-200, -150);
+            Position = new Vector2(-150, -200);
             AddParent<NeutronStarIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -370,7 +402,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronGlaive>();
-            Position = new Vector2(-100, -150);
+            Position = new Vector2(-150, -100);
             AddParent<NeutronStarIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -402,7 +434,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronScythe>();
-            Position = new Vector2(0, -150);
+            Position = new Vector2(-150, 0);
             AddParent<NeutronStarIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -434,7 +466,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronWand>();
-            Position = new Vector2(100, -150);
+            Position = new Vector2(-150, 100);
             AddParent<NeutronStarIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -466,7 +498,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronGun>();
-            Position = new Vector2(200, -150);
+            Position = new Vector2(-150, 200);
             AddParent<NeutronStarIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;

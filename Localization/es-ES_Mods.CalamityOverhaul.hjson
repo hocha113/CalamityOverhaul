@@ -7862,5 +7862,13 @@ QuestLogs: {
 			// Description: " "
 			// DetailedDescription: " "
 		}
+
+		HeavenfallLongbowQuest: {
+			// QuestObjective.Description: 获得无尽弓
+			// QuestReward.Description: 五块无尽锭
+			// DisplayName: HeavenfallLongbowQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
 	}
 }

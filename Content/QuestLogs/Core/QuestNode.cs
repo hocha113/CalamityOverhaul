@@ -345,6 +345,27 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// NPC死亡时调用
         /// </summary>
         public virtual void OnKillByNPC(NPC npc) { }
+
+        /// <summary>
+        /// 绘制节点内容，在节点图标之前调用
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="drawPos"></param>
+        /// <param name="scale"></param>
+        /// <param name="isHovered"></param>
+        /// <param name="alpha"></param>
+        /// <returns></returns>
+        public virtual bool PreDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { return true; }
+
+        /// <summary>
+        /// 绘制节点内容，在节点图标之后调用
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="drawPos"></param>
+        /// <param name="scale"></param>
+        /// <param name="isHovered"></param>
+        /// <param name="alpha"></param>
+        public virtual void PostDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { }
     }
 
     /// <summary>
