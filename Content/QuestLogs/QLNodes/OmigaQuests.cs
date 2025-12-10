@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<InfinityCatalyst>();
             Position = new Vector2(0, -150);
-            AddParent<DarkMatterCompressorQuest>();
+            AddParent<TransmutationOfMatterQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -210,8 +210,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<TransmutationOfMatterItem>();
-            Position = new Vector2(200, -150);
-            AddParent<InfiniteIngotQuest>();
+            Position = new Vector2(0, -150);
+            AddParent<DarkMatterCompressorQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -242,8 +242,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AriaofTheCosmos>();
-            Position = new Vector2(-100, -150);
-            AddParent<TransmutationOfMatterQuest>();
+            Position = new Vector2(200, -150);
+            AddParent<InfiniteIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -274,8 +274,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Pandemonium>();
-            Position = new Vector2(100, -150);
-            AddParent<TransmutationOfMatterQuest>();
+            Position = new Vector2(300, -150);
+            AddParent<InfiniteIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
