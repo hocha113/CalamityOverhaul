@@ -38,11 +38,29 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void OnEnterWorld() {
-            QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
+            if (QuestNode.GetQuest<FirstQuest>() != null) {
+                QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
+            }
+            
+            //进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
+            foreach (var quest in QuestNode.AllQuests) {
+                quest.CheckUnlock();
+            }
         }
 
         public override void PostUpdate() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            //每60帧检查一次未解锁的任务，防止漏掉
+            bool checkUnlock = Main.GameUpdateCount % 60 == 0 && QuestLog.Instance.visible;
+
             foreach (var quest in QuestNode.AllQuests) {
+                if (checkUnlock && !quest.IsUnlocked) {
+                    quest.CheckUnlock();
+                }
+
                 if (quest.IsUnlocked && !quest.IsCompleted) {
                     quest.UpdateByPlayer();
                 }
