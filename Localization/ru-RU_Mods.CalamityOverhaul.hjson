@@ -7463,505 +7463,505 @@ ADV: {
 QuestLogs: {
 	QuestNode: {
 		FirstQuest: {
-			// DisplayName: FirstQuest
-			// Description: " "
-			// DetailedDescription: " "
-			// QuestObjective.Description: 点击领取
-			// QuestReward.Description: 点击领取
+			// DisplayName: Welcome to the World of Calamity!
+			// Description: The Beginning of the Journey
+			// DetailedDescription: Every legend begins from humble origins. Claim your starter gear and prepare to face a world filled with gods and monsters.
+			// QuestObjective.Description: Click to claim starter items
+			// QuestReward.Description: Starter Adventure Pack
 		}
 
 		MiningQuest: {
-			// DisplayName: MiningQuest
-			// Description: " "
-			// DetailedDescription: " "
-			// QuestObjective.Description: 收集十块铜矿
+			// DisplayName: Mining Basics
+			// Description: Obtain 10 Copper Ore
+			// DetailedDescription: The underground holds infinite wealth. First, we need some basic metals to craft tools.
+			// QuestObjective.Description: Collect 10 Copper Ore
 
 			QuestReward: {
-				// Description: 五个铜锭
-				// Description2: 一把铁镐
+				// Description: 5 Copper Bars
+				// Description2: 1 Iron Pickaxe
 			}
 		}
 
 		MiningQuestII: {
-			// DisplayName: 矿工时间 II
-			// Description: 收集五十块铁矿
-			// QuestObjective.Description: 收集五十块铁矿
+			// DisplayName: Iron Age
+			// Description: Collect 50 Iron Ore
+			// QuestObjective.Description: Collect 50 Iron Ore
 
 			QuestReward: {
-				// Description: 五十个铁锭
-				// Description2: 一把金镐
+				// Description: 50 Iron Bars
+				// Description2: 1 Gold Pickaxe
 			}
 
-			// DetailedDescription: " "
+			// DetailedDescription: Copper is too soft; we need harder metals to arm ourselves. Delve deeper underground to find Iron veins.
 		}
 
 		MiningQuestIII: {
-			// DisplayName: 矿工时间 III
-			// Description: 收集一百块金矿
-			// QuestObjective.Description: 收集一百块金矿
+			// DisplayName: Gold Rush
+			// Description: Collect 100 Gold Ore
+			// QuestObjective.Description: Collect 100 Gold Ore
 
 			QuestReward: {
-				// Description: 一百个金锭
-				// Description2: 一把铂金镐
+				// Description: 100 Gold Bars
+				// Description2: 1 Platinum Pickaxe
 			}
 
-			// DetailedDescription: " "
+			// DetailedDescription: Gold is not just currency; it possesses excellent magical conductivity and ductility. Although softer than Iron, it is a crucial material for crafting advanced gear.
 		}
 
 		BrimstoneElementalQuest: {
-			// DisplayName: 硫磺火元素
-			// Description: 击败硫磺火元素
-			// QuestObjective.Description: 击败硫磺火元素
-			// QuestReward.Description: 10个暗影之魂
-			// DetailedDescription: " "
+			// DisplayName: Brimstone Elemental
+			// Description: Defeat the Brimstone Elemental
+			// QuestObjective.Description: Defeat the Brimstone Elemental
+			// QuestReward.Description: 10 Souls of Night
+			// DetailedDescription: In the ruins of the Brimstone Crag, awaken and defeat the slumbering elemental spirit. Beware her bullet hell.
 		}
 
 		CalamitasCloneQuest: {
-			// DisplayName: 灾厄之影
-			// Description: 击败灾厄之影
-			// QuestObjective.Description: 击败灾厄之影
-			// QuestReward.Description: 10个灾厄尘
-			// DetailedDescription: " "
+			// DisplayName: The Calamitas Clone
+			// Description: Defeat the Calamitas Clone
+			// QuestObjective.Description: Defeat the Calamitas Clone
+			// QuestReward.Description: 10 Calamitous Dust
+			// DetailedDescription: A clone filled with hatred and a desire for destruction. Defeat it to prove you are worthy of facing the true Witch.
 		}
 
 		CrabulonQuest: {
-			// DisplayName: 菌生蟹
-			// Description: 击败菌生蟹
-			// QuestObjective.Description: 击败菌生蟹
-			// QuestReward.Description: 50个发光蘑菇
-			// DetailedDescription: " "
+			// DisplayName: Crabulon
+			// Description: Defeat Crabulon
+			// QuestObjective.Description: Defeat Crabulon
+			// QuestReward.Description: 50 Glowing Mushrooms
+			// DetailedDescription: In the Glowing Mushroom underground, a giant crab infested by fungi lurks. Its spores are extremely dangerous.
 		}
 
 		CryogenQuest: {
-			// DisplayName: 极地冰灵
-			// Description: 击败极地冰灵
-			// QuestObjective.Description: 击败极地冰灵
-			// QuestReward.Description: 10个光明之魂
-			// DetailedDescription: " "
+			// DisplayName: Cryogen
+			// Description: Defeat Cryogen
+			// QuestObjective.Description: Defeat Cryogen
+			// QuestReward.Description: 10 Souls of Light
+			// DetailedDescription: The former Archmage of the cosmos is sealed within this eternal prison of ice. Release and defeat it to unleash the power of the arctic.
 		}
 
 		DesertScourgeQuest: {
-			// DisplayName: 荒漠灾虫
-			// Description: 击败荒漠灾虫
-			// QuestObjective.Description: 击败荒漠灾虫
-			// QuestReward.Description: 10个胜利碎片
-			// DetailedDescription: " "
+			// DisplayName: Desert Scourge
+			// Description: Defeat the Desert Scourge
+			// QuestObjective.Description: Defeat the Desert Scourge
+			// QuestReward.Description: 10 Victory Shards
+			// DetailedDescription: The former tyrant of the seas now gasps for life in the dried-up desert. Beware its massive mandibles and minions.
 		}
 
 		EaterofWorldsQuest: {
-			// DisplayName: 世界吞噬者/克苏鲁之脑
-			// Description: 击败世界吞噬者或克苏鲁之脑
-			// QuestObjective.Description: 击败世界吞噬者或克苏鲁之脑
-			// QuestReward.Description: 20个暗影鳞片/组织样本
-			// DetailedDescription: " "
+			// DisplayName: Eater of Worlds / Brain of Cthulhu
+			// Description: Defeat the Boss of the Corruption or Crimson
+			// QuestObjective.Description: Defeat the Eater of Worlds or Brain of Cthulhu
+			// QuestReward.Description: 20 Shadow Scales / Tissue Samples
+			// DetailedDescription: Evil is spreading. Venture into the world's lesions and eradicate the giant worm or the vile brain entrenched there.
 		}
 
 		EyeofCthulhuQuest: {
-			// DisplayName: 克苏鲁之眼
-			// Description: 击败克苏鲁之眼
-			// QuestObjective.Description: 击败克苏鲁之眼
-			// QuestReward.Description: 20个魔矿/猩红矿
-			// DetailedDescription: " "
+			// DisplayName: Eye of Cthulhu
+			// Description: Defeat the Eye of Cthulhu
+			// QuestObjective.Description: Defeat the Eye of Cthulhu
+			// QuestReward.Description: 20 Demonite / Crimtane Ore
+			// DetailedDescription: As long as you feel that evil gaze, it will appear. This is the first true test of your strength.
 		}
 
 		GolemQuest: {
-			// DisplayName: 石巨人
-			// Description: 击败石巨人
-			// QuestObjective.Description: 击败石巨人
-			// QuestReward.Description: 10个甲虫外壳
-			// DetailedDescription: " "
+			// DisplayName: Golem
+			// Description: Defeat Golem
+			// QuestObjective.Description: Defeat Golem
+			// QuestReward.Description: 10 Beetle Husks
+			// DetailedDescription: Deep within the Jungle Temple, an ancient war machine is enshrined. Beware its lasers and heavy fists.
 		}
 
 		HiveMindQuest: {
-			// DisplayName: 腐巢意志/血肉宿主
-			// Description: 击败腐巢意志或血肉宿主
-			// QuestObjective.Description: 击败腐巢意志或血肉宿主
-			// QuestReward.Description: 10个魔矿锭/猩红矿锭
-			// DetailedDescription: " "
+			// DisplayName: The Hive Mind / The Perforators
+			// Description: Defeat the true god of the evil biome
+			// QuestObjective.Description: Defeat The Hive Mind or The Perforators
+			// QuestReward.Description: 10 Demonite / Crimtane Bars
+			// DetailedDescription: They are the physical manifestations of the Corruption and Crimson's consciousness. If not destroyed, this land will never know peace.
 		}
 
 		KingSlimeQuest: {
-			// DisplayName: 史莱姆王
-			// Description: 击败史莱姆王
-			// QuestObjective.Description: 击败史莱姆王
-			// QuestReward.Description: 5金币
-			// DetailedDescription: " "
+			// DisplayName: King Slime
+			// Description: Defeat King Slime
+			// QuestObjective.Description: Defeat King Slime
+			// QuestReward.Description: 5 Gold Coins
+			// DetailedDescription: The ruler of all gelatinous creatures. Though it looks somewhat comical, do not let its massive size crush you.
 		}
 
 		LunaticCultistQuest: {
-			// DisplayName: 拜月教邪教徒
-			// Description: 击败拜月教邪教徒
-			// QuestObjective.Description: 击败拜月教邪教徒
-			// QuestReward.Description: 5个日耀碎片
-			// DetailedDescription: " "
+			// DisplayName: Lunatic Cultist
+			// Description: Defeat the Lunatic Cultist
+			// QuestObjective.Description: Defeat the Lunatic Cultist
+			// QuestReward.Description: 5 Solar Fragments
+			// DetailedDescription: At the dungeon entrance, a group of fanatical cultists is trying to prevent—or perhaps trigger—the apocalypse. Stop their ritual.
 		}
 
 		MechanicalBossesQuest: {
-			// DisplayName: 机械三王
-			// Description: 击败所有机械Boss
-			// QuestObjective.Description: 击败所有机械Boss
-			// QuestReward.Description: 20个神圣锭
-			// DetailedDescription: " "
+			// DisplayName: Mechanical Bosses
+			// Description: Defeat all Mechanical Bosses
+			// QuestObjective.Description: Defeat all Mechanical Bosses
+			// QuestReward.Description: 20 Hallowed Bars
+			// DetailedDescription: Early creations of Draedon, mimicking parts of Cthulhu. Only by defeating them will the world be revitalized.
 		}
 
 		MoonLordQuest: {
-			// DisplayName: 月球领主
-			// Description: 击败月球领主
-			// QuestObjective.Description: 击败月球领主
-			// QuestReward.Description: 月球领主纪念章
-			// DetailedDescription: " "
+			// DisplayName: Moon Lord
+			// Description: Defeat the Moon Lord
+			// QuestObjective.Description: Defeat the Moon Lord
+			// QuestReward.Description: Moon Lord Trophy
+			// DetailedDescription: The mastermind behind it all, the terror from the dark side of the moon. End this long nightmare.
 		}
 
 		PlaguebringerGoliathQuest: {
-			// DisplayName: 瘟疫使者歌莉娅
-			// Description: 击败瘟疫使者歌莉娅
-			// QuestObjective.Description: 击败瘟疫使者歌莉娅
-			// QuestReward.Description: 20个瘟疫细胞罐
-			// DetailedDescription: " "
+			// DisplayName: The Plaguebringer Goliath
+			// Description: Defeat The Plaguebringer Goliath
+			// QuestObjective.Description: Defeat The Plaguebringer Goliath
+			// QuestReward.Description: 20 Plague Cell Canisters
+			// DetailedDescription: A Queen Bee modified by nano-virus machinery. It is not only deadly but also carries a dangerous plague.
 		}
 
 		PlanteraQuest: {
-			// DisplayName: 世纪之花
-			// Description: 击败世纪之花
-			// QuestObjective.Description: 击败世纪之花
-			// QuestReward.Description: 50个叶绿矿
-			// DetailedDescription: " "
+			// DisplayName: Plantera
+			// Description: Defeat Plantera
+			// QuestObjective.Description: Defeat Plantera
+			// QuestReward.Description: 50 Chlorophyte Ore
+			// DetailedDescription: Deep in the jungle sleeps a massive man-eating flower. Break the bulb and face the jungle's wrath.
 		}
 
 		SkeletronQuest: {
-			// DisplayName: 骷髅王
-			// Description: 击败骷髅王
-			// QuestObjective.Description: 击败骷髅王
-			// QuestReward.Description: 50个骨头
-			// DetailedDescription: " "
+			// DisplayName: Skeletron
+			// Description: Defeat Skeletron
+			// QuestObjective.Description: Defeat Skeletron
+			// QuestReward.Description: 50 Bones
+			// DetailedDescription: Only by defeating this cursed old man can you safely enter the Dungeon to explore its secrets.
 		}
 
 		SlimeGodQuest: {
-			// DisplayName: 史莱姆之神
-			// Description: 击败史莱姆之神
-			// QuestObjective.Description: 击败史莱姆之神
-			// QuestReward.Description: 100个凝胶
-			// DetailedDescription: " "
+			// DisplayName: The Slime God
+			// Description: Defeat The Slime God
+			// QuestObjective.Description: Defeat The Slime God
+			// QuestReward.Description: 100 Gel
+			// DetailedDescription: The apex of the slime species, an ancient and gluttonous deity. Beware the combined attacks of its avatars.
 		}
 
 		WallofFleshQuest: {
-			// DisplayName: 血肉墙
-			// Description: 击败血肉墙
-			// QuestObjective.Description: 击败血肉墙
-			// QuestReward.Description: 神锤
-			// DetailedDescription: " "
+			// DisplayName: Wall of Flesh
+			// Description: Defeat the Wall of Flesh
+			// QuestObjective.Description: Defeat the Wall of Flesh
+			// QuestReward.Description: Pwnhammer
+			// DetailedDescription: The gatekeeper of the world. Throw the Guide Voodoo Doll into the lava to release the world's ancient spirits and begin Hardmode.
 		}
 
 		CeaselessVoidQuest: {
-			// DisplayName: 无尽虚空
-			// Description: 击败无尽虚空
-			// QuestObjective.Description: 击败无尽虚空
-			// QuestReward.Description: 5个暗物质
-			// DetailedDescription: " "
+			// DisplayName: Ceaseless Void
+			// Description: Defeat the Ceaseless Void
+			// QuestObjective.Description: Defeat the Ceaseless Void
+			// QuestReward.Description: 5 Dark Plasma
+			// DetailedDescription: One of the Sentinels of the Devourer, a mirror of nothingness from another dimension.
 		}
 
 		DevourerofGodsQuest: {
-			// DisplayName: 神明吞噬者
-			// Description: 击败神明吞噬者
-			// QuestObjective.Description: 击败神明吞噬者
-			// QuestReward.Description: 30个神宇金锭
-			// DetailedDescription: " "
+			// DisplayName: The Devourer of Gods
+			// Description: Defeat The Devourer of Gods
+			// QuestObjective.Description: Defeat The Devourer of Gods
+			// QuestReward.Description: 30 Cosmilite Bars
+			// DetailedDescription: A cosmic serpent that hungers to devour all divinity. Duel it in the void, and do not let it consume you.
 		}
 
 		DragonfollyQuest: {
-			// DisplayName: 痴愚金龙
-			// Description: 击败痴愚金龙
-			// QuestObjective.Description: 击败痴愚金龙
-			// QuestReward.Description: 10个闪耀金羽
-			// DetailedDescription: " "
+			// DisplayName: The Dragonfolly
+			// Description: Defeat The Dragonfolly
+			// QuestObjective.Description: Defeat The Dragonfolly
+			// QuestReward.Description: 10 Effulgent Feathers
+			// DetailedDescription: A failed attempt to clone Yharon, a mad and electrified pseudo-dragon.
 		}
 
 		ExoMechsQuest: {
-			// DisplayName: 星流巨械
-			// Description: 击败星流巨械
-			// QuestObjective.Description: 击败星流巨械
-			// QuestReward.Description: 20个星流棱晶
-			// DetailedDescription: " "
+			// DisplayName: Exo Mechs
+			// Description: Defeat the Exo Mechs
+			// QuestObjective.Description: Defeat the Exo Mechs
+			// QuestReward.Description: 20 Exo Prisms
+			// DetailedDescription: Draedon's ultimate masterpieces, representing the pinnacle of Terrarian technology. Survive this perfect performance.
 		}
 
 		OldDukeQuest: {
-			// DisplayName: 硫海遗爵
-			// Description: 击败硫海遗爵
-			// QuestObjective.Description: 击败硫海遗爵
-			// QuestReward.Description: 20个腐蚀化石
-			// DetailedDescription: " "
+			// DisplayName: The Old Duke
+			// Description: Defeat The Old Duke
+			// QuestObjective.Description: Defeat The Old Duke
+			// QuestReward.Description: 20 Corroded Fossils
+			// DetailedDescription: The ancient overlord of the Sulphurous Sea depths, a combination of mutation and power. Beware its toxic steam.
 		}
 
 		PolterghastQuest: {
-			// DisplayName: 噬魂幽花
-			// Description: 击败噬魂幽花
-			// QuestObjective.Description: 击败噬魂幽花
-			// QuestReward.Description: 10个幽花之魂
-			// DetailedDescription: " "
+			// DisplayName: Polterghast
+			// Description: Defeat Polterghast
+			// QuestObjective.Description: Defeat Polterghast
+			// QuestReward.Description: 10 Ruinous Souls
+			// DetailedDescription: A monster formed by the gathering of vengeful souls who died in the Dungeon. Quell their rage.
 		}
 
 		PrimordialWyrmQuest: {
-			// DisplayName: 始源妖龙
-			// Description: 击败始源妖龙
-			// QuestObjective.Description: 击败始源妖龙
-			// QuestReward.Description: 大比目鱼炮
-			// DetailedDescription: " "
+			// DisplayName: Primordial Wyrm
+			// Description: Defeat the Primordial Wyrm
+			// QuestObjective.Description: Defeat the Primordial Wyrm
+			// QuestReward.Description: Halibut Cannon
+			// DetailedDescription: The guardian of the deepest Abyss. An entity older than the gods themselves. Do not disturb it unless necessary.
 		}
 
 		ProfanedGuardiansQuest: {
-			// DisplayName: 亵渎使徒
-			// Description: 击败亵渎使徒
-			// QuestObjective.Description: 击败亵渎使徒
-			// QuestReward.Description: 3个亵渎碎片
-			// DetailedDescription: " "
+			// DisplayName: Profaned Guardians
+			// Description: Defeat the Profaned Guardians
+			// QuestObjective.Description: Defeat the Profaned Guardians
+			// QuestReward.Description: 3 Unholy Essence
+			// DetailedDescription: Loyal guards of the Profaned Goddess. Defeat them to weaken the Goddess's defenses.
 		}
 
 		ProvidenceQuest: {
-			// DisplayName: 亵渎天神
-			// Description: 击败亵渎天神
-			// QuestObjective.Description: 击败亵渎天神
-			// QuestReward.Description: 20个圣神晶石
-			// DetailedDescription: " "
+			// DisplayName: Providence, the Profaned Goddess
+			// Description: Defeat Providence
+			// QuestObjective.Description: Defeat Providence
+			// QuestReward.Description: 20 Divine Geodes
+			// DetailedDescription: The Goddess who controls holy fire and purification. Challenge her in the Hallow or the Underworld, but beware of being incinerated by holy flames.
 		}
 
 		SignusQuest: {
-			// DisplayName: 西格纳斯
-			// Description: 击败西格纳斯
-			// QuestObjective.Description: 击败西格纳斯
-			// QuestReward.Description: 5个扭曲虚空
-			// DetailedDescription: " "
+			// DisplayName: Signus, Envoy of the Devourer
+			// Description: Defeat Signus
+			// QuestObjective.Description: Defeat Signus
+			// QuestReward.Description: 5 Twisting Nether
+			// DetailedDescription: One of the Sentinels of the Devourer, a formless assassin, a ghost of the void.
 		}
 
 		StormWeaverQuest: {
-			// DisplayName: 风暴编织者
-			// Description: 击败风暴编织者
-			// QuestObjective.Description: 击败风暴编织者
-			// QuestReward.Description: 5个装甲外壳
-			// DetailedDescription: " "
+			// DisplayName: Storm Weaver
+			// Description: Defeat the Storm Weaver
+			// QuestObjective.Description: Defeat the Storm Weaver
+			// QuestReward.Description: 5 Armored Shells
+			// DetailedDescription: One of the Sentinels of the Devourer, a sky worm that feeds on thunderstorms and lightning.
 		}
 
 		SupremeCalamitasQuest: {
-			// DisplayName: 至尊灾厄
-			// Description: 击败至尊灾厄
-			// QuestObjective.Description: 击败至尊灾厄
-			// QuestReward.Description: 20个灭世余灰
-			// DetailedDescription: " "
+			// DisplayName: Supreme Calamitas
+			// Description: Defeat Supreme Calamitas
+			// QuestObjective.Description: Defeat Supreme Calamitas
+			// QuestReward.Description: 20 Ashes of Annihilation
+			// DetailedDescription: The legendary Brimstone Witch. This is the end of your journey, or perhaps a new beginning? Prepare yourself for true bullet hell.
 		}
 
 		YharonQuest: {
-			// DisplayName: 丛林龙,犽戎
-			// Description: 击败丛林龙,犽戎
-			// QuestObjective.Description: 击败丛林龙,犽戎
-			// QuestReward.Description: 20个圣金源锭
-			// DetailedDescription: " "
+			// DisplayName: Yharon, Dragon of Rebirth
+			// Description: Defeat Yharon
+			// QuestObjective.Description: Defeat Yharon
+			// QuestReward.Description: 20 Auric Tesla Bars
+			// DetailedDescription: The loyal comrade of the Tyrant, a dragon possessing the phoenix's ability of rebirth. This is a trial of the soul.
 		}
 
 		BatteryQuest: {
-			// DisplayName: 能源储存
-			// Description: 制作热能电池
-			// QuestObjective.Description: 获得热能电池
-			// QuestReward.Description: 50个电线
-			// DetailedDescription: " "
+			// DisplayName: Energy Storage
+			// Description: Craft a Thermal Battery
+			// QuestObjective.Description: Obtain a Thermal Battery
+			// QuestReward.Description: 50 Wire
+			// DetailedDescription: Power needs to be stored after generation. Crafting batteries is the first step to building a stable power grid.
 		}
 
 		HydroelectricQuest: {
-			// DisplayName: 水力发电
-			// Description: 制作一台水力发电机
-			// QuestObjective.Description: 获得水力发电机
-			// QuestReward.Description: 水桶
-			// DetailedDescription: " "
+			// DisplayName: Clean Energy
+			// Description: Craft a Hydroelectric Generator
+			// QuestObjective.Description: Obtain a Hydroelectric Generator
+			// QuestReward.Description: Water Bucket
+			// DetailedDescription: Harness the power of flowing water to generate electricity. A clean and sustainable way to obtain energy.
 		}
 
 		IndustrialStartQuest: {
-			// DisplayName: 工业起步
-			// Description: 制作一台风力发电机
-			// QuestObjective.Description: 获得风力发电机
-			// QuestReward.Description: 10个铁锭
-			// DetailedDescription: " "
+			// DisplayName: Industrial Revolution
+			// Description: Craft a Wind Generator
+			// QuestObjective.Description: Obtain a Wind Generator
+			// QuestReward.Description: 10 Iron Bars
+			// DetailedDescription: The first step towards automation. Use wind energy to drive your machines and free your hands.
 		}
 
 		ItemFilterQuest: {
-			// DisplayName: 物品筛选
-			// Description: 制作一个物品过滤器
-			// QuestObjective.Description: 获得物品过滤器
-			// QuestReward.Description: 2个箱子
-			// DetailedDescription: " "
+			// DisplayName: Logistics Sorting
+			// Description: Craft an Item Filter
+			// QuestObjective.Description: Obtain an Item Filter
+			// QuestReward.Description: 2 Chests
+			// DetailedDescription: Automated production lines require order. Use filters to precisely control the flow of items.
 		}
 
 		MiningMachineQuest: {
-			// DisplayName: 自动化挖掘
-			// Description: 制作一台采矿机
-			// QuestObjective.Description: 获得采矿机
-			// QuestReward.Description: 5个洞穴探险药水
-			// DetailedDescription: " "
+			// DisplayName: Automated Excavation
+			// Description: Craft a Mining Machine
+			// QuestObjective.Description: Obtain a Mining Machine
+			// QuestReward.Description: 5 Spelunker Potions
+			// DetailedDescription: Say goodbye to tedious manual mining. This machine devours ore veins with astonishing efficiency.
 		}
 
 		PipelineQuest: {
-			// DisplayName: 能源传输
-			// Description: 制作通用能源管道
-			// QuestObjective.Description: 获得通用能源管道
-			// QuestReward.Description: 20个通用能源管道
-			// DetailedDescription: " "
+			// DisplayName: Energy Transmission
+			// Description: Craft Universal Energy Pipes
+			// QuestObjective.Description: Obtain Universal Energy Pipes
+			// QuestReward.Description: 20 Universal Energy Pipes
+			// DetailedDescription: The veins connecting generators and machines. Without it, electricity is just stagnant water.
 		}
 
 		TeslaTowerQuest: {
-			// DisplayName: 特斯拉塔
-			// Description: 制作一座特斯拉电磁塔
-			// QuestObjective.Description: 获得特斯拉电磁塔
-			// QuestReward.Description: 20个可疑镀层
-			// DetailedDescription: " "
+			// DisplayName: Magnetic Storm Tower
+			// Description: Craft a Tesla Tower
+			// QuestObjective.Description: Obtain a Tesla Tower
+			// QuestReward.Description: 20 Dubious Plating
+			// DetailedDescription: The crystallization of Draedon's technology. This tower allows for wireless power transmission, completely revolutionizing your wiring layout.
 		}
 
 		ThermalPowerQuest: {
-			// DisplayName: 火力发电
-			// Description: 制作一台火力发电机
-			// QuestObjective.Description: 获得火力发电机
-			// QuestReward.Description: 50个煤炭
-			// DetailedDescription: " "
+			// DisplayName: Time to Burn
+			// Description: Craft a Thermal Generator
+			// QuestObjective.Description: Obtain a Thermal Generator
+			// QuestReward.Description: 50 Coal
+			// DetailedDescription: Burn fuel to generate massive amounts of power. Though not environmentally friendly, it is the most reliable energy source in the early stages.
 		}
 
 		AnnihilatingUniverseQuest: {
-			// QuestObjective.Description: 获得寰宇湮灭
-			// QuestReward.Description: 五块无尽锭
-			// DisplayName: AnnihilatingUniverseQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Annihilating Universe
+			// QuestReward.Description: 5 Infinite Ingots
+			// DisplayName: Annihilating Universe
+			// Description: Obtain "Annihilating Universe"
+			// DetailedDescription: Compress the power of galaxies onto a bowstring. This weapon possesses the power to destroy universal dimensions, the ultimate proof for a ranger.
 		}
 
 		AriaofTheCosmosQuest: {
-			// QuestObjective.Description: 获得寰宇咏叹调
-			// QuestReward.Description: 二十块无尽锭
-			// DisplayName: AriaofTheCosmosQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Aria of the Cosmos
+			// QuestReward.Description: 20 Infinite Ingots
+			// DisplayName: Aria of the Cosmos
+			// Description: Obtain "Aria of the Cosmos"
+			// DetailedDescription: Perform the symphony of the stars. This tome summons black holes and quasars, letting enemies vanish amidst the song of the universe.
 		}
 
 		DarkMatterCompressorQuest: {
-			// QuestObjective.Description: 获得暗物质压缩机
-			// QuestReward.Description: 十个暗物质球
-			// DisplayName: DarkMatterCompressorQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Dark Matter Compressor
+			// QuestReward.Description: 10 Dark Matter Balls
+			// DisplayName: Dark Matter Compressor
+			// Description: Obtain Dark Matter Compressor
+			// DetailedDescription: Manipulate the most mysterious matter in the universe. This machine compresses dark matter into high-density energy spheres for advanced crafting.
 		}
 
 		InfiniteIngotQuest: {
-			// QuestObjective.Description: 获得无尽锭
-			// QuestReward.Description: 两块无尽锭
-			// DisplayName: InfiniteIngotQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Infinite Ingot
+			// QuestReward.Description: 2 Infinite Ingots
+			// DisplayName: Infinite Ingot
+			// Description: Forge Infinite Ingot
+			// DetailedDescription: A metal that transcends the law of conservation of mass. It is the cornerstone to ultimate power, containing infinite possibilities.
 		}
 
 		InfinitePickQuest: {
-			// QuestObjective.Description: 获得无尽镐
-			// QuestReward.Description: 五块无尽锭
-			// DisplayName: InfinitePickQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Infinite Pickaxe
+			// QuestReward.Description: 5 Infinite Ingots
+			// DisplayName: Infinite Pickaxe
+			// Description: Obtain Infinite Pickaxe
+			// DetailedDescription: Nothing can stop this pickaxe. It can mine everything, even the bedrock of the world.
 		}
 
 		InfiniteToiletQuest: {
-			// QuestObjective.Description: 获得无尽马桶
-			// QuestReward.Description: 一块无尽锭
-			// DisplayName: InfiniteToiletQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Infinite Toilet
+			// QuestReward.Description: 1 Infinite Ingot
+			// DisplayName: Infinite Toilet
+			// Description: Obtain Infinite Toilet
+			// DetailedDescription: The throne of gods. Though it sounds absurd, it truly symbolizes some form of... supreme authority.
 		}
 
 		InfinityCatalystQuest: {
-			// QuestObjective.Description: 获得无尽催化剂
-			// QuestReward.Description: 一块无尽锭
-			// DisplayName: InfinityCatalystQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Infinity Catalyst
+			// QuestReward.Description: 1 Infinite Ingot
+			// DisplayName: Infinity Catalyst
+			// Description: Obtain Infinity Catalyst
+			// DetailedDescription: The key medium to start the infinite reaction. It allows matter to cycle between annihilation and rebirth, generating immense energy.
 		}
 
 		NeutronBowQuest: {
-			// QuestObjective.Description: 获得中子弓
-			// QuestReward.Description: 两块中子星锭
-			// DisplayName: NeutronBowQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Bow
+			// QuestReward.Description: 2 Neutron Star Ingots
+			// DisplayName: Neutron Bow
+			// Description: Obtain Neutron Bow
+			// DetailedDescription: A bow forged from the core fragments of a neutron star. Every arrow carries the gravity of a collapsing star.
 		}
 
 		NeutronGlaiveQuest: {
-			// QuestObjective.Description: 获得中子剑
-			// QuestReward.Description: 两块中子星锭
-			// DisplayName: NeutronGlaiveQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Glaive
+			// QuestReward.Description: 2 Neutron Star Ingots
+			// DisplayName: Neutron Glaive
+			// Description: Obtain Neutron Glaive
+			// DetailedDescription: A polearm with astonishing density. Wielding it requires immense strength, but no armor can withstand its slash.
 		}
 
 		NeutronGunQuest: {
-			// QuestObjective.Description: 获得中子枪
-			// QuestReward.Description: 两块中子星锭
-			// DisplayName: NeutronGunQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Gun
+			// QuestReward.Description: 2 Neutron Star Ingots
+			// DisplayName: Neutron Gun
+			// Description: Obtain Neutron Gun
+			// DetailedDescription: A firearm that shoots micro-neutron streams. Due to their extreme density, the bullets are almost unaffected by resistance.
 		}
 
 		NeutronScytheQuest: {
-			// QuestObjective.Description: 获得中子镰刀
-			// QuestReward.Description: 两块中子星锭
-			// DisplayName: NeutronScytheQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Scythe
+			// QuestReward.Description: 2 Neutron Star Ingots
+			// DisplayName: Neutron Scythe
+			// Description: Obtain Neutron Scythe
+			// DetailedDescription: The reaper's harvesting tool. It tears through space with ease, harvesting life like wheat.
 		}
 
 		NeutronStarIngotQuest: {
-			// QuestObjective.Description: 获得中子星锭
-			// QuestReward.Description: 五块中子星锭
-			// DisplayName: NeutronStarIngotQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Star Ingot
+			// QuestReward.Description: 5 Neutron Star Ingots
+			// DisplayName: Neutron Star Ingot
+			// Description: Obtain Neutron Star Ingot
+			// DetailedDescription: One of the densest materials in the universe. This metal is unimaginably heavy, humming with gravitational fluctuations.
 		}
 
 		NeutronWandQuest: {
-			// QuestObjective.Description: 获得中子杖
-			// QuestReward.Description: 两块中子星锭
-			// DisplayName: NeutronWandQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Neutron Wand
+			// QuestReward.Description: 2 Neutron Star Ingots
+			// DisplayName: Neutron Wand
+			// Description: Obtain Neutron Wand
+			// DetailedDescription: A staff that controls gravity. Use the power of a neutron star to distort space-time and crush your enemies.
 		}
 
 		PandemoniumQuest: {
-			// QuestObjective.Description: 获得万魔殿
-			// QuestReward.Description: 二十块无尽锭
-			// DisplayName: PandemoniumQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Pandemonium
+			// QuestReward.Description: 20 Infinite Ingots
+			// DisplayName: Pandemonium
+			// Description: Obtain "Pandemonium"
+			// DetailedDescription: The ultimate weapon fusing countless souls and Calamitous power. Holding it, you hold the keys to Hell and the Abyss.
 		}
 
 		RockQuest: {
-			// QuestObjective.Description: 获得古恒石
-			// QuestReward.Description: 五块古恒石
-			// DisplayName: RockQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Rock
+			// QuestReward.Description: 5 Rocks
+			// DisplayName: Rock
+			// Description: Obtain Rock
+			// DetailedDescription: A seemingly ordinary stone, yet it has witnessed the cycle of countless Boss Rushes. It is a symbol of eternal perseverance.
 		}
 
 		TerminusQuest: {
-			// QuestObjective.Description: 获得终末石
-			// QuestReward.Description: 大量血珠
-			// DisplayName: TerminusQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Terminus
+			// QuestReward.Description: Massive Amount of Blood Orbs
+			// DisplayName: Terminus
+			// Description: Obtain Terminus
+			// DetailedDescription: The key to starting the Boss Rush. Gaze into this stone and prepare to face a continuous trial against the world's strongest beings.
 		}
 
 		TransmutationOfMatterQuest: {
-			// QuestObjective.Description: 获得物质转化台
-			// QuestReward.Description: 十块无尽锭
-			// DisplayName: TransmutationOfMatterQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Matter Transmuter
+			// QuestReward.Description: 10 Infinite Ingots
+			// DisplayName: Matter Transmuter
+			// Description: Obtain Matter Transmuter
+			// DetailedDescription: The ultimate form of alchemy. This machine breaks the principle of equivalent exchange, converting matter at will, or creating it from nothing.
 		}
 
 		HeavenfallLongbowQuest: {
-			// QuestObjective.Description: 获得无尽弓
-			// QuestReward.Description: 五块无尽锭
-			// DisplayName: HeavenfallLongbowQuest
-			// Description: " "
-			// DetailedDescription: " "
+			// QuestObjective.Description: Obtain Heavenly Gale
+			// QuestReward.Description: 5 Infinite Ingots
+			// DisplayName: Heavenly Gale
+			// Description: Obtain Heavenly Gale
+			// DetailedDescription: A longbow that has shot down gods. Now it shall reappear in the world.
 		}
 	}
 }
