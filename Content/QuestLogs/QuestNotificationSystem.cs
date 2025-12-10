@@ -1,8 +1,6 @@
 using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -63,12 +61,15 @@ namespace CalamityOverhaul.Content.QuestLogs
             _pendingNotifications.Enqueue(new NotificationInfo(title, icon, iconFrame));
         }
 
+        public static void PlayRollout() => SoundEngine.PlaySound(CWRSound.Rollout);
+
         public override void LogicUpdate() {
             //添加新通知
             if (_activeNotifications.Count < MaxActive && _pendingNotifications.Count > 0) {
                 var info = _pendingNotifications.Dequeue();
                 float targetY = GetTargetY(_activeNotifications.Count);
                 _activeNotifications.Add(new ActiveNotification(info, targetY));
+                PlayRollout();
             }
 
             //更新现有通知
