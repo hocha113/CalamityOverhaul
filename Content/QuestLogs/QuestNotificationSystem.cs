@@ -81,6 +81,18 @@ namespace CalamityOverhaul.Content.QuestLogs
                 float targetY = GetTargetY(i);
                 note.CurrentY = MathHelper.Lerp(note.CurrentY, targetY, 0.1f);
 
+                //移除过期通知
+                if (note.Timer >= SlideTime * 2 + DisplayTime) {
+                    _activeNotifications.RemoveAt(i);
+                }
+            }
+        }
+
+        public override void Update() {
+            //更新现有通知
+            for (int i = _activeNotifications.Count - 1; i >= 0; i--) {
+                var note = _activeNotifications[i];
+
                 //检查鼠标交互
                 if (CheckMouseInteraction(note)) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f, Pitch = -0.2f });
@@ -88,11 +100,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                     if (note.Timer < SlideTime + DisplayTime) {
                         note.Timer = SlideTime + DisplayTime;
                     }
-                }
-
-                //移除过期通知
-                if (note.Timer >= SlideTime * 2 + DisplayTime) {
-                    _activeNotifications.RemoveAt(i);
                 }
             }
         }
