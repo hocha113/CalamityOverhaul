@@ -125,7 +125,9 @@ namespace CalamityOverhaul.Content
         }
 
         private static void ModifyResultContent(Recipe recipe) {
-            recipe.AddOnCraftCallback(QLPlayer.CraftedItem);
+            if (CWRServerConfig.Instance.QuestLog) {
+                recipe.AddOnCraftCallback(QLPlayer.CraftedItem);
+            }
 
             //修改雪境暴徒的合成
             {

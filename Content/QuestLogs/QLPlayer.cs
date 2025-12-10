@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //玩家合成物品时调用
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.IsUnlocked && !quest.IsCompleted) {
-                    quest.UpdateByPlayer();
+                    quest.CraftedItem(recipe, item, consumedItems, destinationStack);
                 }
             }
         }
