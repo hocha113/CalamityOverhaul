@@ -82,7 +82,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             panelRect = new Rectangle(0, 0, 800, 600);
             
             availableStyles = [
-                new HotwindQuestLogStyle()
+                new HotwindQuestLogStyle(),
+                new DraedonQuestLogStyle()
             ];
             CurrentStyle = availableStyles[0];
         }
@@ -195,6 +196,57 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
+            bool hoveredOtherButton = false;
+
+            //处理一键领取按钮
+            if (HasUnclaimedRewards()) {
+                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
+                if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
+                    player.mouseInterface = true;
+                    hoveredOtherButton = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        ClaimAllRewards();
+                        SoundEngine.PlaySound(SoundID.Grab);
+                    }
+                }
+            }
+
+            //处理重置视图按钮
+            if (panOffset.Length() > 100f) {
+                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
+                if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
+                    player.mouseInterface = true;
+                    hoveredOtherButton = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        ResetView();
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                    }
+                }
+            }
+
+            //处理样式切换按钮
+            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
+            if (styleRect.Contains(Main.MouseScreen.ToPoint())) {
+                player.mouseInterface = true;
+                hoveredOtherButton = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    currentStyleIndex = (currentStyleIndex + 1) % availableStyles.Count;
+                    CurrentStyle = availableStyles[currentStyleIndex];
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                }
+            }
+
+            //处理夜间模式按钮
+            Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
+            if (nightRect.Contains(Main.MouseScreen.ToPoint())) {
+                player.mouseInterface = true;
+                hoveredOtherButton = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    NightMode = !NightMode;
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                }
+            }
+
             //处理地图拖拽和缩放
             if (hoverInMainPage) {
                 //滚轮缩放
@@ -215,57 +267,6 @@ namespace CalamityOverhaul.Content.QuestLogs
 
                 //检测节点悬停
                 hoveredNode = null;
-
-                bool hoveredOtherButton = false;
-
-                //处理一键领取按钮
-                if (HasUnclaimedRewards()) {
-                    Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
-                    if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
-                        player.mouseInterface = true;
-                        hoveredOtherButton = true;
-                        if (keyLeftPressState == KeyPressState.Pressed) {
-                            ClaimAllRewards();
-                            SoundEngine.PlaySound(SoundID.Grab);
-                        }
-                    }
-                }
-
-                //处理重置视图按钮
-                if (panOffset.Length() > 100f) {
-                    Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
-                    if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
-                        player.mouseInterface = true;
-                        hoveredOtherButton = true;
-                        if (keyLeftPressState == KeyPressState.Pressed) {
-                            ResetView();
-                            SoundEngine.PlaySound(SoundID.MenuTick);
-                        }
-                    }
-                }
-
-                //处理样式切换按钮
-                Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
-                if (styleRect.Contains(Main.MouseScreen.ToPoint())) {
-                    player.mouseInterface = true;
-                    hoveredOtherButton = true;
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        currentStyleIndex = (currentStyleIndex + 1) % availableStyles.Count;
-                        CurrentStyle = availableStyles[currentStyleIndex];
-                        SoundEngine.PlaySound(SoundID.MenuTick);
-                    }
-                }
-
-                //处理夜间模式按钮
-                Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
-                if (nightRect.Contains(Main.MouseScreen.ToPoint())) {
-                    player.mouseInterface = true;
-                    hoveredOtherButton = true;
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        NightMode = !NightMode;
-                        SoundEngine.PlaySound(SoundID.MenuTick);
-                    }
-                }
 
                 if (!hoveredOtherButton) {
                     foreach (var node in Nodes) {

@@ -684,11 +684,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Rectangle buttonRect = GetStyleSwitchButtonRect(panelRect);
             Vector2 center = buttonRect.Center.ToVector2();
 
-            // 绘制背景
+            //绘制背景
             Color bgColor = isHovered ? new Color(100, 100, 120) : new Color(60, 60, 70);
             spriteBatch.Draw(pixel, buttonRect, bgColor * alpha);
 
-            // 绘制边框
+            //绘制边框
             Color borderColor = isHovered ? Color.White : new Color(180, 180, 200);
             int border = 2;
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * alpha);
@@ -696,18 +696,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
 
-            // 绘制图标 (类似书本或层叠页面)
+            //绘制图标 (类似书本或层叠页面)
             Color iconColor = isHovered ? Color.White : new Color(220, 220, 220);
             
-            // 后页
+            //后页
             Rectangle page1 = new Rectangle(0, 0, 16, 20);
             spriteBatch.Draw(pixel, center + new Vector2(2, -2), page1, iconColor * 0.5f * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
             
-            // 前页
+            //前页
             Rectangle page2 = new Rectangle(0, 0, 16, 20);
             spriteBatch.Draw(pixel, center + new Vector2(-2, 2), page2, iconColor * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
             
-            // 页面纹理
+            //页面纹理
             spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, -5), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 0), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 5), new Rectangle(0,0, 6, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -727,11 +727,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Rectangle buttonRect = GetNightModeButtonRect(panelRect);
             Vector2 center = buttonRect.Center.ToVector2();
 
-            // 绘制背景
+            //绘制背景
             Color bgColor = isHovered ? new Color(80, 80, 100) : new Color(40, 40, 50);
             spriteBatch.Draw(pixel, buttonRect, bgColor * alpha);
 
-            // 绘制边框
+            //绘制边框
             Color borderColor = isHovered ? Color.White : new Color(150, 150, 170);
             int border = 2;
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * alpha);
@@ -739,20 +739,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * alpha);
 
-            // 绘制图标 (月亮/太阳)
+            //绘制图标 (月亮/太阳)
             Color iconColor = isHovered ? Color.White : new Color(255, 255, 200);
             
             if (isNightMode) {
-                // 月亮图标
-                // 绘制一个圆形
+                //月亮图标
+                //绘制一个圆形
                 spriteBatch.Draw(pixel, center, new Rectangle(0,0, 16, 16), iconColor * alpha, 0f, new Vector2(8, 8), 1f, SpriteEffects.None, 0f);
-                // 绘制遮罩圆形形成月牙
+                //绘制遮罩圆形形成月牙
                 spriteBatch.Draw(pixel, center + new Vector2(4, -2), new Rectangle(0,0, 14, 14), bgColor * alpha, 0f, new Vector2(7, 7), 1f, SpriteEffects.None, 0f);
             } else {
-                // 太阳图标
-                // 中心圆
+                //太阳图标
+                //中心圆
                 spriteBatch.Draw(pixel, center, new Rectangle(0,0, 10, 10), iconColor * alpha, 0f, new Vector2(5, 5), 1f, SpriteEffects.None, 0f);
-                // 光芒
+                //光芒
                 float time = Main.GameUpdateCount * 0.02f;
                 for(int i=0; i<8; i++) {
                     float rot = i * MathHelper.PiOver4 + time;
@@ -765,7 +765,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) {
             return new Rectangle(
                 panelRect.X + panelRect.Width / 2 - 70,
-                panelRect.Bottom - 48,
+                panelRect.Bottom + 40,
                 140,
                 35
             );
