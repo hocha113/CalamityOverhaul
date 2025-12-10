@@ -2070,7 +2070,7 @@ Buffs: {
 Keybinds: {
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
-	QuestLog_Key.DisplayName: 开关任务书界面
+	QuestLog_Key.DisplayName: 任务书:开关主界面
 	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
 	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
 	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
@@ -6461,13 +6461,14 @@ UI: {
 		RewardText: 任务奖励
 		ReceiveAwardText: 领取奖励
 		ProgressText: 任务完成比例
-		// QuickReceiveAwardText: 一键领取
-		// StyleSwitchText: 切换风格
-		// NightModeText: 夜间模式
-		// ResetViewText: 重置视图
+		QuickReceiveAwardText: 一键领取
+		StyleSwitchText: 切换风格
+		NightModeText: 夜间模式
+		ResetViewText: 重置视图
+		SunModeText: 日间模式
 	}
 
-	// QuestNotificationSystem.Text1: 任务完成
+	QuestNotificationSystem.Text1: 任务完成
 }
 
 ADV: {

@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ProgressText;
         public static LocalizedText StyleSwitchText;
         public static LocalizedText NightModeText;
+        public static LocalizedText SunModeText;
         public static LocalizedText ResetViewText;
 
         private List<IQuestLogStyle> availableStyles;
@@ -96,6 +97,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             ProgressText = this.GetLocalization(nameof(ProgressText), () => "任务完成比例");
             StyleSwitchText = this.GetLocalization(nameof(StyleSwitchText), () => "切换风格");
             NightModeText = this.GetLocalization(nameof(NightModeText), () => "夜间模式");
+            SunModeText = this.GetLocalization(nameof(SunModeText), () => "日间模式");
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
         }
 
@@ -254,7 +256,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 if (scroll != oldScrollWheelValue) {
                     float zoomChange = (scroll - oldScrollWheelValue) > 0 ? 0.1f : -0.1f;
                     float oldZoom = zoom;
-                    float newZoom = MathHelper.Clamp(zoom + zoomChange, 0.5f, 2.0f);
+                    float newZoom = MathHelper.Clamp(zoom + zoomChange, 0.4f, 2.0f);
 
                     if (oldZoom != newZoom) {
                         Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2, panelRect.Y + panelRect.Height / 2);
@@ -335,7 +337,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             bool hoverCloseButton = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
             if (hoverCloseButton) {
                 player.mouseInterface = true;
-                //使用UIHandle的keyLeftPressState接口
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     showDetailPanel = false;
                     selectedNode = null;
@@ -350,7 +351,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 bool hoverRewardButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
                 if (hoverRewardButton) {
                     player.mouseInterface = true;
-                    //使用UIHandle的keyLeftPressState接口
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         ClaimRewards(selectedNode);
                         SoundEngine.PlaySound(SoundID.Grab);
@@ -497,7 +497,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             bool nightHovered = nightRect.Contains(Main.MouseScreen.ToPoint());
             CurrentStyle.DrawNightModeButton(spriteBatch, panelRect, nightHovered, mainPanelAlpha, NightMode);
             if (nightHovered) {
-                Main.hoverItemName = NightModeText.Value;
+                Main.hoverItemName = NightMode ? NightModeText.Value : SunModeText.Value;
             }
         }
 

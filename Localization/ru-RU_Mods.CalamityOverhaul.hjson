@@ -2110,7 +2110,7 @@ Buffs: {
 Keybinds: {
 	ADS_Key.DisplayName: Открыть Прицел
 	KreLoad_Key.DisplayName: Перезарядка
-	// QuestLog_Key.DisplayName: Toggle Quest Book Interface
+	// QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
 	HeavenfallLongbowSkillKey.DisplayName: Небесный Лук Падения: Суд Вселенной
 	InfinitePickSkillKey.DisplayName: Бесконечная Кирка: Изменение Формы
 	Murasama_TriggerKey.DisplayName: Мурасама: Восходящий удар
@@ -5875,24 +5875,24 @@ NPCModifys: {
 		// Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
 		// Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
 		// Homeless3: No vacant housing? What... you expect me to pay rent?
-		// L0: I cannot afford rent, but if you have any deceased relatives you wish for me to attempt... what? You refuse?
-		// L1: I have never believed in souls. Any attempt to resurrect the dead only invites greater catastrophe.
+		// L0: I cannot afford rent. Perhaps I could perform an exorcism for your town to offset some of the cost?
+		// L1: I have never believed in the concept of souls. Any attempt to resurrect the dead only invites greater catastrophe.
 		/* L2:
 			'''
-			In the last century, I stepped into a town swallowed by the supernatural.
-			The streets were lined with dead 'friends and family,' smiling, waving, crying for help...
-			I once tried to bring back my 'mother' from there.
-			She looked exactly as she did in life, her voice flawless... until I realized she had no heartbeat, and she found amusement in that.
+			In the last century, I once stepped into a small town.
+			The streets were crowded with 'friends and family' who were supposed to be dead. They smiled, waved, and even cried for help...
+			I attempted to bring back my 'mother' from there.
+			She looked exactly as she did in life, her tone flawless... until I realized she had no heartbeat, and she found amusement in that fact.
 			''' */
 		/* L3:
 			'''
-			I feel you are sometimes overly confident. You will achieve nothing at this rate.
+			I feel you are sometimes overly confident; you will achieve nothing at this rate.
 			I have seen too many like you perish on their quest for power.
 			''' */
 		/* L4:
 			'''
 			I know you are interested in my magic, but it is... not magic.
-			It is occult power. Those who touch the supernatural meet no good end. I suggest you stay away from it.
+			I hope you stay away from it. Those who touch these powers meet no good end.
 			''' */
 		// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
 		// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
@@ -6569,17 +6569,18 @@ UI: {
 	}
 
 	QuestLog: {
-		// ObjectiveText: 任务目标
-		// RewardText: 任务奖励
-		// ReceiveAwardText: 领取奖励
-		// ProgressText: 任务完成比例
-		// QuickReceiveAwardText: 一键领取
-		// StyleSwitchText: 切换风格
-		// NightModeText: 夜间模式
-		// ResetViewText: 重置视图
+		// ObjectiveText: Objective
+		// RewardText: Reward
+		// ReceiveAwardText: Claim Reward
+		// ProgressText: Quest Progress
+		// QuickReceiveAwardText: Quick Claim
+		// StyleSwitchText: Switch Style
+		// NightModeText: Night Mode
+		// ResetViewText: Reset View
+		// SunModeText: Daytime Mode
 	}
 
-	// QuestNotificationSystem.Text1: 任务完成
+	// QuestNotificationSystem.Text1: Quest Complete
 }
 
 ADV: {
