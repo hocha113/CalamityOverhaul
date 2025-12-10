@@ -6466,6 +6466,8 @@ UI: {
 		// NightModeText: 夜间模式
 		// ResetViewText: 重置视图
 	}
+
+	// QuestNotificationSystem.Text1: 任务完成
 }
 
 ADV: {

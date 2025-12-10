@@ -151,7 +151,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         protected virtual void OnCompletion() {
             //播放完成音效或提示
             if (Main.LocalPlayer.active) {
-                CombatText.NewText(Main.LocalPlayer.getRect(), Color.Green, "任务完成: " + DisplayName.Value);
+                Texture2D icon = GetIconTexture();
+                Rectangle? iconFrame = GetIconSourceRect(icon);
+                QuestNotificationSystem.AddNotification(DisplayName.Value, icon, iconFrame);
             }
 
             //尝试解锁子任务
