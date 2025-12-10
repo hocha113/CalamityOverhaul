@@ -1452,8 +1452,8 @@ Items: {
 	}
 
 	QuestLogBook: {
-		// DisplayName: Quest Log Book
-		// Tooltip: ""
+		// DisplayName: Quest Book
+		// Tooltip: Use to open or close the quest interface
 	}
 }
 
@@ -2041,6 +2041,16 @@ Configs: {
 			// Label: Show Reloading Progress
 			// Tooltip: When opened, the ammo loading progress will be displayed
 		}
+
+		QuestLog: {
+			// Label: Quest Log Guidance
+			/* Tooltip:
+				'''
+				When enabled, the quest log will guide you through game progression
+				You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
+				Enabled by default. Disabling this removes all quest guidance
+				''' */
+		}
 	}
 }
 
@@ -2079,6 +2089,7 @@ Buffs: {
 Keybinds: {
 	ADS_Key.DisplayName: Abrir miras
 	KreLoad_Key.DisplayName: Recargar
+	// QuestLog_Key.DisplayName: Toggle Quest Book Interface
 	HeavenfallLongbowSkillKey.DisplayName: Arco largo de la caída del cielo: Juicio de las manifestaciones
 	InfinitePickSkillKey.DisplayName: Pico infinito: Cambio de forma
 	Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo

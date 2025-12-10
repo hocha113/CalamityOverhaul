@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using ThoriumMod.Core.Handlers.ScreenShakeHandler;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
@@ -20,7 +22,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static Asset<Texture2D> QuestLogStart = null;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
-        public override bool Active => visible || openScale > 0.01f || Main.playerInventory;
+        public override bool Active => (visible || openScale > 0.01f || Main.playerInventory) && CWRServerConfig.Instance.QuestLog;
         internal bool visible;
         public float MainPanelAlpha => mainPanelAlpha;
         private float mainPanelAlpha;
@@ -138,8 +140,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //更新启动器位置和状态
             if (Main.playerInventory) {
-                Vector2 launcherPos = new Vector2(Main.screenWidth / 3, Main.screenHeight / 54);
-                launcher.Update(launcherPos, visible);
+                launcher.Update(new Vector2(570, 36), visible);
                 if (launcher.IsHovered) {
                     player.mouseInterface = true;
                 }

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -141,6 +142,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         public string LocalizationCategory => "QuestLogs.QuestNode";
+
+        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
 
         /// <summary>
         /// 当任务完成时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsCompleted"/>

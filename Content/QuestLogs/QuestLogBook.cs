@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,6 +19,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         private static Asset<Texture2D> QuestLogBook_Close = null;
         private static Asset<Texture2D> QuestLogBook_Open1 = null;
         private static Asset<Texture2D> QuestLogBook_Open2 = null;
+        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
@@ -62,6 +64,7 @@ namespace CalamityOverhaul.Content.QuestLogs
     internal class QuestLogBookPlayer : ModPlayer
     {
         private bool Change;
+        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
         public override void SaveData(TagCompound tag) {
             tag[nameof(Change)] = Change;
         }
@@ -72,6 +75,11 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
         public override void PostUpdateMiscEffects() {
+            if (!VaultUtils.isServer && CWRKeySystem.QuestLog_Key.JustReleased) {
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
+                QuestLog.Instance.visible = !QuestLog.Instance.visible;
+            }
+
             if (Change) {
                 return;
             }

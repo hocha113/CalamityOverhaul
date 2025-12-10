@@ -1432,8 +1432,8 @@ Items: {
 	}
 
 	QuestLogBook: {
-		// DisplayName: Quest Log Book
-		// Tooltip: ""
+		DisplayName: 任务书
+		Tooltip: 使用以打开或者关闭任务界面
 	}
 }
 
@@ -2022,6 +2022,16 @@ Configs: {
 			Label: 显示装弹进度
 			Tooltip: 开启后会让弹药装填的进度被显示出来
 		}
+
+		QuestLog: {
+			Label: 任务书指引
+			Tooltip:
+				'''
+				启用后，在游戏进程中将会有任务书指引玩家
+				可以使用任务书物品、背包中的启动UI，或者快捷键打开任务书界面查看当前任务
+				默认开启，禁用后将不会有任何任务指引
+				'''
+		}
 	}
 }
 
@@ -2060,6 +2070,7 @@ Buffs: {
 Keybinds: {
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
+	QuestLog_Key.DisplayName: 开关任务书界面
 	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
 	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
 	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
