@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -17,11 +18,16 @@ namespace CalamityOverhaul.Content.QuestLogs
             public string Title;
             public Texture2D Icon;
             public Rectangle? IconFrame;
+            public QuestNode node;
 
             public NotificationInfo(string title, Texture2D icon, Rectangle? iconFrame) {
                 Title = title;
                 Icon = icon;
                 IconFrame = iconFrame;
+            }
+
+            public NotificationInfo(QuestNode node) {
+                this.node = node;
             }
         }
 
@@ -59,6 +65,10 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public static void AddNotification(string title, Texture2D icon = null, Rectangle? iconFrame = null) {
             _pendingNotifications.Enqueue(new NotificationInfo(title, icon, iconFrame));
+        }
+
+        public static void AddNotification(QuestNode node) {
+            _pendingNotifications.Enqueue(new NotificationInfo(node));
         }
 
         public static void PlayRollout() => SoundEngine.PlaySound(CWRSound.Rollout);
@@ -145,6 +155,11 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         private void DrawSingleNotification(SpriteBatch sb, ActiveNotification note) {
             float progress = GetProgress(note.Timer);
+            if (note.Info.node != null) {
+                note.Info.Title = note.Info.node.DisplayName.Value;
+                note.Info.Icon = note.Info.node.GetIconTexture();
+                note.Info.IconFrame = note.Info.node.GetIconSourceRect(note.Info.Icon);
+            }
 
             string titleText = Text1.Value;
             string nameText = note.Info.Title;
@@ -168,6 +183,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制图标
             float iconSize = height - padding * 2;
             Vector2 iconPos = new Vector2(x + padding, y + padding);
+
             if (note.Info.Icon != null) {
                 Rectangle src = note.Info.IconFrame ?? note.Info.Icon.Frame();
                 float scale = iconSize / MathHelper.Max(src.Width, src.Height);

@@ -151,9 +151,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         protected virtual void OnCompletion() {
             //播放完成音效或提示
             if (Main.LocalPlayer.active) {
-                Texture2D icon = GetIconTexture();
-                Rectangle? iconFrame = GetIconSourceRect(icon);
-                QuestNotificationSystem.AddNotification(DisplayName.Value, icon, iconFrame);
+                QuestNotificationSystem.AddNotification(this);
             }
 
             //尝试解锁子任务

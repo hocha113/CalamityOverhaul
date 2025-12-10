@@ -101,7 +101,29 @@ namespace CalamityOverhaul.Content.QuestLogs
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
         }
 
-        public override void LogicUpdate() {
+        public override void Update() {
+            //更新动画状态
+            if (visible) {
+                openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
+            }
+            else {
+                openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 0f, 0.14f);
+            }
+
+            //更新详情面板透明度
+            if (showDetailPanel) {
+                if (detailPanelAlpha < 1f) {
+                    detailPanelAlpha += 0.1f;
+                }
+            }
+            else {
+                if (detailPanelAlpha > 0f) {
+                    detailPanelAlpha -= 0.1f;
+                }
+            }
+
             //更新启动器位置和状态
             if (Main.playerInventory) {
                 if (launcher.IsHovered) {
@@ -133,30 +155,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
             CurrentStyle?.UpdateStyle();
-        }
-
-        public override void Update() {
-            //更新动画状态
-            if (visible) {
-                openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
-            }
-            else {
-                openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 0f, 0.14f);
-            }
-
-            //更新详情面板透明度
-            if (showDetailPanel) {
-                if (detailPanelAlpha < 1f) {
-                    detailPanelAlpha += 0.1f;
-                }
-            }
-            else {
-                if (detailPanelAlpha > 0f) {
-                    detailPanelAlpha -= 0.1f;
-                }
-            }
 
             //更新启动器位置和状态
             if (Main.playerInventory) {

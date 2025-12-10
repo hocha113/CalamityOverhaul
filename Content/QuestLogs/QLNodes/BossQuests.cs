@@ -508,9 +508,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "瘟疫使者歌莉娅");
             Description = this.GetLocalization(nameof(Description), () => "击败瘟疫使者歌莉娅");
 
-            IconType = QuestIconType.Texture;
             IconTexturePath = "CalamityMod/NPCs/PlaguebringerGoliath/PlaguebringerGoliath_BossChecklist";//歌莉娅的纹理比较特殊，这里手动设置纹理路径
-            IconNPCType = CWRID.NPC_PlaguebringerGoliath;
             Position = new Vector2(0, -150);
             AddParent<GolemQuest>();
 
