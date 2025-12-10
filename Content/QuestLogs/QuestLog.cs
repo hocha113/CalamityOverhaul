@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ObjectiveText;
         public static LocalizedText RewardText;
         public static LocalizedText ReceiveAwardText;
+        public static LocalizedText QuickReceiveAwardText;
         public static LocalizedText ProgressText;
 
         public QuestLog() {
@@ -77,6 +78,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             ObjectiveText = this.GetLocalization(nameof(ObjectiveText), () => "任务目标");
             RewardText = this.GetLocalization(nameof(RewardText), () => "任务奖励");
             ReceiveAwardText = this.GetLocalization(nameof(ReceiveAwardText), () => "领取奖励");
+            QuickReceiveAwardText = this.GetLocalization(nameof(QuickReceiveAwardText), () => "一键领取");
             ProgressText = this.GetLocalization(nameof(ProgressText), () => "任务完成比例");
         }
 
@@ -240,6 +242,30 @@ namespace CalamityOverhaul.Content.QuestLogs
                 if (keyLeftPressState == KeyPressState.Released) {
                     isDraggingMap = false;
                 }
+
+                //处理一键领取按钮
+                if (HasUnclaimedRewards()) {
+                    Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
+                    if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
+                        player.mouseInterface = true;
+                        if (keyLeftPressState == KeyPressState.Pressed) {
+                            ClaimAllRewards();
+                            SoundEngine.PlaySound(SoundID.Grab);
+                        }
+                    }
+                }
+
+                //处理重置视图按钮
+                if (panOffset.Length() > 100f) {
+                    Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
+                    if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
+                        player.mouseInterface = true;
+                        if (keyLeftPressState == KeyPressState.Pressed) {
+                            ResetView();
+                            SoundEngine.PlaySound(SoundID.MenuTick);
+                        }
+                    }
+                }
             }
             else {
                 isDraggingMap = false;
@@ -296,6 +322,28 @@ namespace CalamityOverhaul.Content.QuestLogs
                     reward.Claimed = true;
                 }
             }
+        }
+
+        private void ClaimAllRewards() {
+            foreach (var node in Nodes) {
+                if (node.IsCompleted && node.Rewards != null) {
+                    ClaimRewards(node);
+                }
+            }
+        }
+
+        private bool HasUnclaimedRewards() {
+            foreach (var node in Nodes) {
+                if (node.IsCompleted && node.Rewards != null && node.Rewards.Exists(r => !r.Claimed)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void ResetView() {
+            dragStartPanOffset = panOffset = Vector2.Zero;
+            zoom = 1f;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -370,6 +418,21 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //绘制进度条
             CurrentStyle.DrawProgressBar(spriteBatch, this, panelRect);
+
+            //绘制一键领取按钮
+            if (HasUnclaimedRewards()) {
+                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
+                bool hovered = claimRect.Contains(Main.MouseScreen.ToPoint());
+                CurrentStyle.DrawClaimAllButton(spriteBatch, panelRect, hovered, mainPanelAlpha);
+            }
+
+            //绘制重置视图按钮
+            if (panOffset.Length() > 100f) {
+                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
+                bool hovered = resetRect.Contains(Main.MouseScreen.ToPoint());
+                Vector2 direction = -panOffset; // 指向中心的方向
+                CurrentStyle.DrawResetViewButton(spriteBatch, panelRect, direction, hovered, mainPanelAlpha);
+            }
         }
 
         private void DrawMainCloseButton(SpriteBatch spriteBatch) {

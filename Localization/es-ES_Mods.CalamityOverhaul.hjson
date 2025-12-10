@@ -6484,6 +6484,7 @@ UI: {
 		// RewardText: 任务奖励
 		// ReceiveAwardText: 领取奖励
 		// ProgressText: 任务完成比例
+		// QuickReceiveAwardText: 一键领取
 	}
 }
 

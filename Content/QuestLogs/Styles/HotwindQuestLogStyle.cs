@@ -660,5 +660,63 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), markColor * 0.7f, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size * 0.4f, size * 0.4f), SpriteEffects.None, 0f);
         }
+
+        public Rectangle GetClaimAllButtonRect(Rectangle panelRect) {
+            return new Rectangle(
+                panelRect.X + panelRect.Width / 2 - 70,
+                panelRect.Bottom - 70,
+                140,
+                35
+            );
+        }
+
+        public void DrawClaimAllButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle buttonRect = GetClaimAllButtonRect(panelRect);
+
+            Color buttonColor = isHovered ? new Color(100, 255, 120) : new Color(60, 180, 80);
+            spriteBatch.Draw(pixel, buttonRect, buttonColor * alpha);
+
+            // 边框
+            int border = 2;
+            Color edgeColor = new Color(200, 255, 200) * alpha;
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Bottom - border, buttonRect.Width, border), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), edgeColor);
+            spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), edgeColor);
+
+            // 文字
+            string text = QuestLog.QuickReceiveAwardText.Value;
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f;
+            Vector2 textPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
+            Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
+        }
+
+        public Rectangle GetResetViewButtonRect(Rectangle panelRect) {
+            return new Rectangle(
+                panelRect.Right - 40,
+                panelRect.Bottom - 40,
+                30,
+                30
+            );
+        }
+
+        public void DrawResetViewButton(SpriteBatch spriteBatch, Rectangle panelRect, Vector2 directionToCenter, bool isHovered, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle buttonRect = GetResetViewButtonRect(panelRect);
+
+            Color buttonColor = isHovered ? new Color(255, 200, 100) : new Color(200, 150, 80);
+            spriteBatch.Draw(pixel, buttonRect, buttonColor * alpha);
+
+            // 箭头
+            float rotation = directionToCenter.ToRotation();
+            Vector2 center = buttonRect.Center.ToVector2();
+            
+            // 绘制指向中心的箭头
+            spriteBatch.Draw(pixel, center, new Rectangle(0,0, 14, 2), Color.White * alpha, rotation, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
+            
+            // 箭头头部
+            spriteBatch.Draw(pixel, center + new Vector2(6, 0).RotatedBy(rotation), new Rectangle(0,0, 6, 6), Color.White * alpha, rotation + MathHelper.PiOver4, new Vector2(3, 3), 1f, SpriteEffects.None, 0f);
+        }
     }
 }

@@ -21,5 +21,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         Rectangle GetRewardButtonRect(Rectangle panelRect);
         //绘制进度条
         void DrawProgressBar(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect);
+        //获取一键领取按钮区域
+        Rectangle GetClaimAllButtonRect(Rectangle panelRect);
+        //绘制一键领取按钮
+        void DrawClaimAllButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha);
+        //获取重置视图按钮区域
+        Rectangle GetResetViewButtonRect(Rectangle panelRect);
+        //绘制重置视图按钮
+        void DrawResetViewButton(SpriteBatch spriteBatch, Rectangle panelRect, Vector2 directionToCenter, bool isHovered, float alpha);
     }
 }
