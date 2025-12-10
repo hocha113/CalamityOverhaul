@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.KingSlime;
             Position = new Vector2(0, 150);
-            AddParent<FirstQuest>(); 
-            
+            AddParent<FirstQuest>();
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_DesertScourgeHead;
             Position = new Vector2(150, 0);
             AddParent<KingSlimeQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.EyeofCthulhu;
             Position = new Vector2(150, 0);
             AddParent<DesertScourgeQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_Crabulon;
             Position = new Vector2(150, 0);
             AddParent<EyeofCthulhuQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.EaterofWorldsHead;
             Position = new Vector2(150, 0);
             AddParent<CrabulonQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_HiveMind;
             Position = new Vector2(150, 0);
             AddParent<EaterofWorldsQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.SkeletronHead;
             Position = new Vector2(150, 0);
             AddParent<HiveMindQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_SlimeGodCore;
             Position = new Vector2(150, 0);
             AddParent<SkeletronQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
 
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.WallofFlesh;
             Position = new Vector2(150, 0);
             AddParent<SlimeGodQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
 
@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_Cryogen;
             Position = new Vector2(0, 150);
             AddParent<WallofFleshQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ItemID.MechanicalSkull;
             Position = new Vector2(150, 0); // Main line from WoF
             AddParent<WallofFleshQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
 
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_BrimstoneElemental;
             Position = new Vector2(0, -150); // Branch up from Mechs
             AddParent<MechanicalBossesQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.Plantera;
             Position = new Vector2(150, 0); // Main line from Mechs
             AddParent<MechanicalBossesQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Expert;
 
@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_CalamitasClone;
             Position = new Vector2(0, 150); // Branch down from Plantera
             AddParent<PlanteraQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.Golem;
             Position = new Vector2(150, 0); // Main line from Plantera
             AddParent<PlanteraQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Expert;
 
@@ -512,7 +512,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_PlaguebringerGoliath;
             Position = new Vector2(0, -150); // Branch up from Golem
             AddParent<GolemQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.CultistBoss;
             Position = new Vector2(150, 0); // Main line from Golem
             AddParent<GolemQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -578,7 +578,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = NPCID.MoonLordHead;
             Position = new Vector2(150, 0); // Main line from Cultist
             AddParent<LunaticCultistQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 

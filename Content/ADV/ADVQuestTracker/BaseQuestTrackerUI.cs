@@ -630,15 +630,15 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             //字体箭头符号
             string arrowSymbol = isCollapsed ? "◀" : "▶";
             var font = FontAssets.MouseText.Value;
-            
+
             //测量文本尺寸以正确居中
             Vector2 textSize = font.MeasureString(arrowSymbol);
             float scale = collapseButtonHovered ? 1.1f : 1f;
             Vector2 scaledSize = textSize * scale;
-            
+
             //计算居中位置
             Vector2 drawPos = center - scaledSize / 2f;
-            
+
             //绘制箭头主体
             Utils.DrawBorderString(spriteBatch, arrowSymbol, drawPos, arrowColor, scale);
 
@@ -646,14 +646,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             if (collapseButtonHovered) {
                 Color glowColor = Color.Lerp(styleColor, Color.White, 0.4f) with { A = 0 };
                 float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.5f;
-                
+
                 //绘制多层发光
                 for (int i = 0; i < 2; i++) {
                     float glowScale = scale * (1f + i * 0.08f);
                     float glowAlpha = glowPulse * (0.4f - i * 0.15f);
                     Vector2 glowSize = textSize * glowScale;
                     Vector2 glowPos = center - glowSize / 2f;
-                    
+
                     Utils.DrawBorderString(spriteBatch, arrowSymbol, glowPos, glowColor * glowAlpha, glowScale);
                 }
             }

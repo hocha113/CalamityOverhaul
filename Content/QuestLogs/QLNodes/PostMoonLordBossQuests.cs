@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "ProfanedGuardianCommander").Type;
             Position = new Vector2(150, 0);
             AddParent<MoonLordQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Bumblefuck").Type;
             Position = new Vector2(0, 150);
             AddParent<MoonLordQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_Providence;
             Position = new Vector2(150, 0);
             AddParent<ProfanedGuardiansQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "StormWeaverHead").Type;
             Position = new Vector2(0, -150);
             AddParent<ProvidenceQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "CeaselessVoid").Type;
             Position = new Vector2(0, 150);
             AddParent<ProvidenceQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Signus").Type;
             Position = new Vector2(75, 150);
             AddParent<ProvidenceQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Polterghast").Type;
             Position = new Vector2(150, 0);
             AddParent<ProvidenceQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_OldDuke;
             Position = new Vector2(0, 150);
             AddParent<PolterghastQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_DevourerofGodsHead;
             Position = new Vector2(150, 0);
             AddParent<PolterghastQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_Yharon;
             Position = new Vector2(150, 0);
             AddParent<DevourerofGodsQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_ThanatosHead;
             Position = new Vector2(150, -100);
             AddParent<YharonQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -393,7 +393,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = CWRID.NPC_SupremeCalamitas;
             Position = new Vector2(150, 100);
             AddParent<YharonQuest>();
-            
+
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -428,7 +428,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "PrimordialWyrmHead").Type;
             Position = new Vector2(0, 200);
             AddParent<YharonQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 

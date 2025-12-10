@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles
 {

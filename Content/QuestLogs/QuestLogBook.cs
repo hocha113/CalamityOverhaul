@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (Change) {
                 return;
             }
-            foreach(var item in Player.inventory) {
+            foreach (var item in Player.inventory) {
                 if (!item.Alives() || item.type != CWRID.Item_StarterBag) {
                     continue;
                 }

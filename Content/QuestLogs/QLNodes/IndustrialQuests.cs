@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<WindGrivenGenerator>();
             Position = new Vector2(150, -150);
             AddParent<MiningQuestIII>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<ThermalGenerator>();
             Position = new Vector2(150, 0);
             AddParent<IndustrialStartQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<UEPipeline>();
             Position = new Vector2(0, -150);
             AddParent<IndustrialStartQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<ThermalBattery>();
             Position = new Vector2(0, -150);
             AddParent<PipelineQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<MiningMachine>();
             Position = new Vector2(150, 0);
             AddParent<ThermalPowerQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<ItemFilter>();
             Position = new Vector2(150, 0);
             AddParent<MiningMachineQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<Hydroelectric>();
             Position = new Vector2(0, -150);
             AddParent<ThermalPowerQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconItemType = ModContent.ItemType<TeslaElectromagneticTower>();
             Position = new Vector2(150, 0);
             AddParent<HydroelectricQuest>();
-            
+
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 

@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindCampsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
-using CalamityOverhaul.OtherMods.NoxusBoss;
 using CalamityOverhaul.OtherMods.SubWorld;
 using Microsoft.Xna.Framework.Graphics;
 using System;
