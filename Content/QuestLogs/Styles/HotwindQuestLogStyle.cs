@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Color edgeStart = nightMode ? new Color(40, 120, 255) : new Color(255, 120, 40);
             Color edgeEnd = nightMode ? new Color(100, 180, 255) : new Color(255, 180, 100);
             Color edgeColor = Color.Lerp(edgeStart, edgeEnd, pulse);
-            
+
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, border), edgeColor * 0.95f * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - border, panelRect.Width, border), edgeColor * 0.75f * log.MainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, border, panelRect.Height), edgeColor * 0.85f * log.MainPanelAlpha);
@@ -698,19 +698,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制图标 (类似书本或层叠页面)
             Color iconColor = isHovered ? Color.White : new Color(220, 220, 220);
-            
+
             //后页
             Rectangle page1 = new Rectangle(0, 0, 16, 20);
             spriteBatch.Draw(pixel, center + new Vector2(2, -2), page1, iconColor * 0.5f * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
-            
+
             //前页
             Rectangle page2 = new Rectangle(0, 0, 16, 20);
             spriteBatch.Draw(pixel, center + new Vector2(-2, 2), page2, iconColor * alpha, 0f, new Vector2(8, 10), 1f, SpriteEffects.None, 0f);
-            
+
             //页面纹理
-            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, -5), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 0), new Rectangle(0,0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 5), new Rectangle(0,0, 6, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, -5), new Rectangle(0, 0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 0), new Rectangle(0, 0, 8, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, center + new Vector2(-2, 2) + new Vector2(-4, 5), new Rectangle(0, 0, 6, 2), Color.Black * 0.5f * alpha, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
         public Rectangle GetNightModeButtonRect(Rectangle panelRect) {
@@ -741,23 +741,24 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //绘制图标 (月亮/太阳)
             Color iconColor = isHovered ? Color.White : new Color(255, 255, 200);
-            
+
             if (isNightMode) {
                 //月亮图标
                 //绘制一个圆形
-                spriteBatch.Draw(pixel, center, new Rectangle(0,0, 16, 16), iconColor * alpha, 0f, new Vector2(8, 8), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 16, 16), iconColor * alpha, 0f, new Vector2(8, 8), 1f, SpriteEffects.None, 0f);
                 //绘制遮罩圆形形成月牙
-                spriteBatch.Draw(pixel, center + new Vector2(4, -2), new Rectangle(0,0, 14, 14), bgColor * alpha, 0f, new Vector2(7, 7), 1f, SpriteEffects.None, 0f);
-            } else {
+                spriteBatch.Draw(pixel, center + new Vector2(4, -2), new Rectangle(0, 0, 14, 14), bgColor * alpha, 0f, new Vector2(7, 7), 1f, SpriteEffects.None, 0f);
+            }
+            else {
                 //太阳图标
                 //中心圆
-                spriteBatch.Draw(pixel, center, new Rectangle(0,0, 10, 10), iconColor * alpha, 0f, new Vector2(5, 5), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 10, 10), iconColor * alpha, 0f, new Vector2(5, 5), 1f, SpriteEffects.None, 0f);
                 //光芒
                 float time = Main.GameUpdateCount * 0.02f;
-                for(int i=0; i<8; i++) {
+                for (int i = 0; i < 8; i++) {
                     float rot = i * MathHelper.PiOver4 + time;
                     Vector2 offset = new Vector2(0, -9).RotatedBy(rot);
-                    spriteBatch.Draw(pixel, center + offset, new Rectangle(0,0, 2, 4), iconColor * alpha, rot, new Vector2(1, 2), 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(pixel, center + offset, new Rectangle(0, 0, 2, 4), iconColor * alpha, rot, new Vector2(1, 2), 1f, SpriteEffects.None, 0f);
                 }
             }
         }

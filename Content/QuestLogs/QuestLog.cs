@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             launcher = new QuestLogLauncher();
             //设置初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
-            
+
             availableStyles = [
                 new HotwindQuestLogStyle(),
                 new DraedonQuestLogStyle()
@@ -519,12 +519,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void DrawCloseButton(SpriteBatch spriteBatch) {
-            Rectangle closeButtonRect = new Rectangle(
-                detailPanelRect.Right - 40,
-                detailPanelRect.Y + 10,
-                30,
-                30
-            );
+            Rectangle closeButtonRect = CurrentStyle.GetCloseButtonRect(detailPanelRect);
 
             bool hovered = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
             Color buttonColor = hovered ? new Color(255, 100, 100) : new Color(200, 80, 80);

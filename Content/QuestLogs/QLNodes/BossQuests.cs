@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ItemID.MechanicalSkull;
-            Position = new Vector2(150, 0); // Main line from WoF
+            Position = new Vector2(150, 0);
             AddParent<WallofFleshQuest>();
 
             QuestType = QuestType.Main;
@@ -364,7 +364,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool isDowned = InWorldBossPhase.DownedAnyMechBoss; // Note: InWorldBossPhase.DownedAnyMechBoss implies ALL are defeated
+            bool isDowned = InWorldBossPhase.DownedAnyMechBoss;
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_BrimstoneElemental;
-            Position = new Vector2(0, -150); // Branch up from Mechs
+            Position = new Vector2(0, -150);
             AddParent<MechanicalBossesQuest>();
 
             QuestType = QuestType.Side;
@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.Plantera;
-            Position = new Vector2(150, 0); // Main line from Mechs
+            Position = new Vector2(150, 0);
             AddParent<MechanicalBossesQuest>();
 
             QuestType = QuestType.Main;
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_CalamitasClone;
-            Position = new Vector2(0, 150); // Branch down from Plantera
+            Position = new Vector2(0, 150);
             AddParent<PlanteraQuest>();
 
             QuestType = QuestType.Side;
@@ -477,7 +477,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.Golem;
-            Position = new Vector2(150, 0); // Main line from Plantera
+            Position = new Vector2(150, 0);
             AddParent<PlanteraQuest>();
 
             QuestType = QuestType.Main;
@@ -508,9 +508,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "瘟疫使者歌莉娅");
             Description = this.GetLocalization(nameof(Description), () => "击败瘟疫使者歌莉娅");
 
-            IconType = QuestIconType.NPC;
+            IconType = QuestIconType.Texture;
+            IconTexturePath = "CalamityMod/NPCs/PlaguebringerGoliath/PlaguebringerGoliath_BossChecklist";//歌莉娅的纹理比较特殊，这里手动设置纹理路径
             IconNPCType = CWRID.NPC_PlaguebringerGoliath;
-            Position = new Vector2(0, -150); // Branch up from Golem
+            Position = new Vector2(0, -150);
             AddParent<GolemQuest>();
 
             QuestType = QuestType.Side;
@@ -543,7 +544,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.CultistBoss;
-            Position = new Vector2(150, 0); // Main line from Golem
+            Position = new Vector2(150, 0);
             AddParent<GolemQuest>();
 
             QuestType = QuestType.Main;
@@ -576,7 +577,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.MoonLordHead;
-            Position = new Vector2(150, 0); // Main line from Cultist
+            Position = new Vector2(150, 0);
             AddParent<LunaticCultistQuest>();
 
             QuestType = QuestType.Main;

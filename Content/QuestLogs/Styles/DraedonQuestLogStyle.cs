@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     panelRect.X + (Math.Abs(p.Position.X * 13.5f) % panelRect.Width),
                     panelRect.Y + (Math.Abs(p.Position.Y * 13.5f) % panelRect.Height)
                 );
-                
+
                 float lifeRatio = p.Life / p.MaxLife;
                 float fade = (float)Math.Sin(lifeRatio * MathHelper.Pi);
                 spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), accentColor * fade * 0.6f * alpha, 0f, Vector2.Zero, p.Scale * 2f, SpriteEffects.None, 0f);
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             bool isCompleted = node.IsCompleted;
             bool isUnlocked = node.IsUnlocked;
-            
+
             //节点颜色
             Color nodeColor = isCompleted ? new Color(100, 255, 100) : (isUnlocked ? new Color(40, 200, 255) : new Color(80, 80, 90));
             if (isHovered) nodeColor = Color.Lerp(nodeColor, Color.White, 0.5f);
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //主体
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), nodeColor * alpha, rotation, new Vector2(0.5f, 0.5f), size, SpriteEffects.None, 0f);
-            
+
             //内部黑色
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), Color.Black * alpha, rotation, new Vector2(0.5f, 0.5f), size * 0.8f, SpriteEffects.None, 0f);
 
@@ -215,10 +215,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //详情面板背景
             spriteBatch.Draw(pixel, panelRect, new Color(10, 15, 25) * 0.95f * alpha);
-            
+
             //详情面板边框
             Color borderColor = new Color(40, 200, 255) * alpha;
             int border = 2;
@@ -429,7 +429,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             //背景槽
             spriteBatch.Draw(pixel, barRect, Color.Black * 0.6f * log.MainPanelAlpha);
-            
+
             //进度条
             Rectangle fillRect = new Rectangle(barRect.X, barRect.Y, (int)(barRect.Width * progress), barRect.Height);
             spriteBatch.Draw(pixel, fillRect, barColor * 0.8f * log.MainPanelAlpha);
@@ -484,7 +484,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle buttonRect = GetClaimAllButtonRect(panelRect);
             Color btnColor = isHovered ? new Color(80, 255, 100) : new Color(40, 200, 60);
-            
+
             //按钮背景
             spriteBatch.Draw(pixel, buttonRect, btnColor * 0.2f * alpha);
             DrawTechBorder(spriteBatch, buttonRect, btnColor * alpha, 2);
@@ -517,7 +517,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //画雷达指针
             Vector2 center = buttonRect.Center.ToVector2();
             float rotation = directionToCenter.ToRotation();
-            
+
             //绘制雷达扫描线
             spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 1, 1), btnColor * alpha, rotation, new Vector2(0, 0.5f), new Vector2(12, 2), SpriteEffects.None, 0f);
             //绘制中心点
@@ -544,12 +544,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //画个数据板图标
             Rectangle iconRect = buttonRect;
             iconRect.Inflate(-6, -6);
-            
+
             //绘制数据板外框
             spriteBatch.Draw(pixel, iconRect, btnColor * 0.3f * alpha);
             //绘制几行数据线
-            for(int i=0; i<3; i++) {
-                spriteBatch.Draw(pixel, new Rectangle(iconRect.X + 2, iconRect.Y + 4 + i*5, iconRect.Width - 4, 2), btnColor * 0.8f * alpha);
+            for (int i = 0; i < 3; i++) {
+                spriteBatch.Draw(pixel, new Rectangle(iconRect.X + 2, iconRect.Y + 4 + i * 5, iconRect.Width - 4, 2), btnColor * 0.8f * alpha);
             }
         }
 
@@ -573,12 +573,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //画个太阳/月亮示意
             Rectangle iconRect = buttonRect;
             iconRect.Inflate(-8, -8);
-            
+
             if (isNightMode) {
                 //月亮 (简单的C形)
                 spriteBatch.Draw(pixel, iconRect, btnColor * alpha);
                 spriteBatch.Draw(pixel, new Rectangle(iconRect.X + 4, iconRect.Y - 2, iconRect.Width, iconRect.Height), Color.Black * 0.8f * alpha);
-            } else {
+            }
+            else {
                 //太阳 (简单的圆形)
                 spriteBatch.Draw(pixel, iconRect, btnColor * alpha);
                 //太阳光芒

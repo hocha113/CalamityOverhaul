@@ -464,10 +464,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     });
                 }
             }
-            
+
             ResetState();
             CloseEyes(Player);
-            
+
             //双重保险：强制重置复苏速度
             if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ResurrectionSystem.ResurrectionRate = 0f;

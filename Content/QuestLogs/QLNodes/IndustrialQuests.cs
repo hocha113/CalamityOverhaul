@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
 
             Rewards.Add(new QuestReward {
-                ItemType = ItemID.WaterBucket,
+                ItemType = ItemID.BottomlessBucket,
                 Amount = 1,
                 Description = this.GetLocalization("QuestReward.Description", () => "水桶")
             });

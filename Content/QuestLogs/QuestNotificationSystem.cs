@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         private static Queue<NotificationInfo> _pendingNotifications = new();
         private static List<ActiveNotification> _activeNotifications = new();
-        
+
         private const int SlideTime = 20;
         private const int DisplayTime = 180;
         private const int MaxActive = 6;
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         private void DrawSingleNotification(SpriteBatch sb, ActiveNotification note) {
             float progress = GetProgress(note.Timer);
-            
+
             string titleText = Text1.Value;
             string nameText = note.Info.Title;
 
