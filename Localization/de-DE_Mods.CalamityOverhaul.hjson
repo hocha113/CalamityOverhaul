@@ -6495,6 +6495,7 @@ UI: {
 		// QuickReceiveAwardText: 一键领取
 		// StyleSwitchText: 切换风格
 		// NightModeText: 夜间模式
+		// ResetViewText: 重置视图
 	}
 }
 

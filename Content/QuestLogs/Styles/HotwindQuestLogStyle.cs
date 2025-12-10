@@ -765,7 +765,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public Rectangle GetClaimAllButtonRect(Rectangle panelRect) {
             return new Rectangle(
                 panelRect.X + panelRect.Width / 2 - 70,
-                panelRect.Bottom - 60,
+                panelRect.Bottom - 48,
                 140,
                 35
             );
@@ -840,7 +840,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public Rectangle GetResetViewButtonRect(Rectangle panelRect) {
             return new Rectangle(
                 panelRect.Right - 45,
-                panelRect.Bottom - 45,
+                panelRect.Bottom - 48,
                 36,
                 36
             );

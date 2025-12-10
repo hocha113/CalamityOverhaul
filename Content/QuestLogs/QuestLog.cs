@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ProgressText;
         public static LocalizedText StyleSwitchText;
         public static LocalizedText NightModeText;
+        public static LocalizedText ResetViewText;
 
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
@@ -94,6 +95,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             ProgressText = this.GetLocalization(nameof(ProgressText), () => "任务完成比例");
             StyleSwitchText = this.GetLocalization(nameof(StyleSwitchText), () => "切换风格");
             NightModeText = this.GetLocalization(nameof(NightModeText), () => "夜间模式");
+            ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
         }
 
         public override void LogicUpdate() {
@@ -474,7 +476,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (panOffset.Length() > 100f) {
                 Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
                 bool hovered = resetRect.Contains(Main.MouseScreen.ToPoint());
-                Vector2 direction = -panOffset; // 指向中心的方向
+                if (hovered) {
+                    Main.hoverItemName = ResetViewText.Value;
+                }
+                Vector2 direction = -panOffset; //指向中心的方向
                 CurrentStyle.DrawResetViewButton(spriteBatch, panelRect, direction, hovered, mainPanelAlpha);
             }
 
@@ -482,11 +487,17 @@ namespace CalamityOverhaul.Content.QuestLogs
             Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
             bool styleHovered = styleRect.Contains(Main.MouseScreen.ToPoint());
             CurrentStyle.DrawStyleSwitchButton(spriteBatch, panelRect, styleHovered, mainPanelAlpha);
+            if (styleHovered) {
+                Main.hoverItemName = StyleSwitchText.Value;
+            }
 
             //绘制夜间模式按钮
             Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
             bool nightHovered = nightRect.Contains(Main.MouseScreen.ToPoint());
             CurrentStyle.DrawNightModeButton(spriteBatch, panelRect, nightHovered, mainPanelAlpha, NightMode);
+            if (nightHovered) {
+                Main.hoverItemName = NightModeText.Value;
+            }
         }
 
         private void DrawMainCloseButton(SpriteBatch spriteBatch) {
