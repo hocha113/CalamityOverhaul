@@ -7687,5 +7687,141 @@ QuestLogs: {
 			// QuestReward.Description: 50个煤炭
 			// DetailedDescription: " "
 		}
+
+		AnnihilatingUniverseQuest: {
+			// QuestObjective.Description: 获得寰宇湮灭
+			// QuestReward.Description: 五块无尽锭
+			// DisplayName: AnnihilatingUniverseQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		AriaofTheCosmosQuest: {
+			// QuestObjective.Description: 获得寰宇咏叹调
+			// QuestReward.Description: 二十块无尽锭
+			// DisplayName: AriaofTheCosmosQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		DarkMatterCompressorQuest: {
+			// QuestObjective.Description: 获得暗物质压缩机
+			// QuestReward.Description: 十个暗物质球
+			// DisplayName: DarkMatterCompressorQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		InfiniteIngotQuest: {
+			// QuestObjective.Description: 获得无尽锭
+			// QuestReward.Description: 两块无尽锭
+			// DisplayName: InfiniteIngotQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		InfinitePickQuest: {
+			// QuestObjective.Description: 获得无尽镐
+			// QuestReward.Description: 五块无尽锭
+			// DisplayName: InfinitePickQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		InfiniteToiletQuest: {
+			// QuestObjective.Description: 获得无尽马桶
+			// QuestReward.Description: 一块无尽锭
+			// DisplayName: InfiniteToiletQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		InfinityCatalystQuest: {
+			// QuestObjective.Description: 获得无尽催化剂
+			// QuestReward.Description: 一块无尽锭
+			// DisplayName: InfinityCatalystQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronBowQuest: {
+			// QuestObjective.Description: 获得中子弓
+			// QuestReward.Description: 两块中子星锭
+			// DisplayName: NeutronBowQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronGlaiveQuest: {
+			// QuestObjective.Description: 获得中子剑
+			// QuestReward.Description: 两块中子星锭
+			// DisplayName: NeutronGlaiveQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronGunQuest: {
+			// QuestObjective.Description: 获得中子枪
+			// QuestReward.Description: 两块中子星锭
+			// DisplayName: NeutronGunQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronScytheQuest: {
+			// QuestObjective.Description: 获得中子镰刀
+			// QuestReward.Description: 两块中子星锭
+			// DisplayName: NeutronScytheQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronStarIngotQuest: {
+			// QuestObjective.Description: 获得中子星锭
+			// QuestReward.Description: 五块中子星锭
+			// DisplayName: NeutronStarIngotQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		NeutronWandQuest: {
+			// QuestObjective.Description: 获得中子杖
+			// QuestReward.Description: 两块中子星锭
+			// DisplayName: NeutronWandQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		PandemoniumQuest: {
+			// QuestObjective.Description: 获得万魔殿
+			// QuestReward.Description: 二十块无尽锭
+			// DisplayName: PandemoniumQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		RockQuest: {
+			// QuestObjective.Description: 获得古恒石
+			// QuestReward.Description: 五块古恒石
+			// DisplayName: RockQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		TerminusQuest: {
+			// QuestObjective.Description: 获得终末石
+			// QuestReward.Description: 大量血珠
+			// DisplayName: TerminusQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
+
+		TransmutationOfMatterQuest: {
+			// QuestObjective.Description: 获得物质转化台
+			// QuestReward.Description: 十块无尽锭
+			// DisplayName: TransmutationOfMatterQuest
+			// Description: " "
+			// DetailedDescription: " "
+		}
 	}
 }

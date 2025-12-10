@@ -6457,10 +6457,10 @@ UI: {
 	}
 
 	QuestLog: {
-		// ObjectiveText: 任务目标
-		// RewardText: 任务奖励
-		// ReceiveAwardText: 领取奖励
-		// ProgressText: 任务完成比例
+		ObjectiveText: 任务目标
+		RewardText: 任务奖励
+		ReceiveAwardText: 领取奖励
+		ProgressText: 任务完成比例
 	}
 }
 
@@ -7348,16 +7348,16 @@ QuestLogs: {
 	QuestNode: {
 		FirstQuest: {
 			DisplayName: 欢迎来到灾厄世界!
-			Description: 点击领取初始道具
-			DetailedDescription: 点击领取初始道具
-			QuestObjective.Description: 点击领取
-			QuestReward.Description: 点击领取
+			Description: 旅途的起点
+			DetailedDescription: 每一个传奇都始于微末。领取你的初始物资，准备迎接这个充满了神明与怪物的世界吧。
+			QuestObjective.Description: 点击领取初始道具
+			QuestReward.Description: 初始冒险包
 		}
 
 		MiningQuest: {
-			DisplayName: 矿工时间
+			DisplayName: 挖掘起步
 			Description: 获得十块铜矿
-			DetailedDescription: 获得十块铜矿
+			DetailedDescription: 地下蕴藏着无限的财富。首先，我们需要一些基础金属来打造工具。
 			QuestObjective.Description: 收集十块铜矿
 
 			QuestReward: {
@@ -7367,7 +7367,7 @@ QuestLogs: {
 		}
 
 		MiningQuestII: {
-			DisplayName: 矿工时间 II
+			DisplayName: 铁器时代
 			Description: 收集五十块铁矿
 			QuestObjective.Description: 收集五十块铁矿
 
@@ -7376,11 +7376,11 @@ QuestLogs: {
 				Description2: 一把金镐
 			}
 
-			DetailedDescription: 收集五十块铁矿
+			DetailedDescription: 铜矿太过柔软，我们需要更坚硬的金属来武装自己。深入地下寻找铁矿脉吧。
 		}
 
 		MiningQuestIII: {
-			DisplayName: 矿工时间 III
+			DisplayName: 黄金狂潮
 			Description: 收集一百块金矿
 			QuestObjective.Description: 收集一百块金矿
 
@@ -7389,319 +7389,455 @@ QuestLogs: {
 				Description2: 一把铂金镐
 			}
 
-			DetailedDescription: 收集一百块金矿
+			DetailedDescription: 黄金不仅仅是货币，它具有良好的导魔性和延展性。虽然它不如铁坚硬，但它是制作高级装备的重要材料。
 		}
 
 		BrimstoneElementalQuest: {
-			// DisplayName: 硫磺火元素
-			// Description: 击败硫磺火元素
-			// QuestObjective.Description: 击败硫磺火元素
-			// QuestReward.Description: 10个暗影之魂
-			// DetailedDescription: " "
+			DisplayName: 硫磺火元素
+			Description: 击败硫磺火元素
+			QuestObjective.Description: 击败硫磺火元素
+			QuestReward.Description: 10个暗影之魂
+			DetailedDescription: 在硫磺火崖的废墟中，唤醒并击败那位沉睡的元素之灵。小心她的弹幕地狱。
 		}
 
 		CalamitasCloneQuest: {
-			// DisplayName: 灾厄之影
-			// Description: 击败灾厄之影
-			// QuestObjective.Description: 击败灾厄之影
-			// QuestReward.Description: 10个灾厄尘
-			// DetailedDescription: " "
+			DisplayName: 灾厄之影
+			Description: 击败灾厄之影
+			QuestObjective.Description: 击败灾厄之影
+			QuestReward.Description: 10个灾厄尘
+			DetailedDescription: 一个充满了仇恨与毁灭欲望的克隆体。击败它，证明你拥有直面真正魔女的资格。
 		}
 
 		CrabulonQuest: {
-			// DisplayName: 菌生蟹
-			// Description: 击败菌生蟹
-			// QuestObjective.Description: 击败菌生蟹
-			// QuestReward.Description: 50个发光蘑菇
-			// DetailedDescription: " "
+			DisplayName: 菌生蟹
+			Description: 击败菌生蟹
+			QuestObjective.Description: 击败菌生蟹
+			QuestReward.Description: 50个发光蘑菇
+			DetailedDescription: 发光蘑菇地下生物群落中潜伏着一只被真菌寄生的巨蟹。它的孢子非常危险。
 		}
 
 		CryogenQuest: {
-			// DisplayName: 极地冰灵
-			// Description: 击败极地冰灵
-			// QuestObjective.Description: 击败极地冰灵
-			// QuestReward.Description: 10个光明之魂
-			// DetailedDescription: " "
+			DisplayName: 极地冰灵
+			Description: 击败极地冰灵
+			QuestObjective.Description: 击败极地冰灵
+			QuestReward.Description: 10个光明之魂
+			DetailedDescription: 这位曾经的御宇寒冰法师被封印在永恒的寒冰监狱中。释放并击败它，解放极地的寒冷力量。
 		}
 
 		DesertScourgeQuest: {
-			// DisplayName: 荒漠灾虫
-			// Description: 击败荒漠灾虫
-			// QuestObjective.Description: 击败荒漠灾虫
-			// QuestReward.Description: 10个胜利碎片
-			// DetailedDescription: " "
+			DisplayName: 荒漠灾虫
+			Description: 击败荒漠灾虫
+			QuestObjective.Description: 击败荒漠灾虫
+			QuestReward.Description: 10个胜利碎片
+			DetailedDescription: 曾经的海洋霸主如今在干涸的沙漠中苟延残喘。小心它巨大的颚部和随从。
 		}
 
 		EaterofWorldsQuest: {
-			// DisplayName: 世界吞噬者/克苏鲁之脑
-			// Description: 击败世界吞噬者或克苏鲁之脑
-			// QuestObjective.Description: 击败世界吞噬者或克苏鲁之脑
-			// QuestReward.Description: 20个暗影鳞片/组织样本
-			// DetailedDescription: " "
+			DisplayName: 世界吞噬者/克苏鲁之脑
+			Description: 击败腐化或猩红之地的Boss
+			QuestObjective.Description: 击败世界吞噬者或克苏鲁之脑
+			QuestReward.Description: 20个暗影鳞片/组织样本
+			DetailedDescription: 邪恶正在蔓延。深入世界的病灶，铲除盘踞在那里的巨型蠕虫或邪恶大脑。
 		}
 
 		EyeofCthulhuQuest: {
-			// DisplayName: 克苏鲁之眼
-			// Description: 击败克苏鲁之眼
-			// QuestObjective.Description: 击败克苏鲁之眼
-			// QuestReward.Description: 20个魔矿/猩红矿
-			// DetailedDescription: " "
+			DisplayName: 克苏鲁之眼
+			Description: 击败克苏鲁之眼
+			QuestObjective.Description: 击败克苏鲁之眼
+			QuestReward.Description: 20个魔矿/猩红矿
+			DetailedDescription: 只要你感到那股邪恶的注视，它就会出现。这是对你实力的第一次真正考验。
 		}
 
 		GolemQuest: {
-			// DisplayName: 石巨人
-			// Description: 击败石巨人
-			// QuestObjective.Description: 击败石巨人
-			// QuestReward.Description: 10个甲虫外壳
-			// DetailedDescription: " "
+			DisplayName: 石巨人
+			Description: 击败石巨人
+			QuestObjective.Description: 击败石巨人
+			QuestReward.Description: 10个甲虫外壳
+			DetailedDescription: 丛林神庙深处供奉着一台古老的战争机器。小心它的激光和重拳。
 		}
 
 		HiveMindQuest: {
-			// DisplayName: 腐巢意志/血肉宿主
-			// Description: 击败腐巢意志或血肉宿主
-			// QuestObjective.Description: 击败腐巢意志或血肉宿主
-			// QuestReward.Description: 10个魔矿锭/猩红矿锭
-			// DetailedDescription: " "
+			DisplayName: 腐巢意志/血肉宿主
+			Description: 击败邪恶生物群落的真神
+			QuestObjective.Description: 击败腐巢意志或血肉宿主
+			QuestReward.Description: 10个魔矿锭/猩红矿锭
+			DetailedDescription: 它们是腐化与猩红意识的具象化。如果不消灭它们，这片土地将永无宁日。
 		}
 
 		KingSlimeQuest: {
-			// DisplayName: 史莱姆王
-			// Description: 击败史莱姆王
-			// QuestObjective.Description: 击败史莱姆王
-			// QuestReward.Description: 5金币
-			// DetailedDescription: " "
+			DisplayName: 史莱姆王
+			Description: 击败史莱姆王
+			QuestObjective.Description: 击败史莱姆王
+			QuestReward.Description: 5金币
+			DetailedDescription: 凝胶生物的统御者。虽然看起来有些滑稽，但不要被它巨大的体型压扁了。
 		}
 
 		LunaticCultistQuest: {
-			// DisplayName: 拜月教邪教徒
-			// Description: 击败拜月教邪教徒
-			// QuestObjective.Description: 击败拜月教邪教徒
-			// QuestReward.Description: 5个日耀碎片
-			// DetailedDescription: " "
+			DisplayName: 拜月教邪教徒
+			Description: 击败拜月教邪教徒
+			QuestObjective.Description: 击败拜月教邪教徒
+			QuestReward.Description: 5个日耀碎片
+			DetailedDescription: 在地牢门口，一群狂热的信徒正在试图阻止——或者引发——末日。阻止他们的仪式。
 		}
 
 		MechanicalBossesQuest: {
-			// DisplayName: 机械三王
-			// Description: 击败所有机械Boss
-			// QuestObjective.Description: 击败所有机械Boss
-			// QuestReward.Description: 20个神圣锭
-			// DetailedDescription: " "
+			DisplayName: 机械三王
+			Description: 击败所有机械Boss
+			QuestObjective.Description: 击败所有机械Boss
+			QuestReward.Description: 20个神圣锭
+			DetailedDescription: 嘉登的早期造物，模仿了克苏鲁的部分器官。只有击败它们，世界才会焕发新生。
 		}
 
 		MoonLordQuest: {
-			// DisplayName: 月球领主
-			// Description: 击败月球领主
-			// QuestObjective.Description: 击败月球领主
-			// QuestReward.Description: 月球领主纪念章
-			// DetailedDescription: " "
+			DisplayName: 月球领主
+			Description: 击败月球领主
+			QuestObjective.Description: 击败月球领主
+			QuestReward.Description: 月球领主纪念章
+			DetailedDescription: 这一切背后的幕后黑手，月球背面的恐怖。终结这场漫长的梦魇吧。
 		}
 
 		PlaguebringerGoliathQuest: {
-			// DisplayName: 瘟疫使者歌莉娅
-			// Description: 击败瘟疫使者歌莉娅
-			// QuestObjective.Description: 击败瘟疫使者歌莉娅
-			// QuestReward.Description: 20个瘟疫细胞罐
-			// DetailedDescription: " "
+			DisplayName: 瘟疫使者歌莉娅
+			Description: 击败瘟疫使者歌莉娅
+			QuestObjective.Description: 击败瘟疫使者歌莉娅
+			QuestReward.Description: 20个瘟疫细胞罐
+			DetailedDescription: 一只被纳米机械病毒改造的蜂后。它不仅致命，还携带这危险的瘟疫。
 		}
 
 		PlanteraQuest: {
-			// DisplayName: 世纪之花
-			// Description: 击败世纪之花
-			// QuestObjective.Description: 击败世纪之花
-			// QuestReward.Description: 50个叶绿矿
-			// DetailedDescription: " "
+			DisplayName: 世纪之花
+			Description: 击败世纪之花
+			QuestObjective.Description: 击败世纪之花
+			QuestReward.Description: 50个叶绿矿
+			DetailedDescription: 丛林深处沉睡着一朵巨大的食人花。打破花苞，面对丛林的愤怒。
 		}
 
 		SkeletronQuest: {
-			// DisplayName: 骷髅王
-			// Description: 击败骷髅王
-			// QuestObjective.Description: 击败骷髅王
-			// QuestReward.Description: 50个骨头
-			// DetailedDescription: " "
+			DisplayName: 骷髅王
+			Description: 击败骷髅王
+			QuestObjective.Description: 击败骷髅王
+			QuestReward.Description: 50个骨头
+			DetailedDescription: 只有击败这个被诅咒的老人，你才能安全地进入地牢探寻其中的秘密。
 		}
 
 		SlimeGodQuest: {
-			// DisplayName: 史莱姆之神
-			// Description: 击败史莱姆之神
-			// QuestObjective.Description: 击败史莱姆之神
-			// QuestReward.Description: 100个凝胶
-			// DetailedDescription: " "
+			DisplayName: 史莱姆之神
+			Description: 击败史莱姆之神
+			QuestObjective.Description: 击败史莱姆之神
+			QuestReward.Description: 100个凝胶
+			DetailedDescription: 史莱姆这一物种的顶点，古老而贪婪的神明。小心它的分身合击。
 		}
 
 		WallofFleshQuest: {
-			// DisplayName: 血肉墙
-			// Description: 击败血肉墙
-			// QuestObjective.Description: 击败血肉墙
-			// QuestReward.Description: 神锤
-			// DetailedDescription: " "
+			DisplayName: 血肉墙
+			Description: 击败血肉墙
+			QuestObjective.Description: 击败血肉墙
+			QuestReward.Description: 神锤
+			DetailedDescription: 世界的守门人。将向导的玩偶投入岩浆，释放这个世界的古老神灵，开启困难模式。
 		}
 
 		CeaselessVoidQuest: {
-			// DisplayName: 无尽虚空
-			// Description: 击败无尽虚空
-			// QuestObjective.Description: 击败无尽虚空
-			// QuestReward.Description: 5个暗物质
-			// DetailedDescription: " "
+			DisplayName: 无尽虚空
+			Description: 击败无尽虚空
+			QuestObjective.Description: 击败无尽虚空
+			QuestReward.Description: 5个暗物质
+			DetailedDescription: 神明吞噬者的哨兵之一，来自异维度的虚无之镜。
 		}
 
 		DevourerofGodsQuest: {
-			// DisplayName: 神明吞噬者
-			// Description: 击败神明吞噬者
-			// QuestObjective.Description: 击败神明吞噬者
-			// QuestReward.Description: 30个神宇金锭
-			// DetailedDescription: " "
+			DisplayName: 神明吞噬者
+			Description: 击败神明吞噬者
+			QuestObjective.Description: 击败神明吞噬者
+			QuestReward.Description: 30个神宇金锭
+			DetailedDescription: 一条渴望吞噬一切神性的宇宙之蛇。在虚空中与它决战，不要让它把你吞下。
 		}
 
 		DragonfollyQuest: {
-			// DisplayName: 痴愚金龙
-			// Description: 击败痴愚金龙
-			// QuestObjective.Description: 击败痴愚金龙
-			// QuestReward.Description: 10个闪耀金羽
-			// DetailedDescription: " "
+			DisplayName: 痴愚金龙
+			Description: 击败痴愚金龙
+			QuestObjective.Description: 击败痴愚金龙
+			QuestReward.Description: 10个闪耀金羽
+			DetailedDescription: 试图复活犽戎的失败产物，疯狂而带电的伪龙。
 		}
 
 		ExoMechsQuest: {
-			// DisplayName: 星流巨械
-			// Description: 击败星流巨械
-			// QuestObjective.Description: 击败星流巨械
-			// QuestReward.Description: 20个星流棱晶
-			// DetailedDescription: " "
+			DisplayName: 星流巨械
+			Description: 击败星流巨械
+			QuestObjective.Description: 击败星流巨械
+			QuestReward.Description: 20个星流棱晶
+			DetailedDescription: 嘉登的终极杰作，代表了泰拉瑞亚科技的巅峰。在这场完美的演出中活下来。
 		}
 
 		OldDukeQuest: {
-			// DisplayName: 硫海遗爵
-			// Description: 击败硫海遗爵
-			// QuestObjective.Description: 击败硫海遗爵
-			// QuestReward.Description: 20个腐蚀化石
-			// DetailedDescription: " "
+			DisplayName: 硫海遗爵
+			Description: 击败硫海遗爵
+			QuestObjective.Description: 击败硫海遗爵
+			QuestReward.Description: 20个腐蚀化石
+			DetailedDescription: 硫磺海深处的古老霸主，变异与力量的结合体。小心它的剧毒蒸汽。
 		}
 
 		PolterghastQuest: {
-			// DisplayName: 噬魂幽花
-			// Description: 击败噬魂幽花
-			// QuestObjective.Description: 击败噬魂幽花
-			// QuestReward.Description: 10个幽花之魂
-			// DetailedDescription: " "
+			DisplayName: 噬魂幽花
+			Description: 击败噬魂幽花
+			QuestObjective.Description: 击败噬魂幽花
+			QuestReward.Description: 10个幽花之魂
+			DetailedDescription: 那些在地牢中死去的冤魂聚集而成的怪物。平息它们的愤怒。
 		}
 
 		PrimordialWyrmQuest: {
-			// DisplayName: 始源妖龙
-			// Description: 击败始源妖龙
-			// QuestObjective.Description: 击败始源妖龙
-			// QuestReward.Description: 大比目鱼炮
-			// DetailedDescription: " "
+			DisplayName: 始源妖龙
+			Description: 击败始源妖龙
+			QuestObjective.Description: 击败始源妖龙
+			QuestReward.Description: 大比目鱼炮
+			DetailedDescription: 深渊最底层的守护者。它是比神明更古老的存在，非必要请勿打扰。
 		}
 
 		ProfanedGuardiansQuest: {
-			// DisplayName: 亵渎使徒
-			// Description: 击败亵渎使徒
-			// QuestObjective.Description: 击败亵渎使徒
-			// QuestReward.Description: 3个亵渎碎片
-			// DetailedDescription: " "
+			DisplayName: 亵渎使徒
+			Description: 击败亵渎使徒
+			QuestObjective.Description: 击败亵渎使徒
+			QuestReward.Description: 3个亵渎碎片
+			DetailedDescription: 亵渎天神的忠诚守卫，击败它们以削弱女神的防御。
 		}
 
 		ProvidenceQuest: {
-			// DisplayName: 亵渎天神
-			// Description: 击败亵渎天神
-			// QuestObjective.Description: 击败亵渎天神
-			// QuestReward.Description: 20个圣神晶石
-			// DetailedDescription: " "
+			DisplayName: 亵渎天神
+			Description: 击败亵渎天神
+			QuestObjective.Description: 击败亵渎天神
+			QuestReward.Description: 20个圣神晶石
+			DetailedDescription: 掌控圣火与净化的女神。在神圣之地或地狱挑战她，但要小心被圣火焚尽。
 		}
 
 		SignusQuest: {
-			// DisplayName: 西格纳斯
-			// Description: 击败西格纳斯
-			// QuestObjective.Description: 击败西格纳斯
-			// QuestReward.Description: 5个扭曲虚空
-			// DetailedDescription: " "
+			DisplayName: 西格纳斯
+			Description: 击败西格纳斯
+			QuestObjective.Description: 击败西格纳斯
+			QuestReward.Description: 5个扭曲虚空
+			DetailedDescription: 神明吞噬者的哨兵之一，无形的刺客，虚空的幽灵。
 		}
 
 		StormWeaverQuest: {
-			// DisplayName: 风暴编织者
-			// Description: 击败风暴编织者
-			// QuestObjective.Description: 击败风暴编织者
-			// QuestReward.Description: 5个装甲外壳
-			// DetailedDescription: " "
+			DisplayName: 风暴编织者
+			Description: 击败风暴编织者
+			QuestObjective.Description: 击败风暴编织者
+			QuestReward.Description: 5个装甲外壳
+			DetailedDescription: 神明吞噬者的哨兵之一，以雷暴和闪电为食的空之虫。
 		}
 
 		SupremeCalamitasQuest: {
-			// DisplayName: 至尊灾厄
-			// Description: 击败至尊灾厄
-			// QuestObjective.Description: 击败至尊灾厄
-			// QuestReward.Description: 20个灭世余灰
-			// DetailedDescription: " "
+			DisplayName: 至尊灾厄
+			Description: 击败至尊灾厄
+			QuestObjective.Description: 击败至尊灾厄
+			QuestReward.Description: 20个灭世余灰
+			DetailedDescription: 传说中的硫火女巫。这是你旅途的终点，亦或是新的开始？准备好迎接真正的弹幕地狱吧。
 		}
 
 		YharonQuest: {
-			// DisplayName: 丛林龙,犽戎
-			// Description: 击败丛林龙,犽戎
-			// QuestObjective.Description: 击败丛林龙,犽戎
-			// QuestReward.Description: 20个圣金源锭
-			// DetailedDescription: " "
+			DisplayName: 丛林龙,犽戎
+			Description: 击败丛林龙,犽戎
+			QuestObjective.Description: 击败丛林龙,犽戎
+			QuestReward.Description: 20个圣金源锭
+			DetailedDescription: 魔君的忠诚战友，拥有凤凰般重生能力的巨龙。这是一场关乎灵魂的试炼。
 		}
 
 		BatteryQuest: {
-			// DisplayName: 能源储存
-			// Description: 制作热能电池
-			// QuestObjective.Description: 获得热能电池
-			// QuestReward.Description: 50个电线
-			// DetailedDescription: " "
+			DisplayName: 能源储存
+			Description: 制作热能电池
+			QuestObjective.Description: 获得热能电池
+			QuestReward.Description: 50个电线
+			DetailedDescription: 电力生产出来后需要储存。制作电池是构建稳定电力网络的第一步。
 		}
 
 		HydroelectricQuest: {
-			// DisplayName: 水力发电
-			// Description: 制作一台水力发电机
-			// QuestObjective.Description: 获得水力发电机
-			// QuestReward.Description: 水桶
-			// DetailedDescription: " "
+			DisplayName: 清洁能源
+			Description: 制作一台水力发电机
+			QuestObjective.Description: 获得水力发电机
+			QuestReward.Description: 水桶
+			DetailedDescription: 利用流水的力量产生电力。这是一种清洁且可持续的能源获取方式。
 		}
 
 		IndustrialStartQuest: {
-			// DisplayName: 工业起步
-			// Description: 制作一台风力发电机
-			// QuestObjective.Description: 获得风力发电机
-			// QuestReward.Description: 10个铁锭
-			// DetailedDescription: " "
+			DisplayName: 工业革命
+			Description: 制作一台风力发电机
+			QuestObjective.Description: 获得风力发电机
+			QuestReward.Description: 10个铁锭
+			DetailedDescription: 迈向自动化的第一步。利用风能驱动你的机器，解放你的双手。
 		}
 
 		ItemFilterQuest: {
-			// DisplayName: 物品筛选
-			// Description: 制作一个物品过滤器
-			// QuestObjective.Description: 获得物品过滤器
-			// QuestReward.Description: 2个箱子
-			// DetailedDescription: " "
+			DisplayName: 物流筛选
+			Description: 制作一个物品过滤器
+			QuestObjective.Description: 获得物品过滤器
+			QuestReward.Description: 2个箱子
+			DetailedDescription: 自动化产线需要秩序。使用过滤器来精准控制物品的流向。
 		}
 
 		MiningMachineQuest: {
-			// DisplayName: 自动化挖掘
-			// Description: 制作一台采矿机
-			// QuestObjective.Description: 获得采矿机
-			// QuestReward.Description: 5个洞穴探险药水
-			// DetailedDescription: " "
+			DisplayName: 自动化挖掘
+			Description: 制作一台采矿机
+			QuestObjective.Description: 获得采矿机
+			QuestReward.Description: 5个洞穴探险药水
+			DetailedDescription: 告别繁琐的手工挖掘。这台机器能以惊人的效率吞噬矿脉。
 		}
 
 		PipelineQuest: {
-			// DisplayName: 能源传输
-			// Description: 制作通用能源管道
-			// QuestObjective.Description: 获得通用能源管道
-			// QuestReward.Description: 20个通用能源管道
-			// DetailedDescription: " "
+			DisplayName: 能量传输
+			Description: 制作通用能源管道
+			QuestObjective.Description: 获得通用能源管道
+			QuestReward.Description: 20个通用能源管道
+			DetailedDescription: 连接发电机与机器的血管。没有它，电力只是一潭死水。
 		}
 
 		TeslaTowerQuest: {
-			// DisplayName: 特斯拉塔
-			// Description: 制作一座特斯拉电磁塔
-			// QuestObjective.Description: 获得特斯拉电磁塔
-			// QuestReward.Description: 20个可疑镀层
-			// DetailedDescription: " "
+			DisplayName: 磁暴高塔
+			Description: 制作一座特斯拉电磁塔
+			QuestObjective.Description: 获得特斯拉电磁塔
+			QuestReward.Description: 20个可疑镀层
+			DetailedDescription: 嘉登科技的结晶。这座塔能进行无线输电，彻底改变你的布线布局。
 		}
 
 		ThermalPowerQuest: {
-			// DisplayName: 火力发电
-			// Description: 制作一台火力发电机
-			// QuestObjective.Description: 获得火力发电机
-			// QuestReward.Description: 50个煤炭
-			// DetailedDescription: " "
+			DisplayName: 燃烧时刻
+			Description: 制作一台火力发电机
+			QuestObjective.Description: 获得火力发电机
+			QuestReward.Description: 50个煤炭
+			DetailedDescription: 燃烧燃料以获取大量电力。虽然不环保，但在早期它是最可靠的能源。
+		}
+
+		AnnihilatingUniverseQuest: {
+			QuestObjective.Description: 获得寰宇湮灭
+			QuestReward.Description: 五块无尽锭
+			DisplayName: 寰宇湮灭
+			Description: 获得“寰宇湮灭”
+			DetailedDescription: 将星系的力量压缩在弓弦之上。这把武器拥有毁灭宇宙维度的力量，是射手极致的证明。
+		}
+
+		AriaofTheCosmosQuest: {
+			QuestObjective.Description: 获得寰宇咏叹调
+			QuestReward.Description: 二十块无尽锭
+			DisplayName: 寰宇咏叹调
+			Description: 获得“寰宇咏叹调”
+			DetailedDescription: 演奏群星的乐章。这本魔法书能召唤黑洞与类星体，让敌人在宇宙的歌声中消逝。
+		}
+
+		DarkMatterCompressorQuest: {
+			QuestObjective.Description: 获得暗物质压缩机
+			QuestReward.Description: 十个暗物质球
+			DisplayName: 暗物质压缩机
+			Description: 获得暗物质压缩机
+			DetailedDescription: 操纵宇宙中最神秘的物质。这台机器能将暗物质压缩成高密度的能量球，用于更高级的合成。
+		}
+
+		InfiniteIngotQuest: {
+			QuestObjective.Description: 获得无尽锭
+			QuestReward.Description: 两块无尽锭
+			DisplayName: 无尽锭
+			Description: 锻造无尽锭
+			DetailedDescription: 超越了物质守恒定律的金属。它是通往终极力量的基石，蕴含着无尽的可能性。
+		}
+
+		InfinitePickQuest: {
+			QuestObjective.Description: 获得无尽镐
+			QuestReward.Description: 五块无尽锭
+			DisplayName: 无尽镐
+			Description: 获得无尽镐
+			DetailedDescription: 没有什么能阻挡这把镐子。它能挖掘一切，甚至是世界的基岩。
+		}
+
+		InfiniteToiletQuest: {
+			QuestObjective.Description: 获得无尽马桶
+			QuestReward.Description: 一块无尽锭
+			DisplayName: 无尽马桶
+			Description: 获得无尽马桶
+			DetailedDescription: 神明的王座。虽然听起来很荒谬，但它确实象征着某种......至高无上的权力。
+		}
+
+		InfinityCatalystQuest: {
+			QuestObjective.Description: 获得无尽催化剂
+			QuestReward.Description: 一块无尽锭
+			DisplayName: 无尽催化剂
+			Description: 获得无尽催化剂
+			DetailedDescription: 启动无尽反应的关键媒介。它能让物质在湮灭与重生中循环，产生巨大的能量。
+		}
+
+		NeutronBowQuest: {
+			QuestObjective.Description: 获得中子弓
+			QuestReward.Description: 两块中子星锭
+			DisplayName: 中子弓
+			Description: 获得中子弓
+			DetailedDescription: 由中子星核心碎片打造的弓。每一箭都带着坍缩恒星的重力。
+		}
+
+		NeutronGlaiveQuest: {
+			QuestObjective.Description: 获得中子剑
+			QuestReward.Description: 两块中子星锭
+			DisplayName: 中子战刃
+			Description: 获得中子战刃
+			DetailedDescription: 密度惊人的长柄武器。挥舞它需要巨大的力量，但没有任何护甲能阻挡它的斩击。
+		}
+
+		NeutronGunQuest: {
+			QuestObjective.Description: 获得中子枪
+			QuestReward.Description: 两块中子星锭
+			DisplayName: 中子枪
+			Description: 获得中子枪
+			DetailedDescription: 发射微型中子流的枪械。由于其极高的密度，子弹几乎不会受到阻力影响。
+		}
+
+		NeutronScytheQuest: {
+			QuestObjective.Description: 获得中子镰刀
+			QuestReward.Description: 两块中子星锭
+			DisplayName: 中子镰刀
+			Description: 获得中子镰刀
+			DetailedDescription: 死神的收割工具。它能轻易撕裂空间，像收割麦子一样收割生命。
+		}
+
+		NeutronStarIngotQuest: {
+			QuestObjective.Description: 获得中子星锭
+			QuestReward.Description: 五块中子星锭
+			DisplayName: 中子星锭
+			Description: 获得中子星锭
+			DetailedDescription: 宇宙中密度最大的物质之一。这块金属沉重得难以想象，散发着引力波动的嗡鸣。
+		}
+
+		NeutronWandQuest: {
+			QuestObjective.Description: 获得中子杖
+			QuestReward.Description: 两块中子星锭
+			DisplayName: 中子杖
+			Description: 获得中子杖
+			DetailedDescription: 掌控重力的法杖。利用中子星的力量扭曲时空，粉碎你的敌人。
+		}
+
+		PandemoniumQuest: {
+			QuestObjective.Description: 获得万魔殿
+			QuestReward.Description: 二十块无尽锭
+			DisplayName: 万魔殿
+			Description: 获得“万魔殿”
+			DetailedDescription: 融合了无数灵魂与灾厄力量的终极武器。握着它，你就握住了通往地狱与深渊的钥匙。
+		}
+
+		RockQuest: {
+			QuestObjective.Description: 获得古恒石
+			QuestReward.Description: 五块古恒石
+			DisplayName: 古恒石
+			Description: 获得古恒石
+			DetailedDescription: 一块看似普通的石头，却见证了无数次Boss Rush的轮回。它是永恒毅力的象征。
+		}
+
+		TerminusQuest: {
+			QuestObjective.Description: 获得终末石
+			QuestReward.Description: 大量血珠
+			DisplayName: 终末石
+			Description: 获得终末石
+			DetailedDescription: 开启Boss Rush挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
+		}
+
+		TransmutationOfMatterQuest: {
+			QuestObjective.Description: 获得物质转化台
+			QuestReward.Description: 十块无尽锭
+			DisplayName: 物质转化台
+			Description: 获得物质转化台
+			DetailedDescription: 炼金术的终极形态。这台机器能打破等价交换的原则，将物质随意转化，甚至无中生有。
 		}
 	}
 }

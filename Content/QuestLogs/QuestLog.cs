@@ -12,7 +12,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using ThoriumMod.Core.Handlers.ScreenShakeHandler;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {

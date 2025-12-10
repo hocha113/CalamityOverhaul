@@ -12,6 +12,7 @@ using CalamityMod.Items.Fishing.SunkenSeaCatches;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
+using CalamityMod.Items.SummonItems;
 using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
@@ -62,6 +63,8 @@ namespace CalamityOverhaul
         public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
         public static int Item_ => ModContent.ItemType<Rock>();
+        public static int Item_BloodOrb => ModContent.ItemType<BloodOrb>();
+        public static int Item_Terminus => ModContent.ItemType<Terminus>();
         public static int Item_LoreAwakening => ModContent.ItemType<LoreAwakening>();
         public static int Item_SquirrelSquireStaff => ModContent.ItemType<SquirrelSquireStaff>();
         public static int Item_ThrowingBrick => ModContent.ItemType<ThrowingBrick>();
