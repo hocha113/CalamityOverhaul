@@ -1,12 +1,12 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -72,10 +72,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         private void HandleStateOne() {
             //计算蓄力进度
             float progress = Math.Min(Projectile.ai[0] / 60f, 1f);
-            
+
             //旋转速度随蓄力进度增加
             Projectile.rotation += 0.2f + progress * 0.5f;
-            
+
             //缩放效果加入弹性震荡模拟能量不稳定性
             float pulse = (float)Math.Sin(Projectile.ai[0] * 0.2f) * 0.1f * progress;
             Projectile.scale = MathHelper.Lerp(1.2f, 2.5f, progress) + pulse;
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void OnKill(int timeLeft) {
             Projectile.damage = Projectile.originalDamage;
             Projectile.Explode(1200);
-            
+
             //爆炸视觉效果
             if (!VaultUtils.isServer) {
                 //冲击波
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-            
+
             //残影绘制
             if (Projectile.ai[1] == 2) {
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {

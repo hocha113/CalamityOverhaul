@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override bool CanUseItem(Player player) {
             if (TileProcessorLoader.TP_ID_To_InWorld_Count.TryGetValue(TPUtils.GetID<MermanRodTP>(), out var num) && num > 0) {
                 if (Main.mouseLeftRelease)
-                CombatText.NewText(player.getRect(), Color.Cyan, Text1.Value);
+                    CombatText.NewText(player.getRect(), Color.Cyan, Text1.Value);
                 return false;
             }
             return base.CanUseItem(player);
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         private void UpdateFishingBuff() {
             foreach (var player in Main.player) {
                 if (!player.active || player.dead) continue;
-                
+
                 //给周围的玩家提供渔力加成
                 if (Vector2.Distance(player.Center, PosInWorld) < 600) {
                     player.fishingSkill += 20;

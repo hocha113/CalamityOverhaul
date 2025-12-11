@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public new void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(zoom)] = zoom;
-            tag[Name + ":" + nameof(panOffset)] = panOffset;          
+            tag[Name + ":" + nameof(panOffset)] = panOffset;
             tag[Name + ":" + nameof(dragStartMousePos)] = dragStartMousePos;
             tag[Name + ":" + nameof(dragStartPanOffset)] = dragStartPanOffset;
             tag[Name + ":" + nameof(currentStyleIndex)] = currentStyleIndex;

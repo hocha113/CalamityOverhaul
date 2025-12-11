@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -15,7 +16,6 @@ using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal bool BatteryPrompt;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private ArmState currentState = ArmState.Idle;
-        
+
         //物理模拟相关
         private Vector2[] segments;
         private const int SegmentCount = 60;
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             UpdateVerletPhysics();
 
             Projectile.damage = Projectile.originalDamage;
-            
+
             //状态机逻辑
             ExecuteBehavior();
 
@@ -308,7 +308,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     if (dist > 0) {
                         float error = dist - SegmentLength;
                         Vector2 correction = vector.SafeNormalize(Vector2.Zero) * error * 0.5f;
-                        
+
                         if (i > 0) segments[i] += correction; //基座不动
                         if (i + 1 < SegmentCount - 1) segments[i + 1] -= correction; //头部由AI控制位置，不完全受物理约束
                     }
@@ -392,14 +392,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         private void BehaviorLockOn() {
             if (player == null) return;
-            
+
             //悬停在玩家附近，准备攻击
             Vector2 hoverTarget = player.Center + (startPos - player.Center).SafeNormalize(Vector2.Zero) * 200f;
-            
+
             //快速逼近
             Vector2 toTarget = hoverTarget - Projectile.Center;
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * 0.1f, 0.2f);
-            
+
             attackTimer++;
             //锁定时间结束，发起攻击
             if (attackTimer > 40) {
@@ -412,19 +412,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         private void BehaviorStrike() {
             attackTimer++;
-            
+
             if (attackTimer == 1) {
                 //计算突袭向量
                 Vector2 strikeDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                 Projectile.velocity = strikeDir * 25f; //高速突袭
-                
+
                 //消耗能量
                 if (collectorTP.MachineData.UEvalue > 10) {
                     collectorTP.MachineData.UEvalue -= 10;
                     collectorTP.SendData();
                 }
             }
-            
+
             //突袭过程中产生粒子
             if (attackTimer < 15) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Electric);
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (attackTimer > 20) {
                 Projectile.velocity *= 0.8f;
             }
-            
+
             if (attackTimer > 40) {
                 currentState = ArmState.CoolDown;
                 attackTimer = 0;
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void BehaviorCoolDown() {
             attackTimer++;
             Projectile.velocity *= 0.9f;
-            
+
             //短暂硬直后重新寻找目标
             if (attackTimer > 30) {
                 currentState = ArmState.LockOn;
@@ -463,11 +463,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void UpdateRotation() {
             if (currentState == ArmState.Strike) {
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            } else if (player != null) {
+            }
+            else if (player != null) {
                 //始终注视玩家
                 float targetRot = (player.Center - Projectile.Center).ToRotation() + MathHelper.PiOver2;
                 Projectile.rotation = Projectile.rotation.AngleLerp(targetRot, 0.2f);
-            } else {
+            }
+            else {
                 Projectile.rotation = Projectile.rotation.AngleLerp(Projectile.velocity.ToRotation() + MathHelper.PiOver2, 0.1f);
             }
         }
@@ -505,7 +507,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Vector2 end = segments[i + 1];
                 Vector2 vector = end - start;
                 float dist = vector.Length();
-                
+
                 //计算需要绘制的数量，确保填满间隙
                 int numDraws = (int)Math.Ceiling(dist / step);
                 if (numDraws <= 0) numDraws = 1;
@@ -515,14 +517,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     Vector2 drawPos = Vector2.Lerp(start, end, t);
                     Color color = Lighting.GetColor(drawPos.ToTileCoordinates());
                     float rotation = vector.ToRotation() + MathHelper.PiOver2;
-                    
-                    Main.EntitySpriteDraw(armTex, drawPos - Main.screenPosition, null, color, rotation, 
+
+                    Main.EntitySpriteDraw(armTex, drawPos - Main.screenPosition, null, color, rotation,
                         new Vector2(armTex.Width / 2, armTex.Height / 2), 1f, SpriteEffects.None, 0);
                 }
             }
 
             //绘制头部夹子
-            Main.EntitySpriteDraw(clampTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, 
+            Main.EntitySpriteDraw(clampTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation,
                 clampTex.Size() / 2, 1f, SpriteEffects.None, 0);
 
             return false;

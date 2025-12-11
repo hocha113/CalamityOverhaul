@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 //放置老箱子
                 PlaceOldChest(campsiteCenter);
             }
-            
+
             mermanRod = false;
 
             //服务器端同步装饰物位置给所有客户端
