@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
@@ -54,11 +56,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Volume = 0.6f
         };
 
+        internal Item ItemFilter;
+        internal float hoverSengs;
+
         public override void SetBattery() {
             IdleDistance = 4000;
             storedItems = new List<Item>();
             fishingParticles = new List<FishingParticle>();
             vortexEffect = new OceanRaidersVortexEffect(this);
+            ItemFilter = new Item();
         }
 
         public override void SendData(ModPacket data) {
@@ -66,6 +72,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             data.Write(isWorking);
             data.Write(hasWater);
             data.Write(fishingTimer);
+            ItemIO.Send(ItemFilter, data);
 
             //发送存储物品数据
             data.Write(storedItems.Count);
@@ -84,6 +91,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             isWorking = reader.ReadBoolean();
             hasWater = reader.ReadBoolean();
             fishingTimer = reader.ReadInt32();
+            ItemFilter = ItemIO.Receive(reader);
 
             //接收存储物品数据
             int count = reader.ReadInt32();
@@ -97,6 +105,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
             try {
+                ItemFilter ??= new Item();
+                tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
+
                 //保存存储的物品
                 List<TagCompound> itemTags = new();
                 foreach (var item in storedItems) {
@@ -116,6 +127,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             try {
+                if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
+                    ItemFilter = ItemIO.Load(value);
+                }
+                else {
+                    ItemFilter = new Item();
+                }
+
                 //加载存储的物品
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
@@ -146,22 +164,35 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             return false;
         }
 
+        private bool IsItemFiltered(int itemType) {
+            if (ItemFilter == null || ItemFilter.IsAir) return false;
+            if (ItemFilter.TryGetGlobalItem<ItemFilterData>(out var data)) {
+                return data.Items.Contains(itemType);
+            }
+            return false;
+        }
+
         private void PerformFishing() {
             //模拟钓鱼，生成物品
             if (VaultUtils.isClient) return;
 
-            //创建钓鱼尝试
+            //计算钓鱼力，基于能量充盈度和随机波动
             int power = 50 + Main.rand.Next(30);
+            if (MachineData.UEvalue > MaxUEValue * 0.8f) {
+                power += 20;
+            }
 
-            //获取可能的钓鱼物品
-            List<int> possibleCatches = GetPossibleCatches(power);
-            if (possibleCatches.Count == 0) return;
+            //获取钓鱼掉落
+            int caughtItem = GetFishingLoot(power);
+            if (caughtItem <= ItemID.None) return;
 
-            int caughtItem = Main.rand.Next(possibleCatches);
-            int stack = 1;
+            //检查过滤器，如果物品在过滤列表中则不进行捕获
+            if (IsItemFiltered(caughtItem)) return;
+
+            int stack;
 
             //箱子类物品只给1个
-            if (caughtItem >= ItemID.WoodenCrate && caughtItem <= ItemID.GoldenCrate) {
+            if (ItemID.Sets.IsFishingCrate[caughtItem]) {
                 stack = 1;
             }
             //鱼类物品给1-3个
@@ -177,36 +208,62 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             AddItemToStorage(caughtItem, stack);
         }
 
-        private List<int> GetPossibleCatches(int fishingPower) {
-            List<int> catches = new();
+        private static int GetFishingLoot(int fishingPower) {
+            //判定是否钓到箱子，基础概率10%，高渔力加成
+            int crateChance = 10;
+            if (fishingPower > 100) crateChance += 10;
+            if (Main.rand.Next(100) < crateChance) {
+                //根据渔力决定箱子品质
+                if (fishingPower > 90 && Main.rand.NextBool(5)) return ItemID.GoldenCrate;
+                if (fishingPower > 50 && Main.rand.NextBool(3)) return ItemID.IronCrate;
+                return ItemID.WoodenCrate;
+            }
 
-            //基础鱼类
-            catches.Add(ItemID.Bass);
-            catches.Add(ItemID.Trout);
-            catches.Add(ItemID.AtlanticCod);
-            catches.Add(ItemID.RedSnapper);
-            catches.Add(ItemID.Tuna);
+            //判定稀有掉落(渔力 > 80)
+            if (fishingPower > 80 && Main.rand.NextBool(25)) {
+                int[] rares = { 
+                    ItemID.Swordfish, 
+                    ItemID.Sextant, 
+                    ItemID.ReaverShark, 
+                    ItemID.SawtoothShark,
+                    ItemID.Rockfish,
+                    ItemID.PurpleClubberfish
+                };
+                return rares[Main.rand.Next(rares.Length)];
+            }
 
+            //判定特殊掉落
+            if (Main.rand.NextBool(12)) {
+                return ModContent.ItemType<Oceanfragments>();
+            }
+
+            //判定普通掉落
+            List<int> commons = new() { 
+                ItemID.Bass, 
+                ItemID.Trout, 
+                ItemID.AtlanticCod, 
+                ItemID.RedSnapper, 
+                ItemID.Tuna, 
+                ItemID.Shrimp,
+                ItemID.Flounder
+            };
+            
+            //高渔力解锁更多鱼类
             if (fishingPower > 30) {
-                catches.Add(ItemID.NeonTetra);
-                catches.Add(ItemID.ArmoredCavefish);
-                catches.Add(ItemID.DoubleCod);
+                commons.Add(ItemID.NeonTetra);
+                commons.Add(ItemID.ArmoredCavefish);
+                commons.Add(ItemID.DoubleCod);
+                commons.Add(ItemID.Damselfish);
+                commons.Add(ItemID.FrostMinnow);
             }
 
-            if (fishingPower > 50) {
-                catches.Add(ItemID.WoodenCrate);
-                catches.Add(ItemID.IronCrate);
+            //极低概率钓到垃圾(渔力越低概率越高)
+            if (fishingPower < 50 && Main.rand.NextBool(10)) {
+                int[] junk = { ItemID.OldShoe, ItemID.TinCan, ItemID.FishingSeaweed };
+                return junk[Main.rand.Next(junk.Length)];
             }
 
-            if (fishingPower > 70) {
-                catches.Add(ItemID.GoldenCrate);
-                catches.Add(ItemID.Swordfish);
-                catches.Add(ItemID.Sextant);
-            }
-
-            catches.Add(ModContent.ItemType<Oceanfragments>());
-
-            return catches;
+            return commons[Main.rand.Next(commons.Count)];
         }
 
         private void AddItemToStorage(int itemType, int stack) {
@@ -339,6 +396,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             //更新吸入口位置
             intakeCenter = CenterInWorld + new Vector2(0, 32);
 
+            hoverSengs = HoverTP
+                ? Math.Min(hoverSengs + 0.1f, 1f)
+                : Math.Max(hoverSengs - 0.1f, 0f);
+
             //更新动画
             frame = 0;
             //检查水源
@@ -420,9 +481,54 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
+
+            if (ItemFilter != null && !ItemFilter.IsAir && hoverSengs > 0.01f) {
+                var filterItems = ItemFilter.GetGlobalItem<ItemFilterData>().Items;
+                if (filterItems.Count > 0) {
+                    const float maxRadius = 150f;
+                    float currentRadius = maxRadius * hoverSengs;
+                    float angleIncrement = MathHelper.TwoPi / filterItems.Count;
+
+                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
+
+                    for (int i = 0; i < filterItems.Count; i++) {
+                        int itemType = filterItems[i];
+                        if (itemType <= ItemID.None) continue;
+
+                        float currentAngle = angleIncrement * i - MathHelper.PiOver2;
+                        Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
+                        Vector2 itemPos = drawCenter + offset;
+
+                        Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
+                        float scale = hoverSengs * 1.25f;
+
+                        VaultUtils.SafeLoadItem(itemType);
+                        VaultUtils.SimpleDrawItem(Main.spriteBatch, itemType, itemPos, itemWidth: 32, scale, 0, drawColor);
+                    }
+                }
+            }
+            if (ItemFilter.Alives()) {
+                VaultUtils.SimpleDrawItem(Main.spriteBatch, ItemFilter.type, CenterInWorld - Main.screenPosition, itemWidth: 32, 1f, 0, Color.White);
+            }
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            Item item = player.GetItem();
+            if (item.type == ModContent.ItemType<ItemFilter>()) {
+                ItemFilter = item.Clone();
+                //深拷贝过滤数据
+                var sourceData = item.GetGlobalItem<ItemFilterData>();
+                var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
+                targetData.SetItems(sourceData.Items);
+
+                SoundEngine.PlaySound(CWRSound.Select);
+
+                if (Main.netMode != NetmodeID.SinglePlayer) {
+                    SendData();
+                }
+                return true;
+            }
+
             //右键打开专属箱子UI
             if (player.whoAmI == Main.myPlayer) {
                 OceanRaidersUI.Instance.Interactive(this);
