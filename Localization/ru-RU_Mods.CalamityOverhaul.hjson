@@ -7475,24 +7475,24 @@ QuestLogs: {
 
 		MiningQuest: {
 			// DisplayName: Mining Basics
-			// Description: Obtain 10 Copper Ore
+			// Description: Obtain 10 {0}
 			// DetailedDescription: The underground holds infinite wealth. First, we need some basic metals to craft tools.
-			// QuestObjective.Description: Collect 10 Copper Ore
+			// QuestObjective.Description: Collect 10 {0}
 
 			QuestReward: {
-				// Description: 5 Copper Bars
-				// Description2: 1 Iron Pickaxe
+				// Description: 5 {0}
+				// Description2: 1 {0}
 			}
 		}
 
 		MiningQuestII: {
 			// DisplayName: Iron Age
-			// Description: Collect 50 Iron Ore
-			// QuestObjective.Description: Collect 50 Iron Ore
+			// Description: Collect 50 {0}
+			// QuestObjective.Description: Collect 50 {0}
 
 			QuestReward: {
-				// Description: 50 Iron Bars
-				// Description2: 1 Gold Pickaxe
+				// Description: 50 {0}
+				// Description2: 1 {0}
 			}
 
 			// DetailedDescription: Copper is too soft; we need harder metals to arm ourselves. Delve deeper underground to find Iron veins.
@@ -7500,12 +7500,12 @@ QuestLogs: {
 
 		MiningQuestIII: {
 			// DisplayName: Gold Rush
-			// Description: Collect 100 Gold Ore
-			// QuestObjective.Description: Collect 100 Gold Ore
+			// Description: Collect 100 {0}
+			// QuestObjective.Description: Collect 100 {0}
 
 			QuestReward: {
-				// Description: 100 Gold Bars
-				// Description2: 1 Platinum Pickaxe
+				// Description: 100 {0}
+				// Description2: 1 {0}
 			}
 
 			// DetailedDescription: Gold is not just currency; it possesses excellent magical conductivity and ductility. Although softer than Iron, it is a crucial material for crafting advanced gear.

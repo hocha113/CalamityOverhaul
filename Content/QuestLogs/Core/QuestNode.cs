@@ -347,6 +347,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public virtual void OnKillByNPC(NPC npc) { }
 
         /// <summary>
+        /// 当玩家进入世界时调用，用于根据世界状态初始化任务
+        /// </summary>
+        public virtual void OnWorldEnter() { }
+
+        /// <summary>
         /// 绘制节点内容，在节点图标之前调用
         /// </summary>
         /// <param name="spriteBatch"></param>

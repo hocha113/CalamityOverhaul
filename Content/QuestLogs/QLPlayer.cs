@@ -42,8 +42,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
             }
 
-            //进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
+            // 进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
             foreach (var quest in QuestNode.AllQuests) {
+                quest.OnWorldEnter();
                 quest.CheckUnlock();
             }
         }

@@ -7363,24 +7363,24 @@ QuestLogs: {
 
 		MiningQuest: {
 			DisplayName: 挖掘起步
-			Description: 获得十块铜矿
+			Description: 获得十块{0}
 			DetailedDescription: 地下蕴藏着无限的财富。首先，我们需要一些基础金属来打造工具。
-			QuestObjective.Description: 收集十块铜矿
+			QuestObjective.Description: 收集十块{0}
 
 			QuestReward: {
-				Description: 五个铜锭
-				Description2: 一把铁镐
+				Description: 五个{0}
+				Description2: 一把{0}
 			}
 		}
 
 		MiningQuestII: {
 			DisplayName: 铁器时代
-			Description: 收集五十块铁矿
-			QuestObjective.Description: 收集五十块铁矿
+			Description: 收集五十块{0}
+			QuestObjective.Description: 收集五十块{0}
 
 			QuestReward: {
-				Description: 五十个铁锭
-				Description2: 一把金镐
+				Description: 五十个{0}
+				Description2: 一把{0}
 			}
 
 			DetailedDescription: 铜矿太过柔软，我们需要更坚硬的金属来武装自己。深入地下寻找铁矿脉吧。
@@ -7388,12 +7388,12 @@ QuestLogs: {
 
 		MiningQuestIII: {
 			DisplayName: 黄金狂潮
-			Description: 收集一百块金矿
-			QuestObjective.Description: 收集一百块金矿
+			Description: 收集一百块{0}
+			QuestObjective.Description: 收集一百块{0}
 
 			QuestReward: {
-				Description: 一百个金锭
-				Description2: 一把铂金镐
+				Description: 一百个{0}
+				Description2: 一把{0}
 			}
 
 			DetailedDescription: 黄金不仅仅是货币，它具有良好的导魔性和延展性。虽然它不如铁坚硬，但它是制作高级装备的重要材料。
