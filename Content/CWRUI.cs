@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants;
+using CalamityOverhaul.Content.QuestLogs;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Terraria;
@@ -34,7 +35,8 @@ namespace CalamityOverhaul.Content
     {
         public override void SaveData(TagCompound tag) {
             try {
-                UIHandleLoader.GetUIHandleOfType<EnchantUI>().SaveUIData(tag);
+                EnchantUI.Instance.SaveUIData(tag);
+                QuestLog.Instance.SaveUIData(tag);
                 foreach (var ui in UIHandleLoader.UIHandles) {
                     if (ui is BaseQuestTrackerUI trackerUI) {
                         trackerUI.SaveUIData(tag);
@@ -44,7 +46,8 @@ namespace CalamityOverhaul.Content
         }
         public override void LoadData(TagCompound tag) {
             try {
-                UIHandleLoader.GetUIHandleOfType<EnchantUI>().LoadUIData(tag);
+                EnchantUI.Instance.LoadUIData(tag);
+                QuestLog.Instance.LoadUIData(tag);
                 foreach (var ui in UIHandleLoader.UIHandles) {
                     if (ui is BaseQuestTrackerUI trackerUI) {
                         trackerUI.LoadUIData(tag);

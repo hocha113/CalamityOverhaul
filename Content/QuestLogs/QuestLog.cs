@@ -12,6 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
@@ -32,9 +33,9 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public IReadOnlyCollection<QuestNode> Nodes => QuestNode.AllQuests;
 
-        private Vector2 panOffset;
         private float zoom = 1f;
         private bool isDraggingMap;
+        private Vector2 panOffset;
         private Vector2 dragStartMousePos;
         private Vector2 dragStartPanOffset;
 
@@ -99,6 +100,24 @@ namespace CalamityOverhaul.Content.QuestLogs
             NightModeText = this.GetLocalization(nameof(NightModeText), () => "夜间模式");
             SunModeText = this.GetLocalization(nameof(SunModeText), () => "日间模式");
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
+        }
+
+        public new void SaveUIData(TagCompound tag) {
+            tag[Name + ":" + nameof(zoom)] = zoom;
+            tag[Name + ":" + nameof(panOffset)] = panOffset;          
+            tag[Name + ":" + nameof(dragStartMousePos)] = dragStartMousePos;
+            tag[Name + ":" + nameof(dragStartPanOffset)] = dragStartPanOffset;
+            tag[Name + ":" + nameof(currentStyleIndex)] = currentStyleIndex;
+        }
+
+        public new void LoadUIData(TagCompound tag) {
+            tag.TryGet(Name + ":" + nameof(zoom), out zoom);
+            zoom = MathHelper.Clamp(zoom, 0.4f, 2.0f);
+            tag.TryGet(Name + ":" + nameof(panOffset), out panOffset);
+            tag.TryGet(Name + ":" + nameof(dragStartMousePos), out dragStartMousePos);
+            tag.TryGet(Name + ":" + nameof(dragStartPanOffset), out dragStartPanOffset);
+            tag.TryGet(Name + ":" + nameof(currentStyleIndex), out currentStyleIndex);
+            currentStyleIndex = (int)MathHelper.Clamp(currentStyleIndex, 0, availableStyles.Count - 1);
         }
 
         public override void Update() {
