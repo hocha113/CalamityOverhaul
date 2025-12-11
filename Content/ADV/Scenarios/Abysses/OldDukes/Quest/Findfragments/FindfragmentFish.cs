@@ -19,7 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfrag
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.life <= 0 && target.lifeMax > 100 && Main.rand.NextBool(4) && OldDukeCampsite.IsGenerated && Player.ZoneBeach) {//击杀概率掉落海洋残片
+            if (OldDukeCampsite.IsGenerated
+                && target.life <= 0 && target.lifeMax > 100
+                && Main.rand.NextBool(4)
+                && (Player.ZoneBeach || Player.GetPlayerZoneSulphur() || Player.GetPlayerZoneAbyss())) {//击杀概率掉落海洋残片
                 VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(ModContent.ItemType<Oceanfragments>()));
             }
         }

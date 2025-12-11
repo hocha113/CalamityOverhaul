@@ -268,5 +268,7 @@ namespace CalamityOverhaul
         public static float GetPlayerRogueStealth(this Player player) => player.Calamity().rogueStealth;
         public static float SetPlayerRogueStealth(this Player player, float value) => player.Calamity().rogueStealth = value;
         public static float GetPlayerRogueStealthMax(this Player player) => player.Calamity().rogueStealthMax;
+        public static bool GetPlayerZoneSulphur(this Player player) => player.Calamity().ZoneSulphur;
+        public static bool GetPlayerZoneAbyss(this Player player) => player.Calamity().ZoneAbyss;
     }
 }
