@@ -7854,5 +7854,37 @@ QuestLogs: {
 			Description: 获得无尽弓
 			DetailedDescription: 射杀过神明的长弓。现在将重现于世。
 		}
+
+		SpearOfLonginusQuest: {
+			QuestObjective.Description: 获得朗基努斯
+			QuestReward.Description: 五块无尽锭
+			DisplayName: 朗基努斯
+			Description: 获得朗基努斯
+			DetailedDescription: 传说中刺穿神明的圣枪，拥有贯穿一切力场与绝对领域的权能。当它被投掷出时，就连因果律也会为其让路。
+		}
+
+		DragonsWordQuest: {
+			QuestObjective.Description: 获得龙言
+			QuestReward.Description: 五块无尽锭
+			DisplayName: 龙言
+			Description: 获得龙言
+			DetailedDescription: 龙一生值流一次眼泪，那是死亡之时
+		}
+
+		RockQuestII: {
+			QuestObjective.Description: 通过终末之战五次，获得五块以上的古恒石
+			QuestReward.Description: 五块古恒石
+			DisplayName: 征战轮回
+			Description: 通过终末之战五次，获得五块以上的古恒石
+			DetailedDescription: 真正战士的象征
+		}
+
+		AdventurerQuests: {
+			// DisplayName: 冒险家
+			// Description: 世界任我走！
+			// QuestObjective.Description: 点击领取
+			// QuestReward.Description: 跑靴
+			// DetailedDescription: " "
+		}
 	}
 }

@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<InfinitePick>();
-            Position = new Vector2(-100, -150);
+            Position = new Vector2(150, -150);
             AddParent<InfiniteIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<HeavenfallLongbow>();
-            Position = new Vector2(-200, -150);
+            Position = new Vector2(-150, -150);
             AddParent<InfiniteIngotQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -166,38 +166,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int count = player.CountItem(ModContent.ItemType<HeavenfallLongbow>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class AnnihilatingUniverseQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<AnnihilatingUniverse>();
-            Position = new Vector2(100, -150);
-            AddParent<InfiniteIngotQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得寰宇湮灭"),
-                RequiredProgress = 1
-            });
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<AnnihilatingUniverse>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -269,13 +237,45 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
+    internal class AnnihilatingUniverseQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<AnnihilatingUniverse>();
+            Position = new Vector2(150, -200);
+            AddParent<RockQuestII>();
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得寰宇湮灭"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            Player player = Main.LocalPlayer;
+            int count = player.CountItem(ModContent.ItemType<AnnihilatingUniverse>());
+            Objectives[0].CurrentProgress = count;
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+    }
+
     internal class AriaofTheCosmosQuest : QuestNode
     {
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AriaofTheCosmos>();
-            Position = new Vector2(200, -150);
-            AddParent<InfiniteIngotQuest>();
+            Position = new Vector2(150, -100);
+            AddParent<RockQuestII>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -286,8 +286,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "二十块无尽锭")
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
             });
         }
 
@@ -306,8 +306,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Pandemonium>();
-            Position = new Vector2(300, -150);
-            AddParent<InfiniteIngotQuest>();
+            Position = new Vector2(150, 0);
+            AddParent<RockQuestII>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -318,14 +318,110 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "二十块无尽锭")
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
             });
         }
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int count = player.CountItem(ModContent.ItemType<Pandemonium>());
+            Objectives[0].CurrentProgress = count;
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+    }
+
+    internal class SpearOfLonginusQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<SpearOfLonginus>();
+            Position = new Vector2(150, 100);
+            AddParent<RockQuestII>();
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得朗基努斯"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            Player player = Main.LocalPlayer;
+            int count = player.CountItem(ModContent.ItemType<SpearOfLonginus>());
+            Objectives[0].CurrentProgress = count;
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+    }
+
+    internal class DragonsWordQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<DragonsWord>();
+            Position = new Vector2(150, 200);
+            AddParent<RockQuestII>();
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得龙言"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            Player player = Main.LocalPlayer;
+            int count = player.CountItem(ModContent.ItemType<DragonsWord>());
+            Objectives[0].CurrentProgress = count;
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+    }
+
+    internal class RockQuestII : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            IconTexturePath = "CalamityMod/UI/MiscTextures/BossRushIcon";
+            Position = new Vector2(200, 0);
+            AddParent<TransmutationOfMatterQuest>();
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                TargetItemID = CWRID.Item_,
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
+                RequiredProgress = 5
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = CWRID.Item_,
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            Player player = Main.LocalPlayer;
+            int count = player.CountItem(CWRID.Item_);
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;

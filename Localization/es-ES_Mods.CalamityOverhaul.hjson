@@ -7877,5 +7877,37 @@ QuestLogs: {
 			// Description: Obtain Heavenly Gale
 			// DetailedDescription: A longbow that has shot down gods. Now it shall reappear in the world.
 		}
+
+		SpearOfLonginusQuest: {
+			// QuestObjective.Description: Obtain Spear of Longinus
+			// QuestReward.Description: 5 Infinite Ingots
+			// DisplayName: Spear of Longinus
+			// Description: Obtain Spear of Longinus
+			// DetailedDescription: The legendary holy lance that pierced a deity, possessing the power to penetrate all fields and absolute barriers. When thrown, even the laws of causality make way for it.
+		}
+
+		DragonsWordQuest: {
+			// QuestObjective.Description: Obtain Dragon's Word
+			// QuestReward.Description: 5 Infinite Ingots
+			// DisplayName: Dragon's Word
+			// Description: Obtain Dragon's Word
+			// DetailedDescription: A dragon sheds tears only once in its life, at the moment of its death.
+		}
+
+		RockQuestII: {
+			// QuestObjective.Description: Complete the Boss Rush 5 times and obtain 5 or more Rocks
+			// QuestReward.Description: 5 Rocks
+			// DisplayName: Cycle of Conquest
+			// Description: Complete the Boss Rush 5 times and obtain 5 or more Rocks
+			// DetailedDescription: The symbol of a true warrior
+		}
+
+		AdventurerQuests: {
+			// DisplayName: 冒险家
+			// Description: 世界任我走！
+			// QuestObjective.Description: 点击领取
+			// QuestReward.Description: 跑靴
+			// DetailedDescription: " "
+		}
 	}
 }
