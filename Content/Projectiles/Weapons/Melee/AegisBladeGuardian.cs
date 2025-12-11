@@ -6,10 +6,11 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class AegisBladeGuardian : ModProjectile
+    internal class AegisBladeGuardian : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
         public override void SetStaticDefaults() {
@@ -51,15 +52,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.ai[0]++;
         }
 
-        //处理状态0：发射后悬停并跟随玩家
+        //发射后悬停并跟随玩家
         private void HandleStateZero() {
-            Player player = Main.player[Projectile.owner];
             //平滑插值缩放
             Projectile.scale = MathHelper.Lerp(Projectile.scale, 1.2f, 0.1f);
             //快速减速以停留在空中
             Projectile.velocity *= 0.9f;
             //平滑移动到玩家头顶上方
-            Vector2 targetPos = player.Center + new Vector2(0, -60);
+            Vector2 targetPos = Owner.Center + new Vector2(0, -60);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.1f);
 
             //当速度足够小且接近目标位置时进入下一状态
@@ -68,10 +68,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        //处理状态1：蓄力阶段
+        //蓄力阶段
         private void HandleStateOne() {
-            Player player = Main.player[Projectile.owner];
-            
             //计算蓄力进度
             float progress = Math.Min(Projectile.ai[0] / 60f, 1f);
             
@@ -97,16 +95,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             //保持在玩家上方
             Projectile.velocity = Vector2.Zero;
-            Projectile.Center = Vector2.Lerp(Projectile.Center, player.Center + new Vector2(0, -60), 0.2f);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + new Vector2(0, -60), 0.2f);
 
             //检测按键释放或超时
-            if (player.PressKey(false)) {
+            if (DownRight) {
                 Projectile.timeLeft = 300;
                 //限制最大蓄力时间
                 if (Projectile.ai[0] > 55) Projectile.ai[0] = 55;
             }
 
-            if (Projectile.ai[0] > 60 || !player.PressKey(false)) {
+            if (Projectile.ai[0] > 60 || !DownRight) {
                 TransitionToState(2, resetVelocity: false);
                 //蓄力完成时的爆发特效
                 if (!VaultUtils.isServer) {
@@ -116,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        //处理状态2：追踪攻击
+        //追踪攻击
         private void HandleStateTwo() {
             //寻找最近的敌人
             NPC npc = Projectile.Center.FindClosestNPC(6000, true, true);
