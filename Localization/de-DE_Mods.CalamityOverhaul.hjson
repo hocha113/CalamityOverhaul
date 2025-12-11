@@ -1440,6 +1440,16 @@ Items: {
 		// DisplayName: Quest Book
 		// Tooltip: Use to open or close the quest interface
 	}
+
+	MermanRod: {
+		// Text1: A Merman's Rod has already been placed in the world!
+		// DisplayName: Merman's Rod
+		/* Tooltip:
+			'''
+			Increases fishing power by 20 when fishing nearby
+			The Old Duke will move his campsite here
+			''' */
+	}
 }
 
 Projectiles: {

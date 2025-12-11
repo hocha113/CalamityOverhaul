@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
@@ -11,6 +12,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         /// 处理商店物品列表
         /// </summary>
         public static void Handle(List<OldDukeShopItem> shopItems) {
+            //鱼人钓
+            shopItems.Add(new OldDukeShopItem(ModContent.ItemType<MermanRod>(), 1, 1));
+
             //海洋武器
             shopItems.Add(new OldDukeShopItem(ItemID.Trident, 1, 15));
             shopItems.Add(new OldDukeShopItem(ItemID.FrostStaff, 1, 25));

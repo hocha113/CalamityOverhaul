@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         internal static readonly List<PotData> pots = [];
         internal static readonly List<FlagpoleData> flagpoles = [];
         internal static bool decorationsPositionSet;
+        internal static bool mermanRod;
 
         private const int upOffsetValue = 660;
 
@@ -130,16 +131,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 new Vector2(-160f, 55f)
             ];
 
+            int _upOffsetValue = upOffsetValue;
+            if (mermanRod) {
+                _upOffsetValue = 30;
+            }
+
             foreach (var offset in potOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - upOffsetValue;
+                int tileY = (int)(searchPos.Y / 16f) - _upOffsetValue;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + upOffsetValue * 2; y++) {
+                for (int y = tileY; y < tileY + _upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
@@ -172,13 +178,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             foreach (var offset in flagpoleOffsets) {
                 Vector2 searchPos = campsiteCenter + offset;
                 int tileX = (int)(searchPos.X / 16f);
-                int tileY = (int)(searchPos.Y / 16f) - upOffsetValue;
+                int tileY = (int)(searchPos.Y / 16f) - _upOffsetValue;
 
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
                 //向下搜索最近的实心地面
-                for (int y = tileY; y < tileY + upOffsetValue * 2; y++) {
+                for (int y = tileY; y < tileY + _upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
                     }
@@ -200,8 +206,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            //放置老箱子
-            PlaceOldChest(campsiteCenter);
+            if (!mermanRod) {//鱼人钓搬家时不进行箱子放置
+                //放置老箱子
+                PlaceOldChest(campsiteCenter);
+            }
+            
+            mermanRod = false;
 
             //服务器端同步装饰物位置给所有客户端
             if (VaultUtils.isServer) {

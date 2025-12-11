@@ -1435,6 +1435,16 @@ Items: {
 		DisplayName: 任务书
 		Tooltip: 使用以打开或者关闭任务界面
 	}
+
+	MermanRod: {
+		Text1: 世界中已经放置了一座鱼人钓!
+		DisplayName: 鱼人钓
+		Tooltip:
+			'''
+			在附近钓鱼时增加20点渔力
+			老公爵会将营地搬来此处
+			'''
+	}
 }
 
 Projectiles: {

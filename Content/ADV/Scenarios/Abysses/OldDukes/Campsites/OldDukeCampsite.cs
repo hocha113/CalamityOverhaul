@@ -28,11 +28,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static Texture2D OldPot;//反射加载老公爵营地的锅纹理，大小宽46像素高48像素，适合放地上用于丰富营地场景
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
         public static Texture2D Oldflagpole;//反射加载老公爵营地的旗帜纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
-
+        /// <summary>
+        /// 人鱼钓是否正在收回
+        /// </summary>
+        public static bool MermanRodMoveback { get; internal set; }
         /// <summary>
         /// 营地是否已生成
         /// </summary>
-        public static bool IsGenerated { get; private set; }
+        public static bool IsGenerated { get; internal set; }
         /// <summary>
         /// 是否在和老公爵切磋
         /// </summary>
@@ -141,6 +144,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 检查是否应该生成营地
         /// </summary>
         private static bool ShouldGenerateCampsite(Player player) {
+            //玩家不在营地周围，这个检测是用于如果营地中途发生搬家的情况，避免在玩家视觉中发生营地搬迁
+            if (MermanRodMoveback && player.DistanceSQ(CampsitePosition) > 1200 * 1200) {
+                ClearCampsite();//清理营地
+                return true;
+            }
+
             //检查营地是否已经生成
             if (IsGenerated) {
                 return false;
@@ -486,6 +495,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 清除营地
         /// </summary>
         public static void ClearCampsite() {
+            MermanRodMoveback = false;
             IsGenerated = false;
             animationFrame = 0;
             animationTimer = 0;
