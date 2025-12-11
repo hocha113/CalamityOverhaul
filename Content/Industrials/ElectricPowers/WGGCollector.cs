@@ -15,6 +15,7 @@ using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
@@ -195,18 +196,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal WGGCollectorTP collectorTP;
         private int attackTimer;
         private int idleWiggleTime;
-        private float syncopeRotAngle;
         internal bool BatteryPrompt;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private ArmState currentState = ArmState.Idle;
+        
+        //物理模拟相关
+        private Vector2[] segments;
+        private const int SegmentCount = 60;
+        private const float SegmentLength = 16f;
+
         private enum ArmState
         {
             Idle,
             Searching,
-            ApproachingTarget,
-            Attacking,
+            LockOn, //锁定目标
+            Strike, //突袭
+            CoolDown, //冷却/回收
             Retreating
         }
+
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -232,18 +240,29 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             currentState = (ArmState)reader.ReadByte();
         }
 
+        private void InitializeSegments() {
+            segments = new Vector2[SegmentCount];
+            for (int i = 0; i < SegmentCount; i++) {
+                segments[i] = Projectile.Center;
+            }
+        }
+
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 startPos = Projectile.Center;
                 Projectile.localAI[0] = 1f;
                 currentState = ArmState.Searching;
+                InitializeSegments();
                 Projectile.netUpdate = true;
+            }
+
+            if (segments == null) {
+                InitializeSegments();
             }
 
             if (TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
                 Projectile.timeLeft = 2;
                 startPos = collectorTP.ArmPos;
-                //验证唯一性，防止在一些情况下重叠生成
                 if (Projectile.identity != collectorTP.ArmIndex) {
                     Projectile.Kill();
                     return;
@@ -255,31 +274,55 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (startPos.FindClosestPlayer(WGGCollectorTP.killerArmDistance) == null) {
-                collectorTP.dontSpawnArmTime = 60;//添加一个延迟时间，防止因为某些距离误差而疯狂进行生成尝试
+                collectorTP.dontSpawnArmTime = 60;
                 Projectile.Kill();
                 return;
             }
 
+            //更新物理模拟
+            UpdateVerletPhysics();
+
             Projectile.damage = Projectile.originalDamage;
-            if (currentState != ArmState.Retreating && Projectile.Distance(startPos) > 1000) {
-                currentState = ArmState.Retreating;
-                Projectile.netUpdate = true;
-            }
+            
+            //状态机逻辑
+            ExecuteBehavior();
 
-            if (collectorTP.byHitSyncopeTime > 0) {
-                DoSyncopeMotion(); //受到攻击后的晕厥
-                return;
-            }
+            //头部旋转逻辑
+            UpdateRotation();
+        }
 
-            if (collectorTP.MachineData.UEvalue < 800 && !VaultUtils.isClient) {
-                player = startPos.FindClosestPlayer(600);
-                if (player == null || !player.Alives() || startPos.Distance(player.Center) > 600) {
-                    collectorTP.MachineData.UEvalue += 0.2f;
-                    if (++Projectile.localAI[1] > 60) {
-                        collectorTP.SendData();
-                        Projectile.localAI[1] = 0;//间隔一秒发包，防止制造数据洪流
+        private void UpdateVerletPhysics() {
+            //简单的Verlet积分模拟绳索/机械臂
+            //头部跟随弹幕中心
+            segments[SegmentCount - 1] = Projectile.Center;
+            //尾部固定在基座
+            segments[0] = startPos;
+
+            //迭代约束
+            for (int k = 0; k < 10; k++) {
+                for (int i = 0; i < SegmentCount - 1; i++) {
+                    Vector2 segmentStart = segments[i];
+                    Vector2 segmentEnd = segments[i + 1];
+                    Vector2 vector = segmentEnd - segmentStart;
+                    float dist = vector.Length();
+                    if (dist > 0) {
+                        float error = dist - SegmentLength;
+                        Vector2 correction = vector.SafeNormalize(Vector2.Zero) * error * 0.5f;
+                        
+                        if (i > 0) segments[i] += correction; //基座不动
+                        if (i + 1 < SegmentCount - 1) segments[i + 1] -= correction; //头部由AI控制位置，不完全受物理约束
                     }
                 }
+                //再次强制约束头部和尾部
+                segments[0] = startPos;
+                segments[SegmentCount - 1] = Projectile.Center;
+            }
+        }
+
+        private void ExecuteBehavior() {
+            if (collectorTP.byHitSyncopeTime > 0) {
+                DoSyncopeMotion();
+                return;
             }
 
             if (collectorTP.MachineData.UEvalue < 10) {
@@ -288,192 +331,199 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
                     BatteryPrompt = true;
                 }
-                DoIdleMotion(); //能量不够时的摆动待机状态
+                DoIdleMotion();
                 return;
             }
             else {
                 BatteryPrompt = false;
             }
 
-            if (player?.Alives() != true && Projectile.Center.Distance(startPos) < 1200) {
-                player = startPos.FindClosestPlayer(600);
+            //索敌逻辑
+            if (player?.Alives() != true || Projectile.Center.Distance(startPos) > 1400) {
+                player = startPos.FindClosestPlayer(800);
                 if (player == null) {
-                    Projectile.damage = 0;
-                    DoIdleMotion(); //无目标时的摆动待机状态
-                    return;
+                    currentState = ArmState.Searching;
                 }
-                else if (currentState != ArmState.ApproachingTarget) {
-                    currentState = ArmState.ApproachingTarget;
-                    Projectile.netUpdate = true;
+                else if (currentState == ArmState.Searching) {
+                    currentState = ArmState.LockOn;
+                    attackTimer = 0;
                 }
             }
 
             switch (currentState) {
-                case ArmState.ApproachingTarget:
                 case ArmState.Searching:
-                    ApproachTarget();
+                    BehaviorSearch();
                     break;
-                case ArmState.Attacking:
-                    AttackTarget();
+                case ArmState.LockOn:
+                    BehaviorLockOn();
+                    break;
+                case ArmState.Strike:
+                    BehaviorStrike();
+                    break;
+                case ArmState.CoolDown:
+                    BehaviorCoolDown();
                     break;
                 case ArmState.Retreating:
-                    Projectile.damage = 0;
-                    Retreat();
+                    BehaviorRetreat();
+                    break;
+                default:
+                    DoIdleMotion();
                     break;
             }
-
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        private void ApproachTarget() {
-            float dist = Vector2.Distance(Projectile.Center, player.Center);
-
-            if (dist > 800f) {
-                Projectile.netUpdate = true;
-                currentState = ArmState.Retreating;
-                player = null;
-                return;
+        private void BehaviorSearch() {
+            Projectile.damage = 0;
+            //机械式扫描：移动到一个点，停顿，再移动
+            idleWiggleTime++;
+            if (idleWiggleTime % 120 == 0) {
+                //随机选择一个新的扫描点
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float dist = Main.rand.NextFloat(100, 300);
+                Projectile.ai[1] = angle; //存储目标角度
+                Projectile.ai[2] = dist;  //存储目标距离
             }
 
-            if (dist > 400f) {
-                Projectile.netUpdate = true;
-                currentState = ArmState.Searching;
-                player = null;
-                return;
-            }
-
-            if (dist < 100f) {
-                Projectile.netUpdate = true;
-                attackTimer = 0;
-                currentState = ArmState.Attacking;
-                return;
-            }
-
-            Projectile.ChasingBehavior(player.Center, 8f);
+            Vector2 target = startPos + new Vector2((float)Math.Cos(Projectile.ai[1]), (float)Math.Sin(Projectile.ai[1])) * Projectile.ai[2];
+            //使用平滑阻尼移动，模拟伺服电机
+            Projectile.Center = Vector2.Lerp(Projectile.Center, target, 0.05f);
+            Projectile.velocity *= 0.9f;
         }
 
-        private void AttackTarget() {
+        private void BehaviorLockOn() {
+            if (player == null) return;
+            
+            //悬停在玩家附近，准备攻击
+            Vector2 hoverTarget = player.Center + (startPos - player.Center).SafeNormalize(Vector2.Zero) * 200f;
+            
+            //快速逼近
+            Vector2 toTarget = hoverTarget - Projectile.Center;
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * 0.1f, 0.2f);
+            
             attackTimer++;
+            //锁定时间结束，发起攻击
+            if (attackTimer > 40) {
+                currentState = ArmState.Strike;
+                attackTimer = 0;
+                //播放锁定音效
+                SoundEngine.PlaySound(SoundID.Item23, Projectile.Center);
+            }
+        }
 
+        private void BehaviorStrike() {
+            attackTimer++;
+            
             if (attackTimer == 1) {
-                //发起冲刺
-                Vector2 dashDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                Projectile.velocity = dashDir * 18f;
+                //计算突袭向量
+                Vector2 strikeDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                Projectile.velocity = strikeDir * 25f; //高速突袭
+                
+                //消耗能量
                 if (collectorTP.MachineData.UEvalue > 10) {
                     collectorTP.MachineData.UEvalue -= 10;
                     collectorTP.SendData();
                 }
             }
-            else if (attackTimer > 16) {
-                Projectile.velocity /= 2;
-                currentState = ArmState.Retreating;
-                Projectile.netUpdate = true;
+            
+            //突袭过程中产生粒子
+            if (attackTimer < 15) {
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Electric);
+            }
+
+            //减速并进入冷却
+            if (attackTimer > 20) {
+                Projectile.velocity *= 0.8f;
+            }
+            
+            if (attackTimer > 40) {
+                currentState = ArmState.CoolDown;
+                attackTimer = 0;
             }
         }
 
-        private void Retreat() {
-            Vector2 retreatPos = startPos + new Vector2(0, -120);
-            if (Projectile.Center.Distance(retreatPos) < 10f) {
-                currentState = ArmState.Searching;
-                Projectile.netUpdate = true;
-                return;
+        private void BehaviorCoolDown() {
+            attackTimer++;
+            Projectile.velocity *= 0.9f;
+            
+            //短暂硬直后重新寻找目标
+            if (attackTimer > 30) {
+                currentState = ArmState.LockOn;
+                attackTimer = 0;
             }
+        }
 
-            Projectile.ChasingBehavior(retreatPos, 6f);
+        private void BehaviorRetreat() {
+            Vector2 retreatPos = startPos + new Vector2(0, -100);
+            Projectile.velocity = (retreatPos - Projectile.Center) * 0.1f;
+            if (Projectile.Distance(retreatPos) < 20) {
+                currentState = ArmState.Searching;
+            }
+        }
+
+        private void UpdateRotation() {
+            if (currentState == ArmState.Strike) {
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            } else if (player != null) {
+                //始终注视玩家
+                float targetRot = (player.Center - Projectile.Center).ToRotation() + MathHelper.PiOver2;
+                Projectile.rotation = Projectile.rotation.AngleLerp(targetRot, 0.2f);
+            } else {
+                Projectile.rotation = Projectile.rotation.AngleLerp(Projectile.velocity.ToRotation() + MathHelper.PiOver2, 0.1f);
+            }
         }
 
         private void DoSyncopeMotion() {
-            //每帧递增计时器
             idleWiggleTime++;
-
-            //抖动半径 + 衰减效果
-            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - collectorTP.byHitSyncopeTime / 60f); //随时间减弱
-            float angle = idleWiggleTime * 0.3f;
-            Vector2 offset = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle * 1.3f)) * shakeRadius;
-
-            //设置旋转角度偏移（模拟旋转晕头感）
-            syncopeRotAngle += (float)Math.Sin(idleWiggleTime / 5f) * 0.05f;
-            Projectile.rotation = syncopeRotAngle;
-
-            //目标点偏移
-            Vector2 syncopeTarget = startPos + offset + new Vector2(0, -60f);
-            Projectile.ChasingBehavior(syncopeTarget, 2.5f); //晕厥时移动缓慢
+            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - collectorTP.byHitSyncopeTime / 60f);
+            Vector2 offset = Main.rand.NextVector2Circular(shakeRadius, shakeRadius);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, startPos + new Vector2(0, -100) + offset, 0.1f);
+            Projectile.rotation += 0.1f;
         }
 
         private void DoIdleMotion() {
+            //简单的上下浮动
             idleWiggleTime++;
-            float xOffset = (float)Math.Sin(idleWiggleTime / 30f) * 40f;
-            Vector2 idleTarget = startPos + new Vector2(xOffset, -60f + (float)Math.Sin(idleWiggleTime / 45f) * 12f);
-            Projectile.ChasingBehavior(idleTarget, 4f);
+            Vector2 idlePos = startPos + new Vector2(0, -100 + (float)Math.Sin(idleWiggleTime * 0.05f) * 20f);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, idlePos, 0.05f);
+            Projectile.rotation = 0;
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (startPos == Vector2.Zero) {
-                return false;
-            }
+            if (segments == null || segments.Length == 0) return false;
 
             if (BatteryPrompt) {
-                lightColor.R /= 2;
-                lightColor.G /= 2;
-                lightColor.B /= 2;
-                lightColor.A = 255;
+                lightColor = Color.Red; //能量不足显示红色警告
             }
 
-            Texture2D tex = arm.Value;
-            Vector2 start = startPos;
-            Vector2 end = Projectile.Center;
+            Texture2D armTex = arm.Value;
+            Texture2D clampTex = clamp.Value;
+            float step = armTex.Height * 0.6f; //步长设置为纹理高度的0.6倍以保证重叠
 
-            //动态控制点偏移
-            float dist = Vector2.Distance(start, end);
-            float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
-            Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
+            //绘制机械臂体节
+            for (int i = 0; i < SegmentCount - 1; i++) {
+                Vector2 start = segments[i];
+                Vector2 end = segments[i + 1];
+                Vector2 vector = end - start;
+                float dist = vector.Length();
+                
+                //计算需要绘制的数量，确保填满间隙
+                int numDraws = (int)Math.Ceiling(dist / step);
+                if (numDraws <= 0) numDraws = 1;
 
-            //估算真实曲线长度
-            int sampleCount = 50;
-            float curveLength = 0f;
-            Vector2 prev = start;
-            for (int i = 1; i <= sampleCount; i++) {
-                float t = i / (float)sampleCount;
-                Vector2 a = Vector2.Lerp(start, midControl, t);
-                Vector2 b = Vector2.Lerp(midControl, end, t);
-                Vector2 point = Vector2.Lerp(a, b, t);
-                curveLength += Vector2.Distance(prev, point);
-                prev = point;
-            }
-
-            float segmentLength = tex.Height / 2;
-            int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
-            Vector2[] points = new Vector2[segmentCount + 1];
-
-            //构建点位
-            for (int i = 0; i <= segmentCount; i++) {
-                float t = i / (float)segmentCount;
-                Vector2 pos = Vector2.Lerp(
-                    Vector2.Lerp(start, midControl, t),
-                    Vector2.Lerp(midControl, end, t),
-                    t
-                );
-                points[i] = pos;
-            }
-
-            float clampRot = Projectile.rotation;
-
-            for (int i = 0; i < segmentCount; i++) {
-                Vector2 pos = points[i];
-                Vector2 next = points[i + 1];
-                Vector2 direction = next - pos;
-                Color color = Lighting.GetColor((pos / 16).ToPoint());
-                float rotation = direction.ToRotation() + MathHelper.PiOver2;
-                if (i == segmentCount - 1) {
-                    clampRot = direction.ToRotation();
+                for (int j = 0; j < numDraws; j++) {
+                    float t = j / (float)numDraws;
+                    Vector2 drawPos = Vector2.Lerp(start, end, t);
+                    Color color = Lighting.GetColor(drawPos.ToTileCoordinates());
+                    float rotation = vector.ToRotation() + MathHelper.PiOver2;
+                    
+                    Main.EntitySpriteDraw(armTex, drawPos - Main.screenPosition, null, color, rotation, 
+                        new Vector2(armTex.Width / 2, armTex.Height / 2), 1f, SpriteEffects.None, 0);
                 }
-                Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
-                    , new Vector2(tex.Width / 2f, tex.Height), 1f, SpriteEffects.None, 0f);
             }
 
-            Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
-                , clamp.Value.GetRectangle(), lightColor, clampRot + MathHelper.PiOver2
-                , clamp.Value.GetOrig(), 1f, SpriteEffects.None, 0f);
+            //绘制头部夹子
+            Main.EntitySpriteDraw(clampTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, 
+                clampTex.Size() / 2, 1f, SpriteEffects.None, 0);
 
             return false;
         }
