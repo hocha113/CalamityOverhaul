@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs;
 using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
@@ -221,10 +221,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             //判定稀有掉落(渔力 > 80)
             if (fishingPower > 80 && Main.rand.NextBool(25)) {
-                int[] rares = { 
-                    ItemID.Swordfish, 
-                    ItemID.Sextant, 
-                    ItemID.ReaverShark, 
+                int[] rares = {
+                    ItemID.Swordfish,
+                    ItemID.Sextant,
+                    ItemID.ReaverShark,
                     ItemID.SawtoothShark,
                     ItemID.Rockfish,
                     ItemID.PurpleClubberfish
@@ -238,16 +238,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             }
 
             //判定普通掉落
-            List<int> commons = new() { 
-                ItemID.Bass, 
-                ItemID.Trout, 
-                ItemID.AtlanticCod, 
-                ItemID.RedSnapper, 
-                ItemID.Tuna, 
+            List<int> commons = new() {
+                ItemID.Bass,
+                ItemID.Trout,
+                ItemID.AtlanticCod,
+                ItemID.RedSnapper,
+                ItemID.Tuna,
                 ItemID.Shrimp,
                 ItemID.Flounder
             };
-            
+
             //高渔力解锁更多鱼类
             if (fishingPower > 30) {
                 commons.Add(ItemID.NeonTetra);
