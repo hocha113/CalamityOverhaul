@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         private const int FishNeedThreshold = 10;
 
         //可计入的普通鱼ID表
-        private static readonly int[] CandidateFishTypes = [
+        internal static readonly int[] CandidateFishTypes = [
             ItemID.Bass,
             ItemID.Trout,
             ItemID.Salmon,

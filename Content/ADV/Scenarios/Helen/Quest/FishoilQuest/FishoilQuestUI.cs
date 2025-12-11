@@ -4,6 +4,7 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -106,8 +107,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         public override void SetStaticDefaults() {
-            TitleText = this.GetLocalization(nameof(TitleText), () => "采集:鲈鱼");
-            DescText = this.GetLocalization(nameof(DescText), () => "放入足够数量的鲈鱼,我会立刻提炼一瓶鱼油返还给你,过程很快,不需要你等待");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "采集:普通鱼");
+            DescText = this.GetLocalization(nameof(DescText), () => "放入足够数量的普通鱼,我会立刻提炼一瓶鱼油返还给你,过程很快,不需要你等待");
             SubmitHint = this.GetLocalization(nameof(SubmitHint), () => "左键放入/右键取出,Shift批量,Ctrl满仓");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");
             CompletedText = this.GetLocalization(nameof(CompletedText), () => "完成");
@@ -144,7 +145,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
         private void InitDefaultRequirement() {
             RequiredItems.Clear();
-            RequiredItems.Add(new QuestMaterialSlot(ItemID.Bass, 300));
+            RequiredItems.Add(new QuestMaterialSlot(FishoilQuestScenario.CandidateFishTypes, 300));
         }
 
         public override void Update() {
@@ -305,7 +306,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     continue;
                 }
                 //先处理鼠标物品
-                if (Main.mouseItem.type == slot.ItemType && Main.mouseItem.stack > 0) {
+                if (slot.IsValidItem(Main.mouseItem.type) && Main.mouseItem.stack > 0) {
                     int need = slot.Need - slot.Current;
                     int move = Math.Min(need, Main.mouseItem.stack);
                     slot.Current += move;
@@ -317,7 +318,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 //再处理背包
                 for (int i = 0; i < p.inventory.Length && !slot.IsSatisfied; i++) {
                     Item inv = p.inventory[i];
-                    if (inv.type != slot.ItemType || inv.stack <= 0) {
+                    if (!slot.IsValidItem(inv.type) || inv.stack <= 0) {
                         continue;
                     }
                     int need = slot.Need - slot.Current;
@@ -528,15 +529,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
         }
 
-        private class QuestMaterialSlot(int itemType, int need)
+        private class QuestMaterialSlot(int[] itemTypes, int need)
         {
-            public int ItemType = itemType;
+            public int[] ItemTypes = itemTypes;
             public int Need = need;
             public int Current;
             public Vector2 Pos;
             public Rectangle Hit;
             public bool Hover;
             public bool IsSatisfied => Current >= Need;
+
+            public bool IsValidItem(int type) {
+                return ItemTypes.Contains(type);
+            }
 
             public void ResetCount() => Current = 0;
 
@@ -549,7 +554,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 }
                 if (Hover) {
                     bool leftClick = Main.mouseLeft && Main.mouseLeftRelease;
-                    if (leftClick && Main.mouseItem.type == ItemType && !IsSatisfied) {
+                    if (leftClick && IsValidItem(Main.mouseItem.type) && !IsSatisfied) {
                         int add = 1;
                         if (Main.keyState.PressingShift()) {
                             add = Math.Min(Main.mouseItem.stack, Need - Current);
@@ -568,7 +573,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     bool rightClick = Main.mouseRight && Main.mouseRightRelease;
                     if (rightClick && Current > 0 && Main.mouseItem.IsAir) {
                         Current -= 1;
-                        Item give = new Item(ItemType);
+                        Item give = new Item(ItemTypes[0]);
                         give.stack = 1;
                         Main.mouseItem = give;
                         SoundEngine.PlaySound(SoundID.Grab);
@@ -589,9 +594,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 sb.Draw(vaule, new Rectangle(r.X, r.Bottom - 2, r.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
                 sb.Draw(vaule, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
                 sb.Draw(vaule, new Rectangle(r.Right - 2, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-                if (ItemType > ItemID.None) {
-                    Main.instance.LoadItem(ItemType);
-                    Texture2D tex = TextureAssets.Item[ItemType].Value;
+                if (ItemTypes.Length > 0) {
+                    int index = (int)(Main.GlobalTimeWrappedHourly / 2f) % ItemTypes.Length;
+                    int type = ItemTypes[index];
+                    Main.instance.LoadItem(type);
+                    Texture2D tex = TextureAssets.Item[type].Value;
                     Rectangle frame = tex.Frame();
                     Vector2 center = new Vector2(r.X + r.Width / 2f, r.Y + r.Height / 2f);
                     float fitScale = Math.Min((r.Width - 8f) / frame.Width, (r.Height - 8f) / frame.Height) * scale;
