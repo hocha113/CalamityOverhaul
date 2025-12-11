@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.UIHandles;
 using System;
 using Terraria;
@@ -138,6 +139,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
             if (--RandTimer > 0) {
                 return;//等待计时器
+            }
+            if (SubWorldRef.AnyActiveSubWorld()) {
+                return;//子世界中不触发
             }
             if (StartScenario()) {
                 Spawn = false;
