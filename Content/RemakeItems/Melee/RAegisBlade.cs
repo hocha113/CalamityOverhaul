@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         private int Level;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-        public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AegisBladeGuardian>()] == 0;
+        public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AegisBladeGuardian>()] == 0 || player.altFunctionUse == 0;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return ShootFunc(ref Level, player, source, position, velocity, type, damage, knockback);
         }

@@ -198,6 +198,7 @@ namespace CalamityOverhaul
         public static int Proj_BarinadeArrow => ModContent.ProjectileType<BarinadeArrow>();
         public static int Proj_BoltArrow => ModContent.ProjectileType<BoltArrow>();
         public static int Proj_ => ModContent.ProjectileType<Nuke>();
+        public static int Proj_AegisFlame => ModContent.ProjectileType<AegisFlame>();
         public static int Proj_DarkMasterBeam => ModContent.ProjectileType<DarkMasterBeam>();
         public static int Proj_DarkMasterClone => ModContent.ProjectileType<DarkMasterClone>();
         public static int Proj_OverlyDramaticDukeSummoner => ModContent.ProjectileType<OverlyDramaticDukeSummoner>();
