@@ -6845,8 +6845,8 @@ ADV: {
 	}
 
 	FishoilQuestUI: {
-		TitleText: 采集:鲈鱼
-		DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
+		TitleText: 采集:鱼
+		DescText: 放入足够数量的鱼，我就可以提炼出一瓶鱼油
 		SubmitHint: 点击放置/取出
 		DeclineText: 拒绝
 		CompletedText: 完成

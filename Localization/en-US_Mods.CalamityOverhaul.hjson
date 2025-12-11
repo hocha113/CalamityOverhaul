@@ -6879,8 +6879,8 @@ ADV: {
 	}
 
 	FishoilQuestUI: {
-		TitleText: Collect: Bass
-		DescText: Deposit enough Bass, and I will refine them into a bottle of fish oil.
+		TitleText: Collect: Fish
+		DescText: Deposit enough Fish, and I will refine them into a bottle of fish oil.
 		SubmitHint: Click to Deposit/Withdraw
 		DeclineText: Decline
 		CompletedText: Completed

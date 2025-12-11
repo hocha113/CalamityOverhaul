@@ -6957,13 +6957,13 @@ ADV: {
 	}
 
 	FishoilQuestUI: {
-		TitleText: Сбор: Окунь
-		DescText: Сдай достаточно Окуня, и я переработаю его в бутылку рыбьего жира.
-		SubmitHint: Нажмите для сдачи/возврата
+		TitleText: Сбор: Рыба
+		DescText: Положите достаточно рыбы, и я смогу добыть бутылку рыбьего жира
+		SubmitHint: Нажмите, чтобы положить/забрать
 		DeclineText: Отказаться
-		CompletedText: Выполнено
+		CompletedText: Завершить
 		RewardText: Забрать награду
-		QuickPutText: Быстрая сдача
+		QuickPutText: Быстро добавить
 	}
 
 	DoGQuestUI: {
