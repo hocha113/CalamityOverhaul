@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //更新启动器位置和状态
             if (Main.playerInventory) {
-                launcher.Update(new Vector2(570, 36), visible);
+                launcher.Update(new Vector2(20, 280), visible);
                 if (launcher.IsHovered) {
                     player.mouseInterface = true;
                 }

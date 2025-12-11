@@ -1455,8 +1455,8 @@ Items: {
 	}
 
 	MermanRod: {
-		Text1: A Merman's Rod has already been placed in the world!
-		DisplayName: Merman's Rod
+		Text1: A Merman's Perch has already been placed in the world!
+		DisplayName: Merman's Perch
 		Tooltip:
 			'''
 			Increases fishing power by 20 when fishing nearby
