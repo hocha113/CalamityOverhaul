@@ -146,7 +146,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static bool ShouldGenerateCampsite(Player player) {
             //玩家不在营地周围，这个检测是用于如果营地中途发生搬家的情况，避免在玩家视觉中发生营地搬迁
             if (MermanRodMoveback && player.DistanceSQ(CampsitePosition) > 1200 * 1200) {
-                ClearCampsite();//清理营地
+                if (VaultUtils.isSinglePlayer) {
+                    ClearCampsite();
+                }
                 return true;
             }
 

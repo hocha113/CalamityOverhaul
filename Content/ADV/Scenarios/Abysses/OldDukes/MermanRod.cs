@@ -150,6 +150,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override void OnKill() {
             //当被挖掘时，设置搬家标记
             OldDukeCampsite.MermanRodMoveback = true;
+            //如果是在多人模式中，先清理旧营地
+            if (VaultUtils.isServer) {
+                OldDukeCampsite.ClearCampsite();
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+                packet.Write(false);
+                packet.Send();
+            }
         }
     }
 }
