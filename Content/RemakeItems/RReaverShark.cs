@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         public override void SetDefaults(Item item) {
             item.pick = 60;
             item.axe = 10;
-            item.useTime = 4;           
+            item.useTime = 4;
         }
     }
 }
