@@ -45,9 +45,15 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Rewards.Add(new QuestReward { ItemType = CWRID.Item_LoreAwakening, Amount = 1 });
 
             if (ModLoader.TryGetMod("MagicStorage", out Mod magicStorage)) {
-                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("StorageHeart").Type, Amount = 1 });
-                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("StorageUnit").Type, Amount = 4 });
-                Rewards.Add(new QuestReward { ItemType = magicStorage.Find<ModItem>("CraftingAccess").Type, Amount = 1 });
+                if (magicStorage.TryFind<ModItem>("StorageHeart", out var heart)) {
+                    Rewards.Add(new QuestReward { ItemType = heart.Type, Amount = 1 });
+                }
+                if (magicStorage.TryFind<ModItem>("StorageUnit", out var unit)) {
+                    Rewards.Add(new QuestReward { ItemType = unit.Type, Amount = 4 });
+                }
+                if (magicStorage.TryFind<ModItem>("CraftingAccess", out var crafting)) {
+                    Rewards.Add(new QuestReward { ItemType = crafting.Type, Amount = 1 });
+                }
             }
 
             AddChild<MiningQuest>();

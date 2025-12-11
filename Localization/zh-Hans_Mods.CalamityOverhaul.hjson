@@ -7880,11 +7880,139 @@ QuestLogs: {
 		}
 
 		AdventurerQuests: {
-			// DisplayName: 冒险家
-			// Description: 世界任我走！
-			// QuestObjective.Description: 点击领取
-			// QuestReward.Description: 跑靴
-			// DetailedDescription: " "
+			DisplayName: 冒险家
+			Description: 世界任我走！
+			QuestObjective.Description: 点击领取
+			QuestReward.Description: 跑靴
+			DetailedDescription: 千里之行始于足下。穿上这双靴子，去丈量这个广阔的世界吧。
+		}
+
+		ExploreDungeon: {
+			DisplayName: 阴森地牢
+			Description: 发现地牢入口
+			QuestObjective.Description: 到达地牢
+			QuestReward.Description: 危险感应药水
+			DetailedDescription: 被诅咒的墙壁后隐藏着无尽的秘密与危险。只有最勇敢的探险家敢于踏足这片亡者的领地。
+		}
+
+		ExploreHell: {
+			DisplayName: 地狱深渊
+			Description: 深入地狱
+			QuestObjective.Description: 到达地狱
+			QuestReward.Description: 黑曜石皮肤药水
+			DetailedDescription: 世界的最深处流淌着熔岩之河。那是恶魔的家园，也是黑曜石与狱石的产地。记得看路，别掉进去了。
+		}
+
+		ExploreJungle: {
+			DisplayName: 丛林探险
+			Description: 深入丛林生物群落
+			QuestObjective.Description: 到达丛林
+			QuestReward.Description: 召唤药水
+			DetailedDescription: 生机勃勃却又危机四伏的绿色迷宫。茂密的植被下掩盖着古老的庙宇和致命的蜂群。
+		}
+
+		ExploreOcean: {
+			DisplayName: 世界尽头
+			Description: 到达海洋生物群落
+			QuestObjective.Description: 到达海洋
+			QuestReward.Description: 鱼鳃药水
+			DetailedDescription: 大陆的边缘。在这里，天与海交汇。深邃的蓝色之下埋藏着沉船与未知的海怪。
+		}
+
+		ExploreSnow: {
+			DisplayName: 极寒之地
+			Description: 探索雪原生物群落
+			QuestObjective.Description: 到达雪原
+			QuestReward.Description: 暖身药水
+			DetailedDescription: 永恒的冻土。寒风凛冽，冰雪覆盖了一切。在这里，生命以一种更坚韧的方式存在。
+		}
+
+		ExploreSpace: {
+			DisplayName: 星辰大海
+			Description: 飞向太空
+			QuestObjective.Description: 到达太空
+			QuestReward.Description: 羽落药水
+			DetailedDescription: 摆脱重力的束缚，触摸群星。只有飞得够高，你才能看清这个世界的全貌。
+		}
+
+		HellLabSchematic: {
+			DisplayName: 地狱蓝图
+			Description: 在地狱嘉登实验室寻找加密图纸
+			QuestObjective.Description: 获取地狱图纸
+
+			QuestReward: {
+				Description: {
+					Plating: 可疑镀层
+					Circuitry: 神秘电路
+					Fireblossom: 火焰花
+				}
+			}
+
+			DetailedDescription: 嘉登在地狱建立了一座前哨站，利用这里的地热进行实验。找到那里的图纸，或许能解锁新的武器科技。
+		}
+
+		IceLabSchematic: {
+			DisplayName: 极地密码
+			Description: 在雪原嘉登实验室寻找加密图纸
+			QuestObjective.Description: 获取冰冻图纸
+
+			QuestReward: {
+				Description: {
+					Plating: 可疑镀层
+					Circuitry: 神秘电路
+					Shiverthorn: 寒颤棘
+				}
+			}
+
+			DetailedDescription: 这里的低温是保存精密仪器的绝佳环境。深入冰原下的实验室，寻找那份被封存的极地科技。
+		}
+
+		JungleLabSchematic: {
+			DisplayName: 丛林原案
+			Description: 在丛林嘉登实验室寻找加密图纸
+			QuestObjective.Description: 获取丛林图纸
+
+			QuestReward: {
+				Description: {
+					Plating: 可疑镀层
+					Circuitry: 神秘电路
+					Moonglow: 月光草
+				}
+			}
+
+			DetailedDescription: 茂密的丛林掩盖了嘉登的生物实验室。他在那里研究瘟疫与纳米病毒。找到那份图纸，揭开危险的真相。
+		}
+
+		PlanetoidLabSchematic: {
+			DisplayName: 星流之谜
+			Description: 在小行星嘉登实验室寻找加密图纸
+			QuestObjective.Description: 获取小行星图纸
+
+			QuestReward: {
+				Description: {
+					Plating: 可疑镀层
+					Circuitry: 神秘电路
+					FallenStar: 坠落之星
+				}
+			}
+
+			DetailedDescription: 在高空的微重力环境下，嘉登的一座实验室正静静漂浮。去那里寻找关于星流巨械的早期设计图。
+		}
+
+		SunkenSeaLabSchematic: {
+			DisplayName: 沉沦之海
+			Description: 在沉沦之海嘉登实验室寻找加密图纸
+			QuestObjective.Description: 获取沉沦之海图纸
+
+			QuestReward: {
+				Description: {
+					Plating: 可疑镀层
+					Circuitry: 神秘电路
+					Waterleaf: 波浪叶
+				}
+			}
+
+			DetailedDescription: 在这片宁静的地下海中，嘉登遗留了一些关于棱晶能源的研究。潜入水下，取回那些宝贵的数据。
 		}
 	}
 }

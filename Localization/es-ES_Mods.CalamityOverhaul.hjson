@@ -7895,19 +7895,147 @@ QuestLogs: {
 		}
 
 		RockQuestII: {
-			// QuestObjective.Description: Complete the Boss Rush 5 times and obtain 5 or more Rocks
+			// QuestObjective.Description: Clear Boss Rush 5 times, obtain 5 Rocks
 			// QuestReward.Description: 5 Rocks
 			// DisplayName: Cycle of Conquest
-			// Description: Complete the Boss Rush 5 times and obtain 5 or more Rocks
+			// Description: Clear Boss Rush 5 times, obtain 5 Rocks
 			// DetailedDescription: The symbol of a true warrior
 		}
 
 		AdventurerQuests: {
-			// DisplayName: 冒险家
-			// Description: 世界任我走！
-			// QuestObjective.Description: 点击领取
-			// QuestReward.Description: 跑靴
-			// DetailedDescription: " "
+			// DisplayName: Adventurer
+			// Description: The world is mine to roam!
+			// QuestObjective.Description: Click to Claim
+			// QuestReward.Description: Hermes Boots
+			// DetailedDescription: A journey of a thousand miles begins with a single step. Put on these boots and measure this vast world.
+		}
+
+		ExploreDungeon: {
+			// DisplayName: Gloomy Dungeon
+			// Description: Discover the Dungeon entrance
+			// QuestObjective.Description: Reach the Dungeon
+			// QuestReward.Description: Dangersense Potion
+			// DetailedDescription: Endless secrets and dangers hide behind the cursed walls. Only the bravest explorers dare to set foot in this realm of the dead.
+		}
+
+		ExploreHell: {
+			// DisplayName: Abyssal Underworld
+			// Description: Descend into the Underworld
+			// QuestObjective.Description: Reach the Underworld
+			// QuestReward.Description: Obsidian Skin Potion
+			// DetailedDescription: Rivers of lava flow in the deepest parts of the world. It is the home of demons and the source of Obsidian and Hellstone. Watch your step.
+		}
+
+		ExploreJungle: {
+			// DisplayName: Jungle Expedition
+			// Description: Delve into the Jungle biome
+			// QuestObjective.Description: Reach the Jungle
+			// QuestReward.Description: Summoning Potion
+			// DetailedDescription: A vibrant yet perilous green maze. The dense vegetation conceals ancient temples and deadly swarms of bees.
+		}
+
+		ExploreOcean: {
+			// DisplayName: World's End
+			// Description: Reach the Ocean biome
+			// QuestObjective.Description: Reach the Ocean
+			// QuestReward.Description: Gills Potion
+			// DetailedDescription: The edge of the continent. Here, the sky meets the sea. Sunken ships and unknown sea monsters lie buried beneath the deep blue.
+		}
+
+		ExploreSnow: {
+			// DisplayName: Frozen Wasteland
+			// Description: Explore the Snow biome
+			// QuestObjective.Description: Reach the Snow biome
+			// QuestReward.Description: Warmth Potion
+			// DetailedDescription: Eternal permafrost. The biting wind covers everything in ice and snow. Here, life exists in a much more resilient form.
+		}
+
+		ExploreSpace: {
+			// DisplayName: Sea of Stars
+			// Description: Fly into Space
+			// QuestObjective.Description: Reach Space
+			// QuestReward.Description: Featherfall Potion
+			// DetailedDescription: Break free from gravity's shackles and touch the stars. Only by flying high enough can you see the full picture of this world.
+		}
+
+		HellLabSchematic: {
+			// DisplayName: Hell Blueprint
+			// Description: Find the Encrypted Schematic in the Underworld Draedon Lab
+			// QuestObjective.Description: Obtain Hell Schematic
+
+			QuestReward: {
+				Description: {
+					// Plating: Dubious Plating
+					// Circuitry: Mysterious Circuitry
+					// Fireblossom: Fireblossom
+				}
+			}
+
+			// DetailedDescription: Draedon established an outpost in Hell to experiment with geothermal energy. Find the schematic there; it might unlock new weapon technologies.
+		}
+
+		IceLabSchematic: {
+			// DisplayName: Polar Code
+			// Description: Find the Encrypted Schematic in the Snow Draedon Lab
+			// QuestObjective.Description: Obtain Ice Schematic
+
+			QuestReward: {
+				Description: {
+					// Plating: Dubious Plating
+					// Circuitry: Mysterious Circuitry
+					// Shiverthorn: Shiverthorn
+				}
+			}
+
+			// DetailedDescription: The low temperatures here are perfect for preserving precision instruments. Delve into the lab beneath the ice to find that sealed polar technology.
+		}
+
+		JungleLabSchematic: {
+			// DisplayName: Jungle Draft
+			// Description: Find the Encrypted Schematic in the Jungle Draedon Lab
+			// QuestObjective.Description: Obtain Jungle Schematic
+
+			QuestReward: {
+				Description: {
+					// Plating: Dubious Plating
+					// Circuitry: Mysterious Circuitry
+					// Moonglow: Moonglow
+				}
+			}
+
+			// DetailedDescription: The dense jungle conceals Draedon's biological laboratory. He studied plagues and nano-viruses there. Find that schematic to reveal the dangerous truth.
+		}
+
+		PlanetoidLabSchematic: {
+			// DisplayName: Exo Mystery
+			// Description: Find the Encrypted Schematic in the Planetoid Draedon Lab
+			// QuestObjective.Description: Obtain Planetoid Schematic
+
+			QuestReward: {
+				Description: {
+					// Plating: Dubious Plating
+					// Circuitry: Mysterious Circuitry
+					// FallenStar: Fallen Star
+				}
+			}
+
+			// DetailedDescription: In the microgravity environment of high altitude, a lab floats silently. Go there to find early design blueprints regarding the Exo Mechs.
+		}
+
+		SunkenSeaLabSchematic: {
+			// DisplayName: Sunken Sea
+			// Description: Find the Encrypted Schematic in the Sunken Sea Draedon Lab
+			// QuestObjective.Description: Obtain Sunken Sea Schematic
+
+			QuestReward: {
+				Description: {
+					// Plating: Dubious Plating
+					// Circuitry: Mysterious Circuitry
+					// Waterleaf: Waterleaf
+				}
+			}
+
+			// DetailedDescription: In this tranquil underground sea, Draedon left behind research regarding Prism energy. Dive underwater and retrieve that valuable data.
 		}
 	}
 }
