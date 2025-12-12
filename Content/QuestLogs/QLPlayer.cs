@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 QuestProgress.Clear();
                 if (tag.TryGet("QuestProgress", out TagCompound questsTag)) {
                     foreach (var kvp in questsTag) {
-                        if (kvp.Value is TagCompound questDataTag && QuestProgress.ContainsKey(kvp.Key)) {
+                        if (kvp.Value is TagCompound questDataTag) {
                             QuestProgress[kvp.Key] = QuestSaveData.Deserialize(questDataTag);
                         }
                     }
