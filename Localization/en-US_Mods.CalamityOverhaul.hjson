@@ -6373,7 +6373,7 @@ UI: {
 	}
 
 	CQETConstructorTP: {
-		GuideText_NeedBlocks: Needs {0} Gausspulse Plating
+		GuideText_NeedBlocks: Needs {0} Starflow Plated Block
 		GuideText_Ready: Ready!
 		GuideText_GroundIncomplete: The Ground Is Incomplete!
 	}
