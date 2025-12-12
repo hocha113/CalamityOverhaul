@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants;
 using CalamityOverhaul.Content.QuestLogs;
+using CalamityOverhaul.OtherMods.Fargowiltas;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Terraria;
@@ -28,6 +29,12 @@ namespace CalamityOverhaul.Content
         public override void SaveWorldData(TagCompound tag) {
             tag["placeholder"] = false;
             SaveMod.DoSave<UIDataSave>();
+        }
+
+        public override void UpdateUI(GameTime gameTime) {
+            if (QuestLog.Instance.visible) {
+                FargowiltasRef.CloseStatButton();//关闭Fargowiltas的状态按钮，防止遮挡
+            }
         }
     }
 

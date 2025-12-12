@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
+using CalamityOverhaul.OtherMods.Fargowiltas;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -124,7 +125,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //更新动画状态
             if (visible) {
                 openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);              
             }
             else {
                 openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
@@ -177,7 +178,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //更新启动器位置和状态
             if (Main.playerInventory) {
-                launcher.Update(new Vector2(20, 280), visible);
+                launcher.Update(new Vector2(380, 270), visible);
                 if (launcher.IsHovered) {
                     player.mouseInterface = true;
                 }

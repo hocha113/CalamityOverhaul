@@ -49,6 +49,7 @@ namespace CalamityOverhaul
         internal Mod woTM = null;
         internal Mod noxusBoss = null;
         internal Mod subworldLibrary = null;
+        internal Mod fargowiltas = null;
 
         #endregion
 
@@ -115,6 +116,7 @@ namespace CalamityOverhaul
             woTM = null;
             noxusBoss = null;
             subworldLibrary = null;
+            fargowiltas = null;
         }
 
         public void FindMod() {
@@ -148,6 +150,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("WoTM", out woTM);
             ModLoader.TryGetMod("NoxusBoss", out noxusBoss);
             ModLoader.TryGetMod("SubworldLibrary", out subworldLibrary);
+            ModLoader.TryGetMod("Fargowiltas", out fargowiltas);
         }
     }
 }
