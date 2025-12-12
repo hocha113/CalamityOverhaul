@@ -64,6 +64,11 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         //启动图标
         private QuestLogLauncher launcher;
+        //启动图标位置
+        public Vector2 LauncherPosition;
+        private bool isDraggingLauncher;
+        private Vector2 dragStartLauncherPos;
+        private Vector2 dragStartMousePosForLauncher;
 
         public static LocalizedText ObjectiveText;
         public static LocalizedText RewardText;
@@ -74,6 +79,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText NightModeText;
         public static LocalizedText SunModeText;
         public static LocalizedText ResetViewText;
+        public static LocalizedText LauncherHoverText;
 
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
@@ -83,6 +89,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             launcher = new QuestLogLauncher();
             //设置初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
+            //设置启动图标初始位置
+            LauncherPosition = new Vector2(380, 270);
 
             availableStyles = [
                 new HotwindQuestLogStyle(),
@@ -101,6 +109,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             NightModeText = this.GetLocalization(nameof(NightModeText), () => "夜间模式");
             SunModeText = this.GetLocalization(nameof(SunModeText), () => "日间模式");
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
+            LauncherHoverText = this.GetLocalization(nameof(LauncherHoverText), () => "左键开关面板，右键拖动");
         }
 
         public new void SaveUIData(TagCompound tag) {
@@ -109,6 +118,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag[Name + ":" + nameof(dragStartMousePos)] = dragStartMousePos;
             tag[Name + ":" + nameof(dragStartPanOffset)] = dragStartPanOffset;
             tag[Name + ":" + nameof(currentStyleIndex)] = currentStyleIndex;
+            tag[Name + ":" + nameof(LauncherPosition)] = LauncherPosition;
         }
 
         public new void LoadUIData(TagCompound tag) {
@@ -119,13 +129,17 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag.TryGet(Name + ":" + nameof(dragStartPanOffset), out dragStartPanOffset);
             tag.TryGet(Name + ":" + nameof(currentStyleIndex), out currentStyleIndex);
             currentStyleIndex = (int)MathHelper.Clamp(currentStyleIndex, 0, availableStyles.Count - 1);
+            tag.TryGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
+            if (LauncherPosition == Vector2.Zero) {
+                LauncherPosition = new Vector2(380, 270);
+            }
         }
 
         public override void Update() {
             //更新动画状态
             if (visible) {
                 openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);              
+                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
             }
             else {
                 openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
@@ -178,10 +192,25 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //更新启动器位置和状态
             if (Main.playerInventory) {
-                launcher.Update(new Vector2(380, 270), visible);
                 if (launcher.IsHovered) {
                     player.mouseInterface = true;
+                    //右键拖动逻辑
+                    if (keyRightPressState == KeyPressState.Pressed && !isDraggingLauncher) {
+                        isDraggingLauncher = true;
+                        dragStartLauncherPos = LauncherPosition;
+                        dragStartMousePosForLauncher = Main.MouseScreen;
+                    }
                 }
+
+                if (isDraggingLauncher) {
+                    Vector2 diff = Main.MouseScreen - dragStartMousePosForLauncher;
+                    LauncherPosition = dragStartLauncherPos + diff;
+                    if (keyRightPressState == KeyPressState.Released) {
+                        isDraggingLauncher = false;
+                    }
+                }
+
+                launcher.Update(LauncherPosition, visible);
             }
 
             if (openScale <= 0.01f && !visible) return;
@@ -415,6 +444,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             //绘制启动图标
             if (Main.playerInventory) {
                 launcher.Draw(spriteBatch, visible);
+                if (launcher.IsHovered && !visible) {
+                    Main.hoverItemName = LauncherHoverText.Value;
+                }
             }
 
             if (openScale <= 0.01f && !visible) return;

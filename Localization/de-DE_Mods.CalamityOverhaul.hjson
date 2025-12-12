@@ -6507,6 +6507,7 @@ UI: {
 		// NightModeText: Night Mode
 		// ResetViewText: Reset View
 		// SunModeText: Daytime Mode
+		// LauncherHoverText: Left-Click Toggle, Right-Click Drag
 	}
 
 	// QuestNotificationSystem.Text1: Quest Complete

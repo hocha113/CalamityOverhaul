@@ -30,12 +30,6 @@ namespace CalamityOverhaul.Content
             tag["placeholder"] = false;
             SaveMod.DoSave<UIDataSave>();
         }
-
-        public override void UpdateUI(GameTime gameTime) {
-            if (QuestLog.Instance.visible) {
-                FargowiltasRef.CloseStatButton();//关闭Fargowiltas的状态按钮，防止遮挡
-            }
-        }
     }
 
     internal class UIDataSave : SaveMod
