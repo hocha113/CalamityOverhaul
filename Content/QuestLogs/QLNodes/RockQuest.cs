@@ -54,12 +54,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
                 RequiredProgress = 1
             });
-
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
-            });
+            //这个还是别给了
+            //Rewards.Add(new QuestReward {
+            //    ItemType = CWRID.Item_,
+            //    Amount = 5,
+            //    Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
+            //});
         }
 
         public override void UpdateByPlayer() {
