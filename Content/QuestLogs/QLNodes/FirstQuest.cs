@@ -44,6 +44,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward { ItemType = CWRID.Item_LoreAwakening, Amount = 1 });
 
+            if (ModLoader.TryGetMod("CalamityModMusic", out var musicMod) && musicMod.TryFind<ModItem>("CalamityMusicbox", out var musicbox)) {
+                Rewards.Add(new QuestReward { ItemType = musicbox.Type, Amount = 1 });
+            }
+
             if (ModLoader.TryGetMod("MagicStorage", out Mod magicStorage)) {
                 if (magicStorage.TryFind<ModItem>("StorageHeart", out var heart)) {
                     Rewards.Add(new QuestReward { ItemType = heart.Type, Amount = 1 });
