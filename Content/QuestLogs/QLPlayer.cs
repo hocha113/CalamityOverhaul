@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.QLNodes;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,21 +13,29 @@ namespace CalamityOverhaul.Content.QuestLogs
         public Dictionary<string, QuestSaveData> QuestProgress = new();
 
         public override void SaveData(TagCompound tag) {
-            TagCompound questsTag = new();
-            foreach (var kvp in QuestProgress) {
-                questsTag[kvp.Key] = kvp.Value.Serialize();
+            try {
+                TagCompound questsTag = new();
+                foreach (var kvp in QuestProgress) {
+                    questsTag[kvp.Key] = kvp.Value.Serialize();
+                }
+                tag["QuestProgress"] = questsTag;
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[QLPlayer:SaveData] an error has occurred:{ex.Message}");
             }
-            tag["QuestProgress"] = questsTag;
         }
 
         public override void LoadData(TagCompound tag) {
-            QuestProgress.Clear();
-            if (tag.TryGet("QuestProgress", out TagCompound questsTag)) {
-                foreach (var kvp in questsTag) {
-                    if (kvp.Value is TagCompound questDataTag) {
-                        QuestProgress[kvp.Key] = QuestSaveData.Deserialize(questDataTag);
+            try {
+                QuestProgress.Clear();
+                if (tag.TryGet("QuestProgress", out TagCompound questsTag)) {
+                    foreach (var kvp in questsTag) {
+                        if (kvp.Value is TagCompound questDataTag && QuestProgress.ContainsKey(kvp.Key)) {
+                            QuestProgress[kvp.Key] = QuestSaveData.Deserialize(questDataTag);
+                        }
                     }
                 }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[QLPlayer:LoadData] an error has occurred:{ex.Message}");
             }
         }
 
@@ -42,7 +51,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
             }
 
-            // 进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
+            //进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
             foreach (var quest in QuestNode.AllQuests) {
                 quest.OnWorldEnter();
                 quest.CheckUnlock();
