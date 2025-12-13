@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient(ItemID.DyeVat).
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient(CWRID.Item_DubiousPlating, 15).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddTile(TileID.Anvils).
                 Register();
         }

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 50)
                 .AddIngredient(ModContent.ItemType<WulfrumMetalScrap>(), 2)
-                .AddIngredient(ModContent.ItemType<DubiousPlating>(), 2)
+                .AddIngredient(CWRID.Item_DubiousPlating, 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

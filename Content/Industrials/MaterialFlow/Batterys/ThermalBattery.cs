@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient(CWRID.Item_DubiousPlating, 15).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient(ItemID.Glass, 50).
                 AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
                 AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).

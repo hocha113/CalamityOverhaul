@@ -39,16 +39,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(10).
-                AddIngredient<MysteriousCircuitry>(10).
+                AddIngredient(CWRID.Item_DubiousPlating, 10).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
                 AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
                 AddIngredient(ItemID.Lens, 4).
                 AddTile(TileID.Anvils).
                 Register();
 
             CreateRecipe().
-                AddIngredient<DubiousPlating>(10).
-                AddIngredient<MysteriousCircuitry>(10).
+                AddIngredient(CWRID.Item_DubiousPlating, 10).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
                 AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
                 AddIngredient(ItemID.Ruby, 1).
                 AddTile(TileID.Anvils).

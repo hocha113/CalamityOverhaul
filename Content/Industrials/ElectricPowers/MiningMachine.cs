@@ -44,8 +44,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             CreateRecipe().
                 AddRecipeGroup(RecipeGroupID.IronBar, 15).
                 AddRecipeGroup(CWRRecipes.IronPickaxeGroup).
-                AddIngredient<DubiousPlating>(5).
-                AddIngredient<MysteriousCircuitry>(5).
+                AddIngredient(CWRID.Item_DubiousPlating, 5).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
                 AddTile(TileID.Anvils).
                 Register();
         }
@@ -143,8 +143,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 { ItemID.PlatinumOre, 0.1f },
                 { ItemID.DemoniteOre, 0.1f },
                 { ItemID.Coal, 0.1f },
-                { ModContent.ItemType<DubiousPlating>(), 0.04f },
-                { ModContent.ItemType<MysteriousCircuitry>(), 0.012f },
+                { CWRID.Item_DubiousPlating, 0.08f },
+                { CWRID.Item_MysteriousCircuitry, 0.062f },
             };
         }
 

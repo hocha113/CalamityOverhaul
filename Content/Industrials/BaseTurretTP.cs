@@ -264,11 +264,11 @@ namespace CalamityOverhaul.Content.Industrials
 
             int dropNum = Main.rand.Next(2, 4);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(ModContent.ItemType<DubiousPlating>());
+                DropItem(CWRID.Item_DubiousPlating);
             }
             dropNum = Main.rand.Next(2, 4);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(ModContent.ItemType<MysteriousCircuitry>());
+                DropItem(CWRID.Item_MysteriousCircuitry);
             }
         }
 

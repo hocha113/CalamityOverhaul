@@ -94,11 +94,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 
             int dropNum = Main.rand.Next(8, 12);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(ModContent.ItemType<DubiousPlating>());
+                DropItem(CWRID.Item_DubiousPlating);
             }
             dropNum = Main.rand.Next(10, 15);
             for (int i = 0; i < dropNum; i++) {
-                DropItem(ModContent.ItemType<MysteriousCircuitry>());
+                DropItem(CWRID.Item_MysteriousCircuitry);
             }
             if (Main.rand.NextBool(5)) {
                 DropItem(ModContent.ItemType<SuspiciousScrap>());

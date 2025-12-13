@@ -51,8 +51,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override int CreateTileID => ModContent.TileType<UEPipelineTile>();
         public override void AddRecipes() {
             CreateRecipe(333).
-                AddIngredient<DubiousPlating>(5).
-                AddIngredient<MysteriousCircuitry>(5).
+                AddIngredient(CWRID.Item_DubiousPlating, 5).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
                 AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();

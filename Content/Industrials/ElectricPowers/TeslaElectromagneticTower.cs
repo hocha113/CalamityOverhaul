@@ -49,8 +49,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient(CWRID.Item_DubiousPlating, 15).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient<AerialiteBar>(10).
                 AddIngredient<StormlionMandible>(4).
                 AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
@@ -87,8 +87,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient(CWRID.Item_DubiousPlating, 15).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient<AerialiteBar>(10).
                 AddIngredient<StormlionMandible>(4).
                 AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).

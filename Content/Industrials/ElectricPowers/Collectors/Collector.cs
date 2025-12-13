@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(15).
-                AddIngredient<MysteriousCircuitry>(20).
+                AddIngredient(CWRID.Item_DubiousPlating, 15).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
                 AddRecipeGroup(CWRRecipes.TungstenBarGroup, 8).
                 AddIngredient(ItemID.Hook, 3).
                 AddTile(TileID.Anvils).

@@ -59,8 +59,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<WindGrivenGenerator>().
-                AddIngredient<DubiousPlating>(20).
-                AddIngredient<MysteriousCircuitry>(20).
+                AddIngredient(CWRID.Item_DubiousPlating, 20).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
                 AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
                 AddRecipeGroup(CWRRecipes.GoldBarGroup, 15).
                 AddCondition(WindGrivenRecipeCondition(out var condition), condition).

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             _ = CreateRecipe()
                 .AddIngredient<EnergyCore>(2)
                 .AddIngredient<WulfrumMetalScrap>(5)
-                .AddIngredient<DubiousPlating>(5)
+                .AddIngredient(CWRID.Item_DubiousPlating, 5)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

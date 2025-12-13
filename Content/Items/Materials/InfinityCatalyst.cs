@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<MolluskHusk>(QFD(50))//生物质
                 .AddIngredient<DepthCells>(QFD(50))//深渊生物组织
                 .AddIngredient<DivineGeode>(QFD(50))//圣神晶石
-                .AddIngredient<DubiousPlating>(QFD(50))//废弃装甲
+                .AddIngredient(CWRID.Item_DubiousPlating, QFD(50))//废弃装甲
                 .AddIngredient<BloodstoneCore>(QFD(50))//血石核心
                 .AddIngredient<CoreofCalamity>(QFD(50))//灾劫精华
                 .AddIngredient<AscendantSpiritEssence>(QFD(50))//化神精魄

@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             int[] mineralItems = [
                 ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre,
                 ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre,
-                ItemID.JungleSpores, ItemID.Moonglow, ModContent.ItemType<DubiousPlating>()
-                , ModContent.ItemType<MysteriousCircuitry>()
+                ItemID.JungleSpores, ItemID.Moonglow, CWRID.Item_DubiousPlating
+                , CWRID.Item_MysteriousCircuitry
             ];
 
             int[] junkItems = [

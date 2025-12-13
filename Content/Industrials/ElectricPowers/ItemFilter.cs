@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
@@ -273,6 +274,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 VaultUtils.SafeLoadItem(itemType);
                 VaultUtils.SimpleDrawItem(spriteBatch, itemType, itemPos, itemWidth: 26, scale * 0.75f, 0, Color.White);
             }
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddRecipeGroup(RecipeGroupID.IronBar, 5).
+                AddIngredient(ItemID.Chest, 4).
+                AddIngredient(CWRID.Item_DubiousPlating, 2).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 2).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 
