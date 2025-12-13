@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.TileProcessors;
+﻿using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addTile(Type);
         }
 
-        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile<BloodOrb>();
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(CWRID.Item_BloodOrb);
 
         public override bool CanExplode(int i, int j) => false;
 

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -101,7 +100,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 DropItem(CWRID.Item_MysteriousCircuitry);
             }
             if (Main.rand.NextBool(5)) {
-                DropItem(ModContent.ItemType<SuspiciousScrap>());
+                DropItem(CWRID.Item_SuspiciousScrap);
             }
         }
 

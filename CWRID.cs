@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria.ModLoader;
 
@@ -107,6 +106,11 @@ namespace CalamityOverhaul
         public static int Item_CosmicDischarge => Get();
         public static int Item_Norfleet => Get();
         public static int Item_CosmiliteBar => Get();
+        public static int Item_ShadowspecBar => Get();
+        public static int Item_YharonBag => Get();
+        public static int Item_SuspiciousScrap => Get();
+        public static int Item_WulfrumMetalScrap => Get();
+        public static int Item_ChargingStationItem => Get();
         #endregion
         #region NPC ID引用
         public static int NPC_Cataclysm => Get();
@@ -338,6 +342,14 @@ namespace CalamityOverhaul
         public static int Proj_CardSpade => Get();
         public static int Proj_CardDiamond => Get();
         public static int Proj_CardClub => Get();
+        public static int Proj_SwordsplosionBlue => Get();
+        public static int Proj_SwordsplosionGreen => Get();
+        public static int Proj_SwordsplosionPurple => Get();
+        public static int Proj_SwordsplosionRed => Get();
+        public static int Proj_GalaxyBlast => Get();
+        public static int Proj_GalaxyBlastType2 => Get();
+        public static int Proj_GalaxyBlastType3 => Get();
+        public static int Proj_SCalRitualDrama => Get();
         #endregion
         #region 物块ID引用
         public static int Tile_PlagueInfuser => Get();
@@ -346,6 +358,17 @@ namespace CalamityOverhaul
         public static int Tile_SCalAltarLarge => Get();
         public static int Tile_SulphurousSand => Get();
         public static int Tile_SulphurousSandstone => Get();
+        public static int Tile_CosmicAnvil => Get();
+        public static int Tile_AncientAltar => Get();
+        public static int Tile_AshenAltar => Get();
+        public static int Tile_BotanicPlanter => Get();
+        public static int Tile_EutrophicShelf => Get();
+        public static int Tile_MonolithAmalgam => Get();
+        public static int Tile_VoidCondenser => Get();
+        public static int Tile_WulfrumLabstation => Get();
+        public static int Tile_StaticRefiner => Get();
+        public static int Tile_ProfanedCrucible => Get();
+        public static int Tile_ChargingStation => Get();
         #endregion
         #region 增益效果ID引用
         public static int Buff_Plague => Get();

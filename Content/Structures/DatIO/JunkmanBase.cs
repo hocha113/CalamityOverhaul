@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System;
 using System.IO;
 using Terraria;

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.TileProcessors;
@@ -50,18 +49,18 @@ namespace CalamityOverhaul.Content.Tiles
                 TileID.TinkerersWorkbench,
                 TileID.LunarCraftingStation,
                 TileID.DemonAltar,
-                ModContent.TileType<CosmicAnvil>(),
-                ModContent.TileType<SCalAltarLarge>(),
-                ModContent.TileType<AncientAltar>(),
-                ModContent.TileType<AshenAltar>(),
-                ModContent.TileType<BotanicPlanter>(),
-                ModContent.TileType<EutrophicShelf>(),
-                ModContent.TileType<MonolithAmalgam>(),
-                ModContent.TileType<VoidCondenser>(),
-                ModContent.TileType<WulfrumLabstation>(),
-                ModContent.TileType<StaticRefiner>(),
-                ModContent.TileType<ProfanedCrucible>(),
-                ModContent.TileType<PlagueInfuser>(),
+                CWRID.Tile_CosmicAnvil,
+                CWRID.Tile_SCalAltarLarge,
+                CWRID.Tile_AncientAltar,
+                CWRID.Tile_AshenAltar,
+                CWRID.Tile_BotanicPlanter,
+                CWRID.Tile_EutrophicShelf,
+                CWRID.Tile_MonolithAmalgam,
+                CWRID.Tile_VoidCondenser,
+                CWRID.Tile_WulfrumLabstation,
+                CWRID.Tile_StaticRefiner,
+                CWRID.Tile_ProfanedCrucible,
+                CWRID.Tile_PlagueInfuser,
                 CWRID.Tile_DraedonsForge,
                 ModContent.TileType<DarkMatterCompressor>(),
             ];

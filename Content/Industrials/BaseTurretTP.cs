@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +6,6 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials
 {

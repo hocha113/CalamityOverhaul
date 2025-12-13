@@ -8,14 +8,11 @@ using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
-using CalamityMod.Projectiles.Boss;
-using CalamityMod.Projectiles.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
@@ -49,33 +46,33 @@ namespace CalamityOverhaul
         public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
-                0 => ModContent.ProjectileType<SwordsplosionBlue>(),
-                1 => ModContent.ProjectileType<SwordsplosionGreen>(),
-                2 => ModContent.ProjectileType<SwordsplosionPurple>(),
-                3 => ModContent.ProjectileType<SwordsplosionRed>(),
-                _ => ModContent.ProjectileType<SwordsplosionBlue>(),
+                0 => CWRID.Proj_SwordsplosionBlue,
+                1 => CWRID.Proj_SwordsplosionGreen,
+                2 => CWRID.Proj_SwordsplosionPurple,
+                3 => CWRID.Proj_SwordsplosionRed,
+                _ => CWRID.Proj_SwordsplosionBlue,
             };
         }
         public static int GetRandomProjectileType2() {
             return Main.rand.Next(6) switch {
-                1 => ModContent.ProjectileType<GalaxyBlast>(),
-                2 => ModContent.ProjectileType<GalaxyBlastType2>(),
-                3 => ModContent.ProjectileType<GalaxyBlastType3>(),
-                _ => ModContent.ProjectileType<GalaxyBlast>(),
+                1 => CWRID.Proj_GalaxyBlast,
+                2 => CWRID.Proj_GalaxyBlastType2,
+                3 => CWRID.Proj_GalaxyBlastType3,
+                _ => CWRID.Proj_GalaxyBlast,
             };
         }
         public static int GetProjectileTypeByIndex(int index) {
             return index switch {
-                0 => ModContent.ProjectileType<GalaxyBlast>(),
-                1 => ModContent.ProjectileType<GalaxyBlastType2>(),
-                2 => ModContent.ProjectileType<GalaxyBlastType3>(),
-                _ => ModContent.ProjectileType<GalaxyBlast>(),
+                0 => CWRID.Proj_GalaxyBlast,
+                1 => CWRID.Proj_GalaxyBlastType2,
+                2 => CWRID.Proj_GalaxyBlastType3,
+                _ => CWRID.Proj_GalaxyBlast,
             };
         }
         public static void SummonSupCal(Vector2 spawnPos) {
             SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
-                , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
+                , CWRID.Proj_SCalRitualDrama, 0, 0f, Main.myPlayer, 0, 0);
         }
         public static void SummonExo(int exoType, Player player) {
             if (CWRMod.Instance.calamity == null) {
@@ -92,7 +89,7 @@ namespace CalamityOverhaul
             switch (CalamityWorld.DraedonMechToSummon) {
                 case ExoMech.Destroyer:
                     Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
-                    NPC thanatos = CalamityUtils.SpawnBossBetter(thanatosSpawnPosition, ModContent.NPCType<ThanatosHead>());
+                    NPC thanatos = CalamityUtils.SpawnBossBetter(thanatosSpawnPosition, CWRID.NPC_ThanatosHead);
                     if (thanatos != null)
                         thanatos.velocity = thanatos.SafeDirectionTo(player.Center) * 40f;
                     break;
@@ -265,6 +262,9 @@ namespace CalamityOverhaul
                 }
             }
         }
+        public static ref float RefItemCharge(this Item item) => ref item.Calamity().Charge;
+        public static float GetItemMaxCharge(this Item item) => item.Calamity().MaxCharge;
+        public static bool GetItemUsesCharge(this Item item) => item.Calamity().UsesCharge;
         public static RogueDamageClass GetRogueDamageClass() => ModContent.GetInstance<RogueDamageClass>();
         public static float GetPlayerRogueStealth(this Player player) => player.Calamity().rogueStealth;
         public static float SetPlayerRogueStealth(this Player player, float value) => player.Calamity().rogueStealth = value;

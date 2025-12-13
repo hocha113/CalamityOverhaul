@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Materials;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ID;

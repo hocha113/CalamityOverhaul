@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
+﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -25,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 50)
-                .AddIngredient(ModContent.ItemType<WulfrumMetalScrap>(), 2)
                 .AddIngredient(CWRID.Item_DubiousPlating, 2)
+                .AddIngredient(CWRID.Item_WulfrumMetalScrap, 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

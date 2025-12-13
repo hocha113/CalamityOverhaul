@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;

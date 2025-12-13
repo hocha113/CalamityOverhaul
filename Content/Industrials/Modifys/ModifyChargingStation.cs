@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.DraedonStructures;
-using CalamityMod.Tiles.DraedonStructures;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameSystem;
@@ -20,7 +16,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 {
     internal class ModifyChargingStationItem : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<ChargingStationItem>();
+        public override int TargetID => CWRID.Item_ChargingStationItem;
         public override bool DrawingInfo => false;
         public override void SetDefaults(Item item) {
             item.CWR().StorageUE = true;
@@ -40,7 +36,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
     internal class ModifyChargingStation : TileOverride
     {
-        public override int TargetID => ModContent.TileType<ChargingStation>();
+        public override int TargetID => CWRID.Tile_ChargingStation;
         public override bool? CanDrop(int i, int j, int type) => false;
 
         public override bool? RightClick(int i, int j, Tile tile) {
@@ -54,12 +50,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             return false;
         }
 
-        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<ChargingStationItem>());
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(CWRID.Item_ChargingStationItem);
     }
 
     internal class ChargingStationTP : BaseBattery
     {
-        public override int TargetTileID => ModContent.TileType<ChargingStation>();
+        public override int TargetTileID => CWRID.Tile_ChargingStation;
         public static int StaticID { get; private set; }
 
         internal Item Item = new Item();
@@ -68,7 +64,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override bool CanDrop => false;
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1000;
-        public override int TargetItem => ModContent.ItemType<ChargingStationItem>();
+        public override int TargetItem => CWRID.Item_ChargingStationItem;
 
         public override void SendData(ModPacket data) {
             base.SendData(data);
@@ -172,9 +168,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return true;
             }
 
-            if (item.Calamity().UsesCharge) {
-                ueValue = item.Calamity().Charge;
-                maxUEValue = item.Calamity().MaxCharge;
+            if (item.GetItemUsesCharge()) {
+                ueValue = item.RefItemCharge();
+                maxUEValue = item.GetItemMaxCharge();
                 return true;
             }
 
@@ -203,7 +199,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
             }
 
-            Item chargingStation = new Item(ModContent.ItemType<ChargingStationItem>());
+            Item chargingStation = new Item(CWRID.Item_ChargingStationItem);
             chargingStation.CWR().UEValue = MachineData.UEvalue;
             type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, chargingStation);
             if (VaultUtils.isServer) {
@@ -222,7 +218,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     setUE = ref Item.CWR().UEValue;
                 }
                 else {
-                    setUE = ref Item.Calamity().Charge;
+                    setUE = ref Item.RefItemCharge();
                 }
 
                 if (ueValue < maxValue) {
