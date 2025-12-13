@@ -407,13 +407,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Difficulty = QuestDifficulty.Master;
 
             Objectives.Add(new QuestObjective {
-                TargetItemID = CWRID.Item_,
+                TargetItemID = CWRID.Item_Rock,
                 Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
                 RequiredProgress = 5
             });
 
             Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_,
+                ItemType = CWRID.Item_Rock,
                 Amount = 5,
                 Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
             });
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(CWRID.Item_);
+            int count = player.CountItem(CWRID.Item_Rock);
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;

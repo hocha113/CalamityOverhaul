@@ -663,7 +663,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.FetidEmesis: {
-                    target.AddBuff(CWRID.Buff_, 60);
+                    target.AddBuff(CWRID.Buff_Plague, 60);
                     break;
                 }
             }

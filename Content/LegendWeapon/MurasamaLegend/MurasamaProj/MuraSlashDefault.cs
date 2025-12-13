@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             //对灾眼兄弟仅造成50%伤害
-            if (target.type == CWRID.NPC_ || target.type == CWRID.NPC_Catastrophe) {
+            if (target.type == CWRID.NPC_Cataclysm || target.type == CWRID.NPC_Catastrophe) {
                 modifiers.FinalDamage *= 0.5f;
             }
 

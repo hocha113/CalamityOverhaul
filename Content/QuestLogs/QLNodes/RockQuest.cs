@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
     {
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
-            IconItemType = CWRID.Item_;
+            IconItemType = CWRID.Item_Rock;
             Position = new Vector2(0, -150);
             AddParent<TerminusQuest>();
             QuestType = QuestType.Main;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int currentOre = player.CountItem(CWRID.Item_, 64);
+            int currentOre = player.CountItem(CWRID.Item_Rock, 64);
             // 更新进度
             Objectives[0].CurrentProgress = currentOre;
 

@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override bool PreInOwner() {
-            int dustType = Main.rand.NextBool() ? CWRID.Dust_ : CWRID.Dust_AstralBlue;
+            int dustType = Main.rand.NextBool() ? CWRID.Dust_AstralOrange : CWRID.Dust_AstralBlue;
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, dustType);
             if (d != null) {
                 d.customData = 0.03f;

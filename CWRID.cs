@@ -57,12 +57,12 @@ namespace CalamityOverhaul
     /// <summary>
     /// 所有用于引用外部模组内部内容的ID集中地
     /// </summary>
-    internal static class CWRID
+    internal class CWRID : ICWRLoader
     {
         public static int Item_Heresy => ModContent.ItemType<Heresy>();
         public static int Item_BurntSienna => ModContent.ItemType<BurntSienna>();
         public static int Item_DubiousPlating => ModContent.ItemType<DubiousPlating>();
-        public static int Item_ => ModContent.ItemType<Rock>();
+        public static int Item_Rock => ModContent.ItemType<Rock>();
         public static int Item_BloodOrb => ModContent.ItemType<BloodOrb>();
         public static int Item_Terminus => ModContent.ItemType<Terminus>();
         public static int Item_LoreAwakening => ModContent.ItemType<LoreAwakening>();
@@ -149,7 +149,7 @@ namespace CalamityOverhaul
         public static int Item_CosmicDischarge => ModContent.ItemType<CosmicDischarge>();
         public static int Item_Norfleet => ModContent.ItemType<Norfleet>();
         public static int Item_CosmiliteBar => ModContent.ItemType<CosmiliteBar>();
-        public static int NPC_ => ModContent.NPCType<Cataclysm>();
+        public static int NPC_Cataclysm => ModContent.NPCType<Cataclysm>();
         public static int NPC_SepulcherHead => ModContent.NPCType<SepulcherHead>();
         public static int NPC_SepulcherBody => ModContent.NPCType<SepulcherBody>();
         public static int NPC_SepulcherTail => ModContent.NPCType<SepulcherTail>();
@@ -197,7 +197,7 @@ namespace CalamityOverhaul
         public static int Proj_CosmicIceBurst => ModContent.ProjectileType<CosmicIceBurst>();
         public static int Proj_BarinadeArrow => ModContent.ProjectileType<BarinadeArrow>();
         public static int Proj_BoltArrow => ModContent.ProjectileType<BoltArrow>();
-        public static int Proj_ => ModContent.ProjectileType<Nuke>();
+        public static int Proj_Nuke => ModContent.ProjectileType<Nuke>();
         public static int Proj_AegisFlame => ModContent.ProjectileType<AegisFlame>();
         public static int Proj_DarkMasterBeam => ModContent.ProjectileType<DarkMasterBeam>();
         public static int Proj_DarkMasterClone => ModContent.ProjectileType<DarkMasterClone>();
@@ -323,7 +323,7 @@ namespace CalamityOverhaul
         public static int Tile_SCalAltarLarge => ModContent.TileType<SCalAltarLarge>();
         public static int Tile_SulphurousSand => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSand>();
         public static int Tile_SulphurousSandstone => ModContent.TileType<CalamityMod.Tiles.Abyss.SulphurousSandstone>();
-        public static int Buff_ => ModContent.BuffType<Plague>();
+        public static int Buff_Plague => ModContent.BuffType<Plague>();
         public static int Buff_ElementalMix => ModContent.BuffType<ElementalMix>();
         public static int Buff_VulnerabilityHex => ModContent.BuffType<VulnerabilityHex>();
         public static int Buff_MarkedforDeath => ModContent.BuffType<MarkedforDeath>();
@@ -339,9 +339,13 @@ namespace CalamityOverhaul
         public static int Buff_GlacialState => ModContent.BuffType<GlacialState>();
         public static int Buff_AstralInfectionDebuff => ModContent.BuffType<AstralInfectionDebuff>();
         public static int Buff_BrimstoneFlames => ModContent.BuffType<BrimstoneFlames>();
-        public static int Dust_ => ModContent.DustType<AstralOrange>();
-        public static int Dust_Brimstone => (int)CalamityDusts.Brimstone;
+        public static int Dust_AstralOrange => ModContent.DustType<AstralOrange>();
         public static int Dust_AstralBlue => ModContent.DustType<AstralBlue>();
-        public static int ItemGroup_RogueWeapon => (int)CalamityResearchSorting.RogueWeapon;
+        public static int Dust_Brimstone => 235;//是的，灾厄拿夺命杖的粒子当硫磺火焰粒子用
+        public static int ItemGroup_RogueWeapon => 570;//是的，570是盗贼武器物品组ID
+        //用于加载数据
+        void ICWRLoader.SetupData() {
+            
+        }
     }
 }
