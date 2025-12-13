@@ -178,6 +178,39 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
+    public class MiningMachineIIQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "自动化挖掘II");
+            Description = this.GetLocalization(nameof(Description), () => "制作一台采矿机MK2");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<MiningMachineMk2>();
+            Position = new Vector2(150, -150);
+            AddParent<MiningMachineQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得采矿机MK2"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ItemID.SpelunkerPotion,
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "5个洞穴探险药水")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<MiningMachineMk2>());
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
     public class ItemFilterQuest : QuestNode
     {
         public override void SetStaticDefaults() {

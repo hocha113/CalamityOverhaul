@@ -1445,6 +1445,16 @@ Items: {
 			老公爵会将营地搬来此处
 			'''
 	}
+
+	MiningMachineMk2: {
+		DontWork: 需要放置在坚硬的表面上才能进行挖掘作业
+		DisplayName: 采矿机MK2
+		Tooltip:
+			'''
+			消耗电能钻探矿物
+			需要放置在合适的地方才能正常工作
+			'''
+	}
 }
 
 Projectiles: {
@@ -7696,6 +7706,14 @@ QuestLogs: {
 			QuestObjective.Description: 获得采矿机
 			QuestReward.Description: 5个洞穴探险药水
 			DetailedDescription: 告别繁琐的手工挖掘。这台机器能以惊人的效率吞噬矿脉。
+		}
+
+		MiningMachineIIQuest: {
+			DisplayName: 自动化挖掘II
+			Description: 制作一台采矿机MK2
+			QuestObjective.Description: 获得采矿机MK2
+			QuestReward.Description: 5个洞穴探险药水
+			DetailedDescription: 强化的动力核心带来了无与伦比的挖掘速度。
 		}
 
 		PipelineQuest: {

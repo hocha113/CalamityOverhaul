@@ -1463,6 +1463,16 @@ Items: {
 			The Old Duke will move his campsite here
 			'''
 	}
+
+	MiningMachineMk2: {
+		DontWork: It needs to be placed on a hard surface in order to carry out excavation work.
+		DisplayName: Mining Machine Mk2
+		Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			'''
+	}
 }
 
 Projectiles: {
@@ -7730,6 +7740,14 @@ QuestLogs: {
 			QuestObjective.Description: Obtain a Mining Machine
 			QuestReward.Description: 5 Spelunker Potions
 			DetailedDescription: Say goodbye to tedious manual mining. This machine devours ore veins with astonishing efficiency.
+		}
+
+		MiningMachineIIQuest: {
+			DisplayName: Automated Excavation II
+			Description: Craft a Mining Machine MK2
+			QuestObjective.Description: Obtain a Mining Machine MK2
+			QuestReward.Description: 5 Mining Potions
+			DetailedDescription: Its reinforced power core offers unparalleled speed.
 		}
 
 		PipelineQuest: {
