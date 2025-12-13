@@ -7743,7 +7743,7 @@ QuestLogs: {
 		}
 
 		MiningMachineIIQuest: {
-			DisplayName: Automated Excavation II
+			DisplayName: Deep Core Drilling
 			Description: Craft a Mining Machine MK2
 			QuestObjective.Description: Obtain a Mining Machine MK2
 			QuestReward.Description: 5 Mining Potions

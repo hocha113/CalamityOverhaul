@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<MiningMachineMk2>();
-            Position = new Vector2(150, -150);
+            Position = new Vector2(0, 150);
             AddParent<MiningMachineQuest>();
 
             QuestType = QuestType.Side;

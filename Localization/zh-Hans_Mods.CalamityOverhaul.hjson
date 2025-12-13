@@ -7709,7 +7709,7 @@ QuestLogs: {
 		}
 
 		MiningMachineIIQuest: {
-			DisplayName: 自动化挖掘II
+			DisplayName: 深层钻探
 			Description: 制作一台采矿机MK2
 			QuestObjective.Description: 获得采矿机MK2
 			QuestReward.Description: 5个洞穴探险药水
