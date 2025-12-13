@@ -6,9 +6,6 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\RemakeItems\RMagicConch.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\RemakeItems\RWarbanneroftheSun.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\SkyEffects\BrutalSkeletronSky.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Structures\IndustrializationGen.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Structures\ModifyStructure.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Structures\WorldGenSystem.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\TileModify\ModifyMusicbox.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Tiles\DarkMatterCompressor.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Industrials\ElectricPowers\TeslaElectromagneticTower.cs
@@ -19,7 +16,6 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\NeutronStarMuzzleBrake.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\PrecisionMuzzleBrake.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\SimpleMuzzleBrake.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\Unsunghero.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Magic\SandVortexOfTheDecayedSea.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Materials\InfiniteIngot.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Materials\InfinityCatalyst.cs
@@ -34,8 +30,6 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Ranged\BarrenBow.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Ranged\CrystalDimming.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Ranged\DarkFrostSolstice.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Ranged\SnowQuay.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Ranged\SnowQuayMK2.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Rogue\CosmicCalamity.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Rogue\GeminisTribute.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Rogue\NeutronScythe.cs

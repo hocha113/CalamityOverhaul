@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayMK2";
         public override void SetDefaults() {
-            Item.SetItemCopySD<Onyxia>();
+            Item.CloneDefaults(CWRID.Item_Onyxia);
             Item.damage = 28;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.2f };
@@ -22,8 +20,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void AddRecipes() {
             _ = CreateRecipe().
                 AddIngredient<SnowQuay>().
-                AddIngredient<CryonicBar>(5).
-                AddIngredient<EssenceofEleum>(5).
+                AddIngredient(CWRID.Item_CryonicBar, 5).
+                AddIngredient(CWRID.Item_EssenceofEleum, 5).
                 AddIngredient(ItemID.IceBlock, 1000).
                 AddTile(TileID.IceMachine).
                 Register();

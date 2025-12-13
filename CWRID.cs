@@ -16,6 +16,10 @@ namespace CalamityOverhaul
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
         public static int Item_Rock => Get();
+        public static int Item_Onyxia => Get();
+        public static int Item_CryonicBar => Get();
+        public static int Item_FlurrystormCannon => Get();
+        public static int Item_EssenceofEleum => Get();
         public static int Item_StaticRefiner => Get();
         public static int Item_ProfanedCrucible => Get();
         public static int Item_PlagueInfuser => Get();
