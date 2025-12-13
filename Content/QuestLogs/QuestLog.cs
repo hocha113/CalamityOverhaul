@@ -93,7 +93,8 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             availableStyles = [
                 new HotwindQuestLogStyle(),
-                new DraedonQuestLogStyle()
+                new DraedonQuestLogStyle(),
+                new ForestQuestLogStyle()
             ];
             CurrentStyle = availableStyles[0];
         }
