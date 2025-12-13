@@ -307,7 +307,6 @@ namespace CalamityOverhaul
         #region 物品组ID引用
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
-
         #region 加载数据
         internal static void Setup() {
             const string calamityModName = "CalamityMod";
@@ -375,7 +374,6 @@ namespace CalamityOverhaul
             }
         }
         #endregion
-
         #region 卸载数据
         public static void UnLoad() {
             FieldInfo[] fields = typeof(CWRID).GetFields(BindingFlags.Public | BindingFlags.Static);
