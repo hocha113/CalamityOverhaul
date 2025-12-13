@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
@@ -13,7 +12,7 @@ namespace CalamityOverhaul.Content.Buffs
         }
 
         public override void Update(Player player, ref int buffIndex) {
-            if (player.Calamity().adrenalineModeActive) {
+            if (player.AdrenalineMode()) {
                 player.buffTime[buffIndex] = 10086;
             }
             else {

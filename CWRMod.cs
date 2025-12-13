@@ -57,7 +57,6 @@ namespace CalamityOverhaul
 
         public override void PostSetupContent() {
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
-            CWRID.Setup();
             CWRLoad.Setup();
             foreach (var load in ILoaders) {
                 load.SetupData();

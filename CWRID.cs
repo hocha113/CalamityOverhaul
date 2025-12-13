@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -10,447 +12,440 @@ namespace CalamityOverhaul
     internal static class CWRID
     {
         #region 物品ID引用
-        public static int Item_Heresy;
-        public static int Item_BurntSienna;
-        public static int Item_DubiousPlating;
-        public static int Item_Rock;
-        public static int Item_BloodOrange;
-        public static int Item_MiracleFruit;
-        public static int Item_Elderberry;
-        public static int Item_Dragonfruit;
-        public static int Item_LoreCynosure;
-        public static int Item_BloodOrb;
-        public static int Item_Terminus;
-        public static int Item_LoreAwakening;
-        public static int Item_SquirrelSquireStaff;
-        public static int Item_ThrowingBrick;
-        public static int Item_Brimlish;
-        public static int Item_WaveSkipper;
-        public static int Item_ExoPrism;
-        public static int Item_DraedonsForge;
-        public static int Item_RogueEmblem;
-        public static int Item_SnowRuffianMask;
-        public static int Item_SnowRuffianChestplate;
-        public static int Item_SnowRuffianGreaves;
-        public static int Item_PurifiedGel;
-        public static int Item_VulcaniteLance;
-        public static int Item_Brimlance;
-        public static int Item_ContinentalGreatbow;
-        public static int Item_BrimstoneFury;
-        public static int Item_Helstorm;
-        public static int Item_Hellborn;
-        public static int Item_AuricBar;
-        public static int Item_GrandGuardian;
-        public static int Item_SomaPrime;
-        public static int Item_Infinity;
-        public static int Item_PlagueKeeper;
-        public static int Item_Hellkite;
-        public static int Item_Contagion;
-        public static int Item_PlagueCellCanister;
-        public static int Item_PlaguebringerCarapace;
-        public static int Item_InfectedArmorPlating;
-        public static int Item_PlaguebringerVisor;
-        public static int Item_PlaguebringerPistons;
-        public static int Item_Lazhar;
-        public static int Item_ScoriaBar;
-        public static int Item_BloodSample;
-        public static int Item_BlightedGel;
-        public static int Item_RottenMatter;
-        public static int Item_MidasPrime;
-        public static int Item_CrackshotColt;
-        public static int Item_HolyCollider;
-        public static int Item_CelestialClaymore;
-        public static int Item_DivineGeode;
-        public static int Item_StormlionMandible;
-        public static int Item_DiseasedPike;
-        public static int Item_HellionFlowerSpear;
-        public static int Item_Pandemic;
-        public static int Item_SulphurousGrabber;
-        public static int Item_TheSyringe;
-        public static int Item_PestilentDefiler;
-        public static int Item_TheHive;
-        public static int Item_BlightSpewer;
-        public static int Item_Malevolence;
-        public static int Item_PlagueStaff;
-        public static int Item_SparklingEmpress;
-        public static int Item_SeaPrism;
-        public static int Item_PearlShard;
-        public static int Item_DragoonDrizzlefish;
-        public static int Item_Murasama;
-        public static int Item_PlasmaDriveCore;
-        public static int Item_MysteriousCircuitry;
-        public static int Item_EncryptedSchematicHell;
-        public static int Item_LuxorsGift;
-        public static int Item_EternalBlizzard;
-        public static int Item_Arbalest;
-        public static int Item_AshesofCalamity;
-        public static int Item_CoreofEleum;
-        public static int Item_Condemnation;
-        public static int Item_AshesofAnnihilation;
-        public static int Item_Vehemence;
-        public static int Item_ValkyrieRay;
-        public static int Item_Violence;
-        public static int Item_Vigilance;
-        public static int Item_DeathstareRod;
-        public static int Item_ArmoredShell;
-        public static int Item_DarkPlasma;
-        public static int Item_TwistingNether;
-        public static int Item_Excelsus;
-        public static int Item_TheObliterator;
-        public static int Item_Deathwind;
-        public static int Item_DeathhailStaff;
-        public static int Item_StaffoftheMechworm;
-        public static int Item_Eradicator;
-        public static int Item_StarterBag;
-        public static int Item_CosmicDischarge;
-        public static int Item_Norfleet;
-        public static int Item_CosmiliteBar;
+        public static int Item_Heresy => Get();
+        public static int Item_BurntSienna => Get();
+        public static int Item_DubiousPlating => Get();
+        public static int Item_Rock => Get();
+        public static int Item_BloodOrange => Get();
+        public static int Item_MiracleFruit => Get();
+        public static int Item_Elderberry => Get();
+        public static int Item_Dragonfruit => Get();
+        public static int Item_LoreCynosure => Get();
+        public static int Item_BloodOrb => Get();
+        public static int Item_Terminus => Get();
+        public static int Item_LoreAwakening => Get();
+        public static int Item_SquirrelSquireStaff => Get();
+        public static int Item_ThrowingBrick => Get();
+        public static int Item_Brimlish => Get();
+        public static int Item_WaveSkipper => Get();
+        public static int Item_ExoPrism => Get();
+        public static int Item_DraedonsForge => Get();
+        public static int Item_RogueEmblem => Get();
+        public static int Item_SnowRuffianMask => Get();
+        public static int Item_SnowRuffianChestplate => Get();
+        public static int Item_SnowRuffianGreaves => Get();
+        public static int Item_PurifiedGel => Get();
+        public static int Item_VulcaniteLance => Get();
+        public static int Item_Brimlance => Get();
+        public static int Item_ContinentalGreatbow => Get();
+        public static int Item_BrimstoneFury => Get();
+        public static int Item_Helstorm => Get();
+        public static int Item_Hellborn => Get();
+        public static int Item_AuricBar => Get();
+        public static int Item_GrandGuardian => Get();
+        public static int Item_SomaPrime => Get();
+        public static int Item_Infinity => Get();
+        public static int Item_PlagueKeeper => Get();
+        public static int Item_Hellkite => Get();
+        public static int Item_Contagion => Get();
+        public static int Item_PlagueCellCanister => Get();
+        public static int Item_PlaguebringerCarapace => Get();
+        public static int Item_InfectedArmorPlating => Get();
+        public static int Item_PlaguebringerVisor => Get();
+        public static int Item_PlaguebringerPistons => Get();
+        public static int Item_Lazhar => Get();
+        public static int Item_ScoriaBar => Get();
+        public static int Item_BloodSample => Get();
+        public static int Item_BlightedGel => Get();
+        public static int Item_RottenMatter => Get();
+        public static int Item_MidasPrime => Get();
+        public static int Item_CrackshotColt => Get();
+        public static int Item_HolyCollider => Get();
+        public static int Item_CelestialClaymore => Get();
+        public static int Item_DivineGeode => Get();
+        public static int Item_StormlionMandible => Get();
+        public static int Item_DiseasedPike => Get();
+        public static int Item_HellionFlowerSpear => Get();
+        public static int Item_Pandemic => Get();
+        public static int Item_SulphurousGrabber => Get();
+        public static int Item_TheSyringe => Get();
+        public static int Item_PestilentDefiler => Get();
+        public static int Item_TheHive => Get();
+        public static int Item_BlightSpewer => Get();
+        public static int Item_Malevolence => Get();
+        public static int Item_PlagueStaff => Get();
+        public static int Item_SparklingEmpress => Get();
+        public static int Item_SeaPrism => Get();
+        public static int Item_PearlShard => Get();
+        public static int Item_DragoonDrizzlefish => Get();
+        public static int Item_Murasama => Get();
+        public static int Item_PlasmaDriveCore => Get();
+        public static int Item_MysteriousCircuitry => Get();
+        public static int Item_EncryptedSchematicHell => Get();
+        public static int Item_LuxorsGift => Get();
+        public static int Item_EternalBlizzard => Get();
+        public static int Item_Arbalest => Get();
+        public static int Item_AshesofCalamity => Get();
+        public static int Item_CoreofEleum => Get();
+        public static int Item_Condemnation => Get();
+        public static int Item_AshesofAnnihilation => Get();
+        public static int Item_Vehemence => Get();
+        public static int Item_ValkyrieRay => Get();
+        public static int Item_Violence => Get();
+        public static int Item_Vigilance => Get();
+        public static int Item_DeathstareRod => Get();
+        public static int Item_ArmoredShell => Get();
+        public static int Item_DarkPlasma => Get();
+        public static int Item_TwistingNether => Get();
+        public static int Item_Excelsus => Get();
+        public static int Item_TheObliterator => Get();
+        public static int Item_Deathwind => Get();
+        public static int Item_DeathhailStaff => Get();
+        public static int Item_StaffoftheMechworm => Get();
+        public static int Item_Eradicator => Get();
+        public static int Item_StarterBag => Get();
+        public static int Item_CosmicDischarge => Get();
+        public static int Item_Norfleet => Get();
+        public static int Item_CosmiliteBar => Get();
         #endregion
         #region NPC ID引用
-        public static int NPC_Cataclysm;
-        public static int NPC_Polterghast;
-        public static int NPC_SepulcherHead;
-        public static int NPC_SepulcherBody;
-        public static int NPC_SepulcherTail;
-        public static int NPC_Yharon;
-        public static int NPC_SlimeGodCore;
-        public static int NPC_Providence;
-        public static int NPC_PlaguebringerGoliath;
-        public static int NPC_PerforatorHive;
-        public static int NPC_Anahita;
-        public static int NPC_Leviathan;
-        public static int NPC_HiveMind;
-        public static int NPC_DevourerofGodsHead;
-        public static int NPC_DevourerofGodsBody;
-        public static int NPC_DevourerofGodsTail;
-        public static int NPC_Cryogen;
-        public static int NPC_Crabulon;
-        public static int NPC_BrimstoneElemental;
-        public static int NPC_KingSlimeJewelRuby;
-        public static int NPC_KingSlimeJewelSapphire;
-        public static int NPC_EbonianPaladin;
-        public static int NPC_CrimulanPaladin;
-        public static int NPC_SplitEbonianPaladin;
-        public static int NPC_SplitCrimulanPaladin;
-        public static int NPC_Catastrophe;
-        public static int NPC_Draedon;
-        public static int NPC_RavagerHead2;
-        public static int NPC_DarkEnergy;
-        public static int NPC_PolterghastHook;
-        public static int NPC_CalamitasClone;
-        public static int NPC_AquaticScourgeBodyAlt;
-        public static int NPC_SupremeCalamitas;
-        public static int NPC_ThanatosHead;
-        public static int NPC_THIEF;
-        public static int NPC_WITCH;
-        public static int NPC_SEAHOE;
-        public static int NPC_DILF;
-        public static int NPC_DesertScourgeHead;
-        public static int NPC_AquaticScourgeHead;
-        public static int NPC_OldDuke;
-        public static int NPC_Androomba;
-        public static int NPC_ScornEater;
-        public static int NPC_StormWeaverHead;
-        public static int NPC_StormWeaverBody;
-        public static int NPC_StormWeaverTail;
-        public static int NPC_PrimordialWyrmHead;
-        public static int NPC_PrimordialWyrmBody;
-        public static int NPC_PrimordialWyrmTail;
-        public static int NPC_PerforatorHeadLarge;
-        public static int NPC_PerforatorBodyLarge;
-        public static int NPC_PerforatorTailLarge;
-        public static int NPC_PerforatorHeadMedium;
-        public static int NPC_PerforatorBodyMedium;
-        public static int NPC_PerforatorTailMedium;
-        public static int NPC_PerforatorHeadSmall;
-        public static int NPC_PerforatorBodySmall;
-        public static int NPC_PerforatorTailSmall;
-        public static int NPC_ArmoredDiggerHead;
-        public static int NPC_ArmoredDiggerBody;
-        public static int NPC_ArmoredDiggerTail;
-        public static int NPC_Apollo;
-        public static int NPC_Artemis;
-        public static int NPC_AresBody;
-        public static int NPC_AresLaserCannon;
-        public static int NPC_AresPlasmaFlamethrower;
-        public static int NPC_AresTeslaCannon;
-        public static int NPC_AresGaussNuke;
-        public static int NPC_ThanatosBody1;
-        public static int NPC_ThanatosBody2;
-        public static int NPC_ThanatosTail;
-        public static int NPC_CosmicGuardianHead;
-        public static int NPC_CosmicGuardianBody;
-        public static int NPC_CosmicGuardianTail;
-        public static int NPC_DesertScourgeBody;
-        public static int NPC_DesertScourgeTail;
-        public static int NPC_DesertNuisanceHead;
-        public static int NPC_DesertNuisanceBody;
-        public static int NPC_DesertNuisanceTail;
-        public static int NPC_DesertNuisanceHeadYoung;
-        public static int NPC_DesertNuisanceBodyYoung;
-        public static int NPC_DesertNuisanceTailYoung;
-        public static int NPC_AstrumDeusHead;
-        public static int NPC_AstrumDeusBody;
-        public static int NPC_AstrumDeusTail;
-        public static int NPC_AquaticScourgeBody;
-        public static int NPC_AquaticScourgeTail;
-        public static int NPC_EidolonWyrmHead;
-        public static int NPC_EidolonWyrmBody;
-        public static int NPC_EidolonWyrmBodyAlt;
-        public static int NPC_EidolonWyrmTail;
-        public static int NPC_AstrumAureus;
-        public static int NPC_RavagerBody;
-        public static int NPC_RavagerClawLeft;
-        public static int NPC_RavagerClawRight;
-        public static int NPC_RavagerHead;
-        public static int NPC_RavagerLegLeft;
-        public static int NPC_RavagerLegRight;
+        public static int NPC_Cataclysm => Get();
+        public static int NPC_Polterghast => Get();
+        public static int NPC_SepulcherHead => Get();
+        public static int NPC_SepulcherBody => Get();
+        public static int NPC_SepulcherTail => Get();
+        public static int NPC_Yharon => Get();
+        public static int NPC_SlimeGodCore => Get();
+        public static int NPC_Providence => Get();
+        public static int NPC_PlaguebringerGoliath => Get();
+        public static int NPC_PerforatorHive => Get();
+        public static int NPC_Anahita => Get();
+        public static int NPC_Leviathan => Get();
+        public static int NPC_HiveMind => Get();
+        public static int NPC_DevourerofGodsHead => Get();
+        public static int NPC_DevourerofGodsBody => Get();
+        public static int NPC_DevourerofGodsTail => Get();
+        public static int NPC_Cryogen => Get();
+        public static int NPC_Crabulon => Get();
+        public static int NPC_BrimstoneElemental => Get();
+        public static int NPC_KingSlimeJewelRuby => Get();
+        public static int NPC_KingSlimeJewelSapphire => Get();
+        public static int NPC_EbonianPaladin => Get();
+        public static int NPC_CrimulanPaladin => Get();
+        public static int NPC_SplitEbonianPaladin => Get();
+        public static int NPC_SplitCrimulanPaladin => Get();
+        public static int NPC_Catastrophe => Get();
+        public static int NPC_Draedon => Get();
+        public static int NPC_RavagerHead2 => Get();
+        public static int NPC_DarkEnergy => Get();
+        public static int NPC_PolterghastHook => Get();
+        public static int NPC_CalamitasClone => Get();
+        public static int NPC_AquaticScourgeBodyAlt => Get();
+        public static int NPC_SupremeCalamitas => Get();
+        public static int NPC_ThanatosHead => Get();
+        public static int NPC_THIEF => Get();
+        public static int NPC_WITCH => Get();
+        public static int NPC_SEAHOE => Get();
+        public static int NPC_DILF => Get();
+        public static int NPC_DesertScourgeHead => Get();
+        public static int NPC_AquaticScourgeHead => Get();
+        public static int NPC_OldDuke => Get();
+        public static int NPC_Androomba => Get();
+        public static int NPC_ScornEater => Get();
+        public static int NPC_StormWeaverHead => Get();
+        public static int NPC_StormWeaverBody => Get();
+        public static int NPC_StormWeaverTail => Get();
+        public static int NPC_PrimordialWyrmHead => Get();
+        public static int NPC_PrimordialWyrmBody => Get();
+        public static int NPC_PrimordialWyrmTail => Get();
+        public static int NPC_PerforatorHeadLarge => Get();
+        public static int NPC_PerforatorBodyLarge => Get();
+        public static int NPC_PerforatorTailLarge => Get();
+        public static int NPC_PerforatorHeadMedium => Get();
+        public static int NPC_PerforatorBodyMedium => Get();
+        public static int NPC_PerforatorTailMedium => Get();
+        public static int NPC_PerforatorHeadSmall => Get();
+        public static int NPC_PerforatorBodySmall => Get();
+        public static int NPC_PerforatorTailSmall => Get();
+        public static int NPC_ArmoredDiggerHead => Get();
+        public static int NPC_ArmoredDiggerBody => Get();
+        public static int NPC_ArmoredDiggerTail => Get();
+        public static int NPC_Apollo => Get();
+        public static int NPC_Artemis => Get();
+        public static int NPC_AresBody => Get();
+        public static int NPC_AresLaserCannon => Get();
+        public static int NPC_AresPlasmaFlamethrower => Get();
+        public static int NPC_AresTeslaCannon => Get();
+        public static int NPC_AresGaussNuke => Get();
+        public static int NPC_ThanatosBody1 => Get();
+        public static int NPC_ThanatosBody2 => Get();
+        public static int NPC_ThanatosTail => Get();
+        public static int NPC_CosmicGuardianHead => Get();
+        public static int NPC_CosmicGuardianBody => Get();
+        public static int NPC_CosmicGuardianTail => Get();
+        public static int NPC_DesertScourgeBody => Get();
+        public static int NPC_DesertScourgeTail => Get();
+        public static int NPC_DesertNuisanceHead => Get();
+        public static int NPC_DesertNuisanceBody => Get();
+        public static int NPC_DesertNuisanceTail => Get();
+        public static int NPC_DesertNuisanceHeadYoung => Get();
+        public static int NPC_DesertNuisanceBodyYoung => Get();
+        public static int NPC_DesertNuisanceTailYoung => Get();
+        public static int NPC_AstrumDeusHead => Get();
+        public static int NPC_AstrumDeusBody => Get();
+        public static int NPC_AstrumDeusTail => Get();
+        public static int NPC_AquaticScourgeBody => Get();
+        public static int NPC_AquaticScourgeTail => Get();
+        public static int NPC_EidolonWyrmHead => Get();
+        public static int NPC_EidolonWyrmBody => Get();
+        public static int NPC_EidolonWyrmBodyAlt => Get();
+        public static int NPC_EidolonWyrmTail => Get();
+        public static int NPC_AstrumAureus => Get();
+        public static int NPC_RavagerBody => Get();
+        public static int NPC_RavagerClawLeft => Get();
+        public static int NPC_RavagerClawRight => Get();
+        public static int NPC_RavagerHead => Get();
+        public static int NPC_RavagerLegLeft => Get();
+        public static int NPC_RavagerLegRight => Get();
         #endregion
         #region 弹幕ID引用
-        public static int Proj_ArcZap;
-        public static int Proj_CatastropheClaymoreSparkle;
-        public static int Proj_AngelicBeam;
-        public static int Proj_AstralRound;
-        public static int Proj_AstrealArrow;
-        public static int Proj_AuralisBullet;
-        public static int Proj_CosmicIceBurst;
-        public static int Proj_BarinadeArrow;
-        public static int Proj_BoltArrow;
-        public static int Proj_Nuke;
-        public static int Proj_AegisFlame;
-        public static int Proj_DarkMasterBeam;
-        public static int Proj_DarkMasterClone;
-        public static int Proj_OverlyDramaticDukeSummoner;
-        public static int Proj_MythrilFlare;
-        public static int Proj_Brimlash2;
-        public static int Proj_BrimlashProj;
-        public static int Proj_BalefulHarvesterProjectile;
-        public static int Proj_WaveSkipperProjectile;
-        public static int Proj_DeathsAscensionProjectile;
-        public static int Proj_DarklightGreatswordSlashCreator;
-        public static int Proj_DarkBeam;
-        public static int Proj_CometQuasherMeteor;
-        public static int Proj_DesertScourgeSpit;
-        public static int Proj_Razorwind;
-        public static int Proj_Brimblast;
-        public static int Proj_IceBombFriendly;
-        public static int Proj_AtaraxiaBoom;
-        public static int Proj_AtaraxiaMain;
-        public static int Proj_AtaraxiaSide;
-        public static int Proj_BrimstoneBoom;
-        public static int Proj_AftershockRock;
-        public static int Proj_UniversalGenesisStar;
-        public static int Proj_UniversalGenesisStarcaller;
-        public static int Proj_UltimaBolt;
-        public static int Proj_UltimaRay;
-        public static int Proj_UltimaSpark;
-        public static int Proj_Bolt;
-        public static int Proj_TelluricGlareArrow;
-        public static int Proj_SulphuricBlast;
-        public static int Proj_StormSurgeTornado;
-        public static int Proj_SputterCometBig;
-        public static int Proj_PlasmaBlast;
-        public static int Proj_AstralStar;
-        public static int Proj_SpykerProj;
-        public static int Proj_LostSoulFriendly;
-        public static int Proj_Shroom;
-        public static int Proj_SeasSearingBubble;
-        public static int Proj_SeasSearingSecondary;
-        public static int Proj_ArcherfishShot;
-        public static int Proj_FishronRPG;
-        public static int Proj_ImpactRound;
-        public static int Proj_PristineSecondary;
-        public static int Proj_PristineFire;
-        public static int Proj_PlanarRipperBolt;
-        public static int Proj_PlagueTaintedDrone;
-        public static int Proj_PlagueTaintedProjectile;
-        public static int Proj_ShockblastRound;
-        public static int Proj_P90Round;
-        public static int Proj_EmesisGore;
-        public static int Proj_FlakKrakenProjectile;
-        public static int Proj_FlakToxicannonProjectile;
-        public static int Proj_FeatherLarge;
-        public static int Proj_SlimeStream;
-        public static int Proj_ChargedBlast;
-        public static int Proj_AuricBullet;
-        public static int Proj_AquaBlast;
-        public static int Proj_AquaBlastToxic;
-        public static int Proj_PlagueArrow;
-        public static int Proj_NitroShot;
-        public static int Proj_MarksmanShot;
-        public static int Proj_RicoshotCoin;
-        public static int Proj_MineralMortarProjectile;
-        public static int Proj_MiniSharkron;
-        public static int Proj_TyphoonArrow;
-        public static int Proj_IcicleArrowProj;
-        public static int Proj_DrataliornusFlame;
-        public static int Proj_VanquisherArrowProj;
-        public static int Proj_DaemonsFlameArrow;
-        public static int Proj_VernalBolt;
-        public static int Proj_CorrodedShell;
-        public static int Proj_RealmRavagerBullet;
-        public static int Proj_CorinthPrimeAirburstGrenade;
-        public static int Proj_SmallCoral;
-        public static int Proj_LeafArrow;
-        public static int Proj_BrimstoneBolt;
-        public static int Proj_ClamorRifleProj;
-        public static int Proj_ClaretCannonProj;
-        public static int Proj_CondemnationArrowHoming;
-        public static int Proj_FlurrystormIceChunk;
-        public static int Proj_SquirrelSquireAcorn;
-        public static int Proj_DracoBeam;
-        public static int Proj_EarthProj;
-        public static int Proj_FossilShard;
-        public static int Proj_GalacticaComet;
-        public static int Proj_ThornBase;
-        public static int Proj_Flarefrost;
-        public static int Proj_FloodtideShark;
-        public static int Proj_GreenWater;
-        public static int Proj_DarkBall;
-        public static int Proj_VolcanicFireball;
-        public static int Proj_VolcanicFireballLarge;
-        public static int Proj_TerratomereSwordBeam;
-        public static int Proj_ExcelsusMain;
-        public static int Proj_ExcelsusBlue;
-        public static int Proj_ExcelsusPink;
-        public static int Proj_MirrorBlast;
-        public static int Proj_StormRulerProj;
-        public static int Proj_StarnightBeam;
-        public static int Proj_PrismaticWave;
-        public static int Proj_RSSolarFlare;
-        public static int Proj_ReaverHealOrb;
-        public static int Proj_BloodBall;
-        public static int Proj_GhastlySoulLarge;
-        public static int Proj_GhastlySoulMedium;
-        public static int Proj_GhastlySoulSmall;
-        public static int Proj_UltimusCleaverDust;
-        public static int Proj_CausticEdgeProjectile;
-        public static int Proj_PrismaticBeam;
-        public static int Proj_TerratomereSlashCreator;
-        public static int Proj_Voidragon;
-        public static int Proj_TorrentialArrow;
-        public static int Proj_HallowPointRoundProj;
-        public static int Proj_Aquashard;
-        public static int Proj_ArcherfishRing;
-        public static int Proj_CardHeart;
-        public static int Proj_CardSpade;
-        public static int Proj_CardDiamond;
-        public static int Proj_CardClub;
+        public static int Proj_ArcZap => Get();
+        public static int Proj_CatastropheClaymoreSparkle => Get();
+        public static int Proj_AngelicBeam => Get();
+        public static int Proj_AstralRound => Get();
+        public static int Proj_AstrealArrow => Get();
+        public static int Proj_AuralisBullet => Get();
+        public static int Proj_CosmicIceBurst => Get();
+        public static int Proj_BarinadeArrow => Get();
+        public static int Proj_BoltArrow => Get();
+        public static int Proj_Nuke => Get();
+        public static int Proj_AegisFlame => Get();
+        public static int Proj_DarkMasterBeam => Get();
+        public static int Proj_DarkMasterClone => Get();
+        public static int Proj_OverlyDramaticDukeSummoner => Get();
+        public static int Proj_MythrilFlare => Get();
+        public static int Proj_Brimlash2 => Get();
+        public static int Proj_BrimlashProj => Get();
+        public static int Proj_BalefulHarvesterProjectile => Get();
+        public static int Proj_WaveSkipperProjectile => Get();
+        public static int Proj_DeathsAscensionProjectile => Get();
+        public static int Proj_DarklightGreatswordSlashCreator => Get();
+        public static int Proj_DarkBeam => Get();
+        public static int Proj_CometQuasherMeteor => Get();
+        public static int Proj_DesertScourgeSpit => Get();
+        public static int Proj_Razorwind => Get();
+        public static int Proj_Brimblast => Get();
+        public static int Proj_IceBombFriendly => Get();
+        public static int Proj_AtaraxiaBoom => Get();
+        public static int Proj_AtaraxiaMain => Get();
+        public static int Proj_AtaraxiaSide => Get();
+        public static int Proj_BrimstoneBoom => Get();
+        public static int Proj_AftershockRock => Get();
+        public static int Proj_UniversalGenesisStar => Get();
+        public static int Proj_UniversalGenesisStarcaller => Get();
+        public static int Proj_UltimaBolt => Get();
+        public static int Proj_UltimaRay => Get();
+        public static int Proj_UltimaSpark => Get();
+        public static int Proj_Bolt => Get();
+        public static int Proj_TelluricGlareArrow => Get();
+        public static int Proj_SulphuricBlast => Get();
+        public static int Proj_StormSurgeTornado => Get();
+        public static int Proj_SputterCometBig => Get();
+        public static int Proj_PlasmaBlast => Get();
+        public static int Proj_AstralStar => Get();
+        public static int Proj_SpykerProj => Get();
+        public static int Proj_LostSoulFriendly => Get();
+        public static int Proj_Shroom => Get();
+        public static int Proj_SeasSearingBubble => Get();
+        public static int Proj_SeasSearingSecondary => Get();
+        public static int Proj_ArcherfishShot => Get();
+        public static int Proj_FishronRPG => Get();
+        public static int Proj_ImpactRound => Get();
+        public static int Proj_PristineSecondary => Get();
+        public static int Proj_PristineFire => Get();
+        public static int Proj_PlanarRipperBolt => Get();
+        public static int Proj_PlagueTaintedDrone => Get();
+        public static int Proj_PlagueTaintedProjectile => Get();
+        public static int Proj_ShockblastRound => Get();
+        public static int Proj_P90Round => Get();
+        public static int Proj_EmesisGore => Get();
+        public static int Proj_FlakKrakenProjectile => Get();
+        public static int Proj_FlakToxicannonProjectile => Get();
+        public static int Proj_FeatherLarge => Get();
+        public static int Proj_SlimeStream => Get();
+        public static int Proj_ChargedBlast => Get();
+        public static int Proj_AuricBullet => Get();
+        public static int Proj_AquaBlast => Get();
+        public static int Proj_AquaBlastToxic => Get();
+        public static int Proj_PlagueArrow => Get();
+        public static int Proj_NitroShot => Get();
+        public static int Proj_MarksmanShot => Get();
+        public static int Proj_RicoshotCoin => Get();
+        public static int Proj_MineralMortarProjectile => Get();
+        public static int Proj_MiniSharkron => Get();
+        public static int Proj_TyphoonArrow => Get();
+        public static int Proj_IcicleArrowProj => Get();
+        public static int Proj_DrataliornusFlame => Get();
+        public static int Proj_VanquisherArrowProj => Get();
+        public static int Proj_DaemonsFlameArrow => Get();
+        public static int Proj_VernalBolt => Get();
+        public static int Proj_CorrodedShell => Get();
+        public static int Proj_RealmRavagerBullet => Get();
+        public static int Proj_CorinthPrimeAirburstGrenade => Get();
+        public static int Proj_SmallCoral => Get();
+        public static int Proj_LeafArrow => Get();
+        public static int Proj_BrimstoneBolt => Get();
+        public static int Proj_ClamorRifleProj => Get();
+        public static int Proj_ClaretCannonProj => Get();
+        public static int Proj_CondemnationArrowHoming => Get();
+        public static int Proj_FlurrystormIceChunk => Get();
+        public static int Proj_SquirrelSquireAcorn => Get();
+        public static int Proj_DracoBeam => Get();
+        public static int Proj_EarthProj => Get();
+        public static int Proj_FossilShard => Get();
+        public static int Proj_GalacticaComet => Get();
+        public static int Proj_ThornBase => Get();
+        public static int Proj_Flarefrost => Get();
+        public static int Proj_FloodtideShark => Get();
+        public static int Proj_GreenWater => Get();
+        public static int Proj_DarkBall => Get();
+        public static int Proj_VolcanicFireball => Get();
+        public static int Proj_VolcanicFireballLarge => Get();
+        public static int Proj_TerratomereSwordBeam => Get();
+        public static int Proj_ExcelsusMain => Get();
+        public static int Proj_ExcelsusBlue => Get();
+        public static int Proj_ExcelsusPink => Get();
+        public static int Proj_MirrorBlast => Get();
+        public static int Proj_StormRulerProj => Get();
+        public static int Proj_StarnightBeam => Get();
+        public static int Proj_PrismaticWave => Get();
+        public static int Proj_RSSolarFlare => Get();
+        public static int Proj_ReaverHealOrb => Get();
+        public static int Proj_BloodBall => Get();
+        public static int Proj_GhastlySoulLarge => Get();
+        public static int Proj_GhastlySoulMedium => Get();
+        public static int Proj_GhastlySoulSmall => Get();
+        public static int Proj_UltimusCleaverDust => Get();
+        public static int Proj_CausticEdgeProjectile => Get();
+        public static int Proj_PrismaticBeam => Get();
+        public static int Proj_TerratomereSlashCreator => Get();
+        public static int Proj_Voidragon => Get();
+        public static int Proj_TorrentialArrow => Get();
+        public static int Proj_HallowPointRoundProj => Get();
+        public static int Proj_Aquashard => Get();
+        public static int Proj_ArcherfishRing => Get();
+        public static int Proj_CardHeart => Get();
+        public static int Proj_CardSpade => Get();
+        public static int Proj_CardDiamond => Get();
+        public static int Proj_CardClub => Get();
         #endregion
         #region 物块ID引用
-        public static int Tile_PlagueInfuser;
-        public static int Tile_DraedonsForge;
-        public static int Tile_SCalAltar;
-        public static int Tile_SCalAltarLarge;
-        public static int Tile_SulphurousSand;
-        public static int Tile_SulphurousSandstone;
+        public static int Tile_PlagueInfuser => Get();
+        public static int Tile_DraedonsForge => Get();
+        public static int Tile_SCalAltar => Get();
+        public static int Tile_SCalAltarLarge => Get();
+        public static int Tile_SulphurousSand => Get();
+        public static int Tile_SulphurousSandstone => Get();
         #endregion
         #region 增益效果ID引用
-        public static int Buff_Plague;
-        public static int Buff_ElementalMix;
-        public static int Buff_VulnerabilityHex;
-        public static int Buff_MarkedforDeath;
-        public static int Buff_BrutalCarnage;
-        public static int Buff_ArmorCrunch;
-        public static int Buff_GodSlayerInferno;
-        public static int Buff_Shadowflame;
-        public static int Buff_HolyFlames;
-        public static int Buff_BrainRot;
-        public static int Buff_Nightwither;
-        public static int Buff_BurningBlood;
-        public static int Buff_TemporalSadness;
-        public static int Buff_GlacialState;
-        public static int Buff_AstralInfectionDebuff;
-        public static int Buff_BrimstoneFlames;
+        public static int Buff_Plague => Get();
+        public static int Buff_ElementalMix => Get();
+        public static int Buff_VulnerabilityHex => Get();
+        public static int Buff_MarkedforDeath => Get();
+        public static int Buff_BrutalCarnage => Get();
+        public static int Buff_ArmorCrunch => Get();
+        public static int Buff_GodSlayerInferno => Get();
+        public static int Buff_Shadowflame => Get();
+        public static int Buff_HolyFlames => Get();
+        public static int Buff_BrainRot => Get();
+        public static int Buff_Nightwither => Get();
+        public static int Buff_BurningBlood => Get();
+        public static int Buff_TemporalSadness => Get();
+        public static int Buff_GlacialState => Get();
+        public static int Buff_AstralInfectionDebuff => Get();
+        public static int Buff_BrimstoneFlames => Get();
         #endregion
         #region 粒子效果ID引用
-        public static int Dust_AstralOrange;
-        public static int Dust_AstralBlue;
+        public static int Dust_AstralOrange => Get();
+        public static int Dust_AstralBlue => Get();
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
         #region 物品组ID引用
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
-        #region 加载数据
-        internal static void Setup() {
+
+        #region 数据加载逻辑
+        private readonly static Dictionary<string, int> _idCache = [];
+        private static int Get([CallerMemberName] string name = "") {
+            if (_idCache.TryGetValue(name, out int value)) {
+                return value;
+            }
+
+            string[] parts = name.Split('_');
+            if (parts.Length < 2) {
+                CWRMod.Instance.Logger.Warn($"[CWRID] Invalid ID format: {name}");
+                return 0;
+            }
+
+            string prefix = parts[0];
+            string typeName = string.Join("", parts.Skip(1));
             const string calamityModName = "CalamityMod";
-            FieldInfo[] fields = typeof(CWRID).GetFields(BindingFlags.Public | BindingFlags.Static);
-            foreach (FieldInfo field in fields) {
-                if (field.FieldType != typeof(int)) {
-                    continue;
-                }
-                if (field.IsInitOnly) {
-                    continue;
-                }
-                string fieldName = field.Name;
-                string[] parts = fieldName.Split('_');
-                if (parts.Length < 2) {
-                    continue;
-                }
-                string prefix = parts[0];
-                string typeName = string.Join("", parts.Skip(1));
-                int value = 0;
-                bool found = false;
-                switch (prefix) {
-                    case "Item":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModItem modItem)) {
-                            value = modItem.Type;
-                            found = true;
-                        }
-                        break;
-                    case "NPC":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModNPC modNPC)) {
-                            value = modNPC.Type;
-                            found = true;
-                        }
-                        break;
-                    case "Proj":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModProjectile modProjectile)) {
-                            value = modProjectile.Type;
-                            found = true;
-                        }
-                        break;
-                    case "Tile":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModTile modTile)) {
-                            value = modTile.Type;
-                            found = true;
-                        }
-                        break;
-                    case "Buff":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModBuff modBuff)) {
-                            value = modBuff.Type;
-                            found = true;
-                        }
-                        break;
-                    case "Dust":
-                        if (ModContent.TryFind(calamityModName, typeName, out ModDust modDust)) {
-                            value = modDust.Type;
-                            found = true;
-                        }
-                        break;
-                }
-                if (found) {
-                    field.SetValue(null, value);
-                }
-                else {
-                    CWRMod.Instance.Logger.Warn($"[CWRID:SetupData] Unknown typeName '{typeName}' in field '{fieldName}'.");
-                }
+            int result = 0;
+            bool found = false;
+
+            switch (prefix) {
+                case "Item":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModItem modItem)) {
+                        result = modItem.Type;
+                        found = true;
+                    }
+                    break;
+                case "NPC":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModNPC modNPC)) {
+                        result = modNPC.Type;
+                        found = true;
+                    }
+                    break;
+                case "Proj":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModProjectile modProjectile)) {
+                        result = modProjectile.Type;
+                        found = true;
+                    }
+                    break;
+                case "Tile":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModTile modTile)) {
+                        result = modTile.Type;
+                        found = true;
+                    }
+                    break;
+                case "Buff":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModBuff modBuff)) {
+                        result = modBuff.Type;
+                        found = true;
+                    }
+                    break;
+                case "Dust":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModDust modDust)) {
+                        result = modDust.Type;
+                        found = true;
+                    }
+                    break;
+            }
+
+            if (found && result != 0) {
+                _idCache[name] = result;
+                return result;
+            }
+            else {
+                //如果没找到，可能是因为模组还没加载完，或者ID真的错了
+                CWRMod.Instance.Logger.Warn($"[CWRID] Failed to find {name} in CalamityMod. It might be too early to access, or the ID is incorrect.");
+                return 0;
             }
         }
         #endregion
+
         #region 卸载数据
-        public static void UnLoad() {
-            FieldInfo[] fields = typeof(CWRID).GetFields(BindingFlags.Public | BindingFlags.Static);
-            foreach (FieldInfo field in fields) {
-                if (field.FieldType != typeof(int)) {
-                    continue;
-                }
-                if (field.IsInitOnly) {
-                    continue;
-                }
-                field.SetValue(null, 0);
-            }
-        }
+        public static void UnLoad() => _idCache.Clear();
         #endregion
     }
 }
