@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         public override void AddRecipes() {
             _ = CreateRecipe()
                 .AddIngredient(ItemID.BoneWhip)
-                .AddIngredient(ModContent.ItemType<RuinousSoul>(), 5)
+                .AddIngredient(CWRID.Item_RuinousSoul, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
         }

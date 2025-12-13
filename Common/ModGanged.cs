@@ -1,4 +1,6 @@
 ﻿using CalamityMod;
+using CalamityMod.Balancing;
+using CalamityMod.CalPlayer;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
@@ -478,6 +480,9 @@ namespace CalamityOverhaul.Common
                     methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
                     VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
                 }
+
+                var math = typeof(CalamityPlayer).GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
+                VaultHook.Add(math, OnProvideStealthStatBonusesHook);
             }
             #endregion
 
@@ -532,6 +537,29 @@ namespace CalamityOverhaul.Common
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
             calamityUtils_GetReworkedReforge_Method = null;
+        }
+
+        private static void OnProvideStealthStatBonusesHook(Action<CalamityPlayer> orig, CalamityPlayer calamityPlayer) {
+            if (calamityPlayer.Player.CWR().IsUnsunghero) {
+                if (!calamityPlayer.wearingRogueArmor || calamityPlayer.rogueStealthMax <= 0) {
+                    return;
+                }
+
+                Item item = calamityPlayer.Player.GetItem();
+                int realUseTime = Math.Max(item.useTime, item.useAnimation);
+                double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
+                //直接使用固定的基础时间，固定为 4 秒
+                double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
+
+                double stealthAddedDamage = calamityPlayer.rogueStealth * BalancingConstants.UniversalStealthStrikeDamageFactor * useTimeFactor * stealthGenFactor;
+                calamityPlayer.stealthDamage += (float)stealthAddedDamage;
+
+                calamityPlayer.Player.aggro -= (int)(calamityPlayer.rogueStealth * 300f);
+
+                return;
+            }
+
+            orig.Invoke(calamityPlayer);
         }
 
         internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
@@ -639,7 +667,7 @@ namespace CalamityOverhaul.Common
 
             try {
                 modConfig = CWRMod.Instance.magicStorage.Find<ModConfig>("MagicStorageConfig");
-                int recursionCraftingDepthNum = ((int)MS_Config_recursionCraftingDepth_FieldInfo.GetValue(modConfig));
+                int recursionCraftingDepthNum = (int)MS_Config_recursionCraftingDepth_FieldInfo.GetValue(modConfig);
                 if (recursionCraftingDepthNum == 0) {
                     return false;
                 }

@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.ADV;
+﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = false;
             Item.maxStack = 1;
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = CWRID.Rarity_Violet;
             Item.value = Item.sellPrice(platinum: 5);
             Item.UseSound = SoundID.Item122;
         }
@@ -129,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             CreateRecipe()
                 .AddIngredient(ItemID.Book)
                 .AddIngredient(ItemID.FallenStar, 20)
-                .AddIngredient<CosmiliteBar>(5)
+                .AddIngredient(CWRID.Item_CosmiliteBar, 5)
                 .AddIngredient(ItemID.FragmentNebula, 10)
                 .AddIngredient(ItemID.FragmentVortex, 10)
                 .AddIngredient(ItemID.LunarBar, 10)

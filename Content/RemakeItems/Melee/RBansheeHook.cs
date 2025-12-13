@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Armor.Bloodflare;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class BansheeHookHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<BansheeHook>();
+        public override int TargetID => CWRID.Item_BansheeHook;
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "WeaverGrievances_Bar";
         public override string GlowTexturePath => CWRConstant.Cay_Proj_Melee + "Spears/BansheeHookAltGlow";
@@ -265,7 +264,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            if (Owner == null || Item == null || Item.type != ModContent.ItemType<BansheeHook>()) {
+            if (Owner == null || Item == null || Item.type != CWRID.Item_BansheeHook) {
                 Projectile.Kill();
                 return;
             }

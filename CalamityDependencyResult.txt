@@ -19,8 +19,6 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\NeutronStarMuzzleBrake.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\PrecisionMuzzleBrake.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\SimpleMuzzleBrake.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\TheLuxirSoulArtifact.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\TheRelicLuxor.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Accessories\Unsunghero.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Magic\SandVortexOfTheDecayedSea.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Materials\InfiniteIngot.cs
@@ -48,12 +46,10 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Summon\BleedingScourge.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Summon\ElementWhip.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Summon\ForgedLash.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Summon\GhostFireWhip.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Summon\WhiplashGalactica.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Tools\DraedonsRemote.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Tools\EncyclopediaofOceanicKnowledge.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Tools\FungalFeed.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Items\Tools\TheForgottenTome.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\LegendWeapon\HalibutLegend\HalibutData.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\LegendWeapon\SHPCLegend\SHPCHeld.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\MeleeModify\Core\EarlierSwordHeld.cs
@@ -194,7 +190,5 @@ C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverh
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Projectiles\Weapons\Ranged\NeutronBowProjs\EXNeutronArrow.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Projectiles\Weapons\Ranged\NeutronBowProjs\NeutronLaser.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\Projectiles\Weapons\Rogue\HeldProjs\FrostcrushValariHeld.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\RemakeItems\Melee\ArkoftheOverride\Cosmos\ModifyArkoftheCosmos.cs
-C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\RemakeItems\Melee\ArkoftheOverride\Elements\ModifyArkoftheElements.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\ADV\Scenarios\SupCal\End\EternalBlazingNows\Enchants\EnchantmentHandler.cs
 C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\Content\ADV\Scenarios\SupCal\End\EternalBlazingNows\Enchants\EnchantUI.cs

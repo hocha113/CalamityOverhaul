@@ -1,7 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
-using CalamityMod.Items.Accessories;
-using CalamityMod.Items.Weapons.Melee;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -10,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems
 {
     internal class RWarbanneroftheSun : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<WarbanneroftheSun>();
+        public override int TargetID => CWRID.Item_WarbanneroftheSun;
         public override bool DrawingInfo => false;
 
         public override bool On_UpdateAccessory(Item item, Player player, bool hideVisual) {
@@ -18,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             if (item2.IsAir) {
                 return true;
             }
-            if (item2.type == ModContent.ItemType<Murasama>()) {
+            if (item2.type == CWRID.Item_Murasama) {
                 CalamityPlayer modPlayer = player.Calamity();
                 modPlayer.warbannerOfTheSun = true;
                 float bonus = 0f;

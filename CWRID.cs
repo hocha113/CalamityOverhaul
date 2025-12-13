@@ -97,6 +97,7 @@ namespace CalamityOverhaul
         public static int Item_MysteriousCircuitry => Get();
         public static int Item_EncryptedSchematicHell => Get();
         public static int Item_LuxorsGift => Get();
+        public static int Item_WarbanneroftheSun => Get();
         public static int Item_EternalBlizzard => Get();
         public static int Item_Arbalest => Get();
         public static int Item_AshesofCalamity => Get();
@@ -408,6 +409,9 @@ namespace CalamityOverhaul
         public static int Dust_AstralBlue => Get();
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
+        #region 稀有度ID引用
+        public static int Rarity_Violet => Get();
+        #endregion
         #region 物品组ID引用
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
@@ -465,6 +469,12 @@ namespace CalamityOverhaul
                 case "Dust":
                     if (ModContent.TryFind(calamityModName, typeName, out ModDust modDust)) {
                         result = modDust.Type;
+                        found = true;
+                    }
+                    break;
+                case "Rarity":
+                    if (ModContent.TryFind(calamityModName, typeName, out ModRarity modRarity)) {
+                        result = modRarity.Type;
                         found = true;
                     }
                     break;
