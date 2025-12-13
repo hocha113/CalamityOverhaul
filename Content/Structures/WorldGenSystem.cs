@@ -1,5 +1,4 @@
-﻿using CalamityMod.Systems;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria.GameContent.Generation;
@@ -21,9 +20,10 @@ namespace CalamityOverhaul.Content.Structures
         }
 
         void ICWRLoader.LoadData() {
-            WorldgenManagementSystem_ModifyWorldGenTasks = typeof(WorldgenManagementSystem)
+            WorldgenManagementSystem_ModifyWorldGenTasks = CWRMod.Instance.calamity?.Code.GetType("CalamityMod.Systems.WorldgenManagementSystem")
                 .GetMethod("ModifyWorldGenTasks", BindingFlags.Instance | BindingFlags.Public);
-            VaultHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
+            if (WorldgenManagementSystem_ModifyWorldGenTasks is not null)
+                VaultHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
         }
 
         void ICWRLoader.UnLoadData() {

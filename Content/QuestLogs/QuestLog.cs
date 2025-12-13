@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             currentStyleIndex = (int)MathHelper.Clamp(currentStyleIndex, 0, availableStyles.Count - 1);
             tag.TryGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
             if (LauncherPosition == Vector2.Zero) {
-                LauncherPosition = new Vector2(380, 270);
+                LauncherPosition = new Vector2(572, 108);
             }
         }
 
@@ -157,9 +157,17 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
+            //打开时居中
+            panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
+            panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
+
+            //更新主UI碰撞箱
+            UIHitBox = panelRect;
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && visible;
+
             //更新启动器位置和状态
             if (Main.playerInventory) {
-                if (launcher.IsHovered) {
+                if (launcher.IsHovered && !hoverInMainPage) {
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         visible = !visible;
                         if (!visible) {
@@ -213,14 +221,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             if (openScale <= 0.01f && !visible) return;
-
-            //打开时居中
-            panelRect.X = (Main.screenWidth - panelRect.Width) / 2;
-            panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
-
-            //更新主UI碰撞箱
-            UIHitBox = panelRect;
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 
             //阻止鼠标穿透
             if (hoverInMainPage) {

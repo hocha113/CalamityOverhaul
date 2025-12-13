@@ -11,6 +11,7 @@ namespace CalamityOverhaul
     internal static class CWRID
     {
         #region 物品ID引用
+        public static int Item_SHPC => Get();
         public static int Item_Heresy => Get();
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
@@ -368,6 +369,9 @@ namespace CalamityOverhaul
         public static int Proj_SCalRitualDrama => Get();
         #endregion
         #region 物块ID引用
+        public static int Tile_LaboratoryPipePlating => Get();
+        public static int Tile_LaboratoryPlating => Get();
+        public static int Tile_LabHologramProjector => Get();
         public static int Tile_PlagueInfuser => Get();
         public static int Tile_DraedonsForge => Get();
         public static int Tile_SCalAltar => Get();

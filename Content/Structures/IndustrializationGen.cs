@@ -1,5 +1,4 @@
-﻿using CalamityMod.Tiles.DraedonStructures;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
@@ -176,7 +175,7 @@ namespace CalamityOverhaul.Content.Structures
 
         internal static void SpawnWindGrivenGenerator() {
             Point16 asteroidCoreTopPoint = new Point16(Main.maxTilesX / 2, 0);
-            int labHologramProjector = ModContent.TileType<LabHologramProjector>();
+            int labHologramProjector = CWRID.Tile_LabHologramProjector;
             for (int x = 0; x < Main.maxTilesX; x++) {
                 for (int y = 0; y < 500; y++) {
                     Point16 newPoint = new Point16(x, y);
@@ -286,7 +285,7 @@ namespace CalamityOverhaul.Content.Structures
             }
 
             //放置底座
-            int laboratoryPipePlating = ModContent.TileType<LaboratoryPipePlating>();
+            int laboratoryPipePlating = CWRID.Tile_LaboratoryPipePlating;
             for (int z = 0; z < 2; z++) {
                 for (int q = 0; q < 5; q++) {
                     Point16 newPos = mainPos + new Point16(q - 2, z + maxExcavateY - 1);
@@ -298,7 +297,7 @@ namespace CalamityOverhaul.Content.Structures
             }
 
             //找到实验室镀板
-            int laboratoryPlating = ModContent.TileType<LaboratoryPlating>();
+            int laboratoryPlating = CWRID.Tile_LaboratoryPlating;
             //放置管道
             int uePipelineTile = ModContent.TileType<UEPipelineTile>();
             for (int y = 0; y < 55; y++) {
