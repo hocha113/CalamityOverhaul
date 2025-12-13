@@ -7879,7 +7879,7 @@ QuestLogs: {
 			QuestReward.Description: 五块无尽锭
 			DisplayName: 龙言
 			Description: 获得龙言
-			DetailedDescription: 龙一生值流一次眼泪，那是死亡之时
+			DetailedDescription: 龙一生只流一次眼泪，那是死亡之时
 		}
 
 		RockQuestII: {
