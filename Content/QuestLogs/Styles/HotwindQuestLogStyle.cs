@@ -544,6 +544,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawProgressBar(SpriteBatch spriteBatch, QuestLog log, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float alpha = log.MainPanelAlpha;
+            bool nightMode = log.NightMode;
 
             //计算进度
             int total = 0;
@@ -563,7 +564,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, barRect, Color.Black * 0.7f * alpha);
 
             //绘制边框
-            Color borderColor = new Color(255, 140, 60) * alpha;
+            Color borderColor = nightMode ? new Color(60, 140, 255) : new Color(255, 140, 60);
+            borderColor *= alpha;
             int border = 2;
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, barRect.Width, border), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Bottom - border, barRect.Width, border), borderColor);
@@ -576,7 +578,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Rectangle fillRect = new Rectangle(barRect.X + border, barRect.Y + border, fillWidth, barHeight - border * 2);
 
                 //渐变填充
-                Color fillColor = new Color(255, 180, 60) * 0.6f * alpha;
+                Color fillColor = nightMode ? new Color(80, 160, 255) : new Color(255, 180, 60);
+                fillColor *= 0.6f * alpha;
                 spriteBatch.Draw(pixel, fillRect, fillColor);
 
                 //流光效果
@@ -775,13 +778,21 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawClaimAllButton(SpriteBatch spriteBatch, Rectangle panelRect, bool isHovered, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle buttonRect = GetClaimAllButtonRect(panelRect);
+            bool nightMode = QuestLog.Instance?.NightMode ?? false;
 
             //动态脉冲
             float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f;
 
             //背景渐变
-            Color colorTop = isHovered ? new Color(155, 150, 70) : new Color(255, 150, 70);
-            Color colorBottom = isHovered ? new Color(155, 200, 120) : new Color(255, 200, 120);
+            Color colorTop, colorBottom;
+            if (nightMode) {
+                colorTop = isHovered ? new Color(70, 130, 200) : new Color(70, 130, 200);
+                colorBottom = isHovered ? new Color(100, 180, 255) : new Color(100, 180, 255);
+            }
+            else {
+                colorTop = isHovered ? new Color(255, 150, 70) : new Color(255, 150, 70);
+                colorBottom = isHovered ? new Color(255, 200, 120) : new Color(255, 200, 120);
+            }
 
             //绘制渐变背景
             int steps = 110;
@@ -794,7 +805,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
 
             //绘制发光边框
-            Color glowColor = Color.Lerp(new Color(150, 255, 150), new Color(255, 255, 200), pulse);
+            Color glowColor;
+            if (nightMode) {
+                glowColor = Color.Lerp(new Color(100, 180, 255), new Color(150, 220, 255), pulse);
+            }
+            else {
+                glowColor = Color.Lerp(new Color(150, 255, 150), new Color(255, 255, 200), pulse);
+            }
             if (isHovered) glowColor = Color.White;
 
             //内发光
@@ -830,12 +847,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Vector2 textPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
 
             //文字发光
-            if (isHovered) {
-                Utils.DrawBorderString(spriteBatch, text, textPos, new Color(200, 255, 200) * alpha, 0.85f, 0.5f, 0.5f);
+            Color textColor;
+            if (nightMode) {
+                textColor = isHovered ? new Color(200, 230, 255) : Color.White;
             }
             else {
-                Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.85f, 0.5f, 0.5f);
+                textColor = isHovered ? new Color(200, 255, 200) : Color.White;
             }
+
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f, 0.5f, 0.5f);
         }
 
         public Rectangle GetResetViewButtonRect(Rectangle panelRect) {
