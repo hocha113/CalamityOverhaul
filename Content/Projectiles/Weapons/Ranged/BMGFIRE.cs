@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.damage = (int)(Projectile.damage * 0.9f);
                 }
             }
-            if (target.type == CWRLoad.Yharon) {
+            if (target.type == CWRID.NPC_Yharon) {
                 modifiers.FinalDamage *= 0.35f;
             }
         }

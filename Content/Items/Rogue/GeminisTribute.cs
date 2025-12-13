@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.width = 52;
             Item.height = 52;
             Item.damage = 40;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.useAnimation = Item.useTime = 20;
             Item.shootSpeed = 22f;
             Item.knockBack = 4f;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.width = 52;
             Item.height = 52;
             Item.damage = 282;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.useAnimation = Item.useTime = 18;
             Item.shootSpeed = 22f;
             Item.knockBack = 4f;
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
         }
 
         public override void AI() {
@@ -296,11 +296,11 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 int proj;
                 proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, ver
                     , shootID, (int)(Projectile.damage * 0.7), Projectile.knockBack, Projectile.owner);
-                Main.projectile[proj].DamageType = CWRLoad.RogueDamageClass;
+                Main.projectile[proj].DamageType = CWRRef.GetRogueDamageClass();
                 ver = (MathHelper.TwoPi / 4 * i).ToRotationVector2() * 33;
                 proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, ver
                     , shootID, (int)(Projectile.damage * 0.7), Projectile.knockBack, Projectile.owner);
-                Main.projectile[proj].DamageType = CWRLoad.RogueDamageClass;
+                Main.projectile[proj].DamageType = CWRRef.GetRogueDamageClass();
             }
             SoundEngine.PlaySound(SoundID.Item122, Projectile.Center);
         }
@@ -329,7 +329,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.width = 14;
             Projectile.height = 14;
             Projectile.friendly = true;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;
             Projectile.ignoreWater = true;

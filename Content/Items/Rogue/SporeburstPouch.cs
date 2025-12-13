@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<SporeburstPouchThrow>();
             Item.shootSpeed = 17f;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.rare = ItemRarityID.Green;
             Item.value = Item.buyPrice(0, 0, 25, 0);
         }
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.ignoreWater = true;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 900;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;//关闭接触伤害的冷却，因为伤害完全来自爆炸
             Projectile.extraUpdates = 1;
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;//减小碰撞体积，让它看起来更像孢子
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.timeLeft = 300;
             Projectile.friendly = true;
             Projectile.extraUpdates = 3;//降低额外更新，让弹道轨迹更清晰可见

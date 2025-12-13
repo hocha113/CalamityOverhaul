@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.height = 46;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.penetrate = -1;
             Projectile.hide = true;
         }

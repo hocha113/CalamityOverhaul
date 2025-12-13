@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.8f;
             }
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.25f;
             }
             Projectile.damage = (int)(Projectile.damage * 0.66f);

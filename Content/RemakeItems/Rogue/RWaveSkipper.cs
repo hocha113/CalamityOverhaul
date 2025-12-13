@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             item.rare = ItemRarityID.Pink;
             item.shoot = ModContent.ProjectileType<RWaveSkipperProjectile>();
             item.shootSpeed = 12f;
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {

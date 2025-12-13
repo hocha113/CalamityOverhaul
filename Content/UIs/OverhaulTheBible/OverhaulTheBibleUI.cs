@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             }
             if (tabControlRogue == null) {
                 tabControlRogue = new TabControl();
-                tabControlRogue.DamageClass = CWRLoad.RogueDamageClass;
+                tabControlRogue.DamageClass = CWRRef.GetRogueDamageClass();
             }
             if (tabControlSummon == null) {
                 tabControlSummon = new TabControl();
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     continue;
                 }
 
-                if (!tabControlRogue.Tab && ccItem.DamageType == CWRLoad.RogueDamageClass) {
+                if (!tabControlRogue.Tab && ccItem.DamageType == CWRRef.GetRogueDamageClass()) {
                     continue;
                 }
 

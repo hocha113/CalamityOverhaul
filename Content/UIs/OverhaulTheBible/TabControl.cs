@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 if (DamageClass == DamageClass.Summon) {
                     targetID = 4281;
                 }
-                if (DamageClass == CWRLoad.RogueDamageClass) {
+                if (DamageClass == CWRRef.GetRogueDamageClass()) {
                     targetID = 55;
                 }
 

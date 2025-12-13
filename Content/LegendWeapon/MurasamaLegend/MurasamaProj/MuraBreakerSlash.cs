@@ -239,17 +239,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             //对塔纳托斯体节造成2倍伤害
-            if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2 || target.type == CWRLoad.ThanatosTail) {
+            if (target.type == CWRID.NPC_ThanatosBody1 || target.type == CWRID.NPC_ThanatosBody2 || target.type == CWRID.NPC_ThanatosTail) {
                 modifiers.FinalDamage *= 2f;
             }
 
             //对神明吞噬者头尾、风编尾造成4倍伤害
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail || target.type == CWRLoad.StormWeaverTail) {
+            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail || target.type == CWRID.NPC_StormWeaverTail) {
                 modifiers.FinalDamage *= 4f;
             }
 
             //对塔纳托斯头造成11.4倍伤害
-            if (target.type == CWRLoad.ThanatosHead) {
+            if (target.type == CWRID.NPC_ThanatosHead) {
                 modifiers.FinalDamage *= 11.4f;
             }
 
@@ -264,13 +264,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             //对毁灭魔像身体部位造成50%伤害
-            if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
-                || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
+            if (target.type == CWRID.NPC_RavagerClawLeft || target.type == CWRID.NPC_RavagerClawRight || target.type == CWRID.NPC_RavagerHead
+                || target.type == CWRID.NPC_RavagerLegLeft || target.type == CWRID.NPC_RavagerLegRight) {
                 modifiers.FinalDamage *= 0.5f;
             }
 
             //对星流双子造成1.33倍伤害
-            if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
+            if (target.type == CWRID.NPC_Apollo || target.type == CWRID.NPC_Artemis) {
                 modifiers.FinalDamage *= 1.33f;
             }
 

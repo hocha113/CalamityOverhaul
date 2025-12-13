@@ -490,7 +490,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     #region 毒雾蘑菇弹幕
     ///<summary>
-    ///毒雾蘑菇 - 生成持续性毒雾区域
+    ///毒雾蘑菇，生成持续性毒雾区域
     ///</summary>
     internal class AmanitaToxicMushroom : ModProjectile
     {
@@ -513,7 +513,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
                 modifiers.FinalDamage *= 2f;
             }
         }
@@ -707,7 +707,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
         }

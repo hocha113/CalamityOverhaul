@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<CommandersClawThrow>();
             Item.shootSpeed = 17f;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 65, 0);
             Item.CWR().DeathModeItem = true;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.ignoreWater = true;
             Projectile.penetrate = 6;
             Projectile.timeLeft = 900;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 50;
             Projectile.extraUpdates = 1;

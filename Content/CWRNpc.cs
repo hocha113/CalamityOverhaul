@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool SpecialOnKill(NPC npc) {
-            if (npc.type == CWRLoad.AstrumDeusHead) {
+            if (npc.type == CWRID.NPC_AstrumDeusHead) {
                 //经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
                 //怎么这么多年过去了，原灾厄那个bug竟然还没修复
                 //写这个Boss的脑袋肯定有问题
@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content
                 return;
             }
 
-            if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
+            if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRID.NPC_PlaguebringerGoliath) {
                 for (int i = 0; i < Main.rand.Next(3, 6); i++) {
                     int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_DubiousPlating, Main.rand.Next(7, 13));
                     if (!VaultUtils.isSinglePlayer) {
@@ -248,13 +248,13 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (npc.type == CWRLoad.PrimordialWyrmHead && !CWRRef.GetDownedPrimordialWyrm()) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
+            if (npc.type == CWRID.NPC_PrimordialWyrmHead && !CWRRef.GetDownedPrimordialWyrm()) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
                 CWRRef.SetDownedPrimordialWyrm(true);
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
-            if (npc.type == CWRLoad.Yharon) {
+            if (npc.type == CWRID.NPC_Yharon) {
                 InWorldBossPhase.YharonKillCount++;
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
-using CalamityOverhaul.OtherMods.Fargowiltas;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

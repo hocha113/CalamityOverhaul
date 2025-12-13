@@ -88,19 +88,19 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers) {
             if (HasProverbs && proj.Alives() && proj.CWR().Source is EntitySource_Parent entitySource
-                && entitySource.Entity is NPC npc && npc.Alives() && npc.type == CWRLoad.SupremeCalamitas && Main.rand.NextBool(3)) {
+                && entitySource.Entity is NPC npc && npc.Alives() && npc.type == CWRID.NPC_SupremeCalamitas && Main.rand.NextBool(3)) {
                 modifiers.FinalDamage *= 10;
             }
         }
 
         public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) {
-            if (HasProverbs && npc.type == CWRLoad.SupremeCalamitas && Main.rand.NextBool(3)) {
+            if (HasProverbs && npc.type == CWRID.NPC_SupremeCalamitas && Main.rand.NextBool(3)) {
                 modifiers.FinalDamage *= 10;
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (HasProverbs && target.type == CWRLoad.SupremeCalamitas) {
+            if (HasProverbs && target.type == CWRID.NPC_SupremeCalamitas) {
                 modifiers.FinalDamage *= 2;
             }
         }

@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public override void SetDefaults() {
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.width = Projectile.height = 100;
             Projectile.timeLeft = 20;
             Projectile.aiStyle = -1;

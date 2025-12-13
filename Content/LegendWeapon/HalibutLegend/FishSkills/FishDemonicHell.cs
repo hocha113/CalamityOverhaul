@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
         }

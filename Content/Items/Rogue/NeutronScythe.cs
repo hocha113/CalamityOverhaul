@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronScythe;
             ItemOverride.ItemMeleePrefixDic[Type] = true;

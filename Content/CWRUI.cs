@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants;
 using CalamityOverhaul.Content.QuestLogs;
-using CalamityOverhaul.OtherMods.Fargowiltas;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Terraria;

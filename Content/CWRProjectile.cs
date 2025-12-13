@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {
+            if (projectile.type == CWRID.Proj_ArcZap && target.IsWormBody()) {
                 modifiers.FinalDamage /= 2;
             }
 
@@ -373,19 +373,19 @@ namespace CalamityOverhaul.Content
                 if (target.IsWormBody()) {
                     modifiers.FinalDamage *= 0.75f;
                 }
-                if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
-                    || target.type == CWRLoad.AresTeslaCannon || target.type == CWRLoad.AresGaussNuke) {
+                if (target.type == CWRID.NPC_AresLaserCannon || target.type == CWRID.NPC_AresPlasmaFlamethrower
+                    || target.type == CWRID.NPC_AresTeslaCannon || target.type == CWRID.NPC_AresGaussNuke) {
                     modifiers.FinalDamage *= 0.7f;
                 }
-                if (target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.DevourerofGodsHead) {
+                if (target.type == CWRID.NPC_DevourerofGodsBody || target.type == CWRID.NPC_DevourerofGodsHead) {
                     modifiers.FinalDamage *= 0.7f;
                 }
-                if (target.type == CWRLoad.Polterghast) {
+                if (target.type == CWRID.NPC_Polterghast) {
                     modifiers.FinalDamage *= 0.8f;
                 }
             }
             else if (projectile.type == CWRID.Proj_CosmicIceBurst) {
-                if (target.type == CWRLoad.Yharon) {
+                if (target.type == CWRID.NPC_Yharon) {
                     modifiers.FinalDamage *= 0.8f;
                 }
             }

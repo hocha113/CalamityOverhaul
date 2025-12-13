@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = (int)MaxTime;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.alpha = 90;
             Projectile.ignoreWater = true;
             Projectile.hide = true;

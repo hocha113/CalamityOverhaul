@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = TotalLifetime + ChargeUpTime;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.ignoreWater = true;
             SetThrowable();
         }

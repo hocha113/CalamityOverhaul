@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
                         , ProjectileID.SuperStar, Projectile.damage / 2, 0.2f, Owner.whoAmI, ai2: 1);
                     proj.extraUpdates = 3;
                     proj.scale *= Main.rand.NextFloat(0.3f, 0.6f);
-                    proj.DamageType = CWRLoad.RogueDamageClass;
+                    proj.DamageType = CWRRef.GetRogueDamageClass();
                     proj.CWR().HitAttribute.WormResistance = 0.2f;
                 }
             }

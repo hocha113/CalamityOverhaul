@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 
         public override void SetDefaults(Item item) {
             item.damage = 18;
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
             item.shoot = ModContent.ProjectileType<EnchantedBoomerangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 6;

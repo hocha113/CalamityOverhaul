@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.value = Item.buyPrice(0, 0, 50, 15);
             Item.shoot = ModContent.ProjectileType<SandDaggerThrow>();
             Item.shootSpeed = 10f;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             ItemOverride.ItemMeleePrefixDic[Type] = true;
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }

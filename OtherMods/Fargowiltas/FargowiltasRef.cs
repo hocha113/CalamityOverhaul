@@ -45,6 +45,6 @@ namespace CalamityOverhaul.OtherMods.Fargowiltas
                 //调用原始方法
                 orig(self, gameTime);
             }
-        }       
+        }
     }
 }

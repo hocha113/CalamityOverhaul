@@ -1,30 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.LoreItems;
-using CalamityMod.Items.PermanentBoosters;
-using CalamityMod.NPCs.Abyss;
-using CalamityMod.NPCs.AquaticScourge;
-using CalamityMod.NPCs.AstrumAureus;
-using CalamityMod.NPCs.AstrumDeus;
-using CalamityMod.NPCs.DesertScourge;
-using CalamityMod.NPCs.DevourerofGods;
-using CalamityMod.NPCs.DraedonLabThings;
-using CalamityMod.NPCs.ExoMechs.Apollo;
-using CalamityMod.NPCs.ExoMechs.Ares;
-using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityMod.NPCs.HiveMind;
-using CalamityMod.NPCs.NormalNPCs;
-using CalamityMod.NPCs.Perforator;
-using CalamityMod.NPCs.PlaguebringerGoliath;
-using CalamityMod.NPCs.Polterghast;
-using CalamityMod.NPCs.PrimordialWyrm;
-using CalamityMod.NPCs.Providence;
-using CalamityMod.NPCs.Ravager;
-using CalamityMod.NPCs.StormWeaver;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.NPCs.Yharon;
-using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -59,157 +33,62 @@ namespace CalamityOverhaul
         public static int MetanovaBar;
         #endregion
 
-        public static RogueDamageClass RogueDamageClass => GetInstance<RogueDamageClass>();
-
-        public static int Projectile_ArcZap;
         /// <summary>
         /// 关于哪些物品应该被设置为64的最大堆叠数
         /// </summary>
         public static int[] AddMaxStackItemsIn64 { get; private set; } = [];
         /// <summary>
-        /// 扫地机器人
-        /// </summary>
-        public static int Androomba;
-        /// <summary>
-        /// 瘟疫使者
-        /// </summary>
-        public static int PlaguebringerGoliath;
-        /// <summary>
-        /// 噬魂幽花
-        /// </summary>
-        public static int Polterghast;
-        /// <summary>
-        /// 亵渎天神
-        /// </summary>
-        public static int Providence;
-        /// <summary>
-        /// 丛林龙
-        /// </summary>
-        public static int Yharon;
-        /// <summary>
-        /// 吞噬兽
-        /// </summary>
-        public static int ScornEater;
-        /// <summary>
-        /// 至尊灾厄
-        /// </summary>
-        public static int SupremeCalamitas;
-        /// <summary>
         /// 灾坟虫
         /// </summary>
         public static List<int> targetNpcTypes;
-        public static int SepulcherHead;
-        public static int SepulcherBody;
-        public static int SepulcherTail;
         /// <summary>
         /// 风暴编织者
         /// </summary>
         public static List<int> targetNpcTypes2;
-        public static int StormWeaverHead;
-        public static int StormWeaverBody;
-        public static int StormWeaverTail;
         /// <summary>
         /// 幻海妖龙 
         /// </summary>
         public static List<int> targetNpcTypes3;
-        public static int PrimordialWyrmHead;
-        public static int PrimordialWyrmBody;
-        public static int PrimordialWyrmTail;
-        /// <summary>
-        /// 血肉宿主
-        /// </summary>
-        public static int PerforatorHive;
-        /// <summary>
-        /// 腐巢意志
-        /// </summary>
-        public static int HiveMind;
         /// <summary>
         /// 血肉蠕虫 
         /// </summary>
         public static List<int> targetNpcTypes4;
-        public static int PerforatorHeadLarge;
-        public static int PerforatorBodyLarge;
-        public static int PerforatorTailLarge;
         /// <summary>
         /// 血肉蠕虫2 
         /// </summary>
         public static List<int> targetNpcTypes5;
-        public static int PerforatorHeadMedium;
-        public static int PerforatorBodyMedium;
-        public static int PerforatorTailMedium;
         /// <summary>
         /// 装甲掘地虫 
         /// </summary>
         public static List<int> targetNpcTypes6;
-        public static int ArmoredDiggerHead;
-        public static int ArmoredDiggerBody;
-        public static int ArmoredDiggerTail;
         /// <summary>
         /// 星流巨械
         /// </summary>
         public static List<int> targetNpcTypes7;
+        /// <summary>
+        /// 星流巨械Alt
+        /// </summary>
         public static List<int> targetNpcTypes7_1;
-        public static int Apollo;
-        public static int Artemis;
-        public static int AresBody;
-        public static int AresLaserCannon;
-        public static int AresPlasmaFlamethrower;
-        public static int AresTeslaCannon;
-        public static int AresGaussNuke;
-        public static int ThanatosHead;
-        public static int ThanatosBody1;
-        public static int ThanatosBody2;
-        public static int ThanatosTail;
         /// <summary>
         /// 神明吞噬者
         /// </summary>
         public static List<int> targetNpcTypes8;
-        public static int DevourerofGodsHead;
-        public static int DevourerofGodsBody;
-        public static int DevourerofGodsTail;
-        public static int CosmicGuardianHead;
-        public static int CosmicGuardianBody;
-        public static int CosmicGuardianTail;
         /// <summary>
         /// 荒漠灾虫
         /// </summary>
         public static List<int> targetNpcTypes9;
-        public static int DesertScourgeHead;
-        public static int DesertScourgeBody;
-        public static int DesertScourgeTail;
-        public static int DesertNuisanceHead;
-        public static int DesertNuisanceBody;
-        public static int DesertNuisanceTail;
-        public static int DesertNuisanceHeadYoung;
-        public static int DesertNuisanceBodyYoung;
-        public static int DesertNuisanceTailYoung;
         /// <summary>
         /// 星神游龙
         /// </summary>
         public static List<int> targetNpcTypes10;
-        public static int AstrumDeusHead;
-        public static int AstrumDeusBody;
-        public static int AstrumDeusTail;
         /// <summary>
         /// 渊海灾虫
         /// </summary>
         public static List<int> targetNpcTypes11;
-        public static int AquaticScourgeHead;
-        public static int AquaticScourgeBody;
-        public static int AquaticScourgeTail;
         /// <summary>
         /// 幻海妖龙幼年体
         /// </summary>
         public static List<int> targetNpcTypes12;
-        public static int EidolonWyrmHead;
-        public static int EidolonWyrmBody;
-        public static int EidolonWyrmBodyAlt;
-        public static int EidolonWyrmTail;
-        /// <summary>
-        /// 白金星舰
-        /// </summary>
-        public static int AstrumAureus;
-
         /// <summary>
         /// 月球领主
         /// </summary>
@@ -222,31 +101,18 @@ namespace CalamityOverhaul
         /// 毁灭者
         /// </summary>
         public static List<int> targetNpcTypes15;
-
         /// <summary>
         /// 毁灭魔像
         /// </summary>
         public static List<int> targetNpcTypes16;
-        public static int RavagerBody;
-        public static int RavagerClawLeft;
-        public static int RavagerClawRight;
-        public static int RavagerHead;
-        public static int RavagerLegLeft;
-        public static int RavagerLegRight;
-
         /// <summary>
         /// 血肉蠕虫3
         /// </summary>
         public static List<int> targetNpcTypes17;
-        public static int PerforatorHeadSmall;
-        public static int PerforatorBodySmall;
-        public static int PerforatorTailSmall;
-
         /// <summary>
         /// 蠕虫类体节
         /// </summary>
         public static int[] WormBodys { get; private set; }
-
         /// <summary>
         /// 物块对应掉落物的词典
         /// </summary>
@@ -329,7 +195,7 @@ namespace CalamityOverhaul
                 npc.HitSound != SoundID.NPCHit34 && npc.HitSound != SoundID.NPCHit36 && npc.HitSound != SoundID.NPCHit42 &&
                 npc.HitSound != SoundID.NPCHit49 && npc.HitSound != SoundID.NPCHit52 && npc.HitSound != SoundID.NPCHit53 &&
                 npc.HitSound != SoundID.NPCHit54 && npc.HitSound != null)
-                || npc.type == Providence || npc.type == ScornEater || npc.type == Yharon || npc.type == DevourerofGodsHead) {
+                || npc.type == CWRID.NPC_Providence || npc.type == CWRID.NPC_ScornEater || npc.type == CWRID.NPC_Yharon || npc.type == CWRID.NPC_DevourerofGodsHead) {
                     return false;
                 }
                 return true;
@@ -345,134 +211,38 @@ namespace CalamityOverhaul
         }
 
         public static void Setup() {
-            #region ID
-            Androomba = NPCType<Androomba>();
-            Polterghast = NPCType<Polterghast>();
-            Providence = NPCType<Providence>();
-            Yharon = NPCType<Yharon>();
-            ScornEater = NPCType<ScornEater>();
-            PlaguebringerGoliath = NPCType<PlaguebringerGoliath>();
-
-            PerforatorHive = NPCType<PerforatorHive>();
-            HiveMind = NPCType<HiveMind>();
-
-            SupremeCalamitas = NPCType<SupremeCalamitas>();
-
-            SepulcherHead = NPCType<SepulcherHead>();
-            SepulcherBody = NPCType<SepulcherBody>();
-            SepulcherTail = NPCType<SepulcherTail>();
-
-            StormWeaverHead = NPCType<StormWeaverHead>();
-            StormWeaverBody = NPCType<StormWeaverBody>();
-            StormWeaverTail = NPCType<StormWeaverTail>();
-
-            PrimordialWyrmHead = NPCType<PrimordialWyrmHead>();
-            PrimordialWyrmBody = NPCType<PrimordialWyrmBody>();
-            PrimordialWyrmTail = NPCType<PrimordialWyrmTail>();
-
-            PerforatorHeadLarge = NPCType<PerforatorHeadLarge>();
-            PerforatorBodyLarge = NPCType<PerforatorBodyLarge>();
-            PerforatorTailLarge = NPCType<PerforatorTailLarge>();
-
-            PerforatorHeadMedium = NPCType<PerforatorHeadMedium>();
-            PerforatorBodyMedium = NPCType<PerforatorBodyMedium>();
-            PerforatorTailMedium = NPCType<PerforatorTailMedium>();
-
-            AstrumAureus = NPCType<AstrumAureus>();
-
-            ArmoredDiggerHead = NPCType<ArmoredDiggerHead>();
-            ArmoredDiggerBody = NPCType<ArmoredDiggerBody>();
-            ArmoredDiggerTail = NPCType<ArmoredDiggerTail>();
-
-            Apollo = NPCType<Apollo>();
-            Artemis = NPCType<Artemis>();
-            AresBody = NPCType<AresBody>();
-            ThanatosHead = NPCType<ThanatosHead>();
-            ThanatosBody1 = NPCType<ThanatosBody1>();
-            ThanatosBody2 = NPCType<ThanatosBody2>();
-            ThanatosTail = NPCType<ThanatosTail>();
-
-            DevourerofGodsHead = NPCType<DevourerofGodsHead>();
-            DevourerofGodsBody = NPCType<DevourerofGodsBody>();
-            DevourerofGodsTail = NPCType<DevourerofGodsTail>();
-            CosmicGuardianHead = NPCType<CosmicGuardianHead>();
-            CosmicGuardianBody = NPCType<CosmicGuardianBody>();
-            CosmicGuardianTail = NPCType<CosmicGuardianTail>();
-
-            DesertScourgeHead = NPCType<DesertScourgeHead>();
-            DesertScourgeBody = NPCType<DesertScourgeBody>();
-            DesertScourgeTail = NPCType<DesertScourgeTail>();
-            DesertNuisanceHead = NPCType<DesertNuisanceHead>();
-            DesertNuisanceBody = NPCType<DesertNuisanceBody>();
-            DesertNuisanceTail = NPCType<DesertNuisanceTail>();
-            DesertNuisanceHeadYoung = NPCType<DesertNuisanceHeadYoung>();
-            DesertNuisanceBodyYoung = NPCType<DesertNuisanceBodyYoung>();
-            DesertNuisanceTailYoung = NPCType<DesertNuisanceTailYoung>();
-
-            AstrumDeusHead = NPCType<AstrumDeusHead>();
-            AstrumDeusBody = NPCType<AstrumDeusBody>();
-            AstrumDeusTail = NPCType<AstrumDeusTail>();
-
-            AquaticScourgeHead = NPCType<AquaticScourgeHead>();
-            AquaticScourgeBody = NPCType<AquaticScourgeBody>();
-            AquaticScourgeTail = NPCType<AquaticScourgeTail>();
-
-            EidolonWyrmHead = NPCType<EidolonWyrmHead>();
-            EidolonWyrmBody = NPCType<EidolonWyrmBody>();
-            EidolonWyrmBodyAlt = NPCType<EidolonWyrmBodyAlt>();
-            EidolonWyrmTail = NPCType<EidolonWyrmTail>();
-
-            RavagerBody = NPCType<RavagerBody>();
-            RavagerClawLeft = NPCType<RavagerClawLeft>();
-            RavagerClawRight = NPCType<RavagerClawRight>();
-            RavagerHead = NPCType<RavagerHead>();
-            RavagerLegLeft = NPCType<RavagerLegLeft>();
-            RavagerLegRight = NPCType<RavagerLegRight>();
-
-            AresLaserCannon = NPCType<AresLaserCannon>();
-            AresPlasmaFlamethrower = NPCType<AresPlasmaFlamethrower>();
-            AresTeslaCannon = NPCType<AresTeslaCannon>();
-            AresGaussNuke = NPCType<AresGaussNuke>();
-
-            PerforatorHeadSmall = NPCType<PerforatorHeadSmall>();
-            PerforatorBodySmall = NPCType<PerforatorBodySmall>();
-            PerforatorTailSmall = NPCType<PerforatorTailSmall>();
-
-            Projectile_ArcZap = ProjectileType<ArcZap>();
-            #endregion
-
             #region List
-            targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
-            targetNpcTypes2 = [StormWeaverHead, StormWeaverBody, StormWeaverTail];
-            targetNpcTypes3 = [PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail];
-            targetNpcTypes4 = [PerforatorHeadLarge, PerforatorBodyLarge, PerforatorTailLarge];
-            targetNpcTypes5 = [PerforatorHeadMedium, PerforatorBodyMedium, PerforatorTailMedium];
-            targetNpcTypes6 = [ArmoredDiggerHead, ArmoredDiggerBody, ArmoredDiggerTail];
-            targetNpcTypes7 = [Apollo, Artemis, AresBody, ThanatosHead, ThanatosBody1, ThanatosBody2, ThanatosTail];
-            targetNpcTypes7_1 = [AresBody, AresLaserCannon, AresPlasmaFlamethrower, AresTeslaCannon, AresGaussNuke];
-            targetNpcTypes8 = [DevourerofGodsHead, DevourerofGodsBody, DevourerofGodsTail, CosmicGuardianHead, CosmicGuardianBody, CosmicGuardianTail];
-            targetNpcTypes9 = [DesertScourgeHead, DesertScourgeBody, DesertScourgeTail, DesertNuisanceHead, DesertNuisanceBody, DesertNuisanceTail];
-            targetNpcTypes10 = [AstrumDeusHead, AstrumDeusBody, AstrumDeusTail];
-            targetNpcTypes11 = [AquaticScourgeHead, AquaticScourgeBody, AquaticScourgeTail];
-            targetNpcTypes12 = [EidolonWyrmHead, EidolonWyrmBody, EidolonWyrmBodyAlt, EidolonWyrmTail];
+            targetNpcTypes = [CWRID.NPC_SepulcherHead, CWRID.NPC_SepulcherBody, CWRID.NPC_SepulcherTail];
+            targetNpcTypes2 = [CWRID.NPC_StormWeaverHead, CWRID.NPC_StormWeaverBody, CWRID.NPC_StormWeaverTail];
+            targetNpcTypes3 = [CWRID.NPC_PrimordialWyrmHead, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_PrimordialWyrmTail];
+            targetNpcTypes4 = [CWRID.NPC_PerforatorHeadLarge, CWRID.NPC_PerforatorBodyLarge, CWRID.NPC_PerforatorTailLarge];
+            targetNpcTypes5 = [CWRID.NPC_PerforatorHeadMedium, CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorTailMedium];
+            targetNpcTypes6 = [CWRID.NPC_ArmoredDiggerHead, CWRID.NPC_ArmoredDiggerBody, CWRID.NPC_ArmoredDiggerTail];
+            targetNpcTypes7 = [CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_AresBody, CWRID.NPC_ThanatosHead, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_ThanatosTail];
+            targetNpcTypes7_1 = [CWRID.NPC_AresBody, CWRID.NPC_AresLaserCannon, CWRID.NPC_AresPlasmaFlamethrower, CWRID.NPC_AresTeslaCannon, CWRID.NPC_AresGaussNuke];
+            targetNpcTypes8 = [CWRID.NPC_DevourerofGodsHead, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail, CWRID.NPC_CosmicGuardianHead, CWRID.NPC_CosmicGuardianBody, CWRID.NPC_CosmicGuardianTail];
+            targetNpcTypes9 = [CWRID.NPC_DesertScourgeHead, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertScourgeTail, CWRID.NPC_DesertNuisanceHead, CWRID.NPC_DesertNuisanceBody, CWRID.NPC_DesertNuisanceTail];
+            targetNpcTypes10 = [CWRID.NPC_AstrumDeusHead, CWRID.NPC_AstrumDeusBody, CWRID.NPC_AstrumDeusTail];
+            targetNpcTypes11 = [CWRID.NPC_AquaticScourgeHead, CWRID.NPC_AquaticScourgeBody, CWRID.NPC_AquaticScourgeTail];
+            targetNpcTypes12 = [CWRID.NPC_EidolonWyrmHead, CWRID.NPC_EidolonWyrmBody, CWRID.NPC_EidolonWyrmBodyAlt, CWRID.NPC_EidolonWyrmTail];
             targetNpcTypes13 = [NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob];
             targetNpcTypes14 = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
             targetNpcTypes15 = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
-            targetNpcTypes16 = [RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight];
-            targetNpcTypes17 = [PerforatorHeadSmall, PerforatorBodySmall, PerforatorTailSmall];
+            targetNpcTypes16 = [CWRID.NPC_RavagerBody, CWRID.NPC_RavagerClawLeft, CWRID.NPC_RavagerClawRight, CWRID.NPC_RavagerHead, CWRID.NPC_RavagerLegLeft, CWRID.NPC_RavagerLegRight];
+            targetNpcTypes17 = [CWRID.NPC_PerforatorHeadSmall, CWRID.NPC_PerforatorBodySmall, CWRID.NPC_PerforatorTailSmall];
 
-            WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody,
-                DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
-                , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, PerforatorBodySmall, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
+            WormBodys = [ CWRID.NPC_AquaticScourgeBody, CWRID.NPC_StormWeaverBody, CWRID.NPC_ArmoredDiggerBody, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertNuisanceBody,
+                CWRID.NPC_DesertNuisanceBodyYoung, CWRID.NPC_CosmicGuardianBody, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_AstrumDeusBody
+                , CWRID.NPC_SepulcherBody, CWRID.NPC_PerforatorBodyLarge, CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorBodySmall, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
             AddMaxStackItemsIn64 = [
-                ItemType<BloodOrange>(),
-                ItemType<MiracleFruit>(),
-                ItemType<Elderberry>(),
-                ItemType<Dragonfruit>(),
-                ItemType<LoreCynosure>(),
-                ItemID.BloodMoonStarter,
                 CWRID.Item_Rock,
+                CWRID.Item_BloodOrange,
+                CWRID.Item_MiracleFruit,
+                CWRID.Item_Elderberry,
+                CWRID.Item_Dragonfruit,
+                CWRID.Item_LoreCynosure,
+                ItemID.BloodMoonStarter,
             ];
             #endregion
 

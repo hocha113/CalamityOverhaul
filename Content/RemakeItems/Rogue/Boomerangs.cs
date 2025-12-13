@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
         public override int TargetID => ItemID.Bananarang;
         public override void SetDefaults(Item item) {
             item.damage = 56;
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
             item.shoot = ModContent.ProjectileType<BananarangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 16;
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
         public override int TargetID => ItemID.Trimarang;
         public override void SetDefaults(Item item) {
             item.damage = 16;
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
             item.shoot = ModContent.ProjectileType<TrimarangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 16;
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
                             , ProjectileID.SuperStar, Projectile.damage / 2, 0.2f, Owner.whoAmI, ai2: 1);
                         proj.extraUpdates = 3;
                         proj.scale *= Main.rand.NextFloat(0.3f, 0.6f);
-                        proj.DamageType = CWRLoad.RogueDamageClass;
+                        proj.DamageType = CWRRef.GetRogueDamageClass();
                         proj.CWR().HitAttribute.WormResistance = 0.4f;
                     }
                 }
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
                         Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI()
                             , Projectile.Center, (MathHelper.TwoPi / 6 * i + rand).ToRotationVector2() * 6
                             , ProjectileID.Mushroom, Projectile.damage / 5, 0.2f, Owner.whoAmI);
-                        proj.DamageType = CWRLoad.RogueDamageClass;
+                        proj.DamageType = CWRRef.GetRogueDamageClass();
                     }
                 }
             }
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
         public override int TargetID => ItemID.IceBoomerang;
         public override void SetDefaults(Item item) {
             item.damage = 18;
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
             item.shoot = ModContent.ProjectileType<IceBoomerangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 4;

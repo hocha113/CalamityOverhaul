@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Flamarang;
         public override void SetDefaults(Item item) {
-            item.DamageType = CWRLoad.RogueDamageClass;
+            item.DamageType = CWRRef.GetRogueDamageClass();
             item.shoot = ModContent.ProjectileType<FlamarangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 16;

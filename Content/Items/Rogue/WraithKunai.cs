@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.CloneDefaults(ModContent.ItemType<LunarKunai>());
             Item.damage = 160;
             Item.UseSound = null;
-            Item.DamageType = CWRLoad.RogueDamageClass;
+            Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.shoot = ModContent.ProjectileType<WraithKunaiThrowable>();
             ItemOverride.ItemMeleePrefixDic[Type] = true;
             ItemOverride.ItemRangedPrefixDic[Type] = false;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.timeLeft = 300;
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             Projectile.extraUpdates = 4;
         }
 
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
         public override void SetThrowable() {
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.DamageType = CWRRef.GetRogueDamageClass();
             HandOnTwringMode = -36;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
