@@ -1,13 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Accessories;
-using CalamityMod.Items.Armor.Bloodflare;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityMod.Items.Weapons.Summon;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -97,16 +88,16 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<TerrorBlade>()
-                .AddIngredient<BansheeHook>()
-                .AddIngredient<GhoulishGouger>()
-                .AddIngredient<FatesReveal>()
-                .AddIngredient<GhastlyVisage>()
-                .AddIngredient<DaemonsFlame>()
-                .AddIngredient<EtherealSubjugator>()
-                .AddIngredient<Affliction>()
-                .AddIngredient<Necroplasm>(5)
-                .AddIngredient<RuinousSoul>(5)
+                .AddIngredient(CWRID.Item_TerrorBlade)
+                .AddIngredient(CWRID.Item_BansheeHook)
+                .AddIngredient(CWRID.Item_GhoulishGouger)
+                .AddIngredient(CWRID.Item_FatesReveal)
+                .AddIngredient(CWRID.Item_GhastlyVisage)
+                .AddIngredient(CWRID.Item_DaemonsFlame)
+                .AddIngredient(CWRID.Item_EtherealSubjugator)
+                .AddIngredient(CWRID.Item_Affliction)
+                .AddIngredient(CWRID.Item_Necroplasm, 5)
+                .AddIngredient(CWRID.Item_RuinousSoul, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
         }
@@ -202,7 +193,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 CreateEllipseDust(Projectile.velocity, Projectile.Center, 13, 1.2f, 0.8f);
-                SoundStyle sound = BloodflareHeadRanged.ActivationSound;
+                SoundStyle sound = "CalamityMod/Sounds/Custom/AbilitySounds/BloodflareRangerActivation".GetSound();
                 sound.Pitch = -0.3f;
                 SoundEngine.PlaySound(sound, Projectile.position);
             }
@@ -386,7 +377,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 if (Main.zenithWorld) {//在天顶世界中追踪敌人
-                    CalamityUtils.HomeInOnNPC(Projectile, ignoreTiles: true, 300f, 12f, 20f);
+                    CWRRef.HomeInOnNPC(Projectile, ignoreTiles: true, 300f, 12f, 20f);
                 }
             }
             else {

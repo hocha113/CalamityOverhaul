@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Boss;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -71,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     for (int i = 0; i < 4; i++) {
                         Vector2 velocity = new Vector2(Projectile.velocity.X * (0.6f + i * 0.1f), Projectile.velocity.Y);
                         int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity
-                        , ModContent.ProjectileType<DesertScourgeSpit>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                        , CWRID.Proj_DesertScourgeSpit, Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
                         Main.projectile[proj].hostile = false;
                         Main.projectile[proj].friendly = true;
                         NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);

@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.Furniture.CraftingStations;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -27,18 +24,18 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<DarkMatterCompressor>();
-            Item.rare = ModContent.RarityType<DarkOrange>();
+            Item.rare = ItemRarityID.Cyan;
             Item.value = Item.buyPrice(gold: 16);
         }
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<DarkPlasma>(5)//暗物质
-                .AddIngredient<StaticRefiner>()
-                .AddIngredient<ProfanedCrucible>()
-                .AddIngredient<PlagueInfuser>()
-                .AddIngredient<MonolithAmalgam>()
-                .AddIngredient<VoidCondenser>()
+                .AddIngredient(CWRID.Item_DarkPlasma, 5)//暗物质
+                .AddIngredient(CWRID.Item_StaticRefiner)
+                .AddIngredient(CWRID.Item_ProfanedCrucible)
+                .AddIngredient(CWRID.Item_PlagueInfuser)
+                .AddIngredient(CWRID.Item_MonolithAmalgam)
+                .AddIngredient(CWRID.Item_VoidCondenser)
                 .Register();
         }
     }

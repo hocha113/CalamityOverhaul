@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Tiles;
 using InnoVault.PRT;
@@ -66,7 +65,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             }
 
             foreach (Item orb in player.inventory) {
-                if (orb.type == ModContent.ItemType<BloodOrb>()) {
+                if (orb.type == CWRID.Item_BloodOrb) {
                     orbNum += orb.stack;
                 }
             }
@@ -77,7 +76,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             }
             else {
                 foreach (Item orb in player.inventory) {
-                    if (orb.type != ModContent.ItemType<BloodOrb>()) {
+                    if (orb.type != CWRID.Item_BloodOrb) {
                         continue;
                     }
 
@@ -111,7 +110,7 @@ namespace CalamityOverhaul.Content.TileProcessors
 
         private void FindOrb() {
             foreach (var orb in Main.ActiveItems) {
-                if (orb.type != ModContent.ItemType<BloodOrb>()) {
+                if (orb.type != CWRID.Item_BloodOrb) {
                     continue;
                 }
 
@@ -211,12 +210,12 @@ namespace CalamityOverhaul.Content.TileProcessors
             if (OnBoolMoon) {
                 drawPos = Center + new Vector2(-8, -64) - Main.screenPosition;
                 float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
-                VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+                VaultUtils.SimpleDrawItem(spriteBatch, CWRID.Item_BloodOrb, drawPos, slp, 0, Color.White);
             }
             else if (mouseOnTile) {
                 drawPos = Center + new Vector2(-8, -32) - Main.screenPosition;
                 float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
-                VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+                VaultUtils.SimpleDrawItem(spriteBatch, CWRID.Item_BloodOrb, drawPos, slp, 0, Color.White);
             }
         }
 

@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -33,9 +30,9 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<GrandGuardian>()
-                .AddIngredient<AshesofAnnihilation>(5)
-                .AddTile(ModContent.TileType<DraedonsForge>())
+                .AddIngredient(CWRID.Item_GrandGuardian)
+                .AddIngredient(CWRID.Item_AshesofAnnihilation, 5)
+                .AddTile(CWRID.Tile_DraedonsForge)
                 .Register();
         }
     }
