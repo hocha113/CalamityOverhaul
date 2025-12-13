@@ -305,7 +305,7 @@ namespace CalamityOverhaul
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
         #region 物品组ID引用
-        public static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID
+        public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
 
         #region 加载数据
@@ -366,13 +366,11 @@ namespace CalamityOverhaul
                         }
                         break;
                 }
-                if (field.GetValue(null) is int existingValue && existingValue == 0) {
-                    if (found) {
-                        field.SetValue(null, value);
-                    }
-                    else {
-                        CWRMod.Instance.Logger.Warn($"[CWRID:SetupData] Unknown typeName '{typeName}' in field '{fieldName}'.");
-                    }
+                if (found) {
+                    field.SetValue(null, value);
+                }
+                else {
+                    CWRMod.Instance.Logger.Warn($"[CWRID:SetupData] Unknown typeName '{typeName}' in field '{fieldName}'.");
                 }
             }
         }
