@@ -25,26 +25,21 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup GoldBarGroup;
         public static RecipeGroup AdamantiteBarGroup;
         public static RecipeGroup MythrilBarGroup;
-        public static int[] Gemstones;
-        public static int[] Emblems;
-
-        public override void SetupContent() {
-            Gemstones = [
+        public static int[] Gemstones => [
                 ItemID.Sapphire,//蓝玉
                 ItemID.Ruby,//红宝石
                 ItemID.Emerald,//翡翠
                 ItemID.Topaz,//黄宝石
                 ItemID.Amethyst,//紫水晶
                 ItemID.Diamond,//钻石
-            ];
-            Emblems = [
+        ];
+        public static int[] Emblems => [
                 ItemID.SorcererEmblem,//法师
                 ItemID.WarriorEmblem,//战士
                 ItemID.RangerEmblem,//射手
                 ItemID.SummonerEmblem,//召唤师
                 CWRID.Item_RogueEmblem//盗贼
-            ];
-        }
+        ];
 
         public static void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
             foreach (var gemstone in Gemstones) {
@@ -120,8 +115,6 @@ namespace CalamityOverhaul.Content
             GodDWGroup = null;
             FishGroup = null;
             AdamantiteBarGroup = null;
-            Gemstones = null;
-            Emblems = null;
         }
 
         private static void ModifyResultContent(Recipe recipe) {
