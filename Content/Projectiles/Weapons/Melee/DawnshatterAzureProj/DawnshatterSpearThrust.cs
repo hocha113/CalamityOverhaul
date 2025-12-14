@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-
-        private bool hasHit;
-        private int hitCount;
         private int comboStage;//Á¬»÷½×¶Î
         private bool spawnedShockwave;
         private float energyIntensity;
@@ -243,9 +240,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            hasHit = true;
-            hitCount++;
-
             target.AddBuff(BuffID.OnFire3, 360);
             target.AddBuff(BuffID.Daybreak, 300);
 
