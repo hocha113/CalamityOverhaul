@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod.Buffs.DamageOverTime;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -62,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
     }

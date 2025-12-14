@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -55,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], Color.White, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], Color.White, 1);
             return false;
         }
     }

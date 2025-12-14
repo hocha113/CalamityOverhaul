@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -78,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
 
-            CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
+            CWRRef.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
         }
 
         //生成宝石光尘

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -389,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 homingDelay--;
             }
             else {
-                CalamityUtils.HomeInOnNPC(Projectile, true, 400f, 8f, 20f);
+                CWRRef.HomeInOnNPC(Projectile, true, 400f, 8f, 20f);
             }
 
             //轨迹粒子

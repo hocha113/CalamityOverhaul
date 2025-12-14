@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -99,7 +98,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Type], lightColor, 1);
             value = Glow.Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
             , Projectile.rotation, value.GetOrig(), Projectile.scale, SpriteEffects.None, 0);

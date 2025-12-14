@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, Projectile.Calamity().stealthStrike ? 4 : 2);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, Projectile.Calamity().stealthStrike ? 4 : 2);
             return false;
         }
     }

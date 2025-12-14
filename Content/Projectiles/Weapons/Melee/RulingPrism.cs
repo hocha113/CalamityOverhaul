@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -61,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Main.dust[rainbow].velocity *= 0.5f;
             Main.dust[rainbow].velocity += Projectile.velocity * 0.1f;
 
-            CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 200f, 10f, 20f);
+            CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 200f, 10f, 20f);
         }
 
         public void SpanProj() {
@@ -92,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.timeLeft > 115) {
                 return false;
             }
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
 

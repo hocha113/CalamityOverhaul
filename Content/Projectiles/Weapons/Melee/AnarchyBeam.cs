@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 return false;
             }
             Projectile.DrawStarTrail(Color.Red, Color.White);
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
 

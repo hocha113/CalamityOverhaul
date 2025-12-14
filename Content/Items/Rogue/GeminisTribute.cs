@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameContent.BaseEntity;
@@ -344,7 +343,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             }
             else {
                 Projectile.penetrate = 1;
-                CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
+                CWRRef.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
             }
         }
 

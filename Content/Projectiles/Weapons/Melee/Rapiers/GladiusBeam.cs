@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -50,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             }
             else {
                 Projectile.rotation = Projectile.velocity.ToRotation();
-                CalamityUtils.HomeInOnNPC(Projectile, true, 250f, 10f, 25f);
+                CWRRef.HomeInOnNPC(Projectile, true, 250f, 10f, 25f);
             }
             Projectile.ai[0]++;
         }

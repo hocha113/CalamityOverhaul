@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Projectiles.Ranged;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -79,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
 

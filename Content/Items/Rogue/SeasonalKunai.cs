@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 }
             }
             else {
-                CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 6f, 20f);
+                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 6f, 20f);
                 Projectile.velocity.Y += 0.01f;
                 if (Projectile.timeLeft < 240) {
                     Projectile.tileCollide = true;
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
     }

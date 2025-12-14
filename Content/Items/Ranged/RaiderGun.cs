@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameContent.BaseEntity;
@@ -410,7 +409,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Lighting.AddLight(Projectile.Center, 1f, 0.79f, 0.3f);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.ai[0] != 0) {
-                CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
+                CWRRef.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
             }
             float xVel = Projectile.velocity.X * 0.5f;
             float yVel = Projectile.velocity.Y * 0.5f;

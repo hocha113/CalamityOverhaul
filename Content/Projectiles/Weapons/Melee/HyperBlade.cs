@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -33,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.5f, 0f);
 
-            CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
+            CWRRef.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
         }
 
         public override Color? GetAlpha(Color lightColor) {
@@ -46,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
 

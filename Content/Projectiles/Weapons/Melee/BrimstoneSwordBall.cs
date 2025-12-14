@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.Melee;
 using Terraria;
 using Terraria.ID;
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.timeLeft > 595) {
                 return false;
             }
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
 

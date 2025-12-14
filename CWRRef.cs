@@ -17,6 +17,7 @@ using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -132,6 +133,7 @@ namespace CalamityOverhaul
                     , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
             GeneralParticleHandler.SpawnParticle(smoke);
         }
+        public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) => CalamityUtils.DrawAfterimagesCentered(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
         public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
         public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f)
             => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod.Buffs.DamageOverTime;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor);
             return false;
         }
 

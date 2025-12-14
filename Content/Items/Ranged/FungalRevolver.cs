@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bool isHoming = false;
             if (Projectile.timeLeft < 150) {
                 isHoming = true;
-                CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 450f, 6.5f, 20f);
+                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 450f, 6.5f, 20f);
             }
 
             if (!isHoming) {

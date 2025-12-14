@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Buffs;
@@ -86,7 +85,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
                 if (Projectile.ai[0] >= Inder2) {
                     if (Projectile.Center.FindClosestNPC(1300f) != null) {
-                        CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 1300f, 12f, 20f);
+                        CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 1300f, 12f, 20f);
                         Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
                     }
                 }
@@ -111,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 }
             }
             else {
-                CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 12f, 20f);
+                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 12f, 20f);
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
 
@@ -176,7 +175,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
     }

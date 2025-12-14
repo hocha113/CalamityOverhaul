@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
+﻿using CalamityMod.Events;
 using CalamityMod.Items.Potions;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
@@ -35,7 +34,7 @@ namespace CalamityOverhaul.Content.TileModify
                 return false;
             }
 
-            if (CalamityUtils.CountProjectiles(ModContent.ProjectileType<SCalRitualDrama>()) > 0) {
+            if (VaultUtils.CountProjectilesOfID(ModContent.ProjectileType<SCalRitualDrama>()) > 0) {
                 return false;
             }
 

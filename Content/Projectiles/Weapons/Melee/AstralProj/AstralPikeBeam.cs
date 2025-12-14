@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
 
         public override bool PreDraw(ref Color lightColor) {
             Projectile.DrawStarTrail(Color.Coral, Color.White);
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
             return false;
         }
     }

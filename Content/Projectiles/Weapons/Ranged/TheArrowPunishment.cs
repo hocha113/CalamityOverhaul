@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool PreDraw(ref Color lightColor) {
             if (Projectile.ai[0] == 1) {
-                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+                CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             }
             return base.PreDraw(ref lightColor);
         }

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityOverhaul.Content.Projectiles.Others;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -96,7 +95,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Projectile + "Bee");
             foreach (Bee bee in bees) {
                 bee.Draw(Main.spriteBatch, value);

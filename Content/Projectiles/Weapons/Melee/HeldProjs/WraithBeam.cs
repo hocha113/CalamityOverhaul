@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using System;
+﻿using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -164,7 +163,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 return false;
             }
 
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
             return false;
         }
 

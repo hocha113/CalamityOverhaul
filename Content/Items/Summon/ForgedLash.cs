@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.BaseProjectiles;
+﻿using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityOverhaul.Content.Items.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -170,7 +169,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             }
             Projectile.rotation += 0.4f;
             if (Projectile.timeLeft < 80) {
-                CalamityUtils.HomeInOnNPC(Projectile, true, 360, 16, 10);
+                CWRRef.HomeInOnNPC(Projectile, true, 360, 16, 10);
             }
         }
 
