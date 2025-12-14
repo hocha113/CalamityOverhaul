@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -13,7 +12,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {
-    //ÆÆÏþ³¤Ç¹µÄ»ÙÃðÐÔÐîÁ¦Í»½ø£¬ÖÕÄ©ÎäÆ÷µÄÖÕ¼«¹¥»÷
     internal class DawnshatterChargeDash : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();

@@ -7,7 +7,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {
-    //ÆÆÏþ³¤Ç¹Éú³ÉµÄ»ÙÃð»ðÑæµ¯
     internal class DawnshatterFireball : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -111,7 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             target.AddBuff(BuffID.Daybreak, 240);
 
             Projectile.penetrate--;
-            
+
             if (Projectile.penetrate <= 0) {
                 Projectile.Kill();
                 return;

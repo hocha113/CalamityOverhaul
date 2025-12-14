@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DawnshatterAzure : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-        
+
         private int comboCounter;
         private int comboResetTimer;
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/Yharon/YharonRoarShort".GetSound() with { Volume = 0.5f, Pitch = -0.1f }, player.Center);
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<DawnshatterChargeDash>()
                     , (int)(damage * 2f), knockback * 1.5f, player.whoAmI);
-                
+
                 //使用大招后重置连击
                 comboCounter = 0;
                 comboResetTimer = 0;
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //左键普通刺击，传递连击阶段
             float thrustPitch = 0.1f + (comboCounter % 3) * 0.15f;
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = thrustPitch }, player.Center);
-            
+
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, comboCounter);
 
             //增加连击计数并重置计时器

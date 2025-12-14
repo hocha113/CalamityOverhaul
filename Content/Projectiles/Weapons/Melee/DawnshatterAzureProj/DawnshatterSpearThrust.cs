@@ -13,7 +13,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {
-    //破晓长枪的普通刺击，终末级别的华丽攻击
     internal class DawnshatterSpearThrust : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
@@ -148,7 +147,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         //刺击爆发特效
         private void SpawnThrustExplosion(int stage) {
             Vector2 tipPos = Projectile.Center + Projectile.velocity * 70f;
-            
+
             SoundEngine.PlaySound("CalamityMod/Sounds/Custom/Yharon/YharonFireOrb".GetSound() with { Volume = 0.7f, Pitch = -0.2f + stage * 0.1f }, tipPos);
 
             //大范围火焰爆发
@@ -209,7 +208,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             //超大范围爆炸粒子
             for (int i = 0; i < 100; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(20f, 20f);
-                
+
                 BasePRT finale = new PRT_Light(position, vel, Main.rand.NextFloat(1.5f, 2.8f)
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.OrangeRed, Color.Gold, Color.White)
                     , 35, 0.8f, 1.8f);
@@ -233,7 +232,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         //能量波
         private void SpawnEnergyWave() {
             Vector2 wavePos = Projectile.Center + Projectile.velocity * Main.rand.NextFloat(30f, 70f);
-            
+
             BasePRT wave = new PRT_Light(wavePos, Projectile.velocity * 5f, Main.rand.NextFloat(1f, 1.5f)
                 , Color.Cyan, 20, 0.5f, 1.3f);
             PRTLoader.AddParticle(wave);
@@ -261,7 +260,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             //华丽的命中粒子
             for (int i = 0; i < 20 + comboStage * 10; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
-                
+
                 BasePRT hitEffect = new PRT_Light(target.Center, vel, Main.rand.NextFloat(0.8f, 1.5f)
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Gold)
                     , 18, 0.5f, 1.2f);
@@ -278,7 +277,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         private void SpawnHitExplosion(Vector2 position) {
             for (int i = 0; i < 50; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
-                
+
                 BasePRT explosion = new PRT_Light(position, vel, Main.rand.NextFloat(1.2f, 2f)
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
                     , 30, 0.6f, 1.5f);
