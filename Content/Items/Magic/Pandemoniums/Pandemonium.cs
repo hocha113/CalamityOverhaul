@@ -1,5 +1,4 @@
-﻿using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.Collections.Generic;
 using Terraria;
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.noMelee = true;
             Item.knockBack = 5;
             Item.value = Item.sellPrice(platinum: 10);
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = CWRID.Rarity_Violet;
             Item.UseSound = SoundID.Item113;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();

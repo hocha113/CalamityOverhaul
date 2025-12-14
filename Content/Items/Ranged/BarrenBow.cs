@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = SoundID.Item5;
             Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(0, 2, 15, 0);
-            Item.rare = ModContent.RarityType<PureGreen>();
+            Item.rare = CWRID.Rarity_PureGreen;
             Item.SetHeldProj<BarrenBowHeld>();
         }
 

@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using CalamityMod.Projectiles.Typeless;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
+﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.width = Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
-            Item.rare = ModContent.RarityType<Turquoise>();
+            Item.rare = CWRID.Rarity_Turquoise;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronStarMuzzleBrake;
         }
 
@@ -30,12 +26,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             CWRPlayer modplayer = player.CWR();
             modplayer.LoadMuzzleBrakeLevel = 4;
             modplayer.PressureIncrease = 0;
-            CalamityPlayer calPlayer = player.Calamity();
-            calPlayer.rangedAmmoCost *= 0.8f;
-            calPlayer.deadshotBrooch = true;
-            calPlayer.dynamoStemCells = true;
-            calPlayer.MiniSwarmers = true;
-            calPlayer.eleResist = true;
+            CWRRef.SetNSMBPlayer(player);
             player.moveSpeed += 0.25f;
             player.magicQuiver = true;
             player.GetDamage<RangedDamageClass>() += 1f;
@@ -43,13 +34,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             player.GetAttackSpeed<RangedDamageClass>() += 1f;
             player.aggro -= 1200;
 
-            calPlayer.voidField = true;
             if (player.whoAmI == Main.myPlayer) {
                 var source = player.GetSource_Accessory(Item);
-                if (player.ownedProjectileCounts[ModContent.ProjectileType<VoidFieldGenerator>()] < 4) {
+                if (player.ownedProjectileCounts[CWRID.Proj_VoidFieldGenerator] < 4) {
                     for (int v = 0; v < 4; v++) {
                         Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
-                            , ModContent.ProjectileType<VoidFieldGenerator>(), 0, 0f, Main.myPlayer, v);
+                            , CWRID.Proj_VoidFieldGenerator, 0, 0f, Main.myPlayer, v);
                     }
                 }
             }

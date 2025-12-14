@@ -1,7 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using InnoVault.TileProcessors;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;

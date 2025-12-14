@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Armor.Demonshade;
 using CalamityMod.Items.Materials;
-using CalamityMod.Rarities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
             Item.height = 18;
             Item.defense = 35;
             Item.value = Item.buyPrice(0, 25, 5, 5);
-            Item.rare = ModContent.RarityType<HotPink>();
+            Item.rare = CWRID.Rarity_HotPink;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) {

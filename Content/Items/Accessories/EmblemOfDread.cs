@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using CalamityMod.NPCs.DevourerofGods;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
@@ -15,7 +11,6 @@ using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -28,13 +23,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>
     /// 惧亡者之证
     /// </summary>
-    internal class EmblemOfDread : ModItem, ICWRLoader
+    internal class EmblemOfDread : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "EmblemOfDread";
-        internal FieldInfo TotalDefenseDamageInfo { get; private set; }
-        void ICWRLoader.LoadData() => TotalDefenseDamageInfo = typeof(CalamityPlayer)
-            .GetField("totalDefenseDamage", BindingFlags.Instance | BindingFlags.NonPublic);
-        void ICWRLoader.UnLoadData() => TotalDefenseDamageInfo = null;
 
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 3));
@@ -45,15 +36,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.width = Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
-            Item.rare = ModContent.RarityType<Turquoise>();
+            Item.rare = CWRID.Rarity_Turquoise;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_EmblemOfDread;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.GetModPlayer<EmblemOfDreadPlayer>().Alive = true;
             player.dashType = 0;
-            player.Calamity().DashID = string.Empty;
-            TotalDefenseDamageInfo?.SetValue(player.Calamity(), 0);
+            player.SetPlayerDashID(string.Empty);
             player.GetDamage<MeleeDamageClass>() += 1f;
             player.GetAttackSpeed<MeleeDamageClass>() += 1f;
             player.GetCritChance<MeleeDamageClass>() += 100f;
@@ -284,7 +274,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool ShouldUpdatePosition() => false;
 
         public override void Initialize() {
-            SlotId = SoundEngine.PlaySound(DevourerofGodsHead.DeathAnimationSound with { Pitch = -0.2f }, Owner.Center);
+            SlotId = SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeath".GetSound() with { Pitch = -0.2f }, Owner.Center);
             Owner.GetModPlayer<EmblemOfDreadPlayer>().SetDash((int)Projectile.ai[0]);
             Projectile.localAI[0] = EmblemOfDreadPlayer.DashVelocity;
         }

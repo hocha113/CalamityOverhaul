@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Item.value = Item.buyPrice(0, 18, 25, 0);
             Item.shoot = ModContent.ProjectileType<StormGoddessSpearHeld>();
             Item.shootSpeed = 18f; //提高射速
-            Item.rare = ModContent.RarityType<DarkBlue>();
+            Item.rare = CWRID.Rarity_DarkBlue;
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10; //提高暴击率

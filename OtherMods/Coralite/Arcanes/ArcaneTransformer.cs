@@ -1,5 +1,4 @@
-﻿using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.OtherMods.Coralite.Arcanes
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<ArcaneTransformerTile>();
-            Item.rare = ModContent.RarityType<DarkOrange>();
+            Item.rare = CWRID.Rarity_DarkOrange;
             Item.value = Item.buyPrice(gold: 6);
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 1200;

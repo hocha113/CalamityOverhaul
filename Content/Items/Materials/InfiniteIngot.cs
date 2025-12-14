@@ -1,5 +1,4 @@
-﻿using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override void SetDefaults() {
             Item.width = Item.height = 25;
             Item.maxStack = 99;
-            Item.rare = RarityType<HotPink>();
+            Item.rare = CWRID.Rarity_HotPink;
             Item.value = Item.sellPrice(gold: 99999);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;

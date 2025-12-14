@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.Audio;
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 _ = Projectile.NewProjectile(source, position, velocity * 2, ModContent.ProjectileType<DawnshatterOut>(), damage * 5, knockback, player.whoAmI);
                 return false;
             }
-            SoundEngine.PlaySound(Yharon.OrbSound with { Pitch = 0.2f, Volume = 0.7f }, player.Center);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/Yharon/YharonFireOrb".GetSound() with { Pitch = 0.2f, Volume = 0.7f }, player.Center);
             _ = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }

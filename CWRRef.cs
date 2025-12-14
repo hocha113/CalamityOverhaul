@@ -281,5 +281,15 @@ namespace CalamityOverhaul
         public static ref float RefPlayerRogueStealthMax(this Player player) => ref player.Calamity().rogueStealthMax;
         public static bool GetPlayerZoneSulphur(this Player player) => player.Calamity().ZoneSulphur;
         public static bool GetPlayerZoneAbyss(this Player player) => player.Calamity().ZoneAbyss;
+        public static void SetPlayerDashID(this Player player, string value) => player.Calamity().DashID = value;
+        public static void SetNSMBPlayer(Player player) {
+            CalamityPlayer calPlayer = player.Calamity();
+            calPlayer.rangedAmmoCost *= 0.8f;
+            calPlayer.deadshotBrooch = true;
+            calPlayer.dynamoStemCells = true;
+            calPlayer.MiniSwarmers = true;
+            calPlayer.eleResist = true;
+            calPlayer.voidField = true;
+        }
     }
 }

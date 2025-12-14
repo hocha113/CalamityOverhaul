@@ -1,5 +1,4 @@
-﻿using CalamityMod.Dusts;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            CreateDustEffect((int)CalamityDusts.SulphurousSeaAcid, 120);
+            CreateDustEffect(CWRID.Dust_SulphurousSeaAcid, 120);
         }
 
         private void CreateDustEffect(int dustType, int amount) {

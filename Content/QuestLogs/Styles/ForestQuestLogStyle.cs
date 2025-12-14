@@ -76,22 +76,22 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             float pulse = (float)Math.Sin(glowTimer * 1.5f) * 0.5f + 0.5f;
 
             Color auraColor = nightMode ? new Color(100, 200, 150) : new Color(150, 200, 100);
-            
+
             //绘制多层光环
             for (int layer = 0; layer < 3; layer++) {
                 float layerOffset = layer * 0.33f;
                 float layerPulse = (float)Math.Sin(glowTimer * 1.5f + layerOffset * MathHelper.TwoPi) * 0.5f + 0.5f;
-                
+
                 int radius = 50 + layer * 30;
                 int segments = 32;
-                
+
                 for (int i = 0; i < segments; i++) {
                     float angle = (i / (float)segments) * MathHelper.TwoPi + magicTimer * (0.3f + layer * 0.1f);
                     float nextAngle = ((i + 1) / (float)segments) * MathHelper.TwoPi + magicTimer * (0.3f + layer * 0.1f);
-                    
+
                     Vector2 pos1 = center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
                     Vector2 pos2 = center + new Vector2((float)Math.Cos(nextAngle), (float)Math.Sin(nextAngle)) * radius;
-                    
+
                     //确保在面板内
                     if (panelRect.Contains(pos1.ToPoint()) || panelRect.Contains(pos2.ToPoint())) {
                         float alpha = layerPulse * 0.1f * alphaMult;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawDecorativeBorder(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alphaMult, bool nightMode) {
             //绘制森林主题的装饰边框
             float pulse = (float)Math.Sin(glowTimer * 2f) * 0.5f + 0.5f;
-            
+
             Color outerColor = nightMode ? new Color(60, 120, 80) : new Color(100, 150, 80);
             Color innerColor = nightMode ? new Color(100, 180, 120) : new Color(150, 200, 100);
             Color edgeColor = Color.Lerp(outerColor, innerColor, pulse) * alphaMult;
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 float t = i / (float)vineCount;
                 int x = panelRect.X + (int)(t * panelRect.Width);
                 float wave = (float)Math.Sin(t * MathHelper.TwoPi * 3f + leafTimer) * 3f;
-                
+
                 for (int j = 0; j < 5; j++) {
                     int y = panelRect.Y + 2 + j * 2;
                     int offsetX = (int)(wave * (j / 5f));
@@ -176,15 +176,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             for (int i = 0; i < points; i++) {
                 float angle1 = (i / (float)points) * MathHelper.TwoPi + rotation;
                 float angle2 = ((i + 2) / (float)points) * MathHelper.TwoPi + rotation;
-                
+
                 Vector2 p1 = center + new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * size;
                 Vector2 p2 = center + new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * size;
-                
+
                 //绘制连接线
                 Vector2 diff = p2 - p1;
                 float length = diff.Length();
                 float lineRotation = diff.ToRotation();
-                
+
                 spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, (int)length, 2), color, lineRotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
@@ -195,18 +195,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawFloatingParticles(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alphaMult, bool nightMode) {
             //绘制漂浮的魔法粒子
             Color particleColor = nightMode ? new Color(150, 255, 200) : new Color(180, 255, 150);
-            
+
             int particleCount = 20;
             for (int i = 0; i < particleCount; i++) {
                 float offset = i * 0.314f;
                 float t = (magicTimer + offset) % MathHelper.TwoPi;
-                
+
                 float x = panelRect.X + 20 + (float)Math.Sin(t * 2f + i) * (panelRect.Width - 40) * 0.5f + (panelRect.Width - 40) * 0.5f;
                 float y = panelRect.Y + ((t / MathHelper.TwoPi) * (panelRect.Height - 40)) + 20;
-                
+
                 float alpha = (float)Math.Sin(t) * 0.5f + 0.5f;
                 float size = 2f + (float)Math.Sin(t * 3f) * 1f;
-                
+
                 spriteBatch.Draw(pixel, new Vector2(x, y), new Rectangle(0, 0, 1, 1), particleColor * alpha * alphaMult * 0.4f, 0f, Vector2.Zero, size, SpriteEffects.None, 0f);
             }
         }
@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             if (node.IsUnlocked || node.IsCompleted) {
                 float glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.04f) * 0.5f + 0.5f;
                 Color glowColor = node.IsCompleted ? new Color(120, 255, 150) : new Color(255, 220, 120);
-                
+
                 DrawHexagon(spriteBatch, pixel, drawPos, size * 0.55f, glowColor * (0.4f * glowPulse * alpha));
             }
 
@@ -261,15 +261,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             for (int i = 0; i < sides; i++) {
                 float angle1 = (i / (float)sides) * MathHelper.TwoPi - MathHelper.PiOver2;
                 float angle2 = ((i + 1) / (float)sides) * MathHelper.TwoPi - MathHelper.PiOver2;
-                
+
                 Vector2 p1 = center + new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * radius;
                 Vector2 p2 = center + new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * radius;
-                
+
                 //绘制从中心到边缘的三角形
                 Vector2 diff = p2 - p1;
                 float length = diff.Length();
                 float rotation = diff.ToRotation();
-                
+
                 Rectangle rect = new Rectangle(0, 0, (int)length, (int)radius);
                 spriteBatch.Draw(pixel, p1, rect, color, rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
@@ -281,14 +281,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             for (int i = 0; i < sides; i++) {
                 float angle1 = (i / (float)sides) * MathHelper.TwoPi - MathHelper.PiOver2;
                 float angle2 = ((i + 1) / (float)sides) * MathHelper.TwoPi - MathHelper.PiOver2;
-                
+
                 Vector2 p1 = center + new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * radius;
                 Vector2 p2 = center + new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * radius;
-                
+
                 Vector2 diff = p2 - p1;
                 float length = diff.Length();
                 float rotation = diff.ToRotation();
-                
+
                 spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, (int)length, thickness), color, rotation, new Vector2(0, thickness / 2f), 1f, SpriteEffects.None, 0f);
             }
         }
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         private void DrawDetailPanelBorder(SpriteBatch spriteBatch, Texture2D pixel, Rectangle panelRect, float alpha) {
             float pulse = (float)Math.Sin(glowTimer * 2f) * 0.5f + 0.5f;
-            
+
             Color outerColor = new Color(80, 140, 90);
             Color innerColor = new Color(120, 200, 130);
             Color edgeColor = Color.Lerp(outerColor, innerColor, pulse) * alpha;
@@ -583,9 +583,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private void DrawDecorativeDivider(SpriteBatch spriteBatch, Texture2D pixel, int x, int y, int width, float alpha) {
             //绘制装饰性分隔线
             Color lineColor = new Color(100, 150, 100) * alpha;
-            
+
             spriteBatch.Draw(pixel, new Rectangle(x, y, width, 2), lineColor * 0.6f);
-            
+
             //中间装饰
             int centerX = x + width / 2;
             DrawRune(spriteBatch, pixel, new Vector2(centerX, y), 8, lineColor * 1.2f, runeTimer);
@@ -593,10 +593,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         private void DrawMagicButton(SpriteBatch spriteBatch, Texture2D pixel, Rectangle buttonRect, bool isHovered, float alpha, string text) {
             float pulse = (float)Math.Sin(glowTimer * 2.5f) * 0.5f + 0.5f;
-            
+
             Color bgColor1 = new Color(80, 140, 90);
             Color bgColor2 = new Color(120, 180, 130);
-            
+
             if (isHovered) {
                 bgColor1 = Color.Lerp(bgColor1, Color.White, 0.3f);
                 bgColor2 = Color.Lerp(bgColor2, Color.White, 0.3f);
@@ -626,7 +626,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             //文字
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.9f;
             Vector2 textPos = new Vector2(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
-            
+
             Color textColor = isHovered ? new Color(220, 255, 230) : Color.White;
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.9f, 0.5f, 0.5f);
         }
@@ -670,7 +670,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 //渐变填充
                 Color fillColor1 = nightMode ? new Color(100, 180, 140) : new Color(120, 200, 140);
                 Color fillColor2 = nightMode ? new Color(140, 220, 180) : new Color(160, 240, 180);
-                
+
                 int gradSteps = 68;
                 for (int i = 0; i < gradSteps; i++) {
                     float t = i / (float)gradSteps;

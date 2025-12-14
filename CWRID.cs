@@ -16,6 +16,9 @@ namespace CalamityOverhaul
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
         public static int Item_Rock => Get();
+        public static int Item_PerennialBar => Get();
+        public static int Item_UelibloomBar => Get();
+        public static int Item_LifeAlloy => Get();
         public static int Item_Onyxia => Get();
         public static int Item_CryonicBar => Get();
         public static int Item_FlurrystormCannon => Get();
@@ -371,6 +374,7 @@ namespace CalamityOverhaul
         public static int Proj_GalaxyBlastType2 => Get();
         public static int Proj_GalaxyBlastType3 => Get();
         public static int Proj_SCalRitualDrama => Get();
+        public static int Proj_VoidFieldGenerator => Get();
         #endregion
         #region 物块ID引用
         public static int Tile_LaboratoryPipePlating => Get();
@@ -415,10 +419,16 @@ namespace CalamityOverhaul
         #region 粒子效果ID引用
         public static int Dust_AstralOrange => Get();
         public static int Dust_AstralBlue => Get();
+        public readonly static int Dust_SulphurousSeaAcid = 75;
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
         #region 稀有度ID引用
         public static int Rarity_Violet => Get();
+        public static int Rarity_Turquoise => Get();
+        public static int Rarity_HotPink => Get();
+        public static int Rarity_PureGreen => Get();
+        public static int Rarity_DarkBlue => Get();
+        public static int Rarity_DarkOrange => Get();
         #endregion
         #region 物品组ID引用
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Rarities;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.width = Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(0, 6, 15, 0);
-            Item.rare = ModContent.RarityType<Turquoise>();
+            Item.rare = CWRID.Rarity_Turquoise;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

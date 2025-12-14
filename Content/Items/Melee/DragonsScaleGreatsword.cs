@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.channel = true;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 4, 75, 0);
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = CWRID.Rarity_Violet;
             Item.shoot = ModContent.ProjectileType<DragonsScaleGreatswordBeam>();
             Item.shootSpeed = 7f;
             Item.SetKnifeHeld<DragonsScaleGreatswordHeld>();
@@ -34,8 +32,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<PerennialBar>(15).
-                AddIngredient<UelibloomBar>(15).
+                AddIngredient(CWRID.Item_PerennialBar, 15).
+                AddIngredient(CWRID.Item_UelibloomBar, 15).
                 AddIngredient(ItemID.ChlorophyteBar, 15).
                 AddTile(TileID.LunarCraftingStation).
                 Register();

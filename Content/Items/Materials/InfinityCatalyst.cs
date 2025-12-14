@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -45,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.maxStack = 99;
-            Item.rare = RarityType<HotPink>();
+            Item.rare = CWRID.Rarity_HotPink;
             Item.value = Item.sellPrice(gold: 99999);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
@@ -62,31 +59,31 @@ namespace CalamityOverhaul.Content.Items.Materials
         public static int QFD(int num) => (int)(num * QFH);
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<Rock>(1)//古恒石
-                .AddIngredient<MiracleMatter>(QFD(5))//奇迹物质
-                .AddIngredient<ExoPrism>(QFD(5))//星流棱晶
-                .AddIngredient<AshesofAnnihilation>(QFD(5))//至尊灾厄精华
-                .AddIngredient<YharonSoulFragment>(QFD(5))//龙魂
-                .AddIngredient<DarkPlasma>(QFD(10))//暗物质
-                .AddIngredient<TwistingNether>(QFD(10))//扭曲虚空
-                .AddIngredient<ArmoredShell>(QFD(10))//装甲心脏
-                .AddIngredient<EffulgentFeather>(QFD(15))//闪耀金羽
-                .AddIngredient<AshesofCalamity>(QFD(20))//灾厄尘
-                .AddIngredient<MurkyPaste>(QFD(50))//泥浆杂草混合物质
-                .AddIngredient<MolluskHusk>(QFD(50))//生物质
-                .AddIngredient<DepthCells>(QFD(50))//深渊生物组织
-                .AddIngredient<DivineGeode>(QFD(50))//圣神晶石
-                .AddIngredient(CWRID.Item_DubiousPlating, QFD(50))//废弃装甲
-                .AddIngredient<BloodstoneCore>(QFD(50))//血石核心
-                .AddIngredient<CoreofCalamity>(QFD(50))//灾劫精华
-                .AddIngredient<AscendantSpiritEssence>(QFD(50))//化神精魄
-                .AddIngredient<LifeAlloy>(QFD(50))//生命合金
-                .AddIngredient<LivingShard>(QFD(50))//生命物质
-                .AddIngredient<Lumenyl>(QFD(50))//流明晶
-                .AddIngredient<MeldConstruct>(QFD(50))//幻塔物质
-                .AddIngredient<Necroplasm>(QFD(50))//幻魂
-                .AddIngredient<RuinousSoul>(QFD(50))//幽花之魂
-                .AddIngredient<UnholyEssence>(QFD(50))//灼火精华
+                .AddIngredient(CWRID.Item_Rock, 1)
+                .AddIngredient(CWRID.Item_MiracleFruit, QFD(5))
+                .AddIngredient(CWRID.Item_ExoPrism, QFD(5))
+                .AddIngredient(CWRID.Item_AshesofAnnihilation, QFD(5))
+                .AddIngredient(ItemID.FragmentSolar, QFD(5))
+                .AddIngredient(CWRID.Item_DarkPlasma, QFD(10))
+                .AddIngredient(CWRID.Item_TwistingNether, QFD(10))
+                .AddIngredient(CWRID.Item_ArmoredShell, QFD(10))
+                .AddIngredient(ItemID.FragmentVortex, QFD(15))
+                .AddIngredient(CWRID.Item_AshesofCalamity, QFD(20))
+                .AddIngredient(ItemID.Gel, QFD(50))
+                .AddIngredient(ItemID.HellstoneBar, QFD(50))
+                .AddIngredient(ItemID.SoulofNight, QFD(50))
+                .AddIngredient(CWRID.Item_DivineGeode, QFD(50))
+                .AddIngredient(CWRID.Item_DubiousPlating, QFD(50))
+                .AddIngredient(ItemID.Obsidian, QFD(50))
+                .AddIngredient(ItemID.HallowedBar, QFD(50))
+                .AddIngredient(ItemID.LunarBar, QFD(50))
+                .AddIngredient(CWRID.Item_LifeAlloy, QFD(50))
+                .AddIngredient(ItemID.LifeCrystal, QFD(50))
+                .AddIngredient(ItemID.FallenStar, QFD(50))
+                .AddIngredient(ItemID.Ectoplasm, QFD(50))
+                .AddIngredient(CWRID.Item_Necroplasm, QFD(50))
+                .AddIngredient(CWRID.Item_RuinousSoul, QFD(50))
+                .AddIngredient(ItemID.SoulofLight, QFD(50))
                 .AddTile(TileType<DarkMatterCompressor>())
                 .Register();
         }
