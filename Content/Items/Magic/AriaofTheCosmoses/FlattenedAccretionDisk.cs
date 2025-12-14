@@ -183,23 +183,24 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void OnKill(int timeLeft) {
             //消失特效
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item92 with {
-                    Volume = 0.6f,
-                    Pitch = 0.2f
-                }, Projectile.Center);
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item92 with {
+                Volume = 0.6f,
+                Pitch = 0.2f
+            }, Projectile.Center);
 
-                //爆发粒子
-                for (int i = 0; i < 40; i++) {
-                    float angle = MathHelper.TwoPi * i / 40f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-                    velocity.Y *= FlattenAngle; //保持压扁效果
+            //爆发粒子
+            for (int i = 0; i < 40; i++) {
+                float angle = MathHelper.TwoPi * i / 40f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
+                velocity.Y *= FlattenAngle; //保持压扁效果
 
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, velocity, 100,
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(1.5f, 2.5f));
-                    dust.noGravity = true;
-                }
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, velocity, 100,
+                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(1.5f, 2.5f));
+                dust.noGravity = true;
             }
         }
 
