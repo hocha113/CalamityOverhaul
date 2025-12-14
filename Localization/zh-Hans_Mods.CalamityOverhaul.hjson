@@ -1627,12 +1627,6 @@ Projectiles: {
 	BrimstoneSwordBall.DisplayName: 硫磺火剑气
 	BrinyBaronOrb.DisplayName: 渊海男爵珠
 	DarkIceBomb.DisplayName: 暗冰炸弹
-	DawnshatterEndOrb.DisplayName: 破晓终焉球
-	DawnshatterEndOrb2.DisplayName: 破晓终焉球
-	MakeDamage.DisplayName: 湮灭力场
-	TheDaybreak.DisplayName: 破晓之光
-	TheDaybreak2.DisplayName: 破晓之光
-	TheDaybreak3.DisplayName: 破晓之光
 	TheEndSun.DisplayName: 终焉之阳
 	DeathLaserSpwan.DisplayName: 死亡激光
 	DeathLaser.DisplayName: 死亡激光
@@ -1876,6 +1870,7 @@ Projectiles: {
 	AriaRSkillBeam.DisplayName: 蓝色伽马射线
 	AriaQSkillMiniDisk.DisplayName: 星环护卫
 	SulfuricacidExplosion.DisplayName: 硫酸爆炸
+	DawnshatterFireball.DisplayName: 黎明之火
 }
 
 Configs: {

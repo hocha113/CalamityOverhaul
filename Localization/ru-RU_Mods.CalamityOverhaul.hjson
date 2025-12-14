@@ -1654,12 +1654,6 @@ Projectiles: {
 	BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
 	BrinyBaronOrb.DisplayName: Briny Baron Orb
 	DarkIceBomb.DisplayName: Dark Ice Bomb
-	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
-	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
-	MakeDamage.DisplayName: Make Damage
-	TheDaybreak.DisplayName: The Daybreak
-	TheDaybreak2.DisplayName: The Daybreak2
-	TheDaybreak3.DisplayName: The Daybreak3
 	TheEndSun.DisplayName: The End Sun
 	DeathLaserSpwan.DisplayName: Death Laser Spwan
 	DeathLaser.DisplayName: Death Laser
@@ -1903,6 +1897,7 @@ Projectiles: {
 	// AriaRSkillBeam.DisplayName: Aria R Skill Beam
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
+	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
 }
 
 Configs: {
