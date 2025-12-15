@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<DarkMatterCompressorItem>());
+            int count = player.InquireItem(ModContent.ItemType<DarkMatterCompressorItem>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<InfinityCatalyst>());
+            int count = player.InquireItem(ModContent.ItemType<InfinityCatalyst>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<InfiniteIngot>());
+            int count = player.InquireItem(ModContent.ItemType<InfiniteIngot>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<InfinitePick>());
+            int count = player.InquireItem(ModContent.ItemType<InfinitePick>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<HeavenfallLongbow>());
+            int count = player.InquireItem(ModContent.ItemType<HeavenfallLongbow>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<InfiniteToiletItem>());
+            int count = player.InquireItem(ModContent.ItemType<InfiniteToiletItem>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<TransmutationOfMatterItem>());
+            int count = player.InquireItem(ModContent.ItemType<TransmutationOfMatterItem>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<AnnihilatingUniverse>());
+            int count = player.InquireItem(ModContent.ItemType<AnnihilatingUniverse>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<AriaofTheCosmos>());
+            int count = player.InquireItem(ModContent.ItemType<AriaofTheCosmos>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<Pandemonium>());
+            int count = player.InquireItem(ModContent.ItemType<Pandemonium>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<SpearOfLonginus>());
+            int count = player.InquireItem(ModContent.ItemType<SpearOfLonginus>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -389,7 +389,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<DragonsWord>());
+            int count = player.InquireItem(ModContent.ItemType<DragonsWord>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(CWRID.Item_Rock);
+            int count = player.InquireItem(CWRID.Item_Rock);
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -453,7 +453,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronStarIngot>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronStarIngot>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -485,7 +485,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronBow>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronBow>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -517,7 +517,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronGlaive>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronGlaive>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -549,7 +549,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronScythe>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronScythe>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -581,7 +581,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronWand>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronWand>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
@@ -613,7 +613,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int count = player.CountItem(ModContent.ItemType<NeutronGun>());
+            int count = player.InquireItem(ModContent.ItemType<NeutronGun>());
             Objectives[0].CurrentProgress = count;
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;

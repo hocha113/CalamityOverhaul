@@ -524,10 +524,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         private void DrawPriceDisplay(SpriteBatch spriteBatch, OldDukeShopItem shopItem, Vector2 position, float hoverProgress) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-
             //检查是否有足够的海洋残片
-            int oceanFragmentCount = player.CountItem(ModContent.ItemType<Oceanfragments>());
+            int oceanFragmentCount = player.InquireItem(true, ModContent.ItemType<Oceanfragments>());
             bool canAfford = oceanFragmentCount >= shopItem.price;
 
             //绘制海洋残片图标

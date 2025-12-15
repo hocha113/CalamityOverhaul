@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int currentOre = player.CountItem(TargetOreID);
+            int currentOre = player.InquireItem(false, ItemID.CopperOre, ItemID.TinOre);
 
             //更新进度
             Objectives[0].CurrentProgress = currentOre;
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int currentOre = player.CountItem(TargetOreID);
+            int currentOre = player.InquireItem(false, ItemID.IronOre, ItemID.LeadOre);
 
             //更新进度
             Objectives[0].CurrentProgress = currentOre;
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
-            int currentOre = player.CountItem(TargetOreID);
+            int currentOre = player.InquireItem(false, ItemID.GoldOre, ItemID.PlatinumOre);
 
             //更新进度
             Objectives[0].CurrentProgress = currentOre;

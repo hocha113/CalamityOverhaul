@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (IconItemType > 0 && Main.LocalPlayer.HasItem(IconItemType)) {
+            if (IconItemType > 0 && Main.LocalPlayer.InquireItem(IconItemType) > 0) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (IconItemType > 0 && Main.LocalPlayer.HasItem(IconItemType)) {
+            if (IconItemType > 0 && Main.LocalPlayer.InquireItem(IconItemType) > 0) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (IconItemType > 0 && Main.LocalPlayer.HasItem(IconItemType)) {
+            if (IconItemType > 0 && Main.LocalPlayer.InquireItem(IconItemType) > 0) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (IconItemType > 0 && Main.LocalPlayer.HasItem(IconItemType)) {
+            if (IconItemType > 0 && Main.LocalPlayer.InquireItem(IconItemType) > 0) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -490,7 +490,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (IconItemType > 0 && Main.LocalPlayer.HasItem(IconItemType)) {
+            if (IconItemType > 0 && Main.LocalPlayer.InquireItem(IconItemType) > 0) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;

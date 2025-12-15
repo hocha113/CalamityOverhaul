@@ -237,6 +237,61 @@ namespace CalamityOverhaul
         public static bool IsWaterBucket(this Item item) => item.type == ItemID.WaterBucket || item.type == ItemID.BottomlessBucket;
 
         /// <summary>
+        /// 查询指定物品数量
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="itemTypes"></param>
+        /// <returns></returns>
+        public static int InquireItem(this IList<Item> items, params HashSet<int> itemTypes) {
+            int num = 0;
+            foreach (var item in items.ToList()) {
+                if (!item.Alives()) {
+                    continue;
+                }
+                if (itemTypes.Contains(item.type)) {
+                    num += item.stack;
+                }
+            }
+            return num;
+        }
+
+        /// <summary>
+        /// 查询玩家拥有的指定物品数量
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="itemType"></param>
+        /// <param name="checkBank"></param>
+        /// <returns></returns>
+        public static int InquireItem(this Player player, int itemType, bool checkBank = false) {
+            int num = player.inventory.InquireItem(itemType);
+            if (checkBank) {
+                num += player.bank.item.InquireItem(itemType);
+                num += player.bank2.item.InquireItem(itemType);
+                num += player.bank3.item.InquireItem(itemType);
+                num += player.bank4.item.InquireItem(itemType);
+            }
+            return num;
+        }
+
+        /// <summary>
+        /// 查询玩家拥有的指定物品数量
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="checkBank"></param>
+        /// <param name="itemTypes"></param>
+        /// <returns></returns>
+        public static int InquireItem(this Player player, bool checkBank, params HashSet<int> itemTypes) {
+            int num = player.inventory.InquireItem(itemTypes);
+            if (checkBank) {
+                num += player.bank.item.InquireItem(itemTypes);
+                num += player.bank2.item.InquireItem(itemTypes);
+                num += player.bank3.item.InquireItem(itemTypes);
+                num += player.bank4.item.InquireItem(itemTypes);
+            }
+            return num;
+        }
+
+        /// <summary>
         /// 目标弹药是否应该判定为一个木箭
         /// </summary>
         /// <param name="player"></param>

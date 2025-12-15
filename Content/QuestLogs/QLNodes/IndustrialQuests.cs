@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<WindGrivenGenerator>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<WindGrivenGenerator>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<UEPipeline>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<UEPipeline>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<ThermalBattery>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<ThermalBattery>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<MiningMachine>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<MiningMachine>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<MiningMachineMk2>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<MiningMachineMk2>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<ItemFilter>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<ItemFilter>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<Hydroelectric>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Hydroelectric>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<TeslaElectromagneticTower>());
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<TeslaElectromagneticTower>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
