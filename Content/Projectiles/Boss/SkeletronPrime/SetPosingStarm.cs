@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
@@ -149,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (ModGanged.InfernumModeOpenState) {
                         maxProjSanShootNum += 4;
                     }
-                    if (BossRushEvent.BossRushActive) {
+                    if (CWRRef.GetBossRushActive()) {
                         maxProjSanShootNum += 4;
                     }
 

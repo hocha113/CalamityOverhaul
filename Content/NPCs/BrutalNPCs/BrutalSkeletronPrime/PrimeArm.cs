@@ -1,7 +1,5 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityMod.NPCs;
-using CalamityMod.World;
 using Terraria;
 using Terraria.ID;
 
@@ -41,9 +39,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            bossRush = BossRushEvent.BossRushActive;
+            bossRush = CWRRef.GetBossRushActive();
             masterMode = Main.masterMode || bossRush;
-            death = CalamityWorld.death || bossRush;
+            death = CWRRef.GetDeathMode() || bossRush;
             head = Main.npc[(int)npc.ai[1]];
             player = Main.player[npc.target];
             npc.spriteDirection = -(int)npc.ai[0];

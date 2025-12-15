@@ -12,6 +12,8 @@ namespace CalamityOverhaul
     {
         #region 物品ID引用
         public static int Item_SHPC => Get();
+        public static int Item_AerialiteBar => Get();
+        public static int Item_DeliciousMeat => Get();
         public static int Item_Heresy => Get();
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
@@ -238,6 +240,7 @@ namespace CalamityOverhaul
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
+        public static int Proj_CosmicDischargeFlail => Get();
         public static int Proj_CatastropheClaymoreSparkle => Get();
         public static int Proj_AngelicBeam => Get();
         public static int Proj_AstralRound => Get();

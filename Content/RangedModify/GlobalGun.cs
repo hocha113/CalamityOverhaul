@@ -10,14 +10,14 @@ namespace CalamityOverhaul.Content.RangedModify
     internal class GlobalGun : GlobalRanged
     {
         public override void PreInOwnerByFeederGun(BaseFeederGun gun) {
-            if (CWRServerConfig.Instance.MagazineSystem && gun.Owner.AdrenalineMode()) {
+            if (CWRServerConfig.Instance.MagazineSystem && gun.Owner.GetPlayerAdrenalineMode()) {
                 gun.Owner.AddBuff(ModContent.BuffType<FrenziedMachineSoul>(), 10086);//For The Emperor!!!
             }
         }
 
         public override bool? CanUpdateMagazine(BaseFeederGun gun) {
             if (CWRServerConfig.Instance.MagazineSystem
-                && gun.Owner.AdrenalineMode()) {//在肾上腺素下不会消耗弹匣子弹
+                && gun.Owner.GetPlayerAdrenalineMode()) {//在肾上腺素下不会消耗弹匣子弹
                 return false;
             }
             return base.CanUpdateMagazine(gun);

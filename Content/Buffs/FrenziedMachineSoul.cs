@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Buffs
         }
 
         public override void Update(Player player, ref int buffIndex) {
-            if (player.AdrenalineMode()) {
+            if (player.GetPlayerAdrenalineMode()) {
                 player.buffTime[buffIndex] = 10086;
             }
             else {

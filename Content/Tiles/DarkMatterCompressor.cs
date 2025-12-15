@@ -1,5 +1,4 @@
-﻿using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,11 +34,11 @@ namespace CalamityOverhaul.Content.Tiles
             AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<DarkMatterCompressorItem>());
             AnimationFrameHeight = 52;
             AdjTiles = [
-                ModContent.TileType<StaticRefiner>(),
-                ModContent.TileType<ProfanedCrucible>(),
-                ModContent.TileType<PlagueInfuser>(),
-                ModContent.TileType<MonolithAmalgam>(),
-                ModContent.TileType<VoidCondenser>(),
+                CWRID.Tile_StaticRefiner,
+                CWRID.Tile_ProfanedCrucible,
+                CWRID.Tile_PlagueInfuser,
+                CWRID.Tile_MonolithAmalgam,
+                CWRID.Tile_VoidCondenser,
             ];
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
             TileObjectData.newTile.Width = Width;

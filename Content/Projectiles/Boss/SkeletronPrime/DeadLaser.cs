@@ -1,5 +1,4 @@
-﻿using CalamityMod.Events;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.friendly = false;
             Projectile.timeLeft = (int)timeLeft;
             Projectile.extraUpdates = 2;
-            if (BossRushEvent.BossRushActive || Main.zenithWorld || Main.getGoodWorld) {
+            if (CWRRef.GetBossRushActive() || Main.zenithWorld || Main.getGoodWorld) {
                 Projectile.extraUpdates += 1;
             }
             Projectile.tileCollide = false;

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             float ai3 = (Main.rand.NextFloat() - 0.75f) * 0.7853982f;
             int sengs = 1;
-            if (player.AdrenalineMode()) {
+            if (player.GetPlayerAdrenalineMode()) {
                 sengs = 12;
             }
             Projectile.NewProjectile(source, position.X, position.Y, velocity.X * sengs, velocity.Y * sengs

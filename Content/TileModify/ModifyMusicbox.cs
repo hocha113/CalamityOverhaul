@@ -1,9 +1,4 @@
-﻿using CalamityMod.Events;
-using CalamityMod.Items.Potions;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Projectiles.Boss;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -28,13 +23,13 @@ namespace CalamityOverhaul.Content.TileModify
             }
             //愚人节快乐
             //尝试召唤至尊灾厄而不是开启音乐
-            bool vodka = Main.LocalPlayer.GetItem().type == ModContent.ItemType<DeliciousMeat>() && Main.zenithWorld;//TODO
+            bool vodka = Main.LocalPlayer.GetItem().type == CWRID.Item_DeliciousMeat && Main.zenithWorld;//TODO
 
-            if (NPC.AnyNPCs(ModContent.NPCType<SupremeCalamitas>()) || BossRushEvent.BossRushActive) {
+            if (NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas) || CWRRef.GetBossRushActive()) {
                 return false;
             }
 
-            if (VaultUtils.CountProjectilesOfID(ModContent.ProjectileType<SCalRitualDrama>()) > 0) {
+            if (VaultUtils.CountProjectilesOfID(CWRID.Proj_SCalRitualDrama) > 0) {
                 return false;
             }
 
@@ -44,9 +39,9 @@ namespace CalamityOverhaul.Content.TileModify
 
             Vector2 spawnPos = point.ToWorldCoordinates() + new Vector2(8f, -16f);
 
-            SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/SCalAltarSummon".GetSound(), spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
-                , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, vodka.ToInt());
+                , CWRID.Proj_SCalRitualDrama, 0, 0f, Main.myPlayer, 0, vodka.ToInt());
 
             WorldGen.KillTile(i, j);//防止开启的音乐盒影响Boss音乐，所以直接破坏掉音乐盒
             if (!VaultUtils.isSinglePlayer) {

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
+using CalamityMod.CustomRecipes;
 using CalamityMod.Events;
 using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
@@ -24,6 +25,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -35,6 +37,8 @@ namespace CalamityOverhaul
     {
         public static bool GetDownedPrimordialWyrm() => DownedBossSystem.downedPrimordialWyrm;
         public static void SetDownedPrimordialWyrm(bool value) => DownedBossSystem.downedPrimordialWyrm = value;
+        public static bool GetDeathMode() => CalamityWorld.death;
+        public static bool GetRevengeMode() => CalamityWorld.revenge;
         public static bool GetBossRushActive() => BossRushEvent.BossRushActive;
         public static void SetBossRushActive(bool value) => BossRushEvent.BossRushActive = value;
         public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
@@ -42,8 +46,10 @@ namespace CalamityOverhaul
         public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
         public static DamageClass GetMeleeRangedHybridDamageClass() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
         public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
-        public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
-        public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
+        public static bool GetNPCIsAnEnemy(this NPC npc) => npc.IsAnEnemy();
+        public static void SetPlayerWarbannerOfTheSun(this Player player, bool value) => player.Calamity().warbannerOfTheSun = value;
+        public static bool GetPlayerBladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
+        public static bool GetPlayerAdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
         public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
@@ -293,5 +299,6 @@ namespace CalamityOverhaul
             calPlayer.eleResist = true;
             calPlayer.voidField = true;
         }
+        public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) => ArsenalTierGatedRecipe.ConstructRecipeCondition(tier, out condition);
     }
 }

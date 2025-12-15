@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.World;
-using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -34,11 +31,11 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static bool HasBoss;
 
-        internal static bool BossRush => BossRushEvent.BossRushActive || MachineRebellion;
+        internal static bool BossRush => CWRRef.GetBossRushActive() || MachineRebellion;
         internal static bool MasterMode => Main.masterMode || BossRush;
         internal static bool ExpertMode => Main.expertMode || BossRush;
-        internal static bool Death => CalamityWorld.death || BossRush;
-        internal static bool Revenge => CalamityWorld.revenge || BossRush;
+        internal static bool Death => CWRRef.GetDeathMode() || BossRush;
+        internal static bool Revenge => CWRRef.GetRevengeMode() || BossRush;
 
         internal static int primeLaser = -1;
         internal static int primeCannon = -1;
@@ -47,7 +44,7 @@ namespace CalamityOverhaul.Content
 
         internal static List<IWorldInfo> WorldInfos { get; private set; }
 
-        internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
+        internal static bool IsAcidRainEventIsOngoing() => CWRRef.GetAcidRainEventIsOngoing();
 
         public static void CheckNPCIndexByType(ref int index, int npcID) {
             if (index < 0)
@@ -74,12 +71,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override void Load() {
-            VaultUtils.InvasionEvent += IsAcidRainEventIsOngoing;
+            VaultUtils.InvasionEvent += CWRRef.GetAcidRainEventIsOngoing;
             WorldInfos = VaultUtils.GetDerivedInstances<IWorldInfo>();
         }
 
         public override void Unload() {
-            VaultUtils.InvasionEvent -= IsAcidRainEventIsOngoing;
+            VaultUtils.InvasionEvent -= CWRRef.GetAcidRainEventIsOngoing;
         }
 
         public override void OnWorldLoad() {
@@ -176,16 +173,14 @@ namespace CalamityOverhaul.Content
 
         public override void NetSend(BinaryWriter writer) {
             BitsByte flags1 = new BitsByte();
-            flags1[0] = DownedBossSystem.downedPrimordialWyrm;
-            flags1[1] = MachineRebellionDowned;
+            flags1[0] = MachineRebellionDowned;
             writer.Write(flags1);
             writer.Write(InWorldBossPhase.YharonKillCount);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BitsByte flags1 = reader.ReadByte();
-            DownedBossSystem.downedPrimordialWyrm = flags1[0];
-            MachineRebellionDowned = flags1[1];
+            MachineRebellionDowned = flags1[0];
             InWorldBossPhase.YharonKillCount = reader.ReadInt32();
         }
 

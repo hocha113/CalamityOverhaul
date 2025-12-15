@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.RangedModify
                 }
             }
 
-            if (player.BladeArmEnchant()) {//我不知道为什么需要这行代码
+            if (player.GetPlayerBladeArmEnchant()) {//我不知道为什么需要这行代码
                 return false;
             }
 

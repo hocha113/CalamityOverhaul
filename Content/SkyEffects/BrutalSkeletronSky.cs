@@ -1,5 +1,4 @@
-﻿using CalamityMod.Events;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.SkyEffects
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
             Rectangle rectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-            if (BossRushEvent.BossRushActive) {
+            if (CWRRef.GetBossRushActive()) {
                 rectangle = new Rectangle(0, 0, Main.screenWidth * 2, Main.screenHeight * 2);
             }
 

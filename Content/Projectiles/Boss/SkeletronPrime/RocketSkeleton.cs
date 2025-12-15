@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (ModGanged.InfernumModeOpenState) {
                 Projectile.extraUpdates += 1;
             }
-            if (BossRushEvent.BossRushActive || Main.getGoodWorld || Main.zenithWorld || NPC.downedMoonlord) {
+            if (CWRRef.GetBossRushActive() || Main.getGoodWorld || Main.zenithWorld || NPC.downedMoonlord) {
                 Projectile.extraUpdates += 1;
             }
 

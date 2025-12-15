@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
+﻿using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.RangedModify;
 using InnoVault.GameSystem;
@@ -19,8 +16,8 @@ namespace CalamityOverhaul.Content.Players
         void ICWRLoader.SetupData() {
             Instance = this;
             noRippersProj = [
-                ModContent.ProjectileType<CosmicDischargeFlail>(),
-                ModContent.ProjectileType<CosmicIceBurst>(),
+                CWRID.Proj_CosmicDischargeFlail,
+                CWRID.Proj_CosmicIceBurst,
                 ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearHeld>(),
                 ModContent.ProjectileType<StormArc>(),
@@ -34,8 +31,7 @@ namespace CalamityOverhaul.Content.Players
         }
 
         public override bool On_ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers) {
-            CalamityPlayer mp = Player.Calamity();
-            if (mp.adrenalineModeActive) {
+            if (Player.GetPlayerAdrenalineMode()) {
                 if (noRippersProj.Contains(proj.type)) {
                     return false;
                 }

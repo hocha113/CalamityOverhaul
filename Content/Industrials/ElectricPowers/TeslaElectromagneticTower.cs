@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CustomRecipes;
-using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -51,9 +47,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
-                AddIngredient<AerialiteBar>(10).
-                AddIngredient<StormlionMandible>(4).
-                AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
+                AddIngredient(CWRID.Item_AerialiteBar, 10).
+                AddIngredient(CWRID.Item_StormlionMandible, 4).
+                AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
                 AddTile(TileID.Anvils).
                 Register();
 
@@ -89,9 +85,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
-                AddIngredient<AerialiteBar>(10).
-                AddIngredient<StormlionMandible>(4).
-                AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
+                AddIngredient(CWRID.Item_AerialiteBar, 10).
+                AddIngredient(CWRID.Item_StormlionMandible, 4).
+                AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
                 AddTile(TileID.Anvils).
                 Register();
 
@@ -315,8 +311,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            CalamityGlobalItem calamityItem = handItem.Calamity();
-            if (!calamityItem.UsesCharge || calamityItem.Charge >= calamityItem.MaxCharge) {
+            if (!handItem.GetItemUsesCharge() || handItem.RefItemCharge() >= handItem.GetItemMaxCharge()) {
                 return;
             }
 
@@ -696,10 +691,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float singleCharge = 0.1f;
             Item handItem = Owner.GetItem();
             if (handItem.type > ItemID.None) {
-                CalamityGlobalItem calamityItem = handItem.Calamity();
-                if (calamityItem.UsesCharge && calamityItem.Charge < calamityItem.MaxCharge) {
-                    calamityItem.Charge += singleCharge;
-                    calamityItem.Charge = MathHelper.Clamp(calamityItem.Charge, 0, calamityItem.MaxCharge);
+                if (handItem.GetItemUsesCharge() && handItem.RefItemCharge() < handItem.GetItemMaxCharge()) {
+                    handItem.RefItemCharge() += singleCharge;
+                    handItem.RefItemCharge() = MathHelper.Clamp(handItem.RefItemCharge(), 0, handItem.GetItemMaxCharge());
                 }
             }
         }

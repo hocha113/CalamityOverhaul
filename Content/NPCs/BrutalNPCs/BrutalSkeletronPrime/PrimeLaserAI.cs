@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
@@ -133,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (bossRush) fireCooldown = 10;
 
                 bool canFire = true;
-                if (CalamityWorld.death) {
+                if (CWRRef.GetDeathMode()) {
                     canFire = bossRush;
                 }
 

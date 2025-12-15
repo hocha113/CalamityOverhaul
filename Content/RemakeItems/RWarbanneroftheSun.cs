@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -17,13 +15,12 @@ namespace CalamityOverhaul.Content.RemakeItems
                 return true;
             }
             if (item2.type == CWRID.Item_Murasama) {
-                CalamityPlayer modPlayer = player.Calamity();
-                modPlayer.warbannerOfTheSun = true;
+                player.SetPlayerWarbannerOfTheSun(true);
                 float bonus = 0f;
                 int closestNPC = -1;
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC nPC = Main.npc[i];
-                    if (nPC.IsAnEnemy() && !nPC.dontTakeDamage) {
+                    if (nPC.GetNPCIsAnEnemy() && !nPC.dontTakeDamage) {
                         closestNPC = i;
                         break;
                     }
@@ -31,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems
                 float distance = -1f;
                 for (int j = 0; j < Main.maxNPCs; j++) {
                     NPC nPC = Main.npc[j];
-                    if (nPC.IsAnEnemy() && !nPC.dontTakeDamage) {
+                    if (nPC.GetNPCIsAnEnemy() && !nPC.dontTakeDamage) {
                         float distance2 = Math.Abs(nPC.position.X + nPC.width / 2 - (player.position.X + player.width / 2)) + Math.Abs(nPC.position.Y + nPC.height / 2 - (player.position.Y + player.height / 2));
                         if (distance == -1f || distance2 < distance) {
                             distance = distance2;
@@ -60,7 +57,7 @@ namespace CalamityOverhaul.Content.RemakeItems
 
                 player.GetAttackSpeed<MeleeDamageClass>() += bonus;
                 player.GetDamage<MeleeDamageClass>() += bonus;
-                player.GetDamage<TrueMeleeDamageClass>() += bonus;
+                player.GetDamage(CWRRef.GetTrueMeleeDamageClass()) += bonus;
 
                 return false;
             }

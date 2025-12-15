@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
@@ -204,7 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
                 Vector2 spawnPos = npc.Center + aimDirection * 40f;
 
-                if (CalamityWorld.death || CWRWorld.MachineRebellion || bossRush || ModGanged.InfernumModeOpenState) {
+                if (CWRRef.GetDeathMode() || CWRWorld.MachineRebellion || bossRush || ModGanged.InfernumModeOpenState) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
                         spawnPos, perturbedSpeed,
                         ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,

@@ -1,6 +1,4 @@
-using CalamityMod.Events;
 using CalamityMod.Particles;
-using CalamityMod.World;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -35,8 +33,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             SmokeDrawer.ParticleSpawnRate = 99999;
-            bossRush = BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
-            death = CalamityWorld.death || bossRush;
+            bossRush = CWRRef.GetBossRushActive() || CWRWorld.MachineRebellion;
+            death = CWRRef.GetDeathMode() || bossRush;
             player = Main.player[npc.target];
             npc.defense = npc.defDefense;
             npc.reflectsProjectiles = false;

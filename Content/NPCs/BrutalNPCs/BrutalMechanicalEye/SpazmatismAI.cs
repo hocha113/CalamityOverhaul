@@ -1,6 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -260,8 +258,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         public bool AccompanyAI() {
             NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
             float lifeRog = npc.life / (float)npc.lifeMax;
-            bool bossRush = BossRushEvent.BossRushActive;
-            bool death = CalamityWorld.death || bossRush;
+            bool bossRush = CWRRef.GetBossRushActive();
+            bool death = CWRRef.GetDeathMode() || bossRush;
             bool isSpazmatism = npc.type == NPCID.Spazmatism;
             bool lowBloodVolume = lifeRog < 0.7f;
             bool skeletronPrimeIsDead = !skeletronPrime.Alives();

@@ -1,6 +1,4 @@
-﻿using CalamityMod.Events;
-using CalamityMod.World;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
 
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         public override bool DrawingInfo => false;
         public override bool? On_CanUseItem(Item item, Player player) => DontInBossUseItem(player);
         public static bool? DontInBossUseItem(Player player) {
-            if (CalamityWorld.death || BossRushEvent.BossRushActive) {
+            if (CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()) {
                 bool myIsBossTarget = false;
                 foreach (var npc in Main.ActiveNPCs) {
                     if (npc.boss) {

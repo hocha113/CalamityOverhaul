@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     packet.Send(-1, whoAmI);
                 }
                 else {
-                    if (CWRWorld.IsAcidRainEventIsOngoing()) {
+                    if (CWRRef.GetAcidRainEventIsOngoing()) {
                         ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
                         ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
                     }
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 npc.netUpdate = true;
                 IsLeavingDive = false;
 
-                if (CWRWorld.IsAcidRainEventIsOngoing()) {
+                if (CWRRef.GetAcidRainEventIsOngoing()) {
                     ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
                     ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
                 }
