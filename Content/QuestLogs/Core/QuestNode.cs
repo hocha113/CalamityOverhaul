@@ -321,6 +321,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         /// <summary>
+        /// 添加奖励内容
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <param name="amount"></param>
+        /// <param name="text"></param>
+        public void AddReward(int itemType, int amount = 1, LocalizedText text = null) {
+            Rewards.Add(new QuestReward() {
+                ItemType = itemType,
+                Amount = amount,
+                Description = text ?? VaultUtils.GetLocalizedItemName(itemType)
+            });
+        }
+
+        /// <summary>
         /// 在 <see cref="SetStaticDefaults"/> 之后调用，用于执行依赖于其他任务的初始化逻辑
         /// </summary>
         public virtual void PostSetup() {

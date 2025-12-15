@@ -310,8 +310,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "史莱姆皇后");
             Description = this.GetLocalization(nameof(Description), () => "击败史莱姆皇后");
 
-            IconType = QuestIconType.NPC;
-            IconNPCType = NPCID.QueenSlimeBoss;
+            IconType = QuestIconType.Item;
+            IconItemType = ItemID.QueenSlimeMask;
             Position = new Vector2(150, 150);
             AddParent<WallofFleshQuest>();
 

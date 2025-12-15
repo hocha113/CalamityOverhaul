@@ -229,16 +229,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 player.CWR().DontSwitchWeaponTime = 2;
             }
 
-            //关闭按钮逻辑
-            mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
-            if (mainCloseButtonRect.Contains(MouseHitBox.Location)) {
-                player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    visible = false;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                }
-            }
-
             //如果详情面板开启，优先处理详情面板交互
             if (showDetailPanel && detailPanelAlpha > 0.5f) {
                 UpdateDetailPanel();
@@ -246,6 +236,17 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             bool hoveredOtherButton = false;
+
+            //关闭按钮逻辑
+            mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
+            if (mainCloseButtonRect.Contains(MouseHitBox.Location)) {
+                player.mouseInterface = true;
+                hoveredOtherButton = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    visible = false;
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                }
+            }
 
             //处理一键领取按钮
             if (HasUnclaimedRewards()) {
@@ -453,9 +454,6 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             CurrentStyle.DrawBackground(spriteBatch, this, panelRect);
 
-            //绘制主面板关闭按钮
-            DrawMainCloseButton(spriteBatch);
-
             //开启剪裁，防止节点画出面板
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
 
@@ -497,6 +495,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.End();
             spriteBatch.GraphicsDevice.ScissorRectangle = origRect;
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+
+            //绘制主面板关闭按钮
+            DrawMainCloseButton(spriteBatch);
 
             //绘制详情面板
             if (showDetailPanel || detailPanelAlpha > 0.01f) {
