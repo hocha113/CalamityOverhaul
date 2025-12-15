@@ -1056,7 +1056,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Objectives.Add(new QuestObjective {
                 Description = this.GetLocalization("QuestObjective.Description", () => "完成所有探索任务"),
-                RequiredProgress = 1
+                RequiredProgress = 5
             });
 
             Rewards.Add(new QuestReward {
@@ -1073,13 +1073,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool allCompleted = GetQuest<ExploreSnow>().IsCompleted &&
-                              GetQuest<ExploreOcean>().IsCompleted &&
-                              GetQuest<ExploreJungle>().IsCompleted &&
-                              GetQuest<ExploreDesert>().IsCompleted &&
-                              GetQuest<ExploreHell>().IsCompleted;
-
-            Objectives[0].CurrentProgress = allCompleted ? 1 : 0;
+            int allCompleted = 0;
+            if (GetQuest<ExploreSnow>().IsCompleted) allCompleted++;
+            if (GetQuest<ExploreOcean>().IsCompleted) allCompleted++;
+            if (GetQuest<ExploreJungle>().IsCompleted) allCompleted++;
+            if (GetQuest<ExploreDesert>().IsCompleted) allCompleted++;
+            if (GetQuest<ExploreHell>().IsCompleted) allCompleted++;
+            Objectives[0].CurrentProgress = allCompleted;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
     }
