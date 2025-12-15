@@ -158,6 +158,20 @@ namespace CalamityOverhaul
         public static int Item_SuspiciousScrap => Get();
         public static int Item_WulfrumMetalScrap => Get();
         public static int Item_ChargingStationItem => Get();
+        public static int Item_FireTurret => Get();
+        public static int Item_IceTurret => Get();
+        public static int Item_LabTurret => Get();
+        public static int Item_LaserTurret => Get();
+        public static int Item_OnyxTurret => Get();
+        public static int Item_PlagueTurret => Get();
+        public static int Item_WaterTurret => Get();
+        public static int Item_HostileFireTurret => Get();
+        public static int Item_HostileIceTurret => Get();
+        public static int Item_HostileLabTurret => Get();
+        public static int Item_HostileLaserTurret => Get();
+        public static int Item_HostileOnyxTurret => Get();
+        public static int Item_HostilePlagueTurret => Get();
+        public static int Item_HostileWaterTurret => Get();
         #endregion
         #region NPC ID引用
         public static int NPC_Cataclysm => Get();
@@ -406,6 +420,13 @@ namespace CalamityOverhaul
         public static int Proj_GalaxyBlastType3 => Get();
         public static int Proj_SCalRitualDrama => Get();
         public static int Proj_VoidFieldGenerator => Get();
+        public static int Proj_FireShotBuffer => Get();
+        public static int Proj_IceShotBuffer => Get();
+        public static int Proj_DraedonLaserBuffer => Get();
+        public static int Proj_LaserShotBuffer => Get();
+        public static int Proj_OnyxShotBuffer => Get();
+        public static int Proj_PlagueShotBuffer => Get();
+        public static int Proj_WaterShotBuffer => Get();
         #endregion
         #region 物块ID引用
         public static int Tile_LaboratoryPipePlating => Get();
@@ -428,6 +449,20 @@ namespace CalamityOverhaul
         public static int Tile_StaticRefiner => Get();
         public static int Tile_ProfanedCrucible => Get();
         public static int Tile_ChargingStation => Get();
+        public static int Tile_PlayerFireTurret => Get();
+        public static int Tile_PlayerIceTurret => Get();
+        public static int Tile_PlayerLabTurret => Get();
+        public static int Tile_PlayerLaserTurret => Get();
+        public static int Tile_PlayerOnyxTurret => Get();
+        public static int Tile_PlayerPlagueTurret => Get();
+        public static int Tile_PlayerWaterTurret => Get();
+        public static int Tile_HostileFireTurret => Get();
+        public static int Tile_HostileIceTurret => Get();
+        public static int Tile_DraedonLabTurret => Get();
+        public static int Tile_HostileLaserTurret => Get();
+        public static int Tile_HostileOnyxTurret => Get();
+        public static int Tile_HostilePlagueTurret => Get();
+        public static int Tile_HostileWaterTurret => Get();
         #endregion
         #region 增益效果ID引用
         public static int Buff_Plague => Get();
