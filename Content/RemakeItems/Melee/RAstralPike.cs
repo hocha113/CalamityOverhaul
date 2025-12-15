@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Dusts;
-using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -101,21 +97,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void MeleeEffect() {
             if (Main.rand.NextBool(5)) {
                 Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                    , ModContent.DustType<AstralOrange>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                    , CWRID.Dust_AstralOrange, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
             }
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
+            target.AddBuff(CWRID.Buff_AstralInfectionDebuff, 300);
             if (Projectile.ai[0] != 3) {
                 for (int i = 0; i < 3; i++) {
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile star = CalamityUtils.ProjectileBarrage(Source, Projectile.Center, target.Center, Main.rand.NextBool()
-                            , 800f, 800f, 800f, 800f, 10f, ModContent.ProjectileType<AstralStar>(), (int)(Projectile.damage * 0.4), 1f, Projectile.owner, true);
-                        if (star.whoAmI.WithinBounds(Main.maxProjectiles)) {
-                            star.DamageType = DamageClass.Melee;
-                            star.ai[0] = 3f;
-                        }
+                        Projectile star = CWRRef.ProjectileBarrage(Source, Projectile.Center, target.Center, Main.rand.NextBool()
+                            , 800f, 800f, 800f, 800f, 10f, CWRID.Proj_AstralStar, (int)(Projectile.damage * 0.4), 1f, Projectile.owner, true);
+                        star.DamageType = DamageClass.Melee;
+                        star.ai[0] = 3f;
                     }
                 }
             }

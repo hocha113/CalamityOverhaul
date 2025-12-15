@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             target.AddBuff(BuffID.OnFire3, 240);
             RBalefulHarvester.SpanDust(Projectile.Center, 13, 0.6f, 1f);
             if (!onHitNPCs.Contains(target)) {
-                SoundStyle sound = CommonCalamitySounds.SwiftSliceSound;
+                SoundStyle sound = "CalamityMod/Sounds/Custom/SwiftSlice".GetSound();
                 sound.Pitch = 0.2f;
                 sound.MaxInstances = 3;
                 sound.Volume = 0.6f;
@@ -103,12 +101,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 
             Texture2D value2 = CWRAsset.SemiCircularSmear.Value;
-            Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             Main.EntitySpriteDraw(color: Color.IndianRed
                 , origin: value2.Size() * 0.5f, texture: value2, position: Projectile.Center - Main.screenPosition
                 , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5
                 , scale: Projectile.scale * 0.5f, effects: SpriteEffects.None);
-            Main.spriteBatch.ExitShaderRegion();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             return false;
         }

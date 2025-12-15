@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Rogue;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -64,7 +63,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             earliersuit = InspectionKit(new Suit(Owner.armor[0], Owner.armor[1], Owner.armor[2]));
             if (earliersuit == EarliersuitEnum.Cactus && Item.type == ItemID.CactusSword) {
                 int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                    , ModContent.ProjectileType<NastyChollaBol>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                    , CWRID.Proj_NastyChollaBol, Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
                 Main.projectile[proj].DamageType = DamageClass.Melee;
             }
         }

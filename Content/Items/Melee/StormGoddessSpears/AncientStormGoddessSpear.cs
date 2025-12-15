@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -58,8 +55,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
-                .AddIngredient<StormRuler>()
-                .AddIngredient<StormlionMandible>(5)
+                .AddIngredient(CWRID.Item_StormRuler)
+                .AddIngredient(CWRID.Item_StormlionMandible, 5)
                 .AddIngredient(ItemID.LunarBar, 15)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
@@ -129,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             int index = 3;
             float damageset = 0.5f;
             bool isadrenal = false;
-            if (Owner.Calamity().adrenalineModeActive) {
+            if (Owner.GetPlayerAdrenalineMode()) {
                 index = 6;
                 damageset = 1;
                 isadrenal = true;

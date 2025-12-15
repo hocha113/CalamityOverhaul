@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Crabulon;
-using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
     //驯养菌生蟹，不依赖生物大修
     internal class ModifyCrabulon : NPCOverride, ILocalizedModType
     {
-        public override int TargetID => ModContent.NPCType<Crabulon>();
+        public override int TargetID => CWRID.NPC_Crabulon;
 
         public CrabulonPlayer CrabulonPlayer {
             get {
@@ -224,7 +223,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 && gProj.Source != null
                 && gProj.Source is EntitySource_Parent entitySource
                 && entitySource.Entity is NPC boss
-                && boss.type == ModContent.NPCType<Crabulon>()
+                && boss.type == CWRID.NPC_Crabulon
                 && boss.whoAmI == npc.whoAmI) {
                 return false;
             }

@@ -1,4 +1,3 @@
-using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class FishBrimlish : FishSkill
     {
-        public override int UnlockFishID => ModContent.ItemType<Brimlish>();
+        public override int UnlockFishID => CWRID.Item_Brimlish;
         public override int DefaultCooldown => 20;
         public override int ResearchDuration => 60 * 14;
 

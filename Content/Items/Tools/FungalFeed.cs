@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Crabulon;
-using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -76,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (target.type != ModContent.NPCType<Crabulon>()) {
+            if (target.type != CWRID.NPC_Crabulon) {
                 return;
             }
 

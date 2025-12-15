@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using Terraria;
-using Terraria.ModLoader;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -19,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <param name="item"></param>
         /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type != ModContent.ItemType<HalibutCannon>()) {
+            if (item.type != HalibutOverride.ID) {
                 return 0;
             }
             CWRItem cwrItem = item.CWR();

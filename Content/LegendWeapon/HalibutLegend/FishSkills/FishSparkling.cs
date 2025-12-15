@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Fishing.SunkenSeaCatches;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal static int DepartureDelay => 90 - (HalibutData.GetDomainLayer() * 5);//全部发射后延迟进入离场
         internal static int DepartureDuration => 90 - (HalibutData.GetDomainLayer() * 5);//离场动画时长
         internal static int shootDir;
-        public override int UnlockFishID => ModContent.ItemType<SparklingEmpress>();
+        public override int UnlockFishID => CWRID.Item_SparklingEmpress;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             var hp = player.GetOverride<HalibutPlayer>();

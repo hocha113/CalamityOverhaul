@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         [VaultLoaden(CWRConstant.Masking)]
         public static Texture2D Fire = null;//火焰的纹理灰度图，总共4*4帧，也就是四行四列的帧图
-        public override int UnlockFishID => ModContent.ItemType<DragoonDrizzlefish>();
+        public override int UnlockFishID => CWRID.Item_DragoonDrizzlefish;
         public override int DefaultCooldown => 480 - HalibutData.GetDomainLayer() * 24;
         public override int ResearchDuration => 60 * 16;
 

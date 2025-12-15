@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Melee;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -50,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.timeLeft > 295) {
                 return false;
             }
-            Projectile.DrawStarTrail(Color.Red, Color.White);
+            CWRRef.DrawStarTrail(Projectile, Color.Red, Color.White);
             CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
@@ -74,13 +71,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 13; i++) {
                     _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + VaultUtils.RandVr(222), Vector2.Zero
-                        , ModContent.ProjectileType<BrimstoneBoom>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                        , CWRID.Proj_BrimstoneBoom, Projectile.damage, Projectile.knockBack, Projectile.owner);
                 }
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 180);
+            target.AddBuff(CWRID.Buff_BrimstoneFlames, 180);
         }
     }
 }

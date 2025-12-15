@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -130,7 +129,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Main.spriteBatch.EnterShaderRegion();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             Texture2D noiseTexture = VoronoiShapes.Value;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Vector2 origin = noiseTexture.Size() * 0.5f;
@@ -140,7 +141,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             GameShaders.Misc["CalamityMod:DoGPortal"].Apply();
             float slp = Projectile.ai[1] / 300f + MathF.Sin(Main.GameUpdateCount * CWRUtils.atoR * 2) * 0.1f;
             Main.EntitySpriteDraw(noiseTexture, drawPosition, null, Color.White, 0f, origin, slp, SpriteEffects.None, 0);
-            Main.spriteBatch.ExitShaderRegion();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
     }

@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
@@ -246,7 +244,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             onFireR = flags[4];
         }
 
-        public virtual bool CanSpanProj() => !Owner.Calamity().profanedCrystalBuffs;
+        public virtual bool CanSpanProj() => !Owner.GetPlayerProfanedCrystalBuffs();
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -359,23 +357,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        private void UpdateRogueStealth() {
-            bool noAvailable = false;
-            CalamityPlayer calPlayer = Owner.Calamity();
-            if (CWRMod.Instance.narakuEye != null) {
-                noAvailable = (bool)CWRMod.Instance.narakuEye.Call(Owner);
-                if (calPlayer.StealthStrikeAvailable()) {
-                    noAvailable = false;
-                }
-            }
-            if (!noAvailable) {
-                calPlayer.rogueStealth = 0;
-                if (calPlayer.stealthUIAlpha > 0.02f) {
-                    calPlayer.stealthUIAlpha -= 0.02f;
-                }
-            }
-        }
-
         public void SetWeaponOccupancyStatus() {
             Owner.itemTime = 2;
             Owner.CWR().DontSwitchWeaponTime = 2;
@@ -386,7 +367,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             UpdateSafeMouseInterfaceValue();
             if (CanFire && _safeMouseInterfaceValue) {
                 SetWeaponOccupancyStatus();
-                UpdateRogueStealth();
+                CWRRef.UpdateRogueStealth(Owner);
             }
             if (Projectile.IsOwnedByLocalPlayer() && Item.CWR().Scope) {
                 ScopeSrecen();

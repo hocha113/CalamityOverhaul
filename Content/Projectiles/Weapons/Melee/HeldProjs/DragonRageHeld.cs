@@ -475,12 +475,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
             if (Projectile.ai[0] == 6) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
-                Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
                 Main.EntitySpriteDraw(color: Color.Red * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Owner.Center - Main.screenPosition
                     , sourceRectangle: null, rotation: Projectile.rotation
                     , scale: Projectile.scale * 2.15f, effects: SpriteEffects.None);
-                Main.spriteBatch.ExitShaderRegion();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             }
             base.DrawSwing(spriteBatch, lightColor);
         }

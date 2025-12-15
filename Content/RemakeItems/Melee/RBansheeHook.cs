@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Armor.Bloodflare;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.MeleeModify;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -43,8 +39,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public static void PlaySouldSound(Player player) {
-            SoundStyle sound1 = CommonCalamitySounds.MeatySlashSound;
-            SoundStyle sound2 = BloodflareHeadRanged.ActivationSound;
+            SoundStyle sound1 = "CalamityMod/Sounds/Custom/MeatySlash".GetSound();
+            SoundStyle sound2 = "CalamityMod/Sounds/Custom/AbilitySounds/BloodflareRangerActivation".GetSound();
             sound1.Volume = 0.6f;
             sound2.Volume = 0.6f;
             SoundEngine.PlaySound(sound1, player.Center);
@@ -126,7 +122,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (Projectile.ai[0] == 1 || Projectile.ai[0] == 2) {
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedBy((-1 + i) * 0.06f)
-                        , ModContent.ProjectileType<BansheeHookScythe>(), Projectile.damage
+                        , CWRID.Proj_BansheeHookScythe, Projectile.damage
                         , Projectile.knockBack * 0.85f, Projectile.owner);
                 }
                 return;
@@ -145,13 +141,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             float num4 = Projectile.velocity.Length();
             Vector2 spinningPoint = Vector2.UnitX.RotatedBy(MathF.PI + num2) * new Vector2(num4, Projectile.ai[0]);
             Vector2 destination = vector + spinningPoint.RotatedBy(num3) + new Vector2(num4 + ShootSpeed + 40f, 0f).RotatedBy(num3);
-            Vector2 directionToDestination = player.SafeDirectionTo(destination, Vector2.UnitX * player.direction);
+            Vector2 directionToDestination = player.To(destination).UnitVector();
             Vector2 velocityNormalized = Projectile.velocity.SafeNormalize(Vector2.UnitY);
             float num5 = 2f;
             float randomDustScaleMin = 0.6f;
             for (int i = 0; i < num5; i++) {
                 Dust dust = Dust.NewDustDirect(Projectile.Center, 14, 14, DustID.RedTorch, 0f, 0f, 110);
-                dust.velocity = player.SafeDirectionTo(dust.position) * 2f;
+                dust.velocity = player.To(dust.position).UnitVector() * 2f;
                 dust.position = Projectile.Center + velocityNormalized.RotatedBy(num2 * 2f + i / num5 * (MathF.PI * 2f)) * 10f;
                 dust.scale = 1f + Main.rand.NextFloat(randomDustScaleMin);
                 dust.velocity += velocityNormalized * 3f;
@@ -159,7 +155,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             if (Main.rand.NextBool(3)) {
                 Dust dust2 = Dust.NewDustDirect(Projectile.Center, 20, 20, DustID.RedTorch, 0f, 0f, 110);
-                dust2.velocity = player.SafeDirectionTo(dust2.position) * 2f;
+                dust2.velocity = player.To(dust2.position).UnitVector() * 2f;
                 dust2.position = Projectile.Center + directionToDestination * -110f;
                 dust2.scale = 0.45f + Main.rand.NextFloat(0.4f);
                 dust2.fadeIn = 0.7f + Main.rand.NextFloat(0.4f);
@@ -364,12 +360,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             if (Projectile.ai[2] == 0) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
-                Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 Main.EntitySpriteDraw(color: WeaverBeam.sloudColor2 * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: drawPos
                     , sourceRectangle: null, rotation: Projectile.rotation + MathHelper.PiOver2
                     , scale: Projectile.scale, effects: SpriteEffects.None);
-                Main.spriteBatch.ExitShaderRegion();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             }
 
             RTerrorBlade.DrawFrightEnergyChargeBar(

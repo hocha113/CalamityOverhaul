@@ -1,5 +1,4 @@
-﻿using CalamityMod.CalPlayer;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -117,7 +116,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         private bool IsValidTarget(NPC npc, float maxRange) {
             return npc.CanBeChasedBy(Projectile) &&
                    Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1) &&
-                   !CalamityPlayer.areThereAnyDamnBosses &&
                    Vector2.Distance(Projectile.Center, npc.Center) < maxRange;
         }
 

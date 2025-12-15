@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.value = Item.buyPrice(0, 2, 50, 50);
             Item.rare = ItemRarityID.Purple;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.UseSound = Artemis.AttackSelectionSound;
+            Item.UseSound = "CalamityMod/Sounds/Custom/ExoMechs/ApolloArtemisTargetSelection".GetSound();
             Item.useAnimation = 20;
             Item.useTime = 20;
             Item.autoReuse = false;

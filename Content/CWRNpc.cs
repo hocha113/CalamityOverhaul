@@ -16,7 +16,6 @@ using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityMod.DropHelper;
 
 namespace CalamityOverhaul.Content
 {
@@ -285,24 +284,24 @@ namespace CalamityOverhaul.Content
 
             if (npc.type == NPCID.TombCrawlerHead) {
                 npcLoot.RemoveWhere(rule => true);
-                npcLoot.Add(3380, 1, 2, 6);
+                npcLoot.SimpleAdd(3380, 1, 2, 6);
             }
             else if (npc.type == CWRID.NPC_SupremeCalamitas) {
-                npcLoot.Add(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
+                npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
             }
             else if (npc.type == CWRID.NPC_DesertScourgeHead) {
-                dontExpertRule.Add(ModContent.ItemType<UnderTheSand>(), 10);
-                dontExpertRule.Add(ModContent.ItemType<WastelandFang>(), 10);
-                dontExpertRule.Add(ModContent.ItemType<SandDagger>(), 10);
-                dontExpertRule.Add(CWRID.Item_BurntSienna, 10);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<WastelandFang>(), 10);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<SandDagger>(), 10);
+                dontExpertRule.SimpleAdd(CWRID.Item_BurntSienna, 10);
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == CWRID.NPC_AquaticScourgeHead) {
-                dontExpertRule.Add(ModContent.ItemType<MelodyTheSand>(), 6);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<MelodyTheSand>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == CWRID.NPC_OldDuke) {
-                dontExpertRule.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
         }

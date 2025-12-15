@@ -1,6 +1,4 @@
-﻿using CalamityMod.NPCs.Crabulon;
-using CalamityMod.Projectiles.Boss;
-using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
@@ -304,14 +302,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool? CanBeHitByNPC(NPC attacker) {
-            if (npc.type == ModContent.NPCType<Crabulon>() || npc.type == ModContent.NPCType<CrabShroom>()) {
+            if (npc.type == CWRID.NPC_Crabulon || npc.type == CWRID.NPC_CrabShroom) {
                 return false;
             }
             return null;
         }
 
         public override bool? CanBeHitByProjectile(Projectile projectile) {
-            if (projectile.type == ModContent.ProjectileType<MushBomb>() || projectile.type == ModContent.ProjectileType<MushBombFall>()) {
+            if (projectile.type == CWRID.Proj_MushBomb || projectile.type == CWRID.Proj_MushBombFall) {
                 return false;
             }
 
@@ -320,7 +318,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 && gProj.Source != null
                 && gProj.Source is EntitySource_Parent entitySource
                 && entitySource.Entity is NPC boss
-                && boss.type == ModContent.NPCType<Crabulon>()) {
+                && boss.type == CWRID.NPC_Crabulon) {
                 return false;
             }
             return null;

@@ -1,8 +1,6 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -37,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Irradiated>(), 300);
+            target.AddBuff(CWRID.Buff_Irradiated, 300);
             target.AddBuff(BuffID.Poisoned, 60);
         }
     }

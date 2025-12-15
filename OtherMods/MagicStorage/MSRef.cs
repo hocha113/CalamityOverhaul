@@ -6,7 +6,6 @@ using MagicStorage.Components;
 using MagicStorage.UI.States;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;

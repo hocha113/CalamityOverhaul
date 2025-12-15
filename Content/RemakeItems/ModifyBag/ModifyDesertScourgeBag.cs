@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.TreasureBags;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Rogue;
 using Terraria;
@@ -11,12 +8,12 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
     internal class ModifyDesertScourgeBag : BaseModifyBag
     {
-        public override int TargetID => ModContent.ItemType<DesertScourgeBag>();
+        public override int TargetID => CWRID.Item_DesertScourgeBag;
         public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ModContent.ItemType<UnderTheSand>(), 10);
-            itemLoot.Add(ModContent.ItemType<WastelandFang>(), 10);
-            itemLoot.Add(ModContent.ItemType<SandDagger>(), 10);
-            itemLoot.Add(ModContent.ItemType<BurntSienna>(), 10);
+            itemLoot.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);
+            itemLoot.SimpleAdd(ModContent.ItemType<WastelandFang>(), 10);
+            itemLoot.SimpleAdd(ModContent.ItemType<SandDagger>(), 10);
+            itemLoot.SimpleAdd(CWRID.Item_BurntSienna, 10);
         }
     }
 }

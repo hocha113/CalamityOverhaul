@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
@@ -74,10 +73,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             IItemDropRuleCondition condition = new DropInDeathMode();
             LeadingConditionRule rule = new LeadingConditionRule(condition);
-            rule.Add(ModContent.ItemType<DestroyersBlade>(), 4);
-            rule.Add(ModContent.ItemType<StaffoftheDestroyer>(), 4);
-            rule.Add(ModContent.ItemType<Observer>(), 4);
-            rule.Add(ModContent.ItemType<ForgedLash>(), 4);
+            rule.SimpleAdd(ModContent.ItemType<DestroyersBlade>(), 4);
+            rule.SimpleAdd(ModContent.ItemType<StaffoftheDestroyer>(), 4);
+            rule.SimpleAdd(ModContent.ItemType<Observer>(), 4);
+            rule.SimpleAdd(ModContent.ItemType<ForgedLash>(), 4);
             npcLoot.Add(rule);
         }
 

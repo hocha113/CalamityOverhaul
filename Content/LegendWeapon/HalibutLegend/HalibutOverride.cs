@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 目标ID
         /// </summary>
-        public static int ID => GetCalItemID("HalibutCannon");
+        public static int ID => CWRID.Item_HalibutCannon;
         /// <summary>
         /// 目标ID
         /// </summary>

@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
@@ -17,8 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class SetPosingStarm : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        //让我们疯狂起来!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public FireParticleSet FireDrawer = null;
         private float modeings = 5000;
         private float sengs;
         private float drawTime;
@@ -84,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
 
                     if (!VaultUtils.isServer && !p.dead && p.active) {
-                        p.Calamity().infiniteFlight = true;
+                        p.SetPlayerInfiniteFlight(true);
                     }
 
                     if (p.Distance(Projectile.Center) > modeings) {
@@ -166,7 +162,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     pCOverride.NetAIWorkSend = true;
                 }
             }
-            FireDrawer = null;
         }
 
         public override void PostDraw(Color lightColor) {
@@ -203,33 +198,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 , DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
             Main.spriteBatch.Draw(CWRAsset.Placeholder_White.Value, rekt, null, default, 0f, CWRAsset.Placeholder_White.Value.Size() / 2, 0, 0f);
-            Main.spriteBatch.ExitShaderRegion();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             Color fireColor = Color.DarkRed;
             Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), fireColor * sengs * 0.8f);
-
-            if (sengs > 0) {
-                float num1 = Main.screenWidth * 0.6f;
-                if (num1 < 10f) {
-                    num1 = 10f;
-                }
-
-                float num2 = Main.screenWidth / 100f;
-                if (num2 > 2.75f) {
-                    num2 = 2.75f;
-                }
-
-                if (FireDrawer is null) {
-                    FireDrawer = new FireParticleSet(int.MaxValue, 1, Color.Gold * 1.25f, Color.Red, num1, num2);
-                }
-
-                FireDrawer?.DrawSet(Main.LocalPlayer.Bottom - Vector2.UnitY * 122);
-                FireDrawer?.Update();
-            }
-            else {
-                FireDrawer = null;
-            }
         }
     }
 }

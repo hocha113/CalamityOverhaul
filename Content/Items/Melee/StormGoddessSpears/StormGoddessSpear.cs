@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -71,8 +69,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
-                .AddIngredient<StormRuler>()
-                .AddIngredient<StormlionMandible>(5)
+                .AddIngredient(CWRID.Item_StormRuler)
+                .AddIngredient(CWRID.Item_StormlionMandible, 5)
                 .AddIngredient(ItemID.LunarBar, 15)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();

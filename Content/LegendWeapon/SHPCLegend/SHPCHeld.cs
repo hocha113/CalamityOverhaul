@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Terraria;
 using Terraria.Audio;
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     internal class SHPCHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
-        public override int TargetID => ModContent.ItemType<SHPC>();
+        public override int TargetID => CWRID.Item_SHPC;
         private int Level => SHPCOverride.GetLevel(Item);
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
             }
             else if (onFireR) {
-                SoundEngine.PlaySound(CommonCalamitySounds.LaserCannonSound, Projectile.Center);
+                SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/LaserCannon") { Volume = 0.85f }, Projectile.Center);
             }
         }
 

@@ -77,6 +77,22 @@ namespace CalamityOverhaul
                 _ => CWRID.Proj_GalaxyBlast,
             };
         }
+        public static void UpdateRogueStealth(Player player) {
+            bool noAvailable = false;
+            CalamityPlayer calPlayer = player.Calamity();
+            if (CWRMod.Instance.narakuEye != null) {
+                noAvailable = (bool)CWRMod.Instance.narakuEye.Call(player);
+                if (calPlayer.StealthStrikeAvailable()) {
+                    noAvailable = false;
+                }
+            }
+            if (!noAvailable) {
+                calPlayer.rogueStealth = 0;
+                if (calPlayer.stealthUIAlpha > 0.02f) {
+                    calPlayer.stealthUIAlpha -= 0.02f;
+                }
+            }
+        }
         public static void SummonSupCal(Vector2 spawnPos) {
             SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
@@ -290,6 +306,7 @@ namespace CalamityOverhaul
         public static ref float RefPlayerRogueStealthMax(this Player player) => ref player.Calamity().rogueStealthMax;
         public static bool GetPlayerZoneSulphur(this Player player) => player.Calamity().ZoneSulphur;
         public static bool GetPlayerZoneAbyss(this Player player) => player.Calamity().ZoneAbyss;
+        public static bool GetPlayerProfanedCrystalBuffs(this Player player) => player.Calamity().profanedCrystalBuffs;
         public static void SetPlayerDashID(this Player player, string value) => player.Calamity().DashID = value;
         public static void SetNSMBPlayer(Player player) {
             CalamityPlayer calPlayer = player.Calamity();
@@ -310,6 +327,35 @@ namespace CalamityOverhaul
                 Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
                 _ => 0                                                         //默认值：无效尘埃类型
             };
+        }
+        public static void DrawStarTrail(Projectile projectile, Color outer, Color inner, float auraHeight = 10f) => CalamityUtils.DrawStarTrail(projectile, outer, inner, auraHeight);
+        public static int GetProjectileDamage(Projectile projectile, int projType) => projectile.GetProjectileDamage(projType);
+        public static void SpawnDestroyerPRTEffect(NPC npc, float value, float value2, int idleTime) {
+            if (value != 0 || Main.dedServ) {
+                return;
+            }
+            Color telegraphColor;
+            Particle spark;
+
+            switch (value2 % 3) {
+                case 0:
+                    telegraphColor = Color.Red;
+                    spark = new DestroyerReticleTelegraph(npc, telegraphColor, 1.5f, 0.15f, idleTime + 20);
+                    GeneralParticleHandler.SpawnParticle(spark);
+                    break;
+                case 1:
+                    telegraphColor = Color.Green;
+                    spark = new DestroyerSparkTelegraph(npc, telegraphColor * 2f, Color.White, 3f, idleTime + 20,
+                            Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
+                    GeneralParticleHandler.SpawnParticle(spark);
+                    break;
+                case 2:
+                    telegraphColor = Color.Cyan;
+                    spark = new DestroyerSparkTelegraph(npc, telegraphColor * 2f, Color.White, 3f, idleTime + 20,
+                            Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
+                    GeneralParticleHandler.SpawnParticle(spark);
+                    break;
+            }
         }
     }
 }

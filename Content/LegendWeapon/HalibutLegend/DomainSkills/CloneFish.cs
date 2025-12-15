@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -459,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 cp.eyeColor = drawColor;
 
                 if (cp.itemAnimation > 0) {
-                    Texture2D gun = TextureAssets.Item[ModContent.ItemType<HalibutCannon>()].Value;
+                    Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
                     Main.spriteBatch.Draw(gun, cp.Center - Main.screenPosition + cp.itemRotation.ToRotationVector2() * 42 * cp.direction, null, Color.BlueViolet * 0.75f
                         , cp.itemRotation, gun.Size() / 2, 1f, cp.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 }

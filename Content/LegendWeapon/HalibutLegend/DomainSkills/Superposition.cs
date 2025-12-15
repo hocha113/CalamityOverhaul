@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.DamageModify;
+﻿using CalamityOverhaul.Content.DamageModify;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -802,8 +801,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadItem(ModContent.ItemType<HalibutCannon>());
-            Texture2D texture = TextureAssets.Item[ModContent.ItemType<HalibutCannon>()].Value;
+            Main.instance.LoadItem(HalibutOverride.ID);
+            Texture2D texture = TextureAssets.Item[HalibutOverride.ID].Value;
             Vector2 origin = texture.Size() / 2f;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 

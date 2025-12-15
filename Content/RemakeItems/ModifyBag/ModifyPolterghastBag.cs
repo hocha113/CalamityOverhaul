@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.TreasureBags;
-using CalamityOverhaul.Content.Items.Summon;
+﻿using CalamityOverhaul.Content.Items.Summon;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -8,9 +6,9 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
     internal class ModifyPolterghastBag : BaseModifyBag
     {
-        public override int TargetID => ModContent.ItemType<PolterghastBag>();
+        public override int TargetID => CWRID.Item_PolterghastBag;
         public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ModContent.ItemType<GhostFireWhip>(), 4);
+            itemLoot.SimpleAdd(ModContent.ItemType<GhostFireWhip>(), 4);
         }
     }
 }

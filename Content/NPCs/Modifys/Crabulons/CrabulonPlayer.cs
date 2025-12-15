@@ -1,6 +1,4 @@
-﻿using CalamityMod.NPCs.Crabulon;
-using CalamityMod.Systems;
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             ModifyCrabulons.Clear();
             foreach (var npc in Main.ActiveNPCs) {
-                if (npc.boss || npc.type != ModContent.NPCType<Crabulon>()) {
+                if (npc.boss || npc.type != CWRID.NPC_Crabulon) {
                     continue;
                 }
                 ModifyCrabulons.Add(npc.GetOverride<ModifyCrabulon>());
@@ -78,13 +76,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
-            yield return typeof(CrabulonMusicScene).FullName;
+            yield return "CalamityMod.Systems.CrabulonMusicScene";
         }
         public override bool? PreIsSceneEffectActive(ModSceneEffect modSceneEffect) {
             if (CrabulonIndex == -1) {
                 return false;//直接返回，这里算作一次性能优化
             }
-            int crabulon = ModContent.NPCType<Crabulon>();
+            int crabulon = CWRID.NPC_Crabulon;
             foreach (var npc in Main.ActiveNPCs) {
                 if (!npc.boss) {//这里可以排除掉被驯服的菌生蟹，因为被驯服后不会被算作Boss
                     continue;

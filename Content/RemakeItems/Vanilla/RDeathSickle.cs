@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -146,12 +145,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 
             if (outFive) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
-                Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
                 Main.EntitySpriteDraw(color: Color.BlueViolet * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition
                     , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5 + MathHelper.Pi
                     , scale: Projectile.scale * 0.6f, effects: SpriteEffects.None);
-                Main.spriteBatch.ExitShaderRegion();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                    , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
             }
         }
     }

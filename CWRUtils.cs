@@ -12,6 +12,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Events;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -235,6 +236,16 @@ namespace CalamityOverhaul
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? CWRRef.GetTrueMeleeDamageClass() : DamageClass.Melee;
 
         public static bool IsWaterBucket(this Item item) => item.type == ItemID.WaterBucket || item.type == ItemID.BottomlessBucket;
+
+        public static IItemDropRule SimpleAdd(this ILoot loot, int itemID, int dropRateInt = 1, int minQuantity = 1, int maxQuantity = 1) {
+            var rule = ItemDropRule.Common(itemID, dropRateInt, minQuantity, maxQuantity);
+            return loot.Add(rule);
+        }
+
+        public static IItemDropRule SimpleAdd(this LeadingConditionRule mainRule, int itemID, int dropRateInt = 1, int minQuantity = 1, int maxQuantity = 1, bool hideLootReport = false) {
+            var rule = ItemDropRule.Common(itemID, dropRateInt, minQuantity, maxQuantity);
+            return mainRule.OnSuccess(rule, hideLootReport);
+        }
 
         /// <summary>
         /// 查询指定物品数量

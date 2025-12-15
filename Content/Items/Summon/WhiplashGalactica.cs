@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,8 +26,8 @@ namespace CalamityOverhaul.Content.Items.Summon
         public override void AddRecipes() {
             _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
-                .AddIngredient<CosmiliteBar>(5)
-                .AddTile(ModContent.TileType<CosmicAnvil>())
+                .AddIngredient(CWRID.Item_CosmiliteBar, 5)
+                .AddTile(CWRID.Tile_CosmicAnvil)
                 .Register();
         }
     }
