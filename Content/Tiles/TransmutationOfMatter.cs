@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileProcessors;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using CalamityOverhaul.OtherMods.MagicStorage;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -95,6 +97,11 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
+            if (SupertableUI.Instance.Active && SupertableUI.TramTP is null && MSRef.Has) {//如果是这种状态，说明正在进行魔法存储的联动启动
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f });
+                return false;
+            }
+
             //获取图块的左上角位置
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return true;

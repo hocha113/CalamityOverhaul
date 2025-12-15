@@ -12,20 +12,15 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 快捷操作管理器 - 一键放置、一键取出、高亮显示等
+    /// 快捷操作管理器，一键放置、一键取出、高亮显示等
     /// </summary>
     internal class QuickActionsManager
     {
-        private readonly SupertableUI _mainUI;
-        private readonly SupertableController _controller;
-
         private QuickPlaceButton _quickPlaceButton;
         private QuickTakeButton _quickTakeButton;
         private HighlightButton _highlightButton;
 
         public QuickActionsManager(SupertableUI mainUI, SupertableController controller) {
-            _mainUI = mainUI;
-            _controller = controller;
             _quickPlaceButton = new QuickPlaceButton(mainUI, controller);
             _quickTakeButton = new QuickTakeButton(mainUI, controller);
             _highlightButton = new HighlightButton(mainUI, controller);

@@ -45,25 +45,25 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                 element.Update(_mainUI, this);
             }
 
-            //修复侧边栏高度计算 - 应该是固定高度，用于显示区域
-            int visibleSlots = 7; //一次显示7个配方
-            _sidebarHeight = visibleSlots * 64;
-
-            MouseState currentMouseState = Mouse.GetState();
-            int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
-            _scrollValue -= scrollDelta;
-
-            //修复滚动范围计算
-            int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
-            _scrollValue = MathHelper.Clamp(_scrollValue, 0, maxScroll);
-
-            //对齐到64的倍数，使滚动更流畅
-            _scrollValue = ((int)_scrollValue / 64) * 64;
-            _oldMouseState = currentMouseState;
-
             _hitbox = new Rectangle((int)drawPosition.X - 4, (int)drawPosition.Y, 72, _sidebarHeight);
 
             if (_hitbox.Intersects(_mainUI.MouseHitBox)) {
+                //修复侧边栏高度计算，应该是固定高度，用于显示区域
+                int visibleSlots = 7; //一次显示7个配方
+                _sidebarHeight = visibleSlots * 64;
+
+                MouseState currentMouseState = Mouse.GetState();
+                int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
+                _scrollValue -= scrollDelta;
+
+                //修复滚动范围计算
+                int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
+                _scrollValue = MathHelper.Clamp(_scrollValue, 0, maxScroll);
+
+                //对齐到64的倍数，使滚动更流畅
+                _scrollValue = ((int)_scrollValue / 64) * 64;
+                _oldMouseState = currentMouseState;
+
                 Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/RecipeSidebar");
             }
         }

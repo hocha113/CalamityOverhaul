@@ -1,9 +1,12 @@
-﻿using MagicStorage;
+﻿using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using MagicStorage;
 using MagicStorage.Common.Systems;
 using MagicStorage.Components;
 using MagicStorage.UI.States;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -15,7 +18,17 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
     internal class MSRef
     {
         internal static bool Has => CWRMod.Instance.magicStorage != null && CWRMod.Instance.magicStorage.Version >= new Version(0, 7, 0, 11);
-
+        //缓存反射字段，避免每帧查找造成的严重卡顿
+        private static FieldInfo _recipePanelField;
+        internal static FieldInfo RecipePanelField {
+            get {
+                if (!Has) {
+                    return null;
+                }
+                _recipePanelField ??= typeof(CraftingUIState).GetField("recipePanel", BindingFlags.Instance | BindingFlags.NonPublic);
+                return _recipePanelField;
+            }
+        }
         private static MethodInfo _depositItemMethod;
         [JITWhenModsEnabled("MagicStorage")]
         internal static MethodInfo DepositItemMethod {
@@ -64,6 +77,32 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         [JITWhenModsEnabled("MagicStorage")]
+        public static IEnumerable<Item> GetStoredItems() {
+            StoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<StoragePlayer>();
+            TEStorageHeart heart = storagePlayer.GetStorageHeart();
+
+            if (heart != null) {
+                return heart.GetStoredItems();
+            }
+
+            return [];
+        }
+
+        [JITWhenModsEnabled("MagicStorage")]
+        public static long GetItemCount(int itemType) {
+            var items = GetStoredItems();
+            long count = 0;
+
+            foreach (var item in items) {
+                if (item.type == itemType) {
+                    count += item.stack;
+                }
+            }
+
+            return count;
+        }
+
+        [JITWhenModsEnabled("MagicStorage")]
         internal static List<Item> GetCraftingAccessItems(Player player) {
             //获取当前玩家的 MagicStorage 玩家实例
             StoragePlayer storagePlayer = player.GetModPlayer<StoragePlayer>();
@@ -75,26 +114,77 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         [JITWhenModsEnabled("MagicStorage")]
-        internal static Rectangle GetRecipePanelHitBox() {
-            //检查制作界面是否打开
-            if (MagicUI.IsCraftingUIOpen()) {
-                //获取 UI 实例
-                CraftingUIState craftingUI = (CraftingUIState)MagicUI.craftingUI;
+        public static bool TryGetCraftingPagePosition(out Vector2 position, out CalculatedStyle dimensions) {
+            position = Vector2.Zero;
+            dimensions = default;
 
-                //使用反射获取 protected 字段 'recipePanel' (这是右侧显示配方详情的面板)
-                FieldInfo recipePanelField = typeof(CraftingUIState).GetField("recipePanel", BindingFlags.Instance | BindingFlags.NonPublic);
-                UIElement recipePanel = (UIElement)recipePanelField.GetValue(craftingUI);
+            if (!MagicUI.IsCraftingUIOpen() || MagicUI.craftingUI == null)
+                return false;
 
-                if (recipePanel != null) {
-                    //获取配方面板在屏幕上的绝对矩形区域
-                    return InterfaceHelper.GetFullRectangle(recipePanel);
-                }
+            CraftingUIState craftingUI = (CraftingUIState)MagicUI.craftingUI;
+            UIElement recipePanel = (UIElement)RecipePanelField.GetValue(craftingUI);
+
+            if (recipePanel != null) {
+                dimensions = recipePanel.GetDimensions();
+                position = new Vector2(dimensions.X + dimensions.Width, dimensions.Y);
+                return true;
             }
-            return default;
+
+            return false;
         }
 
         internal static void UpdateUI() {
+            if (!Has) {
+                return;
+            }
 
+            //检查魔法存储的制作界面是否打开
+            bool magicStorageOpen = MagicUI.IsCraftingUIOpen();
+
+            if (magicStorageOpen) {
+                //获取当前制作站列表
+                List<Item> stations = GetCraftingAccessItems(Main.LocalPlayer);
+                bool hasSupertable = false;
+                int targetType = ModContent.ItemType<TransmutationOfMatterItem>();
+
+                foreach (var item in stations) {
+                    if (item.type == targetType) {
+                        hasSupertable = true;
+                        break;
+                    }
+                }
+
+                if (hasSupertable) {
+                    //如果终焉工作台UI没打开，则打开它
+                    if (!SupertableUI.Instance.Active) {
+                        SupertableUI.TramTP = null;
+                        SupertableUI.Instance.Active = true;
+                        if (TryGetCraftingPagePosition(out var pos, out var dimensions)) {
+                            SupertableUI.Instance.DrawPosition = pos;
+                        }
+                    }
+                    //如果已经打开，并且来自某个实体，先关闭，防止污染数据
+                    else {
+                        SupertableUI.TramTP?.CloseUI(Main.LocalPlayer);
+                    }
+                }
+                else if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
+                    //如果不包含终焉工作台，且UI是因为联动打开的（TramTP为null），则关闭
+                    SupertableUI.Instance.Active = false;
+                }
+            }
+            else if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
+                //如果魔法存储界面关闭了，且UI是因为联动打开的，则关闭
+                SupertableUI.Instance.Active = false;
+            }
+        }
+    }
+
+    internal class MSRefSystem : ModSystem
+    {
+        public override void UpdateUI(GameTime gameTime) {
+            if (MSRef.Has)
+                MSRef.UpdateUI();
         }
     }
 }

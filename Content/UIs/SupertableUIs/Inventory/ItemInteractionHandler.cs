@@ -1,3 +1,4 @@
+using CalamityOverhaul.OtherMods.MagicStorage;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -151,6 +152,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
                         if (PlaceItemFromInventory(ref slots[i], backpackItem)) {
                             placedAny = true;
                             break;
+                        }
+                    }
+                }
+
+                //如果有魔法存储，并且已经是联动启用模式
+                if (MSRef.Has && SupertableUI.Instance.Active && SupertableUI.TramTP is null) {
+                    foreach (var backpackItem in MSRef.GetStoredItems()) {
+                        if (backpackItem.type == previewItem.type && backpackItem.type != ItemID.None) {
+                            if (PlaceItemFromInventory(ref slots[i], backpackItem)) {
+                                placedAny = true;
+                                break;
+                            }
                         }
                     }
                 }

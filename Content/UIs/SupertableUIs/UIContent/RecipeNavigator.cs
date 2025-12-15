@@ -10,7 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 配方导航器 - 用于浏览和预览配方
+    /// 配方导航器，用于浏览和预览配方
     /// </summary>
     internal class RecipeNavigator
     {

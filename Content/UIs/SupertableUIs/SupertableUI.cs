@@ -19,11 +19,11 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// Å·Ã×ÇÑÎïÖÊ¾ÛºÏÒÇUI
+    /// æ¬§ç±³èŒ„ç‰©è´¨èšåˆä»ªUI
     /// </summary>
     public class SupertableUI : UIHandle, ICWRLoader
     {
-        #region ¾²Ì¬Êı¾İºÍÊµÀı
+        #region é™æ€æ•°æ®å’Œå®ä¾‹
 
         public static SupertableUI Instance => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
         public static string[][] RpsDataStringArrays { get; set; } = [];
@@ -32,10 +32,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<RecipeData> AllRecipes { get; set; } = [];
         public static int AllRecipesVanillaContentCount { get; private set; }
         public static TramModuleTP TramTP { get; set; }
-
+        public static Item[] GlobalItems { get; set; }
         #endregion
 
-        #region ºËĞÄ×é¼ş
+        #region æ ¸å¿ƒç»„ä»¶
 
         internal SupertableController _controller;
         internal RecipeSidebarManager _sidebarManager;
@@ -44,21 +44,21 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal QuickActionsManager _quickActionsManager;
 
         /// <summary>
-        /// »ñÈ¡Åä·½µ¼º½Æ÷£¨¹©²à±ßÀ¸µÈ×é¼şÊ¹ÓÃ£©
+        /// è·å–é…æ–¹å¯¼èˆªå™¨ï¼ˆä¾›ä¾§è¾¹æ ç­‰ç»„ä»¶ä½¿ç”¨ï¼‰
         /// </summary>
         internal RecipeNavigator RecipeNavigator => _recipeNavigator;
 
         /// <summary>
-        /// »ñÈ¡²à±ßÀ¸¹ÜÀíÆ÷£¨¹©Åä·½µ¼º½Æ÷µÈ×é¼şÊ¹ÓÃ£©
+        /// è·å–ä¾§è¾¹æ ç®¡ç†å™¨ï¼ˆä¾›é…æ–¹å¯¼èˆªå™¨ç­‰ç»„ä»¶ä½¿ç”¨ï¼‰
         /// </summary>
         internal RecipeSidebarManager SidebarManager => _sidebarManager;
 
         #endregion
 
-        #region UI×´Ì¬×Ö¶Î
+        #region UIçŠ¶æ€å­—æ®µ
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°UIÖĞµÄÎïÆ·Êı×é
+        /// è·å–å½“å‰UIä¸­çš„ç‰©å“æ•°ç»„
         /// </summary>
         public Item[] Items {
             get => _controller.SlotManager.Slots;
@@ -81,9 +81,21 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override bool Active {
             get => player.CWR().SupertableUIStartBool || _controller.AnimationController.OpenProgress > 0;
             set {
+                bool lastValue = player.CWR().SupertableUIStartBool;
                 player.CWR().SupertableUIStartBool = value;
 
-                //Èç¹ûÉèÖÃÎª¹Ø±Õ£¬Á¢¼´Çå³ıÑÓ³Ù²¢¿ªÊ¼¹Ø±Õ¶¯»­
+                //å¦‚æœå¼€å¯UIä¸”æ²¡æœ‰ç»‘å®šå®ä½“ï¼Œåˆ™åŠ è½½å…¨å±€ç‰©å“
+                if (value && !lastValue && TramTP == null) {
+                    if (GlobalItems == null) {
+                        GlobalItems = new Item[SupertableConstants.TOTAL_SLOTS];
+                        for (int i = 0; i < GlobalItems.Length; i++) {
+                            GlobalItems[i] = new Item();
+                        }
+                    }
+                    Items = GlobalItems;
+                }
+
+                //å¦‚æœè®¾ä¸ºå…³é—­ï¼Œè¯·æ±‚å»¶è¿Ÿå…³é—­åŠ¨ç”»
                 if (!value) {
                     _controller.AnimationController.RequestDelayedClose(0);
                     TramTP?.CloseUI(player);
@@ -95,18 +107,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region ÉúÃüÖÜÆÚ·½·¨
+        #region ç”Ÿå‘½å‘¨æœŸæ–¹æ³•
 
-        void ICWRLoader.SetupData() {//²»ÒªÊÔÍ¼ÔÚÕâ¸ö½Ó¿Ú¹³×ÓÀïÊ¹ÓÃthis£¬¶ÔÓÚÊµÀıÀ´½²£¬thisÖ»ÊÇ½Ó¿Ú×Ô¼ºnewµÄÊµÀı£¬ºÍUIHandleLoader¹ÜÀíµÄÊµÀıÎŞ¹Ø
+        void ICWRLoader.SetupData() {//ä¸è¦è¯•å›¾åœ¨è¿™ä¸ªæ¥å£é’©å­é‡Œä½¿ç”¨thisï¼Œå¯¹äºå®ä¾‹æ¥è®²ï¼Œthisåªæ˜¯æ¥å£è‡ªå·±newçš„å®ä¾‹ï¼Œå’ŒUIHandleLoaderç®¡ç†çš„å®ä¾‹æ— å…³
             Instance._controller = new SupertableController();
             Instance._sidebarManager = new RecipeSidebarManager(Instance);
             Instance._recipeNavigator = new RecipeNavigator(Instance, Instance._controller);
             Instance._dragController = new DragController(Instance);
             Instance._quickActionsManager = new QuickActionsManager(Instance, Instance._controller);
-
+            //åˆå§‹åŒ–å…¨å±€ç‰©å“å­˜å‚¨
+            GlobalItems = new Item[SupertableConstants.TOTAL_SLOTS];
+            for (int i = 0; i < GlobalItems.Length; i++) {
+                GlobalItems[i] = new Item();
+            }
             LoadRecipe();
 
-            //³õÊ¼»¯²à±ßÀ¸µÄÅä·½ÔªËØ
+            //åˆå§‹åŒ–ä¾§è¾¹æ çš„é…æ–¹å…ƒç´ 
             Instance._sidebarManager.InitializeRecipeElements();
             Instance._recipeNavigator.LoadAllRecipes();
         }
@@ -118,6 +134,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Instance._dragController = null;
             Instance._quickActionsManager = null;
             TramTP = null;
+            GlobalItems = null;
             RpsDataStringArrays = [];
             OtherRpsData_ZenithWorld_StringList = [];
             ModCall_OtherRpsData_StringList = [];
@@ -125,6 +142,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public override void OnEnterWorld() {
+            //é‡ç½®å…¨å±€ç‰©å“å­˜å‚¨
+            if (GlobalItems != null) {
+                for (int i = 0; i < GlobalItems.Length; i++) {
+                    GlobalItems[i] = new Item();
+                }
+            }
             _controller?.AnimationController.ForceClose();
         }
 
@@ -140,7 +163,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region ¾²Ì¬Åä·½¼ÓÔØ
+        #region é™æ€é…æ–¹åŠ è½½
 
         public static void LoadRecipe() {
             Type type = typeof(SupertableRecipeData);
@@ -183,7 +206,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             AllRecipesVanillaContentCount = AllRecipes.Count;
             CWRMod.Instance.Logger.Info($"Loaded recipe count: {AllRecipesVanillaContentCount}");
 
-            //³õÊ¼»¯¿ØÖÆÆ÷µÄÅä·½ÒıÇæ
+            //åˆå§‹åŒ–æ§åˆ¶å™¨çš„é…æ–¹å¼•æ“
             Instance?._controller?.InitializeRecipes(AllRecipes);
         }
 
@@ -193,7 +216,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             SetZenithWorldRecipesData();
 
-            //ÖØĞÂ³õÊ¼»¯²à±ßÀ¸Åä·½ÔªËØ
+            //é‡æ–°åˆå§‹åŒ–ä¾§è¾¹æ é…æ–¹å…ƒç´ 
             Instance?._sidebarManager?.InitializeRecipeElements();
             Instance?._recipeNavigator?.LoadAllRecipes();
         }
@@ -208,10 +231,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region ¸üĞÂÂß¼­
+        #region æ›´æ–°é€»è¾‘
 
         private int _autoSaveTimer;
-        private const int AUTO_SAVE_INTERVAL = 300; //Ã¿300Ö¡£¨5Ãë£©×Ô¶¯±£´æÒ»´Î
+        private const int AUTO_SAVE_INTERVAL = 300; //æ¯300å¸§ï¼ˆ5ç§’ï¼‰è‡ªåŠ¨ä¿å­˜ä¸€æ¬¡
 
         public override void Update() {
             if (_controller == null) return;
@@ -220,25 +243,25 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             UpdateHoveredCell();
 
             int hoveredIndex = _hoveredCell.IsValid() ? _hoveredCell.ToIndex() : -1;
-            //ÕâÀïÓÃ player.CWR().SupertableUIStartBool ¶ø²»ÊÇËûÂèµÄ Active
+            //è¿™é‡Œç”¨ player.CWR().SupertableUIStartBool è€Œä¸æ˜¯ä»–å¦ˆçš„ Active
             _controller.UpdateAnimations(player.CWR().SupertableUIStartBool, hoveredIndex);
 
-            //ÏÈ´¦ÀíÍÏ×§£¬ÒòÎªËü¿ÉÄÜ»á¸Ä±äDrawPosition
+            //å…ˆå¤„ç†æ‹–æ‹½ï¼Œå› ä¸ºå®ƒå¯èƒ½ä¼šæ”¹å˜DrawPosition
             _dragController?.Update();
 
-            //Èç¹ûÕıÔÚÍÏ×§£¬Õ¼ÓÃÊó±ê½Ó¿Ú
+            //å¦‚æœæ­£åœ¨æ‹–æ‹½ï¼Œå ç”¨é¼ æ ‡æ¥å£
             if (_dragController != null && _dragController.IsDragging) {
                 player.mouseInterface = true;
             }
 
-            //È»ºó´¦ÀíÆäËûÊäÈë
+            //ç„¶åå¤„ç†å…¶ä»–è¾“å…¥
             HandleInput();
 
             _sidebarManager?.Update();
             _recipeNavigator?.Update();
             _quickActionsManager?.Update();
 
-            //¶¨ÆÚ×Ô¶¯±£´æµ½TileProcessor
+            //å®šæœŸè‡ªåŠ¨ä¿å­˜åˆ°TileProcessor
             if (Active && TramTP != null) {
                 _autoSaveTimer++;
                 if (_autoSaveTimer >= AUTO_SAVE_INTERVAL) {
@@ -300,17 +323,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region ÊäÈë´¦Àí
+        #region è¾“å…¥å¤„ç†
 
         private void HandleInput() {
-            //´¦Àí¹Ø±Õ°´Å¥ - Ìá¸ßÓÅÏÈ¼¶
+            //å¤„ç†å…³é—­æŒ‰é’® - æé«˜ä¼˜å…ˆçº§
             if (OnCloseButton) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = SupertableConstants.SOUND_PITCH_CLOSE });
-                    //Á¢¼´¹Ø±ÕUI²¢´¥·¢¹Ø±Õ¶¯»­
+                    //ç«‹å³å…³é—­UIå¹¶è§¦å‘å…³é—­åŠ¨ç”»
                     Active = false;
-                    _controller.AnimationController.RequestDelayedClose(0); //Á¢¼´¿ªÊ¼¹Ø±Õ¶¯»­
+                    _controller.AnimationController.RequestDelayedClose(0); //ç«‹å³å¼€å§‹å…³é—­åŠ¨ç”»
                     SyncToNetworkIfNeeded();
                 }
                 return;
@@ -381,7 +404,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region »æÖÆ
+        #region ç»˜åˆ¶
 
         public override void Draw(SpriteBatch spriteBatch) {
             float alpha = _controller.AnimationController.OpenProgress;
@@ -519,13 +542,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region ÍøÂçÍ¬²½
+        #region ç½‘ç»œåŒæ­¥
 
         public static void SyncToNetworkIfNeeded() {
             if (TramTP != null && TramTP.Active) {
-                //¶¨ÆÚ±£´æUIÖĞµÄÎïÆ·Êı¾İ»ØTileProcessor
+                //å®šæœŸä¿å­˜UIä¸­çš„ç‰©å“æ•°æ®å›TileProcessor
                 TramTP.SaveItemsFromUI();
                 TramTP?.SendData();
+            }
+            else {
+                GlobalItems = [.. Instance.Items];
             }
         }
 
