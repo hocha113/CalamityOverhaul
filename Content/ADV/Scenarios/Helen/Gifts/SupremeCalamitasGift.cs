@@ -62,5 +62,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
             return !EbnEffect.IsActive;//防止冲突
         }
+        public override bool CanSpawned() {
+            return !EbnPlayer.IsConquered(Main.LocalPlayer);//防止冲突，如果玩家走的女巫线，这个礼物场景就不触发
+        }
     }
 }

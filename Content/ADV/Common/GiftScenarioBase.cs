@@ -20,7 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Common
 
         public override void OnKill(NPC npc) {
             if (!CWRRef.GetBossRushActive()//Boss Rush时不触发礼物场景
-                && GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var giftScenarioBase)) {
+                && GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var giftScenarioBase)
+                && giftScenarioBase.CanSpawned()) {
                 GiftScenarioBase.SpawnedDic[giftScenarioBase] = true;
             }
         }
@@ -63,7 +64,22 @@ namespace CalamityOverhaul.Content.ADV.Common
             BossIDToInds.Clear();
             pendingTimers.Clear();
         }
+
+        /// <summary>
+        /// 附加生成条件
+        /// </summary>
+        /// <param name="save"></param>
+        /// <param name="halibutPlayer"></param>
+        /// <returns></returns>
         protected virtual bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
+            return true;
+        }
+
+        /// <summary>
+        /// 是否允许生成该礼物场景
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool CanSpawned() {
             return true;
         }
 
