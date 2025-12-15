@@ -8039,5 +8039,35 @@ QuestLogs: {
 
 			DetailedDescription: 在这片宁静的地下海中，嘉登遗留了一些关于棱晶能源的研究。潜入水下，取回那些宝贵的数据。
 		}
+
+		AquaticScourgeQuest: {
+			DisplayName: 渊海灾虫
+			Description: 击败渊海灾虫
+			QuestObjective.Description: 击败渊海灾虫
+			QuestReward.Description: 酸蚀化石
+			DetailedDescription: 曾经是清澈海洋中的和平巨兽，如今被硫磺海的剧毒所扭曲。在这片被污染的酸蚀海域中，小心它突如其来的冲撞和剧毒的云雾。
+		}
+
+		QueenSlimeQuest: {
+			DisplayName: 史莱姆皇后
+			Description: 击败史莱姆皇后
+			QuestObjective.Description: 击败史莱姆皇后
+			QuestReward.Description: 10个光明之魂
+			DetailedDescription: 神圣之地的水晶女皇，统御着所有圣洁的凝胶生物。比起她的配偶，她更加敏捷且致命。准备好迎接一场华丽的弹幕洗礼吧。
+		}
+
+		MachineRebellionQuest: {
+			DisplayName: 机械暴乱
+			Description: 击败机械三王EX
+			QuestObjective.Description: 击败机械三王EX
+
+			QuestReward: {
+				Description: 恐惧之魂EX
+				Description2: 力量之魂EX
+				Description3: 视域之魂EX
+			}
+
+			DetailedDescription: 那些被遗弃的实验品并未停止运作，反而通过自我修复进化出了更恐怖的形态。原本用于守护的程序已被重写为纯粹的杀戮指令。准备好面对嘉登造物的真正愤怒了吗？
+		}
 	}
 }

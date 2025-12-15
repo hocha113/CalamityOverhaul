@@ -8023,5 +8023,35 @@ QuestLogs: {
 
 			// DetailedDescription: In this tranquil underground sea, Draedon left behind research regarding Prism energy. Dive underwater and retrieve that valuable data.
 		}
+
+		AquaticScourgeQuest: {
+			// DisplayName: Aquatic Scourge
+			// Description: Defeat the Aquatic Scourge
+			// QuestObjective.Description: Defeat the Aquatic Scourge
+			// QuestReward.Description: Corroded Fossils
+			// DetailedDescription: Once a peaceful leviathan of the clear oceans, now twisted by the toxicity of the Sulphurous Sea. In these polluted acidic waters, beware its sudden charges and toxic clouds.
+		}
+
+		QueenSlimeQuest: {
+			// DisplayName: Queen Slime
+			// Description: Defeat Queen Slime
+			// QuestObjective.Description: Defeat Queen Slime
+			// QuestReward.Description: 10 Souls of Light
+			// DetailedDescription: The crystal empress of the Hallow, ruling over all sanctified gelatinous creatures. Compared to her spouse, she is far more agile and deadly. Prepare for a magnificent barrage.
+		}
+
+		MachineRebellionQuest: {
+			// DisplayName: Machine Rebellion
+			// Description: Defeat the Mechanical Trio EX
+			// QuestObjective.Description: Defeat the Mechanical Trio EX
+
+			QuestReward: {
+				// Description: Soul of Fright EX
+				// Description2: Soul of Might EX
+				// Description3: Soul of Sight EX
+			}
+
+			// DetailedDescription: The abandoned experiments have not ceased functioning; instead, they have self-repaired and evolved into far more terrifying forms. Protocols once meant for protection have been overwritten with a singular directive: slaughter. Are you ready to face the true wrath of Draedon's creations?
+		}
 	}
 }

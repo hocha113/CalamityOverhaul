@@ -22,6 +22,7 @@ namespace CalamityOverhaul
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
         public static int Item_Rock => Get();
+        public static int Item_CorrodedFossil => Get();
         public static int Item_LunarianBow => Get();
         public static int Item_PerennialBar => Get();
         public static int Item_UelibloomBar => Get();

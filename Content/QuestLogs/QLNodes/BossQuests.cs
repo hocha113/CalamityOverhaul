@@ -304,6 +304,72 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     // --- 困难模式任务 ---
 
+    public class QueenSlimeQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "史莱姆皇后");
+            Description = this.GetLocalization(nameof(Description), () => "击败史莱姆皇后");
+
+            IconType = QuestIconType.NPC;
+            IconNPCType = NPCID.QueenSlimeBoss;
+            Position = new Vector2(150, 150);
+            AddParent<WallofFleshQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "击败史莱姆皇后"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ItemID.SoulofLight,
+                Amount = 10,
+                Description = this.GetLocalization("QuestReward.Description", () => "10个光明之魂")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            bool isDowned = NPC.downedQueenSlime;
+            Objectives[0].CurrentProgress = isDowned ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class AquaticScourgeQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "渊海灾虫");
+            Description = this.GetLocalization(nameof(Description), () => "击败渊海灾虫");
+
+            IconType = QuestIconType.NPC;
+            IconNPCType = CWRID.NPC_AquaticScourgeHead;
+            Position = new Vector2(0, -150);
+            AddParent<WallofFleshQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "击败渊海灾虫"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = CWRID.Item_CorrodedFossil,
+                Amount = 10,
+                Description = this.GetLocalization("QuestReward.Description", () => "酸蚀化石")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            bool isDowned = InWorldBossPhase.Downed8.Invoke();
+            Objectives[0].CurrentProgress = isDowned ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
     public class CryogenQuest : QuestNode
     {
         public override void SetStaticDefaults() {

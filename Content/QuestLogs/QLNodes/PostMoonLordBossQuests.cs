@@ -1,3 +1,5 @@
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria.ModLoader;
 
@@ -447,6 +449,49 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void UpdateByPlayer() {
             //检查始源妖龙是否被击败
             bool isDowned = InWorldBossPhase.Downed31.Invoke();
+            Objectives[0].CurrentProgress = isDowned ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class MachineRebellionQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "机械暴乱");
+            Description = this.GetLocalization(nameof(Description), () => "击败机械三王EX");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<DraedonsRemote>();
+            Position = new Vector2(0, -200);
+            AddParent<YharonQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Master;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "击败机械三王EX"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<SoulofFrightEX>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description", () => "恐惧之魂EX")
+            });
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<SoulofMightEX>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description2", () => "力量之魂EX")
+            });
+            Rewards.Add(new QuestReward {
+                ItemType = ModContent.ItemType<SoulofSightEX>(),
+                Amount = 5,
+                Description = this.GetLocalization("QuestReward.Description3", () => "视域之魂EX")
+            });
+        }
+
+        public override void UpdateByPlayer() {
+            bool isDowned = CWRWorld.MachineRebellionDowned;
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
