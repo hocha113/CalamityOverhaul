@@ -8100,5 +8100,169 @@ QuestLogs: {
 
 			// DetailedDescription: The abandoned experiments have not ceased functioning; instead, they have self-repaired and evolved into far more terrifying forms. Protocols once meant for protection have been overwritten with a singular directive: slaughter. Are you ready to face the true wrath of Draedon's creations?
 		}
+
+		BuildHouse: {
+			// DisplayName: Master Builder
+			// Description: Build a suitable house
+			// QuestObjective.Description: Build a valid house
+			// QuestReward.Description: Wood
+			// DetailedDescription: Everyone needs a sanctuary. Whether it's the Guide or other wanderers, if you provide a room with furniture, light, and walls, they will offer you their services.
+		}
+
+		CollectEvilOres: {
+			// DisplayName: Evil Ores
+			// Description: Collect evil ores
+			// QuestObjective.Description: Collect Demonite or Crimtane Ore
+			// QuestReward.Description: Torches
+			// DetailedDescription: These ores radiate an ominous aura, feeling cold and clammy to the touch. Though they originate from the world's lesions, they are essential materials for crafting powerful gear.
+		}
+
+		CollectFallenStars: {
+			// DisplayName: Star Collector
+			// Description: Collect Fallen Stars
+			// QuestObjective.Description: Collect Fallen Stars
+			// QuestReward.Description: Lesser Mana Potion
+			// DetailedDescription: They are the tears of the night sky, falling only after dark. Collect them not only to increase your mana capacity but also to use as powerful ammunition or magical material.
+		}
+
+		CollectGems: {
+			// DisplayName: Gem Collector
+			// Description: Collect various gems
+			// QuestObjective.Description: Collect 5 different types of gems
+
+			QuestReward: {
+				Description: {
+					// $parentVal: Shine Potion
+					// Diamond: Diamond
+				}
+			}
+
+			// DetailedDescription: Brilliant crystals buried within the rock layers. Beyond decoration, they are vital for crafting staves and grappling hooks. Gathering gems of different colors might let you piece together the brilliance of a rainbow.
+		}
+
+		CollectHerbs: {
+			// DisplayName: Herb Apprentice
+			// Description: Collect various herbs
+			// QuestObjective.Description: Collect 3 different types of herbs
+			// QuestReward.Description: Bottled Water
+			// DetailedDescription: The foundation of alchemy. Different plants thrive in different environments: deserts, tundras, and even the underworld. Learning to identify them is the first step to becoming a master alchemist.
+		}
+
+		CollectOres: {
+			// DisplayName: Ore Gathering
+			// Description: Collect basic ores
+
+			QuestObjective: {
+				Description: {
+					// Iron: Collect Iron or Lead Ore
+					// Copper: Collect Copper or Tin Ore
+				}
+			}
+
+			// QuestReward.Description: Recall Potion
+			// DetailedDescription: Mining is the essence of survival. Copper and Iron may be common, but they are the cornerstones of escaping a primitive life. Do not despise them; even legendary heroes began by swinging a copper pickaxe.
+		}
+
+		DeepExplorer: {
+			// DisplayName: Deep Explorer
+			// Description: Explore all major biomes
+			// QuestObjective.Description: Complete all exploration quests
+
+			QuestReward: {
+				Description: {
+					// $parentVal: GPS
+					// Gold: Gold Coins
+				}
+			}
+
+			// DetailedDescription: You have traversed every corner of the world, from the highest clouds to the deepest hell. The map you have drawn is proof of your courage. Now, the entire world lies at your feet.
+		}
+
+		ExploreCaverns: {
+			// DisplayName: Cavern Depths
+			// Description: Explore the deeper Cavern layers
+			// QuestObjective.Description: Reach the Cavern layer
+			// QuestReward.Description: Spelunker Potion
+			// DetailedDescription: There is no sunlight here, only darkness and unknown creatures. Lava begins to appear, and mineral deposits become richer. Watch your step; the abyss is gazing back at you.
+		}
+
+		ExploreCorruption: {
+			// DisplayName: The Corruption
+			// Description: Explore the Corruption or Crimson
+			// QuestObjective.Description: Enter the Corruption or Crimson
+			// QuestReward.Description: Battle Potion
+			// DetailedDescription: This land is sick. Purple corruption or crimson flesh is devouring the earth. Though filled with bloodthirsty monsters, one must enter the tiger's den to obtain Shadow Scales or Tissue Samples.
+		}
+
+		ExploreDesert: {
+			// DisplayName: Scorching Desert
+			// Description: Enter the Desert biome
+			// QuestObjective.Description: Reach the Desert
+			// QuestReward.Description: Water Walking Potion
+			// DetailedDescription: The scorching sun burns the earth, and the golden sea of sand buries ancient fossils and fierce antlions. Bring plenty of water; the aridity here will drain your life.
+		}
+
+		ExploreFloatingIsland: {
+			// DisplayName: Floating Islands
+			// Description: Find Floating Islands in the sky
+			// QuestObjective.Description: Reach a Floating Island
+			// QuestReward.Description: Gravitation Potion
+			// DetailedDescription: Legends say that above the clouds lie treasure vaults left by an ancient civilization. Look for gravitational anomalies or build a tower to the heavens to find out.
+		}
+
+		ExploreGlowingMushroom: {
+			// DisplayName: Glowing Mushroom
+			// Description: Find the Glowing Mushroom biome
+			// QuestObjective.Description: Reach the Glowing Mushroom biome
+			// QuestReward.Description: Night Owl Potion
+			// DetailedDescription: A psychedelic underground ecosystem. Giant fungi emit a ghostly blue glow, illuminating the darkness. This is the home of the Truffle and peculiar insects.
+		}
+
+		ExploreUnderground: {
+			// DisplayName: Underground Exploration
+			// Description: Delve into the underground caves
+			// QuestObjective.Description: Reach the Underground
+			// QuestReward.Description: Mining Potion
+			// DetailedDescription: Simply scraping the surface dirt is not enough. True adventure begins below the surface. Bring your torches; the first layer of rock is just the beginning.
+		}
+
+		FindLifeCrystal: {
+			// DisplayName: Source of Life
+			// Description: Find a Life Crystal
+			// QuestObjective.Description: Find a Life Crystal
+			// QuestReward.Description: Lesser Healing Potion
+			// DetailedDescription: This red crystal pulses with vitality. Smash and consume it to permanently strengthen your physique. This is the key to survival when facing powerful enemies.
+		}
+
+		FindShadowOrb: {
+			// DisplayName: Core of Evil
+			// Description: Find a Shadow Orb or Crimson Heart deep in the evil biome
+			// QuestObjective.Description: Destroy a Shadow Orb or Crimson Heart
+
+			QuestReward: {
+				Description: {
+					// $parentVal: Dynamite
+					// Bomb: Bomb
+				}
+			}
+
+			// DetailedDescription: Deep within the chasm of evil pulsates a corrupt heart or a shadow orb. Smashing them yields weapons, but beware... if you break three, something terrible will awaken.
+		}
+
+		FirstPotion: {
+			// DisplayName: Alchemy Basics
+			// Description: Brew your first potion
+			// QuestObjective.Description: Brew any potion
+			// QuestReward.Description: Lesser Mana Potion
+			// DetailedDescription: Place an empty bottle on a table, and you have a simple alchemy station. No complex spells are needed, just the right mixture of ingredients. Drink up and feel the power of magic.
+		}
+
+		NPCVillage: {
+			// DisplayName: Thriving Village
+			// Description: Attract multiple NPCs to move in
+			// QuestObjective.Description: Have 5 NPCs
+			// QuestReward.Description: Gold Coins
+			// DetailedDescription: Surviving alone in the wild is lonely. As you become stronger and hold more currency, more people will come to join you. Build a thriving community and let them be your support.
+		}
 	}
 }

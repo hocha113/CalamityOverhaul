@@ -8069,5 +8069,169 @@ QuestLogs: {
 
 			DetailedDescription: 那些被遗弃的实验品并未停止运作，反而通过自我修复进化出了更恐怖的形态。原本用于守护的程序已被重写为纯粹的杀戮指令。准备好面对嘉登造物的真正愤怒了吗？
 		}
+
+		BuildHouse: {
+			DisplayName: 建筑大师
+			Description: 建造合适的房屋
+			QuestObjective.Description: 建造一个有效房屋
+			QuestReward.Description: 木材
+			DetailedDescription: 每个人都需要一个避风港。无论是向导还是其他流浪者，只要你提供一个拥有桌椅、光源和墙壁的房间，他们就会为你效力。
+		}
+
+		CollectEvilOres: {
+			DisplayName: 邪恶矿藏
+			Description: 收集邪恶矿石
+			QuestObjective.Description: 收集魔矿或猩红矿
+			QuestReward.Description: 火把
+			DetailedDescription: 这种矿石散发着不祥的气息，触感冰冷且黏稠。虽然它们来自这个世界的病灶，但却是制作强力装备必不可少的材料。
+		}
+
+		CollectFallenStars: {
+			DisplayName: 星辰收集者
+			Description: 收集坠落之星
+			QuestObjective.Description: 收集坠落之星
+			QuestReward.Description: 次级魔力药水
+			DetailedDescription: 它们是夜空的眼泪，只有在夜晚才会从天而降。收集它们，不仅可以增加你的法力上限，还能作为强大的弹药或魔法材料。
+		}
+
+		CollectGems: {
+			DisplayName: 宝石收藏家
+			Description: 收集各种宝石
+			QuestObjective.Description: 收集5种不同的宝石
+
+			QuestReward: {
+				Description: {
+					$parentVal: 光芒药水
+					Diamond: 钻石
+				}
+			}
+
+			DetailedDescription: 埋藏在岩层中的璀璨结晶。除了作为装饰，它们也是制作法杖和抓钩的重要材料。当你集齐不同颜色的宝石时，也许能拼凑出彩虹的光辉。
+		}
+
+		CollectHerbs: {
+			DisplayName: 草药学徒
+			Description: 收集各种草药
+			QuestObjective.Description: 收集3种不同的草药
+			QuestReward.Description: 瓶装水
+			DetailedDescription: 炼金术的基础。不同的植物生长在不同的环境下：沙漠、雪原、甚至地狱。学会辨认它们，是成为炼金大师的第一步。
+		}
+
+		CollectOres: {
+			DisplayName: 矿石采集
+			Description: 收集基础矿石
+
+			QuestObjective: {
+				Description: {
+					Iron: 收集铁矿或铅矿
+					Copper: 收集铜矿或锡矿
+				}
+			}
+
+			QuestReward.Description: 回忆药水
+			DetailedDescription: 挖掘是生存的根本。铜和铁虽然普通，但它们是你摆脱原始生活的基石。不要嫌弃它们，哪怕是传说中的英雄也是从挥舞铜镐开始的。
+		}
+
+		DeepExplorer: {
+			DisplayName: 深渊探索者
+			Description: 探索所有主要生物群落
+			QuestObjective.Description: 完成所有探索任务
+
+			QuestReward: {
+				Description: {
+					$parentVal: 全球定位系统
+					Gold: 金币
+				}
+			}
+
+			DetailedDescription: 你已经走遍了世界的每一个角落，从最高的云端到最深的地狱。你绘制的地图证明了你的勇气。现在，整个世界都在你的脚下。
+		}
+
+		ExploreCaverns: {
+			DisplayName: 洞穴深处
+			Description: 探索更深的洞穴层
+			QuestObjective.Description: 到达洞穴层
+			QuestReward.Description: 洞穴探险药水
+			DetailedDescription: 这里没有阳光，只有黑暗和未知的生物。岩浆开始出现，矿藏也变得更加丰富。小心脚下，深渊在凝视着你。
+		}
+
+		ExploreCorruption: {
+			DisplayName: 腐化之地
+			Description: 探索腐化或猩红之地
+			QuestObjective.Description: 进入腐化或猩红
+			QuestReward.Description: 战斗药水
+			DetailedDescription: 这片土地病了。紫色的腐化或红色的血肉正在吞噬大地。尽管这里充满了嗜血的怪物，但只有深入虎穴，才能获得暗影鳞片或组织样本。
+		}
+
+		ExploreDesert: {
+			DisplayName: 炎热荒漠
+			Description: 踏入沙漠生物群落
+			QuestObjective.Description: 到达沙漠
+			QuestReward.Description: 水上行走药水
+			DetailedDescription: 烈日灼烧着大地，金色的沙海下掩埋着古老的化石和凶猛的蚁狮。准备好充足的水，这里的干燥会夺走你的生命。
+		}
+
+		ExploreFloatingIsland: {
+			DisplayName: 浮空岛屿
+			Description: 找到天空中的浮空岛
+			QuestObjective.Description: 到达浮空岛
+			QuestReward.Description: 重力药水
+			DetailedDescription: 传说在云层之上，有古代文明留下的宝库。寻找重力的反常之处，或者搭建通天的高塔，去一探究竟吧。
+		}
+
+		ExploreGlowingMushroom: {
+			DisplayName: 发光蘑菇
+			Description: 找到发光蘑菇生物群落
+			QuestObjective.Description: 到达蘑菇地
+			QuestReward.Description: 夜猫子药水
+			DetailedDescription: 一个充满了迷幻色彩的地下生态。巨大的真菌发出蓝色的幽光，照亮了黑暗。这里是松露人和奇特虫子的家园。
+		}
+
+		ExploreUnderground: {
+			DisplayName: 地下探险
+			Description: 深入地下洞穴
+			QuestObjective.Description: 到达地下洞穴
+			QuestReward.Description: 挖矿药水
+			DetailedDescription: 仅仅是铲除地表的泥土是不够的。真正的冒险始于地表之下。带上你的火把，第一层岩石只是个开始。
+		}
+
+		FindLifeCrystal: {
+			DisplayName: 生命之源
+			Description: 寻找生命水晶
+			QuestObjective.Description: 找到生命水晶
+			QuestReward.Description: 次级治疗药水
+			DetailedDescription: 这种红色的水晶蕴含着生命力。打碎并使用它，能永久强健你的体魄。这是你在面对强大敌人时生存的关键。
+		}
+
+		FindShadowOrb: {
+			DisplayName: 邪恶核心
+			Description: 在邪恶之地深处寻找暗影珠或猩红之心
+			QuestObjective.Description: 摧毁暗影珠或猩红之心
+
+			QuestReward: {
+				Description: {
+					$parentVal: 炸药
+					Bomb: 炸弹
+				}
+			}
+
+			DetailedDescription: 在邪恶裂隙的深处，搏动着腐败的心脏或暗影的球体。敲碎它们能获得武器，但要注意......如果你敲碎了三个，将会唤醒一些可怕的东西。
+		}
+
+		FirstPotion: {
+			DisplayName: 炼金入门
+			Description: 制作你的第一瓶药水
+			QuestObjective.Description: 制作任意药水
+			QuestReward.Description: 次级魔力药水
+			DetailedDescription: 将空瓶放在桌子上，你就有了一个简易的炼金站。并不需要复杂的咒语，只需要正确的材料混合。喝下去，感受魔法的力量。
+		}
+
+		NPCVillage: {
+			DisplayName: 繁荣村落
+			Description: 吸引多位NPC入住
+			QuestObjective.Description: 拥有5位NPC
+			QuestReward.Description: 金币
+			DetailedDescription: 一个人在野外生存是孤独的。当你变得强大，持有更多的货币时，更多的人会慕名而来。建立一个繁荣的社区，让他们成为你的后盾。
+		}
 	}
 }
