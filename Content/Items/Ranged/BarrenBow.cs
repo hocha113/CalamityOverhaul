@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -35,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 .AddIngredient(ItemID.LightShard, 2)
                 .AddIngredient(ItemID.AntlionMandible, 5)
                 .AddIngredient(ItemID.HellwingBow)
-                .AddIngredient<LunarianBow>()
+                .AddIngredient(CWRID.Item_LunarianBow)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

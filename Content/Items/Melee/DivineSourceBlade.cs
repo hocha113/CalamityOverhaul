@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -36,10 +33,10 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<AuricBar>(5).
-                AddIngredient<Terratomere>().
-                AddIngredient<Excelsus>().
-                AddTile(ModContent.TileType<CosmicAnvil>()).
+                AddIngredient(CWRID.Item_AuricBar, 5).
+                AddIngredient(CWRID.Item_Terratomere).
+                AddIngredient(CWRID.Item_Excelsus).
+                AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
         }
     }

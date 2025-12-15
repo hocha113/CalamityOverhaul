@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -26,8 +25,8 @@ namespace CalamityOverhaul.Content.Items.Summon
             _ = CreateRecipe()
                 .AddIngredient(ItemID.RainbowWhip)
                 .AddIngredient(ItemID.LunarBar, 5)
-                .AddIngredient<LifeAlloy>(5)
-                .AddIngredient<GalacticaSingularity>(5)
+                .AddIngredient(CWRID.Item_LifeAlloy, 5)
+                .AddIngredient(CWRID.Item_GalacticaSingularity, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
         }

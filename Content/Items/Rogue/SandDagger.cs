@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Boss;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
@@ -103,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 for (int i = 0; i < 3; i++) {
                     Vector2 velocity = new Vector2(0, -6).RotatedByRandom(0.6f);
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity
-                    , ModContent.ProjectileType<DesertScourgeSpit>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    , CWRID.Proj_DesertScourgeSpit, Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
                     Main.projectile[proj].hostile = false;
                     Main.projectile[proj].friendly = true;
                     NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);

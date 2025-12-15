@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -29,8 +27,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<ShadowspecBar>(5)
-                .AddIngredient<DraedonsForge>()
+                .AddIngredient(CWRID.Item_ShadowspecBar, 5)
+                .AddIngredient(CWRID.Item_DraedonsForge)
                 .AddIngredient<DarkMatterCompressorItem>()
                 .Register();
         }

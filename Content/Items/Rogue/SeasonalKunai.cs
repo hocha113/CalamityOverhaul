@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.GameSystem;
 using Terraria;
@@ -19,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
         public override void SetDefaults() {
-            Item.CloneDefaults(ModContent.ItemType<LunarKunai>());
+            Item.CloneDefaults(CWRID.Item_LunarKunai);
             Item.useStyle = ItemUseStyleID.Swing;
             Item.damage = 90;
             Item.UseSound = null;
@@ -31,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -41,9 +36,9 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void AddRecipes() {
             CreateRecipe(333).
-                AddIngredient<LifeAlloy>().
-                AddIngredient<AstralBar>().
-                AddIngredient<GalacticaSingularity>().
+                AddIngredient(CWRID.Item_LifeAlloy).
+                AddIngredient(CWRID.Item_AstralBar).
+                AddIngredient(CWRID.Item_GalacticaSingularity).
                 AddTile(TileID.LunarCraftingStation).
                 Register();
         }
@@ -117,18 +112,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            int buff = Main.dayTime ? BuffID.Daybreak : ModContent.BuffType<Nightwither>();
+            int buff = Main.dayTime ? BuffID.Daybreak : CWRID.Buff_Nightwither;
             target.AddBuff(buff, 180);
         }
 
         public override void OnKill(int timeLeft) {
-            int dustType = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
-                _ => 0                                                         //默认值：无效尘埃类型
-            };
+            int dustType = CWRRef.GetSeasonDustID();
 
             SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
 

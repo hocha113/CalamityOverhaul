@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         public override void AddRecipes() {
             _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
-                .AddIngredient(ModContent.ItemType<UelibloomBar>(), 5)
+                .AddIngredient(CWRID.Item_UelibloomBar, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
         }

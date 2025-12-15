@@ -14,6 +14,7 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
+using CalamityMod.TileEntities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
@@ -300,5 +301,15 @@ namespace CalamityOverhaul
             calPlayer.voidField = true;
         }
         public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) => ArsenalTierGatedRecipe.ConstructRecipeCondition(tier, out condition);
+        public static IList<Type> GetTEBaseTurretTypes() => VaultUtils.GetDerivedTypes<TEBaseTurret>();
+        public static int GetSeasonDustID() {
+            return CalamityMod.CalamityMod.CurrentSeason switch {
+                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
+                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
+                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
+                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
+                _ => 0                                                         //默认值：无效尘埃类型
+            };
+        }
     }
 }

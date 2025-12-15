@@ -1,5 +1,4 @@
-﻿using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.DataStructures;
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             CreateRecipe().
                 AddIngredient(CWRID.Item_CosmiliteBar, 12).
                 AddIngredient(CWRID.Item_WaveSkipper).
-                AddTile(ModContent.TileType<CosmicAnvil>()).
+                AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
         }
     }

@@ -6424,6 +6424,8 @@ UI: {
 		InsertItemHint: 放入需要充能的物品
 		InsertBatteryHint: 放入嘉登能量电池
 		EnergyUnit: UE
+		StationText1: 只能放入可充能物品!
+		StationText2: 只能放入嘉登能量电池!
 	}
 
 	SulfseaDialogueBox: {

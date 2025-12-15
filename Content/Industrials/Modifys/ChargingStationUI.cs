@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.DraedonMisc;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -73,6 +72,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         protected static LocalizedText InsertItemHint;
         protected static LocalizedText InsertBatteryHint;
         protected static LocalizedText EnergyUnit;
+        protected static LocalizedText StationText1;
+        protected static LocalizedText StationText2;
 
         private ChargingStationTP station;
 
@@ -90,6 +91,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             InsertItemHint = this.GetLocalization(nameof(InsertItemHint), () => "放入需要充能的物品");
             InsertBatteryHint = this.GetLocalization(nameof(InsertBatteryHint), () => "放入嘉登能量电池");
             EnergyUnit = this.GetLocalization(nameof(EnergyUnit), () => "UE");
+            StationText1 = this.GetLocalization(nameof(StationText1), () => "只能放入可充能物品!");
+            StationText2 = this.GetLocalization(nameof(StationText2), () => "只能放入嘉登能量电池!");
         }
 
         public void Initialize(ChargingStationTP chargingStation) {
@@ -186,18 +189,18 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
                 else {
                     SoundEngine.PlaySound(SoundID.MenuClose);
-                    CombatText.NewText(station.HitBox, new Color(255, 100, 80), "只能放入可充能物品!", false);
+                    CombatText.NewText(station.HitBox, new Color(255, 100, 80), StationText1.Value, false);
                 }
             }
 
             if (hoveringBatterySlot && UIHandleLoader.keyLeftPressState == KeyPressState.Pressed) {
-                if (Main.mouseItem.type == ModContent.ItemType<DraedonPowerCell>() || Main.mouseItem.IsAir) {
+                if (Main.mouseItem.type == CWRID.Item_DraedonPowerCell || Main.mouseItem.IsAir) {
                     HandlerSlotItem(ref station.Empty);
                     station.SendData();
                 }
                 else {
                     SoundEngine.PlaySound(SoundID.MenuClose);
-                    CombatText.NewText(station.HitBox, new Color(255, 100, 80), "只能放入嘉登能量电池!", false);
+                    CombatText.NewText(station.HitBox, new Color(255, 100, 80), StationText2.Value, false);
                 }
             }
 

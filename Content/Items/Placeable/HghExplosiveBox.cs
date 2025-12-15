@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
+﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 50)
-                .AddIngredient(ModContent.ItemType<UnholyEssence>(), 2)
+                .AddIngredient(CWRID.Item_UnholyEssence, 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

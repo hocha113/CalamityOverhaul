@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -33,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void AddRecipes() {
             _ = CreateRecipe()
                 .AddIngredient<SimpleMuzzleBrake>()
-                .AddIngredient<PlasmaDriveCore>()
+                .AddIngredient(CWRID.Item_PlasmaDriveCore)
                 .AddIngredient(ItemID.HallowedBar, 5)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();

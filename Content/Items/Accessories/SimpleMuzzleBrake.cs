@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -32,8 +31,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                .AddIngredient<EnergyCore>(2)
-                .AddIngredient<WulfrumMetalScrap>(5)
+                .AddIngredient(CWRID.Item_EnergyCore, 2)
+                .AddIngredient(CWRID.Item_WulfrumMetalScrap, 5)
                 .AddIngredient(CWRID.Item_DubiousPlating, 5)
                 .AddTile(TileID.Anvils)
                 .Register();

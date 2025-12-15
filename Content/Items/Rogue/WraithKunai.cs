@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameSystem;
 using System;
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
         public override void SetDefaults() {
-            Item.CloneDefaults(ModContent.ItemType<LunarKunai>());
+            Item.CloneDefaults(CWRID.Item_LunarKunai);
             Item.damage = 160;
             Item.UseSound = null;
             Item.DamageType = CWRRef.GetRogueDamageClass();
@@ -29,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -39,8 +36,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void AddRecipes() {
             CreateRecipe(333).
-                AddIngredient<RuinousSoul>().
-                AddIngredient<Necroplasm>().
+                AddIngredient(CWRID.Item_RuinousSoul).
+                AddIngredient(CWRID.Item_Necroplasm).
                 AddTile(TileID.LunarCraftingStation).
                 Register();
         }

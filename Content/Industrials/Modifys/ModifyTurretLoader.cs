@@ -1,5 +1,4 @@
-﻿using CalamityMod.TileEntities;
-using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
+﻿using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -15,14 +14,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 {
     internal class ModifyTurretLoader : ICWRLoader
     {
-        public delegate void UpdateDelegate(TEBaseTurret turret);
         public static Asset<Texture2D> TurretBase { get; set; }
         public static Dictionary<int, Asset<Texture2D>> BodyAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BodyGlowAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelGlowAssetDic { get; set; } = [];
         void ICWRLoader.LoadData() {
-            IList<Type> turretTypes = VaultUtils.GetDerivedTypes<TEBaseTurret>();
+            IList<Type> turretTypes = CWRRef.GetTEBaseTurretTypes();
+            if (turretTypes is null) {
+                return;
+            }
             foreach (var type in turretTypes) {
                 MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
                 VaultHook.Add(info, OnUpdateHook);
@@ -81,7 +82,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             BarrelGlowAssetDic?.Clear();
         }
 
-        internal static void OnUpdateHook(UpdateDelegate orig, ModTileEntity te) {
+        internal static void OnUpdateHook(Action<ModTileEntity> orig, ModTileEntity te) {
             //在更新时杀死所有炮塔而不运行任何逻辑，这样才能让自定义的TP实体发挥正常作用，否者这些炮塔会重叠
             KillTE(te);
             SendKillTE(te);

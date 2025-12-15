@@ -6447,6 +6447,8 @@ UI: {
 		// InsertItemHint: Insert item to charge
 		// InsertBatteryHint: Insert Draedon Power Cell
 		// EnergyUnit: UE
+		// StationText1: Only accepts rechargeable items!
+		// StationText2: Only accepts Draedon Power Cells!
 	}
 
 	SulfseaDialogueBox: {

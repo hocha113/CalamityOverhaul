@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,10 +28,10 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ModContent.ItemType<PerennialBar>())
-                .AddIngredient(ModContent.ItemType<PlagueCellCanister>(), 2)
-                .AddIngredient(ModContent.ItemType<InfectedArmorPlating>(), 2)
-                .AddTile(ModContent.TileType<PlagueInfuser>())
+                .AddIngredient(CWRID.Item_PerennialBar)
+                .AddIngredient(CWRID.Item_PlagueCellCanister, 2)
+                .AddIngredient(CWRID.Item_InfectedArmorPlating, 2)
+                .AddTile(CWRID.Tile_PlagueInfuser)
                 .Register();
         }
     }

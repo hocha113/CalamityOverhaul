@@ -12,15 +12,22 @@ namespace CalamityOverhaul
     {
         #region 物品ID引用
         public static int Item_SHPC => Get();
+        public static int Item_DraedonPowerCell => Get();
         public static int Item_AerialiteBar => Get();
         public static int Item_DeliciousMeat => Get();
         public static int Item_Heresy => Get();
+        public static int Item_LunarKunai => Get();
+        public static int Item_UnholyEssence => Get();
+        public static int Item_YharonSoulFragment => Get();
         public static int Item_BurntSienna => Get();
         public static int Item_DubiousPlating => Get();
         public static int Item_Rock => Get();
+        public static int Item_LunarianBow => Get();
         public static int Item_PerennialBar => Get();
         public static int Item_UelibloomBar => Get();
         public static int Item_LifeAlloy => Get();
+        public static int Item_AstralBar => Get();
+        public static int Item_GalacticaSingularity => Get();
         public static int Item_Onyxia => Get();
         public static int Item_CryonicBar => Get();
         public static int Item_FlurrystormCannon => Get();
@@ -52,6 +59,8 @@ namespace CalamityOverhaul
         public static int Item_Affliction => Get();
         public static int Item_Necroplasm => Get();
         public static int Item_RuinousSoul => Get();
+        public static int Item_BloodstoneCore => Get();
+        public static int Item_PridefulHuntersPlanarRipper => Get();
         public static int Item_ExoPrism => Get();
         public static int Item_DraedonsForge => Get();
         public static int Item_RogueEmblem => Get();
@@ -66,6 +75,7 @@ namespace CalamityOverhaul
         public static int Item_Helstorm => Get();
         public static int Item_Hellborn => Get();
         public static int Item_AuricBar => Get();
+        public static int Item_Terratomere => Get();
         public static int Item_GrandGuardian => Get();
         public static int Item_SomaPrime => Get();
         public static int Item_Infinity => Get();
@@ -132,8 +142,11 @@ namespace CalamityOverhaul
         public static int Item_CosmicDischarge => Get();
         public static int Item_Norfleet => Get();
         public static int Item_CosmiliteBar => Get();
+        public static int Item_Kingsbane => Get();
         public static int Item_ShadowspecBar => Get();
+        public static int Item_EndothermicEnergy => Get();
         public static int Item_YharonBag => Get();
+        public static int Item_EnergyCore => Get();
         public static int Item_SuspiciousScrap => Get();
         public static int Item_WulfrumMetalScrap => Get();
         public static int Item_ChargingStationItem => Get();

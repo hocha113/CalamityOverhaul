@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameSystem;
 using Terraria;
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 22;
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 26;
