@@ -815,10 +815,58 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (Main.LocalPlayer.position.Y < Main.worldSurface * 16 && Main.LocalPlayer.ZoneSkyHeight) {
+            Player player = Main.LocalPlayer;
+
+            if (!player.ZoneSkyHeight) {
+                return;
+            }
+
+            if (Main.GameUpdateCount % 60 == 0 && CheckIsOnFloatingIsland(player)) {
                 Objectives[0].CurrentProgress = 1;
             }
-            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+
+            if (Objectives[0].IsCompleted && !IsCompleted) {
+                IsCompleted = true;
+            }
+        }
+
+        /// <summary>
+        /// 检测玩家周围是否有空岛特征方块
+        /// </summary>
+        private bool CheckIsOnFloatingIsland(Player player) {
+            int playerX = (int)(player.Center.X / 16f);
+            int playerY = (int)(player.Center.Y / 16f);
+
+            //扫描半径（例如周围 20 格范围内）
+            int range = 20;
+            //判定阈值（至少发现多少个方块才算，防止玩家自己垫了两个云块作弊，设为 5 比较宽松但有效）
+            int cloudCount = 0;
+            int threshold = 5;
+
+            for (int i = playerX - range; i <= playerX + range; i++) {
+                for (int j = playerY - range; j <= playerY + range; j++) {
+                    if (!WorldGen.InWorld(i, j)) continue;
+
+                    Tile tile = Main.tile[i, j];
+
+                    //检查方块是否存在且活跃
+                    if (tile != null && tile.HasTile) {
+                        //检查是否是空岛常见的构成方块
+                        if (tile.TileType == TileID.Cloud ||       //云
+                            tile.TileType == TileID.RainCloud ||   //雨云
+                            tile.TileType == TileID.Sunplate)      //日盘块 (空岛房屋)
+                        {
+                            cloudCount++;
+                            //如果计数达到了阈值，直接返回 true，无需继续扫描
+                            if (cloudCount >= threshold) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 
@@ -929,8 +977,25 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
         }
 
+        public static bool CheckPlayerHouse(Player player) {
+            //将玩家的世界坐标转换为物块坐标
+            int tileX = (int)(player.Center.X / 16f);
+            int tileY = (int)(player.Center.Y / 16f);
+            if (WorldGen.StartRoomCheck(tileX, tileY)) {
+                return true;
+            }
+            //或者检查鼠标位置
+            tileX = (int)(Main.MouseWorld.X / 16f);
+            tileY = (int)(Main.MouseWorld.Y / 16f);
+            if (WorldGen.StartRoomCheck(tileX, tileY)) {
+                return true;
+            }
+            return false;
+        }
+
         public override void UpdateByPlayer() {
-            if (Main.LocalPlayer.townNPCs > 0) {
+            //每秒检查一次玩家是否有房屋
+            if (Main.GameUpdateCount % 60 == 0 && CheckPlayerHouse(Main.LocalPlayer)) {
                 Objectives[0].CurrentProgress = 1;
             }
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
