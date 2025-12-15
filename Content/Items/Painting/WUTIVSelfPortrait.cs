@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Painting
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.rare = CWRID.Rarity_DarkOrange;
             Item.createTile = ModContent.TileType<WUTIVSelfPortraitTile>();
         }
     }

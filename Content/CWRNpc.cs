@@ -41,10 +41,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public byte OrderbringerOnHitNum = 0;
         /// <summary>
-        /// 阳炎命中次数
-        /// </summary>
-        public bool TheEndSunOnHitNum;
-        /// <summary>
         /// 鞭子击中次数
         /// </summary>
         public byte WhipHitNum = 0;
@@ -96,7 +92,6 @@ namespace CalamityOverhaul.Content
             cwr.ContagionOnHitNum = ContagionOnHitNum;
             cwr.PhosphorescentGauntletHitCount = PhosphorescentGauntletHitCount;
             cwr.OrderbringerOnHitNum = OrderbringerOnHitNum;
-            cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
             cwr.WhipHitType = WhipHitType;
             cwr.LonginusSign = LonginusSign;
@@ -258,24 +253,6 @@ namespace CalamityOverhaul.Content
                 InWorldBossPhase.YharonKillCount++;
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
-                }
-            }
-        }
-
-        public override void HitEffect(NPC npc, NPC.HitInfo hit) {
-            if (npc.life <= 0 && TheEndSunOnHitNum) {
-                if (!CWRRef.GetBossRushActive()) {
-                    for (int i = 0; i < Main.rand.Next(16, 23); i++) {
-                        npc.DropItem();
-                    }
-                }
-                else {
-                    if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRID.Item_Rock);
-                        if (VaultUtils.isClient) {
-                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                        }
-                    }
                 }
             }
         }

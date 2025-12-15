@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetDefaults() {
             Item.height = Item.width = 54;
-            Item.damage = 11200;
+            Item.damage =11200;
             Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.noUseGraphic = true;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(6, 23, 75, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.rare = CWRID.Rarity_DarkOrange;
             Item.shoot = ModContent.ProjectileType<DawnshatterSpearThrust>();
             Item.shootSpeed = 1f;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DawnshatterAzure;

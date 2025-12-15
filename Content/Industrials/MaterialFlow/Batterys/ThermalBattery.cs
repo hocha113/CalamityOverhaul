@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.rare = ItemRarityID.Green;
             Item.createTile = ModContent.TileType<ThermalBatteryTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = ThermalBatteryTP._maxUEValue;
