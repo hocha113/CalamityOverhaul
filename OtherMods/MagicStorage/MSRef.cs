@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
                 return _depositItemMethod;
             }
         }
-
+        private static int oldSelectedItemType;
         [JITWhenModsEnabled("MagicStorage")]
         internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {//所以，对外返回obj，或者是其他不需要引用外部程序集的已有类型，这样才能避免触发编译错误
             if (!Has) {//0.7.0.11
@@ -150,12 +151,12 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             if (!MagicUI.IsCraftingUIOpen())
                 return null;
 
-            if (_selectedRecipeField == null)
+            if (SelectedRecipeField == null)
                 return null;
 
             try {
                 // 因为是静态字段，第一个参数传 null
-                return (Recipe)_selectedRecipeField.GetValue(null);
+                return (Recipe)SelectedRecipeField.GetValue(null);
             } catch {
                 return null;
             }
@@ -211,6 +212,9 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
                     else {
                         SupertableUI.TramTP?.CloseUI(Main.LocalPlayer);
                     }
+
+                    //同步配方选择
+                    SelectedCrafting();
                 }
                 else if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
                     //如果不包含终焉工作台，且UI是因为联动打开的（TramTP为null），则关闭
@@ -222,13 +226,44 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
                 SupertableUI.Instance.Active = false;
             }
         }
+
+        private static void SelectedCrafting() {
+            //同步配方选择
+            if (!SupertableUI.Instance.Active) {
+                return;
+            }
+            Item selectedItem = GetSelectedRecipeResultItem();
+            if (selectedItem == null || selectedItem.type <= ItemID.None) {
+                return;
+            }
+            if (oldSelectedItemType == selectedItem.type) {
+                return;
+            }
+            var sidebar = SupertableUI.Instance.SidebarManager;
+            if (sidebar == null) {
+                return;
+            }
+            //检查当前选中的配方是否与魔法存储选中的物品一致
+            if ((sidebar.SelectedRecipe?.RecipeData.Target) == selectedItem.type) {
+                return;
+            }
+            //查找对应的配方
+            for (int i = 0; i < sidebar.RecipeElements.Count; i++) {
+                var element = sidebar.RecipeElements[i];
+                if (element.RecipeData.Target == selectedItem.type) {
+                    //更新选中状态
+                    sidebar.SelectedRecipe = element;
+                    SupertableUI.Instance.RecipeNavigator?.SetRecipeByData(element.RecipeData);
+                    sidebar.ScrollToRecipe(i);
+                    break;
+                }
+            }
+            oldSelectedItemType = selectedItem.type;
+        }
     }
 
     internal class MSRefSystem : ModSystem
     {
-        public override void UpdateUI(GameTime gameTime) {
-            if (MSRef.Has)
-                MSRef.UpdateUI();
-        }
+        public override void UpdateUI(GameTime gameTime) => MSRef.UpdateUI();
     }
 }
