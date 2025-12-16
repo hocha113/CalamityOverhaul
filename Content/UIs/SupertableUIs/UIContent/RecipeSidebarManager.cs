@@ -1,4 +1,4 @@
-using InnoVault.UIHandles;
+ï»¿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// Åä·½²à±ßÀ¸¹ÜÀíÆ÷
+    /// é…æ–¹ä¾§è¾¹æ ç®¡ç†å™¨
     /// </summary>
     internal class RecipeSidebarManager
     {
@@ -48,19 +48,19 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             _hitbox = new Rectangle((int)drawPosition.X - 4, (int)drawPosition.Y, 72, _sidebarHeight);
 
             if (_hitbox.Intersects(_mainUI.MouseHitBox)) {
-                //ĞŞ¸´²à±ßÀ¸¸ß¶È¼ÆËã£¬Ó¦¸ÃÊÇ¹Ì¶¨¸ß¶È£¬ÓÃÓÚÏÔÊ¾ÇøÓò
-                int visibleSlots = 7; //Ò»´ÎÏÔÊ¾7¸öÅä·½
+                //ä¿®å¤ä¾§è¾¹æ é«˜åº¦è®¡ç®—ï¼Œåº”è¯¥æ˜¯å›ºå®šé«˜åº¦ï¼Œç”¨äºæ˜¾ç¤ºåŒºåŸŸ
+                int visibleSlots = 7; //ä¸€æ¬¡æ˜¾ç¤º7ä¸ªé…æ–¹
                 _sidebarHeight = visibleSlots * 64;
 
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
                 _scrollValue -= scrollDelta;
 
-                //ĞŞ¸´¹ö¶¯·¶Î§¼ÆËã
+                //ä¿®å¤æ»šåŠ¨èŒƒå›´è®¡ç®—
                 int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
                 _scrollValue = MathHelper.Clamp(_scrollValue, 0, maxScroll);
 
-                //¶ÔÆëµ½64µÄ±¶Êı£¬Ê¹¹ö¶¯¸üÁ÷³©
+                //å¯¹é½åˆ°64çš„å€æ•°ï¼Œä½¿æ»šåŠ¨æ›´æµç•…
                 _scrollValue = ((int)_scrollValue / 64) * 64;
                 _oldMouseState = currentMouseState;
 
@@ -99,50 +99,50 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         }
 
         /// <summary>
-        /// ¼ì²éÔªËØÊÇ·ñÔÚ¿É¼ûÇøÓòÄÚ
+        /// æ£€æŸ¥å…ƒç´ æ˜¯å¦åœ¨å¯è§åŒºåŸŸå†…
         /// </summary>
         public bool IsElementVisible(RecipeTargetElement element) {
             if (element == null) return false;
 
-            //»ñÈ¡ÔªËØÏà¶ÔÓÚ²à±ßÀ¸µÄÎ»ÖÃ
+            //è·å–å…ƒç´ ç›¸å¯¹äºä¾§è¾¹æ çš„ä½ç½®
             Rectangle elementBounds = element.Hitbox;
 
-            //¼ì²éÊÇ·ñÓë²à±ßÀ¸µÄ¿É¼ûÇøÓòÏà½»
+            //æ£€æŸ¥æ˜¯å¦ä¸ä¾§è¾¹æ çš„å¯è§åŒºåŸŸç›¸äº¤
             return _hitbox.Intersects(elementBounds);
         }
 
         /// <summary>
-        /// »ñÈ¡²à±ßÀ¸µÄ¿É¼ûÇøÓò
+        /// è·å–ä¾§è¾¹æ çš„å¯è§åŒºåŸŸ
         /// </summary>
         public Rectangle VisibleArea => _hitbox;
 
         /// <summary>
-        /// ¹ö¶¯µ½Ö¸¶¨Åä·½Ë÷Òı
+        /// æ»šåŠ¨åˆ°æŒ‡å®šé…æ–¹ç´¢å¼•
         /// </summary>
         public void ScrollToRecipe(int index) {
             if (index < 0 || index >= RecipeElements.Count) return;
 
-            //¼ÆËãÄ¿±êÅä·½µÄÎ»ÖÃ
+            //è®¡ç®—ç›®æ ‡é…æ–¹çš„ä½ç½®
             int targetPosition = index * 64;
 
-            //È·±£Ä¿±êÅä·½ÔÚ¿É¼ûÇøÓòÄÚ
+            //ç¡®ä¿ç›®æ ‡é…æ–¹åœ¨å¯è§åŒºåŸŸå†…
             int visibleSlots = 7;
             int halfVisible = visibleSlots / 2;
 
-            //³¢ÊÔ½«Ñ¡ÖĞµÄÅä·½·ÅÔÚ¿É¼ûÇøÓòµÄÖĞ¼ä
+            //å°è¯•å°†é€‰ä¸­çš„é…æ–¹æ”¾åœ¨å¯è§åŒºåŸŸçš„ä¸­é—´
             int desiredScroll = targetPosition - (halfVisible * 64);
 
-            //ÏŞÖÆ¹ö¶¯·¶Î§
+            //é™åˆ¶æ»šåŠ¨èŒƒå›´
             int maxScroll = Math.Max(0, RecipeElements.Count * 64 - _sidebarHeight);
             _scrollValue = MathHelper.Clamp(desiredScroll, 0, maxScroll);
 
-            //¶ÔÆëµ½64µÄ±¶Êı
+            //å¯¹é½åˆ°64çš„å€æ•°
             _scrollValue = ((int)_scrollValue / 64) * 64;
         }
     }
 
     /// <summary>
-    /// Åä·½Ä¿±êÔªËØ
+    /// é…æ–¹ç›®æ ‡å…ƒç´ 
     /// </summary>
     internal class RecipeTargetElement
     {
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             _hitbox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 64, 64);
             Rectangle mouseRect = new Rectangle((int)mainUI.MousePosition.X, (int)mainUI.MousePosition.Y, 1, 1);
 
-            //¼ì²éÊÇ·ñÔÚ²à±ßÀ¸µÄ¿É¼ûÇøÓòÄÚ
+            //æ£€æŸ¥æ˜¯å¦åœ¨ä¾§è¾¹æ çš„å¯è§åŒºåŸŸå†…
             bool isInSidebarBounds = sidebar.IsElementVisible(this);
             bool isHovered = _hitbox.Intersects(mouseRect) && isInSidebarBounds;
 
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
                         sidebar.SelectedRecipe = this;
                         SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.6f, Volume = 0.8f });
 
-                        //Í¬²½¸üĞÂÖ÷Ãæ°åµÄÅä·½µ¼º½Æ÷
+                        //åŒæ­¥æ›´æ–°ä¸»é¢æ¿çš„é…æ–¹å¯¼èˆªå™¨
                         mainUI.RecipeNavigator?.SetRecipeByData(RecipeData);
                     }
                 }

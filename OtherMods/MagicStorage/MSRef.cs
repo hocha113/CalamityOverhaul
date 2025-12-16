@@ -17,6 +17,17 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
     internal class MSRef
     {
         internal static bool Has => CWRMod.Instance.magicStorage != null && CWRMod.Instance.magicStorage.Version >= new Version(0, 7, 0, 11);
+        private static FieldInfo _selectedRecipeField;
+        internal static FieldInfo SelectedRecipeField {
+            get {
+                if (!Has) {
+                    return null;
+                }
+
+                _selectedRecipeField ??= typeof(CraftingGUI).GetField("selectedRecipe", BindingFlags.Static | BindingFlags.NonPublic);
+                return _selectedRecipeField;
+            }
+        }
         //缓存反射字段，避免每帧查找造成的严重卡顿
         private static FieldInfo _recipePanelField;
         internal static FieldInfo RecipePanelField {
@@ -130,6 +141,40 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 获取 Magic Storage 制作界面当前选中的配方
+        /// </summary>
+        public static Recipe GetSelectedRecipe() {
+            if (!MagicUI.IsCraftingUIOpen())
+                return null;
+
+            if (_selectedRecipeField == null)
+                return null;
+
+            try {
+                // 因为是静态字段，第一个参数传 null
+                return (Recipe)_selectedRecipeField.GetValue(null);
+            } catch {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 获取当前选中配方的结果物品
+        /// </summary>
+        public static Item GetSelectedRecipeResultItem() {
+            Recipe recipe = GetSelectedRecipe();
+            return recipe?.createItem;
+        }
+
+        /// <summary>
+        /// 获取当前选中配方的结果物品类型 ID
+        /// </summary>
+        public static int GetSelectedRecipeResultItemType() {
+            var resultItem = GetSelectedRecipeResultItem();
+            return resultItem?.type ?? 0;
         }
 
         internal static void UpdateUI() {
