@@ -35,8 +35,13 @@ namespace CalamityOverhaul
     /// <summary>
     /// 一个用于访问Calamity Mod内部内容的静态类
     /// </summary>
+    [CWRJITEnabled]
     internal static class CWRRef
     {
+        /// <summary>
+        /// 待用，检查Calamity Mod是否已加载，或者版本是否合适
+        /// </summary>
+        public static bool Has => ModLoader.HasMod("CalamityMod");
         public static bool GetDownedPrimordialWyrm() => DownedBossSystem.downedPrimordialWyrm;
         public static void SetDownedPrimordialWyrm(bool value) => DownedBossSystem.downedPrimordialWyrm = value;
         public static bool GetDeathMode() => CalamityWorld.death;

@@ -68,7 +68,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             Owner.CWR().HeldMurasamaBool = true;
             if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraSlashDefault>()] != 0
-                || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] != 0) {
                 Projectile.hide = false;
                 return true;

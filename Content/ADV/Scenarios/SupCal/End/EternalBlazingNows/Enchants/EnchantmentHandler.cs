@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
     /// 炼铸系统核心逻辑处理器
     /// 负责管理附魔流程、验证、应用等核心功能
     /// </summary>
+    [CWRJITEnabled]
     internal class EnchantmentHandler
     {
         /// <summary>
