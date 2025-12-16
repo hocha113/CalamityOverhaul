@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <param name="item"></param>
         /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type != HalibutOverride.ID) {
+            if (item.type != HalibutOverride.ID || !item.Alives()) {
                 return 0;
             }
             CWRItem cwrItem = item.CWR();

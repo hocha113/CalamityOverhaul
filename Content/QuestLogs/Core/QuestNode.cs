@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 {
     public abstract class QuestNode : VaultType<QuestNode>, ILocalizedModType
     {
+        #region Data
         private readonly static Dictionary<string, QuestNode> _quests = [];
         public static IReadOnlyCollection<QuestNode> AllQuests => _quests.Values;
 
@@ -143,6 +144,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         public string LocalizationCategory => "QuestLogs.QuestNode";
+        #endregion
 
         public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
 
@@ -212,7 +214,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                     break;
 
                 case QuestIconType.Texture:
-                    if (!string.IsNullOrEmpty(IconTexturePath)) {
+                    if (!string.IsNullOrEmpty(IconTexturePath) && ModContent.HasAsset(IconTexturePath)) {
                         if (_iconTextureCache == null || !_iconTextureCache.IsLoaded) {
                             _iconTextureCache = ModContent.Request<Texture2D>(IconTexturePath);
                         }
@@ -221,7 +223,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                     break;
             }
 
-            return null;
+            return VaultAsset.placeholder3.Value;
         }
 
         /// <summary>

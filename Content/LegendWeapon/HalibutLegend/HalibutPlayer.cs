@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 获取死机等级
         /// </summary>
         public static int GetCrashesLevel(Item item) {
-            if (Main.LocalPlayer.name == "杨戬 ") {
+            if (Main.LocalPlayer.name == "杨戬") {
                 return 14;
             }
             int level = HalibutData.GetLevel(item);

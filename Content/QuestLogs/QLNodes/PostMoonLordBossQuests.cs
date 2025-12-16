@@ -13,7 +13,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "ProfanedGuardianCommander").Type;
+            if (ModContent.TryFind("CalamityMod", "ProfanedGuardianCommander", out ModNPC profanedGuardianCommanderNPC)) {
+                IconNPCType = profanedGuardianCommanderNPC.Type;
+            }
             Position = new Vector2(150, 0);
             AddParent<MoonLordQuest>();
 
@@ -25,7 +27,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            AddReward(ModContent.Find<ModItem>("CalamityMod", "UnholyEssence").Type, 30);
+            if (ModContent.TryFind("CalamityMod", "UnholyEssence", out ModItem unholyEssenceItem)) {
+                AddReward(unholyEssenceItem.Type, 30);
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -44,7 +48,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Bumblefuck").Type;
+            if (ModContent.TryFind("CalamityMod", "Bumblefuck", out ModNPC bumblefuckNPC)) {
+                IconNPCType = bumblefuckNPC.Type;
+            }
             Position = new Vector2(0, 150);
             AddParent<MoonLordQuest>();
 
@@ -56,11 +62,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "EffulgentFeather").Type,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个闪耀金羽")
-            });
+            if (ModContent.TryFind("CalamityMod", "EffulgentFeather", out ModItem effulgentFeatherItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = effulgentFeatherItem.Type,
+                    Amount = 10,
+                    Description = this.GetLocalization("QuestReward.Description", () => "10个闪耀金羽")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -113,7 +121,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "StormWeaverHead").Type;
+            if (ModContent.TryFind("CalamityMod", "StormWeaverHead", out ModNPC stormWeaverHeadNPC)) {
+                IconNPCType = stormWeaverHeadNPC.Type;
+            }
             Position = new Vector2(0, -150);
             AddParent<ProvidenceQuest>();
 
@@ -125,11 +135,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "ArmoredShell").Type,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个装甲外壳")
-            });
+            if (ModContent.TryFind("CalamityMod", "ArmoredShell", out ModItem armoredShellItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = armoredShellItem.Type,
+                    Amount = 5,
+                    Description = this.GetLocalization("QuestReward.Description", () => "5个装甲外壳")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -148,7 +160,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "CeaselessVoid").Type;
+            if (ModContent.TryFind("CalamityMod", "CeaselessVoid", out ModNPC ceaselessVoidNPC)) {
+                IconNPCType = ceaselessVoidNPC.Type;
+            }
             Position = new Vector2(0, 150);
             AddParent<ProvidenceQuest>();
 
@@ -160,11 +174,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "DarkPlasma").Type,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个暗物质")
-            });
+            if (ModContent.TryFind("CalamityMod", "DarkPlasma", out ModItem darkPlasmaItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = darkPlasmaItem.Type,
+                    Amount = 5,
+                    Description = this.GetLocalization("QuestReward.Description", () => "5个暗物质")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -183,7 +199,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Signus").Type;
+            if (ModContent.TryFind("CalamityMod", "Signus", out ModNPC signusNPC)) {
+                IconNPCType = signusNPC.Type;
+            }
             Position = new Vector2(75, 150);
             AddParent<ProvidenceQuest>();
 
@@ -195,11 +213,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "TwistingNether").Type,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个扭曲虚空")
-            });
+            if (ModContent.TryFind("CalamityMod", "TwistingNether", out ModItem twistingNetherItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = twistingNetherItem.Type,
+                    Amount = 5,
+                    Description = this.GetLocalization("QuestReward.Description", () => "5个扭曲虚空")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -218,7 +238,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "Polterghast").Type;
+            if (ModContent.TryFind("CalamityMod", "Polterghast", out ModNPC polterghastNPC)) {
+                IconNPCType = polterghastNPC.Type;
+            }
             Position = new Vector2(150, 0);
             AddParent<ProvidenceQuest>();
 
@@ -230,11 +252,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "RuinousSoul").Type,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个幽花之魂")
-            });
+            if (ModContent.TryFind("CalamityMod", "RuinousSoul", out ModItem ruinousSoulItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = ruinousSoulItem.Type,
+                    Amount = 10,
+                    Description = this.GetLocalization("QuestReward.Description", () => "10个幽花之魂")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -264,11 +288,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "CorrodedFossil").Type,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个腐蚀化石")
-            });
+            if (ModContent.TryFind("CalamityMod", "CorrodedFossil", out ModItem corrodedFossilItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = corrodedFossilItem.Type,
+                    Amount = 20,
+                    Description = this.GetLocalization("QuestReward.Description", () => "20个腐蚀化石")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -423,7 +449,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            IconNPCType = ModContent.Find<ModNPC>("CalamityMod", "PrimordialWyrmHead").Type;
+            if (ModContent.TryFind("CalamityMod", "PrimordialWyrmHead", out ModNPC primordialWyrmHeadNPC)) {
+                IconNPCType = primordialWyrmHeadNPC.Type;
+            }
             Position = new Vector2(0, 200);
             AddParent<YharonQuest>();
 
@@ -435,11 +463,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "HalibutCannon").Type,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "大比目鱼炮")
-            });
+            if (ModContent.TryFind("CalamityMod", "HalibutCannon", out ModItem halibutCannonItem)) {
+                Rewards.Add(new QuestReward {
+                    ItemType = halibutCannonItem.Type,
+                    Amount = 1,
+                    Description = this.GetLocalization("QuestReward.Description", () => "大比目鱼炮")
+                });
+            }
         }
 
         public override void UpdateByPlayer() {

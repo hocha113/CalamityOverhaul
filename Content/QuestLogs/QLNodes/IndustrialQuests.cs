@@ -297,8 +297,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
 
             if (CWRRef.Has) {
-                AddReward(ModContent.Find<ModItem>("CalamityMod", "DubiousPlating").Type, 20
-                    , this.GetLocalization("QuestReward.Description", () => "20个可疑镀层"));
+                if (ModContent.TryFind("CalamityMod", "DubiousPlating", out ModItem dubiousPlatingItem)) {
+                    AddReward(dubiousPlatingItem.Type, 20, this.GetLocalization("QuestReward.Description", () => "20个可疑镀层"));
+                }
             }
         }
 
