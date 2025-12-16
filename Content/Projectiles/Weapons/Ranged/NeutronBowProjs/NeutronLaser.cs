@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
@@ -9,9 +7,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
 {
     internal class NeutronLaser : ModProjectile
     {
-        public override string Texture => "CalamityMod/Projectiles/LaserProj";
+        public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {
-            Projectile.CloneDefaults(ModContent.ProjectileType<DrataliornusExoArrow>());
+            Projectile.CloneDefaults(CWRID.Proj_DrataliornusExoArrow);
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 1;
             Projectile.ArmorPenetration = 80;
@@ -44,6 +42,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.immune[Projectile.owner] = 0;
         public override Color? GetAlpha(Color lightColor) => new Color(0, 125, 210, Projectile.alpha);
-        public override bool PreDraw(ref Color lightColor) => Projectile.DrawBeam(200f, 3f, Color.White);
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

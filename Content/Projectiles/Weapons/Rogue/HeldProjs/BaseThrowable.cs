@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -244,7 +243,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 
         public sealed override void AI() {
             if (!onSet) {
-                stealthStrike = Owner.Calamity().StealthStrikeAvailable();
+                stealthStrike = Owner.GetPlayerStealthStrikeAvailable();
                 PostSetThrowable();
                 onSet = true;
             }

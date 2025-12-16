@@ -287,6 +287,9 @@ namespace CalamityOverhaul
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
+        public static int Proj_DrataliornusExoArrow => Get();
+        public static int Proj_Valaricicle => Get();
+        public static int Proj_Valaricicle2 => Get();
         public static int Proj_GelWave => Get();
         public static int Proj_SandBlade => Get();
         public static int Proj_ForbiddenOathbladeProjectile => Get();

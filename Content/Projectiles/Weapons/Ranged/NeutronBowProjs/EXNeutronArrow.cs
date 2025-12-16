@@ -1,18 +1,20 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
 {
-    internal class EXNeutronArrow : ModProjectile
+    internal class EXNeutronArrow : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "NeutronArrow";
+        private Trail Trail;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.timeLeft = 320;
@@ -44,30 +46,50 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 30f;
+        public float GetWidthFunc(float completionRatio) {
+            return Projectile.scale * 30f * Projectile.Opacity * (1f - completionRatio);
+        }
 
-        public Color PrimitiveColorFunction(float _) => Color.AliceBlue * Projectile.Opacity;
-
-        public void DrawTrild() {
+        public Color GetColorFunc(Vector2 completionRatio) {
             float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Blue, Color.White, Color.BlueViolet, Color.CadetBlue, Color.DarkBlue);
-            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.Blue, Color.White, Color.BlueViolet, Color.CadetBlue, Color.DarkBlue);
-
+            float colorInterpolant = (Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + completionRatio.X * 0.2f) % 1f;
+            Color mainColor = VaultUtils.MultiStepColorLerp(colorInterpolant, Color.Blue, Color.White, Color.BlueViolet, Color.CadetBlue, Color.DarkBlue);
             mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
-            secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
+            return mainColor * Projectile.Opacity;
+        }
 
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Projectile.oldPos == null || Projectile.oldPos.Length == 0) {
+                return;
+            }
+
+            Vector2[] positions = new Vector2[Projectile.oldPos.Length];
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    Projectile.oldPos[i] = Projectile.Center;
+                }
+                positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
+            }
+
+            Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
+            Trail.TrailPositions = positions;
+
+            Effect effect = EffectLoader.GradientTrail.Value;
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.SoftGlow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "BrinyBaron_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.SoftGlow.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            DrawTrild();
-
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 7), Color.White
                 , Projectile.rotation, VaultUtils.GetOrig(value, 7), Projectile.scale, SpriteEffects.None, 0);

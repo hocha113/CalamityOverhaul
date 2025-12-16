@@ -1,7 +1,5 @@
-﻿using CalamityMod.Projectiles.Rogue;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
@@ -57,8 +55,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                     for (int i = 0; i < icicleAmt; i++) {
                         Vector2 velocity = -Projectile.velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.3f, 0.45f);
                         int shard = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
-                            , Main.rand.NextBool() ? ModContent.ProjectileType<Valaricicle>()
-                            : ModContent.ProjectileType<Valaricicle2>(), Projectile.damage / 3, 0f, Projectile.owner);
+                            , Main.rand.NextBool() ? CWRID.Proj_Valaricicle
+                            : CWRID.Proj_Valaricicle2, Projectile.damage / 3, 0f, Projectile.owner);
                         Main.projectile[shard].extraUpdates = 2;
                     }
                 }
