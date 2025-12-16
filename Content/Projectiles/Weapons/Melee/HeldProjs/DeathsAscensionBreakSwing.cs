@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
@@ -14,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DeathsAscensionSwing";
         public int frameX = 0;
         public int frameY = 0;
-
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public int CurrentFrame {
             get => frameX * 6 + frameY;
             set {

@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AnarchyBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BrimlashProj";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

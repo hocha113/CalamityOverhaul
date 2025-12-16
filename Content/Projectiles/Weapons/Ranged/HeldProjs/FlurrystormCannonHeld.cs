@@ -4,11 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class FlurrystormCannonHeld : BaseFeederGun
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "FlurrystormCannonShooting";
         private int fireIndex2;
         private int onFireTime;

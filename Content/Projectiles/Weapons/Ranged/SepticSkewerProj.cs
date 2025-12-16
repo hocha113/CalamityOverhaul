@@ -2,11 +2,13 @@
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class SepticSkewerProj : BaseHeldProj
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "SepticSkewerHarpoon";
         public override void SetDefaults() => Projectile.CloneDefaults(CWRID.Proj_SepticSkewerHarpoon);
 

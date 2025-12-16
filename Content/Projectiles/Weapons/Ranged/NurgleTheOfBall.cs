@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class NurgleTheOfBall : ModProjectile
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ContagionBall";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;

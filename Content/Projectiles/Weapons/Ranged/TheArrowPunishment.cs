@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class TheArrowPunishment : ModProjectile
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "CondemnationArrow";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

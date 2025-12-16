@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs;
 public class GiantBansheeScythe : ModProjectile
 {
     public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
+    public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
     private HashSet<NPC> onHitNPCs = [];
     public override void SetStaticDefaults() {
         ProjectileID.Sets.TrailingMode[Type] = 2;

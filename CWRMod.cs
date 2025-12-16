@@ -1,5 +1,6 @@
 ﻿global using InnoVault;
 global using Microsoft.Xna.Framework;
+using CalamityOverhaul.Common;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -69,6 +70,10 @@ namespace CalamityOverhaul
         public override void Load() {
             Instance = this;
             FindMod();
+
+            if (CWRRef.Has) {
+                ModGanged.Load();
+            }
 
             ILoaders = VaultUtils.GetDerivedInstances<ICWRLoader>();
             foreach (var load in ILoaders) {

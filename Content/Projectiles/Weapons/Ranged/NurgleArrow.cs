@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class NurgleArrow : ModProjectile
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ContagionArrow";
         private int addBallTimer = 10;
         private float rot;

@@ -14,6 +14,22 @@ namespace CalamityOverhaul.OtherMods.ImproveGame
         public static ModConfig LuiAFKConfig_ConfigInstance;
         public static FieldInfo LuiAFKConfig_RangerAmmoInfo;
 
+        void ICWRLoader.LoadData() {
+            #region luiafk
+            if (CWRMod.Instance.luiafk != null) {
+                Type luiAFKConfigType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.luiafk), "LuiAFKConfig");
+                LuiAFKConfig_RangerAmmoInfo = luiAFKConfigType.GetField("rangerAmmo", BindingFlags.Public | BindingFlags.Instance);
+            }
+            #endregion
+
+            #region improveGame
+            if (CWRMod.Instance.improveGame != null) {
+                Type improveGameConfigType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.improveGame), "ImproveConfigs");
+                ImproveGameConfig_NoConsume_Ammo = improveGameConfigType.GetField("NoConsume_Ammo", BindingFlags.Public | BindingFlags.Instance);
+            }
+            #endregion
+        }
+
         internal static bool ImproveGameSetAmmoIsNoConsume(Item ammoItem) {
             if (CWRMod.Instance.improveGame == null) {
                 return false;
