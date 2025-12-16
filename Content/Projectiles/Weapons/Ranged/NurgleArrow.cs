@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -59,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 6000);
+            target.AddBuff(CWRID.Buff_Plague, 6000);
             CWRNpc npc = target.CWR();
             npc.CreateHitPlayer = Main.player[Projectile.owner];
             npc.ContagionOnHitNum++;
@@ -69,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 600);
+            target.AddBuff(CWRID.Buff_Plague, 600);
         }
 
         public override void OnKill(int timeLeft) {

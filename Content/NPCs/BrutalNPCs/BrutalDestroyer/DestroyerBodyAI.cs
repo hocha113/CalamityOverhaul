@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -50,7 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
         private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
-        private CalamityGlobalNPC calNPC => npc.Calamity();
         private float enrageScale;
         private int noFlyZoneBoxHeight;
         private int totalSegments;
@@ -183,9 +180,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.localAI[1] = 1f;
             }
 
-            //调用光照逻辑
-            HandleLighting(spitLaserSpreads);
-
             //调用消失行为逻辑
             HandleDespawnBehavior(ref shouldFly, ref segmentVelocity);
 
@@ -251,8 +245,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (ai[1] < DestroyerHeadAI.StretchTime) {
                 ai[1]++;
             }
-            npc.Calamity().newAI[1] = 1200;
-            npc.Calamity().CurrentlyIncreasingDefenseOrDR = false;
+            npc.RefNPCNewAI()[1] = 1200;
+            npc.RefNPCCurrentlyIncreasingDefenseOrDR() = false;
         }
 
         private void UpdateFlightPhase() {
@@ -289,7 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void UpdateEnrageScale() {
             enrageScale = CWRWorld.BossRush ? 1f : 0f;
             if (Main.IsItDay() || CWRWorld.BossRush) {
-                npc.Calamity().CurrentlyEnraged = !CWRWorld.BossRush;
+                npc.RefNPCCurrentlyEnraged() = !CWRWorld.BossRush;
                 enrageScale += 2f;
             }
         }
@@ -422,7 +416,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             npc.localAI[2] = 0f;
-            npc.SyncVanillaLocalAI();
+            CWRRef.SyncVanillaLocalAI(npc);
             NetAISend();
         }
 
@@ -483,38 +477,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
             return true;
-        }
-
-        private void HandleLighting(bool spitLaserSpreads) {
-            if (npc.type == NPCID.TheDestroyerBody) {
-                return;
-            }
-
-            Vector3 groundColor = new Vector3(0.3f, 0.1f, 0.05f);
-            Vector3 flightColor = new Vector3(0.05f, 0.1f, 0.3f);
-            Vector3 segmentColor = Vector3.Lerp(groundColor, flightColor, phaseTransitionColorAmount);
-            Vector3 telegraphColor = groundColor;
-            float telegraphProgress = 0f;
-
-            float telegraphGateValue = ExtremeModeBeamThreshold - BeamWarningDuration;
-
-            if (npc.type == NPCID.TheDestroyer && spitLaserSpreads && ai[0] > telegraphGateValue) {
-                telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                telegraphProgress = MathHelper.Clamp((ai[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
-            }
-            else if (npc.type == NPCID.TheDestroyerBody) {
-                float shootProjectileTime = CWRWorld.BossRush ? 270f : 450f;
-                float bodySegmentTime = npc.ai[0] * 30f;
-                float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
-                float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
-
-                if (ai[0] > bodyTelegraphGateValue) {
-                    telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                    telegraphProgress = MathHelper.Clamp((ai[0] - bodyTelegraphGateValue) / BeamWarningDuration, 0f, 1f);
-                }
-            }
-
-            Lighting.AddLight(npc.Center, Vector3.Lerp(segmentColor, telegraphColor * 2f, telegraphProgress));
         }
 
         private void HandleDespawnBehavior(ref bool shouldFly, ref float segmentVelocity) {

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
         }
         #endregion
         public override void Update() {
-            if (MurasamaItem == null || MurasamaItem.type != ModContent.ItemType<Murasama>()) {
+            if (MurasamaItem == null || MurasamaItem.type != CWRID.Item_Murasama) {
                 murasamaHeld = null;
                 return;
             }

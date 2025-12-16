@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class PestilentDefilerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PestilentDefiler";
-        public override int TargetID => ModContent.ItemType<PestilentDefiler>();
+        public override int TargetID => CWRID.Item_PestilentDefiler;
         public override void SetRangedProperty() {
             KreloadMaxTime = 90;
             FireTime = 20;
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ModContent.ProjectileType<SicknessRound>();
+                AmmoTypes = CWRID.Proj_SicknessRound;
                 WeaponDamage = (int)(WeaponDamage * 0.6f);
             }
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

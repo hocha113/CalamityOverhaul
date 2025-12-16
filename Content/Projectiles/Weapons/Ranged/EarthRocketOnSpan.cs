@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.ID;
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
                 CWRUtils.SpawnGunDust(Projectile, Projectile.Center, vr);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                    Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center, vr, CWRID.Proj_ScorchedEarthRocket, Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 if (Projectile.rotation != 0) {

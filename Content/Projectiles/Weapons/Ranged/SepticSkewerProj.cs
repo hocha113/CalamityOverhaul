@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Ranged;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -11,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class SepticSkewerProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "SepticSkewerHarpoon";
-        public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<SepticSkewerHarpoon>());
+        public override void SetDefaults() => Projectile.CloneDefaults(CWRID.Proj_SepticSkewerHarpoon);
 
         public override void AI() {
             if (Main.rand.NextBool(5)) {

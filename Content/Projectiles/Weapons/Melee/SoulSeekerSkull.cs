@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
 
-        public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<MourningSkull>());
+        public override void SetDefaults() => Projectile.CloneDefaults(CWRID.Proj_MourningSkull);
 
         public override void AI() {
             if (Projectile.ai[0] < 0f) {
@@ -137,7 +136,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Projectile.GetSource_FromThis(),
                     Projectile.position.X, Projectile.position.Y,
                     Main.rand.Next(-35, 36) * 0.2f, Main.rand.Next(-35, 36) * 0.2f,
-                    ModContent.ProjectileType<TinyFlare>(), (int)(Projectile.damage * 0.35),
+                    CWRID.Proj_TinyFlare, (int)(Projectile.damage * 0.35),
                     Projectile.knockBack * 0.35f, Main.myPlayer, 0f, 0f
                 );
             }

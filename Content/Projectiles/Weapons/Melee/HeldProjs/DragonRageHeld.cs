@@ -6,7 +6,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -349,7 +348,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 return;
             }
 
-            int type = ModContent.ProjectileType<DragonRageFireOrb>();
             if (Projectile.ai[0] == 3) {
                 float OrbSize = Main.rand.NextFloat(0.5f, 0.8f) * Projectile.numHits;
                 if (OrbSize > 2.2f) {
@@ -365,20 +363,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                     , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
                 Main.projectile[proj].DamageType = DamageClass.Melee;
             }
-            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && RDragonRage.CoolWorld) {
-                for (int i = 0; i < 3; i++) {
-                    Vector2 vr = (MathHelper.TwoPi / 3f * i + Main.GameUpdateCount * 0.1f).ToRotationVector2();
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
-                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
-                }
-            }
 
             HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
             if (theofSteel) {
-                SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = 0.75f }, target.Center);
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitInorganic".GetSound() with { Pitch = 0.75f, Volume = 0.55f }, target.Center);
             }
             else {
-                SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 1.25f }, target.Center);
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound() with { Pitch = 1.25f, Volume = 0.45f }, target.Center);
             }
 
             for (int i = 0; i < sparkCount; i++) {

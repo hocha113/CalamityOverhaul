@@ -13,6 +13,8 @@ namespace CalamityOverhaul
         #region 物品ID引用
         public static int Item_SHPC => Get();
         public static int Item_HalibutCannon => Get();
+        public static int Item_SpeedBlaster => Get();
+        public static int Item_SuperradiantSlaughterer => Get();
         public static int Item_DraedonPowerCell => Get();
         public static int Item_AquaticScourgeBag => Get();
         public static int Item_AerialiteBar => Get();
@@ -276,8 +278,16 @@ namespace CalamityOverhaul
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
+        public static int Proj_SepticSkewerHarpoon => Get();
+        public static int Proj_BrimstoneSwordExplosion => Get();
         public static int Proj_BansheeHookScythe => Get();
         public static int Proj_NastyChollaBol => Get();
+        public static int Proj_MourningSkull => Get();
+        public static int Proj_TinyFlare => Get();
+        public static int Proj_SandstormBullet => Get();
+        public static int Proj_SicknessRound => Get();
+        public static int Proj_ScorchedEarthRocket => Get();
+        public static int Proj_BrinyTyphoonBubble => Get();
         public static int Proj_CosmicDischargeFlail => Get();
         public static int Proj_CatastropheClaymoreSparkle => Get();
         public static int Proj_DestroyerCursedLaser => Get();

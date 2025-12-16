@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -99,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Projectile.GetSource_FromAI(),
                     Projectile.Center + new Vector2(0, 16),
                     Vector2.Zero,
-                    ModContent.ProjectileType<BrinyTyphoonBubble>(),
+                    CWRID.Proj_BrinyTyphoonBubble,
                     Projectile.damage,
                     Projectile.knockBack,
                     Projectile.owner

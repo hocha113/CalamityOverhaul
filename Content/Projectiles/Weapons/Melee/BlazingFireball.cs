@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -57,9 +55,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.IsOwnedByLocalPlayer()) {
                 int flameCount = Main.rand.Next(2, 4);
                 for (int i = 0; i < flameCount; i++) {
-                    Vector2 velocity = CalamityUtils.RandomVelocity(100f, 70f, 100f);
+                    Vector2 velocity = VaultUtils.RandVr(7, 10);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
-                        , ModContent.ProjectileType<AegisFlame>(), (int)(Projectile.damage * 0.75), 0f, Projectile.owner);
+                        , CWRID.Proj_AegisFlame, (int)(Projectile.damage * 0.75), 0f, Projectile.owner);
                 }
             }
         }

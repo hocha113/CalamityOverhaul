@@ -78,15 +78,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
-                    calNPC.newAI[0]++;
-                    if (!VaultUtils.isClient && calNPC.newAI[0] >= 2) {
+                    npc.RefNPCNewAI()[0]++;
+                    if (!VaultUtils.isClient && npc.RefNPCNewAI()[0] >= 2) {
                         if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
                             SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                             int damage = SetMultiplier(npc.defDamage / 3);
                             Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                                 , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                         }
-                        calNPC.newAI[0] = 0;
+                        npc.RefNPCNewAI()[0] = 0;
                         ai11++;
                         SendExtraAI(npc);
                         NetAISend();
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             else if (npc.ai[1] == 1f) {
                 npc.defense *= (int)(npc.defDefense * 1.25f);
                 npc.damage = npc.defDamage * 2;
-                calNPC.CurrentlyIncreasingDefenseOrDR = true;
+                npc.RefNPCCurrentlyIncreasingDefenseOrDR() = true;
 
                 npc.ai[2]++;
                 if (npc.ai[2] == 2f) {
@@ -213,14 +213,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
 
             if (npc.ai[1] != 1 || ai3 == 3) {
-                SmokeDrawer.ParticleSpawnRate = 3;
-                SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
-                SmokeDrawer.SpawnAreaCompactness = 80f;
                 if (npc.life > npc.lifeMax / 10 && noEye && npc.ai[1] != 2) {
                     npc.life -= 12;
                 }
             }
-            SmokeDrawer.Update();
 
             if (setPosingStarmCount > 0 && !noEye && ai3 != 3) {
                 npc.damage = 0;
@@ -451,13 +447,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-
-                if (noArm) {
-                    SmokeDrawer.ParticleSpawnRate = 3;
-                    SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
-                    SmokeDrawer.SpawnAreaCompactness = 80f;
-                }
-                SmokeDrawer.Update();
 
                 ai10--;
                 if (ai10 <= 0) {

@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Melee;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -45,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                , ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
+                , CWRID.Proj_Brimblast, Projectile.damage, Projectile.knockBack, Main.myPlayer);
             return true;
         }
 
@@ -57,10 +55,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 180);
+            target.AddBuff(CWRID.Buff_BrimstoneFlames, 180);
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0) {
                 _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
-                    , ModContent.ProjectileType<BrimstoneSwordExplosion>(), (int)(Projectile.damage * 0.5), hit.Knockback, Projectile.owner);
+                    , CWRID.Proj_BrimstoneSwordExplosion, (int)(Projectile.damage * 0.5), hit.Knockback, Projectile.owner);
             }
             if (Projectile.damage > 1) {
                 Projectile.damage = (int)(Projectile.damage * 0.6);

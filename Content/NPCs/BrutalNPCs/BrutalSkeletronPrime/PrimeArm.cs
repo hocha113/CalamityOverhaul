@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal Player player;
         internal int frame;
         internal bool dontAttack;
-        internal CalamityGlobalNPC calNPC => npc.Calamity();
         public sealed override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;

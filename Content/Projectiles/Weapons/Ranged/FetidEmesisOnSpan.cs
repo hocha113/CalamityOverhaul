@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.6f, Pitch = -0.8f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
-                    , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                    , CWRID.Proj_EmesisGore, shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                     Main.projectile[proj].penetrate = 5;
                 }
                 for (int i = 0; i < 5; i++) {
@@ -56,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     for (int i = 0; i < 3; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
-                        , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                        , CWRID.Proj_EmesisGore, shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                         Main.projectile[proj].penetrate = 3;
                     }
                 }
@@ -73,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     for (int i = 0; i < (Main.zenithWorld ? 115 : 5); i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
-                        , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                        , CWRID.Proj_EmesisGore, shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                         Main.projectile[proj].penetrate = 2;
                     }
                 }

@@ -3114,7 +3114,6 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Balancer pour lancer plusieurs lames cosmiques
-			Lancer des flèches de lumière cosmique avec le clic droit
 			"Avec cette lame cosmique, je repousse les autres univers"
 			'''
 	}

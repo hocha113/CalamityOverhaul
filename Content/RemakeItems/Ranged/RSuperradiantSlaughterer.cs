@@ -21,17 +21,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSuperradiantSlaughterer : CWRItemOverride
     {
-        public override int TargetID => ModContent.ItemType<SuperradiantSlaughterer>();
+        public override int TargetID => CWRID.Item_SuperradiantSlaughterer;
         public override bool DrawingInfo => false;
         public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<SuperradiantSlaughtererHeld>();
-        public override void ModifyRecipe(Recipe recipe) => recipe.RemoveIngredient(ModContent.ItemType<SpeedBlaster>());
+        public override void ModifyRecipe(Recipe recipe) => recipe.RemoveIngredient(CWRID.Item_SpeedBlaster);
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {//重新补上修改，因为描述替换会让原本的修改操作失效
             tooltips.ReplacePlaceholder("[MAIN]"
                 , VaultUtils.FormatColorTextMultiLine(this.GetLocalizedValue("MainInfo")
                 , new Color(180, 255, 0)), "");
             tooltips.ReplacePlaceholder("[ALT]"
                 , VaultUtils.FormatColorTextMultiLine(this.GetLocalization("AltInfo")
-                .Format(SuperradiantSlaughterer.DashCooldown / 60)
+                .Format(6)
                 , new Color(120, 255, 120)), "");
         }
     }
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSawSmallSlash")]
         private static Asset<Texture2D> SmallSlash { get; set; }
         public override string Texture => "CalamityMod/Projectiles/Ranged/SuperradiantSlaughtererHoldout";
-        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<SuperradiantSlaughterer>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(CWRID.Item_SuperradiantSlaughterer);
         public bool NoSawByHeld;
         public Particle TargetSmallSlashInstance;
         public Particle TargetLargeSlashInstance;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         }
         public override void Initialize() => FromArmLength = MaxFromArmLength;
         public override void AI() {
-            if (!Owner.Alives() || Item.type != ModContent.ItemType<SuperradiantSlaughterer>()) {
+            if (!Owner.Alives() || Item.type != CWRID.Item_SuperradiantSlaughterer) {
                 Projectile.Kill();
                 Projectile.netUpdate = true;
                 return;

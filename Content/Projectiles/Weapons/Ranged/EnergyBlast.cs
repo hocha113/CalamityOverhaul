@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<ElementalMix>(), 60);
+            target.AddBuff(CWRID.Buff_ElementalMix, 60);
             if (Projectile.numHits == 0)
                 SpanDust(Projectile);
         }

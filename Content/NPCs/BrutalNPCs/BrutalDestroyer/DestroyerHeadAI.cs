@@ -76,7 +76,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             rule.SimpleAdd(ModContent.ItemType<DestroyersBlade>(), 4);
             rule.SimpleAdd(ModContent.ItemType<StaffoftheDestroyer>(), 4);
             rule.SimpleAdd(ModContent.ItemType<Observer>(), 4);
-            rule.SimpleAdd(ModContent.ItemType<ForgedLash>(), 4);
             npcLoot.Add(rule);
         }
 

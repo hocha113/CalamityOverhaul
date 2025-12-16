@@ -1,6 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Particles;
-using CalamityOverhaul.Content.Projectiles.Others;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -48,13 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
             if (Main.rand.NextBool(3)) {
-                bool LowVel = Main.rand.NextBool() ? false : true;
-                FlameParticle fire = new FlameParticle(Projectile.Center + VaultUtils.RandVr(13), 20, Main.rand.NextFloat(0.1f, 0.3f), 0.05f
-                    , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f)) {
-                    Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
-                    * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
-                };
-                GeneralParticleHandler.SpawnParticle(fire);
+                CWRRef.NurgleBeeEffect(Projectile, Main.rand.NextBool());
             }
             if (Projectile.timeLeft < 330) {
                 NPC target = Projectile.Center.FindClosestNPC(450);
@@ -72,11 +64,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 6000);
+            target.AddBuff(CWRID.Buff_Plague, 6000);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 600);
+            target.AddBuff(CWRID.Buff_Plague, 600);
         }
 
         public override void OnKill(int timeLeft) {

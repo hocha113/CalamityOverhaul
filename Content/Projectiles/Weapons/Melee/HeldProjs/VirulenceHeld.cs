@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
@@ -30,11 +29,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 300);
+            target.AddBuff(CWRID.Buff_Plague, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Plague>(), 300);
+            target.AddBuff(CWRID.Buff_Plague, 300);
         }
     }
 }

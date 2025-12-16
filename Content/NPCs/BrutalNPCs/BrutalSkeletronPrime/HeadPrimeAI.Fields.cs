@@ -1,6 +1,3 @@
-using CalamityMod;
-using CalamityMod.NPCs;
-using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -15,7 +12,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     {
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
-        public ThanatosSmokeParticleSet SmokeDrawer;
         private const int maxfindModes = 6000;
         private Player player;
         private int frame = 0;
@@ -34,7 +30,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
         private bool noEye;
         internal static int setPosingStarmCount;
-        internal CalamityGlobalNPC calNPC => npc.Calamity();
         internal ref float ai0 => ref ai[0];
         internal ref float ai1 => ref ai[1];
         internal ref float ai2 => ref ai[2];

@@ -8,10 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RExcelsus : CWRItemOverride
     {
-        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
-        public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 78;
             Item.damage = 220;
@@ -55,12 +52,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             int type = CWRID.Proj_ExcelsusMain;
-            if (DownRight) {
-                type = ModContent.ProjectileType<ExcelsusBomb>();
-                Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                    , type, (int)(Projectile.damage * 3.55f), Projectile.knockBack, Owner.whoAmI);
-                return;
-            }
             for (int i = 0; i < 3; ++i) {
                 float speedX = ShootVelocity.X + Main.rand.NextFloat(-1.5f, 1.5f);
                 float speedY = ShootVelocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);

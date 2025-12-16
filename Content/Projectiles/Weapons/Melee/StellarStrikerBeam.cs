@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -42,15 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Player Owner = Main.player[Projectile.owner];
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 4, 2.3f, new Color(68, 153, 112));
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.7f, new Color(95, 200, 157));
-                GeneralParticleHandler.SpawnParticle(spark2);
-            }
+            CWRRef.StellarStrikerBeamEffect(Projectile, Time, targetDist);
 
             Time++;
         }
@@ -64,10 +54,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < 6; i++) {
                     int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + VaultUtils.RandVr(255), Vector2.Zero, ProjectileID.LunarFlare
                         , (int)(Projectile.damage * 0.5), 0, Main.myPlayer, 0f, Main.rand.Next(3));
-                    if (proj.WithinBounds(Main.maxProjectiles)) {
-                        Main.projectile[proj].DamageType = DamageClass.Melee;
-                        Main.projectile[proj].timeLeft = 30;
-                    }
+                    Main.projectile[proj].DamageType = DamageClass.Melee;
+                    Main.projectile[proj].timeLeft = 30;
                 }
                 onhitNPCBool = false;
             }

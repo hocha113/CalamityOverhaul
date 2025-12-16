@@ -1,4 +1,3 @@
-using CalamityMod.Particles;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -15,7 +14,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override void SetProperty() {
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
-            SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
@@ -32,7 +30,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            SmokeDrawer.ParticleSpawnRate = 99999;
             bossRush = CWRRef.GetBossRushActive() || CWRWorld.MachineRebellion;
             death = CWRRef.GetDeathMode() || bossRush;
             player = Main.player[npc.target];

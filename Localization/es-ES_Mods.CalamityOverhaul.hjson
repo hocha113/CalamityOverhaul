@@ -3141,7 +3141,6 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Empuña y lanza múltiples cuchillas cósmicas.
-			El botón derecho lanza flechas de luz y oscuridad.
 			"Con esta cuchilla del universo, lanza las de otros universos."
 			'''
 	}

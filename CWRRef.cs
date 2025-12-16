@@ -357,5 +357,51 @@ namespace CalamityOverhaul
                     break;
             }
         }
+        public static void SyncVanillaLocalAI(NPC npc) => CalamityUtils.SyncVanillaLocalAI(npc);
+        public static ref float[] RefNPCNewAI(this NPC npc) => ref npc.Calamity().newAI;
+        public static ref bool RefNPCCurrentlyEnraged(this NPC npc) => ref npc.Calamity().CurrentlyEnraged;
+        public static ref bool RefNPCCurrentlyIncreasingDefenseOrDR(this NPC npc) => ref npc.Calamity().CurrentlyIncreasingDefenseOrDR;
+        public static void DarkIceBombEffect1(Projectile Projectile, float Time, float targetDist) {
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+            if (Main.rand.NextBool(3) && Time > 5f && targetDist < 1400f) {
+                Particle orb = new GenericBloom(Projectile.Center + Main.rand.NextVector2Circular(10, 10)
+                    , Projectile.velocity * Main.rand.NextFloat(0.05f, 0.5f), Color.WhiteSmoke, Main.rand.NextFloat(0.2f, 0.45f), Main.rand.Next(6, 9), true, false);
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
+
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 10, 1.7f, Color.AliceBlue);
+                GeneralParticleHandler.SpawnParticle(spark2);
+            }
+        }
+        public static void DarkIceBombEffect2(Projectile Projectile, Vector2 randVr) {
+            AltSparkParticle spark = new(Projectile.Center, randVr, true, 12, Main.rand.NextFloat(1.3f, 2.2f), Color.Blue);
+            GeneralParticleHandler.SpawnParticle(spark);
+            AltSparkParticle spark2 = new(Projectile.Center, randVr, false, 9, Main.rand.NextFloat(1.1f, 1.5f), Color.AntiqueWhite);
+            GeneralParticleHandler.SpawnParticle(spark2);
+        }
+        public static void StellarStrikerBeamEffect(Projectile Projectile, float Time, float targetDist) {
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 4, 2.3f, new Color(68, 153, 112));
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.7f, new Color(95, 200, 157));
+                GeneralParticleHandler.SpawnParticle(spark2);
+            }
+        }
+        public static void NurgleBeeEffect(Projectile Projectile, bool LowVel) {
+            FlameParticle fire = new FlameParticle(Projectile.Center + VaultUtils.RandVr(13), 20, Main.rand.NextFloat(0.1f, 0.3f), 0.05f
+            , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f)) {
+                Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
+            * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
+            };
+            GeneralParticleHandler.SpawnParticle(fire);
+        }
     }
 }

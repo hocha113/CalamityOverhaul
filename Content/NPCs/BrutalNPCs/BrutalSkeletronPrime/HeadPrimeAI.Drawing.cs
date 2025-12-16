@@ -190,8 +190,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Rectangle rectangle = mainValue.GetRectangle(frame, 12);
             Vector2 orig = rectangle.Size() / 2;
 
-            SmokeDrawer?.DrawSet(npc.Center);
-
             float sengs = 0.2f;
             for (int i = 0; i < npc.oldPos.Length; i++) {
                 Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;

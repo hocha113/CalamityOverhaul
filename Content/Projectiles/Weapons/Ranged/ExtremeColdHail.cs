@@ -1,5 +1,4 @@
-﻿using CalamityMod.Particles;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,20 +31,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.localAI[0]++;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            Vector2 bloodSpawnPosition = Projectile.Center + (Vector2.UnitY * -13f).RotatedBy(Projectile.rotation);
-            Vector2 splatterDirection = -(Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
-            int bloodLifetime = Main.rand.Next(5, 8);
-            float bloodScale = Main.rand.NextFloat(0.4f, 0.6f);
-            Color bloodColor = Color.Lerp(Color.Cyan, Color.LightCyan, Main.rand.NextFloat());
-            bloodColor = Color.Lerp(bloodColor, new Color(11, 64, 128), Main.rand.NextFloat(0.65f));
-
-            if (Main.rand.NextBool(20))
-                bloodScale *= 1.7f;
-
-            Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.81f) * Main.rand.NextFloat(3f, 6f);
-            bloodVelocity.Y -= 1f;
-            BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
-            GeneralParticleHandler.SpawnParticle(blood);
             if (Main.rand.NextBool(6)) {
                 Projectile.NewProjectileDirect(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity * 0.1f, ModContent.ProjectileType<IceExplosionFriend>(), 13, 0, Projectile.owner, 0);
             }

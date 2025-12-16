@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             int sporeAmt = Main.rand.Next(3, 7);
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int s = 0; s < sporeAmt; s++) {
-                    Vector2 velocity = CalamityUtils.RandomVelocity(100f, 70f, 100f);
+                    Vector2 velocity = VaultUtils.RandVr(7, 10);
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
                         , ProjectileID.SporeGas + Main.rand.Next(3), (int)(Projectile.damage * 0.25), 0f, Projectile.owner);
                     if (proj.WithinBounds(Main.maxProjectiles)) {

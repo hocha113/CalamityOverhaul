@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Content.Projectiles.Others;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -91,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.immune[Projectile.owner] = 8;
-            target.AddBuff(ModContent.BuffType<Plague>(), 180);
+            target.AddBuff(CWRID.Buff_Plague, 180);
         }
 
         public override bool PreDraw(ref Color lightColor) {

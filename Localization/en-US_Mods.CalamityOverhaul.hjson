@@ -3092,8 +3092,8 @@ RemakeItems: {
 		DisplayName: Excelsus
 		Tooltip:
 			'''
-			Sends out Cosmic Blade Mirages that pierce through walls, inflicting God Slayer Inferno. True Melee hits also summon a laser beam from the sky.
-			Right click sends out a high velocity God Slayer dart that explodes on impact.
+			Sends out Cosmic Blade Mirages that pierce through walls, inflicting God Slayer Inferno. 
+			True Melee hits also summon a laser beam from the sky.
 			'''
 	}
 

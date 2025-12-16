@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             if (Main.rand.NextBool(30)) {
                 _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(Main.rand.Next(-3, 3), -11)
-                    , ModContent.ProjectileType<SandstormBullet>(), Projectile.damage, 0f, Main.myPlayer);
+                    , CWRID.Proj_SandstormBullet, Projectile.damage, 0f, Main.myPlayer);
             }
             Projectile.ai[0]++;
         }

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -94,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Vector2 velocity = CalamityUtils.RandomVelocity(100f, 60f, 85f);
+                Vector2 velocity = VaultUtils.RandVr(6, 8);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
                     , ModContent.ProjectileType<SporeBurst>(), Projectile.damage / 2, 0f, Projectile.owner);
             }

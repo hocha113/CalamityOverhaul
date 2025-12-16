@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void UpdateVelocity(Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
             if (death) {
-                if (--calNPC.newAI[2] <= 0) {
+                if (--npc.RefNPCNewAI()[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed / 2;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed / 2;
                 }
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (death || Main.masterMode) {
-                    if (++calNPC.newAI[1] > 90) {
+                    if (++npc.RefNPCNewAI()[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
                         float baseDashSpeed = 20f;
@@ -116,8 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             Main.npc[primeVice].netUpdate = true;
                         }
 
-                        calNPC.newAI[2] = 60;
-                        calNPC.newAI[1] = 0;
+                        npc.RefNPCNewAI()[2] = 60;
+                        npc.RefNPCNewAI()[1] = 0;
                         npc.netUpdate = true;
                     }
                 }
@@ -140,8 +140,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.damage = 1000;
             npc.defense = 9999;
             //标记当前正在愤怒状态和增加防御力或伤害减免
-            calNPC.CurrentlyEnraged = true;
-            calNPC.CurrentlyIncreasingDefenseOrDR = true;
+            npc.RefNPCCurrentlyEnraged() = true;
+            npc.RefNPCCurrentlyIncreasingDefenseOrDR() = true;
         }
 
         private void MoveTowardsPlayer(float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {

@@ -37,11 +37,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #region AI主循环
         public override bool ArmBehavior() {
             float timeToNotAttack = TimeToNotAttack;
-            dontAttack = calNPC.newAI[2] < timeToNotAttack;
+            dontAttack = npc.RefNPCNewAI()[2] < timeToNotAttack;
 
             if (dontAttack) {
-                calNPC.newAI[2] += 1f;
-                if (calNPC.newAI[2] >= timeToNotAttack) {
+                npc.RefNPCNewAI()[2] += 1f;
+                if (npc.RefNPCNewAI()[2] >= timeToNotAttack) {
                     HeadPrimeAI.SendExtraAI(npc);
                 }
             }
