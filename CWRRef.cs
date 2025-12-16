@@ -19,7 +19,9 @@ using CalamityMod.TileEntities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -1196,9 +1198,9 @@ namespace CalamityOverhaul
             }
             else {
                 if (Time % 5 == 0 && Time > 35f && targetDist < 1400f) {
-                    SparkParticle spark = new SparkParticle(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f)
+                    PRT_Spark spark = new PRT_Spark(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f)
                         , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    PRTLoader.AddParticle(spark);
                 }
                 if (targetDist < 1400f) {
                     ModContent.GetInstance<DragonsBreathFlameMetaball2>().SpawnParticle(Projectile.Center, Time * 0.1f + 0.2f);
@@ -1213,8 +1215,8 @@ namespace CalamityOverhaul
         }
         [CWRJITEnabled]
         private static void AstralPikeBeamEffectInner(Projectile Projectile) {
-            LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
-            GeneralParticleHandler.SpawnParticle(spark2);
+            PRT_Line spark2 = new PRT_Line(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
+            PRTLoader.AddParticle(spark2);
         }
 
         public static void FadingGloryRapierHitDustEffect(Projectile Projectile, NPC npc) {
@@ -1234,8 +1236,8 @@ namespace CalamityOverhaul
                     Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
                     Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
                     if (Has) {
-                        SparkParticle spark = new SparkParticle(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                        GeneralParticleHandler.SpawnParticle(spark);
+                        PRT_Spark spark = new PRT_Spark(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                        PRTLoader.AddParticle(spark);
                     }
                 }
             }
