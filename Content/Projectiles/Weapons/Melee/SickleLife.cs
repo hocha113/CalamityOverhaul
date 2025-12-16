@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
@@ -42,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 NPC target = Projectile.Center.FindClosestNPC(900);
                 if (target != null) {
-                    Vector2 idealVelocity = Projectile.SafeDirectionTo(target.Center) * (Projectile.velocity.Length() + 6.5f);
+                    Vector2 idealVelocity = Projectile.To(target.Center).UnitVector() * (Projectile.velocity.Length() + 6.5f);
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, idealVelocity, 0.08f);
                 }
             }

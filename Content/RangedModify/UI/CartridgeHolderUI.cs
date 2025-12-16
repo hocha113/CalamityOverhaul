@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using InnoVault.UIHandles;
@@ -186,7 +185,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
 
-            if (player.Calamity().adrenalineModeActive) {
+            if (player.GetPlayerAdrenalineMode()) {
                 DrawPosition += VaultUtils.RandVr(6);
             }
         }

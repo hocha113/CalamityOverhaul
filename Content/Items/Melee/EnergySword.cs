@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,14 +26,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<EnergySwordHeld>();
-            Item.Calamity().UsesCharge = true;
-            Item.Calamity().MaxCharge = 40;
+            Item.RefItemUsesCharge() = true;
+            Item.RefItemMaxCharge() = 40;
         }
 
         public override bool CanUseItem(Player player) {
-            Item.Calamity().Charge -= 0.12f;
-            if (Item.Calamity().Charge < 0) {
-                Item.Calamity().Charge = 0;
+            Item.RefItemCharge() -= 0.12f;
+            if (Item.RefItemCharge() < 0) {
+                Item.RefItemCharge() = 0;
             }
             return base.CanUseItem(player);
         }
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void Shoot() {
-            if (Item.Calamity().Charge < 0.2f) {
+            if (Item.RefItemCharge() < 0.2f) {
                 return;
             }
 

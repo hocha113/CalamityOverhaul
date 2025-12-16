@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -23,9 +22,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            NPC potentialTarget = Projectile.Center.ClosestNPCAt(1500f, true, true);
+            NPC potentialTarget = Projectile.Center.FindClosestNPC(1500f, true, true);
             if (potentialTarget != null) {
-                Projectile.velocity = (Projectile.velocity * 29f + Projectile.SafeDirectionTo(potentialTarget.Center) * 21f) / 30f;
+                Projectile.velocity = (Projectile.velocity * 29f + Projectile.To(potentialTarget.Center).UnitVector() * 21f) / 30f;
                 Projectile.velocity *= 1.01f;
             }
 

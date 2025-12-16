@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override Color? GetAlpha(Color lightColor) => new Color(250, 50, 200, 0);
 
-        public override bool PreDraw(ref Color lightColor) => Projectile.DrawBeam(100f, 2f, lightColor);
+        public override bool PreDraw(ref Color lightColor) => CWRRef.DrawBeam(Projectile, 100f, 2f, lightColor);
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.ShadowFlame, 600);

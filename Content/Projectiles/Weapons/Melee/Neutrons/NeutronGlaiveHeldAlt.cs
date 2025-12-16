@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                         Vector2 pos = Projectile.Center + Projectile.velocity.UnitVector() * Main.rand.Next(-52, 112);
                         int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos
                         , Projectile.velocity.RotatedByRandom(0.2f), ModContent.ProjectileType<NeutronsOrb>(), Projectile.damage, 0);
-                        Main.projectile[proj].Calamity().allProjectilesHome = true;
+                        Main.projectile[proj].SetAllProjectilesHome(true);
                         for (int i = 0; i < 4; i++) {
                             float rot1 = MathHelper.PiOver2 * i;
                             Vector2 vr = rot1.ToRotationVector2();

@@ -19,7 +19,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class RSuperradiantSlaughterer : CWRItemOverride
     {
         public override int TargetID => CWRID.Item_SuperradiantSlaughterer;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                 , new Color(120, 255, 120)), "");
         }
     }
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class SuperradiantSlaughtererHeld : BaseHeldProj
     {
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSlaughtererHoldoutMiniSaw")]
@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             return false;
         }
     }
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class SuperradiantSawOverhaul : BaseHeldProj
     {
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSawOutline")]

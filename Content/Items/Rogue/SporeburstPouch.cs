@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -38,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            float stealthStrike = player.Calamity().StealthStrikeAvailable() ? 1f : 0f;
+            float stealthStrike = player.GetPlayerStealthStrikeAvailable() ? 1f : 0f;
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, stealthStrike);
             return false;
         }

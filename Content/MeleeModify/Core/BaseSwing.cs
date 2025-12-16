@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
@@ -503,7 +502,6 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
             Vector2 ownerCenter = GetOwnerCenter();
 
-            Projectile.Calamity().timesPierced = 0;
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;

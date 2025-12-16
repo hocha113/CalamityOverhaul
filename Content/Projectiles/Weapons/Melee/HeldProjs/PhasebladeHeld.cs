@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify;
+﻿using CalamityOverhaul.Content.MeleeModify;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
@@ -37,8 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (modifiers.SuperArmor || target.defense > 999
-                || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
+            if (modifiers.SuperArmor || target.defense > 999) {
                 return;
             }
             modifiers.DefenseEffectiveness *= 0f;

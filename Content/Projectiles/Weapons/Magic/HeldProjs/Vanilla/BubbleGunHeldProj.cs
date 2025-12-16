@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
                         , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 if (Main.rand.NextBool(6)) {
-                    Main.projectile[proj].Calamity().allProjectilesHome = true;
+                    Main.projectile[proj].SetAllProjectilesHome(true);
                 }
             }
         }

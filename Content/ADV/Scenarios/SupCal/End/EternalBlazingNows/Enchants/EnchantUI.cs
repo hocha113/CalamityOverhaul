@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
     /// 提供免费无限制的武器附魔，但需要等待附魔时间
     /// </summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class EnchantUI : UIHandle, ILocalizedModType
     {
         public static Asset<Texture2D> CalamitasCurseItemSlot = null;

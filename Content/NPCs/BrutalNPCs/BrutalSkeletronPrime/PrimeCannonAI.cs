@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -155,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void FireSingleRocket() {
             npc.TargetClosest();
             int type = ProjectileID.RocketSkeleton;
-            int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
             float rocketSpeed = 10f;
 
             Vector2 rocketVelocity = aimDirection * rocketSpeed;
@@ -191,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void FireSpreadRockets() {
             npc.TargetClosest();
             int type = ProjectileID.RocketSkeleton;
-            int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
             float rocketSpeed = 10f;
 
             Vector2 baseVelocity = aimDirection * rocketSpeed;
@@ -225,11 +224,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             //大量发射粒子
             SpawnFireParticles(numProj);
-
-            //屏幕震动
-            if (Main.LocalPlayer.Distance(npc.Center) < 700f) {
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = 4f;
-            }
         }
         #endregion
 

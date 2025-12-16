@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Common
         }
     }
 
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class DyeCalParticles : ModSystem
     {
         //使用Dictionary存储粒子对应的着色器数据

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -31,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, player.Calamity().StealthStrikeAvailable() ? 1 : 0);
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, player.GetPlayerStealthStrikeAvailable() ? 1 : 0);
             return false;
         }
     }

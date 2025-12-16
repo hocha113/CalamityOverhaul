@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -94,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Texture2D body = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayMid");
             Texture2D head = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayEnd");
             Texture2D dons = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayStart");
-            Color color = CalamityUtils.ColorSwap(new Color(119, 210, 255), new Color(247, 119, 255), 0.9f); ;
+            Color color = VaultUtils.MultiStepColorLerp(0.9f, new Color(119, 210, 255), new Color(247, 119, 255));
 
             float rots = Projectile.rotation - MathHelper.PiOver2;
             Vector2 slp = new Vector2(wit, 1);

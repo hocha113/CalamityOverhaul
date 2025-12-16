@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿    using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -385,11 +384,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void UpdatePhysicsEffects() {
             //冲击强度衰减
             impactIntensity *= 0.88f;
-
-            //屏幕震动
-            if (impactIntensity > 0.5f && Main.LocalPlayer.Distance(npc.Center) < 600f) {
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = impactIntensity * 3f;
-            }
         }
 
         private void OnImpact() {

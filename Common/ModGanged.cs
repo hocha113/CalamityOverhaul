@@ -25,7 +25,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Common
 {
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal class ModGanged : ICWRLoader
     {
         #region Data

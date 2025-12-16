@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool PreInOwner() {
-            int evilSmasherBoost = Owner.Calamity().evilSmasherBoost;
+            int evilSmasherBoost = Owner.RefPlayerEvilSmasherBoost();
             if (Time == 0) {
                 SwingData.baseSwingSpeed = 4f + evilSmasherBoost * 0.02f;
             }
@@ -38,8 +37,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.life <= 0 && Owner.Calamity().evilSmasherBoost < 10) {
-                Owner.Calamity().evilSmasherBoost += 1;
+            if (target.life <= 0 && Owner.RefPlayerEvilSmasherBoost() < 10) {
+                Owner.RefPlayerEvilSmasherBoost()++;
             }
         }
     }

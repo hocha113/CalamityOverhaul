@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -55,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool CanDrawCustom() => true;
 
         public void DrawCustom(SpriteBatch spriteBatch) {
-            CalamityUtils.DrawAfterimagesFromEdge(Projectile, 0, Color.White, TextureAssets.Projectile[Type].Value);
+            CWRRef.DrawAfterimagesFromEdge(Projectile, 0, Color.White, TextureAssets.Projectile[Type].Value);
         }
 
         public void Warp() {

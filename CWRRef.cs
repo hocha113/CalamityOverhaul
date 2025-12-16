@@ -35,7 +35,7 @@ namespace CalamityOverhaul
     /// <summary>
     /// 一个用于访问Calamity Mod内部内容的静态类
     /// </summary>
-    [CWRJITEnabled]
+    [JITWhenModsEnabled("CalamityMod")]
     internal static class CWRRef
     {
         /// <summary>
@@ -56,8 +56,12 @@ namespace CalamityOverhaul
         public static bool GetNPCIsAnEnemy(this NPC npc) => npc.IsAnEnemy();
         public static void SetPlayerWarbannerOfTheSun(this Player player, bool value) => player.Calamity().warbannerOfTheSun = value;
         public static bool GetPlayerBladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
+        public static ref int RefPlayerEvilSmasherBoost(this Player player) => ref player.Calamity().evilSmasherBoost;
         public static bool GetPlayerAdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
         public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
+        public static void LargeFieryExplosion(Projectile projectile) => projectile.LargeFieryExplosion();
+        public static bool DrawBeam(Projectile projectile, float length, float spacer, Color lightColor, Texture2D texture = null, bool curve = false) => projectile.DrawBeam(length, spacer, lightColor, texture, curve);
+        public static void DrawAfterimagesFromEdge(Projectile proj, int mode, Color lightColor, Texture2D texture = null) => CalamityUtils.DrawAfterimagesFromEdge(proj, mode, lightColor, texture);
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
                 0 => CWRID.Proj_SwordsplosionBlue,
@@ -304,7 +308,9 @@ namespace CalamityOverhaul
         }
         public static ref float RefItemCharge(this Item item) => ref item.Calamity().Charge;
         public static float GetItemMaxCharge(this Item item) => item.Calamity().MaxCharge;
+        public static ref float RefItemMaxCharge(this Item item) => ref item.Calamity().MaxCharge;
         public static bool GetItemUsesCharge(this Item item) => item.Calamity().UsesCharge;
+        public static ref bool RefItemUsesCharge(this Item item) => ref item.Calamity().UsesCharge;
         public static RogueDamageClass GetRogueDamageClass() => ModContent.GetInstance<RogueDamageClass>();
         public static float GetPlayerRogueStealth(this Player player) => player.Calamity().rogueStealth;
         public static float SetPlayerRogueStealth(this Player player, float value) => player.Calamity().rogueStealth = value;

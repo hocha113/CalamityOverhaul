@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -35,9 +34,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.ai[0] == 1) {
                 Projectile.penetrate = 1;
                 Projectile.extraUpdates = 1;
-                NPC potentialTarget = Projectile.Center.ClosestNPCAt(1500f, true, true);
+                NPC potentialTarget = Projectile.Center.FindClosestNPC(1500f, true, true);
                 if (potentialTarget != null) {
-                    Projectile.velocity = (Projectile.velocity * 29f + Projectile.SafeDirectionTo(potentialTarget.Center) * 21f) / 30f;
+                    Projectile.velocity = (Projectile.velocity * 29f + Projectile.To(potentialTarget.Center).UnitVector() * 21f) / 30f;
                     Projectile.velocity *= 1.01f;
                     if (Projectile.Center.Distance(potentialTarget.Center) <= Projectile.width) {
                         Projectile.Kill();

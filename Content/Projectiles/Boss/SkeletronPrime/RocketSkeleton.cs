@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -57,14 +56,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            Projectile.LargeFieryExplosion();
+            CWRRef.LargeFieryExplosion(Projectile);
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnKill(int timeLeft) {
             if (Projectile.numHits <= 0) {
-                Projectile.LargeFieryExplosion();
+                CWRRef.LargeFieryExplosion(Projectile);
             }
         }
 

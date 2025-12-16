@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -72,11 +71,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Vector2 velocity = VaultUtils.RandVr(7, 10);
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
                         , ProjectileID.SporeGas + Main.rand.Next(3), (int)(Projectile.damage * 0.25), 0f, Projectile.owner);
-                    if (proj.WithinBounds(Main.maxProjectiles)) {
-                        Main.projectile[proj].DamageType = DamageClass.Ranged;
-                        Main.projectile[proj].usesLocalNPCImmunity = true;
-                        Main.projectile[proj].localNPCHitCooldown = 30;
-                    }
+                    Main.projectile[proj].DamageType = DamageClass.Ranged;
+                    Main.projectile[proj].usesLocalNPCImmunity = true;
+                    Main.projectile[proj].localNPCHitCooldown = 30;
                 }
             }
         }

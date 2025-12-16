@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -139,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 );
             }
             else if (comboCounter == 1) {
-                //第二击：三道优雅扇形闪电（设计感分布）
+                //第二击：三道优雅扇形闪电
                 for (int i = -1; i <= 1; i++) {
                     //黄金角度分布：中间更密，两侧更开
                     float angle = i * 0.25f * (1f + MathF.Abs(i) * 0.2f);
@@ -156,13 +155,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 }
             }
             else if (comboCounter == 2) {
-                //第三击：螺旋上升闪电阵（更有设计感）
-                bool hasAdrenaline = Owner.Calamity().adrenalineModeActive;
+                bool hasAdrenaline = Owner.GetPlayerAdrenalineMode();
                 int count = hasAdrenaline ? 7 : 0;
                 float damageMultiplier = hasAdrenaline ? 0.85f : 0.6f;
 
                 for (int i = 0; i < count; i++) {
-                    //螺旋分布，而非均匀圆形
                     float progress = i / (float)count;
                     float spiralAngle = MathHelper.TwoPi * progress + progress * MathHelper.PiOver4;
                     float radiusOffset = 0.8f + progress * 0.4f; //螺旋扩散
@@ -296,7 +293,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private void SpawnCriticalArcs(NPC target) {
             if (!Projectile.IsOwnedByLocalPlayer()) return;
 
-            int arcCount = Owner.Calamity().adrenalineModeActive ? 3 : 2; //减少数量
+            int arcCount = Owner.GetPlayerAdrenalineMode() ? 3 : 2; //减少数量
 
             for (int i = 0; i < arcCount; i++) {
                 float angle = MathHelper.TwoPi * i / arcCount + Main.rand.NextFloat(MathHelper.TwoPi);

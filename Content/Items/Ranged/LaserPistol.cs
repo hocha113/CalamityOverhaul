@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -23,8 +22,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = Item.buyPrice(0, 0, 75, 5);
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.SetHeldProj<LaserPistolHeld>();
-            Item.Calamity().UsesCharge = true;
-            Item.Calamity().MaxCharge = 40;
+            Item.RefItemUsesCharge() = true;
+            Item.RefItemMaxCharge() = 40;
         }
 
         public override void AddRecipes() {
@@ -59,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override bool CanSpanProj() {
-            if (Item.Calamity().Charge <= 0) {
+            if (Item.RefItemCharge() <= 0) {
                 return false;
             }
             return base.CanSpanProj();
@@ -75,8 +74,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void PostShootEverthing() {
-            Item.Calamity().Charge -= 0.12f;
-            Item.Calamity().Charge = MathHelper.Clamp(Item.Calamity().Charge, 0, Item.Calamity().MaxCharge);
+            Item.RefItemCharge() -= 0.12f;
+            Item.RefItemCharge() = MathHelper.Clamp(Item.RefItemCharge(), 0, Item.GetItemMaxCharge());
         }
     }
 }

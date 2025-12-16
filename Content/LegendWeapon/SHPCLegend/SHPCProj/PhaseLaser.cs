@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
 
         public override Color? GetAlpha(Color lightColor) => new Color(255, Main.DiscoG, 155, Projectile.alpha);
 
-        public override bool PreDraw(ref Color lightColor) => Projectile.DrawBeam(100f, 3f, lightColor);
+        public override bool PreDraw(ref Color lightColor) => CWRRef.DrawBeam(Projectile, 100f, 3f, lightColor);
 
         public override void OnKill(int timeLeft) {
             int dustAmt = Main.rand.Next(3, 7);

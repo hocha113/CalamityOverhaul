@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify.Core;
@@ -181,20 +180,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            Projectile.LargeFieryExplosion();
+            CWRRef.LargeFieryExplosion(Projectile);
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Projectile.LargeFieryExplosion();
+            CWRRef.LargeFieryExplosion(Projectile);
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnKill(int timeLeft) {
             if (Projectile.numHits <= 0) {
-                Projectile.LargeFieryExplosion();
+                CWRRef.LargeFieryExplosion(Projectile);
             }
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[2] > 0) {
                 for (int i = 0; i < 6; i++) {

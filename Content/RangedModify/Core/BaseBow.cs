@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.UI;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using static Terraria.Player;
 
 namespace CalamityOverhaul.Content.RangedModify.Core
 {
@@ -125,8 +125,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (ShootCoolingValue >= HandRotStartTime && CanFireMotion) {
                 float backArmRotation = Projectile.rotation * SafeGravDir + MathHelper.PiOver2 + MathHelper.Pi * DirSign;
                 float amountValue = 1 - ShootCoolingValue / (Item.useTime - HandRotStartTime);
-                Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                CompositeArmStretchAmount stretch = CompositeArmStretchAmount.Full;
+                if (amountValue < 0.25f)
+                    stretch = CompositeArmStretchAmount.None;
+                if (amountValue < 0.5f)
+                    stretch = CompositeArmStretchAmount.Quarter;
+                if (amountValue < 0.75f)
+                    stretch = CompositeArmStretchAmount.ThreeQuarters;
+                Owner.SetCompositeArmBack(true, CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
                 Owner.SetCompositeArmFront(true, stretch, backArmRotation);
             }
         }

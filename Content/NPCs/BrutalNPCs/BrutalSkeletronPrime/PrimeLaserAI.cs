@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -191,11 +190,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                     //发射音效
                     SoundEngine.PlaySound(SoundID.Item33 with { Volume = 1.2f, Pitch = -0.3f }, npc.Center);
-
-                    //屏幕震动
-                    if (Main.LocalPlayer.Distance(npc.Center) < 800f) {
-                        Main.LocalPlayer.Calamity().GeneralScreenShakePower = 8f;
-                    }
                 }
 
                 laserChargeProgress++;
@@ -261,7 +255,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.TargetClosest();
             float laserSpeed = bossRush ? 5f : 4f;
             int type = ProjectileID.DeathLaser;
-            int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
 
             HeadPrimeAI.SpanFireLerterDustEffect(npc, 3);
 
@@ -279,7 +273,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void FireChargedLaser() {
             int type = death ? ModContent.ProjectileType<DeadLaser>() : ProjectileID.DeathLaser;
-            int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
             damage = (int)(damage * 2.5f);
 
             float laserSpeed = death ? 12f : 15f;
@@ -315,7 +309,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int totalProjectiles = bossRush ? 22 : (masterMode ? 13 : 10);
             float radians = MathHelper.TwoPi / totalProjectiles;
             int type = ProjectileID.DeathLaser;
-            int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
 
             float velocity = 3f;
             double angleA = radians * 0.5;
