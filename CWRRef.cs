@@ -35,7 +35,7 @@ namespace CalamityOverhaul
     /// <summary>
     /// 一个用于访问Calamity Mod内部内容的静态类
     /// </summary>
-    [JITWhenModsEnabled("CalamityMod")]
+    [CWRJITEnabled]
     internal static class CWRRef
     {
         /// <summary>

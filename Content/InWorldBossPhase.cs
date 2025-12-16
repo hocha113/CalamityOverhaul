@@ -1,12 +1,11 @@
 ﻿using CalamityMod;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content
 {
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
-    [JITWhenModsEnabled("CalamityMod")]
+    [CWRJITEnabled]
     public static class InWorldBossPhase
     {
         #region Data

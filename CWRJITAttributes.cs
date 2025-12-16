@@ -9,8 +9,7 @@ namespace CalamityOverhaul
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property, Inherited = true)]
     public class CWRJITEnabledAttribute : MemberJitAttribute
     {
-        public override bool ShouldJIT(System.Reflection.MemberInfo member)
-        {
+        public override bool ShouldJIT(System.Reflection.MemberInfo member) {
             return ModLoader.TryGetMod("CalamityMod", out var mod) && mod.Version == new Version(2, 0, 7, 2);
         }
     }

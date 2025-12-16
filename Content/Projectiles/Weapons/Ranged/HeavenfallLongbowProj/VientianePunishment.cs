@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {
-    [JITWhenModsEnabled("CalamityMod")]
+    [CWRJITEnabled]
     internal class VientianePunishment : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

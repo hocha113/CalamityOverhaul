@@ -1,10 +1,5 @@
-﻿using CalamityMod.Particles;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -154,8 +149,8 @@ namespace CalamityOverhaul.Common
             DyeShaderData = null;
         }
     }
-
-    [JITWhenModsEnabled("CalamityMod")]
+    /*
+    [CWRJITEnabled]
     internal class DyeCalParticles : ModSystem
     {
         //使用Dictionary存储粒子对应的着色器数据
@@ -346,4 +341,5 @@ namespace CalamityOverhaul.Common
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
         }
     }
+    */
 }
