@@ -35,33 +35,121 @@ namespace CalamityOverhaul
     /// <summary>
     /// 一个用于访问Calamity Mod内部内容的静态类
     /// </summary>
-    [CWRJITEnabled]
     internal static class CWRRef
     {
         /// <summary>
         /// 待用，检查Calamity Mod是否已加载，或者版本是否合适
         /// </summary>
         public static bool Has => ModLoader.HasMod("CalamityMod");
-        public static bool GetDownedPrimordialWyrm() => DownedBossSystem.downedPrimordialWyrm;
-        public static void SetDownedPrimordialWyrm(bool value) => DownedBossSystem.downedPrimordialWyrm = value;
-        public static bool GetDeathMode() => CalamityWorld.death;
-        public static bool GetRevengeMode() => CalamityWorld.revenge;
-        public static bool GetBossRushActive() => BossRushEvent.BossRushActive;
-        public static void SetBossRushActive(bool value) => BossRushEvent.BossRushActive = value;
-        public static bool GetAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
-        public static DamageClass GetTrueMeleeDamageClass() => ModContent.GetInstance<TrueMeleeDamageClass>();
-        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
-        public static DamageClass GetMeleeRangedHybridDamageClass() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
-        public static float ChargeRatio(Item item) => item.Calamity().ChargeRatio;
-        public static bool GetNPCIsAnEnemy(this NPC npc) => npc.IsAnEnemy();
-        public static void SetPlayerWarbannerOfTheSun(this Player player, bool value) => player.Calamity().warbannerOfTheSun = value;
-        public static bool GetPlayerBladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
-        public static ref int RefPlayerEvilSmasherBoost(this Player player) => ref player.Calamity().evilSmasherBoost;
-        public static bool GetPlayerAdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
-        public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
-        public static void LargeFieryExplosion(Projectile projectile) => projectile.LargeFieryExplosion();
-        public static bool DrawBeam(Projectile projectile, float length, float spacer, Color lightColor, Texture2D texture = null, bool curve = false) => projectile.DrawBeam(length, spacer, lightColor, texture, curve);
-        public static void DrawAfterimagesFromEdge(Projectile proj, int mode, Color lightColor, Texture2D texture = null) => CalamityUtils.DrawAfterimagesFromEdge(proj, mode, lightColor, texture);
+
+        private static bool dummyBool;
+        private static int dummyInt;
+        private static float dummyFloat;
+        private static float[] dummyFloats;
+
+        public static bool GetDownedPrimordialWyrm() => Has && GetDownedPrimordialWyrmInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetDownedPrimordialWyrmInner() => DownedBossSystem.downedPrimordialWyrm;
+
+        public static void SetDownedPrimordialWyrm(bool value) {
+            if (!Has) return;
+            SetDownedPrimordialWyrmInner(value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetDownedPrimordialWyrmInner(bool value) => DownedBossSystem.downedPrimordialWyrm = value;
+
+        public static bool GetDeathMode() => Has && GetDeathModeInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetDeathModeInner() => CalamityWorld.death;
+
+        public static bool GetRevengeMode() => Has && GetRevengeModeInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetRevengeModeInner() => CalamityWorld.revenge;
+
+        public static bool GetBossRushActive() => Has && GetBossRushActiveInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetBossRushActiveInner() => BossRushEvent.BossRushActive;
+
+        public static void SetBossRushActive(bool value) {
+            if (!Has) return;
+            SetBossRushActiveInner(value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetBossRushActiveInner(bool value) => BossRushEvent.BossRushActive = value;
+
+        public static bool GetAcidRainEventIsOngoing() => Has && GetAcidRainEventIsOngoingInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetAcidRainEventIsOngoingInner() => AcidRainEvent.AcidRainEventIsOngoing;
+
+        public static DamageClass GetTrueMeleeDamageClass() => Has ? GetTrueMeleeDamageClassInner() : DamageClass.Default;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static DamageClass GetTrueMeleeDamageClassInner() => ModContent.GetInstance<TrueMeleeDamageClass>();
+
+        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => Has ? GetTrueMeleeNoSpeedDamageClassInner() : DamageClass.Default;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static DamageClass GetTrueMeleeNoSpeedDamageClassInner() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+
+        public static DamageClass GetMeleeRangedHybridDamageClass() => Has ? GetMeleeRangedHybridDamageClassInner() : DamageClass.Default;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static DamageClass GetMeleeRangedHybridDamageClassInner() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
+
+        public static float ChargeRatio(Item item) => Has ? ChargeRatioInner(item) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float ChargeRatioInner(Item item) => item.Calamity().ChargeRatio;
+
+        public static bool GetNPCIsAnEnemy(this NPC npc) => Has && GetNPCIsAnEnemyInner(npc);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetNPCIsAnEnemyInner(NPC npc) => npc.IsAnEnemy();
+
+        public static void SetPlayerWarbannerOfTheSun(this Player player, bool value) {
+            if (!Has) return;
+            SetPlayerWarbannerOfTheSunInner(player, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetPlayerWarbannerOfTheSunInner(Player player, bool value) => player.Calamity().warbannerOfTheSun = value;
+
+        public static bool GetPlayerBladeArmEnchant(this Player player) => Has && GetPlayerBladeArmEnchantInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerBladeArmEnchantInner(Player player) => player.Calamity().bladeArmEnchant;
+
+        public static ref int RefPlayerEvilSmasherBoost(this Player player) {
+            if (!Has) {
+                return ref dummyInt;
+            }
+            return ref RefPlayerEvilSmasherBoostInner(player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref int RefPlayerEvilSmasherBoostInner(Player player) => ref player.Calamity().evilSmasherBoost;
+
+        public static bool GetPlayerAdrenalineMode(this Player player) => Has && GetPlayerAdrenalineModeInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerAdrenalineModeInner(Player player) => player.Calamity().adrenalineModeActive;
+
+        public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) {
+            if (!Has) return;
+            SetProjPointBlankShotDurationInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetProjPointBlankShotDurationInner(Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
+
+        public static void LargeFieryExplosion(Projectile projectile) {
+            if (!Has) return;
+            LargeFieryExplosionInner(projectile);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void LargeFieryExplosionInner(Projectile projectile) => projectile.LargeFieryExplosion();
+
+        public static bool DrawBeam(Projectile projectile, float length, float spacer, Color lightColor, Texture2D texture = null, bool curve = false) => Has && DrawBeamInner(projectile, length, spacer, lightColor, texture, curve);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool DrawBeamInner(Projectile projectile, float length, float spacer, Color lightColor, Texture2D texture, bool curve) => projectile.DrawBeam(length, spacer, lightColor, texture, curve);
+
+        public static void DrawAfterimagesFromEdge(Projectile proj, int mode, Color lightColor, Texture2D texture = null) {
+            if (!Has) return;
+            DrawAfterimagesFromEdgeInner(proj, mode, lightColor, texture);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DrawAfterimagesFromEdgeInner(Projectile proj, int mode, Color lightColor, Texture2D texture) => CalamityUtils.DrawAfterimagesFromEdge(proj, mode, lightColor, texture);
+
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
                 0 => CWRID.Proj_SwordsplosionBlue,
@@ -88,6 +176,11 @@ namespace CalamityOverhaul
             };
         }
         public static void UpdateRogueStealth(Player player) {
+            if (!Has) return;
+            UpdateRogueStealthInner(player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void UpdateRogueStealthInner(Player player) {
             bool noAvailable = false;
             CalamityPlayer calPlayer = player.Calamity();
             if (CWRMod.Instance.narakuEye != null) {
@@ -103,15 +196,26 @@ namespace CalamityOverhaul
                 }
             }
         }
+
         public static void SummonSupCal(Vector2 spawnPos) {
+            if (!Has) return;
+            SummonSupCalInner(spawnPos);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SummonSupCalInner(Vector2 spawnPos) {
             SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
                 , CWRID.Proj_SCalRitualDrama, 0, 0f, Main.myPlayer, 0, 0);
         }
+
         public static void SummonExo(int exoType, Player player) {
-            if (CWRMod.Instance.calamity == null) {
+            if (!Has) {
                 return;
             }
+            SummonExoInner(exoType, player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        public static void SummonExoInner(int exoType, Player player) {
             CalamityWorld.DraedonMechToSummon = (ExoMech)exoType;
             if (VaultUtils.isClient) {//客户端发送网络数据到服务器
                 var netMessage = CWRMod.Instance.calamity.GetPacket();
@@ -141,6 +245,8 @@ namespace CalamityOverhaul
                     break;
             }
         }
+
+
         public static int GetCurrentSeason() {
             DateTime date = DateTime.Now;
             int day = date.DayOfYear - Convert.ToInt32(DateTime.IsLeapYear(date.Year) && date.DayOfYear > 59);
@@ -162,115 +268,334 @@ namespace CalamityOverhaul
             }
         }
         public static void SpawnMediumMistParticle(Vector2 smokePos, Vector2 smokeVel, bool Smoketype) {
+            if (!Has) return;
+            SpawnMediumMistParticleInner(smokePos, smokeVel, Smoketype);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SpawnMediumMistParticleInner(Vector2 smokePos, Vector2 smokeVel, bool Smoketype) {
             Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 110, 50), Color.OrangeRed
                     , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
             GeneralParticleHandler.SpawnParticle(smoke);
         }
-        public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) => CalamityUtils.DrawAfterimagesCentered(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
-        public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
-        public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f)
-            => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
+
+        public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) {
+            if (!Has) return;
+            DrawAfterimagesCenteredInner(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DrawAfterimagesCenteredInner(Projectile proj, int mode, Color lightColor, int typeOneIncrement, Texture2D texture, bool drawCentered) => CalamityUtils.DrawAfterimagesCentered(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
+
+        public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) {
+            if (!Has) return;
+            HomeInOnNPCInner(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void HomeInOnNPCInner(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
+
+        public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f) {
+            if (!Has) return;
+            SpawnLifeStealProjectileInner(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SpawnLifeStealProjectileInner(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier) => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
+
         public static Projectile ProjectileBarrage(IEntitySource source, Vector2 originVec, Vector2 targetPos, bool fromRight, float xOffsetMin, float xOffsetMax
             , float yOffsetMin, float yOffsetMax, float projSpeed, int projType, int damage, float knockback, int owner, bool clamped = false, float inaccuracyOffset = 5f)
+            => Has ? ProjectileBarrageInner(source, originVec, targetPos, fromRight, xOffsetMin, xOffsetMax, yOffsetMin, yOffsetMax, projSpeed, projType, damage, knockback, owner, clamped, inaccuracyOffset) : null;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static Projectile ProjectileBarrageInner(IEntitySource source, Vector2 originVec, Vector2 targetPos, bool fromRight, float xOffsetMin, float xOffsetMax
+            , float yOffsetMin, float yOffsetMax, float projSpeed, int projType, int damage, float knockback, int owner, bool clamped, float inaccuracyOffset)
             => CalamityUtils.ProjectileBarrage(source, originVec, targetPos, fromRight, xOffsetMin, xOffsetMax
                 , yOffsetMin, yOffsetMax, projSpeed, projType, damage, knockback, owner, clamped, inaccuracyOffset);
+
         public static void SetDraedonDefeatTimer(NPC npc, float value) {
+            if (!Has) return;
+            SetDraedonDefeatTimerInner(npc, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetDraedonDefeatTimerInner(NPC npc, float value) {
             if (npc.ModNPC is Draedon draedon) {
                 draedon.DefeatTimer = value;
             }
         }
-        public static float GetDraedonDefeatTimer(NPC npc) {
+
+        public static float GetDraedonDefeatTimer(NPC npc) => Has ? GetDraedonDefeatTimerInner(npc) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float GetDraedonDefeatTimerInner(NPC npc) {
             if (npc.ModNPC is Draedon draedon) {
                 return draedon.DefeatTimer;
             }
             return 0f;
         }
-        public static List<int> GetPierceResistExceptionList() => CalamityLists.projectileDestroyExceptionList;
-        public static bool HasExo() => Draedon.ExoMechIsPresent;
+
+        public static List<int> GetPierceResistExceptionList() => Has ? GetPierceResistExceptionListInner() : new List<int>();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static List<int> GetPierceResistExceptionListInner() => CalamityLists.projectileDestroyExceptionList;
+
+        public static bool HasExo() => Has && HasExoInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool HasExoInner() => Draedon.ExoMechIsPresent;
+
         public static int GetCalItemID(this string key) => CWRItemOverride.GetCalItemID(key);
+
         public static void SetAbleToSelectExoMech(Player player, bool value) {
+            if (!Has) return;
+            SetAbleToSelectExoMechInner(player, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetAbleToSelectExoMechInner(Player player, bool value) {
             player.Calamity().AbleToSelectExoMech = value;
         }
-        public static void SetProjtimesPierced(this Projectile projectile, int value) => projectile.Calamity().timesPierced = value;
-        public static ref int GetMurasamaHitCooldown(this Player player) => ref player.Calamity().murasamaHitCooldown;
-        public static void SetBrimstoneBullets(this Projectile projectile, bool value) => projectile.Calamity().brimstoneBullets = value;
-        public static void SetDeepcoreBullet(this Projectile projectile, bool value) => projectile.Calamity().deepcoreBullet = value;
-        public static void SetAllProjectilesHome(this Projectile projectile, bool value) => projectile.Calamity().allProjectilesHome = value;
-        public static void SetBetterLifeBullet1(this Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet1 = value;
-        public static void SetBetterLifeBullet2(this Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet2 = value;
-        public static Vector2 GetCoinTossVelocity(Player player) => player.GetCoinTossVelocity();
-        public static bool GetAlchFlask(this Player player) => player.Calamity().alchFlask;
-        public static bool GetSpiritOrigin(this Player player) => player.Calamity().spiritOrigin;
+
+        public static void SetProjtimesPierced(this Projectile projectile, int value) {
+            if (!Has) return;
+            SetProjtimesPiercedInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetProjtimesPiercedInner(Projectile projectile, int value) => projectile.Calamity().timesPierced = value;
+
+        public static ref int GetMurasamaHitCooldown(this Player player) {
+            if (!Has) {
+                return ref dummyInt;
+            }
+            return ref GetMurasamaHitCooldownInner(player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref int GetMurasamaHitCooldownInner(Player player) => ref player.Calamity().murasamaHitCooldown;
+
+        public static void SetBrimstoneBullets(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetBrimstoneBulletsInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetBrimstoneBulletsInner(Projectile projectile, bool value) => projectile.Calamity().brimstoneBullets = value;
+
+        public static void SetDeepcoreBullet(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetDeepcoreBulletInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetDeepcoreBulletInner(Projectile projectile, bool value) => projectile.Calamity().deepcoreBullet = value;
+
+        public static void SetAllProjectilesHome(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetAllProjectilesHomeInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetAllProjectilesHomeInner(Projectile projectile, bool value) => projectile.Calamity().allProjectilesHome = value;
+
+        public static void SetBetterLifeBullet1(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetBetterLifeBullet1Inner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetBetterLifeBullet1Inner(Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet1 = value;
+
+        public static void SetBetterLifeBullet2(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetBetterLifeBullet2Inner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetBetterLifeBullet2Inner(Projectile projectile, bool value) => projectile.Calamity().betterLifeBullet2 = value;
+
+        public static Vector2 GetCoinTossVelocity(Player player) => Has ? GetCoinTossVelocityInner(player) : Vector2.Zero;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static Vector2 GetCoinTossVelocityInner(Player player) => player.GetCoinTossVelocity();
+
+        public static bool GetAlchFlask(this Player player) => Has && GetAlchFlaskInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetAlchFlaskInner(Player player) => player.Calamity().alchFlask;
+
+        public static bool GetSpiritOrigin(this Player player) => Has && GetSpiritOriginInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetSpiritOriginInner(Player player) => player.Calamity().spiritOrigin;
+
         public static void Spawn_PristineFury_Effect(Vector2 spawnPos, Vector2 vel) {
+            if (!Has) return;
+            Spawn_PristineFury_EffectInner(spawnPos, vel);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void Spawn_PristineFury_EffectInner(Vector2 spawnPos, Vector2 vel) {
             CritSpark spark = new(spawnPos, vel, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Color.OrangeRed, 0.9f, 18, 2f, 1.9f);
             GeneralParticleHandler.SpawnParticle(spark);
         }
+
         public static void SetProjCGP(int proj) {
+            if (!Has) return;
+            SetProjCGPInner(proj);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetProjCGPInner(int proj) {
             CalamityGlobalProjectile cgp = Main.projectile[proj].Calamity();
             cgp.supercritHits = -1;
             cgp.appliesSomaShred = true;
         }
+
         public static void Spawn_Effect_1(Vector2 spawnPos, Vector2 vel) {
+            if (!Has) return;
+            Spawn_Effect_1Inner(spawnPos, vel);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void Spawn_Effect_1Inner(Vector2 spawnPos, Vector2 vel) {
             Particle spark2 = new LineParticle(spawnPos, vel, false, Main.rand.Next(15, 25 + 1), Main.rand.NextFloat(1.5f, 2f), Main.rand.NextBool() ? Color.MediumOrchid : Color.DarkViolet);
             GeneralParticleHandler.SpawnParticle(spark2);
         }
+
         public static void Spawn_Effect_2(Vector2 spawnPos, Vector2 vel, int sparkLifetime, float sparkScale, Color sparkColor) {
+            if (!Has) return;
+            Spawn_Effect_2Inner(spawnPos, vel, sparkLifetime, sparkScale, sparkColor);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void Spawn_Effect_2Inner(Vector2 spawnPos, Vector2 vel, int sparkLifetime, float sparkScale, Color sparkColor) {
             SparkParticle spark = new SparkParticle(spawnPos, vel, false, sparkLifetime, sparkScale, sparkColor);
             GeneralParticleHandler.SpawnParticle(spark);
         }
-        public static bool GetDownedCalamitas() {
+
+        public static bool GetDownedCalamitas() => Has && GetDownedCalamitasInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetDownedCalamitasInner() {
             return DownedBossSystem.downedCalamitas;
         }
+
         public static void SetDownedCalamitas(bool value) {
+            if (!Has) return;
+            SetDownedCalamitasInner(value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetDownedCalamitasInner(bool value) {
             DownedBossSystem.downedCalamitas = value;
         }
-        public static void SetDownedBoomerDuke(bool value) => DownedBossSystem.downedBoomerDuke = value;
-        public static bool GetDownedBoomerDuke() => DownedBossSystem.downedBoomerDuke;
-        public static bool GetSupCalPermafrost(NPC npc) {
+
+        public static void SetDownedBoomerDuke(bool value) {
+            if (!Has) return;
+            SetDownedBoomerDukeInner(value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetDownedBoomerDukeInner(bool value) => DownedBossSystem.downedBoomerDuke = value;
+
+        public static bool GetDownedBoomerDuke() => Has && GetDownedBoomerDukeInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetDownedBoomerDukeInner() => DownedBossSystem.downedBoomerDuke;
+
+        public static bool GetSupCalPermafrost(NPC npc) => Has && GetSupCalPermafrostInner(npc);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetSupCalPermafrostInner(NPC npc) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 return supCal.permafrost;
             }
             return false;
         }
+
         public static SoundStyle GetSound(this string path) {
             if (ModContent.HasAsset(path)) {
                 return new SoundStyle(path);
             }
             return CWRSound.None;
         }
-        public static bool GetDownedThanatos() => DownedBossSystem.downedThanatos;
+
+        public static bool GetDownedThanatos() => Has && GetDownedThanatosInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetDownedThanatosInner() => DownedBossSystem.downedThanatos;
+
         public static void SetSupCalPermafrost(NPC npc, bool value) {
+            if (!Has) return;
+            SetSupCalPermafrostInner(npc, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetSupCalPermafrostInner(NPC npc, bool value) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 supCal.permafrost = value;
             }
         }
-        public static int GetSupCalGiveUpCounter(NPC npc) {
+
+        public static int GetSupCalGiveUpCounter(NPC npc) => Has ? GetSupCalGiveUpCounterInner(npc) : 0;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static int GetSupCalGiveUpCounterInner(NPC npc) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 return supCal.giveUpCounter;
             }
             return 0;
         }
+
         public static void SetSupCalGiveUpCounter(NPC npc, int value) {
+            if (!Has) return;
+            SetSupCalGiveUpCounterInner(npc, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetSupCalGiveUpCounterInner(NPC npc, int value) {
             if (npc.ModNPC is SupremeCalamitas supCal) {
                 supCal.giveUpCounter = value;
             }
         }
-        public static Type GetItem_SHPC_Type() => typeof(SHPC);
-        public static Type GetNPC_WITCH_Type() => typeof(WITCH);
-        public static Type GetNPC_SupCal_Type() => typeof(SupremeCalamitas);
-        public static bool GetEarlyHardmodeProgressionReworkBool() => CalamityServerConfig.Instance.EarlyHardmodeProgressionRework;
-        public static bool GetAfterimages() => CalamityClientConfig.Instance.Afterimages;
-        public static int GetProjectileDamage(NPC npc, int projType) => npc.GetProjectileDamage(projType);
-        public static void SetPlayerInfiniteFlight(this Player player, bool value) => player.Calamity().infiniteFlight = value;
-        public static bool GetPlayerStealthStrikeAvailable(this Player player) => player.Calamity().StealthStrikeAvailable();
-        public static void SetProjStealthStrike(this Projectile projectile, bool value) => projectile.Calamity().stealthStrike = value;
+
+        public static Type GetItem_SHPC_Type() => Has ? GetItem_SHPC_TypeInner() : null;
+        public static Type GetNPC_WITCH_Type() => Has ? GetNPC_WITCH_TypeInner() : null;
+        public static Type GetNPC_SupCal_Type() => Has ? GetNPC_SupCal_TypeInner() : null;
+        [JITWhenModsEnabled("CalamityMod")]
+        public static Type GetItem_SHPC_TypeInner() => typeof(SHPC);
+        [JITWhenModsEnabled("CalamityMod")]
+        public static Type GetNPC_WITCH_TypeInner() => typeof(WITCH);
+        [JITWhenModsEnabled("CalamityMod")]
+        public static Type GetNPC_SupCal_TypeInner() => typeof(SupremeCalamitas);
+
+        public static bool GetEarlyHardmodeProgressionReworkBool() => Has && GetEarlyHardmodeProgressionReworkBoolInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetEarlyHardmodeProgressionReworkBoolInner() => CalamityServerConfig.Instance.EarlyHardmodeProgressionRework;
+
+        public static bool GetAfterimages() => Has && GetAfterimagesInner();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetAfterimagesInner() => CalamityClientConfig.Instance.Afterimages;
+
+        public static int GetProjectileDamage(NPC npc, int projType) => Has ? GetProjectileDamageInner(npc, projType) : 0;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static int GetProjectileDamageInner(NPC npc, int projType) => npc.GetProjectileDamage(projType);
+
+        public static void SetPlayerInfiniteFlight(this Player player, bool value) {
+            if (!Has) return;
+            SetPlayerInfiniteFlightInner(player, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetPlayerInfiniteFlightInner(Player player, bool value) => player.Calamity().infiniteFlight = value;
+
+        public static bool GetPlayerStealthStrikeAvailable(this Player player) => Has && GetPlayerStealthStrikeAvailableInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerStealthStrikeAvailableInner(Player player) => player.Calamity().StealthStrikeAvailable();
+
+        public static void SetProjStealthStrike(this Projectile projectile, bool value) {
+            if (!Has) return;
+            SetProjStealthStrikeInner(projectile, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetProjStealthStrikeInner(Projectile projectile, bool value) => projectile.Calamity().stealthStrike = value;
+
         public static void HorsemansBladeOnHit(Player player, int targetIdx, int damage, float knockback
-            , int extraUpdateAmt = 0, int type = ProjectileID.FlamingJack)
+            , int extraUpdateAmt = 0, int type = ProjectileID.FlamingJack) {
+            if (!Has) return;
+            HorsemansBladeOnHitInner(player, targetIdx, damage, knockback, extraUpdateAmt, type);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void HorsemansBladeOnHitInner(Player player, int targetIdx, int damage, float knockback
+            , int extraUpdateAmt, int type)
             => CalamityPlayer.HorsemansBladeOnHit(player, targetIdx, damage, knockback, extraUpdateAmt, type);
-        public static void SetItemCanFirePointBlankShots(this Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
-        public static bool GetProjStealthStrike(this Projectile projectile) => projectile.Calamity().stealthStrike;
+
+        public static void SetItemCanFirePointBlankShots(this Item item, bool value) {
+            if (!Has) return;
+            SetItemCanFirePointBlankShotsInner(item, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetItemCanFirePointBlankShotsInner(Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
+
+        public static bool GetProjStealthStrike(this Projectile projectile) => Has && GetProjStealthStrikeInner(projectile);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetProjStealthStrikeInner(Projectile projectile) => projectile.Calamity().stealthStrike;
+
         public static void OldDukeOnKill(NPC npc) {
-            StopAcidRain();
+            if (!Has) return;
+            OldDukeOnKillInner(npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void OldDukeOnKillInner(NPC npc) {
+            StopAcidRainInner();
             CalamityGlobalNPC.SetNewBossJustDowned(npc);
             DownedBossSystem.downedBoomerDuke = true;
             AcidRainEvent.OldDukeHasBeenEncountered = true;
@@ -278,11 +603,23 @@ namespace CalamityOverhaul
                 NPCLoader.OnKill(npc);
             }
         }
+
         public static void StopAcidRain() {
+            if (!Has) return;
+            StopAcidRainInner();
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void StopAcidRainInner() {
             AcidRainEvent.AccumulatedKillPoints = 0;
             AcidRainEvent.UpdateInvasion(win: true);
         }
+
         public static void StarRT(Projectile projectile, Entity target) {
+            if (!Has) return;
+            StarRTInner(projectile, target);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void StarRTInner(Projectile projectile, Entity target) {
             if (!VaultUtils.isServer) {
                 Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
                 GeneralParticleHandler.SpawnParticle(new ImpactParticle(Vector2.Lerp(projectile.Center, target.Center, 0.65f), 0.1f, 20, Main.rand.NextFloat(0.4f, 0.5f), color));
@@ -297,7 +634,13 @@ namespace CalamityOverhaul
                 }
             }
         }
+
         public static void SpanFire(Entity entity) {
+            if (!Has) return;
+            SpanFireInner(entity);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SpanFireInner(Entity entity) {
             bool LowVel = Main.rand.NextBool() ? false : true;
             FlameParticle ballFire = new FlameParticle(entity.Center + VaultUtils.RandVr(entity.width / 2)
                 , Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed) {
@@ -306,21 +649,97 @@ namespace CalamityOverhaul
             };
             GeneralParticleHandler.SpawnParticle(ballFire);
         }
-        public static ref float RefItemCharge(this Item item) => ref item.Calamity().Charge;
-        public static float GetItemMaxCharge(this Item item) => item.Calamity().MaxCharge;
-        public static ref float RefItemMaxCharge(this Item item) => ref item.Calamity().MaxCharge;
-        public static bool GetItemUsesCharge(this Item item) => item.Calamity().UsesCharge;
-        public static ref bool RefItemUsesCharge(this Item item) => ref item.Calamity().UsesCharge;
-        public static RogueDamageClass GetRogueDamageClass() => ModContent.GetInstance<RogueDamageClass>();
-        public static float GetPlayerRogueStealth(this Player player) => player.Calamity().rogueStealth;
-        public static float SetPlayerRogueStealth(this Player player, float value) => player.Calamity().rogueStealth = value;
-        public static float GetPlayerRogueStealthMax(this Player player) => player.Calamity().rogueStealthMax;
-        public static ref float RefPlayerRogueStealthMax(this Player player) => ref player.Calamity().rogueStealthMax;
-        public static bool GetPlayerZoneSulphur(this Player player) => player.Calamity().ZoneSulphur;
-        public static bool GetPlayerZoneAbyss(this Player player) => player.Calamity().ZoneAbyss;
-        public static bool GetPlayerProfanedCrystalBuffs(this Player player) => player.Calamity().profanedCrystalBuffs;
-        public static void SetPlayerDashID(this Player player, string value) => player.Calamity().DashID = value;
+
+        public static ref float RefItemCharge(this Item item) {
+            if (!Has) {
+                return ref dummyFloat;
+            }
+            return ref RefItemChargeInner(item);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref float RefItemChargeInner(Item item) => ref item.Calamity().Charge;
+
+        public static float GetItemMaxCharge(this Item item) => Has ? GetItemMaxChargeInner(item) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float GetItemMaxChargeInner(Item item) => item.Calamity().MaxCharge;
+
+        public static ref float RefItemMaxCharge(this Item item) {
+            if (!Has) {
+                return ref dummyFloat;
+            }
+            return ref RefItemMaxChargeInner(item);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref float RefItemMaxChargeInner(Item item) => ref item.Calamity().MaxCharge;
+
+        public static bool GetItemUsesCharge(this Item item) => Has && GetItemUsesChargeInner(item);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetItemUsesChargeInner(Item item) => item.Calamity().UsesCharge;
+
+        public static ref bool RefItemUsesCharge(this Item item) {
+            if (!Has) {
+                return ref dummyBool;
+            }
+            return ref RefItemUsesChargeInner(item);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref bool RefItemUsesChargeInner(Item item) => ref item.Calamity().UsesCharge;
+
+        public static DamageClass GetRogueDamageClass() {
+            if (!Has) {
+                return DamageClass.Default;
+            }
+            return GetRogueDamageClassInner();
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static DamageClass GetRogueDamageClassInner() => ModContent.GetInstance<RogueDamageClass>();
+
+        public static float GetPlayerRogueStealth(this Player player) => Has ? GetPlayerRogueStealthInner(player) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float GetPlayerRogueStealthInner(Player player) => player.Calamity().rogueStealth;
+
+        public static float SetPlayerRogueStealth(this Player player, float value) => Has ? SetPlayerRogueStealthInner(player, value) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float SetPlayerRogueStealthInner(Player player, float value) => player.Calamity().rogueStealth = value;
+
+        public static float GetPlayerRogueStealthMax(this Player player) => Has ? GetPlayerRogueStealthMaxInner(player) : 0f;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static float GetPlayerRogueStealthMaxInner(Player player) => player.Calamity().rogueStealthMax;
+
+        public static ref float RefPlayerRogueStealthMax(this Player player) {
+            if (!Has) {
+                return ref dummyFloat;
+            }
+            return ref RefPlayerRogueStealthMaxInner(player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref float RefPlayerRogueStealthMaxInner(Player player) => ref player.Calamity().rogueStealthMax;
+
+        public static bool GetPlayerZoneSulphur(this Player player) => Has && GetPlayerZoneSulphurInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerZoneSulphurInner(Player player) => player.Calamity().ZoneSulphur;
+
+        public static bool GetPlayerZoneAbyss(this Player player) => Has && GetPlayerZoneAbyssInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerZoneAbyssInner(Player player) => player.Calamity().ZoneAbyss;
+
+        public static bool GetPlayerProfanedCrystalBuffs(this Player player) => Has && GetPlayerProfanedCrystalBuffsInner(player);
+        [JITWhenModsEnabled("CalamityMod")]
+        private static bool GetPlayerProfanedCrystalBuffsInner(Player player) => player.Calamity().profanedCrystalBuffs;
+
+        public static void SetPlayerDashID(this Player player, string value) {
+            if (!Has) return;
+            SetPlayerDashIDInner(player, value);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetPlayerDashIDInner(Player player, string value) => player.Calamity().DashID = value;
+
         public static void SetNSMBPlayer(Player player) {
+            if (!Has) return;
+            SetNSMBPlayerInner(player);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SetNSMBPlayerInner(Player player) {
             CalamityPlayer calPlayer = player.Calamity();
             calPlayer.rangedAmmoCost *= 0.8f;
             calPlayer.deadshotBrooch = true;
@@ -329,20 +748,47 @@ namespace CalamityOverhaul
             calPlayer.eleResist = true;
             calPlayer.voidField = true;
         }
-        public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) => ArsenalTierGatedRecipe.ConstructRecipeCondition(tier, out condition);
-        public static IList<Type> GetTEBaseTurretTypes() => VaultUtils.GetDerivedTypes<TEBaseTurret>();
-        public static int GetSeasonDustID() {
+
+        public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) {
+            condition = null;
+            return Has ? ConstructRecipeConditionInner(tier, out condition) : null;
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static LocalizedText ConstructRecipeConditionInner(int tier, out Func<bool> condition) => ArsenalTierGatedRecipe.ConstructRecipeCondition(tier, out condition);
+
+        public static IList<Type> GetTEBaseTurretTypes() => Has ? GetTEBaseTurretTypesInner() : null;
+        [JITWhenModsEnabled("CalamityMod")]
+        public static IList<Type> GetTEBaseTurretTypesInner() => VaultUtils.GetDerivedTypes<TEBaseTurret>();
+
+        public static int GetSeasonDustID() => Has ? GetSeasonDustIDInner() : 0;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static int GetSeasonDustIDInner() {
             return CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
-                _ => 0                                                         //默认值：无效尘埃类型
+                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107),
+                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),
+                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),
+                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),
+                _ => 0
             };
         }
-        public static void DrawStarTrail(Projectile projectile, Color outer, Color inner, float auraHeight = 10f) => CalamityUtils.DrawStarTrail(projectile, outer, inner, auraHeight);
-        public static int GetProjectileDamage(Projectile projectile, int projType) => projectile.GetProjectileDamage(projType);
+
+        public static void DrawStarTrail(Projectile projectile, Color outer, Color inner, float auraHeight = 10f) {
+            if (!Has) return;
+            DrawStarTrailInner(projectile, outer, inner, auraHeight);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DrawStarTrailInner(Projectile projectile, Color outer, Color inner, float auraHeight) => CalamityUtils.DrawStarTrail(projectile, outer, inner, auraHeight);
+
+        public static int GetProjectileDamage(Projectile projectile, int projType) => Has ? GetProjectileDamageInner(projectile, projType) : 0;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static int GetProjectileDamageInner(Projectile projectile, int projType) => projectile.GetProjectileDamage(projType);
+
         public static void SpawnDestroyerPRTEffect(NPC npc, float value, float value2, int idleTime) {
+            if (!Has) return;
+            SpawnDestroyerPRTEffectInner(npc, value, value2, idleTime);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SpawnDestroyerPRTEffectInner(NPC npc, float value, float value2, int idleTime) {
             if (value != 0 || Main.dedServ) {
                 return;
             }
@@ -369,11 +815,47 @@ namespace CalamityOverhaul
                     break;
             }
         }
-        public static void SyncVanillaLocalAI(NPC npc) => CalamityUtils.SyncVanillaLocalAI(npc);
-        public static ref float[] RefNPCNewAI(this NPC npc) => ref npc.Calamity().newAI;
-        public static ref bool RefNPCCurrentlyEnraged(this NPC npc) => ref npc.Calamity().CurrentlyEnraged;
-        public static ref bool RefNPCCurrentlyIncreasingDefenseOrDR(this NPC npc) => ref npc.Calamity().CurrentlyIncreasingDefenseOrDR;
+
+        public static void SyncVanillaLocalAI(NPC npc) {
+            if (!Has) return;
+            SyncVanillaLocalAIInner(npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void SyncVanillaLocalAIInner(NPC npc) => CalamityUtils.SyncVanillaLocalAI(npc);
+
+        public static ref float[] RefNPCNewAI(this NPC npc) {
+            if (!Has) {
+                return ref dummyFloats;
+            }
+            return ref RefNPCNewAIInner(npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref float[] RefNPCNewAIInner(NPC npc) => ref npc.Calamity().newAI;
+
+        public static ref bool RefNPCCurrentlyEnraged(this NPC npc) {
+            if (!Has) {
+                return ref dummyBool;
+            }
+            return ref RefNPCCurrentlyEnragedInner(npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref bool RefNPCCurrentlyEnragedInner(NPC npc) => ref npc.Calamity().CurrentlyEnraged;
+
+        public static ref bool RefNPCCurrentlyIncreasingDefenseOrDR(this NPC npc) {
+            if (!Has) {
+                return ref dummyBool;
+            }
+            return ref RefNPCCurrentlyIncreasingDefenseOrDRInner(npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static ref bool RefNPCCurrentlyIncreasingDefenseOrDRInner(NPC npc) => ref npc.Calamity().CurrentlyIncreasingDefenseOrDR;
+
         public static void DarkIceBombEffect1(Projectile Projectile, float Time, float targetDist) {
+            if (!Has) return;
+            DarkIceBombEffect1Inner(Projectile, Time, targetDist);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DarkIceBombEffect1Inner(Projectile Projectile, float Time, float targetDist) {
             if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
                 AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
                 GeneralParticleHandler.SpawnParticle(spark);
@@ -390,13 +872,25 @@ namespace CalamityOverhaul
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
         }
+
         public static void DarkIceBombEffect2(Projectile Projectile, Vector2 randVr) {
+            if (!Has) return;
+            DarkIceBombEffect2Inner(Projectile, randVr);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DarkIceBombEffect2Inner(Projectile Projectile, Vector2 randVr) {
             AltSparkParticle spark = new(Projectile.Center, randVr, true, 12, Main.rand.NextFloat(1.3f, 2.2f), Color.Blue);
             GeneralParticleHandler.SpawnParticle(spark);
             AltSparkParticle spark2 = new(Projectile.Center, randVr, false, 9, Main.rand.NextFloat(1.1f, 1.5f), Color.AntiqueWhite);
             GeneralParticleHandler.SpawnParticle(spark2);
         }
+
         public static void StellarStrikerBeamEffect(Projectile Projectile, float Time, float targetDist) {
+            if (!Has) return;
+            StellarStrikerBeamEffectInner(Projectile, Time, targetDist);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void StellarStrikerBeamEffectInner(Projectile Projectile, float Time, float targetDist) {
             if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
                 AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 4, 2.3f, new Color(68, 153, 112));
                 GeneralParticleHandler.SpawnParticle(spark);
@@ -407,7 +901,13 @@ namespace CalamityOverhaul
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
         }
+
         public static void NurgleBeeEffect(Projectile Projectile, bool LowVel) {
+            if (!Has) return;
+            NurgleBeeEffectInner(Projectile, LowVel);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void NurgleBeeEffectInner(Projectile Projectile, bool LowVel) {
             FlameParticle fire = new FlameParticle(Projectile.Center + VaultUtils.RandVr(13), 20, Main.rand.NextFloat(0.1f, 0.3f), 0.05f
             , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f)) {
                 Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
@@ -415,10 +915,22 @@ namespace CalamityOverhaul
             };
             GeneralParticleHandler.SpawnParticle(fire);
         }
+
         public static void CosmicFireEffect(Projectile Projectile) {
+            if (!Has) return;
+            CosmicFireEffectInner(Projectile);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void CosmicFireEffectInner(Projectile Projectile) {
             StreamGougeMetaball.SpawnParticle(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
         }
+
         public static void DragonsWordEffect(bool alt, Projectile Projectile, float Time, float targetDist) {
+            if (!Has) return;
+            DragonsWordEffectInner(alt, Projectile, Time, targetDist);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void DragonsWordEffectInner(bool alt, Projectile Projectile, float Time, float targetDist) {
             if (alt) {
                 float OrbSize = Main.rand.NextFloat(0.5f, 0.8f);
                 Particle orb = new GenericBloom(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
@@ -438,11 +950,25 @@ namespace CalamityOverhaul
                 }
             }
         }
+
         public static void AstralPikeBeamEffect(Projectile Projectile) {
+            if (!Has) return;
+            AstralPikeBeamEffectInner(Projectile);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void AstralPikeBeamEffectInner(Projectile Projectile) {
             LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
             GeneralParticleHandler.SpawnParticle(spark2);
         }
+
         public static void FadingGloryRapierHitDustEffect(Projectile Projectile, NPC npc) {
+            if (!Has) {
+                return;
+            }
+            FadingGloryRapierHitDustEffectInner(Projectile, npc);
+        }
+        [JITWhenModsEnabled("CalamityMod")]
+        private static void FadingGloryRapierHitDustEffectInner(Projectile Projectile, NPC npc) {
             Vector2 bloodSpawnPosition = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 0.04f;
             Vector2 splatterDirection = (Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
             if (CWRLoad.NPCValue.ISTheofSteel(npc)) {
@@ -451,8 +977,10 @@ namespace CalamityOverhaul
                     int sparkLifetime = Main.rand.Next(22, 36);
                     Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
                     Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
-                    SparkParticle spark = new SparkParticle(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    if (Has) {
+                        SparkParticle spark = new SparkParticle(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
                 }
             }
             else {
@@ -467,22 +995,34 @@ namespace CalamityOverhaul
 
                     Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.81f) * Main.rand.NextFloat(11f, 23f);
                     bloodVelocity.Y -= 12f;
-                    BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
-                    GeneralParticleHandler.SpawnParticle(blood);
+                    if (Has) {
+                        BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
+                        GeneralParticleHandler.SpawnParticle(blood);
+                    }
                 }
                 for (int i = 0; i < 3; i++) {
                     float bloodScale = Main.rand.NextFloat(0.2f, 0.33f);
                     Color bloodColor = Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.5f, 1f));
                     Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(9f, 14.5f);
-                    BloodParticle2 blood = new BloodParticle2(bloodSpawnPosition, bloodVelocity, 20, bloodScale, bloodColor);
-                    GeneralParticleHandler.SpawnParticle(blood);
+                    if (Has) {
+                        BloodParticle2 blood = new BloodParticle2(bloodSpawnPosition, bloodVelocity, 20, bloodScale, bloodColor);
+                        GeneralParticleHandler.SpawnParticle(blood);
+                    }
                 }
             }
         }
+
         public static Projectile ProjectileRain(IEntitySource source, Vector2 targetPos, float xLimit
+            , float xVariance, float yLimitLower, float yLimitUpper, float projSpeed, int projType, int damage, float knockback, int owner)
+            => Has ? ProjectileRainInner(source, targetPos, xLimit, xVariance, yLimitLower, yLimitUpper, projSpeed, projType, damage, knockback, owner) : null;
+        [JITWhenModsEnabled("CalamityMod")]
+        private static Projectile ProjectileRainInner(IEntitySource source, Vector2 targetPos, float xLimit
             , float xVariance, float yLimitLower, float yLimitUpper, float projSpeed, int projType, int damage, float knockback, int owner)
             => CalamityUtils.ProjectileRain(source, targetPos, xLimit, xVariance, yLimitLower
                 , yLimitUpper, projSpeed, projType, damage, knockback, owner);
-        public static List<Vector2> BezierCurveGetPoints(int count, params Vector2[] pos) => new BezierCurve(pos).GetPoints(count);
+
+        public static List<Vector2> BezierCurveGetPoints(int count, params Vector2[] pos) => Has ? BezierCurveGetPointsInner(count, pos) : new List<Vector2>();
+        [JITWhenModsEnabled("CalamityMod")]
+        private static List<Vector2> BezierCurveGetPointsInner(int count, Vector2[] pos) => new BezierCurve(pos).GetPoints(count);
     }
 }

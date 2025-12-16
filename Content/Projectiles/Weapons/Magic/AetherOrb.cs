@@ -7,6 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
     internal class AetherOrb : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/LaserProj";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public ref float BeamLength => ref Projectile.localAI[0];
         public override void SetDefaults() {
             Projectile.width = 5;

@@ -17,6 +17,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul
 {
@@ -89,6 +90,18 @@ namespace CalamityOverhaul
         //      CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
         //  }
         //}
+
+        public static Type[] GetModTypes(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
+
+        public static Type GetTargetTypeInStringKey(Type[] types, string key) {
+            Type reset = null;
+            foreach (Type type in types) {
+                if (type.Name == key) {
+                    reset = type;
+                }
+            }
+            return reset;
+        }
         #endregion
 
         #region AIUtils

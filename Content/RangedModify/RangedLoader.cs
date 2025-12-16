@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
+using CalamityOverhaul.OtherMods.ImproveGame;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -59,11 +60,11 @@ namespace CalamityOverhaul.Content.RangedModify
                 return false;
             }
 
-            if (ModGanged.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK
+            if (ImproveRef.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK
                 return true;
             }
 
-            if (ModGanged.ImproveGameSetAmmoIsNoConsume(ammoItem)) {//适配ImproveGame
+            if (ImproveRef.ImproveGameSetAmmoIsNoConsume(ammoItem)) {//适配ImproveGame
                 return true;
             }
 

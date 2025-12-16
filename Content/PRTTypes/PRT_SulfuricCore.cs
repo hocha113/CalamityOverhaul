@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// </summary>
     internal class PRT_SulfuricCore : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/BloomCircle";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle5";
 
         private float pulseSpeed;
         private float maxPulseScale;

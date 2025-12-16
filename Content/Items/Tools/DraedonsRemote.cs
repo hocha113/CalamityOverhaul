@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -54,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanUseItem(Player player) {
-            if (ModGanged.InfernumModeOpenState) {
+            if (InfernumRef.InfernumModeOpenState) {
                 CombatText.NewText(player.Hitbox, Color.OrangeRed, DontUseByDeath.Value);
                 SoundEngine.PlaySound(SoundID.MenuClose);
                 return false;

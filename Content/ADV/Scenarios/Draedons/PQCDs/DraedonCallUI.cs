@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             //≤•∑≈“Ù–ß
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.3f });
-            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Custom/CodebreakerBeam") with { Volume = 0.7f });
+            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/CodebreakerBeam".GetSound() with { Volume = 0.7f });
         }
 
         private void OnCallComplete() {

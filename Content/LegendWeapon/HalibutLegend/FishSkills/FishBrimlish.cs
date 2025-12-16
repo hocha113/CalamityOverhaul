@@ -69,6 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class BrimfishSpitterProjectile : ModProjectile
     {
         public override string Texture => "CalamityMod/Items/Fishing/BrimstoneCragCatches/Brimlish";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
 
         private enum FishState
         {

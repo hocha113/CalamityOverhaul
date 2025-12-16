@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -17,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.hostile = true;
             Projectile.friendly = false;
             Projectile.extraUpdates = 4;
-            if (ModGanged.InfernumModeOpenState) {
+            if (InfernumRef.InfernumModeOpenState) {
                 Projectile.extraUpdates += 1;
             }
             if (CWRRef.GetBossRushActive() || Main.getGoodWorld || Main.zenithWorld) {

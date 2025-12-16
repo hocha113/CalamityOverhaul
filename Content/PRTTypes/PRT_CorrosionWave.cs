@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// </summary>
     internal class PRT_CorrosionWave : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
 
         [VaultLoaden("@CalamityMod/Particles/BloomCircle")]
         internal static Asset<Texture2D> BloomTex = null;

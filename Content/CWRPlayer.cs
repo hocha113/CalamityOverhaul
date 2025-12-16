@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.OtherMods.HighFPSSupport;
+using CalamityOverhaul.OtherMods.ImproveGame;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -359,7 +360,7 @@ namespace CalamityOverhaul.Content
                 VaultUtils.Text(hookDownText1, Color.Red);
             }
 
-            if (!ModGanged.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
+            if (!ImproveRef.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);

@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class CelestialObliterationArrow : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Cay_Item + "Ammo/VanquisherArrow";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private Trail Trail;
         private const int MaxPos = 40;
         public override void SetDefaults() {

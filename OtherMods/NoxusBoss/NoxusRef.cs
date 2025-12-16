@@ -20,7 +20,7 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
                 if (!InWorldBossPhase.Downed29.Invoke()) {
                     return false;//需要星流巨械被打败
                 }
-                Type type = ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(CWRMod.Instance.noxusBoss), "MarsCombatEvent");
+                Type type = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.noxusBoss), "MarsCombatEvent");
                 if (type == null) {
                     return false;
                 }

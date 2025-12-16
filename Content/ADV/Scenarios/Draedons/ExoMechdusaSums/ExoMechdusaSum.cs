@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -44,7 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 if (CWRMod.Instance.fargowiltasCrossmod != null) {
                     return true;//我爱你FargowiltasCrossmod
                 }
-                if (CWRMod.Instance.infernum != null && ModGanged.InfernumModeOpenState) {
+                if (CWRMod.Instance.infernum != null && InfernumRef.InfernumModeOpenState) {
                     return true;//我爱你InfernumMode
                 }
                 if (CWRMod.Instance.woTM != null) {

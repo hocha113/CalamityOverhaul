@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Common
             if (CWRMod.Instance.calamity == null) {
                 return;
             }
-            var type = ModGanged.GetTargetTypeInStringKey(AssemblyManager.GetLoadableTypes(CWRMod.Instance.calamity.Code), "LavaRendering");
+            var type = CWRUtils.GetTargetTypeInStringKey(AssemblyManager.GetLoadableTypes(CWRMod.Instance.calamity.Code), "LavaRendering");
             if (type == null) {
                 return;
             }

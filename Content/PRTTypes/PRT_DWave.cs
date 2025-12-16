@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_DWave : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         private float OriginalScale;
         private float FinalScale;

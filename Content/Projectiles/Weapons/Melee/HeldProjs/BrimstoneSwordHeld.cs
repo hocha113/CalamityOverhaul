@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     internal class BrimstoneSwordHeld : BaseKnife
     {
         public override string Texture => "CalamityMod/Items/Weapons/Melee/BrimstoneSword";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private bool trueMelee;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 24;

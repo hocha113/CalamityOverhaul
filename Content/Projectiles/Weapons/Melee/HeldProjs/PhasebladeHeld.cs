@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class PhasebladeHeld : BaseKnife
     {
-        public override int TargetID => Item.type;
+        public override int TargetID => Main.gameMenu ? ItemID.IronBroadsword : Item.type;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 46;
             Projectile.usesLocalNPCImmunity = false;

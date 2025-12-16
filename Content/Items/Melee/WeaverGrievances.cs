@@ -155,6 +155,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class WeaverGrievancesDash : BaseHeldProj
     {
         public override string Texture => "CalamityMod/NPCs/Polterghast/Polterghast";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private ref float Time => ref Projectile.ai[0];
         private ref float SwingDir => ref Projectile.ai[1];
         public override void SetStaticDefaults() {

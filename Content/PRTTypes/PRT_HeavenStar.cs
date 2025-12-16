@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_HeavenStar : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/ThinSparkle";
+        public override string Texture => CWRConstant.Masking + "BlankStar";
         private float Spin;
         private Color Bloom;
         private Color LightColor => Bloom * Opacity;
