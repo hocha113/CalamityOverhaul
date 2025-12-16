@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         private static bool IsLeavingDive;
         private bool CanDraw;
-
+        private int deadCounter = 0;
         //场景控制标记
         private bool isFirstMeet = false;
         private bool firstMeetCompleted = false;
@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override void SetProperty() {
             IsLeavingDive = false;
             CanDraw = false;
+            deadCounter = 0;
         }
 
         public override bool FindFrame(int frameHeight) {
@@ -78,7 +79,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (!VaultUtils.isClient) {
                 npc.DropItem();
             }
-            CWRRef.OldDukeOnKill(npc);
+            if (deadCounter == 0) {
+                deadCounter++;//写这个是为了避免多次调用或者无限迭代，万一呢
+                CWRRef.OldDukeOnKill(npc);
+            }
             VaultUtils.Text(LeavingDiveText.Value, Color.YellowGreen);
             foreach (var g in Main.gore) {
                 g.active = false;//清除老公爵的残骸，避免影响潜入效果

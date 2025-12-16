@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Everyday
                 return;
             }
             Item item = halibutPlayer.Player.GetItem();
-            if (item.type > ItemID.None && item.CWR().DyeItemID > ItemID.None) {
+            if (item.type == HalibutOverride.ID && item.CWR().DyeItemID > ItemID.None) {
                 StartScenario();
                 save.DyeProtest = true;
             }

@@ -275,7 +275,7 @@ namespace CalamityOverhaul
             DownedBossSystem.downedBoomerDuke = true;
             AcidRainEvent.OldDukeHasBeenEncountered = true;
             if (npc.ModNPC is not null && npc.ModNPC is OldDuke oldDuke) {
-                oldDuke.OnKill();
+                NPCLoader.OnKill(npc);
             }
         }
         public static void StopAcidRain() {
