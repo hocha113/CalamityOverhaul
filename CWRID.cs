@@ -613,8 +613,10 @@ namespace CalamityOverhaul
                 return result;
             }
             else {
-                //如果没找到，可能是因为模组还没加载完，或者ID真的错了
-                ModLoader.GetMod("CalamityOverhaul").Logger.Warn($"[CWRID] Failed to find {name} in CalamityMod. It might be too early to access, or the ID is incorrect.");
+                if (CWRRef.Has) {
+                    //如果没找到，可能是因为模组还没加载完，或者ID真的错了
+                    ModLoader.GetMod("CalamityOverhaul").Logger.Warn($"[CWRID] Failed to find {name} in CalamityMod. It might be too early to access, or the ID is incorrect.");
+                }
                 return 0;
             }
         }
