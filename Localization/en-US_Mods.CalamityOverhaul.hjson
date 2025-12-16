@@ -1796,7 +1796,6 @@ Projectiles: {
 	BloodBlast.DisplayName: Blood Blast
 	BloodflareSouls.DisplayName: Bloodflare Soul
 	CosmicFire.DisplayName: Cosmic Fire
-	GhostFires.DisplayName: Ghost Fire
 	Ieaf.DisplayName: Leaf
 	AllhallowsGoldWhipProjectile.DisplayName: All Hallow's Gold Whip
 	ATrail.DisplayName: Trail
@@ -2897,15 +2896,6 @@ RemakeItems: {
 		Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
-	RBlightedCleaver: {
-		DisplayName: Blighted Cleaver
-		Tooltip:
-			'''
-			Fires Blazing Blades that from home in on enemies and ones from above after hitting giving you the "Brutal Carnage" Buff
-			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time.
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: Brimlash
 		Tooltip:
@@ -2987,16 +2977,6 @@ RemakeItems: {
 			'''
 	}
 
-	RDefiledGreatsword: {
-		DisplayName: Defiled Greatsword
-		Tooltip:
-			'''
-			Fires a Myriad of Blazing Blades that aggressively hunt down your foes that give the player the "Brutal Carnage" Buff
-			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will 
-			increase the weapon's damage for a short time along with launching blazing blades at the sides of the screen.
-			'''
-	}
-
 	RDevastation: {
 		DisplayName: Devastation
 		Tooltip: ""
@@ -3048,7 +3028,7 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Launches several earth fragments with a high chance to throw a boulder that pierces and rolls.
-			Right click to hurl the pike like a javelin, causing an earthquake around its impact point. 
+			Right click to hurl the pike like a javelin, causing an earthquake around its impact point.
 			After using the Right click, you have to pick back up the pike manually before using it again.
 			'''
 	}

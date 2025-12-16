@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class EutrophicScimitarHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<EutrophicScimitar>();
+        public override int TargetID => CWRID.Item_EutrophicScimitar;
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 52;
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             }
 
             for (int projectiles = 0; projectiles < 2; projectiles++) {
-                Projectile.NewProjectile(Source, Owner.Center, origVr.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)), ModContent.ProjectileType<EutrophicScimitarProj>(), (int)(Projectile.damage * 0.7), Projectile.knockBack, Owner.whoAmI);
+                Projectile.NewProjectile(Source, Owner.Center, origVr.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)), CWRID.Proj_EutrophicScimitarProj, (int)(Projectile.damage * 0.7), Projectile.knockBack, Owner.whoAmI);
             }
         }
     }

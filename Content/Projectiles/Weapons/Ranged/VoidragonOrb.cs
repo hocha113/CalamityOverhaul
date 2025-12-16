@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -84,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f, ModContent.ProjectileType<PlasmaExplosion>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 1f);
+                _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f, CWRID.Proj_PlasmaExplosion, Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 1f);
             }
             _ = SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
             for (int k = 0; k < 5; k++) {

@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
                 Projectile.ai[1] = value.Y;
             }
         }
-        public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
+        public override string Texture => CWRConstant.Placeholder;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
@@ -44,12 +42,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
                 }
                 Projectile.SmoothHomingBehavior(targetPos, 1, 0.05f);
             }
-            LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
-            GeneralParticleHandler.SpawnParticle(spark2);
+            CWRRef.AstralPikeBeamEffect(Projectile);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Projectile.DrawStarTrail(Color.Coral, Color.White);
+            CWRRef.DrawStarTrail(Projectile, Color.Coral, Color.White);
             CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
             return false;
         }

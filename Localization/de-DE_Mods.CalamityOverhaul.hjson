@@ -1783,7 +1783,6 @@ Projectiles: {
 	// BloodBlast.DisplayName: Blood Blast
 	// BloodflareSouls.DisplayName: Bloodflare Soul
 	// CosmicFire.DisplayName: Cosmic Fire
-	// GhostFires.DisplayName: Ghost Fire
 	// Ieaf.DisplayName: Leaf
 	// AllhallowsGoldWhipProjectile.DisplayName: All Hallow's Gold Whip
 	// ATrail.DisplayName: Trail
@@ -2898,15 +2897,6 @@ RemakeItems: {
 		Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
-	RBlightedCleaver: {
-		DisplayName: Verderbtes Hackmesser
-		Tooltip:
-			'''
-			Die Klinge sammelt bei einem Treffer Tyrannenenergie und erzeugt zahlreiche Klingen des Massakers
-			"Nur wenn dieses Messer Blut trinkt, wird es sich an die mächtige Kraft erinnern, die es einst in den Händen des Dämonenkönigs besaß"
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: Schwefelfeuer-Peitsche
 		Tooltip:
@@ -2990,15 +2980,6 @@ RemakeItems: {
 			Halte die linke Maustaste gedrückt, damit die Sense dem Mauszeiger folgt, 
 			und lasse die Taste los, um den Halbmond des Schnitters zu aktivieren.
 			Ein Rechtsklick wirft mit jedem Schwung die Seelensammelsense des Schnitters.
-			'''
-	}
-
-	RDefiledGreatsword: {
-		DisplayName: Verderbtes Großschwert
-		Tooltip:
-			'''
-			Die Klinge sammelt bei einem Treffer Tyrannenenergie und erzeugt zahlreiche Dschungelklingen
-			"Blut, Gemetzel, Eroberung, dieses Schwert erwacht langsam. Erinnert es sich an den Dämonenkönig von damals oder ist es jetzt von dir besessen?"
 			'''
 	}
 

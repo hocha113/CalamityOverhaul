@@ -1784,7 +1784,6 @@ Projectiles: {
 	// BloodBlast.DisplayName: Blood Blast
 	// BloodflareSouls.DisplayName: Bloodflare Soul
 	// CosmicFire.DisplayName: Cosmic Fire
-	// GhostFires.DisplayName: Ghost Fire
 	// Ieaf.DisplayName: Leaf
 	// AllhallowsGoldWhipProjectile.DisplayName: All Hallow's Gold Whip
 	// ATrail.DisplayName: Trail
@@ -2913,15 +2912,6 @@ RemakeItems: {
 		Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
-	RBlightedCleaver: {
-		DisplayName: Faucheur Ravagé
-		Tooltip:
-			'''
-			Lame accumulant l'énergie du tyran en frappant l'ennemi, générant de nombreuses faucilles de massacre
-			"Seule une soif de sang permettra à cette lame de se rappeler de la puissance qu'elle avait lorsqu'elle était utilisée par le tyran"
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: Fouet de Soufre
 		Tooltip:
@@ -3005,15 +2995,6 @@ RemakeItems: {
 			Maintenez le clic gauche enfoncé pour que la faux suive la position du curseur, 
 			puis relâchez pour déclencher le demi-cercle du faucheur.
 			Un clic droit lancera la faux du faucheur qui récolte les âmes à chaque coup.
-			'''
-	}
-
-	RDefiledGreatsword: {
-		DisplayName: Épée Géante Profanée
-		Tooltip:
-			'''
-			Lame accumulant l'énergie du tyran en frappant l'ennemi, générant de nombreuses faucilles de jungle
-			"Sang, massacre, conquête, cette épée s'éveille lentement. Est-ce qu'elle se souvient du tyran d'autrefois, ou est-elle obsédée par vous maintenant ?"
 			'''
 	}
 

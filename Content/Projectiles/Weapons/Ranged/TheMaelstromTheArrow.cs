@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return;
 
             if (Main.rand.NextBool(3))
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TheMaelstromExplosion>(), Projectile.damage, 0f, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, CWRID.Proj_TheMaelstromExplosion, Projectile.damage, 0f, Projectile.owner);
         }
 
         public override bool PreDraw(ref Color lightColor) {

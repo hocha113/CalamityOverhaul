@@ -1,16 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class GeliticBladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<GeliticBlade>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Gel_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 38;
@@ -28,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<GelWave>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_GelWave, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -14,6 +14,14 @@ namespace CalamityOverhaul
         public static int Item_SHPC => Get();
         public static int Item_HalibutCannon => Get();
         public static int Item_SpeedBlaster => Get();
+        public static int Item_AcidGun => Get();
+        public static int Item_ForbiddenOathblade => Get();
+        public static int Item_EutrophicScimitar => Get();
+        public static int Item_PlasmaRifle => Get();
+        public static int Item_NanoPurge => Get();
+        public static int Item_EidolicWail => Get();
+        public static int Item_Cryophobia => Get();
+        public static int Item_Effervescence => Get();
         public static int Item_SuperradiantSlaughterer => Get();
         public static int Item_DraedonPowerCell => Get();
         public static int Item_AquaticScourgeBag => Get();
@@ -177,6 +185,7 @@ namespace CalamityOverhaul
         #endregion
         #region NPC ID引用
         public static int NPC_Cataclysm => Get();
+        public static int NPC_BrimstoneHeart => Get();
         public static int NPC_Polterghast => Get();
         public static int NPC_SepulcherHead => Get();
         public static int NPC_SepulcherBody => Get();
@@ -278,12 +287,25 @@ namespace CalamityOverhaul
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
+        public static int Proj_GelWave => Get();
+        public static int Proj_SandBlade => Get();
+        public static int Proj_ForbiddenOathbladeProjectile => Get();
+        public static int Proj_EutrophicScimitarProj => Get();
+        public static int Proj_PlasmaBolt => Get();
+        public static int Proj_PlasmaShot => Get();
+        public static int Item_DragonRage => Get();
         public static int Proj_SepticSkewerHarpoon => Get();
         public static int Proj_BrimstoneSwordExplosion => Get();
         public static int Proj_BansheeHookScythe => Get();
         public static int Proj_NastyChollaBol => Get();
         public static int Proj_MourningSkull => Get();
         public static int Proj_TinyFlare => Get();
+        public static int Proj_NanoPurgeLaser => Get();
+        public static int Proj_NeedlerProj => Get();
+        public static int Proj_PlasmaExplosion => Get();
+        public static int Proj_TheMaelstromExplosion => Get();
+        public static int Proj_TheMaelstromShark => Get();
+        public static int Proj_SepticSkewerBacteria => Get();
         public static int Proj_SandstormBullet => Get();
         public static int Proj_SicknessRound => Get();
         public static int Proj_ScorchedEarthRocket => Get();
@@ -476,6 +498,8 @@ namespace CalamityOverhaul
         #endregion
         #region 增益效果ID引用
         public static int Buff_Plague => Get();
+        public static int Buff_SulphuricPoisoning => Get();
+        public static int Buff_Dragonfire => Get();
         public static int Buff_Irradiated => Get();
         public static int Buff_ElementalMix => Get();
         public static int Buff_VulnerabilityHex => Get();

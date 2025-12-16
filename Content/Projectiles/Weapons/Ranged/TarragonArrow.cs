@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 for (int i = 0; i < 3; i++) {
                     Vector2 vr = Projectile.velocity.RotatedBy((-1 + i) * 0.3f) * -1.2f;
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, vr
-                        , ModContent.ProjectileType<NeedlerProj>(), Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner);
+                        , CWRID.Proj_NeedlerProj, Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner);
                 }
             }
         }

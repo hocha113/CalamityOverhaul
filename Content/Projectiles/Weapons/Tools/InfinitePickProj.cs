@@ -1,5 +1,4 @@
-﻿using CalamityMod.Particles;
-using CalamityOverhaul.Content.DamageModify;
+﻿using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
@@ -129,9 +128,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             for (int i = 0; i < 36; i++) {
                 Color outerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
                 Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
-                float slp = Main.rand.NextFloat(0.5f, 0.9f);
-                GeneralParticleHandler.SpawnParticle(new FlareShine(Projectile.Center + Main.rand.NextVector2Unit() * 13, vector, Color.White, outerSparkColor
-                    , 0f, new Vector2(0.6f, 1f) * slp, new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2));
 
                 float scaleBoost = MathHelper.Clamp(i * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;

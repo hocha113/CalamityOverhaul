@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -222,7 +221,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Shadowflame>(), 540);
+            target.AddBuff(CWRID.Buff_Shadowflame, 540);
             target.AddBuff(BuffID.OnFire, 1080);
             SoundEngine.PlaySound(SoundID.Item14, target.Center);
         }

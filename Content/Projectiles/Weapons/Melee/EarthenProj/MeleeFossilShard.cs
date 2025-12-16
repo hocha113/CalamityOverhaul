@@ -1,5 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 60);
+            target.AddBuff(CWRID.Buff_ArmorCrunch, 60);
         }
 
         public override void OnKill(int timeLeft) {

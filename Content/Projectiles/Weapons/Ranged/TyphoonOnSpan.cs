@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 float rot = MathHelper.TwoPi / 94 * i;
                 Vector2 velocity = rot.ToRotationVector2() * (1 + (-6f + rot % MathHelper.PiOver4) * 2);
                 Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, velocity
-                    , ModContent.ProjectileType<TorrentialArrow>()
+                    , CWRID.Proj_TorrentialArrow
                     , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
             }
         }

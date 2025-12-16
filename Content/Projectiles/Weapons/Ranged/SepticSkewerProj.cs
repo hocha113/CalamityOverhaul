@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 harpoonVel *= Main.rand.Next(45, 65) * 0.1f;
                 harpoonVel = harpoonVel.RotatedBy((Main.rand.NextDouble() - 0.5) * MathHelper.PiOver2);
                 _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, harpoonVel
-                    , ModContent.ProjectileType<SepticSkewerBacteria>(), (int)(Projectile.damage * 0.175)
+                    , CWRID.Proj_SepticSkewerBacteria, (int)(Projectile.damage * 0.175)
                     , Projectile.knockBack * 0.2f, Projectile.owner, -10f, 0f);
             }
 
@@ -88,6 +88,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-            => target.AddBuff(ModContent.BuffType<SulphuricPoisoning>(), 180);
+            => target.AddBuff(CWRID.Buff_SulphuricPoisoning, 180);
     }
 }

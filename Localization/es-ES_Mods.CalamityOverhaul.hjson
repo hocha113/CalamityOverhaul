@@ -1798,7 +1798,6 @@ Projectiles: {
 	// BloodBlast.DisplayName: Blood Blast
 	// BloodflareSouls.DisplayName: Bloodflare Soul
 	// CosmicFire.DisplayName: Cosmic Fire
-	// GhostFires.DisplayName: Ghost Fire
 	// Ieaf.DisplayName: Leaf
 	// AllhallowsGoldWhipProjectile.DisplayName: All Hallow's Gold Whip
 	// ATrail.DisplayName: Trail
@@ -2941,15 +2940,6 @@ RemakeItems: {
 		Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
-	RBlightedCleaver: {
-		DisplayName: Cuchilla Maldita
-		Tooltip:
-			'''
-			La hoja acumula energía tiránica al golpear enemigos, generando muchas Guadañas de Masacre
-			"Solo al saciar esta cuchilla con sangre, recordará el inmenso poder que tuvo cuando la usaba el Señor Demonio"
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: Látigo de Azufre
 		Tooltip:
@@ -3032,15 +3022,6 @@ RemakeItems: {
 			Cada tres giros lanza una guadaña voladora gigante
 			Mantén presionado el botón izquierdo para que la guadaña persiga la posición del cursor, suéltalo para activar el medio ciclo de la muerte
 			Cada golpe con el botón derecho lanzará la guadaña del segador de almas
-			'''
-	}
-
-	RDefiledGreatsword: {
-		DisplayName: Gran Espada Profanada
-		Tooltip:
-			'''
-			La hoja acumula energía tiránica al golpear enemigos, generando numerosas Guadañas de Jungla
-			"Sangre, masacre, conquista, esta espada está despertando lentamente. ¿Recuerda al antiguo Señor Demonio, o está fascinada contigo ahora?"
 			'''
 	}
 

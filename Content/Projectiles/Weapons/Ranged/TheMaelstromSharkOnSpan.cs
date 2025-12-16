@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -56,12 +54,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                 SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 35
-                    , ModContent.ProjectileType<TheMaelstromShark>(), Projectile.damage, 0, Projectile.owner);
+                    , CWRID.Proj_TheMaelstromShark, Projectile.damage, 0, Projectile.owner);
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            float angle = (Owner.Calamity().mouseWorld - Owner.MountedCenter).ToRotation();
+            float angle = ToMouseA;
             float blinkage = 0;
             if (Projectile.timeLeft >= MaxCharge * 1.5f) {
                 blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1) * MathHelper.PiOver2 + MathHelper.PiOver2);
@@ -78,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/InvisibleProj").Value;
+            Texture2D texture = ModContent.Request<Texture2D>(CWRConstant.Placeholder).Value;
 
             Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition, null, Color.White, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 700f, 0, 0);
 

@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class ForbiddenOathbladeHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<ForbiddenOathblade>();
+        public override int TargetID => CWRID.Item_ForbiddenOathblade;
         public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastation_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 44;
@@ -36,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<ForbiddenOathbladeProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_ForbiddenOathbladeProjectile, Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -48,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
             target.AddBuff(BuffID.ShadowFlame, 360);
             target.AddBuff(BuffID.OnFire, 720);
-            int onHitDamage = Owner.CalcIntDamage<MeleeDamageClass>(2 * Item.damage);
+            int onHitDamage = (int)(Owner.GetDamage<MeleeDamageClass>().ApplyTo(2 * Item.damage));
             Owner.ApplyDamageToNPC(target, onHitDamage, 0f, 0, false);
             float firstDustScale = 1.7f;
             float secondDustScale = 0.8f;
@@ -88,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Shadowflame>(), 360);
+            target.AddBuff(CWRID.Buff_Shadowflame, 360);
             target.AddBuff(BuffID.OnFire, 720);
             SoundEngine.PlaySound(SoundID.Item14, target.Center);
         }

@@ -219,6 +219,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
         #endregion
 
+        public override bool IsLoadingEnabled(Mod mod) => TargetID > ItemID.None;
+
         /// <summary>
         /// 发送一个比特体，存储8个栏位的布尔值，
         /// 如果子类准备重写，需要尊重父类的使用逻辑，当前已经占用至4号位

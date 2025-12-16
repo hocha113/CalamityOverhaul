@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,7 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class HellkiteHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<Hellkite>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 64;
@@ -24,12 +21,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.zenithWorld) {
-                SoundEngine.PlaySound(Hellkite.UseSound with { Pitch = Main.rand.NextFloat(0.01f, 0.03f) });
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/WulfrumScrewdriverScrewHit".GetSound() with { Pitch = Main.rand.NextFloat(0.01f, 0.03f), Volume = 0.6f });
                 SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
             }
             else {
                 target.AddBuff(BuffID.OnFire3, 300);
-                int onHitDamage = Owner.CalcIntDamage<MeleeDamageClass>(Item.damage);
+                int onHitDamage = (int)Owner.GetDamage<MeleeDamageClass>().ApplyTo(Item.damage);
                 Owner.ApplyDamageToNPC(target, onHitDamage, 0f, 0, false);
                 float firstDustScale = 1.7f;
                 float secondDustScale = 0.8f;

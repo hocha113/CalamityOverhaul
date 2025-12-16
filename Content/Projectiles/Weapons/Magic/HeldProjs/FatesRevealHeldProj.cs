@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -12,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class FatesRevealHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "FatesReveal";
-        public override int TargetID => ModContent.ItemType<FatesReveal>();
+        public override int TargetID => CWRID.Item_FatesReveal;
         public override void SetMagicProperty() {
             GunPressure = 0;
             HandIdleDistanceX = 15;

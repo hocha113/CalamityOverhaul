@@ -1805,7 +1805,6 @@ Projectiles: {
 	BloodBlast.DisplayName: Blood Blast
 	BloodflareSouls.DisplayName: Bloodflare Souls
 	CosmicFire.DisplayName: Cosmic Fire
-	GhostFires.DisplayName: Ghost Fires
 	Ieaf.DisplayName: Ieaf
 	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
 	ATrail.DisplayName: A Trail
@@ -2905,15 +2904,6 @@ RemakeItems: {
 		Tooltip: Накладывает дебафф «Радиация» на поражённых врагов
 	}
 
-	RBlightedCleaver: {
-		DisplayName: Гибельный рассекатель
-		Tooltip:
-			'''
-			Удары в ближнем бою выпускают пылающие клинки с неба и накапливают шкалу ярости, пассивно увеличивающую ваш урон
-			Взмахи мечом, не наносящие урон врагу напрямую, выпускают рассекающие копии меча, тратя вашу ярость
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: Серная плеть
 		Tooltip:
@@ -3002,16 +2992,6 @@ RemakeItems: {
 			Удерживайте левую кнопку мыши, чтобы коса следовала за курсором; 
 			отпустите кнопку, чтобы активировать Полумесяц Жнеца.
 			Щелчок правой кнопкой мыши бросает косу Жнеца, собирающую души, с каждым взмахом.
-			'''
-	}
-
-	RDefiledGreatsword: {
-		DisplayName: Осквернённый двуручный меч
-		Tooltip:
-			'''
-			Удары в ближнем бою выпускают пылающие клинки со всех сторон, дают бафф «Кровавая бойня» и накапливают шкалу ярости, пассивно увеличивающую ваш урон
-			Взмахи мечом, не наносящие урон врагу напрямую, выпускают рассекающие копии меча
-			Однако, если у вас есть ярость, взмахи мечом будут выпускать шквал копий меча в разные стороны, тратя её
 			'''
 	}
 

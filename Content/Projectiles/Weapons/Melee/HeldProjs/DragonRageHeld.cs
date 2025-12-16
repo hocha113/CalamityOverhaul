@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
@@ -19,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class DragonRageHeld : BaseSwing
     {
-        public override int TargetID => ModContent.ItemType<DragonRage>();
+        public override int TargetID => CWRID.Item_DragonRage;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
@@ -31,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Projectile.CloneDefaults(ProjectileID.Spear);
             Projectile.aiStyle = AIType = ProjectileID.None;
             Projectile.extraUpdates = 3;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.width = 48;
             Projectile.height = 48;
             Projectile.alpha = 255;
@@ -270,7 +266,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                             Time = 30 * UpdateRate;
                         }
                         if (Projectile.soundDelay <= 0) {
-                            SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
+                            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash1".GetSound() with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
                             Projectile.soundDelay = 30 * UpdateRate;
                         }
                     }
@@ -308,7 +304,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
             Vector2 vector3 = vector2.RotatedBy(MathF.PI / 2f * Projectile.spriteDirection);
             if (Main.rand.NextBool()) {
                 Dust dust = Dust.NewDustDirect(vector - new Vector2(5f), 10, 10, DustID.CopperCoin, player.velocity.X, player.velocity.Y, 150);
-                dust.velocity = Projectile.SafeDirectionTo(dust.position) * 0.1f + dust.velocity * 0.1f;
+                dust.velocity = Projectile.To(dust.position).UnitVector() * 0.1f + dust.velocity * 0.1f;
             }
 
             for (int i = 0; i < 4; i++) {
@@ -346,22 +342,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         private void HitEffect(Entity target, bool theofSteel) {
             if (target.Distance(Owner.Center) < Owner.width * 2) {
                 return;
-            }
-
-            if (Projectile.ai[0] == 3) {
-                float OrbSize = Main.rand.NextFloat(0.5f, 0.8f) * Projectile.numHits;
-                if (OrbSize > 2.2f) {
-                    OrbSize = 2.2f;
-                }
-                CalamityMod.Particles.Particle orb = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
-                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
-                CalamityMod.Particles.Particle orb2 = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8, true);
-                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb2);
-
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
-                    , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4
-                    , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
-                Main.projectile[proj].DamageType = DamageClass.Melee;
             }
 
             HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
@@ -418,10 +398,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            bool isBrimstoneHeart = target.type == ModContent.NPCType<BrimstoneHeart>();
+            bool isBrimstoneHeart = target.type == CWRID.NPC_BrimstoneHeart;
             if (Projectile.ai[0] == 3) {
-                if (modifiers.SuperArmor || target.defense > 999
-                    || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
+                if (modifiers.SuperArmor || target.defense > 999) {
                     return;
                 }
                 modifiers.DefenseEffectiveness *= 0f;

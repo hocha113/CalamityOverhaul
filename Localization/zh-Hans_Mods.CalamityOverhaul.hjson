@@ -1778,7 +1778,6 @@ Projectiles: {
 	BloodBlast.DisplayName: 鲜血爆破
 	BloodflareSouls.DisplayName: 血炎之魂
 	CosmicFire.DisplayName: 宇宙之火
-	GhostFires.DisplayName: 幽灵之火
 	Ieaf.DisplayName: 叶刃
 	AllhallowsGoldWhipProjectile.DisplayName: 万圣金鞭
 	ATrail.DisplayName: 轨迹
@@ -2856,15 +2855,6 @@ RemakeItems: {
 		Tooltip: 击中敌人时会造成辐射减益
 	}
 
-	RBlightedCleaver: {
-		DisplayName: 凋亡屠刀
-		Tooltip:
-			'''
-			刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
-			"只有让这把刀痛饮鲜血，它才会想起当年被魔君使用时的强大力量"
-			'''
-	}
-
 	RBrimlash: {
 		DisplayName: 硫火鞭
 		Tooltip:
@@ -2947,15 +2937,6 @@ RemakeItems: {
 			每三轮挥舞会将巨大化的飞镰掷出
 			按住左键让飞镰追寻光标位置，松开左键触发死神半月
 			右键挥舞都会掷出收割灵魂的死神之镰
-			'''
-	}
-
-	RDefiledGreatsword: {
-		DisplayName: 神殇巨剑
-		Tooltip:
-			'''
-			刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
-			"鲜血，屠戮，征服，这把刀在慢慢苏醒。它到底是回忆起了当年的魔君，还是痴迷于现在的你？"
 			'''
 	}
 

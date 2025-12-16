@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Providence;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
             Owner.itemAnimation = 2;
             SetDirection();
             if (Projectile.ai[0] == 0) {
-                SoundEngine.PlaySound(Providence.HolyRaySound);
+                SoundEngine.PlaySound("CalamityMod/Sounds/Custom/Providence/ProvidenceHolyRay".GetSound());
                 targetPos = InMousePos;
             }
             targetPos = Vector2.Lerp(targetPos, InMousePos, 0.1f);

@@ -1,5 +1,5 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         private void SetProjectilePenetration() {
-            Projectile.penetrate = Projectile.Calamity().stealthStrike ? 4 : 2;
+            Projectile.penetrate = Projectile.GetProjStealthStrike() ? 4 : 2;
             SetPierce = true;
         }
 
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         private void HandleTileHit() {
             Projectile.extraUpdates = 4;
 
-            if (!Projectile.Calamity().stealthStrike) {
+            if (!Projectile.GetProjStealthStrike()) {
                 Projectile.timeLeft = 200;
             }
 
@@ -120,9 +120,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             float playerDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 2 == 0 && playerDist < 1400f) {
-                SparkParticle spark = new SparkParticle(Projectile.Center - Projectile.velocity * 8f
-                    , -Projectile.velocity * 0.1f, false, 9, 2.3f, Color.Yellow * 0.1f);
-                GeneralParticleHandler.SpawnParticle(spark);
+                PRT_Sparkle spark = new PRT_Sparkle(Projectile.Center - Projectile.velocity * 8f
+                    , -Projectile.velocity * 0.1f, Color.Yellow, Color.White, 0.2f, 22);
+                PRTLoader.AddParticle(spark);
             }
         }
 
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, Projectile.Calamity().stealthStrike ? 4 : 2);
+            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, Projectile.GetProjStealthStrike() ? 4 : 2);
             return false;
         }
     }

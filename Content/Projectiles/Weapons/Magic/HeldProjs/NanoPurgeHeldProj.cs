@@ -1,18 +1,15 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
     internal class NanoPurgeHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Proj_Magic + "NanoPurgeHoldout";
-        public override int TargetID => ModContent.ItemType<NanoPurge>();
+        public override int TargetID => CWRID.Item_NanoPurge;
         private int fireIndex2;
         private int intframe = 15;
         public override void SetMagicProperty() {
@@ -54,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Item.useTime = fireIndex;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.9f, 1.1f)
-                , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                , CWRID.Proj_NanoPurgeLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             if (fireIndex > 5) {
                 OffsetPos += ShootVelocity.UnitVector() * -5;
@@ -70,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Item.useTime = 3;
             intframe = 2;
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                , CWRID.Proj_NanoPurgeLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {

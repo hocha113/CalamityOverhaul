@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<TerratomereSlashCreator>(),
+                    , CWRID.Proj_TerratomereSlashCreator,
                 Projectile.damage / 3, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
                 Main.projectile[proj].timeLeft = 30;
             }
@@ -76,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             if (Projectile.numHits == 0) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<TerratomereSlashCreator>(),
+                    , CWRID.Proj_TerratomereSlashCreator,
                 Projectile.damage / 3, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
                 Main.projectile[proj].timeLeft = 30;
             }

@@ -1,14 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
     internal class LazharHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Lazhar";
-        public override int TargetID => ModContent.ItemType<Lazhar>();
+        public override int TargetID => CWRID.Item_Lazhar;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
             ShootPosNorlLengValue = 0;
