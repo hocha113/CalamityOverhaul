@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,7 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class LifehuntScytheHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<LifehuntScythe>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";
         public override string gradientTexturePath => CWRConstant.ColorBar + "UltimusCleaver_Bar";
         public override void SetKnifeProperty() {

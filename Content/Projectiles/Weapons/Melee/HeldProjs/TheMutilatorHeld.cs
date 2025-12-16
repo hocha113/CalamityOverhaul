@@ -1,16 +1,12 @@
-﻿using CalamityMod.CalPlayer;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class TheMutilatorHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TheMutilator>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 60;
@@ -26,8 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (hit.Crit && target.canGhostHeal && Owner.lifeSteal > 0f) {
                 Owner.lifeSteal -= 5;
-                if (!CalamityPlayer.areThereAnyDamnBosses || Main.rand.NextBool()) {
-                    int heartDrop = CalamityPlayer.areThereAnyDamnBosses ? 1 : Main.rand.Next(1, 3);
+                if (Main.rand.NextBool()) {
+                    int heartDrop = Main.rand.Next(1, 3);
                     for (int i = 0; i < heartDrop; i++) {
                         Item.NewItem(Owner.GetSource_OnHit(target), (int)target.position.X, (int)target.position.Y, target.width, target.height, 58, 1, false, 0, false, false);
                     }

@@ -1874,6 +1874,7 @@ Projectiles: {
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
+	// HolyColliderHeld.DisplayName: Holy Collider Held
 }
 
 Configs: {
@@ -2998,15 +2999,6 @@ RemakeItems: {
 			die mehrfachen Durchschlagschaden an Feinden auf ihrem Weg verursachen.
 			Schließlich werden sechs Karmesinrote Dämonenhellebarden am Cursor beschworen, 
 			die eine Zeit lang schweben und dann in Richtung des Spielers fliegen.
-			'''
-	}
-
-	RDiseasedPike: {
-		DisplayName: Seuchen-Lanze
-		Tooltip:
-			'''
-			Feuert Seuchenbienenschwärme ab
-			Rechtsklick erzeugt verfolgenden Seuchen-Energie
 			'''
 	}
 
@@ -4436,18 +4428,6 @@ RemakeItems: {
 			'''
 			Feuert verlorene Seelen und Leuchtspurgeschosse ab
 			"Sie versuchten, die Konvention zu umgehen, indem sie Leuchtspurgeschosse als Tränengasbomben einsetzten, und das Ergebnis war dieser Witz"
-			'''
-	}
-
-	RSpeedBlaster: {
-		DisplayName: Speed-Blaster
-		Tooltip:
-			'''
-			Feuert schnell Phosphorfarbkugeln ab
-			Drücken Sie die rechte Maustaste, um einen leistungsstarken Phosphorstrahl abzufeuern, der Sie beim Laufen unterstützt
-			Diese Fähigkeit hat eine Abklingzeit von 5 Sekunden
-			Während der Abklingzeit können Sie schneller und präziser schießen
-			"Schieß dir ins Gesicht und du wirst den ganzen Tag lang fröhlich sein können."
 			'''
 	}
 

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -35,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Item.Initialize();
             if (++Item.CWR().ai[0] > 1) {
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity * Main.rand.NextFloat(10, 16)
-                , ModContent.ProjectileType<DarkMasterBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                , CWRID.Proj_DarkMasterBeam, Projectile.damage, Projectile.knockBack, Projectile.owner);
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
                 Item.CWR().ai[0] = 0;
             }

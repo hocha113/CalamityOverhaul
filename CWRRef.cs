@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.CustomRecipes;
+using CalamityMod.DataStructures;
 using CalamityMod.Events;
 using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
@@ -430,5 +431,47 @@ namespace CalamityOverhaul
             LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
             GeneralParticleHandler.SpawnParticle(spark2);
         }
+        public static void FadingGloryRapierHitDustEffect(Projectile Projectile, NPC npc) {
+            Vector2 bloodSpawnPosition = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 0.04f;
+            Vector2 splatterDirection = (Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
+            if (CWRLoad.NPCValue.ISTheofSteel(npc)) {
+                for (int j = 0; j < 3; j++) {
+                    float sparkScale = Main.rand.NextFloat(1.2f, 2.33f);
+                    int sparkLifetime = Main.rand.Next(22, 36);
+                    Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
+                    Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
+                    SparkParticle spark = new SparkParticle(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+            else {
+                for (int i = 0; i < 6; i++) {
+                    int bloodLifetime = Main.rand.Next(22, 36);
+                    float bloodScale = Main.rand.NextFloat(0.6f, 0.8f);
+                    Color bloodColor = Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat());
+                    bloodColor = Color.Lerp(bloodColor, new Color(51, 22, 94), Main.rand.NextFloat(0.65f));
+
+                    if (Main.rand.NextBool(20))
+                        bloodScale *= 2f;
+
+                    Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.81f) * Main.rand.NextFloat(11f, 23f);
+                    bloodVelocity.Y -= 12f;
+                    BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
+                    GeneralParticleHandler.SpawnParticle(blood);
+                }
+                for (int i = 0; i < 3; i++) {
+                    float bloodScale = Main.rand.NextFloat(0.2f, 0.33f);
+                    Color bloodColor = Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.5f, 1f));
+                    Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(9f, 14.5f);
+                    BloodParticle2 blood = new BloodParticle2(bloodSpawnPosition, bloodVelocity, 20, bloodScale, bloodColor);
+                    GeneralParticleHandler.SpawnParticle(blood);
+                }
+            }
+        }
+        public static Projectile ProjectileRain(IEntitySource source, Vector2 targetPos, float xLimit
+            , float xVariance, float yLimitLower, float yLimitUpper, float projSpeed, int projType, int damage, float knockback, int owner)
+            => CalamityUtils.ProjectileRain(source, targetPos, xLimit, xVariance, yLimitLower
+                , yLimitUpper, projSpeed, projType, damage, knockback, owner);
+        public static List<Vector2> BezierCurveGetPoints(int count, params Vector2[] pos) => new BezierCurve(pos).GetPoints(count);
     }
 }

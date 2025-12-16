@@ -1,5 +1,5 @@
-﻿using CalamityMod.Particles;
-using CalamityMod.Projectiles.Magic;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -60,10 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 mainColor = Color.Lerp(Color.Red, mainColor, sengs);
                 marginColor = Color.Lerp(Color.Red, marginColor, sengs);
 
-                LineParticle spark = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1.7f, marginColor);
-                GeneralParticleHandler.SpawnParticle(spark);
-                LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1f, mainColor);
-                GeneralParticleHandler.SpawnParticle(spark2);
+                PRT_Line spark = new PRT_Line(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1.7f, marginColor);
+                PRTLoader.AddParticle(spark);
+                PRT_Line spark2 = new PRT_Line(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1f, mainColor);
+                PRTLoader.AddParticle(spark2);
             }
 
             Projectile.ai[0]++;
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                         tentacleXDirection *= -1f;
                     }
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, tentacleVelocity
-                        , ModContent.ProjectileType<EldritchTentacle>(), Projectile.damage
+                        , CWRID.Proj_EldritchTentacle, Projectile.damage
                         , Projectile.knockBack, Projectile.owner, tentacleXDirection, tentacleYDirection);
                     Main.projectile[proj].DamageType = DamageClass.Magic;
                 }

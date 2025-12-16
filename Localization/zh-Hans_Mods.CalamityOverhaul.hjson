@@ -1869,6 +1869,7 @@ Projectiles: {
 	AriaQSkillMiniDisk.DisplayName: 星环护卫
 	SulfuricacidExplosion.DisplayName: 硫酸爆炸
 	DawnshatterFireball.DisplayName: 黎明之火
+	// HolyColliderHeld.DisplayName: Holy Collider Held
 }
 
 Configs: {
@@ -2952,15 +2953,6 @@ RemakeItems: {
 			每次挥舞会生成一丛漂浮在玩家上方的欢愉之戟，会向光标方向飞行，击中敌人后附着在其身上造成持续伤害
 			大挥砍会发射三轮痛苦之轮回，对路径上的敌人造成多次穿透伤害
 			最后会在光标出召唤六个绯红魔王戟，飘浮一段时间后向玩家方向飞行
-			'''
-	}
-
-	RDiseasedPike: {
-		DisplayName: 瘟疫长枪
-		Tooltip:
-			'''
-			发射瘟疫蜂群
-			右键生成追踪的瘟疫能量
 			'''
 	}
 
@@ -4401,18 +4393,6 @@ RemakeItems: {
 			'''
 			发射失落之魂与信号弹
 			"他们想绕过公约，于是拿信号弹儿当凝固汽油弹使，结果搞出了这么个笑话"
-			'''
-	}
-
-	RSpeedBlaster: {
-		DisplayName: 彩弹冲锋枪
-		Tooltip:
-			'''
-			快速发射磷光彩弹
-			按下右键发射一束强力彩弹，在移动时使用会推动你冲刺
-			这个技能有5秒冷却时间
-			冷却期间，你可以更快、更精准地射击
-			"对着自己的脸来一发，你就能欢快地洗一整天的脸了"
 			'''
 	}
 

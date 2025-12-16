@@ -15,6 +15,7 @@ namespace CalamityOverhaul
         public static int Item_HalibutCannon => Get();
         public static int Item_SpeedBlaster => Get();
         public static int Item_AcidGun => Get();
+        public static int Item_AirSpinner => Get();
         public static int Item_ForbiddenOathblade => Get();
         public static int Item_EutrophicScimitar => Get();
         public static int Item_PlasmaRifle => Get();
@@ -287,11 +288,16 @@ namespace CalamityOverhaul
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
+        public static int Proj_DNA => Get();
+        public static int Proj_SeashineSwordProj => Get();
+        public static int Proj_EldritchTentacle => Get();
         public static int Proj_DrataliornusExoArrow => Get();
         public static int Proj_Valaricicle => Get();
         public static int Proj_Valaricicle2 => Get();
         public static int Proj_GelWave => Get();
+        public static int Proj_VirulentWave => Get();
         public static int Proj_SandBlade => Get();
+        public static int Proj_StormBeam => Get();
         public static int Proj_ForbiddenOathbladeProjectile => Get();
         public static int Proj_EutrophicScimitarProj => Get();
         public static int Proj_PlasmaBolt => Get();

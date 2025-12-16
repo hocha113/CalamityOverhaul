@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Melee;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.ModLoader;
 

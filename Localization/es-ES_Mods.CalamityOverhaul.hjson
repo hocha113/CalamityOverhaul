@@ -1889,6 +1889,7 @@ Projectiles: {
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
+	// HolyColliderHeld.DisplayName: Holy Collider Held
 }
 
 Configs: {
@@ -3038,15 +3039,6 @@ RemakeItems: {
 			volando hacia la dirección del cursor, se adhiere al enemigo al impactar causando daño continuo
 			Un golpe fuerte lanzará tres ciclos de sufrimiento, causando daño penetrante múltiple a los enemigos en su trayectoria
 			Finalmente, invocará seis tridentes escarlata hacia la posición del cursor, que volarán hacia el jugador después de flotar un tiempo
-			'''
-	}
-
-	RDiseasedPike: {
-		DisplayName: Pica de Plaga
-		Tooltip:
-			'''
-			Lanza enjambres de plagas.
-			Clic derecho para generar energía de plaga que persigue.
 			'''
 	}
 
@@ -4420,18 +4412,6 @@ RemakeItems: {
 			'''
 			Lanza almas perdidas y bengalas
 			"Quisieron eludir el acuerdo, así que usaron bengalas como bombas de napalm, resultando en esta burla"
-			'''
-	}
-
-	RSpeedBlaster: {
-		DisplayName: Pistola de Pintura
-		Tooltip:
-			'''
-			Lanza rápidamente balas fluorescentes
-			El clic derecho lanza un fuerte chorro de pintura que te impulsa a correr al moverte
-			Esta habilidad tiene un tiempo de recarga de 5 segundos
-			Durante el enfriamiento, puedes disparar más rápido y con más precisión
-			"Apunta a tu cara y recibirás una divertida limpieza facial todo el día"
 			'''
 	}
 

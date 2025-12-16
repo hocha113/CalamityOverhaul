@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.DamageModify;
+﻿using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -54,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             ShootState shootState = Owner.GetShootState();
             if (Projectile.ai[2] == 0) {
                 if (Time > 10) {
-                    SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
+                    SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound(), Projectile.Center);
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, ver * 20, ProjectileType<InfiniteArrow>()
                         , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     HFBow.ChargeValue += 5;

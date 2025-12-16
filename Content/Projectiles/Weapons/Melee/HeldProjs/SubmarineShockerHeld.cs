@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using System.Linq;
@@ -11,7 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     internal class SubmarineShockerHeld : BaseKnife
     {
         public override string Texture => "CalamityMod/Items/Weapons/Melee/SubmarineShocker";
-        public override int TargetID => ModContent.ItemType<SubmarineShocker>();
         private bool trueMelee;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 24;

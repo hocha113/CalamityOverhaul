@@ -1,14 +1,10 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class SeashineSwordHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<SeashineSword>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
@@ -23,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity * 2.5f
-                , ModContent.ProjectileType<SeashineSwordProj>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                , CWRID.Proj_SeashineSwordProj, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
     }
 }

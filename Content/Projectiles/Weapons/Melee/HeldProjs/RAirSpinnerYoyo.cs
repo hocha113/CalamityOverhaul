@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     {
         public const int MaxUpdates = 2;
 
-        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<AirSpinner>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(CWRID.Item_AirSpinner);
 
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Yoyos/" + "AirSpinnerYoyo";
 

@@ -1,17 +1,12 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 {
     internal class TheBurningSkyHeld : BaseKnife
     {
-        public override int TargetID => ModContent.ItemType<TheBurningSky>();
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetKnifeProperty() {
@@ -37,22 +32,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<Dragonfire>(), 180);
+            target.AddBuff(CWRID.Buff_Dragonfire, 180);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<Dragonfire>(), 180);
+            target.AddBuff(CWRID.Buff_Dragonfire, 180);
         }
 
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
             for (int i = 0; i < 8; ++i) {
                 float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
-                Projectile projectile = CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
+                Projectile projectile = CWRRef.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                     , 290f, 130f, 850f, 1100f, randomSpeed, ShootID
                     , Projectile.damage / 11, 6f, Owner.whoAmI);
                 if (Main.rand.NextBool(3)) {
-                    projectile.Calamity().allProjectilesHome = true;
+                    projectile.SetAllProjectilesHome(true);
                 }
             }
         }

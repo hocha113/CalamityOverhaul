@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Rogue;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -46,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         public override bool? CanDamage() => Projectile.numHits > 0 ? false : base.CanDamage();
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(Supernova.ExplosionSound, Projectile.Center);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Item/SupernovaBoom".GetSound() with { Volume = 0.9f }, Projectile.Center);
             GauntletInAltShoot.SpanDust(Projectile, 3);
 
             Vector2 normVr = Projectile.velocity.GetNormalVector();

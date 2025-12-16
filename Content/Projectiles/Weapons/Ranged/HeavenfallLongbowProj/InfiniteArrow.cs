@@ -1,6 +1,4 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
@@ -51,10 +49,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 float innerSparkScale = 0.6f + scaleBoost;
                 PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
                 PRTLoader.AddParticle(spark2);
-
-                //生成彩色的星光粒子
-                if (Main.rand.NextBool(2))
-                    SpanStarPrt(ChromaColor);
             }
 
             if (Projectile.ai[0] < 3) {
@@ -64,25 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Projectile.ai[1]++;
         }
 
-        public void SpanStarPrt(Color color) {
-            Vector2 vector = Projectile.velocity * 0.75f;
-            float slp = Main.rand.NextFloat(0.5f, 0.9f);
-            GeneralParticleHandler.SpawnParticle(new FlareShine(Projectile.Center + Main.rand.NextVector2Unit() * 13, vector, Color.White, color, 0f, new Vector2(0.6f, 1f) * slp, new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2));
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.type == ModContent.NPCType<SepulcherHead>() || target.type == ModContent.NPCType<SepulcherBody>() || target.type == ModContent.NPCType<SepulcherTail>()) {
-                foreach (NPC targetHead in Main.npc) {
-                    if (targetHead.type == ModContent.NPCType<SepulcherHead>()) {
-                        ModNPC modNPC = targetHead.ModNPC;
-                        modNPC.NPC.life = 0;
-                        modNPC.NPC.checkDead();
-                        modNPC.OnKill();
-                        modNPC.HitEffect(hit);
-                        modNPC.NPC.active = false;
-                    }
-                }
-            }
             if (Projectile.numHits == 0) {
                 int lightningDamage = (int)(Projectile.damage * 1.3f);
                 Vector2 ownerPos = Main.player[Projectile.owner].Center;
@@ -105,9 +81,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                         , Main.rand.NextFloat(0.3f, 0.7f), VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 30, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
-
-                for (int i = 0; i < 6; i++)
-                    GeneralParticleHandler.SpawnParticle(new PulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 130), Vector2.Zero, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f, 0.8f, 8));
             }
             Projectile.Explode(spanSound: false);
         }

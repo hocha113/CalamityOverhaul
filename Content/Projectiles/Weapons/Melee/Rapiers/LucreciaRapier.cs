@@ -1,8 +1,6 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -29,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 overmode *= 3;
             }
             int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity * 16 * overmode
-                , ModContent.ProjectileType<DNA>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                , CWRID.Proj_DNA, Projectile.damage, Projectile.knockBack, Projectile.owner);
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
         }
     }

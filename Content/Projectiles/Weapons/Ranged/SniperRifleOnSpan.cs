@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         ShootState shootState = Owner.GetShootState("CWRGunShoot");
                         int ammo = shootState.AmmoTypes;
-                        if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
+                        if (ammo == ProjectileID.Bullet || ammo == CWRID.Proj_MarksmanShot) {
                             ammo = ProjectileID.BulletHighVelocity;
                         }
 

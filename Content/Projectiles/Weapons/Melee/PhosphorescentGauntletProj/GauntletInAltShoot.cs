@@ -1,5 +1,4 @@
-﻿using CalamityMod.DataStructures;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -71,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             Vector2 topLeft = projectile.Center + vr.RotatedBy(-MathHelper.PiOver2) * 40f * salce;
             Vector2 top = projectile.Center + vr * 70f * salce;
             Vector2 topRight = projectile.Center + vr.RotatedBy(MathHelper.PiOver2) * 40f * salce;
-            foreach (Vector2 spawnPosition in new BezierCurve(topLeft, top, topRight).GetPoints(50)) {
+            foreach (Vector2 spawnPosition in CWRRef.BezierCurveGetPoints(50, topLeft, top, topRight)) {
                 Dust sulphurousAcid = Dust.NewDustPerfect(spawnPosition + vr * 16f, DustID.JungleTorch);
                 sulphurousAcid.velocity = vr * 4f;
                 sulphurousAcid.noGravity = true;

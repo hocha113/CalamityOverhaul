@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             float speed = 13 / meleeSpeedAf;
             for (int i = 0; i < 6; ++i) {
                 float randomSpeed = speed * Main.rand.NextFloat(0.7f, 1.4f);
-                CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
+                CWRRef.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                     , 290f, 130f, 850f, 1100f, randomSpeed, ProjectileID.StarWrath
                     , Projectile.damage / 2, 6f, Owner.whoAmI);
             }

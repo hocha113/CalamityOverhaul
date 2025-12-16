@@ -155,7 +155,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
                 return null;
 
             try {
-                // 因为是静态字段，第一个参数传 null
+                //因为是静态字段，第一个参数传 null
                 return (Recipe)SelectedRecipeField.GetValue(null);
             } catch {
                 return null;
