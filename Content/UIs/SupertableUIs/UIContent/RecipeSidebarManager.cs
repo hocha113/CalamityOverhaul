@@ -46,12 +46,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             }
 
             _hitbox = new Rectangle((int)drawPosition.X - 4, (int)drawPosition.Y, 72, _sidebarHeight);
+            //修复侧边栏高度计算，应该是固定高度，用于显示区域
+            int visibleSlots = 7; //一次显示7个配方
+            _sidebarHeight = visibleSlots * 64;
 
             if (_hitbox.Intersects(_mainUI.MouseHitBox)) {
-                //修复侧边栏高度计算，应该是固定高度，用于显示区域
-                int visibleSlots = 7; //一次显示7个配方
-                _sidebarHeight = visibleSlots * 64;
-
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
                 _scrollValue -= scrollDelta;

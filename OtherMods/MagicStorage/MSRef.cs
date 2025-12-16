@@ -147,6 +147,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// <summary>
         /// 获取 Magic Storage 制作界面当前选中的配方
         /// </summary>
+        [JITWhenModsEnabled("MagicStorage")]
         public static Recipe GetSelectedRecipe() {
             if (!MagicUI.IsCraftingUIOpen())
                 return null;
@@ -166,6 +167,9 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// 获取当前选中配方的结果物品
         /// </summary>
         public static Item GetSelectedRecipeResultItem() {
+            if (!Has) {
+                return null;
+            }
             Recipe recipe = GetSelectedRecipe();
             return recipe?.createItem;
         }
@@ -174,8 +178,20 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// 获取当前选中配方的结果物品类型 ID
         /// </summary>
         public static int GetSelectedRecipeResultItemType() {
+            if (!Has) {
+                return ItemID.None;
+            }
             var resultItem = GetSelectedRecipeResultItem();
             return resultItem?.type ?? 0;
+        }
+
+        [JITWhenModsEnabled("MagicStorage")]
+        private static bool IsCraftingUIOpen() => MagicUI.IsCraftingUIOpen();
+        public static bool SafeIsCraftingUIOpen() {
+            if (!Has) {
+                return false;
+            }
+            return IsCraftingUIOpen();
         }
 
         internal static void UpdateUI() {
@@ -184,7 +200,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
 
             //检查魔法存储的制作界面是否打开
-            bool magicStorageOpen = MagicUI.IsCraftingUIOpen();
+            bool magicStorageOpen = SafeIsCraftingUIOpen();
 
             if (magicStorageOpen) {
                 //获取当前制作站列表
