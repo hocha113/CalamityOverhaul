@@ -1,11 +1,9 @@
-﻿using CalamityMod;
-using System;
+﻿using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content
 {
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
-    [CWRJITEnabled]
     public static class InWorldBossPhase
     {
         #region Data
@@ -115,140 +113,135 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 荒漠灾虫
         /// </summary>
-        public static readonly Func<bool> Downed0 = () => DownedBossSystem.downedDesertScourge;
+        public static readonly Func<bool> Downed0 = CWRRef.GetDownedDesertScourge;
         /// <summary>
         /// 巨像蛤
         /// </summary>
-        public static readonly Func<bool> Downed1 = () => DownedBossSystem.downedCLAM;
+        public static readonly Func<bool> Downed1 = CWRRef.GetDownedCLAM;
         /// <summary>
         /// 蘑菇蟹
         /// </summary>
-        public static readonly Func<bool> Downed2 = () => DownedBossSystem.downedCrabulon;
+        public static readonly Func<bool> Downed2 = CWRRef.GetDownedCrabulon;
         /// <summary>
         /// 腐巢意志
         /// </summary>
-        public static readonly Func<bool> Downed3 = () => DownedBossSystem.downedHiveMind;
+        public static readonly Func<bool> Downed3 = CWRRef.GetDownedHiveMind;
         /// <summary>
         /// 血肉宿主
         /// </summary>
-        public static readonly Func<bool> Downed4 = () => DownedBossSystem.downedPerforator;
+        public static readonly Func<bool> Downed4 = CWRRef.GetDownedPerforator;
         /// <summary>
         /// 史莱姆之神
         /// </summary>
-        public static readonly Func<bool> Downed5 = () => DownedBossSystem.downedSlimeGod;
+        public static readonly Func<bool> Downed5 = CWRRef.GetDownedSlimeGod;
         /// <summary>
         /// 极地冰灵
         /// </summary>
-        public static readonly Func<bool> Downed6 = () => DownedBossSystem.downedCryogen;
+        public static readonly Func<bool> Downed6 = CWRRef.GetDownedCryogen;
         /// <summary>
         /// 硫磺火元素
         /// </summary>
-        public static readonly Func<bool> Downed7 = () => DownedBossSystem.downedBrimstoneElemental;
+        public static readonly Func<bool> Downed7 = CWRRef.GetDownedBrimstoneElemental;
         /// <summary>
         /// 渊海灾虫
         /// </summary>
-        public static readonly Func<bool> Downed8 = () => DownedBossSystem.downedAquaticScourge;
+        public static readonly Func<bool> Downed8 = CWRRef.GetDownedAquaticScourge;
         /// <summary>
         /// 辐射之主
         /// </summary>
-        public static readonly Func<bool> Downed9 = () => DownedBossSystem.downedCragmawMire;
+        public static readonly Func<bool> Downed9 = CWRRef.GetDownedCragmawMire;
         /// <summary>
         /// 灾厄之影
         /// </summary>
-        public static readonly Func<bool> Downed10 = () => DownedBossSystem.downedCalamitasClone;
+        public static readonly Func<bool> Downed10 = CWRRef.GetDownedCalamitasClone;
         /// <summary>
         /// 沙漠巨鲨
         /// </summary>
-        public static readonly Func<bool> Downed11 = () => DownedBossSystem.downedGSS;
+        public static readonly Func<bool> Downed11 = CWRRef.GetDownedGSS;
         /// <summary>
         /// 利维坦
         /// </summary>
-        public static readonly Func<bool> Downed12 = () => DownedBossSystem.downedLeviathan;
+        public static readonly Func<bool> Downed12 = CWRRef.GetDownedLeviathan;
         /// <summary>
         /// 白金星舰
         /// </summary>
-        public static readonly Func<bool> Downed13 = () => DownedBossSystem.downedAstrumAureus;
+        public static readonly Func<bool> Downed13 = CWRRef.GetDownedAstrumAureus;
         /// <summary>
         /// 瘟疫使者
         /// </summary>
-        public static readonly Func<bool> Downed14 = () => DownedBossSystem.downedPlaguebringer;
+        public static readonly Func<bool> Downed14 = CWRRef.GetDownedPlaguebringer;
         /// <summary>
         /// 毁灭魔像
         /// </summary>
-        public static readonly Func<bool> Downed15 = () => DownedBossSystem.downedRavager;
+        public static readonly Func<bool> Downed15 = CWRRef.GetDownedRavager;
         /// <summary>
         /// 星神游龙
         /// </summary>
-        public static readonly Func<bool> Downed16 = () => DownedBossSystem.downedAstrumDeus;
+        public static readonly Func<bool> Downed16 = CWRRef.GetDownedAstrumDeus;
         /// <summary>
         /// 亵渎使徒
         /// </summary>
-        public static readonly Func<bool> Downed17 = () => DownedBossSystem.downedGuardians;
+        public static readonly Func<bool> Downed17 = CWRRef.GetDownedGuardians;
         /// <summary>
         /// 痴愚金龙
         /// </summary>
-        public static readonly Func<bool> Downed18 = () => DownedBossSystem.downedDragonfolly;
+        public static readonly Func<bool> Downed18 = CWRRef.GetDownedDragonfolly;
         /// <summary>
         /// 亵渎天神
         /// </summary>
-        public static readonly Func<bool> Downed19 = () => DownedBossSystem.downedProvidence;
+        public static readonly Func<bool> Downed19 = CWRRef.GetDownedProvidence;
         /// <summary>
         /// 无尽虚空
         /// </summary>
-        public static readonly Func<bool> Downed20 = () => DownedBossSystem.downedCeaselessVoid;
+        public static readonly Func<bool> Downed20 = CWRRef.GetDownedCeaselessVoid;
         /// <summary>
         /// 风暴编织者
         /// </summary>
-        public static readonly Func<bool> Downed21 = () => DownedBossSystem.downedStormWeaver;
+        public static readonly Func<bool> Downed21 = CWRRef.GetDownedStormWeaver;
         /// <summary>
         /// 西格纳斯
         /// </summary>
-        public static readonly Func<bool> Downed22 = () => DownedBossSystem.downedSignus;
+        public static readonly Func<bool> Downed22 = CWRRef.GetDownedSignus;
         /// <summary>
         /// 噬魂幽花
         /// </summary>
-        public static readonly Func<bool> Downed23 = () => DownedBossSystem.downedPolterghast;
+        public static readonly Func<bool> Downed23 = CWRRef.GetDownedPolterghast;
         /// <summary>
         /// 酸雨二
         /// </summary>
-        public static readonly Func<bool> Downed24 = () => DownedBossSystem.downedMauler;
+        public static readonly Func<bool> Downed24 = CWRRef.GetDownedMauler;
         /// <summary>
         /// 生化恐惧
         /// </summary>
-        public static readonly Func<bool> Downed25 = () => DownedBossSystem.downedNuclearTerror;
+        public static readonly Func<bool> Downed25 = CWRRef.GetDownedNuclearTerror;
         /// <summary>
         /// 老核弹
         /// </summary>
-        public static readonly Func<bool> Downed26 = () => DownedBossSystem.downedBoomerDuke;
+        public static readonly Func<bool> Downed26 = CWRRef.GetDownedBoomerDuke;
         /// <summary>
         /// 神明吞噬者
         /// </summary>
-        public static readonly Func<bool> Downed27 = () => DownedBossSystem.downedDoG;
+        public static readonly Func<bool> Downed27 = CWRRef.GetDownedDoG;
         /// <summary>
         /// 丛林龙
         /// </summary>
-        public static readonly Func<bool> Downed28 = () => DownedBossSystem.downedYharon;
+        public static readonly Func<bool> Downed28 = CWRRef.GetDownedYharon;
         /// <summary>
         /// 星流巨械
         /// </summary>
-        public static readonly Func<bool> Downed29 = () => DownedBossSystem.downedExoMechs;
+        public static readonly Func<bool> Downed29 = CWRRef.GetDownedExoMechs;
         /// <summary>
         /// 至尊灾厄
         /// </summary>
-        public static readonly Func<bool> Downed30 = () => DownedBossSystem.downedCalamitas;
+        public static readonly Func<bool> Downed30 = CWRRef.GetDownedCalamitas;
         /// <summary>
         /// 始源妖龙
         /// </summary>
-        public static readonly Func<bool> Downed31 = () => DownedBossSystem.downedPrimordialWyrm;
+        public static readonly Func<bool> Downed31 = CWRRef.GetDownedPrimordialWyrm;
         /// <summary>
         /// 终焉之战
         /// </summary>
-        public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
-        /// <summary>
-        /// 丛林龙死亡次数
-        /// </summary>
-        public static int YharonKillCount;
-
+        public static readonly Func<bool> Downed32 = CWRRef.GetDownedBossRush;
         #endregion
 
         public static int SHPC_Level() {

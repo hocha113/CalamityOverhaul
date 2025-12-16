@@ -4,13 +4,6 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
-    internal class DropRule_Yharon_Down : IItemDropRuleCondition, IProvideItemConditionDescription
-    {
-        bool IItemDropRuleCondition.CanDrop(DropAttemptInfo info) => InWorldBossPhase.YharonKillCount >= 2;
-        bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
-        string IProvideItemConditionDescription.GetConditionDescription() => CWRLocText.GetTextValue("Drop_GlodDragonDrop_RuleText");
-    }
-
     internal class Drop_Thanatos_Down : IItemDropRuleCondition, IProvideItemConditionDescription
     {
         bool IItemDropRuleCondition.CanDrop(DropAttemptInfo info) {

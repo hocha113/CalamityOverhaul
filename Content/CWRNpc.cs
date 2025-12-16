@@ -248,12 +248,6 @@ namespace CalamityOverhaul.Content
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
-            if (npc.type == CWRID.NPC_Yharon) {
-                InWorldBossPhase.YharonKillCount++;
-                if (Main.dedServ) {
-                    NetMessage.SendData(MessageID.WorldData);
-                }
-            }
         }
 
         public override void UpdateLifeRegen(NPC npc, ref int damage) {

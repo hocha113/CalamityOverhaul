@@ -175,24 +175,18 @@ namespace CalamityOverhaul.Content
             BitsByte flags1 = new BitsByte();
             flags1[0] = MachineRebellionDowned;
             writer.Write(flags1);
-            writer.Write(InWorldBossPhase.YharonKillCount);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BitsByte flags1 = reader.ReadByte();
             MachineRebellionDowned = flags1[0];
-            InWorldBossPhase.YharonKillCount = reader.ReadInt32();
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            tag.Add("_InWorldBossPhase_YharonKillCount", InWorldBossPhase.YharonKillCount);
             tag.Add("_MachineRebellion", MachineRebellionDowned);
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            if (tag.TryGet("_InWorldBossPhase_YharonKillCount", out int _yharonKillCount)) {
-                InWorldBossPhase.YharonKillCount = _yharonKillCount;
-            }
             if (!tag.TryGet("_MachineRebellion", out MachineRebellionDowned)) {
                 MachineRebellionDowned = false;
             }
