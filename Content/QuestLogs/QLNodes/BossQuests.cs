@@ -170,6 +170,35 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
+    public class QueenBeeQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "蜂后");
+            Description = this.GetLocalization(nameof(Description), () => "击败蜂后");
+
+            IconType = QuestIconType.NPC;
+            IconNPCType = NPCID.QueenBee;
+            Position = new Vector2(0, 150);
+            AddParent<EaterofWorldsQuest>();
+
+            QuestType = QuestType.Main;
+            Difficulty = QuestDifficulty.Normal;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "击败蜂后"),
+                RequiredProgress = 1
+            });
+
+            AddReward(ItemID.BeeWax, 20);
+        }
+
+        public override void UpdateByPlayer() {
+            bool isDowned = InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke();
+            Objectives[0].CurrentProgress = isDowned ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
     public class HiveMindQuest : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -257,8 +286,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Gel,
-                Amount = 100,
-                Description = this.GetLocalization("QuestReward.Description", () => "100个凝胶")
+                Amount = 1000,
+                Description = this.GetLocalization("QuestReward.Description", () => "1000个凝胶")
             });
         }
 
@@ -288,11 +317,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.Pwnhammer,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "神锤")
-            });
+            AddReward(ItemID.SoulofLight, 20);
+            AddReward(ItemID.SoulofNight, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -323,11 +349,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.SoulofLight,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个光明之魂")
-            });
+            AddReward(ItemID.QueenSlimeMountSaddle);
         }
 
         public override void UpdateByPlayer() {
@@ -389,11 +411,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.SoulofLight,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个光明之魂")
-            });
+            AddReward(ModContent.Find<ModItem>("CalamityMod", "EssenceofEleum").Type, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -444,8 +462,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_BrimstoneElemental;
-            Position = new Vector2(0, -150);
-            AddParent<MechanicalBossesQuest>();
+            Position = new Vector2(150, -150);
+            AddParent<WallofFleshQuest>();
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
@@ -455,11 +473,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.SoulofNight,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个暗影之魂")
-            });
+            AddReward(ModContent.Find<ModItem>("CalamityMod", "EssenceofHavoc").Type, 20);
         }
 
         public override void UpdateByPlayer() {
@@ -523,8 +537,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AshesofCalamity,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个灾厄尘")
+                Amount = 100,
+                Description = this.GetLocalization("QuestReward.Description", () => "100个灾厄尘")
             });
         }
 
@@ -619,11 +633,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.FragmentSolar,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个日耀碎片")
-            });
+            AddReward(ItemID.FragmentSolar, 5);
+            AddReward(ItemID.FragmentVortex, 5);
+            AddReward(ItemID.FragmentNebula, 5);
+            AddReward(ItemID.FragmentStardust, 5);
         }
 
         public override void UpdateByPlayer() {
@@ -652,11 +665,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ItemID.MoonLordTrophy,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "月球领主纪念章")
-            });
+            AddReward(ItemID.LunarOre, 100);
         }
 
         public override void UpdateByPlayer() {

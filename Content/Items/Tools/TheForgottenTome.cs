@@ -66,6 +66,11 @@ namespace CalamityOverhaul.Content.Items.Tools
                     }
                 }
             }
+
+            if (CWRRef.GetDownedCalamitas()) {
+                return true;
+            }
+
             return false;
         }
 
@@ -100,6 +105,16 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
+            if (CWRRef.GetDownedCalamitas()) {
+                resetFieldCount++;
+                //设置至尊灾厄未击败
+                CWRRef.SetDownedCalamitas(false);
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+            }
+
+            //关闭当前可能存在的对话框
             DialogueUIRegistry.ForceCloseBox(DialogueUIRegistry.Current);
             ScenarioManager.ResetAll();
             return resetFieldCount;

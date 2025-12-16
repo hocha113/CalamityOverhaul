@@ -1887,7 +1887,6 @@ Projectiles: {
 	AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	DawnshatterFireball.DisplayName: Dawnshatter Fireball
-	HolyColliderHeld.DisplayName: Holy Collider Held
 }
 
 Configs: {
@@ -7542,7 +7541,7 @@ QuestLogs: {
 			DisplayName: The Slime God
 			Description: Defeat The Slime God
 			QuestObjective.Description: Defeat The Slime God
-			QuestReward.Description: 100 Gel
+			QuestReward.Description: 1000 Gel
 			DetailedDescription: The apex of the slime species, an ancient and gluttonous deity. Beware the combined attacks of its avatars.
 		}
 
@@ -8226,6 +8225,13 @@ QuestLogs: {
 			QuestObjective.Description: Have 5 NPCs
 			QuestReward.Description: Gold Coins
 			DetailedDescription: Surviving alone in the wild is lonely. As you become stronger and hold more currency, more people will come to join you. Build a thriving community and let them be your support.
+		}
+
+		QueenBeeQuest: {
+			DisplayName: Queen Bee
+			Description: Defeat Queen Bee
+			QuestObjective.Description: Defeat Queen Bee
+			DetailedDescription: Deep within the massive hives of the Underground Jungle, breaking the larva inside will enrage the ruler of the swarm. Prepare anti-poison potions and beware her stingers and rapid dashes.
 		}
 	}
 }

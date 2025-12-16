@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override string gradientTexturePath => CWRConstant.ColorBar + "HolyCollider_Bar";
-
+        public override int TargetID => CWRID.Item_HolyCollider;
         private int chargeTime; //蓄力时间
         private float weaponMomentum; //武器动量，模拟重量感
 

@@ -25,11 +25,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "ProfanedShard").Type,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "3个亵渎碎片")
-            });
+            AddReward(ModContent.Find<ModItem>("CalamityMod", "UnholyEssence").Type, 30);
         }
 
         public override void UpdateByPlayer() {

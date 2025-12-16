@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -303,7 +304,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         public override void VaultSetup() {
-            SetStaticDefaults();
+            try {
+                SetStaticDefaults();
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[QuestNode:VaultSetup] an error has occurred:{ex.Message}");
+            }
+
             DisplayName ??= this.GetLocalization(nameof(DisplayName), () => Name);
             Description ??= this.GetLocalization(nameof(Description), () => " ");
             DetailedDescription ??= this.GetLocalization(nameof(DetailedDescription), () => " ");

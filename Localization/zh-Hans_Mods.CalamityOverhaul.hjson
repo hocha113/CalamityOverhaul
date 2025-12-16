@@ -1869,7 +1869,6 @@ Projectiles: {
 	AriaQSkillMiniDisk.DisplayName: 星环护卫
 	SulfuricacidExplosion.DisplayName: 硫酸爆炸
 	DawnshatterFireball.DisplayName: 黎明之火
-	// HolyColliderHeld.DisplayName: Holy Collider Held
 }
 
 Configs: {
@@ -7508,7 +7507,7 @@ QuestLogs: {
 			DisplayName: 史莱姆之神
 			Description: 击败史莱姆之神
 			QuestObjective.Description: 击败史莱姆之神
-			QuestReward.Description: 100个凝胶
+			QuestReward.Description: 1000个凝胶
 			DetailedDescription: 史莱姆这一物种的顶点，古老而贪婪的神明。小心它的分身合击。
 		}
 
@@ -8192,6 +8191,13 @@ QuestLogs: {
 			QuestObjective.Description: 拥有5位NPC
 			QuestReward.Description: 金币
 			DetailedDescription: 一个人在野外生存是孤独的。当你变得强大，持有更多的货币时，更多的人会慕名而来。建立一个繁荣的社区，让他们成为你的后盾。
+		}
+
+		QueenBeeQuest: {
+			DisplayName: 蜂后
+			Description: 击败蜂后
+			QuestObjective.Description: 击败蜂后
+			DetailedDescription: 深入地下丛林的巨大蜂巢，打破其中的幼虫将会激怒整个蜂群的统治者。准备好抗毒药剂，小心她的毒刺和极速冲撞。
 		}
 	}
 }
