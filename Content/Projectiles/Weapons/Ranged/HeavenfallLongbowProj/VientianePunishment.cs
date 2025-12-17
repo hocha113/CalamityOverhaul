@@ -1,21 +1,19 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
-using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {
-    [CWRJITEnabled]
     internal class VientianePunishment : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -82,6 +80,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         private Vector2[] toTargetPath = new Vector2[62];
 
+        private ThunderTrail lightningTrail;
+
+        private static Dictionary<int, Asset<Texture2D>> BowTextures = new();
+
+        public static Asset<Texture2D> GetBowTexture(int index) {
+            if (BowTextures.TryGetValue(index, out var asset)) return asset;
+
+            if (index >= 0 && index < VientianeTex.Length) {
+                string path = CWRConstant.Cay_Wap_Ranged + VientianeTex[index];
+                if (ModContent.HasAsset(path)) {
+                    asset = CWRUtils.GetT2DAsset(path);
+                    BowTextures[index] = asset;
+                    return asset;
+                }
+            }
+            return VaultAsset.placeholder3;
+        }
+
         public override void SendExtraAI(BinaryWriter writer) {
             writer.WriteVector2(MousPos);
             writer.Write(Index);
@@ -108,6 +124,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
                 if (!VaultUtils.isServer)
                     GetColorDate();
+            }
+
+            if (lightningTrail == null) {
+                lightningTrail = new ThunderTrail(
+                    CWRUtils.GetT2DAsset(CWRConstant.Masking + "ThunderTrail"),
+                    GetTrailWidth,
+                    GetTrailColor,
+                    (f) => 1f
+                );
+                lightningTrail.SetExpandWidth(4);
+                lightningTrail.SetRange((0, 5));
+                lightningTrail.CanDraw = true;
+                lightningTrail.UseNonOrAdd = true;
             }
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -149,6 +178,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 for (int i = 0; i < toTargetPath.Length; i++) {
                     toTargetPath[i] = Projectile.Center + rotToVr * i;
                 }
+
+                lightningTrail.BasePositions = toTargetPath;
+                if (Time % 3 == 0) {
+                    lightningTrail.RandomThunder();
+                }
             }
             else//否则，让万象跟随玩家鼠标
             {
@@ -172,7 +206,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public void SpanInfiniteRune(Vector2 orig, int maxNum, float prtslp, float slp, Color[] colors) {
-            SoundEngine.PlaySound(CommonCalamitySounds.PlasmaBoltSound, Projectile.Center);
+            SoundEngine.PlaySound("CalamityMod/Sounds/Item/PlasmaBolt".GetSound() with { Volume = 0.8f }, Projectile.Center);
             float rot = 0;
             if (!VaultUtils.isServer) {
                 for (int j = 0; j < maxNum; j++) {
@@ -192,7 +226,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public override void OnKill(int timeLeft) {
             if (!VaultUtils.isServer) {
-                Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
+                Texture2D value = GetBowTexture((int)Projectile.ai[0]).Value;
                 for (int i = 0; i < 16; i++) {
                     BasePRT energyLeak = new PRT_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
                     , Main.rand.NextFloat(0.3f, 0.7f), vientianeColor, 60, 1, 1.5f, hueShift: 0.0f, _entity: null, _followingRateRatio: 1);
@@ -208,7 +242,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public void GetColorDate() {
-            Texture2D tex = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
+            Texture2D tex = GetBowTexture((int)Projectile.ai[0]).Value;
+            if (tex == null) return;
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);
             List<Color> nonTransparentColors = [];
@@ -220,25 +255,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             VientianeColors = nonTransparentColors.ToArray();
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) {
-            return CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * TrailWig;
+        public float GetTrailWidth(float completionRatio) {
+            return MathF.Sin(MathHelper.Pi * MathHelper.Clamp(completionRatio, 0f, 1f)) * Projectile.scale * TrailWig;
         }
 
-        public Color PrimitiveColorFunction(float completionRatio) {
+        public Color GetTrailColor(float completionRatio) {
             return vientianeColor;
         }
 
         public override bool PreDraw(ref Color lightColor) {
             if (Time > 120)//在开始攻击之前不要进行特效的绘制
             {
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-                PrimitiveRenderer.RenderTrail(toTargetPath, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
+                lightningTrail?.DrawThunder(Main.instance.GraphicsDevice);
             }
 
-            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
+            Texture2D value = GetBowTexture((int)Projectile.ai[0]).Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, value.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
             return false;
