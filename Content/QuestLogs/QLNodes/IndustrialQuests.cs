@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
 using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.Industrials.Generator.Thermal;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;

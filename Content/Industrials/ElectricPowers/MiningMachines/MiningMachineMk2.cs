@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -12,7 +11,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     internal class MiningMachineMk2 : ModItem
     {
@@ -136,38 +135,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int time2;
         internal int frame;
         internal Vector2 offsetPos;
-        internal static Dictionary<int, float> Ores { get; private set; }
 
-        void ICWRLoader.SetupData() {
-            Ores = new Dictionary<int, float>() {
-                { ItemID.IronOre, 0.12f },
-                { ItemID.CopperOre, 0.12f },
-                { ItemID.GoldOre, 0.11f },
-                { ItemID.SilverOre, 0.11f },
-                { ItemID.TinOre, 0.12f },
-                { ItemID.LeadOre, 0.12f },
-                { ItemID.TungstenOre, 0.11f },
-                { ItemID.PlatinumOre, 0.11f },
-                { ItemID.DemoniteOre, 0.10f },
-                { ItemID.CrimtaneOre, 0.10f },
-                { ItemID.Meteorite, 0.09f },
-                { ItemID.Obsidian, 0.08f },
-                { ItemID.Hellstone, 0.07f },
-                { ItemID.CobaltOre, 0.06f },
-                { ItemID.PalladiumOre, 0.06f },
-                { ItemID.MythrilOre, 0.05f },
-                { ItemID.OrichalcumOre, 0.05f },
-                { ItemID.AdamantiteOre, 0.04f },
-                { ItemID.TitaniumOre, 0.04f },
-                { ItemID.Coal, 0.13f },
-            };
-            if (CWRRef.Has) {
-                Ores[CWRID.Item_DubiousPlating] = 0.08f;
-                Ores[CWRID.Item_MysteriousCircuitry] = 0.062f;
-            }
-        }
+        void ICWRLoader.SetupData() { }
 
-        void ICWRLoader.UnLoadData() => Ores?.Clear();
+        void ICWRLoader.UnLoadData() { }
 
         public override void SetBattery() {
             IdleDistance = 5000;
@@ -235,15 +206,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         private void DropOre() {
-            if (Ores == null || Ores.Count == 0) {
-                return;
-            }
-
-            foreach (var ore in Ores) {
-                if (Main.rand.NextFloat() < ore.Value) {
-                    DropItem(ore.Key);
-                    break;
-                }
+            if (MiningMachineSystem.TryGetDropItem(2, Position.ToPoint(), out int itemID)) {
+                DropItem(itemID);
             }
         }
 

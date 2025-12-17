@@ -1073,6 +1073,7 @@ Items: {
 			'''
 			Бурит полезные ископаемые, потребляя электрическую энергию
 			Для корректной работы должна быть установлена в подходящем месте
+			Особые минералы можно добывать в особых условиях
 			'''
 		DontWork: Для проведения горных работ его необходимо разместить на твердой поверхности.
 	}
@@ -1479,6 +1480,7 @@ Items: {
 			'''
 			Drilling minerals by consuming electrical energy
 			It needs to be placed in an appropriate location to work properly
+			Special minerals can be extracted in special environments
 			''' */
 	}
 }

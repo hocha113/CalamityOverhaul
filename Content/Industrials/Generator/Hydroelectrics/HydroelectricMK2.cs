@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
     internal class HydroelectricMK2Tile : BaseGeneratorTile
     {
         public override string Texture => CWRConstant.Asset + "Generator/HydroelectricMK2Tile";
-        public override int GeneratorTP => TileProcessorLoader.GetModuleID<HydroelectricTP>();
+        public override int GeneratorTP => TileProcessorLoader.GetModuleID<HydroelectricMK2TP>();
         public override int GeneratorUI => 0;
         public override int TargetItem => ModContent.ItemType<HydroelectricMK2>();
         public override void SetStaticDefaults() {
@@ -123,7 +123,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 return;
             }
 
-            if (hasElmdVlome < 0.4f) {
+            float efficiency = Hydroelectric.GetEnvironmentEfficiency();
+            float maxRot = 0.4f * efficiency;
+            if (hasElmdVlome < maxRot) {
                 hasElmdVlome += 0.002f;
             }
 

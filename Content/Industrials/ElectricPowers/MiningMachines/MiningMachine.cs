@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -12,7 +11,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     internal class MiningMachine : ModItem
     {
@@ -136,28 +135,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int time2;
         internal int frame;
         internal Vector2 offsetPos;
-        internal static Dictionary<int, float> Ores { get; private set; }
 
-        void ICWRLoader.SetupData() {
-            Ores = new Dictionary<int, float>() {
-                { ItemID.IronOre, 0.1f },
-                { ItemID.CopperOre, 0.1f },
-                { ItemID.GoldOre, 0.1f },
-                { ItemID.SilverOre, 0.1f },
-                { ItemID.TinOre, 0.1f },
-                { ItemID.LeadOre, 0.1f },
-                { ItemID.TungstenOre, 0.1f },
-                { ItemID.PlatinumOre, 0.1f },
-                { ItemID.DemoniteOre, 0.1f },
-                { ItemID.Coal, 0.1f },
-            };
-            if (CWRRef.Has) {
-                Ores[CWRID.Item_DubiousPlating] = 0.08f;
-                Ores[CWRID.Item_MysteriousCircuitry] = 0.062f;
-            }
-        }
+        void ICWRLoader.SetupData() { }
 
-        void ICWRLoader.UnLoadData() => Ores?.Clear();
+        void ICWRLoader.UnLoadData() { }
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止作业
@@ -225,15 +206,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         private void DropOre() {
-            if (Ores == null || Ores.Count == 0) {
-                return;
-            }
-
-            foreach (var ore in Ores) {
-                if (Main.rand.NextFloat() < ore.Value) {
-                    DropItem(ore.Key);
-                    break;
-                }
+            if (MiningMachineSystem.TryGetDropItem(1, Position.ToPoint(), out int itemID)) {
+                DropItem(itemID);
             }
         }
 

@@ -35,6 +35,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             Item.CWR().ConsumeUseUE = 1000;
         }
 
+        public static float GetEnvironmentEfficiency() {
+            float multiplier = 1f;
+            if (Main.raining) {
+                multiplier += 0.2f;
+            }
+            if (Main.moonPhase == 0 || Main.moonPhase == 4) {
+                multiplier += 0.1f;
+            }
+            return multiplier;
+        }
+
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe().
@@ -109,7 +120,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         public override void GeneratorUpdate() {
             Tile tile = Framing.GetTileSafely(FlabellumPos);
             if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
-                if (flabellumRotVlome < 0.4f) {
+                float efficiency = Hydroelectric.GetEnvironmentEfficiency();
+                float maxRot = 0.4f * efficiency;
+                if (flabellumRotVlome < maxRot) {
                     flabellumRotVlome += 0.002f;
                 }
                 flabellumRot += flabellumRotVlome;
