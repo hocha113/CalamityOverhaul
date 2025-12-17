@@ -1,8 +1,8 @@
 ﻿displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.7.2, InnoVault@1.9.72
+modReferences = InnoVault@1.9.72
 sortAfter = CalamityMod, InnoVault
-weakReferences = ThoriumMod@1.7.2.4, BossChecklist@2.2.2, MagicStorage@0.7.0.11
+weakReferences = CalamityMod@2.0.7.2, ThoriumMod@1.7.2.4, BossChecklist@2.2.2, MagicStorage@0.7.0.11
 homepage = https://calamity-overhaul.cc
 author = HoCha113
-version = 0.8052
+version = 0.8053
 includeSource = true

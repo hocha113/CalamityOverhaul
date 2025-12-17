@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class NeutronBullet : ModProjectile, IWarpDrawable
     {
         public override string Texture => "CalamityMod/Projectiles/Ranged/GodSlayerSlugBlue";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

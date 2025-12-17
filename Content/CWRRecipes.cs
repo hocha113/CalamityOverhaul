@@ -32,14 +32,6 @@ namespace CalamityOverhaul.Content
                 ItemID.Amethyst,//紫水晶
                 ItemID.Diamond,//钻石
         ];
-        public static int[] Emblems => [
-                ItemID.SorcererEmblem,//法师
-                ItemID.WarriorEmblem,//战士
-                ItemID.RangerEmblem,//射手
-                ItemID.SummonerEmblem,//召唤师
-                CWRID.Item_RogueEmblem//盗贼
-        ];
-
         public static void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
             foreach (var gemstone in Gemstones) {
                 if (gemstone == gemstonesID) {
@@ -49,21 +41,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(gemstone)
                     .AddIngredient(dyeID)
                     .AddTile(TileID.DyeVat)
-                    .DisableDecraft()//不要被微光转化
-                    .Register();
-            }
-        }
-
-        public static void LoadenEmblemsRecipe(int emblemID) {
-            foreach (var emblem in Emblems) {
-                if (emblem == emblemID) {
-                    continue;
-                }
-                Recipe.Create(emblemID)
-                    .AddIngredient(emblem)
-                    .AddIngredient(ItemID.SoulofLight, 2)
-                    .AddIngredient(ItemID.SoulofNight, 2)
-                    .AddTile(TileID.Anvils)
                     .DisableDecraft()//不要被微光转化
                     .Register();
             }
@@ -102,10 +79,6 @@ namespace CalamityOverhaul.Content
         }
 
         private static void ModifyResultContent(Recipe recipe) {
-            if (CWRServerConfig.Instance.QuestLog) {
-                recipe.AddOnCraftCallback(QLPlayer.CraftedItem);
-            }
-
             //修改雪境暴徒的合成
             {
                 if (recipe.HasResult(CWRID.Item_SnowRuffianMask)) {//面具
@@ -286,12 +259,6 @@ namespace CalamityOverhaul.Content
                 LoadenGemstoneRecipe(ItemID.Topaz, ItemID.YellowDye);
                 LoadenGemstoneRecipe(ItemID.Amethyst, ItemID.PurpleDye);
                 LoadenGemstoneRecipe(ItemID.Diamond, ItemID.SkyBlueDye);
-            }
-            //添加勋章的合成
-            {
-                foreach (var emblem in Emblems) {
-                    LoadenEmblemsRecipe(emblem);
-                }
             }
             //添加热线枪的合成
             {
@@ -598,14 +565,21 @@ namespace CalamityOverhaul.Content
                 SetOmigaSnyRecipes();
             }
             {//添加配方的操作
-                AddResultContent();
+                if (CWRRef.Has) {
+                    AddResultContent();
+                } 
             }
         }
 
         public override void PostAddRecipes() {
             //遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
             for (int i = 0; i < Recipe.numRecipes; i++) {
-                ModifyResultContent(Main.recipe[i]);
+                if (CWRServerConfig.Instance.QuestLog) {
+                    Main.recipe[i].AddOnCraftCallback(QLPlayer.CraftedItem);
+                }
+                if (CWRRef.Has) {
+                    ModifyResultContent(Main.recipe[i]);
+                }
             }
         }
 

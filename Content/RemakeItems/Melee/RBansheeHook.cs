@@ -180,6 +180,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class SoulSearchScythe : ModProjectile
     {
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -237,6 +238,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class BansheeHookHeldAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private int drawUIalp = 0;
         public override void SetDefaults() {
             Projectile.width = 40;

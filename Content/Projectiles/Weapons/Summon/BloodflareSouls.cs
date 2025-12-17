@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
     internal class BloodflareSouls : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "BloodflareSoul";
-
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 32;

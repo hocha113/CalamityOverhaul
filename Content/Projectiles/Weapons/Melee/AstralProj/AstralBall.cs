@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
     internal class AstralBall : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Enemy/MantisRing";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private int tileCounter = 5;
         private Player player => Main.player[Projectile.owner];
         private Item astralBlade => player.GetItem();

@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 {
     internal abstract class BaseSwing : BaseHeldProj
     {
+        public override bool IsLoadingEnabled(Mod mod) => TargetID > ItemID.None;
         #region Data
         private int dirs;
         private float oldRot;

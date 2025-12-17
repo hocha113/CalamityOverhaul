@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 {
     internal class EarlierSwordHeld : BaseKnife
     {
-        public override int TargetID => Item.type;
+        public override int TargetID => Main.gameMenu ? ItemID.IronBroadsword : Item.type;
         internal static EarliersuitEnum earliersuit;
         internal enum EarliersuitEnum : byte
         {

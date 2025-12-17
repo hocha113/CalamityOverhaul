@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// </summary>
     internal class PRT_AcidSplash : BasePRT
     {
-        public override string Texture => "CalamityMod/Projectiles/StarProj";
+        public override string Texture => CWRConstant.Masking + "Extra_98";
 
         private Color acidColor;
         private bool affectedByGravity;

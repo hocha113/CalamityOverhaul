@@ -296,11 +296,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "DubiousPlating").Type,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个可疑镀层")
-            });
+            if (CWRRef.Has) {
+                if (ModContent.TryFind("CalamityMod", "DubiousPlating", out ModItem dubiousPlatingItem)) {
+                    AddReward(dubiousPlatingItem.Type, 20, this.GetLocalization("QuestReward.Description", () => "20个可疑镀层"));
+                }
+            }
         }
 
         public override void UpdateByPlayer() {

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_LonginusWave : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         private float OriginalScale;
         private float FinalScale;
         private Vector2 Squish;

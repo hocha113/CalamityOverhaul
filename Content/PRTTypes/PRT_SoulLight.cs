@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_SoulLight : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/Light";
+        public override string Texture => CWRConstant.Masking + "Photosphere";
         public float SquishStrenght;
         public float MaxSquish;
         public float HueShift;

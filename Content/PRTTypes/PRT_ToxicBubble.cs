@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// </summary>
     internal class PRT_ToxicBubble : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/BloomCircle";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle5";
 
         private float popProgress; //气泡破裂进度
         private float shimmerTimer; //表面波光粼粼计时器

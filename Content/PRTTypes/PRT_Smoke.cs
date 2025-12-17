@@ -7,14 +7,13 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_Smoke : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/HeavySmoke";
+        public override string Texture => CWRConstant.Masking + "Smoke";
         private float Spin;
-        private bool StrongVisual;
         private bool Glowing;
         private float HueShift;
         private static int FrameAmount = 6;
         public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
-            , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
+            , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f) {
             Position = position;
             Velocity = velocity;
             Color = color;
@@ -22,7 +21,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Lifetime = lifetime;
             Opacity = opacity;
             Spin = rotationSpeed;
-            StrongVisual = required;
             Glowing = glowing;
             HueShift = hueshift;
 

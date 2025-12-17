@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     {
         public override LocalizedText DisplayName => ItemLoader.GetItem(CWRItemOverride.GetCalItemID("BalefulHarvester")).GetLocalization("DisplayName");
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public const float MaxChargeTime = 20f;
         private Item balefulHarvester => Owner.GetItem();
         private Item IndsItem;

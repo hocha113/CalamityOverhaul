@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.UI;
+using CalamityOverhaul.OtherMods.ImproveGame;
 using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using System;
 using System.IO;
@@ -673,7 +674,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             int quantity = LoadingQuantity > 0 ? LoadingQuantity : cwrItems.AmmoCapacity;
             if (BulletNum < cwrItems.AmmoCapacity) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
-                if (ModGanged.Suitableversion_improveGame) {//更好的体验适配
+                if (ImproveRef.Suitableversion_improveGame) {//更好的体验适配
                     var ammoChain = Item.GetQotAmmoChain();
                     if (ammoChain != null) {
                         AmmoState.CurrentItems = Owner.GetQotAmmoItems(ammoChain, Item.useAmmo, quantity);

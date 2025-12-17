@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
     internal class PlagueBeeWave : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Melee/VirulentWave";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private List<Bee> bees = [];
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 4;

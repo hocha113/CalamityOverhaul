@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants
 {
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
     /// 负责管理附魔流程、验证、应用等核心功能
     /// </summary>
     [CWRJITEnabled]
+    [ExtendsFromMod("CalamityMod")]
     internal class EnchantmentHandler
     {
         /// <summary>

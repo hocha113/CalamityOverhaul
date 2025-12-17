@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override bool Active {
             get {
                 if (!Main.playerInventory || !_active) {
-                    _active = player.GetItem().type == HalibutOverride.ID;
+                    var item = player.GetItem();
+                    _active = item.Alives() && item.type == HalibutOverride.ID;
                 }
                 return _active;
             }

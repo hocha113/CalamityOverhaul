@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
     /// </summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
     [CWRJITEnabled]
+    [ExtendsFromMod("CalamityMod")]
     internal class EnchantUI : UIHandle, ILocalizedModType
     {
         public static Asset<Texture2D> CalamitasCurseItemSlot = null;

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System;
 using System.Reflection;
 using Terraria;
@@ -16,7 +15,7 @@ namespace CalamityOverhaul.OtherMods.Thorium
             if (!ModLoader.TryGetMod("ThoriumMod", out Mod mod)) {
                 return;
             }
-            var type = ModGanged.GetTargetTypeInStringKey(ModGanged.GetModTypes(mod), "SheathData");
+            var type = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(mod), "SheathData");
             if (type == null) {
                 return;
             }

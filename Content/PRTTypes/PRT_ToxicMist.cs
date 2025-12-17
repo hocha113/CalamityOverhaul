@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// </summary>
     internal class PRT_ToxicMist : BasePRT
     {
-        public override string Texture => "CalamityMod/Particles/HeavySmoke";
+        public override string Texture => CWRConstant.Masking + "Smoke";
 
         [VaultLoaden("@CalamityMod/Particles/BloomCircle")]
         internal static Asset<Texture2D> BloomTex = null;

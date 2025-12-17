@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -160,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 rocketVelocity = aimDirection * rocketSpeed;
             Vector2 spawnPos = npc.Center + aimDirection * 40f;
 
-            if (death && masterMode || bossRush || ModGanged.InfernumModeOpenState) {
+            if (death && masterMode || bossRush || InfernumRef.InfernumModeOpenState) {
                 int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
                     spawnPos, rocketVelocity,
                     ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
@@ -202,7 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
                 Vector2 spawnPos = npc.Center + aimDirection * 40f;
 
-                if (CWRRef.GetDeathMode() || CWRWorld.MachineRebellion || bossRush || ModGanged.InfernumModeOpenState) {
+                if (CWRRef.GetDeathMode() || CWRWorld.MachineRebellion || bossRush || InfernumRef.InfernumModeOpenState) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
                         spawnPos, perturbedSpeed,
                         ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,

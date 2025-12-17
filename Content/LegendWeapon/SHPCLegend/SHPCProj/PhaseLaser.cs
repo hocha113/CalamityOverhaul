@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
     internal class PhaseLaser : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/LaserProj";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetDefaults() {
             Projectile.width = 5;
             Projectile.height = 5;

@@ -13,6 +13,7 @@ using static CalamityOverhaul.Common.DyeEffectHandle;
 namespace CalamityOverhaul.Common
 {
     [CWRJITEnabled]
+    [ExtendsFromMod("CalamityMod")]
     internal class DyeCalParticles : ModSystem
     {
         //使用Dictionary存储粒子对应的着色器数据

@@ -197,6 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class SparklingFishHolder : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Item + "Fishing/SunkenSeaCatches/SparklingEmpress";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public Player Owner;
         internal bool Fired {
             get => Projectile.ai[2] == 1f;

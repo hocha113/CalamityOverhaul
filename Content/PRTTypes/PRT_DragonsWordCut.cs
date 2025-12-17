@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public bool AffectedByGravity;
         public float Ylength = 1f;
         public float Xlength = 0.6f;
-        public override string Texture => "CalamityMod/Particles/LargeSpark";
+        public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Vector2 scale = new Vector2(Xlength, Ylength) * Scale;
+            Vector2 scale = new Vector2(Xlength, Ylength) * Scale * 6;
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
             spriteBatch.Draw(texture, Position - Main.screenPosition, null
                 , Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);

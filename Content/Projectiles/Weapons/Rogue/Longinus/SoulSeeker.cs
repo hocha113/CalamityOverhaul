@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
     internal class SoulSeeker : ModProjectile
     {
         public override string Texture => "CalamityMod/NPCs/SupremeCalamitas/SoulSeekerSupreme";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
         public override void SetStaticDefaults() {

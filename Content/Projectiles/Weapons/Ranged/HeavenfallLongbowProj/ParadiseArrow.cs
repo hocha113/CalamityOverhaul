@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
 
             Vector2 scale = new Vector2(0.5f, 1.6f) * Projectile.scale;
-            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;
+            Texture2D texture = ModContent.Request<Texture2D>(CWRConstant.Masking + "Extra_98").Value;
 
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, mainColor, Projectile.rotation, texture.Size() * 0.5f, scale, 0, 0f);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, secondaryColor, Projectile.rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);

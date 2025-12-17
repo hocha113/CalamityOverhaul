@@ -20,9 +20,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         private static int lastHoveredChoice = -1;
 
         //三个机甲图标的悬停音效
-        public static readonly SoundStyle ThanatosIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover");
-        public static readonly SoundStyle AresIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/AresIconHover");
-        public static readonly SoundStyle ArtemisApolloIconHover = new("CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover");
+        public static readonly SoundStyle ThanatosIconHover = "CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover".GetSound();
+        public static readonly SoundStyle AresIconHover = "CalamityMod/Sounds/Custom/Codebreaker/AresIconHover".GetSound();
+        public static readonly SoundStyle ArtemisApolloIconHover = "CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover".GetSound();
 
         //反射加载纹理，对应三种机甲图标
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]

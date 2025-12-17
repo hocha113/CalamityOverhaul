@@ -57,11 +57,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.Find<ModItem>("CalamityMod", "VictoryShard").Type,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个胜利碎片")
-            });
+            if (CWRRef.Has) {
+                if (ModContent.TryFind("CalamityMod", "VictoryShard", out ModItem victoryShardItem)) {
+                    AddReward(victoryShardItem.Type, 10, this.GetLocalization("QuestReward.Description", () => "10个胜利碎片"));
+                }
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -411,7 +411,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            AddReward(ModContent.Find<ModItem>("CalamityMod", "EssenceofEleum").Type, 20);
+            if (CWRRef.Has) {
+                if (ModContent.TryFind("CalamityMod", "EssenceofEleum", out ModItem essenceOfEleumItem)) {
+                    AddReward(essenceOfEleumItem.Type, 20);
+                }
+            }
         }
 
         public override void UpdateByPlayer() {
@@ -473,7 +477,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            AddReward(ModContent.Find<ModItem>("CalamityMod", "EssenceofHavoc").Type, 20);
+            if (CWRRef.Has) {
+                if (ModContent.TryFind("CalamityMod", "EssenceofHavoc", out ModItem essenceOfHavocItem)) {
+                    AddReward(essenceOfHavocItem.Type, 20);
+                }
+            }
         }
 
         public override void UpdateByPlayer() {

@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Items.Magic
         [VaultLoaden(CWRConstant.Item_Magic + "DragonsWordGlow")]
         public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
-            Item.width = 70;
-            Item.height = 84;
+            Item.width = 68;
+            Item.height = 78;
             Item.damage = 682;
             Item.mana = 80;
             Item.shootSpeed = 6;

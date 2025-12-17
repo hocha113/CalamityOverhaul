@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class Feathers : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Magic/TradewindsProjectile";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private Vector2 hitOffsetVr = Vector2.Zero;
         private float hitOffsetRot = 0;
         public override void SetStaticDefaults() {

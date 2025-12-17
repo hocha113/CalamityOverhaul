@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.OtherMods.BossChecklist;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection;
@@ -56,7 +57,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
         /// </summary>
         /// <returns></returns>
         internal static bool SetAIState() {
-            if (ModGanged.InfernumModeOpenState) {
+            if (InfernumRef.InfernumModeOpenState) {
                 return false;
             }
             return true;

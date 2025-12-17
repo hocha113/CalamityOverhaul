@@ -142,9 +142,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 { ItemID.PlatinumOre, 0.1f },
                 { ItemID.DemoniteOre, 0.1f },
                 { ItemID.Coal, 0.1f },
-                { CWRID.Item_DubiousPlating, 0.08f },
-                { CWRID.Item_MysteriousCircuitry, 0.062f },
             };
+            if (CWRRef.Has) {
+                Ores[CWRID.Item_DubiousPlating] = 0.08f;
+                Ores[CWRID.Item_MysteriousCircuitry] = 0.062f;
+            }
         }
 
         void ICWRLoader.UnLoadData() => Ores?.Clear();

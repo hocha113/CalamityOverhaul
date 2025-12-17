@@ -372,13 +372,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void StartCall() {
-            isCalling = true;
-            callProgress = 0f;
-            statusText = ConnectingText.Value;
+            if (CWRRef.Has) {
+                isCalling = true;
+                callProgress = 0f;
+                statusText = ConnectingText.Value;
+            }
 
             //≤•∑≈“Ù–ß
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.3f });
-            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Custom/CodebreakerBeam") with { Volume = 0.7f });
+            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/CodebreakerBeam".GetSound() with { Volume = 0.7f });
         }
 
         private void OnCallComplete() {

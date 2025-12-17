@@ -17,8 +17,8 @@ namespace CalamityOverhaul.OtherMods.HighFPSSupport
                 return;
             }
             try {
-                var types = ModGanged.GetModTypes(CWRMod.Instance.highFPSSupport);
-                var configType = ModGanged.GetTargetTypeInStringKey(types, "Config");
+                var types = CWRUtils.GetModTypes(CWRMod.Instance.highFPSSupport);
+                var configType = CWRUtils.GetTargetTypeInStringKey(types, "Config");
                 motionInterpolationField = configType.GetField("motionInterpolation", BindingFlags.Public | BindingFlags.Instance);
                 DisableMotionInterpolationMethod = configType.GetMethod("DisableMotionInterpolation", BindingFlags.NonPublic | BindingFlags.Static);
             } catch (Exception ex) { CWRMod.Instance.Logger.Error($"HighFPSRef.LoadData An Error Has Cccurred: {ex.Message}"); }

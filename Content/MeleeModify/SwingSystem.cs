@@ -24,8 +24,10 @@ namespace CalamityOverhaul.Content.MeleeModify
             Swings = VaultUtils.GetDerivedInstances<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
-                int type = CWRMod.Instance.Find<ModProjectile>(pathValue).Type;
-                SwingFullNameToType.Add(pathValue, type);
+                if (CWRMod.Instance.TryFind(pathValue, out ModProjectile proj)) {
+                    int type = proj.Type;
+                    SwingFullNameToType.Add(pathValue, type);
+                }
             }
         }
         void ICWRLoader.LoadAsset() {
@@ -41,13 +43,13 @@ namespace CalamityOverhaul.Content.MeleeModify
                     path2 = CWRConstant.ColorBar + "NullEffectColorBar";
                 }
 
-                int type = SwingFullNameToType[swing.GetType().Name];
+                if (SwingFullNameToType.TryGetValue(swing.GetType().Name, out int type)) {
+                    trailTextures.TryAdd(type, CWRUtils.GetT2DAsset(path1));
+                    gradientTextures.TryAdd(type, CWRUtils.GetT2DAsset(path2));
 
-                trailTextures.TryAdd(type, CWRUtils.GetT2DAsset(path1));
-                gradientTextures.TryAdd(type, CWRUtils.GetT2DAsset(path2));
-
-                if (path3 != "") {
-                    glowTextures.TryAdd(type, CWRUtils.GetT2DAsset(path3));
+                    if (path3 != "") {
+                        glowTextures.TryAdd(type, CWRUtils.GetT2DAsset(path3));
+                    }
                 }
             }
         }

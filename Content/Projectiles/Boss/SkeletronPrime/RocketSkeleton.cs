@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -19,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.friendly = false;
             Projectile.timeLeft = 600;
             Projectile.extraUpdates = 4;
-            if (ModGanged.InfernumModeOpenState) {
+            if (InfernumRef.InfernumModeOpenState) {
                 Projectile.extraUpdates += 1;
             }
             if (CWRRef.GetBossRushActive() || Main.getGoodWorld || Main.zenithWorld || NPC.downedMoonlord) {

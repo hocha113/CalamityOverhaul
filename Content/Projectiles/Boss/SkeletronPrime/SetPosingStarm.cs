@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -141,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 //不 要 在 客 户 端 上 生 成 射 弹
                 if (!VaultUtils.isClient) {
                     float maxProjSanShootNum = 28;
-                    if (ModGanged.InfernumModeOpenState) {
+                    if (InfernumRef.InfernumModeOpenState) {
                         maxProjSanShootNum += 4;
                     }
                     if (CWRRef.GetBossRushActive()) {

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheDarkMaster";
         public override string GlowPath => CWRConstant.Cay_Wap_Melee + "TheDarkMaster";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetRapiers() {
             PremanentToSkialthRot = 10;
             overHitModeing = 73;

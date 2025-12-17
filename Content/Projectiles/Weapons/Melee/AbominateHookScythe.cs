@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AbominateHookScythe : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public ref float Time => ref Projectile.localAI[0];
         public Vector2 DashVr = Vector2.Zero;
         public override void SetStaticDefaults() {

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
-
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;

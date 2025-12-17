@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
     public class RWaveSkipperProjectile : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/WaveSkipper";
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public int Time = 0;
         public int TimeUnderground = 0;
         public bool PostExitTiles = false;

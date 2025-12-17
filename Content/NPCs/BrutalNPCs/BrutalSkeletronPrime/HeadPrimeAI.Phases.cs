@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -298,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             for (int i = 0; i < maxLerNum; i++) {
                                 float rotoffset = MathHelper.TwoPi / maxLerNum * i;
                                 Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                                if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
+                                if (death && Main.masterMode || bossRush || InfernumRef.InfernumModeOpenState) {
                                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed
                                     , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
                                     , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
