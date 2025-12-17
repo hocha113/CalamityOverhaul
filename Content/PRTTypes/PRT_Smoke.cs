@@ -1,6 +1,5 @@
 ﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
@@ -11,7 +10,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float Spin;
         private bool Glowing;
         private float HueShift;
-        private static int FrameAmount = 6;
         public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
             , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f) {
             Position = position;
@@ -26,13 +24,8 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         }
         public override void SetProperty() {
-            if (Glowing) {
-                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            }
-            else {
-                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
-            }
-            ai[0] = Main.rand.Next(7);
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            ai[0] = Main.rand.Next(16);
         }
         public override void AI() {
             if (Time / (float)Lifetime < 0.2f) {
@@ -54,8 +47,10 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameAmount));
-            Rectangle frame = new Rectangle((int)(80 * ai[0]), 80 * animationFrame, 80, 80);
+            int index = (int)ai[0];
+            int frameX = index % 4;
+            int frameY = index / 4;
+            Rectangle frame = new Rectangle(frameX * 256, frameY * 256, 256, 256);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation, frame.Size() / 2f, Scale, SpriteEffects.None, 0);
             return false;
         }

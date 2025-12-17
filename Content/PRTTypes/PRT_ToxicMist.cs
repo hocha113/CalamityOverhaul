@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float depthLayer; //0-1, …Ó∂»≤„¥Œ
         private Color mistColor;
         private int frameIndex;
-        private static int FrameCount = 6;
 
         public PRT_ToxicMist(Vector2 position, Vector2 velocity, float scale, int lifetime, float depth = 0.5f) {
             Position = position;
@@ -37,11 +36,11 @@ namespace CalamityOverhaul.Content.PRTTypes
                 ? new Color(100, 160, 80) //«∞æ∞ - ¡¡¬Ã
                 : new Color(70, 130, 70); //±≥æ∞ - ∞µ¬Ã
 
-            frameIndex = Main.rand.Next(7);
+            frameIndex = Main.rand.Next(16);
         }
 
         public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             Opacity = 0f;
         }
 
@@ -87,12 +86,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
 
             //º∆À„µ±«∞÷°
-            int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameCount));
-            animationFrame = Math.Clamp(animationFrame, 0, FrameCount - 1);
-            Rectangle frame = new Rectangle(80 * frameIndex, 80 * animationFrame, 80, 80);
+            int frameX = frameIndex % 4;
+            int frameY = frameIndex / 4;
+            Rectangle frame = new Rectangle(frameX * 256, frameY * 256, 256, 256);
             Vector2 origin = frame.Size() / 2f;
 
-            Color drawColor = mistColor with { A = 0 } * Opacity;
+            Color drawColor = mistColor * Opacity;
 
             //ªÊ÷∆µ◊≤„¿©…¢π‚‘Œ
             float bloomScale = Scale * 0.2f * (1f + (1f - depthLayer) * 0.05f);
