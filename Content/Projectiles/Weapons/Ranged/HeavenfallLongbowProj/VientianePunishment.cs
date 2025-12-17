@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     nonTransparentColors.Add(color);
                 }
             }
-            VientianeColors = nonTransparentColors.ToArray();
+            VientianeColors = [.. nonTransparentColors];
         }
 
         public float GetTrailWidth(float completionRatio) {
