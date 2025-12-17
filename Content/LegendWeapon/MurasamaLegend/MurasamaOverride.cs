@@ -230,8 +230,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => TooltipHandler.SetTooltip(item, ref tooltips);
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
-            => DataHandler.DamageModify(item, player, ref damage);
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            DataHandler.DamageModify(item, player, ref damage);
+            return false;
+        }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
             => CWRUtils.ModifyLegendWeaponKnockbackFunc(item, GetOnKnockback(item), GetStartKnockback, ref knockback);
