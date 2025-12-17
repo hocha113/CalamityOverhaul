@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NeutronGunHeld : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
-        public override int TargetID => NeutronGun.ID;
+        public override int TargetID => ModContent.ItemType<NeutronGun>();
         private float Charge {
             get => ((NeutronGun)Item.ModItem).Charge;
             set => ((NeutronGun)Item.ModItem).Charge = value;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            if (Item != null && !Item.IsAir && Item.type == NeutronGun.ID) {
+            if (Item.Alives() && Item.type == ModContent.ItemType<NeutronGun>()) {
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge, uiframe);
             }
             Texture2D setValue = TextureValue;

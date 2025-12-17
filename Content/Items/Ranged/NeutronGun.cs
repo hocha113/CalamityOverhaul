@@ -12,14 +12,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class NeutronGun : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
-        public static int ID;
         public float Charge;
         [VaultLoaden(CWRConstant.Item_Ranged + "NeutronGun2")]
         internal static Asset<Texture2D> ShootGun = null;
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));
-            ID = Type;
         }
 
         public override void SetDefaults() {
