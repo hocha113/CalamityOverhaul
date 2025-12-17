@@ -1183,32 +1183,6 @@ namespace CalamityOverhaul
             StreamGougeMetaball.SpawnParticle(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
         }
 
-        public static void DragonsWordEffect(bool alt, Projectile Projectile, float Time, float targetDist) {
-            if (!Has) return;
-            DragonsWordEffectInner(alt, Projectile, Time, targetDist);
-        }
-        [CWRJITEnabled]
-        private static void DragonsWordEffectInner(bool alt, Projectile Projectile, float Time, float targetDist) {
-            if (alt) {
-                float OrbSize = Main.rand.NextFloat(0.5f, 0.8f);
-                Particle orb = new GenericBloom(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
-                GeneralParticleHandler.SpawnParticle(orb);
-                Particle orb2 = new GenericBloom(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8, true);
-                GeneralParticleHandler.SpawnParticle(orb2);
-            }
-            else {
-                if (Time % 5 == 0 && Time > 35f && targetDist < 1400f) {
-                    PRT_Spark spark = new PRT_Spark(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f)
-                        , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
-                    PRTLoader.AddParticle(spark);
-                }
-                if (targetDist < 1400f) {
-                    ModContent.GetInstance<DragonsBreathFlameMetaball2>().SpawnParticle(Projectile.Center, Time * 0.1f + 0.2f);
-                    ModContent.GetInstance<DragonsBreathFlameMetaball>().SpawnParticle(Projectile.Center + Projectile.velocity, Time * 0.09f + 0.15f);
-                }
-            }
-        }
-
         public static void AstralPikeBeamEffect(Projectile Projectile) {
             if (!Has) return;
             AstralPikeBeamEffectInner(Projectile);

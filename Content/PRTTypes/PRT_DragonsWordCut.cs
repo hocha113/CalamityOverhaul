@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Vector2 scale = new Vector2(Xlength, Ylength) * Scale;
+            Vector2 scale = new Vector2(Xlength, Ylength) * Scale * 6;
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
             spriteBatch.Draw(texture, Position - Main.screenPosition, null
                 , Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);
