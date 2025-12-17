@@ -21,6 +21,15 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.Vertebrae, 5)
+                .AddIngredient(ItemID.SoulofNight, 5)
+                .AddIngredient(ItemID.CrimstoneBlock, 50)
+                .AddTile(TileID.DemonAltar)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_BloodOrb, 5)
                 .AddIngredient(CWRID.Item_BloodSample, 5)

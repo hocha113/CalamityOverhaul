@@ -2,12 +2,14 @@
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 {
     internal abstract class BaseTurretTile : TileOverride
     {
         public virtual int TargetTPID => 0;
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override bool? CanDrop(int i, int j, int type) => false;
         public override bool? PreDraw(int i, int j, int type, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {

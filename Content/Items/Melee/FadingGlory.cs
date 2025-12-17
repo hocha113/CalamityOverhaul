@@ -29,6 +29,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.PiercingStarlight)
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_GrandGuardian)
                 .AddIngredient(CWRID.Item_AshesofAnnihilation, 5)

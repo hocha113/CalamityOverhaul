@@ -39,6 +39,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 2).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).

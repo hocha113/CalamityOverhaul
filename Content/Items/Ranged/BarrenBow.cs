@@ -30,6 +30,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.LightShard, 2)
+                .AddIngredient(ItemID.AntlionMandible, 5)
+                .AddIngredient(ItemID.HellwingBow)
+                .AddTile(TileID.Anvils)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(ItemID.LightShard, 2)
                 .AddIngredient(ItemID.AntlionMandible, 5)

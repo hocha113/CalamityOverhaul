@@ -46,6 +46,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
         public override int CreateTileID => ModContent.TileType<UEPipelineTile>();
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe(333).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe(333).
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 5).

@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -31,6 +32,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient(ItemID.Glass, 50).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).

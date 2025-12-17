@@ -18,6 +18,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<SnowQuayMK2>().
+                AddIngredient(ItemID.ShroomiteBar, 3).
+                AddIngredient(ItemID.BeetleHusk, 5).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+                return;
+            }
             _ = CreateRecipe().
                 AddIngredient<SnowQuayMK2>().
                 AddIngredient(ItemID.ShroomiteBar, 3).

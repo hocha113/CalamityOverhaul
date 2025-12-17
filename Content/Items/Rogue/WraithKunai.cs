@@ -35,6 +35,13 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe(333)
+                .AddIngredient(ItemID.LunarBar, 30)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe(333).
                 AddIngredient(CWRID.Item_RuinousSoul).
                 AddIngredient(CWRID.Item_Necroplasm).

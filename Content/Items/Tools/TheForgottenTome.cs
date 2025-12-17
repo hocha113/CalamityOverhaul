@@ -139,6 +139,17 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.Book)
+                .AddIngredient(ItemID.FallenStar, 20)
+                .AddIngredient(ItemID.FragmentNebula, 10)
+                .AddIngredient(ItemID.FragmentVortex, 10)
+                .AddIngredient(ItemID.LunarBar, 10)
+                .AddTile(TileID.Bookcases)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(ItemID.Book)
                 .AddIngredient(ItemID.FallenStar, 20)

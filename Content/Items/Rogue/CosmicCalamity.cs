@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
+﻿using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.DataStructures;
@@ -45,6 +46,13 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 30)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_CosmiliteBar, 12).
                 AddIngredient(CWRID.Item_WaveSkipper).

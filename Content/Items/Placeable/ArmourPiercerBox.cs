@@ -21,6 +21,14 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.AmmoBox)
+                .AddIngredient(ItemID.EmptyBullet, 50)
+                .AddTile(TileID.Anvils)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 50)

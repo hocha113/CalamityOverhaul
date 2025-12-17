@@ -33,6 +33,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient(ItemID.Furnace).
+                AddRecipeGroup(RecipeGroupID.IronBar, 5).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(ItemID.Furnace).
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).

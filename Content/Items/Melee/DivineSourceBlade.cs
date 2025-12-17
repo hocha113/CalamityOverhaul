@@ -32,6 +32,13 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.FragmentSolar, 30)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_AuricBar, 5).
                 AddIngredient(CWRID.Item_Terratomere).

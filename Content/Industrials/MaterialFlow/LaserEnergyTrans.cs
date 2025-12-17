@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,6 +38,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                    AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
+                    AddIngredient(ItemID.Lens, 4).
+                    AddTile(TileID.Anvils).
+                    Register();
+
+                CreateRecipe().
+                    AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
+                    AddIngredient(ItemID.Ruby, 1).
+                    AddTile(TileID.Anvils).
+                    Register();
+                return;
+            }
+
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 10).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 10).

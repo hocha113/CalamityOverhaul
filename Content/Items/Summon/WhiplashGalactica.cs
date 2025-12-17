@@ -24,6 +24,13 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient(CWRID.Item_CosmiliteBar, 5)

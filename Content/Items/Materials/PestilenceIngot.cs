@@ -27,6 +27,13 @@ namespace CalamityOverhaul.Content.Items.Materials
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.MythrilBar)
+                .AddTile(TileID.Anvils)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_PerennialBar)
                 .AddIngredient(CWRID.Item_PlagueCellCanister, 2)

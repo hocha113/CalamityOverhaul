@@ -67,6 +67,14 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.ThunderSpear)
+                .AddIngredient(ItemID.LunarBar, 15)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
                 .AddIngredient(CWRID.Item_StormRuler)

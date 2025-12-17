@@ -26,6 +26,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 15)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_ShadowspecBar, 5)
                 .AddIngredient(CWRID.Item_DraedonsForge)

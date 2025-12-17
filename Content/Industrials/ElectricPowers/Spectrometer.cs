@@ -36,6 +36,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.CWR().ConsumeUseUE = 800;
         }
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient(ItemID.DyeVat).
+                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(ItemID.DyeVat).
                 AddIngredient(CWRID.Item_DubiousPlating, 15).

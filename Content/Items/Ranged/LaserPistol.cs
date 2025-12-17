@@ -27,6 +27,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddRecipeGroup(RecipeGroupID.IronBar, 2).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
+                AddTile(TileID.Anvils).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).

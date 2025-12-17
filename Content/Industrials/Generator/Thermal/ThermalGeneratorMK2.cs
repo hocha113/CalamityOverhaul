@@ -32,6 +32,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<ThermalGenerator>().
+                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient<ThermalGenerator>().
                 AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).

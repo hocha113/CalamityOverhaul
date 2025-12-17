@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.TileModify
                 return CWRMod.Instance.musicMod.Find<ModTile>("CalamityTitleMusicBox").Type;
             }
         }
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override bool CanLoad() => ModLoader.HasMod("CalamityModMusic");
         public override bool? RightClick(int i, int j, Tile tile) {
             if (!VaultUtils.IsAprilFoolsDay) {

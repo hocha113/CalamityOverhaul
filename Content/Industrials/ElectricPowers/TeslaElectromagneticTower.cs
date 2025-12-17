@@ -44,6 +44,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+
+                CreateRecipe().
+                AddIngredient<TeslaElectromagneticTowerAttackMode>().
+                Register();
+                return;
+            }
+
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
@@ -82,6 +94,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+
+                CreateRecipe().
+                AddIngredient<TeslaElectromagneticTower>().
+                Register();
+                return;
+            }
+
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).

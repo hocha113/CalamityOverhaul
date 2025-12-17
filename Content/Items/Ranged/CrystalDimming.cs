@@ -18,6 +18,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<Snowblindness>().
+                AddIngredient(ItemID.LunarBar, 5).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+                return;
+            }
             _ = CreateRecipe().
                 AddIngredient<Snowblindness>().
                 AddIngredient(CWRID.Item_PridefulHuntersPlanarRipper, 1).

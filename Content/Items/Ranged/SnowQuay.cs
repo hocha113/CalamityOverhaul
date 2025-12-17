@@ -17,6 +17,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient(ItemID.IceBlock, 600).
+                AddTile(TileID.IceMachine).
+                Register();
+                return;
+            }
             _ = CreateRecipe().
                 AddIngredient(CWRID.Item_FlurrystormCannon).
                 AddIngredient(CWRID.Item_EssenceofEleum, 10).

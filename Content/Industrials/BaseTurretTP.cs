@@ -6,6 +6,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials
 {
@@ -127,6 +128,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual Asset<Texture2D> GetBarrelAsset => ModifyTurretLoader.BarrelAssetDic[ID];
         public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic[ID];
         #endregion
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetBattery() {
             Efficiency = Friend ? 2 : 0;//敌对建筑不具备电力传输能力
             IdleDistance = TurretIdleDistance;

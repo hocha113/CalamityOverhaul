@@ -276,6 +276,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                    AddRecipeGroup(RecipeGroupID.IronBar, 5).
+                    AddIngredient(ItemID.Chest, 4).
+                    AddTile(TileID.Anvils).
+                    Register();
+                return;
+            }
             CreateRecipe().
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).
                 AddIngredient(ItemID.Chest, 4).

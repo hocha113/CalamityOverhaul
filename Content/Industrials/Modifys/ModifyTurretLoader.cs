@@ -20,6 +20,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelGlowAssetDic { get; set; } = [];
         void ICWRLoader.LoadData() {
+            if (!CWRRef.Has) {
+                return;
+            }
+
             IList<Type> turretTypes = CWRRef.GetTEBaseTurretTypes();
             if (turretTypes is null) {
                 return;
@@ -33,6 +37,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
 
         void ICWRLoader.LoadAsset() {
+            if (!CWRRef.Has) {
+                return;
+            }
+
             TurretBase = CWRUtils.GetT2DAsset(CWRConstant.Turrets + "TurretBase");
 
             List<BaseTurretTP> baseTurretTPs = VaultUtils.GetDerivedInstances<BaseTurretTP>();

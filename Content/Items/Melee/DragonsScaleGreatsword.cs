@@ -31,6 +31,13 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 3;
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.ChlorophyteBar, 30)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient(CWRID.Item_PerennialBar, 15).
                 AddIngredient(CWRID.Item_UelibloomBar, 15).

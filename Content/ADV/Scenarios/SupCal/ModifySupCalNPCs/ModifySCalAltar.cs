@@ -5,12 +5,14 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
 {
     internal class ModifySCalAltar : TileOverride
     {
         public override int TargetID => CWRID.Tile_SCalAltar;
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public static void HitEffctByPlayer(Player player) {
             //硫磺火粒子爆发，使用Brimstone粒子
             for (int z = 0; z < 40; z++) {
@@ -63,6 +65,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
     internal class ModifySCalAltarLarge : TileOverride
     {
         public override int TargetID => CWRID.Tile_SCalAltarLarge;
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override bool? RightClick(int i, int j, Tile tile) => ModifySCalAltar.Click();
     }
 }

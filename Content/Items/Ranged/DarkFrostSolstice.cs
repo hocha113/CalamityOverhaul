@@ -19,6 +19,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<CrystalDimming>().
+                AddIngredient(ItemID.LunarBar, 5).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+                return;
+            }
             _ = CreateRecipe().
                 AddIngredient<CrystalDimming>().
                 AddIngredient(CWRID.Item_Kingsbane).

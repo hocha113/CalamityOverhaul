@@ -18,6 +18,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<SnowQuay>().
+                AddIngredient(ItemID.IceBlock, 1000).
+                AddTile(TileID.IceMachine).
+                Register();
+                return;
+            }
             _ = CreateRecipe().
                 AddIngredient<SnowQuay>().
                 AddIngredient(CWRID.Item_CryonicBar, 5).

@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
     internal class ModifyChargingStation : TileOverride
     {
         public override int TargetID => CWRID.Tile_ChargingStation;
+        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override bool? CanDrop(int i, int j, int type) => false;
 
         public override bool? RightClick(int i, int j, Tile tile) {

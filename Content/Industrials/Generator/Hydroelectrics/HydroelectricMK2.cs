@@ -35,6 +35,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<Hydroelectric>().
+                AddIngredient(ItemID.InletPump).
+                AddIngredient(ItemID.OutletPump).
+                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient<Hydroelectric>().
                 AddIngredient(ItemID.InletPump).

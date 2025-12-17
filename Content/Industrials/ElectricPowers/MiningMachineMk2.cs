@@ -40,6 +40,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe().
+                AddIngredient<MiningMachine>().
+                AddRecipeGroup(CWRRecipes.AdamantiteBarGroup, 25).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+                return;
+            }
             CreateRecipe().
                 AddIngredient<MiningMachine>().
                 AddRecipeGroup(CWRRecipes.AdamantiteBarGroup, 25).

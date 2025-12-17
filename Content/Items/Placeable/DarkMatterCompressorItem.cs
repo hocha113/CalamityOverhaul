@@ -29,6 +29,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_DarkPlasma, 5)//暗物质
                 .AddIngredient(CWRID.Item_StaticRefiner)
