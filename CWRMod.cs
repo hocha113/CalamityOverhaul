@@ -90,6 +90,7 @@ namespace CalamityOverhaul
             ILoaders?.Clear();
             CWRLoad.UnLoad();
             CWRID.UnLoad();
+            CWRRef.UnLoad();
             Instance = null;
         }
 

@@ -98,12 +98,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        internal static void SendExtraAI(NPC npc) {
-            if (VaultUtils.isServer) {
-                //TODO
-            }
-        }
-
         internal bool TargetPlayerIsActive() => player == null || player.dead
             || Math.Abs(npc.position.X - player.position.X) > maxfindModes
             || Math.Abs(npc.position.Y - player.position.Y) > maxfindModes;

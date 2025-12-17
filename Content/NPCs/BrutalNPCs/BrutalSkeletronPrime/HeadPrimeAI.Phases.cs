@@ -79,17 +79,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
-                    npc.RefNPCNewAI()[0]++;
-                    if (!VaultUtils.isClient && npc.RefNPCNewAI()[0] >= 2) {
+                    ai11++;
+                    if (!VaultUtils.isClient && ai11 >= 2) {
                         if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
                             SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                             int damage = SetMultiplier(npc.defDamage / 3);
                             Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                                 , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                         }
-                        npc.RefNPCNewAI()[0] = 0;
-                        ai11++;
-                        SendExtraAI(npc);
+                        ai11 = 0;
                         NetAISend();
                     }
                     npc.TargetClosest();
@@ -153,7 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (npc.ai[2] == 36f) {
-                    SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
+                    SoundStyle sound = "CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound();
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
 
@@ -474,7 +472,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (heandItem.type == ItemID.CoinGun) {
                 if (npc.ai[1] != 4f && player.GetShootState().AmmoTypes == ProjectileID.PlatinumCoin) {
                     npc.ai[1] = 4f;
-                    SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
+                    SoundStyle sound = "CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound();
                     SoundEngine.PlaySound(sound with { Pitch = -0.18f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }

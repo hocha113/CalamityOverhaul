@@ -123,7 +123,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.aiStyle = -1;
 
             SetMechQueenUp();
-            UpdateDRIncrease();
             UpdateFlightPhase();
             phaseTransitionColorAmount = CalculatePhaseTransitionColorAmount();
             UpdateEnrageScale();
@@ -239,14 +238,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.scale = 2;
                 }
             }
-        }
-
-        private void UpdateDRIncrease() {
-            if (ai[1] < DestroyerHeadAI.StretchTime) {
-                ai[1]++;
-            }
-            npc.RefNPCNewAI()[1] = 1200;
-            npc.RefNPCCurrentlyIncreasingDefenseOrDR() = false;
         }
 
         private void UpdateFlightPhase() {
@@ -416,7 +407,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             npc.localAI[2] = 0f;
-            CWRRef.SyncVanillaLocalAI(npc);
             NetAISend();
         }
 

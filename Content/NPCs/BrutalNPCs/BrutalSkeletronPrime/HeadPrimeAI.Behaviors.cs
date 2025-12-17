@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void UpdateVelocity(Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
             if (death) {
-                if (--npc.RefNPCNewAI()[2] <= 0) {
+                if (--ai2 <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed / 2;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed / 2;
                 }
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (death || Main.masterMode) {
-                    if (++npc.RefNPCNewAI()[1] > 90) {
+                    if (++ai11 > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
                         float baseDashSpeed = 20f;
@@ -116,8 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             Main.npc[primeVice].netUpdate = true;
                         }
 
-                        npc.RefNPCNewAI()[2] = 60;
-                        npc.RefNPCNewAI()[1] = 0;
+                        ai2 = 60;
+                        ai11 = 0;
                         npc.netUpdate = true;
                     }
                 }

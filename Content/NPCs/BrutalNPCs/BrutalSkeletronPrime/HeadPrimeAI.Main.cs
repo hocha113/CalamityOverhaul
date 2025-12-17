@@ -57,7 +57,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[0] == 0f) {
                 if (!VaultUtils.isClient) {
                     npc.TargetClosest();
-                    SendExtraAI(npc);
                     NetAISend();
                 }
                 //设置为1，表明完成了首次初始化

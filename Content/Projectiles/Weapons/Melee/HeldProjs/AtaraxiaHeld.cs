@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.ShadowFlame, 480);
             if (Projectile.numHits == 0) {
-                SoundStyle fire = new("CalamityMod/Sounds/Item/CursedDaggerThrow");
+                SoundStyle fire = "CalamityMod/Sounds/Item/CursedDaggerThrow".GetSound();
                 SoundEngine.PlaySound(fire with { Volume = 0.5f, Pitch = 0.9f, PitchVariance = 0.2f, MaxInstances = -1 }, Owner.Center);
             }
 

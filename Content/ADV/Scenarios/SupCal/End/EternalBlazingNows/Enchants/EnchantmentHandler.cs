@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             //播放完成音效
             Player player = Main.LocalPlayer;
             if (player != null) {
-                SoundStyle enchantSound = new("CalamityMod/Sounds/Custom/WeaponEnchant");
+                SoundStyle enchantSound = "CalamityMod/Sounds/Custom/WeaponEnchant".GetSound();
                 SoundEngine.PlaySound(enchantSound with { Volume = 0.8f }, player.Center);
             }
 

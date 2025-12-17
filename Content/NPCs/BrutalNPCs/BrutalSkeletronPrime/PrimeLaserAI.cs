@@ -41,15 +41,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region AI主循环
         public override bool ArmBehavior() {
-            dontAttack = npc.RefNPCNewAI()[2] < TimeToNotAttack;
+            dontAttack = ai[0] < TimeToNotAttack;
             normalLaserRotation = npc.localAI[1] % 2f == 0f;
-
-            if (dontAttack) {
-                npc.RefNPCNewAI()[2]++;
-                if (npc.RefNPCNewAI()[2] >= TimeToNotAttack) {
-                    HeadPrimeAI.SendExtraAI(npc);
-                }
-            }
 
             //更新视觉效果
             UpdateLaserEffects();

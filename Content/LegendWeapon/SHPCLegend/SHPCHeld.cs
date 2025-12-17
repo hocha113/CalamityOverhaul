@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
             }
             else if (onFireR) {
-                SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/LaserCannon") { Volume = 0.85f }, Projectile.Center);
+                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/LaserCannon") { Volume = 0.85f }, Projectile.Center);
             }
         }
 

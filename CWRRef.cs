@@ -53,7 +53,9 @@ namespace CalamityOverhaul
         private static bool dummyBool;
         private static int dummyInt;
         private static float dummyFloat;
-        private static float[] dummyFloats;
+        private static float[] dummyFloats = [4];
+
+        internal static void UnLoad() => _has = null;
 
         /// <summary>
         /// 荒漠灾虫
@@ -1073,22 +1075,6 @@ namespace CalamityOverhaul
                     break;
             }
         }
-
-        public static void SyncVanillaLocalAI(NPC npc) {
-            if (!Has) return;
-            SyncVanillaLocalAIInner(npc);
-        }
-        [CWRJITEnabled]
-        private static void SyncVanillaLocalAIInner(NPC npc) => CalamityUtils.SyncVanillaLocalAI(npc);
-
-        public static ref float[] RefNPCNewAI(this NPC npc) {
-            if (!Has) {
-                return ref dummyFloats;
-            }
-            return ref RefNPCNewAIInner(npc);
-        }
-        [CWRJITEnabled]
-        private static ref float[] RefNPCNewAIInner(NPC npc) => ref npc.Calamity().newAI;
 
         public static ref bool RefNPCCurrentlyEnraged(this NPC npc) {
             if (!Has) {

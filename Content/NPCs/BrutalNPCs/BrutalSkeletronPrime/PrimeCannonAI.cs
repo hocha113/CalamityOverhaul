@@ -27,24 +27,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 常量与变量
         private const float TimeToNotAttack = 180f;
-        private int stateTimer = 0;
         private float recoilIntensity = 0f;
         private Vector2 aimDirection = Vector2.Zero;
         private bool isFiring = false;
-        private int burstCount = 0;
         #endregion
 
         #region AI主循环
         public override bool ArmBehavior() {
-            float timeToNotAttack = TimeToNotAttack;
-            dontAttack = npc.RefNPCNewAI()[2] < timeToNotAttack;
-
-            if (dontAttack) {
-                npc.RefNPCNewAI()[2] += 1f;
-                if (npc.RefNPCNewAI()[2] >= timeToNotAttack) {
-                    HeadPrimeAI.SendExtraAI(npc);
-                }
-            }
+            dontAttack = ai[0] < TimeToNotAttack;
 
             //更新后坐力效果
             UpdateRecoilEffects();
@@ -107,8 +97,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 状态行为
         private void State_SingleShot() {
-            stateTimer++;
-
             //检查头部状态
             if (head.ai[1] == 3f && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
@@ -134,8 +122,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void State_SpreadShot() {
-            stateTimer++;
-
             //瞄准玩家
             SmoothAimAtPlayer(0.2f);
 
