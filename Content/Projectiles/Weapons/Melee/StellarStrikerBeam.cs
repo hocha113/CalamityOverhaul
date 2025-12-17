@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -40,7 +42,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Player Owner = Main.player[Projectile.owner];
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
-            CWRRef.StellarStrikerBeamEffect(Projectile, Time, targetDist);
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                PRT_SparkAlpha spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 4, 2.3f, new Color(68, 153, 112));
+                PRTLoader.AddParticle(spark);
+            }
+
+            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
+                PRT_Line spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.7f, new Color(95, 200, 157));
+                PRTLoader.AddParticle(spark2);
+            }
 
             Time++;
         }

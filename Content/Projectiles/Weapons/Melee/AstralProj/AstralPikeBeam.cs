@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -42,7 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
                 }
                 Projectile.SmoothHomingBehavior(targetPos, 1, 0.05f);
             }
-            CWRRef.AstralPikeBeamEffect(Projectile);
+            PRT_Line spark2 = new PRT_Line(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
+            PRTLoader.AddParticle(spark2);
         }
 
         public override bool PreDraw(ref Color lightColor) {

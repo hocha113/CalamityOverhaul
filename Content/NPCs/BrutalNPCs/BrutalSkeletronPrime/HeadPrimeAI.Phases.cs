@@ -143,7 +143,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             else if (npc.ai[1] == 1f) {
                 npc.defense *= (int)(npc.defDefense * 1.25f);
                 npc.damage = npc.defDamage * 2;
-                npc.RefNPCCurrentlyIncreasingDefenseOrDR() = true;
 
                 npc.ai[2]++;
                 if (npc.ai[2] == 2f) {

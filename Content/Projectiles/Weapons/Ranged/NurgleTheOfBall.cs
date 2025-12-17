@@ -1,4 +1,8 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Mono.Cecil;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -42,22 +46,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            Projectile.Explode(180, SoundID.Item14);
-            int inc;
-            for (int i = 4; i < 31; i = inc + 1) {
-                float oldXPos = Projectile.oldVelocity.X * (30f / i);
-                float oldYPos = Projectile.oldVelocity.Y * (30f / i);
-                int killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 8, 8, DustID.Blood, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.8f);
-                Main.dust[killDust].noGravity = true;
-                Dust dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.5f;
-                dust2.color = Color.GreenYellow;
-                killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 8, 8, DustID.JungleSpore, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, 1.4f);
-                dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.05f;
-                dust2.noGravity = true;
-                inc = i;
-            }
+            Projectile.Explode(180, default, false);
+            Vector2 spawnPos = Projectile.Center;
+            Vector2 velocity = Main.rand.NextVector2Circular(0.8f, 0.8f);
+            float depth = Main.rand.NextFloat(0.3f, 1f);
+
+            PRT_ToxicMist acidMist = new(
+                spawnPos,
+                velocity,
+                Main.rand.NextFloat(0.5f, 0.75f),
+                Main.rand.Next(50, 75),
+                depth
+            );
+            PRTLoader.AddParticle(acidMist);
         }
 
         public override bool PreDraw(ref Color lightColor) {

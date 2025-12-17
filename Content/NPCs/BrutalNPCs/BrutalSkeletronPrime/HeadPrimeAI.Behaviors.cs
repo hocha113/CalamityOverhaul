@@ -139,9 +139,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //增加 NPC 的伤害和防御
             npc.damage = 1000;
             npc.defense = 9999;
-            //标记当前正在愤怒状态和增加防御力或伤害减免
-            npc.RefNPCCurrentlyEnraged() = true;
-            npc.RefNPCCurrentlyIncreasingDefenseOrDR() = true;
         }
 
         private void MoveTowardsPlayer(float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {

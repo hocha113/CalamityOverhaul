@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -46,7 +48,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
             if (Main.rand.NextBool(3)) {
-                CWRRef.NurgleBeeEffect(Projectile, Main.rand.NextBool());
+                Vector2 spawnPos = Projectile.Center;
+                Vector2 velocity = Main.rand.NextVector2Circular(0.8f, 0.8f);
+                float depth = Main.rand.NextFloat(0.3f, 1f);
+
+                PRT_ToxicMist acidMist = new(
+                    spawnPos,
+                    velocity,
+                    Main.rand.NextFloat(0.5f, 0.75f),
+                    Main.rand.Next(50, 75),
+                    depth
+                );
+                PRTLoader.AddParticle(acidMist);
             }
             if (Projectile.timeLeft < 330) {
                 NPC target = Projectile.Center.FindClosestNPC(450);

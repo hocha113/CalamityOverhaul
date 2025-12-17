@@ -7,10 +7,6 @@ using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.ExoMechs;
-using CalamityMod.NPCs.ExoMechs.Apollo;
-using CalamityMod.NPCs.ExoMechs.Ares;
-using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Particles;
@@ -504,14 +500,14 @@ namespace CalamityOverhaul
 
                 case ExoMech.Prime:
                     Vector2 aresSpawnPosition = player.Center - Vector2.UnitY * 1400f;
-                    CalamityUtils.SpawnBossBetter(aresSpawnPosition, ModContent.NPCType<AresBody>());
+                    CalamityUtils.SpawnBossBetter(aresSpawnPosition, CWRID.NPC_AresBody);
                     break;
 
                 case ExoMech.Twins:
                     Vector2 artemisSpawnPosition = player.Center + new Vector2(-1100f, -1600f);
                     Vector2 apolloSpawnPosition = player.Center + new Vector2(1100f, -1600f);
-                    CalamityUtils.SpawnBossBetter(artemisSpawnPosition, ModContent.NPCType<Artemis>());
-                    CalamityUtils.SpawnBossBetter(apolloSpawnPosition, ModContent.NPCType<Apollo>());
+                    CalamityUtils.SpawnBossBetter(artemisSpawnPosition, CWRID.NPC_Artemis);
+                    CalamityUtils.SpawnBossBetter(apolloSpawnPosition, CWRID.NPC_Apollo);
                     break;
             }
         }
@@ -859,9 +855,7 @@ namespace CalamityOverhaul
             CalamityGlobalNPC.SetNewBossJustDowned(npc);
             DownedBossSystem.downedBoomerDuke = true;
             AcidRainEvent.OldDukeHasBeenEncountered = true;
-            if (npc.ModNPC is not null && npc.ModNPC is OldDuke oldDuke) {
-                NPCLoader.OnKill(npc);
-            }
+            NPCLoader.OnKill(npc);
         }
 
         public static void StopAcidRain() {
@@ -1076,90 +1070,6 @@ namespace CalamityOverhaul
             }
         }
 
-        public static ref bool RefNPCCurrentlyEnraged(this NPC npc) {
-            if (!Has) {
-                return ref dummyBool;
-            }
-            return ref RefNPCCurrentlyEnragedInner(npc);
-        }
-        [CWRJITEnabled]
-        private static ref bool RefNPCCurrentlyEnragedInner(NPC npc) => ref npc.Calamity().CurrentlyEnraged;
-
-        public static ref bool RefNPCCurrentlyIncreasingDefenseOrDR(this NPC npc) {
-            if (!Has) {
-                return ref dummyBool;
-            }
-            return ref RefNPCCurrentlyIncreasingDefenseOrDRInner(npc);
-        }
-        [CWRJITEnabled]
-        private static ref bool RefNPCCurrentlyIncreasingDefenseOrDRInner(NPC npc) => ref npc.Calamity().CurrentlyIncreasingDefenseOrDR;
-
-        public static void DarkIceBombEffect1(Projectile Projectile, float Time, float targetDist) {
-            if (!Has) return;
-            DarkIceBombEffect1Inner(Projectile, Time, targetDist);
-        }
-        [CWRJITEnabled]
-        private static void DarkIceBombEffect1Inner(Projectile Projectile, float Time, float targetDist) {
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-
-            if (Main.rand.NextBool(3) && Time > 5f && targetDist < 1400f) {
-                Particle orb = new GenericBloom(Projectile.Center + Main.rand.NextVector2Circular(10, 10)
-                    , Projectile.velocity * Main.rand.NextFloat(0.05f, 0.5f), Color.WhiteSmoke, Main.rand.NextFloat(0.2f, 0.45f), Main.rand.Next(6, 9), true, false);
-                GeneralParticleHandler.SpawnParticle(orb);
-            }
-
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 10, 1.7f, Color.AliceBlue);
-                GeneralParticleHandler.SpawnParticle(spark2);
-            }
-        }
-
-        public static void DarkIceBombEffect2(Projectile Projectile, Vector2 randVr) {
-            if (!Has) return;
-            DarkIceBombEffect2Inner(Projectile, randVr);
-        }
-        [CWRJITEnabled]
-        private static void DarkIceBombEffect2Inner(Projectile Projectile, Vector2 randVr) {
-            AltSparkParticle spark = new(Projectile.Center, randVr, true, 12, Main.rand.NextFloat(1.3f, 2.2f), Color.Blue);
-            GeneralParticleHandler.SpawnParticle(spark);
-            AltSparkParticle spark2 = new(Projectile.Center, randVr, false, 9, Main.rand.NextFloat(1.1f, 1.5f), Color.AntiqueWhite);
-            GeneralParticleHandler.SpawnParticle(spark2);
-        }
-
-        public static void StellarStrikerBeamEffect(Projectile Projectile, float Time, float targetDist) {
-            if (!Has) return;
-            StellarStrikerBeamEffectInner(Projectile, Time, targetDist);
-        }
-        [CWRJITEnabled]
-        private static void StellarStrikerBeamEffectInner(Projectile Projectile, float Time, float targetDist) {
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                AltSparkParticle spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 4, 2.3f, new Color(68, 153, 112));
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-
-            if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.7f, new Color(95, 200, 157));
-                GeneralParticleHandler.SpawnParticle(spark2);
-            }
-        }
-
-        public static void NurgleBeeEffect(Projectile Projectile, bool LowVel) {
-            if (!Has) return;
-            NurgleBeeEffectInner(Projectile, LowVel);
-        }
-        [CWRJITEnabled]
-        private static void NurgleBeeEffectInner(Projectile Projectile, bool LowVel) {
-            FlameParticle fire = new FlameParticle(Projectile.Center + VaultUtils.RandVr(13), 20, Main.rand.NextFloat(0.1f, 0.3f), 0.05f
-            , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f)) {
-                Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
-            * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
-            };
-            GeneralParticleHandler.SpawnParticle(fire);
-        }
-
         public static void CosmicFireEffect(Projectile Projectile) {
             if (!Has) return;
             CosmicFireEffectInner(Projectile);
@@ -1167,16 +1077,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void CosmicFireEffectInner(Projectile Projectile) {
             StreamGougeMetaball.SpawnParticle(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
-        }
-
-        public static void AstralPikeBeamEffect(Projectile Projectile) {
-            if (!Has) return;
-            AstralPikeBeamEffectInner(Projectile);
-        }
-        [CWRJITEnabled]
-        private static void AstralPikeBeamEffectInner(Projectile Projectile) {
-            PRT_Line spark2 = new PRT_Line(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
-            PRTLoader.AddParticle(spark2);
         }
 
         public static void FadingGloryRapierHitDustEffect(Projectile Projectile, NPC npc) {

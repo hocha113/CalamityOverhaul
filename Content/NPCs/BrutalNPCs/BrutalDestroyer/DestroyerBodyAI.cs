@@ -274,7 +274,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void UpdateEnrageScale() {
             enrageScale = CWRWorld.BossRush ? 1f : 0f;
             if (Main.IsItDay() || CWRWorld.BossRush) {
-                npc.RefNPCCurrentlyEnraged() = !CWRWorld.BossRush;
                 enrageScale += 2f;
             }
         }

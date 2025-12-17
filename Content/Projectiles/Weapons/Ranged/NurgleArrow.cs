@@ -1,4 +1,9 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ContagionArrow";
+        protected List<Bee> bees = [];
         private int addBallTimer = 10;
         private float rot;
         private Vector2 pos;
@@ -32,6 +38,40 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
+            float toPlayerLeng = Projectile.Center.Distance(Main.player[Projectile.owner].Center);
+            if (!VaultUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
+                if (Projectile.timeLeft > 60 && Projectile.numHits == 0 && toPlayerLeng <= 1800) {
+                    for (int i = 0; i < Main.rand.Next(2, 3); i++) {
+                        bees.Add(new Bee(Projectile, Projectile.Center + VaultUtils.RandVr(Projectile.width + 60), Projectile.velocity, Main.rand.Next(37, 60)
+                            , Color.White, Projectile.rotation, Main.rand.NextFloat(0.9f, 1.3f), 1, Main.rand.Next(4)));
+                    }
+                }
+                bees.RemoveAll((Bee b) => !b.Active);
+                foreach (Bee bee in bees) {
+                    bee.Update();
+                    if (Main.rand.NextBool(13)) {
+                        int dustType = 89;
+                        int plague = Dust.NewDust(bee.Center, 1, 1, dustType, bee.Velocity.X * 0.2f, bee.Velocity.Y * 0.2f, 100, default, bee.Scale);
+                        Dust dust = Main.dust[plague];
+                        dust.scale *= 0.6f;
+                        dust.noGravity = true;
+                    }
+                }
+                if (Main.rand.NextBool(3)) {
+                    Vector2 spawnPos = Projectile.Center;
+                    Vector2 velocity = Main.rand.NextVector2Circular(0.8f, 0.8f);
+                    float depth = Main.rand.NextFloat(0.3f, 1f);
+
+                    PRT_ToxicMist acidMist = new(
+                        spawnPos,
+                        velocity,
+                        Main.rand.NextFloat(0.5f, 0.75f),
+                        Main.rand.Next(50, 75),
+                        depth
+                    );
+                    PRTLoader.AddParticle(acidMist);
+                }
+            }
             if (Projectile.ai[2] == 0) {
                 Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 1.57f;
                 addBallTimer--;
@@ -73,6 +113,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
+            if (!VaultUtils.isServer) {
+                bees.Clear();
+            }
             int inc;
             for (int i = 4; i < 31; i = inc + 1) {
                 float oldXPos = Projectile.oldVelocity.X * (30f / i);
@@ -103,6 +146,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Projectile + "Bee");
+            foreach (Bee bee in bees) {
+                bee.Draw(Main.spriteBatch, value);
+            }
             CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
