@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private float panelHeight;
 
         public override bool Active => VaultLoad.LoadenContent && !CWRRef.Has;
+        //在大多数情况下不需要兼容提醒，很多时候可能会让用户感到被弹窗骚扰了，或者觉得你事多，所以默默做好兼容情况下的内容即可
+        public override bool IsLoadingEnabled(Mod mod) => false;
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "当前正处于兼容模式");
@@ -149,7 +151,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(spriteBatch, wrappedContent, new Vector2(textX, y + padding + titleSize.Y + 2), Color.White, contentScale);
         }
 
-        private float GetProgress(int timer) {
+        private static float GetProgress(int timer) {
             if (timer < SlideTime) {
                 float p = timer / (float)SlideTime;
                 return 1f - (1f - p) * (1f - p);

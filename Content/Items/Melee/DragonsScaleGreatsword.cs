@@ -32,10 +32,6 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AddRecipes() {
             if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.ChlorophyteBar, 30)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
                 return;
             }
             CreateRecipe().

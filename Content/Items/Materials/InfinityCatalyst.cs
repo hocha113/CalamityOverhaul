@@ -60,21 +60,6 @@ namespace CalamityOverhaul.Content.Items.Materials
         public static int QFD(int num) => (int)(num * QFH);
         public override void AddRecipes() {
             if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.FragmentSolar, QFD(5))
-                .AddIngredient(ItemID.FragmentVortex, QFD(15))
-                .AddIngredient(ItemID.Gel, QFD(50))
-                .AddIngredient(ItemID.HellstoneBar, QFD(50))
-                .AddIngredient(ItemID.SoulofNight, QFD(50))
-                .AddIngredient(ItemID.Obsidian, QFD(50))
-                .AddIngredient(ItemID.HallowedBar, QFD(50))
-                .AddIngredient(ItemID.LunarBar, QFD(50))
-                .AddIngredient(ItemID.LifeCrystal, QFD(50))
-                .AddIngredient(ItemID.FallenStar, QFD(50))
-                .AddIngredient(ItemID.Ectoplasm, QFD(50))
-                .AddIngredient(ItemID.SoulofLight, QFD(50))
-                .AddTile(TileType<DarkMatterCompressor>())
-                .Register();
                 return;
             }
             CreateRecipe()
