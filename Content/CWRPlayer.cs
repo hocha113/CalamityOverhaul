@@ -342,22 +342,15 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        /// <summary>
-        /// 临时性版本提醒，在正式版本中不要调用这个函数
-        /// </summary>
-        private void DompTemporaryVersionText() {
-            string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
-            soubText = soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
-            soubText = soubText.Replace("[V2]", "0.6.8.2");
-            SpwanTextProj.New(Player, () => VaultUtils.Text(soubText, Color.IndianRed));
-        }
-
         public override void OnEnterWorld() {
-            //DompTemporaryVersionText();
-
             if (!VaultHook.CheckHookStatus(out int num)) {
                 string hookDownText1 = $"{num} " + CWRLocText.GetTextValue("Error_1");
                 VaultUtils.Text(hookDownText1, Color.Red);
+            }
+
+            if (!CWRRef.Has) {
+                string text = Language.GetTextValue("Mods.CalamityOverhaul.UI.CompatibilityAlert.ContentText");
+                SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }
 
             if (!ImproveRef.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
@@ -370,10 +363,6 @@ namespace CalamityOverhaul.Content
                 string text = CWRItemOverride.ByID.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }
-
-            //if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
-            //  SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
-            //}
 
             if (OverhaulTheBibleUI.Instance != null) {
                 OverhaulTheBibleUI.Instance.Active = false;
