@@ -6479,6 +6479,18 @@ UI: {
 	}
 
 	// QuestNotificationSystem.Text1: Quest Complete
+
+	CompatibilityAlert: {
+		// TitleText: Compatibility Mode Active
+		/* ContentText:
+			'''
+			Major content mods are missing or version conflicts have been detected. 
+			Some features are disabled or running in restricted mode.
+			If this is intentional, please ignore this message.
+			If this is due to outdated versions, please wait for an update.
+			The development team usually releases compatibility patches within 12 hours.
+			''' */
+	}
 }
 
 ADV: {

@@ -30,6 +30,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient<PrecisionMuzzleBrake>()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+                return;
+            }
             _ = CreateRecipe()
                 .AddIngredient<PrecisionMuzzleBrake>()
                 .AddIngredient(CWRID.Item_LifeAlloy, 5)

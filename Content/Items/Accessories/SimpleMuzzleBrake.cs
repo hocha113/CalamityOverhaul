@@ -30,6 +30,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddRecipeGroup(CWRRecipes.GoldBarGroup, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+                return;
+            }
             _ = CreateRecipe()
                 .AddIngredient(CWRID.Item_EnergyCore, 2)
                 .AddIngredient(CWRID.Item_WulfrumMetalScrap, 5)

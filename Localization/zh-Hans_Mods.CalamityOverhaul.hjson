@@ -6448,6 +6448,17 @@ UI: {
 	}
 
 	QuestNotificationSystem.Text1: 任务完成
+
+	CompatibilityAlert: {
+		TitleText: 当前正处于兼容模式
+		ContentText:
+			'''
+			检测到主要内容模组缺失或版本冲突，部分功能已自动禁用或降级运行
+			如果您有意这样使用，请忽略这个提醒
+			如果您确认是版本过时导致的兼容模式，请耐心等待模组更新适配
+			开发团队通常会在十二个小时内发布兼容性补丁
+			'''
+	}
 }
 
 ADV: {

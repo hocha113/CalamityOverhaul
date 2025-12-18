@@ -30,6 +30,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
+            if (!CWRRef.Has) {
+                CreateRecipe()
+                .AddIngredient<SimpleMuzzleBrake>()
+                .AddIngredient(ItemID.HallowedBar, 5)
+                .AddTile(TileID.MythrilAnvil)
+                .Register();
+                return;
+            }
             _ = CreateRecipe()
                 .AddIngredient<SimpleMuzzleBrake>()
                 .AddIngredient(CWRID.Item_PlasmaDriveCore)
