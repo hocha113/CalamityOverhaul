@@ -8202,5 +8202,13 @@ QuestLogs: {
 			QuestObjective.Description: 击败蜂后
 			DetailedDescription: 深入地下丛林的巨大蜂巢，打破其中的幼虫将会激怒整个蜂群的统治者。准备好抗毒药剂，小心她的毒刺和极速冲撞。
 		}
+
+		CollectorQuest: {
+			DisplayName: 收集助手
+			Description: 获得收集者
+			QuestObjective.Description: 获得收集者
+			QuestReward.Description: 2个箱子
+			DetailedDescription: 厌倦了弯腰拾取满地的战利品？这个装置能自动拾取周围的掉落物。它是构建自动化物流与整理系统的核心组件，彻底解放你的双手。
+		}
 	}
 }

@@ -8233,5 +8233,13 @@ QuestLogs: {
 			// QuestObjective.Description: Defeat Queen Bee
 			// DetailedDescription: Deep within the massive hives of the Underground Jungle, breaking the larva inside will enrage the ruler of the swarm. Prepare anti-poison potions and beware her stingers and rapid dashes.
 		}
+
+		CollectorQuest: {
+			// DisplayName: Collection Assistant
+			// Description: Obtain the Collector
+			// QuestObjective.Description: Obtain the Collector
+			// QuestReward.Description: 2 Chests
+			// DetailedDescription: Tired of bending over to pick up loot everywhere? This device automatically collects nearby dropped items. It is a core component for building automated logistics and sorting systems, completely freeing your hands.
+		}
 	}
 }

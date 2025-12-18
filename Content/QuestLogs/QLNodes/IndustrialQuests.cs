@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
 using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.Industrials.Generator.Thermal;
@@ -212,6 +213,41 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
+    public class CollectorQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "收集助手");
+            Description = this.GetLocalization(nameof(Description), () => "获得收集者");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<Collector>();
+            Position = new Vector2(150, 0);
+            AddParent<MiningMachineQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得收集者"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ItemID.Chest,
+                Amount = 2,
+                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+            });
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Collector>()) > 0;
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
     public class ItemFilterQuest : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -221,7 +257,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<ItemFilter>();
             Position = new Vector2(150, 0);
-            AddParent<MiningMachineQuest>();
+            AddParent<CollectorQuest>();
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
@@ -236,6 +272,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 Amount = 2,
                 Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
             });
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
         }
 
         public override void UpdateByPlayer() {
