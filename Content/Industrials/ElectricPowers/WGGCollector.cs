@@ -160,8 +160,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (ArmPos.FindClosestPlayer(killerArmDistance) != null && dontSpawnArmTime <= 0 && !VaultUtils.isClient) {
                 CheckArm(ref ArmIndex, ModContent.ProjectileType<WGGCollectorArm>(), ArmPos);
                 if (ArmIndex == -1) {
+                    int dmg = 10;
+                    if (Main.masterMode || Main.expertMode) {
+                        dmg = 8;
+                    }
                     ArmIndex = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).identity;
+                    , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGCollectorArm>(), dmg, 2, -1).identity;
                     SendData();
                 }
             }
@@ -338,9 +342,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 BatteryPrompt = false;
             }
 
+            if (player.Alives() && player.To(startPos).Length() > 600) {
+                player = null;
+            }
+
             //索敌逻辑
             if (player?.Alives() != true || Projectile.Center.Distance(startPos) > 1400) {
-                player = startPos.FindClosestPlayer(800);
+                player = startPos.FindClosestPlayer(600);
                 if (player == null) {
                     currentState = ArmState.Searching;
                 }

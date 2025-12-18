@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator.Thermal;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

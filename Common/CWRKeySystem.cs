@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Pandemonium_R { get; private set; }
         public static ModKeybind AriaofTheCosmos_Q { get; private set; }
         public static ModKeybind AriaofTheCosmos_R { get; private set; }
+        public static ModKeybind JusticeUnveiled { get; private set; }
 
         void ICWRLoader.LoadData() {
             Mod mod = CWRMod.Instance;
@@ -45,6 +46,7 @@ namespace CalamityOverhaul.Common
             Pandemonium_R = KeybindLoader.RegisterKeybind(mod, "Pandemonium_R", "R");
             AriaofTheCosmos_Q = KeybindLoader.RegisterKeybind(mod, "AriaofTheCosmos_Q", "Q");
             AriaofTheCosmos_R = KeybindLoader.RegisterKeybind(mod, "AriaofTheCosmos_R", "R");
+            JusticeUnveiled = KeybindLoader.RegisterKeybind(mod, "JusticeUnveiled", "W");
         }
 
         void ICWRLoader.UnLoadData() {
@@ -67,6 +69,7 @@ namespace CalamityOverhaul.Common
             Pandemonium_R = null;
             AriaofTheCosmos_Q = null;
             AriaofTheCosmos_R = null;
+            JusticeUnveiled = null;
         }
     }
 }

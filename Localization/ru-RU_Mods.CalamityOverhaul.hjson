@@ -2142,6 +2142,7 @@ Keybinds: {
 	// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
 	// AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
 	// AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
+	// JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment
 }
 
 TextContent: {

@@ -4,15 +4,13 @@ using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {
     internal class CelestialObliterationArrow : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Cay_Item + "Ammo/VanquisherArrow";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override string Texture => CWRConstant.Placeholder;
         private Trail Trail;
         private const int MaxPos = 40;
         public override void SetDefaults() {
@@ -36,6 +34,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.velocity += (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 0.1f;
             if (Projectile.localAI[0] < 1f) {
                 Projectile.localAI[0] += 0.1f;
+            }
+
+            Projectile.ai[0]++;
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Lighting.AddLight(Projectile.Center, Color.AliceBlue.ToVector3() * 0.2f);
+            Player Owner = Main.player[Projectile.owner];
+            float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
+
+            if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
+                PRT_SparkAlpha spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
+                PRTLoader.AddParticle(spark);
+            }
+
+            if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
+                PRT_Line spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.7f, Color.BlueViolet);
+                PRTLoader.AddParticle(spark2);
             }
         }
 
@@ -78,13 +95,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Main.spriteBatch.Draw(tex, drawPosition, null, Projectile.GetAlpha(Color.White), Projectile.rotation, origin, Projectile.scale, 0, 0f);
-            return false;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
 
         void IPrimitiveDrawable.DrawPrimitives() {
             Vector2[] newPoss = new Vector2[MaxPos];

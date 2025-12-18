@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -409,13 +410,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static bool DrawBeamInner(Projectile projectile, float length, float spacer, Color lightColor, Texture2D texture, bool curve) => projectile.DrawBeam(length, spacer, lightColor, texture, curve);
 
-        public static void DrawAfterimagesFromEdge(Projectile proj, int mode, Color lightColor, Texture2D texture = null) {
-            if (!Has) return;
-            DrawAfterimagesFromEdgeInner(proj, mode, lightColor, texture);
-        }
-        [CWRJITEnabled]
-        private static void DrawAfterimagesFromEdgeInner(Projectile proj, int mode, Color lightColor, Texture2D texture) => CalamityUtils.DrawAfterimagesFromEdge(proj, mode, lightColor, texture);
-
         public static int GetRandomProjectileType() {
             return Main.rand.Next(4) switch {
                 0 => CWRID.Proj_SwordsplosionBlue,
@@ -545,7 +539,11 @@ namespace CalamityOverhaul
         }
 
         public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) {
-            if (!Has) return;
+            if (!Has) {
+                Main.spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, proj.Center - Main.screenPosition
+                    , null, lightColor, proj.rotation, TextureAssets.Projectile[proj.type].Value.Size() / 2, proj.scale, SpriteEffects.None, 0);
+                return;
+            }
             DrawAfterimagesCenteredInner(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
         }
         [CWRJITEnabled]

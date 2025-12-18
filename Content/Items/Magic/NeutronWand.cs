@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Items.Magic
     internal class NeutronWand : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
-        internal static int PType;
-        void ICWRLoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 12));

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -93,7 +94,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             }
 
             //检测玩家按下Up键
-            if (player.whoAmI == Main.myPlayer && JusticeUnveiled.justUp && player.CWR().JusticeUnveiledCooldown <= 0) {
+            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.JusticeUnveiled.JustPressed && player.CWR().JusticeUnveiledCooldown <= 0) {
                 if (player.CWR().JusticeUnveiledCharges > 0 && crossIndex == player.CWR().JusticeUnveiledCharges) {
                     NPC target = player.Center.FindClosestNPC(1200, false);
                     if (target != null) {

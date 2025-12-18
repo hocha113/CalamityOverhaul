@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
     internal class NeutronWandHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
-        public override int TargetID => NeutronWand.PType;
+        public override int TargetID => ModContent.ItemType<NeutronWand>();
         private float colers;
         private bool colers2;
         private Vector2 firePos;

@@ -567,7 +567,7 @@ namespace CalamityOverhaul.Content
             {//添加配方的操作
                 if (CWRRef.Has) {
                     AddResultContent();
-                } 
+                }
             }
         }
 

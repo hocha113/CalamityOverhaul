@@ -75,10 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            //CaseEjection();
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, ShootPos + VaultUtils.RandVr(130, 131), ShootVelocity
-                , ModContent.ProjectileType<NeutronLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (++fireIndex > 2) {
                 FireTime = 12;
                 fireIndex = 0;
@@ -86,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            int newdamage = (int)(WeaponDamage * (canattce ? 5.6f : 2.6f));
+            int newdamage = (int)(WeaponDamage * (canattce ? 15.6f : 5.6f));
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, newdamage, WeaponKnockback, Owner.whoAmI, 1);
             if (!canattce) {
                 Charge += 10;

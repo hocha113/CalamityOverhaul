@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;

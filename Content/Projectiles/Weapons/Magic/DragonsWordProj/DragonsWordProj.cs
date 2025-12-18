@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
                         , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
                 PRTLoader.AddParticle(spark);
             }
-            
+
             Projectile.Explode();
         }
     }

@@ -14,10 +14,22 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
         public override void SetDefaults() {
-            Item.CloneDefaults(CWRID.Item_LunarKunai);
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.width = 38;
+            Item.height = 38;
             Item.damage = 90;
+            Item.maxStack = 9999;
+            Item.consumable = true;
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.useAnimation = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 10;
+            Item.knockBack = 2f;
             Item.UseSound = null;
+            Item.autoReuse = true;
+            Item.value = Item.sellPrice(copper: 24);
+            Item.rare = ItemRarityID.Purple;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.DamageType = CWRRef.GetRogueDamageClass();
             Item.shoot = ModContent.ProjectileType<SeasonalKunaiThrowable>();
             ItemOverride.ItemMeleePrefixDic[Type] = true;

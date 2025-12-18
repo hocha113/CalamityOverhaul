@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class IceExplosionFriend : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => "CalamityMod/Projectiles/Summon/SmallAresArms/MinionPlasmaGas";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public float randomX;
         public float randomY;

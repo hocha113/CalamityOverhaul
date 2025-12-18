@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "Airflow"));
             effect.Parameters["uFlow"].SetValue(CWRAsset.Extra_193.Value);
             effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DragonRage_Bar"));
             effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);

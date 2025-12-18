@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.DataStructures;

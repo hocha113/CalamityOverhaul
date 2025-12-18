@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -11,8 +13,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
     /// </summary>
     internal class JusticeUnveiled : ModItem
     {
-        public static bool oldControlUp;
-        public static bool justUp;
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
         public const int DropProbabilityDenominator = 6000;
         private static bool OnLoaden;
@@ -23,15 +23,16 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Item.rare = ItemRarityID.LightRed;
         }
 
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.InsertHotkeyBinding(CWRKeySystem.JusticeUnveiled, "UP", CWRLocText.Instance.Notbound.Value);
+        }
+
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.CWR().IsJusticeUnveiled = true;
             //检测换弹
             if (player.CWR().PlayerIsKreLoadTime > 0) {
                 OnLoaden = true;
             }
-
-            justUp = player.controlUp && !oldControlUp;
-            oldControlUp = player.controlUp;
         }
 
         public static bool SpwanBool(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {

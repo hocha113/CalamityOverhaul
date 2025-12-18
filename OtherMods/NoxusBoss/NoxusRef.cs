@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content;
+﻿using CalamityOverhaul.Content;
 using System;
 using System.Reflection;
 

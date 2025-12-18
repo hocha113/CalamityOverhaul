@@ -10,16 +10,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class NeutronBullet : ModProjectile, IWarpDrawable
     {
-        public override string Texture => "CalamityMod/Projectiles/Ranged/GodSlayerSlugBlue";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override string Texture => CWRConstant.Masking + "Line";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
 
         public override void SetDefaults() {
-            Projectile.width = 4;
-            Projectile.height = 4;
+            Projectile.width = 14;
+            Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.ignoreWater = true;
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
-            Projectile.timeLeft = 60;
+            Projectile.timeLeft = 160;
         }
 
         public override void AI() {
@@ -41,12 +40,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
                 , Vector2.Zero, ModContent.ProjectileType<NeutronExplosionRanged>(), Projectile.damage, 0);
-            if (Projectile.ai[0] > 0 && Projectile.numHits < 8) {
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis()
-                    , target.Center + new Vector2(Main.rand.Next(-120, 120), -Main.rand.Next(720, 850))
-                    , new Vector2(0, 22), ModContent.ProjectileType<NeutronLaser>(), Projectile.damage, 0);
-                }
+            for (int i = 0; i < 3; i++) {
+                Vector2 randVer = VaultUtils.RandVr(16, 18);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis()
+                , target.Center + randVer * 10
+                , -randVer, ModContent.ProjectileType<NeutronLaser>(), Projectile.damage, 0);
             }
         }
 
@@ -55,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool CanDrawCustom() => true;
 
         public void DrawCustom(SpriteBatch spriteBatch) {
-            CWRRef.DrawAfterimagesFromEdge(Projectile, 0, Color.White, TextureAssets.Projectile[Type].Value);
+            Main.spriteBatch.Draw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 }, Projectile.rotation, TextureAssets.Projectile[Type].Value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         }
 
         public void Warp() {

@@ -9,7 +9,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {
-            Projectile.CloneDefaults(CWRID.Proj_DrataliornusExoArrow);
+            Projectile.width = 5;
+            Projectile.height = 5;
+            Projectile.friendly = true;
+            Projectile.alpha = 255;
+            Projectile.penetrate = -1;
+            Projectile.extraUpdates = 4;
+            Projectile.timeLeft = 60;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 1;
             Projectile.ArmorPenetration = 80;
