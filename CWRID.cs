@@ -29,6 +29,7 @@ namespace CalamityOverhaul
         public static int Item_AerialiteBar => Get();
         public static int Item_DeliciousMeat => Get();
         public static int Item_Heresy => Get();
+        public static int Item_DevilsDevastation => Get();
         public static int Item_LunarKunai => Get();
         public static int Item_UnholyEssence => Get();
         public static int Item_YharonSoulFragment => Get();

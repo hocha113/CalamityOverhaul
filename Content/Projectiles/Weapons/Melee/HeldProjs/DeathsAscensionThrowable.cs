@@ -71,8 +71,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                         Main.SetCameraLerp(0.1f, 10);
                     }
                     for (int i = 0; i < 13; i++) {
-                        PRT_Spark spark = new PRT_Spark(Owner.Center, toProj.UnitVector() * 3
-                            , false, 9, 3.3f, Color.DarkBlue);
+                        PRT_SparkAlpha spark = new PRT_SparkAlpha(Owner.Center, toProj.UnitVector() * 3
+                            , false, 9, 1.3f, Color.DarkBlue);
+                        PRTLoader.AddParticle(spark);
+                        spark = new PRT_SparkAlpha(Owner.Center, toProj.UnitVector() * 3
+                            , false, 9, 0.8f, Color.BlueViolet);
                         PRTLoader.AddParticle(spark);
                     }
                     Projectile.velocity = Vector2.Zero;

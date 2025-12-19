@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.useTime = 10;
             item.SetKnifeHeld<ChlorophyteSaberHeld>();
-            item.shootSpeed = 0;
         }
     }
 
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool PreSwingAI() {
-            StabBehavior(initialLength: 10, lifetime: maxSwingTime, scaleFactorDenominator: 420f, minLength: 10, maxLength: 60, ignoreUpdateCount: true);
+            StabBehavior(initialLength: 20, lifetime: maxSwingTime, scaleFactorDenominator: 420f, minLength: 10, maxLength: 60, ignoreUpdateCount: true);
             return false;
         }
 
