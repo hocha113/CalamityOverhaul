@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.penetrate = 1;
             Projectile.timeLeft = 600;
             Projectile.extraUpdates = 3;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override void AI() {
@@ -65,8 +67,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.dust[dust].noGravity = true;
             }
 
-            if (Projectile.timeLeft < 560) {
-                CWRRef.HomeInOnNPC(Projectile, false, 620f, 9f, 60f);
+            //如果是白天，弹幕行为为直射且穿透
+            if (Projectile.ai[0] == 1) {
+                Projectile.extraUpdates = 4;
+                Projectile.penetrate = 5;
+            }
+            //如果是晚上，弹幕行为为追踪
+            else {
+                if (Projectile.timeLeft < 560) {
+                    CWRRef.HomeInOnNPC(Projectile, false, 620f, 9f, 60f);
+                }
             }
         }
 
@@ -102,16 +112,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 _ => 0                                                         //默认值：无效尘埃类型
             };
 
-            SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+            //白天模式下产生更剧烈的爆炸效果
+            if (Projectile.ai[0] == 1) {
+                SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+                for (int i = 0; i < 30; i++) {
+                    int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, 0f, 0f, 100, default, 2.5f);
+                    Main.dust[dust].noGravity = true;
+                    Main.dust[dust].velocity *= 3f;
+                }
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+                for (int i = 1; i <= 27; i++) {
+                    float factor = 30f / i;
+                    Vector2 offset = Projectile.oldVelocity * factor;
+                    Vector2 position = Projectile.oldPosition - offset;
 
-            for (int i = 1; i <= 27; i++) {
-                float factor = 30f / i;
-                Vector2 offset = Projectile.oldVelocity * factor;
-                Vector2 position = Projectile.oldPosition - offset;
-
-                //创建两种不同缩放和速度的尘埃效果
-                CreateDust(position, dustType, 1.8f, 0.5f);  //较大缩放，较低速度
-                CreateDust(position, dustType, 1.4f, 0.05f); //较小缩放，非常低速度
+                    //创建两种不同缩放和速度的尘埃效果
+                    CreateDust(position, dustType, 1.8f, 0.5f);  //较大缩放，较低速度
+                    CreateDust(position, dustType, 1.4f, 0.05f); //较小缩放，非常低速度
+                }
             }
         }
 
@@ -135,8 +155,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+            //白天模式下绘制更大的弹幕
+            float scale = Projectile.ai[0] == 1 ? Projectile.scale * 1.5f : Projectile.scale;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor)
-                , Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+                , Projectile.rotation, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }
@@ -159,11 +181,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void Shoot() {
-            for (int i = 0; i < 3; i++) {
-                Vector2 spanPos = ShootSpanPos + UnitToMouseV.GetNormalVector() * Main.rand.Next(-130, 130);
-                Vector2 ver = spanPos.To(InMousePos + UnitToMouseV * 360).UnitVector() * ShootSpeed;
+            //白天发射强力的穿透光束
+            if (Main.dayTime) {
                 int type = ModContent.ProjectileType<SolsticeHomeBeam>();
-                Projectile.NewProjectile(Source, spanPos, ver, type, Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+                Projectile.NewProjectile(Source, ShootSpanPos, UnitToMouseV * ShootSpeed * 1.5f, type, Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
+            }
+            //晚上发射多发追踪飞弹
+            else {
+                for (int i = 0; i < 3; i++) {
+                    Vector2 spanPos = ShootSpanPos + UnitToMouseV.GetNormalVector() * Main.rand.Next(-130, 130);
+                    Vector2 ver = spanPos.To(InMousePos + UnitToMouseV * 360).UnitVector() * ShootSpeed;
+                    int type = ModContent.ProjectileType<SolsticeHomeBeam>();
+                    Projectile.NewProjectile(Source, spanPos, ver, type, Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI, 0);
+                }
             }
         }
 
@@ -207,3 +237,4 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
     }
 }
+
