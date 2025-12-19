@@ -262,6 +262,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         public virtual void PreInOwner() { }
 
+        internal int idleTimer;
+
         public override void InOwner() {
             PreInOwner();
             SetHeld();
@@ -270,7 +272,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
             //如果玩家正在按住攻击键，则进度条向 1 (开火姿势) 推进
             //否则，进度条向 0 (闲置姿势) 回退
-            fireAnimationProgress += CanFire ? AimingAnimationSpeed : -AimingAnimationSpeed;
+            fireAnimationProgress += CanFire ? 1f : -AimingAnimationSpeed;//开火时直接设置为1，避免影响手感
             fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f); //确保进度在 0 和 1 之间
 
             if (!CanFire && LazyRotationUpdate) {
