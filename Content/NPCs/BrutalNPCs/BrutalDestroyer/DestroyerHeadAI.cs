@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyer;
-        private const int maxFindMode = 60000;
 
         private ref float AI_State => ref npc.ai[0];
         private ref float AI_Timer => ref npc.ai[1];
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static int iconIndex;
         internal static int iconIndex_Void;
 
-        internal static int StretchTime;
+        internal const int StretchTime = 360;
 
         private const int STATE_INTRO = 0;
         private const int STATE_IDLE_PATROL = 1;
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             CWRPlayer.TheDestroyer = npc.whoAmI;
-            StretchTime++;
+
             FindTarget();
             CheckEnrage();
             UpdateBodyList();
@@ -234,7 +233,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void ExecuteEncircleState() {
             //计算环绕目标点
             float angle = AI_Timer * 0.05f;
-            float radius = MathHelper.Lerp(1200f, 400f, Math.Min(AI_Timer / 300f, 1f)); //半径逐渐缩小
+            float radius = MathHelper.Lerp(1600f, 800f, Math.Min(AI_Timer / 300f, 1f)); //半径逐渐缩小
             Vector2 offset = angle.ToRotationVector2() * radius;
             targetPosition = targetPlayer.Center + offset;
 
@@ -244,10 +243,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             AI_Timer++;
 
+            int randNum = 160;
+            if (CWRWorld.Death) {
+                randNum -= 40;
+            }
             //在环绕过程中，体节向圆心发射激光
             if (AI_Timer > 60 && AI_Timer % 10 == 0) {
                 foreach (var segment in bodySegments) {
-                    if (Main.rand.NextBool(160)) { //随机体节开火
+                    if (Main.rand.NextBool(randNum)) { //随机体节开火
                         FireLaser(segment, targetPlayer.Center);
                     }
                 }
