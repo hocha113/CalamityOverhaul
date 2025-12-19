@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Accessories;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
