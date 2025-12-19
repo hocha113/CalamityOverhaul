@@ -426,9 +426,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            if (WorldGen.shadowOrbCount > 0) {
-                Objectives[0].CurrentProgress = 1;
-            }
+            //这里的任务完成会交给 ShadowOrbTP 来更新
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
     }
