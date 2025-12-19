@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                     if (!HalibutUIHead.Instance.Open) {
                         HalibutUIHead.Instance.Open = true;//打开比目鱼UI以便展示
                     }
-                    ResurrectionDeath.CloseEyes(halibutPlayer.Player);
+                    halibutPlayer.CloseEyes();
                     save.FirstResurrectionWarning = true;
                 }
             }

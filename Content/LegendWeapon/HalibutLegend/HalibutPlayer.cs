@@ -33,6 +33,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public bool HasHalubut;
         /// <summary>
+        /// 是否尝试关闭眼睛
+        /// </summary>
+        internal bool CanCloseEye;
+        /// <summary>
         /// 隐藏玩家计时器
         /// </summary>
         public int HidePlayerTime;
@@ -381,8 +385,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             _lastSyncedMouseDirection = mouseDirection;
         }
 
+        public void CloseEyes() {
+            if (!Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
+                return;
+            }
+
+            //使用新的IsCrashed方法，传入player实例，确保在服务器上也能正确判断
+            foreach (var save in halibutSave.activationSequence) {
+                if (save.IsCrashedState(Player)) {
+                    continue;//死机状态的眼睛不受影响
+                }
+                save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
+            }
+
+            List<int> activeIndices = [];
+
+            foreach (var index in halibutSave.activationSequence) {
+                if (index.IsActive) {
+                    activeIndices.Add(index.Index);
+                }
+            }
+
+            //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
+            halibutSave.InitializeEyes(activeIndices);
+            ResurrectionSystem.ResurrectionRate = 0f;
+        }
+
         public override void PostUpdate() {//在每帧更新后进行一些操作
-            if (HeldHalibut) {
+            ResurrectionSystem.Player = Player;
+            if (HeldHalibut && Player.Alives()) {
+                if (CanCloseEye) {
+                    CanCloseEye = false;
+                    CloseEyes();
+                }
                 //更新深渊复苏系统
                 ResurrectionSystem.Update();
             }

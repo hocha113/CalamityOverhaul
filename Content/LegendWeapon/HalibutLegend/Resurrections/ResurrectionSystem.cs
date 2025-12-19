@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using Terraria;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
@@ -6,6 +9,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
     public class ResurrectionSystem
     {
         #region 核心数据
+        internal Player Player;
+
         /// <summary>
         /// 当前复苏值
         /// </summary>
@@ -108,10 +113,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         public float ResurrectionRate {
             get => resurrectionRate;
             set {
-                float oldRate = resurrectionRate;
-                resurrectionRate = value;
-                if (Math.Abs(oldRate - value) > 0.001f) {
-                    OnRateChanged?.Invoke(value);
+                //如果数值变化极小，则忽略
+                if (Math.Abs(resurrectionRate - value) < 0.0001f) {
+                    return;
+                }
+
+                //本地设置值（不触发同步逻辑）
+                SetResurrectionRateNoSync(value);
+
+                //网络同步逻辑
+                if (Player == null || !Player.active) {
+                    return;
+                }
+
+                //如果是客户端，且是本机玩家，发送给服务器
+                if (VaultUtils.isClient && Player.whoAmI == Main.myPlayer) {
+                    SendResurrectionRate(value, Player.whoAmI);
+                }
+                //如果是服务器，发送给所有客户端，作为权威数据
+                else if (VaultUtils.isServer) {
+                    SendResurrectionRate(value, Player.whoAmI);
                 }
             }
         }
@@ -138,6 +159,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 检查是否为空
         /// </summary>
         public bool IsEmpty => currentValue <= 0f;
+        #endregion
+
+        #region 网络同步
+        /// <summary>
+        /// 设置复苏速度但不触发网络同步，用于接收网络包或内部更新
+        /// </summary>
+        public void SetResurrectionRateNoSync(float value) {
+            float oldRate = resurrectionRate;
+            resurrectionRate = value;
+            if (Math.Abs(oldRate - value) > 0.0001f) {
+                OnRateChanged?.Invoke(value);
+            }
+        }
+
+        /// <summary>
+        /// 发送复苏速度到网络
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="whoAmI"></param>
+        internal static void SendResurrectionRate(float value, int whoAmI) {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ResurrectionRate);
+            modPacket.Write((byte)whoAmI);
+            modPacket.Write(value);
+            modPacket.Send();
+        }
+
+        /// <summary>
+        /// 处理复苏速度网络包
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="senderWhoAmI"></param>
+        internal static void HandleResurrectionRate(BinaryReader reader, int senderWhoAmI) {
+            int playerIndex = reader.ReadByte();
+            float value = reader.ReadSingle();
+            if (!playerIndex.TryGetPlayer(out var player)) {
+                return;
+            }
+            if (!player.TryGetHalibutPlayer(out var halibutPlayer)) {
+                return;
+            }
+
+            //使用 NoSync 方法避免死循环，避免再次触发 Setter 的同步逻辑
+            halibutPlayer.ResurrectionSystem.SetResurrectionRateNoSync(value);
+
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            //服务器转发给其他客户端（排除发送者）
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ResurrectionRate);
+            modPacket.Write((byte)playerIndex);
+            modPacket.Write(value);
+            modPacket.Send(-1, senderWhoAmI);
+        }
         #endregion
 
         #region 核心方法

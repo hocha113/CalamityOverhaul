@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.S
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
@@ -42,6 +43,7 @@ namespace CalamityOverhaul
         HandleOldDukeCampsiteDataClient,
         SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
+        ResurrectionRate,
     }
 
     public static class CWRNetWork
@@ -96,6 +98,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.StartCampsiteFindMeScenario) {
                 ModifyOldDuke.StartCampsiteFindMeScenarioNetWork(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.ResurrectionRate) {
+                ResurrectionSystem.HandleResurrectionRate(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

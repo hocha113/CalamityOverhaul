@@ -466,43 +466,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
 
             ResetState();
-            CloseEyes(Player);
-
-            //双重保险：强制重置复苏速度
+            //强制重置复苏速度
             if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.CanCloseEye = true;
                 halibutPlayer.ResurrectionSystem.ResurrectionRate = 0f;
             }
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
-            CloseEyes(Player);
-        }
-
-        public static void CloseEyes(Player player) {
-            if (!player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
-                return;
-            }
-
-            //使用新的IsCrashed方法，传入player实例，确保在服务器上也能正确判断
-            foreach (var save in halibutSave.activationSequence) {
-                if (save.IsCrashedState(player)) {
-                    continue;//死机状态的眼睛不受影响
-                }
-                save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
-            }
-
-            List<int> activeIndices = [];
-
-            foreach (var index in halibutSave.activationSequence) {
-                if (index.IsActive) {
-                    activeIndices.Add(index.Index);
-                }
-            }
-
-            //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
-            halibutSave.InitializeEyes(activeIndices);
-            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ResurrectionSystem.ResurrectionRate = 0f;
+            if (Player.TryGetHalibutPlayer(out var halibutPlayer)) {
+                halibutPlayer.CanCloseEye = true;
             }
         }
         #endregion
