@@ -203,7 +203,50 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
         public override EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRGunShoot");
+
+        /// <summary>
+        /// 从闲置到瞄准姿势的动画过渡进度，范围从 0 (完全闲置) 到 1 (完全瞄准)
+        /// </summary>
+        protected float fireAnimationProgress;
+        /// <summary>
+        /// 瞄准动画的过渡速度，值越大，从闲置到开火姿势的过渡越快
+        /// </summary>
+        public float AimingAnimationSpeed = 0.2f;
         #endregion
+
+        /// <summary>
+        /// 统一处理从闲置到开火的所有姿势过渡和动画
+        /// </summary>
+        protected virtual void UpdateAimingAnimation() {
+            float idleArmRotFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            float idleArmRotBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            float idleRotation = GetGunBodyRot();
+            Vector2 idlePosition = GetGunBodyPos();
+
+            int originalDirection = Owner.direction;
+            int targetDirection = LazyRotationUpdate ? oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1 : ToMouse.X > 0 ? 1 : -1;
+
+            Owner.direction = targetDirection;
+            float fireRotation = GetGunInFireRot();
+
+            float originalRot = Projectile.rotation;
+            Projectile.rotation = fireRotation;
+            Vector2 firePosition = GetGunInFirePos();
+            Projectile.rotation = originalRot;
+
+            float fireArmRot = (MathHelper.PiOver2 * SafeGravDir - fireRotation) * DirSign * SafeGravDir;
+
+            Owner.direction = originalDirection;
+
+            Projectile.rotation = idleRotation.AngleLerp(fireRotation, fireAnimationProgress);
+            Projectile.Center = Vector2.Lerp(idlePosition, firePosition, fireAnimationProgress);
+            ArmRotSengsFront = idleArmRotFront.AngleLerp(fireArmRot, fireAnimationProgress);
+            ArmRotSengsBack = idleArmRotBack.AngleLerp(fireArmRot, fireAnimationProgress);
+
+            if (fireAnimationProgress >= 0.9f) {
+                Owner.direction = targetDirection;
+            }
+        }
 
         /// <summary>
         /// 更新枪压的作用状态
@@ -311,7 +354,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         public override void FiringIncident() {
             if (DownLeft && CanUseGun()) {
-                SetGunBodyInFire();
                 if (HaveAmmo) {//&& Projectile.IsOwnedByLocalPlayer()
                     if (!onFire) {
                         oldSetRoting = ToMouseA;
@@ -324,7 +366,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
 
             if (DownRight && CanUseGun() && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
-                SetGunBodyInFire();
                 if (HaveAmmo) {//&& Projectile.IsOwnedByLocalPlayer()
                     if (!onFireR) {
                         oldSetRoting = ToMouseA;
@@ -357,12 +398,11 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Projectile.timeLeft = 2;
             PreInOwner();
 
-            if (InOwner_HandState_AlwaysSetInFireRoding) {
-                SetGunBodyInFire();
-            }
-            else {
-                SetGunBodyHandIdle();
-            }
+            bool isFiring = CanFire || InOwner_HandState_AlwaysSetInFireRoding;
+            fireAnimationProgress += isFiring ? 1f : -AimingAnimationSpeed;
+            fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f);
+
+            UpdateAimingAnimation();
 
             if (ShootCoolingValue > 0) {
                 SetWeaponOccupancyStatus();

@@ -181,6 +181,15 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         private static float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
 
+        /// <summary>
+        /// 换弹动画进度
+        /// </summary>
+        protected float reloadAnimationProgress;
+        /// <summary>
+        /// 换弹动画过渡速度
+        /// </summary>
+        public float ReloadAnimationSpeed = 0.2f;
+
         #endregion
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
@@ -521,12 +530,15 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
             PreInOwner();
 
-            if (InOwner_HandState_AlwaysSetInFireRoding) {
-                SetGunBodyInFire();
-            }
-            else {
-                SetGunBodyHandIdle();
-            }
+            bool isFiring = CanFire || onFire || onFireR || InOwner_HandState_AlwaysSetInFireRoding;
+            fireAnimationProgress += isFiring ? 1f : -AimingAnimationSpeed;
+            fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f);
+
+            bool isReloading = kreloadTimeValue > 0 || OnKreload;
+            reloadAnimationProgress += isReloading ? 1f : -ReloadAnimationSpeed;
+            reloadAnimationProgress = MathHelper.Clamp(reloadAnimationProgress, 0f, 1f);
+
+            UpdateAimingAnimation();
 
             if (ShootCoolingValue > 0) {
                 SetWeaponOccupancyStatus();
@@ -550,7 +562,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 }
 
                 if (DownLeft && CanUseGun()) {
-                    SetGunBodyInFire();
                     if (IsKreload) {
                         if (!onFire) {
                             oldSetRoting = ToMouseA;
@@ -564,7 +575,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
                 if (DownRight && CanUseGun() && !onFire && CanRightClick && SafeMousetStart
                     && (!CartridgeHolderUI.Instance.hoverInMainPage || SafeMousetStart2)) {//Owner.PressKey()
-                    SetGunBodyInFire();
                     if (IsKreload) {
                         if (!onFireR) {
                             oldSetRoting = ToMouseA;
@@ -893,9 +903,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <param name="xl"></param>
         /// <param name="yl"></param>
         public void LoadingAnimation(int rot, int xl, int yl) {
-            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
-                FeederOffsetRot = -rot * SafeGravDir;
-                FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir);
+            if (reloadAnimationProgress > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+                FeederOffsetRot = -rot * SafeGravDir * reloadAnimationProgress;
+                FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir) * reloadAnimationProgress;
             }
         }
     }
