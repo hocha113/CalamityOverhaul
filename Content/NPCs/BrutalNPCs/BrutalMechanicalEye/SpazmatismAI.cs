@@ -671,7 +671,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private void SpazmatismAI_Phase2() {
             //魔焰眼二阶段逻辑
             //ai[1]:子状态 0=喷火追击 1=连续冲刺
-            
+
             float chaseSpeed = 8f;
             float turnSpeed = 0.15f;
             int flameDuration = 360;
@@ -711,7 +711,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         npc.velocity *= 0.9f;
                         npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
                     }
-                    
+
                     ai[2]++;
                     if (ai[2] == 20) { //冲刺开始
                         SoundEngine.PlaySound(SoundID.Roar, npc.Center);
@@ -738,7 +738,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private void RetinazerAI_Phase1() {
             //激光眼一阶段逻辑
             //ai[1]:子状态 0=悬停射击 1=调整位置
-            
+
             int shootRate = 50;
             float moveSpeed = 12f;
 
@@ -775,7 +775,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     Vector2 reposition = player.Center + Main.rand.NextVector2CircularEdge(400, 400);
                     MoveTo(reposition, moveSpeed * 1.5f, 0.1f);
                     npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
-                    
+
                     ai[2]++;
                     if (ai[2] >= 60 || Vector2.Distance(npc.Center, reposition) < 50) {
                         ai[1] = 0;
@@ -801,7 +801,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     float yDiff = player.Center.Y - npc.Center.Y;
                     npc.velocity.Y = MathHelper.Lerp(npc.velocity.Y, yDiff * 0.1f, 0.1f);
                     npc.velocity.X = MathHelper.Lerp(npc.velocity.X, (targetPos.X - npc.Center.X) * 0.05f, 0.1f);
-                    
+
                     npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
 
                     ai[2]++;
@@ -846,7 +846,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 case 2: //精准狙击
                     npc.velocity *= 0.9f;
                     npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
-                    
+
                     ai[2]++;
                     if (ai[2] < 60) {
                         //蓄力特效

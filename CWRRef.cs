@@ -15,7 +15,6 @@ using CalamityMod.TileEntities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.PRT;

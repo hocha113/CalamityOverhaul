@@ -70,11 +70,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     //使用更平滑的插值移动，模拟重型机械的惯性
                     Vector2 toDest = npc.To(destination);
                     float dist = toDest.Length();
-                    
+
                     //根据距离动态调整速度，远处快近处慢
                     float targetSpeed = MathHelper.Clamp(dist / 20f, 5f, hoverSpeed);
                     npc.velocity = Vector2.Lerp(npc.velocity, toDest.UnitVector() * targetSpeed, 0.08f);
-                    
+
                     //平滑旋转向目标
                     float targetAngle = npc.AngleTo(target.Center);
                     npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.1f);
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                         Vector2 dashDir = npc.To(target.Center).UnitVector().RotatedBy(dashAngleOffset);
                         //爆发性的冲刺速度
                         npc.velocity = dashDir * (hoverSpeed * 1.8f);
-                        
+
                         //冲刺音效
                         SoundEngine.PlaySound(SoundID.Item74, npc.Center);
 
@@ -133,11 +133,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.rotation = npc.velocity.ToRotation();
                     npc.damage = 95;
                     attackTimer++;
-                    
+
                     //冲刺期间保持速度，模拟动量
                     if (attackTimer < 15) {
                         npc.velocity *= 1.02f;
-                    } else {
+                    }
+                    else {
                         npc.velocity *= 0.98f;
                     }
 
@@ -212,7 +213,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             Texture2D value = Probe.Value;
             Texture2D value2 = Probe_Glow.Value;
-            
+
             //冲刺时的残影效果增强
             if (npc.ai[0] == 2f) {
                 for (int i = 0; i < npc.oldPos.Length; i += 2) {

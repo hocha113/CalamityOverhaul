@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         #region Data
         public override int TargetID => NPCID.TheDestroyer;
         private const int maxFindMode = 60000;
-        
+
         private ref float AI_State => ref npc.ai[0];
         private ref float AI_Timer => ref npc.ai[1];
         private ref float AI_SubState => ref npc.ai[2];
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (InfernumRef.InfernumModeOpenState) {
                 return true;
             }
-            
+
             //状态机执行
             switch ((int)AI_State) {
                 case STATE_INTRO:
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateMovement();
             HandleMouth();
             UpdateVisuals();
-            
+
             //网络同步
             if (Main.netMode != NetmodeID.MultiplayerClient && Main.GameUpdateCount % 10 == 0) {
                 npc.netUpdate = true;
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float timeFactor = Main.GameUpdateCount * 0.02f;
             Vector2 offset = new Vector2((float)Math.Cos(timeFactor), (float)Math.Sin(timeFactor) * 0.5f) * patrolRadius;
             targetPosition = targetPlayer.Center + offset;
-            
+
             //速度控制
             speed = 18f;
             turnSpeed = 0.4f;
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     turnSpeed = 2.5f; //极快转向对准玩家
                     Vector2 toPlayer = targetPlayer.Center - npc.Center;
                     targetPosition = targetPlayer.Center + toPlayer.SafeNormalize(Vector2.Zero) * 200f; //稍微越过玩家一点
-                    
+
                     //强制头部指向玩家
                     float targetAngle = toPlayer.ToRotation() + MathHelper.PiOver2;
                     npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.2f);
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 case 1: //冲刺
                     npc.velocity = moveVector;
                     npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
-                    
+
                     //产生残影和粒子
                     CreateDashVisuals();
 
@@ -308,11 +308,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     if (AI_Counter > 60) {
                         AI_SubState = 0;
                         AI_Counter = 0;
-                        
+
                         //检查是否结束冲刺阶段
                         if (AI_Timer > 4) { //已经冲刺了4次
                             SwitchState(STATE_IDLE_PATROL);
-                        } else {
+                        }
+                        else {
                             AI_Timer++; //记录冲刺次数
                         }
                     }
@@ -324,7 +325,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.velocity *= 0.9f;
             npc.rotation += 0.05f;
             AI_Timer++;
-            
+
             //爆炸特效
             if (AI_Timer % 5 == 0) {
                 Vector2 randomPos = npc.Center + Main.rand.NextVector2Circular(100, 100);
@@ -407,7 +408,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (currentSpeed < speed) {
                 npc.velocity += direction * (speed / 20f); //加速度
             }
-            
+
             //转向限制
             Vector2 desiredVelocity = direction * speed;
             npc.velocity = Vector2.Lerp(npc.velocity, desiredVelocity, turnSpeed / 20f);
@@ -444,7 +445,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 //如果击败了 2 个或更多机械 Boss，不调整伤害
             }
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity, ProjectileID.DeathLaser, damage, 0f, Main.myPlayer);
-            
+
             //发射特效
             if (Main.netMode != NetmodeID.Server) {
                 SoundEngine.PlaySound(SoundID.Item12, source.Center);
@@ -461,7 +462,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     , 0, ai0: oldIndex, ai1: index, ai2: 0, ai3: npc.whoAmI);
                 Main.npc[index].realLife = npc.whoAmI;
                 Main.npc[index].netUpdate = true;
-                
+
                 //强化体节属性
                 if (CWRWorld.MachineRebellion) {
                     Main.npc[index].lifeMax = npc.lifeMax;
@@ -477,17 +478,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //当速度方向与朝向玩家方向一致时张嘴
             float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(targetPlayer.Center).UnitVector());
             float dist = npc.Distance(targetPlayer.Center);
-            
+
             if (dist < 800 && dotProduct > 0.8f) {
                 if (dontOpenMouthTime <= 0) openMouth = true;
-            } else {
+            }
+            else {
                 openMouth = false;
             }
 
             if (openMouth) {
                 if (frame < 3) frame++;
                 dontOpenMouthTime = 60;
-            } else {
+            }
+            else {
                 if (frame > 0) frame--;
             }
 
@@ -499,7 +502,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (AI_Counter % 5 == 0) {
                 //这里可以添加屏幕震动逻辑
             }
-            
+
             //粒子拖尾
             Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.RedTorch, npc.velocity.X * 0.5f, npc.velocity.Y * 0.5f);
             d.noGravity = true;
@@ -554,7 +557,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             rule.SimpleAdd(ModContent.ItemType<Observer>(), 4);
             npcLoot.Add(rule);
         }
-        
+
         public override bool CheckActive() => false;
         #endregion
     }
