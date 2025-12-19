@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public override void SaveData(TagCompound tag) {
             try {
+                QuestProgress ??= [];
                 TagCompound questsTag = new();
                 foreach (var kvp in QuestProgress) {
                     questsTag[kvp.Key] = kvp.Value.Serialize();
@@ -26,6 +27,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public override void LoadData(TagCompound tag) {
             try {
+                QuestProgress ??= [];
                 QuestProgress.Clear();
                 if (tag.TryGet("QuestProgress", out TagCompound questsTag)) {
                     foreach (var kvp in questsTag) {

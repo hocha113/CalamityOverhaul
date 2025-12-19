@@ -27,12 +27,24 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         public static QuestSaveData Deserialize(TagCompound tag) {
-            return new QuestSaveData {
-                IsUnlocked = tag.GetBool("IsUnlocked"),
-                IsCompleted = tag.GetBool("IsCompleted"),
-                ObjectiveProgress = tag.GetList<int>("ObjectiveProgress") as List<int> ?? new(),
-                RewardsClaimed = tag.GetList<bool>("RewardsClaimed") as List<bool> ?? new()
-            };
+            var data = new QuestSaveData();
+            data.IsUnlocked = false;
+            if (tag.TryGet("IsUnlocked", out bool isUnlocked)) {
+                data.IsUnlocked = isUnlocked;
+            }
+            data.IsCompleted = false;
+            if (tag.TryGet("IsCompleted", out bool isCompleted)) {
+                data.IsCompleted = isCompleted;
+            }
+            data.ObjectiveProgress = [];
+            if (tag.TryGet("ObjectiveProgress", out List<int> objectiveProgress)) {
+                data.ObjectiveProgress = objectiveProgress;
+            }
+            data.RewardsClaimed = [];
+            if (tag.TryGet("RewardsClaimed", out List<bool> rewardsClaimed)) {
+                data.RewardsClaimed = rewardsClaimed;
+            }
+            return data;
         }
     }
 }
