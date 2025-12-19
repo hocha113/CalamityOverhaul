@@ -108,7 +108,7 @@ Items: {
 			'''
 	}
 
-	TextItem: {
+	TestItem: {
 		DisplayName: 测试物品
 		Tooltip: 嗯...你不应该拥有它
 	}

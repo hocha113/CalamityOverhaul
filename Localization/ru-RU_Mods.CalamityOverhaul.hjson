@@ -114,7 +114,7 @@ Items: {
 			'''
 	}
 
-	TextItem: {
+	TestItem: {
 		DisplayName: Тестировать
 		Tooltip: … У тебя не должно быть этого
 	}
