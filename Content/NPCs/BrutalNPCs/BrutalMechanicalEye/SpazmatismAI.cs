@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         //通用计时器索引
-        private const int GlobalTimer = 2;
         private const int AccompanySpawnStage = 11;
 
         #endregion
