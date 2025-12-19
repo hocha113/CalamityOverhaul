@@ -27,11 +27,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             NPCID.Sets.TrailingMode[npc.type] = 1;
             NPCID.Sets.TrailCacheLength[npc.type] = 16;
             if (CWRWorld.MachineRebellion) {
-                npc.life = npc.lifeMax *= 28;
+                npc.life = npc.lifeMax *= 8;
                 npc.defDefense = npc.defense = 20;
                 npc.defDamage = npc.damage *= 3;
-                npc.knockBackResist = 0.2f;//在机械暴乱中拥有很强的抗击退能力
-                npc.scale += 0.3f;
             }
         }
         public override bool AI() {
