@@ -15,6 +15,7 @@ using CalamityMod.TileEntities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.PRT;
@@ -50,7 +51,6 @@ namespace CalamityOverhaul
         private static bool dummyBool;
         private static int dummyInt;
         private static float dummyFloat;
-        private static float[] dummyFloats = [4];
 
         internal static void UnLoad() => _has = null;
 
@@ -1126,6 +1126,16 @@ namespace CalamityOverhaul
                     }
                 }
             }
+        }
+
+        public static void UpdateDestroyerBodyDRIncrease(NPC npc) {
+            if (!Has) return;
+            UpdateDestroyerBodyDRIncreaseInner(npc);
+        }
+        [CWRJITEnabled]
+        private static void UpdateDestroyerBodyDRIncreaseInner(NPC npc) {
+            npc.Calamity().newAI[1] = 1200;
+            npc.Calamity().CurrentlyIncreasingDefenseOrDR = false;
         }
 
         public static Projectile ProjectileRain(IEntitySource source, Vector2 targetPos, float xLimit

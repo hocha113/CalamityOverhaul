@@ -1,8 +1,11 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
@@ -66,11 +69,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             switch (state) {
                 case 0f: //靠近预热
-                    npc.velocity = Vector2.Lerp(npc.velocity, npc.To(destination).UnitVector() * hoverSpeed, 0.1f);
-                    npc.rotation = npc.AngleTo(target.Center);
+                    //使用更平滑的插值移动，模拟重型机械的惯性
+                    Vector2 toDest = npc.To(destination);
+                    float dist = toDest.Length();
+                    
+                    //根据距离动态调整速度，远处快近处慢
+                    float targetSpeed = MathHelper.Clamp(dist / 20f, 5f, hoverSpeed);
+                    npc.velocity = Vector2.Lerp(npc.velocity, toDest.UnitVector() * targetSpeed, 0.08f);
+                    
+                    //平滑旋转向目标
+                    float targetAngle = npc.AngleTo(target.Center);
+                    npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.1f);
 
-                    if (npc.WithinRange(destination, npc.velocity.Length() * 1.65f)) {
-                        npc.velocity = npc.To(target.Center).UnitVector() * -7f;
+                    if (npc.WithinRange(destination, 100f) || (generalTimer > 180 && dist < 400)) {
                         state = 1f;
                         attackTimer = 0f;
                         npc.netUpdate = true;
@@ -78,12 +89,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     break;
 
                 case 1f: //蓄力准备
-                    npc.velocity *= 0.975f;
+                    npc.velocity *= 0.92f; //更强的刹车感
                     npc.rotation = npc.AngleTo(target.Center);
                     attackTimer++;
 
-                    if (attackTimer == ReelBackTime / 2 && !VaultUtils.isClient) {
+                    //蓄力时的震动效果
+                    if (attackTimer > ReelBackTime * 0.5f) {
+                        npc.Center += Main.rand.NextVector2Circular(2f, 2f);
+                    }
+
+                    if (attackTimer == (int)(ReelBackTime * 0.7f) && !VaultUtils.isClient) {
                         SpawnPinkLaser();
+                        //发射激光时的后坐力
+                        npc.velocity -= npc.rotation.ToRotationVector2() * 6f;
                     }
 
                     //被攻击则提前打断蓄力
@@ -99,7 +117,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                         //冲刺方向扰动
                         float dashAngleOffset = Main.rand.NextFloat(-0.12f, 0.12f);
                         Vector2 dashDir = npc.To(target.Center).UnitVector().RotatedBy(dashAngleOffset);
-                        npc.velocity = dashDir * hoverSpeed;
+                        //爆发性的冲刺速度
+                        npc.velocity = dashDir * (hoverSpeed * 1.8f);
+                        
+                        //冲刺音效
+                        SoundEngine.PlaySound(SoundID.Item74, npc.Center);
 
                         npc.oldPos = new Vector2[npc.oldPos.Length];
                         state = 2f;
@@ -113,10 +135,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.rotation = npc.velocity.ToRotation();
                     npc.damage = 95;
                     attackTimer++;
+                    
+                    //冲刺期间保持速度，模拟动量
+                    if (attackTimer < 15) {
+                        npc.velocity *= 1.02f;
+                    } else {
+                        npc.velocity *= 0.98f;
+                    }
 
                     //冲刺失败后进入短暂思考状态
-                    if (attackTimer > 60f || npc.collideX || npc.collideY) {
-                        npc.velocity = -Vector2.UnitY.RotatedByRandom(0.6f) * 3f;
+                    if (attackTimer > 45f || npc.collideX || npc.collideY) {
+                        //撞击后的反弹或减速
+                        npc.velocity *= 0.5f;
                         state = 3f;
                         attackTimer = 0f;
                         npc.netUpdate = true;
@@ -124,13 +154,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     break;
 
                 case 3f: //停顿等待阶段（失败后思考）
-                    npc.velocity *= 0.9f;
-                    npc.rotation = npc.AngleTo(target.Center);
+                    npc.velocity *= 0.94f;
+                    //缓慢转向目标
+                    float recoverAngle = npc.AngleTo(target.Center);
+                    npc.rotation = npc.rotation.AngleLerp(recoverAngle, 0.05f);
                     attackTimer++;
 
-                    if (attackTimer > 20f) {
+                    if (attackTimer > 30f) {
                         state = 0f;
                         attackTimer = 0f;
+                        generalTimer = 0; //重置总计时器
                         npc.netUpdate = true;
                     }
                     break;
@@ -155,10 +188,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
                 //如果击败了 2 个或更多机械 Boss，不调整伤害
             }
-            int proj = Projectile.NewProjectile(npc.FromObjectGetParent(), npc.Center
-                , npc.rotation.ToRotationVector2() * 8, ProjectileID.PinkLaser, damage, 2);
-            Main.projectile[proj].timeLeft = 300;
-            Main.projectile[proj].netUpdate = true;
+            //发射音效
+            SoundEngine.PlaySound(SoundID.Item12, npc.Center);
+            Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , npc.Center, npc.rotation.ToRotationVector2()
+                                        , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                        , Main.myPlayer, -1, -1, 0);
+
+            //发射时的粒子效果
+            for (int i = 0; i < 10; i++) {
+                Vector2 dustVel = npc.rotation.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 5f);
+                Dust.NewDust(npc.Center, 0, 0, DustID.PinkTorch, dustVel.X, dustVel.Y);
+            }
         }
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {
@@ -173,6 +214,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             Texture2D value = Probe.Value;
             Texture2D value2 = Probe_Glow.Value;
+            
+            //冲刺时的残影效果增强
+            if (npc.ai[0] == 2f) {
+                for (int i = 0; i < npc.oldPos.Length; i += 2) {
+                    Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                    float opacity = 0.6f * (1f - i / (float)npc.oldPos.Length);
+                    spriteBatch.Draw(value2, drawOldPos, null, Color.Red * opacity
+                        , drawRot, value2.Size() / 2, npc.scale, spriteEffects, 0);
+                }
+            }
+
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , null, drawColor, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
 

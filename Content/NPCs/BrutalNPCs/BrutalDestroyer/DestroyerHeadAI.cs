@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return;
             }
 
-            int idleTime = 600;
+            int idleTime = 660;
             if (CWRWorld.MasterMode) {
                 idleTime -= 60;
             }

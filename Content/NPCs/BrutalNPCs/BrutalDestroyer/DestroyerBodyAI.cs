@@ -28,15 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static Asset<Texture2D> Tail_Glow = null;
         private static int iconIndex;
         private static int iconIndex2;
-        private const float BeamWarningDuration = 120f;
         private const float AerialPhaseThreshold = 900f;
-        private const float ExtremeModeBeamThreshold = 600f;
-        private const float PhaseShiftWarningDuration = 180f;
         private const float Phase5AerialTimerValue = AerialPhaseThreshold;
         private const float Phase4AerialTimerValue = AerialPhaseThreshold * 0.5f;
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
-        private const float AerialWarningStartThreshold = AerialPhaseThreshold - PhaseShiftWarningDuration;
-        private const float GroundWarningStartThreshold = AerialPhaseResetThreshold - PhaseShiftWarningDuration;
         private float bodyCount;
         private bool IsBodyAlt => bodyCount % 2 == 0;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
@@ -54,7 +49,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool skeletronAlive;
         private int mechdusaCurvedSpineSegmentIndex;
         private int mechdusaCurvedSpineSegments;
-        private float phaseTransitionColorAmount;
         private int time;
         protected int frame;
         internal Player Target => npc.FindPlayer();
@@ -124,9 +118,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             SetMechQueenUp();
             UpdateFlightPhase();
-            phaseTransitionColorAmount = CalculatePhaseTransitionColorAmount();
             UpdateEnrageScale();
             UpdateAlpha();
+            CWRRef.UpdateDestroyerBodyDRIncrease(npc);
             VaultUtils.ClockFrame(ref frame, 5, 3);
 
             int headIndex = FindHeadIndex((int)npc.ai[3]);
@@ -253,22 +247,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (ai[3] >= AerialPhaseResetThreshold) {
                 ai[3] = flightPhaseTimerSetValue;
             }
-        }
-
-        private float CalculatePhaseTransitionColorAmount() {
-            if (HasSpawnDR || Phase3) {
-                return 1f;
-            }
-
-            if (ai[3] >= GroundWarningStartThreshold) {
-                return MathHelper.Clamp(1f - (ai[3] - GroundWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
-            }
-
-            if (ai[3] >= AerialWarningStartThreshold) {
-                return MathHelper.Clamp((ai[3] - AerialWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
-            }
-
-            return 0f;
         }
 
         private void UpdateEnrageScale() {
@@ -488,14 +466,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                 }
             }
-        }
-
-        private static Vector3 GetTelegraphColor(int destroyerLaserColor) {
-            return destroyerLaserColor switch {
-                1 => new Vector3(0.1f, 0.3f, 0.05f),
-                2 => new Vector3(0.05f, 0.2f, 0.2f),
-                _ => new Vector3(0.3f, 0.1f, 0.05f)
-            };
         }
 
         private void Move(float segmentVelocity) {
