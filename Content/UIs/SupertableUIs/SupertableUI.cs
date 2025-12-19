@@ -70,7 +70,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private GridCoordinate _hoveredCell;
         private Rectangle _gridRectangle;
         private Rectangle _resultRectangle;
-        private Rectangle _closeButtonRectangle;
 
         public bool HoverInPutItemCellPage { get; private set; }
         public bool OnInputSlot { get; private set; }
@@ -254,12 +253,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 player.mouseInterface = true;
             }
 
-            //然后处理其他输入
-            HandleInput();
-
             _sidebarManager?.Update();
             _recipeNavigator?.Update();
             _quickActionsManager?.Update();
+            //再更新一次基础数据，确保前面的更改被应用了
+            UpdateUIPositions();
+            UpdateHoveredCell();
+
+            //然后处理其他输入
+            HandleInput();
 
             //定期自动保存到TileProcessor
             if (Active && TramTP != null) {
@@ -291,25 +293,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 SupertableConstants.INPUT_SLOT_SIZE
             );
 
-            _closeButtonRectangle = new Rectangle(
-                (int)DrawPosition.X,
-                (int)DrawPosition.Y,
-                SupertableConstants.CLOSE_BUTTON_SIZE,
-                SupertableConstants.CLOSE_BUTTON_SIZE
-            );
-
             UIHitBox = new Rectangle(
-                (int)topLeft.X,
-                (int)topLeft.Y,
+                (int)(topLeft.X - SupertableConstants.MAIN_UI_OFFSET.X),
+                (int)(topLeft.Y - SupertableConstants.MAIN_UI_OFFSET.Y),
                 _gridRectangle.Width + 200,
-                _gridRectangle.Height
+                _gridRectangle.Height + 44
             );
 
             Rectangle mouseRec = MouseHitBox;
             hoverInMainPage = UIHitBox.Intersects(mouseRec);
             HoverInPutItemCellPage = _gridRectangle.Intersects(mouseRec);
             OnInputSlot = _resultRectangle.Intersects(mouseRec);
-            OnCloseButton = _closeButtonRectangle.Intersects(mouseRec);
+            OnCloseButton = !hoverInMainPage && !player.mouseInterface;
         }
 
         private void UpdateHoveredCell() {
@@ -326,9 +321,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #region 输入处理
 
         private void HandleInput() {
-            //处理关闭按钮 - 提高优先级
+            //处理关闭
             if (OnCloseButton) {
-                player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = SupertableConstants.SOUND_PITCH_CLOSE });
                     //立即关闭UI并触发关闭动画
@@ -413,7 +407,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-            DrawCloseButton(spriteBatch, alpha);
             DrawPreviewItems(spriteBatch, alpha * 0.25f);
             DrawSlotItems(spriteBatch, alpha);
             DrawResultSlot(spriteBatch, alpha);
@@ -423,18 +416,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             _quickActionsManager?.Draw(spriteBatch, alpha);
 
             DrawHoverTooltips();
-        }
-
-        private void DrawCloseButton(SpriteBatch spriteBatch, float alpha) {
-            Texture2D closeIcon = CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon");
-            spriteBatch.Draw(closeIcon, DrawPosition, null, Color.White * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-            if (OnCloseButton && alpha >= 1) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value,
-                    CWRLocText.GetTextValue("SupertableUI_Text1"),
-                    DrawPosition.X, DrawPosition.Y, Color.Gold, Color.Black, new Vector2(0.3f),
-                    1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
-            }
         }
 
         private void DrawPreviewItems(SpriteBatch spriteBatch, float alpha) {

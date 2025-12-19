@@ -51,6 +51,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             _sidebarHeight = visibleSlots * 64;
 
             if (_hitbox.Intersects(_mainUI.MouseHitBox)) {
+                Main.LocalPlayer.mouseInterface = true;
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollDelta = currentMouseState.ScrollWheelValue - _oldMouseState.ScrollWheelValue;
                 _scrollValue -= scrollDelta;
