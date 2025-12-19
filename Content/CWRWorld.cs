@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -115,16 +116,52 @@ namespace CalamityOverhaul.Content
             return false;
         }
 
+        public static void StartMetalMusic() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            if (MachineRebellion) {
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+                return;
+            }
+
+            if (!HasBoss) {
+                return;
+            }
+
+            if (HeadPrimeAI.DontReform()) {
+                return;
+            }
+
+            bool found = false;
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type == NPCID.SkeletronPrime) {
+                    found = true;
+                    break;
+                }
+                else if (npc.type == NPCID.TheDestroyer) {
+                    found = true;
+                    break;
+                }
+                else if (npc.type == NPCID.Retinazer || npc.type == NPCID.Spazmatism) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return;
+            }
+
+            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+        }
+
         public static void UpdateMachineRebellion() {
             if (!MachineRebellion) {
                 return;
             }
 
             NPC.mechQueen = -1;
-
-            if (!Main.dedServ) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-            }
 
             bool noBoss = true;
             //在机械暴乱开启下，检测如果全程机械Boss被杀死了后就自动关闭
@@ -169,6 +206,8 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+
+            StartMetalMusic();
         }
 
         public override void NetSend(BinaryWriter writer) {
