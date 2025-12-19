@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -66,6 +67,9 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
+            Point16 point16 = Main.MouseWorld.ToTileCoordinates16();
+            Framing.GetTileSafely(point16).TileFrameX.Domp();
+            VaultUtils.IsTopLeft(point16, out _).Domp();
             return true;
         }
     }
