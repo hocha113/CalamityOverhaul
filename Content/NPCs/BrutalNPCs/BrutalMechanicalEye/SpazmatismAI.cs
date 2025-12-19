@@ -47,24 +47,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         //通用计时器索引
         private const int GlobalTimer = 2;
-        private const int ActionCounter = 3;
-        private const int PhaseManager = 6;
-
-        //原生AI专用计时器/参数
-        private const int PositionalKey = 3;
-        private const int AttackCounter = 4;
-        private const int MirrorIndex = 5;
-
-        //随从AI专用计时器/参数
-        private const int AccompanySubAttackTimer = 2;
-        private const int AccompanyFireCounter = 3;
-        private const int AccompanyMovementTimer = 4;
-        private const int AccompanyFireTimer = 5;
-        private const int AccompanyRetreatTimer = 6;
-        private const int AccompanyInSprintState = 7;
-        private const int AccompanyDestroyerAttackTimer = 8;
-        private const int AccompanyVerticalMovement = 9;
-        private const int AccompanyVerticalDirection = 10;
         private const int AccompanySpawnStage = 11;
 
         #endregion
@@ -563,312 +545,356 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 原生AI (Protogenesis AI)
         private bool ProtogenesisAI() {
-            //npc.dontTakeDamage = false;
-            //npc.damage = npc.defDamage;
-
-            ////当血量低于阈值时，强制切换到二阶段战斗
-            //float lifeRatio = npc.life / (float)npc.lifeMax;
-            //bool isEnraged = CalamityWorld.death || BossRushEvent.BossRushActive;
-            //if (lifeRatio < 0.6f && (PrimaryAIState)ai[0] == PrimaryAIState.Battle) {
-            //   //切换到二阶段
-            //   ai[0] = (int)PrimaryAIState.EnragedBattle;
-            //   //重置所有计时器和状态
-            //   ai[1] = (int)AttackState.CircularShot;
-            //   ai[GlobalTimer] = 0;
-            //   ai[PositionalKey] = 0;
-            //   ai[AttackCounter] = 0;
-            //   ai[MirrorIndex] = 1;
-            //   ai[PhaseManager] = 0; //阶段管理器
-            //   //阶段转换演出
-            //   npc.dontTakeDamage = true;
-            //   SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-            //   NetAISend();
-            //   return false;
-            //}
-
-            //PrimaryAIState state = (PrimaryAIState)ai[0];
-            //switch (state) {
-            //   case PrimaryAIState.Initialization:
-            //       ai[0] = (int)PrimaryAIState.Debut;
-            //       NetAISend();
-            //       break;
-            //   case PrimaryAIState.Debut:
-            //       HandleDebut();
-            //       break;
-            //   case PrimaryAIState.Battle:
-            //       HandleProtogenesisBattle(isEnraged, CWRWorld.Death);
-            //       break;
-            //   case PrimaryAIState.EnragedBattle:
-            //       //处理阶段转换时的无敌和回血演出
-            //       if (npc.dontTakeDamage) {
-            //           ai[GlobalTimer]++;
-            //           int healAmount = (int)(npc.lifeMax / 120f);
-            //           if (npc.life < npc.lifeMax * 0.7f) //回血到一个特定值
-            //           {
-            //               npc.life += healAmount;
-            //               CombatText.NewText(npc.Hitbox, Color.Lime, healAmount);
-            //           }
-            //           if (ai[GlobalTimer] > 120) {
-            //               npc.dontTakeDamage = false;
-            //               ai[GlobalTimer] = 0;
-            //           }
-            //           return false; //在演出期间不做任何事
-            //       }
-            //       return true;
-            //   case PrimaryAIState.Flee:
-            //       HandleFlee();
-            //       break;
-            //}
-
-            return true;
-        }
-
-        private void HandleProtogenesisBattle(bool isEnraged, bool death = false) {
-            AttackState attackState = (AttackState)ai[1];
-            switch (attackState) {
-                case AttackState.CircularShot:
-                    HandleCircularShot(isEnraged, death);
-                    break;
-                case AttackState.BarrageAndDash:
-                    HandleBarrageAndDash(isEnraged, death);
-                    break;
-                case AttackState.PreparingDash:
-                    HandlePreparingDash(isEnraged, death);
-                    break;
-                case AttackState.Dashing:
-                    HandleDashing(isEnraged, death);
-                    break;
-                case AttackState.PostDash:
-                    HandlePostDash(isEnraged, death);
-                    break;
+            //检查玩家状态
+            if (player.dead || !player.active) {
+                npc.velocity.Y -= 0.5f;
+                npc.EncourageDespawn(10);
+                return false;
             }
-            ai[GlobalTimer]++;
-        }
 
-        //新的、模块化的攻击行为
-        private void HandleCircularShot(bool isEnraged, bool death) {
-            const int AttackDuration = 480;
-            const int FireRate = 45;
+            //初始化状态
+            if (ai[0] == (int)PrimaryAIState.Initialization) {
+                ai[0] = (int)PrimaryAIState.Debut;
+                ai[1] = 0;
+            }
 
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            Vector2 toTarget = npc.Center.To(player.Center);
-            float rotation = (ai[GlobalTimer] * 0.02f) * (isSpazmatism ? 1f : -1f);
-            Vector2 offset = rotation.ToRotationVector2() * 600;
-            SetEyeValue(npc, player, player.Center + offset, toTarget);
+            //登场演出
+            if (ai[0] == (int)PrimaryAIState.Debut) {
+                if (!AccompanyDebut()) {
+                    ai[0] = (int)PrimaryAIState.Battle;
+                    ai[1] = 0;
+                    ai[2] = 0;
+                    ai[3] = 0;
+                }
+                return false;
+            }
 
-            if (ai[GlobalTimer] % FireRate == 0) {
-                if (!VaultUtils.isClient) {
-                    int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-                    int projDamage = isEnraged ? 36 : 30;
-                    float shootSpeed = 7f;
-                    int projectiles = death ? 8 : 6; //二阶段发射更多弹幕
-                    for (int i = 0; i < projectiles; i++) {
-                        Vector2 velocity = (MathHelper.TwoPi / projectiles * i).ToRotationVector2() * shootSpeed;
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity, projType, projDamage, 0);
-                    }
+            //二阶段检测与转换
+            bool secondPhase = IsSecondPhase();
+            if (secondPhase && ai[0] != (int)PrimaryAIState.EnragedBattle) {
+                ai[0] = (int)PrimaryAIState.EnragedBattle;
+                ai[1] = 0;
+                ai[2] = 0;
+                ai[3] = 0;
+                //转换时的特效或音效
+                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                //清除所有负面buff
+                for (int i = 0; i < npc.buffType.Length; i++) {
+                    npc.buffTime[i] = 0;
                 }
             }
 
-            if (ai[GlobalTimer] > AttackDuration) {
-                //切换到下一个攻击状态
-                ai[1] = (int)AttackState.BarrageAndDash;
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-        }
-
-        private void HandleBarrageAndDash(bool isEnraged, bool death) {
-            const int AttackDuration = 300;
-            const int FireRate = 20;
-
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            NPC otherTwin = CWRUtils.GetNPCInstance(isSpazmatism ? NPCID.Retinazer : NPCID.Spazmatism);
-
-            //这个状态下，一只眼进行弹幕压制，另一只准备冲刺
-            if (isSpazmatism) //咒火眼负责射击
-            {
-                Vector2 toTarget = npc.Center.To(player.Center);
-                Vector2 offset = new Vector2(0, -400); //悬停在玩家上方
-                SetEyeValue(npc, player, player.Center + offset, toTarget);
-
-                if (ai[GlobalTimer] % FireRate == 0) {
-                    if (!VaultUtils.isClient) {
-                        int projType = ModContent.ProjectileType<Fireball>();
-                        int projDamage = isEnraged ? 36 : 30;
-                        float spread = death ? 0.3f : 0.5f;
-                        Vector2 velocity = toTarget.UnitVector() * 9f;
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity.RotatedByRandom(spread), projType, projDamage, 0);
-                    }
-                }
-            }
-            else //激光眼不攻击，移动到侧面准备冲刺
-            {
-                if (otherTwin.Alives()) {
-                    otherTwin.GetOverride<SpazmatismAI>().ai[1] = (int)AttackState.BarrageAndDash;
-                    otherTwin.GetOverride<SpazmatismAI>().ai[GlobalTimer] = ai[GlobalTimer]; //同步计时器
-                }
-                ai[1] = (int)AttackState.PreparingDash; //自己切换到冲刺准备
-                ai[GlobalTimer] = 0;
-                NetAISend();
-                return;
-            }
-
-            if (ai[GlobalTimer] > AttackDuration) {
-                //攻击结束，两者同步切换到下一个状态
-                ai[1] = (int)AttackState.CircularShot;
-                if (otherTwin.Alives()) otherTwin.GetOverride<SpazmatismAI>().ai[1] = (int)AttackState.CircularShot;
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-        }
-
-        private void HandlePreparingDash(bool isEnraged, bool death) {
-            const int PreparationTime = 60;
-            npc.damage = 0;
-
-            //移动到玩家一侧作为冲刺起点
-            Vector2 toTarget = npc.Center.To(player.Center);
-            Vector2 toPoint = player.Center + new Vector2(Math.Sign(player.Center.X - npc.Center.X) * -800, 0);
-            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.08f);
-            npc.rotation = npc.rotation.AngleLerp(toTarget.ToRotation() - MathHelper.PiOver2, 0.1f);
-
-            //播放准备音效和视觉效果
-            if (ai[GlobalTimer] == 1) {
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.5f }, npc.Center);
-            }
-
-            if (ai[GlobalTimer] > PreparationTime) {
-                ai[1] = (int)AttackState.Dashing;
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-        }
-
-        private void HandleDashing(bool isEnraged, bool death) {
-            const int DashSetupTime = 10;
-
-            //冲刺前短暂锁定目标
-            if (ai[GlobalTimer] == 1) {
-                SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
-                Vector2 toTarget = npc.Center.To(player.Center);
-                float speed = isEnraged ? 32f : 26f;
-                if (death) speed *= 1.2f;
-                npc.velocity = toTarget.UnitVector() * speed;
-                npc.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
-                npc.damage = (int)(npc.defDamage * 1.5f);
-            }
-
-            //冲刺中
-            if (ai[GlobalTimer] > DashSetupTime) {
-                //冲刺时可以附加拖尾特效
-            }
-
-            //当冲过玩家位置后，结束冲刺
-            if (Vector2.Dot(npc.velocity, player.Center - npc.Center) < 0 || ai[GlobalTimer] > 120) {
-                ai[1] = (int)AttackState.PostDash;
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-        }
-
-        private void HandlePostDash(bool isEnraged, bool death) {
-            const int CooldownTime = 90;
-
-            npc.damage = npc.defDamage;
-            npc.velocity *= 0.95f; //速度锐减
-
-            if (ai[GlobalTimer] > CooldownTime) {
-                //让负责射击的另一只眼也切换状态
-                NPC spazmatism = CWRUtils.GetNPCInstance(NPCID.Spazmatism);
-                if (spazmatism.Alives()) {
-                    spazmatism.GetOverride<SpazmatismAI>().ai[1] = (int)AttackState.CircularShot;
-                    spazmatism.GetOverride<SpazmatismAI>().ai[GlobalTimer] = 0;
-                }
-                ai[1] = (int)AttackState.CircularShot; //自己也切换回环绕射击
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-        }
-
-
-        #endregion
-
-        #region 通用行为 (登场与退场)
-        private bool HandleDebut() {
-            const int DebutDuration = 180;
-            const int HealStartTime = 90;
-
-            if (ai[GlobalTimer] == 0) {
-                //初始化位置
-                npc.life = 1;
-                npc.Center = player.Center + (npc.type == NPCID.Spazmatism ? new Vector2(-1200, 1000) : new Vector2(1200, 1000));
-            }
-
-            npc.damage = 0;
-            npc.dontTakeDamage = true;
-            npc.velocity = Vector2.Zero;
-            npc.position += player.velocity;
-
-            Vector2 toTarget = npc.Center.To(player.Center);
-            npc.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
-
-            //飞入场内的路径
-            Vector2 destination;
-            if (ai[GlobalTimer] < HealStartTime) {
-                destination = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? 500 : -500, 500);
+            //根据类型分发逻辑
+            if (npc.type == NPCID.Spazmatism) {
+                if (secondPhase) SpazmatismAI_Phase2();
+                else SpazmatismAI_Phase1();
             }
             else {
-                destination = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? -500 : 500, -500);
-
-                if (ai[GlobalTimer] == HealStartTime && !VaultUtils.isServer && !accompany) {
-                    SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
-                }
-
-                //开始回血演出
-                int healAmount = (int)(npc.lifeMax / (float)(DebutDuration - HealStartTime));
-                if (npc.life < npc.lifeMax) {
-                    npc.life += healAmount;
-                    CombatText.NewText(npc.Hitbox, CombatText.HealLife, healAmount);
-                }
-                else {
-                    npc.life = npc.lifeMax;
-                }
+                if (secondPhase) RetinazerAI_Phase2();
+                else RetinazerAI_Phase1();
             }
 
-            npc.Center = Vector2.Lerp(npc.Center, destination, 0.065f);
-
-            if (ai[GlobalTimer] > DebutDuration) {
-                //登场结束，进入战斗状态
-                if (!VaultUtils.isServer && !accompany) {
-                    SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
-                }
-                npc.dontTakeDamage = false;
-                npc.damage = npc.defDamage;
-                ai[0] = (int)PrimaryAIState.Battle;
-                ai[1] = 0; //重置攻击状态
-                ai[GlobalTimer] = 0;
-                NetAISend();
-            }
-
-            ai[GlobalTimer]++;
-            return true;
+            return false;
         }
 
-        private void HandleFlee(bool isAccompany = false) {
-            if (ai[GlobalTimer] == 2 && !VaultUtils.isServer && npc.type == NPCID.Spazmatism) {
-                string textKey = isAccompany ? "Spazmatism_Text7" : "Spazmatism_Text5";
-                VaultUtils.Text(CWRLocText.GetTextValue(textKey), TextColor1);
-                VaultUtils.Text(CWRLocText.GetTextValue(textKey), TextColor2);
+        private void SpazmatismAI_Phase1() {
+            //魔焰眼一阶段逻辑
+            //ai[1]:子状态 0=悬停射击 1=冲刺准备 2=冲刺
+            //ai[2]:计时器
+            //ai[3]:计数器
+
+            int shootRate = 60;
+            int dashCountMax = 3;
+            float moveSpeed = 14f;
+            float dashSpeed = 28f;
+
+            if (CWRWorld.MachineRebellion) {
+                shootRate = 45;
+                moveSpeed = 18f;
+                dashSpeed = 35f;
             }
 
-            npc.dontTakeDamage = true;
-            npc.damage = 0;
-            npc.velocity.Y -= 0.5f; //向上加速飞走
-            if (ai[GlobalTimer] > 200) {
-                npc.active = false;
+            switch ((int)ai[1]) {
+                case 0: //悬停射击
+                    Vector2 hoverTarget = player.Center + new Vector2(npc.Center.X < player.Center.X ? -400 : 400, -200);
+                    MoveTo(hoverTarget, moveSpeed, 0.05f);
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+
+                    ai[2]++;
+                    if (ai[2] >= shootRate) {
+                        if (!VaultUtils.isClient) {
+                            Vector2 shootVel = (player.Center - npc.Center).UnitVector() * 12f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, shootVel, ModContent.ProjectileType<Fireball>(), 30, 0f, Main.myPlayer);
+                        }
+                        SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                        ai[2] = 0;
+                        ai[3]++;
+                    }
+
+                    if (ai[3] >= 6) { //射击6次后进入冲刺
+                        ai[1] = 1;
+                        ai[2] = 0;
+                        ai[3] = 0;
+                    }
+                    break;
+
+                case 1: //冲刺准备
+                    npc.velocity *= 0.9f;
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+                    ai[2]++;
+                    if (ai[2] >= 30) {
+                        SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                        ai[1] = 2;
+                        ai[2] = 0;
+                        npc.velocity = (player.Center - npc.Center).UnitVector() * dashSpeed;
+                    }
+                    break;
+
+                case 2: //冲刺
+                    npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
+                    ai[2]++;
+                    if (ai[2] >= 40) { //冲刺持续时间
+                        npc.velocity *= 0.5f;
+                        ai[3]++;
+                        if (ai[3] >= dashCountMax) {
+                            ai[1] = 0; //回到悬停
+                            ai[3] = 0;
+                        }
+                        else {
+                            ai[1] = 1; //继续冲刺
+                        }
+                        ai[2] = 0;
+                    }
+                    break;
             }
-            ai[GlobalTimer]++;
         }
+
+        private void SpazmatismAI_Phase2() {
+            //魔焰眼二阶段逻辑
+            //ai[1]:子状态 0=喷火追击 1=连续冲刺
+            
+            float chaseSpeed = 8f;
+            float turnSpeed = 0.15f;
+            int flameDuration = 360;
+            int dashCountMax = 5;
+
+            if (CWRWorld.MachineRebellion) {
+                chaseSpeed = 12f;
+                turnSpeed = 0.25f;
+                flameDuration = 420;
+                dashCountMax = 7;
+            }
+
+            switch ((int)ai[1]) {
+                case 0: //喷火追击
+                    Vector2 targetDir = (player.Center - npc.Center).UnitVector();
+                    npc.velocity = Vector2.Lerp(npc.velocity, targetDir * chaseSpeed, turnSpeed);
+                    npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
+
+                    ai[2]++;
+                    if (ai[2] % 5 == 0) { //高频率喷火
+                        if (!VaultUtils.isClient) {
+                            Vector2 fireVel = npc.velocity.UnitVector() * 14f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, fireVel, ProjectileID.EyeFire, 35, 0f, Main.myPlayer);
+                        }
+                        SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                    }
+
+                    if (ai[2] >= flameDuration) {
+                        ai[1] = 1;
+                        ai[2] = 0;
+                        ai[3] = 0;
+                    }
+                    break;
+
+                case 1: //连续冲刺
+                    if (ai[2] == 0) { //准备
+                        npc.velocity *= 0.9f;
+                        npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+                    }
+                    
+                    ai[2]++;
+                    if (ai[2] == 20) { //冲刺开始
+                        SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                        npc.velocity = (player.Center - npc.Center).UnitVector() * 40f;
+                    }
+
+                    if (ai[2] > 20) {
+                        npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
+                    }
+
+                    if (ai[2] >= 50) { //单次冲刺结束
+                        npc.velocity *= 0.4f;
+                        ai[2] = 0;
+                        ai[3]++;
+                        if (ai[3] >= dashCountMax) {
+                            ai[1] = 0; //回到喷火
+                            ai[3] = 0;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void RetinazerAI_Phase1() {
+            //激光眼一阶段逻辑
+            //ai[1]:子状态 0=悬停射击 1=调整位置
+            
+            int shootRate = 50;
+            float moveSpeed = 12f;
+
+            if (CWRWorld.MachineRebellion) {
+                shootRate = 35;
+                moveSpeed = 16f;
+            }
+
+            switch ((int)ai[1]) {
+                case 0: //悬停射击
+                    Vector2 hoverTarget = player.Center + new Vector2(0, -350);
+                    MoveTo(hoverTarget, moveSpeed, 0.08f);
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+
+                    ai[2]++;
+                    if (ai[2] >= shootRate) {
+                        if (!VaultUtils.isClient) {
+                            Vector2 shootVel = (player.Center - npc.Center).UnitVector() * 10f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, shootVel, ProjectileID.DeathLaser, 25, 0f, Main.myPlayer);
+                        }
+                        SoundEngine.PlaySound(SoundID.Item33, npc.Center);
+                        ai[2] = 0;
+                        ai[3]++;
+                    }
+
+                    if (ai[3] >= 8) { //射击8次后调整位置
+                        ai[1] = 1;
+                        ai[2] = 0;
+                        ai[3] = 0;
+                    }
+                    break;
+
+                case 1: //调整位置
+                    Vector2 reposition = player.Center + Main.rand.NextVector2CircularEdge(400, 400);
+                    MoveTo(reposition, moveSpeed * 1.5f, 0.1f);
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+                    
+                    ai[2]++;
+                    if (ai[2] >= 60 || Vector2.Distance(npc.Center, reposition) < 50) {
+                        ai[1] = 0;
+                        ai[2] = 0;
+                    }
+                    break;
+            }
+        }
+
+        private void RetinazerAI_Phase2() {
+            //激光眼二阶段逻辑
+            //ai[1]:子状态 0=垂直弹幕 1=水平弹幕 2=精准狙击
+            int rapidFireRate = 15;
+
+            if (CWRWorld.MachineRebellion) {
+                rapidFireRate = 10;
+            }
+
+            switch ((int)ai[1]) {
+                case 0: //垂直弹幕
+                    Vector2 targetPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -400 : 400, 0);
+                    //保持Y轴对齐
+                    float yDiff = player.Center.Y - npc.Center.Y;
+                    npc.velocity.Y = MathHelper.Lerp(npc.velocity.Y, yDiff * 0.1f, 0.1f);
+                    npc.velocity.X = MathHelper.Lerp(npc.velocity.X, (targetPos.X - npc.Center.X) * 0.05f, 0.1f);
+                    
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+
+                    ai[2]++;
+                    if (ai[2] % rapidFireRate == 0) {
+                        if (!VaultUtils.isClient) {
+                            Vector2 shootVel = (player.Center - npc.Center).UnitVector() * 16f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, shootVel, ProjectileID.DeathLaser, 30, 0f, Main.myPlayer);
+                        }
+                        SoundEngine.PlaySound(SoundID.Item12, npc.Center);
+                    }
+
+                    if (ai[2] >= 240) {
+                        ai[1] = 1;
+                        ai[2] = 0;
+                    }
+                    break;
+
+                case 1: //水平弹幕
+                    targetPos = player.Center + new Vector2(0, -400);
+                    //保持X轴对齐
+                    float xDiff = player.Center.X - npc.Center.X;
+                    npc.velocity.X = MathHelper.Lerp(npc.velocity.X, xDiff * 0.1f, 0.1f);
+                    npc.velocity.Y = MathHelper.Lerp(npc.velocity.Y, (targetPos.Y - npc.Center.Y) * 0.05f, 0.1f);
+
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+
+                    ai[2]++;
+                    if (ai[2] % rapidFireRate == 0) {
+                        if (!VaultUtils.isClient) {
+                            Vector2 shootVel = (player.Center - npc.Center).UnitVector() * 16f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, shootVel, ProjectileID.DeathLaser, 30, 0f, Main.myPlayer);
+                        }
+                        SoundEngine.PlaySound(SoundID.Item12, npc.Center);
+                    }
+
+                    if (ai[2] >= 240) {
+                        ai[1] = 2;
+                        ai[2] = 0;
+                    }
+                    break;
+
+                case 2: //精准狙击
+                    npc.velocity *= 0.9f;
+                    npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+                    
+                    ai[2]++;
+                    if (ai[2] < 60) {
+                        //蓄力特效
+                        if (ai[2] % 5 == 0) {
+                            Dust.NewDust(npc.Center, npc.width, npc.height, DustID.RedTorch, 0, 0, 0, default, 2f);
+                        }
+                    }
+                    else if (ai[2] == 60) {
+                        if (!VaultUtils.isClient) {
+                            Vector2 toPlayer = (player.Center - npc.Center).UnitVector();
+                            int projectileCount = 13; //弹幕数量
+                            float spreadAngle = MathHelper.ToRadians(60); //扇形角度
+                            float baseSpeed = 6f; //基础速度
+                            if (CWRWorld.Death) {
+                                baseSpeed += 3;
+                            }
+
+                            for (int i = 0; i < projectileCount; i++) {
+                                float angle = MathHelper.Lerp(-spreadAngle / 2, spreadAngle / 2, i / (float)(projectileCount - 1));
+                                Vector2 shootVel = toPlayer.RotatedBy(angle) * baseSpeed;
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, shootVel, ModContent.ProjectileType<DeadLaser>(), 55, 0f, Main.myPlayer);
+                            }
+                        }
+                        SoundEngine.PlaySound(SoundID.Item33, npc.Center);
+                        //后坐力
+                        npc.velocity = -(player.Center - npc.Center).UnitVector() * 15f;
+                    }
+
+                    if (ai[2] >= 90) {
+                        ai[3]++;
+                        ai[2] = 0;
+                        if (ai[3] >= 4) { //狙击4次后循环
+                            ai[1] = 0;
+                            ai[3] = 0;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void MoveTo(Vector2 target, float speed, float inertia) {
+            Vector2 direction = target - npc.Center;
+            direction.Normalize();
+            Vector2 desiredVelocity = direction * speed;
+            npc.velocity = (npc.velocity * (1f - inertia)) + (desiredVelocity * inertia);
+        }
+
         #endregion
 
         #region 绘制
