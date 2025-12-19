@@ -35,7 +35,9 @@ namespace CalamityOverhaul.Content
     {
         public override void SaveData(TagCompound tag) {
             try {
-                EnchantUI.Instance.SaveUIData(tag);
+                if (CWRRef.Has) {
+                    EnchantUI.Instance.SaveUIData(tag);
+                }
                 QuestLog.Instance.SaveUIData(tag);
                 foreach (var ui in UIHandleLoader.UIHandles) {
                     if (ui is BaseQuestTrackerUI trackerUI) {
@@ -46,7 +48,9 @@ namespace CalamityOverhaul.Content
         }
         public override void LoadData(TagCompound tag) {
             try {
-                EnchantUI.Instance.LoadUIData(tag);
+                if (CWRRef.Has) {
+                    EnchantUI.Instance.LoadUIData(tag);
+                }
                 QuestLog.Instance.LoadUIData(tag);
                 foreach (var ui in UIHandleLoader.UIHandles) {
                     if (ui is BaseQuestTrackerUI trackerUI) {
