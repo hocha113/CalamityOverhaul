@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateVisuals();
 
             //网络同步
-            if (Main.netMode != NetmodeID.MultiplayerClient && Main.GameUpdateCount % 10 == 0) {
+            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
                 npc.netUpdate = true;
             }
 
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void ExecuteIntroState() {
             if (AI_Timer == 0) {
                 //初始化身体
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     SpawnBody();
                 }
                 SoundEngine.PlaySound(SoundID.Roar, npc.Center);
@@ -344,8 +344,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void ExecuteDespawnState() {
-            npc.velocity.Y += 1f;
-            if (npc.timeLeft > 10) npc.timeLeft = 10;
+            npc.velocity.Y = 82f;
+            if (++AI_Timer > 180) {
+                npc.active = false;
+                npc.netUpdate = true;
+            }
+            else {
+                npc.dontTakeDamage = true;
+            }
         }
 
         #endregion
@@ -374,12 +380,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void FindTarget() {
-            if (npc.target < 0 || npc.target >= 255 || Main.player[npc.target].dead || !Main.player[npc.target].active) {
+            if (npc.target < 0 || npc.target >= 255 || !targetPlayer.Alives()) {
                 npc.TargetClosest();
             }
             targetPlayer = Main.player[npc.target];
 
-            if (targetPlayer.dead || !targetPlayer.active) {
+            if (!targetPlayer.Alives() && AI_State != STATE_DESPAWN) {
                 SwitchState(STATE_DESPAWN);
             }
         }
@@ -400,6 +406,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateMovement() {
+            if (AI_State == STATE_DESPAWN) return;//脱战状态下不受常规物理控制
             if (AI_State == STATE_DASH_ASSAULT && AI_SubState == 1) return; //冲刺时不受常规物理控制
 
             //经典的蠕虫移动算法，但增加了平滑度
@@ -433,20 +440,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
             Vector2 velocity = (target - source.Center).SafeNormalize(Vector2.Zero) * speed;
             //我真的非常厌恶这些莫名其妙的伤害计算，泰拉的伤害计算就是一堆非常庞大的垃圾堆
-            int damage = CWRRef.GetProjectileDamage(npc, ProjectileID.PinkLaser);
-            //仅在启用 EarlyHardmodeProgressionRework 且非 BossRush 模式时调整伤害
-            if (CWRRef.GetEarlyHardmodeProgressionReworkBool() && !CWRRef.GetBossRushActive()) {
-                //计算击败的机械 Boss 数量
-                int downedMechBosses = (NPC.downedMechBoss1 ? 1 : 0) + (NPC.downedMechBoss2 ? 1 : 0) + (NPC.downedMechBoss3 ? 1 : 0);
-                //根据击败的机械 Boss 数量调整伤害
-                if (downedMechBosses == 0) {
-                    damage = (int)(damage * 0.9f);
-                }
-                else if (downedMechBosses == 1) {
-                    damage = (int)(damage * 0.95f);
-                }
-                //如果击败了 2 个或更多机械 Boss，不调整伤害
-            }
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser));
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity, ProjectileID.DeathLaser, damage, 0f, Main.myPlayer);
 
             //发射特效
