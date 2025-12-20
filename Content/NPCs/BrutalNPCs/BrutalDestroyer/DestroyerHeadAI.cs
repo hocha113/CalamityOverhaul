@@ -342,8 +342,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void ExecuteDespawnState() {
             npc.velocity.Y = 82f;
             if (++AI_Timer > 180) {
-                npc.active = false;
-                npc.netUpdate = true;
+                if (!VaultUtils.isClient) {
+                    npc.active = false;
+                    npc.netUpdate = true;
+                    foreach (var n in Main.ActiveNPCs) {
+                        if (n.type == NPCID.TheDestroyer || n.type == NPCID.TheDestroyerBody 
+                            || n.type == NPCID.TheDestroyerTail || n.type == NPCID.Probe) {
+                            n.active = false;
+                            n.netUpdate = true;
+                        }
+                    }
+                }
             }
             else {
                 npc.dontTakeDamage = true;
