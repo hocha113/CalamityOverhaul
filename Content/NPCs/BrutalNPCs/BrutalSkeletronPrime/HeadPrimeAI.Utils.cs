@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -8,17 +8,20 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// °üº¬AIµÄ¸¨Öú·½·¨ºÍĞ§¹û
+    /// åŒ…å«AIçš„è¾…åŠ©æ–¹æ³•å’Œæ•ˆæœ
     /// </summary>
     internal partial class HeadPrimeAI
     {
         internal static bool DontReform() {
+            if (CWRWorld.MachineRebellion) {
+                return false;
+            }//æœºæ¢°æš´ä¹±ï¼Œæ— æ¡ä»¶ä½¿ç”¨
             if (!Main.expertMode) {
                 return true;
-            }//Èç¹û²»ÊÇ×¨¼ÒÄ£Ê½£¬¾Í²»ÒªÊ¹ÓÃÖØ×öºóµÄ»æÖÆ
-            if (CWRWorld.Revenge || CWRWorld.Death || CWRRef.GetBossRushActive() || CWRWorld.MachineRebellion) {
+            }//å¦‚æœä¸æ˜¯ä¸“å®¶æ¨¡å¼ï¼Œå°±ä¸è¦ä½¿ç”¨é‡åšåçš„ç»˜åˆ¶
+            if (CWRWorld.Revenge || CWRWorld.Death || CWRRef.GetBossRushActive()) {
                 return false;
-            }//Èç¹ûÃ»ÓĞ¿ªÆôÈÎºÎÄÑ¶È£¬Ò²²»ÒªÊ¹ÓÃÖØ×öºóµÄ»æÖÆ
+            }//å¦‚æœæ²¡æœ‰å¼€å¯ä»»ä½•éš¾åº¦ï¼Œä¹Ÿä¸è¦ä½¿ç”¨é‡åšåçš„ç»˜åˆ¶
             return true;
         }
 
@@ -51,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void CheakDead(NPC npc, NPC head) {
-            //ËùÒÔ£¬Èç¹ûÍ·²¿ËÀÍö£¬ÄÇÃ´ÊÖ±ÛÒ²Á¢ÂíËÀÍö
+            //æ‰€ä»¥ï¼Œå¦‚æœå¤´éƒ¨æ­»äº¡ï¼Œé‚£ä¹ˆæ‰‹è‡‚ä¹Ÿç«‹é©¬æ­»äº¡
             if (head.active) {
                 return;
             }
@@ -106,8 +109,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (TargetPlayerIsActive()) {
                 npc.TargetClosest();
                 player = Main.player[npc.target];
-                //ÔÚBossÍê³ÉµÇ³¡±íÑİÇ°²»ÒªÈ¥ÇĞ»»ÍÑÕ½ĞĞÎª£¬ËùÒÔÕâÀïÅĞ¶ÏÒ»ÏÂnpc.ai0£¬
-                //·ÀÖ¹BossÔÚ³õÊ¼»¯½×¶Î»òÕß³ö³¡½×¶ÎÊ±£¬ÒòÎªÉú³É¾àÀë¹ıÔ¶µÈÔ­Òò¶ø±»ÅĞ¶¨ÍÑÕ½
+                //åœ¨Bosså®Œæˆç™»åœºè¡¨æ¼”å‰ä¸è¦å»åˆ‡æ¢è„±æˆ˜è¡Œä¸ºï¼Œæ‰€ä»¥è¿™é‡Œåˆ¤æ–­ä¸€ä¸‹npc.ai0ï¼Œ
+                //é˜²æ­¢Bossåœ¨åˆå§‹åŒ–é˜¶æ®µæˆ–è€…å‡ºåœºé˜¶æ®µæ—¶ï¼Œå› ä¸ºç”Ÿæˆè·ç¦»è¿‡è¿œç­‰åŸå› è€Œè¢«åˆ¤å®šè„±æˆ˜
                 if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
                     if (npc.ai[1] == 4) {
                         for (int i = 0; i < 5; i++) {
@@ -136,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            foreach (var findN in Main.ActiveNPCs) {//ÔÚÕÙ»½Ç°ÏÈÇå³ıËùÓĞÒÑ¾­ÓĞÁËµÄÑÛ¾¦
+            foreach (var findN in Main.ActiveNPCs) {//åœ¨å¬å”¤å‰å…ˆæ¸…é™¤æ‰€æœ‰å·²ç»æœ‰äº†çš„çœ¼ç›
                 if (findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
                     findN.active = false;
                 }
@@ -149,10 +152,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void KillArm_OneToTwoStages() {
-            if (npc.ai[0] != 2) {//2±íÃ÷ÊÇ³õÔª½×¶Î£¬Õâ¸öÉ±ËÀÊÖ±ÛµÄº¯ÊıÔÚÕâ¸öÊ±ºò²ÅÄÜÔËĞĞ
+            if (npc.ai[0] != 2) {//2è¡¨æ˜æ˜¯åˆå…ƒé˜¶æ®µï¼Œè¿™ä¸ªæ€æ­»æ‰‹è‡‚çš„å‡½æ•°åœ¨è¿™ä¸ªæ—¶å€™æ‰èƒ½è¿è¡Œ
                 return;
             }
-            npc.ai[0] = 3;//É±ËÀÊÖ±Ûºó±íÃ÷½øÈëÈı½×¶Î
+            npc.ai[0] = 3;//æ€æ­»æ‰‹è‡‚åè¡¨æ˜è¿›å…¥ä¸‰é˜¶æ®µ
             npc.netUpdate = true;
         }
 

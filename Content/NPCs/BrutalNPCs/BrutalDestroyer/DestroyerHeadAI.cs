@@ -88,6 +88,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return false;
             }
 
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
+
             CWRPlayer.TheDestroyer = npc.whoAmI;
 
             FindTarget();

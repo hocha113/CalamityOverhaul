@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.QLNodes;
 using InnoVault.TileProcessors;
 using Terraria;
@@ -18,8 +19,11 @@ namespace CalamityOverhaul.Content.TileProcessors
             return base.IsDaed();
         }
         public override void OnKill() {
-            if (!VaultUtils.isServer) {
-                QuestNode.GetQuest<FindShadowOrb>().Objectives[0].CurrentProgress = 1;
+            if (!VaultUtils.isServer && CWRServerConfig.Instance.QuestLog && Tile.TileFrameX <= 0 && Tile.TileFrameY <= 0) {
+                var node = QuestNode.GetQuest<FindShadowOrb>();
+                if (node is not null && node.IsUnlocked && node.Objectives?.Count > 0) {
+                    node.Objectives[0].CurrentProgress = 1;
+                }
             }
             if (!VaultUtils.isClient && CWRWorld.Death) {
                 //根据世界类型生成对应的怪物，猩红生成猩红喀迈拉，腐化生成噬魂怪

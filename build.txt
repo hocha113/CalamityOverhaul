@@ -4,5 +4,5 @@ sortAfter = CalamityMod, InnoVault
 weakReferences = CalamityMod@2.0.7.2, ThoriumMod@1.7.2.4, BossChecklist@2.2.2, MagicStorage@0.7.0.11
 homepage = https://calamity-overhaul.cc
 author = HoCha113
-version = 0.8057
+version = 0.8058
 includeSource = true
