@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void SpawnSpinUpParticles() {
             Vector2 particlePos = npc.Center + Main.rand.NextVector2Circular(35, 35);
-            Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.Electric,
+            Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.FireworkFountain_Red,
                 0, 0, 100, Color.Yellow * 0.8f, Main.rand.NextFloat(0.8f, 1.3f));
             dust.velocity = (npc.Center - particlePos).RotatedBy(MathHelper.PiOver2) * 0.15f;
             dust.noGravity = true;
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void SpawnDashTrail() {
             Vector2 trailPos = npc.Center - velocity.SafeNormalize(Vector2.Zero) * 40f;
-            Dust dust = Dust.NewDustDirect(trailPos, 1, 1, DustID.Electric,
+            Dust dust = Dust.NewDustDirect(trailPos, 1, 1, DustID.FireworkFountain_Red,
                 -velocity.X * 0.2f, -velocity.Y * 0.2f, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 2.0f));
             dust.noGravity = true;
             dust.fadeIn = 1.1f;
@@ -429,7 +429,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < 2; i++) {
                 Vector2 particlePos = npc.Center + Main.rand.NextVector2Circular(25, 25);
                 Vector2 particleVel = velocity * 0.15f + Main.rand.NextVector2Circular(2, 2);
-                Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.Electric,
+                Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.FireworkFountain_Red,
                     particleVel.X, particleVel.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.1f, 1.7f));
                 dust.noGravity = true;
             }

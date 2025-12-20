@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < count * 5; i++) {
                 Vector2 sparkPos = npc.Center + aimDirection * 45f;
                 Vector2 sparkVel = aimDirection.RotatedByRandom(0.5f) * Main.rand.NextFloat(4f, 10f);
-                Dust spark = Dust.NewDustDirect(sparkPos, 1, 1, DustID.Electric, sparkVel.X, sparkVel.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.0f, 1.8f));
+                Dust spark = Dust.NewDustDirect(sparkPos, 1, 1, DustID.FireworkFountain_Red, sparkVel.X, sparkVel.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.0f, 1.8f));
                 spark.noGravity = true;
                 spark.fadeIn = 1.2f;
             }

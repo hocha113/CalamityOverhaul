@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < 30; i++) {
                 Vector2 particleVel = Main.rand.NextVector2Circular(8f, 8f);
                 Dust dust = Dust.NewDustDirect(npc.Center - Vector2.One * 30, 60, 60,
-                    Main.rand.Next(new int[] { DustID.Electric, DustID.SteampunkSteam, DustID.Smoke }),
+                    Main.rand.Next(new int[] { DustID.FireworkFountain_Red, DustID.SteampunkSteam, DustID.Smoke }),
                     particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(1.2f, 2.0f));
                 dust.noGravity = true;
             }
@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < 20; i++) {
                 float angle = MathHelper.TwoPi * i / 20f;
                 Vector2 shockwaveVel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);
-                Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Electric,
+                Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.FireworkFountain_Red,
                     shockwaveVel.X, shockwaveVel.Y, 100, Color.Cyan, 1.5f);
                 dust.noGravity = true;
                 dust.fadeIn = 1.3f;
@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void SpawnWindUpParticles() {
             Vector2 particlePos = npc.Center + Main.rand.NextVector2Circular(40, 40);
-            Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.Electric,
+            Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.FireworkFountain_Red,
                 0, 0, 100, Color.Yellow, Main.rand.NextFloat(0.8f, 1.4f));
             dust.velocity = (npc.Center - particlePos) * 0.1f;
             dust.noGravity = true;
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void SpawnStrikeTrail() {
             Vector2 trailPos = npc.Center + Main.rand.NextVector2Circular(30, 30);
-            Dust dust = Dust.NewDustDirect(trailPos, 1, 1, DustID.Electric,
+            Dust dust = Dust.NewDustDirect(trailPos, 1, 1, DustID.FireworkFountain_Red,
                 -velocity.X * 0.3f, -velocity.Y * 0.3f, 100, Color.Cyan, Main.rand.NextFloat(1.0f, 1.8f));
             dust.noGravity = true;
         }

@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //充能爆炸粒子
             for (int i = 0; i < 50; i++) {
                 Vector2 particleVel = Main.rand.NextVector2Circular(10f, 10f);
-                Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, Main.rand.NextFloat(1.5f, 2.5f));
+                Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.FireworkFountain_Red, particleVel.X, particleVel.Y, 100, Color.Cyan, Main.rand.NextFloat(1.5f, 2.5f));
                 dust.noGravity = true;
                 dust.fadeIn = 1.5f;
             }
@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float intensity = laserChargeProgress / LaserChargeTime;
                 if (Main.rand.NextFloat() < intensity * 0.3f) {
                     Vector2 particlePos = npc.Center + aimDirection * 60f + Main.rand.NextVector2Circular(20, 20);
-                    Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.Electric, 0, 0, 100, Color.Cyan, Main.rand.NextFloat(0.8f, 1.5f));
+                    Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.FireworkFountain_Red, 0, 0, 100, Color.Cyan, Main.rand.NextFloat(0.8f, 1.5f));
                     dust.velocity = (npc.Center + aimDirection * 80f - particlePos) * 0.1f;
                     dust.noGravity = true;
                 }
@@ -427,7 +427,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Vector2 particleVel = (npc.Center + aimDirection * 80f - particlePos) * 0.15f;
 
                 Color particleColor = Color.Lerp(Color.Yellow, Color.Cyan, intensity);
-                Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.Electric, particleVel.X, particleVel.Y, 100, particleColor, Main.rand.NextFloat(1.0f, 1.8f) * intensity);
+                Dust dust = Dust.NewDustDirect(particlePos, 1, 1, DustID.FireworkFountain_Red, particleVel.X, particleVel.Y, 100, particleColor, Main.rand.NextFloat(1.0f, 1.8f) * intensity);
                 dust.noGravity = true;
                 dust.fadeIn = 1.2f;
             }

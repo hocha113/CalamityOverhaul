@@ -204,8 +204,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //阶段1：充能预警
             if (AI_Timer < 60) {
                 if (AI_Timer % 10 == 0) {
-                    //播放充能音效或特效
-                    Dust.NewDust(npc.Center, npc.width, npc.height, DustID.Electric, 0, 0, 100, default, 2f);
+                    Dust.NewDust(npc.Center, npc.width, npc.height, DustID.FireworkFountain_Red, 0, 0, 100, default, 2f);
                 }
             }
             //阶段2：波次射击
