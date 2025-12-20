@@ -1,8 +1,7 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Others
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
     internal class TransferItemProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        
+
         public override void SetDefaults() {
             Projectile.width = 16;
             Projectile.height = 16;
@@ -18,33 +17,33 @@ namespace CalamityOverhaul.Content.Projectiles.Others
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 120;
-            Projectile.alpha = 255; //³õÊ¼²»¿É¼û
+            Projectile.alpha = 255; //åˆå§‹ä¸å¯è§
         }
 
         public override void AI() {
             Vector2 targetPos = new Vector2(Projectile.ai[1], Projectile.ai[2]);
-            
+
             if (Projectile.localAI[0] == 0) {
                 Projectile.localAI[0] = 1;
                 Projectile.alpha = 0;
-                //³õÊ¼ÏòÉÏÅ×³ö
+                //åˆå§‹å‘ä¸ŠæŠ›å‡º
                 Projectile.velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), -4f);
             }
 
-            //·ÉÏòÄ¿±ê
+            //é£å‘ç›®æ ‡
             Vector2 toTarget = targetPos - Projectile.Center;
             float dist = toTarget.Length();
-            
+
             if (dist < 16f) {
                 Projectile.Kill();
                 return;
             }
 
-            //¼ÓËÙ·ÉÏòÄ¿±ê
+            //åŠ é€Ÿé£å‘ç›®æ ‡
             float speed = Math.Min(dist / 5f, 20f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speed, 0.1f);
-            
-            //Ğı×ªĞ§¹û
+
+            //æ—‹è½¬æ•ˆæœ
             Projectile.rotation += 0.2f;
         }
 
@@ -54,15 +53,15 @@ namespace CalamityOverhaul.Content.Projectiles.Others
 
             Main.instance.LoadItem(itemType);
             Texture2D texture = TextureAssets.Item[itemType].Value;
-            
+
             if (texture != null) {
-                Rectangle rect = Main.itemAnimations[itemType] != null 
-                    ? Main.itemAnimations[itemType].GetFrame(texture) 
+                Rectangle rect = Main.itemAnimations[itemType] != null
+                    ? Main.itemAnimations[itemType].GetFrame(texture)
                     : texture.Frame();
-                
+
                 Vector2 origin = rect.Size() / 2f;
                 float scale = 0.7f;
-                
+
                 Main.EntitySpriteDraw(
                     texture,
                     Projectile.Center - Main.screenPosition,
@@ -75,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
                     0
                 );
             }
-            
+
             return false;
         }
     }

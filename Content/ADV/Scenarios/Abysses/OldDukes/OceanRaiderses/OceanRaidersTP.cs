@@ -311,21 +311,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             if (chest != null) {
                 //获取箱子的世界坐标
                 Vector2 chestPos = new Vector2(chest.x * 16 + 16, chest.y * 16 + 16);
-                
+
                 for (int i = storedItems.Count - 1; i >= 0; i--) {
                     Item item = storedItems[i];
                     if (!chest.CanItemBeAddedToChest(item)) {
                         continue;
                     }
-                    
+
                     //生成飞向箱子的物品粒子
                     if (!VaultUtils.isClient) {
                         //生成一个临时的视觉物品弹幕飞向箱子
                         Projectile.NewProjectile(
-                            this.FromObjectGetParent(), 
-                            intakeCenter, 
-                            Vector2.Zero, 
-                            ModContent.ProjectileType<TransferItemProj>(), 
+                            this.FromObjectGetParent(),
+                            intakeCenter,
+                            Vector2.Zero,
+                            ModContent.ProjectileType<TransferItemProj>(),
                             0, 0, -1, item.type, chestPos.X, chestPos.Y
                         );
                     }
@@ -336,7 +336,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                         break;
                     }
                 }
-                
+
                 if (storedItems.Count == 0) {
                     SendData();
                 }
