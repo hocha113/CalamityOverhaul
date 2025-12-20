@@ -67,6 +67,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             ItemFilter = new Item();
         }
 
+        public override void MachineKill() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            storedItems ??= [];
+            foreach (var i in storedItems) {
+                if (i.Alives()) {
+                    VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, i);
+                }
+            }
+            storedItems.Clear();
+        }
+
         public override void SendData(ModPacket data) {
             base.SendData(data);
             data.Write(isWorking);
@@ -297,6 +310,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             if (chest != null) {
                 for (int i = storedItems.Count - 1; i >= 0; i--) {
                     Item item = storedItems[i];
+                    if (!chest.CanItemBeAddedToChest(item)) {
+                        continue;
+                    }
                     chest.AddItem(item, true);
                     if (item.stack == 0) {
                         storedItems.RemoveAt(i);
