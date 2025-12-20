@@ -542,6 +542,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
         #endregion
 
+        public override bool? CheckDead() {
+            npc.dontTakeDamage = false;
+            return true;
+        }
+
         #region 原生AI (Protogenesis AI)
         private bool ProtogenesisAI() {
             //检查玩家状态
@@ -568,6 +573,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return false;
             }
 
+            npc.dontTakeDamage = false;
             //二阶段检测与转换
             bool secondPhase = IsSecondPhase();
             if (secondPhase && ai[0] != (int)PrimaryAIState.EnragedBattle) {
