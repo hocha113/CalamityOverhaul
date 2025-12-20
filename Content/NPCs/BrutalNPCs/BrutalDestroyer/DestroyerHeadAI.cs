@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
@@ -339,19 +340,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
+        private static void SendDespawn() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            var packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.DespawnDestroyer);
+            packet.Send();
+        }
+
+        internal static void HandleDespawn() {
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == NPCID.TheDestroyer || n.type == NPCID.TheDestroyerBody
+                    || n.type == NPCID.TheDestroyerTail || n.type == NPCID.Probe) {
+                    n.life = 0;
+                    n.HitEffect();
+                    n.active = false;
+                    n.netUpdate = true;
+                }
+            }
+        }
+
         private void ExecuteDespawnState() {
             npc.velocity.Y = 82f;
             if (++AI_Timer > 180) {
                 if (!VaultUtils.isClient) {
                     npc.active = false;
                     npc.netUpdate = true;
-                    foreach (var n in Main.ActiveNPCs) {
-                        if (n.type == NPCID.TheDestroyer || n.type == NPCID.TheDestroyerBody 
-                            || n.type == NPCID.TheDestroyerTail || n.type == NPCID.Probe) {
-                            n.active = false;
-                            n.netUpdate = true;
-                        }
-                    }
+                    HandleDespawn();
+                    SendDespawn();
                 }
             }
             else {

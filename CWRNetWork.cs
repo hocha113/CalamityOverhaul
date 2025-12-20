@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
@@ -45,6 +46,7 @@ namespace CalamityOverhaul
         SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
         ResurrectionRate,
+        DespawnDestroyer,
         MachineEffect,
     }
 
@@ -103,6 +105,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ResurrectionRate) {
                 ResurrectionSystem.HandleResurrectionRate(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.DespawnDestroyer) {
+                DestroyerHeadAI.HandleDespawn();
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
