@@ -6,6 +6,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 
 namespace CalamityOverhaul
 {
@@ -68,7 +69,8 @@ namespace CalamityOverhaul
 
         public override bool? UseItem(Player player) {
             Point16 point16 = Main.MouseWorld.ToTileCoordinates16();
-            Framing.GetTileSafely(point16).TileFrameX.Domp();
+            Framing.GetTileSafely(point16).TileType.Domp();
+            ModContent.TileType<UnloadedTile>().Domp();
             VaultUtils.IsTopLeft(point16, out _).Domp();
             return true;
         }

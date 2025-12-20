@@ -117,11 +117,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
                 //如果是武器类添加随机词缀
                 if (IsWeapon(item)) {
-                    item.prefix = GetRandomWeaponPrefix(random);
+                    item.Prefix(-1);
                 }
                 //如果是装备类添加随机词缀
                 else if (IsEquipment(item)) {
-                    item.prefix = GetRandomEquipmentPrefix(random);
+                    item.Prefix(-1);
                 }
 
                 loot.Add(item);
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             //为武器添加随机词缀
             if (IsWeapon(weapon)) {
-                weapon.prefix = GetRandomWeaponPrefix(random);
+                weapon.Prefix(-1);
             }
 
             loot.Add(weapon);
@@ -271,67 +271,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         private static bool IsEquipment(Item item) {
             return item.accessory || item.defense > 0;
-        }
-
-        /// <summary>
-        /// 获取随机武器词缀
-        /// </summary>
-        private static int GetRandomWeaponPrefix(Random random) {
-            //高品质武器词缀
-            int[] godlyPrefixes = [
-                PrefixID.Legendary,
-                PrefixID.Unreal,
-                PrefixID.Godly,
-                PrefixID.Demonic,
-                PrefixID.Ruthless
-            ];
-
-            //良好武器词缀
-            int[] goodPrefixes = [
-                PrefixID.Deadly,
-                PrefixID.Rapid,
-                PrefixID.Murderous,
-                PrefixID.Zealous,
-                PrefixID.Superior
-            ];
-
-            //根据随机数决定词缀品质
-            double roll = random.NextDouble();
-
-            if (roll < 0.15) {
-                //15%概率获得顶级词缀
-                return godlyPrefixes[random.Next(godlyPrefixes.Length)];
-            }
-            else if (roll < 0.5) {
-                //35%概率获得良好词缀
-                return goodPrefixes[random.Next(goodPrefixes.Length)];
-            }
-            else {
-                //50%概率无词缀或普通词缀
-                return random.NextDouble() < 0.3 ? PrefixID.Keen : 0;
-            }
-        }
-
-        /// <summary>
-        /// 获取随机装备词缀
-        /// </summary>
-        private static int GetRandomEquipmentPrefix(Random random) {
-            int[] equipmentPrefixes = [
-                PrefixID.Menacing,
-                PrefixID.Lucky,
-                PrefixID.Quick,
-                PrefixID.Violent,
-                PrefixID.Warding,
-                PrefixID.Armored,
-                PrefixID.Jagged,
-                PrefixID.Spiked,
-                PrefixID.Angry,
-                PrefixID.Brisk
-            ];
-
-            return random.NextDouble() < 0.6
-                ? equipmentPrefixes[random.Next(equipmentPrefixes.Length)]
-                : 0;
         }
 
         /// <summary>
