@@ -148,6 +148,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
             }
             _controller?.AnimationController.ForceClose();
+            LoadenWorld();
         }
 
         public override void SaveUIData(TagCompound tag) {
@@ -227,7 +228,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
             }
         }
-
         #endregion
 
         #region 更新逻辑

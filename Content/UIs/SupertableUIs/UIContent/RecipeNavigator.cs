@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             SupertableUI.DrawItemIcon(spriteBatch, targetItem, drawPos + new Vector2(5, 5), 0.6f * alpha, 1.5f * alpha);
 
             string name = targetItem.HoverName;
-            string recipeText = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}£º{(string.IsNullOrEmpty(name) ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
+            string recipeText = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}:{(string.IsNullOrEmpty(name) ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
             Vector2 recipeTextSize = FontAssets.MouseText.Value.MeasureString(recipeText);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, recipeText,
                 drawPos.X - recipeTextSize.X / 2 + (RecPBook?.Width ?? 100) / 2, drawPos.Y - 25,
