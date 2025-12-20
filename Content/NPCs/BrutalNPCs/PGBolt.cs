@@ -2,7 +2,7 @@
 using ReLogic.Content;
 using Terraria;
 
-namespace CalamityOverhaul.Content.SkyEffects
+namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
 {
     internal class PGBolt
     {

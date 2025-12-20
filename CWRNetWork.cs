@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RemakeItems;
@@ -44,6 +45,7 @@ namespace CalamityOverhaul
         SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
         ResurrectionRate,
+        MachineEffect,
     }
 
     public static class CWRNetWork
@@ -110,6 +112,7 @@ namespace CalamityOverhaul
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
             ADVSave.NetHandle(type, reader, whoAmI);
             OldDukeEffect.NetHandle(type, reader, whoAmI);
+            MachineEffect.NetHandle(type, reader, whoAmI);
         }
     }
 }

@@ -116,46 +116,6 @@ namespace CalamityOverhaul.Content
             return false;
         }
 
-        public static void StartMetalMusic() {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            if (MachineRebellion) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-                return;
-            }
-
-            if (!HasBoss) {
-                return;
-            }
-
-            if (HeadPrimeAI.DontReform()) {
-                return;
-            }
-
-            bool found = false;
-            foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type == NPCID.SkeletronPrime) {
-                    found = true;
-                    break;
-                }
-                else if (npc.type == NPCID.TheDestroyer) {
-                    found = true;
-                    break;
-                }
-                else if (npc.type == NPCID.Retinazer || npc.type == NPCID.Spazmatism) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                return;
-            }
-
-            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-        }
-
         public static void UpdateMachineRebellion() {
             if (!MachineRebellion) {
                 return;
@@ -206,8 +166,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-
-            StartMetalMusic();
         }
 
         public override void NetSend(BinaryWriter writer) {
