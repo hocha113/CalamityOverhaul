@@ -1898,6 +1898,7 @@ Projectiles: {
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
+	// TransferItemProj.DisplayName: Items In Transit
 }
 
 Configs: {

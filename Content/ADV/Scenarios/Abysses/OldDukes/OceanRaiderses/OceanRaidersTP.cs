@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiders
 using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Projectiles.Others;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
@@ -308,16 +309,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             Chest chest = Position.FindClosestChest(800, false);
             if (chest != null) {
+                //获取箱子的世界坐标
+                Vector2 chestPos = new Vector2(chest.x * 16 + 16, chest.y * 16 + 16);
+                
                 for (int i = storedItems.Count - 1; i >= 0; i--) {
                     Item item = storedItems[i];
                     if (!chest.CanItemBeAddedToChest(item)) {
                         continue;
                     }
+                    
+                    //生成飞向箱子的物品粒子
+                    if (!VaultUtils.isClient) {
+                        //生成一个临时的视觉物品弹幕飞向箱子
+                        Projectile.NewProjectile(
+                            this.FromObjectGetParent(), 
+                            intakeCenter, 
+                            Vector2.Zero, 
+                            ModContent.ProjectileType<TransferItemProj>(), 
+                            0, 0, -1, item.type, chestPos.X, chestPos.Y
+                        );
+                    }
+                    chest.eatingAnimationTime = 30;
                     chest.AddItem(item, true);
-                    if (item.stack == 0) {
-                        storedItems.RemoveAt(i);
+                    storedItems.RemoveAt(i);
+                    if (storedItems.Count == 0) {
+                        break;
                     }
                 }
+                
                 if (storedItems.Count == 0) {
                     SendData();
                 }

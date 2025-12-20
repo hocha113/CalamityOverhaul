@@ -1481,7 +1481,7 @@ Projectiles: {
 	// ElectricMinRocketHeld.DisplayName: Electric Micro-Rocket
 	// TeslaBallByAttack.DisplayName: Tesla Sphere
 	// TeslaBallByGuard.DisplayName: Defensive Tesla Sphere
-	// WGGCollectorArm.DisplayName: W.G.G. Collector Arm
+	// WGGCollectorArm.DisplayName: Junkman Arm
 	// DivineJustice.DisplayName: Divine Justice
 	// EmblemOfDreadDashProj.DisplayName: Dread Emblem Rush
 	// JusticeUnveiledExplode.DisplayName: Justice Unveiled
@@ -1876,6 +1876,7 @@ Projectiles: {
 	// AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
+	// TransferItemProj.DisplayName: Items In Transit
 }
 
 Configs: {

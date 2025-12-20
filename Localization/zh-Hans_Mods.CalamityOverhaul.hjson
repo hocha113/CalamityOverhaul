@@ -1476,7 +1476,7 @@ Projectiles: {
 	ElectricMinRocketHeld.DisplayName: 微型电弧火箭
 	TeslaBallByAttack.DisplayName: 特斯拉感应球
 	TeslaBallByGuard.DisplayName: 特斯拉防御球
-	WGGCollectorArm.DisplayName: W.G.G.采集臂
+	WGGCollectorArm.DisplayName: 拾荒者采集臂
 	DivineJustice.DisplayName: 神圣审判
 	EmblemOfDreadDashProj.DisplayName: 恐惧徽记冲锋
 	JusticeUnveiledExplode.DisplayName: 正义昭彰
@@ -1871,6 +1871,7 @@ Projectiles: {
 	AriaQSkillMiniDisk.DisplayName: 星环护卫
 	SulfuricacidExplosion.DisplayName: 硫酸爆炸
 	DawnshatterFireball.DisplayName: 黎明之火
+	TransferItemProj.DisplayName: 转移中的物品
 }
 
 Configs: {
