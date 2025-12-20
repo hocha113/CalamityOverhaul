@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         #region 状态机
 
         /// <summary>
-        /// 进场状态：从地下冲出，伴随咆哮
+        /// 进场状态
         /// </summary>
         private void ExecuteIntroState() {
             if (AI_Timer == 0) {
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         /// <summary>
-        /// 巡逻状态：在玩家周围盘旋，寻找攻击机会
+        /// 巡空
         /// </summary>
         private void ExecutePatrolState() {
             //移动逻辑：在玩家上方或下方盘旋
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         /// <summary>
-        /// 激光弹幕状态：协同所有体节进行有规律的激光射击
+        /// 协同所有体节进行有规律的激光射击
         /// </summary>
         private void ExecuteLaserBarrageState() {
             //减速以便稳定射击
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         /// <summary>
-        /// 环绕陷阱状态：快速包围玩家，收缩包围圈
+        /// 快速包围玩家，收缩包围圈
         /// </summary>
         private void ExecuteEncircleState() {
             //计算环绕目标点
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         /// <summary>
-        /// 突袭冲刺状态：最偏激的连续冲刺
+        /// 连续冲刺
         /// </summary>
         private void ExecuteDashAssaultState() {
             //子状态管理
@@ -294,9 +294,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 case 1: //冲刺
                     npc.velocity = moveVector;
                     npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
-
-                    //产生残影和粒子
-                    CreateDashVisuals();
 
                     AI_Counter++;
                     if (AI_Counter > 40) { //冲刺持续时间
@@ -494,18 +491,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (dontOpenMouthTime > 0) dontOpenMouthTime--;
         }
 
-        private void CreateDashVisuals() {
-            //冲刺时的屏幕震动
-            if (AI_Counter % 5 == 0) {
-                //这里可以添加屏幕震动逻辑
-            }
-
-            //粒子拖尾
-            Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.RedTorch, npc.velocity.X * 0.5f, npc.velocity.Y * 0.5f);
-            d.noGravity = true;
-            d.scale = 2f;
-        }
-
         private void UpdateVisuals() {
             //身体发光
             Lighting.AddLight(npc.Center, 0.8f, 0.2f, 0.2f);
@@ -522,7 +507,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Rectangle glowRec = texture.GetRectangle(glowFrame, 4);
             Vector2 origin = frameRec.Size() / 2;
 
-            //绘制残影（仅在冲刺时）
+            //在冲刺时绘制残影
             if (AI_State == STATE_DASH_ASSAULT && AI_SubState == 1) {
                 for (int i = 1; i < npc.oldPos.Length; i += 2) {
                     Vector2 drawPos = npc.oldPos[i] - screenPos + npc.Size / 2;

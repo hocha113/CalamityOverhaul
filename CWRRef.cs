@@ -799,7 +799,7 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static bool GetAfterimagesInner() => CalamityClientConfig.Instance.Afterimages;
 
-        public static int GetProjectileDamage(NPC npc, int projType) => Has ? GetProjectileDamageInner(npc, projType) : 0;
+        public static int GetProjectileDamage(NPC npc, int projType) => Has ? GetProjectileDamageInner(npc, projType) : npc.defDamage / 2;
         [CWRJITEnabled]
         private static int GetProjectileDamageInner(NPC npc, int projType) => npc.GetProjectileDamage(projType);
 
