@@ -310,9 +310,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             bool isBullet = false;
+            bool shouldSkipShoot = false;
+
             if (type == ProjectileID.Bullet) {
                 isBullet = true;
                 type = ModContent.ProjectileType<OceanCurrent>();
+            }
+            else {
+                int num = 0;
+                foreach (var p in Main.ActiveProjectiles) {
+                    if (p.owner == player.whoAmI && p.friendly) {
+                        num++;
+                    }
+                }
+                if (num > 220) {
+                    shouldSkipShoot = true;
+                }
             }
 
             var hp = player.GetOverride<HalibutPlayer>();
@@ -345,6 +358,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (damage < 12) {
                     damage = 12;
                 }
+                bulletAmt = 1;
+            }
+            else if (shouldSkipShoot) {
+                damage *= bulletAmt;
                 bulletAmt = 1;
             }
 
