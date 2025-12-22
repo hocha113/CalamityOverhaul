@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -9,41 +9,41 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
     internal class OldDukeShopHandle
     {
         /// <summary>
-        /// ´¦ÀíÉÌµêÎïÆ·ÁĞ±í
+        /// å¤„ç†å•†åº—ç‰©å“åˆ—è¡¨
         /// </summary>
         public static void Handle(List<OldDukeShopItem> shopItems) {
-            //ÓãÈËµö
+            //é±¼äººé’“
             shopItems.Add(new OldDukeShopItem(ModContent.ItemType<MermanRod>(), 1, 1));
 
-            //º£ÑóÎäÆ÷
+            //æµ·æ´‹æ­¦å™¨
             shopItems.Add(new OldDukeShopItem(ItemID.Trident, 1, 15));
             shopItems.Add(new OldDukeShopItem(ItemID.FrostStaff, 1, 25));
             shopItems.Add(new OldDukeShopItem(ItemID.BubbleGun, 1, 30));
             shopItems.Add(new OldDukeShopItem(ItemID.Flairon, 1, 45));
             shopItems.Add(new OldDukeShopItem(ItemID.TsunamiInABottle, 1, 20));
 
-            //º£Ñó×°±¸
+            //æµ·æ´‹è£…å¤‡
             shopItems.Add(new OldDukeShopItem(ItemID.SharkToothNecklace, 1, 12));
             shopItems.Add(new OldDukeShopItem(ItemID.DivingHelmet, 1, 8));
             shopItems.Add(new OldDukeShopItem(ItemID.DivingGear, 1, 18));
             shopItems.Add(new OldDukeShopItem(ItemID.JellyfishNecklace, 1, 15));
 
-            //º£Ñó²ÄÁÏ
+            //æµ·æ´‹ææ–™
             shopItems.Add(new OldDukeShopItem(ItemID.Coral, 10, 5));
             shopItems.Add(new OldDukeShopItem(ItemID.Starfish, 5, 3));
             shopItems.Add(new OldDukeShopItem(ItemID.Seashell, 10, 2));
             shopItems.Add(new OldDukeShopItem(ItemID.SharkFin, 3, 8));
 
-            //º£ÑóÒ©Ë®
+            //æµ·æ´‹è¯æ°´
             shopItems.Add(new OldDukeShopItem(ItemID.GillsPotion, 5, 4));
             shopItems.Add(new OldDukeShopItem(ItemID.SonarPotion, 5, 3));
             shopItems.Add(new OldDukeShopItem(ItemID.WaterWalkingPotion, 5, 3));
 
-            //Ï¡ÓĞÎïÆ·
+            //ç¨€æœ‰ç‰©å“
             shopItems.Add(new OldDukeShopItem(ItemID.ReefBlock, 99, 2));
             shopItems.Add(new OldDukeShopItem(ItemID.Seaweed, 20, 1));
 
-            var rareDrops = GetNPCDrops(CWRID.NPC_OldDuke, true);
+            var rareDrops = VaultUtils.GetNPCDrops(CWRID.NPC_OldDuke, true);
             foreach (var id in rareDrops) {
                 Item item = new Item(id);
                 int value = (int)MathHelper.Clamp(item.value / 6000, 1, 9999);
@@ -52,35 +52,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 }
                 shopItems.Add(new OldDukeShopItem(id, 1, value));
             }
-        }
-
-        /// <summary>
-        /// »ñÈ¡Ö¸¶¨NPCµÄËùÓĞµôÂäÎïÆ·ID
-        /// </summary>
-        /// <param name="npcId">NPCµÄID</param>
-        /// <param name="includeGlobalRules">ÊÇ·ñ°üº¬È«¾ÖµôÂä¹æÔò</param>
-        /// <returns>µôÂäÎïÆ·IDµÄ¼¯ºÏ</returns>
-        public static HashSet<int> GetNPCDrops(int npcId, bool includeGlobalRules = false) {
-            HashSet<int> drops = new HashSet<int>();
-
-            // ´ÓÓÎÏ·Êı¾İ¿â»ñÈ¡¸ÃNPCµÄµôÂä¹æÔò
-            List<IItemDropRule> dropRules = Main.ItemDropsDB.GetRulesForNPCID(npcId, includeGlobalRules);
-
-            // ´´½¨µôÂäÂÊĞÅÏ¢ÁĞ±í
-            List<DropRateInfo> dropRateInfoList = new List<DropRateInfo>();
-            DropRateInfoChainFeed ratesInfo = new DropRateInfoChainFeed(1f);
-
-            // ½âÎöÃ¿¸öµôÂä¹æÔò
-            foreach (IItemDropRule rule in dropRules) {
-                rule.ReportDroprates(dropRateInfoList, ratesInfo);
-            }
-
-            // ÊÕ¼¯ËùÓĞÎïÆ·ID
-            foreach (DropRateInfo dropRateInfo in dropRateInfoList) {
-                drops.Add(dropRateInfo.itemId);
-            }
-
-            return drops;
         }
     }
 }
