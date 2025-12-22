@@ -1,20 +1,20 @@
-using System;
+ï»¿using System;
 using Terraria;
 using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    //¾úÉúĞ·ÎïÀíÏµÍ³£¬´¦ÀíµØĞÎ½»»¥ºÍÒÆ¶¯
+    //èŒç”ŸèŸ¹ç‰©ç†ç³»ç»Ÿï¼Œå¤„ç†åœ°å½¢äº¤äº’å’Œç§»åŠ¨
     internal class CrabulonPhysics
     {
         private readonly NPC npc;
         private readonly ModifyCrabulon owner;
 
-        public float GroundClearance { get; private set; }
+        public float GroundClearance { get; set; }
         public float JumpHeightUpdate { get; set; }
         public float JumpHeightSetFrame { get; set; }
 
-        //Î»ÖÃĞŞÕıÏà¹Ø
+        //ä½ç½®ä¿®æ­£ç›¸å…³
         private int stuckCheckTimer = 0;
         private Vector2 lastValidPosition;
         private const int StuckCheckInterval = 30;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             lastValidPosition = npc.position;
         }
 
-        //»ñÈ¡µ½µØÃæµÄ¾àÀë
+        //è·å–åˆ°åœ°é¢çš„è·ç¦»
         public void UpdateGroundDistance() {
             GroundClearance = 0;
             Vector2 startPos = npc.Bottom;
@@ -42,14 +42,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
                 Tile tile = Framing.GetTileSafely(tileCoords);
 
-                //¸Ä½øµÄµØÃæ¼ì²âÂß¼­
+                //æ”¹è¿›çš„åœ°é¢æ£€æµ‹é€»è¾‘
                 bool hitTile = false;
                 if (owner.CanFallThroughPlatforms() == true) {
-                    //Ö»¼ì²âÊµĞÄ·½¿é
+                    //åªæ£€æµ‹å®å¿ƒæ–¹å—
                     hitTile = tile.HasSolidTile();
                 }
                 else {
-                    //¼ì²âËùÓĞ¿ÉÅö×²µÄ·½¿é£¨°üÀ¨Æ½Ì¨£©
+                    //æ£€æµ‹æ‰€æœ‰å¯ç¢°æ’çš„æ–¹å—ï¼ˆåŒ…æ‹¬å¹³å°ï¼‰
                     hitTile = tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
                 }
 
@@ -61,47 +61,47 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 GroundClearance += CrabulonConstants.GroundCheckInterval;
             }
 
-            //Èç¹ûÃ»ÕÒµ½µØÃæ£¬ÉèÖÃÎª×î´óÖµ
+            //å¦‚æœæ²¡æ‰¾åˆ°åœ°é¢ï¼Œè®¾ç½®ä¸ºæœ€å¤§å€¼
             if (!foundGround) {
                 GroundClearance = CrabulonConstants.MaxGroundDistance;
             }
         }
 
-        //×Ô¶¯ÅÊÅÀÌ¨½×
+        //è‡ªåŠ¨æ”€çˆ¬å°é˜¶
         public void AutoStepClimbing() {
-            //Ö»ÔÚ·şÎñÆ÷»òµ¥ÈËÄ£Ê½Ö´ĞĞÎïÀí¼ÆËã
+            //åªåœ¨æœåŠ¡å™¨æˆ–å•äººæ¨¡å¼æ‰§è¡Œç‰©ç†è®¡ç®—
             if (VaultUtils.isClient) {
                 return;
             }
 
-            //±ØÒªÌõ¼ş¼ì²é
+            //å¿…è¦æ¡ä»¶æ£€æŸ¥
             if (npc.noTileCollide || !npc.collideX) {
                 return;
             }
 
-            //Ê¹ÓÃ·½Ïò¸ĞÖª¼ì²â
+            //ä½¿ç”¨æ–¹å‘æ„ŸçŸ¥æ£€æµ‹
             int direction = Math.Sign(npc.velocity.X);
             if (direction == 0) {
                 return;
             }
 
-            //´ÓNPCÇ°·½¼ì²âÌ¨½×¸ß¶È
+            //ä»NPCå‰æ–¹æ£€æµ‹å°é˜¶é«˜åº¦
             Vector2 frontBottom = npc.Bottom + new Vector2(direction * (npc.width / 2f + 8), 0);
 
-            //¼ì²âÊÇ·ñ´æÔÚĞèÒªÅÊÅÀµÄÌ¨½×
+            //æ£€æµ‹æ˜¯å¦å­˜åœ¨éœ€è¦æ”€çˆ¬çš„å°é˜¶
             if (!DetectStepAhead(frontBottom, direction, out int stepHeight)) {
                 return;
             }
 
-            //Ö´ĞĞÅÊÅÀ
+            //æ‰§è¡Œæ”€çˆ¬
             PerformStepClimb(stepHeight);
         }
 
-        //¼ì²âÇ°·½ÊÇ·ñÓĞÌ¨½×
+        //æ£€æµ‹å‰æ–¹æ˜¯å¦æœ‰å°é˜¶
         private bool DetectStepAhead(Vector2 checkStart, int direction, out int stepHeight) {
             stepHeight = 0;
 
-            //ÏòÏÂ¼ì²âÊÇ·ñÓĞÊµĞÄ·½¿é
+            //å‘ä¸‹æ£€æµ‹æ˜¯å¦æœ‰å®å¿ƒæ–¹å—
             bool hasGroundAhead = false;
             for (int y = 0; y < 20; y += 2) {
                 Vector2 checkPos = checkStart + new Vector2(0, y);
@@ -120,10 +120,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
 
             if (!hasGroundAhead) {
-                return false;//Ç°·½ÊÇ¿ÕµÄ£¬²»ĞèÒªÅÀ
+                return false;//å‰æ–¹æ˜¯ç©ºçš„ï¼Œä¸éœ€è¦çˆ¬
             }
 
-            //ÏòÉÏ¼ì²â¿ÉÒÔÅÊÅÀµÄ×î´ó¸ß¶È
+            //å‘ä¸Šæ£€æµ‹å¯ä»¥æ”€çˆ¬çš„æœ€å¤§é«˜åº¦
             int maxClimbHeight = CrabulonConstants.MaxStepHeight / CrabulonConstants.StepCheckInterval;
             int foundHeight = 0;
 
@@ -131,15 +131,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 int checkHeightPixels = i * CrabulonConstants.StepCheckInterval;
                 Vector2 checkPos = npc.position - new Vector2(0, checkHeightPixels);
 
-                //¼ì²éÔÚÕâ¸ö¸ß¶ÈÊÇ·ñ¿ÉÒÔÍ¨¹ı£¬¼ì²éÕû¸öNPCµÄÅö×²Ïä
+                //æ£€æŸ¥åœ¨è¿™ä¸ªé«˜åº¦æ˜¯å¦å¯ä»¥é€šè¿‡ï¼Œæ£€æŸ¥æ•´ä¸ªNPCçš„ç¢°æ’ç®±
                 if (Collision.SolidCollision(checkPos, npc.width, npc.height)) {
-                    break;//Óöµ½ÕÏ°­Îï£¬²»ÄÜÔÙÍùÉÏ
+                    break;//é‡åˆ°éšœç¢ç‰©ï¼Œä¸èƒ½å†å¾€ä¸Š
                 }
 
-                //¼ì²éÕâ¸ö¸ß¶ÈÇ°·½ÊÇ·ñÓĞ×ã¹»¿Õ¼ä
+                //æ£€æŸ¥è¿™ä¸ªé«˜åº¦å‰æ–¹æ˜¯å¦æœ‰è¶³å¤Ÿç©ºé—´
                 Vector2 forwardPos = checkPos + new Vector2(direction * (npc.width / 2f + 4), 0);
 
-                //È·±£Ç°·½ºÍÉÏ·½¶¼ÓĞ¿Õ¼ä
+                //ç¡®ä¿å‰æ–¹å’Œä¸Šæ–¹éƒ½æœ‰ç©ºé—´
                 bool hasSpace = !Collision.SolidCollision(forwardPos, npc.width / 2, npc.height);
                 bool hasHeadroom = !Collision.SolidCollision(checkPos + new Vector2(0, -npc.height / 2), npc.width, npc.height / 2);
 
@@ -156,66 +156,66 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //Ö´ĞĞÌ¨½×ÅÊÅÀ
+        //æ‰§è¡Œå°é˜¶æ”€çˆ¬
         private void PerformStepClimb(int heightLevel) {
-            //¼ÇÂ¼µ±Ç°Î»ÖÃÎªÓĞĞ§Î»ÖÃ
+            //è®°å½•å½“å‰ä½ç½®ä¸ºæœ‰æ•ˆä½ç½®
             lastValidPosition = npc.position;
 
-            //ÉèÖÃÅÊÅÀ²ÎÊı
+            //è®¾ç½®æ”€çˆ¬å‚æ•°
             JumpHeightUpdate = heightLevel * CrabulonConstants.StepCheckInterval;
             JumpHeightSetFrame = CrabulonConstants.MountTimeout;
 
-            //¸øÒ»¸öĞ¡µÄÏòÉÏËÙ¶È£¬µ«²»ÒªÌ«´ó
+            //ç»™ä¸€ä¸ªå°çš„å‘ä¸Šé€Ÿåº¦ï¼Œä½†ä¸è¦å¤ªå¤§
             npc.velocity.Y = -4f;
 
-            //±ê¼ÇĞèÒªÍøÂçÍ¬²½
+            //æ ‡è®°éœ€è¦ç½‘ç»œåŒæ­¥
             npc.netUpdate = true;
         }
 
-        //´¦ÀíÌøÔ¾¸ß¶È¸üĞÂ
+        //å¤„ç†è·³è·ƒé«˜åº¦æ›´æ–°
         public void UpdateJumpHeight() {
             if (JumpHeightUpdate > 0) {
                 JumpHeightSetFrame = CrabulonConstants.MountTimeout;
 
-                //¼ÆËã±¾Ö¡Ó¦¸ÃÉÏÉıµÄ¾àÀë
-                float climbSpeed = 10f; //½µµÍËÙ¶ÈÒÔÌá¸ßÎÈ¶¨ĞÔ
+                //è®¡ç®—æœ¬å¸§åº”è¯¥ä¸Šå‡çš„è·ç¦»
+                float climbSpeed = 10f; //é™ä½é€Ÿåº¦ä»¥æé«˜ç¨³å®šæ€§
                 float climbDistance = Math.Min(JumpHeightUpdate, climbSpeed);
 
-                //ÔÚÊµ¼ÊÒÆ¶¯Ç°¼ì²éÊÇ·ñ»á¿¨Èë·½¿é
+                //åœ¨å®é™…ç§»åŠ¨å‰æ£€æŸ¥æ˜¯å¦ä¼šå¡å…¥æ–¹å—
                 Vector2 newPosition = npc.position - new Vector2(0, climbDistance);
                 if (!WouldCollideAtPosition(newPosition)) {
                     JumpHeightUpdate -= climbDistance;
                     npc.position.Y -= climbDistance;
-                    lastValidPosition = npc.position; //¸üĞÂÓĞĞ§Î»ÖÃ
+                    lastValidPosition = npc.position; //æ›´æ–°æœ‰æ•ˆä½ç½®
                 }
                 else {
-                    //Èç¹û»á¿¨Èë·½¿é£¬Í£Ö¹ÅÊÅÀ
+                    //å¦‚æœä¼šå¡å…¥æ–¹å—ï¼Œåœæ­¢æ”€çˆ¬
                     JumpHeightUpdate = 0;
                 }
 
-                //ÔÚÅÊÅÀÆÚ¼ä¼õÉÙÖØÁ¦Ó°Ïì¶ø²»ÊÇÍêÈ«½ûÓÃ
+                //åœ¨æ”€çˆ¬æœŸé—´å‡å°‘é‡åŠ›å½±å“è€Œä¸æ˜¯å®Œå…¨ç¦ç”¨
                 if (npc.velocity.Y > 0) {
                     npc.velocity.Y *= 0.5f;
                 }
 
-                //±ê¼ÇĞèÒªÍ¬²½
+                //æ ‡è®°éœ€è¦åŒæ­¥
                 if (climbDistance > 0) {
                     npc.netUpdate = true;
                 }
             }
 
-            //¸üĞÂÅÊÅÀÀäÈ´
+            //æ›´æ–°æ”€çˆ¬å†·å´
             if (JumpHeightSetFrame > 0) {
                 JumpHeightSetFrame--;
             }
         }
 
-        //¼ì²éÔÚÖ¸¶¨Î»ÖÃÊÇ·ñ»á·¢ÉúÅö×²
+        //æ£€æŸ¥åœ¨æŒ‡å®šä½ç½®æ˜¯å¦ä¼šå‘ç”Ÿç¢°æ’
         private bool WouldCollideAtPosition(Vector2 position) {
             return Collision.SolidCollision(position, npc.width, npc.height);
         }
 
-        //¿¨Èë·½¿é¼ì²âºÍĞŞÕı
+        //å¡å…¥æ–¹å—æ£€æµ‹å’Œä¿®æ­£
         public void CheckAndFixStuckPosition() {
             stuckCheckTimer++;
 
@@ -225,14 +225,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             stuckCheckTimer = 0;
 
-            //¼ì²éNPCÊÇ·ñ¿¨ÔÚ·½¿éÖĞ
+            //æ£€æŸ¥NPCæ˜¯å¦å¡åœ¨æ–¹å—ä¸­
             if (Collision.SolidCollision(npc.position, npc.width, npc.height)) {
-                //³¢ÊÔĞŞÕıÎ»ÖÃ
+                //å°è¯•ä¿®æ­£ä½ç½®
                 if (TryFixStuckPosition()) {
                     return;
                 }
 
-                //Èç¹ûĞŞÕıÊ§°Ü£¬»ØÍËµ½ÉÏ´ÎÓĞĞ§Î»ÖÃ
+                //å¦‚æœä¿®æ­£å¤±è´¥ï¼Œå›é€€åˆ°ä¸Šæ¬¡æœ‰æ•ˆä½ç½®
                 if (lastValidPosition != Vector2.Zero &&
                     !Collision.SolidCollision(lastValidPosition, npc.width, npc.height)) {
                     npc.position = lastValidPosition;
@@ -241,24 +241,24 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 }
             }
             else {
-                //µ±Ç°Î»ÖÃÓĞĞ§£¬¸üĞÂ¼ÇÂ¼
+                //å½“å‰ä½ç½®æœ‰æ•ˆï¼Œæ›´æ–°è®°å½•
                 lastValidPosition = npc.position;
             }
         }
 
-        //³¢ÊÔĞŞÕı¿¨ÈëÎ»ÖÃ
+        //å°è¯•ä¿®æ­£å¡å…¥ä½ç½®
         private bool TryFixStuckPosition() {
-            //³¢ÊÔ8¸ö·½ÏòµÄÆ«ÒÆ
+            //å°è¯•8ä¸ªæ–¹å‘çš„åç§»
             Vector2[] directions = new Vector2[]
             {
-                new Vector2(0, -8),  //ÏòÉÏ
-                new Vector2(0, 8),   //ÏòÏÂ
-                new Vector2(-8, 0),  //Ïò×ó
-                new Vector2(8, 0),   //ÏòÓÒ
-                new Vector2(-8, -8), //×óÉÏ
-                new Vector2(8, -8),  //ÓÒÉÏ
-                new Vector2(-8, 8),  //×óÏÂ
-                new Vector2(8, 8)    //ÓÒÏÂ
+                new Vector2(0, -8),  //å‘ä¸Š
+                new Vector2(0, 8),   //å‘ä¸‹
+                new Vector2(-8, 0),  //å‘å·¦
+                new Vector2(8, 0),   //å‘å³
+                new Vector2(-8, -8), //å·¦ä¸Š
+                new Vector2(8, -8),  //å³ä¸Š
+                new Vector2(-8, 8),  //å·¦ä¸‹
+                new Vector2(8, 8)    //å³ä¸‹
             };
 
             foreach (Vector2 offset in directions) {
@@ -275,26 +275,26 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //ÏŞÖÆNPCÔÚÊÀ½ç±ß½çÄÚ
+        //é™åˆ¶NPCåœ¨ä¸–ç•Œè¾¹ç•Œå†…
         public void ClampToWorldBounds() {
             ushort border = CrabulonConstants.WorldBorder;
             npc.position.X = MathHelper.Clamp(npc.position.X, border, Main.maxTilesX * 16 - border);
             npc.position.Y = MathHelper.Clamp(npc.position.Y, border, Main.maxTilesY * 16 - border);
         }
 
-        //¼ì²âÊÇ·ñÓ¦¸Ã´©¹ıÆ½Ì¨
+        //æ£€æµ‹æ˜¯å¦åº”è¯¥ç©¿è¿‡å¹³å°
         public bool? ShouldFallThroughPlatforms() {
-            //Æï³ËÄ£Ê½ÏÂ°´S¼ü´©¹ıÆ½Ì¨
+            //éª‘ä¹˜æ¨¡å¼ä¸‹æŒ‰Sé”®ç©¿è¿‡å¹³å°
             if (owner.Mount && owner.Owner.Alives() && owner.Owner.holdDownCardinalTimer[0] > 2) {
                 return true;
             }
 
-            //´¹Ö±×·ÖğÆÚ¼ä²»´©Æ½Ì¨
+            //å‚ç›´è¿½é€æœŸé—´ä¸ç©¿å¹³å°
             if (owner.ai[7] > 0) {
                 return false;
             }
 
-            //ĞèÒªÏÂÂäÊ±´©¹ıÆ½Ì¨
+            //éœ€è¦ä¸‹è½æ—¶ç©¿è¿‡å¹³å°
             if (owner.ai[10] > 0) {
                 return true;
             }

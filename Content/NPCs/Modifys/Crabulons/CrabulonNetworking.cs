@@ -1,4 +1,4 @@
-using System.IO;
+ï»¿using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     /// <summary>
-    /// ¾úÉúĞ·ÍøÂçÍ¬²½ÏµÍ³
+    /// èŒç”ŸèŸ¹ç½‘ç»œåŒæ­¥ç³»ç»Ÿ
     /// </summary>
     internal class CrabulonNetworking
     {
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.owner = owner;
         }
 
-        //·¢ËÍÍøÂçÊı¾İ°ü
+        //å‘é€ç½‘ç»œæ•°æ®åŒ…
         public void SendNetworkPacket() {
             if (!VaultUtils.isClient) {
                 return;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Send();
         }
 
-        //·¢ËÍÍ¶Î¹Êı¾İ°ü
+        //å‘é€æŠ•å–‚æ•°æ®åŒ…
         public void SendFeedPacket(int projIdentity) {
             if (!VaultUtils.isClient) {
                 return;
@@ -42,34 +42,55 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Send();
         }
 
-        //Ğ´ÈëÊı¾İµ½ÍøÂç°ü
+        //å†™å…¥æ•°æ®åˆ°ç½‘ç»œåŒ…
         public void WriteData(ModPacket netMessage) {
-            netMessage.Write(owner.Owner.Alives() ? owner.Owner.whoAmI : 0);
+            netMessage.Write(owner.Owner.Alives() ? owner.Owner.whoAmI : -1);
             netMessage.Write(owner.FeedValue);
             netMessage.Write(owner.Crouch);
             netMessage.Write(owner.Mount);
             netMessage.Write(owner.MountACrabulon);
             netMessage.Write(owner.DontMount);
             netMessage.Write(owner.DyeItemID);
-            netMessage.Write(owner.Physics.JumpHeightUpdate);
-            netMessage.Write(owner.Physics.JumpHeightSetFrame);
-            netMessage.Write(owner.Physics.GroundClearance);
+            if (owner.Physics != null) {
+                netMessage.Write(owner.Physics.JumpHeightUpdate);
+                netMessage.Write(owner.Physics.JumpHeightSetFrame);
+                netMessage.Write(owner.Physics.GroundClearance);
+            }
+            else {
+                netMessage.Write(0f);
+                netMessage.Write(0f);
+                netMessage.Write(0f);
+            }
             owner.SaddleItem ??= new Item();
             ItemIO.Send(owner.SaddleItem, netMessage);
         }
 
-        //´ÓÍøÂç°ü¶ÁÈ¡Êı¾İ
+        //ä»ç½‘ç»œåŒ…è¯»å–æ•°æ®
         public void ReadData(BinaryReader reader) {
-            owner.Owner = Main.player[reader.ReadInt32()];
+            int ownerIndex = reader.ReadInt32();
+            if (ownerIndex >= 0 && ownerIndex < Main.player.Length) {
+                owner.Owner = Main.player[ownerIndex];
+            }
+            else {
+                owner.Owner = null;
+            }
             owner.FeedValue = reader.ReadSingle();
             owner.Crouch = reader.ReadBoolean();
             owner.Mount = reader.ReadBoolean();
             owner.MountACrabulon = reader.ReadBoolean();
             owner.DontMount = reader.ReadInt32();
             owner.DyeItemID = reader.ReadInt32();
-            owner.Physics.JumpHeightUpdate = reader.ReadSingle();
-            owner.Physics.JumpHeightSetFrame = reader.ReadSingle();
+            
+            float jumpHeightUpdate = reader.ReadSingle();
+            float jumpHeightSetFrame = reader.ReadSingle();
             float groundClearance = reader.ReadSingle();
+
+            if (owner.Physics != null) {
+                owner.Physics.JumpHeightUpdate = jumpHeightUpdate;
+                owner.Physics.JumpHeightSetFrame = jumpHeightSetFrame;
+                owner.Physics.GroundClearance = groundClearance;
+            }
+
             owner.SaddleItem = ItemIO.Receive(reader);
 
             if (!owner.SaddleItem.Alives()) {
@@ -77,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //½ÓÊÕÍøÂçÊı¾İ
+        //æ¥æ”¶ç½‘ç»œæ•°æ®
         public static void ReceiveNetworkData(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt32();
             if (!npcIndex.TryGetNPC(out NPC npc)) {
@@ -99,7 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //½ÓÊÕÍ¶Î¹Êı¾İ°ü
+        //æ¥æ”¶æŠ•å–‚æ•°æ®åŒ…
         public static void ReceiveFeedPacket(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt32();
             int projIdentity = reader.ReadInt32();
@@ -137,10 +158,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Send(-1, whoAmI);
 
             modifyCrabulon.NetAISend();
-            modifyCrabulon.NetOtherWorkSend = true;
+            //modifyCrabulon.NetOtherWorkSend = true;
         }
 
-        //´¦ÀíÍøÂçÏûÏ¢
+        //å¤„ç†ç½‘ç»œæ¶ˆæ¯
         public static void HandleNetworkMessage(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type == CWRMessageType.CrabulonFeed) {
                 ReceiveFeedPacket(reader, whoAmI);

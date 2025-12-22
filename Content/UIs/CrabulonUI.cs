@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.UIs
 
             foreach (var hover in modifys) {
                 //跳过无效或不属于当前玩家的NPC
-                if (!hover.npc.Alives() || hover.Owner.whoAmI != player.whoAmI) {
+                if (hover is null || !hover.npc.Alives() || !hover.Owner.Alives() || hover.Owner.whoAmI != player.whoAmI) {
                     continue;
                 }
 

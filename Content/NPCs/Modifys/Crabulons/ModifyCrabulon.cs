@@ -122,8 +122,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public static void ReceiveNetWork(BinaryReader reader, int whoAmI) => CrabulonNetworking.ReceiveNetworkData(reader, whoAmI);
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) => CrabulonNetworking.HandleNetworkMessage(type, reader, whoAmI);
 
-        public override void OtherNetWorkSend(ModPacket netMessage) => Networking.WriteData(netMessage);
-        public override void OtherNetWorkReceive(BinaryReader reader) => Networking.ReadData(reader);
+        public override void OtherNetWorkSend(ModPacket netMessage) { }
+        public override void OtherNetWorkReceive(BinaryReader reader) { }
 
         //数据保存与加载
         public override void SaveData(TagCompound tag) {
