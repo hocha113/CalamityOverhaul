@@ -1,9 +1,12 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.OtherMods.MagicStorage;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -29,9 +32,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         internal int TagItemSign;
         internal int dontSpawnArmTime;
         internal int consumeUE = 8;
-        internal int ArmIndex0 = -1;
-        internal int ArmIndex1 = -1;
-        internal int ArmIndex2 = -1;
+        internal List<int> ArmActorIndices = new List<int>();
         internal float hoverSengs;
 
         public override void SetBattery() {
@@ -45,9 +46,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             data.Write(TagItemSign);
             data.Write(BatteryPrompt);
             data.Write(workState);
-            data.Write(ArmIndex0);
-            data.Write(ArmIndex1);
-            data.Write(ArmIndex2);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
@@ -56,9 +54,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             TagItemSign = reader.ReadInt32();
             BatteryPrompt = reader.ReadBoolean();
             workState = reader.ReadBoolean();
-            ArmIndex0 = reader.ReadInt32();
-            ArmIndex1 = reader.ReadInt32();
-            ArmIndex2 = reader.ReadInt32();
         }
 
         public override void SaveData(TagCompound tag) {
@@ -104,10 +99,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
         }
 
-        internal static bool IsArmValid(int armIndex) {
-            if (armIndex < 0) return false;
-            Projectile projectile = Main.projectile.FindByIdentity(armIndex);
-            return projectile.Alives() && projectile.type == ModContent.ProjectileType<CollectorArm>();
+        internal static bool IsArmActorValid(int actorIndex) {
+            if(actorIndex < 0 || actorIndex >= ActorLoader.MaxActorCount) return false;
+            Actor actor = ActorLoader.Actors[actorIndex];
+            return actor != null && actor.Active && actor is CollectorArm;
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
@@ -217,44 +212,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return null;
         }
 
-        /// <summary>
-        /// 检查并生成机械臂（仅服务器端）
-        /// </summary>
+        ///<summary>
+        ///检查并生成机械臂(仅服务器端)
+        ///</summary>
         private void SpawnArmsIfNeeded() {
-            if (VaultUtils.isClient) return;
-            if (ArmPos.FindClosestPlayer(killerArmDistance) == null) return;
-            if (dontSpawnArmTime > 0) return;
+            if(VaultUtils.isClient) return;
+            if(dontSpawnArmTime > 0) return;
 
-            bool needsSync = false;
-            int armType = ModContent.ProjectileType<CollectorArm>();
+            //清理失效的索引
+            ArmActorIndices.RemoveAll(index => !IsArmActorValid(index));
 
-            //检查并生成三个机械臂
-            if (!IsArmValid(ArmIndex0)) {
-                ArmIndex0 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 0
-                ).identity;
-                needsSync = true;
-            }
-
-            if (!IsArmValid(ArmIndex1)) {
-                ArmIndex1 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 1
-                ).identity;
-                needsSync = true;
-            }
-
-            if (!IsArmValid(ArmIndex2)) {
-                ArmIndex2 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
-                    armType, 0, 0, -1, ai0: 0, ai1: 2
-                ).identity;
-                needsSync = true;
-            }
-
-            if (needsSync) {
-                SendData();
+            if (ArmActorIndices.Count < 3) {
+                int armSlot = ArmActorIndices.Count;
+                object[] spawnData = [Position, armSlot];
+                int actorIndex = ActorLoader.NewActor<CollectorArm>(ArmPos, Vector2.Zero);
+                ArmActorIndices.Add(actorIndex);
+                ActorLoader.Actors[actorIndex].OnSpawn(spawnData);
             }
         }
 
@@ -278,15 +251,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //检查机械臂总数限制
-            if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
-                if (textIdleTime <= 0) {
+            int totalArms = ActorLoader.GetActiveActors<CollectorArm>().Count;
+            if(totalArms > 300) {
+                if(textIdleTime <= 0) {
                     CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
                     textIdleTime = 300;
                 }
                 return;
             }
 
-            //生成机械臂
             SpawnArmsIfNeeded();
 
             //检查能量状态
@@ -294,24 +267,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             if (BatteryPrompt && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
                 textIdleTime = 300;
-            }
-        }
-
-        public override void PreTileDraw(SpriteBatch spriteBatch) {
-            //只绘制属于当前收集器的机械臂
-            int armType = ModContent.ProjectileType<CollectorArm>();
-
-            foreach (var proj in Main.ActiveProjectiles) {
-                if (proj.type != armType) continue;
-
-                int armSlot = (int)proj.ai[1];
-                bool belongsToThis = armSlot == 0 && ArmIndex0 == proj.identity
-                    || armSlot == 1 && ArmIndex1 == proj.identity
-                    || armSlot == 2 && ArmIndex2 == proj.identity;
-
-                if (belongsToThis) {
-                    ((CollectorArm)proj.ModProjectile).DoDraw(Lighting.GetColor(proj.Center.ToTileCoordinates()));
-                }
             }
         }
 
