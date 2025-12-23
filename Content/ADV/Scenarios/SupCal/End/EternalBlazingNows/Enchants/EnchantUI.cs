@@ -1,5 +1,4 @@
-﻿using CalamityMod.UI.CalamitasEnchants;
-using CalamityOverhaul.Content.ADV.UIEffect;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -23,8 +22,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
     /// 提供免费无限制的武器附魔，但需要等待附魔时间
     /// </summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
-    [CWRJITEnabled]
-    [ExtendsFromMod("CalamityMod")]
     internal class EnchantUI : UIHandle, ILocalizedModType
     {
         public static Asset<Texture2D> CalamitasCurseItemSlot = null;
@@ -279,7 +276,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             }
 
             //获取可用附魔
-            IEnumerable<Enchantment> possibleEnchantments = EnchantmentHandler.GetAvailableEnchantments();
+            IEnumerable<CWRRef.EnchantmentWrapper> possibleEnchantments = EnchantmentHandler.GetAvailableEnchantments();
 
             //物品槽位置
             Vector2 itemSlotDrawPosition = UITopLeft + new Vector2(36f, 46f) * backgroundScale;
@@ -589,7 +586,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             spriteBatch.Draw(enchantIconTexture, enchantIconDrawPosition, null, Color.White, 0f, Vector2.Zero, enchantButtonScale, SpriteEffects.None, 0f);
         }
 
-        private void DrawAndInteractWithButtons(SpriteBatch spriteBatch, IEnumerable<Enchantment> possibleEnchantments, Vector2 topButtonTopLeft, Vector2 bottomButtonTopLeft, Vector2 scale) {
+        private void DrawAndInteractWithButtons(SpriteBatch spriteBatch, IEnumerable<CWRRef.EnchantmentWrapper> possibleEnchantments, Vector2 topButtonTopLeft, Vector2 bottomButtonTopLeft, Vector2 scale) {
             if (!possibleEnchantments.Any())
                 return;
 
@@ -641,7 +638,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             Vector2 scale = new Vector2(1.0f, 0.95f) * UIScale;
             string enchName = EnchantmentHandler.SelectedEnchantment.Value.Name.ToString();
             float textWidth = FontAssets.MouseText.Value.MeasureString(enchName).X * scale.X;
-            Color drawColor = EnchantmentHandler.SelectedEnchantment.Value.Equals(EnchantmentManager.ClearEnchantment) ? Color.White : Color.Orange;
+            Color drawColor = EnchantmentHandler.SelectedEnchantment.Value.IsClearEnchantment ? Color.White : Color.Orange;
             nameDrawCenter.X -= textWidth * 0.5f;
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, enchName, nameDrawCenter, drawColor, 0f, Vector2.Zero, scale);
         }
@@ -704,12 +701,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             EnchantmentHandler.StartEnchanting(player);
         }
 
-        private static void OnEnchantStart(Item item, Enchantment enchantment) {
+        private static void OnEnchantStart(Item item, CWRRef.EnchantmentWrapper enchantment) {
             //炼铸开始时的额外逻辑
             //我暂时想不到有什么需要做的
         }
 
-        private static void OnEnchantComplete(Item item, Enchantment enchantment) {
+        private static void OnEnchantComplete(Item item, CWRRef.EnchantmentWrapper enchantment) {
             //炼铸完成时的额外逻辑
             //我暂时想不到有什么需要做的
         }

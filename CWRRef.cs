@@ -1149,5 +1149,186 @@ namespace CalamityOverhaul
         public static List<Vector2> BezierCurveGetPoints(int count, params Vector2[] pos) => Has ? BezierCurveGetPointsInner(count, pos) : new List<Vector2>();
         [CWRJITEnabled]
         private static List<Vector2> BezierCurveGetPointsInner(int count, Vector2[] pos) => new BezierCurve(pos).GetPoints(count);
+
+        #region 炼铸系统包装器
+        /// <summary>
+        /// 附魔包装器结构体，用于安全地封装CalamityMod的Enchantment
+        /// </summary>
+        public struct EnchantmentWrapper
+        {
+            /// <summary>
+            /// 附魔名称
+            /// </summary>
+            public LocalizedText Name { get; set; }
+
+            /// <summary>
+            /// 附魔描述
+            /// </summary>
+            public LocalizedText Description { get; set; }
+
+            /// <summary>
+            /// 附魔图标路径
+            /// </summary>
+            public string IconTexturePath { get; set; }
+
+            /// <summary>
+            /// 内部标识符（用于比较）
+            /// </summary>
+            internal int InternalId { get; set; }
+
+            /// <summary>
+            /// 是否是清除附魔
+            /// </summary>
+            public bool IsClearEnchantment { get; set; }
+
+            public override bool Equals(object obj) {
+                if (obj is EnchantmentWrapper other)
+                    return InternalId == other.InternalId;
+                return false;
+            }
+
+            public override int GetHashCode() => InternalId;
+
+            public static bool operator ==(EnchantmentWrapper left, EnchantmentWrapper right)
+                => left.InternalId == right.InternalId;
+
+            public static bool operator !=(EnchantmentWrapper left, EnchantmentWrapper right)
+                => !(left == right);
+        }
+
+        /// <summary>
+        /// 获取物品的有效附魔列表
+        /// </summary>
+        public static List<EnchantmentWrapper> GetValidEnchantmentsForItem(Item item) {
+            if (!Has || item == null || item.IsAir)
+                return new List<EnchantmentWrapper>();
+            return GetValidEnchantmentsForItemInner(item);
+        }
+        [CWRJITEnabled]
+        private static List<EnchantmentWrapper> GetValidEnchantmentsForItemInner(Item item) {
+            var result = new List<EnchantmentWrapper>();
+            var enchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
+
+            int id = 0;
+            foreach (var enchantment in enchantments) {
+                result.Add(new EnchantmentWrapper {
+                    Name = enchantment.Name,
+                    Description = enchantment.Description,
+                    IconTexturePath = enchantment.IconTexturePath,
+                    InternalId = id++,
+                    IsClearEnchantment = enchantment.Equals(CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment)
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取清除附魔的包装器
+        /// </summary>
+        public static EnchantmentWrapper GetClearEnchantment() {
+            if (!Has)
+                return default;
+            return GetClearEnchantmentInner();
+        }
+        [CWRJITEnabled]
+        private static EnchantmentWrapper GetClearEnchantmentInner() {
+            var clearEnchant = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment;
+            return new EnchantmentWrapper {
+                Name = clearEnchant.Name,
+                Description = clearEnchant.Description,
+                IconTexturePath = clearEnchant.IconTexturePath,
+                InternalId = -1,
+                IsClearEnchantment = true
+            };
+        }
+
+        /// <summary>
+        /// 应用附魔到物品
+        /// </summary>
+        public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
+            if (!Has || item == null || item.IsAir)
+                return;
+            ApplyEnchantmentToItemInner(item, wrapper, creationEffect);
+        }
+        [CWRJITEnabled]
+        private static void ApplyEnchantmentToItemInner(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect) {
+            int oldPrefix = item.prefix;
+            item.SetDefaults(item.type);
+            item.Prefix(oldPrefix);
+
+            if (wrapper.IsClearEnchantment) {
+                item.Calamity().AppliedEnchantment = null;
+                item.Prefix(oldPrefix);
+            }
+            else {
+                //通过Name和Description重新匹配Enchantment
+                var allEnchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
+                CalamityMod.UI.CalamitasEnchants.Enchantment? targetEnchant = null;
+
+                foreach (var ench in allEnchantments) {
+                    if (ench.Name.Value == wrapper.Name.Value && ench.Description.Value == wrapper.Description.Value) {
+                        targetEnchant = ench;
+                        break;
+                    }
+                }
+
+                if (targetEnchant.HasValue) {
+                    item.Calamity().AppliedEnchantment = targetEnchant.Value;
+                    creationEffect?.Invoke(item);
+                    targetEnchant.Value.CreationEffect?.Invoke(item);
+
+                    if (CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ItemUpgradeRelationship.TryGetValue(item.type, out var newID)) {
+                        item.SetDefaults(newID);
+                        item.Prefix(oldPrefix);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取物品当前的附魔
+        /// </summary>
+        public static EnchantmentWrapper? GetItemEnchantment(Item item) {
+            if (!Has || item == null || item.IsAir)
+                return null;
+            return GetItemEnchantmentInner(item);
+        }
+        [CWRJITEnabled]
+        private static EnchantmentWrapper? GetItemEnchantmentInner(Item item) {
+            var appliedEnchant = item.Calamity().AppliedEnchantment;
+            if (!appliedEnchant.HasValue)
+                return null;
+
+            var ench = appliedEnchant.Value;
+            return new EnchantmentWrapper {
+                Name = ench.Name,
+                Description = ench.Description,
+                IconTexturePath = ench.IconTexturePath,
+                InternalId = 0,
+                IsClearEnchantment = ench.Equals(CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment)
+            };
+        }
+
+        /// <summary>
+        /// 检查附魔是否可用于物品
+        /// </summary>
+        public static bool IsEnchantmentValidForItem(Item item, EnchantmentWrapper wrapper) {
+            if (!Has || item == null || item.IsAir)
+                return false;
+            return IsEnchantmentValidForItemInner(item, wrapper);
+        }
+        [CWRJITEnabled]
+        private static bool IsEnchantmentValidForItemInner(Item item, EnchantmentWrapper wrapper) {
+            var validEnchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
+
+            foreach (var ench in validEnchantments) {
+                if (ench.Name.Value == wrapper.Name.Value && ench.Description.Value == wrapper.Description.Value)
+                    return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

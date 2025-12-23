@@ -1,65 +1,60 @@
-using CalamityMod;
-using CalamityMod.UI.CalamitasEnchants;
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants
 {
     /// <summary>
-    /// Á¶ÖıÏµÍ³ºËĞÄÂß¼­´¦ÀíÆ÷
-    /// ¸ºÔğ¹ÜÀí¸½Ä§Á÷³Ì¡¢ÑéÖ¤¡¢Ó¦ÓÃµÈºËĞÄ¹¦ÄÜ
+    /// ç‚¼é“¸ç³»ç»Ÿæ ¸å¿ƒé€»è¾‘å¤„ç†å™¨
+    /// è´Ÿè´£ç®¡ç†é™„é­”æµç¨‹ã€éªŒè¯ã€åº”ç”¨ç­‰æ ¸å¿ƒåŠŸèƒ½
     /// </summary>
-    [CWRJITEnabled]
-    [ExtendsFromMod("CalamityMod")]
     internal class EnchantmentHandler
     {
         /// <summary>
-        /// µ±Ç°´ıÁ¶ÖıµÄÎïÆ·
+        /// å½“å‰å¾…ç‚¼é“¸çš„ç‰©å“
         /// </summary>
         public Item CurrentItem { get; set; }
 
         /// <summary>
-        /// µ±Ç°Ñ¡ÔñµÄ¸½Ä§Ë÷Òı
+        /// å½“å‰é€‰æ‹©çš„é™„é­”ç´¢å¼•
         /// </summary>
         public int SelectedEnchantmentIndex { get; set; }
 
         /// <summary>
-        /// µ±Ç°Ñ¡ÔñµÄ¸½Ä§
+        /// å½“å‰é€‰æ‹©çš„é™„é­”
         /// </summary>
-        public Enchantment? SelectedEnchantment { get; private set; }
+        public CWRRef.EnchantmentWrapper? SelectedEnchantment { get; private set; }
 
         /// <summary>
-        /// ÊÇ·ñÕıÔÚ½øĞĞÁ¶Öı
+        /// æ˜¯å¦æ­£åœ¨è¿›è¡Œç‚¼é“¸
         /// </summary>
         public bool IsEnchanting { get; private set; }
 
         /// <summary>
-        /// Á¶Öı½ø¶È (0-1)
+        /// ç‚¼é“¸è¿›åº¦ (0-1)
         /// </summary>
         public float EnchantProgress { get; private set; }
 
         /// <summary>
-        /// Á¶ÖıËùĞèÊ±¼ä£¨Ö¡Êı£©
+        /// ç‚¼é“¸æ‰€éœ€æ—¶é—´ï¼ˆå¸§æ•°ï¼‰
         /// </summary>
         public float EnchantDuration { get; set; } = 180f;
 
         /// <summary>
-        /// Á¶ÖıÍê³ÉÊ±µÄ»Øµ÷
+        /// ç‚¼é“¸å®Œæˆæ—¶çš„å›è°ƒ
         /// </summary>
-        public event Action<Item, Enchantment> OnEnchantComplete;
+        public event Action<Item, CWRRef.EnchantmentWrapper> OnEnchantComplete;
 
         /// <summary>
-        /// Á¶Öı¿ªÊ¼Ê±µÄ»Øµ÷
+        /// ç‚¼é“¸å¼€å§‹æ—¶çš„å›è°ƒ
         /// </summary>
-        public event Action<Item, Enchantment> OnEnchantStart;
+        public event Action<Item, CWRRef.EnchantmentWrapper> OnEnchantStart;
 
         /// <summary>
-        /// Á¶Öı½ø¶È¸üĞÂÊ±µÄ»Øµ÷
+        /// ç‚¼é“¸è¿›åº¦æ›´æ–°æ—¶çš„å›è°ƒ
         /// </summary>
         public event Action<float> OnProgressUpdate;
 
@@ -69,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// ¸üĞÂÁ¶ÖıÂß¼­£¬Ã¿Ö¡µ÷ÓÃ
+        /// æ›´æ–°ç‚¼é“¸é€»è¾‘ï¼Œæ¯å¸§è°ƒç”¨
         /// </summary>
         public void Update() {
             if (!IsEnchanting) {
@@ -85,29 +80,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÎïÆ·¿ÉÓÃµÄ¸½Ä§ÁĞ±í
+        /// è·å–å½“å‰ç‰©å“å¯ç”¨çš„é™„é­”åˆ—è¡¨
         /// </summary>
-        /// <returns>¿ÉÓÃµÄ¸½Ä§¼¯ºÏ</returns>
-        public IEnumerable<Enchantment> GetAvailableEnchantments() {
+        /// <returns>å¯ç”¨çš„é™„é­”é›†åˆ</returns>
+        public IEnumerable<CWRRef.EnchantmentWrapper> GetAvailableEnchantments() {
             if (CurrentItem == null || CurrentItem.IsAir) {
                 return [];
             }
-            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.GetValidEnchantmentsForItem(CurrentItem);
+            IEnumerable<CWRRef.EnchantmentWrapper> validEnchantments = CWRRef.GetValidEnchantmentsForItem(CurrentItem);
             return validEnchantments;
         }
 
         /// <summary>
-        /// ¸üĞÂµ±Ç°Ñ¡ÔñµÄ¸½Ä§
+        /// æ›´æ–°å½“å‰é€‰æ‹©çš„é™„é­”
         /// </summary>
         public void UpdateSelectedEnchantment() {
-            IEnumerable<Enchantment> availableEnchantments = GetAvailableEnchantments();
+            IEnumerable<CWRRef.EnchantmentWrapper> availableEnchantments = GetAvailableEnchantments();
 
             if (!availableEnchantments.Any()) {
                 SelectedEnchantment = null;
                 return;
             }
 
-            //È·±£Ë÷ÒıÔÚÓĞĞ§·¶Î§ÄÚ
+            //ç¡®ä¿ç´¢å¼•åœ¨æœ‰æ•ˆèŒƒå›´å†…
             if (SelectedEnchantmentIndex < 0) {
                 SelectedEnchantmentIndex = 0;
             }
@@ -119,15 +114,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// Ñ¡ÔñÉÏÒ»¸ö¸½Ä§
+        /// é€‰æ‹©ä¸Šä¸€ä¸ªé™„é­”
         /// </summary>
-        /// <returns>ÊÇ·ñ³É¹¦ÇĞ»»</returns>
+        /// <returns>æ˜¯å¦æˆåŠŸåˆ‡æ¢</returns>
         public bool SelectPreviousEnchantment() {
             if (IsEnchanting) {
                 return false;
             }
 
-            IEnumerable<Enchantment> enchantments = GetAvailableEnchantments();
+            IEnumerable<CWRRef.EnchantmentWrapper> enchantments = GetAvailableEnchantments();
             if (!enchantments.Any()) {
                 return false;
             }
@@ -142,15 +137,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// Ñ¡ÔñÏÂÒ»¸ö¸½Ä§
+        /// é€‰æ‹©ä¸‹ä¸€ä¸ªé™„é­”
         /// </summary>
-        /// <returns>ÊÇ·ñ³É¹¦ÇĞ»»</returns>
+        /// <returns>æ˜¯å¦æˆåŠŸåˆ‡æ¢</returns>
         public bool SelectNextEnchantment() {
             if (IsEnchanting) {
                 return false;
             }
 
-            IEnumerable<Enchantment> enchantments = GetAvailableEnchantments();
+            IEnumerable<CWRRef.EnchantmentWrapper> enchantments = GetAvailableEnchantments();
             if (!enchantments.Any()) {
                 return false;
             }
@@ -165,10 +160,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// ¿ªÊ¼Á¶ÖıÁ÷³Ì
+        /// å¼€å§‹ç‚¼é“¸æµç¨‹
         /// </summary>
-        /// <param name="player">·¢ÆğÁ¶ÖıµÄÍæ¼Ò</param>
-        /// <returns>ÊÇ·ñ³É¹¦¿ªÊ¼Á¶Öı</returns>
+        /// <param name="player">å‘èµ·ç‚¼é“¸çš„ç©å®¶</param>
+        /// <returns>æ˜¯å¦æˆåŠŸå¼€å§‹ç‚¼é“¸</returns>
         public bool StartEnchanting(Player player) {
             if (IsEnchanting) {
                 return false;
@@ -182,7 +177,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 return false;
             }
 
-            //ÑéÖ¤¸½Ä§ÓĞĞ§ĞÔ
+            //éªŒè¯é™„é­”æœ‰æ•ˆæ€§
             if (!CanEnchant(CurrentItem, SelectedEnchantment.Value)) {
                 return false;
             }
@@ -190,17 +185,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             IsEnchanting = true;
             EnchantProgress = 0f;
 
-            //²¥·Å¿ªÊ¼ÒôĞ§
+            //æ’­æ”¾å¼€å§‹éŸ³æ•ˆ
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = -0.3f }, player.Center);
 
-            //´¥·¢¿ªÊ¼»Øµ÷
+            //è§¦å‘å¼€å§‹å›è°ƒ
             OnEnchantStart?.Invoke(CurrentItem, SelectedEnchantment.Value);
 
             return true;
         }
 
         /// <summary>
-        /// È¡Ïûµ±Ç°Á¶Öı
+        /// å–æ¶ˆå½“å‰ç‚¼é“¸
         /// </summary>
         public void CancelEnchanting() {
             if (!IsEnchanting) {
@@ -212,7 +207,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// Íê³ÉÁ¶ÖıÁ÷³Ì
+        /// å®Œæˆç‚¼é“¸æµç¨‹
         /// </summary>
         private void CompleteEnchantment() {
             if (!SelectedEnchantment.HasValue || CurrentItem == null || CurrentItem.IsAir) {
@@ -221,77 +216,56 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 return;
             }
 
-            //Ó¦ÓÃ¸½Ä§
+            //åº”ç”¨é™„é­”
             ApplyEnchantment(CurrentItem, SelectedEnchantment.Value);
 
-            //ÖØÖÃ×´Ì¬
+            //é‡ç½®çŠ¶æ€
             IsEnchanting = false;
             EnchantProgress = 0f;
             SelectedEnchantmentIndex = 0;
 
-            //²¥·ÅÍê³ÉÒôĞ§
+            //æ’­æ”¾å®ŒæˆéŸ³æ•ˆ
             Player player = Main.LocalPlayer;
             if (player != null) {
                 SoundStyle enchantSound = "CalamityMod/Sounds/Custom/WeaponEnchant".GetSound();
                 SoundEngine.PlaySound(enchantSound with { Volume = 0.8f }, player.Center);
             }
 
-            //´¥·¢Íê³É»Øµ÷
+            //è§¦å‘å®Œæˆå›è°ƒ
             OnEnchantComplete?.Invoke(CurrentItem, SelectedEnchantment.Value);
         }
 
         /// <summary>
-        /// ÑéÖ¤ÊÇ·ñ¿ÉÒÔ¶ÔÎïÆ·Ó¦ÓÃ¸½Ä§
+        /// éªŒè¯æ˜¯å¦å¯ä»¥å¯¹ç‰©å“åº”ç”¨é™„é­”
         /// </summary>
-        /// <param name="item">Ä¿±êÎïÆ·</param>
-        /// <param name="enchantment">Ä¿±ê¸½Ä§</param>
-        /// <returns>ÊÇ·ñ¿ÉÒÔ¸½Ä§</returns>
-        public bool CanEnchant(Item item, Enchantment enchantment) {
+        /// <param name="item">ç›®æ ‡ç‰©å“</param>
+        /// <param name="enchantment">ç›®æ ‡é™„é­”</param>
+        /// <returns>æ˜¯å¦å¯ä»¥é™„é­”</returns>
+        public bool CanEnchant(Item item, CWRRef.EnchantmentWrapper enchantment) {
             if (item == null || item.IsAir) {
                 return false;
             }
 
-            //»ñÈ¡¿ÉÓÃ¸½Ä§ÁĞ±í²¢¼ì²éÄ¿±ê¸½Ä§ÊÇ·ñÔÚÆäÖĞ
-            IEnumerable<Enchantment> validEnchantments = EnchantmentManager.GetValidEnchantmentsForItem(item);
+            //è·å–å¯ç”¨é™„é­”åˆ—è¡¨å¹¶æ£€æŸ¥ç›®æ ‡é™„é­”æ˜¯å¦åœ¨å…¶ä¸­
+            IEnumerable<CWRRef.EnchantmentWrapper> validEnchantments = CWRRef.GetValidEnchantmentsForItem(item);
             return validEnchantments.Contains(enchantment);
         }
 
         /// <summary>
-        /// Ó¦ÓÃ¸½Ä§µ½ÎïÆ·
+        /// åº”ç”¨é™„é­”åˆ°ç‰©å“
         /// </summary>
-        /// <param name="item">Ä¿±êÎïÆ·</param>
-        /// <param name="enchantment">ÒªÓ¦ÓÃµÄ¸½Ä§</param>
-        public void ApplyEnchantment(Item item, Enchantment enchantment) {
+        /// <param name="item">ç›®æ ‡ç‰©å“</param>
+        /// <param name="enchantment">è¦åº”ç”¨çš„é™„é­”</param>
+        public void ApplyEnchantment(Item item, CWRRef.EnchantmentWrapper enchantment) {
             if (item == null || item.IsAir) {
                 return;
             }
 
-            //±£´æÎïÆ·µÄ´Ê×º
-            int oldPrefix = item.prefix;
-
-            //ÖØÖÃÎïÆ·
-            item.SetDefaults(item.type);
-            item.Prefix(oldPrefix);
-
-            //Ó¦ÓÃ»òÇå³ı¸½Ä§
-            if (enchantment.Equals(EnchantmentManager.ClearEnchantment)) {
-                item.Calamity().AppliedEnchantment = null;
-                item.Prefix(oldPrefix);
-            }
-            else {
-                item.Calamity().AppliedEnchantment = enchantment;
-                enchantment.CreationEffect?.Invoke(item);
-
-                if (EnchantmentManager.ItemUpgradeRelationship.TryGetValue(item.type, out var newID)) {
-                    //ÖØÖÃÎªÉı¼¶ºóµÄÎïÆ·
-                    item.SetDefaults(newID);
-                    item.Prefix(oldPrefix);
-                }
-            }
+            CWRRef.ApplyEnchantmentToItem(item, enchantment);
         }
 
         /// <summary>
-        /// ÖØÖÃ´¦ÀíÆ÷×´Ì¬
+        /// é‡ç½®å¤„ç†å™¨çŠ¶æ€
         /// </summary>
         public void Reset() {
             CurrentItem = new Item();
@@ -302,9 +276,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// ÉèÖÃµ±Ç°ÎïÆ·²¢ÖØÖÃÑ¡Ôñ×´Ì¬
+        /// è®¾ç½®å½“å‰ç‰©å“å¹¶é‡ç½®é€‰æ‹©çŠ¶æ€
         /// </summary>
-        /// <param name="item">ĞÂµÄÄ¿±êÎïÆ·</param>
+        /// <param name="item">æ–°çš„ç›®æ ‡ç‰©å“</param>
         public void SetCurrentItem(Item item) {
             if (IsEnchanting) {
                 return;
@@ -316,9 +290,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
         }
 
         /// <summary>
-        /// ½»»»µ±Ç°ÎïÆ·£¨ÓÃÓÚÎïÆ·²Û½»»¥£©
+        /// äº¤æ¢å½“å‰ç‰©å“ï¼ˆç”¨äºç‰©å“æ§½äº¤äº’ï¼‰
         /// </summary>
-        /// <param name="otherItem">Òª½»»»µÄÎïÆ·</param>
+        /// <param name="otherItem">è¦äº¤æ¢çš„ç‰©å“</param>
         public void SwapItem(ref Item otherItem) {
             if (IsEnchanting) {
                 return;
