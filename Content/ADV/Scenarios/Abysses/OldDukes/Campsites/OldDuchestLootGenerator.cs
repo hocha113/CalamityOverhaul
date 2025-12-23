@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -6,43 +6,43 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
     /// <summary>
-    /// ÀÏÏä×ÓÕ½ÀûÆ·Éú³ÉÆ÷
-    /// ¸ºÔğÉú³ÉÓªµØÄÚÀÏÏä×ÓµÄÃ¿ÈÕË¢ĞÂÄÚÈİ
+    /// è€ç®±å­æˆ˜åˆ©å“ç”Ÿæˆå™¨
+    /// è´Ÿè´£ç”Ÿæˆè¥åœ°å†…è€ç®±å­çš„æ¯æ—¥åˆ·æ–°å†…å®¹
     /// </summary>
     internal static class OldDuchestLootGenerator
     {
         private static readonly Random rand = new Random();
 
         /// <summary>
-        /// 6·ÖÖÓ = 360Ãë = 21600Ö¡
+        /// 6åˆ†é’Ÿ = 360ç§’ = 21600å¸§
         /// </summary>
         internal const int RefreshInterval = 21600;
 
         /// <summary>
-        /// Éú³ÉÃ¿ÈÕË¢ĞÂµÄÏä×ÓÄÚÈİ
+        /// ç”Ÿæˆæ¯æ—¥åˆ·æ–°çš„ç®±å­å†…å®¹
         /// </summary>
         public static List<Item> GenerateDailyLoot() {
 
             List<Item> loot = [];
 
-            //Ç®±Ò½±Àø
+            //é’±å¸å¥–åŠ±
             AddCoinReward(loot, rand);
 
-            //ÀÏ¹«¾ôÏà¹ØµôÂäÎï
+            //è€å…¬çˆµç›¸å…³æ‰è½ç‰©
             AddOldDukeDrops(loot, rand);
 
-            //º£ÑóÖ÷ÌâÎïÆ·
+            //æµ·æ´‹ä¸»é¢˜ç‰©å“
             AddOceanThemeItems(loot, rand);
 
-            //Ëæ»úÒ©Ë®ºÍÏûºÄÆ·
+            //éšæœºè¯æ°´å’Œæ¶ˆè€—å“
             AddPotionsAndConsumables(loot, rand);
 
-            //Ï¡ÓĞ²ÄÁÏ
+            //ç¨€æœ‰ææ–™
             if (rand.NextDouble() < 0.3) {
                 AddRareMaterials(loot, rand);
             }
 
-            //ÌØÊâÎäÆ÷×°±¸
+            //ç‰¹æ®Šæ­¦å™¨è£…å¤‡
             if (rand.NextDouble() < 0.2) {
                 AddSpecialWeapons(loot, rand);
             }
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼ÓÇ®±Ò½±Àø
+        /// æ·»åŠ é’±å¸å¥–åŠ±
         /// </summary>
         private static void AddCoinReward(List<Item> loot, Random random) {
             int coinAmount = random.Next(80, 300);
@@ -82,13 +82,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼ÓÀÏ¹«¾ôµôÂäÎï
+        /// æ·»åŠ è€å…¬çˆµæ‰è½ç‰©
         /// </summary>
         private static void AddOldDukeDrops(List<Item> loot, Random random) {
-            HashSet<int> oldDukeDrops = OldDukeShops.OldDukeShopHandle.GetNPCDrops(CWRID.NPC_OldDuke, true);
+            HashSet<int> oldDukeDrops = VaultUtils.GetNPCDrops(CWRID.NPC_OldDuke, true);
             List<int> qualityDrops = [];
 
-            //É¸Ñ¡¸ß¼ÛÖµÎïÆ·
+            //ç­›é€‰é«˜ä»·å€¼ç‰©å“
             foreach (int drop in oldDukeDrops) {
                 Item item = new Item(drop);
                 if (item.value > 6000 * 30) {
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            //Ëæ»úÑ¡Ôñ3µ½6¸öÎïÆ·
+            //éšæœºé€‰æ‹©3åˆ°6ä¸ªç‰©å“
             int itemCount = random.Next(3, 7);
             for (int i = 0; i < itemCount && loot.Count < 240; i++) {
                 if (qualityDrops.Count == 0) {
@@ -115,11 +115,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 item.SetDefaults(itemType);
                 item.stack = 1;
 
-                //Èç¹ûÊÇÎäÆ÷ÀàÌí¼ÓËæ»ú´Ê×º
+                //å¦‚æœæ˜¯æ­¦å™¨ç±»æ·»åŠ éšæœºè¯ç¼€
                 if (IsWeapon(item)) {
                     item.Prefix(-1);
                 }
-                //Èç¹ûÊÇ×°±¸ÀàÌí¼ÓËæ»ú´Ê×º
+                //å¦‚æœæ˜¯è£…å¤‡ç±»æ·»åŠ éšæœºè¯ç¼€
                 else if (IsEquipment(item)) {
                     item.Prefix(-1);
                 }
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼Óº£ÑóÖ÷ÌâÎïÆ·
+        /// æ·»åŠ æµ·æ´‹ä¸»é¢˜ç‰©å“
         /// </summary>
         private static void AddOceanThemeItems(List<Item> loot, Random random) {
             int[] basicOceanItems = [
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ©Ë®ºÍÏûºÄÆ·
+        /// æ·»åŠ è¯æ°´å’Œæ¶ˆè€—å“
         /// </summary>
         private static void AddPotionsAndConsumables(List<Item> loot, Random random) {
             int[] usefulPotions = [
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 loot.Add(potion);
             }
 
-            //µöÓã¶üÁÏ
+            //é’“é±¼é¥µæ–™
             if (random.NextDouble() < 0.6) {
                 int[] baitItems = [
                     ItemID.MasterBait,
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼ÓÏ¡ÓĞ²ÄÁÏ
+        /// æ·»åŠ ç¨€æœ‰ææ–™
         /// </summary>
         private static void AddRareMaterials(List<Item> loot, Random random) {
             int[] rareMaterials = [
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Ìí¼ÓÌØÊâÎäÆ÷×°±¸
+        /// æ·»åŠ ç‰¹æ®Šæ­¦å™¨è£…å¤‡
         /// </summary>
         private static void AddSpecialWeapons(List<Item> loot, Random random) {
             int[] specialWeapons = [
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Item weapon = new Item();
             weapon.SetDefaults(weaponType);
 
-            //ÎªÎäÆ÷Ìí¼ÓËæ»ú´Ê×º
+            //ä¸ºæ­¦å™¨æ·»åŠ éšæœºè¯ç¼€
             if (IsWeapon(weapon)) {
                 weapon.Prefix(-1);
             }
@@ -260,22 +260,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ÅĞ¶ÏÎïÆ·ÊÇ·ñÎªÎäÆ÷
+        /// åˆ¤æ–­ç‰©å“æ˜¯å¦ä¸ºæ­¦å™¨
         /// </summary>
         private static bool IsWeapon(Item item) {
             return item.damage > 0;
         }
 
         /// <summary>
-        /// ÅĞ¶ÏÎïÆ·ÊÇ·ñÎª×°±¸
+        /// åˆ¤æ–­ç‰©å“æ˜¯å¦ä¸ºè£…å¤‡
         /// </summary>
         private static bool IsEquipment(Item item) {
             return item.accessory || item.defense > 0;
         }
 
         /// <summary>
-        /// ¸ù¾İÓÎÏ·Ê±¼äÉú³ÉÖÖ×Ó
-        /// Ã¿6·ÖÖÓ(21600ÓÎÏ·Ö¡)Ë¢ĞÂÒ»´Î
+        /// æ ¹æ®æ¸¸æˆæ—¶é—´ç”Ÿæˆç§å­
+        /// æ¯6åˆ†é’Ÿ(21600æ¸¸æˆå¸§)åˆ·æ–°ä¸€æ¬¡
         /// </summary>
         public static int GetGameTimeSeed() {
             uint currentGameTime = Main.GameUpdateCount;
@@ -284,12 +284,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »ñÈ¡¾àÀëÏÂ´ÎË¢ĞÂµÄÊ£ÓàÊ±¼ä(Ãë)
+        /// è·å–è·ç¦»ä¸‹æ¬¡åˆ·æ–°çš„å‰©ä½™æ—¶é—´(ç§’)
         /// </summary>
         public static int GetTimeUntilNextRefresh() {
             uint currentGameTime = Main.GameUpdateCount;
             int remainingFrames = (int)(RefreshInterval - (currentGameTime % RefreshInterval));
-            return remainingFrames / 60; //×ª»»ÎªÃë
+            return remainingFrames / 60; //è½¬æ¢ä¸ºç§’
         }
     }
 }
