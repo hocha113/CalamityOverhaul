@@ -81,16 +81,5 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> MediumMist = null;
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/DraedonContactPanel")]
         public static Asset<Texture2D> DraedonContactPanel = null;
-        [VaultLoaden(CWRConstant.Item_Melee + "IceSickle")]
-        public static Asset<Texture2D> NewIceSickle = null;
-        //用于缓存原来的物品纹理，在模组卸载后恢复
-        public static Asset<Texture2D> OrigIceSickle = null;
-        void ICWRLoader.LoadAsset() {
-            OrigIceSickle = TextureAssets.Item[ItemID.IceSickle];
-            TextureAssets.Item[ItemID.IceSickle] = NewIceSickle;
-        }
-        void ICWRLoader.UnLoadData() {
-            TextureAssets.Item[ItemID.IceSickle] = OrigIceSickle;
-        }
     }
 }
