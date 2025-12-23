@@ -1017,11 +1017,7 @@ namespace CalamityOverhaul
         /// <br>- <see langword="false"/>：异步加载纹理（提升加载性能，适合非紧急资源）</br>
         /// </param>
         /// <returns>返回加载的 Texture2D 实例</returns>
-        public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) {
-            return ModContent.Request<Texture2D>(texture
-                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
-        }
-
+        public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) => GetT2DAsset(texture, immediateLoad).Value;
         /// <summary>
         /// 获取指定路径的纹理资源（类型为 Asset&lt;Texture2D&gt;）
         /// </summary>
@@ -1033,6 +1029,9 @@ namespace CalamityOverhaul
         /// </param>
         /// <returns>返回加载的 Asset&lt;Texture2D&gt; 对象，包含纹理资源及其加载状态</returns>
         public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
+            if (string.IsNullOrEmpty(texture) || !ModContent.HasAsset(texture)) {
+                return VaultAsset.placeholder3;
+            }
             return ModContent.Request<Texture2D>(texture
                 , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
