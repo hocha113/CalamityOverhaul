@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -100,7 +99,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         internal static bool IsArmActorValid(int actorIndex) {
-            if(actorIndex < 0 || actorIndex >= ActorLoader.MaxActorCount) return false;
+            if (actorIndex < 0 || actorIndex >= ActorLoader.MaxActorCount) return false;
             Actor actor = ActorLoader.Actors[actorIndex];
             return actor != null && actor.Active && actor is CollectorArm;
         }
@@ -216,8 +215,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         ///检查并生成机械臂(仅服务器端)
         ///</summary>
         private void SpawnArmsIfNeeded() {
-            if(VaultUtils.isClient) return;
-            if(dontSpawnArmTime > 0) return;
+            if (VaultUtils.isClient) return;
+            if (dontSpawnArmTime > 0) return;
 
             //清理失效的索引
             ArmActorIndices.RemoveAll(index => !IsArmActorValid(index));
@@ -252,8 +251,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             //检查机械臂总数限制
             int totalArms = ActorLoader.GetActiveActors<CollectorArm>().Count;
-            if(totalArms > 300) {
-                if(textIdleTime <= 0) {
+            if (totalArms > 300) {
+                if (textIdleTime <= 0) {
                     CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
                     textIdleTime = 300;
                 }

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         //核心引用
         internal CollectorTP collectorTP;
-        
+
         //同步字段
         [SyncVar]
         public Vector2 startPos;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         //本地字段(不同步)
         private Item graspItem;
         private bool initialized;
-        
+
         //存储目标坐标
         [SyncVar]
         private Point16 collectorPos = Point16.NegativeOne;
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 armSlot = (int)args[1];
             }
 
-            if(!VaultUtils.isClient) {
+            if (!VaultUtils.isClient) {
                 startPos = Position;
                 velocity = Vector2.Zero;
                 NetUpdate = true;
@@ -115,33 +115,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private Item FindNearestItem() {
-            if(VaultUtils.isClient) return null;
+            if (VaultUtils.isClient) return null;
 
             Item bestItem = null;
             float minDistSQ = 4000000f;
             int itemFilterType = ModContent.ItemType<ItemFilter>();
 
-            foreach(var item in Main.ActiveItems) {
-                if(!IsValidTarget(item)) continue;
+            foreach (var item in Main.ActiveItems) {
+                if (!IsValidTarget(item)) continue;
 
                 //检查过滤器
-                if(collectorTP.TagItemSign == itemFilterType) {
+                if (collectorTP.TagItemSign == itemFilterType) {
                     var filterData = collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>();
-                    if(!filterData.Items.Contains(item.type)) {
+                    if (!filterData.Items.Contains(item.type)) {
                         continue;
                     }
                 }
-                else if(collectorTP.TagItemSign > ItemID.None && item.type != collectorTP.TagItemSign) {
+                else if (collectorTP.TagItemSign > ItemID.None && item.type != collectorTP.TagItemSign) {
                     continue;
                 }
 
                 //提前检查存储目标(避免抓取后无处存放)
-                if(collectorTP.FindStorageTarget(item) == null) {
+                if (collectorTP.FindStorageTarget(item) == null) {
                     continue;
                 }
 
                 float distSQ = item.Center.DistanceSQ(Center);
-                if(distSQ < minDistSQ) {
+                if (distSQ < minDistSQ) {
                     bestItem = item;
                     minDistSQ = distSQ;
                 }
@@ -151,33 +151,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private bool IsValidTarget(Item item) {
-            if(item.IsAir || !item.active) return false;
-            if(unimportances.Contains(item.type)) return false;
+            if (item.IsAir || !item.active) return false;
+            if (unimportances.Contains(item.type)) return false;
 
             int targetCollector = item.CWR().TargetByCollector;
             //只接受未被锁定或被自己锁定的物品
-            if(targetCollector >= 0 && targetCollector != WhoAmI) return false;
+            if (targetCollector >= 0 && targetCollector != WhoAmI) return false;
 
             return true;
         }
 
         private void MagnetizeNearbyCoins(Vector2 targetCenter) {
-            if(VaultUtils.isClient) return;
+            if (VaultUtils.isClient) return;
 
             magnetizedCoins.Clear();
 
             //查找周围的所有钱币
-            foreach(var coin in Main.ActiveItems) {
-                if(!coin.active || coin.IsAir) continue;
-                if(!IsCoin(coin)) continue;
+            foreach (var coin in Main.ActiveItems) {
+                if (!coin.active || coin.IsAir) continue;
+                if (!IsCoin(coin)) continue;
 
                 //检查距离
                 float distance = Vector2.Distance(coin.Center, targetCenter);
-                if(distance > CoinMagnetRange) continue;
+                if (distance > CoinMagnetRange) continue;
 
                 //检查是否已被其他收集器锁定
                 int targetCollector = coin.CWR().TargetByCollector;
-                if(targetCollector >= 0 && targetCollector != WhoAmI) continue;
+                if (targetCollector >= 0 && targetCollector != WhoAmI) continue;
 
                 //锁定这个钱币
                 coin.CWR().TargetByCollector = WhoAmI;
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //播放吸附音效
-            if(magnetizedCoins.Count > 0) {
+            if (magnetizedCoins.Count > 0) {
                 SoundEngine.PlaySound(SoundID.CoinPickup with {
                     Volume = 0.4f,
                     Pitch = 0.2f
@@ -194,17 +194,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private void MergeMagnetizedCoins() {
-            if(VaultUtils.isClient) return;
-            if(magnetizedCoins.Count == 0) return;
+            if (VaultUtils.isClient) return;
+            if (magnetizedCoins.Count == 0) return;
 
             long totalValue = graspItem.IsACoin ? GetCoinValue(graspItem) * graspItem.stack : 0;
 
             //收集所有钱币的总价值
-            foreach(int coinWhoAmI in magnetizedCoins) {
-                if(coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) continue;
+            foreach (int coinWhoAmI in magnetizedCoins) {
+                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) continue;
 
                 Item coin = Main.item[coinWhoAmI];
-                if(!coin.active || coin.IsAir) continue;
+                if (!coin.active || coin.IsAir) continue;
 
                 totalValue += GetCoinValue(coin) * coin.stack;
                 coin.TurnToAir();
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //将总价值转换回最优钱币组合
-            if(totalValue > 0) {
+            if (totalValue > 0) {
                 graspItem = ConvertValueToCoin(totalValue);
                 graspItem.CWR().TargetByCollector = WhoAmI;
             }
@@ -232,13 +232,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         private static Item ConvertValueToCoin(long value) {
             //优先使用大面值钱币
-            if(value >= 1000000) {
+            if (value >= 1000000) {
                 return new Item(ItemID.PlatinumCoin, (int)(value / 1000000));
             }
-            else if(value >= 10000) {
+            else if (value >= 10000) {
                 return new Item(ItemID.GoldCoin, (int)(value / 10000));
             }
-            else if(value >= 100) {
+            else if (value >= 100) {
                 return new Item(ItemID.SilverCoin, (int)(value / 100));
             }
             else {
@@ -247,14 +247,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private Chest GetTargetChest() {
-            if(targetChestPos == Point16.NegativeOne) return null;
+            if (targetChestPos == Point16.NegativeOne) return null;
             int index = Chest.FindChest(targetChestPos.X, targetChestPos.Y);
             return index >= 0 ? Main.chest[index] : null;
         }
 
         private object GetTargetMagicStorage() {
-            if(targetMagicStoragePos == Point16.NegativeOne) return null;
-            if(!ModLoader.HasMod("MagicStorage")) return null;
+            if (targetMagicStoragePos == Point16.NegativeOne) return null;
+            if (!ModLoader.HasMod("MagicStorage")) return null;
 
             try {
                 return MSRef.FindMagicStorage(graspItem, targetMagicStoragePos, CollectorTP.maxFindChestMode);
@@ -274,14 +274,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             velocity *= Damping;
 
             //限速
-            if(velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
+            if (velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
                 velocity = Vector2.Normalize(velocity) * MaxSpeed;
             }
 
             Position += velocity;
 
             //平滑旋转
-            if(velocity.LengthSquared() > 0.1f) {
+            if (velocity.LengthSquared() > 0.1f) {
                 float targetRotation = velocity.ToRotation();
                 float rotationDiff = MathHelper.WrapAngle(targetRotation - rotation);
                 rotationVelocity = MathHelper.Lerp(rotationVelocity, rotationDiff * 0.2f, 0.3f);
@@ -290,12 +290,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private void SpawnMechanicalParticles(bool intensive = false) {
-            if(Main.netMode == NetmodeID.Server) return;
+            if (Main.netMode == NetmodeID.Server) return;
 
             particleTimer++;
             int spawnRate = intensive ? 8 : 16;
 
-            if(particleTimer % spawnRate == 0) {
+            if (particleTimer % spawnRate == 0) {
                 Vector2 particleVel = velocity * 0.2f + Main.rand.NextVector2Circular(2, 2);
                 Dust dust = Dust.NewDustDirect(Center - Vector2.One * 8, 16, 16,
                     DustID.Electric, particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
@@ -312,8 +312,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             shakeIntensity *= 0.9f;
 
             //每30帧且冷却结束后搜索
-            if(stateTimer >= 30 && searchCooldown == 0 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
-                if(!VaultUtils.isClient) {
+            if (stateTimer >= 30 && searchCooldown == 0 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
+                if (!VaultUtils.isClient) {
                     TransitionToState(ArmState.Searching);
                 }
             }
@@ -324,10 +324,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         private void State_Searching() {
             //只在服务器端搜索
-            if(!VaultUtils.isClient) {
+            if (!VaultUtils.isClient) {
                 Item foundItem = FindNearestItem();
 
-                if(foundItem != null) {
+                if (foundItem != null) {
                     targetItemWhoAmI = foundItem.whoAmI;
                     foundItem.CWR().TargetByCollector = WhoAmI;
 
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     isCollectingCoins = IsCoin(foundItem);
 
                     //如果是钱币,立即吸附周围的钱币
-                    if(isCollectingCoins) {
+                    if (isCollectingCoins) {
                         MagnetizeNearbyCoins(foundItem.Center);
                     }
 
@@ -352,19 +352,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //播放音效(所有客户端)
-            if(stateTimer == 1) {
+            if (stateTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Center);
             }
         }
 
         private void State_MovingToItem() {
-            if(targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
 
             Item targetItem = Main.item[targetItemWhoAmI];
-            if(!IsValidTarget(targetItem) || targetItem.CWR().TargetByCollector != WhoAmI && targetItem.CWR().TargetByCollector != -1) {
+            if (!IsValidTarget(targetItem) || targetItem.CWR().TargetByCollector != WhoAmI && targetItem.CWR().TargetByCollector != -1) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             clampOpenness = MathHelper.Lerp(clampOpenness, 0.8f, 0.15f);
 
-            if(distanceToTarget < ArrivalThreshold) {
+            if (distanceToTarget < ArrivalThreshold) {
                 TransitionToState(ArmState.Grasping);
             }
         }
@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private void State_Grasping() {
             stateTimer++;
 
-            if(targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
@@ -407,33 +407,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             SpawnMechanicalParticles(intensive: true);
 
             //抓取完成(仅服务器端处理物品)
-            if(stateTimer > 12) {
-                if(!VaultUtils.isClient) {
+            if (stateTimer > 12) {
+                if (!VaultUtils.isClient) {
                     graspItem = targetItem.Clone();
                     targetItem.TurnToAir();
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
 
                     //如果是钱币收集模式,合并所有吸附的钱币
-                    if(isCollectingCoins) {
+                    if (isCollectingCoins) {
                         MergeMagnetizedCoins();
                     }
 
                     //查找存储目标(箱子或Magic Storage)
                     object storageTarget = collectorTP.FindStorageTarget(graspItem);
 
-                    if(storageTarget is Chest chest) {
+                    if (storageTarget is Chest chest) {
                         targetChestPos = new Point16(chest.x, chest.y);
                         targetMagicStoragePos = Point16.NegativeOne;
                         isMagicStorageTarget = false;
                         graspItem.CWR().TargetByCollector = WhoAmI;
                         TransitionToState(ArmState.MovingToChest);
                     }
-                    else if(storageTarget != null && ModLoader.HasMod("MagicStorage")) {
+                    else if (storageTarget != null && ModLoader.HasMod("MagicStorage")) {
                         //Magic Storage目标
                         try {
                             var heartType = CWRMod.Instance.magicStorage.Find<ModTileEntity>("TEStorageHeart").Type;
-                            foreach(var te in TileEntity.ByID.Values) {
-                                if(te.type == heartType && te == storageTarget) {
+                            foreach (var te in TileEntity.ByID.Values) {
+                                if (te.type == heartType && te == storageTarget) {
                                     targetMagicStoragePos = te.Position;
                                     targetChestPos = Point16.NegativeOne;
                                     isMagicStorageTarget = true;
@@ -458,11 +458,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
 
                 //音效和特效(所有客户端)
-                if(stateTimer == 13) {
+                if (stateTimer == 13) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Center);
 
-                    if(Main.netMode != NetmodeID.Server) {
-                        for(int i = 0; i < 15; i++) {
+                    if (Main.netMode != NetmodeID.Server) {
+                        for (int i = 0; i < 15; i++) {
                             Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
                             Dust dust = Dust.NewDustDirect(Center - Vector2.One * 16, 32, 32,
                                 DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
@@ -474,22 +474,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private void State_MovingToChest() {
-            if(graspItem == null || graspItem.type == ItemID.None) {
+            if (graspItem == null || graspItem.type == ItemID.None) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
 
             //确定目标位置
             Vector2 targetPos;
-            if(isMagicStorageTarget && targetMagicStoragePos != Point16.NegativeOne) {
+            if (isMagicStorageTarget && targetMagicStoragePos != Point16.NegativeOne) {
                 targetPos = targetMagicStoragePos.ToWorldCoordinates() + new Vector2(8, 8);
             }
-            else if(!isMagicStorageTarget && targetChestPos != Point16.NegativeOne) {
+            else if (!isMagicStorageTarget && targetChestPos != Point16.NegativeOne) {
                 targetPos = targetChestPos.ToWorldCoordinates() + new Vector2(8, 8);
             }
             else {
                 //目标失效
-                if(!VaultUtils.isClient) {
+                if (!VaultUtils.isClient) {
                     VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
                     graspItem.TurnToAir();
                 }
@@ -505,14 +505,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             //到达目标
             Rectangle targetRect;
-            if(isMagicStorageTarget) {
+            if (isMagicStorageTarget) {
                 targetRect = targetMagicStoragePos.ToWorldCoordinates().GetRectangle(48, 48);
             }
             else {
                 targetRect = targetChestPos.ToWorldCoordinates().GetRectangle(32);
             }
 
-            if(HitBox.Intersects(targetRect)) {
+            if (HitBox.Intersects(targetRect)) {
                 TransitionToState(ArmState.Depositing);
             }
         }
@@ -525,14 +525,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             SpawnMechanicalParticles(intensive: true);
 
-            if(stateTimer > 10) {
+            if (stateTimer > 10) {
                 //只在服务器端处理物品存储
-                if(!VaultUtils.isClient) {
-                    if(isMagicStorageTarget && ModLoader.HasMod("MagicStorage")) {
+                if (!VaultUtils.isClient) {
+                    if (isMagicStorageTarget && ModLoader.HasMod("MagicStorage")) {
                         //存储到Magic Storage
                         try {
                             object magicStorage = GetTargetMagicStorage();
-                            if(magicStorage != null) {
+                            if (magicStorage != null) {
                                 MSRef.DepositItemMethod?.Invoke(magicStorage, [graspItem]);
                             }
                         } catch {
@@ -543,7 +543,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     else {
                         //存储到箱子
                         Chest targetChest = GetTargetChest();
-                        if(targetChest != null) {
+                        if (targetChest != null) {
                             targetChest.eatingAnimationTime = 20;
                             targetChest.AddItem(graspItem, true);
                             CheckCoins(targetChest);
@@ -551,17 +551,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     }
 
                     graspItem.TurnToAir();
-                    if(VaultUtils.isServer) {
+                    if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
                     }
                 }
 
                 //音效(所有客户端)
-                if(stateTimer == 11) {
+                if (stateTimer == 11) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Center);
                 }
 
-                if(stateTimer > 15) {
+                if (stateTimer > 15) {
                     TransitionToState(ArmState.Idle);
                 }
             }
@@ -572,7 +572,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             currentState = newState;
             stateTimer = 0;
 
-            if(newState == ArmState.Idle) {
+            if (newState == ArmState.Idle) {
                 targetItemWhoAmI = -1;
                 targetChestPos = Point16.NegativeOne;
                 targetMagicStoragePos = Point16.NegativeOne;
@@ -600,9 +600,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private static void CheckCoins(Chest chest) {
             long totalValue = 0;
 
-            for(int i = 0; i < chest.item.Length; i++) {
+            for (int i = 0; i < chest.item.Length; i++) {
                 Item item = chest.item[i];
-                if(item != null && !item.IsAir && item.IsACoin) {
+                if (item != null && !item.IsAir && item.IsACoin) {
                     int value = item.type switch {
                         ItemID.SilverCoin => 100,
                         ItemID.GoldCoin => 10000,
@@ -614,28 +614,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
 
-            if(totalValue <= 0) return;
+            if (totalValue <= 0) return;
 
-            if(totalValue >= 1000000) {
+            if (totalValue >= 1000000) {
                 chest.AddItem(new Item(ItemID.PlatinumCoin, (int)(totalValue / 1000000)));
                 totalValue %= 1000000;
             }
-            if(totalValue >= 10000) {
+            if (totalValue >= 10000) {
                 chest.AddItem(new Item(ItemID.GoldCoin, (int)(totalValue / 10000)));
                 totalValue %= 10000;
             }
-            if(totalValue >= 100) {
+            if (totalValue >= 100) {
                 chest.AddItem(new Item(ItemID.SilverCoin, (int)(totalValue / 100)));
                 totalValue %= 100;
             }
-            if(totalValue > 0) {
+            if (totalValue > 0) {
                 chest.AddItem(new Item(ItemID.CopperCoin, (int)totalValue));
             }
         }
 
         public override void AI() {
-            if(!initialized) {
-                if(!VaultUtils.isClient) {
+            if (!initialized) {
+                if (!VaultUtils.isClient) {
                     startPos = Center;
                     velocity = Vector2.Zero;
                     NetUpdate = true;
@@ -647,7 +647,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            if(!TileProcessorLoader.AutoPositionGetTP(collectorPos, out collectorTP)) {
+            if (!TileProcessorLoader.AutoPositionGetTP(collectorPos, out collectorTP)) {
                 if (!VaultUtils.isClient) {
                     ActorLoader.KillActor(WhoAmI);
                 }
@@ -657,7 +657,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             startPos = collectorTP.ArmPos;
 
             //状态机驱动
-            switch(currentState) {
+            switch (currentState) {
                 case ArmState.Idle:
                     State_Idle();
                     break;
@@ -682,11 +682,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            if(startPos == Vector2.Zero) {
+            if (startPos == Vector2.Zero) {
                 return false;
             }
 
-            if(collectorTP?.BatteryPrompt == true) {
+            if (collectorTP?.BatteryPrompt == true) {
                 drawColor = new Color(drawColor.R / 2, drawColor.G / 2, drawColor.B / 2, 255);
             }
 
@@ -695,7 +695,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             Vector2 end = Center;
 
             //添加抖动效果
-            if(shakeIntensity > 0.01f) {
+            if (shakeIntensity > 0.01f) {
                 end += Main.rand.NextVector2Circular(shakeIntensity * 2, shakeIntensity * 2);
             }
 
@@ -713,7 +713,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             int sampleCount = 60;
             float curveLength = 0f;
             Vector2 prev = start;
-            for(int i = 1; i <= sampleCount; i++) {
+            for (int i = 1; i <= sampleCount; i++) {
                 float t = i / (float)sampleCount;
                 Vector2 point = Vector2.Lerp(
                     Vector2.Lerp(start, midControl, t),
@@ -728,7 +728,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             Vector2[] points = new Vector2[segmentCount + 1];
 
-            for(int i = 0; i <= segmentCount; i++) {
+            for (int i = 0; i <= segmentCount; i++) {
                 float t = i / (float)segmentCount;
                 points[i] = Vector2.Lerp(
                     Vector2.Lerp(start, midControl, t),
@@ -740,14 +740,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             float clampRot = rotation;
 
             //绘制机械臂
-            for(int i = 0; i < segmentCount; i++) {
+            for (int i = 0; i < segmentCount; i++) {
                 Vector2 pos = points[i];
                 Vector2 next = points[i + 1];
                 Vector2 direction = next - pos;
                 Color color = Lighting.GetColor((pos / 16).ToPoint());
                 float rot = direction.ToRotation() + MathHelper.PiOver2;
 
-                if(i == segmentCount - 1) {
+                if (i == segmentCount - 1) {
                     clampRot = direction.ToRotation();
                 }
 
@@ -772,7 +772,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
 
             //绘制抓取的物品
-            if(graspItem != null && !graspItem.IsAir) {
+            if (graspItem != null && !graspItem.IsAir) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
                     , Center - Main.screenPosition, 1f
                     , clampRot + MathHelper.PiOver2, drawColor);

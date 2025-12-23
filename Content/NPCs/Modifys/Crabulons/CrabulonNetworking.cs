@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.MountACrabulon = reader.ReadBoolean();
             owner.DontMount = reader.ReadInt32();
             owner.DyeItemID = reader.ReadInt32();
-            
+
             float jumpHeightUpdate = reader.ReadSingle();
             float jumpHeightSetFrame = reader.ReadSingle();
             float groundClearance = reader.ReadSingle();
