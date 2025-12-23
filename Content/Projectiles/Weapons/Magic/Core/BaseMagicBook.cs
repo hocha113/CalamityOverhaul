@@ -6,12 +6,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
 {
-    internal abstract class BaseMagicBook<TItem> : BaseMagicActionBook where TItem : ModItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
-        public override int TargetID => ModContent.ItemType<TItem>();
-    }
-
     internal abstract class BaseMagicBook : BaseMagicActionBook
     {
         public override string Texture => CWRConstant.Placeholder3;

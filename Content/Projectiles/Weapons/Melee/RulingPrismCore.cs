@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class RulingPrismCore : ModProjectile
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
         public Color ProjColor;
         public static Color[] richColors = new Color[]{

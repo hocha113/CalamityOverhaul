@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class EssencePlunder : ModProjectile
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "EssenceScythe";
         private HashSet<NPC> onHitNPCs = [];
         public override void SetDefaults() {

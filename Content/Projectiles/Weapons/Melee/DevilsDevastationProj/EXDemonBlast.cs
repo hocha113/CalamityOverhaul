@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonBlast";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public Vector2 MoveVector2;
         public Vector2 ChargeBackPosition; //蓄力后退位置
         public Vector2 pos = new Vector2(0, -1);

@@ -325,6 +325,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public static Color sloudColor1 => new Color(100, 43, 69);
         public static Color sloudColor2 => new Color(200, 111, 145);
         public override void SetStaticDefaults() {

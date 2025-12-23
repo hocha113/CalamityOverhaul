@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

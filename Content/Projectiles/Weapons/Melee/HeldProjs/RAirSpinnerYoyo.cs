@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
 
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(CWRID.Item_AirSpinner);
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Yoyos/" + "AirSpinnerYoyo";
 
         public override void SetStaticDefaults() {

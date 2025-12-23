@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class RulingPrism : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

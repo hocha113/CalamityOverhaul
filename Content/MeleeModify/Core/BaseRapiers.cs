@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
         public virtual Texture2D GlowValue => CWRUtils.GetT2DValue(GlowPath);
         #endregion
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 10;
             ProjectileID.Sets.TrailingMode[Type] = 2;

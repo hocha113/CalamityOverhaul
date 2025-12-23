@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Orderbringer";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public NPC Owner => Main.npc[(int)Projectile.ai[2]];
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 14;

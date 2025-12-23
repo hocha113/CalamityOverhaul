@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private const int DefaultHitCooldown = 8;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(MurasamaOverride.ID);
         public ref int HitCooldown => ref Owner.GetMurasamaHitCooldown();
         public bool onspan;

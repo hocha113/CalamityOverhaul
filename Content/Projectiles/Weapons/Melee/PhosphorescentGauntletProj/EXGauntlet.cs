@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public Vector2 TargetPos {
             get => new Vector2(Projectile.ai[0], Projectile.ai[1]);
             set { Projectile.ai[0] = value.X; Projectile.ai[1] = value.Y; }

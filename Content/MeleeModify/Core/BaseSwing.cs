@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
     internal abstract class BaseSwing : BaseHeldProj
     {
         public override bool IsLoadingEnabled(Mod mod) => TargetID > ItemID.None;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         #region Data
         private int dirs;
         private float oldRot;

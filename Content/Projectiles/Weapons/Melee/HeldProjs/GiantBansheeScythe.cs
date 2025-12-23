@@ -11,6 +11,7 @@ public class GiantBansheeScythe : ModProjectile
 {
     public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
     public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+    public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
     private HashSet<NPC> onHitNPCs = [];
     public override void SetStaticDefaults() {
         ProjectileID.Sets.TrailingMode[Type] = 2;

@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Cyclone";
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         private bool span;
         const float MaxAttractionRange = 600f; //最大吸引距离
         const float DustRotationStep = 60f; //每个 Dust 的角度增量

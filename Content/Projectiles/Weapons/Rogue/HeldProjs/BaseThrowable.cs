@@ -125,6 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             }
         }
         #endregion
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         private static float PartValue(float amount, int degree) => 1f - (float)Math.Pow(1f - amount, degree);
         /// <summary>
         /// 更新<see cref="pullback"/>与<see cref="throwout"/>的值，目前为止没有地方会调用它，一般用于调试时调用

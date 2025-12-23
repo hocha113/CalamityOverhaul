@@ -94,6 +94,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class EXOathblade2 : BaseHeldProj
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "ForbiddenOathbladeProjectile";
         public Vector2 MoveVector2;
         public Vector2 FromeOwnerMoveSet;

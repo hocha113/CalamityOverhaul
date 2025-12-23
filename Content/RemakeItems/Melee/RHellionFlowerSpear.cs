@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class GuardOfLife : ModProjectile
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "HellionSpike";
         internal Vector2 targetPos;
         internal Vector2 ver1;
@@ -142,6 +143,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class GuardOfLifeCore : ModProjectile
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "HellionSpike";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;

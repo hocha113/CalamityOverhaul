@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public int frameX = 0;
         public int frameY = 0;
         public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public int CurrentFrame {
             get => frameX * 6 + frameY;
             set {
