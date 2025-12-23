@@ -3,12 +3,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    internal class PowerSceneEffect : ModSceneEffect
+    internal class PowerSceneEffect : ModSystem
     {
-        public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/BuryTheLight");
-        public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;//我们让这个彩蛋音乐具有很高的优先性
-        public override bool IsSceneEffectActive(Player player) {
-            return player.CWR().InFoodStallChair;
+        public override void PostSetupContent() {
+            if (Main.LocalPlayer.CWR().InFoodStallChair) {
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/BuryTheLight");
+            }
         }
     }
 }
