@@ -182,6 +182,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
                     return true;//厉鬼复苏的死亡无法阻挡
                 }
+                Player.statLife = (int)MathHelper.Clamp(Player.statLife, 1, Player.statLifeMax2);
                 return false;
             }
             return null;

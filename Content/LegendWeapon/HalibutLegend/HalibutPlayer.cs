@@ -78,6 +78,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         private const float MIN_DIRECTION_CHANGE_THRESHOLD = 0.16f;
 
+        internal int PlayerLifeMax;
+
         #region 深渊复苏系统
         /// <summary>
         /// 深渊复苏系统实例
@@ -422,6 +424,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 //更新深渊复苏系统
                 ResurrectionSystem.Update();
+                //同步最大生命值
+                PlayerLifeMax = (int)MathHelper.Clamp(PlayerLifeMax, Player.statLifeMax2, int.MaxValue - 1);
             }
 
             if (Player.whoAmI == Main.myPlayer) {//关于ADV场景的更新只在本地玩家上进行

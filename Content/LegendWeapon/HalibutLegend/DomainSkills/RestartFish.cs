@@ -43,6 +43,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         internal static void ExecuteRestart(Player player) {
+            //调整最大生命值，避免类似削弱生命上限的情况影响重启效果
+            if (player.TryGetHalibutPlayer(out var halibutPlayer)) {
+                player.statLifeMax2 = (int)MathHelper.Clamp(player.statLifeMax2, halibutPlayer.PlayerLifeMax, int.MaxValue - 1);
+            }
+
             //满血
             player.Heal(player.statLifeMax2);
 
