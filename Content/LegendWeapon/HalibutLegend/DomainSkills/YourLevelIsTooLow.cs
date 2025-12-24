@@ -511,17 +511,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    internal class YourLevelIsTooLowPlayer : PlayerOverride
-    {
-        public override bool? On_PreKill(double damage, int hitDirection, bool pvp
-            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
-                return false; //无限重启，不死
-            }
-            return null;
-        }
-    }
-
     #region 无限时空克隆体
     internal class InfiniteTimeClone
     {
