@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -166,6 +167,24 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void ClearWorld() {
             ActiveBoxPosition = Point16.Zero;
+        }
+    }
+
+    internal class SirenMusicalBoxPlayerDeath : PlayerOverride
+    {
+        public static bool MusichasEnded;
+        public override bool? On_PreKill(double damage, int hitDirection, bool pvp
+            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {//使用反射级别的优先级，确保在所有ModPlayer之前执行，只有灵异才能对抗灵异
+            if (MusichasEnded) {
+                return true;
+            }
+            if (Player.GetModPlayer<SirenMusicalBoxPlayer>().IsCursed) {
+                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
+                    return true;//厉鬼复苏的死亡无法阻挡
+                }
+                return false;
+            }
+            return null;
         }
     }
 
@@ -462,6 +481,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SirenMusicalBox.DeathText.ToNetworkText(Player.name)
             );
 
+            SirenMusicalBoxPlayerDeath.MusichasEnded = true;
             //杀死玩家
             Player.KillMe(damageSource, Player.statLifeMax2 * 10, 0, false);
 
@@ -672,6 +692,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         /// </summary>
         public void ResetCurse() {
             IsCursed = false;
+            SirenMusicalBoxPlayerDeath.MusichasEnded = false;
             MusicTimer = 0;
             BoundBoxPosition = Point16.Zero;
         }
@@ -701,16 +722,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                     HasSirenMusicalBox = hasSirenMusicalBox;
                 }
             } catch { }
-        }
-
-        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (IsCursed) {
-                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
-                    return true;//厉鬼复苏的死亡无法阻挡
-                }
-                return false;
-            }
-            return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
         }
 
         public override void OnRespawn() {
@@ -855,18 +866,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (Main.rand.NextBool(4)) {
                 SirenMusicalBoxPlayer.Newphonogram(Center);
             }
-
-            //bool result = false;
-            //foreach (var p in Main.ActivePlayers) {
-            //   if (p.Alives() && p.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
-            //       if (sirenMusicalBoxPlayer.IsCursed) {
-            //           result = true;
-            //       }
-            //   }
-            //}
-            //if (!result) {
-            //   StopMusic();
-            //}
 
             //添加光照效果
             Lighting.AddLight(Center, new Color(139, 0, 139).ToVector3() * (MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f));

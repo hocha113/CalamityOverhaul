@@ -223,10 +223,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             if (ArmActorIndices.Count < 3) {
                 int armSlot = ArmActorIndices.Count;
-                object[] spawnData = [Position, armSlot];
                 int actorIndex = ActorLoader.NewActor<CollectorArm>(ArmPos, Vector2.Zero);
                 ArmActorIndices.Add(actorIndex);
-                ActorLoader.Actors[actorIndex].OnSpawn(spawnData);
+                ActorLoader.Actors[actorIndex].OnSpawn(Position, armSlot);
             }
         }
 

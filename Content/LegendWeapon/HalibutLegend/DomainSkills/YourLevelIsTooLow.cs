@@ -1,4 +1,5 @@
 ﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -510,14 +511,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    internal class YourLevelIsTooLowPlayer : ModPlayer
+    internal class YourLevelIsTooLowPlayer : PlayerOverride
     {
-        public override bool PreKill(double damage, int hitDirection, bool pvp
+        public override bool? On_PreKill(double damage, int hitDirection, bool pvp
             , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
             if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
                 return false; //无限重启，不死
             }
-            return true;
+            return null;
         }
     }
 

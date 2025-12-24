@@ -88,12 +88,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             ItemID.Star, ItemID.SoulCake
         ];
 
-        public override void OnSpawn(object obj) {
+        public override void OnSpawn(params object[] args) {
             Width = 32;
             Height = 32;
+            DrawExtendMode = 1200;
             DrawLayer = ActorDrawLayer.BeforeTiles;
 
-            if (obj is object[] args && args.Length >= 2) {
+            if (args is not null && args.Length >= 2) {
                 collectorPos = (Point16)args[0];
                 armSlot = (int)args[1];
             }
