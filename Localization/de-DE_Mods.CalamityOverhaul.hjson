@@ -1394,7 +1394,9 @@ Items: {
 		/* Tooltip:
 			'''
 			Increases maximum stealth by 10
-			Stealth generation speed will no longer reduce stealth damage
+			Stealth regeneration speed no longer reduces stealth damage
+			"What if you never return?"
+			"Then I shall never return."
 			''' */
 	}
 
@@ -1459,6 +1461,20 @@ Items: {
 			Drilling minerals by consuming electrical energy
 			It needs to be placed in an appropriate location to work properly
 			Special minerals can be extracted in special environments
+			''' */
+	}
+
+	UniversalFrost: {
+		// DisplayName: Universal Frost
+		/* Tooltip:
+			'''
+			Uses Snowballs as ammo
+			Fires hailstones and frigid nova orbs
+			The orbs bounce, home in on enemies, and release frost beams upon explosion
+			Continuous firing accumulates ice energy
+			When fully charged, the next attack unleashes the Glacial Age
+			The Glacial Age summons a massive array of icicles and a blizzard field at the cursor position
+			"When all creation falls into silence, only eternal frost shall blanket the world"
 			''' */
 	}
 }
@@ -1877,6 +1893,8 @@ Projectiles: {
 	// SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 	// DawnshatterFireball.DisplayName: Dawnshatter Fireball
 	// TransferItemProj.DisplayName: Items In Transit
+	// FrostBlizzardField.DisplayName: Frost Blizzard Field
+	// FrostNovaOrb.DisplayName: Frost Nova Orb
 }
 
 Configs: {

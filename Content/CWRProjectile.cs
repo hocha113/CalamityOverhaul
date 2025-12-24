@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content
         RocketLauncher,
         Voidragon,
         CrystalDimming,
+        UniversalFrost,
         WoodenBow,
         IronBow,
         DemonBow,
@@ -528,6 +529,27 @@ namespace CalamityOverhaul.Content
                         proj.usesLocalNPCImmunity = true;
                         proj.localNPCHitCooldown = 20;
                         proj.light = 0.75f;
+                        if (isSuper) {
+                            proj.CWR().HitAttribute.SuperAttack = true;
+                        }
+                    }
+                    break;
+                }
+
+                case SpanTypesEnum.UniversalFrost: {
+                    bool isSuper = Main.rand.NextBool(projectile.type == ModContent.ProjectileType<FrostNovaOrb>() ? 3 : 8);
+                    for (int i = 0; i < 4; i++) {
+                        Vector2 velocity = new(Main.rand.NextFloat(-4, 4), -4);
+                        Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
+                        , projectile.Bottom + new Vector2(Main.rand.Next(-20, 20), Main.rand.Next(-80, 0)), velocity
+                        , ProjectileID.DeerclopsIceSpike, projectile.damage / 4, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.9f, 1.2f));
+                        proj.rotation = velocity.ToRotation();
+                        proj.hostile = false;
+                        proj.friendly = true;
+                        proj.penetrate = -1;
+                        proj.usesLocalNPCImmunity = true;
+                        proj.localNPCHitCooldown = 18;
+                        proj.light = 0.85f;
                         if (isSuper) {
                             proj.CWR().HitAttribute.SuperAttack = true;
                         }

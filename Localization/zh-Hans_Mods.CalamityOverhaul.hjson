@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1390,6 +1390,8 @@ Items: {
 			'''
 			增加10点潜伏值上限
 			潜伏速度将不会降低潜伏伤害
+			"若你一去不回呢？"
+			"那便一去不回。"
 			'''
 	}
 
@@ -1454,6 +1456,18 @@ Items: {
 			消耗电能钻探矿物
 			需要放置在合适的地方才能正常工作
 			在特殊环境中可以挖掘出特殊矿物
+			'''
+	}
+
+	UniversalFrost: {
+		DisplayName: 万象霜天
+		Tooltip:
+			'''
+			使用雪球作为弹药
+			发射冰雹和极寒新星球，冰晶球会反弹追踪并在爆炸时释放冰霜光束
+			持续射击会积蓄寒冰能量，能量满后下次开火将引发冰河纪元
+			冰河纪元会在光标位置召唤巨大的冰柱阵和暴风雪场
+			"当万象归于寂静，唯有永恒的霜雪覆盖世间"
 			'''
 	}
 }
@@ -1872,6 +1886,8 @@ Projectiles: {
 	SulfuricacidExplosion.DisplayName: 硫酸爆炸
 	DawnshatterFireball.DisplayName: 黎明之火
 	TransferItemProj.DisplayName: 转移中的物品
+	FrostBlizzardField.DisplayName: 寒霜暴风雪
+	FrostNovaOrb.DisplayName: 冰霜新星
 }
 
 Configs: {
