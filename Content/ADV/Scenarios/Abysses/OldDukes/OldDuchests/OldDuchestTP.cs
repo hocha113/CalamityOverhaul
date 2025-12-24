@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs;
 using InnoVault.PRT;
@@ -15,31 +15,31 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests
 {
     /// <summary>
-    /// ÀÏÏä×ÓµÄTileProcessor
-    /// ¹ÜÀí´óĞÍ´æ´¢¿Õ¼ä
+    /// è€ç®±å­çš„TileProcessor
+    /// ç®¡ç†å¤§å‹å­˜å‚¨ç©ºé—´
     /// </summary>
     internal class OldDuchestTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<OldDuchestTile>();
 
-        //´æ´¢³£Á¿
+        //å­˜å‚¨å¸¸é‡
         private const int MAX_INTERACTION_DISTANCE = 9000;
 
-        //´æ´¢ÎïÆ·ÁĞ±í
+        //å­˜å‚¨ç‰©å“åˆ—è¡¨
         public List<Item> storedItems = new();
 
-        //¶¯»­Ïà¹Ø
+        //åŠ¨ç”»ç›¸å…³
         private int glowTimer = 0;
         private float glowIntensity = 0f;
         internal bool isOpen = false;
         private int closeTimer = 0;
 
-        //Ã¿ÈÕË¢ĞÂÏà¹Ø
+        //æ¯æ—¥åˆ·æ–°ç›¸å…³
         private bool isInCampsite = false;
         private int lastRefreshCycle = -1;
         private bool hasBeenOpened = false;
 
-        //Ë®ÏÂ×´Ì¬
+        //æ°´ä¸‹çŠ¶æ€
         public bool isUnderwater = false;
 
         public override void SetProperty() {
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         public override void SendData(ModPacket data) {
-            //·¢ËÍ´æ´¢ÎïÆ·Êı¾İ
+            //å‘é€å­˜å‚¨ç‰©å“æ•°æ®
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
                 if (item == null) {
@@ -58,32 +58,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
 
-            //·¢ËÍË¢ĞÂÏà¹ØÊı¾İ
+            //å‘é€åˆ·æ–°ç›¸å…³æ•°æ®
             data.Write(isInCampsite);
             data.Write(lastRefreshCycle);
             data.Write(hasBeenOpened);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            //½ÓÊÕ´æ´¢ÎïÆ·Êı¾İ
+            //æ¥æ”¶å­˜å‚¨ç‰©å“æ•°æ®
             int count = reader.ReadInt32();
             storedItems.Clear();
             for (int i = 0; i < count; i++) {
                 storedItems.Add(ItemIO.Receive(reader, true, true));
             }
 
-            //½ÓÊÕË¢ĞÂÏà¹ØÊı¾İ
+            //æ¥æ”¶åˆ·æ–°ç›¸å…³æ•°æ®
             isInCampsite = reader.ReadBoolean();
             lastRefreshCycle = reader.ReadInt32();
             hasBeenOpened = reader.ReadBoolean();
 
-            //Í¬²½µ½UI
+            //åŒæ­¥åˆ°UI
             SyncItemsToUI();
         }
 
         public override void SaveData(TagCompound tag) {
             try {
-                //±£´æ´æ´¢µÄÎïÆ·
+                //ä¿å­˜å­˜å‚¨çš„ç‰©å“
                 List<TagCompound> itemTags = [];
                 foreach (var item in storedItems) {
                     if (item == null) {
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
                 tag["itemTags"] = itemTags;
 
-                //±£´æË¢ĞÂÊı¾İ
+                //ä¿å­˜åˆ·æ–°æ•°æ®
                 tag["isInCampsite"] = isInCampsite;
                 tag["lastRefreshCycle"] = lastRefreshCycle;
                 tag["hasBeenOpened"] = hasBeenOpened;
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
         public override void LoadData(TagCompound tag) {
             try {
-                //¼ÓÔØ´æ´¢µÄÎïÆ·
+                //åŠ è½½å­˜å‚¨çš„ç‰©å“
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     storedItems.Add(ItemIO.Load(itemTag));
                 }
 
-                //¼ÓÔØË¢ĞÂÊı¾İ
+                //åŠ è½½åˆ·æ–°æ•°æ®
                 if (tag.ContainsKey("isInCampsite")) {
                     isInCampsite = tag.GetBool("isInCampsite");
                 }
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         public override void Update() {
-            //¸üĞÂ·¢¹âĞ§¹û
+            //æ›´æ–°å‘å…‰æ•ˆæœ
             if (isOpen) {
                 glowIntensity = Math.Min(1f, glowIntensity + 0.1f);
                 glowTimer++;
@@ -156,16 +156,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 glowIntensity = Math.Max(0f, glowIntensity - 0.05f);
             }
 
-            //¼ì²âÏä×ÓÊÇ·ñÔÚË®ÏÂ
+            //æ£€æµ‹ç®±å­æ˜¯å¦åœ¨æ°´ä¸‹
             isUnderwater = CheckChestUnderwater();
 
-            //¼ì²é¾àÀë×Ô¶¯¹Ø±Õ
+            //æ£€æŸ¥è·ç¦»è‡ªåŠ¨å…³é—­
             if (isOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
                 OldDuchestUI.Instance.Close();
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
-            //ÓªµØÏä×Ó¶¨ÆÚË¢ĞÂ¼ì²é
+            //è¥åœ°ç®±å­å®šæœŸåˆ·æ–°æ£€æŸ¥
             if (isInCampsite && !isOpen) {
                 int currentCycle = OldDuchestLootGenerator.GetGameTimeSeed();
                 if (lastRefreshCycle != currentCycle && hasBeenOpened) {
@@ -173,40 +173,43 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
 
                 bool updateAdd = false;
-                //ÒÆ³ıÓªµØ¸½½üµÄµôÂäÎïÆ·
+                //ç§»é™¤è¥åœ°é™„è¿‘çš„æ‰è½ç‰©å“
                 foreach (var i in Main.ActiveItems) {
                     float distance = i.DistanceSQ(CenterInWorld);
                     if (distance > 90000) {
-                        continue;//Ö»ÒÆ³ıÓªµØ¸½½üµÄµôÂäÎïÆ·
+                        continue;//åªç§»é™¤è¥åœ°é™„è¿‘çš„æ‰è½ç‰©å“
                     }
                     i.position += i.To(CenterInWorld).UnitVector() * 6;
                     if (distance < 16) {
-                        StackAddItem(i);
-                        i.TurnToAir();
-                        updateAdd = true;
+                        if (StackAddItem(i)) {
+                            updateAdd = true;
+                        }
+                        if (i.stack <= 0) {
+                            i.TurnToAir();
+                        }
                     }
                 }
                 if (updateAdd) {
-                    //Í¬²½µ½UI
+                    //åŒæ­¥åˆ°UI
                     SyncItemsToUI();
                     SendData();
                     if (closeTimer <= 0) {
                         closeTimer = 60;
-                        //¸üĞÂÍ¼¸ñÖ¡Îª´ò¿ª×´Ì¬
+                        //æ›´æ–°å›¾æ ¼å¸§ä¸ºæ‰“å¼€çŠ¶æ€
                         UpdateTileFrame(true);
                         SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                     }
                 }
                 if (closeTimer > 0) {
                     if (--closeTimer == 0) {
-                        //¸üĞÂÍ¼¸ñÖ¡Îª¹Ø±Õ×´Ì¬
+                        //æ›´æ–°å›¾æ ¼å¸§ä¸ºå…³é—­çŠ¶æ€
                         UpdateTileFrame(false);
                         SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                     }
                 }
             }
 
-            //¸üĞÂ¹âÕÕ
+            //æ›´æ–°å…‰ç…§
             if (glowIntensity > 0.01f) {
                 float pulsePulse = MathF.Sin(glowTimer * 0.05f) * 0.3f + 0.7f;
                 Lighting.AddLight(CenterInWorld,
@@ -214,42 +217,122 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             }
         }
 
-        public void StackAddItem(Item item) {
+        public bool StackAddItem(Item item) {
             if (!item.Alives()) {
-                return;
+                return false;
             }
 
-            Item toAdd = item.Clone();
+            // å¤„ç†é’±å¸åˆå¹¶
+            if (item.IsACoin) {
+                return MergeCoins(item);
+            }
 
-            //1.ÏÈ³¢ÊÔ¶Ñµşµ½ÒÑÓĞÏàÍ¬ÀàĞÍµÄÎïÆ·
-            for (int i = 0; i < storedItems.Count && toAdd.stack > 0; i++) {
+            bool changed = false;
+
+            // å°è¯•å †å åˆ°ç°æœ‰ç‰©å“
+            for (int i = 0; i < storedItems.Count && item.stack > 0; i++) {
                 Item slot = storedItems[i];
                 if (slot == null || slot.IsAir) {
                     continue;
                 }
 
-                if (slot.type == toAdd.type && slot.stack < slot.maxStack) {
-                    int transferable = Math.Min(toAdd.stack, slot.maxStack - slot.stack);
+                if (slot.type == item.type && slot.stack < slot.maxStack) {
+                    int transferable = Math.Min(item.stack, slot.maxStack - slot.stack);
                     slot.stack += transferable;
-                    toAdd.stack -= transferable;
+                    item.stack -= transferable;
+                    changed = true;
                 }
             }
 
-            if (storedItems.Count > 239) {
-                toAdd.SpwanItem(this.FromObjectGetParent(), CenterInWorld);
-                return;
+            // å¦‚æœè¿˜æœ‰å‰©ä½™ä¸”æœ‰ç©ºé—´ï¼Œæ·»åŠ æ–°æ§½ä½
+            if (item.stack > 0) {
+                if (storedItems.Count < 240) {
+                    storedItems.Add(item.Clone());
+                    item.stack = 0;
+                    changed = true;
+                }
             }
 
-            storedItems.Add(toAdd);
+            return changed;
+        }
+
+        private bool MergeCoins(Item item) {
+            long totalValue = GetCoinValue(item.type) * item.stack;
+            List<Item> coinsInChest = new();
+
+            // æ”¶é›†ç®±å­é‡Œçš„æ‰€æœ‰é’±å¸
+            for (int i = storedItems.Count - 1; i >= 0; i--) {
+                if (storedItems[i].IsACoin) {
+                    totalValue += GetCoinValue(storedItems[i].type) * storedItems[i].stack;
+                    coinsInChest.Add(storedItems[i]);
+                    storedItems.RemoveAt(i);
+                }
+            }
+
+            // å°†æ€»ä»·å€¼è½¬æ¢å›é’±å¸ç‰©å“
+            List<Item> newCoins = CoinsFromValue(totalValue);
+
+            // æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿç©ºé—´å­˜æ”¾æ•´ç†åçš„é’±å¸
+            // å¦‚æœæ•´ç†åçš„é’±å¸å ç”¨çš„æ§½ä½æ¯”åŸæ¥å°‘æˆ–ç›¸ç­‰ï¼Œæˆ–è€…ç®±å­è¿˜æœ‰ç©ºä½
+            if (storedItems.Count + newCoins.Count <= 240) {
+                storedItems.AddRange(newCoins);
+                item.stack = 0; // é’±å¸è¢«å®Œå…¨å¸æ”¶
+                return true;
+            }
+            else {
+                // ç©ºé—´ä¸è¶³ï¼Œå›æ»šæ“ä½œ
+                // æ³¨æ„ï¼šè¿™é‡Œå›æ»šå¯èƒ½é¡ºåºä¼šå˜ï¼Œä½†å¯¹äºé’±å¸æ¥è¯´æ²¡å…³ç³»
+                storedItems.AddRange(coinsInChest);
+                return false;
+            }
+        }
+
+        private long GetCoinValue(int type) {
+            return type switch {
+                ItemID.CopperCoin => 1,
+                ItemID.SilverCoin => 100,
+                ItemID.GoldCoin => 10000,
+                ItemID.PlatinumCoin => 1000000,
+                _ => 0
+            };
+        }
+
+        private List<Item> CoinsFromValue(long value) {
+            List<Item> list = new();
+            long platinum = value / 1000000;
+            value %= 1000000;
+            long gold = value / 10000;
+            value %= 10000;
+            long silver = value / 100;
+            value %= 100;
+            long copper = value;
+
+            AddCoins(list, ItemID.PlatinumCoin, platinum);
+            AddCoins(list, ItemID.GoldCoin, gold);
+            AddCoins(list, ItemID.SilverCoin, silver);
+            AddCoins(list, ItemID.CopperCoin, copper);
+
+            return list;
+        }
+
+        private void AddCoins(List<Item> list, int type, long count) {
+            while (count > 0) {
+                Item item = new Item();
+                item.SetDefaults(type);
+                int stack = (int)Math.Min(count, item.maxStack);
+                item.stack = stack;
+                list.Add(item);
+                count -= stack;
+            }
         }
 
         /// <summary>
-        /// ¼ì²âÏä×ÓÊÇ·ñÔÚË®ÏÂ
+        /// æ£€æµ‹ç®±å­æ˜¯å¦åœ¨æ°´ä¸‹
         /// </summary>
         private bool CheckChestUnderwater() {
             Point tileCoord = (CenterInWorld / 16).ToPoint();
 
-            //¼ì²éÏä×ÓÉÏ·½ÊÇ·ñÓĞË®
+            //æ£€æŸ¥ç®±å­ä¸Šæ–¹æ˜¯å¦æœ‰æ°´
             for (int y = -3; y <= 0; y++) {
                 for (int x = -2; x <= 2; x++) {
                     Tile tile = Framing.GetTileSafely(tileCoord.X + x, tileCoord.Y + y);
@@ -263,43 +346,43 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ´ò¿ªUI
+        /// æ‰“å¼€UI
         /// </summary>
         public void OpenUI(Player player) {
             if (player == null || !player.active) return;
 
             isOpen = true;
 
-            //±ê¼ÇÓªµØÏä×ÓÒÑ±»´ò¿ª
+            //æ ‡è®°è¥åœ°ç®±å­å·²è¢«æ‰“å¼€
             if (isInCampsite) {
                 hasBeenOpened = true;
                 SendData();
             }
 
-            //Èç¹ûÔÚË®ÏÂ£¬²¥·ÅË®ÅİÒôĞ§²¢Éú³ÉÅİÅİ
+            //å¦‚æœåœ¨æ°´ä¸‹ï¼Œæ’­æ”¾æ°´æ³¡éŸ³æ•ˆå¹¶ç”Ÿæˆæ³¡æ³¡
             if (isUnderwater) {
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Pitch = -0.1f,
                     Volume = 0.7f
                 }, CenterInWorld);
 
-                //Éú³ÉÒ»²¨ÅİÅİĞ§¹û
+                //ç”Ÿæˆä¸€æ³¢æ³¡æ³¡æ•ˆæœ
                 SpawnOpenBubbles();
             }
 
-            //¸üĞÂÍ¼¸ñÖ¡Îª´ò¿ª×´Ì¬
+            //æ›´æ–°å›¾æ ¼å¸§ä¸ºæ‰“å¼€çŠ¶æ€
             UpdateTileFrame(true);
         }
 
         /// <summary>
-        /// Éú³É´ò¿ªÏä×ÓÊ±µÄÅİÅİ
+        /// ç”Ÿæˆæ‰“å¼€ç®±å­æ—¶çš„æ³¡æ³¡
         /// </summary>
         private void SpawnOpenBubbles() {
             if (VaultUtils.isServer) {
                 return;
             }
 
-            //Éú³É15µ½25¸öÅİÅİ
+            //ç”Ÿæˆ15åˆ°25ä¸ªæ³¡æ³¡
             int bubbleCount = Main.rand.Next(15, 26);
 
             for (int i = 0; i < bubbleCount; i++) {
@@ -319,7 +402,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     spawnPos, velocity, Color.White, scale);
             }
 
-            //¶îÍâÉú³ÉÒ»Ğ©Ë®Á£×Ó
+            //é¢å¤–ç”Ÿæˆä¸€äº›æ°´ç²’å­
             for (int i = 0; i < 8; i++) {
                 Vector2 dustVel = new Vector2(
                     Main.rand.NextFloat(-2f, 2f),
@@ -331,24 +414,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¹Ø±ÕUI
+        /// å…³é—­UI
         /// </summary>
         public void CloseUI(Player player) {
             if (player == null) return;
 
             isOpen = false;
 
-            //±£´æUIÊı¾İ
+            //ä¿å­˜UIæ•°æ®
             if (OldDuchestUI.Instance.CurrentChest == this) {
                 SaveItemsFromUI();
             }
 
-            //¸üĞÂÍ¼¸ñÖ¡Îª¹Ø±Õ×´Ì¬
+            //æ›´æ–°å›¾æ ¼å¸§ä¸ºå…³é—­çŠ¶æ€
             UpdateTileFrame(false);
         }
 
         /// <summary>
-        /// ½«ÎïÆ·Êı¾İÍ¬²½µ½UI
+        /// å°†ç‰©å“æ•°æ®åŒæ­¥åˆ°UI
         /// </summary>
         public void SyncItemsToUI() {
             if (OldDuchestUI.Instance == null) return;
@@ -357,7 +440,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ´ÓUI±£´æÎïÆ·Êı¾İ
+        /// ä»UIä¿å­˜ç‰©å“æ•°æ®
         /// </summary>
         public void SaveItemsFromUI() {
             if (OldDuchestUI.Instance == null) return;
@@ -367,7 +450,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¸üĞÂÍ¼¸ñ¶¯»­Ö¡
+        /// æ›´æ–°å›¾æ ¼åŠ¨ç”»å¸§
         /// </summary>
         private void UpdateTileFrame(bool open) {
             if (!VaultUtils.SafeGetTopLeft(Position.X, Position.Y, out var topLeft)) {
@@ -375,7 +458,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             }
 
             int frameOffset = open ? 1 : 0;
-            int frameHeight = 4 * 18; //4¸ñ¸ß¶È
+            int frameHeight = 4 * 18; //4æ ¼é«˜åº¦
 
             for (int i = 0; i < 6; i++) {
                 for (int j = 0; j < 4; j++) {
@@ -392,13 +475,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         public override void OnKill() {
-            //¹Ø±ÕUI
+            //å…³é—­UI
             if (isOpen && OldDuchestUI.Instance.CurrentChest == this) {
                 OldDuchestUI.Instance.Close();
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
-            //µôÂäÎïÆ·
+            //æ‰è½ç‰©å“
             if (!VaultUtils.isClient) {
                 DropItems();
             }
@@ -407,7 +490,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// µôÂäËùÓĞÎïÆ·
+        /// æ‰è½æ‰€æœ‰ç‰©å“
         /// </summary>
         private void DropItems() {
             VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, new Item(ModContent.ItemType<OldDuchest>()));
@@ -421,7 +504,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¼ì²éÏä×ÓÊÇ·ñÔÚÓªµØÄÚ
+        /// æ£€æŸ¥ç®±å­æ˜¯å¦åœ¨è¥åœ°å†…
         /// </summary>
         private void CheckIfInCampsite() {
             if (!OldDukeCampsite.IsGenerated) {
@@ -435,7 +518,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ³õÊ¼»¯ÓªµØÏä×ÓÄÚÈİ
+        /// åˆå§‹åŒ–è¥åœ°ç®±å­å†…å®¹
         /// </summary>
         private void InitializeCampsiteChest() {
             if (!isInCampsite) {
@@ -449,7 +532,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// Ë¢ĞÂÕ½ÀûÆ·
+        /// åˆ·æ–°æˆ˜åˆ©å“
         /// </summary>
         private void RefreshLoot(int refreshCycle) {
             if (VaultUtils.isClient) {

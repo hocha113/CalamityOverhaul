@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -8,19 +8,19 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
     /// <summary>
-    /// ½»»¥Âß¼­¹ÜÀíÆ÷
+    /// äº¤äº’é€»è¾‘ç®¡ç†å™¨
     /// </summary>
     internal class DraedonShopInteraction
     {
         private readonly Player player;
         private readonly List<ShopItem> shopItems;
 
-        //Ñ¡ÔñºÍĞüÍ£×´Ì¬
+        //é€‰æ‹©å’Œæ‚¬åœçŠ¶æ€
         public int SelectedIndex { get; set; } = -1;
         public int HoveredIndex { get; private set; } = -1;
         public int ScrollOffset { get; set; } = 0;
 
-        //³¤°´¹ºÂòÏà¹Ø
+        //é•¿æŒ‰è´­ä¹°ç›¸å…³
         private int holdingPurchaseIndex = -1;
         private int holdingPurchaseTimer = 0;
         private int purchaseCooldown = 30;
@@ -29,11 +29,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private const int HoldThreshold = 20;
         public int ConsecutivePurchaseCount { get; private set; } = 0;
 
-        //UI³ß´ç³£Á¿
+        //UIå°ºå¯¸å¸¸é‡
         public const int MaxVisibleItems = 6;
         public const int ItemSlotHeight = 85;
 
-        //¹ö¶¯Ìõ
+        //æ»šåŠ¨æ¡
         private readonly DraedonScrollBar scrollBar = new();
 
         public int HoldingPurchaseIndex => holdingPurchaseIndex;
@@ -46,10 +46,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// ´¦Àí¹öÂÖ¹ö¶¯
+        /// å¤„ç†æ»šè½®æ»šåŠ¨
         /// </summary>
         public void HandleScroll() {
-            //Èç¹ûÕıÔÚÍÏ¶¯¹ö¶¯Ìõ£¬²»ÏìÓ¦¹öÂÖ
+            //å¦‚æœæ­£åœ¨æ‹–åŠ¨æ»šåŠ¨æ¡ï¼Œä¸å“åº”æ»šè½®
             if (scrollBar.IsDragging) return;
 
             int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// ¸üĞÂ¹ö¶¯Ìõ
+        /// æ›´æ–°æ»šåŠ¨æ¡
         /// </summary>
         public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition,
             bool mouseLeftDown, bool mouseLeftRelease) {
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// »æÖÆ¹ö¶¯Ìõ
+        /// ç»˜åˆ¶æ»šåŠ¨æ¡
         /// </summary>
         public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch,
             Vector2 panelPosition, float uiAlpha, float circuitPulseTimer) {
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// ¸üĞÂÎïÆ·Ñ¡ÔñºÍ¹ºÂòÂß¼­
+        /// æ›´æ–°ç‰©å“é€‰æ‹©å’Œè´­ä¹°é€»è¾‘
         /// </summary>
         public void UpdateItemSelection(Point mousePoint, Vector2 itemListPos, int panelWidth) {
             int itemListY = (int)itemListPos.Y;
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 if (itemRect.Contains(mousePoint)) {
                     HoveredIndex = index;
 
-                    //ĞüÍ£ÒôĞ§
+                    //æ‚¬åœéŸ³æ•ˆ
                     if (oldHoveredIndex != HoveredIndex && HoveredIndex != -1) {
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.4f });
                     }
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 }
             }
 
-            //Êó±êÀë¿ªËùÓĞÎïÆ·ÇøÓò£¬ÖØÖÃ³¤°´×´Ì¬
+            //é¼ æ ‡ç¦»å¼€æ‰€æœ‰ç‰©å“åŒºåŸŸï¼Œé‡ç½®é•¿æŒ‰çŠ¶æ€
             if (HoveredIndex == -1) {
                 ResetHoldingState();
             }
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         private void HandlePurchaseInput(int index) {
             if (Main.mouseLeft) {
                 if (Main.mouseLeftRelease) {
-                    //Ê×´Îµã»÷
+                    //é¦–æ¬¡ç‚¹å‡»
                     SelectedIndex = index;
                     holdingPurchaseIndex = index;
                     holdingPurchaseTimer = 0;
@@ -143,17 +143,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                     TryPurchaseItem(index);
                 }
                 else {
-                    //³ÖĞø°´×¡
+                    //æŒç»­æŒ‰ä½
                     if (holdingPurchaseIndex == index) {
                         holdingPurchaseTimer++;
 
-                        //´ïµ½³¤°´ãĞÖµºó¿ªÊ¼Á¬Ğø¹ºÂò
+                        //è¾¾åˆ°é•¿æŒ‰é˜ˆå€¼åå¼€å§‹è¿ç»­è´­ä¹°
                         if (holdingPurchaseTimer >= HoldThreshold) {
                             if (holdingPurchaseTimer % purchaseCooldown == 0) {
                                 TryPurchaseItem(index);
                                 ConsecutivePurchaseCount++;
 
-                                //Öğ½¥¼ÓËÙ£ºÃ¿¹ºÂò5´Î£¬¼ä¸ô¼õÉÙ20%
+                                //é€æ¸åŠ é€Ÿï¼šæ¯è´­ä¹°5æ¬¡ï¼Œé—´éš”å‡å°‘20%
                                 if (ConsecutivePurchaseCount % 5 == 0) {
                                     purchaseCooldown = Math.Max(
                                         MinPurchaseCooldown,
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                         }
                     }
                     else {
-                        //ÇĞ»»µ½²»Í¬ÎïÆ·£¬ÖØÖÃ
+                        //åˆ‡æ¢åˆ°ä¸åŒç‰©å“ï¼Œé‡ç½®
                         holdingPurchaseIndex = index;
                         holdingPurchaseTimer = 0;
                         ConsecutivePurchaseCount = 0;
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 }
             }
             else {
-                //ËÉ¿ªÊó±ê£¬ÖØÖÃ³¤°´×´Ì¬
+                //æ¾å¼€é¼ æ ‡ï¼Œé‡ç½®é•¿æŒ‰çŠ¶æ€
                 if (holdingPurchaseIndex == index) {
                     ResetHoldingState();
                 }
@@ -185,9 +185,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
             ShopItem shopItem = shopItems[index];
 
-            //¼ì²éÊÇ·ñÓĞ×ã¹»µÄÇ®±Ò
+            //æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿçš„é’±å¸
             if (player.BuyItem(shopItem.price)) {
-                //¸øÓèÎïÆ·
+                //ç»™äºˆç‰©å“
                 player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
                 SoundEngine.PlaySound(SoundID.Coins);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// ÖØÖÃ³¤°´¹ºÂò×´Ì¬
+        /// é‡ç½®é•¿æŒ‰è´­ä¹°çŠ¶æ€
         /// </summary>
         public void ResetHoldingState() {
             holdingPurchaseIndex = -1;
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         }
 
         /// <summary>
-        /// ÖØÖÃËùÓĞ½»»¥×´Ì¬
+        /// é‡ç½®æ‰€æœ‰äº¤äº’çŠ¶æ€
         /// </summary>
         public void Reset() {
             HoveredIndex = -1;
