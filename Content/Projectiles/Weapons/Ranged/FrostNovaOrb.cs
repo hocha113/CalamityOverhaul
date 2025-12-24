@@ -76,14 +76,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.ai[1] == 0) {
                 Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.2f, Volume = 0.5f }, Projectile.position);
-                
+
                 if (Projectile.velocity.X != oldVelocity.X) {
                     Projectile.velocity.X = -oldVelocity.X * 1.8f;
                 }
                 if (Projectile.velocity.Y != oldVelocity.Y) {
                     Projectile.velocity.Y = -oldVelocity.Y * 1.8f;
                 }
-                
+
                 for (int i = 0; i < 4; i++) {
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(-4, 4), -4);
                     Projectile proj = Projectile.NewProjectileDirect(Main.player[Projectile.owner].GetShootState().Source
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         private void ExplodeEffect() {
             SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.2f, Volume = 0.7f }, Projectile.Center);
-            
+
             for (int i = 0; i < 60; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
                 Dust frost = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard, velocity, 0, default, Main.rand.NextFloat(2f, 3.5f));

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private const int ExpandDuration = 25;
         private const int SustainDuration = 140;
         private const int FadeDuration = 20;
-        
+
         public override void SetDefaults() {
             Projectile.width = MaxRadius * 2;
             Projectile.height = MaxRadius * 2;

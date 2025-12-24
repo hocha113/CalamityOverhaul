@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilOffsetRecoverValue = 0.88f;
 
                 SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.6f, Volume = 0.35f });
-                
+
                 for (int i = 0; i < 12; i++) {
                     Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.15f) * Main.rand.NextFloat(0.8f, 1.15f)
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);

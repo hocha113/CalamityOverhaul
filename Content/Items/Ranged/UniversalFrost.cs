@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.knockBack = 2.5f;
             Item.value = Item.buyPrice(0, 32, 0, 0);
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = CWRID.Rarity_DarkBlue;
             Item.UseSound = CWRSound.Gun_Snowblindness_Shoot with { Volume = 0.35f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;

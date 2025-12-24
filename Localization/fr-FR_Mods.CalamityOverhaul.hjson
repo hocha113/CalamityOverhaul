@@ -1478,6 +1478,17 @@ Items: {
 			"When all creation falls into silence, only eternal frost shall blanket the world"
 			''' */
 	}
+
+	GodslayerScabbard: {
+		// DisplayName: Godslayer Scabbard
+		/* Tooltip:
+			'''
+			Accumulates charge while holding a melee weapon without attacking
+			Attacking with full charge grants 2 second of invulnerability
+			"Though the blade remains sheathed, its killing intent is palpable.
+			When the time is right, slaying a god takes but an instant."
+			''' */
+	}
 }
 
 Projectiles: {
