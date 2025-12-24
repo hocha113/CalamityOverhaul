@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             _activeIcons.Sort((a, b) => b.Current.CompareTo(a.Current));
 
-            Vector2 screenAnchor = new(Main.screenWidth - 80, Main.screenHeight - 180);
+            Vector2 screenAnchor = new(180, Main.screenHeight - 40);
             float globalOffset = MathHelper.Lerp(20f, 0f, CWRUtils.EaseOutCubic(_panelAppear));
 
             for (int i = 0; i < _activeIcons.Count; i++) {
@@ -102,8 +102,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 icon.LocalAppear = MathHelper.Lerp(icon.LocalAppear, target, speed);
 
                 float localSlide = MathHelper.Lerp(16f, 0f, CWRUtils.EaseOutCubic(icon.LocalAppear));
-                float y = screenAnchor.Y + globalOffset + i * (IconSize + IconPadding) + localSlide;
-                float x = screenAnchor.X - IconSize / 2f;
+                float y = screenAnchor.Y;
+                float x = screenAnchor.X - IconSize / 2f + globalOffset + i * (IconSize + IconPadding) + localSlide;
                 icon.DrawPos = new Vector2(x, y);
 
                 if (_shakeStrength.TryGetValue(icon.Skill, out float shake)) {

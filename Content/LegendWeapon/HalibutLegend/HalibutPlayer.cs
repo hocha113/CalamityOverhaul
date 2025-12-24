@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 
@@ -233,17 +234,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int SuperpositionCooldown { get; set; }
         #endregion
 
-        #region 终极技能数据
-        /// <summary>
-        /// 终极技能触发冷却
-        /// </summary>
-        public int YourLevelIsTooLowToggleCD { get; set; }
-        /// <summary>
-        /// 终极技能冷却时间
-        /// </summary>
-        public int YourLevelIsTooLowCooldown { get; set; }
-        #endregion
-
         /// <summary>
         /// 每个时期阶段对应的死机等级
         /// </summary>
@@ -411,6 +401,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             ResurrectionSystem.ResurrectionRate = 0f;
         }
 
+        public override bool? On_PreKill(double damage, int hitDirection, bool pvp
+            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
+            RestartFishCooldown = 0;
+            FishTeleportCooldown = 0;
+            SuperpositionCooldown = 0;
+            return null;
+        }
+
         public override void PostUpdate() {//在每帧更新后进行一些操作
             ResurrectionSystem.Player = Player;
             if (HeldHalibut && Player.Alives()) {
@@ -460,10 +458,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //叠加攻击冷却
             if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
             if (SuperpositionCooldown > 0) SuperpositionCooldown--;
-
-            //终极技能冷却
-            if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
-            if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
             if (HidePlayerTime > 0) HidePlayerTime--;
 
