@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Balancing;
 using CalamityMod.CalPlayer;
 using CalamityMod.CustomRecipes;
 using CalamityMod.DataStructures;
@@ -13,22 +14,30 @@ using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using CalamityMod.TileEntities;
 using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityMod.UI;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.Utilities;
+using static CalamityOverhaul.Common.ModGanged;
 
 namespace CalamityOverhaul
 {
@@ -1328,6 +1337,127 @@ namespace CalamityOverhaul
             }
 
             return false;
+        }
+        #endregion
+
+        #region 加载联动修改内容
+        public static MethodBase BossHealthBarManager_Draw_Method;
+        public static MethodBase calamityUtils_GetReworkedReforge_Method;
+        internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
+
+        internal static void LoadComders() {
+            if (!Has) {
+                return;
+            }
+            try {
+                LoadComdersInner();
+            } catch { }
+        }
+        [CWRJITEnabled]
+        internal static void LoadComdersInner() {
+            //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
+            BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager)
+                .GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
+            if (BossHealthBarManager_Draw_Method != null) {
+                VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+            }
+            else {
+                CWRUtils.LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
+            }
+
+            calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils)
+                .GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
+            if (calamityUtils_GetReworkedReforge_Method != null) {
+                VaultHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
+            }
+            else {
+                CWRUtils.LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
+            }
+
+            MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("DisplayLocalizedText", BindingFlags.Static | BindingFlags.Public);
+            VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+
+            //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
+            if (CWRMod.Instance.luminance != null) {
+                var utType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.luminance), "Utilities");
+                methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
+                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+            }
+
+            var math = typeof(CalamityPlayer).GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
+            VaultHook.Add(math, OnProvideStealthStatBonusesHook);
+        }
+
+        [CWRJITEnabled]
+        private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
+            int startHeight = 100;
+            int x = Main.screenWidth - 420;
+            int y = Main.screenHeight - startHeight;
+            if (Main.playerInventory || VaultUtils.IsInvasion()) {
+                x -= 250;
+            }
+            Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);
+            x = (int)modifyPos.X;
+            y = (int)modifyPos.Y;
+            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
+            foreach (BossHealthBarManager.BossHPUI ui in BossHealthBarManager.Bars) {
+                ui.Draw(spriteBatch, x, y);
+                y -= BossHealthBarManager.BossHPUI.VerticalOffsetPerBar;
+            }
+        }
+
+        [CWRJITEnabled]
+        internal static int OnGetReworkedReforgeHook(On_GetReworkedReforge_Dalegate orig
+            , Item item, UnifiedRandom rand, int currentPrefix) {
+            int reset = orig.Invoke(item, rand, currentPrefix);
+            reset = OnCalamityReforgeEvent.HandleCalamityReforgeModificationDueToMissingItemLoader(item, rand, currentPrefix);
+            return reset;
+        }
+
+        [CWRJITEnabled]
+        internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
+            Color color = textColor ?? Color.White;
+            if (VaultLoad.LoadenContent) {
+                bool result = true;
+                foreach (var d in ModifyDisplayText.Instances) {
+                    if (!d.Alive(Main.LocalPlayer)) {
+                        continue;
+                    }
+                    bool newResult = d.Handle(ref key, ref color);
+                    if (!newResult) {
+                        result = false;
+                    }
+                }
+                if (!result) {
+                    return;
+                }
+            }
+
+            orig.Invoke(key, color);
+        }
+
+        [CWRJITEnabled]
+        private static void OnProvideStealthStatBonusesHook(Action<CalamityPlayer> orig, CalamityPlayer calamityPlayer) {
+            if (calamityPlayer.Player.CWR().IsUnsunghero) {
+                if (!calamityPlayer.wearingRogueArmor || calamityPlayer.rogueStealthMax <= 0) {
+                    return;
+                }
+
+                Item item = calamityPlayer.Player.GetItem();
+                int realUseTime = Math.Max(item.useTime, item.useAnimation);
+                double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
+                //直接使用固定的基础时间，固定为 4 秒
+                double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
+
+                double stealthAddedDamage = calamityPlayer.rogueStealth * BalancingConstants.UniversalStealthStrikeDamageFactor * useTimeFactor * stealthGenFactor;
+                calamityPlayer.stealthDamage += (float)stealthAddedDamage;
+
+                calamityPlayer.Player.aggro -= (int)(calamityPlayer.rogueStealth * 300f);
+
+                return;
+            }
+
+            orig.Invoke(calamityPlayer);
         }
         #endregion
     }

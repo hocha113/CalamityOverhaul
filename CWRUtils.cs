@@ -102,6 +102,19 @@ namespace CalamityOverhaul
             }
             return reset;
         }
+
+        private static string FailedLoadMessage => VaultUtils.Translation("未成功加载", "Failed load");
+
+        private static string VerificationMessage => VaultUtils.Translation("是否是", "whether it is");
+
+        private static string ChangeStatusMessage => VaultUtils.Translation("已经改动?", "Has it been changed?");
+
+        private static string ModNotLoadedMessage => VaultUtils.Translation("未加载模组", "The mod is not loaded");
+
+        internal static void LogFailedLoad(string value1, string value2)
+            => CWRMod.Instance.Logger.Info($"{FailedLoadMessage} {value1} {VerificationMessage} {value2} {ChangeStatusMessage}");
+
+        internal static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
         #endregion
 
         #region AIUtils

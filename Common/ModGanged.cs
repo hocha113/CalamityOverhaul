@@ -1,17 +1,9 @@
-﻿using CalamityMod;
-using CalamityMod.Balancing;
-using CalamityMod.CalPlayer;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.UI;
-using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
+﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -21,7 +13,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Core;
 using Terraria.Utilities;
-using static Terraria.ModLoader.ModContent;
+using static CalamityOverhaul.CWRUtils;
 
 namespace CalamityOverhaul.Common
 {
@@ -85,39 +77,9 @@ namespace CalamityOverhaul.Common
         public static Type coolerItemVisualEffectPlayerType;
         public static MethodBase coolerItemVisualEffect_Method;
 
-        public static MethodBase BossHealthBarManager_Draw_Method;
-
         public static Type MS_Config_Type;
         public static FieldInfo MS_Config_recursionCraftingDepth_FieldInfo;
-
-        public static MethodBase calamityUtils_GetReworkedReforge_Method;
-
         #endregion
-        public static Type[] GetModTypes(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
-
-        public static Type GetTargetTypeInStringKey(Type[] types, string key) {
-            Type reset = null;
-            foreach (Type type in types) {
-                if (type.Name == key) {
-                    reset = type;
-                }
-            }
-            return reset;
-        }
-
-        private static string FailedLoadMessage => VaultUtils.Translation("未成功加载", "Failed load");
-
-        private static string VerificationMessage => VaultUtils.Translation("是否是", "whether it is");
-
-        private static string ChangeStatusMessage => VaultUtils.Translation("已经改动?", "Has it been changed?");
-
-        private static string ModNotLoadedMessage => VaultUtils.Translation("未加载模组", "The mod is not loaded");
-
-        private static void LogFailedLoad(string value1, string value2)
-            => CWRMod.Instance.Logger.Info($"{FailedLoadMessage} {value1} {VerificationMessage} {value2} {ChangeStatusMessage}");
-
-        private static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
-
         public static void Load() {
             #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
@@ -274,19 +236,6 @@ namespace CalamityOverhaul.Common
                 else {
                     LogFailedLoad("trO_itemPowerAttacksTypes", "TerrariaOverhaul.ItemPowerAttacks");
                 }
-
-                if (trO_Broadsword_Type != null) {
-                    trO_Broadsword_ShouldApplyItemOverhaul_Method = trO_Broadsword_Type.GetMethod("ShouldApplyItemOverhaul", BindingFlags.Instance | BindingFlags.Public);
-                    if (trO_Broadsword_ShouldApplyItemOverhaul_Method != null) {
-                        VaultHook.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
-                    }
-                    else {
-                        LogFailedLoad("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
-                    }
-                }
-                else {
-                    LogFailedLoad("trO_Broadsword_Type", "TerrariaOverhaul.Broadsword");
-                }
             }
             else {
                 LogModNotLoaded("TerrariaOverhaul");
@@ -384,54 +333,7 @@ namespace CalamityOverhaul.Common
 
             #endregion
 
-            #region calamityMod_noumenon
-            {
-                //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
-                BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager)
-                    .GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
-                if (BossHealthBarManager_Draw_Method != null) {
-                    VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
-                }
-                else {
-                    LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
-                }
-
-                calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils)
-                    .GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
-                if (calamityUtils_GetReworkedReforge_Method != null) {
-                    VaultHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
-                }
-                else {
-                    LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
-                }
-
-                MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("DisplayLocalizedText", BindingFlags.Static | BindingFlags.Public);
-                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
-
-                //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
-                if (CWRMod.Instance.luminance != null) {
-                    var utType = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.luminance), "Utilities");
-                    methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
-                    VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
-                }
-
-                var math = typeof(CalamityPlayer).GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
-                VaultHook.Add(math, OnProvideStealthStatBonusesHook);
-            }
-            #endregion
-
-            #region InfernumMode
-            {
-                if (CWRMod.Instance.infernum != null) {
-                    Type type = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.infernum), "TooltipChangeGlobalItem");
-                    if (type != null) {
-                        MethodInfo dditEnrageTooltipsMethod = type.GetMethod("EditEnrageTooltips", BindingFlags.Public | BindingFlags.Static);
-                        //这个问题并不一定发生，并且不是模组自己的问题，因此不必要进行挂载
-                        //VaultHook.Add(dditEnrageTooltipsMethod, On_EditEnrageTooltips_Hook);
-                    }
-                }
-            }
-            #endregion
+            CWRRef.LoadComders();
         }
 
         void ICWRLoader.UnLoadData() {
@@ -465,66 +367,12 @@ namespace CalamityOverhaul.Common
             coolerItemVisualEffectTypes = null;
             coolerItemVisualEffectPlayerType = null;
             coolerItemVisualEffect_Method = null;
-            BossHealthBarManager_Draw_Method = null;
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
-            calamityUtils_GetReworkedReforge_Method = null;
-        }
-
-        private static void OnProvideStealthStatBonusesHook(Action<CalamityPlayer> orig, CalamityPlayer calamityPlayer) {
-            if (calamityPlayer.Player.CWR().IsUnsunghero) {
-                if (!calamityPlayer.wearingRogueArmor || calamityPlayer.rogueStealthMax <= 0) {
-                    return;
-                }
-
-                Item item = calamityPlayer.Player.GetItem();
-                int realUseTime = Math.Max(item.useTime, item.useAnimation);
-                double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
-                //直接使用固定的基础时间，固定为 4 秒
-                double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
-
-                double stealthAddedDamage = calamityPlayer.rogueStealth * BalancingConstants.UniversalStealthStrikeDamageFactor * useTimeFactor * stealthGenFactor;
-                calamityPlayer.stealthDamage += (float)stealthAddedDamage;
-
-                calamityPlayer.Player.aggro -= (int)(calamityPlayer.rogueStealth * 300f);
-
-                return;
-            }
-
-            orig.Invoke(calamityPlayer);
-        }
-
-        internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
-        internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
-            Color color = textColor ?? Color.White;
-            if (VaultLoad.LoadenContent) {
-                bool result = true;
-                foreach (var d in ModifyDisplayText.Instances) {
-                    if (!d.Alive(Main.LocalPlayer)) {
-                        continue;
-                    }
-                    bool newResult = d.Handle(ref key, ref color);
-                    if (!newResult) {
-                        result = false;
-                    }
-                }
-                if (!result) {
-                    return;
-                }
-            }
-
-            orig.Invoke(key, color);
         }
 
         internal static void On_EditEnrageTooltips_Hook(On_Tooltips_Dalegate orig, Item item, List<TooltipLine> tooltips) {
             orig.Invoke(item, tooltips);
-        }
-
-        internal static int OnGetReworkedReforgeHook(On_GetReworkedReforge_Dalegate orig
-            , Item item, UnifiedRandom rand, int currentPrefix) {
-            int reset = orig.Invoke(item, rand, currentPrefix);
-            reset = OnCalamityReforgeEvent.HandleCalamityReforgeModificationDueToMissingItemLoader(item, rand, currentPrefix);
-            return reset;
         }
 
         internal static void On_FGS_FGSGlobalProj_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
@@ -558,30 +406,8 @@ namespace CalamityOverhaul.Common
             return true;
         }
 
-        private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
-            int[] noEffect = [ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(),];
-            return noEffect.Contains(item.type) ? false : orig.Invoke(obj, item);
-        }
-
         private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
             return item.IsAir || item.type == ItemID.None ? false : orig.Invoke(obj, item, player);
-        }
-
-        private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
-            int startHeight = 100;
-            int x = Main.screenWidth - 420;
-            int y = Main.screenHeight - startHeight;
-            if (Main.playerInventory || VaultUtils.IsInvasion()) {
-                x -= 250;
-            }
-            Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);
-            x = (int)modifyPos.X;
-            y = (int)modifyPos.Y;
-            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
-            foreach (BossHealthBarManager.BossHPUI ui in BossHealthBarManager.Bars) {
-                ui.Draw(spriteBatch, x, y);
-                y -= BossHealthBarManager.BossHPUI.VerticalOffsetPerBar;
-            }
         }
 
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
@@ -616,23 +442,6 @@ namespace CalamityOverhaul.Common
                         return false;
                     }
                 }
-                /*这些代码是不必要的
-                if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    if (gun.OnHandheldDisplayBool) {
-                        return false;
-                    }
-                }
-                if (modPlayer.TryGetInds_BaseGun(out BaseGun gun2)) {
-                    if (gun2.OnHandheldDisplayBool) {
-                        return false;
-                    }
-                }
-                if (modPlayer.TryGetInds_BaseBow(out BaseBow bow)) {
-                    if (bow.OnHandheldDisplayBool) {
-                        return false;
-                    }
-                }
-                */
             }
 
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
