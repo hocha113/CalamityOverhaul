@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Description = this.GetLocalization(nameof(Description), () => "探索腐化或猩红之地");
 
             IconType = QuestIconType.Item;
-            IconItemType = ItemID.DemoniteOre;
+            IconItemType = ItemID.PotSuspendedDeathweedCorrupt;
             Position = new Vector2(0, 150);
             AddParent<AdventurerQuests>();
 
@@ -372,7 +372,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ItemID.DemoniteOre;
-            Position = new Vector2(0, 150);
+            Position = new Vector2(50, 150);
             AddParent<ExploreCorruption>();
 
             Objectives.Add(new QuestObjective {
@@ -404,8 +404,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ItemID.ShadowOrb;
-            Position = new Vector2(0, 150);
-            AddParent<CollectEvilOres>();
+            Position = new Vector2(-50, 150);
+            AddParent<ExploreCorruption>();
 
             Objectives.Add(new QuestObjective {
                 Description = this.GetLocalization("QuestObjective.Description", () => "摧毁暗影珠或猩红之心"),
