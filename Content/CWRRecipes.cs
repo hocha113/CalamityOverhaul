@@ -562,7 +562,9 @@ namespace CalamityOverhaul.Content
 
         public override void AddRecipes() {
             {//添加终焉合成内容
-                SetOmigaSnyRecipes();
+                if (CWRRef.Has) {
+                    SetOmigaSnyRecipes();
+                }
             }
             {//添加配方的操作
                 if (CWRRef.Has) {

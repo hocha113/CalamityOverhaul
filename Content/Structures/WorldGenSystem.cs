@@ -20,10 +20,15 @@ namespace CalamityOverhaul.Content.Structures
         }
 
         void ICWRLoader.LoadData() {
-            WorldgenManagementSystem_ModifyWorldGenTasks = CWRMod.Instance.calamity?.Code.GetType("CalamityMod.Systems.WorldgenManagementSystem")
-                .GetMethod("ModifyWorldGenTasks", BindingFlags.Instance | BindingFlags.Public);
-            if (WorldgenManagementSystem_ModifyWorldGenTasks is not null)
-                VaultHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
+            var type = CWRMod.Instance.calamity?.Code.GetType("CalamityMod.Systems.WorldgenManagementSystem");
+            if (type is null) {
+                return;
+            }
+            WorldgenManagementSystem_ModifyWorldGenTasks = type.GetMethod("ModifyWorldGenTasks", BindingFlags.Instance | BindingFlags.Public);
+            if (WorldgenManagementSystem_ModifyWorldGenTasks is null) {
+                return;
+            }
+            VaultHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
         }
 
         void ICWRLoader.UnLoadData() {
