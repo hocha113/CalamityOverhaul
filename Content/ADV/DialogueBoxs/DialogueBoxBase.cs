@@ -149,9 +149,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// 隐藏当前全身立绘
         /// </summary>
         public virtual void HideFullBodyPortrait() {
-            if (activeFullBodyPortrait != null) {
-                activeFullBodyPortrait.EndPerformance();
-            }
+            activeFullBodyPortrait?.EndPerformance();
         }
 
         /// <summary>
