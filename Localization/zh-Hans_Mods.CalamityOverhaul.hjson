@@ -1481,6 +1481,17 @@ Items: {
 			待时机成熟，斩神不过转瞬"
 			'''
 	}
+
+	Lumberjack: {
+		Text1: 数量过多!
+		Text2: 电力不足!
+		DisplayName: 伐木者
+		Tooltip:
+			'''
+			消耗电力进行伐木工作
+			自动砍伐周围的树木
+			'''
+	}
 }
 
 Projectiles: {

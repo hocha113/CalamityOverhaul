@@ -1488,6 +1488,17 @@ Items: {
 			When the time is right, slaying a god takes but an instant."
 			''' */
 	}
+
+	Lumberjack: {
+		// Text1: Excessive Quantity!
+		// Text2: Lack of Electricity!
+		// DisplayName: Lumberjack
+		/* Tooltip:
+			'''
+			Consumes power to harvest timber
+			Automatically chops down surrounding trees
+			''' */
+	}
 }
 
 Projectiles: {
