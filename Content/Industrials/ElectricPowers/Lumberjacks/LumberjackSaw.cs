@@ -348,6 +348,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 return;
             }
 
+            //记录树木类型用于重生
+            int treeType = tile.TileType;
+
+            //找到树木下方的地面位置
+            int groundY = FindGroundBelowTree(x, y, treeType);
+
             //使用WorldGen砍伐树木
             WorldGen.KillTile(x, y, false, false, false);
             if (VaultUtils.isServer) {
@@ -360,7 +366,50 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 Pitch = -0.3f
             }, Center);
 
+            //触发树木重生系统：生成橡子下落动画
+            if (groundY > 0) {
+                SpawnTreeRegrowthAnimation(x, groundY, treeType);
+            }
+
             targetTreePos = Point16.NegativeOne;
+        }
+
+        /// <summary>
+        /// 找到树木下方的地面位置
+        /// </summary>
+        private static int FindGroundBelowTree(int x, int startY, int treeType) {
+            int y = startY;
+            //向下搜索直到找到非树木物块(即地面)
+            while (y < Main.maxTilesY - 10) {
+                Tile tile = Main.tile[x, y];
+                if (!tile.HasTile || tile.TileType != treeType) {
+                    //找到地面，返回地面的Y坐标
+                    if (tile.HasTile && !Main.tileSolid[tile.TileType] == false) {
+                        return y;
+                    }
+                    //如果下方是空的，继续向下找实心地面
+                    while (y < Main.maxTilesY - 10) {
+                        Tile groundTile = Main.tile[x, y];
+                        if (groundTile.HasTile && Main.tileSolid[groundTile.TileType]) {
+                            return y;
+                        }
+                        y++;
+                    }
+                    break;
+                }
+                y++;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 生成树木重生动画(橡子下落)
+        /// </summary>
+        private static void SpawnTreeRegrowthAnimation(int tileX, int groundY, int treeType) {
+            //生成橡子下落Actor
+            Vector2 spawnPos = new Vector2(tileX * 16 + 8, (groundY - 20) * 16);
+            int actorIndex = ActorLoader.NewActor<FallingAcorn>(spawnPos, Vector2.Zero);
+            ActorLoader.Actors[actorIndex].OnSpawn(tileX, groundY, treeType);
         }
 
         private void State_Returning() {
