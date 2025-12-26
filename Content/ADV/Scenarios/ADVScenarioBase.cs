@@ -103,6 +103,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         }
 
         /// <summary>
+        /// 添加对话(角色名和立绘分离)
+        /// </summary>
+        /// <param name="speaker">显示的说话者名称</param>
+        /// <param name="portraitKey">用于查找立绘的键</param>
+        /// <param name="content">对话内容</param>
+        public void Add(string speaker, string portraitKey, string content) {
+            lines.Add(new DialogueLine(speaker, portraitKey, content));
+        }
+
+        /// <summary>
+        /// 添加完整配置的对话(角色名和立绘分离)
+        /// </summary>
+        /// <param name="speaker">显示的说话者名称</param>
+        /// <param name="portraitKey">用于查找立绘的键</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="onStart">开始回调</param>
+        /// <param name="onComplete">完成回调</param>
+        /// <param name="styleOverride">样式重写</param>
+        public void Add(string speaker, string portraitKey, string content, Action onStart = null, Action onComplete = null, Func<DialogueBoxBase> styleOverride = null) {
+            var line = new DialogueLine(speaker, portraitKey, content) {
+                OnStart = onStart,
+                OnComplete = onComplete,
+                StyleOverride = styleOverride
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
         /// 添加完整配置的对话
         /// </summary>
         public void Add(string speaker, string content, Action onStart = null, Action onComplete = null, Func<DialogueBoxBase> styleOverride = null) {
@@ -222,8 +250,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                     startCallback = line.OnStart;
                 }
 
-                //获取当前实际使用的对话框来入队
-                initialBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
+                //获取当前实际使用的对话框来入队(传递独立的立绘键)
+                initialBox.EnqueueDialogue(line.Speaker, line.PortraitKey, line.Content, completeCallback, startCallback);
             }
         }
 

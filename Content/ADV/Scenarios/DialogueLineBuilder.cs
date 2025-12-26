@@ -19,6 +19,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         }
 
         /// <summary>
+        /// 设置立绘键(允许角色名和立绘分离)
+        /// </summary>
+        /// <param name="portraitKey">用于查找立绘的键</param>
+        public DialogueLineBuilder WithPortrait(string portraitKey) {
+            line.PortraitKey = portraitKey;
+            return this;
+        }
+
+        /// <summary>
         /// 设置开始事件
         /// </summary>
         public DialogueLineBuilder OnStart(Action action) {

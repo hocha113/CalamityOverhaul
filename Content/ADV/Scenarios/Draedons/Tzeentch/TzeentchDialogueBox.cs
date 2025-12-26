@@ -40,6 +40,154 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         private int orbSpawnTimer = 0;
         private const float ParticleSideMargin = 35f;
 
+        #region 样式配置重写
+
+        protected override float PortraitScaleMin => 0.75f;
+        protected override float TopNameOffsetBase => 12f;
+        protected override float TextBlockOffsetBase => 40f;
+        protected override float NameScale => 0.95f;
+        protected override float TextScale => 0.82f;
+        protected override int NameGlowCount => 8;
+        protected override float NameGlowRadius => 2.5f;
+        protected override float PortraitAvailHeightOffset => 65f;
+        protected override float PortraitMinHeight => 90f;
+        protected override float PortraitMaxHeight => 280f;
+        protected override float PortraitFramePadding => 10f;
+        protected override float PortraitGlowPadding => 6f;
+        protected override float PortraitLeftMargin => 24f;
+        protected override float DividerLineOffsetY => 30f;
+        protected override float DividerLineThickness => 1.8f;
+        protected override float ContinueHintScale => 0.88f;
+        protected override float FastHintScale => 0.72f;
+
+        #endregion
+
+        #region 模板方法实现
+
+        /// <summary>
+        /// 获取奸奇风格的剪影颜色
+        /// </summary>
+        protected override Color GetSilhouetteColor(ContentDrawContext ctx) {
+            Color tzeentchShadow = Color.Lerp(new Color(40, 20, 80), new Color(80, 40, 120), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
+            return tzeentchShadow * 0.85f;
+        }
+
+        /// <summary>
+        /// 应用立绘位置扭曲效果
+        /// </summary>
+        protected override Vector2 ApplyPortraitOffset(ContentDrawContext ctx, Vector2 basePosition) {
+            float warpOffsetX = (float)Math.Sin(warpTimer * 1.3f + ctx.PortraitData.Fade) * 2f;
+            float warpOffsetY = (float)Math.Cos(warpTimer * 0.9f + ctx.PortraitData.Fade) * 1.5f;
+            return basePosition + new Vector2(warpOffsetX, warpOffsetY);
+        }
+
+        /// <summary>
+        /// 绘制奸奇风格头像边框
+        /// </summary>
+        protected override void DrawPortraitFrame(ContentDrawContext ctx, Rectangle frameRect) {
+            DrawTzeentchPortraitFrame(ctx.SpriteBatch, frameRect, ctx.Alpha * ctx.PortraitData.Fade * ctx.PortraitExtraAlpha);
+        }
+
+        /// <summary>
+        /// 绘制魔法光环效果
+        /// </summary>
+        protected override void DrawPortraitGlow(ContentDrawContext ctx, Rectangle glowRect) {
+            var pd = ctx.PortraitData;
+            float magicPulse = (float)Math.Sin(arcanePhase * 1.9f + pd.Fade) * 0.5f + 0.5f;
+            Color magicRim = Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), magicPulse);
+            magicRim *= ctx.ContentAlpha * 0.6f * magicPulse * pd.Fade * ctx.PortraitExtraAlpha;
+            DrawMagicGlow(ctx.SpriteBatch, glowRect, magicRim);
+        }
+
+        /// <summary>
+        /// 获取说话者名字位置（带扭曲效果）
+        /// </summary>
+        protected override Vector2 GetSpeakerNamePosition(ContentDrawContext ctx) {
+            float nameWarp = (float)Math.Sin(warpTimer * 1.1f) * 3f;
+            return new Vector2(
+                ctx.PanelRect.X + ctx.LeftOffset + nameWarp,
+                ctx.PanelRect.Y + ctx.TopNameOffset - (1f - ctx.SwitchEase) * 8f
+            );
+        }
+
+        /// <summary>
+        /// 绘制奸奇魔法文字光晕
+        /// </summary>
+        protected override void DrawNameGlow(ContentDrawContext ctx, Vector2 position, float alpha) {
+            Color nameGlow1 = Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
+            Color nameGlow2 = Color.Lerp(new Color(100, 200, 255), new Color(200, 100, 255), (float)Math.Sin(colorShift + MathHelper.PiOver2) * 0.5f + 0.5f);
+
+            for (int i = 0; i < NameGlowCount; i++) {
+                float angle = MathHelper.TwoPi * i / NameGlowCount + arcanePhase * 0.5f;
+                Vector2 offset = angle.ToRotationVector2() * NameGlowRadius * ctx.SwitchEase;
+                Color glowColor = Color.Lerp(nameGlow1, nameGlow2, i / (float)NameGlowCount) * (alpha * 0.5f);
+                Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, position + offset, glowColor, NameScale);
+            }
+        }
+
+        /// <summary>
+        /// 绘制魔法分隔线
+        /// </summary>
+        protected override void DrawDividerLine(ContentDrawContext ctx, Vector2 start, Vector2 end, float alpha) {
+            DrawMagicGradientLine(ctx.SpriteBatch, start, end,
+                Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), (float)Math.Sin(colorShift) * 0.5f + 0.5f) * (alpha * 0.9f),
+                Color.Lerp(new Color(100, 150, 255), new Color(200, 100, 255), (float)Math.Sin(colorShift + 1f) * 0.5f + 0.5f) * (alpha * 0.1f),
+                DividerLineThickness);
+        }
+
+        /// <summary>
+        /// 应用文本行扭曲效果
+        /// </summary>
+        protected override Vector2 ApplyTextLineOffset(ContentDrawContext ctx, Vector2 basePosition, int lineIndex) {
+            float warpX = (float)Math.Sin(warpTimer * 2.5f + lineIndex * 0.8f) * 1.5f;
+            float warpY = (float)Math.Cos(warpTimer * 1.8f + lineIndex * 0.6f) * 0.8f;
+            return basePosition + new Vector2(warpX, warpY);
+        }
+
+        /// <summary>
+        /// 获取魔法色彩文字颜色
+        /// </summary>
+        protected override Color GetTextLineColor(ContentDrawContext ctx, int lineIndex) {
+            float colorPhase = colorShift + lineIndex * 0.3f;
+            Color textColor1 = Color.Lerp(new Color(220, 200, 255), new Color(255, 220, 255), (float)Math.Sin(colorPhase) * 0.5f + 0.5f);
+            Color textColor2 = Color.Lerp(new Color(200, 220, 255), new Color(240, 200, 255), (float)Math.Sin(colorPhase + 1f) * 0.5f + 0.5f);
+            return Color.Lerp(textColor1, textColor2, 0.5f) * ctx.ContentAlpha;
+        }
+
+        /// <summary>
+        /// 绘制微弱的魔法文字光晕
+        /// </summary>
+        protected override void DrawTextLineGlow(ContentDrawContext ctx, string text, Vector2 position, int lineIndex) {
+            Color textGlow = Color.Lerp(new Color(180, 140, 255), new Color(255, 180, 255), (float)Math.Sin(arcanePhase + lineIndex * 0.4f) * 0.5f + 0.5f);
+            Utils.DrawBorderString(ctx.SpriteBatch, text, position + new Vector2(0, 1), textGlow * (ctx.ContentAlpha * 0.12f), TextScale);
+        }
+
+        /// <summary>
+        /// 获取继续提示文本
+        /// </summary>
+        protected override string GetContinueHintText() {
+            return $"◆ {ContinueHint.Value} ◆";
+        }
+
+        /// <summary>
+        /// 获取继续提示颜色
+        /// </summary>
+        protected override Color GetContinueHintColor(ContentDrawContext ctx, float blink) {
+            Color hintColor1 = new Color(200, 150, 255) * blink;
+            Color hintColor2 = new Color(255, 150, 255) * blink;
+            return Color.Lerp(hintColor1, hintColor2, (float)Math.Sin(colorShift * 2f) * 0.5f + 0.5f) * ctx.ContentAlpha;
+        }
+
+        /// <summary>
+        /// 获取加速提示颜色
+        /// </summary>
+        protected override Color GetFastHintColor(ContentDrawContext ctx) {
+            Color fastColor = Color.Lerp(new Color(180, 160, 220), new Color(220, 180, 240), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
+            return fastColor * (0.4f * ctx.ContentAlpha);
+        }
+
+        #endregion
+
         protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize) {
             //奸奇的时间是扭曲的，速度不一
             warpTimer += 0.062f + (float)Math.Sin(changeFlux * 0.3f) * 0.015f;
@@ -200,191 +348,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
                 return;
             }
 
+            //使用基类的模板方法绘制立绘和文本
             DrawPortraitAndText(spriteBatch, panelRect, alpha, contentAlpha);
-        }
-
-        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-
-            bool hasPortrait = false;
-            PortraitData speakerPortrait = null;
-            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f) {
-                hasPortrait = true;
-                speakerPortrait = pd;
-            }
-
-            float switchEase = speakerSwitchProgress;
-            if (switchEase < 1f) {
-                switchEase = CWRUtils.EaseOutCubic(switchEase);
-            }
-            float portraitAppearScale = MathHelper.Lerp(0.75f, 1f, switchEase);
-            float portraitExtraAlpha = MathHelper.Clamp(switchEase, 0f, 1f);
-
-            float leftOffset = Padding;
-            float topNameOffset = 12f;
-            float textBlockOffsetY = Padding + 40;
-
-            if (hasPortrait) {
-                // 使用基类的统一计算方法
-                PortraitSizeInfo sizeInfo = CalculatePortraitSize(
-                    speakerPortrait,
-                    panelRect,
-                    portraitAppearScale,
-                    panelRect.Height - 65f,
-                    Math.Clamp(panelRect.Height - 65f, 90f, 280f)
-                );
-
-                // 立绘位置添加扭曲效果
-                float warpOffsetX = (float)Math.Sin(warpTimer * 1.3f + speakerPortrait.Fade) * 2f;
-                float warpOffsetY = (float)Math.Cos(warpTimer * 0.9f + speakerPortrait.Fade) * 1.5f;
-
-                //应用扭曲偏移到绘制位置
-                Vector2 warpedPosition = sizeInfo.DrawPosition + new Vector2(warpOffsetX, warpOffsetY);
-                PortraitSizeInfo warpedSizeInfo = new PortraitSizeInfo {
-                    Scale = sizeInfo.Scale,
-                    DrawSize = sizeInfo.DrawSize,
-                    DrawPosition = warpedPosition,
-                    SourceRectangle = sizeInfo.SourceRectangle,
-                    TextureSize = sizeInfo.TextureSize
-                };
-
-                //绘制头像边框
-                DrawTzeentchPortraitFrame(spriteBatch,
-                    new Rectangle(
-                        (int)(warpedPosition.X - 10),
-                        (int)(warpedPosition.Y - 10),
-                        (int)(sizeInfo.DrawSize.X + 20),
-                        (int)(sizeInfo.DrawSize.Y + 20)
-                    ),
-                    alpha * speakerPortrait.Fade * portraitExtraAlpha);
-
-                // 计算绘制颜色
-                Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
-                if (speakerPortrait.Silhouette) {
-                    //奸奇的剪影带有魔法色彩
-                    Color tzeentchShadow = Color.Lerp(new Color(40, 20, 80), new Color(80, 40, 120), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
-                    drawColor = tzeentchShadow * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.85f;
-                }
-
-                //使用基类的统一绘制方法
-                DrawPortrait(spriteBatch, speakerPortrait, warpedSizeInfo, drawColor);
-
-                //魔法光环效果
-                float magicPulse = (float)Math.Sin(arcanePhase * 1.9f + speakerPortrait.Fade) * 0.5f + 0.5f;
-                Color magicRim = Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), magicPulse);
-                magicRim *= contentAlpha * 0.6f * magicPulse * speakerPortrait.Fade * portraitExtraAlpha;
-                DrawMagicGlow(spriteBatch,
-                    new Rectangle(
-                        (int)warpedPosition.X - 6,
-                        (int)warpedPosition.Y - 6,
-                        (int)sizeInfo.DrawSize.X + 12,
-                        (int)sizeInfo.DrawSize.Y + 12
-                    ),
-                    magicRim);
-
-                leftOffset += PortraitWidth + 24f;
-            }
-
-            //绘制说话者名字
-            if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
-                float nameWarp = (float)Math.Sin(warpTimer * 1.1f) * 3f;
-                Vector2 speakerPos = new(
-                    panelRect.X + leftOffset + nameWarp,
-                    panelRect.Y + topNameOffset - (1f - switchEase) * 8f
-                );
-                float nameAlpha = contentAlpha * switchEase;
-
-                //奸奇魔法文字光晕
-                Color nameGlow1 = Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
-                Color nameGlow2 = Color.Lerp(new Color(100, 200, 255), new Color(200, 100, 255), (float)Math.Sin(colorShift + MathHelper.PiOver2) * 0.5f + 0.5f);
-
-                for (int i = 0; i < 8; i++) {
-                    float angle = MathHelper.TwoPi * i / 8f + arcanePhase * 0.5f;
-                    Vector2 offset = angle.ToRotationVector2() * 2.5f * switchEase;
-                    Color glowColor = Color.Lerp(nameGlow1, nameGlow2, i / 8f) * (nameAlpha * 0.5f);
-                    Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + offset, glowColor, 0.95f);
-                }
-
-                Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * nameAlpha, 0.95f);
-
-                //魔法分隔线
-                Vector2 divStart = speakerPos + new Vector2(0, 30);
-                Vector2 divEnd = divStart + new Vector2(panelRect.Width - leftOffset - Padding, 0);
-                float lineAlpha = contentAlpha * switchEase;
-                DrawMagicGradientLine(spriteBatch, divStart, divEnd,
-                    Color.Lerp(new Color(150, 100, 255), new Color(255, 150, 255), (float)Math.Sin(colorShift) * 0.5f + 0.5f) * (lineAlpha * 0.9f),
-                    Color.Lerp(new Color(100, 150, 255), new Color(200, 100, 255), (float)Math.Sin(colorShift + 1f) * 0.5f + 0.5f) * (lineAlpha * 0.1f),
-                    1.8f);
-            }
-
-            //绘制文本
-            Vector2 textStart = new(panelRect.X + leftOffset, panelRect.Y + textBlockOffsetY);
-            int remaining = visibleCharCount;
-            int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
-            int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
-
-            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
-                string fullLine = wrappedLines[i];
-                if (string.IsNullOrEmpty(fullLine)) {
-                    continue;
-                }
-
-                string visLine;
-                if (finishedCurrent) {
-                    visLine = fullLine;
-                }
-                else {
-                    if (remaining <= 0) {
-                        break;
-                    }
-                    int take = Math.Min(fullLine.Length, remaining);
-                    visLine = fullLine[..take];
-                    remaining -= take;
-                }
-
-                Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > panelRect.Bottom - Padding) {
-                    break;
-                }
-
-                //现实扭曲效果 - 文字会微微扭曲
-                float warpX = (float)Math.Sin(warpTimer * 2.5f + i * 0.8f) * 1.5f;
-                float warpY = (float)Math.Cos(warpTimer * 1.8f + i * 0.6f) * 0.8f;
-                Vector2 warpPos = linePos + new Vector2(warpX, warpY);
-
-                //魔法色彩文字
-                float colorPhase = colorShift + i * 0.3f;
-                Color textColor1 = Color.Lerp(new Color(220, 200, 255), new Color(255, 220, 255), (float)Math.Sin(colorPhase) * 0.5f + 0.5f);
-                Color textColor2 = Color.Lerp(new Color(200, 220, 255), new Color(240, 200, 255), (float)Math.Sin(colorPhase + 1f) * 0.5f + 0.5f);
-                Color lineColor = Color.Lerp(textColor1, textColor2, 0.5f) * contentAlpha;
-
-                //微弱的魔法光晕
-                Color textGlow = Color.Lerp(new Color(180, 140, 255), new Color(255, 180, 255), (float)Math.Sin(arcanePhase + i * 0.4f) * 0.5f + 0.5f);
-                Utils.DrawBorderString(spriteBatch, visLine, warpPos + new Vector2(0, 1), textGlow * (contentAlpha * 0.12f), 0.82f);
-                Utils.DrawBorderString(spriteBatch, visLine, warpPos, lineColor, 0.82f);
-            }
-
-            //继续提示
-            if (waitingForAdvance) {
-                float blink = (float)Math.Sin(advanceBlinkTimer / 9f * MathHelper.TwoPi) * 0.5f + 0.5f;
-                string hint = $"◆ {ContinueHint.Value} ◆";
-                Vector2 hintSize = font.MeasureString(hint) * 0.68f;
-                Vector2 hintPos = new(panelRect.Right - Padding - hintSize.X, panelRect.Bottom - Padding - hintSize.Y);
-
-                Color hintColor1 = new Color(200, 150, 255) * blink;
-                Color hintColor2 = new Color(255, 150, 255) * blink;
-                Color hintGlow = Color.Lerp(hintColor1, hintColor2, (float)Math.Sin(colorShift * 2f) * 0.5f + 0.5f) * contentAlpha;
-                Utils.DrawBorderString(spriteBatch, hint, hintPos, hintGlow, 0.88f);
-            }
-
-            //加速提示
-            if (!finishedCurrent) {
-                string fast = FastHint.Value;
-                Vector2 fastSize = font.MeasureString(fast) * 0.62f;
-                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 20);
-                Color fastColor = Color.Lerp(new Color(180, 160, 220), new Color(220, 180, 240), (float)Math.Sin(colorShift) * 0.5f + 0.5f);
-                Utils.DrawBorderString(spriteBatch, fast, fastPos, fastColor * (0.4f * contentAlpha), 0.72f);
-            }
         }
 
         #region 样式工具函数
