@@ -366,8 +366,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 Pitch = -0.3f
             }, Center);
 
-            //触发树木重生系统：生成橡子下落动画
-            if (groundY > 0) {
+            //只有在循环模式下才触发树木重生系统
+            if (lumberjackTP != null && lumberjackTP.CycleMode && groundY > 0) {
                 SpawnTreeRegrowthAnimation(x, groundY, treeType);
             }
 

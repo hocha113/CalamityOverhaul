@@ -1,6 +1,5 @@
 ﻿using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -99,7 +98,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         private void PhaseGrowing() {
             //计算生长进度
             float progress = growthTimer / (float)GrowthDuration;
-            progress = EaseOutQuad(progress);
+            progress = VaultUtils.EaseOutQuad(progress);
 
             //更新视觉高度
             visualHeight = MaxVisualHeight * progress;
@@ -371,20 +370,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                    groundType == TileID.Crimsand ||
                    groundType == TileID.Ebonsand ||
                    groundType == TileID.Pearlsand;
-        }
-
-        /// <summary>
-        /// 检测是否可以在此位置种树(保留用于兼容)
-        /// </summary>
-        private static bool CanPlantTreeHere(int x, int y) {
-            return IsValidPlantPosition(x, y);
-        }
-
-        /// <summary>
-        /// 缓出二次方缓动函数
-        /// </summary>
-        private static float EaseOutQuad(float t) {
-            return 1f - (1f - t) * (1f - t);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {

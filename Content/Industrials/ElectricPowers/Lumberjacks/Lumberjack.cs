@@ -10,10 +10,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Lumberjack";
         internal static LocalizedText Text1;
         internal static LocalizedText Text2;
+        internal static LocalizedText CycleModeText;
+        internal static LocalizedText ClearModeText;
 
         public override void SetStaticDefaults() {
             Text1 = this.GetLocalization(nameof(Text1), () => "Excessive Quantity!");
             Text2 = this.GetLocalization(nameof(Text2), () => "Lack of Electricity!");
+            CycleModeText = this.GetLocalization(nameof(CycleModeText), () => "Cycle Mode");
+            ClearModeText = this.GetLocalization(nameof(ClearModeText), () => "Clear Mode");
         }
 
         public override void SetDefaults() {

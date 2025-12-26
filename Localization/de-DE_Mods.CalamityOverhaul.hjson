@@ -1492,11 +1492,16 @@ Items: {
 	Lumberjack: {
 		// Text1: Excessive Quantity!
 		// Text2: Lack of Electricity!
+		// CycleModeText: Cycle Mode
+		// ClearModeText: Clear Mode
 		// DisplayName: Lumberjack
 		/* Tooltip:
 			'''
 			Consumes power to harvest timber
 			Automatically chops down surrounding trees
+			Right-click to switch between Cycle Mode and Clear Mode
+			Cycle Mode continuously harvests trees and replants saplings
+			Clear Mode only harvests trees without replanting
 			''' */
 	}
 }

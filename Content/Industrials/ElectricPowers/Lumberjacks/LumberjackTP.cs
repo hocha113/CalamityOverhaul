@@ -22,6 +22,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         internal int consumeUE = 10;
         internal List<int> ArmActorIndices = new List<int>();
 
+        /// <summary>
+        /// 工作模式(true=循环模式，砍伐后重新种树 false=清理模式，只砍伐不种树)
+        /// </summary>
+        internal bool CycleMode = true;
+
+        //右键交互冷却
+        private int interactCooldown;
+
         public override void SetBattery() {
             DrawExtendMode = 1600;
         }
@@ -29,11 +37,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         public override void SendData(ModPacket data) {
             base.SendData(data);
             data.Write(BatteryPrompt);
+            data.Write(CycleMode);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
             BatteryPrompt = reader.ReadBoolean();
+            CycleMode = reader.ReadBoolean();
         }
 
         internal static bool IsArmActorValid(int actorIndex) {
@@ -59,6 +69,35 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
         }
 
+        /// <summary>
+        /// 切换工作模式
+        /// </summary>
+        public void ToggleMode() {
+            CycleMode = !CycleMode;
+
+            //生成模式指示器动画
+            Vector2 indicatorPos = CenterInWorld + new Vector2(0, -32);
+            int actorIndex = ActorLoader.NewActor<LumberjackModeIndicator>(indicatorPos, Vector2.Zero);
+            //0=循环模式(橡子) 1=清理模式(斧头)
+            ActorLoader.Actors[actorIndex].OnSpawn(CycleMode ? 0 : 1);
+
+            //同步数据
+            SendData();
+        }
+
+        public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            if (interactCooldown > 0) return false;
+
+            ToggleMode();
+            interactCooldown = 30;
+
+            //显示模式切换提示
+            string modeText = CycleMode ? Lumberjack.CycleModeText.Value : Lumberjack.ClearModeText.Value;
+            Color textColor = CycleMode ? Color.LimeGreen : Color.Orange;
+            CombatText.NewText(HitBox, textColor, modeText);
+            return true;
+        }
+
         public override void UpdateMachine() {
             consumeUE = 10;
 
@@ -67,6 +106,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
             if (dontSpawnArmTime > 0) {
                 dontSpawnArmTime--;
+            }
+            if (interactCooldown > 0) {
+                interactCooldown--;
             }
 
             //检查机械臂总数限制
