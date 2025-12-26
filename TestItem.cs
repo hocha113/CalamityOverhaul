@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -66,7 +67,6 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            ScenarioManager.Start<EternalBlazingNow>();
             return true;
         }
     }
