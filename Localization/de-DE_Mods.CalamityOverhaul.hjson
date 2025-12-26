@@ -8299,5 +8299,12 @@ QuestLogs: {
 			// QuestReward.Description: 2 Chests
 			// DetailedDescription: Tired of bending over to pick up loot everywhere? This device automatically collects nearby dropped items. It is a core component for building automated logistics and sorting systems, completely freeing your hands.
 		}
+
+		LumberjackQuest: {
+			// DisplayName: Timber Time
+			// Description: Obtain the Lumberjack
+			// QuestObjective.Description: Obtain the Lumberjack
+			// DetailedDescription: Wood is the cornerstone of industry and construction. Say goodbye to primitive axes; this machine consumes power to automate your tree farm, ensuring a continuous supply of timber.
+		}
 	}
 }

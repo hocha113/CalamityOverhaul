@@ -8265,5 +8265,12 @@ QuestLogs: {
 			QuestReward.Description: 2个箱子
 			DetailedDescription: 厌倦了弯腰拾取满地的战利品？这个装置能自动拾取周围的掉落物。它是构建自动化物流与整理系统的核心组件，彻底解放你的双手。
 		}
+
+		LumberjackQuest: {
+			DisplayName: 伐木时间
+			Description: 获得伐木者
+			QuestObjective.Description: 获得伐木者
+			DetailedDescription: 木材是工业与建筑的基石。告别原始的斧头，这台机器能通过消耗电力来自动化管理你的林场，确保持续不断的木材供应。
+		}
 	}
 }

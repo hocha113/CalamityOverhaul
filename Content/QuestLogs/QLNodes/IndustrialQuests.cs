@@ -1,5 +1,6 @@
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
 using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.Industrials.Generator.Thermal;
@@ -243,6 +244,37 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Collector>()) > 0;
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class LumberjackQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "伐木时间");
+            Description = this.GetLocalization(nameof(Description), () => "获得伐木者");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<Lumberjack>();
+            Position = new Vector2(0, 150);
+            AddParent<CollectorQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得伐木者"),
+                RequiredProgress = 1
+            });
+
+            AddReward(ItemID.LucyTheAxe);
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Lumberjack>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
