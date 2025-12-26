@@ -1,7 +1,9 @@
 ﻿using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
@@ -29,6 +31,40 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         //生长持续时间
         private const int GrowthDuration = 120;
 
+        //树木类型枚举(用于决定绘制风格)
+        private TreeVisualType treeVisualType;
+        //随机种子，用于生成一致的随机效果
+        private int randomSeed;
+        //树枝数据
+        private BranchData[] branches;
+        //叶片簇数据
+        private LeafClusterData[] leafClusters;
+
+        private enum TreeVisualType
+        {
+            Normal,     //普通树
+            Palm,       //棕榈树
+            Sakura,     //樱花树
+            Willow,     //柳树
+            Ash,        //灰烬树
+            Mushroom    //蘑菇
+        }
+
+        private struct BranchData
+        {
+            public float Height;        //分支高度比例
+            public float Angle;         //分支角度
+            public float Length;        //分支长度
+            public int Direction;       //方向(1右 -1左)
+        }
+
+        private struct LeafClusterData
+        {
+            public Vector2 Offset;      //相对偏移
+            public float Size;          //大小
+            public float Phase;         //动画相位
+        }
+
         public override void OnSpawn(params object[] args) {
             Width = 32;
             Height = 32;
@@ -46,6 +82,76 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             growthPhase = 0;
             particleTimer = 0;
             visualHeight = 0f;
+
+            //根据原始树木类型决定视觉风格
+            treeVisualType = originalTreeType switch {
+                TileID.PalmTree => TreeVisualType.Palm,
+                TileID.VanityTreeSakura => TreeVisualType.Sakura,
+                TileID.VanityTreeYellowWillow => TreeVisualType.Willow,
+                TileID.TreeAsh => TreeVisualType.Ash,
+                _ => TreeVisualType.Normal
+            };
+
+            //检查地面是否是蘑菇草
+            if (WorldGen.InWorld(targetTileX, targetTileY)) {
+                Tile groundTile = Main.tile[targetTileX, targetTileY];
+                if (groundTile.HasTile && groundTile.TileType == TileID.MushroomGrass) {
+                    treeVisualType = TreeVisualType.Mushroom;
+                }
+            }
+
+            //生成随机种子
+            randomSeed = targetTileX * 1000 + targetTileY;
+
+            //初始化树枝数据
+            InitializeBranches();
+
+            //初始化叶片簇数据
+            InitializeLeafClusters();
+        }
+
+        private void InitializeBranches() {
+            Random rand = new Random(randomSeed);
+            int branchCount = treeVisualType switch {
+                TreeVisualType.Palm => 0,
+                TreeVisualType.Willow => 8,
+                TreeVisualType.Mushroom => 0,
+                _ => rand.Next(4, 7)
+            };
+
+            branches = new BranchData[branchCount];
+            for (int i = 0; i < branchCount; i++) {
+                branches[i] = new BranchData {
+                    Height = 0.3f + (float)rand.NextDouble() * 0.5f,
+                    Angle = MathHelper.ToRadians(20f + (float)rand.NextDouble() * 40f),
+                    Length = 15f + (float)rand.NextDouble() * 25f,
+                    Direction = rand.Next(2) == 0 ? -1 : 1
+                };
+            }
+        }
+
+        private void InitializeLeafClusters() {
+            Random rand = new Random(randomSeed + 1);
+            int clusterCount = treeVisualType switch {
+                TreeVisualType.Palm => 8,
+                TreeVisualType.Sakura => 12,
+                TreeVisualType.Willow => 15,
+                TreeVisualType.Mushroom => 1,
+                TreeVisualType.Ash => 6,
+                _ => rand.Next(8, 12)
+            };
+
+            leafClusters = new LeafClusterData[clusterCount];
+            for (int i = 0; i < clusterCount; i++) {
+                float angle = MathHelper.TwoPi * i / clusterCount + (float)rand.NextDouble() * 0.5f;
+                float dist = 20f + (float)rand.NextDouble() * 30f;
+
+                leafClusters[i] = new LeafClusterData {
+                    Offset = new Vector2((float)Math.Cos(angle) * dist, (float)Math.Sin(angle) * dist * 0.6f - 20f),
+                    Size = 0.8f + (float)rand.NextDouble() * 0.4f,
+                    Phase = (float)rand.NextDouble() * MathHelper.TwoPi
+                };
+            }
         }
 
         public override void AI() {
@@ -375,50 +481,471 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
             if (growthPhase != 1) return false;
 
-            //绘制生长中的视觉效果(半透明的树木轮廓)
             Vector2 basePos = Center - Main.screenPosition;
+            float progress = visualHeight / MaxVisualHeight;
+            float time = Main.GlobalTimeWrappedHourly;
 
-            //绘制树干轮廓
-            float trunkWidth = 8f;
-            float currentHeight = visualHeight;
-
-            for (float h = 0; h < currentHeight; h += 4f) {
-                float heightRatio = h / MaxVisualHeight;
-                float widthAtHeight = trunkWidth * (1f - heightRatio * 0.3f);
-
-                Vector2 segmentPos = basePos + new Vector2(0, -h);
-                Color trunkColor = Color.SaddleBrown * 0.4f * (1f - heightRatio * 0.5f);
-
-                //简单的矩形表示树干
-                Rectangle rect = new Rectangle((int)(segmentPos.X - widthAtHeight / 2), (int)segmentPos.Y - 2, (int)widthAtHeight, 4);
-                spriteBatch.Draw(VaultAsset.placeholder2.Value, rect, trunkColor);
+            //根据树木类型绘制不同风格
+            switch (treeVisualType) {
+                case TreeVisualType.Palm:
+                    DrawPalmTree(spriteBatch, basePos, progress, time);
+                    break;
+                case TreeVisualType.Sakura:
+                    DrawSakuraTree(spriteBatch, basePos, progress, time);
+                    break;
+                case TreeVisualType.Willow:
+                    DrawWillowTree(spriteBatch, basePos, progress, time);
+                    break;
+                case TreeVisualType.Ash:
+                    DrawAshTree(spriteBatch, basePos, progress, time);
+                    break;
+                case TreeVisualType.Mushroom:
+                    DrawMushroom(spriteBatch, basePos, progress, time);
+                    break;
+                default:
+                    DrawNormalTree(spriteBatch, basePos, progress, time);
+                    break;
             }
 
-            //绘制树冠轮廓
-            if (currentHeight > MaxVisualHeight * 0.3f) {
-                float crownProgress = (currentHeight - MaxVisualHeight * 0.3f) / (MaxVisualHeight * 0.7f);
-                float crownSize = 40f * crownProgress;
-                Vector2 crownPos = basePos + new Vector2(0, -currentHeight + crownSize * 0.3f);
-
-                Color crownColor = Color.ForestGreen * 0.35f * crownProgress;
-
-                //绘制多层树冠
-                for (int layer = 0; layer < 3; layer++) {
-                    float layerSize = crownSize * (1f - layer * 0.25f);
-                    float layerOffset = layer * 15f;
-                    Vector2 layerPos = crownPos + new Vector2(0, layerOffset);
-
-                    Rectangle crownRect = new Rectangle(
-                        (int)(layerPos.X - layerSize),
-                        (int)(layerPos.Y - layerSize * 0.6f),
-                        (int)(layerSize * 2),
-                        (int)(layerSize * 1.2f)
-                    );
-                    spriteBatch.Draw(VaultAsset.placeholder2.Value, crownRect, crownColor);
-                }
-            }
+            //绘制生长光效
+            DrawGrowthGlow(spriteBatch, basePos, progress, time);
 
             return false;
         }
+
+        /// <summary>
+        /// 绘制普通树木
+        /// </summary>
+        private void DrawNormalTree(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float currentHeight = visualHeight;
+
+            //绘制树根
+            DrawTreeRoots(spriteBatch, basePos, progress, new Color(101, 67, 33));
+
+            //绘制树干(带有纹理感)
+            DrawTrunk(spriteBatch, basePos, currentHeight, progress, new Color(139, 90, 43), new Color(101, 67, 33));
+
+            //绘制树枝
+            foreach (var branch in branches) {
+                if (progress > branch.Height) {
+                    float branchProgress = (progress - branch.Height) / (1f - branch.Height);
+                    branchProgress = Math.Min(branchProgress * 2f, 1f);
+                    DrawBranch(spriteBatch, basePos, branch, currentHeight, branchProgress, new Color(120, 80, 40));
+                }
+            }
+
+            //绘制树冠
+            if (progress > 0.25f) {
+                float crownProgress = (progress - 0.25f) / 0.75f;
+                DrawLeafCrown(spriteBatch, basePos, currentHeight, crownProgress, time,
+                    new Color(34, 139, 34), new Color(50, 205, 50), new Color(0, 100, 0));
+            }
+        }
+
+        /// <summary>
+        /// 绘制棕榈树
+        /// </summary>
+        private void DrawPalmTree(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            float currentHeight = visualHeight;
+
+            //棕榈树干(弯曲的)
+            DrawPalmTrunk(spriteBatch, basePos, currentHeight, progress, new Color(160, 120, 80), new Color(120, 90, 60));
+
+            //棕榈叶(顶部扇形展开)
+            if (progress > 0.4f) {
+                float leafProgress = (progress - 0.4f) / 0.6f;
+                DrawPalmLeaves(spriteBatch, basePos, currentHeight, leafProgress, time);
+            }
+        }
+
+        /// <summary>
+        /// 绘制樱花树
+        /// </summary>
+        private void DrawSakuraTree(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            float currentHeight = visualHeight;
+
+            DrawTreeRoots(spriteBatch, basePos, progress, new Color(80, 50, 40));
+            DrawTrunk(spriteBatch, basePos, currentHeight, progress, new Color(120, 80, 60), new Color(80, 50, 40));
+
+            foreach (var branch in branches) {
+                if (progress > branch.Height) {
+                    float branchProgress = (progress - branch.Height) / (1f - branch.Height);
+                    branchProgress = Math.Min(branchProgress * 2f, 1f);
+                    DrawBranch(spriteBatch, basePos, branch, currentHeight, branchProgress, new Color(100, 70, 50));
+                }
+            }
+
+            //樱花花冠(粉色)
+            if (progress > 0.3f) {
+                float crownProgress = (progress - 0.3f) / 0.7f;
+                DrawLeafCrown(spriteBatch, basePos, currentHeight, crownProgress, time,
+                    new Color(255, 182, 193), new Color(255, 105, 180), new Color(255, 20, 147));
+
+                //飘落的花瓣
+                DrawFallingPetals(spriteBatch, basePos, currentHeight, crownProgress, time);
+            }
+        }
+
+        /// <summary>
+        /// 绘制柳树
+        /// </summary>
+        private void DrawWillowTree(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            float currentHeight = visualHeight;
+
+            DrawTreeRoots(spriteBatch, basePos, progress, new Color(90, 60, 30));
+            DrawTrunk(spriteBatch, basePos, currentHeight, progress, new Color(130, 100, 50), new Color(90, 70, 40));
+
+            //柳枝(下垂的)
+            if (progress > 0.35f) {
+                float branchProgress = (progress - 0.35f) / 0.65f;
+                DrawWillowBranches(spriteBatch, basePos, currentHeight, branchProgress, time);
+            }
+        }
+
+        /// <summary>
+        /// 绘制灰烬树
+        /// </summary>
+        private void DrawAshTree(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            float currentHeight = visualHeight;
+
+            //灰烬树干(暗灰色，带有裂纹)
+            DrawTrunk(spriteBatch, basePos, currentHeight, progress, new Color(60, 50, 50), new Color(40, 35, 35));
+
+            foreach (var branch in branches) {
+                if (progress > branch.Height) {
+                    float branchProgress = (progress - branch.Height) / (1f - branch.Height);
+                    branchProgress = Math.Min(branchProgress * 2f, 1f);
+                    DrawBranch(spriteBatch, basePos, branch, currentHeight, branchProgress, new Color(50, 45, 45));
+                }
+            }
+
+            //灰烬树冠(暗红色发光)
+            if (progress > 0.3f) {
+                float crownProgress = (progress - 0.3f) / 0.7f;
+                DrawAshCrown(spriteBatch, basePos, currentHeight, crownProgress, time);
+            }
+        }
+
+        /// <summary>
+        /// 绘制蘑菇
+        /// </summary>
+        private void DrawMushroom(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float currentHeight = visualHeight * 0.6f;
+
+            //蘑菇柄
+            float stemWidth = 12f + progress * 8f;
+            for (float h = 0; h < currentHeight; h += 3f) {
+                float heightRatio = h / currentHeight;
+                float width = stemWidth * (1f - heightRatio * 0.3f);
+
+                Vector2 pos = basePos + new Vector2(0, -h);
+                Color stemColor = Color.Lerp(new Color(200, 180, 160), new Color(180, 160, 140), heightRatio) * 0.7f * progress;
+
+                Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 2, (int)width, 4);
+                spriteBatch.Draw(pixel, rect, stemColor);
+            }
+
+            //蘑菇盖
+            if (progress > 0.3f) {
+                float capProgress = (progress - 0.3f) / 0.7f;
+                float capWidth = 60f * capProgress;
+                float capHeight = 30f * capProgress;
+                Vector2 capPos = basePos + new Vector2(0, -currentHeight);
+
+                //蘑菇盖渐变
+                for (int layer = 0; layer < 8; layer++) {
+                    float layerRatio = layer / 8f;
+                    float layerWidth = capWidth * (1f - layerRatio * 0.5f);
+                    float layerY = capPos.Y - capHeight * (1f - layerRatio);
+
+                    Color capColor = Color.Lerp(new Color(70, 130, 180), new Color(100, 149, 237), layerRatio) * 0.6f * capProgress;
+
+                    //添加发光斑点
+                    float glowPulse = (float)Math.Sin(time * 3f + layer) * 0.3f + 0.7f;
+                    if (layer % 2 == 0) {
+                        capColor = Color.Lerp(capColor, new Color(150, 200, 255) * glowPulse, 0.3f);
+                    }
+
+                    Rectangle capRect = new Rectangle((int)(capPos.X - layerWidth / 2), (int)layerY, (int)layerWidth, (int)(capHeight / 8f) + 2);
+                    spriteBatch.Draw(pixel, capRect, capColor);
+                }
+            }
+        }
+
+        #region 绘制辅助方法
+
+        private void DrawTreeRoots(SpriteBatch spriteBatch, Vector2 basePos, float progress, Color rootColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            if (progress < 0.1f) return;
+
+            float rootProgress = Math.Min(progress * 3f, 1f);
+            Random rand = new Random(randomSeed + 100);
+
+            for (int i = 0; i < 5; i++) {
+                float angle = MathHelper.ToRadians(-60f + i * 30f);
+                float length = (10f + (float)rand.NextDouble() * 15f) * rootProgress;
+                Vector2 rootEnd = basePos + new Vector2((float)Math.Cos(angle) * length, (float)Math.Sin(angle) * length * 0.5f + 5f);
+
+                DrawLine(spriteBatch, pixel, basePos + new Vector2(0, 3), rootEnd, rootColor * 0.5f * rootProgress, 3f);
+            }
+        }
+
+        private void DrawTrunk(SpriteBatch spriteBatch, Vector2 basePos, float currentHeight, float progress, Color trunkColor, Color darkColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float baseWidth = 10f;
+
+            for (float h = 0; h < currentHeight; h += 3f) {
+                float heightRatio = h / MaxVisualHeight;
+                float width = baseWidth * (1f - heightRatio * 0.4f);
+
+                //添加轻微的弯曲
+                float sway = (float)Math.Sin(heightRatio * MathHelper.Pi * 2f + randomSeed) * 3f * heightRatio;
+
+                Vector2 pos = basePos + new Vector2(sway, -h);
+
+                //树干纹理：交替深浅色
+                Color segmentColor = ((int)(h / 8f) % 2 == 0) ? trunkColor : darkColor;
+                segmentColor *= 0.6f * (1f - heightRatio * 0.3f);
+
+                Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 2, (int)width, 4);
+                spriteBatch.Draw(pixel, rect, segmentColor);
+
+                //添加树皮纹理
+                if ((int)(h / 12f) % 3 == 0 && width > 4f) {
+                    Rectangle barkRect = new Rectangle((int)(pos.X - width / 4), (int)pos.Y - 1, (int)(width / 2), 2);
+                    spriteBatch.Draw(pixel, barkRect, darkColor * 0.3f);
+                }
+            }
+        }
+
+        private void DrawPalmTrunk(SpriteBatch spriteBatch, Vector2 basePos, float currentHeight, float progress, Color trunkColor, Color darkColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float baseWidth = 8f;
+
+            for (float h = 0; h < currentHeight; h += 4f) {
+                float heightRatio = h / MaxVisualHeight;
+                float width = baseWidth * (1f - heightRatio * 0.5f);
+
+                //棕榈树特有的弯曲
+                float curve = (float)Math.Sin(heightRatio * MathHelper.PiOver2) * 20f;
+                Vector2 pos = basePos + new Vector2(curve, -h);
+
+                //环状纹理
+                Color segmentColor = ((int)(h / 6f) % 2 == 0) ? trunkColor : darkColor;
+                segmentColor *= 0.7f;
+
+                Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 2, (int)width, 5);
+                spriteBatch.Draw(pixel, rect, segmentColor);
+            }
+        }
+
+        private void DrawBranch(SpriteBatch spriteBatch, Vector2 basePos, BranchData branch, float treeHeight, float branchProgress, Color branchColor) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            float branchY = basePos.Y - treeHeight * branch.Height;
+            float sway = (float)Math.Sin(branch.Height * MathHelper.Pi * 2f + randomSeed) * 3f * branch.Height;
+            Vector2 branchStart = new Vector2(basePos.X + sway, branchY);
+
+            float actualLength = branch.Length * branchProgress;
+            float angle = branch.Direction > 0 ? -branch.Angle : (MathHelper.Pi + branch.Angle);
+
+            Vector2 branchEnd = branchStart + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * actualLength;
+
+            DrawLine(spriteBatch, pixel, branchStart, branchEnd, branchColor * 0.5f * branchProgress, 3f);
+
+            //分支末端的小枝
+            if (branchProgress > 0.5f) {
+                Vector2 twigEnd = branchEnd + new Vector2((float)Math.Cos(angle - 0.3f * branch.Direction), (float)Math.Sin(angle - 0.3f * branch.Direction)) * 8f;
+                DrawLine(spriteBatch, pixel, branchEnd, twigEnd, branchColor * 0.4f * branchProgress, 2f);
+            }
+        }
+
+        private void DrawLeafCrown(SpriteBatch spriteBatch, Vector2 basePos, float treeHeight, float crownProgress, float time,
+            Color leafColor1, Color leafColor2, Color leafColor3) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            Vector2 crownCenter = basePos + new Vector2(0, -treeHeight + 20f);
+            float maxSize = 50f * crownProgress;
+
+            foreach (var cluster in leafClusters) {
+                float swayX = (float)Math.Sin(time * 2f + cluster.Phase) * 3f;
+                float swayY = (float)Math.Cos(time * 1.5f + cluster.Phase) * 2f;
+
+                Vector2 clusterPos = crownCenter + cluster.Offset * crownProgress + new Vector2(swayX, swayY);
+                float clusterSize = maxSize * cluster.Size * 0.6f;
+
+                //多层叶片
+                for (int layer = 0; layer < 3; layer++) {
+                    float layerSize = clusterSize * (1f - layer * 0.25f);
+                    Color layerColor = layer switch {
+                        0 => leafColor3,
+                        1 => leafColor1,
+                        _ => leafColor2
+                    };
+                    layerColor *= 0.4f * crownProgress;
+
+                    Rectangle leafRect = new Rectangle(
+                        (int)(clusterPos.X - layerSize / 2),
+                        (int)(clusterPos.Y - layerSize / 3 + layer * 5f),
+                        (int)layerSize,
+                        (int)(layerSize * 0.6f)
+                    );
+                    spriteBatch.Draw(pixel, leafRect, layerColor);
+                }
+            }
+        }
+
+        private void DrawPalmLeaves(SpriteBatch spriteBatch, Vector2 basePos, float treeHeight, float leafProgress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            float curve = (float)Math.Sin(treeHeight / MaxVisualHeight * MathHelper.PiOver2) * 20f;
+            Vector2 crownPos = basePos + new Vector2(curve, -treeHeight);
+
+            int leafCount = 8;
+            for (int i = 0; i < leafCount; i++) {
+                float angle = MathHelper.TwoPi * i / leafCount - MathHelper.PiOver2;
+                float leafLength = 40f * leafProgress;
+
+                //叶片弯曲
+                float droop = 0.3f + (float)Math.Sin(time * 2f + i) * 0.1f;
+
+                for (float t = 0; t < 1f; t += 0.1f) {
+                    float segmentAngle = angle + droop * t;
+                    Vector2 segmentPos = crownPos + new Vector2(
+                        (float)Math.Cos(segmentAngle) * leafLength * t,
+                        (float)Math.Sin(segmentAngle) * leafLength * t + t * t * 15f
+                    );
+
+                    float segmentWidth = 6f * (1f - t * 0.7f);
+                    Color leafColor = Color.Lerp(new Color(34, 139, 34), new Color(50, 205, 50), t) * 0.5f * leafProgress;
+
+                    Rectangle rect = new Rectangle((int)(segmentPos.X - segmentWidth / 2), (int)segmentPos.Y - 2, (int)segmentWidth, 4);
+                    spriteBatch.Draw(pixel, rect, leafColor);
+                }
+            }
+        }
+
+        private void DrawWillowBranches(SpriteBatch spriteBatch, Vector2 basePos, float treeHeight, float branchProgress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            Vector2 crownPos = basePos + new Vector2(0, -treeHeight * 0.7f);
+
+            Random rand = new Random(randomSeed + 200);
+            int branchCount = 12;
+
+            for (int i = 0; i < branchCount; i++) {
+                float startAngle = MathHelper.TwoPi * i / branchCount + (float)rand.NextDouble() * 0.3f;
+                float startDist = 10f + (float)rand.NextDouble() * 15f;
+                Vector2 branchStart = crownPos + new Vector2((float)Math.Cos(startAngle), (float)Math.Sin(startAngle) * 0.3f - 0.5f) * startDist;
+
+                float branchLength = 50f + (float)rand.NextDouble() * 40f;
+                float sway = (float)Math.Sin(time * 1.5f + i * 0.5f) * 8f;
+
+                //绘制下垂的柳枝
+                for (float t = 0; t < 1f; t += 0.05f) {
+                    float dropY = t * t * branchLength;
+                    float swayX = sway * t;
+                    Vector2 pos = branchStart + new Vector2(swayX, dropY) * branchProgress;
+
+                    float width = 2f * (1f - t * 0.5f);
+                    Color color = Color.Lerp(new Color(154, 205, 50), new Color(107, 142, 35), t) * 0.5f * branchProgress;
+
+                    Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 1, (int)width, 3);
+                    spriteBatch.Draw(pixel, rect, color);
+                }
+            }
+        }
+
+        private void DrawAshCrown(SpriteBatch spriteBatch, Vector2 basePos, float treeHeight, float crownProgress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            Vector2 crownCenter = basePos + new Vector2(0, -treeHeight + 15f);
+
+            //发光的灰烬叶
+            foreach (var cluster in leafClusters) {
+                float pulse = (float)Math.Sin(time * 3f + cluster.Phase) * 0.3f + 0.7f;
+                Vector2 clusterPos = crownCenter + cluster.Offset * crownProgress;
+                float clusterSize = 30f * cluster.Size * crownProgress;
+
+                //暗红色底层
+                Color baseColor = new Color(80, 30, 30) * 0.5f * crownProgress;
+                Rectangle baseRect = new Rectangle(
+                    (int)(clusterPos.X - clusterSize / 2),
+                    (int)(clusterPos.Y - clusterSize / 3),
+                    (int)clusterSize,
+                    (int)(clusterSize * 0.6f)
+                );
+                spriteBatch.Draw(pixel, baseRect, baseColor);
+
+                //发光层
+                Color glowColor = new Color(255, 100, 50) * 0.3f * pulse * crownProgress;
+                Rectangle glowRect = new Rectangle(
+                    (int)(clusterPos.X - clusterSize * 0.3f),
+                    (int)(clusterPos.Y - clusterSize * 0.2f),
+                    (int)(clusterSize * 0.6f),
+                    (int)(clusterSize * 0.4f)
+                );
+                spriteBatch.Draw(pixel, glowRect, glowColor);
+            }
+        }
+
+        private void DrawFallingPetals(SpriteBatch spriteBatch, Vector2 basePos, float treeHeight, float progress, float time) {
+            if (progress < 0.5f) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Random rand = new Random(randomSeed + (int)(time * 10f) % 100);
+
+            int petalCount = (int)(8 * progress);
+            for (int i = 0; i < petalCount; i++) {
+                float fallProgress = ((time * 0.5f + i * 0.2f) % 1f);
+                float x = basePos.X + (float)Math.Sin(time * 2f + i) * 40f + rand.Next(-30, 30);
+                float y = basePos.Y - treeHeight + 50f + fallProgress * 150f;
+
+                float rotation = time * 3f + i;
+                float size = 3f + (float)Math.Sin(rotation) * 1f;
+
+                Color petalColor = new Color(255, 182, 193) * 0.6f * (1f - fallProgress * 0.5f);
+                Rectangle rect = new Rectangle((int)x, (int)y, (int)size, (int)size);
+                spriteBatch.Draw(pixel, rect, petalColor);
+            }
+        }
+
+        private void DrawGrowthGlow(SpriteBatch spriteBatch, Vector2 basePos, float progress, float time) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            float pulse = (float)Math.Sin(time * 4f) * 0.3f + 0.7f;
+            float glowSize = 30f + progress * 50f;
+
+            Color glowColor = treeVisualType switch {
+                TreeVisualType.Sakura => new Color(255, 150, 200),
+                TreeVisualType.Ash => new Color(255, 100, 50),
+                TreeVisualType.Mushroom => new Color(100, 150, 255),
+                _ => new Color(100, 255, 100)
+            };
+            glowColor *= 0.15f * pulse * progress;
+
+            //底部发光
+            Rectangle glowRect = new Rectangle(
+                (int)(basePos.X - glowSize / 2),
+                (int)(basePos.Y - 10),
+                (int)glowSize,
+                (int)(glowSize * 0.5f)
+            );
+            spriteBatch.Draw(pixel, glowRect, glowColor);
+        }
+
+        private static void DrawLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 start, Vector2 end, Color color, float thickness) {
+            Vector2 diff = end - start;
+            float length = diff.Length();
+            if (length < 1f) return;
+
+            float rotation = (float)Math.Atan2(diff.Y, diff.X);
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, rotation,
+                new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
+        }
+
+        #endregion
     }
 }
