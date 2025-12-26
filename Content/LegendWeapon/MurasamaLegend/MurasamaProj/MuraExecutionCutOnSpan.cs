@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.Trails;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -84,21 +83,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 return;
             }
 
-            Trail ??= new Trail([.. PosLists], (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
+            //Trail ??= new Trail([.. PosLists], (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
 
-            Effect effect = EffectLoader.GradientTrail.Value;
-            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
-            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
-            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
-            effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uGradient"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+            //Effect effect = EffectLoader.GradientTrail.Value;
+            //effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            //effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            //effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            //effect.Parameters["udissolveS"].SetValue(1f);
+            //effect.Parameters["uBaseImage"].SetValue(CWRAsset.Placeholder_White.Value);
+            //effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
+            //effect.Parameters["uGradient"].SetValue(CWRAsset.Placeholder_White.Value);
+            //effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
-            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-            Trail?.DrawTrail(effect);
-            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            //Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            //Trail?.DrawTrail(effect);
+            //Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 }

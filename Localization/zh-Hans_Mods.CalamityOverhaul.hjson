@@ -1915,6 +1915,9 @@ Projectiles: {
 	TransferItemProj.DisplayName: 转移中的物品
 	FrostBlizzardField.DisplayName: 寒霜暴风雪
 	FrostNovaOrb.DisplayName: 冰霜新星
+	MuraDimensionSlash.DisplayName: 次元斩
+	MuraSlashArc.DisplayName: 次元斩
+	MuraSlashLine.DisplayName: 次元斩
 }
 
 Configs: {

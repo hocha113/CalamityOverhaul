@@ -1923,6 +1923,9 @@ Projectiles: {
 	// TransferItemProj.DisplayName: Items In Transit
 	// FrostBlizzardField.DisplayName: Frost Blizzard Field
 	// FrostNovaOrb.DisplayName: Frost Nova Orb
+	// MuraDimensionSlash.DisplayName: Mura Dimension Slash
+	// MuraSlashArc.DisplayName: Mura Slash Arc
+	// MuraSlashLine.DisplayName: Mura Slash Line
 }
 
 Configs: {
