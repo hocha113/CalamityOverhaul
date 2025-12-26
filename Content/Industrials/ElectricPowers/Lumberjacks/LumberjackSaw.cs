@@ -210,8 +210,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             if (particleTimer % spawnRate == 0) {
                 Vector2 particleVel = velocity * 0.2f + Main.rand.NextVector2Circular(2, 2);
                 Dust dust = Dust.NewDustDirect(Center - Vector2.One * 8, 16, 16,
-                    DustID.Electric, particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
-                dust.noGravity = true;
+                    DustID.YellowTorch, particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
                 dust.fadeIn = 1.2f;
             }
         }
