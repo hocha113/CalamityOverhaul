@@ -1,114 +1,207 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// È«ÉíÁ¢»æÑİ³ö»ùÀà
-    /// ÓÃÓÚÖÆ×÷´ø¶¯»­Ğ§¹ûµÄÈ«ÉíÁ¢»æ£¬Ö§³Ö±äÉ«¡¢¶¶¶¯µÈÑİ³öĞ§¹û
-    /// ¿ÉÒÔ¿ØÖÆ¶Ô»°¿òµÄÍÆ½øĞĞÎª
+    /// å…¨èº«ç«‹ç»˜æ¼”å‡ºåŸºç±»
+    /// ç”¨äºåˆ¶ä½œå¤æ‚ç‰¹æ•ˆçš„å…¨èº«ç«‹ç»˜ï¼Œæ”¯æŒå˜è‰²ã€æ·¡å…¥æ·¡å‡ºå’Œæ¼”å‡ºæ•ˆæœ
+    /// å¯ä»¥æ§åˆ¶å¯¹è¯æ¡†çš„æ¨è¿›è¡Œä¸º
     /// </summary>
-    public abstract class FullBodyPortraitBase
+    public abstract class FullBodyPortraitBase : VaultType<FullBodyPortraitBase>
     {
+        #region æ¼”å‡ºé˜¶æ®µæšä¸¾
+
         /// <summary>
-        /// Á¢»æ±êÊ¶·û
+        /// æ¼”å‡ºé˜¶æ®µæšä¸¾ï¼Œå­ç±»å¯ç»§æ‰¿æ‰©å±•
+        /// </summary>
+        public enum PerformancePhase
+        {
+            /// <summary>
+            /// æœªæ¿€æ´»
+            /// </summary>
+            Inactive,
+            /// <summary>
+            /// ç­‰å¾…å¯¹è¯æ¡†å‡†å¤‡
+            /// </summary>
+            WaitingDialogue,
+            /// <summary>
+            /// æ·¡å…¥é˜¶æ®µ
+            /// </summary>
+            FadeIn,
+            /// <summary>
+            /// ä¿æŒæ˜¾ç¤º
+            /// </summary>
+            Hold,
+            /// <summary>
+            /// æ·¡å‡ºé˜¶æ®µ
+            /// </summary>
+            FadeOut,
+            /// <summary>
+            /// è‡ªå®šä¹‰æ¼”å‡º(å­ç±»æ‰©å±•)
+            /// </summary>
+            Custom
+        }
+
+        #endregion
+
+        #region åŸºç¡€å±æ€§
+
+        /// <summary>
+        /// ç«‹ç»˜æ ‡è¯†ç¬¦
         /// </summary>
         public abstract string PortraitKey { get; }
 
         /// <summary>
-        /// Á¢»æÊÇ·ñ¼¤»î
+        /// ç«‹ç»˜æ˜¯å¦æ¿€æ´»
         /// </summary>
         public bool Active { get; protected set; }
 
         /// <summary>
-        /// Ä¿±êµ­Èëµ­³öÖµ(0-1)
+        /// ç›®æ ‡æ·¡å…¥æ·¡å‡ºå€¼(0åˆ°1)
         /// </summary>
         public float TargetFade { get; set; }
 
         /// <summary>
-        /// µ±Ç°µ­Èëµ­³öÖµ(0-1)
+        /// å½“å‰æ·¡å…¥æ·¡å‡ºå€¼(0åˆ°1)
         /// </summary>
         public float CurrentFade { get; protected set; }
 
         /// <summary>
-        /// µ­Èëµ­³öËÙ¶È
+        /// æ·¡å…¥æ·¡å‡ºé€Ÿåº¦
         /// </summary>
         protected virtual float FadeSpeed => 0.08f;
 
         /// <summary>
-        /// ÊÇ·ñ×èÖ¹¶Ô»°¿òÍÆ½øµ½ÏÂÒ»¾ä
+        /// æ˜¯å¦é˜»æ­¢å¯¹è¯æ¡†æ¨è¿›åˆ°ä¸‹ä¸€å¥
         /// </summary>
         public bool BlockDialogueAdvance { get; protected set; }
 
         /// <summary>
-        /// ÊÇ·ñ×èÖ¹¶Ô»°¿ò¹Ø±Õ
+        /// æ˜¯å¦é˜»æ­¢å¯¹è¯æ¡†å…³é—­
         /// </summary>
         public bool BlockDialogueClose { get; protected set; }
 
         /// <summary>
-        /// ¹ØÁªµÄ¶Ô»°¿òÊµÀı
+        /// æ‰€å±çš„å¯¹è¯æ¡†å®ä¾‹
         /// </summary>
         protected DialogueBoxBase ownerDialogue;
 
         /// <summary>
-        /// Á¢»æÎ»ÖÃ
+        /// ç«‹ç»˜ä½ç½®
         /// </summary>
         protected Vector2 position;
 
         /// <summary>
-        /// Á¢»æËõ·Å
+        /// ç«‹ç»˜ç¼©æ”¾
         /// </summary>
         protected float scale = 1f;
 
         /// <summary>
-        /// Á¢»æĞı×ª
+        /// ç«‹ç»˜æ—‹è½¬
         /// </summary>
         protected float rotation;
 
         /// <summary>
-        /// Á¢»æÑÕÉ«
+        /// ç»˜åˆ¶é¢œè‰²
         /// </summary>
         protected Color drawColor = Color.White;
 
         /// <summary>
-        /// ÄÚ²¿¼ÆÊ±Æ÷£¬¿ÉÓÃÓÚ¶¯»­
+        /// å†…éƒ¨è®¡æ—¶å™¨ï¼Œç”¨äºåŠ¨ç”»
         /// </summary>
         protected int timer;
 
         /// <summary>
-        /// ³õÊ¼»¯Á¢»æ
+        /// å½“å‰æ¼”å‡ºé˜¶æ®µ
         /// </summary>
-        /// <param name="dialogue">¹ØÁªµÄ¶Ô»°¿ò</param>
+        protected PerformancePhase currentPhase = PerformancePhase.Inactive;
+
+        /// <summary>
+        /// å½“å‰å¯¹è¯ç´¢å¼•(ç”¨äºè¿½è¸ªå¯¹è¯è¿›åº¦)
+        /// </summary>
+        protected int dialogueIndex;
+
+        /// <summary>
+        /// æ˜¯å¦å¯ç”¨è‡ªåŠ¨å¯¹è¯è”åŠ¨
+        /// </summary>
+        protected virtual bool AutoDialogueSync => true;
+
+        #endregion
+
+        #region æ¼”å‡ºé…ç½®
+
+        /// <summary>
+        /// æ·¡å…¥æŒç»­å¸§æ•°
+        /// </summary>
+        protected virtual float FadeInDuration => 60f;
+
+        /// <summary>
+        /// æ·¡å‡ºæŒç»­å¸§æ•°
+        /// </summary>
+        protected virtual float FadeOutDuration => 45f;
+
+        /// <summary>
+        /// é˜¶æ®µè¿›åº¦è®¡æ—¶å™¨
+        /// </summary>
+        protected float phaseProgress;
+
+        #endregion
+
+        #region ç”Ÿå‘½å‘¨æœŸ
+
+        protected sealed override void VaultRegister() {
+            DialogueBoxBase.RegisterFullBodyPortrait(this);
+        }
+
+        public sealed override void VaultSetup() {
+            SetStaticDefaults();
+        }
+
+        /// <summary>
+        /// åˆå§‹åŒ–ç«‹ç»˜
+        /// </summary>
+        /// <param name="dialogue">æ‰€å±çš„å¯¹è¯æ¡†</param>
         public virtual void Initialize(DialogueBoxBase dialogue) {
             ownerDialogue = dialogue;
             Active = true;
             TargetFade = 0f;
             CurrentFade = 0f;
             timer = 0;
+            dialogueIndex = 0;
+            phaseProgress = 0f;
             BlockDialogueAdvance = false;
             BlockDialogueClose = false;
+            currentPhase = PerformancePhase.Inactive;
             OnInitialize();
         }
 
         /// <summary>
-        /// Æô¶¯Á¢»æÑİ³ö
+        /// å¼€å§‹ç«‹ç»˜æ¼”å‡º
         /// </summary>
         public virtual void StartPerformance() {
+            currentPhase = PerformancePhase.WaitingDialogue;
+            phaseProgress = 0f;
             TargetFade = 1f;
             OnStartPerformance();
         }
 
         /// <summary>
-        /// ½áÊøÁ¢»æÑİ³ö
+        /// ç»“æŸç«‹ç»˜æ¼”å‡º
         /// </summary>
         public virtual void EndPerformance() {
             TargetFade = 0f;
+            if (currentPhase != PerformancePhase.Custom) {
+                currentPhase = PerformancePhase.FadeOut;
+                phaseProgress = 0f;
+            }
             OnEndPerformance();
         }
 
         /// <summary>
-        /// ¸üĞÂÁ¢»æ×´Ì¬
+        /// æ›´æ–°ç«‹ç»˜çŠ¶æ€
         /// </summary>
         public virtual void Update() {
             if (!Active) {
@@ -117,7 +210,10 @@ namespace CalamityOverhaul.Content.ADV
 
             timer++;
 
-            //µ­Èëµ­³ö
+            //æ›´æ–°æ¼”å‡ºé˜¶æ®µ
+            UpdatePhase();
+
+            //æ·¡å…¥æ·¡å‡º
             if (CurrentFade < TargetFade) {
                 CurrentFade += FadeSpeed;
                 if (CurrentFade > TargetFade) {
@@ -131,9 +227,10 @@ namespace CalamityOverhaul.Content.ADV
                 }
             }
 
-            //µ­³öÍê³ÉºóÍ£ÓÃ
-            if (CurrentFade <= 0f && TargetFade <= 0f) {
+            //æ·¡å‡ºå®Œæˆååœç”¨
+            if (CurrentFade <= 0f && TargetFade <= 0f && currentPhase == PerformancePhase.FadeOut) {
                 Active = false;
+                currentPhase = PerformancePhase.Inactive;
                 OnDeactivate();
                 return;
             }
@@ -142,10 +239,56 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// »æÖÆÁ¢»æ
+        /// æ›´æ–°æ¼”å‡ºé˜¶æ®µ
         /// </summary>
-        /// <param name="spriteBatch">»æÖÆÅú´Î</param>
-        /// <param name="dialogueAlpha">¶Ô»°¿òµ±Ç°Í¸Ã÷¶È</param>
+        protected virtual void UpdatePhase() {
+            switch (currentPhase) {
+                case PerformancePhase.WaitingDialogue:
+                    if (ownerDialogue != null && ownerDialogue.showProgress >= 1f) {
+                        TransitionToPhase(PerformancePhase.FadeIn);
+                    }
+                    break;
+
+                case PerformancePhase.FadeIn:
+                    phaseProgress++;
+                    if (phaseProgress >= FadeInDuration) {
+                        TransitionToPhase(PerformancePhase.Hold);
+                    }
+                    else {
+                        TargetFade = phaseProgress / FadeInDuration;
+                    }
+                    break;
+
+                case PerformancePhase.Hold:
+                    TargetFade = 1f;
+                    break;
+
+                case PerformancePhase.FadeOut:
+                    phaseProgress++;
+                    TargetFade = Math.Max(0f, 1f - phaseProgress / FadeOutDuration);
+                    break;
+
+                case PerformancePhase.Custom:
+                    OnCustomPhaseUpdate();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// åˆ‡æ¢åˆ°æŒ‡å®šæ¼”å‡ºé˜¶æ®µ
+        /// </summary>
+        protected virtual void TransitionToPhase(PerformancePhase newPhase) {
+            var oldPhase = currentPhase;
+            currentPhase = newPhase;
+            phaseProgress = 0f;
+            OnPhaseTransition(oldPhase, newPhase);
+        }
+
+        /// <summary>
+        /// ç»˜åˆ¶ç«‹ç»˜
+        /// </summary>
+        /// <param name="spriteBatch">ç²¾çµæ‰¹æ¬¡</param>
+        /// <param name="dialogueAlpha">å¯¹è¯æ¡†å½“å‰é€æ˜åº¦</param>
         public virtual void Draw(SpriteBatch spriteBatch, float dialogueAlpha) {
             if (!Active || CurrentFade <= 0.01f) {
                 return;
@@ -154,39 +297,106 @@ namespace CalamityOverhaul.Content.ADV
             OnDraw(spriteBatch, dialogueAlpha * CurrentFade);
         }
 
+        #endregion
+
+        #region å¯¹è¯è”åŠ¨
+
         /// <summary>
-        /// ÉèÖÃÁ¢»æ×èÖ¹¶Ô»°ÍÆ½ø
+        /// å½“å¯¹è¯æ¨è¿›æ—¶è°ƒç”¨(ç”±å¯¹è¯æ¡†è‡ªåŠ¨è§¦å‘)
         /// </summary>
-        /// <param name="block">ÊÇ·ñ×èÖ¹</param>
+        public virtual void OnDialogueAdvance() {
+            dialogueIndex++;
+            OnDialogueAdvanceInternal(dialogueIndex);
+        }
+
+        /// <summary>
+        /// å¯¹è¯æ¨è¿›å†…éƒ¨å¤„ç†ï¼Œå­ç±»é‡å†™æ­¤æ–¹æ³•å®ç°ç«‹ç»˜åˆ‡æ¢ç­‰
+        /// </summary>
+        protected virtual void OnDialogueAdvanceInternal(int index) { }
+
+        /// <summary>
+        /// å½“å¯¹è¯å®Œæˆæ—¶è°ƒç”¨
+        /// </summary>
+        public virtual void OnDialogueComplete() {
+            OnDialogueCompleteInternal();
+        }
+
+        /// <summary>
+        /// å¯¹è¯å®Œæˆå†…éƒ¨å¤„ç†
+        /// </summary>
+        protected virtual void OnDialogueCompleteInternal() { }
+
+        #endregion
+
+        #region æ§åˆ¶æ–¹æ³•
+
+        /// <summary>
+        /// è®¾ç½®æ˜¯å¦é˜»æ­¢å¯¹è¯æ¨è¿›
+        /// </summary>
+        /// <param name="block">æ˜¯å¦é˜»æ­¢</param>
         protected void SetBlockAdvance(bool block) {
             BlockDialogueAdvance = block;
         }
 
         /// <summary>
-        /// ÉèÖÃÁ¢»æ×èÖ¹¶Ô»°¹Ø±Õ
+        /// è®¾ç½®æ˜¯å¦é˜»æ­¢å¯¹è¯å…³é—­
         /// </summary>
-        /// <param name="block">ÊÇ·ñ×èÖ¹</param>
+        /// <param name="block">æ˜¯å¦é˜»æ­¢</param>
         protected void SetBlockClose(bool block) {
             BlockDialogueClose = block;
         }
 
         /// <summary>
-        /// ²¥·ÅÕğ¶¯Ğ§¹û
+        /// è¿›å…¥è‡ªå®šä¹‰æ¼”å‡ºé˜¶æ®µ
         /// </summary>
-        /// <param name="intensity">Õğ¶¯Ç¿¶È</param>
-        /// <param name="duration">³ÖĞøÊ±¼ä(Ö¡)</param>
-        protected void PlayShake(float intensity, int duration) {
-            shakeIntensity = intensity;
-            shakeDuration = duration;
-            shakeTimer = 0;
+        protected void EnterCustomPhase() {
+            TransitionToPhase(PerformancePhase.Custom);
         }
+
+        /// <summary>
+        /// é€€å‡ºè‡ªå®šä¹‰æ¼”å‡ºé˜¶æ®µ
+        /// </summary>
+        /// <param name="nextPhase">ä¸‹ä¸€é˜¶æ®µ</param>
+        protected void ExitCustomPhase(PerformancePhase nextPhase = PerformancePhase.Hold) {
+            if (currentPhase == PerformancePhase.Custom) {
+                TransitionToPhase(nextPhase);
+            }
+        }
+
+        /// <summary>
+        /// å¼ºåˆ¶ç»“æŸæ¼”å‡ºå¹¶åœç”¨
+        /// </summary>
+        protected void ForceDeactivate() {
+            Active = false;
+            currentPhase = PerformancePhase.Inactive;
+            CurrentFade = 0f;
+            TargetFade = 0f;
+            SetBlockAdvance(false);
+            SetBlockClose(false);
+            OnDeactivate();
+        }
+
+        #endregion
+
+        #region éœ‡åŠ¨æ•ˆæœ
 
         private float shakeIntensity;
         private int shakeDuration;
         private int shakeTimer;
 
         /// <summary>
-        /// »ñÈ¡Õğ¶¯Æ«ÒÆ
+        /// æ’­æ”¾éœ‡åŠ¨æ•ˆæœ
+        /// </summary>
+        /// <param name="intensity">éœ‡åŠ¨å¼ºåº¦</param>
+        /// <param name="duration">æŒç»­æ—¶é—´(å¸§)</param>
+        protected void PlayShake(float intensity, int duration) {
+            shakeIntensity = intensity;
+            shakeDuration = duration;
+            shakeTimer = 0;
+        }
+
+        /// <summary>
+        /// è·å–éœ‡åŠ¨åç§»
         /// </summary>
         protected Vector2 GetShakeOffset() {
             if (shakeTimer >= shakeDuration) {
@@ -200,39 +410,51 @@ namespace CalamityOverhaul.Content.ADV
             return new Vector2(offsetX, offsetY);
         }
 
-        #region Ğé·½·¨¹©×ÓÀàÖØĞ´
+        #endregion
+
+        #region é’©å­æ–¹æ³•ï¼Œä¾›å­ç±»é‡å†™
 
         /// <summary>
-        /// ³õÊ¼»¯Ê±µ÷ÓÃ
+        /// åˆå§‹åŒ–æ—¶è°ƒç”¨
         /// </summary>
         protected virtual void OnInitialize() { }
 
         /// <summary>
-        /// ¿ªÊ¼Ñİ³öÊ±µ÷ÓÃ
+        /// å¼€å§‹æ¼”å‡ºæ—¶è°ƒç”¨
         /// </summary>
         protected virtual void OnStartPerformance() { }
 
         /// <summary>
-        /// ½áÊøÑİ³öÊ±µ÷ÓÃ
+        /// ç»“æŸæ¼”å‡ºæ—¶è°ƒç”¨
         /// </summary>
         protected virtual void OnEndPerformance() { }
 
         /// <summary>
-        /// Ã¿Ö¡¸üĞÂÊ±µ÷ÓÃ
+        /// æ¯å¸§æ›´æ–°æ—¶è°ƒç”¨
         /// </summary>
         protected virtual void OnUpdate() { }
 
         /// <summary>
-        /// »æÖÆÊ±µ÷ÓÃ
+        /// ç»˜åˆ¶æ—¶è°ƒç”¨
         /// </summary>
-        /// <param name="spriteBatch">»æÖÆÅú´Î</param>
-        /// <param name="alpha">×îÖÕÍ¸Ã÷¶È(ÒÑ°üº¬µ­Èëµ­³ö)</param>
+        /// <param name="spriteBatch">ç²¾çµæ‰¹æ¬¡</param>
+        /// <param name="alpha">æœ€ç»ˆé€æ˜åº¦(å·²åŒ…å«æ·¡å…¥æ·¡å‡º)</param>
         protected abstract void OnDraw(SpriteBatch spriteBatch, float alpha);
 
         /// <summary>
-        /// Í£ÓÃÊ±µ÷ÓÃ
+        /// åœç”¨æ—¶è°ƒç”¨
         /// </summary>
         protected virtual void OnDeactivate() { }
+
+        /// <summary>
+        /// é˜¶æ®µåˆ‡æ¢æ—¶è°ƒç”¨
+        /// </summary>
+        protected virtual void OnPhaseTransition(PerformancePhase oldPhase, PerformancePhase newPhase) { }
+
+        /// <summary>
+        /// è‡ªå®šä¹‰é˜¶æ®µæ›´æ–°(éœ€è¦å­ç±»å®ç°)
+        /// </summary>
+        protected virtual void OnCustomPhaseUpdate() { }
 
         #endregion
     }

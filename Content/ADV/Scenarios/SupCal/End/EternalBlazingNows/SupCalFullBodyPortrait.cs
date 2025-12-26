@@ -1,46 +1,47 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
     /// <summary>
-    /// ÖÁ×ğÔÖ¶òÅ®Î×È«ÉíÁ¢»æÑİ³ö
-    /// ÓÃÓÚÅ®Î×¸æ±ğ³¡¾°£¬´øÓĞºìÉ«µ­ÈëĞ§¹ûºÍ×îÖÕÈ¼ÉÕÏûÊ§Ñİ³ö
+    /// è‡³å°Šç¾å„å¥³å·«å…¨èº«ç«‹ç»˜æ¼”å‡º
+    /// ç”¨äºå¥³å·«å‘Šåˆ«åœºæ™¯ï¼Œå¸¦æœ‰çº¢è‰²æ·¡å…¥æ•ˆæœå’Œæœ€ç»ˆç‡ƒçƒ§æ¶ˆå¤±æ¼”å‡º
     /// </summary>
     internal class SupCalFullBodyPortrait : FullBodyPortraitBase
     {
         public override string PortraitKey => "SupremeCalamitasFullBody";
 
-        //Ñİ³ö×´Ì¬
-        private enum PerformanceState
-        {
-            Inactive,         //Î´¼¤»î
-            WaitingDialogue,  //µÈ´ı¶Ô»°¿òµ­Èë
-            PortraitFadeIn,   //Á¢»æµ­Èë
-            Hold,             //±£³ÖÏÔÊ¾
-            BurningDissolve   //È¼ÉÕÏûÊ§
-        }
+        #region é…ç½®
 
-        private PerformanceState currentState = PerformanceState.Inactive;
+        //æ·¡å…¥æŒç»­æ—¶é—´(å¸§)
+        protected override float FadeInDuration => 120f;
 
-        //µ­Èë²ÎÊı
-        private float fadeInProgress = 0f;
-        private const float FadeInDuration = 120f; //Á¢»æµ­Èë³ÖĞøÊ±¼ä(Ö¡)
+        //åœ¨ç¬¬å‡ å¥å¯¹è¯æ—¶åˆ‡æ¢åˆ°å¾®ç¬‘ç«‹ç»˜
+        private const int SmilePortraitDialogueIndex = 10;
 
-        //È¼ÉÕÏûÊ§²ÎÊı
+        //ç‡ƒçƒ§æ¶ˆå¤±æŒç»­æ—¶é—´(å¸§)
+        private const float BurnDuration = 180f;
+
+        //ç«‹ç»˜åˆ‡æ¢æŒç»­æ—¶é—´(å¸§)
+        private const float PortraitTransitionDuration = 30f;
+
+        protected override float FadeSpeed => 0.05f;
+
+        #endregion
+
+        #region çŠ¶æ€
+
+        //ç‡ƒçƒ§æ¶ˆå¤±å‚æ•°
         private float burnProgress = 0f;
-        private const float BurnDuration = 180f; //È¼ÉÕÏûÊ§³ÖĞøÊ±¼ä(Ö¡)
-        private float burnHeight = 0f; //È¼ÉÕ¸ß¶È£¨´ÓÏÂÍùÉÏ£¬0-1£©
+        private float burnHeight = 0f;
         private float fireAnimationTimer = 0f;
 
-        //Á¢»æÇĞ»»
-        private int dialogueCounter = 0; //¶Ô»°¼ÆÊıÆ÷
-        private bool useSmilePortrait = false; //ÊÇ·ñÊ¹ÓÃÎ¢Ğ¦Á¢»æ
-        private float portraitTransitionProgress = 0f; //Á¢»æÇĞ»»½ø¶È
-        private const float PortraitTransitionDuration = 30f; //Á¢»æÇĞ»»³ÖĞøÊ±¼ä
+        //ç«‹ç»˜åˆ‡æ¢
+        private bool useSmilePortrait = false;
+        private float portraitTransitionProgress = 0f;
 
-        //»ğÑæÁ£×ÓÏµÍ³
+        //ç«ç„°ç²’å­ç³»ç»Ÿ
         private class FireParticle
         {
             public Vector2 Position;
@@ -57,44 +58,63 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private readonly System.Collections.Generic.List<FireParticle> fireParticles = new();
         private int particleSpawnTimer = 0;
 
-        //ÑÕÉ«¸²¸Ç
+        //é¢œè‰²è¦†ç›–
         private Color currentTint = Color.White;
 
-        protected override float FadeSpeed => 0.05f;
+        #endregion
+
+        #region ç”Ÿå‘½å‘¨æœŸ
 
         protected override void OnInitialize() {
-            currentState = PerformanceState.Inactive;
-            fadeInProgress = 0f;
             burnProgress = 0f;
             burnHeight = 0f;
             fireAnimationTimer = 0f;
             currentTint = Color.White;
             fireParticles.Clear();
             particleSpawnTimer = 0;
-            dialogueCounter = 0;
             useSmilePortrait = false;
             portraitTransitionProgress = 0f;
         }
 
         protected override void OnStartPerformance() {
-            //Ê×ÏÈµÈ´ı¶Ô»°¿òÍêÈ«µ­Èë
-            currentState = PerformanceState.WaitingDialogue;
-            fadeInProgress = 0f;
             SetBlockAdvance(false);
         }
 
         protected override void OnEndPerformance() {
-            //´¥·¢È¼ÉÕÏûÊ§Ñİ³ö
-            if (currentState != PerformanceState.BurningDissolve) {
+            //è§¦å‘ç‡ƒçƒ§æ¶ˆå¤±æ¼”å‡º
+            if (currentPhase != PerformancePhase.Custom) {
                 StartBurningDissolve();
             }
         }
 
+        protected override void OnDeactivate() {
+            fireParticles.Clear();
+            SetBlockAdvance(false);
+            SetBlockClose(false);
+        }
+
+        #endregion
+
+        #region å¯¹è¯è”åŠ¨
+
+        protected override void OnDialogueAdvanceInternal(int index) {
+            //åˆ°è¾¾æŒ‡å®šå¯¹è¯å¥æ•°æ—¶åˆ‡æ¢åˆ°å¾®ç¬‘ç«‹ç»˜
+            if (index >= SmilePortraitDialogueIndex && !useSmilePortrait) {
+                useSmilePortrait = true;
+                portraitTransitionProgress = 0f;
+                StartBurningDissolve();
+            }
+        }
+
+        #endregion
+
+        #region ç‡ƒçƒ§æ¼”å‡º
+
         /// <summary>
-        /// Æô¶¯È¼ÉÕÏûÊ§Ñİ³ö
+        /// å¯åŠ¨ç‡ƒçƒ§æ¶ˆå¤±æ¼”å‡º
         /// </summary>
         public void StartBurningDissolve() {
-            currentState = PerformanceState.BurningDissolve;
+            EnterCustomPhase();
             burnProgress = 0f;
             burnHeight = 0f;
             fireParticles.Clear();
@@ -102,121 +122,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             SetBlockClose(true);
         }
 
-        /// <summary>
-        /// µ±¶Ô»°¿òÍÆ½øµ½ÏÂÒ»¾äÊ±µ÷ÓÃ
-        /// </summary>
-        public void OnDialogueAdvance() {
-            dialogueCounter++;
-
-            //µÚ11¾ä¶Ô»°¿ªÊ¼ÇĞ»»µ½Î¢Ğ¦Á¢»æ
-            if (dialogueCounter >= 10 && !useSmilePortrait) {
-                useSmilePortrait = true;
-                portraitTransitionProgress = 0f;
-            }
-        }
-
-        protected override void OnUpdate() {
-            fireAnimationTimer += 0.12f;
-            if (fireAnimationTimer > 16f) //16Ö¡Ñ­»·
-            {
-                fireAnimationTimer -= 16f;
-            }
-
-            //¸üĞÂÁ¢»æÇĞ»»
-            if (useSmilePortrait && portraitTransitionProgress < 1f) {
-                portraitTransitionProgress += 1f / PortraitTransitionDuration;
-                if (portraitTransitionProgress > 1f) {
-                    portraitTransitionProgress = 1f;
-                }
-            }
-
-            switch (currentState) {
-                case PerformanceState.Inactive:
-                    break;
-
-                case PerformanceState.WaitingDialogue:
-                    UpdateWaitingDialogue();
-                    break;
-
-                case PerformanceState.PortraitFadeIn:
-                    UpdatePortraitFadeIn();
-                    break;
-
-                case PerformanceState.Hold:
-                    UpdateHold();
-                    break;
-
-                case PerformanceState.BurningDissolve:
-                    UpdateBurningDissolve();
-                    break;
-            }
-
-            scale = 1.4f;
+        protected override void OnCustomPhaseUpdate() {
+            UpdateBurningDissolve();
         }
 
         /// <summary>
-        /// µÈ´ı¶Ô»°¿òÍêÈ«µ­Èë
-        /// </summary>
-        private void UpdateWaitingDialogue() {
-            if (ownerDialogue != null && ownerDialogue.showProgress >= 1f) {
-                //¶Ô»°¿òÒÑÍêÈ«µ­Èë£¬¿ªÊ¼Á¢»æµ­Èë
-                currentState = PerformanceState.PortraitFadeIn;
-                fadeInProgress = 0f;
-            }
-        }
-
-        /// <summary>
-        /// ¸üĞÂÁ¢»æµ­Èë×´Ì¬
-        /// </summary>
-        private void UpdatePortraitFadeIn() {
-            fadeInProgress++;
-
-            if (fadeInProgress >= FadeInDuration) {
-                currentState = PerformanceState.Hold;
-                fadeInProgress = FadeInDuration;
-                TargetFade = 1f;
-                return;
-            }
-
-            TargetFade = fadeInProgress / FadeInDuration;
-            currentTint = Color.White;
-        }
-
-        /// <summary>
-        /// ¸üĞÂ±£³ÖÏÔÊ¾×´Ì¬
-        /// </summary>
-        private void UpdateHold() {
-            currentTint = Color.White;
-            TargetFade = 1f;
-        }
-
-        /// <summary>
-        /// ¸üĞÂÈ¼ÉÕÏûÊ§×´Ì¬
+        /// æ›´æ–°ç‡ƒçƒ§æ¶ˆå¤±çŠ¶æ€
         /// </summary>
         private void UpdateBurningDissolve() {
             burnProgress++;
 
             if (burnProgress >= BurnDuration) {
-                Active = false;
-                currentState = PerformanceState.Inactive;
-                SetBlockAdvance(false);
-                SetBlockClose(false);
+                ForceDeactivate();
                 return;
             }
 
             float t = burnProgress / BurnDuration;
 
-            //È¼ÉÕ´Óµ×²¿ÏòÉÏÍÆ½ø
+            //ç‡ƒçƒ§ä»åº•éƒ¨å‘ä¸Šæ¨è¿›
             burnHeight = CWRUtils.EaseInOutQuad(t);
 
-            //Éú³É»ğÑæÁ£×Ó
+            //ç”Ÿæˆç«ç„°ç²’å­
             particleSpawnTimer++;
             if (particleSpawnTimer >= 2 && burnHeight > 0.01f) {
                 particleSpawnTimer = 0;
                 SpawnFireParticles();
             }
 
-            //¸üĞÂÏÖÓĞÁ£×Ó
+            //æ›´æ–°ç°æœ‰ç²’å­
+            UpdateFireParticles();
+
+            //æ•´ä½“é€æ˜åº¦ï¼šç«‹ç»˜åœ¨ç‡ƒçƒ§è¿‡ç¨‹ä¸­é€æ¸æ¶ˆå¤±
+            TargetFade = 1f - CWRUtils.EaseInCubic(t * 0.8f);
+        }
+
+        /// <summary>
+        /// æ›´æ–°ç«ç„°ç²’å­
+        /// </summary>
+        private void UpdateFireParticles() {
             for (int i = fireParticles.Count - 1; i >= 0; i--) {
                 var particle = fireParticles[i];
                 particle.Life++;
@@ -226,23 +169,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     continue;
                 }
 
-                //Á£×ÓÏòÉÏÆ®¶¯
+                //ç²’å­å‘ä¸Šé£˜åŠ¨
                 particle.Position += particle.Velocity;
-                particle.Velocity.Y -= 0.08f; //ÏòÉÏ¼ÓËÙ
-                particle.Velocity.X *= 0.98f; //¿ÕÆø×èÁ¦
+                particle.Velocity.Y -= 0.08f;
+                particle.Velocity.X *= 0.98f;
                 particle.Rotation += particle.RotationSpeed;
 
-                //µ­³ö
+                //æ·¡å‡º
                 float lifeRatio = particle.Life / particle.MaxLife;
                 particle.Alpha = 1f - CWRUtils.EaseInQuad(lifeRatio);
             }
-
-            //ÕûÌåÍ¸Ã÷¶È£ºÁ¢»æÔÚÈ¼ÉÕ¹ı³ÌÖĞÖğ½¥ÏûÊ§
-            TargetFade = 1f - CWRUtils.EaseInCubic(t * 0.8f);
         }
 
         /// <summary>
-        /// Éú³É»ğÑæÁ£×Ó
+        /// ç”Ÿæˆç«ç„°ç²’å­
         /// </summary>
         private void SpawnFireParticles() {
             Texture2D currentPortrait = GetCurrentPortrait();
@@ -250,7 +190,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             Vector2 portraitSize = currentPortrait.Size() * scale;
 
-            //ÔÚÈ¼ÉÕ±ßÔµÉú³ÉÁ£×Ó
+            //åœ¨ç‡ƒçƒ§è¾¹ç¼˜ç”Ÿæˆç²’å­
             float edgeY = position.Y + portraitSize.Y * (1f - burnHeight);
 
             int particleCount = (int)(8f + (float)Math.Sin(timer * 0.1f) * 3f);
@@ -272,8 +212,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
+        #endregion
+
+        #region æ›´æ–°ä¸ç»˜åˆ¶
+
+        protected override void OnUpdate() {
+            fireAnimationTimer += 0.12f;
+            if (fireAnimationTimer > 16f) {
+                fireAnimationTimer -= 16f;
+            }
+
+            //æ›´æ–°ç«‹ç»˜åˆ‡æ¢
+            if (useSmilePortrait && portraitTransitionProgress < 1f) {
+                portraitTransitionProgress += 1f / PortraitTransitionDuration;
+                if (portraitTransitionProgress > 1f) {
+                    portraitTransitionProgress = 1f;
+                }
+            }
+
+            scale = 1.4f;
+            currentTint = Color.White;
+        }
+
         /// <summary>
-        /// »ñÈ¡µ±Ç°Ó¦¸ÃÊ¹ÓÃµÄÁ¢»æ
+        /// è·å–å½“å‰åº”è¯¥ä½¿ç”¨çš„ç«‹ç»˜
         /// </summary>
         private Texture2D GetCurrentPortrait() {
             if (useSmilePortrait) {
@@ -291,113 +253,126 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             position = ownerDialogue.GetPanelRect().Top() + new Vector2(-currentPortrait.Width + 60, -currentPortrait.Height + 80) * scale;
             Vector2 portraitSize = currentPortrait.Size() * scale;
 
-            //Á¢»æÇĞ»»Ê±µÄ»ìºÏ»æÖÆ
+            //ç«‹ç»˜åˆ‡æ¢æ—¶çš„æ··åˆç»˜åˆ¶
             if (useSmilePortrait && portraitTransitionProgress < 1f && ADVAsset.SupCal_closeEyesADV != null) {
-                //»æÖÆµ­³öµÄ±ÕÑÛÁ¢»æ
-                float closeEyesAlpha = alpha * (1f - portraitTransitionProgress);
-                Color closeEyesColor = currentTint * closeEyesAlpha;
-                spriteBatch.Draw(ADVAsset.SupCal_closeEyesADV, position, null, closeEyesColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-
-                //»æÖÆµ­ÈëµÄÎ¢Ğ¦Á¢»æ
-                float smileAlpha = alpha * portraitTransitionProgress;
-                Color smileColor = currentTint * smileAlpha;
-                if (ADVAsset.SupCalADV != null) {
-                    spriteBatch.Draw(ADVAsset.SupCalADV, position, null, smileColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                }
+                DrawPortraitTransition(spriteBatch, alpha);
                 return;
             }
 
-            //È¼ÉÕ×´Ì¬ÏÂµÄÌØÊâ»æÖÆ
-            if (currentState == PerformanceState.BurningDissolve) {
+            //ç‡ƒçƒ§çŠ¶æ€ä¸‹çš„ç‰¹æ®Šç»˜åˆ¶
+            if (currentPhase == PerformancePhase.Custom) {
                 DrawBurningPortrait(spriteBatch, position, portraitSize, alpha);
             }
             else {
-                //Õı³£»æÖÆ
+                //æ­£å¸¸ç»˜åˆ¶
                 Color drawColor = currentTint * alpha;
                 spriteBatch.Draw(currentPortrait, position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
         }
 
         /// <summary>
-        /// »æÖÆÈ¼ÉÕÖĞµÄÁ¢»æ
+        /// ç»˜åˆ¶ç«‹ç»˜åˆ‡æ¢è¿‡æ¸¡
+        /// </summary>
+        private void DrawPortraitTransition(SpriteBatch spriteBatch, float alpha) {
+            //ç»˜åˆ¶æ·¡å‡ºçš„é—­çœ¼ç«‹ç»˜
+            float closeEyesAlpha = alpha * (1f - portraitTransitionProgress);
+            Color closeEyesColor = currentTint * closeEyesAlpha;
+            spriteBatch.Draw(ADVAsset.SupCal_closeEyesADV, position, null, closeEyesColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+            //ç»˜åˆ¶æ·¡å…¥çš„å¾®ç¬‘ç«‹ç»˜
+            float smileAlpha = alpha * portraitTransitionProgress;
+            Color smileColor = currentTint * smileAlpha;
+            if (ADVAsset.SupCalADV != null) {
+                spriteBatch.Draw(ADVAsset.SupCalADV, position, null, smileColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>
+        /// ç»˜åˆ¶ç‡ƒçƒ§ä¸­çš„ç«‹ç»˜
         /// </summary>
         private void DrawBurningPortrait(SpriteBatch spriteBatch, Vector2 pos, Vector2 size, float alpha) {
             Texture2D portrait = GetCurrentPortrait();
             Texture2D fireMask = CWRAsset.Fire?.Value;
 
             if (fireMask == null) {
-                //½µ¼¶µ½¼òµ¥»æÖÆ
+                //é™çº§åˆ°ç®€å•ç»˜åˆ¶
                 spriteBatch.Draw(portrait, pos, null, currentTint * alpha, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 return;
             }
 
-            //¼ÆËã»ğÑæÖ¡
+            //è®¡ç®—ç«ç„°å¸§
             int frameWidth = fireMask.Width / 4;
             int frameHeight = fireMask.Height / 4;
 
-            //1. »æÖÆÎ´È¼ÉÕµÄÉÏ°ë²¿·Ö£¨Õı³£ÏÔÊ¾£©
+            //1. ç»˜åˆ¶æœªç‡ƒçƒ§çš„ä¸ŠåŠéƒ¨åˆ†
+            DrawUnburntPortion(spriteBatch, portrait, pos, alpha);
+
+            //2. ç»˜åˆ¶ç‡ƒçƒ§è¾¹ç¼˜æ•ˆæœ
+            DrawBurningEdge(spriteBatch, portrait, fireMask, pos, size, alpha, frameWidth, frameHeight);
+
+            //3. ç»˜åˆ¶ç«ç„°ç²’å­
+            DrawFireParticles(spriteBatch, fireMask, alpha, frameWidth, frameHeight);
+
+            //4. ç»˜åˆ¶ç°çƒ¬ç²’å­
+            DrawAshParticles(spriteBatch, pos, size, alpha);
+        }
+
+        private void DrawUnburntPortion(SpriteBatch spriteBatch, Texture2D portrait, Vector2 pos, float alpha) {
             if (burnHeight < 1f) {
                 int unburntSourceHeight = (int)(portrait.Height * (1f - burnHeight));
                 if (unburntSourceHeight > 0) {
                     Rectangle unburntSource = new Rectangle(0, 0, portrait.Width, unburntSourceHeight);
-                    Vector2 unburntPos = pos;
                     Color unburntColor = currentTint * alpha;
-
-                    spriteBatch.Draw(portrait, unburntPos, unburntSource, unburntColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(portrait, pos, unburntSource, unburntColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 }
             }
+        }
 
-            //2. »æÖÆÈ¼ÉÕ±ßÔµĞ§¹û
-            if (burnHeight > 0f) {
-                //±ßÔµºñ¶È
-                float edgeThickness = 80f / portrait.Height; //Ïà¶ÔÓÚÔ­Í¼µÄºñ¶È
-                float edgeStart = Math.Max(0f, burnHeight - edgeThickness);
-                float edgeEnd = burnHeight;
+        private void DrawBurningEdge(SpriteBatch spriteBatch, Texture2D portrait, Texture2D fireMask, Vector2 pos, Vector2 size, float alpha, int frameWidth, int frameHeight) {
+            if (burnHeight <= 0f) return;
 
-                if (edgeStart < edgeEnd) {
-                    int edgeSourceY = (int)(portrait.Height * edgeStart);
-                    int edgeSourceHeight = (int)(portrait.Height * (edgeEnd - edgeStart));
+            float edgeThickness = 80f / portrait.Height;
+            float edgeStart = Math.Max(0f, burnHeight - edgeThickness);
+            float edgeEnd = burnHeight;
 
-                    if (edgeSourceHeight > 0) {
-                        Rectangle edgeSource = new Rectangle(0, edgeSourceY, portrait.Width, edgeSourceHeight);
-                        Vector2 edgePos = pos + new Vector2(0, edgeStart * size.Y);
-                        int fireCount = Math.Max(1, (int)(size.X / (frameWidth * scale * 0.5f)));
+            if (edgeStart >= edgeEnd) return;
 
-                        for (int i = 0; i < fireCount; i++) {
-                            float xPos = i * (size.X / fireCount);
-                            float waveOffset = (float)Math.Sin(fireAnimationTimer * 0.5f + i * 0.8f) * 10f;
+            int edgeSourceHeight = (int)(portrait.Height * (edgeEnd - edgeStart));
+            if (edgeSourceHeight <= 0) return;
 
-                            //¼ÆËãµ±Ç°»ğÑæÖ¡
-                            int frameOffset = (int)(fireAnimationTimer + i * 2) % 16;
-                            int frameX = (frameOffset % 4) * frameWidth;
-                            int frameY = (frameOffset / 4) * frameHeight;
-                            Rectangle fireFrame = new Rectangle(frameX, frameY, frameWidth, frameHeight);
+            Vector2 edgePos = pos + new Vector2(0, edgeStart * size.Y);
+            int fireCount = Math.Max(1, (int)(size.X / (frameWidth * scale * 0.5f)));
 
-                            Vector2 firePos = edgePos + new Vector2(xPos, waveOffset);
-                            float fireScale = scale * 0.8f;
+            for (int i = 0; i < fireCount; i++) {
+                float xPos = i * (size.X / fireCount);
+                float waveOffset = (float)Math.Sin(fireAnimationTimer * 0.5f + i * 0.8f) * 10f;
 
-                            //»ğÑæÑÕÉ«´Ó»Æµ½³Èµ½ºì½¥±ä
-                            float gradientT = (float)Math.Sin(fireAnimationTimer * 0.3f + i * 0.5f) * 0.5f + 0.5f;
-                            Color fireColor1 = new Color(255, 240, 100); //ÁÁ»Æ
-                            Color fireColor2 = new Color(255, 150, 50);  //³ÈÉ«
-                            Color fireColor3 = new Color(255, 80, 50);   //Éî³Èºì
-                            Color fireColor = Color.Lerp(Color.Lerp(fireColor1, fireColor2, gradientT), fireColor3, burnHeight * 0.5f);
-                            fireColor.A = 0; //»Ò¶ÈÍ¼£¬AÖµÉèÎª0
-                            fireColor *= alpha * 0.9f;
+                int frameOffset = (int)(fireAnimationTimer + i * 2) % 16;
+                int frameX = (frameOffset % 4) * frameWidth;
+                int frameY = (frameOffset / 4) * frameHeight;
+                Rectangle fireFrame = new Rectangle(frameX, frameY, frameWidth, frameHeight);
 
-                            spriteBatch.Draw(fireMask, firePos, fireFrame, fireColor, rotation, Vector2.Zero, fireScale, SpriteEffects.None, 0f);
-                        }
-                    }
-                }
+                Vector2 firePos = edgePos + new Vector2(xPos, waveOffset);
+                float fireScale = scale * 0.8f;
+
+                float gradientT = (float)Math.Sin(fireAnimationTimer * 0.3f + i * 0.5f) * 0.5f + 0.5f;
+                Color fireColor1 = new Color(255, 240, 100);
+                Color fireColor2 = new Color(255, 150, 50);
+                Color fireColor3 = new Color(255, 80, 50);
+                Color fireColor = Color.Lerp(Color.Lerp(fireColor1, fireColor2, gradientT), fireColor3, burnHeight * 0.5f);
+                fireColor.A = 0;
+                fireColor *= alpha * 0.9f;
+
+                spriteBatch.Draw(fireMask, firePos, fireFrame, fireColor, rotation, Vector2.Zero, fireScale, SpriteEffects.None, 0f);
             }
+        }
 
-            //3. »æÖÆ»ğÑæÁ£×Ó
+        private void DrawFireParticles(SpriteBatch spriteBatch, Texture2D fireMask, float alpha, int frameWidth, int frameHeight) {
             foreach (var particle in fireParticles) {
                 int frameX = (particle.FrameIndex % 4) * frameWidth;
                 int frameY = (particle.FrameIndex / 4) * frameHeight;
                 Rectangle particleFrame = new Rectangle(frameX, frameY, frameWidth, frameHeight);
 
-                //Á£×ÓÑÕÉ«´ÓÁÁ»Æµ½³Èµ½ÉîºìÔÙµ½»Ò
                 Color particleColor;
                 float lifeRatio = particle.Life / particle.MaxLife;
 
@@ -411,7 +386,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     particleColor = Color.Lerp(new Color(255, 100, 60), new Color(100, 100, 100), (lifeRatio - 0.6f) / 0.4f);
                 }
 
-                particleColor.A = 0; //»Ò¶ÈÍ¼£¬AÖµÉèÎª0
+                particleColor.A = 0;
                 particleColor *= alpha * particle.Alpha * 0.7f;
 
                 float particleScale = particle.Scale * scale * 0.4f;
@@ -428,33 +403,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     0f
                 );
             }
+        }
 
-            //4. »æÖÆ»Ò½ıÁ£×Ó£¨Ğ¡µã£©
-            if (burnHeight > 0.1f) {
-                int ashCount = (int)(burnHeight * 15f);
-                Texture2D pixel = VaultAsset.placeholder2.Value;
+        private void DrawAshParticles(SpriteBatch spriteBatch, Vector2 pos, Vector2 size, float alpha) {
+            if (burnHeight <= 0.1f) return;
 
-                for (int i = 0; i < ashCount; i++) {
-                    float ashTimer = (timer + i * 5f) * 0.025f;
-                    float ashX = pos.X + (float)Math.Sin(ashTimer * 2f + i) * size.X * 0.2f + size.X * Main.rand.NextFloat(0.4f, 0.6f);
-                    float ashY = pos.Y + size.Y * (1f - burnHeight) + (ashTimer % 1f) * size.Y * 0.4f;
+            int ashCount = (int)(burnHeight * 15f);
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
-                    float ashAlpha = (1f - (ashTimer % 1f)) * 0.6f;
-                    Color ashColor = new Color(80, 80, 80) * (alpha * ashAlpha);
+            for (int i = 0; i < ashCount; i++) {
+                float ashTimer = (timer + i * 5f) * 0.025f;
+                float ashX = pos.X + (float)Math.Sin(ashTimer * 2f + i) * size.X * 0.2f + size.X * Main.rand.NextFloat(0.4f, 0.6f);
+                float ashY = pos.Y + size.Y * (1f - burnHeight) + (ashTimer % 1f) * size.Y * 0.4f;
 
-                    Vector2 ashPos = new Vector2(ashX, ashY);
-                    float ashSize = Main.rand.NextFloat(1.5f, 2.5f);
+                float ashAlpha = (1f - (ashTimer % 1f)) * 0.6f;
+                Color ashColor = new Color(80, 80, 80) * (alpha * ashAlpha);
 
-                    spriteBatch.Draw(pixel, ashPos, null, ashColor, 0f, new Vector2(0.5f, 0.5f), ashSize, SpriteEffects.None, 0f);
-                }
+                Vector2 ashPos = new Vector2(ashX, ashY);
+                float ashSize = Main.rand.NextFloat(1.5f, 2.5f);
+
+                spriteBatch.Draw(pixel, ashPos, null, ashColor, 0f, new Vector2(0.5f, 0.5f), ashSize, SpriteEffects.None, 0f);
             }
         }
 
-        protected override void OnDeactivate() {
-            currentState = PerformanceState.Inactive;
-            fireParticles.Clear();
-            SetBlockAdvance(false);
-            SetBlockClose(false);
-        }
+        #endregion
     }
 }

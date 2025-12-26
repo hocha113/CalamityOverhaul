@@ -68,7 +68,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         #region 全身立绘系统
 
         //全身立绘注册表
-        protected static readonly Dictionary<string, FullBodyPortraitBase> fullBodyPortraits = new(StringComparer.Ordinal);
+        protected static readonly Dictionary<string, FullBodyPortraitBase> nameTofullBodyPortraits = new(StringComparer.Ordinal);
+        protected static readonly Dictionary<Type, FullBodyPortraitBase> typeTofullBodyPortraits = new();
 
         //当前激活的全身立绘
         protected FullBodyPortraitBase activeFullBodyPortrait;
@@ -78,29 +79,23 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// </summary>
         /// <param name="key">立绘标识符</param>
         /// <param name="portrait">立绘实例</param>
-        public static void RegisterFullBodyPortrait(string key, FullBodyPortraitBase portrait) {
-            if (string.IsNullOrWhiteSpace(key) || portrait == null) {
+        public static void RegisterFullBodyPortrait(FullBodyPortraitBase portrait) {
+            typeTofullBodyPortraits[portrait.GetType()] = portrait;
+
+            if (string.IsNullOrWhiteSpace(portrait.Name) || portrait == null) {
                 return;
             }
 
-            if (fullBodyPortraits.ContainsKey(key)) {
-                fullBodyPortraits[key] = portrait;
-            }
-            else {
-                fullBodyPortraits.Add(key, portrait);
+            if (!nameTofullBodyPortraits.TryAdd(portrait.Name, portrait)) {
+                nameTofullBodyPortraits[portrait.Name] = portrait;
             }
         }
 
         /// <summary>
-        /// 移除注册的全身立绘
+        /// 显示全身立绘
         /// </summary>
-        /// <param name="key">立绘标识符</param>
-        public static void UnregisterFullBodyPortrait(string key) {
-            if (fullBodyPortraits.ContainsKey(key)) {
-                fullBodyPortraits.Remove(key);
-            }
-        }
-
+        /// <returns>是否成功显示</returns>
+        public virtual bool ShowFullBodyPortrait<T>() where T : FullBodyPortraitBase => ShowFullBodyPortrait(typeof(T));
         /// <summary>
         /// 显示全身立绘
         /// </summary>
@@ -111,10 +106,32 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return false;
             }
 
-            if (!fullBodyPortraits.TryGetValue(key, out var portrait)) {
+            if (!nameTofullBodyPortraits.TryGetValue(key, out var portrait)) {
                 return false;
             }
 
+            StartPerformance(portrait);
+            return true;
+        }
+        /// <summary>
+        /// 显示全身立绘
+        /// </summary>
+        /// <param name="key">立绘标识符</param>
+        /// <returns>是否成功显示</returns>
+        public virtual bool ShowFullBodyPortrait(Type type) {
+            if (!typeTofullBodyPortraits.TryGetValue(type, out var portrait)) {
+                return false;
+            }
+
+            StartPerformance(portrait);
+            return true;
+        }
+
+        /// <summary>
+        /// 启动全身立绘
+        /// </summary>
+        /// <param name="portrait"></param>
+        public void StartPerformance(FullBodyPortraitBase portrait) {
             //停止当前立绘
             if (activeFullBodyPortrait != null && activeFullBodyPortrait != portrait) {
                 activeFullBodyPortrait.EndPerformance();
@@ -126,8 +143,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 portrait.Initialize(this);
             }
             portrait.StartPerformance();
-
-            return true;
         }
 
         /// <summary>
@@ -150,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// 清理所有全身立绘
         /// </summary>
         public static void ClearAllFullBodyPortraits() {
-            fullBodyPortraits.Clear();
+            nameTofullBodyPortraits.Clear();
         }
 
         #endregion
@@ -304,10 +319,18 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
         public virtual void StartNext() {
             if (queue.Count == 0) {
+                //通知全身立绘对话完成
+                activeFullBodyPortrait?.OnDialogueComplete();
                 BeginClose();
                 playedCount = 0;
                 return;
             }
+
+            //通知全身立绘对话推进
+            if (playedCount > 0) {
+                activeFullBodyPortrait?.OnDialogueAdvance();
+            }
+
             current = queue.Dequeue();
 
             //在处理对话之前触发 OnStart

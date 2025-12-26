@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override string Key => nameof(WitchFarewell);
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
-        //全身立绘实例
-        private static SupCalFullBodyPortrait fullBodyPortrait;
-
         //女巫告别独白
         public static LocalizedText FarewellLine1 { get; private set; }
         public static LocalizedText FarewellLine2 { get; private set; }
@@ -51,15 +48,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             FarewellLine9 = this.GetLocalization(nameof(FarewellLine9), () => "就当我在这场漫长的旅途中，终于抵达了属于自己的地方");
             FarewellLine10 = this.GetLocalization(nameof(FarewellLine10), () => "那么到这里，就足够了");
             FarewellLine11 = this.GetLocalization(nameof(FarewellLine11), () => "去吧，杂鱼");
-
-            //初始化全身立绘
-            fullBodyPortrait = new SupCalFullBodyPortrait();
-        }
-
-        public override void Unload() {
-            //卸载时清理全身立绘注册
-            DialogueBoxBase.UnregisterFullBodyPortrait("SupremeCalamitasFullBody");
-            fullBodyPortrait = null;
         }
 
         protected override void OnScenarioStart() {
@@ -70,13 +58,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 HasHalibut = true;
             }
 
-            //注册并显示全身立绘
-            if (fullBodyPortrait != null) {
-                DialogueBoxBase.RegisterFullBodyPortrait(fullBodyPortrait.PortraitKey, fullBodyPortrait);
-                //在对话框实例中显示全身立绘
-                var dialogueBox = BrimstoneDialogueBox.Instance;
-                dialogueBox?.ShowFullBodyPortrait(fullBodyPortrait.PortraitKey);
-            }
+            //显示全身立绘
+            BrimstoneDialogueBox.Instance?.ShowFullBodyPortrait<SupCalFullBodyPortrait>();
         }
 
         protected override void OnScenarioComplete() {
@@ -103,25 +86,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
 
         protected override void Build() {
-            //注册至尊灾厄立绘
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value, texture: null);//注销掉使其成为无头像，因为要使用全身立绘
+            //注册至尊灾厄立绘(注销头像，因为要使用全身立绘)
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value, texture: null);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: true);
 
             //女巫的最后独白
+            //对话推进时立绘会自动收到通知，无需手动调用OnDialogueAdvance
             Add(Rolename3.Value, FarewellLine1.Value, onStart: TriggerRedScreen);
-            Add(Rolename3.Value, FarewellLine2.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine3.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine4.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine5.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine6.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine7.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine8.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine9.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance());
-            Add(Rolename3.Value, FarewellLine10.Value, onStart: () => fullBodyPortrait?.OnDialogueAdvance(), onComplete: StartBurningEffect);
-            Add(Rolename3.Value, FarewellLine11.Value, onStart: () => {
-                fullBodyPortrait?.OnDialogueAdvance();
-                Achievement();
-            }, FinalFade);
+            Add(Rolename3.Value, FarewellLine2.Value);
+            Add(Rolename3.Value, FarewellLine3.Value);
+            Add(Rolename3.Value, FarewellLine4.Value);
+            Add(Rolename3.Value, FarewellLine5.Value);
+            Add(Rolename3.Value, FarewellLine6.Value);
+            Add(Rolename3.Value, FarewellLine7.Value);
+            Add(Rolename3.Value, FarewellLine8.Value);
+            Add(Rolename3.Value, FarewellLine9.Value);
+            Add(Rolename3.Value, FarewellLine10.Value);
+            Add(Rolename3.Value, FarewellLine11.Value, onStart: Achievement, onComplete: FinalFade);
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
@@ -133,15 +114,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private void TriggerRedScreen() {
             //触发红屏效果
             EbnEffect.StartRedScreen();
-        }
-
-        /// <summary>
-        /// 启动燃烧效果
-        /// </summary>
-        private void StartBurningEffect() {
-            if (fullBodyPortrait != null) {
-                fullBodyPortrait.StartBurningDissolve();
-            }
         }
 
         private void FinalFade() {
@@ -158,8 +130,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 AchievementToast.ToastStyle.Brimstone
             );
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                save.EternalBlazingNow = true;//标记达成永恒燃烧的现在结局
-                save.SendEbnData(Main.LocalPlayer);//同步数据
+                save.EternalBlazingNow = true;
+                save.SendEbnData(Main.LocalPlayer);
             }
         }
     }
