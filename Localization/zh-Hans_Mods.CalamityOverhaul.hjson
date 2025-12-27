@@ -8296,10 +8296,10 @@ QuestLogs: {
 		}
 
 		LifeWeaverQuest: {
-			// DisplayName: 植树造林
-			// Description: 获得植树者
-			// QuestObjective.Description: 获得植树者
-			// DetailedDescription: " "
+			DisplayName: 植树造林
+			Description: 获得植树者
+			QuestObjective.Description: 获得植树者
+			DetailedDescription: 森林的再生通常漫长而缓慢。这台机器能利用电力将树苗精准地植入土壤，让荒芜的土地迅速重焕生机。它是构建全自动循环林场的最后一块拼图。
 		}
 	}
 }

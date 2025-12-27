@@ -8322,10 +8322,10 @@ QuestLogs: {
 		}
 
 		LifeWeaverQuest: {
-			// DisplayName: 植树造林
-			// Description: 获得植树者
-			// QuestObjective.Description: 获得植树者
-			// DetailedDescription: " "
+			// DisplayName: Reforestation
+			// Description: Obtain the Life Weaver
+			// QuestObjective.Description: Obtain the Life Weaver
+			// DetailedDescription: Forest regeneration is usually a slow process. This machine uses power to precisely plant saplings, quickly restoring life to barren lands. It is the final piece of the puzzle for building a fully automated, sustainable tree farm.
 		}
 	}
 }
