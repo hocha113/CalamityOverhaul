@@ -1,16 +1,14 @@
-sampler uImage0 : register(s0);
+锘縮ampler uImage0 : register(s0);
 float3 filterRGB;
-// 灰蓝色滤镜，非常简单的shader
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-    // 以下照抄自fs49
+    // 浠ヤ笅鐓ф妱鑷猣s49
     float4 color = tex2D(uImage0, coords);
     if (!any(color))
         return color;
-        // 灰度 = r*0.3 + g*0.59 + b*0.11
-    float gs = dot(float3(0.3, 0.59, 0.11), color.rgb);
-    // 直接加上滤镜颜色，效果自己调
+    float gs = dot(float3(0.58, 0.39, 0.11), color.rgb);
+    // 鐩存帴鍔犱笂婊ら暅棰滆壊锛屾晥鏋滆嚜宸辫皟
     return float4(gs + filterRGB.r, gs + filterRGB.g, gs + filterRGB.b, color.a);
 }
 technique Technique1
