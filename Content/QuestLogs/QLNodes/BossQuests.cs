@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            bool isDowned = InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke();
+            bool isDowned = NPC.downedQueenBee;
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
