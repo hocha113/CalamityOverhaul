@@ -1,4 +1,4 @@
-using InnoVault.PRT;
+ï»¿using InnoVault.PRT;
 using InnoVault.RenderHandles;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,12 +12,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
     /// <summary>
-    /// ÀÏ¹«¾ôÓªµØ×°ÊÎäÖÈ¾Æ÷
-    /// ¸ºÔğäÖÈ¾ÓªµØÖĞµÄ×°ÊÎÎïÆ·ºÍ»·¾³Ğ§¹û
+    /// è€å…¬çˆµè¥åœ°è£…é¥°æ¸²æŸ“å™¨
+    /// è´Ÿè´£æ¸²æŸ“è¥åœ°ä¸­çš„è£…é¥°ç‰©å“å’Œç¯å¢ƒæ•ˆæœ
     /// </summary>
     internal class OldDukeCampsiteDecoration : RenderHandle
     {
-        //¶à¸ö¹øµÄÎ»ÖÃĞÅÏ¢
+        //å¤šä¸ªé”…çš„ä½ç½®ä¿¡æ¯
         internal class PotData
         {
             public Vector2 WorldPosition;
@@ -29,18 +29,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             public int SteamSpawnTimer;
             public int BubbleSpawnTimer;
 
-            //ÀÏ¹«¾ô½»»¥×´Ì¬
+            //è€å…¬çˆµäº¤äº’çŠ¶æ€
             public bool IsBeingVisited;
             public float InteractionIntensity;
             public float BouncePhase;
             public int ExtraSteamSpawnTimer;
 
-            //Ë®ÏÂ×´Ì¬
+            //æ°´ä¸‹çŠ¶æ€
             public bool IsUnderwater;
             public int WaterBubbleSpawnTimer;
         }
 
-        //Æì¸ËÎ»ÖÃĞÅÏ¢
+        //æ——æ†ä½ç½®ä¿¡æ¯
         internal class FlagpoleData
         {
             public Vector2 WorldPosition;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private const int upOffsetValue = 660;
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞ¹øµÄÎ»ÖÃÁĞ±í
+        /// è·å–æ‰€æœ‰é”…çš„ä½ç½®åˆ—è¡¨
         /// </summary>
         public static List<Vector2> GetPotPositions() {
             List<Vector2> positions = [];
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞÆì¸ËµÄÎ»ÖÃÁĞ±í
+        /// è·å–æ‰€æœ‰æ——æ†çš„ä½ç½®åˆ—è¡¨
         /// </summary>
         public static List<Vector2> GetFlagpolesPositions() {
             List<Vector2> positions = [];
@@ -77,17 +77,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Í¨Öª¹ø±»ÀÏ¹«¾ô·ÃÎÊ
+        /// é€šçŸ¥é”…è¢«è€å…¬çˆµè®¿é—®
         /// </summary>
         public static void NotifyPotVisit(Vector2 oldDukePosition, bool isVisiting, Vector2 targetPosition) {
             foreach (var pot in pots) {
                 float distance = Vector2.Distance(pot.WorldPosition, oldDukePosition);
                 float targetDistance = Vector2.Distance(pot.WorldPosition, targetPosition);
 
-                //¼ì²âÊÇ·ñÊÇ±»·ÃÎÊµÄ¹ø
+                //æ£€æµ‹æ˜¯å¦æ˜¯è¢«è®¿é—®çš„é”…
                 if (isVisiting && targetDistance < 100f && distance < 150f) {
                     pot.IsBeingVisited = true;
-                    //¸ù¾İ¾àÀë¼ÆËã½»»¥Ç¿¶È
+                    //æ ¹æ®è·ç¦»è®¡ç®—äº¤äº’å¼ºåº¦
                     float distanceFactor = 1f - MathHelper.Clamp(distance / 150f, 0f, 1f);
                     pot.InteractionIntensity = MathHelper.Lerp(pot.InteractionIntensity, distanceFactor, 0.1f);
                 }
@@ -99,15 +99,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ÉèÖÃ×°ÊÎÎïµÄÎ»ÖÃ£¨·şÎñÆ÷¶ËÖ´ĞĞ£©
-        /// ÔÚÓªµØÉú³ÉÊ±×Ô¶¯µ÷ÓÃ
+        /// è®¾ç½®è£…é¥°ç‰©çš„ä½ç½®ï¼ˆæœåŠ¡å™¨ç«¯æ‰§è¡Œï¼‰
+        /// åœ¨è¥åœ°ç”Ÿæˆæ—¶è‡ªåŠ¨è°ƒç”¨
         /// </summary>
         public static void SetupPotPosition(Vector2 campsiteCenter) {
             if (decorationsPositionSet) {
                 return;
             }
 
-            //Ö»ÔÚ·şÎñÆ÷¶ËÖ´ĞĞÊµ¼ÊµÄÎ»ÖÃ²éÕÒ
+            //åªåœ¨æœåŠ¡å™¨ç«¯æ‰§è¡Œå®é™…çš„ä½ç½®æŸ¥æ‰¾
             if (VaultUtils.isServer || VaultUtils.isSinglePlayer) {
                 FindAndPlaceDecorations(campsiteCenter);
             }
@@ -116,14 +116,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ²éÕÒ²¢·ÅÖÃ×°ÊÎÎï£¨·şÎñÆ÷¶Ë£©
+        /// æŸ¥æ‰¾å¹¶æ”¾ç½®è£…é¥°ç‰©ï¼ˆæœåŠ¡å™¨ç«¯ï¼‰
         /// </summary>
         private static void FindAndPlaceDecorations(Vector2 campsiteCenter) {
             pots.Clear();
             flagpoles.Clear();
 
-            //¶¨Òå¶à¸ö¹øµÄÏà¶ÔÆ«ÒÆÎ»ÖÃ
-            //Ö÷Òª²¼ÖÃÔÚÀÏ¹«¾ôÇ°·½ºÍÁ½²à±ÜÃâ±»ÕÚµ²
+            //å®šä¹‰å¤šä¸ªé”…çš„ç›¸å¯¹åç§»ä½ç½®
+            //ä¸»è¦å¸ƒç½®åœ¨è€å…¬çˆµå‰æ–¹å’Œä¸¤ä¾§é¿å…è¢«é®æŒ¡
             Vector2[] potOffsets = [
                 new Vector2(220f, 40f),
                 new Vector2(-240f, 35f),
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
-                //ÏòÏÂËÑË÷×î½üµÄÊµĞÄµØÃæ
+                //å‘ä¸‹æœç´¢æœ€è¿‘çš„å®å¿ƒåœ°é¢
                 for (int y = tileY; y < tileY + _upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            //¶¨ÒåÆì¸ËµÄÏà¶ÔÆ«ÒÆÎ»ÖÃ
+            //å®šä¹‰æ——æ†çš„ç›¸å¯¹åç§»ä½ç½®
             Vector2[] flagpoleOffsets = [
                 new Vector2(-180f, -20f),
                 new Vector2(200f, -15f)
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Vector2 finalPos = searchPos;
                 bool foundGround = false;
 
-                //ÏòÏÂËÑË÷×î½üµÄÊµĞÄµØÃæ
+                //å‘ä¸‹æœç´¢æœ€è¿‘çš„å®å¿ƒåœ°é¢
                 for (int y = tileY; y < tileY + _upOffsetValue * 2; y++) {
                     if (y < 0 || y >= Main.maxTilesY) {
                         continue;
@@ -206,27 +206,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            if (!mermanRod) {//ÓãÈËµö°á¼ÒÊ±²»½øĞĞÏä×Ó·ÅÖÃ
-                //·ÅÖÃÀÏÏä×Ó
+            if (!mermanRod) {//é±¼äººé’“æ¬å®¶æ—¶ä¸è¿›è¡Œç®±å­æ”¾ç½®
+                //æ”¾ç½®è€ç®±å­
                 PlaceOldChest(campsiteCenter);
             }
 
             mermanRod = false;
 
-            //·şÎñÆ÷¶ËÍ¬²½×°ÊÎÎïÎ»ÖÃ¸øËùÓĞ¿Í»§¶Ë
+            //æœåŠ¡å™¨ç«¯åŒæ­¥è£…é¥°ç‰©ä½ç½®ç»™æ‰€æœ‰å®¢æˆ·ç«¯
             if (VaultUtils.isServer) {
                 SyncDecorationsToClients();
             }
         }
 
         /// <summary>
-        /// ·şÎñÆ÷Í¬²½×°ÊÎÎïÎ»ÖÃ¸øËùÓĞ¿Í»§¶Ë
+        /// æœåŠ¡å™¨åŒæ­¥è£…é¥°ç‰©ä½ç½®ç»™æ‰€æœ‰å®¢æˆ·ç«¯
         /// </summary>
         private static void SyncDecorationsToClients() {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeCampsiteDecorationsSync);
 
-            //Ğ´Èë¹øµÄÊıÁ¿ºÍÎ»ÖÃ
+            //å†™å…¥é”…çš„æ•°é‡å’Œä½ç½®
             packet.Write(pots.Count);
             foreach (var pot in pots) {
                 packet.WriteVector2(pot.WorldPosition);
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 packet.Write(pot.SteamTimer);
             }
 
-            //Ğ´ÈëÆì¸ËµÄÊıÁ¿ºÍÎ»ÖÃ
+            //å†™å…¥æ——æ†çš„æ•°é‡å’Œä½ç½®
             packet.Write(flagpoles.Count);
             foreach (var flagpole in flagpoles) {
                 packet.WriteVector2(flagpole.WorldPosition);
@@ -246,13 +246,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ¿Í»§¶Ë½ÓÊÕ×°ÊÎÎïÎ»ÖÃÊı¾İ
+        /// å®¢æˆ·ç«¯æ¥æ”¶è£…é¥°ç‰©ä½ç½®æ•°æ®
         /// </summary>
         internal static void ReceiveDecorationsSync(BinaryReader reader) {
             pots.Clear();
             flagpoles.Clear();
 
-            //¶ÁÈ¡¹øµÄÊı¾İ
+            //è¯»å–é”…çš„æ•°æ®
             int potCount = reader.ReadInt32();
             for (int i = 0; i < potCount; i++) {
                 PotData pot = new PotData {
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 pots.Add(pot);
             }
 
-            //¶ÁÈ¡Æì¸ËµÄÊı¾İ
+            //è¯»å–æ——æ†çš„æ•°æ®
             int flagpoleCount = reader.ReadInt32();
             for (int i = 0; i < flagpoleCount; i++) {
                 FlagpoleData flagpole = new FlagpoleData {
@@ -278,84 +278,106 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ·ÅÖÃÀÏÏä×Óµ½ÓªµØ
+        /// æ”¾ç½®è€ç®±å­åˆ°è¥åœ°
         /// </summary>
         private static void PlaceOldChest(Vector2 campsiteCenter) {
-            //Ïä×Ó·ÅÔÚÓªµØ×ó²à½ÏÔ¶µÄÎ»ÖÃ
+            //ç®±å­æ”¾åœ¨è¥åœ°å·¦ä¾§è¾ƒè¿œçš„ä½ç½®
             Vector2 chestOffset = new Vector2(-320f, 20f);
             Vector2 searchPos = campsiteCenter + chestOffset;
             int baseTileX = (int)(searchPos.X / 16f);
             int baseTileY = (int)(searchPos.Y / 16f) - upOffsetValue;
 
-            //ÏòÏÂËÑË÷µØÃæ
+            int chestType = ModContent.TileType<Items.OldDuchests.OldDuchestTile>();
+
+            //å‘ä¸‹æœç´¢åœ°é¢
             for (int y = baseTileY; y < baseTileY + upOffsetValue * 2; y++) {
-                if (y < 0 || y >= Main.maxTilesY) {
+                if (!WorldGen.InWorld(baseTileX, y)) {
                     continue;
                 }
 
                 Tile tile = Main.tile[baseTileX, y];
-                if (tile != null && tile.HasSolidTile()) {
-                    //ÕÒµ½µØÃæÔÚÉÏ·½·ÅÖÃÏä×Ó
-                    int chestTileX = baseTileX - 2;
-                    int chestTileY = y - 1;
-
-                    //ÇåÀíÏä×Ó·ÅÖÃÇøÓòÏä×ÓÊÇ6x4¸ñ
-                    for (int cx = 0; cx < 6; cx++) {
-                        for (int cy = 0; cy < 4; cy++) {
-                            int clearX = chestTileX + cx;
-                            int clearY = chestTileY - cy;
-
-                            if (clearX >= 0 && clearX < Main.maxTilesX && clearY >= 0 && clearY < Main.maxTilesY) {
-                                Tile clearTile = Main.tile[clearX, clearY];
-                                if (clearTile != null && clearTile.HasTile) {
-                                    WorldGen.KillTile(clearX, clearY, false, false, true);
-                                }
-                            }
-                        }
-                    }
-
-                    //È·±£µ××ùÊÇÊµĞÄµÄ
-                    for (int bx = 0; bx < 6; bx++) {
-                        int baseX = chestTileX + bx;
-                        int baseY = chestTileY + 1;
-
-                        if (baseX >= 0 && baseX < Main.maxTilesX && baseY >= 0 && baseY < Main.maxTilesY) {
-                            Tile baseTile = Main.tile[baseX, baseY];
-                            baseTile.Slope = SlopeType.Solid;
-                            WorldGen.PlaceTile(baseX, baseY, CWRID.Tile_SulphurousSand, true, true);
-                        }
-                    }
-
-                    //·ÅÖÃÀÏÏä×Ó£¨Ïä×ÓµÄÔ­µãÔÚ3,3Î»ÖÃ£©
-                    int chestType = ModContent.TileType<Items.OldDuchests.OldDuchestTile>();
-                    int placeX = chestTileX + 3;
-                    int placeY = chestTileY;
-
-                    WorldGen.PlaceTile(placeX, placeY, chestType, true, false, -1, 0);
-
-                    //»ñÈ¡Ïä×Ó×óÉÏ½ÇÎ»ÖÃ²¢´´½¨TPÊµÌå
-                    if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
-                        var tp = TileProcessorLoader.AddInWorld(chestType, point, null);
-
-                        //Ìî³äÏä×ÓÄÚÈİ
-                        if (tp != null && TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
-                            FillChestWithItems(chestTP);
-                        }
-
-                        //ÍøÂçÍ¬²½Ê¹ÓÃÔ­°æµÄÎï¿éÍ¬²½
-                        if (Main.netMode == NetmodeID.Server) {
-                            NetMessage.SendObjectPlacement(-1, placeX, placeY, chestType, 0, 0, -1, -1);
-                            //Ïä×ÓTPÊµÌåµÄÍ¬²½ÒÑ¾­ÔÚTPÄÚ²¿ÊµÏÖÎŞĞè¶îÍâ´¦Àí
-                        }
-                    }
-
-                    break;
+                if (tile == null || !tile.HasSolidTile()) {
+                    continue;
                 }
+
+                //æ‰¾åˆ°åœ°é¢åœ¨ä¸Šæ–¹æ”¾ç½®ç®±å­
+                int chestTileX = baseTileX - 2;
+                int chestTileY = y - 1;
+
+                //æ£€æŸ¥è¯¥åŒºåŸŸæ˜¯å¦å·²ç»å­˜åœ¨è€ç®±å­ï¼Œé¿å…é‡å¤æ”¾ç½®
+                for (int cx = -12; cx < 18; cx++) {
+                    for (int cy = -12; cy < 16; cy++) {
+                        int checkX = chestTileX + cx;
+                        int checkY = chestTileY - cy;
+                        if (!WorldGen.InWorld(checkX, checkY)) {
+                            continue;
+                        }
+
+                        Tile checkTile = Main.tile[checkX, checkY];
+                        if (checkTile != null && checkTile.HasTile && checkTile.TileType == chestType) {
+                            //å·²ç»å­˜åœ¨è€ç®±å­ï¼Œä¸å†é‡å¤æ”¾ç½®
+                            return;
+                        }
+                    }
+                }
+
+                //æ¸…ç†ç®±å­æ”¾ç½®åŒºåŸŸç®±å­æ˜¯6x4æ ¼
+                for (int cx = 0; cx < 6; cx++) {
+                    for (int cy = 0; cy < 4; cy++) {
+                        int clearX = chestTileX + cx;
+                        int clearY = chestTileY - cy;
+                        if (!WorldGen.InWorld(clearX, clearY)) {
+                            continue;
+                        }
+
+                        Tile clearTile = Main.tile[clearX, clearY];
+                        if (clearTile != null && clearTile.HasTile) {
+                            WorldGen.KillTile(clearX, clearY, false, false, true);
+                        }
+                    }
+                }
+
+                //ç¡®ä¿åº•åº§æ˜¯å®å¿ƒçš„
+                for (int bx = 0; bx < 6; bx++) {
+                    int baseX = chestTileX + bx;
+                    int baseY = chestTileY + 1;
+                    if (!WorldGen.InWorld(baseX, baseY)) {
+                        continue;
+                    }
+
+                    Tile baseTile = Main.tile[baseX, baseY];
+                    baseTile.Slope = SlopeType.Solid;
+                    WorldGen.PlaceTile(baseX, baseY, CWRID.Tile_SulphurousSand, true, true);
+                }
+
+                //æ”¾ç½®è€ç®±å­ï¼ˆç®±å­çš„åŸç‚¹åœ¨3,3ä½ç½®ï¼‰
+                int placeX = chestTileX + 3;
+                int placeY = chestTileY;
+
+                WorldGen.PlaceTile(placeX, placeY, chestType, true, false, -1, 0);
+
+                //è·å–ç®±å­å·¦ä¸Šè§’ä½ç½®å¹¶åˆ›å»ºTPå®ä½“
+                if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
+                    var tp = TileProcessorLoader.AddInWorld(chestType, point, null);
+
+                    //å¡«å……ç®±å­å†…å®¹
+                    if (tp != null && TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
+                        FillChestWithItems(chestTP);
+                    }
+
+                    //ç½‘ç»œåŒæ­¥ä½¿ç”¨åŸç‰ˆçš„ç‰©å—åŒæ­¥
+                    if (Main.netMode == NetmodeID.Server) {
+                        NetMessage.SendObjectPlacement(-1, placeX, placeY, chestType, 0, 0, -1, -1);
+                        //ç®±å­TPå®ä½“çš„åŒæ­¥å·²ç»åœ¨TPå†…éƒ¨å®ç°æ— éœ€é¢å¤–å¤„ç†
+                    }
+                }
+
+                break;
             }
         }
 
         /// <summary>
-        /// ÏòÏä×ÓTPÊµÌåÖĞÌî³äËæ»úÎïÆ·
+        /// å‘ç®±å­TPå®ä½“ä¸­å¡«å……éšæœºç‰©å“
         /// </summary>
         private static void FillChestWithItems(Items.OldDuchests.OldDuchestTP chestTP) {
             if (chestTP == null) {
@@ -364,13 +386,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             chestTP.storedItems = OldDuchestLootGenerator.GenerateDailyLoot();
 
-            //±£´æÊı¾İµ½TP
+            //ä¿å­˜æ•°æ®åˆ°TP
             chestTP.SendData();
         }
 
         /// <summary>
-        /// ÖØÖÃ×°ÊÎ×´Ì¬
-        /// ÔÚÓªµØÇå³ıÊ±µ÷ÓÃ
+        /// é‡ç½®è£…é¥°çŠ¶æ€
+        /// åœ¨è¥åœ°æ¸…é™¤æ—¶è°ƒç”¨
         /// </summary>
         public static void ResetDecoration() {
             decorationsPositionSet = false;
@@ -383,12 +405,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            //¸üĞÂÃ¿¸ö¹øµÄ×´Ì¬
+            //æ›´æ–°æ¯ä¸ªé”…çš„çŠ¶æ€
             foreach (var pot in pots) {
                 UpdatePot(pot);
             }
 
-            //¸üĞÂÆì¸ËÒ¡°Ú
+            //æ›´æ–°æ——æ†æ‘‡æ‘†
             foreach (var flagpole in flagpoles) {
                 flagpole.SwayTimer += 0.02f;
                 if (flagpole.SwayTimer > MathHelper.TwoPi) {
@@ -398,7 +420,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ¸üĞÂµ¥¸ö¹øµÄ×´Ì¬
+        /// æ›´æ–°å•ä¸ªé”…çš„çŠ¶æ€
         /// </summary>
         private void UpdatePot(PotData pot) {
             pot.GlowTimer += 0.025f;
@@ -409,10 +431,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (pot.BubbleTimer > MathHelper.TwoPi) pot.BubbleTimer -= MathHelper.TwoPi;
             if (pot.SteamTimer > MathHelper.TwoPi) pot.SteamTimer -= MathHelper.TwoPi;
 
-            //¼ì²â¹øÊÇ·ñÔÚË®ÏÂ
+            //æ£€æµ‹é”…æ˜¯å¦åœ¨æ°´ä¸‹
             pot.IsUnderwater = CheckPotUnderwater(pot.WorldPosition);
 
-            //¸üĞÂÌø¶¯ÏàÎ»
+            //æ›´æ–°è·³åŠ¨ç›¸ä½
             if (pot.IsBeingVisited) {
                 pot.BouncePhase += 0.2f * (0.5f + pot.InteractionIntensity * 1.5f);
             }
@@ -423,9 +445,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 pot.BouncePhase -= MathHelper.TwoPi;
             }
 
-            //¸ù¾İÊÇ·ñÔÚË®ÏÂÉú³É²»Í¬µÄÁ£×Ó
+            //æ ¹æ®æ˜¯å¦åœ¨æ°´ä¸‹ç”Ÿæˆä¸åŒçš„ç²’å­
             if (pot.IsUnderwater) {
-                //Ë®ÏÂÉú³ÉÅİÅİ
+                //æ°´ä¸‹ç”Ÿæˆæ³¡æ³¡
                 pot.WaterBubbleSpawnTimer++;
                 int bubbleRate = pot.IsBeingVisited ? 4 : 8;
 
@@ -433,14 +455,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     pot.WaterBubbleSpawnTimer = 0;
                     SpawnWaterBubble(pot);
 
-                    //½»»¥Ê±¶îÍâÉú³ÉÅİÅİ
+                    //äº¤äº’æ—¶é¢å¤–ç”Ÿæˆæ³¡æ³¡
                     if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f && Main.rand.NextBool(2)) {
                         SpawnWaterBubble(pot);
                     }
                 }
             }
             else {
-                //·ÇË®ÏÂÉú³ÉÕôÆû
+                //éæ°´ä¸‹ç”Ÿæˆè’¸æ±½
                 pot.SteamSpawnTimer++;
                 int baseSpawnRate = pot.IsBeingVisited ? 6 : 10;
                 int maxSteamCount = pot.IsBeingVisited ? 24 : 12;
@@ -449,7 +471,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     pot.SteamSpawnTimer = 0;
                     SpawnSteamParticle(pot, false);
 
-                    //½»»¥Ê±¶îÍâÉú³ÉÇ¿Á¦ÕôÆû
+                    //äº¤äº’æ—¶é¢å¤–ç”Ÿæˆå¼ºåŠ›è’¸æ±½
                     if (pot.IsBeingVisited && pot.InteractionIntensity > 0.5f) {
                         if (Main.rand.NextBool(2)) {
                             SpawnSteamParticle(pot, true);
@@ -457,7 +479,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     }
                 }
 
-                //ÆøÅİÉú³É
+                //æ°”æ³¡ç”Ÿæˆ
                 pot.BubbleSpawnTimer++;
                 int bubbleSpawnRate = pot.IsBeingVisited ? 8 : 15;
                 int maxBubbleCount = pot.IsBeingVisited ? 10 : 6;
@@ -467,7 +489,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     SpawnBubbleParticle(pot);
                 }
 
-                //¸üĞÂÆøÅİÁ£×Ó
+                //æ›´æ–°æ°”æ³¡ç²’å­
                 for (int i = pot.BubbleParticles.Count - 1; i >= 0; i--) {
                     if (pot.BubbleParticles[i].Update()) {
                         pot.BubbleParticles.RemoveAt(i);
@@ -475,7 +497,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            //¸üĞÂÕôÆûÁ£×Ó
+            //æ›´æ–°è’¸æ±½ç²’å­
             for (int i = pot.SteamParticles.Count - 1; i >= 0; i--) {
                 if (pot.SteamParticles[i].Update()) {
                     pot.SteamParticles.RemoveAt(i);
@@ -486,12 +508,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ¼ì²â¹øÊÇ·ñÔÚË®ÏÂ
+        /// æ£€æµ‹é”…æ˜¯å¦åœ¨æ°´ä¸‹
         /// </summary>
         private static bool CheckPotUnderwater(Vector2 position) {
             Point tileCoord = (position / 16).ToPoint();
 
-            //¼ì²é¹øµÄÉÏ·½ÊÇ·ñÓĞË®
+            //æ£€æŸ¥é”…çš„ä¸Šæ–¹æ˜¯å¦æœ‰æ°´
             for (int y = -2; y <= 0; y++) {
                 Tile tile = Framing.GetTileSafely(tileCoord.X, tileCoord.Y + y);
                 if (tile.LiquidAmount > 128 && tile.LiquidType == LiquidID.Water) {
@@ -503,7 +525,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Éú³ÉË®ÅİÅİ
+        /// ç”Ÿæˆæ°´æ³¡æ³¡
         /// </summary>
         private static void SpawnWaterBubble(PotData pot) {
             if (VaultUtils.isServer) {
@@ -537,7 +559,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //»æÖÆËùÓĞ¹ø
+            //ç»˜åˆ¶æ‰€æœ‰é”…
             foreach (var pot in pots) {
                 Vector2 screenPos = pot.WorldPosition - Main.screenPosition;
 
@@ -556,7 +578,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            //»æÖÆËùÓĞÆì¸Ë
+            //ç»˜åˆ¶æ‰€æœ‰æ——æ†
             foreach (var flagpole in flagpoles) {
                 Vector2 screenPos = flagpole.WorldPosition - Main.screenPosition;
 
@@ -571,7 +593,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆ¹ø
+        /// ç»˜åˆ¶é”…
         /// </summary>
         private void DrawPot(SpriteBatch sb, Vector2 screenPos, PotData pot) {
             if (OldDukeCampsite.OldPot == null) {
@@ -581,20 +603,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Texture2D potTexture = OldDukeCampsite.OldPot;
             Vector2 origin = potTexture.Size() / 2f;
 
-            //Ìø¶¯Ğ§¹ûÆ«ÒÆ
+            //è·³åŠ¨æ•ˆæœåç§»
             float bounceOffset = 0f;
             if (pot.IsBeingVisited && pot.InteractionIntensity > 0.3f) {
                 bounceOffset = MathF.Sin(pot.BouncePhase * 2f) * 4f * pot.InteractionIntensity;
             }
             Vector2 bounceVector = new Vector2(0, bounceOffset);
 
-            //»ù´¡·¢¹âÇ¿¶È
+            //åŸºç¡€å‘å…‰å¼ºåº¦
             float baseGlowIntensity = (MathF.Sin(pot.GlowTimer * 3f) * 0.5f + 0.5f) * 0.6f;
-            //½»»¥Ê±ÔöÇ¿·¢¹â
+            //äº¤äº’æ—¶å¢å¼ºå‘å…‰
             float glowIntensity = baseGlowIntensity * (1f + pot.InteractionIntensity * 1.8f);
             Color fireGlow = new Color(255, 120, 60) with { A = 0 };
 
-            //½»»¥Ê±µÄ¶îÍâ¹âÔÎ²ã
+            //äº¤äº’æ—¶çš„é¢å¤–å…‰æ™•å±‚
             if (pot.IsBeingVisited && pot.InteractionIntensity > 0.2f) {
                 for (int i = 0; i < 2; i++) {
                     float extraGlowScale = 1.4f + i * 0.15f;
@@ -614,7 +636,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 }
             }
 
-            //»ù´¡·¢¹â²ã
+            //åŸºç¡€å‘å…‰å±‚
             for (int i = 0; i < 3; i++) {
                 float glowScale = 1.1f + i * 0.08f;
                 float glowAlpha = glowIntensity * (1f - i * 0.3f);
@@ -633,7 +655,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 );
             }
 
-            //¹øÖ÷ÌåÇáÎ¢Ò¡»ÎĞ§¹û
+            //é”…ä¸»ä½“è½»å¾®æ‘‡æ™ƒæ•ˆæœ
             float potRotation = 0f;
             if (pot.IsBeingVisited && pot.InteractionIntensity > 0.4f) {
                 potRotation = MathF.Sin(pot.BouncePhase * 3f) * 0.15f * pot.InteractionIntensity;
@@ -653,7 +675,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆÆì¸Ë
+        /// ç»˜åˆ¶æ——æ†
         /// </summary>
         private void DrawFlagpole(SpriteBatch sb, Vector2 screenPos, FlagpoleData flagpole) {
             if (OldDukeCampsite.Oldflagpole == null) {
@@ -663,7 +685,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Texture2D flagTexture = OldDukeCampsite.Oldflagpole;
             Vector2 origin = new Vector2(flagTexture.Width / 2f, flagTexture.Height);
 
-            //·ç´µÒ¡°ÚĞ§¹û
+            //é£å¹æ‘‡æ‘†æ•ˆæœ
             float swayAmount = MathF.Sin(flagpole.SwayTimer * 2f) * 0.08f;
             Color lc = Lighting.GetColor((flagpole.WorldPosition / 16).ToPoint());
 
@@ -679,7 +701,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 0f
             );
 
-            //Ìí¼ÓÆìÖÄµÄÆ®¶¯¸Ğ»æÖÆÉÔÎ¢Í¸Ã÷µÄÖØÓ°
+            //æ·»åŠ æ——å¸œçš„é£˜åŠ¨æ„Ÿç»˜åˆ¶ç¨å¾®é€æ˜çš„é‡å½±
             for (int i = 1; i <= 2; i++) {
                 float offsetAmount = i * 3f;
                 float alpha = 0.3f / i;
@@ -700,7 +722,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Éú³ÉÕôÆûÁ£×Ó
+        /// ç”Ÿæˆè’¸æ±½ç²’å­
         /// </summary>
         private void SpawnSteamParticle(PotData pot, bool isEnhanced = false) {
             Vector2 spawnPos = pot.WorldPosition;
@@ -713,7 +735,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// Éú³ÉÆøÅİÁ£×Ó
+        /// ç”Ÿæˆæ°”æ³¡ç²’å­
         /// </summary>
         private void SpawnBubbleParticle(PotData pot) {
             Vector2 spawnPos = pot.WorldPosition;
@@ -726,15 +748,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ÀÏ¹«¾ôÓªµØ×°ÊÎÎïÆ·
+        /// è€å…¬çˆµè¥åœ°è£…é¥°ç‰©å“
         /// </summary>
         public static void Decorate(Vector2 position) {
 
         }
 
         /// <summary>
-        /// ÕôÆûÁ£×Ó
-        /// ´Ó¹øÖĞÉıÆğµÄÈÈÕôÆûĞ§¹û
+        /// è’¸æ±½ç²’å­
+        /// ä»é”…ä¸­å‡èµ·çš„çƒ­è’¸æ±½æ•ˆæœ
         /// </summary>
         internal class SteamParticlePRT
         {
@@ -753,7 +775,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 IsEnhanced = enhanced;
 
                 if (IsEnhanced) {
-                    //ÔöÇ¿ÕôÆûËÙ¶È¸ü¿ì·¶Î§¸ü¹ã
+                    //å¢å¼ºè’¸æ±½é€Ÿåº¦æ›´å¿«èŒƒå›´æ›´å¹¿
                     Velocity = new Vector2(
                         Main.rand.NextFloat(-1.2f, 1.2f),
                         Main.rand.NextFloat(-2.5f, -1.5f)
@@ -775,7 +797,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Life = 0f;
                 Rotation = Main.rand.NextFloat(0f, MathHelper.TwoPi);
 
-                //¸ù¾İ½»»¥Ç¿¶Èµ÷ÕûÑÕÉ«
+                //æ ¹æ®äº¤äº’å¼ºåº¦è°ƒæ•´é¢œè‰²
                 if (IsEnhanced) {
                     Color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(),
                         Color.Yellow, Color.Orange, Color.YellowGreen);
@@ -835,8 +857,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ÆøÅİÁ£×Ó
-        /// ¹øÄÚ·ĞÌÚµÄÆøÅİĞ§¹û
+        /// æ°”æ³¡ç²’å­
+        /// é”…å†…æ²¸è…¾çš„æ°”æ³¡æ•ˆæœ
         /// </summary>
         internal class BubbleParticlePRT
         {
