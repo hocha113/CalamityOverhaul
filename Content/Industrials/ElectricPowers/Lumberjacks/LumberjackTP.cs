@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         /// <summary>
         /// 工作模式(true=循环模式，砍伐后重新种树 false=清理模式，只砍伐不种树)
         /// </summary>
-        internal bool CycleMode = true;
+        internal bool CycleMode = false;
 
         //右键交互冷却
         private int interactCooldown;

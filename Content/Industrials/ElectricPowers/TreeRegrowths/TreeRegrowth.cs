@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
     /// 树木生长动画Actor，用于表示树木快速重新生长的演出效果
@@ -705,7 +705,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 Vector2 pos = basePos + new Vector2(sway, -h);
 
                 //树干纹理：交替深浅色
-                Color segmentColor = ((int)(h / 8f) % 2 == 0) ? trunkColor : darkColor;
+                Color segmentColor = (int)(h / 8f) % 2 == 0 ? trunkColor : darkColor;
                 segmentColor *= 0.6f * (1f - heightRatio * 0.3f);
 
                 Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 2, (int)width, 4);
@@ -732,7 +732,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 Vector2 pos = basePos + new Vector2(curve, -h);
 
                 //环状纹理
-                Color segmentColor = ((int)(h / 6f) % 2 == 0) ? trunkColor : darkColor;
+                Color segmentColor = (int)(h / 6f) % 2 == 0 ? trunkColor : darkColor;
                 segmentColor *= 0.7f;
 
                 Rectangle rect = new Rectangle((int)(pos.X - width / 2), (int)pos.Y - 2, (int)width, 5);
@@ -748,7 +748,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             Vector2 branchStart = new Vector2(basePos.X + sway, branchY);
 
             float actualLength = branch.Length * branchProgress;
-            float angle = branch.Direction > 0 ? -branch.Angle : (MathHelper.Pi + branch.Angle);
+            float angle = branch.Direction > 0 ? -branch.Angle : MathHelper.Pi + branch.Angle;
 
             Vector2 branchEnd = branchStart + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * actualLength;
 
@@ -898,7 +898,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             int petalCount = (int)(8 * progress);
             for (int i = 0; i < petalCount; i++) {
-                float fallProgress = ((time * 0.5f + i * 0.2f) % 1f);
+                float fallProgress = (time * 0.5f + i * 0.2f) % 1f;
                 float x = basePos.X + (float)Math.Sin(time * 2f + i) * 40f + rand.Next(-30, 30);
                 float y = basePos.Y - treeHeight + 50f + fallProgress * 150f;
 

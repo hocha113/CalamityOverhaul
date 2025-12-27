@@ -1,4 +1,5 @@
-﻿using InnoVault.Actors;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths;
+using InnoVault.Actors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

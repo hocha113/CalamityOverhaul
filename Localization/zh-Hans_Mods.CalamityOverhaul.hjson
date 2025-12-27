@@ -1497,6 +1497,23 @@ Items: {
 			清理模式只会砍伐树木，不会让树苗重新生长
 			'''
 	}
+
+	LifeWeaver: {
+		NoValidPositionText: 周围没有种植空位!
+		NoEnergyText: 电力不足!
+		DisplayName: 植树者
+		Tooltip: 消耗电力向周围种植树木
+	}
+
+	WGGLumberjack: {
+		DisplayName: 荒野中的伐木者
+		Tooltip: ""
+	}
+
+	WGGLifeWeaver: {
+		DisplayName: 荒野中的植树者
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1918,6 +1935,8 @@ Projectiles: {
 	MuraDimensionSlash.DisplayName: 次元斩
 	MuraSlashArc.DisplayName: 次元斩
 	MuraSlashLine.DisplayName: 次元斩
+	WGGLumberjackSaw.DisplayName: 生锈动力锯
+	WGGLifeWeaverAcorn.DisplayName: 橡子
 }
 
 Configs: {
@@ -8274,6 +8293,13 @@ QuestLogs: {
 			Description: 获得伐木者
 			QuestObjective.Description: 获得伐木者
 			DetailedDescription: 木材是工业与建筑的基石。告别原始的斧头，这台机器能通过消耗电力来自动化管理你的林场，确保持续不断的木材供应。
+		}
+
+		LifeWeaverQuest: {
+			// DisplayName: 植树造林
+			// Description: 获得植树者
+			// QuestObjective.Description: 获得植树者
+			// DetailedDescription: " "
 		}
 	}
 }

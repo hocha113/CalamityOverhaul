@@ -1504,6 +1504,23 @@ Items: {
 			Clear Mode only harvests trees without replanting
 			''' */
 	}
+
+	LifeWeaver: {
+		// NoValidPositionText: No valid planting spots nearby!
+		// NoEnergyText: Insufficient power!
+		// DisplayName: Life Weaver
+		// Tooltip: Consumes power to plant trees nearby
+	}
+
+	WGGLumberjack: {
+		// DisplayName: Wilderness Lumberjack
+		// Tooltip: ""
+	}
+
+	WGGLifeWeaver: {
+		// DisplayName: Wilderness Life Weaver
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1925,6 +1942,8 @@ Projectiles: {
 	// MuraDimensionSlash.DisplayName: Mura Dimension Slash
 	// MuraSlashArc.DisplayName: Mura Slash Arc
 	// MuraSlashLine.DisplayName: Mura Slash Line
+	// WGGLumberjackSaw.DisplayName: Lumberjack Saw
+	// WGGLifeWeaverAcorn.DisplayName: Acorn
 }
 
 Configs: {
@@ -8308,6 +8327,13 @@ QuestLogs: {
 			// Description: Obtain the Lumberjack
 			// QuestObjective.Description: Obtain the Lumberjack
 			// DetailedDescription: Wood is the cornerstone of industry and construction. Say goodbye to primitive axes; this machine consumes power to automate your tree farm, ensuring a continuous supply of timber.
+		}
+
+		LifeWeaverQuest: {
+			// DisplayName: 植树造林
+			// Description: 获得植树者
+			// QuestObjective.Description: 获得植树者
+			// DetailedDescription: " "
 		}
 	}
 }

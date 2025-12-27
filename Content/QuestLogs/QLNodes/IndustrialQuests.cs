@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
 using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
@@ -275,6 +276,37 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Lumberjack>()) > 0;
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class LifeWeaverQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "植树造林");
+            Description = this.GetLocalization(nameof(Description), () => "获得植树者");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<LifeWeaver>();
+            Position = new Vector2(150, 0);
+            AddParent<LumberjackQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得植树者"),
+                RequiredProgress = 1
+            });
+
+            AddReward(ItemID.Wood, 500);
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<LifeWeaver>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }

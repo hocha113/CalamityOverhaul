@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
     /// 橡子下落动画Actor，用于表示树木被砍伐后的种植演出
