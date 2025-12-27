@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText LeavingDiveText { get; private set; }
 
         private static bool IsLeavingDive;
+        private bool IsAcceptedCooperation;
         private bool CanDraw;
         private int deadCounter = 0;
         //场景控制标记
@@ -137,6 +138,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
+            if (!OldDukeCampsite.WannaToFight) {
+                //检查并更新初见场景状态
+                UpdateFirstMeetState(target);
+
+                OldDukeAIState currentState = (OldDukeAIState)State;
+
+                if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
+                    || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
+                    || IsAcceptedCooperation//如果玩家选择了合作，老公爵也会执行离开潜入海中的AI
+                    ) {
+                    return StorylineAI();
+                }
+            }
+
             if (OldDukeCampsite.IsGenerated && !OldDukeCampsite.WannaToFight && target.whoAmI == Main.myPlayer && !VaultUtils.isServer) {
                 if (BCKRef.Has) {
                     BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//对于Boss列表的适配，隐藏活跃状态，避免消失时弹出信息破坏氛围
@@ -162,19 +177,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     packet.Send();
                 }
                 return false;
-            }
-
-            if (!OldDukeCampsite.WannaToFight) {
-                //检查并更新初见场景状态
-                UpdateFirstMeetState(target);
-
-                OldDukeAIState currentState = (OldDukeAIState)State;
-
-                if ((isFirstMeet && !firstMeetCompleted)//如果是初见场景,执行特殊AI
-                    || currentState == OldDukeAIState.LeavingDive//正在离开潜入海中
-                    ) {
-                    return StorylineAI();
-                }
             }
 
             foreach (var p in Main.ActiveProjectiles) {
@@ -215,10 +217,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     break;
 
                 case OldDukeInteractionState.ChoseToFight:
-                case OldDukeInteractionState.AcceptedCooperation:
-                    //已选择战斗或已接受合作，不再触发初见场景
+                    //已选择战斗，不再触发初见场景
                     isFirstMeet = false;
                     firstMeetCompleted = true;
+                    break;
+
+                case OldDukeInteractionState.AcceptedCooperation:
+                    //已接受合作，不再触发初见场景
+                    isFirstMeet = false;
+                    firstMeetCompleted = true;
+                    IsAcceptedCooperation = true;
                     break;
 
                 case OldDukeInteractionState.Met:
@@ -347,6 +355,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         /// </summary>
         private void HandleLeavingDive() {
             Timer++;
+            //这里设置一下音乐锁定，避免离开后会短暂的试图播放原Boss音乐
+            if (npc.ModNPC is not null) {
+                npc.ModNPC.Music = -1;
+            }
 
             //向下游动
             if (SubState == 0) {
@@ -390,6 +402,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     npc.active = false;
                     npc.netUpdate = true;
                     IsLeavingDive = false;
+
+                    OldDukeEffect.IsActive = false;
+                    OldDukeEffect.Send();
                 }
             }
         }

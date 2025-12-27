@@ -28,8 +28,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             //钱币奖励
             AddCoinReward(loot, rand);
 
-            //老公爵相关掉落物
-            AddOldDukeDrops(loot, rand);
+            //根据进度添加老公爵掉落物
+            if (InWorldBossPhase.Downed23.Invoke() || InWorldBossPhase.Downed26.Invoke()) {
+                //老公爵相关掉落物
+                AddOldDukeDrops(loot, rand);
+            }
 
             //海洋主题物品
             AddOceanThemeItems(loot, rand);

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.ADVChoices;
+ï»¿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
     /// <summary>
-    /// ÓªµØ½»»¥¶Ô»°£¬Èı¸öÑ¡Ïî
+    /// è¥åœ°äº¤äº’å¯¹è¯ï¼Œä¸‰ä¸ªé€‰é¡¹
     /// </summary>
     internal class CampsiteInteractionDialogue : ADVScenarioBase, ILocalizedModType
     {
@@ -25,13 +25,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
-        //½ÇÉ«Ãû³Æ
+        //è§’è‰²åç§°
         public static LocalizedText OldDukeName { get; private set; }
 
-        //¶Ô»°Ì¨´Ê
+        //å¯¹è¯å°è¯
         public static LocalizedText GreetingLine { get; private set; }
 
-        //Ñ¡ÏîÎÄ±¾
+        //é€‰é¡¹æ–‡æœ¬
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
         public static LocalizedText Choice3Text { get; private set; }
@@ -39,68 +39,68 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public static LocalizedText Choice5Text { get; private set; }
         public static LocalizedText Choice2DisabledHint { get; private set; }
 
-        //Ñ¡Ïî»ØÓ¦
+        //é€‰é¡¹å›åº”
         public static LocalizedText Choice1Response { get; private set; }
         public static LocalizedText Choice2Response { get; private set; }
         public static LocalizedText Choice3Response { get; private set; }
 
-        //ÈÎÎñÍê³ÉºóµÄ¶Ô»°
+        //ä»»åŠ¡å®Œæˆåçš„å¯¹è¯
         public static LocalizedText QuestCompleteLine { get; private set; }
 
-        //ÈÎÎñÍê³ÉºóµÄ¶Ô»°
+        //ä»»åŠ¡å®Œæˆåçš„å¯¹è¯
         public static LocalizedText B1 { get; private set; }
         public static LocalizedText Choice4_R1 { get; private set; }
         public static LocalizedText Choice4_R2 { get; private set; }
         public static LocalizedText Choice4_R3 { get; private set; }
 
         /// <summary>
-        /// ÊÇ·ñÔÚ¶Ô»°¿ªÊ¼Ê±¸øÓèÍæ¼ÒÒ»±­²è
+        /// æ˜¯å¦åœ¨å¯¹è¯å¼€å§‹æ—¶ç»™äºˆç©å®¶ä¸€æ¯èŒ¶
         /// </summary>
         public static bool GiveTeaOnStart = false;
 
         public override void SetStaticDefaults() {
-            OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "ÀÏ¹«¾ô");
+            OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "è€å…¬çˆµ");
 
-            GreetingLine = this.GetLocalization(nameof(GreetingLine), () => "ÄãĞèÒªÊ²Ã´£¿");
+            GreetingLine = this.GetLocalization(nameof(GreetingLine), () => "ä½ éœ€è¦ä»€ä¹ˆï¼Ÿ");
 
-            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "ÎÒÀ´ÕÒÄã½»Ò×Ò»ÏÂ");
-            Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "ÄãÒªµÄ¶«Î÷ÎÒ¶¼ÅªÀ´ÁË");
-            Choice3Text = this.GetLocalization(nameof(Choice3Text), () => "ÎÒÖ»ÊÇÀ´Áï´ïÒ»È¦");
-            Choice4Text = this.GetLocalization(nameof(Choice4Text), () => "ÎÒÒªºÍÄãÇĞ´èÒ»ÏÂ");
-            Choice5Text = this.GetLocalization(nameof(Choice5Text), () => "ºÍÎÒÁÄÁÄÄãµÄ¹ıÈ¥°É");
-            Choice2DisabledHint = this.GetLocalization(nameof(Choice2DisabledHint), () => "º£Ñó²ĞÆ¬²»×ã");
+            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "æˆ‘æ¥æ‰¾ä½ äº¤æ˜“ä¸€ä¸‹");
+            Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "ä½ è¦çš„ä¸œè¥¿æˆ‘éƒ½å¼„æ¥äº†");
+            Choice3Text = this.GetLocalization(nameof(Choice3Text), () => "æˆ‘åªæ˜¯æ¥æºœè¾¾ä¸€åœˆ");
+            Choice4Text = this.GetLocalization(nameof(Choice4Text), () => "æˆ‘è¦å’Œä½ åˆ‡ç£‹ä¸€ä¸‹");
+            Choice5Text = this.GetLocalization(nameof(Choice5Text), () => "å’Œæˆ‘èŠèŠä½ çš„è¿‡å»å§");
+            Choice2DisabledHint = this.GetLocalization(nameof(Choice2DisabledHint), () => "æµ·æ´‹æ®‹ç‰‡ä¸è¶³");
 
-            Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "¿´¿´ÎÒÕâÀïÓĞÊ²Ã´°É");
-            Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "ºÜºÃ£¬ÕâĞ©ËéÆ¬×ã¹»ÁË¡£ÕâÊÇÄãÓ¦µÃµÄ½±Àø");
+            Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "çœ‹çœ‹æˆ‘è¿™é‡Œæœ‰ä»€ä¹ˆå§");
+            Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "å¾ˆå¥½ï¼Œè¿™äº›ç¢ç‰‡è¶³å¤Ÿäº†ã€‚è¿™æ˜¯ä½ åº”å¾—çš„å¥–åŠ±");
             Choice3Response = this.GetLocalization(nameof(Choice3Response), () => "......");
 
-            QuestCompleteLine = this.GetLocalization(nameof(QuestCompleteLine), () => "àÅ...ÄãÓĞÊ²Ã´ĞÂ·¢ÏÖÂğ£¿ÎÒÏÖÔÚºÜÃ¦");
+            QuestCompleteLine = this.GetLocalization(nameof(QuestCompleteLine), () => "å—¯...ä½ æœ‰ä»€ä¹ˆæ–°å‘ç°å—ï¼Ÿæˆ‘ç°åœ¨å¾ˆå¿™");
 
-            B1 = this.GetLocalization(nameof(B1), () => "ÎÒÎ´À´¼¸Ìì»á°ÑÈ«²¿Ê±¼ä»¨ÔÚ½â¶ÁÕâĞ©²ĞÆ¬ÉÏ£¬Íê³ÉÁËÖ®ºóÎÒ»áÍ¨ÖªÄãµÄ");
-            Choice4_R1 = this.GetLocalization(nameof(Choice4_R1), () => "ÎÒËäÈ»ÀÏÁË£¬µ«ÄêÇáÊ±ºòµÄ¼¼ÇÉ¿É»¹Ã»ÂäÏÂ");
-            Choice4_R2 = this.GetLocalization(nameof(Choice4_R2), () => "ÄÇ¾ÍÀ´°É");
-            Choice4_R3 = this.GetLocalization(nameof(Choice4_R3), () => "ÄãÕÒÎÒÁ·Ï°Õ½¶·¼¼ÇÉ²¢²»ÊÇ¸öÃ÷ÖÇµÄ¾Ù¶¯...");
+            B1 = this.GetLocalization(nameof(B1), () => "æˆ‘æœªæ¥å‡ å¤©ä¼šæŠŠå…¨éƒ¨æ—¶é—´èŠ±åœ¨è§£è¯»è¿™äº›æ®‹ç‰‡ä¸Šï¼Œå®Œæˆäº†ä¹‹åæˆ‘ä¼šé€šçŸ¥ä½ çš„");
+            Choice4_R1 = this.GetLocalization(nameof(Choice4_R1), () => "æˆ‘è™½ç„¶è€äº†ï¼Œä½†å¹´è½»æ—¶å€™çš„æŠ€å·§å¯è¿˜æ²¡è½ä¸‹");
+            Choice4_R2 = this.GetLocalization(nameof(Choice4_R2), () => "é‚£å°±æ¥å§");
+            Choice4_R3 = this.GetLocalization(nameof(Choice4_R3), () => "ä½ æ‰¾æˆ‘ç»ƒä¹ æˆ˜æ–—æŠ€å·§å¹¶ä¸æ˜¯ä¸ªæ˜æ™ºçš„ä¸¾åŠ¨...");
         }
 
         protected override void Build() {
-            //×¢²áÀÏ¹«¾ôÁ¢»æ
+            //æ³¨å†Œè€å…¬çˆµç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(OldDukeName.Value, OldDukeCampsite.OldDuke, OldDukeCampsite.PortraitRec, null, true);
 
-            //¼ì²éÈÎÎñÊÇ·ñÒÑÍê³É
+            //æ£€æŸ¥ä»»åŠ¡æ˜¯å¦å·²å®Œæˆ
             bool questCompleted = false;
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 questCompleted = save.OldDukeFindFragmentsQuestCompleted;
             }
 
             if (questCompleted) {
-                //ÈÎÎñÒÑÍê³É£¬ÏÔÊ¾¼òµ¥¶Ô»°
+                //ä»»åŠ¡å·²å®Œæˆï¼Œæ˜¾ç¤ºç®€å•å¯¹è¯
                 AddWithChoices(
                     OldDukeName.Value,
                     QuestCompleteLine.Value,
                     [
                         new Choice(Choice1Text.Value, Choice1),
                         new Choice(Choice5Text.Value, Choice5),
-                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//ÕæµÄÓĞ¿ÉÄÜ´¥·¢Õâ¸öno enabled¿ÉÄÜĞÔÂğ£¿
+                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//çœŸçš„æœ‰å¯èƒ½è§¦å‘è¿™ä¸ªno enabledå¯èƒ½æ€§å—ï¼Ÿ
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 );
             }
             else {
-                //ÈÎÎñ½øĞĞÖĞ£¬ÏÔÊ¾Ñ¡Ïî
+                //ä»»åŠ¡è¿›è¡Œä¸­ï¼Œæ˜¾ç¤ºé€‰é¡¹
                 int fragmentCount = FindFragmentUI.GetFragmentCount();
                 bool hasEnoughFragments = fragmentCount >= 777;
 
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     [
                         new Choice(Choice1Text.Value, Choice1),
                         new Choice(Choice2Text.Value, Choice2, enabled: hasEnoughFragments, disabledHint: hasEnoughFragments ? string.Empty : Choice2DisabledHint.Value),
-                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//ÕæµÄÓĞ¿ÉÄÜ´¥·¢Õâ¸öno enabled¿ÉÄÜĞÔÂğ£¿
+                        new Choice(Choice4Text.Value, Choice4, enabled: !NPC.AnyNPCs(CWRID.NPC_OldDuke)),//çœŸçš„æœ‰å¯èƒ½è§¦å‘è¿™ä¸ªno enabledå¯èƒ½æ€§å—ï¼Ÿ
                         new Choice(Choice3Text.Value, Choice3),
                     ],
                     onStart: GiveTea,
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return;
             }
             GiveTeaOnStart = false;
-            //¸øÒ»±­²è
+            //ç»™ä¸€æ¯èŒ¶
             ADVRewardPopup.ShowReward(
                 ItemID.Teacup,
                 1,
@@ -156,14 +156,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// ÏûºÄº£Ñó²ĞÆ¬
+        /// æ¶ˆè€—æµ·æ´‹æ®‹ç‰‡
         /// </summary>
         private static void ConsumeFragments(int amount) {
             Player player = Main.LocalPlayer;
             int fragmentType = ModContent.ItemType<Oceanfragments>();
             int remaining = amount;
             var bigBags = player.GetBigBagItems() ?? [];
-            //ÒÀ´Î´Ó¸÷¸ö´¢ÎïÎ»ÖÃÏûºÄ
+            //ä¾æ¬¡ä»å„ä¸ªå‚¨ç‰©ä½ç½®æ¶ˆè€—
             Item[][] inventories = [
                 player.inventory,
                     player.bank.item,
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
         }
 
-        //Ñ¡Ïî1£º´ò¿ªÉÌµê
+        //é€‰é¡¹1ï¼šæ‰“å¼€å•†åº—
         private void Choice1() {
             ScenarioManager.Reset<CampsiteInteractionDialogue_Choice1>();
             ScenarioManager.Start<CampsiteInteractionDialogue_Choice1>();
@@ -205,16 +205,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //´ò¿ªÉÌµê
+                //æ‰“å¼€å•†åº—
+                OldDukeShopUI.Instance.InitializeShop();
                 OldDukeShopUI.Instance.Active = true;
                 OldDukeEffect.IsActive = false;
                 OldDukeEffect.Send();
             }
         }
 
-        //Ñ¡Ïî2£ºÌá½»º£Ñó²ĞÆ¬
+        //é€‰é¡¹2ï¼šæäº¤æµ·æ´‹æ®‹ç‰‡
         private void Choice2() {
-            //ÏûºÄº£Ñó²ĞÆ¬
+            //æ¶ˆè€—æµ·æ´‹æ®‹ç‰‡
             ConsumeFragments(777);
             ScenarioManager.Reset<CampsiteInteractionDialogue_Choice2>();
             ScenarioManager.Start<CampsiteInteractionDialogue_Choice2>();
@@ -232,12 +233,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             private static void Give() {
-                //±ê¼ÇÈÎÎñÍê³É
+                //æ ‡è®°ä»»åŠ¡å®Œæˆ
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                     save.OldDukeFindFragmentsQuestCompleted = true;
                 }
 
-                //¸øÓè½±Àø
+                //ç»™äºˆå¥–åŠ±
                 ADVRewardPopup.ShowReward(
                     ModContent.ItemType<OceanRaiders>(),
                     1,
@@ -264,7 +265,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
         }
 
-        //Ñ¡Ïî3£º½áÊø¶Ô»°
+        //é€‰é¡¹3ï¼šç»“æŸå¯¹è¯
         private void Choice3() {
             ScenarioManager.Reset<CampsiteInteractionDialogue_Choice3>();
             ScenarioManager.Start<CampsiteInteractionDialogue_Choice3>();
@@ -286,7 +287,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
         }
 
-        //Ñ¡Ïî4£ºÇĞ´è
+        //é€‰é¡¹4ï¼šåˆ‡ç£‹
         private void Choice4() {
             ScenarioManager.Reset<CampsiteInteractionDialogue_Choice4>();
             ScenarioManager.Start<CampsiteInteractionDialogue_Choice4>();
@@ -330,7 +331,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
         }
 
-        //Ñ¡Ïî5£ºÁÄÌì
+        //é€‰é¡¹5ï¼šèŠå¤©
         private void Choice5() {
             ScenarioManager.Reset<CampsiteChatDialogue>();
             ScenarioManager.Start<CampsiteChatDialogue>();

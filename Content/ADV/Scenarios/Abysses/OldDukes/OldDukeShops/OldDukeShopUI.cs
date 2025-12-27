@@ -56,9 +56,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 return;
             }
 
-            //初始化商店
-            InitializeShop();
-
             //初始化组件（延迟初始化，确保shopItems已填充）
             if (interaction == null) {
                 interaction = new OldDukeShopInteraction(player, shopItems);
@@ -148,8 +145,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         /// 初始化商店物品
         /// </summary>
         public void InitializeShop() {
-            if (shopItems.Count > 0) return;
-            //添加商店物品
+            shopItems.Clear();
             OldDukeShopHandle.Handle(shopItems);
         }
     }

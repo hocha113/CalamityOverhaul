@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.Scenarios;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -112,6 +113,18 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.WorldData);
                 }
+            }
+
+            //先清理旧营地
+            if (VaultUtils.isServer) {
+                OldDukeCampsite.ClearCampsite();
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+                packet.Write(false);
+                packet.Send();
+            }
+            else if (VaultUtils.isSinglePlayer) {
+                OldDukeCampsite.ClearCampsite();
             }
 
             //关闭当前可能存在的对话框
