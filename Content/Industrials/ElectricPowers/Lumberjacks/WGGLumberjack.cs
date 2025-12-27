@@ -553,6 +553,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 //只缓慢跟踪，让玩家有机会跑开
                 Vector2 slowTrack = player.Center + new Vector2(0, -140f);
                 hoverTargetPos = Vector2.Lerp(hoverTargetPos, slowTrack, 0.02f);
+                strikeTargetPos = Vector2.Lerp(strikeTargetPos, player.Center, 0.1f);
             }
 
             Projectile.Center = Vector2.Lerp(Projectile.Center, hoverTargetPos + shake, 0.2f);
@@ -571,14 +572,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.7f, Pitch = 0.8f }, Projectile.Center);
             }
 
+            
+
             //蓄力完成，开始下砸
             if (attackTimer >= 50) {
                 currentState = SawState.Diving;
                 attackTimer = 0;
-                //更新目标到玩家当前位置
-                if (player != null && player.Alives()) {
-                    strikeTargetPos = player.Center;
-                }
+
                 SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
 
                 //消耗能量

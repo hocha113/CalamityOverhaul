@@ -630,9 +630,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 ItemID.StaffofRegrowth, ItemID.FlowerBoots, ItemID.NaturesGift
             ];
 
-            int chestNum = 0;
             foreach (var chestTag in regionSaveData.Chests) {
-                chestNum++;
                 ChestSaveData chestSaveData = ChestSaveData.FromTag(chestTag);
                 //需要注意这里chestSaveData拿到的坐标只是相对坐标，所以需要加上orig
                 int chestIndex = Chest.FindChest(orig.X + chestSaveData.X, orig.Y + chestSaveData.Y);
@@ -641,34 +639,31 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
 
                 Chest chest = Main.chest[chestIndex];
+                int maxSlot = chest.item.Length;
                 int slot = 0;
 
-                //根据箱子序号放置不同的物品
-                if (chestNum == 1) {
-                    //第一个箱子放一些基础资源
-                    chest.item[slot++] = new Item(ItemID.Wood, WorldGen.genRand.Next(50, 100));
-                    chest.item[slot++] = new Item(ItemID.Acorn, WorldGen.genRand.Next(10, 20));
-                    chest.item[slot++] = new Item(ItemID.Torch, WorldGen.genRand.Next(20, 40));
-                    if (WorldGen.genRand.NextBool(3)) {
-                        chest.item[slot++] = new Item(rareItems[WorldGen.genRand.Next(rareItems.Length)], 1);
-                    }
+                //固定物品
+                if (slot < maxSlot) chest.item[slot++] = new Item(ItemID.Wood, WorldGen.genRand.Next(50, 100));
+                if (slot < maxSlot) chest.item[slot++] = new Item(ItemID.Acorn, WorldGen.genRand.Next(10, 20));
+                if (slot < maxSlot) chest.item[slot++] = new Item(ItemID.HerbBag, WorldGen.genRand.Next(10, 16));
+                if (slot < maxSlot && WorldGen.genRand.NextBool(3)) {
+                    chest.item[slot++] = new Item(rareItems[WorldGen.genRand.Next(rareItems.Length)], 1);
                 }
-                else {
-                    //其他箱子随机放置物品
-                    int itemCount = WorldGen.genRand.Next(4, 8);
-                    for (int i = 0; i < itemCount && slot < chest.item.Length; i++) {
-                        int rand = WorldGen.genRand.Next(100);
-                        if (rand < 60) {
-                            chest.item[slot++] = new Item(commonItems[WorldGen.genRand.Next(commonItems.Length)]
-                                , WorldGen.genRand.Next(5, 20));
-                        }
-                        else if (rand < 90) {
-                            chest.item[slot++] = new Item(uncommonItems[WorldGen.genRand.Next(uncommonItems.Length)]
-                                , WorldGen.genRand.Next(1, 5));
-                        }
-                        else {
-                            chest.item[slot++] = new Item(rareItems[WorldGen.genRand.Next(rareItems.Length)], 1);
-                        }
+
+                //随机物品
+                int itemCount = WorldGen.genRand.Next(4, 8);
+                for (int i = 0; i < itemCount && slot < maxSlot; i++) {
+                    int rand = WorldGen.genRand.Next(100);
+                    if (rand < 60) {
+                        chest.item[slot++] = new Item(commonItems[WorldGen.genRand.Next(commonItems.Length)]
+                            , WorldGen.genRand.Next(5, 20));
+                    }
+                    else if (rand < 90) {
+                        chest.item[slot++] = new Item(uncommonItems[WorldGen.genRand.Next(uncommonItems.Length)]
+                            , WorldGen.genRand.Next(1, 5));
+                    }
+                    else {
+                        chest.item[slot++] = new Item(rareItems[WorldGen.genRand.Next(rareItems.Length)], 1);
                     }
                 }
             }
