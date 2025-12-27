@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Items.Placeable;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
@@ -18,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public Player player => Main.player[Projectile.owner];
         private ref float Time => ref Projectile.ai[0];
         private bool hasSpawnedDimensionSlash = false;
-
+        private bool sound;
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
 
         public override void SetDefaults() {
@@ -39,23 +38,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
         }
 
-        public override void OnSpawn(IEntitySource source) {
-            //生成次元斩主控弹幕
-            if (Projectile.IsOwnedByLocalPlayer() && CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
-                    , Vector2.Zero, ModContent.ProjectileType<MuraDimensionSlash>(), 0, 0, Projectile.owner);
-                hasSpawnedDimensionSlash = true;
-            }
-        }
+        private bool spwan;
 
         public override void AI() {
+            if (!spwan) {
+                spwan = true;
+                //生成次元斩主控弹幕
+                if (Projectile.IsOwnedByLocalPlayer() && CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
+                        , Vector2.Zero, ModContent.ProjectileType<MuraDimensionSlash>(), 0, 0, Projectile.owner);
+                    hasSpawnedDimensionSlash = true;
+                }
+            }
             Main.LocalPlayer.CWR().EndSkillEffectStartBool = true;
-            Projectile.Center = Main.player[Projectile.owner].Center;
 
             //如果已经生成了次元斩演出，让次元斩弹幕控制时间冻结
             if (!hasSpawnedDimensionSlash) {
                 if (Time < CanDamageTime + 10) {
                     CWRWorld.TimeFrozenTick = 2;
+                }
+            }
+
+            if (!sound) {
+                if (Projectile.owner.TryGetPlayer(out var player) && player.CountProjectilesOfID<MuraExecutionCut>() > 0) {
+                    sound = true;
+                    SoundEngine.PlaySound(CWRSound.INeedMorePower);
                 }
             }
 

@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void PostDraw(Color lightColor) {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             List<ColoredVertex> vertices = new List<ColoredVertex>();
 
             float a = Projectile.localAI[1];
@@ -49,9 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             float flipRotation = Projectile.ai[2];
 
             //为村正添加深红色调
-            Color finalColor = Projectile.ai[0] == 0
-                ? drawColor
-                : Color.Lerp(drawColor, Color.IndianRed, 0.6f);
+            Color finalColor = Color.IndianRed;
 
             Vector2 v1 = new Vector2(-300, -300).RotatedBy(Projectile.localAI[0]);
             vertices.Add(new ColoredVertex(Projectile.Center - Main.screenPosition
@@ -76,6 +76,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (vertices.Count > 3) {
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertices.ToArray(), 0, vertices.Count - 2);
             }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
         }
     }
 }

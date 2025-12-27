@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Owner.velocity += ver * 10;
                     Item.Initialize();
-                    Item.CWR().ai[0] += 5;
+                    Item.CWR().ai[0] += 10;
                     if (Item.CWR().ai[0] > 10) {
                         Item.CWR().ai[0] = 10;
                     }

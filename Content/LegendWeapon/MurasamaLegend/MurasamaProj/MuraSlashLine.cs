@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
@@ -33,34 +32,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         }
 
-        public override void OnSpawn(IEntitySource source) {
-            distance = (Main.LocalPlayer.Center - Projectile.Center).Length();
-            Projectile.ai[2] = (Main.LocalPlayer.Center - Projectile.Center).ToRotation();
-            Projectile.localAI[1] = 420f / distance;
-            Projectile.ai[1] = 2f / distance;
-            Projectile.timeLeft = 80 + (int)Projectile.ai[0] * 110 + (int)distance / 40;
-        }
-
         public override bool ShouldUpdatePosition() => false;
-
+        private bool spwan;
         public override void AI() {
-            timeSinceSpawn++;
-
-            if (30 < timeSinceSpawn && timeSinceSpawn < 51) {
-                drawColor = Color.White * ((50 - timeSinceSpawn) * 0.05f);
-                if (Projectile.ai[0] > 0) {
-                    drawColor.A = 255;
-                }
+            if (!spwan) {
+                spwan = true;
+                distance = (Main.LocalPlayer.Center - Projectile.Center).Length();
+                Projectile.ai[2] = (Main.LocalPlayer.Center - Projectile.Center).ToRotation();
+                Projectile.localAI[1] = 420f / distance;
+                Projectile.ai[1] = 2f / distance;
+                Projectile.timeLeft = 80 + (int)Projectile.ai[0] * 110 + (int)distance / 40;
             }
-
-            if (160 + (int)distance / 40 < timeSinceSpawn) {
-                drawColor *= 0.7f;
-            }
-
             Projectile.localAI[1] += 8f / distance;
+            if (Projectile.owner.TryGetPlayer(out var player) && player.CountProjectilesOfID<MuraExecutionCut>() > 0) {
+                Projectile.extraUpdates = 4;
+            }
         }
 
         public override void PostDraw(Color lightColor) {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             List<ColoredVertex> vertices = new List<ColoredVertex>();
 
             float a = Projectile.localAI[1];
@@ -68,9 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             float flipRotation = Projectile.ai[2];
 
             //深红色调
-            Color finalColor = Projectile.ai[0] > 0
-                ? Color.Lerp(drawColor, new Color(150, 30, 50), 0.5f)
-                : drawColor;
+            Color finalColor = Color.White;
 
             Vector2 v1 = new Vector2(-25, -600);
             vertices.Add(new ColoredVertex(Projectile.Center - Main.screenPosition
@@ -93,6 +82,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (vertices.Count > 3) {
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertices.ToArray(), 0, vertices.Count - 2);
             }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
         }
     }
 }

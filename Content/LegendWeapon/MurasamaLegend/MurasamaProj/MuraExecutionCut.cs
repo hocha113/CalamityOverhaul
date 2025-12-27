@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 if (!VaultUtils.isServer) {
                     float maxNum = 233;
                     for (int i = 0; i < maxNum; i++) {
-                        Vector2 ver = origVer.UnitVector() * (i / maxNum * maxNum + 0.1f);
+                        Vector2 ver = origVer.UnitVector() * (i + 10.2f);
                         Color color = VaultUtils.MultiStepColorLerp(i / maxNum, Color.DarkRed, Color.IndianRed);
                         BasePRT spark = new PRT_Spark(Projectile.Center, ver, false, 119, 2.3f, color);
                         //不要在屏幕外面就消除了，否则玩家什么都看不到

@@ -92,8 +92,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //径向模糊（能量汇聚/爆发效果）
             if (slash.RadialBlurStrength > 0) {
-                MuraSlayAllAssets.RadialBlur.Parameters["center"].SetValue(new Vector2(0.5f, 0.5f));
-                MuraSlayAllAssets.RadialBlur.Parameters["strength"].SetValue(slash.RadialBlurStrength);
+                Vector2 offset = new Vector2(0.5f, 0.5f);
+                Projectile p1 = null;
+                foreach (var p in Main.projectile) {
+                    if (p.active && p.type == ModContent.ProjectileType<EndSkillEffectStart>()) {
+                        p1 = p;
+                    }
+                }
+                if (p1 != null) {
+                    var p1Pos = p1.Center - Main.screenPosition;
+                    offset = new Vector2(p1Pos.X / Main.screenWidth, p1Pos.Y / Main.screenHeight);
+                }
+                MuraSlayAllAssets.RadialBlur.Parameters["center"].SetValue(offset);
+                MuraSlayAllAssets.RadialBlur.Parameters["strength"].SetValue(slash.RadialBlurStrength / 2f);
                 MuraSlayAllAssets.RadialBlur.CurrentTechnique.Passes[0].Apply();
             }
 
@@ -159,23 +170,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             //绘制处理后的实时画面
             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             sb.End();
-
-            ////绘制叠加效果层
-            //sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-
-            ////屏幕闪烁效果（暗红色闪光）
-            //if (slash.ScreenDarkness > 0) {
-            //    sb.Draw(MuraSlayAllAssets.BlackDot, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
-            //        , new Color(80, 30, 40, (int)Math.Min(slash.ScreenDarkness, 255)));
-            //}
-
-            ////渐变滤镜效果（收尾阶段的红色调）
-            //if (slash.FilterIntensity > 0 && slash.FilterIntensity < 2) {
-            //    sb.Draw(TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
-            //        , new Color(200, 80, 100) * slash.FilterIntensity);
-            //}
-
-            //sb.End();
         }
     }
 }
