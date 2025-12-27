@@ -177,27 +177,51 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             Vector2 start = GetLaunchPosition();
             Vector2 targetPos = target.Center;
 
-            //预判玩家移动
+            //轻微预判玩家移动，但不要太准确
             Vector2 playerVel = target.velocity;
-            float predictTime = 40f;
-            targetPos += playerVel * predictTime * 0.5f;
+            float predictTime = 20f;
+            targetPos += playerVel * predictTime * 0.3f;
 
             Vector2 diff = targetPos - start;
+            float horizontalDist = Math.Abs(diff.X);
             float gravity = WGGLifeWeaverAcorn.Gravity;
 
-            //尝试不同的飞行时间
-            for (float testTime = 30f; testTime <= 120f; testTime += 8f) {
+            //根据水平距离计算基础飞行时间，确保足够的抛物线高度
+            //距离越近飞行时间越长，产生更高的弧线
+            float minFlightTime = 70f + (400f - Math.Min(horizontalDist, 400f)) * 0.15f;
+            float maxFlightTime = 140f;
+
+            //尝试不同的飞行时间，优先选择较长的飞行时间以产生更高弧线
+            for (float testTime = minFlightTime; testTime <= maxFlightTime; testTime += 10f) {
                 float vx = diff.X / testTime;
 
-                //限制水平速度
-                if (Math.Abs(vx) > 14f) continue;
+                //限制水平速度，让玩家有时间反应
+                float maxHorizontalSpeed = 6f;
+                if (Math.Abs(vx) > maxHorizontalSpeed) continue;
 
                 //计算垂直初速度
                 float vy = (diff.Y - 0.5f * gravity * testTime * testTime) / testTime;
 
-                //检查速度范围
-                if (vy > 5f) continue;
-                if (vy < -18f) continue;
+                //确保有足够的向上初速度产生明显弧线
+                //即使目标在同一水平线，也要有向上抛射的感觉
+                float minUpwardVelocity = -4f;//至少要有向上的初速度
+                if (vy > minUpwardVelocity) {
+                    //如果初速度不够向上，增加飞行时间重新计算
+                    continue;
+                }
+
+                //限制最大向上速度
+                if (vy < -14f) continue;
+
+                //计算抛物线最高点，确保有足够的弧度
+                float peakTime = -vy / gravity;
+                float peakHeight = start.Y + vy * peakTime + 0.5f * gravity * peakTime * peakTime;
+                float arcHeight = start.Y - peakHeight;
+
+                //确保弧线高度至少有80像素，增加可见性和躲避时间
+                if (arcHeight < 80f && horizontalDist < 300f) {
+                    continue;
+                }
 
                 //验证轨迹
                 if (ValidateTrajectoryPath(start, new Vector2(vx, vy), testTime)) {
@@ -205,6 +229,40 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                     flightTime = testTime;
                     return true;
                 }
+            }
+
+            //如果常规方法失败，使用高弧线备选方案
+            return TryHighArcFallback(start, targetPos, gravity, out velocity, out flightTime);
+        }
+
+        /// <summary>
+        /// 高弧线备选方案，用于近距离或复杂地形
+        /// </summary>
+        private bool TryHighArcFallback(Vector2 start, Vector2 targetPos, float gravity, out Vector2 velocity, out float flightTime) {
+            velocity = Vector2.Zero;
+            flightTime = 0f;
+
+            Vector2 diff = targetPos - start;
+            float horizontalDist = Math.Abs(diff.X);
+
+            //使用固定的高弧线
+            flightTime = 100f + horizontalDist * 0.1f;
+            float vx = diff.X / flightTime;
+
+            //限制水平速度
+            if (Math.Abs(vx) > 5f) {
+                vx = Math.Sign(vx) * 5f;
+                flightTime = diff.X / vx;
+            }
+
+            float vy = (diff.Y - 0.5f * gravity * flightTime * flightTime) / flightTime;
+
+            //确保向上发射
+            vy = Math.Min(vy, -6f);
+
+            if (ValidateTrajectoryPath(start, new Vector2(vx, vy), flightTime)) {
+                velocity = new Vector2(vx, vy);
+                return true;
             }
 
             return false;
@@ -330,7 +388,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
     internal class WGGLifeWeaverAcorn : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public const float Gravity = 0.28f;
+        public const float Gravity = 0.22f;//降低重力让弧线更明显
 
         //物理参数
         private Vector2 initialVelocity;
@@ -341,6 +399,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         //视觉效果
         private float rotationSpeed;
         private int particleTimer;
+        private float glowIntensity;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1000;
@@ -362,8 +421,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 initialVelocity = Projectile.velocity;
                 startPosition = Projectile.Center;
                 expectedFlightTime = Projectile.ai[0];
-                rotationSpeed = Main.rand.NextFloat(0.1f, 0.18f) * (initialVelocity.X > 0 ? 1 : -1);
+                rotationSpeed = Main.rand.NextFloat(0.08f, 0.12f) * (initialVelocity.X > 0 ? 1 : -1);
+                glowIntensity = 0f;
                 Projectile.localAI[0] = 1f;
+
+                //发射时的明显视觉提示
+                SpawnLaunchEffect();
             }
 
             currentFlightTime++;
@@ -379,8 +442,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             float vy = initialVelocity.Y + Gravity * t;
             Projectile.velocity = new Vector2(vx, vy);
 
-            //旋转
-            Projectile.rotation += rotationSpeed;
+            //旋转速度随飞行时间略微变化
+            Projectile.rotation += rotationSpeed * (1f + vy * 0.02f);
+
+            //光晕强度随时间脉动
+            glowIntensity = 0.3f + (float)Math.Sin(currentFlightTime * 0.15f) * 0.2f;
 
             //轨迹粒子
             SpawnTrailParticles();
@@ -391,24 +457,54 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
+        /// <summary>
+        /// 发射时的视觉效果
+        /// </summary>
+        private void SpawnLaunchEffect() {
+            if (Main.netMode == NetmodeID.Server) return;
+
+            //明显的发射粒子爆发
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
+                Vector2 dustVel = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 3f;
+                dustVel += initialVelocity * 0.5f;
+                Dust dust = Dust.NewDustDirect(Projectile.Center, 6, 6, DustID.GreenFairy, dustVel.X, dustVel.Y, 100, default, 1.2f);
+                dust.noGravity = true;
+            }
+
+            //上升的光点
+            for (int i = 0; i < 4; i++) {
+                Vector2 dustVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, -1f));
+                Dust dust = Dust.NewDustDirect(Projectile.Center, 4, 4, DustID.FireworksRGB, dustVel.X, dustVel.Y, 150, new Color(100, 255, 100), 0.8f);
+                dust.noGravity = true;
+            }
+        }
+
         private void SpawnTrailParticles() {
             if (Main.netMode == NetmodeID.Server) return;
 
             particleTimer++;
 
-            //绿色毒性轨迹
-            if (particleTimer % 2 == 0) {
-                Vector2 dustVel = -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f);
-                Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 4, 8, 8, DustID.CursedTorch, dustVel.X, dustVel.Y, 100, default, 0.8f);
+            //绿色轨迹，频率降低让轨迹更清晰
+            if (particleTimer % 3 == 0) {
+                Vector2 dustVel = -Projectile.velocity * 0.05f;
+                Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 4, 8, 8, DustID.CursedTorch, dustVel.X, dustVel.Y, 100, default, 0.9f);
                 dust.noGravity = true;
-                dust.fadeIn = 0.6f;
+                dust.fadeIn = 0.8f;
             }
 
-            //毒性闪光
-            if (particleTimer % 6 == 0) {
-                Dust sparkle = Dust.NewDustDirect(Projectile.Center, 4, 4, DustID.GreenFairy, 0, 0, 150, default, 0.6f);
+            //偶尔的闪光粒子
+            if (particleTimer % 10 == 0) {
+                Dust sparkle = Dust.NewDustDirect(Projectile.Center, 4, 4, DustID.GreenFairy, 0, 0, 150, default, 0.7f);
                 sparkle.noGravity = true;
-                sparkle.velocity = Projectile.velocity * 0.15f;
+                sparkle.velocity *= 0.1f;
+            }
+
+            //下落阶段增加警告粒子
+            if (Projectile.velocity.Y > 2f && particleTimer % 4 == 0) {
+                Vector2 dustVel = Main.rand.NextVector2Circular(1f, 1f);
+                Dust dust = Dust.NewDustDirect(Projectile.Center, 6, 6, DustID.YellowTorch, dustVel.X, dustVel.Y, 100, default, 0.6f);
+                dust.noGravity = true;
             }
         }
 
@@ -441,28 +537,34 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             Texture2D texture = TextureAssets.Item[ItemID.Acorn].Value;
             Vector2 origin = texture.Size() / 2f;
 
-            //绘制拖影
-            if (Projectile.velocity.LengthSquared() > 4f) {
-                for (int i = 1; i <= 4; i++) {
-                    Vector2 trailPos = Projectile.Center - Projectile.velocity * i * 0.25f;
-                    float trailAlpha = 1f - i * 0.2f;
-                    float trailScale = 1f - i * 0.1f;
-                    Color trailColor = lightColor * trailAlpha * 0.4f;
+            //绘制拖影，让轨迹更明显
+            int trailCount = 5;
+            for (int i = 1; i <= trailCount; i++) {
+                Vector2 trailPos = Projectile.Center - Projectile.velocity * i * 0.4f;
+                float trailAlpha = 1f - i / (float)(trailCount + 1);
+                float trailScale = 1f - i * 0.08f;
+                Color trailColor = Color.Lerp(lightColor, new Color(100, 200, 100), 0.3f) * trailAlpha * 0.5f;
 
-                    Main.EntitySpriteDraw(texture, trailPos - Main.screenPosition, null, trailColor,
-                        Projectile.rotation - rotationSpeed * i, origin, trailScale, SpriteEffects.None, 0);
-                }
+                Main.EntitySpriteDraw(texture, trailPos - Main.screenPosition, null, trailColor,
+                    Projectile.rotation - rotationSpeed * i * 1.5f, origin, trailScale, SpriteEffects.None, 0);
             }
 
             //主体绘制
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, lightColor,
                 Projectile.rotation, origin, 1f, SpriteEffects.None, 0);
 
-            //毒性光晕
-            float glowPulse = 0.4f + (float)Math.Sin(currentFlightTime * 0.25f) * 0.15f;
-            Color glowColor = new Color(100, 255, 100) * glowPulse;
+            //毒性光晕，脉动效果
+            Color glowColor = new Color(100, 255, 100) * glowIntensity;
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, glowColor,
-                Projectile.rotation, origin, 1.15f, SpriteEffects.None, 0);
+                Projectile.rotation, origin, 1.2f, SpriteEffects.None, 0);
+
+            //下落时额外的警告光晕
+            if (Projectile.velocity.Y > 1f) {
+                float warningIntensity = Math.Min(Projectile.velocity.Y * 0.1f, 0.4f);
+                Color warningColor = new Color(255, 200, 100) * warningIntensity;
+                Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, warningColor,
+                    Projectile.rotation, origin, 1.3f, SpriteEffects.None, 0);
+            }
 
             return false;
         }

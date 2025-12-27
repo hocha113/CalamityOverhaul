@@ -22,180 +22,341 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 TagCache.Invalidate(SavePath);
                 return;//找不到合适的位置则跳过生成
             }
-            //执行地形清理，让建筑自然融入周围
+            //执行地形清理和融合处理
             PrepareTerrainForOutpost(startPos, region.Size);
             LoadRegion(region, startPos);//这个区域宽97高29(物块)
+            //建筑放置后进行地基修复确保自然融入
+            RepairFoundation(startPos, region.Size);
             SetChestItem(region, startPos);
             TagCache.Invalidate(SavePath);//释放缓存
         }
 
         /// <summary>
-        /// 寻找森林环境下的地表位置
+        /// 寻找森林环境下的地表位置，采用更激进的搜索策略
         /// </summary>
         private static Point16 FindForestSurfacePosition(Point16 regionSize) {
-            int width = regionSize.X;//建筑宽度
-            int height = regionSize.Y;//建筑高度
-            int minDistFromSpawn = 200 + WorldGen.GetWorldSize() * 100;//离出生点最小距离
-            int maxDistFromSpawn = 600 + WorldGen.GetWorldSize() * 200;//离出生点最大距离
-            int searchAttempts = 800;//搜索尝试次数
+            int width = regionSize.X;
+            int height = regionSize.Y;
+            int minDistFromSpawn = 180 + WorldGen.GetWorldSize() * 60;//保证最小距离
 
+            //第一阶段：优先在理想距离内搜索森林
+            Point16 result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 200), 600, true);
+            if (result != Point16.Zero) {
+                return result;
+            }
+
+            //第二阶段：扩大范围，放宽森林要求
+            result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 150), 900, false);
+            if (result != Point16.Zero) {
+                return result;
+            }
+
+            //第三阶段：全地图扫描，只要是地表就行
+            result = FullSurfaceScan(width, height, minDistFromSpawn);
+            return result;
+        }
+
+        /// <summary>
+        /// 在指定范围内搜索合适位置
+        /// </summary>
+        private static Point16 SearchInRange(int width, int height, int minDist, int maxDist, bool requireForest) {
             Point16 bestPos = Point16.Zero;
             int bestScore = -1;
 
-            for (int attempt = 0; attempt < searchAttempts; attempt++) {
-                //在出生点两侧随机选择一个方向
-                int direction = WorldGen.genRand.NextBool() ? 1 : -1;
-                int distFromSpawn = WorldGen.genRand.Next(minDistFromSpawn, maxDistFromSpawn);
-                int testX = Main.spawnTileX + (direction * distFromSpawn);
+            //从出生点向两侧系统性搜索
+            for (int dist = minDist; dist <= maxDist; dist += 20) {
+                for (int dir = -1; dir <= 1; dir += 2) {
+                    int testX = Main.spawnTileX + dir * dist;
+                    testX = Math.Clamp(testX, 150, Main.maxTilesX - 150 - width);
 
-                //确保X坐标在世界边界内
-                testX = Math.Clamp(testX, 100 + width / 2, Main.maxTilesX - 100 - width / 2);
+                    int surfaceY = FindBestSurfaceY(testX, width);
+                    if (surfaceY <= 0) {
+                        continue;
+                    }
 
-                //从地表往下搜索合适的地面位置
-                int surfaceY = FindSurfaceAt(testX, width);
-                if (surfaceY <= 0) {
-                    continue;
-                }
+                    int placeX = testX;
+                    int placeY = surfaceY - height + 2;
 
-                //计算建筑放置原点(建筑底部中心对齐地面)
-                int placeX = testX - width / 2;
-                int placeY = surfaceY - height + 2;//+2是因为建筑自带两层泥土地基
+                    //基础边界检查
+                    if (placeY < 50 || placeY + height > Main.worldSurface + 50) {
+                        continue;
+                    }
 
-                //验证位置是否合适
-                int score = EvaluatePosition(placeX, placeY, width, height);
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestPos = new Point16(placeX, placeY);
-                }
+                    //检查是否在恶劣环境
+                    if (IsInBadBiome(placeX, placeY, width, height)) {
+                        continue;
+                    }
 
-                //分数足够高就直接使用
-                if (score >= 80) {
-                    break;
+                    int score = EvaluatePositionSimple(placeX, placeY, width, height, requireForest);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestPos = new Point16(placeX, placeY);
+                    }
+
+                    //分数够高直接返回
+                    if (score >= 70) {
+                        return bestPos;
+                    }
                 }
             }
 
-            return bestPos;
+            //只要找到了任何可用位置就返回
+            if (bestScore >= 20) {
+                return bestPos;
+            }
+
+            return Point16.Zero;
         }
 
         /// <summary>
-        /// 在指定X坐标处寻找地表Y坐标
+        /// 全地图扫描寻找任意可用的地表位置
         /// </summary>
-        private static int FindSurfaceAt(int centerX, int width) {
-            //检查多个点来确保地面相对平坦
-            int[] checkPoints = [centerX - width / 3, centerX, centerX + width / 3];
-            int avgSurfaceY = 0;
-            int validPoints = 0;
+        private static Point16 FullSurfaceScan(int width, int height, int minDistFromSpawn) {
+            //从世界中心向两侧扫描
+            int centerX = Main.maxTilesX / 2;
+            int scanStep = 50;
 
-            foreach (int x in checkPoints) {
-                if (x < 0 || x >= Main.maxTilesX) {
-                    continue;
+            for (int offset = 0; offset < Main.maxTilesX / 2 - 200; offset += scanStep) {
+                for (int dir = -1; dir <= 1; dir += 2) {
+                    int testX = centerX + dir * offset;
+                    if (testX < 200 || testX > Main.maxTilesX - 200 - width) {
+                        continue;
+                    }
+
+                    //检查是否离出生点太近
+                    if (Math.Abs(testX - Main.spawnTileX) < minDistFromSpawn) {
+                        continue;
+                    }
+
+                    int surfaceY = FindBestSurfaceY(testX, width);
+                    if (surfaceY <= 0) {
+                        continue;
+                    }
+
+                    int placeY = surfaceY - height + 2;
+                    if (placeY < 50 || placeY + height > Main.worldSurface + 80) {
+                        continue;
+                    }
+
+                    //最后阶段只排除最恶劣的环境
+                    if (IsInBadBiome(testX, placeY, width, height)) {
+                        continue;
+                    }
+
+                    return new Point16(testX, placeY);
+                }
+            }
+
+            return Point16.Zero;
+        }
+
+        /// <summary>
+        /// 寻找最佳地表Y坐标，会尝试找到相对平坦的区域并排除空岛
+        /// </summary>
+        private static int FindBestSurfaceY(int startX, int width) {
+            int[] surfaceHeights = new int[width / 8 + 1];
+            int validCount = 0;
+
+            //采样多个点获取地表高度
+            for (int i = 0; i < surfaceHeights.Length; i++) {
+                int checkX = startX + i * 8;
+                if (checkX >= Main.maxTilesX) {
+                    break;
                 }
 
-                //从天空往下搜索第一个实心方块
-                for (int y = 50; y < Main.worldSurface + 50; y++) {
-                    Tile tile = Framing.GetTileSafely(x, y);
+                for (int y = 50; y < Main.worldSurface + 100; y++) {
+                    Tile tile = Framing.GetTileSafely(checkX, y);
                     if (tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]) {
-                        avgSurfaceY += y;
-                        validPoints++;
+                        surfaceHeights[validCount++] = y;
                         break;
                     }
                 }
             }
 
-            if (validPoints < 2) {
-                return -1;//地面不够平坦
+            if (validCount < 3) {
+                return -1;
             }
 
-            return avgSurfaceY / validPoints;
+            //计算中位数作为基准高度
+            Array.Sort(surfaceHeights, 0, validCount);
+            int medianY = surfaceHeights[validCount / 2];
+
+            //验证这个高度是否是真正的地表而非空岛
+            if (!IsValidGroundLevel(startX, medianY, width)) {
+                return -1;
+            }
+
+            return medianY;
         }
 
         /// <summary>
-        /// 评估位置的适合程度，返回0到100的分数
+        /// 验证指定高度是否为真正的地表而非空岛或高空建筑
         /// </summary>
-        private static int EvaluatePosition(int x, int y, int width, int height) {
-            int score = 100;
-
-            //检查是否在世界边界内
-            if (x < 50 || x + width > Main.maxTilesX - 50) {
-                return 0;
-            }
-            if (y < 50 || y + height > Main.worldSurface + 100) {
-                return 0;
+        private static bool IsValidGroundLevel(int startX, int surfaceY, int width) {
+            //如果高度明显高于世界地表线太多，很可能是空岛
+            if (surfaceY < Main.worldSurface * 0.35) {
+                return false;
             }
 
-            //检查是否是森林环境(主要看地面是否是草地)
+            //检查地表下方是否有足够的连续实心地层
+            //真正的地表下方应该有大量连续的泥土石头，空岛下方则是空气
+            int solidCount = 0;
+            int airCount = 0;
+            int checkDepth = 40;//检查深度
+
+            for (int checkX = startX; checkX < startX + width; checkX += 12) {
+                if (checkX >= Main.maxTilesX) {
+                    break;
+                }
+
+                for (int dy = 5; dy < checkDepth; dy++) {
+                    int checkY = surfaceY + dy;
+                    if (!WorldGen.InWorld(checkX, checkY)) {
+                        continue;
+                    }
+
+                    Tile tile = Framing.GetTileSafely(checkX, checkY);
+                    if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                        solidCount++;
+                    }
+                    else {
+                        airCount++;
+                    }
+                }
+            }
+
+            //如果下方空气占比超过60%，判定为空岛
+            int total = solidCount + airCount;
+            if (total > 0 && (float)airCount / total > 0.6f) {
+                return false;
+            }
+
+            //额外检查：验证该位置下方在更深处是否能找到真正的地层
+            //检查是否存在连续的实心层
+            int consecutiveSolid = 0;
+            int maxConsecutive = 0;
+            int centerX = startX + width / 2;
+
+            for (int dy = 0; dy < 80; dy++) {
+                int checkY = surfaceY + dy;
+                if (!WorldGen.InWorld(centerX, checkY)) {
+                    break;
+                }
+
+                Tile tile = Framing.GetTileSafely(centerX, checkY);
+                if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                    consecutiveSolid++;
+                    maxConsecutive = Math.Max(maxConsecutive, consecutiveSolid);
+                }
+                else {
+                    consecutiveSolid = 0;
+                }
+            }
+
+            //真正的地表下方应该有至少15格连续实心层
+            if (maxConsecutive < 15) {
+                return false;
+            }
+
+            //检查是否是模组建筑方块(比如实验室镀板等)
+            int modTileCount = 0;
+            for (int checkX = startX; checkX < startX + width; checkX += 15) {
+                for (int dy = 0; dy < 10; dy++) {
+                    int checkY = surfaceY + dy;
+                    if (!WorldGen.InWorld(checkX, checkY)) {
+                        continue;
+                    }
+
+                    Tile tile = Framing.GetTileSafely(checkX, checkY);
+                    if (tile.HasTile) {
+                        //原版方块ID上限约为700，超过的可能是模组方块
+                        if (tile.TileType >= 700) {
+                            modTileCount++;
+                        }
+                        //云块和日盘等空岛特有方块
+                        if (tile.TileType == TileID.Cloud || tile.TileType == TileID.RainCloud
+                            || tile.TileType == TileID.SnowCloud || tile.TileType == TileID.Sunplate
+                            || tile.TileType == TileID.LivingWood || tile.TileType == TileID.LeafBlock) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            //如果模组方块占比过高，可能是模组建筑
+            if (modTileCount > 5) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查是否在不适合的生物群系中
+        /// </summary>
+        private static bool IsInBadBiome(int x, int y, int width, int height) {
+            int badTileCount = 0;
+            int checkCount = 0;
+
+            for (int checkX = x; checkX < x + width; checkX += 15) {
+                for (int checkY = y; checkY < y + height; checkY += 10) {
+                    checkCount++;
+                    Tile tile = Framing.GetTileSafely(checkX, checkY);
+                    if (!tile.HasTile) {
+                        continue;
+                    }
+
+                    //腐化猩红神圣丛林雪地沙漠等
+                    if (tile.TileType == TileID.CorruptGrass || tile.TileType == TileID.CrimsonGrass
+                        || tile.TileType == TileID.Ebonstone || tile.TileType == TileID.Crimstone
+                        || tile.TileType == TileID.JungleGrass || tile.TileType == TileID.SnowBlock
+                        || tile.TileType == TileID.IceBlock || tile.TileType == TileID.Sand
+                        || tile.TileType == TileID.Sandstone || tile.TileType == TileID.HardenedSand) {
+                        badTileCount++;
+                    }
+                }
+            }
+
+            //超过30%是恶劣地形则排除
+            return checkCount > 0 && (float)badTileCount / checkCount > 0.3f;
+        }
+
+        /// <summary>
+        /// 简化的位置评分
+        /// </summary>
+        private static int EvaluatePositionSimple(int x, int y, int width, int height, bool requireForest) {
+            int score = 50;
+
+            //统计草地数量判断是否森林
             int grassCount = 0;
             int groundY = y + height - 2;
-            for (int checkX = x; checkX < x + width; checkX += 5) {
-                Tile groundTile = Framing.GetTileSafely(checkX, groundY);
-                if (groundTile.HasTile && groundTile.TileType == TileID.Grass) {
+            for (int checkX = x; checkX < x + width; checkX += 8) {
+                Tile tile = Framing.GetTileSafely(checkX, groundY);
+                if (tile.HasTile && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt)) {
                     grassCount++;
                 }
             }
-            if (grassCount < 3) {
-                score -= 40;//不是森林环境扣分
-            }
 
-            //检查地面平坦度
-            int prevY = -1;
-            int heightVariation = 0;
-            for (int checkX = x; checkX < x + width; checkX += 3) {
-                for (int checkY = y; checkY < y + height + 10; checkY++) {
-                    Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    if (tile.HasTile && Main.tileSolid[tile.TileType]) {
-                        if (prevY >= 0) {
-                            heightVariation += Math.Abs(checkY - prevY);
-                        }
-                        prevY = checkY;
-                        break;
-                    }
-                }
+            if (requireForest && grassCount < 3) {
+                return 10;//不是森林但也不完全排除
             }
-            score -= Math.Min(30, heightVariation * 2);//地形起伏太大扣分
+            score += grassCount * 3;
 
-            //检查上方空间是否足够
-            int obstructionCount = 0;
-            for (int checkX = x; checkX < x + width; checkX += 4) {
-                for (int checkY = y - 10; checkY < y + height / 2; checkY++) {
+            //检查液体
+            for (int checkX = x; checkX < x + width; checkX += 12) {
+                for (int checkY = y; checkY < y + height; checkY += 8) {
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    if (tile.HasTile && Main.tileSolid[tile.TileType]) {
-                        obstructionCount++;
-                    }
-                }
-            }
-            score -= Math.Min(20, obstructionCount);//上方有障碍物扣分
-
-            //避开恶意生物群系
-            for (int checkX = x; checkX < x + width; checkX += 10) {
-                for (int checkY = y; checkY < y + height; checkY += 5) {
-                    Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    if (tile.HasTile) {
-                        //腐化、猩红、神圣等特殊地形
-                        if (tile.TileType == TileID.CorruptGrass || tile.TileType == TileID.CrimsonGrass
-                            || tile.TileType == TileID.HallowedGrass || tile.TileType == TileID.Ebonstone
-                            || tile.TileType == TileID.Crimstone || tile.TileType == TileID.JungleGrass) {
-                            return 0;//直接排除
-                        }
+                    if (tile.LiquidAmount > 100) {
+                        score -= 10;
                     }
                 }
             }
 
-            //检查是否有液体
-            for (int checkX = x; checkX < x + width; checkX += 8) {
-                for (int checkY = y; checkY < y + height; checkY += 4) {
-                    Tile tile = Framing.GetTileSafely(checkX, checkY);
-                    if (tile.LiquidAmount > 50) {
-                        score -= 15;//有液体扣分
-                        break;
-                    }
-                }
-            }
-
-            return Math.Max(0, score);
+            return Math.Max(0, Math.Min(100, score));
         }
 
         /// <summary>
-        /// 准备地形，清理建筑放置区域并自然融入周围
+        /// 准备地形，清理建筑放置区域
         /// </summary>
         private static void PrepareTerrainForOutpost(Point16 startPos, Point16 regionSize) {
             int x = startPos.X;
@@ -203,98 +364,250 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             int width = regionSize.X;
             int height = regionSize.Y;
 
-            //清理建筑区域内的方块(保留底部两层作为地基融合)
+            //清理建筑区域内的方块和墙壁
             for (int px = x; px < x + width; px++) {
-                for (int py = y; py < y + height - 2; py++) {
+                for (int py = y; py < y + height; py++) {
+                    if (!WorldGen.InWorld(px, py)) {
+                        continue;
+                    }
+
+                    Tile tile = Framing.GetTileSafely(px, py);
+                    //清除方块
+                    if (tile.HasTile) {
+                        WorldGen.KillTile(px, py, false, false, true);
+                    }
+                    //清除自然墙壁
+                    if (tile.WallType > WallID.None && tile.WallType < WallID.Count) {
+                        WorldGen.KillWall(px, py, false);
+                    }
+                    //清除液体
+                    tile.LiquidAmount = 0;
+                }
+            }
+
+            //清理上方可能遮挡的树木和方块
+            for (int px = x - 5; px < x + width + 5; px++) {
+                for (int py = y - 30; py < y; py++) {
                     if (!WorldGen.InWorld(px, py)) {
                         continue;
                     }
                     Tile tile = Framing.GetTileSafely(px, py);
                     if (tile.HasTile) {
-                        //清除方块但保留自然生成的树木根基附近的方块
-                        WorldGen.KillTile(px, py, false, false, true);
-                    }
-                    //清除墙壁
-                    if (tile.WallType > WallID.None && tile.WallType < WallID.Count) {
-                        WorldGen.KillWall(px, py, false);
-                    }
-                }
-            }
-
-            //处理边缘融合，让建筑与周围地形自然过渡
-            int blendRange = 8;
-
-            //左侧边缘融合
-            for (int bx = 0; bx < blendRange; bx++) {
-                int worldX = x - blendRange + bx;
-                if (!WorldGen.InWorld(worldX, y)) {
-                    continue;
-                }
-
-                float blendFactor = bx / (float)blendRange;
-                int clearHeight = (int)(height * (1 - blendFactor * 0.7f));
-
-                for (int py = y; py < y + clearHeight; py++) {
-                    if (!WorldGen.InWorld(worldX, py)) {
-                        continue;
-                    }
-
-                    Tile tile = Framing.GetTileSafely(worldX, py);
-                    if (tile.HasTile && WorldGen.genRand.NextFloat() > blendFactor * 0.5f) {
-                        WorldGen.KillTile(worldX, py, false, false, true);
+                        int tileType = tile.TileType;
+                        //清除树木及其相关物块
+                        if (tileType == TileID.Trees || tileType == TileID.VanityTreeSakura
+                            || tileType == TileID.VanityTreeYellowWillow || tileType == TileID.Sunflower) {
+                            WorldGen.KillTile(px, py, false, false, true);
+                        }
                     }
                 }
             }
+        }
 
-            //右侧边缘融合
-            for (int bx = 0; bx < blendRange; bx++) {
-                int worldX = x + width + bx;
-                if (!WorldGen.InWorld(worldX, y)) {
-                    continue;
-                }
+        /// <summary>
+        /// 修复地基，确保建筑下方完全填充且自然融入周围地形
+        /// </summary>
+        private static void RepairFoundation(Point16 startPos, Point16 regionSize) {
+            int x = startPos.X;
+            int y = startPos.Y;
+            int width = regionSize.X;
+            int height = regionSize.Y;
+            int groundY = y + height - 2;//建筑底部(自带两层泥土)
 
-                float blendFactor = 1 - bx / (float)blendRange;
-                int clearHeight = (int)(height * (1 - blendFactor * 0.7f));
-
-                for (int py = y; py < y + clearHeight; py++) {
-                    if (!WorldGen.InWorld(worldX, py)) {
-                        continue;
-                    }
-
-                    Tile tile = Framing.GetTileSafely(worldX, py);
-                    if (tile.HasTile && WorldGen.genRand.NextFloat() > blendFactor * 0.5f) {
-                        WorldGen.KillTile(worldX, py, false, false, true);
-                    }
-                }
-            }
-
-            //在建筑底部补充泥土层确保地基稳固
-            int groundY = y + height - 2;
+            //第一步：深度填充建筑下方区域
+            int fillDepth = 25;//向下填充深度
             for (int px = x; px < x + width; px++) {
-                for (int py = groundY; py < groundY + 4; py++) {
+                if (!WorldGen.InWorld(px, groundY)) {
+                    continue;
+                }
+
+                //找到该列最深的实心方块位置
+                int deepestSolid = groundY + fillDepth;
+                for (int py = groundY; py < groundY + fillDepth + 10; py++) {
+                    if (!WorldGen.InWorld(px, py)) {
+                        break;
+                    }
+                    Tile checkTile = Framing.GetTileSafely(px, py);
+                    if (checkTile.HasTile && Main.tileSolid[checkTile.TileType]) {
+                        deepestSolid = py;
+                        break;
+                    }
+                }
+
+                //从地基向下填充直到遇到实心方块或达到最大深度
+                for (int py = groundY; py <= Math.Min(deepestSolid, groundY + fillDepth); py++) {
                     if (!WorldGen.InWorld(px, py)) {
                         continue;
                     }
 
                     Tile tile = Framing.GetTileSafely(px, py);
                     if (!tile.HasTile) {
-                        WorldGen.PlaceTile(px, py, TileID.Dirt, true, true);
+                        //根据深度选择填充物
+                        int fillType = TileID.Dirt;
+                        if (py > groundY + 8) {
+                            fillType = TileID.Stone;//深处用石头
+                        }
+                        WorldGen.PlaceTile(px, py, fillType, true, true);
                     }
                 }
             }
 
-            //在地基顶部铺设草地
-            for (int px = x - 3; px < x + width + 3; px++) {
+            //第二步：处理两侧边缘的地形过渡
+            int blendRange = 12;//融合范围
+            int blendDepth = 20;//融合深度
+
+            //左侧融合
+            BlendEdge(x, groundY, blendRange, blendDepth, true);
+            //右侧融合
+            BlendEdge(x + width - 1, groundY, blendRange, blendDepth, false);
+
+            //第三步：铺设草地表层
+            for (int px = x - blendRange; px < x + width + blendRange; px++) {
+                if (!WorldGen.InWorld(px, groundY)) {
+                    continue;
+                }
+
+                //找到该位置的实际地表
+                for (int py = groundY - 5; py < groundY + 10; py++) {
+                    if (!WorldGen.InWorld(px, py)) {
+                        continue;
+                    }
+
+                    Tile tile = Framing.GetTileSafely(px, py);
+                    if (tile.HasTile && tile.TileType == TileID.Dirt) {
+                        //检查上方是否露天
+                        Tile above = Framing.GetTileSafely(px, py - 1);
+                        if (!above.HasTile || !Main.tileSolid[above.TileType]) {
+                            tile.TileType = TileID.Grass;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //第四步：添加自然装饰让地形更自然
+            AddNaturalDecoration(x, groundY, width, blendRange);
+        }
+
+        /// <summary>
+        /// 融合边缘地形
+        /// </summary>
+        private static void BlendEdge(int edgeX, int groundY, int blendRange, int blendDepth, bool isLeft) {
+            int dir = isLeft ? -1 : 1;
+
+            for (int offset = 1; offset <= blendRange; offset++) {
+                int px = edgeX + dir * offset;
+                if (!WorldGen.InWorld(px, groundY)) {
+                    continue;
+                }
+
+                //融合因子：距离建筑越远融合程度越低
+                float blendFactor = 1f - (float)offset / blendRange;
+
+                //找到周围地形的自然高度
+                int naturalSurfaceY = groundY;
+                for (int searchY = groundY - 15; searchY < groundY + 15; searchY++) {
+                    if (!WorldGen.InWorld(px + dir * 5, searchY)) {
+                        continue;
+                    }
+                    Tile searchTile = Framing.GetTileSafely(px + dir * 5, searchY);
+                    if (searchTile.HasTile && Main.tileSolid[searchTile.TileType]) {
+                        naturalSurfaceY = searchY;
+                        break;
+                    }
+                }
+
+                //计算该位置应该的地表高度(在建筑地面和自然地面之间插值)
+                int targetSurfaceY = (int)MathHelper.Lerp(naturalSurfaceY, groundY, blendFactor);
+
+                //填充该列从目标地表到一定深度
+                int currentFillDepth = (int)(blendDepth * blendFactor) + 5;
+                for (int py = targetSurfaceY; py < targetSurfaceY + currentFillDepth; py++) {
+                    if (!WorldGen.InWorld(px, py)) {
+                        continue;
+                    }
+
+                    Tile tile = Framing.GetTileSafely(px, py);
+                    if (!tile.HasTile) {
+                        int fillType = TileID.Dirt;
+                        if (py > targetSurfaceY + 6) {
+                            fillType = TileID.Stone;
+                        }
+                        //添加一些随机性让边缘更自然
+                        if (WorldGen.genRand.NextFloat() < blendFactor * 0.9f) {
+                            WorldGen.PlaceTile(px, py, fillType, true, true);
+                        }
+                    }
+                }
+
+                //清理地表上方可能存在的悬空方块
+                for (int py = targetSurfaceY - 1; py > targetSurfaceY - 10; py--) {
+                    if (!WorldGen.InWorld(px, py)) {
+                        continue;
+                    }
+                    Tile tile = Framing.GetTileSafely(px, py);
+                    if (tile.HasTile && WorldGen.genRand.NextFloat() > blendFactor * 0.3f) {
+                        //保留部分方块让过渡更自然
+                        if (Main.tileSolid[tile.TileType] && tile.TileType != TileID.Trees) {
+                            if (WorldGen.genRand.NextFloat() > blendFactor) {
+                                WorldGen.KillTile(px, py, false, false, true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 添加自然装饰
+        /// </summary>
+        private static void AddNaturalDecoration(int baseX, int groundY, int width, int blendRange) {
+            //在建筑两侧随机生成一些草和小植物
+            for (int px = baseX - blendRange; px < baseX + width + blendRange; px++) {
                 if (!WorldGen.InWorld(px, groundY - 1)) {
                     continue;
                 }
 
-                Tile surfaceTile = Framing.GetTileSafely(px, groundY);
-                if (surfaceTile.HasTile && surfaceTile.TileType == TileID.Dirt) {
-                    //检查上方是否露天
-                    Tile aboveTile = Framing.GetTileSafely(px, groundY - 1);
-                    if (!aboveTile.HasTile) {
-                        surfaceTile.TileType = TileID.Grass;
+                //跳过建筑主体区域
+                if (px >= baseX && px < baseX + width) {
+                    continue;
+                }
+
+                Tile groundTile = Framing.GetTileSafely(px, groundY);
+                Tile aboveTile = Framing.GetTileSafely(px, groundY - 1);
+
+                //在草地上生成装饰
+                if (groundTile.HasTile && groundTile.TileType == TileID.Grass && !aboveTile.HasTile) {
+                    if (WorldGen.genRand.NextBool(4)) {
+                        //生成短草
+                        WorldGen.PlaceTile(px, groundY - 1, TileID.Plants, true, false, -1, WorldGen.genRand.Next(0, 44));
+                    }
+                    else if (WorldGen.genRand.NextBool(12)) {
+                        //生成花朵
+                        WorldGen.PlaceTile(px, groundY - 1, TileID.Plants2, true, false, -1, WorldGen.genRand.Next(0, 8));
+                    }
+                }
+            }
+
+            //在边缘区域尝试生成小树苗增加自然感
+            for (int i = 0; i < 3; i++) {
+                int treeX = WorldGen.genRand.NextBool() 
+                    ? baseX - WorldGen.genRand.Next(3, blendRange) 
+                    : baseX + width + WorldGen.genRand.Next(3, blendRange);
+
+                if (!WorldGen.InWorld(treeX, groundY)) {
+                    continue;
+                }
+
+                //找到该位置的地表
+                for (int py = groundY - 5; py < groundY + 5; py++) {
+                    Tile ground = Framing.GetTileSafely(treeX, py);
+                    Tile above = Framing.GetTileSafely(treeX, py - 1);
+                    if (ground.HasTile && ground.TileType == TileID.Grass && !above.HasTile) {
+                        if (WorldGen.genRand.NextBool(3)) {
+                            WorldGen.PlaceTile(treeX, py - 1, TileID.Saplings, true, false);
+                        }
+                        break;
                     }
                 }
             }

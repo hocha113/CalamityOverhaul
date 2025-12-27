@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         public override bool CanDrop => false;
         public override float MaxUEValue => 600;
         public Vector2 ArmPos => CenterInWorld + new Vector2(0, -8);
-        internal const int killerArmDistance = 1200;
+        internal const int killerArmDistance = 2200;
         internal const int maxSearchDistance = 1000;
         internal int dontSpawnArmTime;
         internal int byHitSyncopeTime;
@@ -215,11 +215,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         internal Vector2 startPos;
         private SawState currentState = SawState.Idle;
 
-        //物理模拟
-        private Vector2[] segments;
-        private const int SegmentCount = 50;
-        private const float SegmentLength = 14f;
-
         //目标树木
         private Point16 targetTreePos = Point16.NegativeOne;
 
@@ -275,24 +270,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             hoverTargetPos = reader.ReadVector2();
         }
 
-        private void InitializeSegments() {
-            segments = new Vector2[SegmentCount];
-            for (int i = 0; i < SegmentCount; i++) {
-                segments[i] = Projectile.Center;
-            }
-        }
-
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 startPos = Projectile.Center;
                 Projectile.localAI[0] = 1f;
                 currentState = SawState.Searching;
-                InitializeSegments();
                 Projectile.netUpdate = true;
-            }
-
-            if (segments == null) {
-                InitializeSegments();
             }
 
             //检查基座是否存在
@@ -316,7 +299,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 return;
             }
 
-            UpdateVerletPhysics();
             ExecuteBehavior();
             UpdateRotation();
 
@@ -326,29 +308,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
             else {
                 warningTimer = 0;
-            }
-        }
-
-        private void UpdateVerletPhysics() {
-            segments[SegmentCount - 1] = Projectile.Center;
-            segments[0] = startPos;
-
-            for (int k = 0; k < 10; k++) {
-                for (int i = 0; i < SegmentCount - 1; i++) {
-                    Vector2 segmentStart = segments[i];
-                    Vector2 segmentEnd = segments[i + 1];
-                    Vector2 vector = segmentEnd - segmentStart;
-                    float dist = vector.Length();
-                    if (dist > 0) {
-                        float error = dist - SegmentLength;
-                        Vector2 correction = vector.SafeNormalize(Vector2.Zero) * error * 0.5f;
-
-                        if (i > 0) segments[i] += correction;
-                        if (i + 1 < SegmentCount - 1) segments[i + 1] -= correction;
-                    }
-                }
-                segments[0] = startPos;
-                segments[SegmentCount - 1] = Projectile.Center;
             }
         }
 
@@ -553,7 +512,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             hoverTargetPos = player.Center + new Vector2(0, -150f);
 
             //限制不要超出机械臂的范围
-            float maxArmLength = SegmentCount * SegmentLength * 0.9f;
+            float maxArmLength = 600f;
             if (Vector2.Distance(hoverTargetPos, startPos) > maxArmLength) {
                 Vector2 dir = (hoverTargetPos - startPos).SafeNormalize(Vector2.Zero);
                 hoverTargetPos = startPos + dir * maxArmLength;
@@ -879,7 +838,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (segments == null || segments.Length == 0) return false;
+            if (startPos == Vector2.Zero) return false;
 
             if (BatteryPrompt) {
                 lightColor = Color.Red;
@@ -888,27 +847,64 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             Texture2D armTex = arm.Value;
             Texture2D sawTex = saw.Value;
 
-            float step = armTex.Height * 0.6f;
+            Vector2 start = startPos;
+            Vector2 end = Projectile.Center;
+
+            //震动效果
+            if (isCharging) {
+                float shakeIntensity = warningTimer / 60f * 2f;
+                end += Main.rand.NextVector2Circular(shakeIntensity, shakeIntensity);
+            }
+
+            //贝塞尔曲线：计算弯曲高度
+            float dist = Vector2.Distance(start, end);
+            float bendHeight = MathHelper.Clamp(dist * 0.35f, 30f, 150f);
+
+            //根据运动状态调整弯曲
+            if (Projectile.velocity.Length() > 5f) {
+                bendHeight += Projectile.velocity.Length() * 1.5f;
+            }
+
+            Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
+
+            //计算曲线长度用于确定段数
+            int sampleCount = 50;
+            float curveLength = 0f;
+            Vector2 prev = start;
+            for (int i = 1; i <= sampleCount; i++) {
+                float t = i / (float)sampleCount;
+                Vector2 point = Vector2.Lerp(
+                    Vector2.Lerp(start, midControl, t),
+                    Vector2.Lerp(midControl, end, t),
+                    t
+                );
+                curveLength += Vector2.Distance(prev, point);
+                prev = point;
+            }
+
+            float segmentLength = armTex.Height / 2;
+            int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
+            Vector2[] points = new Vector2[segmentCount + 1];
+
+            for (int i = 0; i <= segmentCount; i++) {
+                float t = i / (float)segmentCount;
+                points[i] = Vector2.Lerp(
+                    Vector2.Lerp(start, midControl, t),
+                    Vector2.Lerp(midControl, end, t),
+                    t
+                );
+            }
 
             //绘制机械臂
-            for (int i = 0; i < SegmentCount - 1; i++) {
-                Vector2 start = segments[i];
-                Vector2 end = segments[i + 1];
-                Vector2 vector = end - start;
-                float dist = vector.Length();
+            for (int i = 0; i < segmentCount; i++) {
+                Vector2 pos = points[i];
+                Vector2 next = points[i + 1];
+                Vector2 direction = next - pos;
+                Color color = Lighting.GetColor((pos / 16).ToPoint());
+                float rot = direction.ToRotation() + MathHelper.PiOver2;
 
-                int numDraws = (int)Math.Ceiling(dist / step);
-                if (numDraws <= 0) numDraws = 1;
-
-                for (int j = 0; j < numDraws; j++) {
-                    float t = j / (float)numDraws;
-                    Vector2 drawPos = Vector2.Lerp(start, end, t);
-                    Color color = Lighting.GetColor(drawPos.ToTileCoordinates());
-                    float rotation = vector.ToRotation() + MathHelper.PiOver2;
-
-                    Main.EntitySpriteDraw(armTex, drawPos - Main.screenPosition, null, color, rotation,
-                        new Vector2(armTex.Width / 2, armTex.Height / 2), 1f, SpriteEffects.None, 0);
-                }
+                Main.EntitySpriteDraw(armTex, pos - Main.screenPosition, null, color, rot
+                    , new Vector2(armTex.Width / 2f, armTex.Height), 1f, SpriteEffects.None, 0);
             }
 
             //锯片颜色(蓄力时闪烁警告)
