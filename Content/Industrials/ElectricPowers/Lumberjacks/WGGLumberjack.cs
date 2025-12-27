@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             //更新玩家目标
             if (player?.Alives() != true || player.To(startPos).Length() > 800) {
-                player = startPos.FindClosestPlayer(550);
+                player = startPos.FindClosestPlayer();
             }
 
             switch (currentState) {
@@ -433,15 +433,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             attackTimer++;
 
             //优先检测玩家(进入追踪模式)
-            if (player != null && player.Distance(startPos) < 450) {
+            if (player.Alives() && player.Distance(startPos) < 450) {
                 currentState = SawState.Tracking;
                 attackTimer = 0;
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f }, Projectile.Center);
                 return;
             }
 
-            //搜索树木
-            if (attackTimer % 60 == 1) {
+            //搜索树木，玩家在附近时才会试图寻找树木，这样避免玩家不在的时候把树木砍光
+            if (attackTimer % 60 == 1 && player.Alives() && player.Distance(startPos) < 1550) {
                 targetTreePos = FindNearestTree();
                 if (targetTreePos != Point16.NegativeOne) {
                     currentState = SawState.MovingToTree;
