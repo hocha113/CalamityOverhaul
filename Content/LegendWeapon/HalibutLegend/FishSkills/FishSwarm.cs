@@ -16,18 +16,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 技能最大持续时间（5秒 = 300帧）
         /// </summary>
         public static int FishSwarmDuration => 300 + HalibutData.GetDomainLayer() * 30;
-        /// <summary>
-        /// 攻击后摇持续时间（60帧 = 1秒）
-        /// </summary>
-        public static int AttackRecoveryDuration = 60 - HalibutData.GetDomainLayer() * 4;
         public override int DefaultCooldown => 60 * (30 - HalibutData.GetDomainLayer() * 2);
         public override int ResearchDuration => 60 * 14;
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
+
             if (player.altFunctionUse == 2) {
                 item.UseSound = null;
                 Use(item, player);
-                halibutPlayer.FishConeSurgeActive = true;
                 return false;
             }
             else if (halibutPlayer.FishConeSurgeActive) {
@@ -35,7 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ActivateFishConeSurge(player, halibutPlayer);
                 halibutPlayer.FishConeSurgeActive = false;
             }
-            return halibutPlayer.AttackRecoveryTimer <= 0;
+
+            return halibutPlayer.HidePlayerTime <= 0;
         }
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
@@ -52,9 +49,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SetCooldown();
                 }
             }
-            if (halibutPlayer.AttackRecoveryTimer > 0) {
-                halibutPlayer.AttackRecoveryTimer--;
-            }
 
             return player.CountProjectilesOfID<FishSwarmController>() == 0;
         }
@@ -67,6 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SetCooldown();
             //激活技能
+            halibutPlayer.FishConeSurgeActive = true;
             halibutPlayer.FishSwarmActive = true;
             halibutPlayer.FishSwarmTimer = 0;
 
@@ -123,9 +118,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 激活螺旋尖锥突袭
         /// </summary>
         public static void ActivateFishConeSurge(Player player, HalibutPlayer halibutPlayer) {
-            //设置攻击后摇
-            halibutPlayer.AttackRecoveryTimer = AttackRecoveryDuration;
-
             //计算突袭方向（朝向光标）
             Vector2 surgeDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
 

@@ -139,10 +139,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 螺旋尖锥突袭状态
         /// </summary>
         public bool FishConeSurgeActive { get; set; }
-        /// <summary>
-        /// 突袭后攻击后摇计时器
-        /// </summary>
-        public int AttackRecoveryTimer { get; set; }
         #endregion
 
         #region 蝙蝠
