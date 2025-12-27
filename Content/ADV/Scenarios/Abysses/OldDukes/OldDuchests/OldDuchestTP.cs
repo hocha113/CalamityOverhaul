@@ -160,8 +160,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             isUnderwater = CheckChestUnderwater();
 
             //检查距离自动关闭
-            if (isOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE) {
-                OldDuchestUI.Instance.Close();
+            if (isOpen && (Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE || OldDuchestUI.Instance.CurrentChest != this)) {
+                CloseUI(Main.LocalPlayer);
+                if (OldDuchestUI.Instance.CurrentChest == this) {
+                    OldDuchestUI.Instance.Close();
+                }
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 

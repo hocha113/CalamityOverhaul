@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -11,13 +11,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs
 {
     /// <summary>
-    /// ÀÏÏä×ÓUI
+    /// è€ç®±å­UI
     /// </summary>
     internal class OldDuchestUI : UIHandle, ILocalizedModType
     {
         public static OldDuchestUI Instance => UIHandleLoader.GetUIHandleOfType<OldDuchestUI>();
 
-        //UI×´Ì¬
+        //UIçŠ¶æ€
         private bool _active;
         public override bool Active {
             get => _active || animation.UIAlpha > 0f;
@@ -28,55 +28,56 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         public static LocalizedText TitleText;
         public static LocalizedText StorageText;
 
-        //UI³ß´ç 20x12¸ñ´¢Îï¿Õ¼ä
+        //UIå°ºå¯¸ 20x12æ ¼å‚¨ç‰©ç©ºé—´
         private const int PanelWidth = 760;
         private const int PanelHeight = 520;
         private const int SlotsPerRow = 20;
         private const int SlotRows = 12;
         private const int TotalSlots = SlotsPerRow * SlotRows;
 
-        //µ±Ç°°ó¶¨µÄÏä×Ó
+        //å½“å‰ç»‘å®šçš„ç®±å­
         public OldDuchestTP CurrentChest { get; private set; }
         private Point16 chestPosition;
 
-        //´æ´¢ÎïÆ·
+        //å­˜å‚¨ç‰©å“
         private readonly List<Item> items = new();
 
-        //×é¼ş
+        //ç»„ä»¶
         private readonly OldDuchestAnimation animation = new();
         private readonly OldDuchestEffects effects = new();
         private OldDuchestInteraction interaction;
         private OldDuchestRenderer renderer;
 
         public override void SetStaticDefaults() {
-            TitleText = this.GetLocalization(nameof(TitleText), () => "ÀÏÏä×Ó");
-            StorageText = this.GetLocalization(nameof(StorageText), () => "´¢Îï¿Õ¼ä");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "è€ç®±å­");
+            StorageText = this.GetLocalization(nameof(StorageText), () => "å‚¨ç‰©ç©ºé—´");
 
-            //³õÊ¼»¯ÎïÆ·ÁĞ±í
+            //åˆå§‹åŒ–ç‰©å“åˆ—è¡¨
             for (int i = 0; i < TotalSlots; i++) {
                 items.Add(new Item());
             }
         }
 
         /// <summary>
-        /// ´ò¿ªUI²¢°ó¶¨Ïä×Ó
+        /// æ‰“å¼€UIå¹¶ç»‘å®šç®±å­
         /// </summary>
         public void Interactive(OldDuchestTP chest) {
             if (CurrentChest != chest) {
+                //CurrentChest.CloseUI(Main.LocalPlayer);
                 CurrentChest = chest;
                 chestPosition = chest.Position;
                 _active = true;
 
-                //³õÊ¼»¯×é¼ş
+                //åˆå§‹åŒ–ç»„ä»¶
                 if (interaction == null || renderer == null) {
                     interaction = new OldDuchestInteraction(player, this);
                     renderer = new OldDuchestRenderer(player, this, animation, interaction);
                 }
 
-                //¼ÓÔØÏä×ÓÊı¾İ
+                //åŠ è½½ç®±å­æ•°æ®
                 LoadItems(chest.storedItems);
 
-                //Í¨ÖªÏä×Ó´ò¿ª
+                //é€šçŸ¥ç®±å­æ‰“å¼€
                 chest.OpenUI(player);
                 SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0 });
             }
@@ -87,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
                 else {
                     _active = true;
-                    //Í¨ÖªÏä×Ó´ò¿ª
+                    //é€šçŸ¥ç®±å­æ‰“å¼€
                     chest.OpenUI(player);
                     SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0 });
                 }
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¼ÓÔØÎïÆ·Êı¾İ
+        /// åŠ è½½ç‰©å“æ•°æ®
         /// </summary>
         public void LoadItems(List<Item> storedItems) {
             for (int i = 0; i < TotalSlots; i++) {
@@ -109,7 +110,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// »ñÈ¡´æ´¢µÄÎïÆ·
+        /// è·å–å­˜å‚¨çš„ç‰©å“
         /// </summary>
         public List<Item> GetStoredItems() {
             List<Item> result = new();
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// »ñÈ¡Ö¸¶¨²ÛÎ»ÎïÆ·
+        /// è·å–æŒ‡å®šæ§½ä½ç‰©å“
         /// </summary>
         public Item GetItem(int slot) {
             if (slot < 0 || slot >= items.Count) {
@@ -132,7 +133,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ÉèÖÃÖ¸¶¨²ÛÎ»ÎïÆ·
+        /// è®¾ç½®æŒ‡å®šæ§½ä½ç‰©å“
         /// </summary>
         public void SetItem(int slot, Item item) {
             if (slot < 0 || slot >= items.Count) {
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¹Ø±ÕUI
+        /// å…³é—­UI
         /// </summary>
         public void Close() {
             _active = false;
@@ -150,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         public override void Update() {
-            //¸üĞÂ¶¯»­½ø¶È
+            //æ›´æ–°åŠ¨ç”»è¿›åº¦
             animation.UpdateUIAnimation(_active);
 
             if (animation.UIAlpha <= 0f) {
@@ -158,27 +159,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
 
-            //¼ì²éÏä×ÓÊÇ·ñÈÔÈ»ÓĞĞ§
+            //æ£€æŸ¥ç®±å­æ˜¯å¦ä»ç„¶æœ‰æ•ˆ
             if (!ValidateChest()) {
                 _active = false;
                 return;
             }
 
-            //¸üĞÂ¶¯»­
+            //æ›´æ–°åŠ¨ç”»
             animation.UpdateEffects();
 
-            //¼ÆËãÃæ°åÎ»ÖÃ
+            //è®¡ç®—é¢æ¿ä½ç½®
             Vector2 panelPosition = renderer.CalculatePanelPosition();
 
-            //¸üĞÂÁ£×ÓºÍÌØĞ§
+            //æ›´æ–°ç²’å­å’Œç‰¹æ•ˆ
             effects.UpdateParticles(_active, panelPosition, PanelWidth, PanelHeight);
 
-            //¸üĞÂUI½»»¥
+            //æ›´æ–°UIäº¤äº’
             if (_active && animation.PanelSlideProgress > 0.9f) {
                 UpdateInteraction(panelPosition);
             }
 
-            //¸üĞÂ²ÛÎ»ĞüÍ£¶¯»­
+            //æ›´æ–°æ§½ä½æ‚¬åœåŠ¨ç”»
             animation.UpdateSlotHoverAnimations(interaction.HoveredSlot);
         }
 
@@ -208,7 +209,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
 
-                //ÓÅÏÈ¼ì²â¹Ø±Õ°´Å¥
+                //ä¼˜å…ˆæ£€æµ‹å…³é—­æŒ‰é’®
                 if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition,
                     keyLeftPressState == KeyPressState.Pressed)) {
                     Close();
@@ -216,7 +217,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     return;
                 }
 
-                //´¦Àí²ÛÎ»½»»¥£¨´«µİÍêÕûµÄ°´¼ü×´Ì¬£©
+                //å¤„ç†æ§½ä½äº¤äº’ï¼ˆä¼ é€’å®Œæ•´çš„æŒ‰é”®çŠ¶æ€ï¼‰
                 Vector2 storageStartPos = panelPosition + new Vector2(20, 90);
                 interaction.UpdateSlotInteraction(
                     MousePosition.ToPoint(),
@@ -232,7 +233,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = CurrentChest.isUnderwater ? -0.4f : 0 });
             }
 
-            //ESC¹Ø±Õ
+            //ESCå…³é—­
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
                 Close();
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = CurrentChest.isUnderwater ? -0.4f : 0 });
