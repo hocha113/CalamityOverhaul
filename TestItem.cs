@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.Structures.DatIO;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -66,6 +68,13 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
+            Main.MouseWorld.ToTileCoordinates16().Domp();
+            if (player.altFunctionUse == 2) {
+                SaveStructure.DoLoad<SylvanOutpost>();
+            }
+            else {
+                //SaveStructure.DoSave<SylvanOutpost>();
+            }
             return true;
         }
     }

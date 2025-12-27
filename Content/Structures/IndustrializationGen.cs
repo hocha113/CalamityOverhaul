@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Structures
             }
             JunkmanBase.DoLoad<JunkmanBase>();
             RocketHut.DoLoad<RocketHut>();
+            SylvanOutpost.DoLoad<SylvanOutpost>();
         }
 
         public static void Shuffle<T>(IList<T> list) {
