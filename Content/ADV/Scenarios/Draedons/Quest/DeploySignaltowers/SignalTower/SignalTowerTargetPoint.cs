@@ -1,29 +1,30 @@
+ï»¿using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {
     /// <summary>
-    /// ĞÅºÅËşÄ¿±êµãÊı¾İ
+    /// ä¿¡å·å¡”ç›®æ ‡ç‚¹æ•°æ®
     /// </summary>
     public class SignalTowerTargetPoint
     {
         /// <summary>
-        /// Ä¿±êµãÎ»ÖÃ(Í¼¸ñ×ø±ê)
+        /// ç›®æ ‡ç‚¹ä½ç½®(å›¾æ ¼åæ ‡)
         /// </summary>
         public Point TilePosition { get; set; }
 
         /// <summary>
-        /// ÓĞĞ§·¶Î§(Í¼¸ñµ¥Î»)
+        /// æœ‰æ•ˆèŒƒå›´(å›¾æ ¼å•ä½)
         /// </summary>
         public int Range { get; set; }
 
         /// <summary>
-        /// ÊÇ·ñÒÑÍê³É
+        /// æ˜¯å¦å·²å®Œæˆ
         /// </summary>
         public bool IsCompleted { get; set; }
 
         /// <summary>
-        /// µãÎ»Ë÷Òı
+        /// ç‚¹ä½ç´¢å¼•
         /// </summary>
         public int Index { get; set; }
 
@@ -35,15 +36,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// ¼ì²éÖ¸¶¨Î»ÖÃÊÇ·ñÔÚ·¶Î§ÄÚ
+        /// æ£€æŸ¥æŒ‡å®šä½ç½®æ˜¯å¦åœ¨èŒƒå›´å†…(æ­£æ–¹å½¢èŒƒå›´åˆ¤æ–­)
         /// </summary>
         public bool IsInRange(Point tilePos) {
-            float distance = Vector2.Distance(TilePosition.ToVector2(), tilePos.ToVector2());
-            return distance <= Range;
+            //ä½¿ç”¨æ­£æ–¹å½¢èŒƒå›´åˆ¤æ–­ï¼Œä¸æ¸²æŸ“å™¨æ˜¾ç¤ºçš„æ­£æ–¹å½¢è¾¹æ¡†ä¸€è‡´
+            int deltaX = Math.Abs(tilePos.X - TilePosition.X);
+            int deltaY = Math.Abs(tilePos.Y - TilePosition.Y);
+            return deltaX <= Range && deltaY <= Range;
         }
 
         /// <summary>
-        /// ¼ì²éÍæ¼ÒÊÇ·ñÔÚ·¶Î§ÄÚ
+        /// æ£€æŸ¥ç©å®¶æ˜¯å¦åœ¨èŒƒå›´å†…
         /// </summary>
         public bool IsPlayerInRange(Player player) {
             Point playerTilePos = player.Center.ToTileCoordinates();
@@ -51,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         /// <summary>
-        /// »ñÈ¡ÊÀ½ç×ø±ê
+        /// è·å–ä¸–ç•Œåæ ‡
         /// </summary>
         public Vector2 WorldPosition => TilePosition.ToVector2() * 16f;
     }
