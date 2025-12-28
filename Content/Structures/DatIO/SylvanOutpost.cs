@@ -591,8 +591,8 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
             //在边缘区域尝试生成小树苗增加自然感
             for (int i = 0; i < 3; i++) {
-                int treeX = WorldGen.genRand.NextBool() 
-                    ? baseX - WorldGen.genRand.Next(3, blendRange) 
+                int treeX = WorldGen.genRand.NextBool()
+                    ? baseX - WorldGen.genRand.Next(3, blendRange)
                     : baseX + width + WorldGen.genRand.Next(3, blendRange);
 
                 if (!WorldGen.InWorld(treeX, groundY)) {

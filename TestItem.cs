@@ -68,7 +68,6 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            Main.MouseWorld.ToTileCoordinates16().Domp();
             if (player.altFunctionUse == 2) {
                 SaveStructure.DoLoad<SylvanOutpost>();
             }

@@ -572,7 +572,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.7f, Pitch = 0.8f }, Projectile.Center);
             }
 
-            
+
 
             //蓄力完成，开始下砸
             if (attackTimer >= 50) {
