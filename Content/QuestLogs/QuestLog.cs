@@ -231,6 +231,15 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             //如果详情面板开启，优先处理详情面板交互
             if (showDetailPanel && detailPanelAlpha > 0.5f) {
+                //计算详情面板位置(居中)
+                detailPanelRect = new Rectangle(
+                    (Main.screenWidth - DetailPanelWidth) / 2,
+                    (Main.screenHeight - DetailPanelHeight) / 2,
+                    DetailPanelWidth,
+                    DetailPanelHeight
+                );
+                //关闭按钮逻辑
+                mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
                 UpdateDetailPanel();
                 return;
             }
@@ -336,14 +345,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                         selectedNode = hoveredNode;
                         showDetailPanel = true;
                         SoundEngine.PlaySound(SoundID.MenuTick);
-
-                        //计算详情面板位置(居中)
-                        detailPanelRect = new Rectangle(
-                            (Main.screenWidth - DetailPanelWidth) / 2,
-                            (Main.screenHeight - DetailPanelHeight) / 2,
-                            DetailPanelWidth,
-                            DetailPanelHeight
-                        );
                     }
                     else {
                         //没点击节点，开始拖拽地图
