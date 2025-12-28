@@ -345,6 +345,13 @@ namespace CalamityOverhaul.Content.QuestLogs
                         selectedNode = hoveredNode;
                         showDetailPanel = true;
                         SoundEngine.PlaySound(SoundID.MenuTick);
+                        //计算详情面板位置(居中)
+                        detailPanelRect = new Rectangle(
+                            (Main.screenWidth - DetailPanelWidth) / 2,
+                            (Main.screenHeight - DetailPanelHeight) / 2,
+                            DetailPanelWidth,
+                            DetailPanelHeight
+                        );
                     }
                     else {
                         //没点击节点，开始拖拽地图

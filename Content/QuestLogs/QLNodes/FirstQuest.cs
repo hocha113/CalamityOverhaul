@@ -1,8 +1,9 @@
-using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static InnoVault.VaultUtils;
 
 namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
@@ -19,48 +20,36 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward { ItemType = ItemID.CopperBroadsword, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.CopperBow, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.AmethystStaff, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.CopperHammer, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.WoodenArrow, Amount = 100 });
-            Rewards.Add(new QuestReward { ItemType = CWRID.Item_SquirrelSquireStaff, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = CWRID.Item_ThrowingBrick, Amount = 150 });
+            AddChild<MiningQuest>();
+        }
 
-            Rewards.Add(new QuestReward { ItemType = ItemID.ManaCrystal, Amount = 1 });
-
-            Rewards.Add(new QuestReward { ItemType = ItemID.Bomb, Amount = 10 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.Rope, Amount = 50 });
-
-            Rewards.Add(new QuestReward { ItemType = ItemID.MiningPotion, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.SpelunkerPotion, Amount = 2 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.SwiftnessPotion, Amount = 3 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.GillsPotion, Amount = 2 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.ShinePotion, Amount = 1 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.RecallPotion, Amount = 3 });
-
-            Rewards.Add(new QuestReward { ItemType = ItemID.Torch, Amount = 25 });
-            Rewards.Add(new QuestReward { ItemType = ItemID.Chest, Amount = 3 });
-
-            Rewards.Add(new QuestReward { ItemType = CWRID.Item_LoreAwakening, Amount = 1 });
+        public override void OnWorldEnter() {
+            Rewards.Clear();
+            //自动扫描 StarterBag 的内容物作为奖励
+            if (CWRID.Item_StarterBag > 0) {
+                var dropInfos = ItemDropScanner.GetItemDropsForPlayer(CWRID.Item_StarterBag, Main.LocalPlayer);
+                foreach (var dropInfo in dropInfos) {
+                    if (dropInfo.ItemType > ItemID.None) {
+                        AddReward(dropInfo.ItemType, dropInfo.MaxStack > 1 ? dropInfo.MaxStack : 1);
+                    }
+                }
+            }
 
             if (ModLoader.TryGetMod("CalamityModMusic", out var musicMod) && musicMod.TryFind<ModItem>("CalamityMusicbox", out var musicbox)) {
-                Rewards.Add(new QuestReward { ItemType = musicbox.Type, Amount = 1 });
+                AddReward(musicbox.Type, 1);
             }
 
             if (ModLoader.TryGetMod("MagicStorage", out Mod magicStorage)) {
                 if (magicStorage.TryFind<ModItem>("StorageHeart", out var heart)) {
-                    Rewards.Add(new QuestReward { ItemType = heart.Type, Amount = 1 });
+                    AddReward(heart.Type, 1);
                 }
                 if (magicStorage.TryFind<ModItem>("StorageUnit", out var unit)) {
-                    Rewards.Add(new QuestReward { ItemType = unit.Type, Amount = 4 });
+                    AddReward(unit.Type, 4);
                 }
                 if (magicStorage.TryFind<ModItem>("CraftingAccess", out var crafting)) {
-                    Rewards.Add(new QuestReward { ItemType = crafting.Type, Amount = 1 });
+                    AddReward(crafting.Type, 1);
                 }
             }
-
-            AddChild<MiningQuest>();
         }
 
         public override void UpdateByPlayer() {

@@ -1,10 +1,12 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -335,6 +337,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <param name="amount"></param>
         /// <param name="text"></param>
         public void AddReward(int itemType, int amount = 1, LocalizedText text = null) {
+            if (itemType <= ItemID.None || amount <= 0) {
+                return;
+            }
+            if (Rewards.Any(r => r.ItemType == itemType)) {
+                return;
+            }
             Rewards.Add(new QuestReward() {
                 ItemType = itemType,
                 Amount = amount,

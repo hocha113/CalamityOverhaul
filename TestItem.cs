@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static InnoVault.VaultUtils;
 
 namespace CalamityOverhaul
 {
@@ -68,12 +69,6 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            if (player.altFunctionUse == 2) {
-                SaveStructure.DoLoad<SylvanOutpost>();
-            }
-            else {
-                //SaveStructure.DoSave<SylvanOutpost>();
-            }
             return true;
         }
     }
