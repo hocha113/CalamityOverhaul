@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -202,6 +203,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
         public static void Start() {
             IsActive = false;
             if (VaultUtils.isServer) {
+                return;
+            }
+
+            if (!CWRServerConfig.Instance.BiologyOverhaul) {
                 return;
             }
 
