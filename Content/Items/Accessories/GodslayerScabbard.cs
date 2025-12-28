@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
             _ = CreateRecipe().
-                AddIngredient<CrystalDimming>().
                 AddIngredient(CWRID.Item_CosmiliteBar, 10).
                 AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
