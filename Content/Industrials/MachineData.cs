@@ -6,8 +6,8 @@ namespace CalamityOverhaul.Content.Industrials
 {
     public class MachineData
     {
-        internal float UEvalue;
-        internal string Name => GetType().Name;
+        public float UEvalue;
+        public string Name => GetType().Name;
         public virtual void SendData(ModPacket data) {
             data.Write(UEvalue);
         }

@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 {
-    internal class BaseBattery : MachineTP
+    public class BaseBattery : MachineTP
     {
         /// <summary>
         /// 作为一个电池是否是接收能量的端口？
