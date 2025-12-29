@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
-            //更自然的出生偏移角度（非对称 + 扰动）
+            //更自然的出生偏移角度
             float indexFrac = (npc.whoAmI % 16f) / 16f;
             float angle = MathHelper.Lerp(-0.97f, 0.97f, indexFrac) + Main.rand.NextFloat(-0.1f, 0.1f);
             Vector2 spawnOffset = Vector2.UnitY.RotatedBy(angle) * 300f;
@@ -172,21 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
         private void SpawnPinkLaser() {
-            //我真的非常厌恶这些莫名其妙的伤害计算，泰拉的伤害计算就是一堆非常庞大的垃圾堆
-            int damage = CWRRef.GetProjectileDamage(npc, ProjectileID.PinkLaser);
-            //仅在启用 EarlyHardmodeProgressionRework 且非 BossRush 模式时调整伤害
-            if (CWRRef.GetEarlyHardmodeProgressionReworkBool() && !CWRRef.GetBossRushActive()) {
-                //计算击败的机械 Boss 数量
-                int downedMechBosses = (NPC.downedMechBoss1 ? 1 : 0) + (NPC.downedMechBoss2 ? 1 : 0) + (NPC.downedMechBoss3 ? 1 : 0);
-                //根据击败的机械 Boss 数量调整伤害
-                if (downedMechBosses == 0) {
-                    damage = (int)(damage * 0.9f);
-                }
-                else if (downedMechBosses == 1) {
-                    damage = (int)(damage * 0.95f);
-                }
-                //如果击败了 2 个或更多机械 Boss，不调整伤害
-            }
+            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, ModContent.ProjectileType<PrimeCannonOnSpan>()));
             //发射音效
             SoundEngine.PlaySound(SoundID.Item12, npc.Center);
             Projectile.NewProjectile(npc.GetSource_FromAI()

@@ -40,6 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region AI主循环
         public override bool ArmBehavior() {
+            ai[0]++;
             dontAttack = ai[0] < TimeToNotAttack;
             normalLaserRotation = npc.localAI[1] % 2f == 0f;
 
@@ -245,6 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 攻击函数
         private void FireLaser(bool charged = false) {
+            ai[0] = 0;
             npc.TargetClosest();
             float laserSpeed = bossRush ? 5f : 4f;
             int type = ProjectileID.DeathLaser;
@@ -258,6 +260,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             if (death) {
                 type = ModContent.ProjectileType<DeadLaser>();
+                damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
                 laserVelocity *= 0.65f;
             }
 
@@ -266,8 +269,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void FireChargedLaser() {
             int type = death ? ModContent.ProjectileType<DeadLaser>() : ProjectileID.DeathLaser;
-            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
-            damage = (int)(damage * 2.5f);
+
+            int damage = HeadPrimeAI.SetMultiplier(npc.defDamage / 2);
 
             float laserSpeed = death ? 12f : 15f;
             Vector2 laserVelocity = aimDirection * laserSpeed;
@@ -282,7 +285,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     if (i == 0) continue;
                     float spread = i * 0.12f;
                     Vector2 spreadVel = laserVelocity.RotatedBy(spread) * 0.8f;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, spreadVel, type, (int)(damage * 0.6f), 0f, Main.myPlayer, 1f, 0f);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, spreadVel, type, damage, 0f, Main.myPlayer, 1f, 0f);
                 }
             }
 

@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region AI主循环
         public override bool ArmBehavior() {
+            ai[0]++;
             dontAttack = ai[0] < TimeToNotAttack;
 
             //更新后坐力效果
@@ -174,6 +175,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void FireSpreadRockets() {
+            ai[0] = 0;
             npc.TargetClosest();
             int type = ProjectileID.RocketSkeleton;
             int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));

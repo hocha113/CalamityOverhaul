@@ -808,9 +808,18 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static bool GetAfterimagesInner() => CalamityClientConfig.Instance.Afterimages;
 
-        public static int GetProjectileDamage(NPC npc, int projType) => Has ? GetProjectileDamageInner(npc, projType) : npc.defDamage / 2;
-        [CWRJITEnabled]
-        private static int GetProjectileDamageInner(NPC npc, int projType) => npc.GetProjectileDamage(projType);
+        public static int GetProjectileDamage(NPC npc, int projType) {
+            int num = npc.defDamage / 2;//暂时使用这个，原来的方法在某些情况下会返回1或者0
+            if (Main.expertMode) {
+                num = (int)(num * 0.75f);
+            }
+            if (Main.masterMode) {
+                num = (int)(num * 0.75f);
+            }
+            return num;
+        }
+        //[CWRJITEnabled]
+        //private static int GetProjectileDamageInner(NPC npc, int projType) => npc.GetProjectileDamage(projType);
 
         public static void SetPlayerInfiniteFlight(this Player player, bool value) {
             if (!Has) return;
