@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Content.QuestLogs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

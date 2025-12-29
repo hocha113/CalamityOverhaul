@@ -232,6 +232,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 return;
             }
 
+            if (RenderHandleLoader.ScreenSwap == null || StarsShader == null || Main.screenTarget == null || Main.screenTargetSwap == null) {
+                return;
+            }
+
+            if (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) {
+                return;
+            }
+
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
             RenderTarget2D screenSwap = RenderHandleLoader.ScreenSwap;
 

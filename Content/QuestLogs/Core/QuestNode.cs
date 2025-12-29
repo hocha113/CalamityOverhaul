@@ -317,9 +317,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             DisplayName ??= this.GetLocalization(nameof(DisplayName), () => Name);
             Description ??= this.GetLocalization(nameof(Description), () => " ");
             DetailedDescription ??= this.GetLocalization(nameof(DetailedDescription), () => " ");
-            for (int i = 0; i < Rewards.Count; i++) {
-                Rewards[i].Initialize(this, i);
-            }
+            InitializeRewards();
             for (int i = 0; i < Objectives.Count; i++) {
                 //如果没有指定目标物品，且任务图标为物品，则默认使用任务图标物品
                 if (Objectives[i].TargetItemID == 0 && IconType == QuestIconType.Item && IconItemType > 0) {
@@ -328,6 +326,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 Objectives[i].Initialize(this, i);
             }
             PostSetup();
+        }
+
+        /// <summary>
+        /// 初始化奖励数据
+        /// </summary>
+        public void InitializeRewards() {
+            for (int i = 0; i < Rewards.Count; i++) {
+                Rewards[i].Initialize(this, i);
+            }
         }
 
         /// <summary>
@@ -348,6 +355,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 Amount = amount,
                 Description = text ?? VaultUtils.GetLocalizedItemName(itemType)
             });
+            InitializeRewards();
         }
 
         /// <summary>
