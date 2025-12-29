@@ -63,14 +63,19 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             Point16 bestPos = Point16.Zero;
             int bestScore = -1;
 
-            //从出生点向两侧系统性搜索
-            for (int dist = minDist; dist <= maxDist; dist += 20) {
+            //从出生点向两侧系统性搜索，步长更小以找到更好的位置
+            for (int dist = minDist; dist <= maxDist; dist += 15) {
                 for (int dir = -1; dir <= 1; dir += 2) {
                     int testX = Main.spawnTileX + dir * dist;
                     testX = Math.Clamp(testX, 150, Main.maxTilesX - 150 - width);
 
-                    int surfaceY = FindBestSurfaceY(testX, width);
+                    int surfaceY = FindBestSurfaceY(testX, width, out int flatnessScore);
                     if (surfaceY <= 0) {
+                        continue;
+                    }
+
+                    //平坦度太低直接跳过，避免生成在山峰上
+                    if (flatnessScore < 30) {
                         continue;
                     }
 
@@ -87,21 +92,24 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    int score = EvaluatePositionSimple(placeX, placeY, width, height, requireForest);
+                    //综合评分，平坦度权重很高
+                    int baseScore = EvaluatePositionSimple(placeX, placeY, width, height, requireForest);
+                    int score = baseScore + flatnessScore;//平坦度直接加到总分中
+
                     if (score > bestScore) {
                         bestScore = score;
                         bestPos = new Point16(placeX, placeY);
                     }
 
-                    //分数够高直接返回
-                    if (score >= 70) {
+                    //分数够高直接返回，要求更高的分数以确保平坦
+                    if (score >= 140) {
                         return bestPos;
                     }
                 }
             }
 
             //只要找到了任何可用位置就返回
-            if (bestScore >= 20) {
+            if (bestScore >= 50) {
                 return bestPos;
             }
 
@@ -114,7 +122,10 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         private static Point16 FullSurfaceScan(int width, int height, int minDistFromSpawn) {
             //从世界中心向两侧扫描
             int centerX = Main.maxTilesX / 2;
-            int scanStep = 50;
+            int scanStep = 30;//更小的步长以找到更平坦的位置
+
+            Point16 bestPos = Point16.Zero;
+            int bestFlatness = -1;
 
             for (int offset = 0; offset < Main.maxTilesX / 2 - 200; offset += scanStep) {
                 for (int dir = -1; dir <= 1; dir += 2) {
@@ -128,7 +139,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    int surfaceY = FindBestSurfaceY(testX, width);
+                    int surfaceY = FindBestSurfaceY(testX, width, out int flatnessScore);
                     if (surfaceY <= 0) {
                         continue;
                     }
@@ -143,23 +154,32 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    return new Point16(testX, placeY);
+                    //即使是全图扫描也要尽量选择平坦的位置
+                    if (flatnessScore > bestFlatness) {
+                        bestFlatness = flatnessScore;
+                        bestPos = new Point16(testX, placeY);
+                        //找到足够平坦的位置就返回
+                        if (flatnessScore >= 60) {
+                            return bestPos;
+                        }
+                    }
                 }
             }
 
-            return Point16.Zero;
+            return bestPos;
         }
 
         /// <summary>
         /// 寻找最佳地表Y坐标，会尝试找到相对平坦的区域并排除空岛
         /// </summary>
-        private static int FindBestSurfaceY(int startX, int width) {
-            int[] surfaceHeights = new int[width / 8 + 1];
+        private static int FindBestSurfaceY(int startX, int width, out int flatnessScore) {
+            flatnessScore = 0;
+            int[] surfaceHeights = new int[width / 4 + 1];//更密集的采样以准确评估平坦度
             int validCount = 0;
 
             //采样多个点获取地表高度
             for (int i = 0; i < surfaceHeights.Length; i++) {
-                int checkX = startX + i * 8;
+                int checkX = startX + i * 4;
                 if (checkX >= Main.maxTilesX) {
                     break;
                 }
@@ -173,13 +193,37 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            if (validCount < 3) {
+            if (validCount < 5) {
                 return -1;
             }
 
             //计算中位数作为基准高度
-            Array.Sort(surfaceHeights, 0, validCount);
-            int medianY = surfaceHeights[validCount / 2];
+            int[] sortedHeights = new int[validCount];
+            Array.Copy(surfaceHeights, sortedHeights, validCount);
+            Array.Sort(sortedHeights);
+            int medianY = sortedHeights[validCount / 2];
+
+            //计算平坦度分数，统计高度差异
+            int totalDeviation = 0;
+            int maxDeviation = 0;
+            for (int i = 0; i < validCount; i++) {
+                int deviation = Math.Abs(surfaceHeights[i] - medianY);
+                totalDeviation += deviation;
+                if (deviation > maxDeviation) {
+                    maxDeviation = deviation;
+                }
+            }
+
+            //平均偏差和最大偏差都会影响平坦度评分
+            float avgDeviation = (float)totalDeviation / validCount;
+            //平坦度分数：偏差越小分数越高，满分100
+            //平均偏差小于2格为非常平坦，大于8格为很不平坦
+            flatnessScore = Math.Max(0, 100 - (int)(avgDeviation * 12) - maxDeviation * 2);
+
+            //如果最大偏差超过12格，说明地形起伏太大，直接判定为不平坦
+            if (maxDeviation > 12) {
+                flatnessScore = Math.Min(flatnessScore, 20);
+            }
 
             //验证这个高度是否是真正的地表而非空岛
             if (!IsValidGroundLevel(startX, medianY, width)) {
@@ -187,6 +231,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             }
 
             return medianY;
+        }
+
+        /// <summary>
+        /// 重载版本，不需要平坦度分数时使用
+        /// </summary>
+        private static int FindBestSurfaceY(int startX, int width) {
+            return FindBestSurfaceY(startX, width, out _);
         }
 
         /// <summary>
@@ -350,6 +401,35 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         score -= 10;
                     }
                 }
+            }
+
+            //检查地基下方是否有足够的实心地层支撑
+            //这能避免生成在悬崖边或地形断层处
+            int solidFoundationCount = 0;
+            int checkFoundationDepth = 15;
+            for (int checkX = x; checkX < x + width; checkX += 10) {
+                int solidInColumn = 0;
+                for (int dy = 0; dy < checkFoundationDepth; dy++) {
+                    int checkY = groundY + dy;
+                    if (!WorldGen.InWorld(checkX, checkY)) {
+                        break;
+                    }
+                    Tile tile = Framing.GetTileSafely(checkX, checkY);
+                    if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                        solidInColumn++;
+                    }
+                }
+                //该列有超过一半是实心则计入
+                if (solidInColumn > checkFoundationDepth / 2) {
+                    solidFoundationCount++;
+                }
+            }
+
+            //地基支撑越完整分数越高
+            int expectedColumns = width / 10;
+            if (expectedColumns > 0) {
+                float foundationRatio = (float)solidFoundationCount / expectedColumns;
+                score += (int)(foundationRatio * 20);//最多加20分
             }
 
             return Math.Max(0, Math.Min(100, score));
