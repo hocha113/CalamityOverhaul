@@ -168,6 +168,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Projectile.hostile = false;
         }
 
+        public override bool? CanDamage() {
+            return false;
+        }
+
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
