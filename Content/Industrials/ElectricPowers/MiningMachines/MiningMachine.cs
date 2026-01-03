@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         void ICWRLoader.UnLoadData() { }
 
         public override void SetBattery() {
-            IdleDistance = 4000;//玩家远离后停止作业
+            //IdleDistance = 4000;//玩家远离后停止作业
         }
 
         public override void UpdateMachine() {
