@@ -51,6 +51,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawAimLine(context, chargeColor);
             }
 
+            //如果是激光扫射蓄力，绘制扫射范围预警
+            if (context.ChargeType == 4 && context.Target != null && context.ChargeProgress > 0.4f) {
+                DrawSweepWarning(context, chargeColor);
+            }
+
+            //如果是转阶段蓄力，绘制能量聚集特效
+            if (context.ChargeType == 5 && context.ChargeProgress > 0.3f) {
+                DrawPhaseTransitionEffect(context, chargeColor);
+            }
+
             //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
@@ -69,7 +79,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 1 => Color.OrangeRed,
                 2 => Color.BlueViolet,
                 3 => Color.Orange,
-                4 => Color.IndianRed,
+                4 => Color.Purple,
+                5 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
                 _ => Color.White
             };
         }
@@ -158,6 +169,134 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     );
                 }
             }
+        }
+
+        /// <summary>
+        /// 绘制扫射预警范围
+        /// </summary>
+        private static void DrawSweepWarning(TwinsStateContext context, Color baseColor) {
+            if (context.Target == null) {
+                return;
+            }
+
+            Vector2 direction = (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.Zero);
+            float spreadAngle = MathHelper.PiOver4;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+
+            //绘制扫射范围弧线
+            int arcSegments = 20;
+            float arcRadius = 300f * context.ChargeProgress;
+
+            for (int i = 0; i <= arcSegments; i++) {
+                float t = i / (float)arcSegments;
+                float angle = MathHelper.Lerp(-spreadAngle, spreadAngle, t);
+                Vector2 arcDir = direction.RotatedBy(angle);
+                Vector2 arcPos = context.Npc.Center + arcDir * arcRadius - Main.screenPosition;
+
+                float alpha = context.ChargeProgress * 0.6f;
+                float scale = 0.4f + (1f - System.Math.Abs(t - 0.5f) * 2f) * 0.3f;
+
+                Main.EntitySpriteDraw(
+                    glowTex,
+                    arcPos,
+                    null,
+                    baseColor * alpha,
+                    0f,
+                    glowTex.Size() / 2f,
+                    scale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制扫射方向指示线
+            for (int side = -1; side <= 1; side += 2) {
+                Vector2 lineDir = direction.RotatedBy(spreadAngle * side);
+                float lineLength = arcRadius;
+
+                int segments = (int)(lineLength / 25f);
+                for (int i = 0; i < segments; i++) {
+                    float segT = i / (float)segments;
+                    Vector2 segPos = Vector2.Lerp(context.Npc.Center, context.Npc.Center + lineDir * lineLength, segT) - Main.screenPosition;
+                    float alpha = (1f - segT) * context.ChargeProgress * 0.5f;
+
+                    Main.EntitySpriteDraw(
+                        lineTex,
+                        segPos,
+                        null,
+                        baseColor * alpha,
+                        lineDir.ToRotation(),
+                        new Vector2(0, lineTex.Height / 2f),
+                        new Vector2(0.3f, 0.25f),
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制转阶段能量聚集特效
+        /// </summary>
+        private static void DrawPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //根据是魔焰眼还是激光眼调整颜色
+            Color eyeColor = context.IsSpazmatism ? Color.OrangeRed : Color.BlueViolet;
+            Color mixColor = Color.Lerp(baseColor, eyeColor, context.ChargeProgress);
+
+            //绘制多层收缩圆环
+            for (int i = 0; i < 3; i++) {
+                float layerProgress = (context.ChargeProgress + i * 0.15f) % 1f;
+                float layerScale = 3f - layerProgress * 2.5f;
+                float layerAlpha = layerProgress * (1f - layerProgress) * 1.5f;
+
+                Main.EntitySpriteDraw(
+                    circleTex,
+                    drawPos,
+                    null,
+                    mixColor * layerAlpha,
+                    Main.GlobalTimeWrappedHourly * (2f + i),
+                    circleTex.Size() / 2f,
+                    layerScale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制中心强光
+            float coreScale = 0.5f + context.ChargeProgress * 2f;
+            float coreAlpha = context.ChargeProgress * 0.8f;
+            Main.EntitySpriteDraw(
+                glowTex,
+                drawPos,
+                null,
+                eyeColor * coreAlpha,
+                0f,
+                glowTex.Size() / 2f,
+                coreScale,
+                SpriteEffects.None,
+                0
+            );
+
+            //绘制脉冲波纹
+            float pulsePhase = (Main.GlobalTimeWrappedHourly * 3f) % 1f;
+            float pulseScale = 1f + pulsePhase * 3f;
+            float pulseAlpha = (1f - pulsePhase) * context.ChargeProgress * 0.4f;
+            Main.EntitySpriteDraw(
+                circleTex,
+                drawPos,
+                null,
+                mixColor * pulseAlpha,
+                0f,
+                circleTex.Size() / 2f,
+                pulseScale,
+                SpriteEffects.None,
+                0
+            );
         }
 
         #endregion

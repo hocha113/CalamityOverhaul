@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
@@ -430,19 +431,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[2] = 0;
                 ai[3] = 0;
 
-                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-
                 //清除所有负面buff
                 for (int i = 0; i < npc.buffType.Length; i++) {
                     npc.buffTime[i] = 0;
                 }
 
-                //切换到二阶段状态
-                ITwinsState phase2State = stateContext.IsSpazmatism
-                    ? new SpazmatismFlameChaseState()
-                    : new RetinazerVerticalBarrageState();
-
-                stateMachine.ForceChangeState(phase2State);
+                //切换到转阶段动画状态而不是直接进入二阶段
+                TwinsPhaseTransitionState transitionState = new TwinsPhaseTransitionState();
+                stateMachine.ForceChangeState(transitionState);
             }
         }
 
