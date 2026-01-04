@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -60,16 +59,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //随机切换到不同的特殊招式
             if (Timer >= Duration) {
-                int choice = Main.rand.Next(4);
+                int choice = Main.rand.Next(5);
                 return choice switch {
                     0 => new RetinazerFocusedBeamState(),
                     1 => new RetinazerLaserMatrixState(),
                     2 => new RetinazerPrecisionSniperState(),
+                    3 => HasPartner() ? new TwinsCombinedAttackState() : new RetinazerHorizontalBarrageState(),
                     _ => new RetinazerHorizontalBarrageState()
                 };
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 检查是否有另一只眼睛存活
+        /// </summary>
+        private bool HasPartner() {
+            foreach (var n in Main.npc) {
+                if (n.active && n.type == NPCID.Spazmatism) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

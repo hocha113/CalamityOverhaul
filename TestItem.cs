@@ -1,13 +1,10 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
-using CalamityOverhaul.Content.Structures.DatIO;
-using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static InnoVault.VaultUtils;
 
 namespace CalamityOverhaul
 {

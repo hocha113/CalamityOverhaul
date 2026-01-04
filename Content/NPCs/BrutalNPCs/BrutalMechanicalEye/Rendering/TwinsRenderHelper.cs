@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
@@ -71,6 +70,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawLaserMatrixGrid(context, chargeColor);
             }
 
+            //如果是影分身蓄力，绘制分身预警
+            if (context.ChargeType == 8 && context.ChargeProgress > 0.2f) {
+                DrawShadowDashIndicator(context, chargeColor);
+            }
+
+            //如果是火焰风暴蓄力，绘制风暴预警
+            if (context.ChargeType == 9 && context.ChargeProgress > 0.3f) {
+                DrawFlameStormIndicator(context, chargeColor);
+            }
+
+            //如果是合击蓄力，绘制双眼连接线
+            if (context.ChargeType == 10 && context.ChargeProgress > 0.3f) {
+                DrawCombinedAttackIndicator(context, chargeColor);
+            }
+
             //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
@@ -93,6 +107,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 5 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
                 6 => Color.Cyan,
                 7 => Color.MediumPurple,
+                8 => Color.OrangeRed,
+                9 => Color.Orange,
+                10 => Color.Lerp(Color.OrangeRed, Color.Cyan, 0.5f),
                 _ => Color.White
             };
         }
@@ -507,6 +524,239 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     0
                 );
             }
+        }
+
+        /// <summary>
+        /// 绘制影分身冲刺指示器
+        /// </summary>
+        private static void DrawShadowDashIndicator(TwinsStateContext context, Color baseColor) {
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //绘制分身位置预览
+            int shadowCount = 3;
+            float radius = 300f * context.ChargeProgress;
+
+            for (int i = 0; i < shadowCount; i++) {
+                float angle = MathHelper.TwoPi / shadowCount * i + MathHelper.PiOver2;
+                Vector2 shadowPos = drawPos + angle.ToRotationVector2() * radius;
+
+                //分身轮廓
+                float shadowAlpha = context.ChargeProgress * 0.4f;
+                float shadowScale = 0.6f + context.ChargeProgress * 0.4f;
+                float pulse = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 4f + i * 2f);
+
+                Main.EntitySpriteDraw(
+                    glowTex,
+                    shadowPos,
+                    null,
+                    baseColor * shadowAlpha * pulse,
+                    0f,
+                    glowTex.Size() / 2f,
+                    shadowScale,
+                    SpriteEffects.None,
+                    0
+                );
+
+                //冲刺方向线
+                if (context.Target != null && context.ChargeProgress > 0.5f) {
+                    Vector2 targetPos = context.Target.Center - Main.screenPosition;
+                    Vector2 toTarget = (targetPos - shadowPos).SafeNormalize(Vector2.Zero);
+                    float lineLength = 80f * (context.ChargeProgress - 0.5f) * 2f;
+
+                    int segments = 5;
+                    for (int j = 0; j < segments; j++) {
+                        float t = j / (float)segments;
+                        Vector2 linePos = shadowPos + toTarget * (t * lineLength);
+                        float lineAlpha = (1f - t) * context.ChargeProgress * 0.5f;
+
+                        Main.EntitySpriteDraw(
+                            glowTex,
+                            linePos,
+                            null,
+                            baseColor * lineAlpha,
+                            0f,
+                            glowTex.Size() / 2f,
+                            0.25f,
+                            SpriteEffects.None,
+                            0
+                        );
+                    }
+                }
+            }
+
+            //中心聚集效果
+            float coreScale = 1f + context.ChargeProgress * 0.5f;
+            float coreAlpha = context.ChargeProgress * 0.6f;
+            Main.EntitySpriteDraw(
+                circleTex,
+                drawPos,
+                null,
+                baseColor * coreAlpha,
+                Main.GlobalTimeWrappedHourly * 3f,
+                circleTex.Size() / 2f,
+                coreScale,
+                SpriteEffects.None,
+                0
+            );
+        }
+
+        /// <summary>
+        /// 绘制火焰风暴指示器
+        /// </summary>
+        private static void DrawFlameStormIndicator(TwinsStateContext context, Color baseColor) {
+            if (context.Target == null) {
+                return;
+            }
+
+            Vector2 targetPos = context.Target.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //绘制风暴范围圆
+            float stormRadius = 350f * context.ChargeProgress;
+            float circleAlpha = context.ChargeProgress * 0.3f;
+
+            Main.EntitySpriteDraw(
+                circleTex,
+                targetPos,
+                null,
+                baseColor * circleAlpha,
+                Main.GlobalTimeWrappedHourly * 2f,
+                circleTex.Size() / 2f,
+                stormRadius / (circleTex.Width / 2f),
+                SpriteEffects.None,
+                0
+            );
+
+            //绘制旋转火焰点
+            int flamePoints = 8;
+            float rotation = Main.GlobalTimeWrappedHourly * 3f;
+
+            for (int i = 0; i < flamePoints; i++) {
+                float angle = MathHelper.TwoPi / flamePoints * i + rotation;
+                float pointRadius = stormRadius * (0.6f + 0.4f * (float)System.Math.Sin(angle * 2f + Main.GlobalTimeWrappedHourly * 5f));
+                Vector2 flamePos = targetPos + angle.ToRotationVector2() * pointRadius;
+
+                float flameAlpha = context.ChargeProgress * 0.5f;
+                float flameScale = 0.4f + context.ChargeProgress * 0.3f;
+
+                Main.EntitySpriteDraw(
+                    glowTex,
+                    flamePos,
+                    null,
+                    baseColor * flameAlpha,
+                    0f,
+                    glowTex.Size() / 2f,
+                    flameScale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制中心标记
+            float centerAlpha = context.ChargeProgress * 0.4f;
+            Main.EntitySpriteDraw(
+                glowTex,
+                targetPos,
+                null,
+                baseColor * centerAlpha,
+                0f,
+                glowTex.Size() / 2f,
+                0.8f,
+                SpriteEffects.None,
+                0
+            );
+        }
+
+        /// <summary>
+        /// 绘制合击指示器
+        /// </summary>
+        private static void DrawCombinedAttackIndicator(TwinsStateContext context, Color baseColor) {
+            if (context.Target == null) {
+                return;
+            }
+
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Vector2 targetPos = context.Target.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //绘制到目标的冲刺线
+            Vector2 direction = (targetPos - drawPos).SafeNormalize(Vector2.Zero);
+            float distance = Vector2.Distance(drawPos, targetPos);
+            float lineLength = distance * context.ChargeProgress;
+
+            int segments = (int)(lineLength / 20f);
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                Vector2 segPos = Vector2.Lerp(drawPos, targetPos, t * context.ChargeProgress);
+
+                //交替颜色(火焰和激光)
+                Color segColor = i % 2 == 0 ? Color.OrangeRed : Color.BlueViolet;
+                float segAlpha = (1f - t) * context.ChargeProgress * 0.5f;
+                float pulse = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 8f + t * 10f);
+
+                Main.EntitySpriteDraw(
+                    glowTex,
+                    segPos,
+                    null,
+                    segColor * segAlpha * pulse,
+                    0f,
+                    glowTex.Size() / 2f,
+                    0.3f + (1f - t) * 0.2f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制碰撞点
+            if (context.ChargeProgress > 0.5f) {
+                float collisionProgress = (context.ChargeProgress - 0.5f) * 2f;
+                float collisionScale = 0.5f + collisionProgress * 1.5f;
+                float collisionAlpha = collisionProgress * 0.6f;
+
+                //双色碰撞圆
+                Main.EntitySpriteDraw(
+                    circleTex,
+                    targetPos,
+                    null,
+                    Color.OrangeRed * collisionAlpha,
+                    Main.GlobalTimeWrappedHourly * 3f,
+                    circleTex.Size() / 2f,
+                    collisionScale,
+                    SpriteEffects.None,
+                    0
+                );
+
+                Main.EntitySpriteDraw(
+                    circleTex,
+                    targetPos,
+                    null,
+                    Color.BlueViolet * collisionAlpha * 0.7f,
+                    -Main.GlobalTimeWrappedHourly * 2f,
+                    circleTex.Size() / 2f,
+                    collisionScale * 0.8f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //本体周围的能量环
+            float ringAlpha = context.ChargeProgress * 0.5f;
+            float ringScale = 0.8f + context.ChargeProgress * 0.4f;
+            Main.EntitySpriteDraw(
+                circleTex,
+                drawPos,
+                null,
+                baseColor * ringAlpha,
+                Main.GlobalTimeWrappedHourly * 4f,
+                circleTex.Size() / 2f,
+                ringScale,
+                SpriteEffects.None,
+                0
+            );
         }
 
         #endregion

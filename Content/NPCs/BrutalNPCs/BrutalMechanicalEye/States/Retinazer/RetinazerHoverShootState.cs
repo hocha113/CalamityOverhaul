@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

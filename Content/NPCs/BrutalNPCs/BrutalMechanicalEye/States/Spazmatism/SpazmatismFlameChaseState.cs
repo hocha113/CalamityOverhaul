@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -16,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         private float ChaseSpeed => Context.IsMachineRebellion ? 10f : 6f;
         private float TurnSpeed => Context.IsMachineRebellion ? 0.2f : 0.12f;
-        private int FlameDuration => Context.IsMachineRebellion ? 380 : 300;
+        private int FlameDuration => Context.IsMachineRebellion ? 200 : 150;
 
         private TwinsStateContext Context;
 
@@ -53,12 +52,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 SoundEngine.PlaySound(SoundID.Item34, npc.Center);
             }
 
-            //喷火结束，切换到冲刺
+            //喷火结束，随机切换到特殊招式
             if (Timer >= FlameDuration) {
-                return new SpazmatismPhase2DashPrepareState();
+                int choice = Main.rand.Next(5);
+                return choice switch {
+                    0 => new SpazmatismShadowDashState(),
+                    1 => new SpazmatismFlameStormState(),
+                    2 => HasPartner() ? new TwinsCombinedAttackState() : new SpazmatismPhase2DashPrepareState(),
+                    _ => new SpazmatismPhase2DashPrepareState()
+                };
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 检查是否有另一只眼睛存活
+        /// </summary>
+        private bool HasPartner() {
+            foreach (var n in Main.npc) {
+                if (n.active && n.type == NPCID.Retinazer) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
