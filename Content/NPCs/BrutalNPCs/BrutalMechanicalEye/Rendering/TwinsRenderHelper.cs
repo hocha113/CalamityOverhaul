@@ -85,6 +85,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawCombinedAttackIndicator(context, chargeColor);
             }
 
+            //如果是同步转阶段蓄力，绘制双眼同步特效
+            if (context.ChargeType == 11 && context.ChargeProgress > 0.1f) {
+                DrawSyncPhaseTransitionEffect(context, chargeColor);
+            }
+
             //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
@@ -110,6 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 8 => Color.OrangeRed,
                 9 => Color.Orange,
                 10 => Color.Lerp(Color.OrangeRed, Color.Cyan, 0.5f),
+                11 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
                 _ => Color.White
             };
         }
@@ -757,6 +763,140 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 SpriteEffects.None,
                 0
             );
+        }
+
+        /// <summary>
+        /// 绘制同步转阶段特效
+        /// </summary>
+        private static void DrawSyncPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //根据是魔焰眼还是激光眼调整颜色
+            Color eyeColor = context.IsSpazmatism ? Color.OrangeRed : Color.BlueViolet;
+            Color mixColor = Color.Lerp(baseColor, eyeColor, 0.7f);
+
+            //多层收缩圆环
+            for (int i = 0; i < 4; i++) {
+                float layerProgress = (context.ChargeProgress + i * 0.12f) % 1f;
+                float layerScale = 2.5f - layerProgress * 2f;
+                float layerAlpha = layerProgress * (1f - layerProgress) * 1.2f;
+
+                Main.EntitySpriteDraw(
+                    circleTex,
+                    drawPos,
+                    null,
+                    mixColor * layerAlpha,
+                    Main.GlobalTimeWrappedHourly * (2.5f + i * 0.5f),
+                    circleTex.Size() / 2f,
+                    layerScale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //中心强光
+            float coreScale = 0.8f + context.ChargeProgress * 1.5f;
+            float coreAlpha = context.ChargeProgress * 0.7f;
+            Main.EntitySpriteDraw(
+                glowTex,
+                drawPos,
+                null,
+                eyeColor * coreAlpha,
+                0f,
+                glowTex.Size() / 2f,
+                coreScale,
+                SpriteEffects.None,
+                0
+            );
+
+            //能量放射线
+            if (context.ChargeProgress > 0.3f) {
+                int rayCount = 8;
+                float rayLength = 100f * (context.ChargeProgress - 0.3f) / 0.7f;
+                float rayRotation = Main.GlobalTimeWrappedHourly * 2f;
+
+                for (int i = 0; i < rayCount; i++) {
+                    float angle = MathHelper.TwoPi / rayCount * i + rayRotation;
+                    Vector2 rayDir = angle.ToRotationVector2();
+
+                    int segments = 6;
+                    for (int j = 0; j < segments; j++) {
+                        float t = j / (float)segments;
+                        Vector2 rayPos = drawPos + rayDir * (30f + t * rayLength);
+                        float rayAlpha = (1f - t) * context.ChargeProgress * 0.5f;
+
+                        Main.EntitySpriteDraw(
+                            glowTex,
+                            rayPos,
+                            null,
+                            eyeColor * rayAlpha,
+                            0f,
+                            glowTex.Size() / 2f,
+                            0.3f * (1f - t * 0.5f),
+                            SpriteEffects.None,
+                            0
+                        );
+                    }
+                }
+            }
+
+            //寻找另一只眼睛并绘制连接线
+            NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
+            if (partner != null && partner.active && context.ChargeProgress > 0.2f) {
+                Vector2 partnerPos = partner.Center - Main.screenPosition;
+                Vector2 midPoint = (drawPos + partnerPos) / 2f;
+
+                //双眼连接线
+                int linkSegments = 12;
+                for (int i = 0; i < linkSegments; i++) {
+                    float t = i / (float)(linkSegments - 1);
+                    Vector2 linkPos = Vector2.Lerp(drawPos, partnerPos, t);
+
+                    //波动效果
+                    Vector2 perpendicular = (partnerPos - drawPos).SafeNormalize(Vector2.Zero);
+                    perpendicular = new Vector2(-perpendicular.Y, perpendicular.X);
+                    float wave = (float)System.Math.Sin(t * MathHelper.TwoPi * 2f + Main.GlobalTimeWrappedHourly * 5f) * 15f * context.ChargeProgress;
+                    linkPos += perpendicular * wave;
+
+                    //交替颜色
+                    Color linkColor = i % 2 == 0 ? Color.OrangeRed : Color.BlueViolet;
+                    float linkAlpha = context.ChargeProgress * 0.6f * (1f - System.Math.Abs(t - 0.5f) * 0.5f);
+                    float pulse = 0.8f + 0.2f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 6f + t * 8f);
+
+                    Main.EntitySpriteDraw(
+                        glowTex,
+                        linkPos,
+                        null,
+                        linkColor * linkAlpha * pulse,
+                        0f,
+                        glowTex.Size() / 2f,
+                        0.35f,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+                //中点能量聚集
+                if (context.ChargeProgress > 0.5f) {
+                    float midProgress = (context.ChargeProgress - 0.5f) * 2f;
+                    float midScale = 0.5f + midProgress * 1f;
+                    float midAlpha = midProgress * 0.5f;
+
+                    Main.EntitySpriteDraw(
+                        circleTex,
+                        midPoint,
+                        null,
+                        Color.White * midAlpha,
+                        Main.GlobalTimeWrappedHourly * 5f,
+                        circleTex.Size() / 2f,
+                        midScale,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+            }
         }
 
         #endregion

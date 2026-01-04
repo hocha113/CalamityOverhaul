@@ -1,5 +1,7 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 {
     /// <summary>
     /// 激光眼二阶段聚焦光束状态
-    /// 锁定玩家位置后发射持续的聚焦激光
+    /// 持续追踪玩家位置，在发射前一刻锁定方向
     /// </summary>
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
@@ -40,17 +42,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// </summary>
         private const int TotalDuration = LockPhase + ChargePhase + FirePhase + RecoveryPhase;
 
+        /// <summary>
+        /// 蓄力阶段最后多少帧开始锁定方向不再追踪
+        /// </summary>
+        private const int FinalLockFrames = 8;
+
         private TwinsStateContext Context;
-        private Vector2 lockedDirection;
-        private Vector2 lockedTargetPos;
+        private Vector2 currentDirection;
+        private Vector2 finalLockedDirection;
         private bool hasPlayedChargeSound;
         private bool hasPlayedFireSound;
+        private bool isDirectionLocked;
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
             Context = context;
             hasPlayedChargeSound = false;
             hasPlayedFireSound = false;
+            isDirectionLocked = false;
+            currentDirection = Vector2.Zero;
+            finalLockedDirection = Vector2.Zero;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -94,22 +105,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Vector2 targetPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -350 : 350, -100);
             MoveTo(npc, targetPos, 14f, 0.15f);
 
-            //持续追踪玩家
+            //持续追踪玩家，更新当前方向
+            currentDirection = GetDirectionToTarget(Context);
             FaceTarget(npc, player.Center);
-
-            //记录锁定方向
-            lockedDirection = GetDirectionToTarget(Context);
-            lockedTargetPos = player.Center;
 
             //预警特效
             context.SetChargeState(6, progress * 0.3f);
 
             //锁定指示粒子
             if (!VaultUtils.isServer && Timer % 4 == 0) {
-                Vector2 dustPos = npc.Center + lockedDirection * 40f;
+                Vector2 dustPos = npc.Center + currentDirection * 40f;
                 Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.Vortex, 0, 0, 100, default, 1.2f);
                 dust.noGravity = true;
-                dust.velocity = lockedDirection * 3f;
+                dust.velocity = currentDirection * 3f;
             }
         }
 
@@ -120,11 +128,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             int phaseTimer = Timer - LockPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            //锁定位置不再移动
-            npc.velocity *= 0.9f;
+            //计算是否到达最终锁定时间
+            int remainingFrames = ChargePhase - phaseTimer;
+            bool shouldLockNow = remainingFrames <= FinalLockFrames;
 
-            //保持锁定方向
-            npc.rotation = lockedDirection.ToRotation() - MathHelper.PiOver2;
+            if (!isDirectionLocked) {
+                if (shouldLockNow) {
+                    //最终锁定方向
+                    isDirectionLocked = true;
+                    finalLockedDirection = GetDirectionToTarget(Context);
+
+                    //锁定时的视觉提示
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.5f, Volume = 0.6f }, npc.Center);
+                        for (int i = 0; i < 10; i++) {
+                            Vector2 dustVel = finalLockedDirection.RotatedBy((Main.rand.NextFloat() - 0.5f) * 0.5f) * Main.rand.NextFloat(4f, 8f);
+                            Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Vortex, dustVel.X, dustVel.Y, 0, default, 1.8f);
+                            dust.noGravity = true;
+                        }
+                    }
+                }
+                else {
+                    //持续追踪玩家，更新当前方向
+                    currentDirection = GetDirectionToTarget(Context);
+                }
+            }
+
+            //使用当前有效的方向
+            Vector2 activeDirection = isDirectionLocked ? finalLockedDirection : currentDirection;
+
+            //减速但保持一定的追踪能力
+            npc.velocity *= 0.92f;
+
+            //更新朝向
+            npc.rotation = activeDirection.ToRotation() - MathHelper.PiOver2;
 
             //设置蓄力状态
             context.SetChargeState(6, 0.3f + progress * 0.7f);
@@ -147,13 +184,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (5f + progress * 4f);
                 }
 
-                //发射方向的能量线
+                //发射方向的能量线 - 使用当前方向
                 if (phaseTimer % 3 == 0 && progress > 0.3f) {
                     float lineDist = 50f + progress * 100f;
-                    Vector2 dustPos = npc.Center + lockedDirection * lineDist;
+                    Vector2 dustPos = npc.Center + activeDirection * lineDist;
                     Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, 0, 0, 100, default, 1.8f);
                     dust.noGravity = true;
-                    dust.velocity = lockedDirection * 2f;
+                    dust.velocity = activeDirection * 2f;
                 }
 
                 //蓄力完成时的闪光
@@ -178,12 +215,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //停止蓄力特效
             context.ResetChargeState();
 
+            //使用最终锁定的方向
+            Vector2 fireDirection = finalLockedDirection;
+
             //保持锁定方向
-            npc.rotation = lockedDirection.ToRotation() - MathHelper.PiOver2;
+            npc.rotation = fireDirection.ToRotation() - MathHelper.PiOver2;
 
             //后坐力效果
             if (phaseTimer < 10) {
-                npc.velocity = -lockedDirection * (10f - phaseTimer);
+                npc.velocity = -fireDirection * (10f - phaseTimer);
             }
             else {
                 npc.velocity *= 0.95f;
@@ -200,7 +240,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (phaseTimer % fireInterval == 0 && !VaultUtils.isClient) {
                 //添加轻微的散射
                 float scatter = (Main.rand.NextFloat() - 0.5f) * 0.1f;
-                Vector2 shootDir = lockedDirection.RotatedBy(scatter);
+                Vector2 shootDir = fireDirection.RotatedBy(scatter);
 
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
@@ -224,8 +264,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //持续的发射轨迹粒子
             if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
-                Vector2 dustPos = npc.Center + lockedDirection * (40f + phaseTimer * 3f);
-                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, lockedDirection.X * 5, lockedDirection.Y * 5, 100, default, 1.2f);
+                Vector2 dustPos = npc.Center + fireDirection * (40f + phaseTimer * 3f);
+                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, fireDirection.X * 5, fireDirection.Y * 5, 100, default, 1.2f);
                 dust.noGravity = true;
             }
         }

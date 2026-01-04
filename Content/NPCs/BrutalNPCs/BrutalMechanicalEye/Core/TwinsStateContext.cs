@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
@@ -8,6 +9,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
     /// </summary>
     internal class TwinsStateContext
     {
+        #region 静态同步数据
+        /// <summary>
+        /// 是否已触发二阶段转换
+        /// </summary>
+        public static bool Phase2Triggered { get; set; }
+        /// <summary>
+        /// 触发二阶段的眼睛类型(用于确定谁先触发)
+        /// </summary>
+        public static int Phase2TriggerSource { get; set; }
+        /// <summary>
+        /// 二阶段转换计时器
+        /// </summary>
+        public static int Phase2TransitionTimer { get; set; }
+
+        /// <summary>
+        /// 重置静态同步数据
+        /// </summary>
+        public static void ResetSyncData() {
+            Phase2Triggered = false;
+            Phase2TriggerSource = 0;
+            Phase2TransitionTimer = 0;
+        }
+
+        /// <summary>
+        /// 触发二阶段转换
+        /// </summary>
+        public static void TriggerPhase2(int sourceType) {
+            if (!Phase2Triggered) {
+                Phase2Triggered = true;
+                Phase2TriggerSource = sourceType;
+                Phase2TransitionTimer = 0;
+            }
+        }
+
+        /// <summary>
+        /// 检查另一只眼睛是否存活
+        /// </summary>
+        public static NPC GetPartnerNpc(int myType) {
+            int partnerType = myType == NPCID.Spazmatism ? NPCID.Retinazer : NPCID.Spazmatism;
+            foreach (var n in Main.npc) {
+                if (n.active && n.type == partnerType) {
+                    return n;
+                }
+            }
+            return null;
+        }
+        #endregion
+
         #region 核心引用
         /// <summary>
         /// NPC实例引用
@@ -44,6 +93,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 是否为魔焰眼
         /// </summary>
         public bool IsSpazmatism { get; set; }
+        /// <summary>
+        /// 是否正在执行转阶段动画
+        /// </summary>
+        public bool IsInPhaseTransition { get; set; }
         #endregion
 
         #region 蓄力特效数据

@@ -161,6 +161,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[i] = 0;
             }
 
+            //重置同步数据(只在魔焰眼生成时重置，因为它通常先生成)
+            if (npc.type == NPCID.Spazmatism) {
+                TwinsStateContext.ResetSyncData();
+            }
+
             //检测随从模式
             accompany = false;
             foreach (var n in Main.npc) {
@@ -294,7 +299,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 }
                 return skeletronPrime.ai[0] == 3;
             }
-            return (npc.life / (float)npc.lifeMax) < 0.6f && (PrimaryAIState)ai[0] != PrimaryAIState.Debut;
+
+            //如果还在登场演出阶段，绝对不进入二阶段
+            bool isInDebut = (PrimaryAIState)ai[0] == PrimaryAIState.Debut || (PrimaryAIState)ai[0] == PrimaryAIState.Initialization;
+            if (isInDebut) {
+                return false;
+            }
+
+            //检查是否已经触发了二阶段
+            if (TwinsStateContext.Phase2Triggered) {
+                return true;
+            }
+
+            //检查自身血量(只有在非登场状态下才检查)
+            bool selfLowHealth = (npc.life / (float)npc.lifeMax) < 0.6f;
+
+            //检查另一只眼睛的状态
+            NPC partner = TwinsStateContext.GetPartnerNpc(npc.type);
+            if (partner != null && partner.active) {
+                //获取另一只眼睛的AI控制器来检查它是否在登场演出
+                var partnerOverride = partner.GetGlobalNPC<CWRNpc>();
+                bool partnerInDebut = false;
+
+                //通过ai[0]检查另一只眼睛是否在登场演出
+                //ai[0] == 0 是初始化，ai[0] == 1 是登场演出
+                if (partner.ai[0] <= 1) {
+                    partnerInDebut = true;
+                }
+
+                //只有当另一只眼睛也不在登场演出时，才检查它的血量
+                if (!partnerInDebut) {
+                    bool partnerLowHealth = (partner.life / (float)partner.lifeMax) < 0.6f;
+                    if (partnerLowHealth || selfLowHealth) {
+                        //任意一只眼睛低血量都触发同步二阶段
+                        TwinsStateContext.TriggerPhase2(npc.type);
+                        return true;
+                    }
+                }
+            }
+
+            //只有自身低血量才触发
+            if (selfLowHealth) {
+                TwinsStateContext.TriggerPhase2(npc.type);
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
