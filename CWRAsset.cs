@@ -40,7 +40,7 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> StarTexture = null;
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> SoftGlow = null;
+        public static Asset<Texture2D> SoftGlow = null;//大小64*64的圆点灰度图，一般用于叠加绘制圆形光效，颜色的A值需要设置为0
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fire = null;
         [VaultLoaden(CWRConstant.Masking)]

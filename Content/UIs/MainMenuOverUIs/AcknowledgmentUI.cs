@@ -85,12 +85,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
 
                 //用主材质或替代材质
-                Texture2D tex = index == 0 ? SpazmatismAI.SpazmatismAsset.Value : SpazmatismAI.RetinazerAsset.Value;
+                Texture2D tex = index == 0 ? TwinsAIController.SpazmatismAsset.Value : TwinsAIController.RetinazerAsset.Value;
                 if (index == 2) {
-                    tex = SpazmatismAI.SpazmatismAltAsset.Value;
+                    tex = TwinsAIController.SpazmatismAltAsset.Value;
                 }
                 if (index == 3) {
-                    tex = SpazmatismAI.RetinazerAltAsset.Value;
+                    tex = TwinsAIController.RetinazerAltAsset.Value;
                 }
                 Rectangle frameRect = tex.GetRectangle(frameIndex, 4);
                 SpriteEffects effects = velocity.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;

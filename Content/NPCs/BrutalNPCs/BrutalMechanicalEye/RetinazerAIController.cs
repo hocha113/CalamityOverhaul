@@ -2,7 +2,11 @@
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class RetinazerAI : SpazmatismAI, ICWRLoader
+    /// <summary>
+    /// 激光眼AI控制器
+    /// 继承自双子魔眼基类
+    /// </summary>
+    internal class RetinazerAIController : TwinsAIController
     {
         public override int TargetID => NPCID.Retinazer;
     }
