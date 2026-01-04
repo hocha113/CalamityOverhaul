@@ -61,6 +61,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawPhaseTransitionEffect(context, chargeColor);
             }
 
+            //如果是聚焦光束蓄力，绘制锁定指示器
+            if (context.ChargeType == 6 && context.Target != null && context.ChargeProgress > 0.2f) {
+                DrawFocusedBeamIndicator(context, chargeColor);
+            }
+
+            //如果是激光矩阵蓄力，绘制矩阵网格
+            if (context.ChargeType == 7 && context.ChargeProgress > 0.3f) {
+                DrawLaserMatrixGrid(context, chargeColor);
+            }
+
             //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
@@ -81,6 +91,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 3 => Color.Orange,
                 4 => Color.Purple,
                 5 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
+                6 => Color.Cyan,
+                7 => Color.MediumPurple,
                 _ => Color.White
             };
         }
@@ -297,6 +309,204 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 SpriteEffects.None,
                 0
             );
+        }
+
+        /// <summary>
+        /// 绘制聚焦光束锁定指示器
+        /// </summary>
+        private static void DrawFocusedBeamIndicator(TwinsStateContext context, Color baseColor) {
+            if (context.Target == null) {
+                return;
+            }
+
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Vector2 direction = (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.Zero);
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+
+            //绘制锁定圆环
+            float ringScale = 1.5f - context.ChargeProgress * 0.8f;
+            float ringAlpha = context.ChargeProgress * 0.7f;
+            float ringRotation = Main.GlobalTimeWrappedHourly * 4f;
+
+            for (int i = 0; i < 2; i++) {
+                Main.EntitySpriteDraw(
+                    CWRAsset.DiffusionCircle.Value,
+                    drawPos,
+                    null,
+                    baseColor * ringAlpha * (1f - i * 0.3f),
+                    ringRotation * (i == 0 ? 1 : -1),
+                    CWRAsset.DiffusionCircle.Value.Size() / 2f,
+                    ringScale * (1f + i * 0.2f),
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制瞄准激光线
+            float lineLength = 350f * context.ChargeProgress;
+            int segments = (int)(lineLength / 15f);
+
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float segDist = t * lineLength;
+                Vector2 segPos = context.Npc.Center + direction * segDist - Main.screenPosition;
+
+                //闪烁效果
+                float flicker = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 10f + t * 5f);
+                float alpha = context.ChargeProgress * flicker * (1f - t * 0.5f);
+                float scale = 0.4f + (1f - t) * 0.3f;
+
+                Main.EntitySpriteDraw(
+                    lineTex,
+                    segPos,
+                    null,
+                    baseColor * alpha,
+                    direction.ToRotation(),
+                    new Vector2(0, lineTex.Height / 2f),
+                    new Vector2(scale, scale * 0.4f),
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制准心
+            if (context.ChargeProgress > 0.5f) {
+                float crosshairAlpha = (context.ChargeProgress - 0.5f) * 2f * 0.6f;
+                Vector2 targetPos = context.Npc.Center + direction * lineLength - Main.screenPosition;
+
+                //四个方向的准心线
+                for (int i = 0; i < 4; i++) {
+                    float angle = MathHelper.PiOver2 * i;
+                    Vector2 offset = angle.ToRotationVector2() * 20f;
+
+                    Main.EntitySpriteDraw(
+                        glowTex,
+                        targetPos + offset,
+                        null,
+                        baseColor * crosshairAlpha,
+                        0f,
+                        glowTex.Size() / 2f,
+                        0.3f,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制激光矩阵网格
+        /// </summary>
+        private static void DrawLaserMatrixGrid(TwinsStateContext context, Color baseColor) {
+            Vector2 drawPos = context.Npc.Center - Main.screenPosition;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+
+            //绘制中心节点
+            float coreAlpha = context.ChargeProgress * 0.5f;
+            float coreScale = 0.8f + context.ChargeProgress * 0.5f;
+            Main.EntitySpriteDraw(
+                glowTex,
+                drawPos,
+                null,
+                baseColor * coreAlpha,
+                0f,
+                glowTex.Size() / 2f,
+                coreScale,
+                SpriteEffects.None,
+                0
+            );
+
+            //绘制网格连接线
+            int gridPoints = 4;
+            float gridRadius = 150f * context.ChargeProgress;
+            float rotation = Main.GlobalTimeWrappedHourly * 0.5f;
+
+            for (int i = 0; i < gridPoints; i++) {
+                float angle = MathHelper.TwoPi / gridPoints * i + rotation + MathHelper.PiOver4;
+                Vector2 pointPos = drawPos + angle.ToRotationVector2() * gridRadius;
+
+                //绘制节点
+                float nodeAlpha = context.ChargeProgress * 0.6f;
+                float nodeScale = 0.5f + context.ChargeProgress * 0.3f;
+                float nodePulse = 0.8f + 0.2f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 5f + i);
+
+                Main.EntitySpriteDraw(
+                    glowTex,
+                    pointPos,
+                    null,
+                    baseColor * nodeAlpha * nodePulse,
+                    0f,
+                    glowTex.Size() / 2f,
+                    nodeScale,
+                    SpriteEffects.None,
+                    0
+                );
+
+                //绘制到中心的连接线
+                int lineSegments = 8;
+                for (int j = 1; j < lineSegments; j++) {
+                    float t = j / (float)lineSegments;
+                    Vector2 linePos = Vector2.Lerp(drawPos, pointPos, t);
+                    float lineAlpha = context.ChargeProgress * 0.4f * (1f - System.Math.Abs(t - 0.5f));
+
+                    Main.EntitySpriteDraw(
+                        glowTex,
+                        linePos,
+                        null,
+                        baseColor * lineAlpha,
+                        0f,
+                        glowTex.Size() / 2f,
+                        0.2f,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+                //绘制相邻节点连接
+                int nextI = (i + 1) % gridPoints;
+                float nextAngle = MathHelper.TwoPi / gridPoints * nextI + rotation + MathHelper.PiOver4;
+                Vector2 nextPointPos = drawPos + nextAngle.ToRotationVector2() * gridRadius;
+
+                int edgeSegments = 6;
+                for (int j = 1; j < edgeSegments; j++) {
+                    float t = j / (float)edgeSegments;
+                    Vector2 edgePos = Vector2.Lerp(pointPos, nextPointPos, t);
+                    float edgeAlpha = context.ChargeProgress * 0.3f;
+
+                    Main.EntitySpriteDraw(
+                        glowTex,
+                        edgePos,
+                        null,
+                        baseColor * edgeAlpha,
+                        0f,
+                        glowTex.Size() / 2f,
+                        0.15f,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+            }
+
+            //绘制外圈扩散效果
+            if (context.ChargeProgress > 0.6f) {
+                float ringProgress = (context.ChargeProgress - 0.6f) / 0.4f;
+                float ringScale = 1f + ringProgress * 1.5f;
+                float ringAlpha = (1f - ringProgress) * 0.4f;
+
+                Main.EntitySpriteDraw(
+                    circleTex,
+                    drawPos,
+                    null,
+                    baseColor * ringAlpha,
+                    Main.GlobalTimeWrappedHourly * 2f,
+                    circleTex.Size() / 2f,
+                    ringScale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
         }
 
         #endregion

@@ -53,9 +53,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 Counter++;
             }
 
-            //射击6次后随机切换状态
-            if (Counter >= 6) {
-                if (Main.rand.NextBool(3)) {
+            //射击3次后切换状态，大幅提高特殊技能频率
+            if (Counter >= 3) {
+                //60%概率使用激光扫射，40%概率调整位置
+                if (Main.rand.Next(5) < 3) {
                     return new RetinazerLaserSweepState();
                 }
                 else {

@@ -55,9 +55,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 Counter++;
             }
 
-            //射击5次后随机切换状态
-            if (Counter >= 5) {
-                if (Main.rand.NextBool(3)) {
+            //射击3次后切换状态，大幅提高特殊技能频率
+            if (Counter >= 3) {
+                //50%概率使用火焰漩涡，50%概率冲刺
+                if (Main.rand.NextBool()) {
                     return new SpazmatismFireVortexState();
                 }
                 else {

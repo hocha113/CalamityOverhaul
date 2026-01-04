@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         private const int ChargeTime = 80;
         private const int RecoveryTime = 110;
-        private const int MaxSniperCount = 3;
+        private const int MaxSniperCount = 2;
 
         private TwinsStateContext Context;
         private int sniperCount;
@@ -106,8 +106,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 sniperCount++;
 
                 if (sniperCount >= MaxSniperCount) {
-                    //狙击次数用完，回到垂直弹幕
-                    return new RetinazerVerticalBarrageState();
+                    //狙击次数用完，随机切换到其他特殊招式
+                    int choice = Main.rand.Next(3);
+                    return choice switch {
+                        0 => new RetinazerFocusedBeamState(),
+                        1 => new RetinazerLaserMatrixState(),
+                        _ => new RetinazerVerticalBarrageState()
+                    };
                 }
                 else {
                     //继续下一次狙击

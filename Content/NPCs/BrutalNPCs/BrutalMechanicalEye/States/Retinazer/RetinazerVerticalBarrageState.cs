@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     {
         public override string StateName => "RetinazerVerticalBarrage";
 
-        private const int Duration = 240;
+        private const int Duration = 150;
         private int RapidFireRate => Context.IsMachineRebellion ? 10 : 15;
 
         private TwinsStateContext Context;
@@ -58,9 +58,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 SoundEngine.PlaySound(SoundID.Item12, npc.Center);
             }
 
-            //切换到水平弹幕
+            //随机切换到不同的特殊招式
             if (Timer >= Duration) {
-                return new RetinazerHorizontalBarrageState();
+                int choice = Main.rand.Next(4);
+                return choice switch {
+                    0 => new RetinazerFocusedBeamState(),
+                    1 => new RetinazerLaserMatrixState(),
+                    2 => new RetinazerPrecisionSniperState(),
+                    _ => new RetinazerHorizontalBarrageState()
+                };
             }
 
             return null;
