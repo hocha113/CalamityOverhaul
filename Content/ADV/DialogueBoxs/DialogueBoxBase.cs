@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             Texture2D tex;
             try {
-                tex = ModContent.Request<Texture2D>(texturePath, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+                tex = CWRUtils.GetT2DAsset(texturePath, true).Value;
             } catch {
                 return;
             }
@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             Texture2D tex;
             try {
-                tex = ModContent.Request<Texture2D>(texturePath, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+                tex = CWRUtils.GetT2DAsset(texturePath, true).Value;
             } catch {
                 return;
             }

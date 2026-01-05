@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 //绘制附魔图标
                 if (!string.IsNullOrEmpty(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath)) {
                     Vector2 iconDrawPositionTopLeft = UITopLeft + new Vector2(226f, 56f) * UIScale;
-                    Texture2D iconTexture = ModContent.Request<Texture2D>(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath).Value;
+                    Texture2D iconTexture = CWRUtils.GetT2DAsset(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath).Value;
                     DrawIcon(spriteBatch, iconDrawPositionTopLeft, iconTexture);
                 }
             }

@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// Áò»Ç»ğÓã¼¼ÄÜ£¬¿ª»ğÊ±ÕÙ»½Áò»Ç»ğÓãÔÚÉíºóÅçÉä»ğÑæ
+    /// ç¡«ç£ºç«é±¼æŠ€èƒ½ï¼Œå¼€ç«æ—¶å¬å”¤ç¡«ç£ºç«é±¼åœ¨èº«åå–·å°„ç«ç„°
     /// </summary>
     internal class FishBrimlish : FishSkill
     {
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 14;
 
         private int shootCounter = 0;
-        private static int ShootInterval => 8 - HalibutData.GetDomainLayer() / 3; //Ã¿8´Î¿ª»ğ´¥·¢Ò»´Î
+        private static int ShootInterval => 8 - HalibutData.GetDomainLayer() / 3; //æ¯8æ¬¡å¼€ç«è§¦å‘ä¸€æ¬¡
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 shootCounter = 0;
                 SetCooldown();
 
-                //ÔÚÍæ¼ÒÉíºóÕÙ»½Áò»Ç»ğÓã
+                //åœ¨ç©å®¶èº«åå¬å”¤ç¡«ç£ºç«é±¼
                 SpawnBrimfishSpitter(player, source, damage, knockback);
             }
 
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnBrimfishSpitter(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
-            //ÔÚÍæ¼Òºó·½Éú³É
+            //åœ¨ç©å®¶åæ–¹ç”Ÿæˆ
             Vector2 behindPlayer = player.Center - new Vector2(player.direction * 120f, 60f);
 
             int brimfishProj = Projectile.NewProjectile(
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.projectile[brimfishProj].netUpdate = true;
             }
 
-            //Áò»Ç»ğÕÙ»½ÒôĞ§
+            //ç¡«ç£ºç«å¬å”¤éŸ³æ•ˆ
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
                 Volume = 0.5f,
                 Pitch = -0.3f
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// Áò»Ç»ğÓãÅçÉäÆ÷µ¯Ä»
+    /// ç¡«ç£ºç«é±¼å–·å°„å™¨å¼¹å¹•
     /// </summary>
     internal class BrimfishSpitterProjectile : ModProjectile
     {
@@ -73,10 +73,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private enum FishState
         {
-            Appearing,   //³öÏÖ
-            Charging,    //ĞîÁ¦
-            Spitting,    //ÅçÉä
-            Fading       //ÏûÊ§
+            Appearing,   //å‡ºç°
+            Charging,    //è“„åŠ›
+            Spitting,    //å–·å°„
+            Fading       //æ¶ˆå¤±
         }
 
         private ref float StateRaw => ref Projectile.ai[0];
@@ -94,15 +94,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private readonly List<Vector2> trailPositions = new();
         private const int MaxTrailLength = 12;
 
-        //×´Ì¬³ÖĞøÊ±¼ä
+        //çŠ¶æ€æŒç»­æ—¶é—´
         private const int AppearDuration = 15;
         private const int ChargeDuration = 25;
         private const int SpitDuration = 40;
         private const int FadeDuration = 20;
 
-        //¹¥»÷²ÎÊı
+        //æ”»å‡»å‚æ•°
         private const float SearchRange = 1200f;
-        private static int FlameCount => 6 + HalibutData.GetDomainLayer() / 2; //ÅçÉä»ğÑæÊıÁ¿
+        private static int FlameCount => 6 + HalibutData.GetDomainLayer() / 2; //å–·å°„ç«ç„°æ•°é‡
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.localNPCHitCooldown = -1;
         }
 
-        public override bool? CanDamage() => false; //Óã±¾Éí²»Ôì³ÉÉËº¦£¬Ö»ÓĞ»ğÑæÔì³ÉÉËº¦
+        public override bool? CanDamage() => false; //é±¼æœ¬èº«ä¸é€ æˆä¼¤å®³ï¼Œåªæœ‰ç«ç„°é€ æˆä¼¤å®³
 
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             StateTimer++;
             pulsePhase += 0.2f;
 
-            //×´Ì¬»ú
+            //çŠ¶æ€æœº
             switch (State) {
                 case FishState.Appearing:
                     AppearingBehavior(owner);
@@ -151,19 +151,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //¸üĞÂÍÏÎ²
+            //æ›´æ–°æ‹–å°¾
             UpdateTrail();
 
-            //Áò»Ç»ğ»·¾³¹âÕÕ
+            //ç¡«ç£ºç«ç¯å¢ƒå…‰ç…§
             float pulse = (float)Math.Sin(pulsePhase) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.8f * pulse * glowIntensity, 0.2f * pulse * glowIntensity, 0.1f * pulse * glowIntensity);
 
-            //Áò»Ç»ğ»·¾³Á£×Ó
+            //ç¡«ç£ºç«ç¯å¢ƒç²’å­
             if (glowIntensity > 0.3f && Main.rand.NextBool(4)) {
                 SpawnBrimstoneAmbient();
             }
 
-            //Ğı×ª³¯ÏòÄ¿±ê
+            //æ—‹è½¬æœå‘ç›®æ ‡
             if (State == FishState.Charging || State == FishState.Spitting) {
                 if (IsTargetValid()) {
                     NPC target = Main.npc[targetNPCID];
@@ -180,16 +180,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void AppearingBehavior(Player owner) {
             float progress = StateTimer / AppearDuration;
 
-            //µ­Èë
+            //æ·¡å…¥
             Projectile.alpha = (int)(255 * (1f - progress));
             glowIntensity = progress;
             Projectile.scale = progress;
 
-            //ÇáÎ¢Æ¯¸¡
+            //è½»å¾®æ¼‚æµ®
             float floatY = (float)Math.Sin(pulsePhase * 0.8f) * 2f;
             Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.1f);
 
-            //³öÏÖÊ±Á£×ÓĞ§¹û
+            //å‡ºç°æ—¶ç²’å­æ•ˆæœ
             if (Main.rand.NextBool(3)) {
                 SpawnAppearDust();
             }
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = FishState.Charging;
                 StateTimer = 0;
 
-                //ËÑË÷Ä¿±ê
+                //æœç´¢ç›®æ ‡
                 NPC target = owner.Center.FindClosestNPC(SearchRange);
                 if (target != null) {
                     targetNPCID = target.whoAmI;
@@ -210,22 +210,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / ChargeDuration;
             ChargeProgress = progress;
 
-            //ĞîÁ¦Ê±·¢¹âÇ¿¶ÈÔö¼Ó
+            //è“„åŠ›æ—¶å‘å…‰å¼ºåº¦å¢åŠ 
             glowIntensity = 0.6f + progress * 0.4f;
 
-            //ÇáÎ¢Æ¯¸¡
+            //è½»å¾®æ¼‚æµ®
             float floatY = (float)Math.Sin(pulsePhase * 1.2f) * 3f;
             Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.1f);
 
-            //Óã×ìÖğ½¥ÕÅ¿ªĞ§¹û£¨Í¨¹ıËõ·ÅÄ£Äâ£©
+            //é±¼å˜´é€æ¸å¼ å¼€æ•ˆæœï¼ˆé€šè¿‡ç¼©æ”¾æ¨¡æ‹Ÿï¼‰
             Projectile.scale = 1f + progress * 0.3f;
 
-            //ĞîÁ¦Ê±³ÖĞøÉú³ÉÁò»Ç»ğÁ£×Ó
+            //è“„åŠ›æ—¶æŒç»­ç”Ÿæˆç¡«ç£ºç«ç²’å­
             if (Main.rand.NextBool(2)) {
                 SpawnChargeDust();
             }
 
-            //ĞîÁ¦ÒôĞ§
+            //è“„åŠ›éŸ³æ•ˆ
             if (StateTimer % 10 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with {
                     Volume = 0.3f * progress,
@@ -237,10 +237,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = FishState.Spitting;
                 StateTimer = 0;
 
-                //¿ªÊ¼ÅçÉä
+                //å¼€å§‹å–·å°„
                 SpitBrimstoneFlames(owner);
 
-                //ÅçÉäÒôĞ§
+                //å–·å°„éŸ³æ•ˆ
                 SoundEngine.PlaySound(SoundID.Item74 with {
                     Volume = 0.9f,
                     Pitch = -0.3f
@@ -251,10 +251,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpittingBehavior(Player owner) {
             float progress = StateTimer / SpitDuration;
 
-            //ÅçÉäÊ±±£³ÖÇ¿ÁÒ·¢¹â
+            //å–·å°„æ—¶ä¿æŒå¼ºçƒˆå‘å…‰
             glowIntensity = 1f - progress * 0.3f;
 
-            //ÅçÉäÊ±ºó×øÁ¦Ğ§¹û
+            //å–·å°„æ—¶åååŠ›æ•ˆæœ
             if (IsTargetValid()) {
                 NPC target = Main.npc[targetNPCID];
                 Vector2 toTarget = target.Center - Projectile.Center;
@@ -262,11 +262,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center += recoil * 0.1f;
             }
 
-            //³ÖĞøÆ¯¸¡
+            //æŒç»­æ¼‚æµ®
             float floatY = (float)Math.Sin(pulsePhase) * 2f;
             Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.05f);
 
-            //ÅçÉäÊ±³ÖĞøÉú³É»ğÑæÁ£×Ó
+            //å–·å°„æ—¶æŒç»­ç”Ÿæˆç«ç„°ç²’å­
             if (Main.rand.NextBool(2)) {
                 SpawnSpitEffect();
             }
@@ -280,12 +280,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void FadingBehavior() {
             float progress = StateTimer / FadeDuration;
 
-            //µ­³ö
+            //æ·¡å‡º
             Projectile.alpha = (int)(255 * progress);
             glowIntensity = 1f - progress;
             Projectile.scale = 1f - progress * 0.5f;
 
-            //»ºÂıÏÂ³Á
+            //ç¼“æ…¢ä¸‹æ²‰
             Projectile.velocity.Y += 0.2f;
 
             if (StateTimer >= FadeDuration) {
@@ -298,11 +298,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[targetNPCID];
 
-            //´ÓÓã×ìÎ»ÖÃÅçÉä
+            //ä»é±¼å˜´ä½ç½®å–·å°„
             Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 20f;
             Vector2 toTarget = (target.Center - mouthPos).SafeNormalize(Vector2.Zero);
 
-            //ÅçÉäÉÈĞÎ»ğÑæ
+            //å–·å°„æ‰‡å½¢ç«ç„°
             for (int i = 0; i < FlameCount; i++) {
                 float spreadAngle = MathHelper.Lerp(-0.5f, 0.5f, i / (float)(FlameCount - 1));
                 Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(12f, 18f);
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.projectile[proj].friendly = true;
             }
 
-            //ÅçÉä±¬·¢ÌØĞ§
+            //å–·å°„çˆ†å‘ç‰¹æ•ˆ
             for (int i = 0; i < 40; i++) {
                 Vector2 velocity = toTarget.RotatedByRandom(0.8f) * Main.rand.NextFloat(8f, 20f);
                 Dust brimstone = Dust.NewDustPerfect(
@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.fadeIn = 1.6f;
             }
 
-            //»ğÑæºËĞÄ±¬·¢
+            //ç«ç„°æ ¸å¿ƒçˆ†å‘
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = toTarget.RotatedByRandom(0.6f) * Main.rand.NextFloat(6f, 16f);
                 Dust fire = Dust.NewDustPerfect(
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        //ÌØĞ§·½·¨
+        //ç‰¹æ•ˆæ–¹æ³•
         private void SpawnBrimstoneAmbient() {
             Dust brimstone = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnChargeDust() {
-            //Óã×ìÎ»ÖÃ
+            //é±¼å˜´ä½ç½®
             Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 15f;
 
             for (int i = 0; i < 3; i++) {
@@ -408,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.fadeIn = 1.5f;
             }
 
-            //ºìÉ«»ğÑæºËĞÄ
+            //çº¢è‰²ç«ç„°æ ¸å¿ƒ
             if (Main.rand.NextBool()) {
                 Dust fire = Dust.NewDustPerfect(
                     mouthPos,
@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.fadeIn = 1.4f;
             }
 
-            //»ğÑæ
+            //ç«ç„°
             if (Main.rand.NextBool()) {
                 Dust fire = Dust.NewDustPerfect(
                     mouthPos,
@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //ÏûÉ¢Ğ§¹û
+            //æ¶ˆæ•£æ•ˆæœ
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Dust brimstone = Dust.NewDustPerfect(
@@ -468,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.noGravity = true;
             }
 
-            //»ğÑæÓà½ı
+            //ç«ç„°ä½™çƒ¬
             for (int i = 0; i < 15; i++) {
                 Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -489,16 +489,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D fishTex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D fishTex = CWRUtils.GetT2DAsset(Texture).Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
             float drawRot = Projectile.rotation;
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //»æÖÆÁò»Ç»ğÍÏÎ²
+            //ç»˜åˆ¶ç¡«ç£ºç«æ‹–å°¾
             DrawBrimstoneTrail(sb, fishTex, origin, alpha);
 
-            //Áò»Ç»ğ·¢¹â²ã
+            //ç¡«ç£ºç«å‘å…‰å±‚
             if (glowIntensity > 0.5f) {
                 for (int i = 0; i < 4; i++) {
                     float glowScale = Projectile.scale * (1.2f + i * 0.15f);
@@ -518,7 +518,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //ĞîÁ¦»Ô¹âĞ§¹û
+            //è“„åŠ›è¾‰å…‰æ•ˆæœ
             if (State == FishState.Charging) {
                 float chargeGlow = ChargeProgress;
                 for (int i = 0; i < 3; i++) {
@@ -539,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //Ö÷Ìå»æÖÆ - Áò»Ç»ğºì³ÈÉ«µ÷
+            //ä¸»ä½“ç»˜åˆ¶ - ç¡«ç£ºç«çº¢æ©™è‰²è°ƒ
             Color mainColor = Color.Lerp(
                 lightColor,
                 new Color(255, 120, 60),
@@ -558,7 +558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //Âö³åÁò»Ç»ğĞ§¹û
+            //è„‰å†²ç¡«ç£ºç«æ•ˆæœ
             float pulseIntensity = 0.5f + (float)Math.Sin(pulsePhase) * 0.3f;
             sb.Draw(
                 fishTex,
@@ -572,7 +572,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //°×ÈÈºËĞÄ
+            //ç™½çƒ­æ ¸å¿ƒ
             if (glowIntensity > 0.7f) {
                 sb.Draw(
                     fishTex,
@@ -598,7 +598,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float trailAlpha = progress * alpha * 0.6f;
                 float trailScale = Projectile.scale * MathHelper.Lerp(0.6f, 1f, progress);
 
-                //Áò»Ç»ğ½¥±äÉ«
+                //ç¡«ç£ºç«æ¸å˜è‰²
                 Color trailColor = Color.Lerp(
                     new Color(200, 60, 30),
                     new Color(255, 140, 70),
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// Áò»Ç»ğÑæµ¯Ä»
+    /// ç¡«ç£ºç«ç„°å¼¹å¹•
     /// </summary>
     internal class BrimstoneFlameProjectile : ModProjectile
     {
@@ -651,10 +651,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Timer++;
 
-            //¼õËÙ
+            //å‡é€Ÿ
             Projectile.velocity *= 0.98f;
 
-            //ÇáÎ¢×·×Ù×î½üµÄµĞÈË
+            //è½»å¾®è¿½è¸ªæœ€è¿‘çš„æ•Œäºº
             if (Timer % 15 == 0 && Timer < 60) {
                 NPC target = Projectile.Center.FindClosestNPC(400f);
                 if (target != null) {
@@ -667,13 +667,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //Ğı×ª
+            //æ—‹è½¬
             Projectile.rotation += rotationSpeed;
 
-            //Áò»Ç»ğ¹âÕÕ
+            //ç¡«ç£ºç«å…‰ç…§
             Lighting.AddLight(Projectile.Center, 0.8f, 0.2f, 0.1f);
 
-            //Áò»Ç»ğÁ£×Ó¹ì¼£
+            //ç¡«ç£ºç«ç²’å­è½¨è¿¹
             if (Main.rand.NextBool(2)) {
                 Dust brimstone = Dust.NewDustDirect(
                     Projectile.position,
@@ -688,7 +688,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.noGravity = true;
             }
 
-            //»ğÑæÎ²¼£
+            //ç«ç„°å°¾è¿¹
             if (Main.rand.NextBool()) {
                 Dust fire = Dust.NewDustDirect(
                     Projectile.position,
@@ -705,7 +705,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //Áò»Ç»ğ»÷ÖĞ±¬·¢
+            //ç¡«ç£ºç«å‡»ä¸­çˆ†å‘
             for (int i = 0; i < 15; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Dust brimstone = Dust.NewDustPerfect(
@@ -719,7 +719,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.noGravity = true;
             }
 
-            //»ğÑæ±¬·¢
+            //ç«ç„°çˆ†å‘
             for (int i = 0; i < 8; i++) {
                 Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -739,7 +739,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //ÏûÉ¢±¬·¢
+            //æ¶ˆæ•£çˆ†å‘
             for (int i = 0; i < 20; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust brimstone = Dust.NewDustPerfect(
@@ -753,7 +753,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 brimstone.noGravity = true;
             }
 
-            //»ğÑæ
+            //ç«ç„°
             for (int i = 0; i < 10; i++) {
                 Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -773,11 +773,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //¼òµ¥µÄ·¢¹âÇòÌå»æÖÆ
+            //ç®€å•çš„å‘å…‰çƒä½“ç»˜åˆ¶
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //Íâ²ãÁò»Ç»ğ»Ô¹â
+            //å¤–å±‚ç¡«ç£ºç«è¾‰å…‰
             for (int i = 0; i < 3; i++) {
                 float scale = 0.4f + i * 0.15f;
                 float alpha = (1f - i * 0.3f) * 0.8f;
@@ -795,7 +795,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //ºËĞÄÁÁµã
+            //æ ¸å¿ƒäº®ç‚¹
             Main.spriteBatch.Draw(
                 glowTex,
                 drawPos,

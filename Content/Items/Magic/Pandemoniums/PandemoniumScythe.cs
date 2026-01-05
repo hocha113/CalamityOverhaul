@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D texture = CWRUtils.GetT2DAsset(Texture).Value;
 
             //绘制拖尾 - 根据追踪模式改变颜色
             Color trail1 = HomingMode == 2 ? new Color(255, 140, 60, 0) : new Color(180, 20, 40, 0);

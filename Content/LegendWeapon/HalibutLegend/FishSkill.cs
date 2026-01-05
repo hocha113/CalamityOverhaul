@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             IDToInstance[Instances.Count] = this;//技能ID从1开始，0什么都不是
             NameToInstance[FullName] = this;
             if (!VaultUtils.isServer) {
-                TypeToTex[GetType()] = ModContent.Request<Texture2D>(IconTexture, AssetRequestMode.ImmediateLoad).Value;
+                TypeToTex[GetType()] = CWRUtils.GetT2DAsset(IconTexture, true).Value;
             }
         }
 

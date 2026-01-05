@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D texture = ModContent.Request<Texture2D>(CWRConstant.Placeholder).Value;
+            Texture2D texture = CWRUtils.GetT2DAsset(CWRConstant.Placeholder).Value;
 
             Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition + UnitToMouseV * 59 + new Vector2(0, -5)
                 , null, Color.DarkRed, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 4000f, 0, 0);

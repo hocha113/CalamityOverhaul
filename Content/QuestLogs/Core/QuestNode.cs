@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 case QuestIconType.Texture:
                     if (!string.IsNullOrEmpty(IconTexturePath) && ModContent.HasAsset(IconTexturePath)) {
                         if (_iconTextureCache == null || !_iconTextureCache.IsLoaded) {
-                            _iconTextureCache = ModContent.Request<Texture2D>(IconTexturePath);
+                            _iconTextureCache = CWRUtils.GetT2DAsset(IconTexturePath);
                         }
                         return _iconTextureCache?.Value;
                     }
