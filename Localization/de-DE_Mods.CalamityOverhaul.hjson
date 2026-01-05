@@ -1231,9 +1231,10 @@ Items: {
 			When used, it erases every trace of your worldly memories.
 			A life turned specter, condemned to eternal descent
 			all beings are burdened with sin, and no soul shall return to the next life.
-			My name is [NAME]. If you are reading this, I have already perished.
+			My name is [NAME]. When you read this, I am already dead.
 			''' */
 		// CompletionText: You have forgotten everything
+		// ConditionsText: Achieve any story ending
 	}
 
 	Fishoil: {

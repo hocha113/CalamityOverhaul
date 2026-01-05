@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.MainMenuOvers;
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -19,9 +20,11 @@ namespace CalamityOverhaul.Content.Items.Tools
     {
         public override string Texture => CWRConstant.Item + "Tools/TheForgottenTome";
         public static LocalizedText CompletionText;
+        public static LocalizedText ConditionsText;
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 1;
             CompletionText = this.GetLocalization(nameof(CompletionText), () => "你已经遗忘所有");
+            ConditionsText = this.GetLocalization(nameof(ConditionsText), () => "达成任意剧情结局");
         }
 
         public override void SetDefaults() {
@@ -151,25 +154,16 @@ namespace CalamityOverhaul.Content.Items.Tools
             return true;
         }
 
+        public static LocalizedText ConditionsFunc(out Func<bool> condition) {
+            condition = () => MenuSave.ADV_SupCal_EBN;
+            return ConditionsText;
+        }
+
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.Book)
-                .AddIngredient(ItemID.FallenStar, 20)
-                .AddIngredient(ItemID.FragmentNebula, 10)
-                .AddIngredient(ItemID.FragmentVortex, 10)
-                .AddIngredient(ItemID.LunarBar, 10)
-                .AddTile(TileID.Bookcases)
-                .Register();
-                return;
-            }
             CreateRecipe()
                 .AddIngredient(ItemID.Book)
-                .AddIngredient(ItemID.FallenStar, 20)
-                .AddIngredient(CWRID.Item_CosmiliteBar, 5)
-                .AddIngredient(ItemID.FragmentNebula, 10)
-                .AddIngredient(ItemID.FragmentVortex, 10)
-                .AddIngredient(ItemID.LunarBar, 10)
+                .AddIngredient(ItemID.BloodMoonStarter)
+                .AddCondition(ConditionsFunc(out var condition), condition)
                 .AddTile(TileID.Bookcases)
                 .Register();
         }

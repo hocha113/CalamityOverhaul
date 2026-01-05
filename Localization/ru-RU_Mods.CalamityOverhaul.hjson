@@ -1255,6 +1255,7 @@ Items: {
 			Меня зовут [NAME], и когда вы увидите эту фразу, я уже буду мёртв
 			'''
 		CompletionText: Вы всё забыли
+		// ConditionsText: Achieve any story ending
 	}
 
 	Fishoil: {

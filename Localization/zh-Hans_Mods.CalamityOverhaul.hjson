@@ -1233,6 +1233,7 @@ Items: {
 			我叫[NAME]，当你看到这句话的时候，我已经死了
 			'''
 		CompletionText: 你已经遗忘所有
+		ConditionsText: 达成任意剧情结局
 	}
 
 	Fishoil: {
