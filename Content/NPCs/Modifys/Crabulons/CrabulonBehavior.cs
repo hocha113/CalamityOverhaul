@@ -7,7 +7,6 @@ using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
