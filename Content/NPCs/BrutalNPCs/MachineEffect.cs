@@ -249,13 +249,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
             IsActive = true;
         }
 
+        private static bool dompMusicWindown;
+
         public override void PostUpdateEverything() {
             if (!Main.gameMenu) {
                 Start();
             }
 
             if (!Cek()) {
+                dompMusicWindown = false;
                 return;
+            }
+
+            if (dompMusicWindown) {
+                dompMusicWindown = true;
+                MusicToast.ShowMusic(
+                    title: "位元堕落",
+                    artist: "Ryusa",
+                    albumCover: MeldAsset.Value,
+                    style: MusicToast.MusicStyle.Neon,
+                    displayDuration: 360//6秒
+                );
             }
 
             if (++CekTimer > 60 * 60 * 3) {
@@ -264,17 +278,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
             }
 
             if (!CWRRef.GetBossRushActive() && !VaultUtils.isServer) {
-                int slot = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-                if (Main.newMusic != slot) {
-                    MusicToast.ShowMusic(
-                        title: "位元堕落",
-                        artist: "Ryusa",
-                        albumCover: MeldAsset.Value,
-                        style: MusicToast.MusicStyle.Neon,
-                        displayDuration: 360//6秒
-                    );
-                }
-                Main.newMusic = Main.musicBox2 = slot;
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
             }
         }
 
