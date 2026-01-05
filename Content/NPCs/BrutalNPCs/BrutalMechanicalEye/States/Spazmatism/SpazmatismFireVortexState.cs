@@ -16,11 +16,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     {
         public override string StateName => "SpazmatismFireVortex";
 
-        private const int ChargeTime = 60;
-        private const int TotalDuration = 90;
+        private int ChargeTime => Context.IsMachineRebellion ? 40 : (Context.IsDeathMode ? 45 : 60);
+        private int TotalDuration => Context.IsMachineRebellion ? 60 : (Context.IsDeathMode ? 70 : 90);
 
-        private float MoveSpeed => Context.IsMachineRebellion ? 16f : 12f;
-        private int BulletCount => Context.IsMachineRebellion ? 12 : 8;
+        private float MoveSpeed => Context.IsMachineRebellion ? 16f : (Context.IsDeathMode ? 14f : 12f);
+        private int BulletCount => Context.IsMachineRebellion ? 12 : (Context.IsDeathMode ? 10 : 8);
+        private float BulletSpeed => Context.IsDeathMode ? 7f : 6f;
 
         private TwinsStateContext Context;
 
@@ -56,10 +57,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 //释放环形火焰弹幕
                 SoundEngine.PlaySound(SoundID.Item45, npc.Center);
                 if (!VaultUtils.isClient) {
-                    float baseSpeed = 6f;
                     for (int i = 0; i < BulletCount; i++) {
                         float bulletAngle = MathHelper.TwoPi / BulletCount * i;
-                        Vector2 vel = bulletAngle.ToRotationVector2() * baseSpeed;
+                        Vector2 vel = bulletAngle.ToRotationVector2() * BulletSpeed;
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             npc.Center,

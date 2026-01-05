@@ -12,8 +12,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     {
         public override string StateName => "RetinazerHoverShoot";
 
-        private int ShootRate => Context.IsMachineRebellion ? 45 : 60;
-        private float MoveSpeed => Context.IsMachineRebellion ? 14f : 10f;
+        private int ShootRate => Context.IsMachineRebellion ? 45 : (Context.IsDeathMode ? 50 : 60);
+        private float MoveSpeed => Context.IsMachineRebellion ? 14f : (Context.IsDeathMode ? 12f : 10f);
+        private float LaserSpeed => Context.IsDeathMode ? 11f : 9f;
+        private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
 
         private TwinsStateContext Context;
 
@@ -35,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (Timer >= ShootRate) {
                 //发射激光
                 if (!VaultUtils.isClient) {
-                    Vector2 shootVel = GetDirectionToTarget(context) * 9f;
+                    Vector2 shootVel = GetDirectionToTarget(context) * LaserSpeed;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
                         npc.Center,
@@ -51,8 +53,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 Counter++;
             }
 
-            //射击3次后切换状态，大幅提高特殊技能频率
-            if (Counter >= 3) {
+            //射击次数后切换状态
+            if (Counter >= MaxShootCount) {
                 //60%概率使用激光扫射，40%概率调整位置
                 if (Main.rand.Next(5) < 3) {
                     return new RetinazerLaserSweepState();

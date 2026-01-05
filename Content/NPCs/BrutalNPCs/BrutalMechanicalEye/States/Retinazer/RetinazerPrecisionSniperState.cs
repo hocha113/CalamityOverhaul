@@ -16,9 +16,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     {
         public override string StateName => "RetinazerPrecisionSniper";
 
-        private const int ChargeTime = 80;
-        private const int RecoveryTime = 110;
-        private const int MaxSniperCount = 2;
+        private int ChargeTime => Context.IsMachineRebellion ? 60 : (Context.IsDeathMode ? 65 : 80);
+        private int RecoveryTime => Context.IsMachineRebellion ? 90 : (Context.IsDeathMode ? 95 : 110);
+        private int MaxSniperCount => Context.IsDeathMode ? 3 : 2;
+        private int ProjectileCount => Context.IsMachineRebellion ? 15 : (Context.IsDeathMode ? 13 : 11);
+        private float SpreadAngle => Context.IsDeathMode ? 60f : 50f;
+        private float BaseSpeed => Context.IsDeathMode ? 7f : 5f;
 
         private TwinsStateContext Context;
         private int sniperCount;
@@ -74,13 +77,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
                 if (!VaultUtils.isClient) {
                     Vector2 toPlayer = GetDirectionToTarget(context);
-                    int projectileCount = 11;
-                    float spreadAngle = MathHelper.ToRadians(50);
-                    float baseSpeed = context.IsDeathMode ? 7f : 5f;
+                    float spreadRad = MathHelper.ToRadians(SpreadAngle);
 
-                    for (int i = 0; i < projectileCount; i++) {
-                        float angle = MathHelper.Lerp(-spreadAngle / 2, spreadAngle / 2, i / (float)(projectileCount - 1));
-                        Vector2 shootVel = toPlayer.RotatedBy(angle) * baseSpeed;
+                    for (int i = 0; i < ProjectileCount; i++) {
+                        float angle = MathHelper.Lerp(-spreadRad / 2, spreadRad / 2, i / (float)(ProjectileCount - 1));
+                        Vector2 shootVel = toPlayer.RotatedBy(angle) * BaseSpeed;
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             npc.Center,

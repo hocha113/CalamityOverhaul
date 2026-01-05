@@ -13,9 +13,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     {
         public override string StateName => "SpazmatismFlameChase";
 
-        private float ChaseSpeed => Context.IsMachineRebellion ? 10f : 6f;
-        private float TurnSpeed => Context.IsMachineRebellion ? 0.2f : 0.12f;
-        private int FlameDuration => Context.IsMachineRebellion ? 200 : 150;
+        private float ChaseSpeed => Context.IsMachineRebellion ? 10f : (Context.IsDeathMode ? 8f : 6f);
+        private float TurnSpeed => Context.IsMachineRebellion ? 0.2f : (Context.IsDeathMode ? 0.16f : 0.12f);
+        private int FlameDuration => Context.IsMachineRebellion ? 200 : (Context.IsDeathMode ? 120 : 150);
+        private int FlameInterval => Context.IsDeathMode ? 6 : 8;
 
         private TwinsStateContext Context;
 
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Timer++;
 
             //喷火
-            if (Timer % 8 == 0) {
+            if (Timer % FlameInterval == 0) {
                 if (!VaultUtils.isClient) {
                     Vector2 fireVel = npc.velocity.SafeNormalize(Vector2.UnitY) * 12f;
                     Projectile.NewProjectile(

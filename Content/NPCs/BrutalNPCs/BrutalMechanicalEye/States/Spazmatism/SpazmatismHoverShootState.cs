@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     {
         public override string StateName => "SpazmatismHoverShoot";
 
-        private int ShootRate => Context.IsMachineRebellion ? 55 : 80;
-        private float MoveSpeed => Context.IsMachineRebellion ? 16f : 12f;
+        private int ShootRate => Context.IsMachineRebellion ? 55 : (Context.IsDeathMode ? 60 : 80);
+        private float MoveSpeed => Context.IsMachineRebellion ? 16f : (Context.IsDeathMode ? 14f : 12f);
+        private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
 
         private TwinsStateContext Context;
 
@@ -37,7 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             if (Timer >= ShootRate) {
                 //发射火球
                 if (!VaultUtils.isClient) {
-                    Vector2 shootVel = GetDirectionToTarget(context) * 12f;
+                    float shootSpeed = Context.IsDeathMode ? 14f : 12f;
+                    Vector2 shootVel = GetDirectionToTarget(context) * shootSpeed;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
                         npc.Center,
@@ -53,8 +55,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 Counter++;
             }
 
-            //射击3次后切换状态，大幅提高特殊技能频率
-            if (Counter >= 3) {
+            //射击次数后切换状态
+            if (Counter >= MaxShootCount) {
                 //50%概率使用火焰漩涡，50%概率冲刺
                 if (Main.rand.NextBool()) {
                     return new SpazmatismFireVortexState();

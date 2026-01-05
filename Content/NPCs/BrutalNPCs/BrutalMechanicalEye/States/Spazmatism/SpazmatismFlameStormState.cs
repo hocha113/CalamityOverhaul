@@ -18,32 +18,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>
         /// 上升阶段
         /// </summary>
-        private const int RisePhase = 45;
+        private int RisePhase => Context.IsDeathMode ? 35 : 45;
 
         /// <summary>
         /// 预警阶段 - 给玩家明确的逃离时间
         /// </summary>
-        private const int WarningPhase = 50;
+        private int WarningPhase => Context.IsDeathMode ? 40 : 50;
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 55;
+        private int ChargePhase => Context.IsDeathMode ? 45 : 55;
 
         /// <summary>
         /// 风暴阶段
         /// </summary>
-        private const int StormPhase = 120;
+        private int StormPhase => Context.IsMachineRebellion ? 140 : (Context.IsDeathMode ? 130 : 120);
 
         /// <summary>
         /// 恢复阶段
         /// </summary>
-        private const int RecoveryPhase = 30;
+        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
 
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = RisePhase + WarningPhase + ChargePhase + StormPhase + RecoveryPhase;
+        private int TotalDuration => RisePhase + WarningPhase + ChargePhase + StormPhase + RecoveryPhase;
+
+        /// <summary>
+        /// 旋转速度
+        /// </summary>
+        private float RotSpeed => Context.IsMachineRebellion ? 0.08f : (Context.IsDeathMode ? 0.075f : 0.06f);
+
+        /// <summary>
+        /// 火球发射间隔
+        /// </summary>
+        private int FireRate => Context.IsMachineRebellion ? 6 : (Context.IsDeathMode ? 8 : 10);
 
         private TwinsStateContext Context;
         private Vector2 stormCenter;
@@ -264,8 +274,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //stormCenter = Vector2.Lerp(stormCenter, player.Center, 0.015f);
 
             //本体绕着风暴中心旋转
-            float rotSpeed = Context.IsMachineRebellion ? 0.08f : 0.06f;
-            stormRotation += rotSpeed;
+            stormRotation += RotSpeed;
             Vector2 orbitPos = stormCenter + stormRotation.ToRotationVector2() * stormRadius;
             npc.Center = Vector2.Lerp(npc.Center, orbitPos, 0.15f);
 
@@ -274,8 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             npc.rotation = tangent.ToRotation() - MathHelper.PiOver2;
 
             //发射火球
-            int fireRate = Context.IsMachineRebellion ? 6 : 10;
-            if (phaseTimer % fireRate == 0 && !VaultUtils.isClient) {
+            if (phaseTimer % FireRate == 0 && !VaultUtils.isClient) {
                 //向中心发射
                 Vector2 toCenterDir = (stormCenter - npc.Center).SafeNormalize(Vector2.Zero);
                 Projectile.NewProjectile(
@@ -289,7 +297,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 );
 
                 //沿切线方向也发射
-                if (phaseTimer % (fireRate * 2) == 0) {
+                if (phaseTimer % (FireRate * 2) == 0) {
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
                         npc.Center,

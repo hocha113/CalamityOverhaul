@@ -17,37 +17,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>
         /// 定位阶段
         /// </summary>
-        private const int PositionPhase = 35;
+        private int PositionPhase => Context.IsDeathMode ? 28 : 35;
 
         /// <summary>
         /// 部署阶段
         /// </summary>
-        private const int DeployPhase = 60;
+        private int DeployPhase => Context.IsMachineRebellion ? 45 : (Context.IsDeathMode ? 50 : 60);
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 45;
+        private int ChargePhase => Context.IsMachineRebellion ? 35 : (Context.IsDeathMode ? 38 : 45);
 
         /// <summary>
         /// 发射阶段
         /// </summary>
-        private const int FirePhase = 20;
+        private int FirePhase => Context.IsDeathMode ? 18 : 20;
 
         /// <summary>
         /// 恢复阶段
         /// </summary>
-        private const int RecoveryPhase = 25;
+        private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = PositionPhase + DeployPhase + ChargePhase + FirePhase + RecoveryPhase;
+        private int TotalDuration => PositionPhase + DeployPhase + ChargePhase + FirePhase + RecoveryPhase;
 
         /// <summary>
         /// 矩阵点数量
         /// </summary>
-        private int MatrixPointCount => Context.IsMachineRebellion ? 6 : 4;
+        private int MatrixPointCount => Context.IsMachineRebellion ? 6 : (Context.IsDeathMode ? 5 : 4);
+
+        /// <summary>
+        /// 激光速度
+        /// </summary>
+        private float LaserSpeed => Context.IsDeathMode ? 14f : 12f;
 
         private TwinsStateContext Context;
         private Vector2[] matrixPoints;
@@ -248,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             pointPos,
-                            toCenter * 12f,
+                            toCenter * LaserSpeed,
                             ProjectileID.DeathLaser,
                             35,
                             0f,
@@ -259,7 +264,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             pointPos,
-                            toCenter * 8f,
+                            toCenter * (LaserSpeed * 0.7f),
                             ProjectileID.DeathLaser,
                             30,
                             0f,

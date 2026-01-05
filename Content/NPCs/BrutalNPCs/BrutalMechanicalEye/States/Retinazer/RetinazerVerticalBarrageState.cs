@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     {
         public override string StateName => "RetinazerVerticalBarrage";
 
-        private const int Duration = 150;
-        private int RapidFireRate => Context.IsMachineRebellion ? 10 : 15;
+        private int Duration => Context.IsMachineRebellion ? 180 : (Context.IsDeathMode ? 120 : 150);
+        private int RapidFireRate => Context.IsMachineRebellion ? 10 : (Context.IsDeathMode ? 12 : 15);
+        private float LaserSpeed => Context.IsDeathMode ? 18f : 16f;
 
         private TwinsStateContext Context;
 
@@ -43,7 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //发射激光
             if (Timer % RapidFireRate == 0) {
                 if (!VaultUtils.isClient) {
-                    Vector2 shootVel = GetDirectionToTarget(context) * 16f;
+                    Vector2 shootVel = GetDirectionToTarget(context) * LaserSpeed;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
                         npc.Center,

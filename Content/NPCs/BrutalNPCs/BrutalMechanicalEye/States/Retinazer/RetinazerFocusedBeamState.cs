@@ -18,32 +18,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>
         /// 锁定阶段
         /// </summary>
-        private const int LockPhase = 40;
+        private int LockPhase => Context.IsDeathMode ? 32 : 40;
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 50;
+        private int ChargePhase => Context.IsMachineRebellion ? 35 : (Context.IsDeathMode ? 40 : 50);
 
         /// <summary>
         /// 发射阶段
         /// </summary>
-        private const int FirePhase = 60;
+        private int FirePhase => Context.IsMachineRebellion ? 70 : (Context.IsDeathMode ? 65 : 60);
 
         /// <summary>
         /// 恢复阶段
         /// </summary>
-        private const int RecoveryPhase = 30;
+        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
 
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = LockPhase + ChargePhase + FirePhase + RecoveryPhase;
+        private int TotalDuration => LockPhase + ChargePhase + FirePhase + RecoveryPhase;
 
         /// <summary>
         /// 蓄力阶段最后多少帧开始锁定方向不再追踪
         /// </summary>
-        private const int FinalLockFrames = 8;
+        private int FinalLockFrames => Context.IsDeathMode ? 6 : 8;
+
+        /// <summary>
+        /// 激光发射间隔
+        /// </summary>
+        private int FireInterval => Context.IsMachineRebellion ? 4 : (Context.IsDeathMode ? 5 : 6);
 
         private TwinsStateContext Context;
         private Vector2 currentDirection;
@@ -234,8 +239,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
 
             //持续发射激光
-            int fireInterval = Context.IsMachineRebellion ? 4 : 6;
-            if (phaseTimer % fireInterval == 0 && !VaultUtils.isClient) {
+            if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
                 //添加轻微的散射
                 float scatter = (Main.rand.NextFloat() - 0.5f) * 0.1f;
                 Vector2 shootDir = fireDirection.RotatedBy(scatter);

@@ -19,37 +19,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>
         /// 聚集阶段
         /// </summary>
-        private const int GatherPhase = 40;
+        private int GatherPhase => Context.IsDeathMode ? 30 : 40;
 
         /// <summary>
         /// 分身生成阶段
         /// </summary>
-        private const int SplitPhase = 30;
+        private int SplitPhase => Context.IsDeathMode ? 25 : 30;
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 35;
+        private int ChargePhase => Context.IsDeathMode ? 28 : 35;
 
         /// <summary>
         /// 冲刺阶段
         /// </summary>
-        private const int DashPhase = 45;
+        private int DashPhase => Context.IsDeathMode ? 40 : 45;
 
         /// <summary>
         /// 恢复阶段
         /// </summary>
-        private const int RecoveryPhase = 30;
+        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
 
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = GatherPhase + SplitPhase + ChargePhase + DashPhase + RecoveryPhase;
+        private int TotalDuration => GatherPhase + SplitPhase + ChargePhase + DashPhase + RecoveryPhase;
 
         /// <summary>
         /// 分身数量
         /// </summary>
-        private int ShadowCount => Context.IsMachineRebellion ? 5 : 3;
+        private int ShadowCount => Context.IsMachineRebellion ? 5 : (Context.IsDeathMode ? 4 : 3);
 
         private TwinsStateContext Context;
         private Vector2[] shadowPositions;
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Context = context;
             shadowPositions = new Vector2[ShadowCount];
             shadowDirections = new Vector2[ShadowCount];
-            dashSpeed = context.IsMachineRebellion ? 28f : 22f;
+            dashSpeed = context.IsMachineRebellion ? 28f : (context.IsDeathMode ? 26f : 22f);
             hasDashed = false;
         }
 

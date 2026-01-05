@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -260,7 +261,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
             }
 
             if (!CWRRef.GetBossRushActive()) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+                int slot = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+                if (Main.newMusic != slot) {
+                    MusicToast.ShowMusic(
+                        title: "位元堕落",
+                        artist: "Ryusa",
+                        albumCover: CWRUtils.GetT2DValue(CWRConstant.NPC + "BSP/Skeletron_Head"),
+                        style: MusicToast.MusicStyle.Neon,
+                        displayDuration: 360//6秒
+                    );
+                }
+                Main.newMusic = Main.musicBox2 = slot;
             }
         }
 

@@ -17,29 +17,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>
         /// 进入位置阶段
         /// </summary>
-        private const int PositioningPhase = 30;
+        private int PositioningPhase => Context.IsDeathMode ? 25 : 30;
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 60;
+        private int ChargePhase => Context.IsMachineRebellion ? 45 : (Context.IsDeathMode ? 50 : 60);
 
         /// <summary>
         /// 扫射阶段
         /// </summary>
-        private const int SweepPhase = 70;
+        private int SweepPhase => Context.IsMachineRebellion ? 60 : (Context.IsDeathMode ? 65 : 70);
 
         /// <summary>
         /// 恢复阶段
         /// </summary>
-        private const int RecoveryPhase = 25;
+        private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = PositioningPhase + ChargePhase + SweepPhase + RecoveryPhase;
+        private int TotalDuration => PositioningPhase + ChargePhase + SweepPhase + RecoveryPhase;
 
-        private float MoveSpeed => Context.IsMachineRebellion ? 14f : 10f;
+        private float MoveSpeed => Context.IsMachineRebellion ? 14f : (Context.IsDeathMode ? 12f : 10f);
+        private int FireInterval => Context.IsMachineRebellion ? 5 : (Context.IsDeathMode ? 6 : 7);
+        private float LaserSpeed => Context.IsDeathMode ? 13f : 11f;
 
         private TwinsStateContext Context;
         private Vector2 sweepStartDir;
@@ -109,8 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             int phaseTimer = Timer - PositioningPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            //减速并锁定位置
-            npc.velocity *= 0.92f;
+            npc.velocity = npc.To(player.Center).UnitVector() * MoveSpeed;
 
             //记录扫射起始方向
             sweepStartDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
@@ -192,12 +193,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             npc.velocity *= 0.95f;
 
             //发射激光
-            int fireInterval = Context.IsMachineRebellion ? 5 : 7;
-            if (phaseTimer % fireInterval == 0 && !VaultUtils.isClient) {
+            if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
                     npc.Center,
-                    currentDir * 11f,
+                    currentDir * LaserSpeed,
                     ProjectileID.DeathLaser,
                     20,
                     0f,

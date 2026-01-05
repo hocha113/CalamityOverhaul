@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     {
         public override string StateName => "SpazmatismPhase2DashPrepare";
 
-        private const int ChargeTime = 30;
-
-        private int DashCountMax => Context.IsMachineRebellion ? 6 : 4;
+        private int ChargeTime => Context.IsMachineRebellion ? 20 : (Context.IsDeathMode ? 25 : 30);
+        private int DashCountMax => Context.IsMachineRebellion ? 6 : (Context.IsDeathMode ? 5 : 4);
+        private float DashSpeed => Context.IsMachineRebellion ? 40f : (Context.IsDeathMode ? 38f : 35f);
 
         private TwinsStateContext Context;
         private int dashCount;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 context.ResetChargeState();
 
                 //设置冲刺速度
-                npc.velocity = GetDirectionToTarget(context) * 35f;
+                npc.velocity = GetDirectionToTarget(context) * DashSpeed;
 
                 return new SpazmatismPhase2DashingState(dashCount, DashCountMax);
             }

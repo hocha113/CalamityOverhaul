@@ -1,4 +1,4 @@
-using InnoVault.UIHandles;
+ï»¿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// ÒôÀÖÕ¹Ê¾¿òÏµÍ³£¬´ÓÆÁÄ»×óÏÂ½Çµ¯³öÏÔÊ¾
+    /// éŸ³ä¹å±•ç¤ºæ¡†ç³»ç»Ÿï¼Œä»å±å¹•å·¦ä¸‹è§’å¼¹å‡ºæ˜¾ç¤º
     /// </summary>
     internal class MusicToast : UIHandle, ILocalizedModType
     {
@@ -19,18 +19,18 @@ namespace CalamityOverhaul.Content.ADV
         public static MusicToast Instance => UIHandleLoader.GetUIHandleOfType<MusicToast>();
 
         /// <summary>
-        /// ÒôÀÖÕ¹Ê¾·ç¸ñÃ¶¾Ù
+        /// éŸ³ä¹å±•ç¤ºé£æ ¼æšä¸¾
         /// </summary>
         public enum MusicStyle
         {
-            Vinyl,      //ºÚ½º³ªÆ¬·ç¸ñ
-            Digital,    //Êı×ÖÒô²¨·ç¸ñ
-            Neon,       //ÄŞºç¹âÆ×·ç¸ñ
-            RedNeon     //ºìÉ«ÄŞºç¹âÆ×·ç¸ñ
+            Vinyl,      //é»‘èƒ¶å”±ç‰‡é£æ ¼
+            Digital,    //æ•°å­—éŸ³æ³¢é£æ ¼
+            Neon,       //éœ“è™¹å…‰è°±é£æ ¼
+            RedNeon     //çº¢è‰²éœ“è™¹å…‰è°±é£æ ¼
         }
 
         /// <summary>
-        /// ÒôÀÖÊı¾İÀà
+        /// éŸ³ä¹æ•°æ®ç±»
         /// </summary>
         public class MusicInfo
         {
@@ -39,74 +39,74 @@ namespace CalamityOverhaul.Content.ADV
             public string Artist { get; set; }
             public MusicStyle Style { get; set; } = MusicStyle.Vinyl;
             public Action OnComplete { get; set; }
-            public int DisplayDuration { get; set; } = 300; //Ä¬ÈÏ5Ãë (60fps * 5)
+            public int DisplayDuration { get; set; } = 300; //é»˜è®¤5ç§’ (60fps * 5)
         }
 
-        #region Êı¾İ×Ö¶Î
+        #region æ•°æ®å­—æ®µ
         private readonly Queue<MusicInfo> musicQueue = new();
         private MusicInfo currentMusic;
 
-        //¶¯»­×´Ì¬»ú
+        //åŠ¨ç”»çŠ¶æ€æœº
         private enum AnimationState
         {
-            SlideIn,    //»¬Èë
-            Display,    //Õ¹Ê¾
-            SlideOut    //»¬³ö
+            SlideIn,    //æ»‘å…¥
+            Display,    //å±•ç¤º
+            SlideOut    //æ»‘å‡º
         }
         private AnimationState currentState = AnimationState.SlideIn;
         private int stateTimer = 0;
 
-        //¶¯»­²ÎÊı
-        private const int SlideInDuration = 35;      //»¬ÈëÊ±³¤
-        private const int SlideOutDuration = 30;     //»¬³öÊ±³¤
+        //åŠ¨ç”»å‚æ•°
+        private const int SlideInDuration = 35;      //æ»‘å…¥æ—¶é•¿
+        private const int SlideOutDuration = 30;     //æ»‘å‡ºæ—¶é•¿
 
-        private float slideProgress = 0f;            //»¬¶¯½ø¶È 0-1
-        private float alpha = 1f;                    //Í¸Ã÷¶È
-        private float pulsePhase = 0f;               //Âö³åÏàÎ»
-        private float wavePhase = 0f;                //²¨ĞÎÏàÎ»
+        private float slideProgress = 0f;            //æ»‘åŠ¨è¿›åº¦ 0-1
+        private float alpha = 1f;                    //é€æ˜åº¦
+        private float pulsePhase = 0f;               //è„‰å†²ç›¸ä½
+        private float wavePhase = 0f;                //æ³¢å½¢ç›¸ä½
 
-        //Ãæ°å²ÎÊı
+        //é¢æ¿å‚æ•°
         private const float MinPanelWidth = 320f;
         private const float MaxPanelWidth = 550f;
         private const float PanelHeight = 90f;
-        private const float AlbumSize = 70f;         //×¨¼­·âÃæ´óĞ¡
-        private const float AlbumPadding = 10f;      //×¨¼­·âÃæ×ó±ß¾à
-        private const float TextStartX = 95f;        //ÎÄ×ÖÆğÊ¼X
-        private const float TextPaddingRight = 15f;  //ÎÄ×ÖÓÒ±ß¾à
+        private const float AlbumSize = 70f;         //ä¸“è¾‘å°é¢å¤§å°
+        private const float AlbumPadding = 10f;      //ä¸“è¾‘å°é¢å·¦è¾¹è·
+        private const float TextStartX = 95f;        //æ–‡å­—èµ·å§‹X
+        private const float TextPaddingRight = 15f;  //æ–‡å­—å³è¾¹è·
 
         private float currentPanelWidth = MinPanelWidth;
         private float OffscreenX => -currentPanelWidth - 50f;
         private const float OnscreenX = 15f;
-        private static float ScreenY => Main.screenHeight - PanelHeight - 20f;//×óÏÂ½ÇÎ»ÖÃ
+        private static float ScreenY => Main.screenHeight - PanelHeight - 120f;//å·¦ä¸‹è§’ä½ç½®
 
-        //Òô²¨¿ÉÊÓ»¯
+        //éŸ³æ³¢å¯è§†åŒ–
         private readonly float[] audioLevels = new float[32];
         private int audioUpdateTimer = 0;
 
-        //Ğı×ªĞ§¹û£¨ºÚ½º³ªÆ¬£©
+        //æ—‹è½¬æ•ˆæœï¼ˆé»‘èƒ¶å”±ç‰‡ï¼‰
         private float vinylRotation = 0f;
 
-        //Á£×ÓÏµÍ³
+        //ç²’å­ç³»ç»Ÿ
         private readonly List<MusicParticle> particles = new();
         private int particleSpawnTimer = 0;
 
-        //¹âÆ×Ìõ
+        //å…‰è°±æ¡
         private readonly float[] spectrumBars = new float[16];
         private int spectrumUpdateTimer = 0;
 
-        //±¾µØ»¯ÎÄ±¾
+        //æœ¬åœ°åŒ–æ–‡æœ¬
         protected static LocalizedText NowPlaying;
         #endregion
 
         public override bool Active => currentMusic != null || musicQueue.Count > 0 || slideProgress > 0.01f;
 
         public override void SetStaticDefaults() {
-            NowPlaying = this.GetLocalization(nameof(NowPlaying), () => "ÕıÔÚ²¥·Å");
+            NowPlaying = this.GetLocalization(nameof(NowPlaying), () => "æ­£åœ¨æ’­æ”¾");
         }
 
-        #region ¹«¹²API
+        #region å…¬å…±API
         /// <summary>
-        /// ÏÔÊ¾ÒôÀÖĞÅÏ¢
+        /// æ˜¾ç¤ºéŸ³ä¹ä¿¡æ¯
         /// </summary>
         public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null,
             MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null) {
@@ -122,16 +122,16 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// Çå¿ÕÒôÀÖ¶ÓÁĞ
+        /// æ¸…ç©ºéŸ³ä¹é˜Ÿåˆ—
         /// </summary>
         public static void ClearQueue() {
             Instance.musicQueue.Clear();
         }
         #endregion
 
-        #region ¸üĞÂÂß¼­
+        #region æ›´æ–°é€»è¾‘
         public override void LogicUpdate() {
-            //¶¯»­¼ÆÊ±Æ÷¸üĞÂ
+            //åŠ¨ç”»è®¡æ—¶å™¨æ›´æ–°
             pulsePhase += 0.04f;
             wavePhase += 0.06f;
             vinylRotation += 0.05f;
@@ -140,21 +140,21 @@ namespace CalamityOverhaul.Content.ADV
             if (wavePhase > MathHelper.TwoPi) wavePhase -= MathHelper.TwoPi;
             if (vinylRotation > MathHelper.TwoPi) vinylRotation -= MathHelper.TwoPi;
 
-            //¸üĞÂÒô²¨Êı¾İ
+            //æ›´æ–°éŸ³æ³¢æ•°æ®
             audioUpdateTimer++;
             if (audioUpdateTimer >= 3) {
                 audioUpdateTimer = 0;
                 UpdateAudioLevels();
             }
 
-            //¸üĞÂ¹âÆ×
+            //æ›´æ–°å…‰è°±
             spectrumUpdateTimer++;
             if (spectrumUpdateTimer >= 2) {
                 spectrumUpdateTimer = 0;
                 UpdateSpectrum();
             }
 
-            //Èç¹ûÃ»ÓĞµ±Ç°ÒôÀÖµ«¶ÓÁĞÓĞ£¬¿ªÊ¼ÏÂÒ»¸ö
+            //å¦‚æœæ²¡æœ‰å½“å‰éŸ³ä¹ä½†é˜Ÿåˆ—æœ‰ï¼Œå¼€å§‹ä¸‹ä¸€ä¸ª
             if (currentMusic == null && musicQueue.Count > 0) {
                 StartNext();
                 return;
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.ADV
             Array.Clear(audioLevels, 0, audioLevels.Length);
             Array.Clear(spectrumBars, 0, spectrumBars.Length);
 
-            //¼ÆËãÃæ°å¿í¶È
+            //è®¡ç®—é¢æ¿å®½åº¦
             CalculatePanelWidth();
         }
 
@@ -198,10 +198,10 @@ namespace CalamityOverhaul.Content.ADV
                 maxTextWidth = Math.Max(maxTextWidth, artistSize.X);
             }
 
-            //×Ü¿í¶È = ÎÄ×ÖÆğÊ¼X + ÎÄ×Ö¿í¶È + ÓÒ±ß¾à
+            //æ€»å®½åº¦ = æ–‡å­—èµ·å§‹X + æ–‡å­—å®½åº¦ + å³è¾¹è·
             float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
 
-            //ÏŞÖÆÔÚ×îĞ¡ºÍ×î´ó¿í¶ÈÖ®¼ä
+            //é™åˆ¶åœ¨æœ€å°å’Œæœ€å¤§å®½åº¦ä¹‹é—´
             currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
         }
 
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private void UpdateDisplay() {
-            //³ÖĞøÉú³ÉÁ£×Ó
+            //æŒç»­ç”Ÿæˆç²’å­
             particleSpawnTimer++;
             if (particleSpawnTimer >= 8) {
                 particleSpawnTimer = 0;
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private void UpdateAudioLevels() {
-            //Ä£ÄâÒô²¨Êı¾İ
+            //æ¨¡æ‹ŸéŸ³æ³¢æ•°æ®
             for (int i = 0; i < audioLevels.Length; i++) {
                 float target = (float)Math.Sin(wavePhase + i * 0.2f) * 0.5f + 0.5f;
                 target *= Main.rand.NextFloat(0.6f, 1f);
@@ -282,7 +282,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private void UpdateSpectrum() {
-            //Ä£ÄâÆµÆ×Êı¾İ
+            //æ¨¡æ‹Ÿé¢‘è°±æ•°æ®
             for (int i = 0; i < spectrumBars.Length; i++) {
                 float freq = i / (float)spectrumBars.Length;
                 float target = (float)Math.Sin(wavePhase * 1.5f + freq * MathHelper.TwoPi) * 0.5f + 0.5f;
@@ -297,14 +297,14 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
-        #region »æÖÆÂß¼­
+        #region ç»˜åˆ¶é€»è¾‘
         public override void Draw(SpriteBatch spriteBatch) {
             if (currentMusic == null || slideProgress <= 0.01f) return;
 
             Vector2 panelPos = GetCurrentPanelPosition();
             Rectangle panelRect = new Rectangle((int)panelPos.X, (int)panelPos.Y, (int)currentPanelWidth, (int)PanelHeight);
 
-            //¸ù¾İ·ç¸ñ»æÖÆ±³¾°
+            //æ ¹æ®é£æ ¼ç»˜åˆ¶èƒŒæ™¯
             switch (currentMusic.Style) {
                 case MusicStyle.Vinyl:
                     DrawVinylStyle(spriteBatch, panelRect);
@@ -320,20 +320,20 @@ namespace CalamityOverhaul.Content.ADV
                     break;
             }
 
-            //»æÖÆÄÚÈİ
+            //ç»˜åˆ¶å†…å®¹
             DrawContent(spriteBatch, panelRect);
 
-            //»æÖÆÁ£×Ó
+            //ç»˜åˆ¶ç²’å­
             foreach (var particle in particles) {
                 particle.Draw(spriteBatch, alpha);
             }
         }
 
-        #region ºÚ½º³ªÆ¬·ç¸ñ
+        #region é»‘èƒ¶å”±ç‰‡é£æ ¼
         private void DrawVinylStyle(SpriteBatch spriteBatch, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //ÉîÉ«±³¾°½¥±ä
+            //æ·±è‰²èƒŒæ™¯æ¸å˜
             int segments = 15;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -350,21 +350,21 @@ namespace CalamityOverhaul.Content.ADV
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //¸´¹ÅÖÊ¸Ğ±ß¿ò
+            //å¤å¤è´¨æ„Ÿè¾¹æ¡†
             Color borderColor = new Color(180, 150, 120) * alpha;
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), borderColor);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), borderColor * 0.8f);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.9f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.9f);
 
-            //Òô²¨ÎÆÀí
+            //éŸ³æ³¢çº¹ç†
             DrawVinylGrooves(spriteBatch, rect);
         }
 
         private void DrawVinylGrooves(SpriteBatch sb, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //»æÖÆÍ¬ĞÄÔ²ÎÆÂ·
+            //ç»˜åˆ¶åŒå¿ƒåœ†çº¹è·¯
             Vector2 center = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
             int grooveCount = 8;
             for (int i = 0; i < grooveCount; i++) {
@@ -390,11 +390,11 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
-        #region Êı×ÖÒô²¨·ç¸ñ
+        #region æ•°å­—éŸ³æ³¢é£æ ¼
         private void DrawDigitalStyle(SpriteBatch spriteBatch, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //ÉîÉ«¿Æ¼¼±³¾°
+            //æ·±è‰²ç§‘æŠ€èƒŒæ™¯
             Color bgDark = new Color(5, 15, 25) * alpha;
             Color bgLight = new Color(10, 25, 40) * alpha;
 
@@ -410,17 +410,17 @@ namespace CalamityOverhaul.Content.ADV
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //Íø¸ñÏß
+            //ç½‘æ ¼çº¿
             DrawDigitalGrid(spriteBatch, rect);
 
-            //¿Æ¼¼±ß¿ò
+            //ç§‘æŠ€è¾¹æ¡†
             Color borderColor = new Color(0, 180, 255) * alpha;
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), borderColor);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), borderColor * 0.7f);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.85f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.85f);
 
-            //Òô²¨¿ÉÊÓ»¯
+            //éŸ³æ³¢å¯è§†åŒ–
             DrawAudioWaveform(spriteBatch, rect);
         }
 
@@ -428,13 +428,13 @@ namespace CalamityOverhaul.Content.ADV
             Texture2D px = VaultAsset.placeholder2.Value;
             Color gridColor = new Color(20, 80, 120) * (alpha * 0.1f);
 
-            //´¹Ö±Íø¸ñÏß
+            //å‚ç›´ç½‘æ ¼çº¿
             for (int i = 0; i < 8; i++) {
                 int x = rect.X + (int)((i / 8f) * rect.Width);
                 sb.Draw(px, new Rectangle(x, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), gridColor);
             }
 
-            //Ë®Æ½Íø¸ñÏß
+            //æ°´å¹³ç½‘æ ¼çº¿
             for (int i = 0; i < 4; i++) {
                 int y = rect.Y + (int)((i / 4f) * rect.Height);
                 sb.Draw(px, new Rectangle(rect.X, y, rect.Width, 1), new Rectangle(0, 0, 1, 1), gridColor);
@@ -472,23 +472,23 @@ namespace CalamityOverhaul.Content.ADV
         }
         #endregion
 
-        #region ÄŞºç¹âÆ×·ç¸ñ
+        #region éœ“è™¹å…‰è°±é£æ ¼
         private void DrawNeonStyle(SpriteBatch spriteBatch, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //ÉîÉ«±³¾°
+            //æ·±è‰²èƒŒæ™¯
             Color bgColor = new Color(10, 5, 15) * alpha;
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //ÄŞºç¹âÆ×Ìõ
+            //éœ“è™¹å…‰è°±æ¡
             DrawSpectrumBars(spriteBatch, rect);
 
-            //·¢¹â±ß¿ò
+            //å‘å…‰è¾¹æ¡†
             float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
             Color neonPink = Color.Lerp(new Color(255, 0, 150), new Color(255, 100, 200), pulse) * alpha;
             Color neonCyan = Color.Lerp(new Color(0, 255, 255), new Color(100, 255, 255), pulse) * alpha;
 
-            //½¥±ä±ß¿ò
+            //æ¸å˜è¾¹æ¡†
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonPink);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonCyan);
 
@@ -498,7 +498,7 @@ namespace CalamityOverhaul.Content.ADV
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonPink * 0.85f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonCyan * 0.85f);
 
-            //Íâ·¢¹â
+            //å¤–å‘å…‰
             DrawNeonGlow(spriteBatch, rect, neonPink, neonCyan);
         }
 
@@ -517,14 +517,14 @@ namespace CalamityOverhaul.Content.ADV
 
                 float height = spectrumBars[i] * maxBarHeight;
 
-                //½¥±äÑÕÉ«
+                //æ¸å˜é¢œè‰²
                 float hue = (i / (float)spectrumBars.Length + pulsePhase * 0.1f) % 1f;
                 Color barColor = Main.hslToRgb(hue, 1f, 0.6f) * alpha;
 
                 Rectangle barRect = new Rectangle((int)x, (int)(bottomY - height), (int)barWidth, (int)height);
                 sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor);
 
-                //·¢¹âĞ§¹û
+                //å‘å…‰æ•ˆæœ
                 sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor * 0.3f);
             }
         }
@@ -547,34 +547,34 @@ namespace CalamityOverhaul.Content.ADV
                 Color c1 = color1 * intensity;
                 Color c2 = color2 * intensity;
 
-                //ÉÏÏÂ
+                //ä¸Šä¸‹
                 sb.Draw(px, new Rectangle(glowRect.X, glowRect.Y, glowRect.Width / 2, 1), new Rectangle(0, 0, 1, 1), c1);
                 sb.Draw(px, new Rectangle(glowRect.X + glowRect.Width / 2, glowRect.Y, glowRect.Width / 2, 1), new Rectangle(0, 0, 1, 1), c2);
 
-                //×óÓÒ
+                //å·¦å³
                 sb.Draw(px, new Rectangle(glowRect.X, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c1);
                 sb.Draw(px, new Rectangle(glowRect.Right, glowRect.Y, 1, glowRect.Height), new Rectangle(0, 0, 1, 1), c2);
             }
         }
         #endregion
 
-        #region ºìÉ«ÄŞºç¹âÆ×·ç¸ñ
+        #region çº¢è‰²éœ“è™¹å…‰è°±é£æ ¼
         private void DrawRedNeonStyle(SpriteBatch spriteBatch, Rectangle rect) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //ÉîÉ«±³¾°
+            //æ·±è‰²èƒŒæ™¯
             Color bgColor = new Color(10, 5, 15) * alpha;
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //ÄŞºç¹âÆ×Ìõ
+            //éœ“è™¹å…‰è°±æ¡
             DrawRedSpectrumBars(spriteBatch, rect);
 
-            //·¢¹â±ß¿ò
+            //å‘å…‰è¾¹æ¡†
             float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
             Color neonRed = Color.Lerp(new Color(255, 0, 0), new Color(255, 100, 100), pulse) * alpha;
             Color neonWhite = Color.Lerp(new Color(255, 255, 255), new Color(255, 255, 200), pulse) * alpha;
 
-            //½¥±ä±ß¿ò
+            //æ¸å˜è¾¹æ¡†
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonRed);
             spriteBatch.Draw(px, new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, 3), new Rectangle(0, 0, 1, 1), neonWhite);
 
@@ -584,7 +584,7 @@ namespace CalamityOverhaul.Content.ADV
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonRed * 0.85f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), neonWhite * 0.85f);
 
-            //Íâ·¢¹â
+            //å¤–å‘å…‰
             DrawNeonGlow(spriteBatch, rect, neonRed, neonWhite);
         }
 
@@ -603,22 +603,22 @@ namespace CalamityOverhaul.Content.ADV
 
                 float height = spectrumBars[i] * maxBarHeight;
 
-                //ºìÉ«Ïµ½¥±ä - ´ÓÉîºìµ½ÁÁºìµ½³Èºì
+                //çº¢è‰²ç³»æ¸å˜ - ä»æ·±çº¢åˆ°äº®çº¢åˆ°æ©™çº¢
                 float t = (i / (float)spectrumBars.Length + pulsePhase * 0.1f) % 1f;
                 Color barColor;
 
                 if (t < 0.33f) {
-                    //Éîºì -> ÏÊºì
+                    //æ·±çº¢ -> é²œçº¢
                     float localT = t / 0.33f;
                     barColor = Color.Lerp(new Color(180, 0, 0), new Color(255, 0, 0), localT);
                 }
                 else if (t < 0.66f) {
-                    //ÏÊºì -> ³Èºì
+                    //é²œçº¢ -> æ©™çº¢
                     float localT = (t - 0.33f) / 0.33f;
                     barColor = Color.Lerp(new Color(255, 0, 0), new Color(255, 80, 0), localT);
                 }
                 else {
-                    //³Èºì -> ÁÁ³È
+                    //æ©™çº¢ -> äº®æ©™
                     float localT = (t - 0.66f) / 0.34f;
                     barColor = Color.Lerp(new Color(255, 80, 0), new Color(255, 150, 50), localT);
                 }
@@ -628,7 +628,7 @@ namespace CalamityOverhaul.Content.ADV
                 Rectangle barRect = new Rectangle((int)x, (int)(bottomY - height), (int)barWidth, (int)height);
                 sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor);
 
-                //·¢¹âĞ§¹û
+                //å‘å…‰æ•ˆæœ
                 sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), barColor * 0.4f);
             }
         }
@@ -637,23 +637,23 @@ namespace CalamityOverhaul.Content.ADV
         private void DrawContent(SpriteBatch spriteBatch, Rectangle rect) {
             var font = FontAssets.MouseText.Value;
 
-            //»æÖÆ×¨¼­·âÃæ»òÒôÀÖÍ¼±ê
+            //ç»˜åˆ¶ä¸“è¾‘å°é¢æˆ–éŸ³ä¹å›¾æ ‡
             Vector2 albumPos = new Vector2(rect.X + AlbumPadding + AlbumSize / 2f, rect.Y + rect.Height / 2f);
 
             if (currentMusic.AlbumCover != null) {
                 Texture2D album = currentMusic.AlbumCover;
                 float albumScale = Math.Min(AlbumSize / album.Width, AlbumSize / album.Height);
 
-                //ºÚ½º³ªÆ¬·ç¸ñ£ºĞı×ª·âÃæ
+                //é»‘èƒ¶å”±ç‰‡é£æ ¼ï¼šæ—‹è½¬å°é¢
                 float rotation = currentMusic.Style == MusicStyle.Vinyl ? vinylRotation : 0f;
                 spriteBatch.Draw(album, albumPos, null, Color.White * alpha, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
             }
             else {
-                //Ä¬ÈÏÒô·ûÍ¼±ê
+                //é»˜è®¤éŸ³ç¬¦å›¾æ ‡
                 DrawDefaultMusicIcon(spriteBatch, albumPos);
             }
 
-            //»æÖÆÎÄ×Ö
+            //ç»˜åˆ¶æ–‡å­—
             Vector2 textStart = new Vector2(rect.X + TextStartX, rect.Y + 15);
 
             Color textColor = currentMusic.Style switch {
@@ -664,11 +664,11 @@ namespace CalamityOverhaul.Content.ADV
                 _ => Color.White * alpha
             };
 
-            //"ÕıÔÚ²¥·Å" ±êÇ©
+            //"æ­£åœ¨æ’­æ”¾" æ ‡ç­¾
             string nowPlayingText = NowPlaying.Value;
             Utils.DrawBorderString(spriteBatch, nowPlayingText, textStart, textColor * 0.7f, 0.6f);
 
-            //±êÌâ
+            //æ ‡é¢˜
             Vector2 titlePos = textStart + new Vector2(0, 14);
             string titleText = currentMusic.Title ?? "Unknown Track";
 
@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.ADV
                 Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f);
             }
 
-            //ÒÕÊõ¼Ò/×÷Õß
+            //è‰ºæœ¯å®¶/ä½œè€…
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
                 Vector2 artistPos = titlePos + new Vector2(0, titleSize.Y + 3);
                 Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
@@ -703,10 +703,10 @@ namespace CalamityOverhaul.Content.ADV
             Texture2D px = VaultAsset.placeholder2.Value;
             Color iconColor = Color.White * alpha;
 
-            //¼òµ¥µÄÒô·ûÍ¼±ê
+            //ç®€å•çš„éŸ³ç¬¦å›¾æ ‡
             float noteSize = AlbumSize * 0.6f;
 
-            //Òô·û±ú
+            //éŸ³ç¬¦æŸ„
             Rectangle stem = new Rectangle(
                 (int)(center.X + noteSize * 0.15f),
                 (int)(center.Y - noteSize * 0.3f),
@@ -715,13 +715,13 @@ namespace CalamityOverhaul.Content.ADV
             );
             sb.Draw(px, stem, new Rectangle(0, 0, 1, 1), iconColor);
 
-            //Òô·ûÍ·
+            //éŸ³ç¬¦å¤´
             sb.Draw(px, center + new Vector2(0, noteSize * 0.2f), new Rectangle(0, 0, 1, 1), iconColor,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(noteSize * 0.25f, noteSize * 0.2f), SpriteEffects.None, 0f);
         }
         #endregion
 
-        #region Á£×ÓÀà
+        #region ç²’å­ç±»
         private class MusicParticle
         {
             public Vector2 Position;
@@ -768,13 +768,13 @@ namespace CalamityOverhaul.Content.ADV
                 Velocity.X *= 0.98f;
                 Velocity.Y *= 0.95f;
 
-                //ÄŞºç·ç¸ñ£ºÑÕÉ«±ä»¯
+                //éœ“è™¹é£æ ¼ï¼šé¢œè‰²å˜åŒ–
                 if (Style == MusicStyle.Neon) {
                     float hue = (Life * 0.02f) % 1f;
                     Color = Main.hslToRgb(hue, 1f, 0.6f);
                 }
                 else if (Style == MusicStyle.RedNeon) {
-                    //ºìÉ«ÄŞºç£ºÔÚºìÉ«·¶Î§ÄÚ±ä»¯
+                    //çº¢è‰²éœ“è™¹ï¼šåœ¨çº¢è‰²èŒƒå›´å†…å˜åŒ–
                     float t = (Life * 0.03f) % 1f;
                     if (t < 0.5f) {
                         Color = Color.Lerp(new Color(255, 0, 0), new Color(255, 100, 0), t * 2f);
