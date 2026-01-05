@@ -265,6 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.autoReuse = false;
             Item.shoot = ModContent.ProjectileType<MuraSlashDefault>();
             Item.shootSpeed = 24f;
+            Item.rare = CWRID.Rarity_Violet;
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
             Item.CWR().LegendData = new MuraData();
