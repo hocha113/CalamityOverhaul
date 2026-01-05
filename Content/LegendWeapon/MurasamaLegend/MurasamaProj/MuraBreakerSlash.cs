@@ -163,9 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             int level = MurasamaOverride.GetLevel(Item);
 
             //boss存活时对非Boss单位造成2倍伤害
-            if (CWRWorld.HasBoss && !target.boss) {
-                modifiers.FinalDamage *= 2f;
-            }
+            MuraSlashDefault.ApplyBaseDamageModifiers(target, ref modifiers);
 
             //对飞眼怪仅造成15%伤害
             if (target.type == NPCID.Creeper) {

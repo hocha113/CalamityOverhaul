@@ -270,19 +270,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             modifiers.DefenseEffectiveness *= 0f;
         }
 
-        private void ApplyBaseDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
-            //Boss存活时对非Boss单位造成2倍伤害
-            if (CWRWorld.HasBoss && !target.boss) {
-                modifiers.FinalDamage *= 2f;
+        internal static void ApplyBaseDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
+            //有Boss存在时，对非Boss实体造成双倍伤害
+            if (!CWRWorld.HasBoss || target.boss) {
+                return;
             }
-
-            //对蠕虫只造成50%伤害
-            if (target.IsWormBody()) {
-                modifiers.FinalDamage *= 0.5f;
+            //如果这个实体是Boss的子实体，不要进行伤害增幅
+            if (target.realLife.TryGetNPC(out var npc) && npc.boss) {
+                return;
             }
+            modifiers.FinalDamage *= 2f;
         }
 
-        private void ApplyBossDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
+        private static void ApplyBossDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
             //对克苏鲁之眼造成1.5倍伤害
             if (target.type == NPCID.EyeofCthulhu) {
                 modifiers.FinalDamage *= 1.5f;
@@ -344,7 +344,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
         }
 
-        private void ApplyWormDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
+        private static void ApplyWormDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
+            //对蠕虫只造成50%基础伤害
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+
             //对黄沙恶虫造成1.32倍伤害
             if (CWRLoad.targetNpcTypes9.Contains(target.type)) {
                 modifiers.FinalDamage *= 1.32f;
