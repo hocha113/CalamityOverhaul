@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class GodslayerScabbard : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "GodslayerScabbard";
-        //拔刀值上限120帧即2秒
-        public const int MaxDrawCharge = 120;
+        //拔刀值上限180帧即3秒
+        public const int MaxDrawCharge = 180;
         //提供的无敌帧时间
         public const int IFrameTime = 120;
 
@@ -55,6 +55,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
         private int readyPulseTimer;
         //触发无敌帧的视觉效果计时
         private int triggerEffectTimer;
+        //记录上一帧的攻击动画状态用于检测攻击结束
+        private bool wasAttacking;
+        //记录本次攻击是否成功命中
+        private bool hasHitThisSwing;
+        //打空失败效果计时器
+        private int missEffectTimer;
 
         public override void ResetEffects() {
             EquipScabbard = false;
@@ -66,18 +72,42 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 DrawCharge = 0;
                 DrawChargeReady = false;
                 readyPulseTimer = 0;
+                wasAttacking = false;
+                hasHitThisSwing = false;
                 return;
             }
 
             Item heldItem = Player.HeldItem;
 
-            //检查是否手持近战武器且未攻击
+            //检查是否手持近战武器
             bool isMeleeWeapon = heldItem != null && !heldItem.IsAir
                 && (heldItem.DamageType == DamageClass.Melee
                 || heldItem.DamageType == CWRRef.GetTrueMeleeDamageClass()
                 || heldItem.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass());
 
-            bool notAttacking = Player.itemAnimation <= 0 && Player.itemTime <= 0;
+            bool isAttacking = Player.itemAnimation > 0;
+            bool notAttacking = !isAttacking && Player.itemTime <= 0;
+
+            //检测攻击动画刚刚结束（从攻击状态变为非攻击状态）
+            if (wasAttacking && !isAttacking && DrawChargeReady && isMeleeWeapon) {
+                //攻击动画结束但没有命中敌人，触发打空惩罚
+                if (!hasHitThisSwing) {
+                    //清空蓄力
+                    DrawCharge = 0;
+                    DrawChargeReady = false;
+                    readyPulseTimer = 0;
+                    missEffectTimer = 20;
+                    //播放失败音效
+                    SoundEngine.PlaySound(SoundID.Item64 with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
+                    //生成失败特效
+                    SpawnMissEffect();
+                }
+                //重置命中标记
+                hasHitThisSwing = false;
+            }
+
+            //更新攻击状态记录
+            wasAttacking = isAttacking;
 
             if (isMeleeWeapon && notAttacking) {
                 //积累拔刀值
@@ -94,10 +124,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                         SpawnChargeReadyEffect();
                     }
                 }
-            }
-            else if (Player.itemAnimation > 0 && DrawChargeReady) {
-                //正在攻击且拔刀值已满，但需要等待OnHitNPC触发无敌帧
-                //这里不再直接触发，而是保持蓄力状态
             }
 
             //更新充能完成的脉冲效果
@@ -127,10 +153,18 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 triggerEffectTimer--;
                 SpawnTriggerTrailEffect();
             }
+
+            //更新打空失败效果计时器
+            if (missEffectTimer > 0) {
+                missEffectTimer--;
+                if (missEffectTimer % 4 == 0) {
+                    SpawnMissTrailEffect();
+                }
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (!EquipScabbard || !DrawChargeReady) {
+            if (!EquipScabbard) {
                 return;
             }
 
@@ -140,6 +174,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 || hit.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass();
 
             if (!isMeleeDamage) {
+                return;
+            }
+
+            //标记本次攻击已命中
+            hasHitThisSwing = true;
+
+            if (!DrawChargeReady) {
                 return;
             }
 
@@ -159,6 +200,52 @@ namespace CalamityOverhaul.Content.Items.Accessories
             DrawCharge = 0;
             DrawChargeReady = false;
             readyPulseTimer = 0;
+        }
+
+        //生成打空失败的粒子效果
+        private void SpawnMissEffect() {
+            if (VaultUtils.isServer) return;
+
+            //使用暗淡的颜色表示失败
+            Color missColor = new Color(100, 100, 150);
+            Color darkBlue = new Color(40, 60, 100);
+
+            //向外扩散的暗淡粒子
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
+                BasePRT spark = new PRT_Spark(
+                    Player.Center,
+                    velocity,
+                    true, //受重力影响，表现出失败的沉重感
+                    Main.rand.Next(15, 25),
+                    Main.rand.NextFloat(0.8f, 1.2f),
+                    Color.Lerp(missColor, darkBlue, Main.rand.NextFloat()),
+                    Player
+                );
+                PRTLoader.AddParticle(spark);
+            }
+
+            //碎裂效果
+            for (int i = 0; i < 12; i++) {
+                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f);
+                velocity.Y -= 2f; //稍微向上
+                int dust = Dust.NewDust(Player.Center, 0, 0, DustID.Electric, velocity.X, velocity.Y, 180, missColor, 0.8f);
+                Main.dust[dust].noGravity = false;
+                Main.dust[dust].fadeIn = 0.5f;
+            }
+        }
+
+        //生成打空后的拖尾效果
+        private void SpawnMissTrailEffect() {
+            if (VaultUtils.isServer) return;
+
+            float progress = 1f - (missEffectTimer / 20f);
+            Color trailColor = new Color(80, 80, 120) * (1f - progress);
+
+            Vector2 pos = Player.Center + Main.rand.NextVector2Circular(15f, 15f);
+            int dust = Dust.NewDust(pos, 0, 0, DustID.Smoke, 0, -1f, 150, trailColor, 0.6f);
+            Main.dust[dust].noGravity = true;
         }
 
         //生成充能完成的粒子效果
