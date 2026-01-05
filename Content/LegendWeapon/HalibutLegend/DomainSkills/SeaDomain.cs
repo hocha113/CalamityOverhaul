@@ -342,6 +342,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 if (!npc.active || npc.friendly) continue;
                 if (npc.dontTakeDamage || npc.lifeMax <= 1) continue;
 
+                //适配小动物友谊指南
+                //如果 NPC 算作小动物，且弹幕的主人拥有“不伤害小动物”的效果，则跳过
+                if (npc.CountsAsACritter && Owner.dontHurtCritters) {
+                    continue;
+                }
+
                 float dist = Vector2.Distance(npc.Center, domainCenter); //使用领域中心
                 bool inDomain = dist < maxDomainRadius;
 
@@ -404,6 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         //给予微小随机波动，避免所有数值一致
                         damage += Main.rand.Next(-1, 2);
                         if (damage < 1) damage = 1;
+
                         //伤害归属玩家
                         npc.SimpleStrikeNPC(damage, npc.direction); //移除不存在的 direction 命名参数
                         npc.AddBuff(BuffID.Wet, 120);
