@@ -25,6 +25,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override ITwinsState OnUpdate(TwinsStateContext context) {
             NPC npc = context.Npc;
 
+            //检测独眼狂暴模式触发
+            if (context.SoloRageJustTriggered) {
+                return new SpazmatismSoloRageState();
+            }
+
             //朝向速度方向
             FaceVelocity(npc);
 
@@ -36,6 +41,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 currentDashCount++;
 
                 if (currentDashCount >= maxDashCount) {
+                    //独眼模式下切换到狂暴状态
+                    if (context.IsSoloRageMode) {
+                        return new SpazmatismSoloRageState();
+                    }
+
                     //冲刺次数用完，随机切换到特殊招式
                     int choice = Main.rand.Next(4);
                     return choice switch {

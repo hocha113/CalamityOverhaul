@@ -92,6 +92,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //状态结束
             if (Timer >= TotalDuration) {
+                //独眼模式下切换到狂暴状态
+                if (context.IsSoloRageMode) {
+                    return new RetinazerSoloRageState();
+                }
                 return new RetinazerVerticalBarrageState();
             }
 

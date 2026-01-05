@@ -27,6 +27,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             NPC npc = context.Npc;
             Player player = context.Target;
 
+            //检测独眼狂暴模式触发
+            if (context.SoloRageJustTriggered) {
+                return new RetinazerSoloRageState();
+            }
+
             //计算目标位置，在玩家上方
             Vector2 targetPos = player.Center + new Vector2(0, -400);
 
@@ -58,6 +63,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //随机切换到不同的特殊招式
             if (Timer >= Duration) {
+                //独眼模式下切换到狂暴状态
+                if (context.IsSoloRageMode) {
+                    return new RetinazerSoloRageState();
+                }
+
                 int choice = Main.rand.Next(4);
                 return choice switch {
                     0 => new RetinazerFocusedBeamState(),

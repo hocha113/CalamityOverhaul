@@ -104,6 +104,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (Timer >= RecoveryTime) {
                 sniperCount++;
 
+                //独眼模式下切换到狂暴状态
+                if (context.IsSoloRageMode) {
+                    return new RetinazerSoloRageState();
+                }
+
                 if (sniperCount >= MaxSniperCount) {
                     //狙击次数用完，随机切换到其他特殊招式
                     int choice = Main.rand.Next(3);

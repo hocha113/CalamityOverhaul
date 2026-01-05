@@ -97,6 +97,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 是否正在执行转阶段动画
         /// </summary>
         public bool IsInPhaseTransition { get; set; }
+        /// <summary>
+        /// 是否处于独眼狂暴模式(另一只眼睛已死亡)
+        /// </summary>
+        public bool IsSoloRageMode { get; set; }
+        /// <summary>
+        /// 独眼狂暴模式刚刚触发(用于状态切换)
+        /// </summary>
+        public bool SoloRageJustTriggered { get; set; }
         #endregion
 
         #region 蓄力特效数据

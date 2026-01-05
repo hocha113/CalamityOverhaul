@@ -29,6 +29,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             NPC npc = context.Npc;
             Player player = context.Target;
 
+            //检测独眼狂暴模式触发
+            if (context.SoloRageJustTriggered) {
+                return new SpazmatismSoloRageState();
+            }
+
             //追击玩家
             Vector2 targetDir = GetDirectionToTarget(context);
             npc.velocity = Vector2.Lerp(npc.velocity, targetDir * ChaseSpeed, TurnSpeed);
@@ -55,6 +60,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //喷火结束，随机切换到特殊招式
             if (Timer >= FlameDuration) {
+                //独眼模式下切换到狂暴状态
+                if (context.IsSoloRageMode) {
+                    return new SpazmatismSoloRageState();
+                }
+
                 int choice = Main.rand.Next(5);
                 return choice switch {
                     0 => new SpazmatismShadowDashState(),

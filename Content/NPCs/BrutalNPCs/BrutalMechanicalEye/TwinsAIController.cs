@@ -402,6 +402,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext.Target = player;
             stateContext.IsSecondPhase = IsSecondPhase();
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+
+            //检测独眼狂暴模式(另一只眼睛死亡)
+            CheckSoloRageMode();
+        }
+
+        /// <summary>
+        /// 检测独眼狂暴模式
+        /// </summary>
+        private void CheckSoloRageMode() {
+            //只有在二阶段时才检测独眼狂暴
+            if (!stateContext.IsSecondPhase || stateContext.IsSoloRageMode) {
+                return;
+            }
+
+            //检查另一只眼睛是否存活
+            NPC partner = TwinsStateContext.GetPartnerNpc(npc.type);
+            bool partnerDead = partner == null || !partner.active;
+
+            if (partnerDead) {
+                //触发独眼狂暴模式
+                stateContext.IsSoloRageMode = true;
+                stateContext.SoloRageJustTriggered = true;
+
+                //播放狂暴音效
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.3f, Volume = 1.5f }, npc.Center);
+                }
+
+                //狂暴特效
+                if (!VaultUtils.isServer) {
+                    Color effectColor = stateContext.IsSpazmatism ? Color.OrangeRed : Color.BlueViolet;
+                    for (int i = 0; i < 30; i++) {
+                        float angle = MathHelper.TwoPi / 30f * i;
+                        Vector2 vel = angle.ToRotationVector2() * 8f;
+                        Dust dust = Dust.NewDustDirect(npc.Center, 1, 1,
+                            stateContext.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex,
+                            vel.X, vel.Y, 0, default, 2.5f);
+                        dust.noGravity = true;
+                    }
+                }
+            }
         }
 
         #endregion

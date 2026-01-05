@@ -71,6 +71,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             NPC npc = context.Npc;
             Player player = context.Target;
 
+            //检测独眼狂暴模式触发
+            if (context.SoloRageJustTriggered) {
+                return new SpazmatismSoloRageState();
+            }
+
             Timer++;
 
             //阶段1: 聚集能量
@@ -96,6 +101,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //状态结束
             if (Timer >= TotalDuration) {
+                //独眼模式下切换到狂暴状态
+                if (context.IsSoloRageMode) {
+                    return new SpazmatismSoloRageState();
+                }
                 return new SpazmatismFlameChaseState();
             }
 
