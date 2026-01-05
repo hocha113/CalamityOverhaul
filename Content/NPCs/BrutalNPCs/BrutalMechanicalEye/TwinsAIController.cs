@@ -481,6 +481,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[2] = 0;
                 ai[3] = 0;
 
+                //同步原版npc.ai数组，让原版绘制可以识别二阶段
+                //原版双子魔眼在二阶段时npc.ai[0]为4
+                npc.ai[0] = 4f;
+
                 //清除所有负面buff
                 for (int i = 0; i < npc.buffType.Length; i++) {
                     npc.buffTime[i] = 0;

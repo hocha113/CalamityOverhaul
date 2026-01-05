@@ -13,6 +13,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal partial class HeadPrimeAI
     {
         internal static bool DontReform() {
+            if (!CWRRef.Has) {
+                return !Main.expertMode || !Main.masterMode;
+            }//在没有启用灾厄的情况下，只要是专家或者大师就可以使用
             if (CWRWorld.MachineRebellion) {
                 return false;
             }//机械暴乱，无条件使用
