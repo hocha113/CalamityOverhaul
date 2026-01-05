@@ -1,5 +1,7 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -18,12 +20,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>
         /// 上升阶段
         /// </summary>
-        private const int RisePhase = 35;
+        private const int RisePhase = 45;
+
+        /// <summary>
+        /// 预警阶段 - 给玩家明确的逃离时间
+        /// </summary>
+        private const int WarningPhase = 50;
 
         /// <summary>
         /// 蓄力阶段
         /// </summary>
-        private const int ChargePhase = 45;
+        private const int ChargePhase = 55;
 
         /// <summary>
         /// 风暴阶段
@@ -38,13 +45,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// <summary>
         /// 总时长
         /// </summary>
-        private const int TotalDuration = RisePhase + ChargePhase + StormPhase + RecoveryPhase;
+        private const int TotalDuration = RisePhase + WarningPhase + ChargePhase + StormPhase + RecoveryPhase;
 
         private TwinsStateContext Context;
         private Vector2 stormCenter;
         private float stormRotation;
         private float stormRadius;
         private bool hasStartedStorm;
+        private bool hasPlayedWarningSound;
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -52,6 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             stormRotation = 0f;
             stormRadius = 350f;
             hasStartedStorm = false;
+            hasPlayedWarningSound = false;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -64,15 +73,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             if (Timer <= RisePhase) {
                 ExecuteRisePhase(npc, player);
             }
-            //阶段2: 蓄力
-            else if (Timer <= RisePhase + ChargePhase) {
+            //阶段2: 预警阶段
+            else if (Timer <= RisePhase + WarningPhase) {
+                ExecuteWarningPhase(npc, player);
+            }
+            //阶段3: 蓄力
+            else if (Timer <= RisePhase + WarningPhase + ChargePhase) {
                 ExecuteChargePhase(npc, player);
             }
-            //阶段3: 火焰风暴
-            else if (Timer <= RisePhase + ChargePhase + StormPhase) {
+            //阶段4: 火焰风暴
+            else if (Timer <= RisePhase + WarningPhase + ChargePhase + StormPhase) {
                 ExecuteStormPhase(npc, player);
             }
-            //阶段4: 恢复
+            //阶段5: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
@@ -93,11 +106,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //快速上升到玩家上方
             Vector2 targetPos = player.Center + new Vector2(0, -400);
-            MoveTo(npc, targetPos, 18f, 0.12f);
+            MoveTo(npc, targetPos, 16f, 0.1f);
             FaceTarget(npc, player.Center);
 
             //设置蓄力状态
-            context.SetChargeState(9, progress * 0.2f);
+            context.SetChargeState(9, progress * 0.15f);
 
             //上升轨迹粒子
             if (!VaultUtils.isServer && Timer % 2 == 0) {
@@ -107,21 +120,95 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         }
 
         /// <summary>
+        /// 预警阶段 - 明确显示风暴范围，给玩家逃离时间
+        /// </summary>
+        private void ExecuteWarningPhase(NPC npc, Player player) {
+            int phaseTimer = Timer - RisePhase;
+            float progress = phaseTimer / (float)WarningPhase;
+
+            //锁定风暴中心位置
+            if (phaseTimer == 1) {
+                stormCenter = player.Center;
+            }
+
+            //悬停在上方
+            Vector2 targetPos = stormCenter + new Vector2(0, -400);
+            npc.Center = Vector2.Lerp(npc.Center, targetPos, 0.08f);
+            npc.velocity *= 0.9f;
+            FaceTarget(npc, stormCenter);
+
+            //设置蓄力状态
+            context.SetChargeState(9, 0.15f + progress * 0.25f);
+
+            //预警音效
+            if (!hasPlayedWarningSound) {
+                hasPlayedWarningSound = true;
+                SoundEngine.PlaySound(SoundID.Item20 with { Pitch = -0.5f, Volume = 1.0f }, npc.Center);
+            }
+
+            //显示完整的预警圆环 - 让玩家明确知道风暴范围
+            if (!VaultUtils.isServer) {
+                //逐渐显现的危险区域圆环
+                int ringPoints = 24;
+                float displayRadius = stormRadius * progress;
+
+                if (phaseTimer % 3 == 0) {
+                    for (int i = 0; i < ringPoints; i++) {
+                        float angle = MathHelper.TwoPi / ringPoints * i + phaseTimer * 0.02f;
+                        Vector2 ringPos = stormCenter + angle.ToRotationVector2() * displayRadius;
+
+                        //外圈警告粒子
+                        Dust dust = Dust.NewDustDirect(ringPos, 1, 1, DustID.Torch, 0, 0, 100, default, 1.2f + progress * 0.5f);
+                        dust.noGravity = true;
+                        dust.velocity = angle.ToRotationVector2() * 0.5f;
+                    }
+                }
+
+                //显示最终圆环边界
+                if (progress > 0.5f && phaseTimer % 4 == 0) {
+                    for (int i = 0; i < ringPoints; i++) {
+                        float angle = MathHelper.TwoPi / ringPoints * i;
+                        Vector2 ringPos = stormCenter + angle.ToRotationVector2() * stormRadius;
+
+                        Dust dust = Dust.NewDustDirect(ringPos, 1, 1, DustID.SolarFlare, 0, 0, 150, default, 1.5f);
+                        dust.noGravity = true;
+                        dust.velocity = Vector2.Zero;
+                    }
+                }
+
+                //中心标记
+                if (phaseTimer % 5 == 0) {
+                    Dust centerDust = Dust.NewDustDirect(stormCenter + Main.rand.NextVector2Circular(20, 20), 1, 1, DustID.Torch, 0, 0, 100, default, 2f);
+                    centerDust.noGravity = true;
+                    centerDust.velocity = Vector2.Zero;
+                }
+
+                //闪烁警告效果
+                if (progress > 0.7f && phaseTimer % 8 < 4) {
+                    for (int i = 0; i < 8; i++) {
+                        float angle = MathHelper.TwoPi / 8 * i;
+                        Vector2 flashPos = stormCenter + angle.ToRotationVector2() * stormRadius;
+                        Dust dust = Dust.NewDustDirect(flashPos, 1, 1, DustID.Torch, 0, 0, 0, default, 2.5f);
+                        dust.noGravity = true;
+                        dust.velocity = Vector2.Zero;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 蓄力阶段
         /// </summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
-            int phaseTimer = Timer - RisePhase;
+            int phaseTimer = Timer - RisePhase - WarningPhase;
             float progress = phaseTimer / (float)ChargePhase;
-
-            //记录风暴中心
-            stormCenter = player.Center;
 
             //悬停
             npc.velocity *= 0.9f;
-            FaceTarget(npc, player.Center);
+            FaceTarget(npc, stormCenter);
 
             //设置蓄力状态
-            context.SetChargeState(9, 0.2f + progress * 0.8f);
+            context.SetChargeState(9, 0.4f + progress * 0.6f);
 
             //蓄力特效
             if (!VaultUtils.isServer) {
@@ -135,16 +222,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (5f + progress * 3f);
                 }
 
-                //预警圆环
-                if (phaseTimer % 4 == 0 && progress > 0.3f) {
-                    int ringPoints = 16;
-                    float ringRadius = stormRadius * (progress - 0.3f) / 0.7f;
+                //持续显示风暴圆环
+                if (phaseTimer % 3 == 0) {
+                    int ringPoints = 20;
                     for (int i = 0; i < ringPoints; i++) {
-                        float angle = MathHelper.TwoPi / ringPoints * i;
-                        Vector2 ringPos = stormCenter + angle.ToRotationVector2() * ringRadius;
-                        Dust dust = Dust.NewDustDirect(ringPos, 1, 1, DustID.Torch, 0, 0, 150, default, 1f);
+                        float angle = MathHelper.TwoPi / ringPoints * i + phaseTimer * 0.03f;
+                        Vector2 ringPos = stormCenter + angle.ToRotationVector2() * stormRadius;
+                        Dust dust = Dust.NewDustDirect(ringPos, 1, 1, DustID.SolarFlare, 0, 0, 100, default, 1.3f);
                         dust.noGravity = true;
-                        dust.velocity = Vector2.Zero;
+                        dust.velocity = (angle + MathHelper.PiOver2).ToRotationVector2() * 2f;
                     }
                 }
 
@@ -164,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// 风暴阶段
         /// </summary>
         private void ExecuteStormPhase(NPC npc, Player player) {
-            int phaseTimer = Timer - RisePhase - ChargePhase;
+            int phaseTimer = Timer - RisePhase - WarningPhase - ChargePhase;
             float progress = phaseTimer / (float)StormPhase;
 
             //停止蓄力特效
@@ -176,8 +262,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.2f, Volume = 1.3f }, npc.Center);
             }
 
-            //更新风暴中心跟随玩家
-            stormCenter = Vector2.Lerp(stormCenter, player.Center, 0.02f);
+            //更新风暴中心缓慢跟随玩家
+            //stormCenter = Vector2.Lerp(stormCenter, player.Center, 0.015f);
 
             //本体绕着风暴中心旋转
             float rotSpeed = Context.IsMachineRebellion ? 0.08f : 0.06f;
