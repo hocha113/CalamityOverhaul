@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Tools;
+ï»¿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    //¾úÉúĞ·ĞĞÎªÏµÍ³
+    //èŒç”ŸèŸ¹è¡Œä¸ºç³»ç»Ÿ
     internal class CrabulonBehavior
     {
         private readonly NPC npc;
@@ -23,16 +23,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.physics = physics;
         }
 
-        //´¦Àí»ù´¡¸üĞÂ£¬ÕâĞ©Âß¼­ÔÚÈÎºÎ×´Ì¬ÏÂ¶¼Ó¦¸ÃÖ´ĞĞ
+        //å¤„ç†åŸºç¡€æ›´æ–°ï¼Œè¿™äº›é€»è¾‘åœ¨ä»»ä½•çŠ¶æ€ä¸‹éƒ½åº”è¯¥æ‰§è¡Œ
         public void UpdateBasics() {
             UpdateTimers();
             physics.UpdateGroundDistance();
             CheckHover();
-            //¼ì²é²¢ĞŞÕı¿¨ÈëÎ»ÖÃ
+            //æ£€æŸ¥å¹¶ä¿®æ­£å¡å…¥ä½ç½®
             physics.CheckAndFixStuckPosition();
         }
 
-        //´¦ÀíÖ÷AIÂß¼­£¬Õâ²¿·ÖÔÚÆï³Ë×´Ì¬ÏÂ»á±»Ìø¹ı
+        //å¤„ç†ä¸»AIé€»è¾‘ï¼Œè¿™éƒ¨åˆ†åœ¨éª‘ä¹˜çŠ¶æ€ä¸‹ä¼šè¢«è·³è¿‡
         public bool ProcessAI() {
             if (owner.CrabulonPlayer != null) {
                 owner.CrabulonPlayer.CrabulonIndex = npc.whoAmI;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return ProcessFollowOrAttack();
         }
 
-        //¸üĞÂ¼ÆÊ±Æ÷
+        //æ›´æ–°è®¡æ—¶å™¨
         private void UpdateTimers() {
             if (owner.ai[7] > 0) owner.ai[7]--;
             if (owner.ai[8] > 0) owner.ai[8]--;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (owner.dontTurnTo > 0) owner.dontTurnTo--;
         }
 
-        //¼ì²éÊó±êĞüÍ£
+        //æ£€æŸ¥é¼ æ ‡æ‚¬åœ
         private void CheckHover() {
             owner.hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (owner.hoverNPC) {
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´¦ÀíÏû»¯×´Ì¬
+        //å¤„ç†æ¶ˆåŒ–çŠ¶æ€
         private bool ProcessDigestion() {
             if (owner.ai[8] <= 0) {
                 return false;
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
 
-        //´´½¨Ïû»¯Á£×ÓĞ§¹û
+        //åˆ›å»ºæ¶ˆåŒ–ç²’å­æ•ˆæœ
         private void CreateDigestionParticles() {
             if (owner.ai[8] == CrabulonConstants.ParticleEffectTime1) {
                 SpawnNutritionalParticles(CrabulonConstants.ParticleCount1);
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´¦Àí¶×·ü×´Ì¬
+        //å¤„ç†è¹²ä¼çŠ¶æ€
         private bool ProcessCrouch() {
             if (owner.Crouch) {
                 HandleCrouching();
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //´¦Àí¶×·üÂß¼­
+        //å¤„ç†è¹²ä¼é€»è¾‘
         private void HandleCrouching() {
             if (owner.ai[9] < CrabulonConstants.CrouchAnimationMax) {
                 owner.ai[9] += CrabulonConstants.CrouchAnimationSpeed;
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //ÖÎÁÆNPC
+        //æ²»ç–—NPC
         private void HealNPC() {
             if (!VaultUtils.isClient) {
                 npc.life += CrabulonConstants.HealAmount;
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             SpawnNutritionalParticles(CrabulonConstants.HealParticleCount);
         }
 
-        //´¦Àí´«ËÍÂß¼­
+        //å¤„ç†ä¼ é€é€»è¾‘
         private bool ProcessTeleport() {
             if (owner.Owner.Distance(npc.Center) <= CrabulonConstants.TeleportDistance) {
                 return false;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //Ö´ĞĞ´«ËÍ
+        //æ‰§è¡Œä¼ é€
         private void PerformTeleport() {
             owner.ai[6] = 0;
             npc.Center = owner.Owner.Center + new Vector2(0, CrabulonConstants.TeleportSpawnHeight);
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´´½¨´«ËÍÁ£×Ó
+        //åˆ›å»ºä¼ é€ç²’å­
         private void CreateTeleportDust() {
             Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
             int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
         }
 
-        //´¦Àí¸úËæ»ò¹¥»÷ĞĞÎª
+        //å¤„ç†è·Ÿéšæˆ–æ”»å‡»è¡Œä¸º
         private bool ProcessFollowOrAttack() {
             Vector2 targetPos = owner.Owner.Center;
             float moveSpeed = CrabulonConstants.MoveSpeed;
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //´¦ÀíºáÏòÒÆ¶¯
+        //å¤„ç†æ¨ªå‘ç§»åŠ¨
         private void ProcessHorizontalMovement(Vector2 toDis, float followDistance, float moveSpeed, float inertia) {
             if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
                 if (toDis.X > 0) {
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´¦Àí¹¥»÷ÌøÔ¾
+        //å¤„ç†æ”»å‡»è·³è·ƒ
         private void ProcessAttackJump() {
             npc.ai[0] = 3f;
             if (npc.velocity.Y == 0) {
@@ -247,18 +247,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             else {
                 npc.velocity.Y += 0.2f;
             }
-
-            CreateAttackJumpEffect();
         }
 
-        //´´½¨¹¥»÷ÌøÔ¾Ğ§¹û
-        private void CreateAttackJumpEffect() {
-            if (!VaultUtils.isServer) {
-                SpawnNutritionalParticles(CrabulonConstants.HealParticleCount);
-            }
-        }
-
-        //´¦Àí×İÏòÒÆ¶¯
+        //å¤„ç†çºµå‘ç§»åŠ¨
         private void ProcessVerticalMovement(Vector2 targetPos) {
             if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
                 npc.velocity.Y = CrabulonConstants.JumpVelocity;
@@ -272,14 +263,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //¸üĞÂ³¯Ïò
+        //æ›´æ–°æœå‘
         private void UpdateDirection() {
             if (owner.dontTurnTo <= 0f) {
                 npc.spriteDirection = npc.direction;
             }
         }
 
-        //Éú³ÉÓªÑøÁ£×Ó
+        //ç”Ÿæˆè¥å…»ç²’å­
         private void SpawnNutritionalParticles(int count) {
             for (int i = 0; i < count; i++) {
                 Vector2 spawnPos = npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
