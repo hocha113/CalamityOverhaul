@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //围绕玩家旋转
             vortexAngle += VortexSpeed;
-            float radius = 280f + (float)Math.Sin(modeTimer * 0.05f) * 80f; //半径会波动
+            float radius = 680f + (float)Math.Sin(modeTimer * 0.05f) * 120f; //半径会波动
             Vector2 targetPos = player.Center + vortexAngle.ToRotationVector2() * radius;
 
             //快速移动到目标位置
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //}
 
             //间歇性发射火球
-            if (modeTimer % 15 == 0 && !VaultUtils.isClient) {
+            if (modeTimer % 10 == 0 && !VaultUtils.isClient) {
                 Vector2 fireDir = (player.Center - npc.Center).SafeNormalize(Vector2.Zero);
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //持续追踪玩家，但速度很快
             Vector2 toPlayer = GetDirectionToTarget(Context);
-            float chaseSpeed = Context.IsMachineRebellion ? 14f : (Context.IsDeathMode ? 12f : 10f);
+            float chaseSpeed = Context.IsMachineRebellion ? 8f : (Context.IsDeathMode ? 4f : 2f);
             float turnSpeed = Context.IsMachineRebellion ? 0.25f : (Context.IsDeathMode ? 0.2f : 0.15f);
 
             npc.velocity = Vector2.Lerp(npc.velocity, toPlayer * chaseSpeed, turnSpeed);
@@ -343,7 +343,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //持续喷火
             int fireRate = Context.IsMachineRebellion ? 5 : (Context.IsDeathMode ? 6 : 8);
-            if (modeTimer % fireRate == 0 && !VaultUtils.isClient) {
+            if (modeTimer > 30 && modeTimer % fireRate == 0 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
                     npc.Center,

@@ -261,15 +261,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
                 return;
             }
 
-            if (dompMusicWindown) {
+            if (!dompMusicWindown) {
                 dompMusicWindown = true;
-                MusicToast.ShowMusic(
-                    title: "位元堕落",
-                    artist: "Ryusa",
-                    albumCover: MeldAsset.Value,
-                    style: MusicToast.MusicStyle.Neon,
-                    displayDuration: 360//6秒
-                );
+                if (!VaultUtils.isServer) {
+                    MusicToast.ShowMusic(
+                        title: "位元堕落",
+                        artist: "Ryusa",
+                        albumCover: MeldAsset.Value,
+                        style: MusicToast.MusicStyle.Neon,
+                        displayDuration: 360//6秒
+                    );
+                }
             }
 
             if (++CekTimer > 60 * 60 * 3) {
