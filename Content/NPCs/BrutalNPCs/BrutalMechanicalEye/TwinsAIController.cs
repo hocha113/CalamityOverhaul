@@ -891,6 +891,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return true;
         }
 
+        public override bool CheckActive() => false;//不要自动消失
+
         #endregion
 
         #region 绘制
