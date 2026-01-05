@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.IO;
 using Terraria;
@@ -164,6 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
     {
         public static bool IsActive;
         public static int CekTimer = 0;
+        [VaultLoaden(CWRConstant.NPC + "Meld")]
+        public static Asset<Texture2D> MeldAsset;
 
         internal static void Send() {
             if (VaultUtils.isSinglePlayer) {
@@ -260,13 +263,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs
                 return;
             }
 
-            if (!CWRRef.GetBossRushActive()) {
+            if (!CWRRef.GetBossRushActive() && !VaultUtils.isServer) {
                 int slot = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
                 if (Main.newMusic != slot) {
                     MusicToast.ShowMusic(
                         title: "位元堕落",
                         artist: "Ryusa",
-                        albumCover: CWRUtils.GetT2DValue(CWRConstant.NPC + "BSP/Skeletron_Head"),
+                        albumCover: MeldAsset.Value,
                         style: MusicToast.MusicStyle.Neon,
                         displayDuration: 360//6秒
                     );
