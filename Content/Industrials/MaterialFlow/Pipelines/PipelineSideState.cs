@@ -9,131 +9,139 @@ using Terraria.DataStructures;
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     /// <summary>
-    /// 用于处理管道侧面连接逻辑的类
+    /// 管道侧面连接状态，处理连接检测、电力传输和绘制逻辑
     /// </summary>
     internal class PipelineSideState(Point16 point16)
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
-        internal const int efficiency = 2;
-        internal Tile externalTile;
+        internal const float TRANSFER_RATE = 2f;
         internal TileProcessor externalTP;
         internal UEPipelineTP coreTP;
         internal PipelineLinkType LinkType { get; private set; } = PipelineLinkType.None;
         internal bool canDraw;
+
+        /// <summary>
+        /// 更新连接状态并处理电力传输
+        /// </summary>
         public void UpdateConnectionState() {
-            //初始化状态
-            externalTile = default;
+            //重置状态
             externalTP = null;
             LinkType = PipelineLinkType.None;
-            canDraw = true;
+            canDraw = false;
 
-            //获取相邻的物块和TileProcessor
-            externalTile = Framing.GetTileSafely(Position + Offset);
-            if (!externalTile.HasTile || !VaultUtils.SafeGetTopLeft(Position + Offset, out var point)
-                || !TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
-                canDraw = false;
+            Point16 checkPos = Position + Offset;
+
+            //获取相邻物块
+            Tile tile = Framing.GetTileSafely(checkPos);
+            if (!tile.HasTile) return;
+
+            if (!VaultUtils.SafeGetTopLeft(checkPos, out var topLeft)) return;
+
+            //使用TileProcessorLoader提供的O(1)字典查询
+            if (!TileProcessorLoader.TP_Point_To_Instance.TryGetValue(topLeft, out externalTP)) return;
+            if (externalTP == null || !externalTP.Active) {
+                externalTP = null;
                 return;
             }
 
+            //根据类型处理连接和电力传输
             switch (externalTP) {
-                case BaseGeneratorTP:
-                    //当管道连接到发电机时，将自己的"供电状态"激活
-                    coreTP.IsNetworkPowered = true;
+                case BaseGeneratorTP generator:
+                    HandleGeneratorConnection(generator);
                     break;
-                case UEPipelineTP otherPipe:
-                    //传播"供电状态"。只要两者中有一个是供电的，就将两者都设置为供电状态
-                    if (coreTP.IsNetworkPowered || otherPipe.IsNetworkPowered) {
-                        coreTP.IsNetworkPowered = true;
-                        otherPipe.IsNetworkPowered = true;
-                    }
-                    break;
-            }
-        }
-        /// <summary>
-        /// 核心更新逻辑，用于检测和处理与相邻物块的交互
-        /// </summary>
-        public void Update() {
-            if (!canDraw) {
-                return;
-            }
-
-            switch (externalTP) {
-                case BaseGeneratorTP gen:
-                    HandleGeneratorConnection(gen);
-                    break;
-                case UEPipelineTP otherPipe:
+                case BaseUEPipelineTP otherPipe:
                     HandlePipelineConnection(otherPipe);
                     break;
                 case BaseBattery battery:
                     HandleBatteryConnection(battery);
                     break;
+                default:
+                    return;
             }
 
-            if (LinkType == PipelineLinkType.None) {
-                canDraw = false;
-            }
+            canDraw = LinkType != PipelineLinkType.None;
         }
 
-        //处理与发电机的连接
+        /// <summary>
+        /// 处理与发电机的连接
+        /// </summary>
         private void HandleGeneratorConnection(BaseGeneratorTP generator) {
-            float transferAmount = Math.Min(efficiency, generator.MachineData.UEvalue);
-            if (transferAmount > 0 && coreTP.MachineData.UEvalue < 20) {
-                generator.MachineData.UEvalue -= transferAmount;
-                coreTP.MachineData.UEvalue += transferAmount;
-            }
-            //当管道连接到发电机时，将自己的"供电状态"激活
-            coreTP.IsNetworkPowered = true;
+            if (generator.MachineData == null || coreTP.MachineData == null) return;
 
+            //从发电机抽取电力
+            float available = generator.MachineData.UEvalue;
+            float pipeSpace = coreTP.MaxUEValue - coreTP.MachineData.UEvalue;
+            float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, pipeSpace));
+
+            if (transfer > 0) {
+                generator.MachineData.UEvalue -= transfer;
+                coreTP.MachineData.UEvalue += transfer;
+            }
+
+            //连接发电机意味着网络有电源
+            coreTP.IsNetworkPowered = true;
             LinkType = PipelineLinkType.Generator;
         }
 
-        //处理与另一个管道的连接
-        private void HandlePipelineConnection(UEPipelineTP otherPipe) {
+        /// <summary>
+        /// 处理与另一个管道的连接
+        /// </summary>
+        private void HandlePipelineConnection(BaseUEPipelineTP otherPipe) {
+            if (otherPipe.MachineData == null || coreTP.MachineData == null) return;
+
+            //管道之间均衡电力
             float totalUE = coreTP.MachineData.UEvalue + otherPipe.MachineData.UEvalue;
-            float averageUE = totalUE / 2;
-            float transferUE = Math.Min(efficiency, Math.Abs(coreTP.MachineData.UEvalue - averageUE));
+            float averageUE = totalUE / 2f;
+            float diff = coreTP.MachineData.UEvalue - averageUE;
+            float transfer = Math.Min(TRANSFER_RATE, Math.Abs(diff));
 
-            if (coreTP.MachineData.UEvalue > averageUE) {
-                coreTP.MachineData.UEvalue -= transferUE;
-                otherPipe.MachineData.UEvalue += transferUE;
+            if (diff > 0) {
+                coreTP.MachineData.UEvalue -= transfer;
+                otherPipe.MachineData.UEvalue += transfer;
             }
-            else {
-                coreTP.MachineData.UEvalue += transferUE;
-                otherPipe.MachineData.UEvalue -= transferUE;
-            }
-
-            //传播"供电状态"。只要两者中有一个是供电的，就将两者都设置为供电状态
-            if (coreTP.IsNetworkPowered || otherPipe.IsNetworkPowered) {
-                coreTP.IsNetworkPowered = true;
-                otherPipe.IsNetworkPowered = true;
+            else if (diff < 0) {
+                coreTP.MachineData.UEvalue += transfer;
+                otherPipe.MachineData.UEvalue -= transfer;
             }
 
-            //如果另一个管道是拐角或十字，则不绘制连接臂，避免穿帮
-            if (otherPipe.Shape is PipelineShape.Cross or PipelineShape.Corner or PipelineShape.ThreeWay) {
-                canDraw = false;
+            //传播供电状态
+            if (otherPipe is UEPipelineTP normalOther) {
+                if (coreTP.IsNetworkPowered || normalOther.IsNetworkPowered) {
+                    coreTP.IsNetworkPowered = true;
+                    normalOther.IsNetworkPowered = true;
+                }
             }
+
             LinkType = PipelineLinkType.Pipeline;
         }
 
-        //处理与电池的连接
+        /// <summary>
+        /// 处理与电池的连接
+        /// </summary>
         private void HandleBatteryConnection(BaseBattery battery) {
-            //电池交互逻辑
-            //如果管道网络由发电机供能，则无视电池的设置，强制为其充电
-            //如果管道网络是独立的(没有发电机)，则尊重电池的设置
+            if (battery.MachineData == null || coreTP.MachineData == null) return;
+
             if (coreTP.IsNetworkPowered || battery.ReceivedEnergy) {
-                float transferAmount = Math.Min(efficiency, Math.Min(coreTP.MachineData.UEvalue, battery.MaxUEValue - battery.MachineData.UEvalue));
-                if (transferAmount > 0) {
-                    battery.MachineData.UEvalue += transferAmount;
-                    coreTP.MachineData.UEvalue -= transferAmount;
+                //充电:管道向电池传输
+                float available = coreTP.MachineData.UEvalue;
+                float batterySpace = battery.MaxUEValue - battery.MachineData.UEvalue;
+                float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, batterySpace));
+
+                if (transfer > 0) {
+                    battery.MachineData.UEvalue += transfer;
+                    coreTP.MachineData.UEvalue -= transfer;
                 }
             }
             else {
-                //电池想要放电，管道从中取电为其他设备供能
-                float transferAmount = Math.Min(efficiency, Math.Min(battery.MachineData.UEvalue, coreTP.MaxUEValue - coreTP.MachineData.UEvalue));
-                if (transferAmount > 0) {
-                    battery.MachineData.UEvalue -= transferAmount;
-                    coreTP.MachineData.UEvalue += transferAmount;
+                //放电:电池向管道传输
+                float available = battery.MachineData.UEvalue;
+                float pipeSpace = coreTP.MaxUEValue - coreTP.MachineData.UEvalue;
+                float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, pipeSpace));
+
+                if (transfer > 0) {
+                    coreTP.MachineData.UEvalue += transfer;
+                    battery.MachineData.UEvalue -= transfer;
                 }
             }
 
@@ -141,22 +149,35 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         /// <summary>
-        /// 绘制连接臂的逻辑
+        /// 更新绘制状态
+        /// </summary>
+        public void UpdateDrawState() {
+            if (!canDraw || externalTP == null) return;
+
+            //如果另一个管道是拐角或十字，则不绘制连接臂避免穿帮
+            if (externalTP is UEPipelineTP otherPipe) {
+                if (otherPipe.Shape is PipelineShape.Cross or PipelineShape.Corner or PipelineShape.ThreeWay) {
+                    canDraw = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制连接臂
         /// </summary>
         public void Draw(SpriteBatch spriteBatch) {
-            if (coreTP == null || coreTP.MachineData == null || externalTP == null) {
-                return;
-            }
+            if (coreTP?.MachineData == null || externalTP == null) return;
 
             Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = Offset.ToVector2().ToRotation();
             Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
 
             //绘制能量流动效果
-            Color energyColor = coreTP.BaseColor * (coreTP.MachineData.UEvalue / 10f);
+            float energyRatio = coreTP.MachineData.UEvalue / 10f;
+            Color energyColor = coreTP.BaseColor * energyRatio;
             spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, energyColor, drawRot, orig, 1, SpriteEffects.None, 0);
 
-            //绘制管道连接臂的本体
+            //绘制管道连接臂本体
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
             spriteBatch.Draw(UEPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, lightingColor, drawRot, orig, 1, SpriteEffects.None, 0);
         }
