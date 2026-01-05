@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
@@ -212,6 +213,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             physics.AutoStepClimbing();
             UpdateDirection();
 
+            //处理落地攻击效果
+            if (owner.TargetNPC != null) {
+                JumpFloorEffect();
+            }
+
             return false;
         }
 
@@ -276,6 +282,78 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 Vector2 spawnPos = npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
                 PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
             }
+        }
+
+        //落地冲击效果
+        private void JumpFloorEffect() {
+            if (!npc.collideY) {
+                owner.ai[3] += Math.Abs(npc.velocity.Y);
+                if (npc.velocity.Y < 0) {
+                    owner.ai[3] = 0;
+                    owner.ai[4] = 0;
+                }
+                if (owner.ai[3] > owner.ai[4] && npc.velocity.Y > 0) {
+                    owner.ai[4] = owner.ai[3];
+                }
+                return;
+            }
+
+            if (npc.oldVelocity.Y > 2f && owner.ai[4] > 10) {
+                CreateImpactEffects(Math.Clamp(owner.ai[4] * 10, 10, 600));
+            }
+
+            owner.ai[3] = 0;
+            owner.ai[4] = 0;
+        }
+
+        //创建冲击效果
+        private void CreateImpactEffects(float impactStrength) {
+            if (!VaultUtils.isServer) {
+                float volume = CrabulonConstants.ImpactSoundVolume + Math.Min(
+                    impactStrength / CrabulonConstants.ImpactVolumeMultiplier,
+                    0.5f
+                );
+                SoundEngine.PlaySound(SoundID.Item14 with { Volume = volume }, npc.Center);
+
+                int dustCount = (int)MathHelper.Clamp(
+                    impactStrength / CrabulonConstants.ImpactDustDivisor,
+                    CrabulonConstants.MinDustCount,
+                    CrabulonConstants.MaxDustCount
+                );
+
+                for (int i = 0; i < dustCount; i++) {
+                    CreateImpactDust(impactStrength);
+                }
+            }
+
+            if (!VaultUtils.isClient) {
+                CreateImpactProjectile(impactStrength);
+            }
+        }
+
+        //创建冲击粒子
+        private void CreateImpactDust(float impactStrength) {
+            Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
+            int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
+            Main.dust[dust].velocity *= 0.5f;
+            Main.dust[dust].velocity.Y *= impactStrength / Main.rand.NextFloat(160, 230);
+            Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
+        }
+
+        //创建冲击弹幕
+        private void CreateImpactProjectile(float impactStrength) {
+            int baseDmg = CrabulonConstants.BaseDamage + (int)(impactStrength / CrabulonConstants.DamagePerImpact);
+
+            Projectile.NewProjectile(
+                npc.FromObjectGetParent(),
+                npc.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<CrabulonFriendHitbox>(),
+                baseDmg,
+                CrabulonConstants.ImpactKnockback,
+                Main.myPlayer,
+                npc.whoAmI
+            );
         }
     }
 }
