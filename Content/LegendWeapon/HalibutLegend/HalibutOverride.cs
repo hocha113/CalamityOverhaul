@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {0, 4 },
                 {1, 5 },
                 {2, 6 },
-                {3, 6 },
+                {3, 8 },
                 {4, 11 },
                 {5, 15 },
                 {6, 20 },
@@ -63,27 +63,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {8, 35 },
                 {9, 48 },
                 {10, 65 },
-                {11, 90 },
-                {12, 125 },
-                {13, 190 },
-                {14, 320 }
+                {11, 80 },
+                {12, 110 },
+                {13, 170 },
+                {14, 280 }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
                 {0, 0 },
                 {1, 1 },
-                {2, 1 },
-                {3, 2 },
-                {4, 2 },
+                {2, 2 },
+                {3, 3 },
+                {4, 4 },
                 {5, 5 },
                 {6, 6 },
                 {7, 7 },
-                {8, 8 },
-                {9, 9 },
-                {10, 10 },
-                {11, 11 },
-                {12, 13 },
-                {13, 15 },
-                {14, 20 }
+                {8, 7 },
+                {9, 8 },
+                {10, 9 },
+                {11, 10 },
+                {12, 11 },
+                {13, 13 },
+                {14, 15 }
             };
         }
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

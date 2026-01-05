@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //对双子魔眼造成1.5倍伤害
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1f;
             }
 
             //对灾眼兄弟仅造成50%伤害
