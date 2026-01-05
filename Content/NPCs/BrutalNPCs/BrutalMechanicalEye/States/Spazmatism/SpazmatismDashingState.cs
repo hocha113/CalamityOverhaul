@@ -11,7 +11,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismDashing";
 
         private const int DashDuration = 40;
-        private const int MaxDashCount = 2;
+
+        private int currentDashCount;
+        private int maxDashCount;
+
+        public SpazmatismDashingState(int dashCount, int maxCount) {
+            currentDashCount = dashCount;
+            maxDashCount = maxCount;
+        }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
             NPC npc = context.Npc;
@@ -24,15 +31,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //冲刺结束
             if (Timer >= DashDuration) {
                 npc.velocity *= 0.5f;
-                Counter++;
+                currentDashCount++;
 
-                if (Counter >= MaxDashCount) {
+                if (currentDashCount >= maxDashCount) {
                     //冲刺次数用完，回到悬停
                     return new SpazmatismHoverShootState();
                 }
                 else {
-                    //继续下一次冲刺
-                    return new SpazmatismDashPrepareState();
+                    //继续下一次冲刺准备
+                    return new SpazmatismDashPrepareState(currentDashCount);
                 }
             }
 

@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -13,9 +15,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismDashPrepare";
 
         private const int ChargeTime = 45;
+        private const int MaxDashCount = 2;
         private float DashSpeed => Context.IsMachineRebellion ? 30f : 24f;
 
         private TwinsStateContext Context;
+        private int currentDashCount;
+
+        public SpazmatismDashPrepareState(int dashCount = 0) {
+            currentDashCount = dashCount;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -53,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 //设置冲刺速度
                 npc.velocity = GetDirectionToTarget(context) * DashSpeed;
 
-                return new SpazmatismDashingState();
+                return new SpazmatismDashingState(currentDashCount, MaxDashCount);
             }
 
             return null;
