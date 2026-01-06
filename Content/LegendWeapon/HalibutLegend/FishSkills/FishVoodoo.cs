@@ -140,16 +140,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {
             skill = null;
             hPlayer = Player.GetOverride<HalibutPlayer>();
-            if (hPlayer == null || !hPlayer.HeldHalibut) {
+            if (hPlayer == null) {
                 return false;
             }
             if (!FishSkill.UnlockFishs.TryGetValue(ItemID.GuideVoodooFish, out FishSkill fs)) {
                 return false;
             }
-            if (hPlayer.SkillID != fs.ID) {
+            if (fs is not FishVoodoo fv) {
                 return false;
             }
-            if (fs is not FishVoodoo fv) {
+            if(!fs.Active(Player)) {
                 return false;
             }
             skill = fv;
