@@ -5,6 +5,7 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -561,6 +562,85 @@ namespace CalamityOverhaul.Content.QuestLogs
             CurrentStyle.DrawNightModeButton(spriteBatch, panelRect, nightHovered, mainPanelAlpha, NightMode);
             if (nightHovered) {
                 Main.hoverItemName = NightMode ? NightModeText.Value : SunModeText.Value;
+            }
+
+            //如果任务检测被禁用，绘制禁止覆盖层
+            var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
+            if (!qlPlayer.ShouldCheckQuestInCurrentWorld()) {
+                DrawDisabledOverlay(spriteBatch);
+            }
+        }
+
+        private float disabledOverlayAnimTime;
+
+        private void DrawDisabledOverlay(SpriteBatch spriteBatch) {
+            disabledOverlayAnimTime += 0.016f;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //半透明红色覆盖层
+            float pulseAlpha = 0.65f + MathF.Sin(disabledOverlayAnimTime * 2f) * 0.05f;
+            Color overlayColor = new Color(150, 50, 50) * (mainPanelAlpha * pulseAlpha);
+            spriteBatch.Draw(pixel, panelRect, overlayColor);
+
+            //绘制禁止符号
+            Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2f, panelRect.Y + panelRect.Height / 2f);
+
+            //外圆
+            float circleRadius = 60f;
+            float circleThickness = 8f;
+            Color circleColor = new Color(200, 60, 60) * (mainPanelAlpha * 0.8f);
+
+            //使用SoftGlow绘制发光效果
+            Texture2D softGlow = CWRAsset.SoftGlow.Value;
+            float glowPulse = 0.8f + MathF.Sin(disabledOverlayAnimTime * 3f) * 0.2f;
+            Color glowColor = new Color(200, 80, 80, 0) * (mainPanelAlpha * 0.4f * glowPulse);
+            spriteBatch.Draw(softGlow, center, null, glowColor, 0f,
+                softGlow.Size() / 2f, 2f, SpriteEffects.None, 0f);
+
+            //绘制圆环
+            int segments = 36;
+            for (int i = 0; i < segments; i++) {
+                float angle1 = MathHelper.TwoPi * i / segments;
+                float angle2 = MathHelper.TwoPi * (i + 1) / segments;
+
+                Vector2 p1 = center + angle1.ToRotationVector2() * circleRadius;
+                Vector2 p2 = center + angle2.ToRotationVector2() * circleRadius;
+
+                float segAngle = MathF.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+                float segLength = Vector2.Distance(p1, p2);
+
+                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), circleColor,
+                    segAngle, new Vector2(0, 0.5f), new Vector2(segLength + 1, circleThickness), SpriteEffects.None, 0f);
+            }
+
+            //绘制斜线(禁止符号)
+            float lineAngle = MathHelper.PiOver4;
+            float lineLength = circleRadius * 1.4f;
+            Vector2 lineStart = center - lineAngle.ToRotationVector2() * lineLength / 2f;
+
+            spriteBatch.Draw(pixel, lineStart, new Rectangle(0, 0, 1, 1), circleColor,
+                lineAngle, new Vector2(0, 0.5f), new Vector2(lineLength, circleThickness), SpriteEffects.None, 0f);
+
+            //绘制提示文本
+            string text = QuestWorldConfirmUI.DisabledOverlayText?.Value ?? "任务检测已被禁止";
+            string[] lines = text.Split('\n');
+
+            float textY = center.Y + circleRadius + 30f;
+            float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y;
+
+            for (int i = 0; i < lines.Length; i++) {
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(lines[i]);
+                Vector2 textPos = new Vector2(center.X - textSize.X / 2f * 0.9f, textY + i * lineHeight);
+
+                //文字阴影
+                Utils.DrawBorderString(spriteBatch, lines[i], textPos + new Vector2(2, 2),
+                    Color.Black * (mainPanelAlpha * 0.6f), 0.9f);
+
+                //文字主体(带脉冲效果)
+                Color textColor = Color.Lerp(new Color(255, 180, 180), new Color(255, 100, 100),
+                    MathF.Sin(disabledOverlayAnimTime * 2f) * 0.5f + 0.5f);
+                Utils.DrawBorderString(spriteBatch, lines[i], textPos, textColor * mainPanelAlpha, 0.9f);
             }
         }
 

@@ -1,5 +1,7 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.QLNodes;
+using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -12,6 +14,18 @@ namespace CalamityOverhaul.Content.QuestLogs
     {
         public Dictionary<string, QuestSaveData> QuestProgress = new();
 
+        /// <summary>
+        /// 上次检测任务的世界完整名称
+        /// </summary>
+        public string LastWorldFullName = string.Empty;
+
+        /// <summary>
+        /// 在此世界中跳过任务检测(用于用户选择跳过后记录)
+        /// </summary>
+        public string DontCheckQuestInWorld = string.Empty;
+
+        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
+
         public override void SaveData(TagCompound tag) {
             try {
                 QuestProgress ??= [];
@@ -20,6 +34,14 @@ namespace CalamityOverhaul.Content.QuestLogs
                     questsTag[kvp.Key] = kvp.Value.Serialize();
                 }
                 tag["QuestProgress"] = questsTag;
+
+                //保存世界追踪数据
+                if (!string.IsNullOrEmpty(LastWorldFullName)) {
+                    tag["QL_LastWorldFullName"] = LastWorldFullName;
+                }
+                if (!string.IsNullOrEmpty(DontCheckQuestInWorld)) {
+                    tag["QL_DontCheckQuestInWorld"] = DontCheckQuestInWorld;
+                }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[QLPlayer:SaveData] an error has occurred:{ex.Message}");
             }
@@ -36,6 +58,16 @@ namespace CalamityOverhaul.Content.QuestLogs
                         }
                     }
                 }
+
+                //加载世界追踪数据
+                LastWorldFullName = string.Empty;
+                if (tag.TryGet("QL_LastWorldFullName", out string lastWorld)) {
+                    LastWorldFullName = lastWorld;
+                }
+                DontCheckQuestInWorld = string.Empty;
+                if (tag.TryGet("QL_DontCheckQuestInWorld", out string dontCheck)) {
+                    DontCheckQuestInWorld = dontCheck;
+                }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[QLPlayer:LoadData] an error has occurred:{ex.Message}");
             }
@@ -48,7 +80,36 @@ namespace CalamityOverhaul.Content.QuestLogs
             return QuestProgress[questID];
         }
 
+        /// <summary>
+        /// 检查是否应该在当前世界检测任务
+        /// </summary>
+        public bool ShouldCheckQuestInCurrentWorld() {
+            //如果用户选择了跳过当前世界的任务检测
+            if (DontCheckQuestInWorld == SaveWorld.WorldFullName) {
+                return false;
+            }
+            return true;
+        }
+
         public override void OnEnterWorld() {
+            string currentWorldFullName = SaveWorld.WorldFullName;
+
+            //每次进入世界都重置跳过标记，确保每次进入都会提醒
+            //只有当用户在本次会话中选择跳过后才会设置DontCheckQuestInWorld
+            //这样下次进入世界时会重新询问
+
+            //检测是否进入了不同的世界
+            if (!string.IsNullOrEmpty(LastWorldFullName) && LastWorldFullName != currentWorldFullName) {
+                //进入了不同的世界，重置跳过标记并弹出确认窗口
+                DontCheckQuestInWorld = string.Empty;
+                QuestWorldConfirmUI.RequestConfirm(Main.worldName, LastWorldFullName);
+            }
+            else if (string.IsNullOrEmpty(LastWorldFullName)) {
+                //首次进入，正常设置
+                LastWorldFullName = currentWorldFullName;
+            }
+            //同一世界不需要重置，保持之前的选择
+
             if (QuestNode.GetQuest<FirstQuest>() != null) {
                 QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
             }
@@ -62,6 +123,16 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public override void PostUpdate() {
             if (VaultUtils.isServer) {
+                return;
+            }
+
+            //如果用户跳过了当前世界的任务检测，则不更新任务
+            if (!ShouldCheckQuestInCurrentWorld()) {
+                return;
+            }
+
+            //如果确认窗口正在显示，暂停任务更新
+            if (QuestWorldConfirmUI.Instance != null && QuestWorldConfirmUI.Instance.Active) {
                 return;
             }
 

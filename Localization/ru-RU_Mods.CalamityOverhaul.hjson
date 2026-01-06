@@ -6640,6 +6640,25 @@ UI: {
 			The development team usually releases compatibility patches within 12 hours.
 			''' */
 	}
+
+	QuestWorldConfirmUI: {
+		// TitleText: Quest Check Confirmation
+		/* DescText:
+			'''
+			Detected entry from another world.
+			Do you want to check quest progress 
+			in the current world?
+			''' */
+		// ConfirmText: Check Quests
+		// CancelText: Skip
+		// EnabledText: Quest Check Enabled
+		// DisabledText: Quest Check Skipped
+		/* DisabledOverlayText:
+			'''
+			Quest checking is disabled in this world.
+			Re-enter the world to choose again.
+			''' */
+	}
 }
 
 ADV: {

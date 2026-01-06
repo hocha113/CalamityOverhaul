@@ -6347,7 +6347,8 @@ UI: {
 		// TitleText: Legendary Weapon Upgrade Confirmation
 		/* DescText:
 			'''
-			Current world level detected as higher than weapon level.
+			Current world level detected 
+			as higher than weapon level.
 			Upgrade {0} to level {1}?
 			''' */
 		// ConfirmText: Confirm Upgrade
@@ -6558,6 +6559,25 @@ UI: {
 			If this is intentional, please ignore this message.
 			If this is due to outdated versions, please wait for an update.
 			The development team usually releases compatibility patches within 12 hours.
+			''' */
+	}
+
+	QuestWorldConfirmUI: {
+		// TitleText: Quest Check Confirmation
+		/* DescText:
+			'''
+			Detected entry from another world.
+			Do you want to check quest progress 
+			in the current world?
+			''' */
+		// ConfirmText: Check Quests
+		// CancelText: Skip
+		// EnabledText: Quest Check Enabled
+		// DisabledText: Quest Check Skipped
+		/* DisabledOverlayText:
+			'''
+			Quest checking is disabled in this world.
+			Re-enter the world to choose again.
 			''' */
 	}
 }

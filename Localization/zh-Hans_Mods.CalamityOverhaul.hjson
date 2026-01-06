@@ -6526,6 +6526,24 @@ UI: {
 			开发团队通常会在十二个小时内发布兼容性补丁
 			'''
 	}
+
+	QuestWorldConfirmUI: {
+		TitleText: 任务检测确认
+		DescText:
+			'''
+			检测到您从其他世界进入当前世界
+			是否在当前世界中检测任务进度？
+			'''
+		ConfirmText: 检测任务
+		CancelText: 跳过
+		EnabledText: 已启用任务检测
+		DisabledText: 已跳过任务检测
+		DisabledOverlayText:
+			'''
+			任务检测已在当前世界中被禁止
+			重新进入世界以重新选择配置
+			'''
+	}
 }
 
 ADV: {
