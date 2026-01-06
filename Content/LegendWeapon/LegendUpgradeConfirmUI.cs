@@ -57,12 +57,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private float particleSpawnTimer;
 
         //布局常量
-        private const float PanelWidth = 420f;
-        private const float PanelHeight = 260f;
+        private const float PanelWidth = 480f;
+        private const float PanelHeight = 240f;
         private const float Padding = 24f;
         private const float ButtonHeight = 42f;
-        private const float ButtonWidth = 150f;
+        private const float ButtonWidth = 130f;
         private const float CornerRadius = 12f;
+        private const float ItemShowcaseWidth = 120f;
 
         //按钮
         private Rectangle confirmButtonRect;
@@ -239,28 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 player.mouseInterface = true;
             }
 
-            //按钮位置(相对于缩放后的面板)
-            float buttonY = DrawPosition.Y + scaledHeight - Padding * panelScaleAnim - ButtonHeight * panelScaleAnim;
-            float centerX = DrawPosition.X + scaledWidth / 2f;
-            float buttonSpacing = 24f * panelScaleAnim;
-            float scaledButtonWidth = ButtonWidth * panelScaleAnim;
-            float scaledButtonHeight = ButtonHeight * panelScaleAnim;
-
-            confirmButtonRect = new Rectangle(
-                (int)(centerX - scaledButtonWidth - buttonSpacing / 2f),
-                (int)buttonY,
-                (int)scaledButtonWidth,
-                (int)scaledButtonHeight
-            );
-
-            cancelButtonRect = new Rectangle(
-                (int)(centerX + buttonSpacing / 2f),
-                (int)buttonY,
-                (int)scaledButtonWidth,
-                (int)scaledButtonHeight
-            );
-
-            //悬停检测
+            //按钮位置在DrawContent中动态计算，这里只更新悬停检测
             hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
@@ -528,8 +508,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private void DrawContent(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
             float scale = panelScaleAnim;
+
+            //计算左侧文本区域和右侧物品展示区域
+            float showcaseWidth = ItemShowcaseWidth * scale;
+            float textAreaWidth = Size.X - showcaseWidth - Padding * scale * 2;
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale);
@@ -548,16 +531,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Color titleColor = Color.Lerp(new Color(255, 240, 200), new Color(255, 200, 100), breatheAnim * 0.3f);
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale);
 
-            //分割线(带渐变和动画)
+            //分割线(只在文本区域)
             Vector2 dividerStart = titlePos + new Vector2(0, 40 * scale);
-            Vector2 dividerEnd = dividerStart + new Vector2((PanelWidth - Padding * 2) * scale, 0);
-
-            //分割线背景
+            Vector2 dividerEnd = dividerStart + new Vector2(textAreaWidth, 0);
             DrawAnimatedDivider(spriteBatch, dividerStart, dividerEnd, alpha);
 
             //描述文本
             if (pendingItem != null) {
-                Vector2 descPos = dividerStart + new Vector2(0, 20 * scale);
+                Vector2 descPos = dividerStart + new Vector2(0, 18 * scale);
                 string itemName = pendingItem.Name;
                 string desc = string.Format(DescText.Value, itemName, targetLevel);
                 string[] lines = desc.Split('\n');
@@ -570,28 +551,123 @@ namespace CalamityOverhaul.Content.LegendWeapon
                     Vector2 linePos = descPos + new Vector2(0, i * lineHeight);
                     string lineText = lines[i];
 
-                    //如果包含物品名或等级，高亮显示
                     if (lineText.Contains(itemName) || lineText.Contains(targetLevel.ToString())) {
-                        Utils.DrawBorderString(spriteBatch, lineText, linePos, highlightColor, 0.9f * scale);
+                        Utils.DrawBorderString(spriteBatch, lineText, linePos, highlightColor, 0.85f * scale);
                     }
                     else {
-                        Utils.DrawBorderString(spriteBatch, lineText, linePos, textColor, 0.9f * scale);
+                        Utils.DrawBorderString(spriteBatch, lineText, linePos, textColor, 0.85f * scale);
                     }
                 }
 
-                //物品图标展示区
-                float iconAreaY = descPos.Y + lineHeight * lines.Length + 15 * scale;
-                DrawItemShowcase(spriteBatch, pendingItem, new Vector2(DrawPosition.X + Size.X / 2f, iconAreaY), alpha, scale);
+                //右侧物品展示区
+                Rectangle showcaseRect = new(
+                    (int)(DrawPosition.X + Size.X - showcaseWidth - Padding * scale * 0.5f),
+                    (int)(DrawPosition.Y + Padding * scale),
+                    (int)showcaseWidth,
+                    (int)(Size.Y - ButtonHeight * scale)
+                );
+                DrawItemShowcasePanel(spriteBatch, pendingItem, showcaseRect, alpha, scale);
             }
 
-            //按钮
+            //按钮(放在左侧文本区域下方)
+            float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
+            float buttonCenterX = DrawPosition.X + Padding * scale + textAreaWidth / 2f;
+            float buttonSpacing = 16f * scale;
+            float scaledButtonWidth = ButtonWidth * scale;
+            float scaledButtonHeight = ButtonHeight * scale;
+
+            confirmButtonRect = new Rectangle(
+                (int)(buttonCenterX - scaledButtonWidth - buttonSpacing / 2f),
+                (int)buttonY,
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
+            );
+
+            cancelButtonRect = new Rectangle(
+                (int)(buttonCenterX + buttonSpacing / 2f),
+                (int)buttonY,
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
+            );
+
             DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, true, scale);
             DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, false, scale);
+        }
+
+        private void DrawItemShowcasePanel(SpriteBatch spriteBatch, Item item, Rectangle rect, float alpha, float scale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //展示框背景(深色带渐变)
+            Color bgTop = new Color(35, 30, 22) * (alpha * 0.9f);
+            Color bgBottom = new Color(25, 22, 16) * (alpha * 0.9f);
+            DrawGradientRoundedRect(spriteBatch, rect, bgTop, bgBottom, 8f);
+
+            //展示框边框
+            Color borderColor = new Color(100, 85, 50) * (alpha * 0.7f);
+            DrawRoundedRectBorder(spriteBatch, rect, borderColor, 8f, 1);
+
+            //内发光
+            DrawInnerGlow(spriteBatch, rect, new Color(255, 180, 80) * (alpha * 0.08f), 8f, 12);
+
+            //物品居中位置
+            Vector2 itemCenter = new(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f - 10f);
+            float floatOffset = MathF.Sin(itemFloatPhase) * 3f;
+            Vector2 itemPos = itemCenter + new Vector2(0, floatOffset);
+
+            //使用SoftGlow纹理绘制背景光晕
+            Texture2D softGlow = CWRAsset.SoftGlow.Value;
+            float glowScale = (0.8f + itemGlowIntensity * 0.4f) * scale;
+            Color glowColor = new Color(255, 180, 80, 0) * (alpha * 0.35f * itemGlowIntensity);
+            spriteBatch.Draw(softGlow, itemPos, null, glowColor, 0f,
+                softGlow.Size() / 2f, glowScale, SpriteEffects.None, 0f);
+
+            //使用StarTexture绘制星芒效果
+            Texture2D starTex = CWRAsset.SoftGlow.Value;
+            float starScale = (0.3f + MathF.Sin(globalTime * 2f) * 0.1f) * scale;
+            Color starColor = new Color(255, 220, 150, 0) * (alpha * 0.5f);
+            spriteBatch.Draw(starTex, itemPos, null, starColor, globalTime * 0.5f,
+                starTex.Size() / 2f, starScale, SpriteEffects.None, 0f);
+
+            //第二层星芒(反向旋转)
+            Color starColor2 = new Color(255, 200, 100, 0) * (alpha * 0.3f);
+            spriteBatch.Draw(starTex, itemPos, null, starColor2, -globalTime * 0.3f,
+                starTex.Size() / 2f, starScale * 0.7f, SpriteEffects.None, 0f);
+
+            //物品图标
+            if (item.type > ItemID.None) {
+                float itemScale = 1.3f * scale;
+                VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos,
+                    item.width, itemScale, itemRotation, Color.White * alpha);
+            }
+
+            //等级徽章(在物品下方)
+            string levelText = $"Lv.{targetLevel}";
+            Vector2 levelTextSize = FontAssets.MouseText.Value.MeasureString(levelText) * 0.75f * scale;
+            Vector2 levelPos = new(rect.X + rect.Width / 2f, rect.Y + rect.Height - 20f * scale);
+
+            //徽章背景
+            Rectangle badgeRect = new(
+                (int)(levelPos.X - levelTextSize.X / 2f - 8f * scale),
+                (int)(levelPos.Y - levelTextSize.Y / 2f - 4f * scale),
+                (int)(levelTextSize.X + 16f * scale),
+                (int)(levelTextSize.Y + 8f * scale)
+            );
+
+            Color badgeBg = new Color(50, 42, 25) * (alpha * 0.95f);
+            Color badgeBorder = new Color(255, 200, 100) * (alpha * 0.8f);
+            DrawGradientRoundedRect(spriteBatch, badgeRect, badgeBg, badgeBg * 0.8f, 4f);
+            DrawRoundedRectBorder(spriteBatch, badgeRect, badgeBorder, 4f, 1);
+
+            //等级文字
+            Vector2 textPos = levelPos - levelTextSize / 2f + new Vector2(0, 2f * scale);
+            Color levelColor = Color.Lerp(new Color(255, 220, 150), new Color(255, 180, 80), breatheAnim);
+            Utils.DrawBorderString(spriteBatch, levelText, textPos, levelColor * alpha, 0.75f * scale);
         }
 
         private void DrawAnimatedDivider(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float length = (end - start).Length();
+            if (length < 1f) return;
             Vector2 dir = Vector2.Normalize(end - start);
 
             //底层线条
@@ -602,69 +678,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //流光效果
             float shimmerT = (globalTime * 0.5f) % 1f;
             Vector2 shimmerPos = Vector2.Lerp(start, end, shimmerT);
-            Color shimmerColor = new Color(255, 200, 100) * (alpha * 0.8f);
+            Color shimmerColor = new Color(255, 200, 100, 0) * (alpha * 0.8f);
 
-            //流光主体
-            float shimmerWidth = length * 0.15f;
-            spriteBatch.Draw(pixel, shimmerPos - dir * shimmerWidth / 2f, new Rectangle(0, 0, 1, 1),
-                shimmerColor, 0f, new Vector2(0, 0.5f), new Vector2(shimmerWidth, 2f), SpriteEffects.None, 0f);
-
-            //流光光晕
-            spriteBatch.Draw(pixel, shimmerPos - dir * shimmerWidth, new Rectangle(0, 0, 1, 1),
-                shimmerColor * 0.3f, 0f, new Vector2(0, 0.5f), new Vector2(shimmerWidth * 2f, 4f), SpriteEffects.None, 0f);
-        }
-
-        private void DrawItemShowcase(SpriteBatch spriteBatch, Item item, Vector2 center, float alpha, float scale) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //物品浮动效果
-            float floatOffset = MathF.Sin(itemFloatPhase) * 4f;
-            Vector2 itemPos = center + new Vector2(0, floatOffset);
-
-            //背景光环
-            float glowSize = 50f + itemGlowIntensity * 20f;
-            Color glowColor = new Color(255, 180, 80) * (alpha * 0.2f * itemGlowIntensity);
-            for (int i = 3; i >= 0; i--) {
-                float layerSize = glowSize * (1f + i * 0.3f);
-                float layerAlpha = 0.15f / (i + 1);
-                spriteBatch.Draw(pixel, itemPos, new Rectangle(0, 0, 1, 1),
-                    glowColor * layerAlpha, globalTime * 0.2f + i * 0.5f,
-                    new Vector2(0.5f), new Vector2(layerSize), SpriteEffects.None, 0f);
-            }
-
-            //旋转光芒
-            int rayCount = 6;
-            for (int i = 0; i < rayCount; i++) {
-                float rayAngle = MathHelper.TwoPi * i / rayCount + globalTime * 0.3f;
-                float rayLength = 35f + MathF.Sin(globalTime * 2f + i) * 10f;
-                Color rayColor = new Color(255, 200, 100) * (alpha * 0.3f);
-
-                spriteBatch.Draw(pixel, itemPos, new Rectangle(0, 0, 1, 1), rayColor,
-                    rayAngle, new Vector2(0, 0.5f), new Vector2(rayLength, 2f), SpriteEffects.None, 0f);
-            }
-
-            //物品图标
-            if (item.type > ItemID.None) {
-                float itemScale = 1.2f * scale;
-                VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos,
-                    item.width, itemScale, itemRotation, Color.White * alpha);
-            }
-
-            //等级徽章
-            string levelText = $"Lv.{targetLevel}";
-            Vector2 levelPos = itemPos + new Vector2(30f, -20f);
-            Color badgeColor = new Color(60, 50, 30) * (alpha * 0.9f);
-            Color badgeBorder = new Color(255, 200, 100) * alpha;
-
-            //徽章背景
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(levelText) * 0.7f;
-            Rectangle badgeRect = new((int)(levelPos.X - textSize.X / 2 - 6), (int)(levelPos.Y - textSize.Y / 2 - 3),
-                (int)(textSize.X + 12), (int)(textSize.Y + 6));
-            spriteBatch.Draw(pixel, badgeRect, new Rectangle(0, 0, 1, 1), badgeColor);
-            DrawRoundedRectBorder(spriteBatch, badgeRect, badgeBorder, 3f, 1);
-
-            Utils.DrawBorderString(spriteBatch, levelText, levelPos - textSize / 2 + new Vector2(0, 2),
-                new Color(255, 220, 150) * alpha, 0.7f);
+            //使用SoftGlow纹理绘制流光
+            Texture2D softGlow = CWRAsset.SoftGlow.Value;
+            float glowScale = 0.15f;
+            spriteBatch.Draw(softGlow, shimmerPos, null, shimmerColor * 0.6f, 0f,
+                softGlow.Size() / 2f, new Vector2(glowScale * 2f, glowScale * 0.5f), SpriteEffects.None, 0f);
         }
 
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
