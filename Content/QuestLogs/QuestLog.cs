@@ -135,6 +135,11 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
+        public override void LogicUpdate() {
+            //在逻辑更新中更新样式，这样避免高帧率让样式动画变得过快
+            CurrentStyle?.UpdateStyle();
+        }
+
         public override void Update() {
             //更新动画状态
             if (visible) {
@@ -196,7 +201,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                     }
                 }
             }
-            CurrentStyle?.UpdateStyle();
 
             //更新启动器位置和状态
             if (Main.playerInventory) {
