@@ -641,7 +641,8 @@ namespace CalamityOverhaul.Content
 
 
             try {
-                LegendData?.DoUpdate(item);
+                //存储操作使用StorageOperation上下文，静默升级不弹窗
+                LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
                 LegendData?.SaveData(item, tag);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:SaveData] an error has occurred:{ex.Message}");
@@ -699,7 +700,8 @@ namespace CalamityOverhaul.Content
 
             try {
                 LegendData?.LoadData(item, tag);
-                LegendData?.DoUpdate(item);
+                //加载操作使用StorageOperation上下文，静默升级不弹窗
+                LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
             }
@@ -712,7 +714,8 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            LegendData?.DoUpdate(item);
+            //玩家手持物品，使用PlayerHolding上下文，跨世界需要确认
+            LegendData?.DoUpdate(item, LegendUpdateContext.PlayerHolding);
             if (heldProjType > 0) {
                 //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
                 if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
@@ -740,12 +743,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void UpdateInventory(Item item, Player player) {
-            LegendData?.DoUpdate(item);
+            //玩家背包中的物品，使用PlayerInventory上下文，跨世界需要确认
+            LegendData?.DoUpdate(item, LegendUpdateContext.PlayerInventory);
             RecoverUnloadedItem.UpdateInventory(item);
         }
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {
-            LegendData?.DoUpdate(item);
+            //世界掉落物，使用WorldItem上下文，静默升级不弹窗
+            LegendData?.DoUpdate(item, LegendUpdateContext.WorldItem);
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {

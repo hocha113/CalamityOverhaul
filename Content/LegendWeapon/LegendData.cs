@@ -9,6 +9,29 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon
 {
+    /// <summary>
+    /// 传奇武器升级更新的调用上下文，用于区分不同场景下的升级行为
+    /// </summary>
+    public enum LegendUpdateContext
+    {
+        /// <summary>
+        /// 玩家正在手持该物品
+        /// </summary>
+        PlayerHolding,
+        /// <summary>
+        /// 物品在玩家背包中
+        /// </summary>
+        PlayerInventory,
+        /// <summary>
+        /// 物品正在被存储或加载(存档操作)
+        /// </summary>
+        StorageOperation,
+        /// <summary>
+        /// 物品在世界中(掉落物、箱子等)
+        /// </summary>
+        WorldItem
+    }
+
     public abstract class LegendData
     {
         /// <summary>
@@ -131,37 +154,92 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
         }
 
-        public virtual void Update(Item item) {
+        /// <summary>
+        /// 检查物品是否需要升级
+        /// </summary>
+        /// <returns>如果需要升级返回true</returns>
+        public bool NeedUpgrade() {
             if (DontUpgradeName == SaveWorld.WorldFullName) {
-                return;//跳过升级
+                return false;
             }
-            //检测是否需要升级
             if (TargetLevel <= Level && !UpgradeTagNameIsEmpty) {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 检查是否需要跨世界升级确认(即从别的世界带过来的传奇武器)
+        /// </summary>
+        /// <returns>如果需要跨世界确认返回true</returns>
+        public bool NeedCrossWorldConfirm() {
+            return UpgradeWorldFullName != string.Empty && UpgradeWorldFullName != SaveWorld.WorldFullName;
+        }
+
+        /// <summary>
+        /// 执行实际的升级操作
+        /// </summary>
+        private void PerformUpgrade() {
+            UpgradeWorldName = Main.worldName;
+            UpgradeWorldFullName = SaveWorld.WorldFullName;
+            Level = TargetLevel;
+        }
+
+        public virtual void Update(Item item, LegendUpdateContext context) {
+            //基础检查，如果不需要升级就直接返回
+            if (!NeedUpgrade()) {
                 return;
             }
-            //确保不是在同一个世界内多次升级
-            if (UpgradeWorldFullName != string.Empty && UpgradeWorldFullName != SaveWorld.WorldFullName) {
-                if (item != null && item.type > ItemID.None) {
-                    //检查该物品是否就是当前LegendData所属的物品
-                    if (item.CWR().LegendData == this) {
-                        //弹出确认UI
-                        LegendUpgradeConfirmUI.RequestUpgrade(item, this, TargetLevel);
-                        return;//等待用户确认，不自动升级
-                    }
-                }
+
+            //验证物品有效性
+            if (item == null || item.type <= ItemID.None) {
+                return;
             }
 
-            //如果不是手持状态，或者确认UI已经处理完毕，则自动升级（保持原有行为）
-            //这样可以兼容旧存档和非手持情况
-            if (!LegendUpgradeConfirmUI.Instance.Active) {
-                UpgradeWorldName = Main.worldName;
-                UpgradeWorldFullName = SaveWorld.WorldFullName;
-                Level = TargetLevel;
+            //验证物品的LegendData是否就是当前实例
+            CWRItem cwrItem = item.CWR();
+            if (cwrItem == null || cwrItem.LegendData != this) {
+                return;
+            }
+
+            //根据上下文决定升级行为
+            switch (context) {
+                case LegendUpdateContext.PlayerHolding:
+                case LegendUpdateContext.PlayerInventory:
+                    //玩家背包或手持中的物品，如果是跨世界升级需要确认
+                    if (NeedCrossWorldConfirm()) {
+                        //弹出确认UI，等待用户确认
+                        LegendUpgradeConfirmUI.RequestUpgrade(item, this, TargetLevel);
+                        return;
+                    }
+                    //同世界或首次升级，直接执行
+                    if (!LegendUpgradeConfirmUI.Instance.Active) {
+                        PerformUpgrade();
+                    }
+                    break;
+
+                case LegendUpdateContext.StorageOperation:
+                case LegendUpdateContext.WorldItem:
+                    //存储操作或世界物品，静默升级不弹窗
+                    //这样可以保证箱子里的传奇武器也能正常升级而不会干扰玩家
+                    PerformUpgrade();
+                    break;
             }
         }
 
+        /// <summary>
+        /// 带上下文的更新调用，推荐使用此方法
+        /// </summary>
+        public void DoUpdate(Item item, LegendUpdateContext context) {
+            Update(item, context);
+        }
+
+        /// <summary>
+        /// 无上下文的更新调用，默认为世界物品上下文(静默升级)
+        /// 保留此重载以兼容旧代码
+        /// </summary>
         public void DoUpdate(Item item) {
-            Update(item);
+            Update(item, LegendUpdateContext.WorldItem);
         }
     }
 }

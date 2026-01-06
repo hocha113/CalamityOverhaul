@@ -1,7 +1,8 @@
-using InnoVault.GameSystem;
+ï»¿using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -13,70 +14,115 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon
 {
     /// <summary>
-    /// ´«ÆæÎäÆ÷Éı¼¶È·ÈÏUI£¬ÔÚ¼ì²âµ½½øÈë¸ßµÈ¼¶ÊÀ½çÊ±µ¯³öÈ·ÈÏ
+    /// ä¼ å¥‡æ­¦å™¨å‡çº§ç¡®è®¤UIï¼Œåœ¨æ£€æµ‹åˆ°è¿›å…¥é«˜ç­‰çº§ä¸–ç•Œæ—¶å¼¹å‡ºç¡®è®¤
     /// </summary>
     internal class LegendUpgradeConfirmUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
         public static LegendUpgradeConfirmUI Instance => UIHandleLoader.GetUIHandleOfType<LegendUpgradeConfirmUI>();
 
-        //±¾µØ»¯ÎÄ±¾
+        //æœ¬åœ°åŒ–æ–‡æœ¬
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText DescText { get; private set; }
         public static LocalizedText ConfirmText { get; private set; }
         public static LocalizedText CancelText { get; private set; }
         public static LocalizedText Success { get; private set; }
 
-        //UI¿ØÖÆ
+        //UIæ§åˆ¶
         private float showProgress;
         private float contentFade;
         private bool closing;
         private float hideProgress;
 
-        //¶¯»­
-        private float panelPulse;
-        private float borderGlow;
-        private float titleGlowPhase;
+        //åŠ¨ç”»æ—¶é—´è½´
+        private float globalTime;
+        private float panelSlideOffset;
+        private float panelScaleAnim;
+        private float breatheAnim;
+        private float shimmerPhase;
 
-        //²¼¾Ö³£Á¿
-        private const float PanelWidth = 380f;
-        private const float PanelHeight = 220f;
-        private const float Padding = 18f;
-        private const float ButtonHeight = 36f;
-        private const float ButtonWidth = 140f;
+        //æŒ‰é’®åŠ¨ç”»
+        private float confirmHoverAnim;
+        private float cancelHoverAnim;
+        private float confirmPressAnim;
+        private float cancelPressAnim;
 
-        //°´Å¥
+        //ç‰©å“å›¾æ ‡åŠ¨ç”»
+        private float itemFloatPhase;
+        private float itemGlowIntensity;
+        private float itemRotation;
+
+        //ç²’å­ç³»ç»Ÿ
+        private readonly List<FloatingParticle> particles = [];
+        private float particleSpawnTimer;
+
+        //å¸ƒå±€å¸¸é‡
+        private const float PanelWidth = 420f;
+        private const float PanelHeight = 260f;
+        private const float Padding = 24f;
+        private const float ButtonHeight = 42f;
+        private const float ButtonWidth = 150f;
+        private const float CornerRadius = 12f;
+
+        //æŒ‰é’®
         private Rectangle confirmButtonRect;
         private Rectangle cancelButtonRect;
         private bool hoveringConfirm;
         private bool hoveringCancel;
 
-        //´ıÉı¼¶Êı¾İ
+        //å¾…å‡çº§æ•°æ®
         private static Item pendingItem;
         private static LegendData pendingLegendData;
         private static int targetLevel;
         private static bool isPending;
 
+        //ç²’å­ç»“æ„
+        private struct FloatingParticle
+        {
+            public Vector2 Position;
+            public Vector2 Velocity;
+            public float Life;
+            public float MaxLife;
+            public float Size;
+            public float Rotation;
+            public float RotationSpeed;
+            public Color BaseColor;
+        }
+
         public override void SetStaticDefaults() {
-            TitleText = this.GetLocalization(nameof(TitleText), () => "´«ÆæÎäÆ÷Éı¼¶È·ÈÏ");
-            DescText = this.GetLocalization(nameof(DescText), () => "¼ì²âµ½µ±Ç°ÊÀ½çµÈ¼¶¸ßÓÚÎäÆ÷µÈ¼¶\nÊÇ·ñ½«{0}Éı¼¶µ½µÈ¼¶ {1}£¿");
-            ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "È·ÈÏÉı¼¶");
-            CancelText = this.GetLocalization(nameof(CancelText), () => "È¡Ïû");
-            Success = this.GetLocalization(nameof(Success), () => "[ITEM]ÒÑ¾­Éı¼¶µ½[LEVEL]¼¶");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "ä¼ å¥‡æ­¦å™¨å‡çº§ç¡®è®¤");
+            DescText = this.GetLocalization(nameof(DescText), () => "æ£€æµ‹åˆ°å½“å‰ä¸–ç•Œç­‰çº§é«˜äºæ­¦å™¨ç­‰çº§\næ˜¯å¦å°†{0}å‡çº§åˆ°ç­‰çº§ {1}ï¼Ÿ");
+            ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "ç¡®è®¤å‡çº§");
+            CancelText = this.GetLocalization(nameof(CancelText), () => "å–æ¶ˆ");
+            Success = this.GetLocalization(nameof(Success), () => "[ITEM]å·²ç»å‡çº§åˆ°[LEVEL]çº§");
         }
 
         public override bool Active => isPending || showProgress > 0f;
 
         public override void LoadUIData(TagCompound tag) {
             CancelPending();
+            ResetAnimations();
         }
 
         public override void SaveUIData(TagCompound tag) {
             CancelPending();
+            ResetAnimations();
+        }
+
+        private void ResetAnimations() {
+            showProgress = 0f;
+            contentFade = 0f;
+            panelSlideOffset = 50f;
+            panelScaleAnim = 0.8f;
+            confirmHoverAnim = 0f;
+            cancelHoverAnim = 0f;
+            confirmPressAnim = 0f;
+            cancelPressAnim = 0f;
+            particles.Clear();
         }
 
         /// <summary>
-        /// ÇëÇóÏÔÊ¾Éı¼¶È·ÈÏUI
+        /// è¯·æ±‚æ˜¾ç¤ºå‡çº§ç¡®è®¤UI
         /// </summary>
         public static void RequestUpgrade(Item item, LegendData legendData, int newLevel) {
             if (isPending || item == null || legendData == null) {
@@ -87,10 +133,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             pendingLegendData = legendData;
             targetLevel = newLevel;
             isPending = true;
+
+            //æ’­æ”¾æ‰“å¼€éŸ³æ•ˆ
+            SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.2f });
         }
 
         /// <summary>
-        /// È¡Ïû´ı´¦ÀíµÄÉı¼¶ÇëÇó
+        /// å–æ¶ˆå¾…å¤„ç†çš„å‡çº§è¯·æ±‚
         /// </summary>
         public static void CancelPending() {
             isPending = false;
@@ -100,321 +149,702 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public override void Update() {
-            //Õ¹¿ª/ÊÕÆğ¶¯»­
-            float targetShow = isPending && !closing ? 1f : 0f;
-            showProgress = MathHelper.Lerp(showProgress, targetShow, 0.15f);
+            globalTime += 0.016f;
 
-            if (Math.Abs(showProgress - targetShow) < 0.01f) {
+            //ä¸»é¢æ¿å±•å¼€åŠ¨ç”»(å¸¦å¼¹æ€§)
+            float targetShow = isPending && !closing ? 1f : 0f;
+            float showSpeed = closing ? 0.12f : 0.08f;
+            showProgress += (targetShow - showProgress) * showSpeed;
+            if (Math.Abs(showProgress - targetShow) < 0.001f) {
                 showProgress = targetShow;
             }
 
-            if (showProgress <= 0.01f && !isPending) {
+            if (showProgress <= 0.001f && !isPending) {
+                particles.Clear();
                 return;
             }
 
-            //ÄÚÈİµ­Èë
-            if (showProgress > 0.4f && contentFade < 1f) {
-                float adjustedProgress = (showProgress - 0.4f) / 0.6f;
-                contentFade = Math.Min(contentFade + 0.1f, adjustedProgress);
-            }
-            else if (showProgress <= 0.4f && contentFade > 0f) {
-                contentFade -= 0.15f;
-                contentFade = Math.Clamp(contentFade, 0f, 1f);
+            //é¢æ¿æ»‘å…¥åŠ¨ç”»
+            float targetSlide = isPending && !closing ? 0f : 60f;
+            panelSlideOffset += (targetSlide - panelSlideOffset) * 0.15f;
+
+            //é¢æ¿ç¼©æ”¾åŠ¨ç”»(å¸¦è¿‡å†²æ•ˆæœ)
+            float targetScale = isPending && !closing ? 1f : 0.85f;
+            panelScaleAnim += (targetScale - panelScaleAnim) * 0.1f;
+            if (panelScaleAnim > 0.98f && targetScale == 1f) {
+                panelScaleAnim += (1.02f - panelScaleAnim) * 0.3f;
             }
 
-            //¶¯»­¸üĞÂ
-            panelPulse += 0.03f;
-            borderGlow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.3f + 0.7f;
-            titleGlowPhase += 0.05f;
+            //å†…å®¹æ·¡å…¥(å»¶è¿Ÿå¯åŠ¨)
+            if (showProgress > 0.5f && !closing) {
+                float targetFade = 1f;
+                contentFade += (targetFade - contentFade) * 0.12f;
+            }
+            else {
+                contentFade *= 0.85f;
+            }
+            contentFade = Math.Clamp(contentFade, 0f, 1f);
 
-            //¹Ø±Õ¶¯»­
+            //å‘¼å¸åŠ¨ç”»
+            breatheAnim = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
+            shimmerPhase = globalTime * 2f;
+
+            //ç‰©å“æµ®åŠ¨åŠ¨ç”»
+            itemFloatPhase += 0.04f;
+            itemGlowIntensity = 0.6f + MathF.Sin(globalTime * 3f) * 0.4f;
+            itemRotation = MathF.Sin(globalTime * 0.8f) * 0.05f;
+
+            //æŒ‰é’®æ‚¬åœåŠ¨ç”»(å¹³æ»‘è¿‡æ¸¡)
+            float hoverSpeed = 0.15f;
+            confirmHoverAnim += ((hoveringConfirm ? 1f : 0f) - confirmHoverAnim) * hoverSpeed;
+            cancelHoverAnim += ((hoveringCancel ? 1f : 0f) - cancelHoverAnim) * hoverSpeed;
+
+            //æŒ‰é’®æŒ‰å‹åŠ¨ç”»è¡°å‡
+            confirmPressAnim *= 0.85f;
+            cancelPressAnim *= 0.85f;
+
+            //å…³é—­åŠ¨ç”»
             if (closing) {
-                hideProgress += 0.08f;
+                hideProgress += 0.06f;
                 if (hideProgress >= 1f) {
                     hideProgress = 1f;
                     closing = false;
                     CancelPending();
+                    ResetAnimations();
                 }
             }
 
-            //Î»ÖÃºÍ³ß´ç
-            Vector2 panelSize = new Vector2(PanelWidth, PanelHeight);
-            DrawPosition = new Vector2(Main.screenWidth / 2 - PanelWidth / 2, Main.screenHeight - PanelHeight);
-            Size = panelSize;
-            UIHitBox = DrawPosition.GetRectangle(panelSize);
+            //æ›´æ–°ç²’å­
+            UpdateParticles();
+
+            //ç”Ÿæˆæ–°ç²’å­
+            if (showProgress > 0.3f && !closing) {
+                particleSpawnTimer += 1f;
+                if (particleSpawnTimer > 3f) {
+                    SpawnParticle();
+                    particleSpawnTimer = 0f;
+                }
+            }
+
+            //è®¡ç®—é¢æ¿ä½ç½®(å±…ä¸­åä¸‹)
+            float scaledWidth = PanelWidth * panelScaleAnim;
+            float scaledHeight = PanelHeight * panelScaleAnim;
+            Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight - PanelHeight / 2f - 40f + panelSlideOffset);
+            DrawPosition = panelCenter - new Vector2(scaledWidth, scaledHeight) / 2f;
+            Size = new Vector2(scaledWidth, scaledHeight);
+            UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)scaledWidth, (int)scaledHeight);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 
-            if (hoverInMainPage) {
+            if (hoverInMainPage && showProgress > 0.5f) {
                 player.mouseInterface = true;
             }
 
-            //°´Å¥Î»ÖÃ
-            float buttonY = DrawPosition.Y + PanelHeight - Padding - ButtonHeight;
-            float centerX = DrawPosition.X + PanelWidth / 2;
-            float buttonSpacing = 20f;
+            //æŒ‰é’®ä½ç½®(ç›¸å¯¹äºç¼©æ”¾åçš„é¢æ¿)
+            float buttonY = DrawPosition.Y + scaledHeight - Padding * panelScaleAnim - ButtonHeight * panelScaleAnim;
+            float centerX = DrawPosition.X + scaledWidth / 2f;
+            float buttonSpacing = 24f * panelScaleAnim;
+            float scaledButtonWidth = ButtonWidth * panelScaleAnim;
+            float scaledButtonHeight = ButtonHeight * panelScaleAnim;
 
             confirmButtonRect = new Rectangle(
-                (int)(centerX - ButtonWidth - buttonSpacing / 2),
+                (int)(centerX - scaledButtonWidth - buttonSpacing / 2f),
                 (int)buttonY,
-                (int)ButtonWidth,
-                (int)ButtonHeight
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
             );
 
             cancelButtonRect = new Rectangle(
-                (int)(centerX + buttonSpacing / 2),
+                (int)(centerX + buttonSpacing / 2f),
                 (int)buttonY,
-                (int)ButtonWidth,
-                (int)ButtonHeight
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
             );
 
-            //ĞüÍ£¼ì²â
-            hoveringConfirm = confirmButtonRect.Contains(MouseHitBox);
-            hoveringCancel = cancelButtonRect.Contains(MouseHitBox);
+            //æ‚¬åœæ£€æµ‹
+            hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
+            hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //µã»÷´¦Àí
-            if (keyLeftPressState == KeyPressState.Pressed) {
+            //ç‚¹å‡»å¤„ç†
+            if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringConfirm) {
+                    confirmPressAnim = 1f;
                     OnConfirm();
                 }
                 else if (hoveringCancel) {
+                    cancelPressAnim = 1f;
                     OnCancel();
                 }
             }
         }
 
+        private void UpdateParticles() {
+            for (int i = particles.Count - 1; i >= 0; i--) {
+                var p = particles[i];
+                p.Life -= 0.016f;
+                p.Position += p.Velocity;
+                p.Velocity *= 0.98f;
+                p.Velocity.Y -= 0.02f;
+                p.Rotation += p.RotationSpeed;
+                particles[i] = p;
+
+                if (p.Life <= 0f) {
+                    particles.RemoveAt(i);
+                }
+            }
+        }
+
+        private void SpawnParticle() {
+            if (particles.Count > 30) return;
+
+            var p = new FloatingParticle {
+                Position = new Vector2(
+                    DrawPosition.X + Main.rand.NextFloat(Size.X),
+                    DrawPosition.Y + Size.Y
+                ),
+                Velocity = new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-1.5f, -0.5f)),
+                Life = Main.rand.NextFloat(1.5f, 3f),
+                MaxLife = 0f,
+                Size = Main.rand.NextFloat(2f, 5f),
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f),
+                BaseColor = Color.Lerp(new Color(255, 200, 100), new Color(255, 150, 50), Main.rand.NextFloat())
+            };
+            p.MaxLife = p.Life;
+            particles.Add(p);
+        }
+
         private void OnConfirm() {
             if (pendingLegendData != null && pendingItem != null) {
-                //Ö´ĞĞÉı¼¶
                 pendingLegendData.UpgradeWorldName = Main.worldName;
                 pendingLegendData.UpgradeWorldFullName = SaveWorld.WorldFullName;
                 pendingLegendData.Level = targetLevel;
 
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
+                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.4f });
 
-                //Éı¼¶³É¹¦ÌáÊ¾
                 string message = Success.Value.Replace("[ITEM]", pendingItem.Name).Replace("[LEVEL]", targetLevel.ToString());
                 CombatText.NewText(player.Hitbox, Color.Gold, message, true);
+
+                //ç”Ÿæˆåº†ç¥ç²’å­
+                for (int i = 0; i < 15; i++) {
+                    SpawnParticle();
+                }
             }
 
             BeginClose();
         }
 
         private void OnCancel() {
-            SoundEngine.PlaySound(SoundID.MenuClose);
-            pendingLegendData.DontUpgradeName = SaveWorld.WorldFullName;
+            SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
+            if (pendingLegendData != null) {
+                pendingLegendData.DontUpgradeName = SaveWorld.WorldFullName;
+            }
             BeginClose();
         }
 
         private void BeginClose() {
-            if (closing) {
-                return;
-            }
+            if (closing) return;
             closing = true;
             hideProgress = 0f;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (showProgress <= 0.01f) {
-                return;
-            }
+            if (showProgress <= 0.001f) return;
 
-            float alpha = Math.Min(showProgress * 2f, 1f);
+            float alpha = Math.Min(showProgress * 1.5f, 1f);
             if (closing) {
-                alpha *= (1f - hideProgress);
+                alpha *= 1f - EaseOutQuad(hideProgress);
             }
 
+            //ç»˜åˆ¶èƒŒæ™¯é®ç½©
+            DrawBackdrop(spriteBatch, alpha * 0.4f);
+
+            //ç»˜åˆ¶ç²’å­(åœ¨é¢æ¿åé¢)
+            DrawParticles(spriteBatch, alpha);
+
+            //ç»˜åˆ¶ä¸»é¢æ¿
             DrawPanel(spriteBatch, alpha);
 
+            //ç»˜åˆ¶å†…å®¹
             if (contentFade > 0.01f) {
                 DrawContent(spriteBatch, alpha * contentFade);
             }
         }
 
-        private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
+        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+        private static float EaseOutBack(float t) {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * MathF.Pow(t - 1f, 3f) + c1 * MathF.Pow(t - 1f, 2f);
+        }
+
+        private void DrawBackdrop(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //ÒõÓ°
-            Rectangle shadowRect = UIHitBox;
-            shadowRect.Offset(5, 5);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.6f));
+            //åº•éƒ¨æ¸å˜é®ç½©
+            int gradientHeight = 300;
+            int startY = Main.screenHeight - gradientHeight;
+            for (int i = 0; i < gradientHeight; i++) {
+                float t = i / (float)gradientHeight;
+                float gradientAlpha = t * t * alpha;
+                Rectangle line = new(0, startY + i, Main.screenWidth, 1);
+                spriteBatch.Draw(pixel, line, new Rectangle(0, 0, 1, 1), Color.Black * gradientAlpha);
+            }
+        }
 
-            //±³¾°½¥±ä - ´«Ææ½ğÉ«Ö÷Ìâ
-            Color bgTop = new Color(40, 35, 20) * (alpha * 0.95f);
-            Color bgMid = new Color(60, 50, 25) * (alpha * 0.95f);
-            Color bgBottom = new Color(80, 65, 30) * (alpha * 0.95f);
-            int segments = 20;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                float t2 = (i + 1) / (float)segments;
-                int y1 = (int)(DrawPosition.Y + t * PanelHeight);
-                int y2 = (int)(DrawPosition.Y + t2 * PanelHeight);
-                Rectangle r = new Rectangle((int)DrawPosition.X, y1, (int)PanelWidth, Math.Max(1, y2 - y1));
-                Color segColor = t < 0.5f
-                    ? Color.Lerp(bgTop, bgMid, t * 2f)
-                    : Color.Lerp(bgMid, bgBottom, (t - 0.5f) * 2f);
-                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), segColor);
+        private void DrawParticles(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            foreach (var p in particles) {
+                float lifeRatio = p.Life / p.MaxLife;
+                float particleAlpha = lifeRatio * alpha;
+                float size = p.Size * (0.5f + lifeRatio * 0.5f);
+
+                Color color = p.BaseColor * particleAlpha;
+                spriteBatch.Draw(pixel, p.Position, new Rectangle(0, 0, 1, 1), color, p.Rotation,
+                    new Vector2(0.5f), new Vector2(size), SpriteEffects.None, 0f);
+
+                //å‘å…‰å±‚
+                Color glowColor = color * 0.3f;
+                spriteBatch.Draw(pixel, p.Position, new Rectangle(0, 0, 1, 1), glowColor, p.Rotation,
+                    new Vector2(0.5f), new Vector2(size * 2f), SpriteEffects.None, 0f);
+            }
+        }
+
+        private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle panelRect = UIHitBox;
+
+            //å¤šå±‚é˜´å½±(æ›´æŸ”å’Œçš„æŠ•å½±æ•ˆæœ)
+            for (int i = 4; i >= 1; i--) {
+                Rectangle shadowRect = panelRect;
+                shadowRect.Offset(i * 2, i * 3);
+                float shadowAlpha = alpha * 0.15f * (5 - i) / 4f;
+                DrawRoundedRect(spriteBatch, shadowRect, Color.Black * shadowAlpha, CornerRadius + i);
             }
 
-            //Âö³åµş¼Ó
-            float pulse = (float)Math.Sin(panelPulse * 1.5f) * 0.5f + 0.5f;
-            Color pulseColor = new Color(180, 140, 60) * (alpha * 0.15f * pulse);
-            spriteBatch.Draw(pixel, UIHitBox, new Rectangle(0, 0, 1, 1), pulseColor);
+            //èƒŒæ™¯æ¸å˜(æ·±è‰²è´¨æ„Ÿ)
+            Color bgTop = new Color(25, 22, 18);
+            Color bgBottom = new Color(45, 38, 28);
+            DrawGradientRoundedRect(spriteBatch, panelRect, bgTop * (alpha * 0.97f), bgBottom * (alpha * 0.97f), CornerRadius);
 
-            //±ß¿ò
-            DrawLegendFrame(spriteBatch, UIHitBox, alpha, borderGlow);
+            //å†…å‘å…‰æ•ˆæœ
+            float innerGlowIntensity = 0.15f + breatheAnim * 0.1f;
+            DrawInnerGlow(spriteBatch, panelRect, new Color(180, 140, 60) * (alpha * innerGlowIntensity), CornerRadius, 20);
+
+            //æµå…‰è¾¹æ¡†
+            DrawAnimatedBorder(spriteBatch, panelRect, alpha);
+
+            //é¡¶éƒ¨é«˜å…‰æ¡
+            Rectangle highlightBar = new(panelRect.X + 20, panelRect.Y + 2, panelRect.Width - 40, 2);
+            float highlightAlpha = 0.4f + breatheAnim * 0.2f;
+            DrawHorizontalGradient(spriteBatch, highlightBar,
+                Color.Transparent, new Color(255, 220, 150) * (alpha * highlightAlpha), Color.Transparent);
+
+            //è§’è½è£…é¥°
+            DrawCornerOrnaments(spriteBatch, panelRect, alpha);
+        }
+
+        private void DrawAnimatedBorder(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //åŸºç¡€è¾¹æ¡†
+            Color baseColor = new Color(120, 100, 60) * (alpha * 0.8f);
+            DrawRoundedRectBorder(spriteBatch, rect, baseColor, CornerRadius, 2);
+
+            //æµå…‰æ•ˆæœ
+            float shimmerPos = (shimmerPhase % 4f) / 4f;
+            int perimeter = (rect.Width + rect.Height) * 2;
+
+            for (int i = 0; i < 3; i++) {
+                float offset = (shimmerPos + i * 0.33f) % 1f;
+                Vector2 pos = GetPointOnRectPerimeter(rect, offset);
+                float intensity = MathF.Sin(offset * MathHelper.Pi) * 0.8f;
+                Color shimmerColor = new Color(255, 200, 100) * (alpha * intensity);
+
+                //æµå…‰ç‚¹
+                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), shimmerColor,
+                    0f, new Vector2(0.5f), new Vector2(8f, 4f), SpriteEffects.None, 0f);
+
+                //æµå…‰æ‹–å°¾
+                for (int j = 1; j <= 5; j++) {
+                    float trailOffset = (offset - j * 0.01f + 1f) % 1f;
+                    Vector2 trailPos = GetPointOnRectPerimeter(rect, trailOffset);
+                    float trailIntensity = intensity * (1f - j / 6f);
+                    spriteBatch.Draw(pixel, trailPos, new Rectangle(0, 0, 1, 1),
+                        shimmerColor * trailIntensity * 0.5f, 0f, new Vector2(0.5f),
+                        new Vector2(6f - j, 3f - j * 0.4f), SpriteEffects.None, 0f);
+                }
+            }
+        }
+
+        private static Vector2 GetPointOnRectPerimeter(Rectangle rect, float t) {
+            float perimeter = (rect.Width + rect.Height) * 2f;
+            float dist = t * perimeter;
+
+            if (dist < rect.Width) {
+                return new Vector2(rect.X + dist, rect.Y);
+            }
+            dist -= rect.Width;
+            if (dist < rect.Height) {
+                return new Vector2(rect.Right, rect.Y + dist);
+            }
+            dist -= rect.Height;
+            if (dist < rect.Width) {
+                return new Vector2(rect.Right - dist, rect.Bottom);
+            }
+            dist -= rect.Width;
+            return new Vector2(rect.X, rect.Bottom - dist);
+        }
+
+        private void DrawCornerOrnaments(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float ornamentAlpha = alpha * (0.6f + breatheAnim * 0.4f);
+            Color ornamentColor = new Color(255, 200, 100) * ornamentAlpha;
+
+            Vector2[] corners = [
+                new(rect.X + 8, rect.Y + 8),
+                new(rect.Right - 8, rect.Y + 8),
+                new(rect.X + 8, rect.Bottom - 8),
+                new(rect.Right - 8, rect.Bottom - 8)
+            ];
+
+            float[] rotations = [0f, MathHelper.PiOver2, -MathHelper.PiOver2, MathHelper.Pi];
+
+            for (int i = 0; i < 4; i++) {
+                float rot = rotations[i] + globalTime * 0.5f;
+
+                //è±å½¢è£…é¥°
+                spriteBatch.Draw(pixel, corners[i], new Rectangle(0, 0, 1, 1), ornamentColor,
+                    MathHelper.PiOver4 + rot * 0.1f, new Vector2(0.5f), new Vector2(6f, 6f), SpriteEffects.None, 0f);
+
+                //å…‰èŠ’
+                for (int j = 0; j < 4; j++) {
+                    float rayRot = j * MathHelper.PiOver2 + globalTime * 0.3f;
+                    Vector2 rayDir = rayRot.ToRotationVector2();
+                    spriteBatch.Draw(pixel, corners[i] + rayDir * 4f, new Rectangle(0, 0, 1, 1),
+                        ornamentColor * 0.5f, rayRot, new Vector2(0f, 0.5f), new Vector2(8f, 1.5f), SpriteEffects.None, 0f);
+                }
+            }
         }
 
         private void DrawContent(SpriteBatch spriteBatch, float alpha) {
-            //±êÌâ
-            Vector2 titlePos = DrawPosition + new Vector2(Padding, Padding);
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float scale = panelScaleAnim;
+
+            //æ ‡é¢˜
+            Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale);
             string title = TitleText.Value;
 
-            //±êÌâ·¢¹â
-            float titleGlow = (float)Math.Sin(titleGlowPhase) * 0.3f + 0.7f;
-            Color glowColor = Color.Gold * alpha * titleGlow * 0.8f;
-            for (int i = 0; i < 4; i++) {
-                float angle = MathHelper.TwoPi * i / 4f;
-                Vector2 offset = angle.ToRotationVector2() * 2f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, glowColor, 1f);
+            //æ ‡é¢˜å…‰æ™•
+            float titleGlow = 0.5f + breatheAnim * 0.5f;
+            Color titleGlowColor = new Color(255, 200, 100) * (alpha * titleGlow * 0.4f);
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f + globalTime * 0.5f;
+                Vector2 offset = angle.ToRotationVector2() * (3f + breatheAnim * 2f);
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlowColor, scale);
             }
-            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 1f);
 
-            //·Ö¸îÏß
-            Vector2 dividerStart = titlePos + new Vector2(0, 36);
-            Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - Padding * 2, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
-                Color.Gold * alpha * 0.9f, Color.Gold * alpha * 0.1f, 2f);
+            //æ ‡é¢˜ä¸»ä½“
+            Color titleColor = Color.Lerp(new Color(255, 240, 200), new Color(255, 200, 100), breatheAnim * 0.3f);
+            Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale);
 
-            //ÃèÊöÎÄ±¾
+            //åˆ†å‰²çº¿(å¸¦æ¸å˜å’ŒåŠ¨ç”»)
+            Vector2 dividerStart = titlePos + new Vector2(0, 40 * scale);
+            Vector2 dividerEnd = dividerStart + new Vector2((PanelWidth - Padding * 2) * scale, 0);
+
+            //åˆ†å‰²çº¿èƒŒæ™¯
+            DrawAnimatedDivider(spriteBatch, dividerStart, dividerEnd, alpha);
+
+            //æè¿°æ–‡æœ¬
             if (pendingItem != null) {
-                Vector2 descPos = dividerStart + new Vector2(4, 16);
+                Vector2 descPos = dividerStart + new Vector2(0, 20 * scale);
                 string itemName = pendingItem.Name;
                 string desc = string.Format(DescText.Value, itemName, targetLevel);
                 string[] lines = desc.Split('\n');
 
-                float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y * 0.85f;
-                Color textColor = new Color(255, 245, 200) * alpha;
+                float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y * 0.9f * scale;
+                Color textColor = new Color(220, 210, 190) * alpha;
+                Color highlightColor = new Color(255, 220, 150) * alpha;
 
                 for (int i = 0; i < lines.Length; i++) {
                     Vector2 linePos = descPos + new Vector2(0, i * lineHeight);
-                    Utils.DrawBorderString(spriteBatch, lines[i], linePos + new Vector2(1, 1),
-                        Color.Black * alpha * 0.6f, 0.85f);
-                    Utils.DrawBorderString(spriteBatch, lines[i], linePos, textColor, 0.85f);
+                    string lineText = lines[i];
+
+                    //å¦‚æœåŒ…å«ç‰©å“åæˆ–ç­‰çº§ï¼Œé«˜äº®æ˜¾ç¤º
+                    if (lineText.Contains(itemName) || lineText.Contains(targetLevel.ToString())) {
+                        Utils.DrawBorderString(spriteBatch, lineText, linePos, highlightColor, 0.9f * scale);
+                    }
+                    else {
+                        Utils.DrawBorderString(spriteBatch, lineText, linePos, textColor, 0.9f * scale);
+                    }
                 }
 
-                //ÎïÆ·Í¼±ê
-                if (pendingItem.type > ItemID.None) {
-                    Vector2 iconPos = new Vector2(DrawPosition.X + PanelWidth / 2, descPos.Y + lineHeight * lines.Length + 24);
-                    float iconScale = 1f;
-                    VaultUtils.SimpleDrawItem(spriteBatch, pendingItem.type, iconPos,
-                        pendingItem.width, iconScale, 0, Color.White * alpha);
-                }
+                //ç‰©å“å›¾æ ‡å±•ç¤ºåŒº
+                float iconAreaY = descPos.Y + lineHeight * lines.Length + 15 * scale;
+                DrawItemShowcase(spriteBatch, pendingItem, new Vector2(DrawPosition.X + Size.X / 2f, iconAreaY), alpha, scale);
             }
 
-            //»æÖÆ°´Å¥
-            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, hoveringConfirm, alpha, true);
-            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, hoveringCancel, alpha, false);
+            //æŒ‰é’®
+            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, true, scale);
+            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, false, scale);
         }
 
-        private static void DrawButton(SpriteBatch spriteBatch, Rectangle buttonRect, string text,
-            bool hovering, float alpha, bool isConfirm) {
+        private void DrawAnimatedDivider(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float length = (end - start).Length();
+            Vector2 dir = Vector2.Normalize(end - start);
+
+            //åº•å±‚çº¿æ¡
+            Color baseColor = new Color(80, 70, 50) * (alpha * 0.6f);
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), baseColor, 0f,
+                Vector2.Zero, new Vector2(length, 1f), SpriteEffects.None, 0f);
+
+            //æµå…‰æ•ˆæœ
+            float shimmerT = (globalTime * 0.5f) % 1f;
+            Vector2 shimmerPos = Vector2.Lerp(start, end, shimmerT);
+            Color shimmerColor = new Color(255, 200, 100) * (alpha * 0.8f);
+
+            //æµå…‰ä¸»ä½“
+            float shimmerWidth = length * 0.15f;
+            spriteBatch.Draw(pixel, shimmerPos - dir * shimmerWidth / 2f, new Rectangle(0, 0, 1, 1),
+                shimmerColor, 0f, new Vector2(0, 0.5f), new Vector2(shimmerWidth, 2f), SpriteEffects.None, 0f);
+
+            //æµå…‰å…‰æ™•
+            spriteBatch.Draw(pixel, shimmerPos - dir * shimmerWidth, new Rectangle(0, 0, 1, 1),
+                shimmerColor * 0.3f, 0f, new Vector2(0, 0.5f), new Vector2(shimmerWidth * 2f, 4f), SpriteEffects.None, 0f);
+        }
+
+        private void DrawItemShowcase(SpriteBatch spriteBatch, Item item, Vector2 center, float alpha, float scale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //°´Å¥±³¾°
-            Color bgColor = isConfirm
-                ? hovering ? new Color(100, 80, 30) : new Color(70, 55, 20)
-                : hovering ? new Color(80, 40, 40) : new Color(60, 30, 30);
-            bgColor *= alpha * 0.9f;
+            //ç‰©å“æµ®åŠ¨æ•ˆæœ
+            float floatOffset = MathF.Sin(itemFloatPhase) * 4f;
+            Vector2 itemPos = center + new Vector2(0, floatOffset);
 
-            spriteBatch.Draw(pixel, buttonRect, new Rectangle(0, 0, 1, 1), bgColor);
+            //èƒŒæ™¯å…‰ç¯
+            float glowSize = 50f + itemGlowIntensity * 20f;
+            Color glowColor = new Color(255, 180, 80) * (alpha * 0.2f * itemGlowIntensity);
+            for (int i = 3; i >= 0; i--) {
+                float layerSize = glowSize * (1f + i * 0.3f);
+                float layerAlpha = 0.15f / (i + 1);
+                spriteBatch.Draw(pixel, itemPos, new Rectangle(0, 0, 1, 1),
+                    glowColor * layerAlpha, globalTime * 0.2f + i * 0.5f,
+                    new Vector2(0.5f), new Vector2(layerSize), SpriteEffects.None, 0f);
+            }
 
-            //°´Å¥±ß¿ò
-            Color borderColor = isConfirm ? Color.Gold : new Color(200, 100, 100);
-            borderColor *= alpha * (hovering ? 1f : 0.7f);
-            int borderWidth = hovering ? 2 : 1;
+            //æ—‹è½¬å…‰èŠ’
+            int rayCount = 6;
+            for (int i = 0; i < rayCount; i++) {
+                float rayAngle = MathHelper.TwoPi * i / rayCount + globalTime * 0.3f;
+                float rayLength = 35f + MathF.Sin(globalTime * 2f + i) * 10f;
+                Color rayColor = new Color(255, 200, 100) * (alpha * 0.3f);
 
-            Rectangle topBorder = new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, borderWidth);
-            Rectangle bottomBorder = new Rectangle(buttonRect.X, buttonRect.Bottom - borderWidth, buttonRect.Width, borderWidth);
-            Rectangle leftBorder = new Rectangle(buttonRect.X, buttonRect.Y, borderWidth, buttonRect.Height);
-            Rectangle rightBorder = new Rectangle(buttonRect.Right - borderWidth, buttonRect.Y, borderWidth, buttonRect.Height);
+                spriteBatch.Draw(pixel, itemPos, new Rectangle(0, 0, 1, 1), rayColor,
+                    rayAngle, new Vector2(0, 0.5f), new Vector2(rayLength, 2f), SpriteEffects.None, 0f);
+            }
 
-            spriteBatch.Draw(pixel, topBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, bottomBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, leftBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, rightBorder, new Rectangle(0, 0, 1, 1), borderColor);
+            //ç‰©å“å›¾æ ‡
+            if (item.type > ItemID.None) {
+                float itemScale = 1.2f * scale;
+                VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos,
+                    item.width, itemScale, itemRotation, Color.White * alpha);
+            }
 
-            //°´Å¥ÎÄ×Ö
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.9f;
-            Vector2 textPos = buttonRect.Center.ToVector2() - textSize / 2;
-            Color textColor = Color.White * alpha * (hovering ? 1.2f : 1f);
+            //ç­‰çº§å¾½ç« 
+            string levelText = $"Lv.{targetLevel}";
+            Vector2 levelPos = itemPos + new Vector2(30f, -20f);
+            Color badgeColor = new Color(60, 50, 30) * (alpha * 0.9f);
+            Color badgeBorder = new Color(255, 200, 100) * alpha;
 
-            Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 1),
-                Color.Black * alpha * 0.7f, 0.9f);
-            Utils.DrawBorderString(spriteBatch, text, textPos, textColor, 0.9f);
+            //å¾½ç« èƒŒæ™¯
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(levelText) * 0.7f;
+            Rectangle badgeRect = new((int)(levelPos.X - textSize.X / 2 - 6), (int)(levelPos.Y - textSize.Y / 2 - 3),
+                (int)(textSize.X + 12), (int)(textSize.Y + 6));
+            spriteBatch.Draw(pixel, badgeRect, new Rectangle(0, 0, 1, 1), badgeColor);
+            DrawRoundedRectBorder(spriteBatch, badgeRect, badgeBorder, 3f, 1);
 
-            //ĞüÍ£·¢¹â
-            if (hovering) {
-                float hoverGlow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.3f + 0.7f;
-                Color glowColor = (isConfirm ? Color.Gold : new Color(255, 150, 150)) * alpha * hoverGlow * 0.3f;
-                spriteBatch.Draw(pixel, buttonRect, new Rectangle(0, 0, 1, 1), glowColor);
+            Utils.DrawBorderString(spriteBatch, levelText, levelPos - textSize / 2 + new Vector2(0, 2),
+                new Color(255, 220, 150) * alpha, 0.7f);
+        }
+
+        private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
+            float hoverAnim, float pressAnim, float alpha, bool isConfirm, float scale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //æŒ‰å‹æ•ˆæœ
+            Rectangle drawRect = rect;
+            if (pressAnim > 0.01f) {
+                int pressOffset = (int)(pressAnim * 2f);
+                drawRect.Y += pressOffset;
+            }
+
+            //æ‚¬åœè†¨èƒ€æ•ˆæœ
+            int expandAmount = (int)(hoverAnim * 3f);
+            drawRect.Inflate(expandAmount, expandAmount / 2);
+
+            //èƒŒæ™¯æ¸å˜
+            Color bgTop, bgBottom;
+            if (isConfirm) {
+                bgTop = Color.Lerp(new Color(50, 45, 25), new Color(70, 60, 30), hoverAnim);
+                bgBottom = Color.Lerp(new Color(35, 30, 18), new Color(50, 42, 22), hoverAnim);
+            }
+            else {
+                bgTop = Color.Lerp(new Color(50, 35, 35), new Color(70, 45, 45), hoverAnim);
+                bgBottom = Color.Lerp(new Color(35, 25, 25), new Color(50, 32, 32), hoverAnim);
+            }
+            DrawGradientRoundedRect(spriteBatch, drawRect, bgTop * (alpha * 0.95f), bgBottom * (alpha * 0.95f), 6f);
+
+            //è¾¹æ¡†
+            Color borderColor = isConfirm
+                ? Color.Lerp(new Color(150, 130, 70), new Color(255, 200, 100), hoverAnim)
+                : Color.Lerp(new Color(150, 100, 100), new Color(220, 150, 150), hoverAnim);
+            DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)(hoverAnim));
+
+            //æ‚¬åœæ—¶çš„å†…å‘å…‰
+            if (hoverAnim > 0.01f) {
+                Color innerGlow = (isConfirm ? new Color(255, 200, 100) : new Color(255, 150, 150)) * (alpha * hoverAnim * 0.15f);
+                DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 10);
+            }
+
+            //æŒ‰é’®æ–‡å­—
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f * scale;
+            Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
+
+            //æ–‡å­—é˜´å½±
+            Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
+                Color.Black * (alpha * 0.5f), 0.85f * scale);
+
+            //æ–‡å­—ä¸»ä½“
+            Color textColor = Color.Lerp(new Color(200, 190, 170), Color.White, hoverAnim);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f * scale);
+
+            //æ‚¬åœæ—¶çš„æ–‡å­—å…‰æ™•
+            if (hoverAnim > 0.3f) {
+                Color textGlow = (isConfirm ? new Color(255, 200, 100) : new Color(255, 180, 180)) * (alpha * (hoverAnim - 0.3f) * 0.5f);
+                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
             }
         }
 
-        private static void DrawLegendFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
+        #region ç»˜åˆ¶è¾…åŠ©æ–¹æ³•
+
+        private static void DrawRoundedRect(SpriteBatch sb, Rectangle rect, Color color, float radius) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //Íâ¿ò
-            Color outerEdge = Color.Lerp(new Color(180, 140, 60), new Color(255, 215, 100), pulse) * (alpha * 0.9f);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.8f);
-            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.95f);
-            sb.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.95f);
+            //ç®€åŒ–çš„åœ†è§’çŸ©å½¢(ç”¨å¤šä¸ªçŸ©å½¢è¿‘ä¼¼)
+            int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
 
-            //ÄÚ¿ò·¢¹â
-            Rectangle inner = rect;
-            inner.Inflate(-7, -7);
-            Color innerGlow = new Color(255, 215, 100) * (alpha * 0.25f * pulse);
-            sb.Draw(pixel, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow);
-            sb.Draw(pixel, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow * 0.7f);
-            sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.9f);
-            sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.9f);
+            //ä¸­å¿ƒåŒºåŸŸ
+            Rectangle center = new(rect.X + r, rect.Y, rect.Width - r * 2, rect.Height);
+            sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), color);
 
-            //ËÄ½ÇĞÇ¹â×°ÊÎ
-            DrawCornerStar(sb, new Vector2(rect.X + 12, rect.Y + 12), alpha * pulse);
-            DrawCornerStar(sb, new Vector2(rect.Right - 12, rect.Y + 12), alpha * pulse);
-            DrawCornerStar(sb, new Vector2(rect.X + 12, rect.Bottom - 12), alpha * pulse * 0.8f);
-            DrawCornerStar(sb, new Vector2(rect.Right - 12, rect.Bottom - 12), alpha * pulse * 0.8f);
-        }
+            //å·¦å³åŒºåŸŸ
+            Rectangle left = new(rect.X, rect.Y + r, r, rect.Height - r * 2);
+            Rectangle right = new(rect.Right - r, rect.Y + r, r, rect.Height - r * 2);
+            sb.Draw(pixel, left, new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, right, new Rectangle(0, 0, 1, 1), color);
 
-        private static void DrawCornerStar(SpriteBatch sb, Vector2 pos, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            float size = 6f;
-            Color color = Color.Gold * alpha;
-            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
-                new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.9f, MathHelper.PiOver2,
-                new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
-        }
+            //å››ä¸ªè§’(ç”¨å°çŸ©å½¢å¡«å……)
+            for (int i = 0; i < r; i++) {
+                float t = i / (float)r;
+                int cornerWidth = (int)(r * MathF.Sqrt(1f - (1f - t) * (1f - t)));
 
-        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end,
-            Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Vector2 edge = end - start;
-            float length = edge.Length();
-            if (length < 1f) {
-                return;
+                sb.Draw(pixel, new Rectangle(rect.X + r - cornerWidth, rect.Y + i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
+                sb.Draw(pixel, new Rectangle(rect.Right - r, rect.Y + i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
+                sb.Draw(pixel, new Rectangle(rect.X + r - cornerWidth, rect.Bottom - 1 - i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
+                sb.Draw(pixel, new Rectangle(rect.Right - r, rect.Bottom - 1 - i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
             }
-            edge.Normalize();
-            float rotation = (float)Math.Atan2(edge.Y, edge.X);
-            int segments = Math.Max(1, (int)(length / 10f));
+        }
+
+        private static void DrawGradientRoundedRect(SpriteBatch sb, Rectangle rect, Color topColor, Color bottomColor, float radius) {
+            int segments = rect.Height;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
-                Vector2 segPos = start + edge * (length * t);
-                float segLength = length / segments;
-                Color color = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation,
-                    new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+                Color color = Color.Lerp(topColor, bottomColor, t);
+
+                int y = rect.Y + i;
+                int inset = 0;
+
+                //è®¡ç®—åœ†è§’å†…ç¼©
+                int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
+                if (i < r) {
+                    float cornerT = i / (float)r;
+                    inset = (int)(r * (1f - MathF.Sqrt(1f - (1f - cornerT) * (1f - cornerT))));
+                }
+                else if (i > rect.Height - r) {
+                    float cornerT = (rect.Height - i) / (float)r;
+                    inset = (int)(r * (1f - MathF.Sqrt(1f - (1f - cornerT) * (1f - cornerT))));
+                }
+
+                Rectangle line = new(rect.X + inset, y, rect.Width - inset * 2, 1);
+                sb.Draw(VaultAsset.placeholder2.Value, line, new Rectangle(0, 0, 1, 1), color);
             }
         }
+
+        private static void DrawRoundedRectBorder(SpriteBatch sb, Rectangle rect, Color color, float radius, int thickness) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
+
+            //ä¸Šä¸‹è¾¹
+            sb.Draw(pixel, new Rectangle(rect.X + r, rect.Y, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, new Rectangle(rect.X + r, rect.Bottom - thickness, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
+
+            //å·¦å³è¾¹
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
+
+            //å››ä¸ªè§’å¼§çº¿
+            DrawCornerArc(sb, new Vector2(rect.X + r, rect.Y + r), r, MathHelper.Pi, MathHelper.PiOver2, color, thickness);
+            DrawCornerArc(sb, new Vector2(rect.Right - r, rect.Y + r), r, -MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);
+            DrawCornerArc(sb, new Vector2(rect.X + r, rect.Bottom - r), r, MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);
+            DrawCornerArc(sb, new Vector2(rect.Right - r, rect.Bottom - r), r, 0, MathHelper.PiOver2, color, thickness);
+        }
+
+        private static void DrawCornerArc(SpriteBatch sb, Vector2 center, float radius, float startAngle, float sweep, Color color, int thickness) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int segments = Math.Max(4, (int)(radius * sweep / 2f));
+
+            for (int i = 0; i <= segments; i++) {
+                float angle = startAngle + sweep * i / segments;
+                Vector2 pos = center + angle.ToRotationVector2() * radius;
+                sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f, new Vector2(0.5f), thickness, SpriteEffects.None, 0f);
+            }
+        }
+
+        private static void DrawInnerGlow(SpriteBatch sb, Rectangle rect, Color color, float radius, int glowSize) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            for (int i = 0; i < glowSize; i++) {
+                float t = i / (float)glowSize;
+                float alpha = (1f - t) * (1f - t);
+                Color glowColor = color * alpha;
+
+                Rectangle glowRect = rect;
+                glowRect.Inflate(-i, -i);
+
+                if (glowRect.Width > 0 && glowRect.Height > 0) {
+                    DrawRoundedRectBorder(sb, glowRect, glowColor, Math.Max(0, radius - i), 1);
+                }
+            }
+        }
+
+        private static void DrawHorizontalGradient(SpriteBatch sb, Rectangle rect, Color left, Color center, Color right) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            int halfWidth = rect.Width / 2;
+
+            for (int i = 0; i < rect.Width; i++) {
+                float t = i / (float)rect.Width;
+                Color color;
+                if (t < 0.5f) {
+                    color = Color.Lerp(left, center, t * 2f);
+                }
+                else {
+                    color = Color.Lerp(center, right, (t - 0.5f) * 2f);
+                }
+
+                sb.Draw(pixel, new Rectangle(rect.X + i, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), color);
+            }
+        }
+
+        #endregion
     }
 }
