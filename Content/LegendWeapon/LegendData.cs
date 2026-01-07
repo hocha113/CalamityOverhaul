@@ -222,6 +222,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 case LegendUpdateContext.WorldItem:
                     //存储操作或世界物品，静默升级不弹窗
                     //这样可以保证箱子里的传奇武器也能正常升级而不会干扰玩家
+                    //但如果是跨世界的传奇武器，需要等玩家主动确认后才能升级
+                    //避免玩家不操作确认窗口直接退出保存时被静默覆盖等级
+                    if (NeedCrossWorldConfirm()) {
+                        return;
+                    }
                     PerformUpgrade();
                     break;
             }
