@@ -398,6 +398,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             Item targetItem = Main.item[targetItemWhoAmI];
 
+            //检查物品是否有效，如果无效则返回空闲状态
+            if (!targetItem.Alives()) {
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
             clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.25f);
             shakeIntensity = 1.5f;
 
