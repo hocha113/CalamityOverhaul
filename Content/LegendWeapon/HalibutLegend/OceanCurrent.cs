@@ -95,6 +95,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.25f;
             }
+        }
+
+        //击中NPC
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            CreateOceanSplash(Projectile.Center, Projectile.velocity);
+
+            //潮湿debuff
+            target.AddBuff(BuffID.Wet, 300);
+
+            //击中音效
+            SoundEngine.PlaySound(SoundID.Item85 with {
+                Volume = 0.6f,
+                Pitch = 0.1f
+            }, Projectile.Center);
+
             Projectile.damage = (int)(Projectile.damage * 0.66f);
         }
 
@@ -504,20 +519,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             Projectile.velocity = Vector2.Zero;
             return false;
-        }
-
-        //击中NPC
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            CreateOceanSplash(Projectile.Center, Projectile.velocity);
-
-            //潮湿debuff
-            target.AddBuff(BuffID.Wet, 300);
-
-            //击中音效
-            SoundEngine.PlaySound(SoundID.Item85 with {
-                Volume = 0.6f,
-                Pitch = 0.1f
-            }, Projectile.Center);
         }
 
         //创建海洋飞溅效果
