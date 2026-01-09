@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1545,6 +1545,11 @@ Items: {
 			Shift + Right-click to quickly deposit ingredients or retrieve products
 			Smelting items yields double output
 			'''
+	}
+
+	ItemPipeline: {
+		DisplayName: Logistics Pipeline
+		Tooltip: ""
 	}
 }
 
@@ -6610,6 +6615,13 @@ UI: {
 			OutputHint: Click to retrieve output
 			PowerUnit: UE
 		}
+	}
+
+	ItemPipeline: {
+		Normal: 普通
+		Output: 输出
+		Input: 输入
+		NotEndpointHint: 只能在管道末端设置输入输出
 	}
 }
 

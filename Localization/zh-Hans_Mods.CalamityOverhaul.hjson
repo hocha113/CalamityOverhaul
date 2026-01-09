@@ -1526,6 +1526,11 @@ Items: {
 			熔炼物品可以得到双倍的产出物
 			'''
 	}
+
+	ItemPipeline: {
+		DisplayName: 物流管道
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -6571,6 +6576,13 @@ UI: {
 			OutputHint: 点击取出成品
 			PowerUnit: UE
 		}
+	}
+
+	ItemPipeline: {
+		Normal: 普通
+		Output: 输出
+		Input: 输入
+		NotEndpointHint: 只能在管道末端设置输入输出
 	}
 }
 

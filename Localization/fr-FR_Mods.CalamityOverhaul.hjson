@@ -1534,6 +1534,11 @@ Items: {
 			Smelting items yields double output
 			''' */
 	}
+
+	ItemPipeline: {
+		// DisplayName: Logistics Pipeline
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -6560,6 +6565,13 @@ UI: {
 			// OutputHint: Click to retrieve output
 			// PowerUnit: UE
 		}
+	}
+
+	ItemPipeline: {
+		// Normal: 普通
+		// Output: 输出
+		// Input: 输入
+		// NotEndpointHint: 只能在管道末端设置输入输出
 	}
 }
 
