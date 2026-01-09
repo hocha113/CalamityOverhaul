@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
     /// 老箱子的TileProcessor
     /// 管理大型存储空间
     /// </summary>
-    internal class OldDuchestTP : TileProcessor
+    public class OldDuchestTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<OldDuchestTile>();
 
@@ -203,12 +203,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                         SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                     }
                 }
-                if (closeTimer > 0) {
-                    if (--closeTimer == 0) {
-                        //更新图格帧为关闭状态
-                        UpdateTileFrame(false);
-                        SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
-                    }
+            }
+
+            if (closeTimer > 0) {
+                if (--closeTimer == 0) {
+                    //更新图格帧为关闭状态
+                    UpdateTileFrame(false);
+                    SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                 }
             }
 
@@ -546,6 +547,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             lastRefreshCycle = refreshCycle;
             hasBeenOpened = false;
             SendData();
+        }
+
+        /// <summary>
+        /// 触发存入物品的动画效果
+        /// 短暂打开箱子然后自动关闭
+        /// </summary>
+        public void TriggerDepositAnimation() {
+            if (isOpen) {
+                return;
+            }
+
+            //设置关闭计时器，触发开关动画
+            if (closeTimer <= 0) {
+                closeTimer = 45;//约0.75秒后自动关闭
+                UpdateTileFrame(true);
+                SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.5f, Pitch = isUnderwater ? -0.4f : 0.1f }, CenterInWorld);
+            }
         }
     }
 }

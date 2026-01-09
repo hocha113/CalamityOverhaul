@@ -79,6 +79,23 @@ namespace CalamityOverhaul.Content.Industrials.Storage
     }
 
     /// <summary>
+    /// 老公爵营地箱子存储提供者工厂
+    /// </summary>
+    public class OldDuchestStorageProviderFactory : IStorageProviderFactory
+    {
+        public string Identifier => "CWR.OldDuchest";
+        public int Priority => 5;
+        public bool IsAvailable => true;
+
+        public IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item) {
+            var provider = OldDuchestStorageProvider.FindNearPosition(position, range, item);
+            if (provider != null) {
+                yield return provider;
+            }
+        }
+    }
+
+    /// <summary>
     /// 存储提供者注册表
     /// 管理所有已注册的存储提供者工厂
     /// </summary>
