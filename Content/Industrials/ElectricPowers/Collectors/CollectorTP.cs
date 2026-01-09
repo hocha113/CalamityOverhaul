@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.OtherMods.MagicStorage;
+using CalamityOverhaul.Content.Industrials.Storage;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -142,63 +142,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return false;
         }
 
-        internal Chest FindChest(Item item) {
-            Chest chest = Position.FindClosestChest(maxFindChestMode, true, (c) => c.CanItemBeAddedToChest(item));
+        /// <summary>
+        /// 查找可用的存储目标
+        /// 使用抽象存储系统自动支持箱子和Magic Storage等扩展
+        /// </summary>
+        internal IStorageProvider FindStorageTarget(Item item) {
+            var storage = StorageSystem.FindStorageTarget(Position, maxFindChestMode, item);
 
-            //只在服务器端显示提示
-            if (chest == null && textIdleTime <= 0 && !VaultUtils.isClient) {
+            //找不到存储目标时显示提示
+            if (storage == null && textIdleTime <= 0 && !VaultUtils.isClient) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
 
-                //生成视觉提示粒子（客户端也会同步看到）
-                if (Main.netMode != NetmodeID.Server) {
-                    for (int i = 0; i < 220; i++) {
-                        Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
-                        int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
-                        Main.dust[dust].noGravity = true;
-                    }
-                }
-            }
-            return chest;
-        }
-
-        /// <summary>
-        /// 尝试查找Magic Storage存储核心
-        /// </summary>
-        internal object FindMagicStorage(Item item) {
-            if (!ModLoader.HasMod("MagicStorage")) {
-                return null;
-            }
-
-            try {
-                return MSRef.FindMagicStorage(item, Position, maxFindChestMode);
-            } catch {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 查找存储目标（箱子或Magic Storage）
-        /// </summary>
-        internal object FindStorageTarget(Item item) {
-            //优先尝试查找箱子
-            Chest chest = Position.FindClosestChest(maxFindChestMode, true, (c) => c.CanItemBeAddedToChest(item));
-
-            if (chest != null) {
-                return chest;
-            }
-
-            //如果没有箱子，尝试查找Magic Storage
-            object magicStorage = FindMagicStorage(item);
-            if (magicStorage != null) {
-                return magicStorage;
-            }
-
-            //都找不到，显示提示
-            if (textIdleTime <= 0 && !VaultUtils.isClient) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
-                textIdleTime = 300;
-
+                //生成视觉提示粒子
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 220; i++) {
                         Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
@@ -208,7 +164,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
 
-            return null;
+            return storage;
         }
 
         ///<summary>

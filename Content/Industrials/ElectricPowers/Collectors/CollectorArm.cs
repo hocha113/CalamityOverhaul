@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.OtherMods.MagicStorage;
+﻿using CalamityOverhaul.Content.Industrials.Storage;
 using InnoVault.Actors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,11 +37,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         [SyncVar]
         public int targetItemWhoAmI = -1;
         [SyncVar]
-        public Point16 targetChestPos = Point16.NegativeOne;
+        public Point16 targetStoragePos = Point16.NegativeOne;
         [SyncVar]
-        public Point16 targetMagicStoragePos = Point16.NegativeOne;
-        [SyncVar]
-        public bool isMagicStorageTarget = false;
+        public string storageIdentifier = "";
         [SyncVar]
         public int armSlot = 0;
         [SyncVar]
@@ -50,6 +48,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         //本地字段(不同步)
         private Item graspItem;
         private bool initialized;
+        private IStorageProvider cachedStorageProvider;
 
         //存储目标坐标
         [SyncVar]
@@ -247,21 +246,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        private Chest GetTargetChest() {
-            if (targetChestPos == Point16.NegativeOne) return null;
-            int index = Chest.FindChest(targetChestPos.X, targetChestPos.Y);
-            return index >= 0 ? Main.chest[index] : null;
-        }
-
-        private object GetTargetMagicStorage() {
-            if (targetMagicStoragePos == Point16.NegativeOne) return null;
-            if (!ModLoader.HasMod("MagicStorage")) return null;
-
-            try {
-                return MSRef.FindMagicStorage(graspItem, targetMagicStoragePos, CollectorTP.maxFindChestMode);
-            } catch {
+        /// <summary>
+        /// 获取缓存的存储提供者，如果缓存失效则重新查找
+        /// </summary>
+        private IStorageProvider GetTargetStorage() {
+            if (targetStoragePos == Point16.NegativeOne) {
                 return null;
             }
+
+            //检查缓存是否有效
+            if (cachedStorageProvider != null && cachedStorageProvider.IsValid 
+                && cachedStorageProvider.Position == targetStoragePos) {
+                return cachedStorageProvider;
+            }
+
+            //根据标识符重新查找
+            if (storageIdentifier == "Vanilla.Chest") {
+                cachedStorageProvider = ChestStorageProvider.FromPosition(targetStoragePos);
+            }
+            else if (storageIdentifier == "MagicStorage.StorageHeart") {
+                cachedStorageProvider = MagicStorageProvider.FindNearPosition(targetStoragePos, 48, graspItem);
+            }
+            else {
+                //尝试通用查找
+                cachedStorageProvider = StorageSystem.FindStorageTarget(targetStoragePos, 48, graspItem);
+            }
+
+            return cachedStorageProvider;
         }
 
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
@@ -425,36 +436,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                         MergeMagnetizedCoins();
                     }
 
-                    //查找存储目标(箱子或Magic Storage)
-                    object storageTarget = collectorTP.FindStorageTarget(graspItem);
+                    //使用新存储系统查找存储目标
+                    var storageProvider = collectorTP.FindStorageTarget(graspItem);
 
-                    if (storageTarget is Chest chest) {
-                        targetChestPos = new Point16(chest.x, chest.y);
-                        targetMagicStoragePos = Point16.NegativeOne;
-                        isMagicStorageTarget = false;
+                    if (storageProvider != null) {
+                        targetStoragePos = storageProvider.Position;
+                        storageIdentifier = storageProvider.Identifier;
+                        cachedStorageProvider = storageProvider;
                         graspItem.CWR().TargetByCollector = WhoAmI;
                         TransitionToState(ArmState.MovingToChest);
-                    }
-                    else if (storageTarget != null && ModLoader.HasMod("MagicStorage")) {
-                        //Magic Storage目标
-                        try {
-                            var heartType = CWRMod.Instance.magicStorage.Find<ModTileEntity>("TEStorageHeart").Type;
-                            foreach (var te in TileEntity.ByID.Values) {
-                                if (te.type == heartType && te == storageTarget) {
-                                    targetMagicStoragePos = te.Position;
-                                    targetChestPos = Point16.NegativeOne;
-                                    isMagicStorageTarget = true;
-                                    graspItem.CWR().TargetByCollector = WhoAmI;
-                                    TransitionToState(ArmState.MovingToChest);
-                                    break;
-                                }
-                            }
-                        } catch {
-                            //找不到Magic Storage,丢弃物品
-                            VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                            graspItem.TurnToAir();
-                            TransitionToState(ArmState.Idle);
-                        }
                     }
                     else {
                         //找不到存储位置,丢弃物品
@@ -487,14 +477,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //确定目标位置
-            Vector2 targetPos;
-            if (isMagicStorageTarget && targetMagicStoragePos != Point16.NegativeOne) {
-                targetPos = targetMagicStoragePos.ToWorldCoordinates() + new Vector2(8, 8);
-            }
-            else if (!isMagicStorageTarget && targetChestPos != Point16.NegativeOne) {
-                targetPos = targetChestPos.ToWorldCoordinates() + new Vector2(8, 8);
-            }
-            else {
+            if (targetStoragePos == Point16.NegativeOne) {
                 //目标失效
                 if (!VaultUtils.isClient) {
                     VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
@@ -504,22 +487,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            targetPosition = targetPos;
+            var storage = GetTargetStorage();
+            if (storage == null || !storage.IsValid) {
+                //存储目标失效
+                if (!VaultUtils.isClient) {
+                    VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
+                    graspItem.TurnToAir();
+                }
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
+            targetPosition = storage.WorldCenter;
             SpringPhysicsMove(targetPosition, 1.0f);
 
             graspItem.Center = Center;
             SpawnMechanicalParticles();
 
             //到达目标
-            Rectangle targetRect;
-            if (isMagicStorageTarget) {
-                targetRect = targetMagicStoragePos.ToWorldCoordinates().GetRectangle(48, 48);
-            }
-            else {
-                targetRect = targetChestPos.ToWorldCoordinates().GetRectangle(32);
-            }
-
-            if (HitBox.Intersects(targetRect)) {
+            if (HitBox.Intersects(storage.HitBox)) {
                 TransitionToState(ArmState.Depositing);
             }
         }
@@ -535,26 +521,27 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             if (stateTimer > 10) {
                 //只在服务器端处理物品存储
                 if (!VaultUtils.isClient) {
-                    if (isMagicStorageTarget && ModLoader.HasMod("MagicStorage")) {
-                        //存储到Magic Storage
-                        try {
-                            object magicStorage = GetTargetMagicStorage();
-                            if (magicStorage != null) {
-                                MSRef.DepositItemMethod?.Invoke(magicStorage, [graspItem]);
+                    var storage = GetTargetStorage();
+                    if (storage != null && storage.IsValid) {
+                        bool success = storage.DepositItem(graspItem);
+                        if (success) {
+                            storage.PlayDepositAnimation();
+                            //如果是箱子，检查并合并钱币
+                            if (storage is ChestStorageProvider chestProvider) {
+                                int chestIndex = Chest.FindChest(chestProvider.Position.X, chestProvider.Position.Y);
+                                if (chestIndex >= 0) {
+                                    CheckCoins(Main.chest[chestIndex]);
+                                }
                             }
-                        } catch {
-                            //失败则掉落物品
+                        }
+                        else {
+                            //存储失败则掉落物品
                             VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
                         }
                     }
                     else {
-                        //存储到箱子
-                        Chest targetChest = GetTargetChest();
-                        if (targetChest != null) {
-                            targetChest.eatingAnimationTime = 20;
-                            targetChest.AddItem(graspItem, true);
-                            CheckCoins(targetChest);
-                        }
+                        //存储目标失效，掉落物品
+                        VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
                     }
 
                     graspItem.TurnToAir();
@@ -581,9 +568,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             if (newState == ArmState.Idle) {
                 targetItemWhoAmI = -1;
-                targetChestPos = Point16.NegativeOne;
-                targetMagicStoragePos = Point16.NegativeOne;
-                isMagicStorageTarget = false;
+                targetStoragePos = Point16.NegativeOne;
+                storageIdentifier = "";
+                cachedStorageProvider = null;
                 isCollectingCoins = false;
                 magnetizedCoins.Clear();
             }
