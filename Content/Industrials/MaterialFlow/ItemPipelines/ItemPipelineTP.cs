@@ -149,6 +149,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// </summary>
         private const int ExtractInterval = 30;
 
+        /// <summary>
+        /// 流动动画器(只有输出端点才会使用)
+        /// </summary>
+        private PipelineFlowAnimator flowAnimator;
+
+        /// <summary>
+        /// 路径更新计时器
+        /// </summary>
+        private int pathUpdateTimer = 0;
+
+        /// <summary>
+        /// 路径更新间隔(帧)
+        /// </summary>
+        private const int PathUpdateInterval = 60;
+
         //缓存连接掩码
         private int lastConnectionMask = -1;
         #endregion
@@ -189,6 +204,31 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             //更新传输中的物品
             UpdateTransportingItem();
+
+            //更新流动动画(只有输出端点才需要)
+            if (Mode == ItemPipelineMode.Output) {
+                UpdateFlowAnimation();
+            }
+            else if (flowAnimator != null) {
+                flowAnimator.Clear();
+                flowAnimator = null;
+            }
+        }
+
+        /// <summary>
+        /// 更新流动动画
+        /// </summary>
+        private void UpdateFlowAnimation() {
+            flowAnimator ??= new PipelineFlowAnimator();
+
+            //定期更新路径
+            pathUpdateTimer++;
+            if (pathUpdateTimer >= PathUpdateInterval) {
+                pathUpdateTimer = 0;
+                flowAnimator.UpdatePath(this);
+            }
+
+            flowAnimator.Update();
         }
 
         private void UpdateShape() {
@@ -588,6 +628,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     DrawEndpoint(spriteBatch, drawPos, modeColor, lightingColor);
                     break;
             }
+        }
+
+        [VaultLoaden(CWRConstant.UI + "SupertableUIs/InputArrow")]
+        private static Asset<Texture2D> InputArrow;
+
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            //绘制流动动画(只有输出端点才绘制)
+            if (Mode == ItemPipelineMode.Output && flowAnimator != null && flowAnimator.HasValidPath) {
+                flowAnimator.Draw(spriteBatch, GetModeColor());
+            }
 
             //绘制传输中的物品
             DrawTransportingItem(spriteBatch);
@@ -660,22 +710,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         /// <summary>
-        /// 绘制模式指示器(箭头指向存储对象)
+        /// 绘制模式指示器(使用箭头纹理)
         /// </summary>
         private void DrawModeIndicator(SpriteBatch spriteBatch) {
             if (Mode == ItemPipelineMode.Normal) return;
+            if (InputArrow == null) return;
 
             Vector2 center = CenterInWorld - Main.screenPosition;
             Color indicatorColor = GetModeColor();
 
             //呼吸闪烁效果
             float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.3f + 0.7f;
-            Texture2D px = VaultAsset.placeholder2.Value;
 
             //获取存储方向，绘制箭头
             int storageDir = StorageDirectionIndex;
             if (storageDir >= 0) {
                 //根据方向计算箭头旋转角度
+                //原始纹理朝向右边(0度)
                 //输入模式:箭头指向存储(物品进入存储)
                 //输出模式:箭头背离存储(物品从存储出来)
                 float baseRotation = storageDir switch {
@@ -691,56 +742,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     baseRotation += MathHelper.Pi;
                 }
 
-                DrawArrow(spriteBatch, center, baseRotation, indicatorColor * pulse);
+                DrawArrowTexture(spriteBatch, center, baseRotation, indicatorColor * pulse, 1f);
             }
             else {
                 //没有存储连接时显示小方块
+                Texture2D px = VaultAsset.placeholder2.Value;
                 Rectangle indicatorRect = new Rectangle((int)(center.X - 2), (int)(center.Y - 2), 4, 4);
                 spriteBatch.Draw(px, indicatorRect, indicatorColor * pulse);
             }
         }
 
         /// <summary>
-        /// 绘制箭头
+        /// 使用纹理绘制箭头
         /// </summary>
-        private static void DrawArrow(SpriteBatch spriteBatch, Vector2 center, float rotation, Color color) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+        internal static void DrawArrowTexture(SpriteBatch spriteBatch, Vector2 position, float rotation, Color color, float scale) {
+            if (InputArrow == null) return;
 
-            //箭头由三条线组成:主轴和两个斜线
-            Vector2 direction = rotation.ToRotationVector2();
-            Vector2 perpendicular = (rotation + MathHelper.PiOver2).ToRotationVector2();
+            Texture2D arrowTex = InputArrow.Value;
+            Vector2 origin = arrowTex.Size() / 2f;
 
-            //箭头参数
-            float arrowLength = 6f;
-            float headLength = 3f;
-            float headWidth = 2.5f;
-
-            //箭头起点和终点
-            Vector2 start = center - direction * arrowLength * 0.5f;
-            Vector2 end = center + direction * arrowLength * 0.5f;
-
-            //绘制主轴
-            DrawLine(spriteBatch, px, start, end, color, 2);
-
-            //绘制箭头头部两条斜线
-            Vector2 headBase = end - direction * headLength;
-            Vector2 headLeft = headBase + perpendicular * headWidth;
-            Vector2 headRight = headBase - perpendicular * headWidth;
-
-            DrawLine(spriteBatch, px, end, headLeft, color, 2);
-            DrawLine(spriteBatch, px, end, headRight, color, 2);
-        }
-
-        /// <summary>
-        /// 绘制线条
-        /// </summary>
-        private static void DrawLine(SpriteBatch spriteBatch, Texture2D texture, Vector2 start, Vector2 end, Color color, int thickness) {
-            Vector2 delta = end - start;
-            float length = delta.Length();
-            float rotation = (float)System.Math.Atan2(delta.Y, delta.X);
-
-            Rectangle destRect = new Rectangle((int)start.X, (int)start.Y, (int)length, thickness);
-            spriteBatch.Draw(texture, destRect, null, color, rotation, new Vector2(0, thickness / 2f), SpriteEffects.None, 0);
+            spriteBatch.Draw(arrowTex, position, null, color, rotation, origin, scale, SpriteEffects.None, 0);
         }
         #endregion
     }
