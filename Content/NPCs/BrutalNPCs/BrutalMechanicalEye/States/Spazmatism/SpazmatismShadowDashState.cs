@@ -267,6 +267,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             if (!hasDashed) {
                 hasDashed = true;
                 npc.velocity = shadowDirections[0] * dashSpeed;
+                //冲刺时启用碰撞伤害
+                EnableContactDamage(npc);
 
                 //所有分身发射火球
                 if (!VaultUtils.isClient) {
@@ -322,6 +324,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// 恢复阶段
         /// </summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
+            //恢复阶段禁用碰撞伤害
+            DisableContactDamage(npc);
+
             //逐渐恢复
             npc.velocity *= 0.92f;
             FaceTarget(npc, player.Center);
@@ -334,5 +339,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         }
 
         private TwinsStateContext context => Context;
+
+        public override void OnExit(TwinsStateContext context) {
+            base.OnExit(context);
+            //确保离开状态时禁用碰撞伤害
+            DisableContactDamage(context.Npc);
+        }
     }
 }

@@ -96,6 +96,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }
 
+        /// <summary>
+        /// 启用碰撞伤害，用于冲刺等体术攻击
+        /// </summary>
+        protected void EnableContactDamage(NPC npc) {
+            npc.damage = npc.defDamage;
+        }
+
+        /// <summary>
+        /// 禁用碰撞伤害，用于非冲刺状态
+        /// </summary>
+        protected void DisableContactDamage(NPC npc) {
+            npc.damage = 0;
+        }
+
         #endregion
     }
 }

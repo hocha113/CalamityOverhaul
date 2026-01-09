@@ -484,6 +484,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //检测二阶段转换
             CheckPhaseTransition();
 
+            //碰撞伤害控制:
+            //魔焰眼: 默认禁用，只有在冲刺状态才由状态机启用
+            //激光眼: 始终禁用，因为它没有体术类型攻击
+            if (npc.type == NPCID.Retinazer) {
+                npc.damage = 0;
+            }
+
             //更新状态机
             stateMachine?.Update();
 
@@ -508,6 +515,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             stateMachine.SetInitialState(initialState);
+
+            //初始化后默认禁用碰撞伤害
+            //魔焰眼只有在冲刺状态才会由状态机启用伤害
+            //激光眼始终不造成碰撞伤害
+            npc.damage = 0;
         }
 
         /// <summary>

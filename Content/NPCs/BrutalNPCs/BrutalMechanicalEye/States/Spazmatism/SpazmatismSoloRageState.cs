@@ -116,6 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             modeTimer = 0;
             attackCount = 0;
             hasPlayedModeSound = false;
+            //切换模式时默认禁用碰撞伤害
+            DisableContactDamage(Context.Npc);
 
             //随机选择下一个模式，但避免连续相同
             RageAttackMode previousMode = currentMode;
@@ -162,6 +164,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
             //冲刺阶段
             else {
+                //冲刺时启用碰撞伤害
+                EnableContactDamage(npc);
+
                 npc.velocity = dashDirection * DashSpeed;
                 FaceVelocity(npc);
 
@@ -179,6 +184,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 if (phaseInCycle == cycleTime - 1) {
                     npc.velocity *= 0.3f;
                     attackCount++;
+                    //冲刺结束禁用碰撞伤害
+                    DisableContactDamage(npc);
 
                     if (attackCount >= MaxDashCount) {
                         SwitchToNextMode();
@@ -331,6 +338,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.5f }, npc.Center);
+                //追踪冲刺模式启用碰撞伤害
+                EnableContactDamage(npc);
             }
 
             //持续追踪玩家，但速度很快
@@ -384,6 +393,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             if (modeTimer >= homingDuration) {
                 npc.velocity *= 0.5f;
+                //追踪冲刺结束禁用碰撞伤害
+                DisableContactDamage(npc);
                 SwitchToNextMode();
             }
         }

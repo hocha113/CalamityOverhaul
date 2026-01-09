@@ -22,6 +22,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             maxDashCount = maxCount;
         }
 
+        public override void OnEnter(TwinsStateContext context) {
+            base.OnEnter(context);
+            //冲刺状态启用碰撞伤害
+            EnableContactDamage(context.Npc);
+        }
+
         public override ITwinsState OnUpdate(TwinsStateContext context) {
             NPC npc = context.Npc;
 
@@ -62,6 +68,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
 
             return null;
+        }
+
+        public override void OnExit(TwinsStateContext context) {
+            base.OnExit(context);
+            //离开冲刺状态禁用碰撞伤害
+            DisableContactDamage(context.Npc);
         }
 
         /// <summary>
