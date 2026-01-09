@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>
         /// 抽取间隔(帧)
         /// </summary>
-        private const int ExtractInterval = 30;
+        private const int ExtractInterval = 3;
 
         /// <summary>
         /// 流动动画器(只有输出端点才会使用)
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>
         /// 路径更新间隔(帧)
         /// </summary>
-        private const int PathUpdateInterval = 60;
+        private const int PathUpdateInterval = 120;
 
         //缓存连接掩码
         private int lastConnectionMask = -1;
@@ -405,10 +405,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         /// <summary>
-        /// 尝试将物品传递到下一个管道
+        /// 尝试将物品传递到下一个管道(分叉时随机分流)
         /// </summary>
         private bool TryPassToNextPipeline(ref TransportingItem item) {
-            //查找可用的下一个管道(排除来源方向)
+            //收集所有可用的下一个管道(排除来源方向)
+            List<int> availableDirections = [];
             for (int i = 0; i < 4; i++) {
                 if (i == item.SourceDirection) {
                     continue;//不往回走
@@ -420,15 +421,24 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 if (side.LinkedPipeline != null && !side.LinkedPipeline.CurrentItem.HasValue) {
-                    //传递物品
-                    item.Progress = 0f;
-                    item.SourceDirection = GetOppositeDirection(i);
-                    side.LinkedPipeline.CurrentItem = item;
-                    return true;
+                    availableDirections.Add(i);
                 }
             }
 
-            return false;
+            //没有可用路径
+            if (availableDirections.Count == 0) {
+                return false;
+            }
+
+            //随机选择一个方向(平均分流)
+            int selectedDir = availableDirections[Main.rand.Next(availableDirections.Count)];
+            var selectedSide = SideStates[selectedDir];
+
+            //传递物品
+            item.Progress = 0f;
+            item.SourceDirection = GetOppositeDirection(selectedDir);
+            selectedSide.LinkedPipeline.CurrentItem = item;
+            return true;
         }
 
         /// <summary>
