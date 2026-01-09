@@ -653,7 +653,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     3 => new Vector2(8, 0), //从右来
                     _ => Vector2.Zero
                 };
-                offset = Vector2.Lerp(-dirOffset, Vector2.Zero, item.Progress);
+                offset = Vector2.Lerp(dirOffset, Vector2.Zero, item.Progress);
             }
 
             VaultUtils.SimpleDrawItem(spriteBatch, item.ItemType, center + offset, 20, 0.6f, 0, Color.White);
