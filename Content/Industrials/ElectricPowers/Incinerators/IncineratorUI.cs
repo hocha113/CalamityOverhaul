@@ -532,15 +532,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             sb.Draw(px, new Rectangle(barBg.X, barBg.Bottom - 2, barBg.Width, 2), new Rectangle(0, 0, 1, 1), borderColor);
             sb.Draw(px, new Rectangle(barBg.X, barBg.Y, 2, barBg.Height), new Rectangle(0, 0, 1, 1), borderColor);
             sb.Draw(px, new Rectangle(barBg.Right - 2, barBg.Y, 2, barBg.Height), new Rectangle(0, 0, 1, 1), borderColor);
-
-            //箭头符号
-            string arrow = ">>>";
-            Vector2 arrowSize = FontAssets.MouseText.Value.MeasureString(arrow) * 0.6f;
-            Vector2 arrowPos = new Vector2(progressBarRect.Center.X - arrowSize.X / 2, progressBarRect.Center.Y - arrowSize.Y / 2 - 18);
-            Color arrowColor = IncData.IsWorking
-                ? Color.Lerp(new Color(255, 150, 80), new Color(255, 200, 120), (float)Math.Sin(powerFlowTimer * 4f) * 0.5f + 0.5f)
-                : new Color(100, 80, 60);
-            Utils.DrawBorderString(sb, arrow, arrowPos, arrowColor * alpha, 0.6f);
         }
 
         private void DrawPowerBar(SpriteBatch sb) {

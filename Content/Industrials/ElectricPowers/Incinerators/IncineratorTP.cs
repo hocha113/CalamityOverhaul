@@ -2,7 +2,6 @@
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -26,11 +25,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         private int frameTimer;
         private int particleTimer;
 
-        /// <summary>
-        /// 焚烧配方表：输入物品类型 -> 输出物品类型
-        /// </summary>
-        public static Dictionary<int, int> SmeltRecipes { get; private set; }
-
         public override MachineData GetGeneratorDataInds() {
             var data = new IncineratorData {
                 MaxSmeltingProgress = 120,
@@ -39,72 +33,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 MaxTemperature = 100
             };
             return data;
-        }
-
-        public override void SetBattery() {
-            InitializeRecipes();
-        }
-
-        /// <summary>
-        /// 初始化焚烧配方
-        /// </summary>
-        private static void InitializeRecipes() {
-            if (SmeltRecipes != null) {
-                return;
-            }
-
-            SmeltRecipes = new Dictionary<int, int> {
-                //原版矿石
-                { ItemID.CopperOre, ItemID.CopperBar },
-                { ItemID.TinOre, ItemID.TinBar },
-                { ItemID.IronOre, ItemID.IronBar },
-                { ItemID.LeadOre, ItemID.LeadBar },
-                { ItemID.SilverOre, ItemID.SilverBar },
-                { ItemID.TungstenOre, ItemID.TungstenBar },
-                { ItemID.GoldOre, ItemID.GoldBar },
-                { ItemID.PlatinumOre, ItemID.PlatinumBar },
-                { ItemID.CrimtaneOre, ItemID.CrimtaneBar },
-                { ItemID.DemoniteOre, ItemID.DemoniteBar },
-                { ItemID.Hellstone, ItemID.HellstoneBar },
-                { ItemID.CobaltOre, ItemID.CobaltBar },
-                { ItemID.PalladiumOre, ItemID.PalladiumBar },
-                { ItemID.MythrilOre, ItemID.MythrilBar },
-                { ItemID.OrichalcumOre, ItemID.OrichalcumBar },
-                { ItemID.AdamantiteOre, ItemID.AdamantiteBar },
-                { ItemID.TitaniumOre, ItemID.TitaniumBar },
-                { ItemID.ChlorophyteOre, ItemID.ChlorophyteBar },
-                { ItemID.LunarOre, ItemID.LunarBar },
-                //其他可焚烧物
-                { ItemID.SandBlock, ItemID.Glass },
-                { ItemID.Wood, ItemID.Coal },
-                { ItemID.Ebonwood, ItemID.Coal },
-                { ItemID.Shadewood, ItemID.Coal },
-                { ItemID.RichMahogany, ItemID.Coal },
-                { ItemID.BorealWood, ItemID.Coal },
-                { ItemID.PalmWood, ItemID.Coal },
-                { ItemID.Pearlwood, ItemID.Coal },
-                { ItemID.ClayBlock, ItemID.RedBrick },
-                { ItemID.MudBlock, ItemID.DirtBlock },
-            };
-        }
-
-        /// <summary>
-        /// 检查物品是否可以被焚烧
-        /// </summary>
-        public static bool CanSmelt(Item item) {
-            if (item == null || item.IsAir) {
-                return false;
-            }
-            InitializeRecipes();
-            return SmeltRecipes.ContainsKey(item.type);
-        }
-
-        /// <summary>
-        /// 获取焚烧后的输出物品类型
-        /// </summary>
-        public static int GetSmeltResult(int inputType) {
-            InitializeRecipes();
-            return SmeltRecipes.TryGetValue(inputType, out int result) ? result : ItemID.None;
         }
 
         public override void UpdateMachine() {
@@ -143,21 +71,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             if (IncData.InputItem == null || IncData.InputItem.IsAir) {
                 return false;
             }
-            if (!CanSmelt(IncData.InputItem)) {
+            if (!IncineratorRecipes.TryGetRecipe(IncData.InputItem.type, out var recipe)) {
                 return false;
             }
 
-            int resultType = GetSmeltResult(IncData.InputItem.type);
-            if (resultType == ItemID.None) {
+            //检查输入物品数量是否足够
+            if (IncData.InputItem.stack < recipe.InputStack) {
                 return false;
             }
+
+            int resultType = recipe.OutputType;
+            int outputStack = IncineratorRecipes.GetOutputStack(IncData.InputItem.type);
 
             //检查输出槽是否有空间
             if (IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
                 if (IncData.OutputItem.type != resultType) {
                     return false;
                 }
-                if (IncData.OutputItem.stack >= IncData.OutputItem.maxStack) {
+                if (IncData.OutputItem.stack + outputStack > IncData.OutputItem.maxStack) {
                     return false;
                 }
             }
@@ -206,24 +137,31 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         /// 完成焚烧
         /// </summary>
         private void CompleteSmelting() {
-            int resultType = GetSmeltResult(IncData.InputItem.type);
-            if (resultType == ItemID.None) {
+            if (!IncineratorRecipes.TryGetRecipe(IncData.InputItem.type, out var recipe)) {
                 IncData.SmeltingProgress = 0;
                 return;
             }
 
-            //减少输入物品
-            IncData.InputItem.stack--;
+            int resultType = recipe.OutputType;
+            int inputCost = recipe.InputStack;
+            int outputAmount = IncineratorRecipes.GetOutputStack(IncData.InputItem.type);
+
+            //减少输入物品(按配方需求数量)
+            IncData.InputItem.stack -= inputCost;
             if (IncData.InputItem.stack <= 0) {
                 IncData.InputItem.TurnToAir();
             }
 
-            //增加输出物品
+            //增加输出物品(应用2倍产出)
             if (IncData.OutputItem == null || IncData.OutputItem.IsAir) {
-                IncData.OutputItem = new Item(resultType, 1);
+                IncData.OutputItem = new Item(resultType, outputAmount);
             }
             else {
-                IncData.OutputItem.stack++;
+                IncData.OutputItem.stack += outputAmount;
+                //确保不超过最大堆叠
+                if (IncData.OutputItem.stack > IncData.OutputItem.maxStack) {
+                    IncData.OutputItem.stack = IncData.OutputItem.maxStack;
+                }
             }
 
             //重置进度
@@ -236,7 +174,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         /// 更新空闲动画
         /// </summary>
         private void UpdateIdleAnimation() {
-            frame = 2; //熄灭帧
+            frame = 2;//熄灭帧
             frameTimer = 0;
         }
 
@@ -265,7 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             Item mouseItem = Main.mouseItem;
 
             //如果手持物品可以焚烧，放入输入槽
-            if (CanSmelt(mouseItem)) {
+            if (IncineratorRecipes.CanSmelt(mouseItem)) {
                 if (IncData.InputItem == null || IncData.InputItem.IsAir) {
                     IncData.InputItem = mouseItem.Clone();
                     mouseItem.TurnToAir();
@@ -336,7 +274,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 
             //Shift点击快速放入
             if (Main.keyState.PressingShift()) {
-                if (CanSmelt(item)) {
+                if (IncineratorRecipes.CanSmelt(item)) {
                     if (IncData.InputItem == null || IncData.InputItem.IsAir) {
                         IncData.InputItem = item.Clone();
                         item.TurnToAir();
