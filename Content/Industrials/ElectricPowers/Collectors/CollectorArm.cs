@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //检查缓存是否有效
-            if (cachedStorageProvider != null && cachedStorageProvider.IsValid 
+            if (cachedStorageProvider != null && cachedStorageProvider.IsValid
                 && cachedStorageProvider.Position == targetStoragePos) {
                 return cachedStorageProvider;
             }

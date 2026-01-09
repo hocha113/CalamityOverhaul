@@ -1,8 +1,6 @@
 ﻿using InnoVault.TileProcessors;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;

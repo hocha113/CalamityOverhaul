@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (fs is not FishVoodoo fv) {
                 return false;
             }
-            if(!fs.Active(Player)) {
+            if (!fs.Active(Player)) {
                 return false;
             }
             skill = fv;
