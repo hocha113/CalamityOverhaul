@@ -1537,6 +1537,17 @@ Items: {
 		// DisplayName: Wilderness Life Weaver
 		// Tooltip: ""
 	}
+
+	Incinerator: {
+		// DisplayName: Electric Incinerator
+		/* Tooltip:
+			'''
+			Consumes power to smelt items
+			Right-click to open the control panel
+			Shift + Right-click to quickly deposit ingredients or retrieve products
+			Smelting items yields double output
+			''' */
+	}
 }
 
 Projectiles: {
@@ -6571,6 +6582,23 @@ UI: {
 			Quest checking is disabled in this world.
 			Re-enter the world to choose again.
 			''' */
+	}
+
+	Incinerator: {
+		IncineratorUI: {
+			// TitleText: Electric Incinerator
+			// InputLabel: Input
+			// OutputLabel: Output
+			// ProgressLabel: Progress
+			// PowerLabel: Power
+			// StatusLabel: Status:
+			// SmeltingText: Incinerating
+			// IdleText: Idle
+			// NoPowerText: No Power
+			// InputHint: Place items to incinerate
+			// OutputHint: Click to retrieve output
+			// PowerUnit: UE
+		}
 	}
 }
 

@@ -1515,6 +1515,17 @@ Items: {
 		DisplayName: 荒野中的植树者
 		Tooltip: ""
 	}
+
+	Incinerator: {
+		DisplayName: 电动焚化炉
+		Tooltip:
+			'''
+			消耗电力熔炼物品
+			右键打开操控面板
+			Shift右键可以快速放入熔炼物，或者取出熔炼产物
+			熔炼物品可以得到双倍的产出物
+			'''
+	}
 }
 
 Projectiles: {
@@ -6543,6 +6554,23 @@ UI: {
 			任务检测已在当前世界中被禁止
 			重新进入世界以重新选择配置
 			'''
+	}
+
+	Incinerator: {
+		IncineratorUI: {
+			TitleText: 电动焚化炉
+			InputLabel: 输入
+			OutputLabel: 输出
+			ProgressLabel: 进度
+			PowerLabel: 电力
+			StatusLabel: 状态:
+			SmeltingText: 焚烧中
+			IdleText: 待机
+			NoPowerText: 缺电
+			InputHint: 放入可焚烧物品
+			OutputHint: 点击取出成品
+			PowerUnit: UE
+		}
 	}
 }
 
