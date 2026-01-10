@@ -1,6 +1,8 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -164,6 +166,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         //缓存连接掩码
         private int lastConnectionMask = -1;
+
+        /// <summary>
+        /// 物品筛选器(用于过滤输出/输入的物品类型)
+        /// </summary>
+        internal Item ItemFilter;
+
+        /// <summary>
+        /// 悬停动画进度
+        /// </summary>
+        internal float hoverSengs;
         #endregion
 
         #region 初始化和更新
@@ -174,6 +186,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 new ItemPipelineSideState(new Point16(-1, 0), 2),//左
                 new ItemPipelineSideState(new Point16(1, 0), 3)  //右
             ];
+            ItemFilter = new Item();
         }
 
         public override void Update() {
@@ -211,6 +224,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 flowAnimator.Clear();
                 flowAnimator = null;
             }
+
+            //更新悬停动画
+            hoverSengs = HoverTP
+                ? Math.Min(hoverSengs + 0.1f, 1f)
+                : Math.Max(hoverSengs - 0.1f, 0f);
         }
 
         /// <summary>
@@ -294,6 +312,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 //从存储中取出第一个可用物品
                 foreach (var storedItem in storage.GetStoredItems()) {
                     if (storedItem == null || storedItem.IsAir) {
+                        continue;
+                    }
+
+                    //检查物品是否被筛选器允许
+                    if (!IsItemAllowedByFilter(storedItem.type)) {
                         continue;
                     }
 
@@ -484,6 +507,55 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         #region 模式切换
         /// <summary>
+        /// 右键点击处理:设置物品筛选器
+        /// </summary>
+        public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            if (Mode == ItemPipelineMode.Normal) {
+                return null;
+            }
+
+            Item item = player.GetItem();
+
+            //如果手持物品筛选器
+            if (item.type == ModContent.ItemType<ItemFilter>()) {
+                ItemFilter = item.Clone();
+                //深拷贝过滤数据
+                var sourceData = item.GetGlobalItem<ItemFilterData>();
+                var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
+                targetData.SetItems(sourceData.Items);
+
+                SoundEngine.PlaySound(SoundID.Grab, CenterInWorld);
+                SendData();
+                return true;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 检查物品是否被筛选器允许
+        /// </summary>
+        private bool IsItemAllowedByFilter(int itemType) {
+            //没有筛选器或筛选器为空，允许所有物品
+            if (ItemFilter == null || ItemFilter.IsAir) {
+                return true;
+            }
+
+            if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) {
+                return true;
+            }
+
+            var filterData = ItemFilter.GetGlobalItem<ItemFilterData>();
+            //如果筛选器列表为空，允许所有物品
+            if (filterData.Items.Count == 0) {
+                return true;
+            }
+
+            //检查物品是否在筛选器列表中
+            return filterData.Items.Contains(itemType);
+        }
+
+        /// <summary>
         /// 循环切换管道模式(只有端点可以切换)
         /// </summary>
         public void CycleMode() {
@@ -541,6 +613,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 data.Write(item.Prefix);
                 data.Write(item.Progress);
             }
+            ItemIO.Send(ItemFilter ?? new Item(), data);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
@@ -558,6 +631,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             else {
                 CurrentItem = null;
             }
+            ItemFilter = ItemIO.Receive(reader);
         }
 
         public override void SaveData(TagCompound tag) {
@@ -568,6 +642,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 tag["ItemPipeline_Stack"] = item.Stack;
                 tag["ItemPipeline_Prefix"] = item.Prefix;
             }
+            ItemFilter ??= new Item();
+            tag["ItemPipeline_ItemFilter"] = ItemIO.Save(ItemFilter);
         }
 
         public override void LoadData(TagCompound tag) {
@@ -578,6 +654,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 int stack = tag.GetInt("ItemPipeline_Stack");
                 int prefix = tag.GetInt("ItemPipeline_Prefix");
                 CurrentItem = new TransportingItem(itemType, stack, prefix);
+            }
+            if (tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag)) {
+                ItemFilter = ItemIO.Load(filterTag);
+            }
+            else {
+                ItemFilter = new Item();
             }
         }
 
@@ -651,6 +733,42 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             //绘制模式指示器
             DrawModeIndicator(spriteBatch);
+
+            //绘制筛选器物品显示
+            DrawFilterDisplay(spriteBatch);
+        }
+
+        /// <summary>
+        /// 绘制筛选器物品环形显示
+        /// </summary>
+        private void DrawFilterDisplay(SpriteBatch spriteBatch) {
+            if (ItemFilter == null || ItemFilter.IsAir) return;
+            if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) return;
+            if (hoverSengs <= 0.01f) return;
+
+            var filterData = ItemFilter.GetGlobalItem<ItemFilterData>();
+            if (filterData.Items.Count == 0) return;
+
+            const float maxRadius = 80f;
+            float currentRadius = maxRadius * hoverSengs;
+            float angleIncrement = MathHelper.TwoPi / filterData.Items.Count;
+
+            Vector2 drawCenter = CenterInWorld - Main.screenPosition;
+
+            for (int i = 0; i < filterData.Items.Count; i++) {
+                int itemType = filterData.Items[i];
+                if (itemType <= ItemID.None) continue;
+
+                float currentAngle = angleIncrement * i - MathHelper.PiOver2;
+                Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
+                Vector2 itemPos = drawCenter + offset;
+
+                Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
+                float scale = hoverSengs * 0.8f;
+
+                VaultUtils.SafeLoadItem(itemType);
+                VaultUtils.SimpleDrawItem(spriteBatch, itemType, itemPos, itemWidth: 24, scale, 0, drawColor);
+            }
         }
 
         private void DrawCross(SpriteBatch spriteBatch, Vector2 drawPos, Color modeColor, Color lightingColor) {
