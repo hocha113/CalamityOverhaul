@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 //使用纹理绘制流动箭头粒子
-                ItemPipelineTP.DrawArrowTexture(spriteBatch, screenPos, rotation, flowColor * particle.Alpha * 0.8f, 0.6f);
+                ItemPipelineTP.DrawArrowTexture(spriteBatch, screenPos, rotation, flowColor * particle.Alpha * 0.4f, 0.6f);
             }
         }
 
