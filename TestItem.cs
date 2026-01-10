@@ -1,10 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
-using CalamityOverhaul.Content.Industrials.Storage;
 using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;

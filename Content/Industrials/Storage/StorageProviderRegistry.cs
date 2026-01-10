@@ -34,6 +34,14 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         /// <param name="item">要存储的物品，用于检查是否可以存入</param>
         /// <returns>找到的存储提供者列表</returns>
         IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item);
+
+        /// <summary>
+        /// 获取指定位置的存储提供者
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        IStorageProvider GetStorageProviders(Point16 position, Item item);
     }
 
     /// <summary>
@@ -54,13 +62,21 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             else {
                 chest = position.FindClosestChest(range, true, null);
             }
-            
+
             if (chest != null) {
                 int index = Chest.FindChest(chest.x, chest.y);
                 if (index >= 0) {
                     yield return new ChestStorageProvider(chest, index);
                 }
             }
+        }
+
+        public IStorageProvider GetStorageProviders(Point16 position, Item item) {
+            int index = Chest.FindChest(position.X, position.Y);
+            if (index >= 0) {
+                return new ChestStorageProvider(Main.chest[index], index);
+            }
+            return null;
         }
     }
 
@@ -83,6 +99,13 @@ namespace CalamityOverhaul.Content.Industrials.Storage
                 yield return provider;
             }
         }
+
+        public IStorageProvider GetStorageProviders(Point16 position, Item item) {
+            if (!IsAvailable) {
+                return null;
+            }
+            return MagicStorageProvider.GetAtPosition(position, item);
+        }
     }
 
     /// <summary>
@@ -99,6 +122,10 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             if (provider != null) {
                 yield return provider;
             }
+        }
+
+        public IStorageProvider GetStorageProviders(Point16 position, Item item) {
+            return OldDuchestStorageProvider.GetAtPosition(position, item);
         }
     }
 

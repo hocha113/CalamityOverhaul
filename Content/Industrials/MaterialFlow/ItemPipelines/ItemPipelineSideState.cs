@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 return;
             }
 
-            var inds = StorageSystem.FindStorageTarget(pos, 1);
+            var inds = StorageSystem.GetStorageTargetByPoint(pos);
 
             if (inds != null) {
                 linkedStorage = inds;
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             Vector2 orig = ItemPipelineTP.PipelineChannel.Size() / 2;
 
             //绘制管道连接臂外壳(中空，不填充)
-            Color lightingColor = Lighting.GetColor(Position.ToPoint());
+            Color lightingColor = VaultUtils.MultiStepColorLerp(0.5f, Color.YellowGreen, Lighting.GetColor(Position.ToPoint()));
 
             //根据模式添加颜色
             Color tintColor = lightingColor;

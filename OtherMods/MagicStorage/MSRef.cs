@@ -88,6 +88,33 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         [JITWhenModsEnabled("MagicStorage")]
+        internal static object GetMagicStorage(Item item, Point16 position) {//所以，对外返回obj，或者是其他不需要引用外部程序集的已有类型，这样才能避免触发编译错误
+            if (!Has) {//0.7.0.11
+                return null;
+            }
+
+            if (TileEntity.ByPosition.TryGetValue(position, out TileEntity te) && te is TEStorageHeart heart) {
+                //检查安全系统权限
+                if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
+                    return null;
+
+                //检查存储核心是否还有容量
+                bool hasSpace = false;
+                foreach (var unit in heart.GetStorageUnits()) {
+                    if (!unit.Inactive && (unit.HasSpaceInStackFor(item) || !unit.IsFull)) {
+                        hasSpace = true;
+                        break;
+                    }
+                }
+
+                if (hasSpace)
+                    return heart;
+            }
+
+            return null;
+        }
+
+        [JITWhenModsEnabled("MagicStorage")]
         public static IEnumerable<Item> GetStoredItems() {
             StoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<StoragePlayer>();
             TEStorageHeart heart = storagePlayer.GetStorageHeart();

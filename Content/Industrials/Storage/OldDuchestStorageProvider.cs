@@ -85,7 +85,6 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         /// 在指定范围内查找最近的OldDuchestTP
         /// </summary>
         public static OldDuchestStorageProvider FindNearPosition(Point16 position, int range, Item item) {
-            Vector2 worldPos = position.ToWorldCoordinates();
             float rangeSQ = range * range;
             OldDuchestTP nearestTP = null;
             float nearestDistSQ = float.MaxValue;
@@ -117,6 +116,23 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             }
 
             return nearestTP != null ? new OldDuchestStorageProvider(nearestTP) : null;
+        }
+
+        /// <summary>
+        /// 获取指定位置的OldDuchestTP存储提供者
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static OldDuchestStorageProvider GetAtPosition(Point16 position, Item item) {
+            if (!TileProcessorLoader.AutoPositionGetTP(position, out OldDuchestTP tp)) {
+                return null;
+            }
+            var provider = new OldDuchestStorageProvider(tp);
+            if (item.Alives() && !provider.CanAcceptItem(item)) {
+                return null;
+            }
+            return provider;
         }
 
         public bool CanAcceptItem(Item item) {

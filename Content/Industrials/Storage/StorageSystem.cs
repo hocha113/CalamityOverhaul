@@ -60,6 +60,26 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         }
 
         /// <summary>
+        /// 获取指定位置的存储对象
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static IStorageProvider GetStorageTargetByPoint(Point16 position) {
+            //确保注册表已初始化
+            StorageProviderRegistry.Initialize();
+
+            //按优先级遍历所有工厂
+            foreach (var factory in StorageProviderRegistry.GetAvailableFactories()) {
+                var providers = factory.GetStorageProviders(position, new Item());
+                if (providers != null && providers.IsValid) {
+                    return factory.GetStorageProviders(position, new Item());
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// 查找指定范围内所有可用的存储对象
         /// </summary>
         /// <param name="position">搜索中心位置(物块坐标)</param>

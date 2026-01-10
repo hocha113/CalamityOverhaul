@@ -174,6 +174,31 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             return null;
         }
 
+        /// <summary>
+        /// 获取指定位置的Magic Storage存储核心
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static MagicStorageProvider GetAtPosition(Point16 position, Item item) {
+            if (!MSRef.Has || !ModLoader.HasMod("MagicStorage")) {
+                return null;
+            }
+            try {
+                object heart = MSRef.GetMagicStorage(item, position);
+                if (heart == null) {
+                    return null;
+                }
+                //获取存储核心的位置
+                if (heart is TileEntity te) {
+                    return new MagicStorageProvider(heart, te.Position);
+                }
+            } catch {
+                return null;
+            }
+            return null;
+        }
+
         public bool CanAcceptItem(Item item) {
             if (!IsValid || item == null || item.IsAir) {
                 return false;
@@ -194,8 +219,48 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         }
 
         public Item WithdrawItem(int itemType, int count) {
-            //Magic Storage的取出操作比较复杂，暂时返回空物品
-            //可以通过反射调用WithdrawItems方法实现
+            if (!IsValid || !MSRef.Has) {
+                return new Item();
+            }
+
+            try {
+                //通过反射调用 TEStorageHeart.Withdraw 方法
+                if (_storageHeart is TileEntity te) {
+                    //获取 Withdraw 方法
+                    var withdrawMethod = _storageHeart.GetType().GetMethod("Withdraw",
+                        [typeof(Item), typeof(bool)]);
+
+                    if (withdrawMethod != null) {
+                        //创建要取出的物品
+                        Item toWithdraw = new Item();
+                        toWithdraw.SetDefaults(itemType);
+                        toWithdraw.stack = count;
+
+                        //调用 Withdraw(Item item, bool keepOneIfFavorite)
+                        Item withdrawn = withdrawMethod.Invoke(_storageHeart,
+                            new object[] { toWithdraw, false }) as Item;
+
+                        return withdrawn ?? new Item();
+                    }
+                }
+
+                //方法2：如果上面不可用，尝试使用 TryWithdraw
+                var tryWithdrawMethod = _storageHeart.GetType().GetMethod("TryWithdraw");
+                if (tryWithdrawMethod != null) {
+                    Item toWithdraw = new Item();
+                    toWithdraw.SetDefaults(itemType);
+                    toWithdraw.stack = count;
+
+                    //TryWithdraw 的参数可能不同，需要检查签名
+                    Item withdrawn = tryWithdrawMethod.Invoke(_storageHeart,
+                        [toWithdraw, false, null, false]) as Item;
+
+                    return withdrawn ?? new Item();
+                }
+            } catch {
+                return new Item();
+            }
+
             return new Item();
         }
 

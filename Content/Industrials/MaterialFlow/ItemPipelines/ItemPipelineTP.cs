@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
-using CalamityOverhaul.Content.Industrials.Storage;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -620,7 +618,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             Color modeColor = GetModeColor();
-            Color lightingColor = Lighting.GetColor(Position.ToPoint());
+            Color lightingColor = VaultUtils.MultiStepColorLerp(0.5f, modeColor, Lighting.GetColor(Position.ToPoint()));
 
             //绘制管道本体(中空，不填充内部)
             switch (Shape) {
