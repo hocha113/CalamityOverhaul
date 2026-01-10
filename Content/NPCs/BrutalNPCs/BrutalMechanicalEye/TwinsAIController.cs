@@ -365,6 +365,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             FindPlayer();
             if (player == null || !player.active || player.dead) {
+                if (ai[0] != (int)PrimaryAIState.Flee) {
+                    ai[1] = 0;
+                }
                 ai[0] = (int)PrimaryAIState.Flee;
                 NetAISend();
             }
@@ -456,9 +459,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// 原生模式AI
         /// </summary>
         private bool ProtogenesisAI() {
-            if (player.dead || !player.active) {
+            if (ai[0] == (int)PrimaryAIState.Flee) {
                 npc.velocity.Y -= 0.5f;
                 npc.EncourageDespawn(10);
+                if (++ai[1] > 180) {
+                    npc.active = false;
+                    npc.netUpdate = true;
+                }
                 return false;
             }
 
