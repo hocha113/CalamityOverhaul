@@ -419,6 +419,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //检查另一只眼睛是否存活
             NPC partner = TwinsStateContext.GetPartnerNpc(npc.type);
             bool partnerDead = partner == null || !partner.active;
+            if (stateContext.IsDeathMode && partner.Alives()) {
+                partnerDead = (partner.life / (float)partner.lifeMax) < 0.15f;
+            }
 
             if (partnerDead) {
                 //触发独眼狂暴模式

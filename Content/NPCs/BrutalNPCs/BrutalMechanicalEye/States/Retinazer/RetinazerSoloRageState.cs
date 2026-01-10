@@ -371,12 +371,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //部署阶段
             if (modeTimer < deployTime) {
                 float progress = modeTimer / (float)deployTime;
-
-                //计算矩阵点位置
-                for (int i = 0; i < MatrixPointCount; i++) {
-                    float angle = MathHelper.TwoPi / MatrixPointCount * i + MathHelper.PiOver4;
-                    float matrixRadius = 320f;
-                    matrixPoints[i] = player.Center + angle.ToRotationVector2() * matrixRadius;
+                float value = Context.IsDeathMode ? 0.8f : 0.65f;
+                if (progress < value) {
+                    //计算矩阵点位置
+                    for (int i = 0; i < MatrixPointCount; i++) {
+                        float angle = MathHelper.TwoPi / MatrixPointCount * i + MathHelper.PiOver4;
+                        float matrixRadius = 320f;
+                        matrixPoints[i] = player.Center + angle.ToRotationVector2() * matrixRadius;
+                    }
                 }
 
                 //矩阵点渐显特效
