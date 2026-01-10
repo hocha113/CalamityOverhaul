@@ -114,7 +114,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 
             //更新动画帧(在工作帧0和1之间切换)
             if (++frameTimer >= 6) {
-                frame = frame == 0 ? 1 : 0;
+                if (++frame > 2) {
+                    frame = 0;
+                }
                 frameTimer = 0;
             }
 
@@ -173,7 +175,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         /// 更新空闲动画
         /// </summary>
         private void UpdateIdleAnimation() {
-            frame = 2;//熄灭帧
+            frame = 3;//熄灭帧
             frameTimer = 0;
         }
 

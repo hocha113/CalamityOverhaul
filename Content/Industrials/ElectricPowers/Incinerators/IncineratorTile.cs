@@ -11,13 +11,12 @@ using Terraria.ObjectData;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
     /// <summary>
-    /// 物块，焚烧炉的物块帧为三帧，一般用于工作时来回切换第一帧和第二帧的燃烧动画，第三帧为熄灭的动画帧，单帧大小为宽7高6格物块
+    /// 物块
     /// </summary>
     internal class IncineratorTile : ModTile
     {
         public const int TileWidth = 7;
         public const int TileHeight = 6;
-        public const int FrameCount = 3;
         public override string Texture => CWRConstant.Asset + "ElectricPowers/IncineratorTile";
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
