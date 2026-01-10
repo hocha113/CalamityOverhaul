@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             if (!CWRRef.Has) {
                 CreateRecipe(333)
                     .AddRecipeGroup(RecipeGroupID.IronBar, 5)
+                    .AddIngredient(ItemID.Chest, 2)
                     .AddIngredient(ItemID.Glass, 5)
                     .AddTile(TileID.Anvils)
                     .Register();
@@ -34,6 +35,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 .AddIngredient(CWRID.Item_DubiousPlating, 5)
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 5)
                 .AddRecipeGroup(RecipeGroupID.IronBar, 5)
+                .AddIngredient(ItemID.Chest, 2)
                 .AddIngredient(ItemID.Glass, 5)
                 .AddTile(TileID.Anvils)
                 .Register();
@@ -62,9 +64,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return false;
         }
 
-        public override bool CanDrop(int i, int j) => false;
-
         public override bool RightClick(int i, int j) {
+            if (Main.LocalPlayer.GetItem().type == ModContent.ItemType<ItemPipeline>()) {
+                return false;
+            }
             //切换管道模式
             if (InnoVault.TileProcessors.TileProcessorLoader.AutoPositionGetTP(i, j, out ItemPipelineTP tp)) {
                 tp.CycleMode();

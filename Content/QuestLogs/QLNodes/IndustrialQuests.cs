@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
@@ -7,6 +8,7 @@ using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.Industrials.Generator.Thermal;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
@@ -78,6 +80,35 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             bool hasItem = Main.LocalPlayer.HasItem(ModContent.ItemType<ThermalGenerator>());
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class IncineratorQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "电动熔炼");
+            Description = this.GetLocalization(nameof(Description), () => "制作一台电力焚化炉");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<Incinerator>();
+            Position = new Vector2(0, 150);
+            AddParent<ThermalPowerQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得电力焚化炉"),
+                RequiredProgress = 1
+            });
+
+            AddReward(ItemID.Coal, 50);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Incinerator>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
@@ -342,6 +373,41 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<ItemFilter>()) > 0;
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class ItemPipelineQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "物流系统");
+            Description = this.GetLocalization(nameof(Description), () => "制作一个物品管道");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<ItemPipeline>();
+            Position = new Vector2(150, 0);
+            AddParent<ItemFilterQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得物品管道"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ItemID.Chest,
+                Amount = 2,
+                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+            });
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<ItemPipeline>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }

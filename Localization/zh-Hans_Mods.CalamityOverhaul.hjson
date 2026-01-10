@@ -1529,7 +1529,13 @@ Items: {
 
 	ItemPipeline: {
 		DisplayName: 物流管道
-		Tooltip: ""
+		Tooltip:
+			'''
+			用于传输物品
+			右键可快速拆除目标位置的管道并回收，此功能在手持管道时可用
+			右键端点位置的管道可以在输出模式和输入模式之间切换，此功能在手持管道时不可用
+			输出模式的管道会抽取连接的容器内的物品，传输到连接的输入模式管道连接的物品中
+			'''
 	}
 }
 
@@ -8359,6 +8365,21 @@ QuestLogs: {
 			Description: 获得植树者
 			QuestObjective.Description: 获得植树者
 			DetailedDescription: 森林的再生通常漫长而缓慢。这台机器能利用电力将树苗精准地植入土壤，让荒芜的土地迅速重焕生机。它是构建全自动循环林场的最后一块拼图。
+		}
+
+		IncineratorQuest: {
+			DisplayName: 电动熔炼
+			Description: 制作一台电力焚化炉
+			QuestObjective.Description: 获得电力焚化炉
+			DetailedDescription: 传统的熔炉效率低下，浪费了大量的矿物精华。这台机器利用高压电弧产生的极高温度，能将矿石彻底分解，提取出比以往多一倍的成品。这是迈向工业化的关键一步。
+		}
+
+		ItemPipelineQuest: {
+			DisplayName: 物流系统
+			Description: 制作一个物品管道
+			QuestObjective.Description: 获得物品管道
+			QuestReward.Description: 2个箱子
+			DetailedDescription: 还在像个原始人一样在箱子之间跑来跑去吗？这些管道是工业的血管。将它们连接在机器与容器之间，看着物品自动流向它们该去的地方。建立一条自动化的流水线。
 		}
 	}
 }
