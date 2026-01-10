@@ -116,31 +116,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// 检查位置是否有箱子
         /// </summary>
         private void CheckForChest(Point16 checkPos) {
-            int chestIndex = Chest.FindChest(checkPos.X, checkPos.Y);
-            if (chestIndex < 0) {
-                //尝试查找箱子的其他格子
-                for (int ox = -1; ox <= 1; ox++) {
-                    for (int oy = -1; oy <= 1; oy++) {
-                        if (ox == 0 && oy == 0) continue;
-                        chestIndex = Chest.FindChest(checkPos.X + ox, checkPos.Y + oy);
-                        if (chestIndex >= 0) {
-                            Chest chest = Main.chest[chestIndex];
-                            if (chest != null) {
-                                //检查箱子是否真的覆盖这个位置
-                                Rectangle chestRect = new Rectangle(chest.x, chest.y, 2, 2);
-                                if (chestRect.Contains(checkPos.X, checkPos.Y)) {
-                                    break;
-                                }
-                                chestIndex = -1;
-                            }
-                        }
-                    }
-                    if (chestIndex >= 0) break;
-                }
+            if (!VaultUtils.SafeGetTopLeft(checkPos, out var pos)) {
+                return;
             }
 
-            if (chestIndex >= 0 && Main.chest[chestIndex] != null) {
-                linkedStorage = new ChestStorageProvider(Main.chest[chestIndex], chestIndex);
+            var inds = StorageSystem.FindStorageTarget(pos, 1);
+
+            if (inds != null) {
+                linkedStorage = inds;
                 LinkType = ItemPipelineLinkType.Storage;
                 CanDraw = true;
             }

@@ -46,8 +46,15 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         public bool IsAvailable => true;
 
         public IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item) {
-            //使用扩展方法查找最近的可用箱子
-            Chest chest = position.FindClosestChest(range, true, c => c.CanItemBeAddedToChest(item));
+            Chest chest;
+            if (item.Alives()) {
+                //使用扩展方法查找最近的可用箱子
+                chest = position.FindClosestChest(range, true, c => c.CanItemBeAddedToChest(item));
+            }
+            else {
+                chest = position.FindClosestChest(range, true, null);
+            }
+            
             if (chest != null) {
                 int index = Chest.FindChest(chest.x, chest.y);
                 if (index >= 0) {

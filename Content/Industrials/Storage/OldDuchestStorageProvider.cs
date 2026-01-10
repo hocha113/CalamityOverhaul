@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests;
 using InnoVault.TileProcessors;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -98,14 +99,14 @@ namespace CalamityOverhaul.Content.Industrials.Storage
                     continue;
                 }
 
-                float distSQ = Vector2.DistanceSquared(worldPos, tp.CenterInWorld);
+                float distSQ = MathF.Pow(position.X - tp.Position.X, 2) + MathF.Pow(position.Y - tp.Position.Y, 2);
                 if (distSQ > rangeSQ) {
                     continue;
                 }
 
                 //检查是否可以存入物品
                 var provider = new OldDuchestStorageProvider(tp);
-                if (!provider.CanAcceptItem(item)) {
+                if (item.Alives() && !provider.CanAcceptItem(item)) {
                     continue;
                 }
 

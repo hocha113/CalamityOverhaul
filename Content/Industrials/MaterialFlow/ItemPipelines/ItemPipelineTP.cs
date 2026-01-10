@@ -352,7 +352,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
                 if (storage.CanAcceptItem(toDeposit) && storage.DepositItem(toDeposit)) {
                     CurrentItem = null;
-                    storage.PlayDepositAnimation();
                     break;
                 }
             }
@@ -640,7 +639,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        [VaultLoaden(CWRConstant.UI + "SupertableUIs/InputArrow")]
+        [VaultLoaden(CWRConstant.UI + "SupertableUIs/InputArrow3")]
         private static Asset<Texture2D> InputArrow;
 
         public override void FrontDraw(SpriteBatch spriteBatch) {

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Industrials.Storage
         /// <param name="item">要存储的物品</param>
         /// <returns>找到的存储提供者，如果没找到返回null</returns>
         public static IStorageProvider FindStorageTarget(Point16 position, int range, Item item) {
-            if (item == null || item.IsAir) {
+            if (!item.Alives()) {
                 return null;
             }
 
@@ -29,6 +29,28 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             foreach (var factory in StorageProviderRegistry.GetAvailableFactories()) {
                 foreach (var provider in factory.FindStorageProviders(position, range, item)) {
                     if (provider != null && provider.IsValid && provider.CanAcceptItem(item)) {
+                        return provider;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 查找可以存放指定物品的最近存储对象
+        /// </summary>
+        /// <param name="position">搜索中心位置(物块坐标)</param>
+        /// <param name="range">搜索范围(像素)</param>
+        /// <returns>找到的存储提供者，如果没找到返回null</returns>
+        public static IStorageProvider FindStorageTarget(Point16 position, int range) {
+            //确保注册表已初始化
+            StorageProviderRegistry.Initialize();
+
+            //按优先级遍历所有工厂
+            foreach (var factory in StorageProviderRegistry.GetAvailableFactories()) {
+                foreach (var provider in factory.FindStorageProviders(position, range, new Item())) {
+                    if (provider != null && provider.IsValid) {
                         return provider;
                     }
                 }
