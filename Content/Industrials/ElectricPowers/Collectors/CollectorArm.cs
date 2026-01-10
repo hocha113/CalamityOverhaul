@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Storage;
+﻿using CalamityOverhaul.OtherMods.MagicStorage;
 using InnoVault.Actors;
 using InnoVault.Storages;
 using InnoVault.TileProcessors;

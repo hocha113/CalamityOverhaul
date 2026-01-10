@@ -1,12 +1,11 @@
-﻿using CalamityOverhaul.OtherMods.MagicStorage;
-using InnoVault.Storages;
+﻿using InnoVault.Storages;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Industrials.Storage
+namespace CalamityOverhaul.OtherMods.MagicStorage
 {
     /// <summary>
     /// Magic Storage存储提供者工厂
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.Industrials.Storage
     {
         public string Identifier => "MagicStorage.StorageHeart";
         public int Priority => 10;
-        public bool IsAvailable => ModLoader.HasMod("MagicStorage") && OtherMods.MagicStorage.MSRef.Has;
+        public bool IsAvailable => ModLoader.HasMod("MagicStorage") && MSRef.Has;
 
         public IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item) {
             if (!IsAvailable) {
