@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Industrials.Storage;
 using InnoVault.Actors;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -269,7 +270,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
             else {
                 //尝试通用查找
-                cachedStorageProvider = StorageSystem.FindStorageTarget(targetStoragePos, 48, graspItem);
+                cachedStorageProvider = StorageLoader.FindStorageTarget(targetStoragePos, 48, graspItem);
             }
 
             return cachedStorageProvider;

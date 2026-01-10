@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.Storage;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -120,7 +121,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 return;
             }
 
-            var inds = StorageSystem.GetStorageTargetByPoint(pos);
+            var inds = StorageLoader.GetStorageTargetByPoint(pos);
 
             if (inds != null) {
                 linkedStorage = inds;

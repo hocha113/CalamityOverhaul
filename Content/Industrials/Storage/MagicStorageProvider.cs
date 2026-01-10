@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.OtherMods.MagicStorage;
+using InnoVault.Storages;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -7,6 +8,34 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Storage
 {
+    /// <summary>
+    /// Magic Storage存储提供者工厂
+    /// </summary>
+    public class MagicStorageProviderFactory : IStorageProviderFactory
+    {
+        public string Identifier => "MagicStorage.StorageHeart";
+        public int Priority => 10;
+        public bool IsAvailable => ModLoader.HasMod("MagicStorage") && OtherMods.MagicStorage.MSRef.Has;
+
+        public IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item) {
+            if (!IsAvailable) {
+                yield break;
+            }
+
+            var provider = MagicStorageProvider.FindNearPosition(position, range, item);
+            if (provider != null) {
+                yield return provider;
+            }
+        }
+
+        public IStorageProvider GetStorageProviders(Point16 position, Item item) {
+            if (!IsAvailable) {
+                return null;
+            }
+            return MagicStorageProvider.GetAtPosition(position, item);
+        }
+    }
+
     /// <summary>
     /// Magic Storage模组的存储核心提供者实现
     /// 使用反射调用以避免硬依赖，通过懒加载缓存反射结果优化性能

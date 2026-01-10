@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.Storage;
 using InnoVault.Actors;
+using InnoVault.Storages;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -147,7 +148,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         /// 使用抽象存储系统自动支持箱子和Magic Storage等扩展
         /// </summary>
         internal IStorageProvider FindStorageTarget(Item item) {
-            var storage = StorageSystem.FindStorageTarget(Position, maxFindChestMode, item);
+            var storage = StorageLoader.FindStorageTarget(Position, maxFindChestMode, item);
 
             //找不到存储目标时显示提示
             if (storage == null && textIdleTime <= 0 && !VaultUtils.isClient) {

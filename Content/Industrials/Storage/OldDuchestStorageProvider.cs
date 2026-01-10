@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,27 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.Storage
 {
+    /// <summary>
+    /// 老公爵营地箱子存储提供者工厂
+    /// </summary>
+    public class OldDuchestStorageProviderFactory : IStorageProviderFactory
+    {
+        public string Identifier => "CWR.OldDuchest";
+        public int Priority => 5;
+        public bool IsAvailable => true;
+
+        public IEnumerable<IStorageProvider> FindStorageProviders(Point16 position, int range, Item item) {
+            var provider = OldDuchestStorageProvider.FindNearPosition(position, range, item);
+            if (provider != null) {
+                yield return provider;
+            }
+        }
+
+        public IStorageProvider GetStorageProviders(Point16 position, Item item) {
+            return OldDuchestStorageProvider.GetAtPosition(position, item);
+        }
+    }
+
     /// <summary>
     /// 老公爵营地箱子的存储提供者实现
     /// </summary>
