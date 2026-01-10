@@ -720,6 +720,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             float segmentLength = tex.Height / 2;
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
+            if (segmentCount > short.MaxValue) {
+                return false;//避免过多段数导致性能问题
+            }
+
             Vector2[] points = new Vector2[segmentCount + 1];
 
             for (int i = 0; i <= segmentCount; i++) {

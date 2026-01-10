@@ -224,44 +224,10 @@ namespace CalamityOverhaul.Content.Industrials.Storage
             }
 
             try {
-                //通过反射调用 TEStorageHeart.Withdraw 方法
-                if (_storageHeart is TileEntity te) {
-                    //获取 Withdraw 方法
-                    var withdrawMethod = _storageHeart.GetType().GetMethod("Withdraw",
-                        [typeof(Item), typeof(bool)]);
-
-                    if (withdrawMethod != null) {
-                        //创建要取出的物品
-                        Item toWithdraw = new Item();
-                        toWithdraw.SetDefaults(itemType);
-                        toWithdraw.stack = count;
-
-                        //调用 Withdraw(Item item, bool keepOneIfFavorite)
-                        Item withdrawn = withdrawMethod.Invoke(_storageHeart,
-                            new object[] { toWithdraw, false }) as Item;
-
-                        return withdrawn ?? new Item();
-                    }
-                }
-
-                //方法2：如果上面不可用，尝试使用 TryWithdraw
-                var tryWithdrawMethod = _storageHeart.GetType().GetMethod("TryWithdraw");
-                if (tryWithdrawMethod != null) {
-                    Item toWithdraw = new Item();
-                    toWithdraw.SetDefaults(itemType);
-                    toWithdraw.stack = count;
-
-                    //TryWithdraw 的参数可能不同，需要检查签名
-                    Item withdrawn = tryWithdrawMethod.Invoke(_storageHeart,
-                        [toWithdraw, false, null, false]) as Item;
-
-                    return withdrawn ?? new Item();
-                }
+                return MSRef.WithdrawFromHeart(_storageHeart, itemType, count);
             } catch {
                 return new Item();
             }
-
-            return new Item();
         }
 
         public IEnumerable<Item> GetStoredItems() {

@@ -52,34 +52,69 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
         private static int oldSelectedItemType;
+        /// <summary>
+        /// 从TileEntity获取关联的StorageHeart（支持RemoteAccess、StorageAccess等）
+        /// </summary>
         [JITWhenModsEnabled("MagicStorage")]
-        internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {//所以，对外返回obj，或者是其他不需要引用外部程序集的已有类型，这样才能避免触发编译错误
-            if (!Has) {//0.7.0.11
+        private static TEStorageHeart GetHeartFromTileEntity(TileEntity te) {
+            if (te == null) return null;
+            
+            //情况1：直接就是 StorageHeart
+            if (te is TEStorageHeart heart) {
+                return heart;
+            }
+            
+            //情况2：是 TEStorageCenter 的子类（RemoteAccess、StorageAccess、CraftingAccess等）
+            //它们都有 GetHeart() 方法
+            if (te is TEStorageCenter center) {
+                return center.GetHeart();
+            }
+            
+            return null;
+        }
+
+        /// <summary>
+        /// 检查存储核心是否有空间存放物品
+        /// </summary>
+        [JITWhenModsEnabled("MagicStorage")]
+        private static bool CheckHeartHasSpace(TEStorageHeart heart, Item item) {
+            if (heart == null) return false;
+            
+            // 检查安全系统权限
+            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
+                return false;
+
+            // 检查存储核心是否还有容量
+            foreach (var unit in heart.GetStorageUnits()) {
+                if (!unit.Inactive && (unit.HasSpaceInStackFor(item) || !unit.IsFull)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        [JITWhenModsEnabled("MagicStorage")]
+        internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {
+            if (!Has) {
                 return null;
             }
-            //在一定范围内查找 Magic Storage 的存储核心
-            for (int x = position.X - (maxFindChestMode / 16); x <= position.X + (maxFindChestMode / 16); x++) {
-                for (int y = position.Y - (maxFindChestMode / 16); y <= position.Y + (maxFindChestMode / 16); y++) {
+            
+            int range = maxFindChestMode / 16;
+            
+            //在一定范围内查找 Magic Storage 的存储核心（包括远程端口）
+            for (int x = position.X - range; x <= position.X + range; x++) {
+                for (int y = position.Y - range; y <= position.Y + range; y++) {
                     if (!WorldGen.InWorld(x, y))
                         continue;
 
                     Point16 checkPos = new Point16(x, y);
-                    if (TileEntity.ByPosition.TryGetValue(checkPos, out TileEntity te) && te is TEStorageHeart heart) {
-                        //检查安全系统权限
-                        if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
-                            continue;
+                    if (!TileEntity.ByPosition.TryGetValue(checkPos, out TileEntity te))
+                        continue;
 
-                        //检查存储核心是否还有容量
-                        bool hasSpace = false;
-                        foreach (var unit in heart.GetStorageUnits()) {
-                            if (!unit.Inactive && (unit.HasSpaceInStackFor(item) || !unit.IsFull)) {
-                                hasSpace = true;
-                                break;
-                            }
-                        }
-
-                        if (hasSpace)
-                            return heart;
+                    //尝试获取关联的StorageHeart（支持直接StorageHeart和各种Access端口）
+                    TEStorageHeart heart = GetHeartFromTileEntity(te);
+                    if (heart != null && CheckHeartHasSpace(heart, item)) {
+                        return heart;
                     }
                 }
             }
@@ -88,30 +123,65 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         [JITWhenModsEnabled("MagicStorage")]
-        internal static object GetMagicStorage(Item item, Point16 position) {//所以，对外返回obj，或者是其他不需要引用外部程序集的已有类型，这样才能避免触发编译错误
-            if (!Has) {//0.7.0.11
+        internal static object GetMagicStorage(Item item, Point16 position) {
+            if (!Has) {
                 return null;
             }
 
-            if (TileEntity.ByPosition.TryGetValue(position, out TileEntity te) && te is TEStorageHeart heart) {
-                //检查安全系统权限
-                if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
-                    return null;
+            if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te))
+                return null;
 
-                //检查存储核心是否还有容量
-                bool hasSpace = false;
-                foreach (var unit in heart.GetStorageUnits()) {
-                    if (!unit.Inactive && (unit.HasSpaceInStackFor(item) || !unit.IsFull)) {
-                        hasSpace = true;
-                        break;
-                    }
-                }
-
-                if (hasSpace)
-                    return heart;
+            //尝试获取关联的StorageHeart（支持直接StorageHeart和各种Access端口）
+            TEStorageHeart heart = GetHeartFromTileEntity(te);
+            if (heart != null && CheckHeartHasSpace(heart, item)) {
+                return heart;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 从存储核心取出物品
+        /// </summary>
+        [JITWhenModsEnabled("MagicStorage")]
+        internal static Item WithdrawFromHeart(object storageHeart, int itemType, int count) {
+            if (storageHeart is not TEStorageHeart heart) {
+                return new Item();
+            }
+
+            //检查安全系统权限
+            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1)) {
+                return new Item();
+            }
+
+            //创建要取出的物品
+            Item toWithdraw = new Item();
+            toWithdraw.SetDefaults(itemType);
+            toWithdraw.stack = count;
+
+            //调用 Withdraw 方法
+            //Withdraw(Item item, bool keepOneIfFavorite) 返回取出的物品
+            Item withdrawn = heart.Withdraw(toWithdraw, false);
+            return withdrawn ?? new Item();
+        }
+
+        /// <summary>
+        /// 从存储核心取出指定物品（使用Item参数）
+        /// </summary>
+        [JITWhenModsEnabled("MagicStorage")]
+        internal static Item WithdrawFromHeart(object storageHeart, Item toWithdraw) {
+            if (storageHeart is not TEStorageHeart heart) {
+                return new Item();
+            }
+
+            //检查安全系统权限
+            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1)) {
+                return new Item();
+            }
+
+            //调用 Withdraw 方法
+            Item withdrawn = heart.Withdraw(toWithdraw, false);
+            return withdrawn ?? new Item();
         }
 
         [JITWhenModsEnabled("MagicStorage")]
