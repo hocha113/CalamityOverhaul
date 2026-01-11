@@ -306,8 +306,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 return;
             }
 
+            float rate = MathHelper.Max(ThrowSpeed * 0.2f, 1f);
             //消耗能量
-            MachineData.UEvalue -= ConsumeUE;
+            MachineData.UEvalue -= ConsumeUE * rate;
 
             //计算投掷速度向量
             float radians = MathHelper.ToRadians(ThrowDirection);
