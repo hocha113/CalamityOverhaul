@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers;
 using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.Industrials.Generator.Thermal;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
@@ -408,6 +409,41 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void UpdateByPlayer() {
             bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<ItemPipeline>()) > 0;
+            Objectives[0].CurrentProgress = hasItem ? 1 : 0;
+            if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
+        }
+    }
+
+    public class ThrowerQuest : QuestNode
+    {
+        public override void SetStaticDefaults() {
+            DisplayName = this.GetLocalization(nameof(DisplayName), () => "投掷助手");
+            Description = this.GetLocalization(nameof(Description), () => "制作一个投掷者");
+
+            IconType = QuestIconType.Item;
+            IconItemType = ModContent.ItemType<Thrower>();
+            Position = new Vector2(150, 0);
+            AddParent<ItemPipelineQuest>();
+
+            QuestType = QuestType.Side;
+            Difficulty = QuestDifficulty.Hard;
+
+            Objectives.Add(new QuestObjective {
+                Description = this.GetLocalization("QuestObjective.Description", () => "获得投掷者"),
+                RequiredProgress = 1
+            });
+
+            Rewards.Add(new QuestReward {
+                ItemType = ItemID.Chest,
+                Amount = 2,
+                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+            });
+            AddReward(CWRID.Item_DubiousPlating, 10);
+            AddReward(CWRID.Item_MysteriousCircuitry, 10);
+        }
+
+        public override void UpdateByPlayer() {
+            bool hasItem = Main.LocalPlayer.InquireItem(ModContent.ItemType<Thrower>()) > 0;
             Objectives[0].CurrentProgress = hasItem ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Storage;
-using InnoVault.Storages;
+﻿using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

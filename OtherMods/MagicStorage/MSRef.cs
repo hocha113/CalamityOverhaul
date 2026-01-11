@@ -58,18 +58,18 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         [JITWhenModsEnabled("MagicStorage")]
         private static TEStorageHeart GetHeartFromTileEntity(TileEntity te) {
             if (te == null) return null;
-            
+
             //情况1：直接就是 StorageHeart
             if (te is TEStorageHeart heart) {
                 return heart;
             }
-            
+
             //情况2：是 TEStorageCenter 的子类（RemoteAccess、StorageAccess、CraftingAccess等）
             //它们都有 GetHeart() 方法
             if (te is TEStorageCenter center) {
                 return center.GetHeart();
             }
-            
+
             return null;
         }
 
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         [JITWhenModsEnabled("MagicStorage")]
         private static bool CheckHeartHasSpace(TEStorageHeart heart, Item item) {
             if (heart == null) return false;
-            
+
             // 检查安全系统权限
             if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
                 return false;
@@ -98,9 +98,9 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             if (!Has) {
                 return null;
             }
-            
+
             int range = maxFindChestMode / 16;
-            
+
             //在一定范围内查找 Magic Storage 的存储核心（包括远程端口）
             for (int x = position.X - range; x <= position.X + range; x++) {
                 for (int y = position.Y - range; y <= position.Y + range; y++) {

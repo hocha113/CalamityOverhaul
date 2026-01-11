@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.Content.Industrials.Storage;
 using InnoVault.Actors;
 using InnoVault.Storages;
 using Microsoft.Xna.Framework.Graphics;

@@ -1566,6 +1566,19 @@ Items: {
 			Pipes in Output mode extract items from connected containers and transfer them to containers connected to Input mode pipes
 			''' */
 	}
+
+	Thrower: {
+		// NoEnergyText: Insufficient energy!
+		// NoItemText: No items to throw!
+		// WorkingText: Throwing...
+		// IdleText: Idle
+		// DisplayName: Thrower
+		/* Tooltip:
+			'''
+			Consumes power to throw items
+			Right-click to open the control panel
+			''' */
+	}
 }
 
 Projectiles: {
@@ -6705,6 +6718,27 @@ UI: {
 		// Input: 输入
 		// NotEndpointHint: 只能在管道末端设置输入输出
 	}
+
+	ThrowerUI: {
+		// TitleText: Item Thrower
+		// InventoryLabel: Storage
+		// ControlLabel: Control Panel
+		// SpeedLabel: Throw Velocity
+		// AngleLabel: Spread Angle
+		// IntervalLabel: Throw Interval
+		// DirectionLabel: Throw Direction
+		// StartText: Start
+		// StopText: Stop
+		// StatusRunning: Running
+		// StatusIdle: Idle
+		// StatusNoEnergy: No Energy
+		// StatusNoItems: No Items
+		// EnergyLabel: Energy
+		// DropHint: Place Items
+		// AmmoModeOnText: Fire Ammo
+		// AmmoModeOffText: Throw Item
+		// AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
+	}
 }
 
 ADV: {
@@ -8495,6 +8529,14 @@ QuestLogs: {
 			// QuestObjective.Description: Obtain an Item Pipeline
 			// QuestReward.Description: 2 Chests
 			// DetailedDescription: Still running between chests like a primitive? These pipes are the veins of industry. Connect them between machines and containers, and watch items automatically flow to where they belong. Build an automated assembly line and enjoy the pleasure of reaping rewards without the labor.
+		}
+
+		ThrowerQuest: {
+			// DisplayName: Throwing Assistant
+			// Description: Craft a Thrower
+			// QuestObjective.Description: Obtain a Thrower
+			// QuestReward.Description: 2 Chests
+			// DetailedDescription: Not all items are worth treasuring. This device ejects items from the logistics network, tossing them out into the world. Whether for automated crafting (like dropping items into liquids) or simply acting as a garbage disposal chute, it handles the job perfectly.
 		}
 	}
 }

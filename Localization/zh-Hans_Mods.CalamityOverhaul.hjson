@@ -1537,6 +1537,19 @@ Items: {
 			输出模式的管道会抽取连接的容器内的物品，传输到连接的输入模式管道连接的物品中
 			'''
 	}
+
+	Thrower: {
+		NoEnergyText: 能量不足!
+		NoItemText: 没有可投掷的物品!
+		WorkingText: 投掷中...
+		IdleText: 待机
+		DisplayName: 投掷者
+		Tooltip:
+			'''
+			消耗电力投掷物品
+			右键打开操控面板
+			'''
+	}
 }
 
 Projectiles: {
@@ -6590,6 +6603,27 @@ UI: {
 		Input: 输入
 		NotEndpointHint: 只能在管道末端设置输入输出
 	}
+
+	ThrowerUI: {
+		TitleText: 物品投掷器
+		InventoryLabel: 存储仓
+		ControlLabel: 控制面板
+		SpeedLabel: 投掷力度
+		AngleLabel: 散布角度
+		IntervalLabel: 投掷间隔
+		DirectionLabel: 投掷方向
+		StartText: 启动
+		StopText: 停止
+		StatusRunning: 运行中
+		StatusIdle: 待机
+		StatusNoEnergy: 能量不足
+		StatusNoItems: 无物品
+		EnergyLabel: 能量
+		DropHint: 放入物品
+		AmmoModeOnText: 弹药发射
+		AmmoModeOffText: 物品投掷
+		AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
+	}
 }
 
 ADV: {
@@ -8380,6 +8414,14 @@ QuestLogs: {
 			QuestObjective.Description: 获得物品管道
 			QuestReward.Description: 2个箱子
 			DetailedDescription: 还在像个原始人一样在箱子之间跑来跑去吗？这些管道是工业的血管。将它们连接在机器与容器之间，看着物品自动流向它们该去的地方。建立一条自动化的流水线。
+		}
+
+		ThrowerQuest: {
+			DisplayName: 投掷助手
+			Description: 制作一个投掷者
+			QuestObjective.Description: 获得投掷者
+			QuestReward.Description: 2个箱子
+			DetailedDescription: 并非所有物品都值得被珍藏。这个装置能将物品从物流网络中排出，将其抛掷到世界中。无论是为了特定的自动化合成（比如将物品丢入液体），还是单纯地作为垃圾排放口，它都能完美胜任。
 		}
 	}
 }
