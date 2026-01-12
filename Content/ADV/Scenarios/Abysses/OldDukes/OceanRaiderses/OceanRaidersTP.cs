@@ -61,7 +61,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         internal float hoverSengs;
 
         public override void SetBattery() {
-            IdleDistance = 4000;
             storedItems = new List<Item>();
             fishingParticles = new List<FishingParticle>();
             vortexEffect = new OceanRaidersVortexEffect(this);

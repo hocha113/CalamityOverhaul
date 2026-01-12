@@ -64,7 +64,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         #endregion
 
         public override void SetBattery() {
-            IdleDistance = 2000;
             StoredItems = [];
             ThrowDirection = -45f;
         }
