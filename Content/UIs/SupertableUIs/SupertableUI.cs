@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileProcessors;
 using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
