@@ -15,6 +15,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using static Terraria.GameContent.Bestiary.BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -85,12 +86,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 //如果开启UI且没有绑定实体，则加载全局物品
                 if (value && !lastValue && TramTP == null) {
-                    if (GlobalItems == null) {
-                        GlobalItems = new Item[SupertableConstants.TOTAL_SLOTS];
-                        for (int i = 0; i < GlobalItems.Length; i++) {
-                            GlobalItems[i] = new Item();
-                        }
-                    }
+                    InstallGlobalItems();
                     Items = GlobalItems;
                 }
 
@@ -140,13 +136,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             AllRecipes = [];
         }
 
-        public override void OnEnterWorld() {
-            //重置全局物品存储
-            if (GlobalItems != null) {
+        private static void InstallGlobalItems() {
+            if (GlobalItems == null) {
+                //初始化全局物品存储
+                GlobalItems = new Item[SupertableConstants.TOTAL_SLOTS];
                 for (int i = 0; i < GlobalItems.Length; i++) {
                     GlobalItems[i] = new Item();
                 }
             }
+        }
+
+        public override void OnEnterWorld() {
+            InstallGlobalItems();
             _controller?.AnimationController.ForceClose();
             LoadenWorld();
         }
@@ -154,11 +155,28 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void SaveUIData(TagCompound tag) {
             tag["SupertableUI_DrawPos_X"] = DrawPosition.X;
             tag["SupertableUI_DrawPos_Y"] = DrawPosition.Y;
+
+            List<TagCompound> itemTags = new List<TagCompound>();
+            for (int i = 0; i < GlobalItems.Length; i++) {
+                if (GlobalItems[i] == null) {
+                    GlobalItems[i] = new Item(0);
+                }
+                itemTags.Add(ItemIO.Save(GlobalItems[i]));
+            }
+            tag["GlobalItems"] = itemTags;
         }
 
         public override void LoadUIData(TagCompound tag) {
             DrawPosition.X = tag.TryGet("SupertableUI_DrawPos_X", out float x) ? x : 500;
             DrawPosition.Y = tag.TryGet("SupertableUI_DrawPos_Y", out float y) ? y : 300;
+
+            if (tag.TryGet("GlobalItems", out List<TagCompound> itemTags)) {
+                List<Item> loadedItems = new List<Item>();
+                for (int i = 0; i < itemTags.Count; i++) {
+                    loadedItems.Add(ItemIO.Load(itemTags[i]));
+                }
+                GlobalItems = loadedItems.ToArray();
+            }
         }
 
         #endregion
