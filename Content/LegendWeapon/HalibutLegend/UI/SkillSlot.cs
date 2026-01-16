@@ -87,11 +87,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         HalibutUIPanel.Instance.MoveSlotToFront(this);
                     }
                 }
-                //W键将技能移动到技能库
+                //W键将技能移动到技能库（带动画）
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W) &&
                     !Main.oldKeyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W)) {
-                    if (FishSkill != null) {
-                        SkillLibraryUI.Instance?.MoveToLibrary(this);
+                    if (FishSkill != null && !beingDragged) {
+                        Vector2 startPos = DrawPosition + Size / 2;
+                        SkillLibraryUI.Instance?.MoveToLibraryWithAnimation(this, startPos);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -9,6 +10,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
@@ -59,6 +61,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private readonly List<LibraryBubble> bubbles = [];
         private int bubbleSpawnTimer;
 
+        //飞行粒子系统
+        public readonly List<LibrarySkillFlyEntity> flyingParticles = [];
+
+        //拖拽高亮状态
+        public bool IsDragHighlighted;
+        private float highlightIntensity;
+
+        //技能库内部拖拽
+        private SkillSlot draggingSlot;
+        private Vector2 dragOffset;
+        private int dragOriginalIndex = -1;
+        private int dragHoldTimer;
+        private const int DragHoldDelay = 8;
+
         //悬停状态
         private SkillSlot hoveredSlot;
         private int hoverTimer;
@@ -86,7 +102,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             Sengs = Math.Clamp(Sengs, 0f, 1f);
 
+            //更新飞行粒子（即使面板关闭也要更新）
+            UpdateFlyingParticles();
+
             if (Sengs <= 0.01f) {
+                IsDragHighlighted = false;
+                highlightIntensity = 0f;
                 return;
             }
 
@@ -120,6 +141,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 player.CWR().DontSwitchWeaponTime = 2;
             }
 
+            //高亮动画
+            float targetHighlight = IsDragHighlighted ? 1f : 0f;
+            highlightIntensity += (targetHighlight - highlightIntensity) * 0.15f;
+
             //滚动处理
             UpdateScroll();
 
@@ -128,6 +153,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //更新气泡粒子
             UpdateBubbles();
+
+            //重置高亮状态（每帧由HalibutUIPanel设置）
+            IsDragHighlighted = false;
+        }
+
+        private void UpdateFlyingParticles() {
+            for (int i = flyingParticles.Count - 1; i >= 0; i--) {
+                var particle = flyingParticles[i];
+                if (particle.Update()) {
+                    //粒子到达目标
+                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.4f, Volume = 0.5f });
+
+                    //如果有待激活的槽位，播放出现动画
+                    if (particle.PendingSlot != null) {
+                        particle.PendingSlot.isAppearing = true;
+                        particle.PendingSlot.appearProgress = 0f;
+                    }
+
+                    flyingParticles.RemoveAt(i);
+                }
+            }
         }
 
         private void UpdateScroll() {
@@ -165,6 +211,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float contentStartY = DrawPosition.Y + TitleHeight + Padding;
             float contentStartX = DrawPosition.X + Padding;
 
+            //拖拽起始检测
+            if (draggingSlot == null && Main.mouseLeft) {
+                dragHoldTimer++;
+            }
+            else if (!Main.mouseLeft) {
+                dragHoldTimer = 0;
+            }
+
             for (int i = 0; i < LibrarySlots.Count; i++) {
                 var slot = LibrarySlots[i];
                 int row = i / IconsPerRow;
@@ -174,27 +228,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float x = contentStartX + col * (IconSize + IconSpacing);
                 float y = contentStartY + visualRow * (IconSize + IconSpacing);
 
-                slot.DrawPosition = new Vector2(x, y);
+                //非拖拽中的槽位设置位置
+                if (draggingSlot == null || slot != draggingSlot) {
+                    slot.DrawPosition = Vector2.Lerp(slot.DrawPosition, new Vector2(x, y), 0.4f);
+                }
                 slot.Size = new Vector2(IconSize, IconSize);
 
                 //检测悬停
                 Rectangle slotRect = new Rectangle((int)x, (int)y, (int)IconSize, (int)IconSize);
                 bool isVisible = visualRow >= -0.5f && visualRow < ((PanelHeight - TitleHeight - Padding * 2) / (IconSize + IconSpacing));
 
-                if (isVisible && slotRect.Contains(MouseHitBox) && contentFade > 0.5f) {
+                if (isVisible && slotRect.Contains(MouseHitBox) && contentFade > 0.5f && draggingSlot == null) {
                     hoveredSlot = slot;
                     hoverTimer++;
 
-                    //检测W键按下，将技能加回主列表
+                    //检测W键按下，将技能加回主列表（带动画）
                     if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W) &&
                         !Main.oldKeyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W)) {
-                        MoveToMainList(slot);
+                        MoveToMainListWithAnimation(slot, slot.DrawPosition + new Vector2(IconSize / 2));
+                    }
+
+                    //拖拽起始检测
+                    if (Main.mouseLeft && dragHoldTimer >= DragHoldDelay) {
+                        draggingSlot = slot;
+                        dragOriginalIndex = i;
+                        dragOffset = Main.MouseScreen - slot.DrawPosition;
+                        slot.beingDragged = true;
+                        SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
                     }
                 }
             }
 
             if (hoveredSlot == null) {
                 hoverTimer = 0;
+            }
+
+            //处理拖拽中的槽位
+            if (draggingSlot != null) {
+                //更新拖拽位置
+                draggingSlot.DrawPosition = Main.MouseScreen - dragOffset;
+
+                //检测释放
+                if (Main.mouseLeftRelease) {
+                    draggingSlot.beingDragged = false;
+
+                    //检测是否释放到主面板区域
+                    bool releasedOnMainPanel = HalibutUIPanel.Instance.UIHitBox.Contains(MouseHitBox);
+
+                    if (releasedOnMainPanel) {
+                        //移动到主列表（带动画）
+                        MoveToMainListWithAnimation(draggingSlot, draggingSlot.DrawPosition + new Vector2(IconSize / 2));
+                    }
+                    else if (!hoverInMainPage) {
+                        //释放到UI外，返回原位（槽位位置会在下一帧自动插值回去）
+                        SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.3f, Pitch = 0.2f });
+                    }
+                    //否则保持在技能库中
+
+                    draggingSlot = null;
+                    dragOriginalIndex = -1;
+                    dragHoldTimer = 0;
+                }
             }
         }
 
@@ -215,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 将技能从主列表移动到技能库
+        /// 将技能从主列表移动到技能库（无动画，直接移动）
         /// </summary>
         public void MoveToLibrary(SkillSlot slot) {
             if (slot?.FishSkill == null) {
@@ -240,7 +334,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 将技能从技能库移动回主列表
+        /// 将技能从主列表移动到技能库（带飞行动画）
+        /// </summary>
+        public void MoveToLibraryWithAnimation(SkillSlot slot, Vector2 startPosition) {
+            if (slot?.FishSkill == null) {
+                return;
+            }
+
+            var mainSlots = player.GetModPlayer<HalibutSave>().halibutUISkillSlots;
+            if (!mainSlots.Contains(slot)) {
+                return;
+            }
+
+            mainSlots.Remove(slot);
+
+            //计算目标位置（技能库中的位置）
+            int futureIndex = LibrarySlots.Count;
+            int row = futureIndex / IconsPerRow;
+            int col = futureIndex % IconsPerRow;
+            float contentStartY = DrawPosition.Y + TitleHeight + Padding;
+            float contentStartX = DrawPosition.X + Padding;
+            Vector2 targetPos = new Vector2(
+                contentStartX + col * (IconSize + IconSpacing) + IconSize / 2,
+                contentStartY + (row - currentScrollOffset) * (IconSize + IconSpacing) + IconSize / 2
+            );
+
+            //如果目标不在可见区域，飞往面板中心
+            if (row - currentScrollOffset < 0 || row - currentScrollOffset >= 2) {
+                targetPos = DrawPosition + Size / 2;
+            }
+
+            //创建飞行粒子
+            LibrarySkillFlyEntity particle = new(slot.FishSkill, startPosition, targetPos, slot);
+            flyingParticles.Add(particle);
+
+            //先将槽位添加到列表，但标记为未激活
+            slot.appearProgress = 0f;
+            slot.isAppearing = false;
+            LibrarySlots.Add(slot);
+
+            //播放音效
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
+
+            //如果当前选中的技能被移走了，清空选择
+            if (HalibutUIHead.FishSkill == slot.FishSkill) {
+                HalibutUIHead.FishSkill = null;
+            }
+        }
+
+        /// <summary>
+        /// 将技能从技能库移动回主列表（无动画）
         /// </summary>
         public void MoveToMainList(SkillSlot slot) {
             if (slot?.FishSkill == null) {
@@ -259,7 +402,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.2f });
         }
 
+        /// <summary>
+        /// 将技能从技能库移动回主列表（带飞行动画）
+        /// </summary>
+        public void MoveToMainListWithAnimation(SkillSlot slot, Vector2 startPosition) {
+            if (slot?.FishSkill == null) {
+                return;
+            }
+
+            if (!LibrarySlots.Contains(slot)) {
+                return;
+            }
+
+            LibrarySlots.Remove(slot);
+
+            //计算目标位置（主面板技能列表中的位置）
+            var mainSlots = player.GetModPlayer<HalibutSave>().halibutUISkillSlots;
+            int futureIndex = mainSlots.Count;
+            int visibleIndex = futureIndex - HalibutUIPanel.Instance.scrollOffset;
+
+            Vector2 targetPos;
+            if (visibleIndex >= 0 && visibleIndex < HalibutUIPanel.maxVisibleSlots) {
+                targetPos = HalibutUIPanel.Instance.DrawPosition + new Vector2(52, 30);
+                targetPos.X += visibleIndex * (Skillcon.Width + 4);
+                targetPos += new Vector2(Skillcon.Width / 2, Skillcon.Height / 10);
+            }
+            else {
+                //不在可见范围，飞往面板右侧
+                targetPos = HalibutUIPanel.Instance.DrawPosition + new Vector2(HalibutUIPanel.Instance.Size.X - 30, 30 + Skillcon.Height / 10);
+            }
+
+            //创建飞行粒子（飞往主面板）
+            SkillIconEntity particle = new(slot.FishSkill, startPosition, targetPos);
+            HalibutUIPanel.Instance.flyingParticles.Add(particle);
+
+            //将槽位添加到主列表
+            slot.appearProgress = 0f;
+            slot.isAppearing = false;
+            mainSlots.Add(slot);
+
+            //注册到pendingSlots，粒子到达后触发出现动画
+            int particleIndex = HalibutUIPanel.Instance.flyingParticles.Count - 1;
+            HalibutUIPanel.Instance.RegisterPendingSlot(slot, particleIndex);
+
+            //播放音效
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.2f });
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
+            //即使面板关闭也要绘制飞行粒子
+            foreach (var particle in flyingParticles) {
+                particle.Draw(spriteBatch);
+            }
+
             if (Sengs <= 0.01f) {
                 return;
             }
@@ -268,6 +463,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //绘制面板
             DrawPanel(spriteBatch, alpha);
+
+            //绘制拖拽高亮效果
+            if (highlightIntensity > 0.01f) {
+                DrawDragHighlight(spriteBatch, alpha);
+            }
 
             //绘制气泡（在内容后面）
             foreach (var bubble in bubbles) {
@@ -278,6 +478,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (contentFade > 0.01f) {
                 DrawContent(spriteBatch, alpha * contentFade);
             }
+        }
+
+        public void DoDrawDraggingSlot(SpriteBatch spriteBatch) {
+            //绘制拖拽中的槽位（在最上层）
+            if (draggingSlot != null) {
+                DrawDraggingSlot(spriteBatch, Math.Min(Sengs * 1.5f, 1f));
+            }
+        }
+
+        private void DrawDragHighlight(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle panelRect = UIHitBox;
+
+            //脉动效果
+            float pulse = (float)Math.Sin(pulseTimer * 4f) * 0.3f + 0.7f;
+            float intensity = highlightIntensity * pulse;
+
+            //内发光
+            Color glowColor = new Color(100, 200, 255) * (alpha * intensity * 0.25f);
+            for (int i = 0; i < 8; i++) {
+                Rectangle glowRect = panelRect;
+                glowRect.Inflate(-i * 2, -i * 2);
+                if (glowRect.Width > 0 && glowRect.Height > 0) {
+                    float glowAlpha = (1f - i / 8f) * intensity;
+                    spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor * glowAlpha);
+                }
+            }
+
+            //边框高亮
+            Color borderHighlight = new Color(120, 220, 255) * (alpha * intensity * 0.8f);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 3), new Rectangle(0, 0, 1, 1), borderHighlight);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - 3, panelRect.Width, 3), new Rectangle(0, 0, 1, 1), borderHighlight * 0.7f);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, 3, panelRect.Height), new Rectangle(0, 0, 1, 1), borderHighlight * 0.85f);
+            spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - 3, panelRect.Y, 3, panelRect.Height), new Rectangle(0, 0, 1, 1), borderHighlight * 0.85f);
+        }
+
+        private void DrawDraggingSlot(SpriteBatch spriteBatch, float alpha) {
+            if (draggingSlot?.FishSkill?.Icon == null) {
+                return;
+            }
+
+            Vector2 iconCenter = draggingSlot.DrawPosition + new Vector2(IconSize / 2);
+
+            //发光效果
+            Color glowColor = new Color(120, 200, 240) * (alpha * 0.6f);
+            spriteBatch.Draw(draggingSlot.FishSkill.Icon, iconCenter, null, glowColor, 0f,
+                draggingSlot.FishSkill.Icon.Size() / 2, 1.4f, SpriteEffects.None, 0f);
+
+            //图标主体
+            spriteBatch.Draw(draggingSlot.FishSkill.Icon, iconCenter, null, Color.White * alpha, 0f,
+                draggingSlot.FishSkill.Icon.Size() / 2, 1.15f, SpriteEffects.None, 0f);
         }
 
         private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
@@ -425,6 +676,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             for (int i = 0; i < LibrarySlots.Count; i++) {
                 var slot = LibrarySlots[i];
                 if (slot?.FishSkill?.Icon == null) {
+                    continue;
+                }
+
+                //跳过正在拖拽的槽位（单独绘制）
+                if (slot == draggingSlot) {
                     continue;
                 }
 
@@ -577,6 +833,96 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color highlightColor = new Color(180, 230, 255) * (finalAlpha * 0.3f);
             Vector2 highlightOffset = new Vector2(-Size * 0.2f, -Size * 0.2f);
             spriteBatch.Draw(pixel, Position + highlightOffset, new Rectangle(0, 0, 1, 1), highlightColor, 0f, new Vector2(0.5f), Size * 0.3f, SpriteEffects.None, 0f);
+        }
+    }
+
+    /// <summary>
+    /// 技能库飞行粒子实体
+    /// </summary>
+    internal class LibrarySkillFlyEntity
+    {
+        public FishSkill FishSkill;
+        public Vector2 Position;
+        public float Scale = 0.5f;
+        public float Rotation;
+        public float RotationSpeed;
+        public float Alpha = 1f;
+        public int LifeTime;
+        public int MaxLifeTime = 45;
+        public SkillSlot PendingSlot;
+
+        private Vector2 startPos;
+        private Vector2 endPos;
+        private Vector2 controlPoint1;
+        private Vector2 controlPoint2;
+
+        public LibrarySkillFlyEntity(FishSkill fishSkill, Vector2 start, Vector2 end, SkillSlot pendingSlot = null) {
+            FishSkill = fishSkill;
+            startPos = start;
+            endPos = end;
+            PendingSlot = pendingSlot;
+
+            //创建贝塞尔曲线控制点
+            Vector2 mid = (start + end) / 2;
+            float distance = Vector2.Distance(start, end);
+
+            //向上弯曲的弧线
+            controlPoint1 = start + new Vector2(distance * 0.15f, -distance * 0.3f);
+            controlPoint2 = mid + new Vector2(distance * 0.05f, -distance * 0.2f);
+
+            Position = start;
+            RotationSpeed = (Main.rand.NextFloat() - 0.5f) * 0.15f;
+            LifeTime = 0;
+        }
+
+        public bool Update() {
+            LifeTime++;
+
+            float progress = (float)LifeTime / MaxLifeTime;
+            float easedProgress = CWRUtils.EaseOutCubic(progress);
+
+            //贝塞尔曲线位置
+            Position = CWRUtils.CubicBezier(easedProgress, startPos, controlPoint1, controlPoint2, endPos);
+
+            Rotation += RotationSpeed;
+
+            //缩放动画
+            if (progress < 0.25f) {
+                Scale = 0.5f + (progress / 0.25f) * 0.5f;
+            }
+            else {
+                Scale = 1.0f - ((progress - 0.25f) / 0.75f) * 0.3f;
+            }
+
+            //透明度
+            if (progress < 0.8f) {
+                Alpha = 1f;
+            }
+            else {
+                Alpha = 1f - ((progress - 0.8f) / 0.2f);
+            }
+
+            return LifeTime >= MaxLifeTime;
+        }
+
+        public void Draw(SpriteBatch spriteBatch) {
+            if (FishSkill?.Icon == null) {
+                return;
+            }
+
+            Vector2 origin = FishSkill.Icon.Size() / 2;
+
+            //发光外圈
+            Color glowColor = new Color(100, 200, 240) with { A = 0 } * (Alpha * 0.5f);
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4 + Rotation;
+                Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 2.5f;
+                spriteBatch.Draw(FishSkill.Icon, Position + offset, null, glowColor, Rotation, origin, Scale * 1.1f, SpriteEffects.None, 0);
+            }
+
+            //主图标
+            Color mainColor = Color.White * Alpha;
+            spriteBatch.Draw(FishSkill.Icon, Position, null, mainColor, Rotation, origin, Scale, SpriteEffects.None, 0);
         }
     }
 }

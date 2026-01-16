@@ -159,7 +159,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            SkillLibraryUI.Instance.Draw(spriteBatch);//绘制技能库（在主面板上方）
+            //技能库在最下层（避免遮挡其他UI）
+            SkillLibraryUI.Instance.Draw(spriteBatch);
             DomainUI.Instance.Draw(spriteBatch);           
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
@@ -168,6 +169,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             spriteBatch.Draw(Head, UIHitBox, Color.White);
 
             HalibutUILeftSidebar.Instance.PostDraw(spriteBatch);
+
+            //绘制拖拽中的技能图标（在所有UI之上）
+            HalibutUIPanel.Instance.DrawDraggingSlot(spriteBatch);
+            SkillLibraryUI.Instance.DoDrawDraggingSlot(spriteBatch);
 
             if (FishSkill == null) {
                 return;
@@ -263,6 +268,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = [];//槽位 -> 对应的粒子索引
+
+        /// <summary>
+        /// 注册待激活的技能槽位，粒子到达后触发出现动画
+        /// </summary>
+        public void RegisterPendingSlot(SkillSlot slot, int particleIndex) {
+            pendingSlots ??= [];
+            pendingSlots[slot] = particleIndex;
+        }
 
         private SkillSlot draggingSlot;//当前拖拽中的槽位
         private Vector2 dragOffset;//鼠标相对槽位中心偏移
@@ -554,15 +567,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //更新拖拽位置
                 Vector2 mouse = Main.MouseScreen - dragOffset;
                 dragVisualX = MathHelper.Lerp(dragVisualX, mouse.X, 0.5f);
-                draggingSlot.DrawPosition = new Vector2(dragVisualX, draggingSlot.DrawPosition.Y);
+                draggingSlot.DrawPosition = new Vector2(dragVisualX, mouse.Y - dragOffset.Y);
+
+                //检测是否悬停在技能库区域，设置高亮
+                bool hoveringLibrary = SkillLibraryUI.Instance.Sengs > 0.5f &&
+                    SkillLibraryUI.Instance.UIHitBox.Contains(MouseHitBox);
+                SkillLibraryUI.Instance.IsDragHighlighted = hoveringLibrary;
+
                 //计算插入索引（依据拖拽中心X）
                 float centerX = draggingSlot.DrawPosition.X + draggingSlot.Size.X / 2 - (DrawPosition.X + baseX);
                 float logicalIndexF = centerX / slotWidth + currentScrollOffset;
                 int logicalIndex = (int)Math.Round(logicalIndexF);
                 logicalIndex = Math.Clamp(logicalIndex, 0, halibutUISkillSlots.Count - 1);
                 dragInsertIndex = logicalIndex;
-                if (logicalIndex != dragOriginalIndex) {
-                    //为其他槽位腾出空间动画
+                if (logicalIndex != dragOriginalIndex && !hoveringLibrary) {
+                    //为其他槽位腾出空间动画（仅在不悬停技能库时）
                     for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                         var slot = halibutUISkillSlots[i];
                         if (slot == draggingSlot) {
@@ -589,13 +608,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     //保持拖拽
                 }
                 else {
-                    //释放 -> 重新排序
+                    //释放
                     draggingSlot.beingDragged = false;
-                    if (dragInsertIndex != dragOriginalIndex && dragInsertIndex >= 0) {
+
+                    //检测是否释放到技能库区域
+                    if (hoveringLibrary) {
+                        //移动到技能库（带动画）
+                        Vector2 startPos = draggingSlot.DrawPosition + draggingSlot.Size / 2;
+                        SkillLibraryUI.Instance.MoveToLibraryWithAnimation(draggingSlot, startPos);
+                    }
+                    else if (dragInsertIndex != dragOriginalIndex && dragInsertIndex >= 0 && hoverInMainPage) {
+                        //在主面板内重新排序
                         halibutUISkillSlots.Remove(draggingSlot);
                         halibutUISkillSlots.Insert(dragInsertIndex, draggingSlot);
                         SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.4f });
                     }
+                    else if (!hoverInMainPage && !hoveringLibrary) {
+                        //释放到UI外，返回原位（槽位会自动插值回去）
+                        SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.3f, Pitch = 0.2f });
+                    }
+
                     draggingSlot = null;
                     dragOriginalIndex = -1;
                     dragInsertIndex = -1;
@@ -636,6 +668,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
         }
 
+        /// <summary>
+        /// 绘制拖拽中的技能槽位（在所有UI之上）
+        /// </summary>
+        public void DrawDraggingSlot(SpriteBatch spriteBatch) {
+            if (draggingSlot?.FishSkill?.Icon == null) {
+                return;
+            }
+
+            Vector2 center = draggingSlot.DrawPosition + draggingSlot.Size / 2;
+            Vector2 origin = draggingSlot.Size / 2;
+
+            //发光效果
+            Color glowColor = Color.Gold with { A = 0 } * 0.7f;
+            spriteBatch.Draw(draggingSlot.FishSkill.Icon, center, null, glowColor, 0f, origin, 1.35f, SpriteEffects.None, 0);
+
+            //主图标
+            spriteBatch.Draw(draggingSlot.FishSkill.Icon, center, null, Color.White, 0f, origin, 1.15f, SpriteEffects.None, 0);
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
             RasterizerState normalState = new RasterizerState() { ScissorTestEnable = false };
@@ -665,6 +716,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, scissorRect);
             for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                 var slot = halibutUISkillSlots[i];
+                //跳过拖拽中的槽位（单独绘制在最上层）
+                if (slot == draggingSlot) {
+                    continue;
+                }
                 float alpha = 1f;//计算透明度：边缘的图标逐渐淡出
                 if (slot.RelativeIndex < 0) {
                     alpha = Math.Max(0, 1f + slot.RelativeIndex);//左侧淡出
