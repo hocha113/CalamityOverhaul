@@ -70,8 +70,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //技能库内部拖拽
         private SkillSlot draggingSlot;
+        /// <summary>
+        /// 是否有槽位正在被拖拽
+        /// </summary>
+        public bool IsDragging => draggingSlot != null;
         private Vector2 dragOffset;
-        private int dragOriginalIndex = -1;
         private int dragHoldTimer;
         private const int DragHoldDelay = 8;
 
@@ -238,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Rectangle slotRect = new Rectangle((int)x, (int)y, (int)IconSize, (int)IconSize);
                 bool isVisible = visualRow >= -0.5f && visualRow < ((PanelHeight - TitleHeight - Padding * 2) / (IconSize + IconSpacing));
 
-                if (isVisible && slotRect.Contains(MouseHitBox) && contentFade > 0.5f && draggingSlot == null) {
+                if (isVisible && slotRect.Contains(MouseHitBox) && contentFade > 0.5f && draggingSlot == null && !HalibutUIPanel.Instance.IsDragging) {
                     hoveredSlot = slot;
                     hoverTimer++;
 
@@ -248,10 +251,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         MoveToMainListWithAnimation(slot, slot.DrawPosition + new Vector2(IconSize / 2));
                     }
 
-                    //拖拽起始检测
-                    if (Main.mouseLeft && dragHoldTimer >= DragHoldDelay) {
+                    //拖拽起始检测（确保主面板没有在拖拽）
+                    if (Main.mouseLeft && dragHoldTimer >= DragHoldDelay && !HalibutUIPanel.Instance.IsDragging) {
                         draggingSlot = slot;
-                        dragOriginalIndex = i;
                         dragOffset = Main.MouseScreen - slot.DrawPosition;
                         slot.beingDragged = true;
                         SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
@@ -286,7 +288,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     //否则保持在技能库中
 
                     draggingSlot = null;
-                    dragOriginalIndex = -1;
                     dragHoldTimer = 0;
                 }
             }

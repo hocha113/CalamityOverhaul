@@ -278,6 +278,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private SkillSlot draggingSlot;//当前拖拽中的槽位
+        /// <summary>
+        /// 是否有槽位正在被拖拽
+        /// </summary>
+        public bool IsDragging => draggingSlot != null;
         private Vector2 dragOffset;//鼠标相对槽位中心偏移
         private float dragVisualX;//拖拽视觉X
         private int dragOriginalIndex = -1;//开始拖拽时原索引
@@ -547,7 +551,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 slot.RelativeIndex = relativePosition;//用于判断是否在可见范围内
                 slot.Update();
-                if (slot.hoverInMainPage && draggingSlot == null && Main.mouseLeft && dragHoldTimer >= DragHoldDelay) {
+                if (slot.hoverInMainPage && draggingSlot == null && Main.mouseLeft && dragHoldTimer >= DragHoldDelay && !SkillLibraryUI.Instance.IsDragging) {
                     draggingSlot = slot;
                     dragOriginalIndex = i;
                     dragOffset = Main.MouseScreen - slot.DrawPosition;
@@ -567,7 +571,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //更新拖拽位置
                 Vector2 mouse = Main.MouseScreen - dragOffset;
                 dragVisualX = MathHelper.Lerp(dragVisualX, mouse.X, 0.5f);
-                draggingSlot.DrawPosition = new Vector2(dragVisualX, mouse.Y - dragOffset.Y);
+                draggingSlot.DrawPosition = new Vector2(dragVisualX, MathHelper.Lerp(draggingSlot.DrawPosition.Y, mouse.Y, 0.5f));
+
+                //拖拽时清除悬停状态，防止提示窗口残留
+                SkillSlot.HoveredSlot = null;
+                SkillTooltipPanel.Instance.ForceHide();
 
                 //检测是否悬停在技能库区域，设置高亮
                 bool hoveringLibrary = SkillLibraryUI.Instance.Sengs > 0.5f &&

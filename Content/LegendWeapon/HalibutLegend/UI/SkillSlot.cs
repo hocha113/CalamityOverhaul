@@ -64,7 +64,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && DrawAlpha > 0.5f && appearProgress >= 1f;
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && DrawAlpha > 0.5f && appearProgress >= 1f && !beingDragged;
+
+            //如果有任何拖拽在进行，清除悬停状态
+            if (HalibutUIPanel.Instance.IsDragging || SkillLibraryUI.Instance.IsDragging) {
+                hoverInMainPage = false;
+            }
 
             if (hoverInMainPage) {
                 HoveredSlot = this;
