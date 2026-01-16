@@ -607,7 +607,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 lockParticle.Draw(spriteBatch, alpha);
             }
             if (expandProgress > 0.8f) {
-                DrawTitle(spriteBatch, alpha);
+                //事实证明绘制这个标题不是一个好主意，因为不符合UI风格，并且还显得多余
+                //DrawTitle(spriteBatch, alpha);
             }
             if (hoveredEye != null && expandProgress >= 0.4f) {
                 DrawEyeTooltip(spriteBatch, hoveredEye, alpha);
@@ -1026,24 +1027,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
             extraEye.Draw(spriteBatch, halibutCenter, alpha);
-        }
-
-        private void DrawTitle(SpriteBatch spriteBatch, float alpha) {
-            if (contentFadeProgress < 0.5f) {
-                return;
-            }
-            float titleAlpha = contentFadeProgress * alpha;
-            string title = TitleText.Value;
-            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title);
-            Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 4);
-            Color titleGlow = Color.Gold * titleAlpha * 0.5f;
-            for (int i = 0; i < 4; i++) {
-                float angle = MathHelper.TwoPi * i / 4;
-                Vector2 offset = angle.ToRotationVector2() * 1.2f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlow, 0.85f);
-            }
-            Color titleColor = Color.Lerp(Color.Gold, Color.White, 0.3f) * titleAlpha;
-            Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor, 0.85f);
         }
 
         public static string GetDescription(int layer) {
