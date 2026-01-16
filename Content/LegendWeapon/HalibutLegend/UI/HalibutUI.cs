@@ -60,6 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutUIPanel.Instance.Update();
             DomainUI.Instance.Update();
             ResurrectionUI.Instance.Update();//更新复苏条
+            SkillLibraryUI.Instance.Update();//更新技能库
         }
 
         public override void LogicUpdate() {
@@ -158,7 +159,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            DomainUI.Instance.Draw(spriteBatch);
+            SkillLibraryUI.Instance.Draw(spriteBatch);//绘制技能库（在主面板上方）
+            DomainUI.Instance.Draw(spriteBatch);           
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
             ResurrectionUI.Instance.Draw(spriteBatch);//绘制复苏条

@@ -20,6 +20,7 @@ HalibutText: {
 		// Hover2: Right Click: Pin to Top
 		// Hover3: Scroll Wheel: Scroll
 		// Hover4: Drag: Sort
+		// Hover5: W键: 收入库中
 	}
 
 	DomainUI: {
@@ -153,6 +154,17 @@ HalibutText: {
 		// Trend4: Flooding
 		// Trend5: Catastrophic Collapse
 		// SummaryFormat: Diagnosis: {0} [Erosion Trend: {1}]
+	}
+
+	SkillLibraryUI: {
+		// TitleText: Skill Library
+		/* EmptyText:
+			'''
+			Skill Library is empty
+			Press [W] on a skill to store it
+			''' */
+		// HintAddToList: "[W] Add to List"
+		// HintRemoveFromList: "[W] Store in Library"
 	}
 }
 

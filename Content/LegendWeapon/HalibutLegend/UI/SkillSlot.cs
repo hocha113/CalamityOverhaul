@@ -42,12 +42,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         internal static LocalizedText Hover2;
         internal static LocalizedText Hover3;
         internal static LocalizedText Hover4;
+        internal static LocalizedText Hover5;
 
         public override void SetStaticDefaults() {
             Hover1 = this.GetLocalization(nameof(Hover1), () => "左键: 选择");
             Hover2 = this.GetLocalization(nameof(Hover2), () => "右键: 置顶");
             Hover3 = this.GetLocalization(nameof(Hover3), () => "滚轮: 滚动");
             Hover4 = this.GetLocalization(nameof(Hover4), () => "长按: 拖拽");
+            Hover5 = this.GetLocalization(nameof(Hover5), () => "W键: 收入库中");
         }
 
         public override void Update() {
@@ -83,6 +85,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (Main.mouseRight && Main.mouseRightRelease) {
                     if (FishSkill != null) {
                         HalibutUIPanel.Instance.MoveSlotToFront(this);
+                    }
+                }
+                //W键将技能移动到技能库
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W) &&
+                    !Main.oldKeyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W)) {
+                    if (FishSkill != null) {
+                        SkillLibraryUI.Instance?.MoveToLibrary(this);
                     }
                 }
             }
@@ -142,10 +151,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string l2 = Hover2.Value;
             string l3 = Hover3.Value;
             string l4 = Hover4.Value;
+            string l5 = Hover5.Value;
             var font = FontAssets.MouseText.Value;
-            float w = Math.Max(font.MeasureString(l1).X, Math.Max(font.MeasureString(l2).X, font.MeasureString(l3).X));
+            float w = Math.Max(font.MeasureString(l1).X, Math.Max(font.MeasureString(l2).X, Math.Max(font.MeasureString(l3).X, Math.Max(font.MeasureString(l4).X, font.MeasureString(l5).X))));
             float lineH = 18f;
-            Vector2 size = new Vector2(w + 20, lineH * 4 + 16);
+            Vector2 size = new Vector2(w + 20, lineH * 5 + 16);
             Vector2 pos = DrawPosition + new Vector2(Size.X / 2 - size.X / 2, -size.Y - 6);
             pos.X = Math.Clamp(pos.X, 16, Main.screenWidth - size.X - 16);
             pos.Y = Math.Max(16, pos.Y);
@@ -164,6 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Utils.DrawBorderString(spriteBatch, l2, tPos + new Vector2(0, lineH), Color.White, 0.75f);
             Utils.DrawBorderString(spriteBatch, l3, tPos + new Vector2(0, lineH * 2), Color.White, 0.75f);
             Utils.DrawBorderString(spriteBatch, l4, tPos + new Vector2(0, lineH * 3), Color.White, 0.75f);
+            Utils.DrawBorderString(spriteBatch, l5, tPos + new Vector2(0, lineH * 4), new Color(150, 200, 255), 0.75f);
         }
     }
 }

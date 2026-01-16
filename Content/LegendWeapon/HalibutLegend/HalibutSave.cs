@@ -16,6 +16,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public readonly List<SkillSlot> halibutUISkillSlots = [];
         /// <summary>
+        /// 技能库中的技能槽位（用于保存加载）
+        /// </summary>
+        public readonly List<SkillSlot> skillLibrarySlots = [];
+        /// <summary>
         /// 大比目鱼技能（用于保存加载）
         /// </summary>
         public readonly List<FishSkill> unlockSkills = [];
@@ -58,6 +62,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     list.Add(skillTag);
                 }
                 tag["FishSkills"] = list;
+
+                //保存技能库数据
+                IList<TagCompound> libraryList = [];
+                foreach (var slot in skillLibrarySlots) {
+                    if (slot.FishSkill == null) {
+                        continue;
+                    }
+                    TagCompound skillTag = [];
+                    skillTag["Name"] = slot.FishSkill.FullName;
+                    libraryList.Add(skillTag);
+                }
+                tag["SkillLibrary"] = libraryList;
 
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
                     var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
@@ -110,6 +126,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
                     if (tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
                         FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
+                    }
+                }
+
+                //加载技能库数据
+                if (tag.TryGet<IList<TagCompound>>("SkillLibrary", out var libraryList)) {
+                    skillLibrarySlots.Clear();
+                    foreach (var skillTag in libraryList) {
+                        if (!skillTag.TryGet<string>("Name", out var name) ||
+                            !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
+                            continue;
+                        }
+                        skillLibrarySlots.Add(HalibutUIPanel.AddSkillSlot(fishSkill, 1f));
+                        //确保技能在unlockSkills中
+                        if (!unlockSkills.Contains(fishSkill)) {
+                            unlockSkills.Add(fishSkill);
+                        }
                     }
                 }
 

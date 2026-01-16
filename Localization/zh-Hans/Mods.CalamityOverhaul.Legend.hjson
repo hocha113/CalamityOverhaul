@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -20,6 +20,7 @@ HalibutText: {
 		Hover2: 右键: 置顶
 		Hover3: 滚轮: 滚动
 		Hover4: 长按: 拖拽
+		// Hover5: W键: 收入库中
 	}
 
 	DomainUI: {
@@ -157,6 +158,17 @@ HalibutText: {
 		Trend4: 剧烈灌注
 		Trend5: 瞬间崩坏
 		SummaryFormat: 当前诊断：{0} [侵蚀态势：{1}]
+	}
+
+	SkillLibraryUI: {
+		TitleText: 技能库
+		EmptyText:
+			'''
+			技能库为空
+			在技能上按[W]可收纳技能
+			'''
+		HintAddToList: "[W]加入列表"
+		HintRemoveFromList: "[W]收入库中"
 	}
 }
 
