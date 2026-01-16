@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static LocalizedText HintRemoveFromList;
 
         //数据访问
-        public List<SkillSlot> LibrarySlots => player.GetModPlayer<HalibutSave>().skillLibrarySlots;
+        public static List<SkillSlot> LibrarySlots => player.GetModPlayer<HalibutSave>().skillLibrarySlots;
 
         //面板尺寸
         private const float PanelWidth = 210f;
