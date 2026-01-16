@@ -1,0 +1,1570 @@
+﻿Items: {
+	ElementWhip: {
+		DisplayName: Element Whip
+		Tooltip: A Whip infused with the energy of the Moon and the Elements.
+	}
+
+	TheRelicLuxor: {
+		DisplayName: The Relic Luxor
+		Tooltip:
+			'''
+			Searing psychic power will accompany you in every attack, and the God of Glory is with you
+			[tips]
+			'''
+	}
+
+	TheLuxirSoulArtifact: {
+		DisplayName: The Luxir Soul Artifact
+		Tooltip:
+			'''
+			Both God and immortality acknowledge your glory
+			[tips]
+			'''
+	}
+
+	AzureDragonRage: {
+		DisplayName: Azure Dragon Rage
+		Tooltip: Smells like freshly cut albeit musty grass.
+	}
+
+	BleedingScourge: {
+		DisplayName: Bleeding Scourge
+		Tooltip: Hitting an enemy with this whip causing blood to rain down from the sky before bursting on the enemy below, tagging it for minions.
+	}
+
+	GhostFireWhip: {
+		DisplayName: Ghost Fire Whip
+		Tooltip:
+			'''
+			An Extremely long whip, formed from fury of the restless dungeon spirits.
+			[c/d4bc75:Pure Zealousy Eminates from the base, encouraging you to seek out who wronged you.]
+			'''
+	}
+
+	AllhallowsGoldWhip: {
+		DisplayName: Allhallows Gold Whip
+		Tooltip: It's actually not finished yet
+	}
+
+	DivineSourceBlade: {
+		DisplayName: Divine Source Blade
+		Tooltip: Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons.
+	}
+
+	FoodStallChair: {
+		DisplayName: Food Stall Chair
+		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
+	}
+
+	AnnihilatingUniverse: {
+		DisplayName: Annihilating Universe
+		Tooltip:
+			'''
+			Wooden Arrows turn into a spread of Cosmic Bolts. 
+			Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
+			Right click to summon Projections of the Devourer that grow stronger and bigger over time. 
+			Letting go of right click fires the portal used to home in on enemies before eventually dying out.
+			[c/9C27B0:The End is Nigh.]
+			'''
+	}
+
+	HeavenfallLongbow: {
+		DisplayName: Heavenfall Longbow
+		Tooltip:
+			'''
+			Fires out Pure Primordial Rainbow Light to completely annihiliate your foes in brilliance.
+			Right click will have the Primordial light rain down on your foes, exploding in pure magnifience.
+			Press [KEY] to start the Vientiane Trial when at max power.
+			[legend]
+			'''
+		Legend:
+			'''
+
+			The flames of war from a billion years ago have never truly been extinguished. 
+			Like smoldering embers, they traverse the endless corridors of time, burning brightly even now.
+			They are the remnants of the Twilight of the Gods, the afterglow of the universe’s ancient schism, the ceaseless echoes of existence and annihilation.
+
+			The Radiant God, embodiment of galactic order, fell in the greatest rebellion the cosmos has ever witnessed.
+			The divine body shattered like a collapsing star, scattering countless brilliant fragments across every corner of the galaxy.
+			Those fragments became the seeds of life, the spark of knowledge, the cradle of miracles—and yet, 
+			they also bore the stain of greed, destruction, and desecration.
+			Mortals revere these remnants, calling them sacred relics; 
+			yet the so-called miracles crafted from them are but crude imitations of the divine, the reckless hubris of those who do not know reverence.
+
+			But among the forgotten ruins and the echoes of legend, there exists an artifact that transcends all relics. 
+			It is no mere witness to the fall of the Supreme God; it was the very weapon that cast Him into eternal oblivion—a bow of legend.
+			Once wreathed in the fury of heaven’s fire, 
+			it loosed the fatal arrow that sundered the divine authority and extinguished the hubris of gods, bringing their ambitions to ruin.
+			As the war ended, the bow too was claimed by the tides of time, buried in the endless shroud of mystery and myth.
+
+			Yet now, the wheel of fate turns once more. 
+			The fires of heaven reignite, and that god-slaying bow shall emerge anew amid the symphony of stars.
+			Once more, it shall carve the annals of history in blood and stardust.
+
+			'''
+	}
+
+	TestItem: {
+		DisplayName: Text Item
+		Tooltip: Um... You shouldn't have it
+	}
+
+	BaseSingularity: {
+		DisplayName: Base Singularity
+		Tooltip: Um... You shouldn't have it
+	}
+
+	InfiniteIngot: {
+		DisplayName: Infinite Ingot
+		Tooltip: The power of many worlds, universes and galaxies all coalesce into this singular ingot.
+	}
+
+	TransmutationOfMatterItem: {
+		DisplayName: Omega Substance Polymerizer
+		Tooltip:
+			'''
+			An Experimental Device of Draedon's Creation. Placing it down and right clicking it opens an extended crafting interface to go beyond mortal limits.
+			"Your Journey into Greedy Madness is now underway."
+			'''
+	}
+
+	DarkMatterCompressorItem: {
+		DisplayName: Dark Matter Compressor
+		Tooltip: A Culmination of Several workstations, now able to compress pure matter like a black hole.
+	}
+
+	InfinitePick: {
+		DisplayName: Universal Greed Pickaxe
+		Tooltip:
+			'''
+			Right-click and destroy everything it touches
+			Press [KEY] to change the mode
+			'You can sense that the very lands of Terraria trembles in fear whenever you hold it.'
+			'''
+	}
+
+	DarkMatterBall: {
+		DisplayName: Dark Matter Ball
+		Tooltip:
+			'''
+			It has been compressed into a black hole, yet miraculously remains stable.
+			Right-click while holding the item to store items inside.
+			Right-click with an empty hand to retrieve stored items.
+			'''
+		Contents: Contents:
+	}
+
+	NeutronStarIngot: {
+		DisplayName: Neutron Star Ingot
+		Tooltip: The weight of all things, gathered at your fingertips
+	}
+
+	InfinityCatalyst: {
+		DisplayName: Infinity Catalyst
+		Tooltip: ""
+	}
+
+	DawnshatterAzure: {
+		DisplayName: Dawnshatter Azure
+		Tooltip:
+			'''
+			Fires a shadow of the corona, summoning explosive dragon flames upon hitting enemies.
+			Hold the right mouse button to dash while raising your weapon.
+			"Let the flames purify your soul and utterly plunder your enemies."
+			'''
+	}
+
+	DecayParticles: {
+		DisplayName: Decay Particles
+		Tooltip:
+			'''
+			A glimpse into the source of matter
+			Existence itself is a miracle
+			'''
+	}
+
+	DecaySubstance: {
+		DisplayName: Decay Substance
+		Tooltip:
+			'''
+			It is in endless decay
+			A cycle of destruction and renewal
+			'''
+	}
+
+	DissipationSubstance: {
+		DisplayName: Dissipation Substance
+		Tooltip:
+			'''
+			Reality has trouble capturing its essence
+			It's disappearing, but it's huge
+			'''
+	}
+
+	SpectralMatter: {
+		DisplayName: Spectral Matter
+		Tooltip: About 3.7 trillion billion tons
+	}
+
+	InfiniteToiletItem: {
+		DisplayName: Infinite Toilet
+		Tooltip: The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet.
+	}
+
+	StormGoddessSpear: {
+		DisplayName: Storm Goddess Spear
+		Tooltip:
+			'''
+			A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
+			When held, summons the lingering spirit of the Storm Goddess to assist in combat.
+			[legend]
+			'''
+		Legend:
+			'''
+			Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
+			her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
+			When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
+			She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
+			She no longer sought the light but reforged herself in the abyss. An ancient, 
+			forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
+			Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
+			She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
+			Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
+			She fought not for justice, not for Terra, not for the gods.  
+			She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
+			'''
+	}
+
+	DragonsScaleGreatsword: {
+		DisplayName: Dragonseaweed Greatblade
+		Tooltip: Swings a mighty sword that summons poisonous clouds that weakly home into enemies.
+	}
+
+	CosmicCalamity: {
+		DisplayName: Galactic Disaster
+		Tooltip: Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy.
+	}
+
+	SpearOfLonginus: {
+		DisplayName: Spear of Longinus
+		Tooltip:
+			'''
+			Each time the stealth bar fills, the Spear charges up and depletes stealth back to 0.
+			The maximum amount of charge is 6 full stealth bars.
+			When charged, circles will show the Area of effect. Upon thrown, It will unleash a world shattering strike.
+			If the spear has charge, the attack will be followed by a laser from the sun, sealing anything's fate.
+			[legend]
+			'''
+		Legend:
+			'''
+
+			O shattered god, permit me to atone for my sins. 
+			The war has sprawled across centuries, and I, a fugitive fleeing the grand civilization,
+			eke out a meager existence on this desolate planet at the edge of the universe.
+			Thousands of light-years away, the colossal war machines of conflict grind stars to dust.
+			Savage and dreadful assaults erase light-years of stellar expanse in the blink of an eye, transforming it into a domain of silence.
+			For countless centuries, this war has raged on. Now, the mighty civilization to which I belong teeters on the brink,
+			and I shall become a cosmic sinner, the most disrespectful blasphemer.
+			My flesh has decayed, my bones mirroring the wrinkles of passing ages. 
+			I am on the verge of becoming one of the feeble machines I created. 
+			Before that fate befalls me, may the gods grant me forgiveness and pardon my disrespect towards this supreme being. 
+			Let me descend into the abyss of purgatory, enduring endless torment as my soul falls.
+			Yet, for the sake of my civilization, for victory in this war spanning centuries, I must harness the fragmented power of this godly entity.
+			To guide its mysterious force, I have no choice but to infuse its shattered divine form with the cold embrace of machinery.
+			This is an inevitable sacrilege. For the continuity of civilization, for the triumph of war, 
+			I must become the most devout follower of this supreme entity, the most disrespectful blasphemer in history.
+			'''
+	}
+
+	BloodAltar: {
+		DisplayName: Blood Altar
+		Tooltip:
+			'''
+			Right click on the Altar to summon the Blood Moon
+			Automatically collects dropped blood orbs from around the world and stores them in the nearest storage bin.
+			"Let the world be wreathed by Crimson."
+			'''
+	}
+
+	StarMyriadChanges: {
+		DisplayName: Star Myriad Changes
+		Tooltip: Praise the God of change!
+	}
+
+	TerminusOver: {
+		DisplayName: The final touch
+		Tooltip: The final battle awaits, however there is a price to pay.
+	}
+
+	PestilenceIngot: {
+		DisplayName: Pestilence Ingot
+		Tooltip: Smells like pungent sour apple candy.
+	}
+
+	ReminiscenceBreastplate: {
+		DisplayName: Reminiscence Breastplate
+		Tooltip: Reminisence on the Journey you've had and how far you have come.
+	}
+
+	MurasamaMould: {
+		DisplayName: Blood gold mold
+		Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
+	}
+
+	OverhaulTheBibleBook: {
+		DisplayName: Overhaul The Bible
+		Tooltip: Use to see Calamity Overhaul Mod related tutorials.... There may be more to come here later
+	}
+
+	BarrenBow: {
+		DisplayName: Barren Bow
+		Tooltip: The arrows fired will burst out a barren current when they hit the enemy
+	}
+
+	ElementMuzzleBrake: {
+		DisplayName: Element Muzzle Brake
+		Tooltip:
+			'''
+			Reduces recoil and chamber pressure by 65%
+			Reduces ranged damage by 5%
+			Increases ranged critical hit rate by 15%
+			'''
+	}
+
+	NeutronStarMuzzleBrake: {
+		DisplayName: Neutron Star Stabilizer
+		Tooltip:
+			'''
+			Increases ranged damage by 100%
+			Increases ranged critical strike chance by 100%
+			Increases ranged attack speed by 100%
+			Completely negates recoil and chamber pressure
+			Greatly enhances ranged projectiles
+			Grants all abilities of lower-tier accessories
+			'''
+	}
+
+	PrecisionMuzzleBrake: {
+		DisplayName: Precision Muzzle Brake
+		Tooltip:
+			'''
+			Reduces recoil and chamber pressure by 55%
+			Reduces ranged damage by 10%
+			Increases ranged critical hit rate by 10%
+			'''
+	}
+
+	SimpleMuzzleBrake: {
+		DisplayName: Simple Muzzle Brake
+		Tooltip:
+			'''
+			Reduces recoil and chamber pressure by 40%
+			Reduces ranged damage by 15%
+			Increases ranged critical hit rate by 5%
+			'''
+	}
+
+	AmmoBoxFire: {
+		DisplayName: Burning Ammo Box
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			It makes the warhead highly flammable and explodes when it hits the target
+			"This isn't cod."
+			'''
+	}
+
+	ArmourPiercerBox: {
+		DisplayName: Armour Piercer Box
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			Coat the ammunition with tungsten gold to increase the bullet's armor breaking ability, ignoring the target's 75% armor
+			"Even so, don't try to shoot down a tank with a pistol."
+			'''
+	}
+
+	HighExplosiveBox: {
+		DisplayName: High Explosive Box
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			Turn the warhead into a high-explosive projectile, firing a violent explosion when the bullet hits the target
+			"Blow them all up!"
+			'''
+	}
+
+	DragonBreathBox: {
+		DisplayName: Dragon Breath Box
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			A combination of magic and technology, bullets hit their targets and explode into a jet of metal, causing damage to a wide range of enemies
+			"This is the dragon's saliva. Do you want to believe it?"
+			'''
+	}
+
+	AvalancheM60: {
+		DisplayName: Avalanche M60
+		Tooltip:
+			'''
+			Use snowballs as ammunition.
+			Firing a barrage of snowballs,
+			Firepower increasing as ammunition diminishes.
+			Every 20 shots triggers an overdrive surge,
+			Creating a small avalanche.
+			"Denji, let's have a snowball fight."
+			'''
+	}
+
+	CrystalDimming: {
+		DisplayName: Crystal Dimming
+		Tooltip:
+			'''
+			Use snowballs as ammunition.
+			Launching frigid hail and snowballs,
+			Ice crystals rebound rapidly upon hitting walls,
+			Then track down enemies.
+			Every 20 shots triggers an overdrive surge,
+			Summoning a massive ice pillar at the mouse cursor.
+			'''
+	}
+
+	DarkFrostSolstice: {
+		DisplayName: Dark Frost Solstice
+		Tooltip:
+			'''
+			Use snowballs as ammunition.
+			Firing hail and polar flames,
+			Every 20 shots triggers an overdrive surge,
+			Summoning wintry divinity at the mouse cursor.
+			'''
+	}
+
+	SnowQuay: {
+		DisplayName: Snow Viper M16
+		Tooltip:
+			'''
+			Use snowballs as ammunition
+			A large-caliber snow cannon, firing ice and snow mixed shells
+			'''
+	}
+
+	NeutronGlaive: {
+		DisplayName: Black Zone Cleaver
+		Tooltip:
+			'''
+			Swinging releases powerful gravitational sword waves, causing a neutron star explosion upon hitting a target.
+			Right-click to charge the blade; releasing it when fully charged triggers a large neutron star explosion at the cursor.
+			Releasing before fully charged will cause the energy to spill out.
+			'''
+	}
+
+	NeutronBow: {
+		DisplayName: Roche's String
+		Tooltip:
+			'''
+			Fires gravity arrows that generate gamma rays upon hitting a target.
+			Right-click to perform a three-level charge, releasing three powerful gravity arrows when fully charged.
+			'''
+		Lang1: Trapping gravity
+		Lang2: Is making gravity yield
+		Lang3: Finished!!
+	}
+
+	NeutronGun: {
+		DisplayName: Stellar Hunter
+		Tooltip:
+			'''
+			Fires gravity projectiles that create warp points upon hitting a target.
+			Right-click to switch to sniper mode, firing more powerful gravity bullets that summon gamma rays upon impact.
+			Each shot charges the gun, and when fully charged, the next shot triggers a neutron star explosion at the cursor.
+			"Shoot the sun down!"
+			'''
+	}
+
+	NeutronWand: {
+		DisplayName: Light of the Star Tomb
+		Tooltip:
+			'''
+			Fires four powerful gravity stars.
+			Right-click to cast gravity magic at the cursor.
+			"Legend says that in ancient times, a powerful psychic used this wand to compress stars into black holes,
+			but this tale is lost to time, now just a fragment of song sung by interstellar nomads."
+			'''
+	}
+
+	FadingGlory: {
+		DisplayName: Fading Glory
+		Tooltip:
+			'''
+			True melee hits a target that heals the player if the target is an organism, 
+			and releases a lot of sparks if the target is non-organism
+			Non-true proximity battles will actively fire the blade, 
+			which will generate an extra bell chasing ghost cut after 
+			hitting the target and release a blood tentacle when exploding
+			'''
+	}
+
+	NeutronScythe: {
+		DisplayName: Blackhole Messenger
+		Tooltip:
+			'''
+			The scythe fires gamma rays at enemies, leaving several warp points along its path.
+			Stealth attack throws a circle of scythes.
+			'''
+	}
+
+	RebelBlade: {
+		DisplayName: Rebel Blade
+		Tooltip:
+			'''
+			True melee generates a large number of demon light balls around the target
+			Right click to control blade flight and cut towards the cursor
+			'''
+	}
+
+	MG42: {
+		DisplayName: MG42
+		Tooltip:
+			'''
+			Continuous firing causes the barrel to overheat
+			Turning musket bullets into armor-piercing bullets
+			'''
+	}
+
+	DragonsWord: {
+		DisplayName: Dragon's Word
+		Tooltip:
+			'''
+			Fires dragon tears that spin for a while before homing in on enemies.
+			Right-click to cast Dragon Command Magic at the cursor, issuing a death command to enemies within the area.
+			"A dragon can shed tears only once in its lifetime."
+			'''
+	}
+
+	SnowQuayMK2: {
+		DisplayName: Snow Quay MK2
+		Tooltip:
+			'''
+			Use snowballs as ammunition
+			A large-caliber snow cannon that fires ice and snow mixed shells
+			No preheating is required to fire
+			'''
+	}
+
+	HghExplosiveBox: {
+		DisplayName: Hgh Explosive Box
+		Tooltip:
+			'''
+			Hold to deploy. Once deployed, right-click the ammo box with a firearm to load special ammunition into the magazine.
+			Special ammo can stack effects with regular bullets.
+			"Blow them all to the skies!"
+			'''
+	}
+
+	JusticeUnveiled: {
+		DisplayName: Justice Unveiled
+		Tooltip:
+			'''
+			Ranged attacks build charges of "Judgment Strike", up to a maximum of 5
+			Press [UP] to expend 1 charge and call down a devastating holy impact
+			"Should justice be summoned, I shall heed the call—wherever it leads."
+			'''
+	}
+
+	WeaverGrievances: {
+		DisplayName: Weaver Grievances
+		Tooltip:
+			'''
+			Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
+			Right-click and roll in the direction of the cursor. Hitting an enemy during the roll will give the player an invincible frame
+			A close roll would be considered a perfect dodge
+			[legend]
+			'''
+		Legend:
+			'''
+			The eternal dungeon stretches across the land, its walls etched with the inscriptions and screams of ancient warriors. 
+			Each stone is saturated with lingering malice, like chains of the damned, binding it to the endless darkness at time’s end.  
+			These warriors were once the blades of their king, waging war across the realms. 
+			Their swords had illuminated countless battlefields, their blood forged the towering empire. 
+			Their loyalty was as enduring as the stars, their conviction as unyielding as iron.  
+			Yet, when the wars ceased, and the Demonlord’s banners were torn asunder at the king’s feet, 
+			the moment peace descended, the king decreed their consignment to the abyss.  
+			“We betrayed not, yet the king has betrayed us!” The anguished wails of the damned tore through the void, piercing the silence of eternity. 
+			Their noble spirits did not return to the dust but were imprisoned in the void’s chasm, condemned as witnesses to eternal night.  
+			The ceaseless lamentations transformed into a silent accusation, one that reached the furthest ends of the stars.  
+			It is said the king, in fear of their unyielding loyalty and the inferno of their wrath, 
+			heeded the whispers of the Demonlord’s sorcerers, choosing to consign these warriors to the shadows of history.  
+			But malice, like a tide, has twisted the dungeon’s reality. Their suffering has shaken the barriers of time and space, weaving a prophecy of vengeance:  
+			“The Demonlord shall return; the void shall be torn asunder, and our wrath shall consume all!”  
+			When Terra once more faces the brink of annihilation, these restless dead will rise from the darkness. 
+			Their blades will no longer fight for the glory of an empire but for the judgment of the betrayer.  
+			Glory and loyalty are long since obliterated—only the flames of vengeance remain, destined to engulf all.
+			'''
+	}
+
+	Starship: {
+		DisplayName: Starship
+		Tooltip: ""
+	}
+
+	SandDagger: {
+		DisplayName: Sand Dagger
+		Tooltip:
+			'''
+			Throws onto sand, then jumps into the air and explodes after a while
+			Stealth attacks throw an enhanced dagger
+			'''
+	}
+
+	UnderTheSand: {
+		DisplayName: Beneath the Sand
+		Tooltip: Creates several sand orbs
+	}
+
+	WastelandFang: {
+		DisplayName: Wasteland Fang
+		Tooltip:
+			'''
+			Bounces off blocks and accelerates when retracting
+			Opens its mouth and spits out several sand orbs
+			'''
+	}
+
+	Flawless: {
+		DisplayName: Flawless
+		Tooltip: ""
+	}
+
+	MelodyTheSand: {
+		DisplayName: Song of the Sand
+		Tooltip: Throws a spread of sand spikes that are affected by gravity and pierce enemies
+	}
+
+	SandVortexOfTheDecayedSea: {
+		DisplayName: Decayed Sea Sand Vortex
+		Tooltip:
+			'''
+			Vomits several sulfuric steam orbs
+			"Master of Vomiting"
+			'''
+	}
+
+	SeasonalKunai: {
+		DisplayName: Seasonal Kunai
+		Tooltip:
+			'''
+			Throws three homing kunai at enemies
+			Stealth attacks throw a large kunai that splits at the end of its trajectory
+			"Reflecting the Four Seasons"
+			'''
+	}
+
+	WraithKunai: {
+		DisplayName: Wraith Kunai
+		Tooltip:
+			'''
+			Throws three homing kunai at enemies
+			Stealth attacks summon a group of ghostly daggers hovering around the player
+			'''
+	}
+
+	CalSelfPortrait: {
+		DisplayName: Forgotten Photograph
+		Tooltip:
+			'''
+			A forgotten photograph
+			[legend]
+			'''
+		Legend: What else do you want to see? :)
+	}
+
+	WUTIVSelfPortrait: {
+		DisplayName: Thank You, Wuti
+		Tooltip: ""
+	}
+
+	HandmadeDoll: {
+		DisplayName: Handmade Sewn Doll
+		Tooltip:
+			'''
+			Used in the Underworld to summon the Wall of Flesh
+			If the Guide is alive, he will be sacrificed upon use
+			"Handmade, and the Guide doesn't know"
+			'''
+	}
+
+	Snowblindness: {
+		DisplayName: Snow Blindness
+		Tooltip:
+			'''
+			Fires snowballs and frost beams at high frequency
+			On hit, generates multiple EX frost beams around the target
+			"Lost in the blizzard, an eternal wait, a painful map, a sharp turn,
+			cracked lenses, dried bloodstains, red ice, a crying beaver, a shadow in the ice"
+			'''
+	}
+
+	WhiplashGalactica: {
+		DisplayName: Galactic Whiplash
+		Tooltip:
+			'''
+			Marks enemies upon hit and fires cosmic fireballs
+			"The spine of the cosmic serpent, brimming with celestial energy, guiding the fury of the universe"
+			'''
+	}
+
+	FocusingGrimoire: {
+		DisplayName: Focusing Grimoire
+		Tooltip:
+			'''
+			Left click to fire homing thermal rings
+			Right click to rapidly fire death rays
+			"Better than six books combined"
+			'''
+	}
+
+	CommandersStaff: {
+		DisplayName: Commander's Staff
+		Tooltip:
+			'''
+			Fires a thermal disintegration beam that pierces enemies
+			"Taken from that machine’s arm, how about using psionic energy instead of diesel?"
+			'''
+	}
+
+	RaiderGun: {
+		DisplayName: Raider
+		Tooltip:
+			'''
+			Converts musket balls into high-speed bullets
+			Right click to roll dash and reload the magazine
+			The first bullet fired after rolling is converted into a Destroyer Grenade
+			"Perfect for indoor hostage rescues"
+			'''
+	}
+
+	HyperionBarrage: {
+		DisplayName: Hyperion Auto-Turret
+		Tooltip:
+			'''
+			Fires thermal cruise missiles
+			"Make full use of everything"
+			'''
+	}
+
+	RaiderGunEX: {
+		DisplayName: Raider EX
+		Tooltip:
+			'''
+			Converts musket balls into high-speed bullets
+			Additionally fires a barrage of Destroyer Homing Missiles
+			Right click to roll dash and reload the magazine
+			The first bullet fired after rolling is converted into a Destroyer Grenade
+			"Carpet bombing"
+			'''
+	}
+
+	CommandersChainsaw: {
+		DisplayName: Commander's Chainsaw
+		Tooltip:
+			'''
+			Generates sparks upon hitting a target
+			"Add more diesel"
+			'''
+	}
+
+	GeminisTribute: {
+		DisplayName: Twins' Tribute
+		Tooltip:
+			'''
+			Throws a fast-revolving scythe that slashes back and forth
+			Stealth attacks unleash a swarm of Destroyer cruise missiles
+			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
+			'''
+	}
+
+	Dicoria: {
+		DisplayName: Dicoria
+		Tooltip:
+			'''
+			Fires dual bullets, can be charged
+			Fully charged shots release a thermal beam
+			"By the way, won't this make us cross-eyed?"
+			'''
+	}
+
+	GeminisTributeEX: {
+		DisplayName: Twins' Tribute EX
+		Tooltip:
+			'''
+			Throws a fast-revolving scythe that slashes back and forth
+			Hitting an enemy spawns two additional companion scythes
+			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
+			'''
+	}
+
+	DestroyersBlade: {
+		DisplayName: Destroyer's Blade
+		Tooltip:
+			'''
+			Fires thermal barrages
+			"Contains the immense energy core of the Destroyer."
+			'''
+	}
+
+	Observer: {
+		DisplayName: Observer
+		Tooltip: '''"It's still watching you"'''
+	}
+
+	StaffoftheDestroyer: {
+		DisplayName: Staff of the Destroyer
+		Tooltip:
+			'''
+			Summons a miniature Destroyer to fight for you
+			The higher the summon limit, the stronger the Destroyer
+			At least four summoning slots are required
+			'''
+	}
+
+	ForgedLash: {
+		DisplayName: Forged Lash
+		Tooltip: '''"Not suitable for being bought as scrap iron."'''
+	}
+
+	CommandersClaw: {
+		DisplayName: Commander's Claw
+		Tooltip:
+			'''
+			Throw them at the enemies and restrain them.
+			The stealth attack will generate several Destroyer Grenades.
+			'''
+	}
+
+	DraedonsRemote: {
+		DisplayName: Draedon's Remote
+		Tooltip:
+			'''
+			Summons the EX Mechanical Trio
+			Can only be used at night
+			'''
+		DontUseByDeath: The current game difficulty does not allow sending signals!
+	}
+
+	CommandersStaffEX: {
+		DisplayName: Commander's Staff EX
+		Tooltip:
+			'''
+			Fires multiple spreading thermal beams
+			"Suitable for cutting metal"
+			'''
+	}
+
+	CommandersChainsawEX: {
+		DisplayName: Commander's Chainsaw EX
+		Tooltip: '''"Shreds everything in your path"'''
+	}
+
+	ForgedLashEX: {
+		DisplayName: Forged Lash EX
+		Tooltip: ""
+	}
+
+	SoulofFrightEX: {
+		DisplayName: Soul of Fright EX
+		Tooltip:
+			'''
+			Concentrated fear energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			'''
+	}
+
+	SoulofMightEX: {
+		DisplayName: Soul of Might EX
+		Tooltip:
+			'''
+			Concentrated destructive energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			'''
+	}
+
+	SoulofSightEX: {
+		DisplayName: Soul of Sight EX
+		Tooltip:
+			'''
+			Concentrated wisdom energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			'''
+	}
+
+	DestroyersBladeEX: {
+		DisplayName: Destroyers Blade EX
+		Tooltip:
+			'''
+			Launch a thermal barrage
+			"It's always easier to destroy than to build"
+			'''
+	}
+
+	ThermalGenerator: {
+		DisplayName: Thermal Generator
+		Tooltip:
+			'''
+			Put fuel in for power generation.
+			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			'''
+	}
+
+	ThermalBattery: {
+		DisplayName: Thermal Battery
+		Tooltip: Store a certain amount of electrical energy
+	}
+
+	WindGrivenGenerator: {
+		DisplayName: Wind Griven Generator
+		Tooltip: Move with the wind and generate electricity
+		UnderstandWindGriven: An initial understanding of how wind power works is required
+		UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
+	}
+
+	WindGrivenGeneratorMK2: {
+		DisplayName: Wind Griven Generator MK2
+		Tooltip: Move with the wind and generate electricity
+		UnderstandWindGrivenMK2: A deep understanding of wind power is required
+		UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
+	}
+
+	ThermalGeneratorMK2: {
+		DisplayName: Thermal Generator MK2
+		Tooltip:
+			'''
+			Put fuel in for power generation.
+			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			'''
+	}
+
+	WGGMK2Wilderness: {
+		DisplayName: Giant Wind Turbines In The Wilderness
+		Tooltip: ""
+	}
+
+	WGGWilderness: {
+		DisplayName: Wind Turbines In The Wilderness
+		Tooltip: ""
+	}
+
+	MedicalBox: {
+		DisplayName: Medical Box
+		Tooltip:
+			'''
+			Press and hold to deploy to the ground
+			Right-click on the medical box after deployment to heal yourself
+			'''
+	}
+
+	TeslaElectromagneticTower: {
+		DisplayName: Tesla Electromagnetic Tower
+		Tooltip:
+			'''
+			Requires electrical energy to operate
+			Right-click after placing on the ground to switch between attack mode and guard mode
+			In attack mode, it emits electric arcs to nearby enemies
+			In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
+			and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
+			"Engineers, stay away"
+			'''
+	}
+
+	EmblemOfDread: {
+		DisplayName: Emblem of Dread
+		Tooltip:
+			'''
+			Increases melee damage by 100%
+			Increases melee critical strike chance by 100%
+			Increases melee attack speed by 100%
+			Grants 100 defense, ignoring all defense reduction
+			Reduces damage taken by 75%, and inflicts 100x reflected damage to attackers
+			All melee attacks inflict the Void Corrosion debuff on enemies
+			If an enemy's health is below 250,000, true melee attacks may directly erase them
+			While moving at high speeds, leaves behind multiple warp points that deal immense damage to enemies on contact
+			Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
+			Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
+			Enemies are more likely to target you
+			[c/d94fff:"A radiant angel veils your sight, whispering sweet lies of eternal salvation."]
+			[c/ff4d4d:"A bloodied butcher lifts your blades, proclaiming slaughter as the path to glory."]
+			[c/4da6ff:"A sapphire dove pecks your brow, mocking your feeble struggle against fate."]
+			'''
+	}
+
+	ElectricMinRocket: {
+		DisplayName: Electric Mini Rocket
+		Tooltip:
+			'''
+			Right-click to use the rocket, or place it on the ground and right-click to start flying.
+			Press the left or right arrow keys in the air to adjust direction.
+			Hold the down arrow key to descend slowly; flying will gradually consume power.
+			Press the spacebar to interrupt flight.
+			“Made in the Soviet Union, sturdy and reliable, it almost made it to the moon.”
+			'''
+	}
+
+	UEPipeline: {
+		DisplayName: Energy Pipeline
+		Tooltip:
+			'''
+			Used for transmitting electrical energy
+			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
+			Connects to generators and other power sources to transfer energy to batteries or electrical devices
+			'''
+	}
+
+	EnergySword: {
+		DisplayName: Energy Sword
+		Tooltip:
+			'''
+			Expend energy to shoot lasers and penetrate multiple enemies
+			"Utilization is not high."
+			'''
+	}
+
+	LaserPistol: {
+		DisplayName: Laser Pistol
+		Tooltip:
+			'''
+			Expend energy to shoot lasers and penetrate multiple enemies
+			"Utilization is not high."
+			'''
+	}
+
+	HyperionBarrageEX: {
+		DisplayName: Hyperion Barrage EX
+		Tooltip:
+			'''
+			After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
+			"Beyond its intended use"
+			'''
+	}
+
+	MiningMachine: {
+		DisplayName: Mining Machine
+		Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			Special minerals can be extracted in special environments
+			'''
+		DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+	}
+
+	HoChaMeditatorItem: {
+		DisplayName: HoCha Meditator
+		Tooltip: ""
+	}
+
+	Collector: {
+		DisplayName: Collector
+		Tooltip:
+			'''
+			Automatically pick up the fallen objects around and place them in the nearest box
+			It won't work if there are no boxes around
+			'''
+		Text1: Excessive Quantity!
+		Text2: There are no boxes around!
+		Text3: Lack of Electricity!
+	}
+
+	WGGCollector: {
+		DisplayName: Junkman
+		Tooltip:
+			'''
+			It’s passionate about recycling — including you.
+			To it, there’s no real difference between a plastic bottle and your spinal cord.
+			'''
+	}
+
+	LaserEnergyTrans: {
+		DisplayName: Laser Energy Trans
+		Tooltip:
+			'''
+			Remote power transmission.
+			After placement, right-click to activate the laser navigation, 
+			and then right-click on other power buildings to link them.
+			The farther the transmission distance, the greater the energy loss. 
+			The maximum loss is 100%.
+			'''
+	}
+
+	MetalMusicBox: {
+		DisplayName: Music Box (Machine Rebellion)
+		Tooltip: Plays 'Fall of the Bit' by Ryusa
+	}
+
+	Hydroelectric: {
+		DisplayName: Hydroelectric
+		Tooltip:
+			'''
+			Generating electricity by placing in water
+			"One application of fluid mechanics"
+			'''
+	}
+
+	HydroelectricMK2: {
+		DisplayName: Hydroelectric MK2
+		Tooltip:
+			'''
+			Generating electricity by placing in water
+			"One application of fluid mechanics"
+			'''
+	}
+
+	CreativeUEPipeline: {
+		DisplayName: Energy Creative Pipeline
+		Tooltip: ""
+	}
+
+	ItemFilter: {
+		DisplayName: Item Filter Board
+		Tooltip:
+			'''
+			Use to open the filter panel
+			Right-click a compatible machine to apply
+			Left-click a chest to copy its contents as filter rules
+			'''
+	}
+
+	SporeBubbleBlaster: {
+		DisplayName: Spore Bubble Blaster
+		Tooltip:
+			'''
+			Sprays a stream of spore particles
+			Causes only 50% damage during the day
+			'''
+	}
+
+	TomeofFungalDecay: {
+		DisplayName: Tomeof Fungal Decay
+		Tooltip: ""
+	}
+
+	FungalRevolver: {
+		DisplayName: Fungal Revolver
+		Tooltip: ""
+	}
+
+	FungalFeed: {
+		DisplayName: Fungal Feed
+		Tooltip:
+			'''
+			Throw at a Sporecrab to tame it
+			A tamed Sporecrab will follow you and fight by your side
+			Can be equipped with a [i:CalamityOverhaul/MushroomSaddle] Mushroom Saddle to become a mount
+			"They just love mushrooms"
+			'''
+	}
+
+	MushroomSaddle: {
+		DisplayName: Mushroom Saddle
+		Tooltip:
+			'''
+			Can be equipped on a Sporecrab tamed with [i:CalamityOverhaul/FungalFeed] Fungal Feed
+			Left-click the Sporecrab while holding the saddle to equip it
+			Right-click an equipped Sporecrab to ride
+			'''
+		UseCombat: Can only be applied to crabulon
+	}
+
+	SporeboundRoller: {
+		DisplayName: Sporebound Roller
+		Tooltip:
+			'''
+			Generates a floating little mushroom after hitting an enemy
+			"They love to keep rolling around"
+			'''
+	}
+
+	Spectrometer: {
+		DisplayName: Spectrometer
+		Tooltip:
+			'''
+			Allows dyeing items with color
+			Requires power to operate
+			'''
+	}
+
+	SporeburstPouch: {
+		DisplayName: Sporeburst Pouch
+		Tooltip:
+			'''
+			Throws a volatile pouch of fungal spores that explodes on impact
+			Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
+			'''
+	}
+
+	Pallbearer: {
+		DisplayName: Pallbearer
+		Tooltip:
+			'''
+			Hold left-click to charge, releasing to fire a Pallbearer Arrow
+			The longer the charge, the more powerful the arrow
+			Right-click to throw the crossbow
+			Hitting an enemy significantly empowers the next arrow and accelerates charge speed
+			"Also known as the Coffin Carrier"
+			'''
+	}
+
+	EncyclopediaofOceanicKnowledge: {
+		DisplayName: Encyclopediaof Oceanic Knowledge
+		Tooltip:
+			'''
+			Instantly gain knowledge of all fish species
+			Unlock all fish-related skills
+			[c/FFD700: The wisdom of the ocean will converge upon you]
+			'''
+		Text1: You have mastered all the knowledge
+		Text2: You have acquired [NUM] kinds of fish knowledge!
+	}
+
+	TheForgottenTome: {
+		DisplayName: The Forgotten Tome
+		Tooltip:
+			'''
+			When used, it erases every trace of your worldly memories.
+			A life turned specter, condemned to eternal descent
+			all beings are burdened with sin, and no soul shall return to the next life.
+			My name is [NAME]. When you read this, I am already dead.
+			'''
+		CompletionText: You have forgotten everything
+		ConditionsText: Achieve any story ending
+	}
+
+	Fishoil: {
+		DisplayName: Bottled Fish Oil
+		Tooltip:
+			'''
+			Increases fishing power by 10%
+			Allows breathing underwater
+			Grants additional resistance against certain eerie entities
+			'''
+	}
+
+	SirenMusicalBox: {
+		DisplayName: Siren Musical Box
+		Tooltip:
+			'''
+			Right-click to play eerie music from a music box.
+			All who hear it will be cursed, unable to die while the music plays.
+			When the music ends, they will suffer a fatal attack.
+			'''
+		DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
+	}
+
+	Heartcarver: {
+		DisplayName: Heartcarver
+		Tooltip:
+			'''
+			Generate three additional ritual daggers to rotate around the player.
+			After the charging is completed, fly towards the target.
+			Right-click to perform a short-range thrust.
+			'''
+	}
+
+	OniMachete: {
+		DisplayName: Oni Machete
+		Tooltip:
+			'''
+			When held, six oni hands will be generated to assist in combat.
+			True melee attacks will release ghost flames.
+			'''
+	}
+
+	Pandemonium: {
+		DisplayName: Pandemonium
+		Tooltip:
+			'''
+			Left-click to charge and release Transcendent Magic
+			Right-click to cast a Brimstone Rune at the cursor
+			Press [PandemoniumQSkill] to unleash Brimstone Judgement
+			Press [PandemoniumRSkill] to perform The End of All Demons
+			'''
+	}
+
+	Proverbs: {
+		DisplayName: Proverb
+		Tooltip:
+			'''
+			Generates a small brimstone rune behind you
+			Grants immunity to most fire-based debuffs
+			Most of your attacks inflict the Withered Curse debuff
+			[Content]
+			'''
+		L1:
+			'''
+			Deals double damage to the Brimstone Witch; 
+			her attacks have a chance to critically strike you
+			'''
+		L2:
+			'''
+			If you are reading this, then I am likely already gone.
+			Throughout my long years, this ring was the only thing that felt truly cold.
+			But somewhere along the way, it absorbed a mortal's warmth... and became... too hot to let go.
+			I have returned to the Brimstone, reduced to the ashes of an era.
+			I should have departed with nothing, 
+			yet I found myself greedy for this singular warmth, wishing to preserve it.
+			Wear it.
+			And when you finally raise your blade against the gods...
+			Know that even if the world freezes over, I will still be burning at your fingertips.
+			'''
+	}
+
+	AncientStormGoddessSpear: {
+		DisplayName: Ancient Storm Goddess Spear
+		Tooltip:
+			'''
+			A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
+			"It is already a thing of the past, but it still works."
+			[legend]
+			'''
+		Legend:
+			'''
+			Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
+			her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
+			When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
+			She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
+			She no longer sought the light but reforged herself in the abyss. An ancient, 
+			forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
+			Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
+			She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
+			Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
+			She fought not for justice, not for Terra, not for the gods.  
+			She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
+			'''
+	}
+
+	ConstructionBlueprintQET: {
+		DisplayName: Construction Blueprint (Quantum Entanglement Tower)
+		Tooltip:
+			'''
+			Use to learn how to craft the [i:CalamityOverhaul/CQETConstructor] Self-Constructor
+			"Your hands will forge the cornerstone and tower that connect two worlds"
+			'''
+		L1: Learned to craft the Self-Constructor (Quantum Entanglement Tower)!
+		L2: You have already learned this blueprint!
+	}
+
+	CQETConstructor: {
+		DisplayName: Self-Constructor (Quantum Entanglement Tower)
+		Tooltip:
+			'''
+			Place to construct a Quantum Entanglement Tower
+			Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Starflow Plated Blocks
+			'''
+		UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
+	}
+
+	DeploySignaltower: {
+		DisplayName: Quantum Entanglement Tower
+		Tooltip:
+			'''
+			An important communication device that acts as a lighthouse in subspace
+			"A wild child raises a torch in the forest, shouting I am here"
+			'''
+	}
+
+	StarflowPlatedBlock: {
+		DisplayName: Starflow Plated Block
+		Tooltip:
+			'''
+			Basic material for building the [i:CalamityOverhaul/DeploySignaltower] Quantum Entanglement Tower
+			"Forging flowing starlight into an immortal foundation"
+			'''
+	}
+
+	PQCD: {
+		DisplayName: Portable Quantum Communicator
+		Tooltip:
+			'''
+			Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
+			"Theoretically capable of issuing an Extermination Order, but authorization seems insufficient"
+			'''
+		NeedSignalTowersText: Quantum entanglement link incomplete! Requires all {0} Signal Towers to be deployed.
+		SignalTowerProgressText: Signal Tower Deployment Progress: {0}/{1}
+	}
+
+	Unsunghero: {
+		DisplayName: Unsung Hero
+		Tooltip:
+			'''
+			Increases maximum stealth by 10
+			Stealth regeneration speed no longer reduces stealth damage
+			"What if you never return?"
+			"Then I shall never return."
+			'''
+	}
+
+	AriaofTheCosmos: {
+		DisplayName: Aria of the Cosmos
+		Tooltip:
+			'''
+			Hold left-click to charge a powerful quasar, dealing devastating damage upon release
+			Right-click to release a miniature black hole that fires a barrage of gamma rays once formed
+			Press [AriaofTheCosmosQSkill] to summon a Star Ring Guardian
+			Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
+			'''
+	}
+
+	Oceanfragments: {
+		DisplayName: Ocean Scraps
+		Tooltip: A mysterious trinket. The Old Duke might be interested in it.
+	}
+
+	OceanRaiders: {
+		WorkingText: Working...
+		NoWaterText: Must be placed above water to operate!
+		NoEnergyText: Insufficient Power!
+		DisplayName: Ocean Devourer
+		Tooltip:
+			'''
+			Consumes power to extract resources from water bodies
+			Right-click to open internal storage
+			'''
+	}
+
+	OldDuchest: {
+		StorageText: Large Storage Chest
+		DisplayName: Old Duchest
+		Tooltip:
+			'''
+			A storage chest with immense capacity
+			"The Old Duke's former chest. If he is nearby, he might toss some things inside."
+			'''
+	}
+
+	QuestLogBook: {
+		DisplayName: Quest Book
+		Tooltip: Use to open or close the quest interface
+	}
+
+	MermanRod: {
+		Text1: A Merman's Perch has already been placed in the world!
+		DisplayName: Merman's Perch
+		Tooltip:
+			'''
+			Increases fishing power by 20 when fishing nearby
+			The Old Duke will move his campsite here
+			'''
+	}
+
+	MiningMachineMk2: {
+		DontWork: It needs to be placed on a hard surface in order to carry out excavation work.
+		DisplayName: Mining Machine Mk2
+		Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			Special minerals can be extracted in special environments
+			'''
+	}
+
+	UniversalFrost: {
+		DisplayName: Universal Frost
+		Tooltip:
+			'''
+			Uses Snowballs as ammo
+			Fires hailstones and frigid nova orbs
+			The orbs bounce, home in on enemies, and release frost beams upon explosion
+			Continuous firing accumulates ice energy
+			When fully charged, the next attack unleashes the Glacial Age
+			The Glacial Age summons a massive array of icicles and a blizzard field at the cursor position
+			"When all creation falls into silence, only eternal frost shall blanket the world"
+			'''
+	}
+
+	GodslayerScabbard: {
+		DisplayName: Godslayer Scabbard
+		Tooltip:
+			'''
+			Accumulates charge while holding a melee weapon without attacking
+			Attacking with full charge grants 2 second of invulnerability
+			"Though the blade remains sheathed, its killing intent is palpable.
+			When the time is right, slaying a god takes but an instant."
+			'''
+	}
+
+	Lumberjack: {
+		Text1: Excessive Quantity!
+		Text2: Lack of Electricity!
+		CycleModeText: Cycle Mode
+		ClearModeText: Clear Mode
+		DisplayName: Lumberjack
+		Tooltip:
+			'''
+			Consumes power to harvest timber
+			Automatically chops down surrounding trees
+			Right-click to switch between Cycle Mode and Clear Mode
+			Cycle Mode continuously harvests trees and replants saplings
+			Clear Mode only harvests trees without replanting
+			'''
+	}
+
+	LifeWeaver: {
+		NoValidPositionText: No valid planting spots nearby!
+		NoEnergyText: Insufficient power!
+		DisplayName: Life Weaver
+		Tooltip: Consumes power to plant trees nearby
+	}
+
+	WGGLumberjack: {
+		DisplayName: Wilderness Lumberjack
+		Tooltip: ""
+	}
+
+	WGGLifeWeaver: {
+		DisplayName: Wilderness Life Weaver
+		Tooltip: ""
+	}
+
+	Incinerator: {
+		DisplayName: Electric Incinerator
+		Tooltip:
+			'''
+			Consumes power to smelt items
+			Right-click to open the control panel
+			Shift + Right-click to quickly deposit ingredients or retrieve products
+			Smelting items yields double output
+			'''
+	}
+
+	ItemPipeline: {
+		DisplayName: Item Pipeline
+		Tooltip:
+			'''
+			Used to transport items
+			Right-click to quickly dismantle and retrieve the target pipe (only when holding a pipeline)
+			Right-click a pipe endpoint to switch between Output and Input modes (only when NOT holding a pipeline)
+			Pipes in Output mode extract items from connected containers and transfer them to containers connected to Input mode pipes
+			'''
+	}
+
+	Thrower: {
+		NoEnergyText: Insufficient energy!
+		NoItemText: No items to throw!
+		WorkingText: Throwing...
+		IdleText: Idle
+		DisplayName: Thrower
+		Tooltip:
+			'''
+			Consumes power to throw items
+			Right-click to open the control panel
+			'''
+	}
+}

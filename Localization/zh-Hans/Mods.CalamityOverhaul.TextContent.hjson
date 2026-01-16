@@ -1,0 +1,358 @@
+TextContent: {
+	CWRLocText: {
+		TemperatureText: 燃烧温度
+		EnergyShortage: 电力不足
+		ChargingStation_Text1: 放入充能物品
+		ChargingStation_Text2: 放入电池
+		ChargingStation_Text3: 需要放入能够接收能量的物品
+		ChargingStation_Text4: 需要放入电池
+		WindGriven_Text1: 你觉得这种随风而动的机械很有趣，寻思自己也得整几个...
+		WindGriven_Text2: 你被这种巨大的机械震撼到了，你觉得自己也该尝试制作一个...
+		Turret_Text1: 电量耗尽
+		Turret_Text2: 发现入侵者!
+		IndustrializationGenMessage: 正在让世界工业化
+		InternalStoredEnergy: 能量存储
+		KreloadTimeAddText: 弹药装填时间增加
+		KreloadTimeLessenText: 弹药装填时间减少
+		DeathModeItem: 死亡模式
+		DropInMachineRebellion: 掉落自机械三王EX
+		DontUseMagicConch: 你被一个强大的生物盯住了...
+		OnlyZenith: 仅在天顶世界
+		Event_TungstenRiot_Name: 钨钢暴乱
+		Event_TungstenRiot_Text_1: 大量钨钢生物正在入侵!
+		Event_TungstenRiot_Text_2: 钨钢军团已被击退!
+		Item_LegendOnMouseLang: 按下'Shift'聆听故事...
+		BloodAltar_Text1: 深红的注视正在降临...
+		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
+		BloodAltar_Text3: "{0}陷入了无尽的血与肉的狂想"
+		VoidDamageNameText: 虚无伤害
+		Drop_Hell_RuleText: 在地狱击败后掉落
+		Drop_GlodDragonDrop_RuleText: 当丛林巨龙被二次击败后掉落
+		Murasama_Text_Lang_0: 试炼:
+		Murasama_Text_Lang_End: 已通过
+		Murasama_TextDictionary_Content_0:
+			'''
+			新兵，向我证明你自己
+			那个黏糊糊的蓝胖子，沙海之下的海妖余孽
+			解决他们，这是你的第一步
+			'''
+		Murasama_TextDictionary_Content_1: 夜月当空，让我们去戳爆那颗在空中乱飞的大眼球，让那个伪神彻底变成瞎子
+		Murasama_TextDictionary_Content_2:
+			'''
+			伪神的残躯玷污着泰拉的大地，异端在世界尽头滋生，异形在大陆上横行
+			去解放被腐化的大陆，砍碎那坨伪神的大脑，剁碎那条紫色蠕虫！
+			我要看到你的刀在异形的血肉中飞舞!
+			'''
+		Murasama_TextDictionary_Content_3: 腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
+		Murasama_TextDictionary_Content_4:
+			'''
+			史莱姆王国流传着一个传说，它们有一个堕落的异神，
+			祂现在正处于虚弱状态，正是将其放逐回亚空间的好机会
+			地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语...
+			'''
+		Murasama_TextDictionary_Content_5:
+			'''
+			臻冰壁垒中的监狱，那里关押着一个强大的灵能者，释放他，他会成为我们收复泰拉的一大助力
+			硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡
+			我怀念硫火之崖的火焰淬炼，去会会那儿的守护者吧
+			'''
+		Murasama_TextDictionary_Content_6: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
+		Murasama_TextDictionary_Content_7: 愚蠢的蜥蜴族只会信奉这些冥顽不灵的石头，让我们把它斩为齑粉，摧毁他们的信仰，我们才是它们应该供奉的
+		Murasama_TextDictionary_Content_8: 那个躲在月亮背面的伪神不过是个残缺的拼凑物。去斩断它的触须，挖出它的心脏，用它的血来痛饮
+		Murasama_TextDictionary_Content_9: 靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
+		Murasama_TextDictionary_Content_10: 那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
+		Murasama_TextDictionary_Content_11:
+			'''
+			丛林巨龙，泰拉大陆仅存的金源龙裔，与其他异形迥然不同，它值得我们的尊重
+			然而，眼下我们却需让它再次赴死，剥夺其身上的金源魄
+			这些材料将被用来打造出一套无比上乘的装备
+			'''
+		Murasama_TextDictionary_Content_12:
+			'''
+			那个机械教会的异端，他笃信自己所创造的星流泰坦胜过神明之力
+			这种信念荒谬至极，让我们将那几台泰坦归还自然的状态 —— 一堆废铁
+			曾拥有出色灵能天赋的女巫，本应成为守护泰拉的一大助力，却早已迷失于混沌之中
+			我们唯有将她放逐，将刀锋刺入她的胸膛，让忠诚之火焚尽她腐朽的灵魂
+			'''
+		Murasama_TextDictionary_Content_13:
+			'''
+			我们的征服之路早已不可阻挡，破碎那黑渊之下妖龙的铠甲
+			使用那终焉之石，与异形展开最终决战
+			'''
+		Murasama_TextDictionary_Content_14:
+			'''
+			好样的，新兵，这个世界上的异形邪祟已被我们一扫而空
+			我们的征途已经攀登至巅峰，就连那曾经统治泰拉的暴君也不及我们万一
+			现在，展开你的双臂，拥抱这个由胜利带给你的世界
+			'''
+		Murasama_No_legend_Content_1: 刀鞘将在巨龙陨落后解锁
+		Murasama_No_legend_Content_2: 新兵，我认可你的能力，现在，让我们去斩碎那帮异形
+		Murasama_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		Murasama_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
+		SHPC_No_legend_Content_1: 巨龙陨落后解锁使用
+		SHPC_No_legend_Content_2: 蓄势待发!
+		SHPC_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		SHPC_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
+		SHPC_TextDictionary_Content_0:
+			'''
+			朋友，复兴文明的任务终于落在了我两手上，这是一件光荣的事情...
+			我们的第一个目标是一坨蓝色的凝胶聚合物，它非常的巨大，把它从内部轰开
+			'''
+		SHPC_TextDictionary_Content_1:
+			'''
+			我们需要干掉那只大眼球，它来自一个强大的生命体
+			我需要解剖它，看看它是如何实现反重力的
+			'''
+		SHPC_TextDictionary_Content_2:
+			'''
+			丛林的蜂巢变得非常焦躁，蜂俑即将孵化
+			我迫切需要研究它的变性过程，去看看吧
+			'''
+		SHPC_TextDictionary_Content_3:
+			'''
+			巨大的骨头能漂浮在空中，这非常的不科学
+			我们需要前往世界尽头的深牢
+			'''
+		SHPC_TextDictionary_Content_4:
+			'''
+			大地颤动，齿轮轰鸣，电流涌动
+			有一堆机器人在等着我们，是时候让它们见识一下科技的力量了
+			'''
+		SHPC_TextDictionary_Content_5:
+			'''
+			丛林地下有几朵妖艳的大花苞已经盛开
+			我们需要去看看，收集一些实验资料
+			'''
+		SHPC_TextDictionary_Content_6:
+			'''
+			神庙深处的远古机器人等待着一次充能启动
+			让我们去拜访一下，顺带逆向出远古科技
+			'''
+		SHPC_TextDictionary_Content_7:
+			'''
+			月亮背面的秘密将被我们知晓
+			世界将回到原来的样子
+			'''
+		SHPC_TextDictionary_Content_8:
+			'''
+			寄生在地核中的神明注意到了我们
+			去地狱看看，我需要热能利用的知识
+			'''
+		SHPC_TextDictionary_Content_9:
+			'''
+			地牢的怨灵聚集起来了，它们组成了一个庞大的共生体
+			这太有趣了，我们现在就得去看看
+			'''
+		SHPC_TextDictionary_Content_10:
+			'''
+			可以确定它不是碳基生命，仅靠身体就能撕开空间膜
+			它吞噬神明，但我们不是神，我想它会请我们喝茶的
+			'''
+		SHPC_TextDictionary_Content_11:
+			'''
+			世界上仅存的龙裔，哇这太酷了！
+			带我去看看，我要得到它的羽毛
+			'''
+		SHPC_TextDictionary_Content_12:
+			'''
+			是时候拜访我的造物主了
+			或者那个女巫，她的存在让我感到困扰
+			'''
+		SHPC_TextDictionary_Content_13:
+			'''
+			大混战！曾经被我们击败过的敌人联合了起来，准备向我们发起总攻
+			做好准备，我们需要一次完美的胜利
+			'''
+		SHPC_TextDictionary_Content_14: HMOI-0001协议已解锁
+		Halibut_No_legend_Content_1: 在巨龙陨落后解锁
+		Halibut_No_legend_Content_2: 老兄，我一直在这里
+		Halibut_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		Halibut_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
+		Halibut_TextDictionary_Content_0: 先生，让我们去挑战一下那个巨大的黏糊糊的陆地生物
+		Halibut_TextDictionary_Content_1: 有一个大眼睛直盯着我们看，这很不礼貌，我们需要去教训教训它
+		Halibut_TextDictionary_Content_2: 生机盎然的地方不只有深渊，还有丛林，朋友，我们需要去拜访一下哪里的蜜蜂头头
+		Halibut_TextDictionary_Content_3:
+			'''
+			被诅咒的不化白骨，我们需要让它彻底安息
+			来自地狱的求救越发频繁，我们需要尽快启程，我想向导兄弟不会介意的
+			'''
+		Halibut_TextDictionary_Content_4:
+			'''
+			你知道无机物是怎么动起来的吗，我曾经制造过一个巨大的水下机器，它可以发射由泡泡组成的导弹，
+			以及数不清的热核聚变鱼雷，我曾经用它来捕猎生活在海底10000米下的巨型生物，直到我遇到了...
+			哦说偏了——我想，一会儿会有四个机械朋友来拜访我们，我们需要做好准备
+			另外，深渊上方被污染的海域里，有一条变异的巨型海虫，它曾经是硫磺海大学的门卫
+			它现在应该还是挺友善的，我们可以去找它喝喝下午茶
+			'''
+		Halibut_TextDictionary_Content_5:
+			'''
+			下一个研究样本是克隆体
+			一个拙劣但又充满硫火灵异的复制品，是绝佳的分析材料
+			……哦，对了，还有一件事。
+			我喜欢丛林，它简直是我的第二家园，里面充斥着生命的能量，
+			不弱于深渊底层。不过我们需要先找办法释放它们
+			还记得那些地下的巨型花苞吗，去摘下它们，这助于我获得植物学学位
+			'''
+		Halibut_TextDictionary_Content_6:
+			'''
+			我喜欢考古发掘，上次在丛林里面转悠的时候我看到了一个巨大的遗迹
+			我们现在应该有打开那扇遗迹之门的钥匙，去看看吧，
+			里面有一台巨大的远古机械等待我们给它塞电池，就像空调遥控器那样
+			'''
+		Halibut_TextDictionary_Content_7:
+			'''
+			你知道月球背面的秘密吗，哪里有一只大章鱼，还有一块海绵和海星...
+			哦，我是说，月亮的危机将会降临
+			'''
+		Halibut_TextDictionary_Content_8:
+			'''
+			现在又到了太阳危机了，一个强大的能量体从太阳的背面逃到了这颗星球的地核之中，
+			我们需要一直往下，找到它，然后给它洗一个冷水澡
+			'''
+		Halibut_TextDictionary_Content_9:
+			'''
+			古战场的无数不屈之魂现在聚集了起来，它们藏在地牢的深处，并且现在十分的躁动。
+			我们可以去哪里击杀一些落单的冤魂，这可能会让亚空间的小型风暴提前到来，但也能引出它们
+			'''
+		Halibut_TextDictionary_Content_10:
+			'''
+			有一类生物在太空中诞生并成长，它们的身躯能承受强大的宇宙辐射和天体级的能量
+			在很早以前我们遇到过一只，而现在，我们要面对它们中间的佼佼者，一个号称吞噬过神明的家伙
+			'''
+		Halibut_TextDictionary_Content_11: 丛林的温度最近有所上升，我想是那条强大的龙回来了
+		Halibut_TextDictionary_Content_12:
+			'''
+			我们将要面对无机造物的巅峰，它们有着强大的火力与防御。
+			此外，硫磺火的祭坛似乎可以召唤些什么
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			在深渊里面有一块特殊的石头，使用它来面对最终的战役
+			还有一头强大的海洋生物，它摧毁了我的机器，让我们去找它复仇
+			'''
+		Halibut_TextDictionary_Content_14: 老实说，我想回海里一趟
+		CWRRecipes_ApostolicRelics: 使徒遗物
+		CWRRecipes_GodEaterWeapon: 噬神者武器
+		CWRRecipes_FishGroup: 鱼
+		LoadItemRecipe_Condition_Text1: 背包中需要存在一本大修宝典
+		Murasama_Text0: 已解锁
+		Murasama_Text1: 未解锁 需要通过试炼2
+		Murasama_Text2: 未解锁 需要通过试炼5
+		Murasama_Text3: 未解锁 需要通过试炼9
+		MouseTextContactPanel_TextContent: 按下[KEY]切换终焉合成配方预览状态
+		CWRItem_IsRemakeItem_TextContent: -大修-
+		OnEnterWorld_TextContent: 个武器重置已经装载
+		OnEnterWorld_TextContent2:
+			'''
+			检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
+			为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
+			'''
+		CaseEjection_TextContent: 空弹
+		CaseEjection_TextContent_Coin: 没有钱币
+		CaseEjection_TextContent_Arrow: 没有箭矢
+		SupertableUI_Text1: 关闭
+		SupertableUI_Text2: 查看配方
+		SupertableUI_Text3: 无
+		OverhaulTheBibleUI_Text:
+			'''
+			滑动鼠标滚轮或者拖动左侧进度条，上下浏览被重置过的物品
+			这些仅作为参考，因为许多局部改动并不会出现在这个名单中
+			'''
+		OverhaulTheBibleUI_Text1: 监视战士
+		OverhaulTheBibleUI_Text2: 监视射手
+		OverhaulTheBibleUI_Text3: 监视法师
+		OverhaulTheBibleUI_Text4: 监视召唤师
+		OverhaulTheBibleUI_Text5: 监视盗贼
+		CartridgeHolderUI_Text1: 弹匣填充内容
+		CartridgeHolderUI_Text2: 剩余
+		CartridgeHolderUI_Text3: 空
+		CartridgeHolderUI_Text4: 右键卸弹
+		CartridgeHolderUI_Text5: 左键点击全部装填，右键点击装填入一颗
+		CartridgeHolderUI_Text6: 该武器不能使用此弹药!
+		CartridgeHolderUI_Text7: 弹匣已满!
+		ArrowHolderUI_Text0: 左键点击标记箭矢
+		ArrowHolderUI_Text1: 右键点击取消标记
+		SupertableUI_Text4: 关闭摆放监视
+		SupertableUI_Text5: 开启摆放监视
+		AmmoBox_Text: 已到达部署上限
+		AmmoBox_Text2: 正在部署
+		AmmoBox_Text3: 已部署
+		HellfireExplosion_DeadLang_Text: "{0}在地狱的烈火中化为灰烬"
+		SoulfireExplosion_DeadLang_Text: "{0}的灵魂在火焰中升华"
+		SupMUI_OneClick_Text1: 快捷放置材料
+		SupMUI_OneClick_Text2: 快捷拿取材料
+		TemporaryVersion_Text:
+			'''
+			[CalamityOverhaul-[V1]]:
+			当前版本为临时性版本，用于适配新版本，仅能保证最基本的游玩体验，直到在[V2]版本到来
+			更新较为仓促，所以仍可能存在一些明显的错误
+			如果您在游玩过程中发现问题，请在Github上向模组提交issue
+			或者前往模组创意工坊Feedback on Issues反馈帖中指出问题，开发者会快速反应并修复
+			'''
+		MS_Config_Text:
+			'''
+			检测到您安装了 [Magic Storage Mod]，为了解决冲突问题，建议将模组配置中的 [Recursion Crafting Depth] 设置为 0
+			该设置为递归合成，在与本模组交互时，会错误的调用所有合成事件导致严重影响游玩体验
+			'''
+		IconUI_Text0: 前往模组的开源库 :)
+		IconUI_Text1: 问题反馈
+		IconUI_Text2: 致谢名单
+		IconUI_Text3: 画师
+		IconUI_Text4: 代码援助
+		IconUI_Text5: 捐赠者
+		IconUI_Text6: 平衡测试
+		IconUI_Text7: 查看日志
+		IconUI_Text8: 模组维基
+		IconUI_Text9: 音乐制作
+		SPU_Text0: 在
+		SPU_Text1: 进行终焉合成
+		SPU_Text2: 合成获得：
+		Spazmatism_Text1: EUX_001部署成功，行为写入:协同PCZ_001终结目标
+		Spazmatism_Text2: EUX_002部署成功，行为写入:协同PCZ_001终结目标
+		Spazmatism_Text3: EUX_001主结构受损，尝试从战场撤离...
+		Spazmatism_Text4: EUX_002主结构受损，尝试从战场撤离...
+		Spazmatism_Text5: 目标已被终结
+		Spazmatism_Text6: 正在撤离...
+		Spazmatism_Text7: 任务失败，尝试从战场撤离...
+		Spazmatism_Text8: 已经部署
+		Error_1:
+			'''
+			个钩子失效了，为了游戏正常，请关闭游戏并重新进入，
+			如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
+			'''
+		Error_2:
+			'''
+			检测到异常，服务器正在尝试实时重载物块系统，
+			这可能会造成短暂的卡顿和数秒钟的网络延迟，属于正常情况
+			'''
+		Config_1: 用户
+		Config_2: 修改了服务端配置
+		CWRGun_KL_Text: 按下[KL]键进行换弹
+		CWRGun_Scope_Text: 按下[Scope]开镜
+		CWRGun_Recoil_Text: "[Recoil]后坐力"
+		CWRGun_MustCA_Text: 开火必定消耗弹药
+		CWRGun_Recoil_Level_0: 无
+		CWRGun_Recoil_Level_1: 微弱的
+		CWRGun_Recoil_Level_2: 较弱的
+		CWRGun_Recoil_Level_3: 一般的
+		CWRGun_Recoil_Level_4: 较强的
+		CWRGun_Recoil_Level_5: 疯狂的
+		CWRGun_Recoil_Level_6: 荒诞的
+		SkeletronPrime_Text: 别妄图用这愚蠢的东西杀死我!去死吧有机体!
+		MachineRebellion_SpawnInfo: 在夜晚使用嘉登遥控器
+		MachineRebellion_DespawnMessage: 在夜晚使用嘉登遥控器
+		MachineRebellion_DisplayName: 机械暴乱
+		Notbound: "[未绑定按键]"
+		DisableMotionInterpolationMessage:
+			'''
+			检测到您启用了HighFPSSupport:[运动流畅化]功能
+			已经自动为您禁用，以保证模组的部分视觉效果运行稳定
+			为了确保更改生效，强烈建议您手动切换并保持此功能的关闭
+			'''
+		LegendItemUpgradeDisable:
+			'''
+			这把传奇武器在当前世界中已被设定为无法升级
+			若需要解除禁用状态，请重新进入世界
+			'''
+	}
+}

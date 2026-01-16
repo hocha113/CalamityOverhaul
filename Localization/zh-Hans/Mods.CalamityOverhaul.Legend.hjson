@@ -1,0 +1,182 @@
+Legend: {
+	HalibutText: {
+		FishByStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			这条鱼可被研究
+			'''
+		FishOnStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			这条鱼已经研究
+			'''
+		FishByPuzzle:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			这条鱼可成为拼图
+			'''
+
+		SkillSlot: {
+			Hover1: 左键: 选择
+			Hover2: 右键: 置顶
+			Hover3: 滚轮: 滚动
+			Hover4: 长按: 拖拽
+		}
+
+		DomainUI: {
+			TitleText: 海域领域
+			ExtraEyeTitleText: 第 十 层
+			CrashedLabelText: 已死机
+			EyeDesc1:
+				'''
+				第一只眼睁开，在你意识的暗面撕开了一道缝隙。
+				你听到了不应该存在的潮汐声，湿冷的寒意开始渗入现实的帷幕。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				'''
+			EyeDesc2:
+				'''
+				第二只眼与第一只眼重叠，你的视界出现了无法对焦的重影。
+				现实世界像被水浸泡的照片一样模糊，另一个维度的灰暗海面正在强制覆盖当前的空间。
+				一个新的领域在原先的领域中被强行开启了，构成了双层嵌套的诡异维度。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				'''
+			EyeDesc3:
+				'''
+				额头传来撕裂般的剧痛，三只幽蓝的眼球闪烁着不详的光芒，在皮肉下疯狂转动。
+				光线开始被这片空间吞噬，来自体内的深渊低语不再像是幻听，而变成了清晰的咀嚼声。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				'''
+			EyeDesc4:
+				'''
+				四只眼分为两对，分别覆盖在你的双目之上，原本分离的深渊投影开始互相叠加、融合。
+				你眼中的世界不再是原本的模样，物质的结构在浑浊的海水中被解构重组。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				'''
+			EyeDesc5:
+				'''
+				你的皮肤变得苍白肿胀，如同浸泡许久的浮尸。
+				无数只不安分的眼睛在皮下如游鱼般游弋、争抢，最终汇聚于额前，撕裂出一只狰狞的独眼。
+				五层领域彻底融合，你获得了扭曲领域内因果的能力。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]重启自身。
+				'''
+			EyeDesc6:
+				'''
+				第六只眼在你的心脏上睁开。
+				泵出的不再是温热的血液，而是诡异的黑水，腥臭而阴冷，如同泡过腐尸的污水。
+				每一次搏动，都在海域内激荡起肉眼可见的深蓝脉络。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]重启自身。
+				'''
+			EyeDesc7:
+				'''
+				七只眼在你额头排列成诡异的阵列，随时间的脉动迸发光芒。
+				领域开始疯狂侵蚀现实，边界所及之处，物质如沙般消解，法则被潮汐所改写。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]大范围重启。
+				按下[Halibut_Superposition]使用叠加袭击。
+				'''
+			EyeDesc8:
+				'''
+				第八只眼化作一个无声的漩涡，出现在你的掌心。
+				领域内的水压变得几近凝实，光线在此弯曲，声音在此寂灭。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]大范围重启。
+				按下[Halibut_Superposition]使用叠加袭击。
+				'''
+			EyeDesc9:
+				'''
+				九为极数。九只眼在你头顶形成一轮虚幻的渊环。
+				最后一丝人性已被海水洗刷殆尽，此刻伫立于此的，是一具承载着无尽尸海的躯壳。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]大范围重启。
+				按下[Halibut_Superposition]使用叠加袭击。
+				'''
+			EyeDesc10:
+				'''
+				层数失去了意义，一即无限。
+				你成为了深渊，深渊亦是你。
+				你的目光所及，便是新的创世纪。
+				你已抵达此岸的终点，成为了彼岸的神祇。
+				[Line]
+				按下[Halibut_Domain]开启或者关闭领域。
+				按下[Halibut_Teleport]在领域内瞬移。
+				按下[Halibut_Clone]让过去入侵到现在。
+				按下[Halibut_Restart]大范围重启。
+				按下[Halibut_Superposition]使用叠加袭击。
+				按住左键开始无限叠加并无限重启。
+				'''
+			LayerTitleFormat: 第 {0} 层
+		}
+
+		ResurrectionUI: {
+			TitleText: 深渊复苏状态
+			LinePercentFormat: 百分比 : {0:F1}%
+			LineValueFormat: 复苏值 : {0:F1} / {1:F1}
+			LineRateFormat: 速度   : {0:F3}/秒
+			HeaderSummaryText: 当前态势评估
+			RateLevelVeryLow: 死寂
+			RateLevelLow: 低语
+			RateLevelMedium: 躁动
+			RateLevelHigh: 沸腾
+			RateLevelDanger: 决堤
+			Phase1: 复苏尚且平静，深渊处于沉寂状态
+			Phase2: 能够听到并不存在的潮汐声，肢体末端开始感到冰冷
+			Phase3: 幻觉加剧。深海的重压开始作用于眼球与心脏
+			Phase4: 现实逻辑开始崩塌，你的存在正在被某种恐怖阴冷的东西改写
+			Phase5: 临界点已破。人性正在消散，你即将成为那片尸海的一部分
+			Trend1: 几乎停滞
+			Trend2: 缓慢渗漏
+			Trend3: 持续上涌
+			Trend4: 剧烈灌注
+			Trend5: 瞬间崩坏
+			SummaryFormat: 当前诊断：{0} [侵蚀态势：{1}]
+		}
+	}
+
+	MuraText: {
+		Subtest_Text0: 我们必须去地狱释放光明与黑暗的力量，这会引发亚空间风暴，但我们不得不做，新兵，为征途写下宏伟的一笔!
+		Subtest_Text1: 一个巨大的钢铁蠕虫挡住了我们的征途，将它剁成碎片
+		Subtest_Text2: 我能感觉到两道目光在注视着我们，去解决它们
+		Subtest_Text3:
+			'''
+			一次决战要到来了，那些破铜烂铁计划联合在一起，妄图阻挡我们
+			以刀与血来告诉它们，我们远征的步伐将碾碎一切异形邪祟和憎恶智能
+			'''
+		World_Text0: 上次升级的世界:<{0}>|记录等级:<{1}>
+		Subtest_Text4: 丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
+		Subtest_Text5: 血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
+		Subtest_Text6: 昔日的星神早已陨落，如今所剩的不过堪堪一条蛆虫，让我们彻底结束星神的时代
+		Subtest_Text7: 让地牢里那团灵魂聚集物在我的刀锋下凋零，它的灵魂将是最好的养料
+		Subtest_Text8: 靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
+		Subtest_Text9: 丛林深处的那朵植株异形，去撕碎它的花瓣，碾碎它的球茎，让它的汁液浸染这片土地
+		Subtest_Text10: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
+	}
+}

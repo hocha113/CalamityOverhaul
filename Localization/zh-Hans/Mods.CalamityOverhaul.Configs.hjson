@@ -1,0 +1,176 @@
+Configs: {
+	CWRServerConfig: {
+		DisplayName: 内容设置
+
+		WeaponOverhaul: {
+			Label: 武器大修
+			Tooltip:
+				'''
+				启用后会修改大部分的武器
+				[c/FF0000:如果您希望可以最优化的体验灾厄大修的内容，请开启它！]
+				'''
+		}
+
+		ScreenVibration: {
+			Label: 武器特殊攻击屏幕振动效果
+			Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
+		}
+
+		MurasamaSpaceFragmentationBool: {
+			Label: 鬼妖村正终结技碎屏效果
+			Tooltip:
+				'''
+				默认开启，鬼妖村正进行终结技时会制造屏幕破碎的特效用于增强打击感
+				如果关闭便会禁用这些特效，可以根据您的喜好设置
+				'''
+		}
+
+		HalibutDomainConciseDisplay: {
+			Label: 比目鱼海洋领域简约显示
+			Tooltip: 默认关闭，开启后会屏蔽掉领域内大多数的视觉效果
+		}
+
+		Headers: {
+			CWRSystem: 大修系统设置
+			CWRWeapon: 大修武器设置
+			CWRUI: 大修UI设置
+		}
+
+		LensEasing: {
+			Label: 镜头缓动
+			Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
+		}
+
+		CartridgeUI_Offset_X_Value: {
+			Label: 弹匣UI横向偏离值
+			Tooltip: ""
+		}
+
+		CartridgeUI_Offset_Y_Value: {
+			Label: 弹匣UI纵向偏离值
+			Tooltip: ""
+		}
+
+		WeaponHandheldDisplay: {
+			Label: 武器手持显示
+			Tooltip:
+				'''
+				开启后，多数武器会拥有手持动画和特殊使用动作
+				这个效果的优先级非常高，会覆盖掉绝大多数第三方模组的手持动画
+				默认开启，并且出于视觉体验考虑，作者不建议关闭
+				如果您是在游戏中途更改该配置，则一些效果需要重新加载模组后才能改变
+				'''
+		}
+
+		ActivateGunRecoil: {
+			Label: 枪械后坐力[c/06e33f:(实验性)]
+			Tooltip: 开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
+		}
+
+		MagazineSystem: {
+			Label: 弹匣系统
+			Tooltip:
+				'''
+				一个庞大的内容系统，开启后绝大多数枪械会拥有弹匣机制，包括换弹、混装弹药等玩法
+				关闭将禁用这些内容，枪械将使用原版的弹药机制
+				[c/fff08c:值得注意的是]，大修的游戏平衡是在[c/fff08c:开启了弹匣系统]的基础上调整的
+				如果您选择关闭，可能会让一些远程武器变得[c/de0808:过分强大]
+				因此，如果关闭此项功能，[c/de0808:远程武器的游戏平衡将不再具有讨论意义]
+				[c/fff08c:如果更改了该选项，请重新进入世界以保证所有效果正确变动]
+				'''
+		}
+
+		BowArrowDraw: {
+			Label: 绘制弓弦箭矢
+			Tooltip:
+				'''
+				玩家使用弓类进行攻击时，会实时绘制出对应的箭矢动画
+				默认开启，可以根据个人喜好进行设置
+				'''
+		}
+
+		EnableCasingsEntity: {
+			Label: 启用弹壳实体
+			Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
+		}
+
+		LoadingAA_Volume: {
+			Label: 枪械换弹音效音量系数
+			Tooltip: 值越大声音越明显，1为原音量
+		}
+
+		ShotgunFireForcedReloadInterruption: {
+			Label: 霰弹枪开火强制打断子弹装填[c/06e33f:(实验性)]
+			Tooltip:
+				'''
+				小部分的霰弹枪类拥有这个特性，在装填子弹时，如果玩家试图开火将打断装填动作
+				这个选项如果开启，将令所有霰弹枪武器具备该特性
+				'''
+		}
+
+		WeaponLazyRotationAngle: {
+			Label: 武器惰性旋转角更新
+			Tooltip:
+				'''
+				如果启用，会让手持类武器的使用动画更加接近原版，
+				使用的朝向将只在开火时改变一次
+				'''
+		}
+
+		BiologyOverhaul: {
+			Label: 生物大修[c/06e33f:(实验性)]
+			Tooltip:
+				'''
+				[c/c20909:未完成]
+				默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
+				这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
+				'''
+		}
+
+		EnableSwordLight: {
+			Label: 启用刀光
+			Tooltip:
+				'''
+				默认开启，许多刀剑类武器将会拥有炫彩亮丽的刀光
+				在绝大多数情况下，这会让游戏变得更酷
+				'''
+		}
+
+		MuraUIStyleType: {
+			Label: 鬼妖村正UI样式选择
+			Tooltip:
+				'''
+				样式1:精致-悬浮于头顶
+				样式2:精致-紧凑
+				样式3:经典-悬浮于头顶
+				样式4:经典-紧凑
+				样式5:隐蔽
+				'''
+		}
+
+		MuraPosStyleType: {
+			Label: 鬼妖村正UI位置选择
+			Tooltip:
+				'''
+				预设1:右下
+				预设2:左下
+				预设3:居高
+				'''
+		}
+
+		ShowReloadingProgressUI: {
+			Label: 显示装弹进度
+			Tooltip: 开启后会让弹药装填的进度被显示出来
+		}
+
+		QuestLog: {
+			Label: 任务书指引
+			Tooltip:
+				'''
+				启用后，在游戏进程中将会有任务书指引玩家
+				可以使用任务书物品、背包中的启动UI，或者快捷键打开任务书界面查看当前任务
+				默认开启，禁用后将不会有任何任务指引
+				'''
+		}
+	}
+}

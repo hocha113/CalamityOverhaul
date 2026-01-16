@@ -1,0 +1,31 @@
+Buffs: {
+	SoulBurning: {
+		DisplayName: 灵魂火
+		Description: 来自地狱的火焰
+	}
+
+	HellburnBuff: {
+		DisplayName: 地狱炎爆
+		Description: 来自地狱的火焰
+	}
+
+	VoidErosion: {
+		DisplayName: 虚空侵蚀
+		Description: 逐渐化为虚无
+	}
+
+	DestroyerSummonBuff: {
+		DisplayName: 毁灭者
+		Description: 迷你毁灭者会跟随你征战
+	}
+
+	FrenziedMachineSoul: {
+		DisplayName: 狂热机魂
+		Description: 机魂大悦!
+	}
+
+	FishoilBuff: {
+		DisplayName: 鱼油
+		Description: 你感觉自己的皮肤在变得油腻
+	}
+}

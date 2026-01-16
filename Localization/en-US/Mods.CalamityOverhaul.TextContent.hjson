@@ -1,0 +1,372 @@
+﻿TextContent: {
+	CWRLocText: {
+		TemperatureText: Combustion Temperature
+		EnergyShortage: Energy Shortage
+		ChargingStation_Text1: Put in charge items
+		ChargingStation_Text2: Put in battery
+		ChargingStation_Text3: Need to put in something that can receive energy
+		ChargingStation_Text4: Need to put in batteries
+		WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+		WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
+		Turret_Text1: Battery Runs Out
+		Turret_Text2: Intruder Detected!
+		IndustrializationGenMessage: Industrializing The World
+		InternalStoredEnergy: Internal Stored Energy
+		KreloadTimeAddText: "Ammunition reloading time increased "
+		KreloadTimeLessenText: "Ammunition reloading time is reduced "
+		DeathModeItem: Death Mode Item
+		DropInMachineRebellion: Dropped by the Mech Trio EX
+		DontUseMagicConch: You're being watched by a powerful creature...
+		OnlyZenith: Only in Zenith World
+		Event_TungstenRiot_Name: Tungsten Riot
+		Event_TungstenRiot_Text_1: A large number of tungsten creatures are invading!
+		Event_TungstenRiot_Text_2: The Tungsten Army has been beaten back!
+		Item_LegendOnMouseLang: Press 'Shift' to listen to the story...
+		BloodAltar_Text1: The crimson gaze is coming...
+		BloodAltar_Text2: You don't have enough blood orb to pay tribute to the Crimson King...
+		BloodAltar_Text3: "{0} Trapped in an endless frenzy of blood and flesh"
+		VoidDamageNameText: Void Damage
+		Drop_Hell_RuleText: Fall after being defeated in Hell
+		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
+		Murasama_Text_Lang_0: Trial:
+		Murasama_Text_Lang_End: Already passed
+		Murasama_TextDictionary_Content_0:
+			'''
+			Recruit. Prove yourself to me.
+			That slimy blue brute, and the siren-spawn beneath the sands...
+			Destroy them. That is your first step.
+			'''
+		Murasama_TextDictionary_Content_1: The moon is high. Let's go poke out that giant, careening eyeball and blind that false god for good.
+		Murasama_TextDictionary_Content_2:
+			'''
+			The false god's remains taint this land. Heresy breeds at the world's end, and abominations run rampant.
+			Go and liberate the corrupted lands. Hack apart that false god's putrid brain. Mince that purple worm!
+			I want to see my blade dance in their alien flesh!
+			'''
+		Murasama_TextDictionary_Content_3: The corrupted lands still throb like a heart. The flesh-parasites still squirm. The corrupted tumors still *think*. Go and banish them all!
+		Murasama_TextDictionary_Content_4:
+			'''
+			There is a legend in the Slime Kingdom... of a fallen, alien god.
+			It is weak. Now is the time to banish it back to the void.
+			The curse on the dungeon is failing. I feel a psychic power stirring in the deep... screams... wails... whispers...
+			'''
+		Murasama_TextDictionary_Content_5:
+			'''
+			The prison of solid ice... a powerful psyker is held there. Free him. He will be a great asset in our reclamation of this world.
+			The outcast of the Sulphurous Sea bars our path to the abyss's treasures. End its endless consumption and wandering.
+			I miss the tempering of the brimstone crag. Go... and 'greet' its guardian.
+			'''
+		Murasama_TextDictionary_Content_6: That witch who gave herself to the chaos... she has a warped clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
+		Murasama_TextDictionary_Content_7: The foolish Lihzahrds worship inert stone. Let us grind their idol to dust and shatter their faith. WE are what they should be worshipping.
+		Murasama_TextDictionary_Content_8: That false god hiding behind the moon is nothing but a flawed, patchwork thing. Go. Sever its tentacles, carve out its heart, and let us drink deep of its blood.
+		Murasama_TextDictionary_Content_9:
+			'''
+			A pathetic god, merely prolonging its wretched life by siphoning stellar heat. Its heretical fire must be extinguished.
+			Let that mass of souls in the dungeon wither before my blade. Their spirits will be the finest nourishment.
+			'''
+		Murasama_TextDictionary_Content_10: That arrogant cosmic serpent stirs behind the veil of this world. End its ambition.
+		Murasama_TextDictionary_Content_11:
+			'''
+			The Jungle Dragon... the last of the Auric Dragons. Unlike these other abominations, it... deserves our respect.
+			And yet, we must make it die again. We must strip it of its Auric soul.
+			These materials will forge wargear of supreme quality.
+			'''
+		Murasama_TextDictionary_Content_12:
+			'''
+			That heretic of the mechanical cult... he truly believes his 'Titans' surpass the power of gods.
+			Such conviction is absurd. Let us return those Titans to their natural state—a pile of scrap.
+			And that witch... a gifted psyker who should have been a great asset, now lost to chaos.
+			We can only banish her. Plunge this blade into her heart and let the fire of loyalty burn her corrupted soul to ash.
+			'''
+		Murasama_TextDictionary_Content_13:
+			'''
+			Our path to conquest is inevitable. Shatter the armor of that abyssal dragon.
+			Use the Terminus Stone. Begin the final battle against these alien things.
+			'''
+		Murasama_TextDictionary_Content_14:
+			'''
+			Well done, recruit. The alien filth of this world has been scoured clean by our hand.
+			Our conquest is at its zenith. Even the tyrant who once ruled this world was nothing before us.
+			Now... open your arms. Embrace the world our victory has given you.
+			'''
+		Murasama_No_legend_Content_1: The sheath will be unlocked after the dragon falls
+		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
+		Murasama_No_legend_Content_3: "[c/fff08c:Stronger with the distance of the journey]"
+		Murasama_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		SHPC_No_legend_Content_1: Unlock it after the dragon falls
+		SHPC_No_legend_Content_2: Return of the legendary weapon! :)
+		SHPC_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
+		SHPC_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		SHPC_TextDictionary_Content_0:
+			'''
+			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
+			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
+			'''
+		SHPC_TextDictionary_Content_1:
+			'''
+			We need to take down that giant eyeball. It comes from a powerful entity.
+			I need to dissect it to see how it achieves anti-gravity.
+			'''
+		SHPC_TextDictionary_Content_2:
+			'''
+			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
+			I urgently need to study its metamorphic process. Go and take a look.
+			'''
+		SHPC_TextDictionary_Content_3:
+			'''
+			Giant bones floating in the air... it's very unscientific.
+			We need to head to the deep dungeon at the world's end.
+			'''
+		SHPC_TextDictionary_Content_4:
+			'''
+			The earth trembles, gears roar, and currents surge.
+			A bunch of robots are waiting for us. It's time to show them the power of technology.
+			'''
+		SHPC_TextDictionary_Content_5:
+			'''
+			A few flamboyant large flower buds have bloomed underground in the jungle.
+			We need to check them out and collect some experimental data.
+			'''
+		SHPC_TextDictionary_Content_6:
+			'''
+			Ancient robots deep within the temple await a recharge activation.
+			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			'''
+		SHPC_TextDictionary_Content_7:
+			'''
+			The secrets on the dark side of the moon will be revealed to us.
+			The world will return to its original state.
+			'''
+		SHPC_TextDictionary_Content_8:
+			'''
+			The deity parasitizing the earth's core has noticed us.
+			Go to the underworld. I need knowledge on thermal energy utilization.
+			'''
+		SHPC_TextDictionary_Content_9:
+			'''
+			The spirits of the dungeon are gathering into a massive symbiotic entity.
+			This is fascinating. We need to check it out immediately.
+			'''
+		SHPC_TextDictionary_Content_10:
+			'''
+			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
+			It devours gods, but we are not gods. I think it will invite us for tea.
+			'''
+		SHPC_TextDictionary_Content_11:
+			'''
+			The last dragonborn in the world, wow, that's so cool!
+			Take me to see it. I need to get its feathers.
+			'''
+		SHPC_TextDictionary_Content_12:
+			'''
+			It's time to visit my creator.
+			Or that witch, her existence troubles me.
+			'''
+		SHPC_TextDictionary_Content_13:
+			'''
+			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
+			Get ready; we need a perfect victory.
+			'''
+		SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_No_legend_Content_1: Unlocked after the fall of the great dragon
+		Halibut_No_legend_Content_2: Hey, I've been here all along
+		Halibut_No_legend_Content_3: "[c/fff08c:Growing stronger with each step of the journey]"
+		Halibut_No_legend_Content_4: "[c/00707d:The legendary glow has faded...]"
+		Halibut_TextDictionary_Content_0: Friend, let's challenge that enormous, slimy land creature.
+		Halibut_TextDictionary_Content_1: There's a big eye staring at us. That's quite rude; we should teach it a lesson.
+		Halibut_TextDictionary_Content_2: Life thrives not only in the Abyss but also in the Jungle. We should pay a visit to the queen bee there.
+		Halibut_TextDictionary_Content_3:
+			'''
+			A cursed skeleton that never decays—we need to put it to rest.
+			The cries for help from Hell are becoming more frequent. We should leave soon. I'm sure the Guide won't mind.
+			'''
+		Halibut_TextDictionary_Content_4:
+			'''
+			Do you know how inanimate objects come to life? I once built a massive underwater machine that could launch nuclear warheads made of bubbles
+			and countless thermonuclear torpedoes. I used it to hunt gigantic creatures living 10,000 meters below the sea—until I met...
+			Oh, I digress. I think we’ll soon have four mechanical friends visiting us, so we should be prepared.
+			Also, there's a mutated giant sea worm in the polluted waters above the Abyss. It used to be a gatekeeper at the Sulphurous Sea University.
+			It should still be quite friendly; we can go have some afternoon tea with it.
+			'''
+		Halibut_TextDictionary_Content_5:
+			'''
+			The next research sample is the clone.
+			A crude replica, yes, but it's saturated with that brimstone presence... excellent material for analysis.
+			...Oh, right. One more thing.
+			I'm fond of the jungle. It's practically my second home, brimming with life energy
+			on par with the deep abyss. However, we need to find a way to release it first.
+			Remember those giant bulbs underground? Go 'pick' them. It will... help with my botany degree.
+			'''
+		Halibut_TextDictionary_Content_6:
+			'''
+			I enjoy archaeological digs. Last time I was wandering through the Jungle, I saw a massive ruin.
+			We should now have the key to open the door to that ruin. Let’s go check it out.
+			Inside, there’s an ancient machine waiting for us to power it up, just like a remote control for an air conditioner.
+			Besides that, there’s an alien plague spreading on the surface, infecting the land and most inorganic objects.
+			Every night, a tormented mining machine roams around, long since infected. Let's put it out of its misery.
+			'''
+		Halibut_TextDictionary_Content_7:
+			'''
+			Do you know the secret on the far side of the Moon? There’s a giant octopus, a sponge, and a starfish...
+			Oh, I mean, the lunar crisis is coming.
+			'''
+		Halibut_TextDictionary_Content_8:
+			'''
+			Now it’s time for the solar crisis. A powerful energy being escaped from the far side of the Sun and burrowed into the planet’s core.
+			We need to head down there and give it a cold shower.
+			'''
+		Halibut_TextDictionary_Content_9:
+			'''
+			Countless indomitable souls from ancient battlefields have gathered now, hidden deep within the dungeon, and are becoming restless.
+			We can go down there and slay some of the wandering spirits. This might bring about a small storm in the Subspace, but it’ll also lure them out.
+			'''
+		Halibut_TextDictionary_Content_10:
+			'''
+			There’s a species that is born and grows in space, capable of withstanding intense cosmic radiation and celestial-level energy.
+			We encountered one a long time ago, but now we face the champion among them—a being that claims to have devoured gods.
+			'''
+		Halibut_TextDictionary_Content_11: The Jungle's temperature has risen lately; I think that powerful dragon has returned.
+		Halibut_TextDictionary_Content_12:
+			'''
+			We’re about to face the pinnacle of inorganic creations, with unmatched firepower and defense.
+			Additionally, the Sulphurous Fire Altar seems capable of summoning something.
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			In the Abyss lies a special stone—use it to face the final battle.
+			There's also a powerful sea creature that destroyed my machine; let’s seek revenge.
+			'''
+		Halibut_TextDictionary_Content_14: Honestly, I feel like going back to the sea.
+		CWRRecipes_ApostolicRelics: Apostolic relics
+		CWRRecipes_GodEaterWeapon: God Eater weapon
+		CWRRecipes_FishGroup: fish
+		LoadItemRecipe_Condition_Text1: Need to have an Overhaul The Bible Book in your backpack
+		Murasama_Text0: Unlocked
+		Murasama_Text1: Not yet unlocked. Need to pass test 2
+		Murasama_Text2: Not yet unlocked. Need to pass test 5
+		Murasama_Text3: Not yet unlocked. Need to pass test 9
+		MouseTextContactPanel_TextContent: Press [KEY] to toggle the End Synthesis Recipe Preview.
+		CWRItem_IsRemakeItem_TextContent: -overhauls-
+		OnEnterWorld_TextContent: " weapon reset has been loaded"
+		OnEnterWorld_TextContent2:
+			'''
+			It has been detected that you have installed [Quality of Terraria Mod], 
+			but your [Quality of Terraria Mod] version is outdated.
+			To ensure the game runs properly, please make sure your 
+			[Quality of Terraria Mod] version is at least 1.7.1.7.
+			'''
+		CaseEjection_TextContent: No Bullets
+		CaseEjection_TextContent_Coin: No Money
+		CaseEjection_TextContent_Arrow: No Arrow
+		SupertableUI_Text1: close
+		SupertableUI_Text2: View recipe
+		SupertableUI_Text3: nothing
+		OverhaulTheBibleUI_Text:
+			'''
+			Swipe the mouse wheel or drag the left progress bar to navigate up and down the reset items
+			These are for reference only, as many partial changes do not appear in this list
+			'''
+		OverhaulTheBibleUI_Text1: Monitor the Meleer
+		OverhaulTheBibleUI_Text2: Monitor the Rangedr
+		OverhaulTheBibleUI_Text3: Monitor the Mager
+		OverhaulTheBibleUI_Text4: Monitor the summoner
+		OverhaulTheBibleUI_Text5: Monitor the Roguer
+		CartridgeHolderUI_Text1: Magazine stuffing
+		CartridgeHolderUI_Text2: Residue
+		CartridgeHolderUI_Text3: Empty
+		CartridgeHolderUI_Text4: Right-click discharge
+		CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
+		CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
+		CartridgeHolderUI_Text7: The Magazine Is Full!
+		ArrowHolderUI_Text0: Left Click On The Marked Arrow
+		ArrowHolderUI_Text1: Right Click Untag
+		SupertableUI_Text4: Close display monitor
+		SupertableUI_Text5: Open display monitor
+		AmmoBox_Text: The deployment upper limit has been reached
+		AmmoBox_Text2: Being deployed
+		AmmoBox_Text3: " Deployed"
+		HellfireExplosion_DeadLang_Text: "{0} To Burn In The Flames Of Hell"
+		SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
+		SupMUI_OneClick_Text1: Quick placement material
+		SupMUI_OneClick_Text2: Quick access to material
+		TemporaryVersion_Text:
+			'''
+			[CalamityOverhaul-[V1]]:
+			This is a temporary version designed to adapt to the new update, 
+			providing only the most basic gameplay experience until version [V2] arrives.
+			Due to the rushed update, there may still be some noticeable bugs.
+			If you encounter any issues during gameplay, please submit an issue on Github,
+			or report the problem in the Feedback on Issues thread on the mod's Workshop page. 
+			The developers will respond and fix it promptly.
+			'''
+		MS_Config_Text:
+			'''
+			Detected that you have installed the [Magic Storage Mod]. 
+			To resolve conflict issues, it is recommended to set the [Recursion Crafting Depth] in the mod configuration to 0. 
+			This setting for recursive crafting, when interacting with this mod, 
+			would incorrectly trigger all crafting events, severely affecting the gameplay experience.
+			'''
+		IconUI_Text0: Go to the mod's open source repository :)
+		IconUI_Text1: Issue Feedback
+		IconUI_Text2: Acknowledgments
+		IconUI_Text3: Artist
+		IconUI_Text4: Code Assistance
+		IconUI_Text5: Donor
+		IconUI_Text6: Balance Tester
+		IconUI_Text7: View log
+		IconUI_Text8: Mod Wiki
+		IconUI_Text9: Musician
+		SPU_Text0: In
+		SPU_Text1: Perform final synthesis
+		SPU_Text2: Synthetic acquisition：
+		Spazmatism_Text1: EUX_001 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
+		Spazmatism_Text2: EUX_002 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
+		Spazmatism_Text3: EUX_001 main structure damaged, attempting to retreat from the battlefield...
+		Spazmatism_Text4: EUX_002 main structure damaged, attempting to retreat from the battlefield...
+		Spazmatism_Text5: Target has been terminated.
+		Spazmatism_Text6: Initiating extraction...
+		Spazmatism_Text7: Mission failed, attempting to retreat from the battlefield...
+		Spazmatism_Text8: Have been deployed
+		Error_1:
+			'''
+			hook failed, in order to normal the game, please close the game and re-enter, 
+			if this still does not return to normal, please bring the exported log to find the module developer
+			'''
+		Error_2:
+			'''
+			An exception has been detected and the server is attempting to load the block system in real time, 
+			which may cause a brief stutter and a few seconds of network delay
+			'''
+		Config_1: User
+		Config_2: The server configuration is modified
+		CWRGun_KL_Text: Press the [KL] key to change the cartridge
+		CWRGun_Scope_Text: Press [Scope] to open the lens
+		CWRGun_Recoil_Text: "[Recoil] Recoil"
+		CWRGun_MustCA_Text: Firing must consume ammunition
+		CWRGun_Recoil_Level_0: No
+		CWRGun_Recoil_Level_1: Slight
+		CWRGun_Recoil_Level_2: Weaker
+		CWRGun_Recoil_Level_3: Medium
+		CWRGun_Recoil_Level_4: Strong
+		CWRGun_Recoil_Level_5: Crazy
+		CWRGun_Recoil_Level_6: Ridiculous
+		SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
+		MachineRebellion_SpawnInfo: Use the Garden remote control at night
+		MachineRebellion_DespawnMessage: Use the Garden remote control at night
+		MachineRebellion_DisplayName: Machine Rebellion
+		Notbound: "[Unbound keys]"
+		DisableMotionInterpolationMessage:
+			'''
+			Detected that you have enabled the HighFPSSupport: [Motion Smoothing] feature.
+			To ensure the stability of certain visual effects in the mod,
+			this feature has been automatically disabled for you.
+			To make sure the change takes effect,
+			it is strongly recommended that you manually toggle and keep this feature turned off.
+			'''
+		LegendItemUpgradeDisable:
+			'''
+			This legendary weapon has been set to disable upgrades in the current world.
+			To lift this restriction, please re-enter the world.
+			'''
+	}
+}

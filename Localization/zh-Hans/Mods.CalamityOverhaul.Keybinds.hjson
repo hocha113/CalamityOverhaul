@@ -1,0 +1,22 @@
+Keybinds: {
+	ADS_Key.DisplayName: 打开瞄准镜
+	KreLoad_Key.DisplayName: 换弹
+	QuestLog_Key.DisplayName: 任务书:开关主界面
+	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
+	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
+	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
+	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
+	Halibut_Domain.DisplayName: 大比目鱼:海洋领域
+	Halibut_Clone.DisplayName: 大比目鱼:过去身入侵
+	Halibut_Restart.DisplayName: 大比目鱼:重启
+	Halibut_Superposition.DisplayName: 大比目鱼:叠加
+	Halibut_Teleport.DisplayName: 大比目鱼:领域传送
+	Halibut_UIControl.DisplayName: 大比目鱼:面板开关
+	Halibut_Skill_L.DisplayName: 大比目鱼:向左切换技能
+	Halibut_Skill_R.DisplayName: 大比目鱼:向右切换技能
+	Pandemonium_Q.DisplayName: 万魔殿:硫磺火天罚
+	Pandemonium_R.DisplayName: 万魔殿:万魔终焉
+	AriaofTheCosmos_Q.DisplayName: 寰宇咏叹调:星环护卫
+	AriaofTheCosmos_R.DisplayName: 寰宇咏叹调:伽马射线爆
+	JusticeUnveiled.DisplayName: 正义的显现:触发裁决
+}
