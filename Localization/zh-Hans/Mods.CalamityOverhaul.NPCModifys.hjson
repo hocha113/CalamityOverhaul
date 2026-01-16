@@ -1,4 +1,4 @@
-NPCModifys: {
+
 	ModifyCrabulon: {
 		CrouchText: 等待
 		CrouchAltText: 跟随
@@ -87,4 +87,4 @@ NPCModifys: {
 	}
 
 	ModifyOldDuke.LeavingDiveText: 老公爵潜入了水中...
-}
+

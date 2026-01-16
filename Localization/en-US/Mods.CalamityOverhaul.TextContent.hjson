@@ -1,4 +1,4 @@
-﻿TextContent: {
+﻿
 	CWRLocText: {
 		TemperatureText: Combustion Temperature
 		EnergyShortage: Energy Shortage
@@ -369,4 +369,4 @@
 			To lift this restriction, please re-enter the world.
 			'''
 	}
-}
+

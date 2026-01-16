@@ -1,4 +1,4 @@
-﻿Keybinds: {
+﻿
 	ADS_Key.DisplayName: Firearms:Open the scope
 	KreLoad_Key.DisplayName: Firearms:Change the ammunition
 	QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
@@ -19,4 +19,4 @@
 	AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
 	AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
 	JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment
-}
+

@@ -1,4 +1,4 @@
-Buffs: {
+
 	SoulBurning: {
 		DisplayName: 灵魂火
 		Description: 来自地狱的火焰
@@ -28,4 +28,4 @@ Buffs: {
 		DisplayName: 鱼油
 		Description: 你感觉自己的皮肤在变得油腻
 	}
-}
+

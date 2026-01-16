@@ -1,4 +1,4 @@
-﻿Buffs: {
+﻿
 	SoulBurning: {
 		DisplayName: Soul Burning
 		Description: Fire from hell
@@ -28,4 +28,4 @@
 		DisplayName: Fishoil
 		Description: You feel that your skin is becoming oily
 	}
-}
+

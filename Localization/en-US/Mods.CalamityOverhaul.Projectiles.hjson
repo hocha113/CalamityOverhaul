@@ -1,4 +1,4 @@
-﻿Projectiles: {
+﻿
 	MurasamaHeld.DisplayName: Murasama
 	MuraTriggerDash.DisplayName: Murasama
 	MuraBreakerSlash.DisplayName: Crescent Moon Slash
@@ -419,4 +419,4 @@
 	MuraSlashLine.DisplayName: Mura Slash Line
 	WGGLumberjackSaw.DisplayName: Lumberjack Saw
 	WGGLifeWeaverAcorn.DisplayName: Acorn
-}
+

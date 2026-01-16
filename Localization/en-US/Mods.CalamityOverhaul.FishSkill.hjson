@@ -1,4 +1,4 @@
-﻿FishSkill: {
+﻿
 	FishSwarm: {
 		DisplayName: Phantom Swarm
 		Tooltip:
@@ -444,4 +444,4 @@
 			'''
 		Studied: Brace yourself for frostbite!
 	}
-}
+

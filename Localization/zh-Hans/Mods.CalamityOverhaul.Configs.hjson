@@ -1,4 +1,4 @@
-Configs: {
+
 	CWRServerConfig: {
 		DisplayName: 内容设置
 
@@ -173,4 +173,4 @@ Configs: {
 				'''
 		}
 	}
-}
+

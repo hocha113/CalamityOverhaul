@@ -1,4 +1,4 @@
-﻿Items: {
+﻿
 	ElementWhip: {
 		DisplayName: Element Whip
 		Tooltip: A Whip infused with the energy of the Moon and the Elements.
@@ -1567,4 +1567,4 @@
 			Right-click to open the control panel
 			'''
 	}
-}
+

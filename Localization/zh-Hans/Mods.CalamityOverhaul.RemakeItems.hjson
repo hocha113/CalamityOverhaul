@@ -1,4 +1,4 @@
-RemakeItems: {
+
 	HalibutOverride: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
@@ -3014,4 +3014,4 @@ RemakeItems: {
 			将水桶放置到染料槽中可以洗掉物品的染色
 			'''
 	}
-}
+

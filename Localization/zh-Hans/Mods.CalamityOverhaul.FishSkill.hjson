@@ -1,5 +1,4 @@
 
-FishSkill: {
 	FishSwarm: {
 		DisplayName: 鱼形换影
 		Tooltip:
@@ -445,4 +444,3 @@ FishSkill: {
 			'''
 		Studied: 准备冻手！
 	}
-}

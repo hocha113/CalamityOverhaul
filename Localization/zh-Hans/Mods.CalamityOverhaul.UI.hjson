@@ -1,4 +1,4 @@
-UI: {
+
 	ItemFilterUI: {
 		HintText: 左键点击可添加项目
 		HintText2: 左键点击可移除项目
@@ -284,4 +284,4 @@ UI: {
 		AmmoModeOffText: 物品投掷
 		AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
 	}
-}
+

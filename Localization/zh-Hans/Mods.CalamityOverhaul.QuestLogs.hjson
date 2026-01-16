@@ -1,5 +1,4 @@
 
-QuestLogs: {
 	QuestNode: {
 		FirstQuest: {
 			DisplayName: 欢迎来到灾厄世界!
@@ -917,4 +916,3 @@ QuestLogs: {
 			DetailedDescription: 并非所有物品都值得被珍藏。这个装置能将物品从物流网络中排出，将其抛掷到世界中。无论是为了特定的自动化合成（比如将物品丢入液体），还是单纯地作为垃圾排放口，它都能完美胜任。
 		}
 	}
-}

@@ -1,4 +1,4 @@
-Items: {
+
 	ElementWhip: {
 		DisplayName: 元素长鞭
 		Tooltip:
@@ -1547,4 +1547,4 @@ Items: {
 			右键打开操控面板
 			'''
 	}
-}
+

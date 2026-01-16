@@ -1,4 +1,4 @@
-﻿RemakeItems: {
+﻿
 	HalibutOverride: {
 		DisplayName: Halibut Cannon
 		Tooltip:
@@ -3014,4 +3014,4 @@
 			Place a Water Bucket into the dye slot to wash dyes off items
 			'''
 	}
-}
+

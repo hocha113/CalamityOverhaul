@@ -1,4 +1,4 @@
-﻿NPCModifys: {
+﻿
 	ModifyCrabulon: {
 		CrouchText: Await
 		CrouchAltText: Follow
@@ -87,4 +87,4 @@
 	}
 
 	ModifyOldDuke.LeavingDiveText: The Old Duke dove into the water...
-}
+

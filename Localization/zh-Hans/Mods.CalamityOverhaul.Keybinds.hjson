@@ -1,4 +1,4 @@
-Keybinds: {
+
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
 	QuestLog_Key.DisplayName: 任务书:开关主界面
@@ -19,4 +19,4 @@ Keybinds: {
 	AriaofTheCosmos_Q.DisplayName: 寰宇咏叹调:星环护卫
 	AriaofTheCosmos_R.DisplayName: 寰宇咏叹调:伽马射线爆
 	JusticeUnveiled.DisplayName: 正义的显现:触发裁决
-}
+

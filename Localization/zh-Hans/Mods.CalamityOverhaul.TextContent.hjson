@@ -1,4 +1,4 @@
-TextContent: {
+
 	CWRLocText: {
 		TemperatureText: 燃烧温度
 		EnergyShortage: 电力不足
@@ -355,4 +355,4 @@ TextContent: {
 			若需要解除禁用状态，请重新进入世界
 			'''
 	}
-}
+

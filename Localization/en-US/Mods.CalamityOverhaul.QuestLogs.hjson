@@ -1,4 +1,4 @@
-﻿QuestLogs: {
+﻿
 	QuestNode: {
 		FirstQuest: {
 			DisplayName: Welcome to the World of Calamity!
@@ -916,4 +916,4 @@
 			DetailedDescription: Not all items are worth treasuring. This device ejects items from the logistics network, tossing them out into the world. Whether for automated crafting (like dropping items into liquids) or simply acting as a garbage disposal chute, it handles the job perfectly.
 		}
 	}
-}
+
