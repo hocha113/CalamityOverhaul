@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override void Draw(SpriteBatch spriteBatch) {
             //技能库在最下层（避免遮挡其他UI）
             SkillLibraryUI.Instance.Draw(spriteBatch);
-            DomainUI.Instance.Draw(spriteBatch);           
+            DomainUI.Instance.Draw(spriteBatch);
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
             ResurrectionUI.Instance.Draw(spriteBatch);//绘制复苏条
