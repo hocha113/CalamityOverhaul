@@ -1,1 +1,415 @@
-
+CWRLocText: {
+	// TemperatureText: Combustion Temperature
+	// EnergyShortage: Energy Shortage
+	// ChargingStation_Text1: Put in charge items
+	// ChargingStation_Text2: Put in battery
+	// ChargingStation_Text3: Need to put in something that can receive energy
+	// ChargingStation_Text4: Need to put in batteries
+	// WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+	// WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
+	// Turret_Text1: Battery Runs Out
+	// Turret_Text2: Intruder Detected!
+	// IndustrializationGenMessage: Industrializing The World
+	// InternalStoredEnergy: Internal Stored Energy
+	// KreloadTimeAddText: "Ammunition reloading time increased "
+	// KreloadTimeLessenText: "Ammunition reloading time is reduced "
+	DeathModeItem: Death Mode Item
+	// DropInMachineRebellion: Dropped by the Mech Trio EX
+	DontUseMagicConch: You're being watched by a powerful creature...
+	OnlyZenith: Solo en el mundo de Zenith
+	Event_TungstenRiot_Name: Revuelta de tungsteno
+	Event_TungstenRiot_Text_1: ¡Una gran cantidad de criaturas de tungsteno están invadiendo!
+	Event_TungstenRiot_Text_2: ¡La legión de tungsteno ha sido rechazada!
+	Item_LegendOnMouseLang: Presiona [Shift] para escuchar la historia...
+	BloodAltar_Text1: La mirada carmesí está descendiendo...
+	BloodAltar_Text2: Las gotas de sangre en tu cuerpo no son suficientes para rendir homenaje al rey carmesí...
+	BloodAltar_Text3: Caíste en un frenesí interminable de sangre y carne
+	VoidDamageNameText: Daño vacío
+	Drop_Hell_RuleText: Caído tras derrotar en el infierno
+	Drop_GlodDragonDrop_RuleText: Caído tras la segunda derrota del dragón de la jungla
+	Murasama_Text_Lang_0: Prueba:
+	Murasama_Text_Lang_End: Completada
+	Murasama_TextDictionary_Content_0:
+		'''
+		Recluta, demuéstrame tu valía.
+		Ese pegajoso gordo azul, los restos de la sirena del desierto, 
+		el cangrejo zombi en la cueva de setas.
+		Elimina a uno de ellos, este es tu primer paso.
+		'''
+	Murasama_TextDictionary_Content_1:
+		'''
+		Con la luna llena, vamos a explotar esa gran esfera ocular que vuela por los aires, 
+		¡deja al dios falso completamente ciego!
+		La arena tiembla, veamos qué hay abajo, y luego acaba con esa gran ostra.
+		'''
+	Murasama_TextDictionary_Content_2:
+		'''
+		El cuerpo del dios falso mancha la tierra sagrada de Terra, 
+		herejías brotan en el fin del mundo, aberraciones recorren el continente.
+		¡Libera el continente corrompido! ¡Corta ese cerebro del dios falso y aplasta ese gusano morado!
+		Quiero ver tu cuchillo danzar en el aire, ¡por la sagrada Terra!
+		'''
+	Murasama_TextDictionary_Content_3:
+		'''
+		La tierra corrompida sigue temblando como un corazón, los parásitos de carne aún están activos, 
+		los tumores corrompidos todavía piensan, ¡expúlsalos completamente!
+		La maldición en la puerta de la mazmorras se ha aflojado, 
+		siento la energía psíquica agitarse en las profundidades, mezclada con gritos, lamentos y susurros.
+		'''
+	Murasama_TextDictionary_Content_4:
+		'''
+		Se cuenta una leyenda en el reino de los slimes, tienen un dios extraño caído, 
+		y ahora está debilitado, es la oportunidad perfecta para expulsarlo al subespacio.
+		'''
+	Murasama_TextDictionary_Content_5:
+		'''
+		En la prisión de la barrera de hielo, hay un poderoso psíquico encerrado, 
+		libéralo, él será de gran ayuda para recuperar Terra.
+		El hijo del mar de azufre bloquea nuestra búsqueda de los tesoros del abismo, termina con su devoración y deambular.
+		Extraño las llamas de la forja en los acantilados de azufre, ve a conocer al guardián allí.
+		'''
+	Murasama_TextDictionary_Content_6:
+		'''
+		Esa bruja que se sumergió en el caos, tiene una hermana clon distorsionada, 
+		mata a esa aberración, ofrenda sangre y fuego a la hoja.
+		Cantos encantadores llegan desde la orilla, son los parientes de la sirena, 
+		¡cortemos la cabeza de la sirena y establezcamos un logro en el mar!
+		Los estúpidos lagartos solo adoran estas piedras obstinadas, 
+		dejemos que se conviertan en polvo y destruyamos su fe, ¡nosotros somos a quienes deben adorar!
+		'''
+	Murasama_TextDictionary_Content_7:
+		'''
+		Cuerpos entrelazados de carne, almas vengativas de antiguos campos de batalla, 
+		un golem de destrucción incesante, destruye todo, y nosotros lo destruimos a él.
+		En la jungla, un antiguo fracaso de alguien aún deambula, como un fracaso, debe ser como un montón de chatarra.
+		El antiguo dragón estelar ha caído, lo que queda es apenas un gusano, terminemos con la era de los dragones estelares.
+		'''
+	Murasama_TextDictionary_Content_8:
+		'''
+		Esa torpe imitación de la herejía del culto mecánico, 
+		estúpidos clones, deambulan por la jungla, elimínalos.
+		En el subsuelo ha surgido otro sol, 
+		parece que quiere llevar esta llama sagrada a la superficie a través de la tierra sagrada,
+		¡expulsa a sus apóstoles, Terra solo permite una fe de llama!
+		'''
+	Murasama_TextDictionary_Content_9:
+		'''
+		Ese dios desgraciado que sobrevive chupando la energía térmica de las estrellas, 
+		su fuego hereje necesita ser extinguido por completo.
+		Un insecto tormentoso que se alimenta de dragones voladores en los bordes del cielo, 
+		tiene un buen caparazón de armadura.
+		Quizás sea una buena forma de obtener materia oscura 
+		en las fisuras dimensionales selladas de las mazmorras.
+		Un apóstol hereje del subespacio, lleva una rara distorsión del vacío, 
+		¡es una buena oportunidad para entender la esencia del subespacio!
+		'''
+	Murasama_TextDictionary_Content_10:
+		'''
+		Esa arrogante serpiente cósmica se mueve tras el telón del mundo, 
+		¡termina con su ambición!
+		La criatura más antigua que acecha en el mar de azufre despierta con la tormenta de energía psíquica, 
+		¡que se convierta en parte de nuestra gloria!
+		'''
+	Murasama_TextDictionary_Content_11:
+		'''
+		El dragón de la jungla, el último descendiente de los dragones de oro de Terra, 
+		es muy diferente a otras aberraciones, merece nuestro respeto.
+		Sin embargo, ahora debemos hacer que muera de nuevo, despojándolo de su esencia de oro.
+		Estos materiales se utilizarán para forjar una armadura de calidad incomparable.
+		'''
+	Murasama_TextDictionary_Content_12:
+		'''
+		Esa herejía del culto mecánico, cree que sus titanes de flujo estelar son superiores al poder de los dioses.
+		Esta creencia es absurda, ¡devuelvamos esos titanes a su estado natural — un montón de chatarra!
+		La bruja que solía tener un gran talento psíquico, 
+		debería haber sido un gran apoyo para proteger la sagrada Terra, pero se ha perdido en el caos.
+		Por lo tanto, solo podemos expulsarla, apuñalando su pecho, 
+		dejando que el fuego de la lealtad consuma su alma en descomposición.
+		Esta guerra será registrada en la historia de Terra, y nuestro viaje comenzará aquí, recorriendo la galaxia.
+		'''
+	Murasama_TextDictionary_Content_13:
+		'''
+		Nuestra senda de conquista es ya imparable, rompe la armadura del dragón de las sombras, busca el objeto del fin.
+		¡Luchemos a fondo con esas aberraciones! ¡Luchar, esa es la batalla necesaria! ¡Luchar, esa es la batalla correcta!
+		'''
+	Murasama_TextDictionary_Content_14:
+		'''
+		¡Buen trabajo, recluta, las aberraciones de este mundo han sido barridas por nosotros!
+		Nuestro viaje ha alcanzado la cima, ni siquiera el tirano que una vez dominó Terra se compara con nosotros.
+		Ahora, extiende tus brazos y abraza este mundo que la victoria te ha traído.
+		'''
+	Murasama_No_legend_Content_1: La funda de la espada se desbloqueará tras la caída del dragón
+	Murasama_No_legend_Content_2: Recluta, reconozco tu habilidad, ahora, vamos a destrozar a esos aberrantes
+	Murasama_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
+	Murasama_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
+	SHPC_No_legend_Content_1: Desbloqueado tras la caída del dragón
+	SHPC_No_legend_Content_2: ¡Listo para atacar!
+	SHPC_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
+	SHPC_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
+	SHPC_TextDictionary_Content_0:
+		'''
+		Amigo, la tarea de revivir la civilización finalmente recae en nuestras manos, es un asunto glorioso...
+		Nuestro primer objetivo es un enorme polímero azul, es muy grande, revéntalo desde adentro
+		'''
+	SHPC_TextDictionary_Content_1:
+		'''
+		Necesitamos acabar con ese gran ojo, proviene de un poderoso organismo
+		Necesito diseccionarlo para ver cómo logra la antigravedad
+		'''
+	SHPC_TextDictionary_Content_2:
+		'''
+		La colmena de la jungla se ha vuelto muy inquieta, las abejas están a punto de eclosionar
+		Necesito urgentemente estudiar su proceso de metamorfosis, ve a ver
+		'''
+	SHPC_TextDictionary_Content_3:
+		'''
+		Los enormes huesos pueden flotar en el aire, eso es muy poco científico
+		Necesitamos ir a la profunda prisión en el fin del mundo
+		'''
+	SHPC_TextDictionary_Content_4:
+		'''
+		La tierra tiembla, los engranajes rugen, la electricidad fluye
+		Un montón de robots nos espera, es hora de mostrarles el poder de la tecnología
+		'''
+	SHPC_TextDictionary_Content_5:
+		'''
+		Debajo de la jungla, varias grandes y llamativas flores han florecido
+		Necesitamos ir a ver y recolectar algunos datos experimentales
+		'''
+	SHPC_TextDictionary_Content_6:
+		'''
+		Los antiguos robots en las profundidades del templo esperan una recarga para activar
+		Visitemos, además de retroceder en la tecnología antigua
+		'''
+	SHPC_TextDictionary_Content_7:
+		'''
+		Los secretos del lado oculto de la luna serán revelados por nosotros
+		El mundo volverá a su forma original
+		'''
+	SHPC_TextDictionary_Content_8:
+		'''
+		La deidad que parasita el núcleo de la tierra ha notado nuestra presencia
+		Ve al infierno, necesito conocimientos sobre el uso del calor
+		'''
+	SHPC_TextDictionary_Content_9:
+		'''
+		Los espíritus rencorosos de la prisión se han agrupado, formando un enorme organismo simbiótico
+		Esto es muy interesante, necesitamos ir a verlo ahora
+		'''
+	SHPC_TextDictionary_Content_10:
+		'''
+		Puedo asegurar que no es vida basada en carbono, puede desgarrar la membrana del espacio con su cuerpo
+		Devora a las deidades, pero nosotros no somos dioses, creo que nos invitará a tomar té
+		'''
+	SHPC_TextDictionary_Content_11:
+		'''
+		El último descendiente de dragón en el mundo, ¡wow, eso es genial!
+		Llévame a verlo, quiero obtener sus plumas
+		'''
+	SHPC_TextDictionary_Content_12:
+		'''
+		Es hora de visitar a mi creador
+		O a esa bruja, su existencia me perturba
+		'''
+	SHPC_TextDictionary_Content_13:
+		'''
+		¡Gran batalla! Los enemigos que alguna vez derrotamos se han unido, preparándose para un asalto total
+		Prepárate, necesitamos una victoria perfecta
+		'''
+	SHPC_TextDictionary_Content_14: El protocolo HMOI-0001 ha sido desbloqueado
+	Halibut_No_legend_Content_1: Desbloquear después de la caída del dragón
+	Halibut_No_legend_Content_2: Hermano, he estado aquí todo el tiempo
+	Halibut_No_legend_Content_3: "[c/fff08c:Me vuelvo más fuerte a medida que avanza el viaje]"
+	Halibut_No_legend_Content_4: "[c/00707d:El brillo de la leyenda se ha apagado...]"
+	Halibut_TextDictionary_Content_0: Amigo, vamos a desafiar a esa enorme criatura terrestre pegajosa
+	Halibut_TextDictionary_Content_1: Hay un gran ojo mirándonos, eso es muy grosero, necesitamos enseñarle una lección
+	Halibut_TextDictionary_Content_2: En los lugares llenos de vida no solo hay abismos, también hay junglas, amigo, necesitamos visitar a la reina de las abejas
+	Halibut_TextDictionary_Content_3:
+		'''
+		Los huesos malditos que no se disuelven, necesitamos dejarlos descansar en paz
+		Los gritos de auxilio desde el infierno son cada vez más frecuentes, necesitamos partir pronto, creo que a nuestro hermano guía no le importará
+		'''
+	Halibut_TextDictionary_Content_4:
+		'''
+		¿Sabes cómo se mueven los inorgánicos? Una vez construí una enorme máquina submarina que podía disparar misiles de burbujas,
+		y un número interminable de torpedos de fusión térmica, la usé para cazar enormes criaturas que viven a 10,000 metros bajo el mar, hasta que encontré...
+		Oh, me estoy desviando: creo que en un momento llegarán cuatro amigos mecánicos a visitarnos, necesitamos prepararnos
+		Además, en las aguas contaminadas sobre el abismo, hay un gusano marino gigante mutado que solía ser el guardián de la Universidad del Mar de Azufre
+		Debería seguir siendo bastante amigable, podemos ir a tomar té por la tarde con él
+		'''
+	Halibut_TextDictionary_Content_5:
+		'''
+		Me encanta la jungla, es como mi segundo hogar, rebosante de energía vital,
+		no es menos que el fondo del abismo, pero primero necesitamos encontrar una manera de liberarlos,
+		¿Recuerdas esos enormes capullos subterráneos? Ve y cógelos, esto me ayudará a obtener mi título en botánica
+		'''
+	Halibut_TextDictionary_Content_6:
+		'''
+		Me gusta la arqueología, la última vez que estuve vagando por la jungla vi una gran ruina
+		Ahora deberíamos tener la llave para abrir la puerta de esa ruina, vamos a echar un vistazo,
+		dentro hay una enorme máquina antigua que espera que le pongamos una batería, como un control remoto de aire acondicionado
+		Aparte de eso, en la superficie hay una plaga extraterrestre que puede infectar la tierra y la mayoría de los inorgánicos,
+		cada noche hay una máquina minera agonizante merodeando, ha estado infectada por mucho tiempo, démosle un descanso
+		'''
+	Halibut_TextDictionary_Content_7:
+		'''
+		¿Sabes el secreto de la cara oculta de la luna? Allí hay un gran pulpo, una esponja y una estrella de mar...
+		Oh, quise decir que la crisis lunar se avecina
+		'''
+	Halibut_TextDictionary_Content_8:
+		'''
+		Ahora es la crisis solar, un poderoso ente energético ha escapado del lado oscuro del sol hacia el núcleo de este planeta,
+		necesitamos seguir bajando, encontrarlo y darle un baño frío
+		'''
+	Halibut_TextDictionary_Content_9:
+		'''
+		Las innumerables almas indomables de antiguas batallas se han reunido ahora, se esconden en las profundidades de la mazmorras y están muy inquietas.
+		Podemos ir a matar algunas almas solitarias, esto podría hacer que la pequeña tormenta en el espacio llegue antes, pero también puede atraerlas
+		'''
+	Halibut_TextDictionary_Content_10:
+		'''
+		Hay una clase de seres que nacen y crecen en el espacio, sus cuerpos pueden soportar radiaciones cósmicas y energías de nivel celeste
+		Hace mucho tiempo nos encontramos con uno, y ahora, debemos enfrentar al más destacado entre ellos, uno que dice haber devorado a dioses
+		'''
+	Halibut_TextDictionary_Content_11: La temperatura de la jungla ha aumentado últimamente, creo que ese poderoso dragón ha vuelto
+	Halibut_TextDictionary_Content_12:
+		'''
+		Nos enfrentaremos a la cúspide de los seres inorgánicos, tienen un gran poder de fuego y defensa.
+		Además, parece que el altar de fuego de azufre puede convocar algo
+		'''
+	Halibut_TextDictionary_Content_13:
+		'''
+		Hay una piedra especial en el abismo, úsala para enfrentar la batalla final
+		Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
+		'''
+	Halibut_TextDictionary_Content_14: Honestamente, quiero regresar al mar
+	CWRRecipes_ApostolicRelics: Reliquias Apostólicas
+	CWRRecipes_GodEaterWeapon: Arma Devoradora de Dios
+	CWRRecipes_FishGroup: Peces
+	LoadItemRecipe_Condition_Text1: Se necesita tener un Compendio de Gran Renovación en la mochila
+	Murasama_Text0: Desbloqueado
+	Murasama_Text1: No desbloqueado. Necesita Prueba 2
+	Murasama_Text2: No desbloqueado. Necesita Prueba 5
+	Murasama_Text3: No desbloqueado. Necesita Prueba 9
+	MouseTextContactPanel_TextContent: Presiona [KEY] para alternar la vista previa de la receta de síntesis final.
+	CWRItem_IsRemakeItem_TextContent: -Gran Renovación-
+	OnEnterWorld_TextContent: Se ha cargado la reinicialización de armas
+	OnEnterWorld_TextContent2:
+		'''
+		Se ha detectado que ha instalado [Mejor Experiencia], pero su versión de [Mejor Experiencia] está desactualizada.
+		Para garantizar el funcionamiento normal del juego, asegúrese de que la versión de [Mejor Experiencia] no sea inferior a 1.7.1.7
+		'''
+	CaseEjection_TextContent: Cartucho vacío
+	// CaseEjection_TextContent_Coin: No Money
+	// CaseEjection_TextContent_Arrow: No Arrow
+	SupertableUI_Text1: Cerrar
+	SupertableUI_Text2: Ver recetas
+	SupertableUI_Text3: Ninguno
+	OverhaulTheBibleUI_Text:
+		'''
+		Ruede la rueda del mouse o arrastre la barra de progreso a la izquierda para navegar por los objetos que han sido reinicializados
+		Estos son solo de referencia, ya que muchos cambios parciales no aparecerán en esta lista.
+		'''
+	OverhaulTheBibleUI_Text1: Guerrero Vigilante
+	OverhaulTheBibleUI_Text2: Tirador Vigilante
+	OverhaulTheBibleUI_Text3: Mago Vigilante
+	OverhaulTheBibleUI_Text4: Invocador Vigilante
+	OverhaulTheBibleUI_Text5: Ladrón Vigilante
+	CartridgeHolderUI_Text1: Contenido del cargador
+	CartridgeHolderUI_Text2: Restante
+	CartridgeHolderUI_Text3: Vacío
+	CartridgeHolderUI_Text4: Hacer clic derecho para vaciar
+	CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
+	CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
+	CartridgeHolderUI_Text7: The Magazine Is Full!
+	// ArrowHolderUI_Text0: Left Click On The Marked Arrow
+	// ArrowHolderUI_Text1: Right Click Untag
+	SupertableUI_Text4: Cerrar la supervisión de colocación
+	SupertableUI_Text5: Abrir la supervisión de colocación
+	AmmoBox_Text: Se ha alcanzado el límite de despliegue
+	AmmoBox_Text2: Desplegando
+	AmmoBox_Text3: Desplegado
+	HellfireExplosion_DeadLang_Text: "{0} Se convierte en cenizas en el fuego del infierno"
+	SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
+	SupMUI_OneClick_Text1: Colocar materiales rápidamente
+	SupMUI_OneClick_Text2: Recoger materiales rápidamente
+	TemporaryVersion_Text:
+		'''
+		[CalamityOverhaul-[V1]]:
+		Esta es una versión temporal diseñada para adaptarse a la nueva actualización, 
+		proporcionando solo la experiencia de juego más básica hasta que llegue la versión [V2].
+		Debido a la actualización apresurada, puede haber algunos errores notables.
+		Si encuentras algún problema durante el juego, por favor envía un issue en Github,
+		o informa del problema en el hilo Feedback on Issues en la página del Workshop del mod. 
+		Los desarrolladores responderán y lo solucionarán rápidamente.
+		'''
+	MS_Config_Text:
+		'''
+		Se ha detectado que tienes instalado [Magic Storage Mod]. Para resolver problemas de conflicto, 
+		se recomienda establecer [Recursion Crafting Depth] en 0 en la configuración del mod.
+		Esta configuración es para la elaboración recursiva y, al interactuar con este mod, 
+		puede llamar incorrectamente a todos los eventos de elaboración, lo que afectará gravemente la experiencia de juego.
+		'''
+	IconUI_Text0: Ir al repositorio de código abierto del mod :)
+	IconUI_Text1: Retroalimentación de problemas
+	IconUI_Text2: Lista de agradecimientos
+	IconUI_Text3: Artistas
+	IconUI_Text4: Ayuda con el código
+	IconUI_Text5: Donantes
+	IconUI_Text6: Pruebas de equilibrio
+	IconUI_Text7: Ver registro
+	IconUI_Text8: Mod Wiki
+	// IconUI_Text9: Musician
+	SPU_Text0: En proceso
+	SPU_Text1: Realizando síntesis final
+	SPU_Text2: Obtenido por síntesis:
+	Spazmatism_Text1: Despliegue exitoso de EUX_001, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+	Spazmatism_Text2: Despliegue exitoso de EUX_002, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+	Spazmatism_Text3: Estructura principal de EUX_001 dañada, intentando retirarse del campo de batalla...
+	Spazmatism_Text4: Estructura principal de EUX_002 dañada, intentando retirarse del campo de batalla...
+	Spazmatism_Text5: Objetivo eliminado
+	Spazmatism_Text6: Retirándose...
+	Spazmatism_Text7: Misión fallida, intentando retirarse del campo de batalla...
+	Spazmatism_Text8: Ya desplegado
+	Error_1:
+		'''
+		Un gancho ha fallado. Para el funcionamiento normal del juego, por favor cierra el juego y vuelve a entrar.
+		Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
+		'''
+	Error_2:
+		'''
+		Se ha detectado una anomalía. El servidor está intentando recargar en tiempo real el sistema de bloques.
+		Esto puede causar un breve retraso y unos segundos de latencia en la red, lo cual es normal.
+		'''
+	Config_1: Usuario
+	Config_2: Se ha modificado la configuración del servidor
+	CWRGun_KL_Text: Presiona la tecla [KL] para recargar
+	CWRGun_Scope_Text: Presiona [Scope] para mirar a través del visor
+	CWRGun_Recoil_Text: "[Retroceso]"
+	CWRGun_MustCA_Text: Disparar siempre consume munición
+	CWRGun_Recoil_Level_0: Ninguno
+	CWRGun_Recoil_Level_1: Débil
+	CWRGun_Recoil_Level_2: Moderadamente débil
+	CWRGun_Recoil_Level_3: Normal
+	CWRGun_Recoil_Level_4: Fuerte
+	CWRGun_Recoil_Level_5: Loco
+	CWRGun_Recoil_Level_6: Ridículo
+	// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
+	// MachineRebellion_SpawnInfo: Use the Garden remote control at night
+	// MachineRebellion_DespawnMessage: Use the Garden remote control at night
+	// MachineRebellion_DisplayName: Machine Rebellion
+	// Notbound: "[Unbound keys]"
+	/* DisableMotionInterpolationMessage:
+		'''
+		Detected that you have enabled the HighFPSSupport: [Motion Smoothing] feature.
+		To ensure the stability of certain visual effects in the mod,
+		this feature has been automatically disabled for you.
+		To make sure the change takes effect,
+		it is strongly recommended that you manually toggle and keep this feature turned off.
+		''' */
+	/* LegendItemUpgradeDisable:
+		'''
+		This legendary weapon has been set to disable upgrades in the current world.
+		To lift this restriction, please re-enter the world.
+		''' */
+}

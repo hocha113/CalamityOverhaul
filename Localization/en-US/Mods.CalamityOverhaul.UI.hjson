@@ -1,290 +1,288 @@
-﻿
-	ItemFilterUI: {
-		HintText: Left-click to add an item
-		HintText2: Left-click to remove an item
-		CloseHint: Press [ESC] or [Right-click] to close
-	}
+ItemFilterUI: {
+	HintText: Left-click to add an item
+	HintText2: Left-click to remove an item
+	CloseHint: Press [ESC] or [Right-click] to close
+}
 
-	LegendUpgradeConfirmUI: {
-		TitleText: Legendary Weapon Upgrade Confirmation
-		DescText:
-			'''
-			Current world level detected 
-			as higher than weapon level.
-			Upgrade {0} to level {1}?
-			'''
-		ConfirmText: Confirm Upgrade
-		CancelText: Cancel
-		Success: "[ITEM] has been upgraded to level [LEVEL]."
-	}
+LegendUpgradeConfirmUI: {
+	TitleText: Legendary Weapon Upgrade Confirmation
+	DescText:
+		'''
+		Current world level detected 
+		as higher than weapon level.
+		Upgrade {0} to level {1}?
+		'''
+	ConfirmText: Confirm Upgrade
+	CancelText: Cancel
+	Success: "[ITEM] has been upgraded to level [LEVEL]."
+}
 
-	QuestTracker: {
-		DamageTrackerSystem: {
-			QuestFailedPrefix: Quest Failed
-			QuestCompletedPrefix: Quest Completed!
-			FailureReasonWrongWeapon: Did not land the killing blow with the specified weapon
-			FailureReasonInsufficientDamage: Insufficient damage contribution from the weapon
-			SuccessDamageContribution: Damage Contribution
-		}
+QuestTracker: {
+	DamageTrackerSystem: {
+		QuestFailedPrefix: Quest Failed
+		QuestCompletedPrefix: Quest Completed!
+		FailureReasonWrongWeapon: Did not land the killing blow with the specified weapon
+		FailureReasonInsufficientDamage: Insufficient damage contribution from the weapon
+		SuccessDamageContribution: Damage Contribution
 	}
+}
 
-	DoGQuestTrackerUI: {
-		QuestTitle: Commission: Hunt the Devourer of Gods
-		DamageContribution: Heartcarver Damage
-		RequiredContribution: Required: 80%
-	}
+DoGQuestTrackerUI: {
+	QuestTitle: Commission: Hunt the Devourer of Gods
+	DamageContribution: Heartcarver Damage
+	RequiredContribution: Required: 80%
+}
 
-	PallbearerQuestTrackerUI: {
-		QuestTitle: Commission: Hunt the Profaned Goddess
-		DamageContribution: Pallbearer Damage
-		RequiredContribution: Required: 80%
-	}
+PallbearerQuestTrackerUI: {
+	QuestTitle: Commission: Hunt the Profaned Goddess
+	DamageContribution: Pallbearer Damage
+	RequiredContribution: Required: 80%
+}
 
-	YharonQuestTrackerUI: {
-		QuestTitle: Commission: Hunt the Incineration Dragon
-		DamageContribution: Oni Machete Damage
-		RequiredContribution: Required: 75%
-	}
+YharonQuestTrackerUI: {
+	QuestTitle: Commission: Hunt the Incineration Dragon
+	DamageContribution: Oni Machete Damage
+	RequiredContribution: Required: 75%
+}
 
-	SeaDialogueBox: {
-		ContinueHint: Continue
-		FastHint: Accelerate
-	}
+SeaDialogueBox: {
+	ContinueHint: Continue
+	FastHint: Accelerate
+}
 
-	BrimstoneDialogueBox: {
-		ContinueHint: Continue
-		FastHint: Accelerate
-	}
+BrimstoneDialogueBox: {
+	ContinueHint: Continue
+	FastHint: Accelerate
+}
 
-	DraedonDialogueBox: {
-		ContinueHint: Continue
-		FastHint: Accelerate
-	}
+DraedonDialogueBox: {
+	ContinueHint: Continue
+	FastHint: Accelerate
+}
 
-	ExoMechdusaSumRender: {
-		ThanatosDescription: Thanatos, a terrifying giant serpent equipped with heavy armor and countless autocannons.
-		AresDescription: Ares, a colossus armed with four super-Gausspulse weapons.
-		ArtemisApolloDescription: Artemis and Apollo, an exceptionally durable pair of automata with highly unstable energy reserves.
-	}
+ExoMechdusaSumRender: {
+	ThanatosDescription: Thanatos, a terrifying giant serpent equipped with heavy armor and countless autocannons.
+	AresDescription: Ares, a colossus armed with four super-Gausspulse weapons.
+	ArtemisApolloDescription: Artemis and Apollo, an exceptionally durable pair of automata with highly unstable energy reserves.
+}
 
-	CQETConstructorTP: {
-		GuideText_NeedBlocks: Needs {0} Starflow Plated Block
-		GuideText_Ready: Ready!
-		GuideText_GroundIncomplete: The Ground Is Incomplete!
-	}
+CQETConstructorTP: {
+	GuideText_NeedBlocks: Needs {0} Starflow Plated Block
+	GuideText_Ready: Ready!
+	GuideText_GroundIncomplete: The Ground Is Incomplete!
+}
 
-	DeploySignaltowerTrackerUI: {
-		QuestTitle: Quantum Entanglement Network Deployment
-		DamageContribution: Deployment Progress
-		RequiredContribution: Goal: 10 Signal Towers
-		NearestTargetText: Nearest Target Point
-		NodeText: Entanglement Node #[NUM]
-		StatusText: Status
-		InRangeText: In Range
-		DistanceText: Distance
-		QuestCompleteText: Mission Complete!
-	}
+DeploySignaltowerTrackerUI: {
+	QuestTitle: Quantum Entanglement Network Deployment
+	DamageContribution: Deployment Progress
+	RequiredContribution: Goal: 10 Signal Towers
+	NearestTargetText: Nearest Target Point
+	NodeText: Entanglement Node #[NUM]
+	StatusText: Status
+	InRangeText: In Range
+	DistanceText: Distance
+	QuestCompleteText: Mission Complete!
+}
 
-	SignalTowerTargetRenderer: {
-		InRangeText: In Range
-		TargetCompletedText: Target Point [NUM] Complete!
-		AllCompletedText: Quantum Entanglement Network Complete!
-	}
+SignalTowerTargetRenderer: {
+	InRangeText: In Range
+	TargetCompletedText: Target Point [NUM] Complete!
+	AllCompletedText: Quantum Entanglement Network Complete!
+}
 
-	DraedonCallUI: {
-		TitleText: Call Draedon
-		TitleTextDisabled: Call Disabled
-		CallButtonText: Initiate Call
-		CallingText: Calling...
-		DisabledButtonText: Disabled
-		ConnectingText: Connecting...
-		ConnectedText: Connected
-		DisabledReasonText: Draedon Has Been Called
-	}
+DraedonCallUI: {
+	TitleText: Call Draedon
+	TitleTextDisabled: Call Disabled
+	CallButtonText: Initiate Call
+	CallingText: Calling...
+	DisabledButtonText: Disabled
+	ConnectingText: Connecting...
+	ConnectedText: Connected
+	DisabledReasonText: Draedon Has Been Called
+}
 
-	TzeentchDialogueBox: {
-		ContinueHint: Continue
-		FastHint: Accelerate
-	}
+TzeentchDialogueBox: {
+	ContinueHint: Continue
+	FastHint: Accelerate
+}
 
-	EnchantUI: {
-		ExpandHint: Expand Enchant Menu
-		CollapseHint: Collapse Enchant Menu
-		EnchantTitle: Enchant
-	}
+EnchantUI: {
+	ExpandHint: Expand Enchant Menu
+	CollapseHint: Collapse Enchant Menu
+	EnchantTitle: Enchant
+}
 
-	ConstructionBlueprintUI: {
-		UITitle: Self-Constructor (Quantum Entanglement Tower)
-		MaterialsRequired: Materials Required:
-		CloseHint: Click to Close
-		CraftingStation: Crafting Station:
-	}
+ConstructionBlueprintUI: {
+	UITitle: Self-Constructor (Quantum Entanglement Tower)
+	MaterialsRequired: Materials Required:
+	CloseHint: Click to Close
+	CraftingStation: Crafting Station:
+}
 
-	Generator: {
-		ThermalGeneratorUI: {
-			TitleText: Thermal Generator
-			FuelLabel: Fuel
-			TemperatureLabel: Temperature
-			PowerLabel: Power
-			StatusLabel: Status:
-			ActiveText: Active
-			IdleText: Idle
-			EfficiencyText: Efficiency: {0}%
-			InsertFuelHint: Click to Insert/Extract Fuel
-			TemperatureUnit: °C
-			PowerUnit: UE
-		}
-	}
-
-	ChargingStationUI: {
-		TitleText: Charging Station
-		ItemSlotLabel: Charging Item
-		BatterySlotLabel: Battery
-		StationEnergyLabel: Station Energy
-		ItemChargeLabel: Item Charge
+Generator: {
+	ThermalGeneratorUI: {
+		TitleText: Thermal Generator
+		FuelLabel: Fuel
+		TemperatureLabel: Temperature
+		PowerLabel: Power
 		StatusLabel: Status:
-		ChargingText: Charging
+		ActiveText: Active
 		IdleText: Idle
-		InsertItemHint: Insert item to charge
-		InsertBatteryHint: Insert Draedon Power Cell
-		EnergyUnit: UE
-		StationText1: Only accepts rechargeable items!
-		StationText2: Only accepts Draedon Power Cells!
+		EfficiencyText: Efficiency: {0}%
+		InsertFuelHint: Click to Insert/Extract Fuel
+		TemperatureUnit: °C
+		PowerUnit: UE
 	}
+}
 
-	SulfseaDialogueBox: {
-		ContinueHint: Continue
-		FastHint: Accelerate
+ChargingStationUI: {
+	TitleText: Charging Station
+	ItemSlotLabel: Charging Item
+	BatterySlotLabel: Battery
+	StationEnergyLabel: Station Energy
+	ItemChargeLabel: Item Charge
+	StatusLabel: Status:
+	ChargingText: Charging
+	IdleText: Idle
+	InsertItemHint: Insert item to charge
+	InsertBatteryHint: Insert Draedon Power Cell
+	EnergyUnit: UE
+	StationText1: Only accepts rechargeable items!
+	StationText2: Only accepts Draedon Power Cells!
+}
+
+SulfseaDialogueBox: {
+	ContinueHint: Continue
+	FastHint: Accelerate
+}
+
+OldDukeShopUI: {
+	TitleText: Old Duke's Shop
+	CurrencyName: Ocean Scraps
+	HintTooltip: Scroll/Drag Bar
+}
+
+FindCampsiteUI: {
+	QuestTitle: The Abyss Beckons
+	DamageContribution: Quest Progress
+	RequiredContribution: Objective: Find and speak to the Old Duke
+	ObjectiveText: Objective
+	LocationText: Go to the Old Duke's Campsite
+	DistanceText: Distance
+	InteractText: Speak to the Old Duke
+	QuestCompleteText: Quest Complete!
+	HoldFragmentHintText: Hold Ocean Scraps to view direction
+}
+
+FindFragmentUI: {
+	QuestTitle: The Abyss Beckons
+	DamageContribution: Collection Progress
+	RequiredContribution: Objective: Collect 777 Ocean Scraps
+	ObjectiveText: Objective
+	CollectFragmentsText: Collect Ocean Scraps
+	CurrentFragmentsText: Currently Held
+	ReturnToCampsiteText: Return to campsite to submit
+	QuestCompleteText: Quest Complete!
+	HintText: Fish or loot creatures in the Ocean
+}
+
+OceanRaidersUI: {
+	TitleText: Ocean Devourer Storage
+	StorageText: Storage
+}
+
+OldDuchestUI: {
+	TitleText: Old Chest
+	StorageText: Storage Space
+}
+
+QuestLog: {
+	ObjectiveText: Objective
+	RewardText: Reward
+	ReceiveAwardText: Claim Reward
+	ProgressText: Quest Progress
+	QuickReceiveAwardText: Quick Claim
+	StyleSwitchText: Switch Style
+	NightModeText: Night Mode
+	ResetViewText: Reset View
+	SunModeText: Daytime Mode
+	LauncherHoverText: Left-Click Toggle, Right-Click Drag
+}
+
+QuestNotificationSystem.Text1: Quest Complete
+
+CompatibilityAlert: {
+	TitleText: Compatibility Mode Active
+	ContentText:
+		'''
+		Major content mods are missing or version conflicts have been detected. 
+		Some features are disabled or running in restricted mode.
+		If this is intentional, please ignore this message.
+		If this is due to outdated versions, please wait for an update.
+		The development team usually releases compatibility patches within 12 hours.
+		'''
+}
+
+QuestWorldConfirmUI: {
+	TitleText: Quest Check Confirmation
+	DescText:
+		'''
+		Detected entry from another world.
+		Do you want to check quest progress 
+		in the current world?
+		'''
+	ConfirmText: Check Quests
+	CancelText: Skip
+	EnabledText: Quest Check Enabled
+	DisabledText: Quest Check Skipped
+	DisabledOverlayText:
+		'''
+		Quest checking is disabled in this world.
+		Re-enter the world to choose again.
+		'''
+}
+
+Incinerator: {
+	IncineratorUI: {
+		TitleText: Electric Incinerator
+		InputLabel: Input
+		OutputLabel: Output
+		ProgressLabel: Progress
+		PowerLabel: Power
+		StatusLabel: Status:
+		SmeltingText: Incinerating
+		IdleText: Idle
+		NoPowerText: No Power
+		InputHint: Place items to incinerate
+		OutputHint: Click to retrieve output
+		PowerUnit: UE
 	}
+}
 
-	OldDukeShopUI: {
-		TitleText: Old Duke's Shop
-		CurrencyName: Ocean Scraps
-		HintTooltip: Scroll/Drag Bar
-	}
+ItemPipeline: {
+	Normal: 普通
+	Output: 输出
+	Input: 输入
+	NotEndpointHint: 只能在管道末端设置输入输出
+}
 
-	FindCampsiteUI: {
-		QuestTitle: The Abyss Beckons
-		DamageContribution: Quest Progress
-		RequiredContribution: Objective: Find and speak to the Old Duke
-		ObjectiveText: Objective
-		LocationText: Go to the Old Duke's Campsite
-		DistanceText: Distance
-		InteractText: Speak to the Old Duke
-		QuestCompleteText: Quest Complete!
-		HoldFragmentHintText: Hold Ocean Scraps to view direction
-	}
-
-	FindFragmentUI: {
-		QuestTitle: The Abyss Beckons
-		DamageContribution: Collection Progress
-		RequiredContribution: Objective: Collect 777 Ocean Scraps
-		ObjectiveText: Objective
-		CollectFragmentsText: Collect Ocean Scraps
-		CurrentFragmentsText: Currently Held
-		ReturnToCampsiteText: Return to campsite to submit
-		QuestCompleteText: Quest Complete!
-		HintText: Fish or loot creatures in the Ocean
-	}
-
-	OceanRaidersUI: {
-		TitleText: Ocean Devourer Storage
-		StorageText: Storage
-	}
-
-	OldDuchestUI: {
-		TitleText: Old Chest
-		StorageText: Storage Space
-	}
-
-	QuestLog: {
-		ObjectiveText: Objective
-		RewardText: Reward
-		ReceiveAwardText: Claim Reward
-		ProgressText: Quest Progress
-		QuickReceiveAwardText: Quick Claim
-		StyleSwitchText: Switch Style
-		NightModeText: Night Mode
-		ResetViewText: Reset View
-		SunModeText: Daytime Mode
-		LauncherHoverText: Left-Click Toggle, Right-Click Drag
-	}
-
-	QuestNotificationSystem.Text1: Quest Complete
-
-	CompatibilityAlert: {
-		TitleText: Compatibility Mode Active
-		ContentText:
-			'''
-			Major content mods are missing or version conflicts have been detected. 
-			Some features are disabled or running in restricted mode.
-			If this is intentional, please ignore this message.
-			If this is due to outdated versions, please wait for an update.
-			The development team usually releases compatibility patches within 12 hours.
-			'''
-	}
-
-	QuestWorldConfirmUI: {
-		TitleText: Quest Check Confirmation
-		DescText:
-			'''
-			Detected entry from another world.
-			Do you want to check quest progress 
-			in the current world?
-			'''
-		ConfirmText: Check Quests
-		CancelText: Skip
-		EnabledText: Quest Check Enabled
-		DisabledText: Quest Check Skipped
-		DisabledOverlayText:
-			'''
-			Quest checking is disabled in this world.
-			Re-enter the world to choose again.
-			'''
-	}
-
-	Incinerator: {
-		IncineratorUI: {
-			TitleText: Electric Incinerator
-			InputLabel: Input
-			OutputLabel: Output
-			ProgressLabel: Progress
-			PowerLabel: Power
-			StatusLabel: Status:
-			SmeltingText: Incinerating
-			IdleText: Idle
-			NoPowerText: No Power
-			InputHint: Place items to incinerate
-			OutputHint: Click to retrieve output
-			PowerUnit: UE
-		}
-	}
-
-	ItemPipeline: {
-		Normal: 普通
-		Output: 输出
-		Input: 输入
-		NotEndpointHint: 只能在管道末端设置输入输出
-	}
-
-	ThrowerUI: {
-		TitleText: Item Thrower
-		InventoryLabel: Storage
-		ControlLabel: Control Panel
-		SpeedLabel: Throw Velocity
-		AngleLabel: Spread Angle
-		IntervalLabel: Throw Interval
-		DirectionLabel: Throw Direction
-		StartText: Start
-		StopText: Stop
-		StatusRunning: Running
-		StatusIdle: Idle
-		StatusNoEnergy: No Energy
-		StatusNoItems: No Items
-		EnergyLabel: Energy
-		DropHint: Place Items
-		AmmoModeOnText: Fire Ammo
-		AmmoModeOffText: Throw Item
-		AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
-	}
-
+ThrowerUI: {
+	TitleText: Item Thrower
+	InventoryLabel: Storage
+	ControlLabel: Control Panel
+	SpeedLabel: Throw Velocity
+	AngleLabel: Spread Angle
+	IntervalLabel: Throw Interval
+	DirectionLabel: Throw Direction
+	StartText: Start
+	StopText: Stop
+	StatusRunning: Running
+	StatusIdle: Idle
+	StatusNoEnergy: No Energy
+	StatusNoItems: No Items
+	EnergyLabel: Energy
+	DropHint: Place Items
+	AmmoModeOnText: Fire Ammo
+	AmmoModeOffText: Throw Item
+	AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
+}

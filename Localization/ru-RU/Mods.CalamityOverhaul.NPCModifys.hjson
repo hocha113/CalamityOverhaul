@@ -1,1 +1,88 @@
+ModifyCrabulon: {
+	CrouchText: Ожидать
+	CrouchAltText: Следовать
+	MountHoverText: ЛКМ, чтобы установить седло
+	RideHoverText: ПКМ, чтобы поехать
+	ChangeSaddleText: ЛКМ, чтобы сменить седло
+	DismountText: ПКМ, чтобы спешиться
+	// DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
+}
 
+ModifyTruffle: {
+	SleepName: ???
+	ButtonText: Пробудить
+	Chat0:
+		'''
+		В животе у того краба было так уютно, я всё это время там жил.
+		Но ты вспорол его — теперь я бездомный.
+		'''
+	/* Chat1:
+		'''
+		I once ran a mushroom farm, with my children helping me.  
+		One day I found out half of them were growing inside someone else’s stomach.  
+		''' */
+	Chat2: «Красная шляпка, белая ножка… съешь и лежи плашмя вечно».
+	Chat3: «Можешь продать мне грибы, но взамен не получишь абсолютно ничего».
+	Chat4: «Здесь все хотят меня съесть».
+	Chat5:
+		'''
+		Я однажды видел грибное дерево, высотой не меньше 2000 метров.
+		Говорят, если забраться на вершину и спрыгнуть, попадёшь в Грибной Мир.
+		'''
+	Chat6:
+		'''
+		Если нужен суп, купи мои грибы.
+		По крайней мере, они не будут кричать в котелке.
+		'''
+	Chat7: «Все грибы здесь — мои».
+	Chat8:
+		'''
+		Десять лет назад ты мог нанять меня, чтобы я провёл тебя в Грибное Королевство под землёй.
+		Я слышал, сейчас там распродажа.
+		'''
+	Chat9:
+		'''
+		Думаю, у тебя в лёгких растёт какой-то грибок.
+		Загляни в мой магазин — у меня есть идеальное лекарство.
+		'''
+	Chat10: «Ох, как же я ненавижу этого красного парня».
+	Chat11:
+		'''
+		Ненавижу такую кровавую луну.
+		Она заставляет меня увядать… как сморщенный гриб, который никому не нужен.
+		'''
+}
+
+ModifyWITCH: {
+	// Homeless0: Apologies, I have nothing to offer you. Perhaps you could try reforging some items, then return to me...
+	// Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
+	// Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
+	// Homeless3: No vacant housing? What... you expect me to pay rent?
+	// L0: I cannot afford rent. Perhaps I could perform an exorcism for your town to offset some of the cost?
+	// L1: I have never believed in the concept of souls. Any attempt to resurrect the dead only invites greater catastrophe.
+	/* L2:
+		'''
+		In the last century, I once stepped into a small town.
+		The streets were crowded with 'friends and family' who were supposed to be dead. They smiled, waved, and even cried for help...
+		I attempted to bring back my 'mother' from there.
+		She looked exactly as she did in life, her tone flawless... until I realized she had no heartbeat, and she found amusement in that fact.
+		''' */
+	/* L3:
+		'''
+		I feel you are sometimes overly confident; you will achieve nothing at this rate.
+		I have seen too many like you perish on their quest for power.
+		''' */
+	/* L4:
+		'''
+		I know you are interested in my magic, but it is... not magic.
+		I hope you stay away from it. Those who touch these powers meet no good end.
+		''' */
+	// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
+	// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
+	// Night0: Night is when the spirits haunt. I have no desire to be outside at such a time.
+	// Night1: Long ago, I performed a divination every night before sleep. Until once, for seven consecutive nights, I foresaw that I would die on the eighth.
+	// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
+	// Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
+}
+
+// ModifyOldDuke.LeavingDiveText: The Old Duke dove into the water...

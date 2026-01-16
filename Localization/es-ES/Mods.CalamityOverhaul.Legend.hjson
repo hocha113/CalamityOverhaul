@@ -1,1 +1,181 @@
+HalibutText: {
+	/* FishByStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		This fish can be studied
+		''' */
+	/* FishOnStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		This fish has been studied
+		''' */
+	/* FishByPuzzle:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		This fish can be used as a piece of the puzzle
+		''' */
 
+	SkillSlot: {
+		// Hover1: Left Click: Select
+		// Hover2: Right Click: Pin to Top
+		// Hover3: Scroll Wheel: Scroll
+		// Hover4: Drag: Sort
+	}
+
+	DomainUI: {
+		// TitleText: Oceanic Domain
+		// ExtraEyeTitleText: Layer X
+		// CrashedLabelText: Scream
+		/* EyeDesc1:
+			'''
+			The first eye of the domain opens. You feel something dormant within you resonate, as faint tides begin to ripple through reality.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			''' */
+		/* EyeDesc2:
+			'''
+			A second eye opens, overlapping the first. The boundary between reality and the domain blurs.
+			Within the domain, a new domain is forcibly opened, forming a bizarre, double-nested space.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			''' */
+		/* EyeDesc3:
+			'''
+			Three eyes, shimmering with an unholy light, overlap on your forehead. The domains nest, layer by layer, forming a bottomless, triple-layered sea.
+			The abyssal whispers from within you become clearly audible.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			''' */
+		/* EyeDesc4:
+			'''
+			Four eyes split into two pairs, covering your own. These two adjacent, two-layered domains are no longer content with simply nesting.
+			In an unholy light, they begin to merge, becoming a more terrifying four-layered domain.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			''' */
+		/* EyeDesc5:
+			'''
+			Your skin becomes like that of a bloated, drowned corpse. Countless eerie eyes surface and swim beneath your skin before sinking away, like sharks fighting over prey.
+			They finally converge on your forehead, fusing into a single, monstrous eye.
+			The five layers of the domain fully merge, granting you the power to twist causality within it.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] to restart yourself.
+			''' */
+		/* EyeDesc6:
+			'''
+			The sixth eye opens in your heart.
+			Each beat triggers a pulse of energy within the domain, making deep blue energy conduits, like a spider's web, clearly visible within the space.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] to restart yourself.
+			''' */
+		/* EyeDesc7:
+			'''
+			Seven eyes form an eerie array on your forehead, bursting with light in time with the pulse of the universe.
+			The domain begins to frantically erode reality. Wherever its boundary reaches, matter dissolves like sand, and the laws of nature are rewritten by the tides.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] for a large-scale restart.
+			Press [Halibut_Superposition] to use a superpositional strike.
+			''' */
+		/* EyeDesc8:
+			'''
+			The eighth eye becomes a silent vortex in the palm of your hand.
+			The pressure within the domain becomes almost solid. Light bends here, and sound is annihilated.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] for a large-scale restart.
+			Press [Halibut_Superposition] to use a superpositional strike.
+			''' */
+		/* EyeDesc9:
+			'''
+			Nine is the ultimate number. Nine eyes form an illusory abyssal halo above your head, and with it, the last shred of your humanity vanishes.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] for a large-scale restart.
+			Press [Halibut_Superposition] to use a superpositional strike.
+			''' */
+		/* EyeDesc10:
+			'''
+			Layers have lost their meaning. One is infinity.
+			You have become the abyss, and the abyss is you.
+			Where your gaze falls, a new genesis begins.
+			You have reached the end of this shore and become a god on the other.
+			[Line]
+			Press [Halibut_Domain] to open or close the domain.
+			Press [Halibut_Teleport] to teleport within the domain.
+			Press [Halibut_Clone] to make the past invade the present.
+			Press [Halibut_Restart] for a large-scale restart.
+			Press [Halibut_Superposition] to use a superpositional strike.
+			Hold the left mouse button to begin infinite superposition and infinite restarts.
+			''' */
+		// LayerTitleFormat: Layer {0}
+	}
+
+	ResurrectionUI: {
+		// TitleText: Abyssal Resurrection Status
+		// LinePercentFormat: Assimilation : {0:F1}%
+		// LineValueFormat: Value : {0:F1} / {1:F1}
+		// LineRateFormat: Rate : {0:F3}/s
+		// HeaderSummaryText: Mental State Diagnosis
+		// RateLevelVeryLow: Dead Silence
+		// RateLevelLow: Whispering
+		// RateLevelMedium: Restless
+		// RateLevelHigh: Seething
+		// RateLevelDanger: Torrential
+		// Phase1: The Abyss remains dormant. All is calm.
+		// Phase2: Phantom tides echo in your ears; a chill creeps into your extremities.
+		// Phase3: Hallucinations intensify. Crushing deep-sea pressure builds behind your eyes and heart.
+		// Phase4: The logic of reality crumbles. Your very existence is being overwritten by a cold, unseen terror.
+		// Phase5: Threshold breached. Humanity dissolves; you are becoming one with the Sea of Corpses.
+		// Trend1: Stagnant
+		// Trend2: Seeping
+		// Trend3: Rising
+		// Trend4: Flooding
+		// Trend5: Catastrophic Collapse
+		// SummaryFormat: Diagnosis: {0} [Erosion Trend: {1}]
+	}
+}
+
+MuraText: {
+	Subtest_Text0:
+		'''
+		Debemos ir al infierno para liberar el poder de la luz y la oscuridad. 
+		Esto desatará una tormenta de subespacio, pero no tenemos otra opción. 
+		¡Recluta, escribe un capítulo grandioso para el viaje!
+		'''
+	Subtest_Text1: Un enorme gusano de acero bloquea nuestro camino. Despedázalo.
+	Subtest_Text2: Puedo sentir dos miradas observándonos. Ve y ocúpate de ellas.
+	Subtest_Text3:
+		'''
+		Se avecina una batalla decisiva. Esas pilas de chatarra planean unirse para intentar detenernos.
+		Con espadas y sangre, hágales saber que nuestra expedición aplastará a todas las abominaciones alienígenas e inteligencias odiosas.
+		'''
+	// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
+	// Subtest_Text4: Someone's shoddy handiwork still wanders the jungle. As the failure it is, it deserves to be turned into a pile of scrap.
+	// Subtest_Text5: A husk of interwoven flesh and blood, the bitter spirits of an ancient battlefield, a golem of ceaseless ruin. It destroys all things, and we... we destroy *it*.
+	// Subtest_Text6: The Star God of old is long fallen. What's left is nothing but a maggot. Let us put an end to the age of these so-called gods.
+	// Subtest_Text7: Let that clump of souls in the dungeon wither before my blade. Its soul will be the finest nourishment.
+	// Subtest_Text8: A pathetic god, merely prolonging its wretched life by sipping stellar heat. Its heretical fire needs to be extinguished. Completely.
+	// Subtest_Text9: That floral abomination deep in the jungle... Go. Shred its petals, crush its bulb, and let its juices soak the earth.
+	// Subtest_Text10: That witch who gave herself to chaos... she has a *warped* clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
+}

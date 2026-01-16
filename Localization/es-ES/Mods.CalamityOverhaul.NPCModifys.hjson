@@ -1,1 +1,88 @@
+ModifyCrabulon: {
+	// CrouchText: Await
+	// CrouchAltText: Follow
+	// MountHoverText: Left-Click To Mount Saddle
+	// RideHoverText: Right-Click To Ride
+	// ChangeSaddleText: Left-Click To Change Saddle
+	// DismountText: Right-Click To Dismount
+	// DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
+}
 
+ModifyTruffle: {
+	// SleepName: ???
+	// ButtonText: Awaken
+	/* Chat0:
+		'''
+		The belly of that crab was so cozy, I’d been living there all this time.  
+		But you split it wide open—now I’m homeless.  
+		''' */
+	/* Chat1:
+		'''
+		I once ran a mushroom farm, with my children helping me.  
+		One day I found out half of them were growing inside someone else’s stomach.  
+		''' */
+	// Chat2: "Red cap, white stem… eat it and lie flat forever.  "
+	// Chat3: "You can sell mushrooms to me, but you’ll get absolutely nothing in return.  "
+	// Chat4: "Everyone here wants to eat me.  "
+	/* Chat5:
+		'''
+		I once saw a mushroom tree, at least 2000 meters tall.  
+		They say if you climb to the top and jump off, you’ll land in the Mushroom World.  
+		''' */
+	/* Chat6:
+		'''
+		If you need soup, buy my mushrooms.  
+		At least they won’t scream in the pot.  
+		''' */
+	// Chat7: "All the mushrooms here are mine.  "
+	/* Chat8:
+		'''
+		Ten years ago, you could hire me to guide you to the Fungal Kingdom underground.  
+		I hear it’s on clearance sale now.  
+		''' */
+	/* Chat9:
+		'''
+		I think you’ve got some fungus growing in your lungs.  
+		Come check my shop—I’ve got the perfect cure.  
+		''' */
+	// Chat10: "Oh, I hate that red guy.  "
+	/* Chat11:
+		'''
+		I hate this kind of blood moon.  
+		It makes me fade… like a wilted mushroom nobody wants.  
+		''' */
+}
+
+ModifyWITCH: {
+	// Homeless0: Apologies, I have nothing to offer you. Perhaps you could try reforging some items, then return to me...
+	// Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
+	// Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
+	// Homeless3: No vacant housing? What... you expect me to pay rent?
+	// L0: I cannot afford rent. Perhaps I could perform an exorcism for your town to offset some of the cost?
+	// L1: I have never believed in the concept of souls. Any attempt to resurrect the dead only invites greater catastrophe.
+	/* L2:
+		'''
+		In the last century, I once stepped into a small town.
+		The streets were crowded with 'friends and family' who were supposed to be dead. They smiled, waved, and even cried for help...
+		I attempted to bring back my 'mother' from there.
+		She looked exactly as she did in life, her tone flawless... until I realized she had no heartbeat, and she found amusement in that fact.
+		''' */
+	/* L3:
+		'''
+		I feel you are sometimes overly confident; you will achieve nothing at this rate.
+		I have seen too many like you perish on their quest for power.
+		''' */
+	/* L4:
+		'''
+		I know you are interested in my magic, but it is... not magic.
+		I hope you stay away from it. Those who touch these powers meet no good end.
+		''' */
+	// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
+	// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
+	// Night0: Night is when the spirits haunt. I have no desire to be outside at such a time.
+	// Night1: Long ago, I performed a divination every night before sleep. Until once, for seven consecutive nights, I foresaw that I would die on the eighth.
+	// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
+	// Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
+}
+
+// ModifyOldDuke.LeavingDiveText: The Old Duke dove into the water...

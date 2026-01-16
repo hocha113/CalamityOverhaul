@@ -1,1 +1,394 @@
-
+CWRLocText: {
+	// TemperatureText: Combustion Temperature
+	// EnergyShortage: Energy Shortage
+	// ChargingStation_Text1: Put in charge items
+	// ChargingStation_Text2: Put in battery
+	// ChargingStation_Text3: Need to put in something that can receive energy
+	// ChargingStation_Text4: Need to put in batteries
+	// WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+	// WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
+	// Turret_Text1: Battery Runs Out
+	// Turret_Text2: Intruder Detected!
+	// IndustrializationGenMessage: Industrializing The World
+	// InternalStoredEnergy: Internal Stored Energy
+	// KreloadTimeAddText: "Ammunition reloading time increased "
+	// KreloadTimeLessenText: "Ammunition reloading time is reduced "
+	DeathModeItem: Death Mode Item
+	// DropInMachineRebellion: Dropped by the Mech Trio EX
+	DontUseMagicConch: You're being watched by a powerful creature...
+	OnlyZenith: Nur in der Zenith-Welt
+	Event_TungstenRiot_Name: Wolfram-Aufstand
+	Event_TungstenRiot_Text_1: Eine große Anzahl von Wolfram-Kreaturen fällt ein!
+	Event_TungstenRiot_Text_2: Die Wolfram-Legion wurde zurückgeschlagen!
+	Item_LegendOnMouseLang: Halte [Shift] gedrückt, um die Geschichte zu hören...
+	BloodAltar_Text1: Ein tiefer roter Blick senkt sich herab...
+	BloodAltar_Text2: Du hast nicht genug Blutperlen, um dem König des tiefroten Tributs zu zollen...
+	BloodAltar_Text3: Versunken in endlose Blut- und Fleischfantasien
+	VoidDamageNameText: Leere Schaden
+	Drop_Hell_RuleText: Nach dem Sieg in der Hölle fallen lassen
+	Drop_GlodDragonDrop_RuleText: Nach dem zweiten Sieg über den Dschungeldrachen fallen lassen
+	Murasama_Text_Lang_0: Prüfung:
+	Murasama_Text_Lang_End: Bereits durch die
+	Murasama_TextDictionary_Content_0:
+		'''
+		Rekrut, beweise mir deine Fähigkeiten
+		Der klebrige Blauer Fatty, die Überreste des Meeresgeistes unter dem Sandmeer, der Zombiekrebs im Pilzloch
+		Löse eines von ihnen, das ist dein erster Schritt
+		'''
+	Murasama_TextDictionary_Content_1:
+		'''
+		Bei Mondschein, lass uns das große Auge am Himmel durchbohren, lass den falschen Gott blind werden
+		Die Sandsee zittert, gehe hinunter und finde heraus, dann beseitige die große Muschel
+		'''
+	Murasama_TextDictionary_Content_2:
+		'''
+		Die Überreste des falschen Gottes beflecken das heilige Land von Terraria, Ketzerei gedeiht am Ende der Welt, Fremdartige herrschen auf dem Kontinent
+		Befreie das verdorbene Land! Zerschmettere das Gehirn des falschen Gottes, hacke den violetten Wurm zu Stücken!
+		Ich möchte sehen, wie dein Schwert in der Luft tanzt, für das heilige Terraria!
+		'''
+	Murasama_TextDictionary_Content_3:
+		'''
+		Das verdorbene Land pulsiert wie ein Herz, Fleisch und Blut Parasiten sind noch aktiv, verdorbene Tumore denken immer noch nach, vertreibe sie für immer!
+		Der Fluch am Eingang des Verlieses hat sich gelockert, ich spüre die Psionik tief im Kerker, durchdrungen von Schreien, Heulen und Flüstern
+		'''
+	Murasama_TextDictionary_Content_4:
+		'''
+		Erinnerst du dich an diese törichten Schleime? Ich spüre, dass eine besondere Agglomeration unter ihnen aufgetaucht ist. 
+		Nimm sie aus dem Weg, um zukünftige Probleme zu vermeiden.
+		'''
+	Murasama_TextDictionary_Content_5:
+		'''
+		In der eisigen Bastion liegt ein Gefängnis, wo ein mächtiger Psioniker gefangen gehalten wird, befreie ihn, er wird uns helfen, Terraria zurückzuerobern
+		Das verstoßene Kind des Schwefelmeers blockiert unsere Suche nach dem Schatz der Tiefe, beende seine Verschlingung und das Herumstreifen
+		Ich vermisse die flammengehärtete Lavaklippe, lass uns den Wächter dort besuchen
+		'''
+	Murasama_TextDictionary_Content_6:
+		'''
+		Die Hexe, die sich dem Chaos hingegeben hat, hat eine deformierte Klonschwester, töte das Fremde mit Blut und Feuer
+		Der betörende Gesang kommt vom Meer, das sind die Anhänger der Sirenen, lasst uns ihre Köpfe nehmen, und auf dem Meer unsere Großtaten aufbauen
+		Die dummen Echsenmenschen verehren nur diese sturen Steine, lass uns sie zerstampfen, zerstöre ihren Glauben, wir sind es, die sie anbeten sollten
+		'''
+	Murasama_TextDictionary_Content_7:
+		'''
+		Fleischverflochtene Körper, die gequälten Seelen des alten Schlachtfeldes, unaufhörlich zerstörende Golems, die alles zerstören, während wir sie vernichten
+		In dem Dschungel streift immer noch ein misslungenes Werk herum, als ein Misserfolg, es sollte wie ein Haufen Schrott sein
+		Der einstige Sternengott ist längst gefallen, was übrig bleibt, ist kaum mehr als ein Wurm, lasst uns das Zeitalter der Sternengötter endgültig beenden
+		'''
+	Murasama_TextDictionary_Content_8:
+		'''
+		Die Ketzerei des mechanischen Glaubens, ein törichtes Abbild, streift durch den Dschungel, vernichte es
+		Ein weiterer Sonnenuntergang unter der Erde, es scheint, als würde es das heilige Feuer durch heilige Stätten zur Oberfläche tragen wollen,
+		Vertreibe seine Jünger, Terraria erlaubt nur das Feuer des einen Glaubens
+		'''
+	Murasama_TextDictionary_Content_9:
+		'''
+		Der armselige Gott, der sich von der Hitze der Sterne ernährt, sein Ketzerfeuer muss vollständig erlöschen
+		Die Sturmraupe, die am Rande des Himmels fliegt und die fliegenden Drachen jagt, hat eine anständige Panzerung
+		Die Dimensionsriss, die im Verlies versiegelt sind, sind vielleicht ein guter Weg, um an Dunkle Materie zu gelangen
+		Der heidnische Apostel aus dem Hyperraum, der eine seltene Verdrehung des Vakuums trägt, dies ist eine gute Gelegenheit für uns, die Natur des Hyperraums zu verstehen
+		'''
+	Murasama_TextDictionary_Content_10:
+		'''
+		Der stolze kosmische Riesenschlange lauert hinter dem Vorhang der Welt, ende seine Ambitionen
+		Das älteste Monster, das in den Schwefelmeeren lauert, erwacht mit dem Psioniksturm, lass es zu einem Teil unseres Ruhmes werden
+		'''
+	Murasama_TextDictionary_Content_11:
+		'''
+		Der Dschungeldrache, der letzte Nachkomme des goldenen Drachen auf Terraria, unterscheidet sich von anderen Fremden, er verdient unseren Respekt
+		Doch jetzt müssen wir ihn wieder töten, um das Goldessenz von ihm zu bekommen
+		Diese Materialien werden verwendet, um eine extrem hochwertige Rüstung herzustellen
+		'''
+	Murasama_TextDictionary_Content_12:
+		'''
+		Die Ketzerei der mechanischen Kirche, die an ihre selbstgeschaffene Sternenflusstitanen mehr als die Macht der Götter glaubt,
+		Diese Überzeugung ist lächerlich, lassen wir diese Titanen wieder in ihren natürlichen Zustand versetzen - einen Haufen Schrott
+		Die einst begabte Hexe mit außergewöhnlichen Psionikfähigkeiten hätte ein großer Verbündeter von Terraria sein können, ist aber längst im Chaos verloren gegangen
+		Daher müssen wir sie verbannen, das Schwert in ihre Brust stoßen, das Feuer der Loyalität ihre korrupte Seele verbrennen lassen
+		Dieser Krieg wird in die Geschichte von Terraria eingehen, und unsere Reise wird von hier aus beginnen, die Galaxie durchqueren
+		'''
+	Murasama_TextDictionary_Content_13:
+		'''
+		Unser Eroberungsweg ist bereits unaufhaltsam geworden, zerstöre die Rüstung des Drachen unter dem schwarzen Abgrund, suche nach diesem Endgegenstand
+		Kämpfe gegen diese Fremden mit aller Kraft! Kämpfe, das muss der eine Kampf sein! Kämpfe, der richtige Kampf!
+		'''
+	Murasama_TextDictionary_Content_14:
+		'''
+		Gut gemacht, Rekrut, die fremden Übel in dieser Welt wurden von uns vollständig beseitigt
+		Unsere Reise hat den Gipfel erreicht, selbst der einst herrschende Tyrann von Terraria kann nicht mit uns mithalten
+		Jetzt breite deine Arme aus, umarme die Welt, die der Sieg dir gebracht hat
+		'''
+	Murasama_No_legend_Content_1: Die Scheide wird nach dem Tod des Drachens freigeschaltet
+	Murasama_No_legend_Content_2: Rekrut, ich erkenne deine Fähigkeiten an, lass uns jetzt diese Fremden zerstören
+	Murasama_No_legend_Content_3: "[c/fff08c:Wird stärker mit jedem entfernten Reise]"
+	Murasama_No_legend_Content_4: "[c/00707d:Die Glorie der Legende ist bereits verblasst...]"
+	SHPC_No_legend_Content_1: Wird nach dem Tod des Drachen freigeschaltet
+	SHPC_No_legend_Content_2: Bereit zum Angriff!
+	SHPC_No_legend_Content_3: "[c/fff08c:Wird stärker mit jedem entfernten Reise]"
+	SHPC_No_legend_Content_4: "[c/00707d:Die Glorie der Legende ist bereits verblasst...]"
+	SHPC_TextDictionary_Content_0:
+		'''
+		Freund, die Aufgabe der Wiederbelebung der Zivilisation liegt endlich in unseren Händen, das ist eine glorreiche Sache...
+		Unser erstes Ziel ist ein Klumpen blauer Gelmasse, er ist enorm groß, sprengen wir ihn von innen auf.
+		'''
+	SHPC_TextDictionary_Content_1:
+		'''
+		Wir müssen dieses große Auge loswerden, es stammt von einem mächtigen Lebenswesen.
+		Ich muss es sezieren, um zu sehen, wie es die Antischwerkraft erreicht.
+		'''
+	SHPC_TextDictionary_Content_2:
+		'''
+		Die Bienenwaben im Dschungel werden sehr unruhig, die Bienenpuppen schlüpfen bald.
+		Ich muss dringend ihren Transformationsprozess untersuchen, lass uns hingehen und nachsehen.
+		'''
+	SHPC_TextDictionary_Content_3:
+		'''
+		Riesige Knochen können in der Luft schweben, das ist sehr ungewöhnlich.
+		Wir müssen zum tiefsten Gefängnis am Ende der Welt gehen.
+		'''
+	SHPC_TextDictionary_Content_4:
+		'''
+		Die Erde bebt, die Zahnräder knirschen, Strom fließt.
+		Es warten eine Menge Roboter auf uns, es ist Zeit, ihnen die Kraft der Technologie zu zeigen.
+		'''
+	SHPC_TextDictionary_Content_5:
+		'''
+		Unter dem Dschungel blühen bereits mehrere prächtige große Blütenknospen.
+		Wir müssen hingehen und einige experimentelle Daten sammeln.
+		'''
+	SHPC_TextDictionary_Content_6:
+		'''
+		Tief im Tempel warten alte Roboter auf eine Ladung.
+		Lass uns hingehen und antikes Wissen über Technologie gewinnen.
+		'''
+	SHPC_TextDictionary_Content_7:
+		'''
+		Die Geheimnisse auf der Rückseite des Mondes werden uns bekannt werden.
+		Die Welt wird wieder in ihren ursprünglichen Zustand zurückkehren.
+		'''
+	SHPC_TextDictionary_Content_8:
+		'''
+		Die Götter, die im Erdkern parasitieren, haben uns bemerkt.
+		Geh zur Hölle und ich brauche Wissen über die Nutzung von Thermalenergie.
+		'''
+	SHPC_TextDictionary_Content_9:
+		'''
+		Die Geister im Verlies versammeln sich und bilden einen riesigen Symbionten.
+		Das ist sehr interessant, lass uns jetzt hingehen und uns umsehen.
+		'''
+	SHPC_TextDictionary_Content_10:
+		'''
+		Es ist sicher, dass es keine Kohlenstoff-basiertes Leben ist, es kann nur mit seinem Körper den Raummembran durchbrechen.
+		Es verschlingt Götter, aber wir sind keine Götter, ich denke, es wird uns Tee anbieten.
+		'''
+	SHPC_TextDictionary_Content_11:
+		'''
+		Der letzte Drachennachkomme auf der Welt, wow, das ist cool!
+		Bring mich hin, ich will seine Federn bekommen.
+		'''
+	SHPC_TextDictionary_Content_12:
+		'''
+		Es ist Zeit, meinen Schöpfer zu besuchen.
+		Oder diese Hexe, ihr Dasein beunruhigt mich.
+		'''
+	SHPC_TextDictionary_Content_13:
+		'''
+		Große Schlacht! Die Feinde, die wir einst besiegt haben, haben sich vereint und bereiten einen Gesamtangriff auf uns vor.
+		Mach dich bereit, wir brauchen einen perfekten Sieg.
+		'''
+	SHPC_TextDictionary_Content_14: HMOI-0001-Protokoll wurde entsperrt.
+	Halibut_No_legend_Content_1: Freigeschaltet nach dem Fall des großen Drachen
+	Halibut_No_legend_Content_2: Kumpel, ich war die ganze Zeit hier
+	Halibut_No_legend_Content_3: "[c/fff08c:Stärker geworden mit jeder Reise]"
+	Halibut_No_legend_Content_4: "[c/00707d:Der Glanz der Legende ist verblasst...]"
+	Halibut_TextDictionary_Content_0: Freund, lass uns dieses riesige, schleimige Landwesen herausfordern.
+	Halibut_TextDictionary_Content_1: Da ist ein großes Auge, das uns anstarrt. Das ist unhöflich, wir müssen ihm eine Lektion erteilen.
+	Halibut_TextDictionary_Content_2: Leben gibt es nicht nur in der Tiefe, sondern auch im Dschungel. Freund, wir müssen den Anführer der Bienen besuchen.
+	Halibut_TextDictionary_Content_3:
+		'''
+		Der verfluchte, unsterbliche Knochenriese muss zur Ruhe gebracht werden.
+		Die Hilferufe aus der Hölle werden immer häufiger. Wir müssen schnell aufbrechen, ich denke, der Guide wird nichts dagegen haben.
+		'''
+	Halibut_TextDictionary_Content_4:
+		'''
+		Weißt du, wie sich anorganische Objekte bewegen? Ich habe einmal eine riesige Unterwassermaschine gebaut, die aus Blasen bestehende Atomsprengköpfe
+		und unzählige thermonukleare Torpedos abfeuern konnte. Ich habe sie benutzt, um riesige Kreaturen zu jagen, die 10.000 Meter unter dem Meer lebten, bis ich auf...
+		Oh, ich schweife ab. Ich denke, vier mechanische Freunde werden uns bald besuchen, wir sollten vorbereitet sein.
+		Außerdem gibt es über der verseuchten Tiefsee einen mutierten, gigantischen Seewurm. Er war früher der Türsteher der Schwefelmeeres-Universität.
+		Er ist wahrscheinlich immer noch recht freundlich; wir könnten ihn zum Nachmittagstee treffen.
+		'''
+	Halibut_TextDictionary_Content_5:
+		'''
+		Ich liebe den Dschungel; er ist fast mein zweites Zuhause, erfüllt von Lebensenergie,
+		die der in den Tiefen der See in nichts nachsteht. Aber zuerst müssen wir einen Weg finden, sie freizusetzen.
+		Erinnerst du dich an die riesigen Knospen unter der Erde? Pflücke sie — sie werden mir helfen, meinen Abschluss in Botanik zu machen.
+		'''
+	Halibut_TextDictionary_Content_6:
+		'''
+		Ich liebe archäologische Ausgrabungen. Beim letzten Mal, als ich durch den Dschungel wanderte, sah ich riesige Ruinen.
+		Wir sollten jetzt den Schlüssel haben, um die Tür zu diesen Ruinen zu öffnen. Lass uns nachsehen.
+		Drinnen wartet eine antike Maschine, die wir wie eine Klimaanlagenfernbedienung in Gang setzen müssen.
+		Außerdem breitet sich auf der Oberfläche eine außerirdische Seuche aus, die die Erde und die meisten anorganischen Objekte infiziert.
+		Jede Nacht wandert eine schmerzerfüllte Bergbaumaschine umher, die schon lange infiziert ist. Lass uns sie erlösen.
+		'''
+	Halibut_TextDictionary_Content_7:
+		'''
+		Kennst du das Geheimnis auf der Rückseite des Mondes? Dort gibt es einen riesigen Oktopus, einen Schwamm und einen Seestern...
+		Oh, ich meinte, die Mondkrise naht.
+		'''
+	Halibut_TextDictionary_Content_8:
+		'''
+		Jetzt kommt die Sonnenkrise. Ein mächtiges Energie-Wesen ist von der Rückseite der Sonne entkommen und in den Kern dieses Planeten geflohen.
+		Wir müssen nach unten gehen und es mit einer kalten Dusche abkühlen.
+		'''
+	Halibut_TextDictionary_Content_9:
+		'''
+		Unzählige unbezwingbare Seelen von den alten Schlachtfeldern haben sich jetzt versammelt und verstecken sich tief im Dungeon, sie werden immer unruhiger.
+		Wir können dorthin gehen und einige der verlorenen Seelen eliminieren. Das könnte einen kleinen Sturm im Subraum auslösen, aber auch sie hervorlocken.
+		'''
+	Halibut_TextDictionary_Content_10:
+		'''
+		Es gibt eine Art von Kreaturen, die im Weltraum geboren werden und dort wachsen, ihre Körper können starke kosmische Strahlung und planetarische Energie aushalten.
+		Vor langer Zeit haben wir einem von ihnen begegnet, und jetzt stehen wir einem der mächtigsten von ihnen gegenüber — einer Kreatur, die angeblich Götter verschlungen hat.
+		'''
+	Halibut_TextDictionary_Content_11: Die Temperatur im Dschungel ist in letzter Zeit gestiegen; ich denke, dieser mächtige Drache ist zurückgekehrt.
+	Halibut_TextDictionary_Content_12:
+		'''
+		Wir werden bald dem Höhepunkt der anorganischen Schöpfungen gegenüberstehen, die über starke Feuerkraft und Verteidigung verfügen.
+		Außerdem scheint es, dass man am Altar des Schwefelfeuers etwas beschwören kann.
+		'''
+	Halibut_TextDictionary_Content_13:
+		'''
+		In der Tiefe gibt es einen besonderen Stein — benutze ihn, um der letzten Schlacht zu begegnen.
+		Es gibt auch eine mächtige Meereskreatur, die meine Maschine zerstört hat; lass uns Rache nehmen.
+		'''
+	Halibut_TextDictionary_Content_14: Ehrlich gesagt, ich möchte wieder ins Meer zurückkehren.
+	CWRRecipes_ApostolicRelics: Apostolische Relikte
+	CWRRecipes_GodEaterWeapon: Gottesser-Waffe
+	CWRRecipes_FishGroup: Fische
+	LoadItemRecipe_Condition_Text1: Es muss ein Calamity Overhaul-Buch im Inventar vorhanden sein.
+	Murasama_Text0: Entsperrt
+	Murasama_Text1: Nicht entsperrt, benötigt Trial 2
+	Murasama_Text2: Nicht entsperrt, benötigt Trial 5
+	Murasama_Text3: Nicht entsperrt, benötigt Trial 9
+	MouseTextContactPanel_TextContent: Drücken Sie [KEY], um die Vorschau der Endsynthetiserezepte umzuschalten.
+	CWRItem_IsRemakeItem_TextContent: - Überarbeitung -
+	OnEnterWorld_TextContent: Waffenrücksetzung wurde geladen
+	OnEnterWorld_TextContent2:
+		'''
+		Es wurde erkannt, dass Sie [Better Experience] installiert haben, aber Ihre Version von [Better Experience] ist veraltet.
+		Um sicherzustellen, dass das Spiel ordnungsgemäß funktioniert, stellen Sie sicher, dass die Version von [Better Experience] nicht niedriger als 1.7.1.7 ist.
+		'''
+	CaseEjection_TextContent: Leerhülsen
+	// CaseEjection_TextContent_Coin: No Money
+	// CaseEjection_TextContent_Arrow: No Arrow
+	SupertableUI_Text1: Schließen
+	SupertableUI_Text2: Rezept anzeigen
+	SupertableUI_Text3: Kein
+	OverhaulTheBibleUI_Text:
+		'''
+		Verwenden Sie das Mausrad oder ziehen Sie die linke Fortschrittsleiste, um zurückgesetzte Gegenstände nach oben oder unten zu durchsuchen.
+		Diese Liste dient nur als Referenz, da viele lokale Änderungen nicht in dieser Liste enthalten sind.
+		'''
+	OverhaulTheBibleUI_Text1: Wächter-Krieger
+	OverhaulTheBibleUI_Text2: Wächter-Schütze
+	OverhaulTheBibleUI_Text3: Wächter-Magier
+	OverhaulTheBibleUI_Text4: Wächter-Beschwörer
+	OverhaulTheBibleUI_Text5: Wächter-Dieb
+	CartridgeHolderUI_Text1: Patronenhalterinhalt
+	CartridgeHolderUI_Text2: Restlich
+	CartridgeHolderUI_Text3: Leer
+	CartridgeHolderUI_Text4: Mit der rechten Maustaste entladen
+	CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
+	CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
+	CartridgeHolderUI_Text7: The Magazine Is Full!
+	// ArrowHolderUI_Text0: Left Click On The Marked Arrow
+	// ArrowHolderUI_Text1: Right Click Untag
+	SupertableUI_Text4: Platzierungsüberwachung schließen
+	SupertableUI_Text5: Platzierungsüberwachung öffnen
+	AmmoBox_Text: Maximale Bereitstellung erreicht
+	AmmoBox_Text2: Bereitstellung läuft
+	AmmoBox_Text3: Bereitgestellt
+	HellfireExplosion_DeadLang_Text: Verbrenne in der Hölle zu Asche
+	// SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
+	SupMUI_OneClick_Text1: Materialien schnell platzieren
+	SupMUI_OneClick_Text2: Materialien schnell nehmen
+	TemporaryVersion_Text:
+		'''
+		[CalamityOverhaul-[V1]]:
+		Dies ist eine temporäre Version, die zur Anpassung an das neue Update entwickelt wurde 
+		und nur grundlegende Spielerfahrungen bietet, bis Version [V2] veröffentlicht wird.
+		Aufgrund des überstürzten Updates könnten noch einige auffällige Fehler vorhanden sein.
+		Sollten Sie während des Spiels auf Probleme stoßen, melden Sie diese bitte auf Github
+		oder geben Sie die Probleme im Feedback-Thread zu Problemen auf der Workshop-Seite des Mods an. 
+		Die Entwickler werden schnell reagieren und sie beheben.
+		'''
+	MS_Config_Text:
+		'''
+		Es wurde festgestellt, dass Sie das [Magic Storage Mod] installiert haben. Um Konflikte zu lösen, 
+		wird empfohlen, die Einstellung [Recursion Crafting Depth] in der Mod-Konfiguration auf 0 zu setzen.  
+		Diese Einstellung ist für rekursives Crafting verantwortlich und kann beim 
+		Interagieren mit diesem Mod alle Crafting-Ereignisse fehlerhaft aufrufen, was das Spielerlebnis erheblich beeinträchtigen würde.
+		'''
+	IconUI_Text0: Zum Open-Source-Repository des Mods gehen :)
+	IconUI_Text1: Problem melden
+	IconUI_Text2: Dankeschön-Liste
+	IconUI_Text3: Künstler
+	IconUI_Text4: Code-Hilfe
+	IconUI_Text5: Spender
+	IconUI_Text6: Balancing-Tests
+	IconUI_Text7: Log anzeigen
+	IconUI_Text8: Mod Wiki
+	// IconUI_Text9: Musician
+	SPU_Text0: In Arbeit
+	SPU_Text1: Endsynthetisierung läuft
+	SPU_Text2: Durch Synthese erhalten:
+	Spazmatism_Text1: EUX_001 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
+	Spazmatism_Text2: EUX_002 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
+	Spazmatism_Text3: Hauptstruktur von EUX_001 beschädigt, versuche, das Schlachtfeld zu verlassen...
+	Spazmatism_Text4: Hauptstruktur von EUX_002 beschädigt, versuche, das Schlachtfeld zu verlassen...
+	Spazmatism_Text5: Ziel wurde eliminiert.
+	Spazmatism_Text6: Einleitung der Evakuierung...
+	Spazmatism_Text7: Mission fehlgeschlagen, versuche, das Schlachtfeld zu verlassen...
+	Spazmatism_Text8: Wurden eingesetzt.
+	/* Error_1:
+		'''
+		hook failed, in order to normal the game, please close the game and re-enter, 
+		if this still does not return to normal, please bring the exported log to find the module developer
+		''' */
+	/* Error_2:
+		'''
+		An exception has been detected and the server is attempting to load the block system in real time, 
+		which may cause a brief stutter and a few seconds of network delay
+		''' */
+	// Config_1: User
+	// Config_2: The server configuration is modified
+	CWRGun_KL_Text: Drücke [KL] für Nachladen
+	CWRGun_Scope_Text: Drücke [Scope] für Zielen
+	CWRGun_Recoil_Text: "[Recoil] Rückstoß"
+	CWRGun_MustCA_Text: Schießen verbraucht immer Munition
+	CWRGun_Recoil_Level_0: Kein
+	CWRGun_Recoil_Level_1: Leichter
+	CWRGun_Recoil_Level_2: Geringer
+	CWRGun_Recoil_Level_3: Normaler
+	CWRGun_Recoil_Level_4: Starker
+	CWRGun_Recoil_Level_5: Extremer
+	CWRGun_Recoil_Level_6: Absurder
+	// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
+	// MachineRebellion_SpawnInfo: Use the Garden remote control at night
+	// MachineRebellion_DespawnMessage: Use the Garden remote control at night
+	// MachineRebellion_DisplayName: Machine Rebellion
+	// Notbound: "[Unbound keys]"
+	/* DisableMotionInterpolationMessage:
+		'''
+		Detected that you have enabled the HighFPSSupport: [Motion Smoothing] feature.
+		To ensure the stability of certain visual effects in the mod,
+		this feature has been automatically disabled for you.
+		To make sure the change takes effect,
+		it is strongly recommended that you manually toggle and keep this feature turned off.
+		''' */
+	/* LegendItemUpgradeDisable:
+		'''
+		This legendary weapon has been set to disable upgrades in the current world.
+		To lift this restriction, please re-enter the world.
+		''' */
+}

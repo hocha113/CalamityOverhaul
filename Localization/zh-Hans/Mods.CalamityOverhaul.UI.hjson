@@ -1,287 +1,285 @@
+ItemFilterUI: {
+	HintText: 左键点击可添加项目
+	HintText2: 左键点击可移除项目
+	CloseHint: "[ESC]键或[右键点击]可关闭"
+}
 
-	ItemFilterUI: {
-		HintText: 左键点击可添加项目
-		HintText2: 左键点击可移除项目
-		CloseHint: "[ESC]键或[右键点击]可关闭"
+LegendUpgradeConfirmUI: {
+	TitleText: 传奇武器升级确认
+	DescText:
+		'''
+		当前世界等级高于武器等级
+		是否将{0}升级到等级 {1}？
+		'''
+	ConfirmText: 确认升级
+	CancelText: 取消
+	Success: "[ITEM]已经升级到[LEVEL]级"
+}
+
+QuestTracker: {
+	DamageTrackerSystem: {
+		QuestFailedPrefix: 任务失败
+		QuestCompletedPrefix: 任务完成!
+		FailureReasonWrongWeapon: 未使用指定武器完成最后一击
+		FailureReasonInsufficientDamage: 武器伤害占比不足
+		SuccessDamageContribution: 伤害占比
 	}
+}
 
-	LegendUpgradeConfirmUI: {
-		TitleText: 传奇武器升级确认
-		DescText:
-			'''
-			当前世界等级高于武器等级
-			是否将{0}升级到等级 {1}？
-			'''
-		ConfirmText: 确认升级
-		CancelText: 取消
-		Success: "[ITEM]已经升级到[LEVEL]级"
-	}
+DoGQuestTrackerUI: {
+	QuestTitle: 委托：猎杀神明吞噬者
+	DamageContribution: 刻心者伤害
+	RequiredContribution: 需求: 80%
+}
 
-	QuestTracker: {
-		DamageTrackerSystem: {
-			QuestFailedPrefix: 任务失败
-			QuestCompletedPrefix: 任务完成!
-			FailureReasonWrongWeapon: 未使用指定武器完成最后一击
-			FailureReasonInsufficientDamage: 武器伤害占比不足
-			SuccessDamageContribution: 伤害占比
-		}
-	}
+PallbearerQuestTrackerUI: {
+	QuestTitle: 委托：猎杀亵渎天神
+	DamageContribution: 扶柩者伤害
+	RequiredContribution: 需求: 80%
+}
 
-	DoGQuestTrackerUI: {
-		QuestTitle: 委托：猎杀神明吞噬者
-		DamageContribution: 刻心者伤害
-		RequiredContribution: 需求: 80%
-	}
+YharonQuestTrackerUI: {
+	QuestTitle: 委托：猎杀焚世龙
+	DamageContribution: 鬼面刀伤害
+	RequiredContribution: 需求: 75%
+}
 
-	PallbearerQuestTrackerUI: {
-		QuestTitle: 委托：猎杀亵渎天神
-		DamageContribution: 扶柩者伤害
-		RequiredContribution: 需求: 80%
-	}
+SeaDialogueBox: {
+	ContinueHint: 继续
+	FastHint: 加速
+}
 
-	YharonQuestTrackerUI: {
-		QuestTitle: 委托：猎杀焚世龙
-		DamageContribution: 鬼面刀伤害
-		RequiredContribution: 需求: 75%
-	}
+BrimstoneDialogueBox: {
+	ContinueHint: 继续
+	FastHint: 加速
+}
 
-	SeaDialogueBox: {
-		ContinueHint: 继续
-		FastHint: 加速
-	}
+DraedonDialogueBox: {
+	ContinueHint: 继续
+	FastHint: 加速
+}
 
-	BrimstoneDialogueBox: {
-		ContinueHint: 继续
-		FastHint: 加速
-	}
+ExoMechdusaSumRender: {
+	ThanatosDescription: 塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒
+	AresDescription: 阿瑞斯，一个搭载着四台超级星流武器的庞然巨物
+	ArtemisApolloDescription: 阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器
+}
 
-	DraedonDialogueBox: {
-		ContinueHint: 继续
-		FastHint: 加速
-	}
+CQETConstructorTP: {
+	GuideText_NeedBlocks: 需要 {0} 个星流电镀块
+	GuideText_Ready: 准备就绪！
+	GuideText_GroundIncomplete: 地面不完整！
+}
 
-	ExoMechdusaSumRender: {
-		ThanatosDescription: 塔纳托斯，一条装备着厚重铠甲、搭载了无数机关炮的恐怖巨蟒
-		AresDescription: 阿瑞斯，一个搭载着四台超级星流武器的庞然巨物
-		ArtemisApolloDescription: 阿尔忒弥斯和阿波罗，一对能量储备十分不稳定的超耐久自动机器
-	}
+DeploySignaltowerTrackerUI: {
+	QuestTitle: 量子纠缠网络部署
+	DamageContribution: 部署进度
+	RequiredContribution: 目标:10座信号塔
+	NearestTargetText: 最近的目标点
+	NodeText: "[NUM]号纠缠节点"
+	StatusText: 状态
+	InRangeText: 范围内
+	DistanceText: 距离
+	QuestCompleteText: 任务完成!
+}
 
-	CQETConstructorTP: {
-		GuideText_NeedBlocks: 需要 {0} 个星流电镀块
-		GuideText_Ready: 准备就绪！
-		GuideText_GroundIncomplete: 地面不完整！
-	}
+SignalTowerTargetRenderer: {
+	InRangeText: 范围内
+	TargetCompletedText: 目标点[NUM]已完成!
+	AllCompletedText: 量子纠缠网络已完成!
+}
 
-	DeploySignaltowerTrackerUI: {
-		QuestTitle: 量子纠缠网络部署
-		DamageContribution: 部署进度
-		RequiredContribution: 目标:10座信号塔
-		NearestTargetText: 最近的目标点
-		NodeText: "[NUM]号纠缠节点"
-		StatusText: 状态
-		InRangeText: 范围内
-		DistanceText: 距离
-		QuestCompleteText: 任务完成!
-	}
+DraedonCallUI: {
+	TitleText: 呼叫嘉登
+	TitleTextDisabled: 呼叫禁用
+	CallButtonText: 启动呼叫
+	CallingText: 正在呼叫...
+	DisabledButtonText: 禁用中
+	ConnectingText: 正在连接...
+	ConnectedText: 已连接
+	DisabledReasonText: 嘉登已被呼叫
+}
 
-	SignalTowerTargetRenderer: {
-		InRangeText: 范围内
-		TargetCompletedText: 目标点[NUM]已完成!
-		AllCompletedText: 量子纠缠网络已完成!
-	}
+TzeentchDialogueBox: {
+	ContinueHint: 继续
+	FastHint: 加速
+}
 
-	DraedonCallUI: {
-		TitleText: 呼叫嘉登
-		TitleTextDisabled: 呼叫禁用
-		CallButtonText: 启动呼叫
-		CallingText: 正在呼叫...
-		DisabledButtonText: 禁用中
-		ConnectingText: 正在连接...
-		ConnectedText: 已连接
-		DisabledReasonText: 嘉登已被呼叫
-	}
+EnchantUI: {
+	ExpandHint: 展开炼铸界面
+	CollapseHint: 收起炼铸界面
+	EnchantTitle: 炼铸
+}
 
-	TzeentchDialogueBox: {
-		ContinueHint: 继续
-		FastHint: 加速
-	}
+ConstructionBlueprintUI: {
+	UITitle: 自我搭建器(量子纠缠塔)
+	MaterialsRequired: 所需材料:
+	CloseHint: 点击关闭
+	CraftingStation: 合成站点:
+}
 
-	EnchantUI: {
-		ExpandHint: 展开炼铸界面
-		CollapseHint: 收起炼铸界面
-		EnchantTitle: 炼铸
-	}
-
-	ConstructionBlueprintUI: {
-		UITitle: 自我搭建器(量子纠缠塔)
-		MaterialsRequired: 所需材料:
-		CloseHint: 点击关闭
-		CraftingStation: 合成站点:
-	}
-
-	Generator: {
-		ThermalGeneratorUI: {
-			TitleText: 热能发电机
-			FuelLabel: 燃料
-			TemperatureLabel: 温度
-			PowerLabel: 电力
-			StatusLabel: 状态:
-			ActiveText: 运行中
-			IdleText: 待机
-			EfficiencyText: 效率: {0}%
-			InsertFuelHint: 点击放入/取出燃料
-			TemperatureUnit: °C
-			PowerUnit: UE
-		}
-	}
-
-	ChargingStationUI: {
-		TitleText: 充能站
-		ItemSlotLabel: 充能物品
-		BatterySlotLabel: 电池
-		StationEnergyLabel: 站点能量
-		ItemChargeLabel: 物品电量
+Generator: {
+	ThermalGeneratorUI: {
+		TitleText: 热能发电机
+		FuelLabel: 燃料
+		TemperatureLabel: 温度
+		PowerLabel: 电力
 		StatusLabel: 状态:
-		ChargingText: 充能中
+		ActiveText: 运行中
 		IdleText: 待机
-		InsertItemHint: 放入需要充能的物品
-		InsertBatteryHint: 放入嘉登能量电池
-		EnergyUnit: UE
-		StationText1: 只能放入可充能物品!
-		StationText2: 只能放入嘉登能量电池!
+		EfficiencyText: 效率: {0}%
+		InsertFuelHint: 点击放入/取出燃料
+		TemperatureUnit: °C
+		PowerUnit: UE
 	}
+}
 
-	SulfseaDialogueBox: {
-		ContinueHint: 继续
-		FastHint: 加速
+ChargingStationUI: {
+	TitleText: 充能站
+	ItemSlotLabel: 充能物品
+	BatterySlotLabel: 电池
+	StationEnergyLabel: 站点能量
+	ItemChargeLabel: 物品电量
+	StatusLabel: 状态:
+	ChargingText: 充能中
+	IdleText: 待机
+	InsertItemHint: 放入需要充能的物品
+	InsertBatteryHint: 放入嘉登能量电池
+	EnergyUnit: UE
+	StationText1: 只能放入可充能物品!
+	StationText2: 只能放入嘉登能量电池!
+}
+
+SulfseaDialogueBox: {
+	ContinueHint: 继续
+	FastHint: 加速
+}
+
+OldDukeShopUI: {
+	TitleText: 老公爵的店铺
+	CurrencyName: 海洋残片
+	HintTooltip: 滚动/拖动条
+}
+
+FindCampsiteUI: {
+	QuestTitle: 深渊在呼唤
+	DamageContribution: 任务进度
+	RequiredContribution: 目标: 找到并与老公爵对话
+	ObjectiveText: 目标
+	LocationText: 前往老公爵营地
+	DistanceText: 距离
+	InteractText: 与老公爵对话
+	QuestCompleteText: 任务完成！
+	HoldFragmentHintText: 持有海洋碎片可查看方向
+}
+
+FindFragmentUI: {
+	QuestTitle: 深渊在呼唤
+	DamageContribution: 收集进度
+	RequiredContribution: 目标: 收集777块海洋残片
+	ObjectiveText: 目标
+	CollectFragmentsText: 收集海洋残片
+	CurrentFragmentsText: 当前拥有
+	ReturnToCampsiteText: 返回营地提交
+	QuestCompleteText: 任务完成！
+	HintText: 钓鱼或者搜刮海洋区域的生物
+}
+
+OceanRaidersUI: {
+	TitleText: 海洋吞噬者存储
+	StorageText: 存储空间
+}
+
+OldDuchestUI: {
+	TitleText: 老箱子
+	StorageText: 储物空间
+}
+
+QuestLog: {
+	ObjectiveText: 任务目标
+	RewardText: 任务奖励
+	ReceiveAwardText: 领取奖励
+	ProgressText: 任务完成比例
+	QuickReceiveAwardText: 一键领取
+	StyleSwitchText: 切换风格
+	NightModeText: 夜间模式
+	ResetViewText: 重置视图
+	SunModeText: 日间模式
+	LauncherHoverText: 左键交互，右键拖动
+}
+
+QuestNotificationSystem.Text1: 任务完成
+
+CompatibilityAlert: {
+	TitleText: 当前正处于兼容模式
+	ContentText:
+		'''
+		检测到主要内容模组缺失或版本冲突，部分功能已自动禁用或降级运行
+		如果您有意这样使用，请忽略这个提醒
+		如果您确认是版本过时导致的兼容模式，请耐心等待模组更新适配
+		开发团队通常会在十二个小时内发布兼容性补丁
+		'''
+}
+
+QuestWorldConfirmUI: {
+	TitleText: 任务检测确认
+	DescText:
+		'''
+		检测到您从其他世界进入当前世界
+		是否在当前世界中检测任务进度？
+		'''
+	ConfirmText: 检测任务
+	CancelText: 跳过
+	EnabledText: 已启用任务检测
+	DisabledText: 已跳过任务检测
+	DisabledOverlayText:
+		'''
+		任务检测已在当前世界中被禁止
+		重新进入世界以重新选择配置
+		'''
+}
+
+Incinerator: {
+	IncineratorUI: {
+		TitleText: 电动焚化炉
+		InputLabel: 输入
+		OutputLabel: 输出
+		ProgressLabel: 进度
+		PowerLabel: 电力
+		StatusLabel: 状态:
+		SmeltingText: 焚烧中
+		IdleText: 待机
+		NoPowerText: 缺电
+		InputHint: 放入可焚烧物品
+		OutputHint: 点击取出成品
+		PowerUnit: UE
 	}
+}
 
-	OldDukeShopUI: {
-		TitleText: 老公爵的店铺
-		CurrencyName: 海洋残片
-		HintTooltip: 滚动/拖动条
-	}
+ItemPipeline: {
+	Normal: 普通
+	Output: 输出
+	Input: 输入
+	NotEndpointHint: 只能在管道末端设置输入输出
+}
 
-	FindCampsiteUI: {
-		QuestTitle: 深渊在呼唤
-		DamageContribution: 任务进度
-		RequiredContribution: 目标: 找到并与老公爵对话
-		ObjectiveText: 目标
-		LocationText: 前往老公爵营地
-		DistanceText: 距离
-		InteractText: 与老公爵对话
-		QuestCompleteText: 任务完成！
-		HoldFragmentHintText: 持有海洋碎片可查看方向
-	}
-
-	FindFragmentUI: {
-		QuestTitle: 深渊在呼唤
-		DamageContribution: 收集进度
-		RequiredContribution: 目标: 收集777块海洋残片
-		ObjectiveText: 目标
-		CollectFragmentsText: 收集海洋残片
-		CurrentFragmentsText: 当前拥有
-		ReturnToCampsiteText: 返回营地提交
-		QuestCompleteText: 任务完成！
-		HintText: 钓鱼或者搜刮海洋区域的生物
-	}
-
-	OceanRaidersUI: {
-		TitleText: 海洋吞噬者存储
-		StorageText: 存储空间
-	}
-
-	OldDuchestUI: {
-		TitleText: 老箱子
-		StorageText: 储物空间
-	}
-
-	QuestLog: {
-		ObjectiveText: 任务目标
-		RewardText: 任务奖励
-		ReceiveAwardText: 领取奖励
-		ProgressText: 任务完成比例
-		QuickReceiveAwardText: 一键领取
-		StyleSwitchText: 切换风格
-		NightModeText: 夜间模式
-		ResetViewText: 重置视图
-		SunModeText: 日间模式
-		LauncherHoverText: 左键交互，右键拖动
-	}
-
-	QuestNotificationSystem.Text1: 任务完成
-
-	CompatibilityAlert: {
-		TitleText: 当前正处于兼容模式
-		ContentText:
-			'''
-			检测到主要内容模组缺失或版本冲突，部分功能已自动禁用或降级运行
-			如果您有意这样使用，请忽略这个提醒
-			如果您确认是版本过时导致的兼容模式，请耐心等待模组更新适配
-			开发团队通常会在十二个小时内发布兼容性补丁
-			'''
-	}
-
-	QuestWorldConfirmUI: {
-		TitleText: 任务检测确认
-		DescText:
-			'''
-			检测到您从其他世界进入当前世界
-			是否在当前世界中检测任务进度？
-			'''
-		ConfirmText: 检测任务
-		CancelText: 跳过
-		EnabledText: 已启用任务检测
-		DisabledText: 已跳过任务检测
-		DisabledOverlayText:
-			'''
-			任务检测已在当前世界中被禁止
-			重新进入世界以重新选择配置
-			'''
-	}
-
-	Incinerator: {
-		IncineratorUI: {
-			TitleText: 电动焚化炉
-			InputLabel: 输入
-			OutputLabel: 输出
-			ProgressLabel: 进度
-			PowerLabel: 电力
-			StatusLabel: "状态:"
-			SmeltingText: 焚烧中
-			IdleText: 待机
-			NoPowerText: 缺电
-			InputHint: 放入可焚烧物品
-			OutputHint: 点击取出成品
-			PowerUnit: UE
-		}
-	}
-
-	ItemPipeline: {
-		Normal: 普通
-		Output: 输出
-		Input: 输入
-		NotEndpointHint: 只能在管道末端设置输入输出
-	}
-
-	ThrowerUI: {
-		TitleText: 物品投掷器
-		InventoryLabel: 存储仓
-		ControlLabel: 控制面板
-		SpeedLabel: 投掷力度
-		AngleLabel: 散布角度
-		IntervalLabel: 投掷间隔
-		DirectionLabel: 投掷方向
-		StartText: 启动
-		StopText: 停止
-		StatusRunning: 运行中
-		StatusIdle: 待机
-		StatusNoEnergy: 能量不足
-		StatusNoItems: 无物品
-		EnergyLabel: 能量
-		DropHint: 放入物品
-		AmmoModeOnText: 弹药发射
-		AmmoModeOffText: 物品投掷
-		AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
-	}
-
+ThrowerUI: {
+	TitleText: 物品投掷器
+	InventoryLabel: 存储仓
+	ControlLabel: 控制面板
+	SpeedLabel: 投掷力度
+	AngleLabel: 散布角度
+	IntervalLabel: 投掷间隔
+	DirectionLabel: 投掷方向
+	StartText: 启动
+	StopText: 停止
+	StatusRunning: 运行中
+	StatusIdle: 待机
+	StatusNoEnergy: 能量不足
+	StatusNoItems: 无物品
+	EnergyLabel: 能量
+	DropHint: 放入物品
+	AmmoModeOnText: 弹药发射
+	AmmoModeOffText: 物品投掷
+	AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
+}

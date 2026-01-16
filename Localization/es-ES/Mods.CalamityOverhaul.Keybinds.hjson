@@ -1,1 +1,20 @@
-
+ADS_Key.DisplayName: Abrir miras
+KreLoad_Key.DisplayName: Recargar
+// QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
+HeavenfallLongbowSkillKey.DisplayName: Arco largo de la caída del cielo: Juicio de las manifestaciones
+InfinitePickSkillKey.DisplayName: Pico infinito: Cambio de forma
+Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo
+Murasama_DownKey.DisplayName: Murasama: Golpe descendente
+// Halibut_Domain.DisplayName: Halibut: Oceanic Domain
+// Halibut_Clone.DisplayName: Halibut: Invasion of the Former Self
+// Halibut_Restart.DisplayName: Halibut: Reboot
+// Halibut_Superposition.DisplayName: Halibut: Superposition
+// Halibut_Teleport.DisplayName: Halibut: Domain Teleport
+// Halibut_UIControl.DisplayName: Halibut: UI Control
+// Halibut_Skill_L.DisplayName: Halibut: Switch to the left skill
+// Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
+// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
+// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
+// AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
+// AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
+// JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment

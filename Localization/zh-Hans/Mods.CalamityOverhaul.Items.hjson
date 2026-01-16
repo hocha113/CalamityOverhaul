@@ -1,1550 +1,1548 @@
-
-	ElementWhip: {
-		DisplayName: 元素长鞭
-		Tooltip:
-			'''
-			{$CommonItemTooltip.Whips}
-			让敌人被元素之火灼烧
-			"泰拉的本源连同宇宙的元素一同贯穿世界"
-			'''
-	}
-
-	TheRelicLuxor: {
-		DisplayName: 卢克索的圣物
-		Tooltip:
-			'''
-			灼热的灵力将伴随你的每一次攻击，耀界之神与你同在
-			[tips]
-			'''
-	}
-
-	TheLuxirSoulArtifact: {
-		DisplayName: 卢克索的灵魂圣器
-		Tooltip:
-			'''
-			无论是神还是不朽，皆承认你的荣耀
-			[tips]
-			'''
-	}
-
-	AzureDragonRage: {
-		DisplayName: 青龙之怒
-		Tooltip:
-			'''
-			{$CommonItemTooltip.Whips}
-			有一股浓厚的青草气味
-			'''
-	}
-
-	BleedingScourge: {
-		DisplayName: 血色鞭挞
-		Tooltip: 击中敌人后进行死亡标记，并令血雨降下
-	}
-
-	GhostFireWhip: {
-		DisplayName: 鬼火鞭
-		Tooltip:
-			'''
-			{$CommonItemTooltip.Whips}
-			一把很长的鞭子，由地牢冤魂的怒火编制而成
-			[c/d4bc75:纯粹的热情从地狱散发出来，鼓励你找出谁冤枉了你]
-			'''
-	}
-
-	AllhallowsGoldWhip: {
-		DisplayName: 金源长鞭
-		Tooltip: 它实际上还没有完成
-	}
-
-	DivineSourceBlade: {
-		DisplayName: 金源灭却刃
-		Tooltip:
-			'''
-			挥舞金源之力
-			"生命不息"
-			'''
-	}
-
-	FoodStallChair: {
-		DisplayName: 大排档塑料椅子
-		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
-	}
-
-	AnnihilatingUniverse: {
-		DisplayName: 湮宇星矢
-		Tooltip:
-			'''
-			箭矢击中敌人后在原地留下一颗璀璨之星
-			右键以噬神者之力摧毁敌人
-			'''
-	}
-
-	HeavenfallLongbow: {
-		DisplayName: 天堂陨落长弓
-		Tooltip:
-			'''
-			发射无尽之箭，终焉彩虹能量将随后而至
-			右键让天堂之箭从天而降
-			蓄力完成后按下[KEY]启动万象审判
-			[legend]
-			'''
-		Legend:
-			'''
-
-			百亿年前的战火并未熄灭，它们如炽烈的余烬，穿越无尽时光，至今燃烧不息。
-			那是众神黄昏的遗迹，是古老宇宙裂变时刻的余光，是生生不息的回响。
-			耀界之神，银河秩序的化身，在那场宇宙间最伟大的反叛中陨落。
-			祂的身躯如同星辰碎裂，化作无数璀璨的神辉，散落至银河的每一个角落。
-			那些光辉孕育了生命、知识与奇迹，也带来了贪婪、毁灭与亵渎。凡人崇拜着祂的残骸，称之为神圣遗迹；
-			而那些奇迹之物，不过是对祂力量的拙劣复制，是凡人不知敬畏的狂妄象征。
-			但在无尽的遗忘与遗迹之中，有一物品超越了神迹，它不仅见证了至高神的陨落，更亲手将其送入永夜的深渊——这是一把传说中的长弓。
-			它曾在天堂的怒火中燃烧，射出那致命的一箭，粉碎了至高神的权能，终结了众神的野望。
-			随着战争的终结，这柄弓也随时间的洪流被埋葬在无尽的神秘与传说中。
-			而如今，命运的齿轮再次转动，天堂的怒火重新点燃。那柄杀神之弓，将在众星的赞歌中复现，再次将历史书写于鲜血与星尘之上
-
-			'''
-	}
-
-	TestItem: {
-		DisplayName: 测试物品
-		Tooltip: 嗯...你不应该拥有它
-	}
-
-	BaseSingularity: {
-		DisplayName: 奇点基类
-		Tooltip: 嗯...你不应该拥有它
-	}
-
-	InfiniteIngot: {
-		DisplayName: 无尽锭
-		Tooltip: 寰宇之力，就在掌中
-	}
-
-	TransmutationOfMatterItem: {
-		DisplayName: 终焉物质聚合仪
-		Tooltip:
-			'''
-			放置后右键打开合成台
-			"你的贪婪之旅将正式启程"
-			'''
-	}
-
-	DarkMatterCompressorItem: {
-		DisplayName: 暗物质压缩机
-		Tooltip: 如黑洞般重构物质
-	}
-
-	InfinitePick: {
-		DisplayName: 寰宇贪婪镐
-		Tooltip:
-			'''
-			右键摧毁触及的一切
-			按下[KEY]切换形态
-			"你可以感觉到，每当你握住，泰拉瑞亚的土地就会在恐惧中颤抖"
-			'''
-	}
-
-	DarkMatterBall: {
-		DisplayName: 暗物质球
-		Tooltip:
-			'''
-			它已经被压缩成了黑洞，但却奇迹般的保持住了稳定状态
-			手持物品右键可以将物品存入其中
-			空手右键可以将容纳物取出
-			'''
-		Contents: 内容物:
-	}
-
-	NeutronStarIngot: {
-		DisplayName: 中子星锭
-		Tooltip: 万物之重，聚合指尖
-	}
-
-	InfinityCatalyst: {
-		DisplayName: 无尽催化剂
-		Tooltip: 你的贪婪即将达到顶点
-	}
-
-	DawnshatterAzure: {
-		DisplayName: 苍穹破晓
-		Tooltip:
-			'''
-			射出日冕之影，击中敌人后召唤爆炸龙焰
-			长按右键举枪冲刺
-			"烈火净化灵魂，将你的敌人彻底掠夺干净"
-			'''
-	}
-
-	DecayParticles: {
-		DisplayName: 虚粒子
-		Tooltip:
-			'''
-			对物质本源的一丝窥视
-			存在本身便是一种奇迹
-			'''
-	}
-
-	DecaySubstance: {
-		DisplayName: 衰变物质
-		Tooltip:
-			'''
-			它在无穷无尽的衰败着
-			循环着毁灭与新生
-			'''
-	}
-
-	DissipationSubstance: {
-		DisplayName: 消渐物质
-		Tooltip:
-			'''
-			现实已经难以捕捉它的本质
-			它不断的消散，但又无比庞大
-			'''
-	}
-
-	SpectralMatter: {
-		DisplayName: 幽灵物质
-		Tooltip: 大约3700000亿吨吧
-	}
-
-	InfiniteToiletItem: {
-		DisplayName: 无尽马桶
-		Tooltip: "[c/fff08c:寰宇之力，就在桶中]"
-	}
-
-	StormGoddessSpear: {
-		DisplayName: 风暴女神之矛
-		Tooltip:
-			'''
-			发射出带有毁灭电弧的风暴之吻
-			手持时召唤风暴女神残魂协助作战
-			[legend]
-			'''
-		Legend:
-			'''
-			阿莉娜，泰拉曾最为锐利的锋刃。
-			她信仰坚定，勇猛骁战。铁屑银枪，丝发乱舞。雷暴之刃，呼啸而过。
-			然而，再锋利的剑刃也会溃败崩摧，信仰却换来了神明的冷漠。
-			当至高降下神罚，她的战友、亲族、誓言与荣耀一同化为灰烬。
-			亲眼见证，何所谓正义践踏一切...血泪...尘土......何以借秩序的名义行驶最卑鄙的毁灭。
-			神明啊......阿莉娜不再仰望神明。
-			她退回深渊，摧毁了自己，让古老的禁忌之力任意蚕食她的灵魂
-			阿莉娜的身甲融作深渊铁铸的残躯。那往日的残云、赤血遮日与过往交织，战友...还有亲族死前的凝视......阿莉娜...一切都已结束。
-			她已不再是曾经的阿莉娜，那位守护泰拉的战神
-			她的怒火如狂风般归来，卷入战场的蝼蚁，她的雷霆横空霹雳，洪声震开云与天空，裂开王座与大地。
-			风暴女神，阿莉娜，无情地带来了毁灭与复仇。
-			'''
-	}
-
-	DragonsScaleGreatsword: {
-		DisplayName: 龙藻巨刃
-		Tooltip:
-			'''
-			发生螺旋绿藻剑气，击中目标后炸成数团毒藻雾
-			真近战攻击会生成大量毒藻雾
-			'''
-	}
-
-	CosmicCalamity: {
-		DisplayName: 银河之灾
-		Tooltip:
-			'''
-			掷出追踪的银河灾虫
-			潜伏攻击造成一次热射十字爆
-			'''
-	}
-
-	SpearOfLonginus: {
-		DisplayName: 朗基努斯之枪
-		Tooltip:
-			'''
-			每当潜伏条达到上限时进行一次增幅，最高叠加到六重立场
-			手持时对最近的敌人进行命运标记
-			立场击中标记的敌人后将触发朝圣者之怒
-			[legend]
-			'''
-		Legend:
-			'''
-
-			“破碎的神啊，请允许我赎还我的罪。”
-			战争已经蔓延数个世纪，我，作为逃离伟大文明的溃败者，孤身在这宇宙边缘的荒凉星球上苟且生存。
-			数万光年外，战争的巨械在碾碎星辰，残暴而可怖的攻击能在瞬息间清除数光年的星空，将其变为寂静之域。
-			而这样的战争，持续了数百年，如今，我所属的伟大文明岌岌可危，我将成为宇宙中的罪人，成为那最为不敬的亵渎者。
-			我的血肉已然腐朽，骨骸如同岁月的老化皱纹，我即将沦为我所创造的孱弱机械之一。
-			在此之前，愿神赐予我宽恕，赦免我对这至高存在的不敬之罪，让我在灵魂陨落的那一刻，陷入炼狱的深渊，受那无尽的苦痛。
-			然而，无论如何，为了我所属的文明，为了在这场跨越世纪的战争中取得胜利，我必须汲取这至高之物残缺的力量。
-			为了引导它的神秘力量，我别无选择，只能将冰冷的机械灌注进它破碎的神体之中。
-			这是一场不可避免的亵渎，为了文明的延续，为了战争的胜利，我不得不成为那至高之物最虔诚的信徒，有史以来最不敬的亵渎者。
-			'''
-	}
-
-	BloodAltar: {
-		DisplayName: 深红祭坛
-		Tooltip:
-			'''
-			右键祭坛用血珠召唤血月
-			自动收集世界上掉落的血珠存放到最近的箱子中
-			"让世界被深红所注视"
-			'''
-	}
-
-	StarMyriadChanges: {
-		DisplayName: 万变之星
-		Tooltip: 赞美变化之神！
-	}
-
-	TerminusOver: {
-		DisplayName: 终焉之触
-		Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
-	}
-
-	PestilenceIngot: {
-		DisplayName: 瘟疫锭
-		Tooltip: 闻起来像发酸的香草方糕
-	}
-
-	ReminiscenceBreastplate: {
-		DisplayName: 塑神胸甲
-		Tooltip: ""
-	}
-
-	MurasamaMould: {
-		DisplayName: 血金模具
-		Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
-	}
-
-	OverhaulTheBibleBook: {
-		DisplayName: 大修宝典
-		Tooltip: 使用以查看相关教程....这里以后可能会包含更多内容
-	}
-
-	BarrenBow: {
-		DisplayName: 荒芜弓
-		Tooltip: 发射出的箭矢在击中敌人时会爆发出荒芜电流
-	}
-
-	ElementMuzzleBrake: {
-		DisplayName: 元素稳定器
-		Tooltip:
-			'''
-			减少65%后坐力与膛压
-			远程伤害降低5%
-			远程暴击率增加15%
-			敌人将更不容易发现你
-			'''
-	}
-
-	NeutronStarMuzzleBrake: {
-		DisplayName: 中子素稳定器
-		Tooltip:
-			'''
-			远程伤害增加100%
-			远程暴击率增加100%
-			远程射速增加100%
-			完全抵消后坐力与膛压
-			极大的增强远程射弹
-			拥有所有下位饰品的能力
-			'''
-	}
-
-	PrecisionMuzzleBrake: {
-		DisplayName: 高精密稳定器
-		Tooltip:
-			'''
-			减少55%后坐力与膛压
-			远程伤害降低10%
-			远程暴击率增加10%
-			敌人将更不容易发现你
-			'''
-	}
-
-	SimpleMuzzleBrake: {
-		DisplayName: 简陋稳定器
-		Tooltip:
-			'''
-			减少40%后坐力与膛压
-			远程伤害降低15%
-			远程暴击率增加5%
-			敌人将更不容易发现你
-			'''
-	}
-
-	AmmoBoxFire: {
-		DisplayName: 燃烧弹药箱
-		Tooltip:
-			'''
-			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-			特种弹药可以和原来的子弹效果叠加
-			让弹头变得极度易燃，击中目标时发生爆燃
-			"这里不是cod"
-			'''
-	}
-
-	ArmourPiercerBox: {
-		DisplayName: 破甲弹药箱
-		Tooltip:
-			'''
-			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-			特种弹药可以和原来的子弹效果叠加
-			给弹药镀上一层钨金，增加子弹的破甲能力，无视目标75%护甲
-			"即便如此，你仍旧不要尝试用手枪去击毁坦克"
-			'''
-	}
-
-	HighExplosiveBox: {
-		DisplayName: 高爆弹药箱
-		Tooltip:
-			'''
-			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-			特种弹药可以和原来的子弹效果叠加
-			让弹头变成高爆炸弹，子弹击中目标时发射剧烈的爆炸
-			"把它们全部炸飞！"
-			'''
-	}
-
-	DragonBreathBox: {
-		DisplayName: 龙息弹药箱
-		Tooltip:
-			'''
-			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-			特种弹药可以和原来的子弹效果叠加
-			魔法与科技的结合，子弹击中目标后会爆发出一道金属射流，对大范围的敌人造成杀伤
-			"这是那条龙的唾液，你愿意相信吗？"
-			'''
-	}
-
-	AvalancheM60: {
-		DisplayName: 雪崩 M60
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			发射大量雪球，火力随着弹药减少而变强
-			每开火20次进入一次超频爆发，制造一次小型的雪崩
-			"电次，我们来打雪仗吧"
-			'''
-	}
-
-	CrystalDimming: {
-		DisplayName: 冰河时代
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			发射极寒冰雹和雪球，冰晶在撞击墙壁后会高速反弹，然后追踪敌人
-			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
-			'''
-	}
-
-	DarkFrostSolstice: {
-		DisplayName: 凛冬神性
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			发射冰雹和极地幽火，攻击有概率冻住敌人
-			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
-			'''
-	}
-
-	SnowQuay: {
-		DisplayName: 雪蝰
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			一把大口径雪炮，发射冰雪混合炮弹
-			'''
-	}
-
-	NeutronGlaive: {
-		DisplayName: 黑域斩切
-		Tooltip:
-			'''
-			挥舞将发射强大的引力波剑气，击中目标后生成一次中子星爆炸
-			右键持剑蓄力，蓄力完成后松开可以在光标处引发一次大型的中子星爆炸
-			蓄力未完成松开则会让能量倾泻而出
-			'''
-	}
-
-	NeutronBow: {
-		DisplayName: 洛希之弦
-		Tooltip:
-			'''
-			发射重力箭矢，击中目标后生成数道伽马射线
-			右键进行三级蓄力，蓄满能量后将发射三发强大的引力箭矢
-			'''
-		Lang1: 正在捕获重力
-		Lang2: 正在使重力屈服
-		Lang3: 就绪!!
-	}
-
-	NeutronGun: {
-		DisplayName: 恒星猎手
-		Tooltip:
-			'''
-			发射重力弹丸，击中目标后生成翘曲点
-			右键切换为狙击形态，发射更为强大引力子弹，引力子弹击中目标后将让数道伽马射线降落
-			每次开火都会给枪械充能，充能满格后再次开火会在鼠标处引发一次中子星爆炸
-			"把太阳射下来!"
-			'''
-	}
-
-	NeutronWand: {
-		DisplayName: 星墓之光
-		Tooltip:
-			'''
-			发射四颗强大引力星星
-			右键在鼠标处施展重力魔法
-			"传说在远古时期，有一位强大的灵能者用这根法杖将恒星压缩成了黑洞，
-			但已经无从考证，成为星际游牧者口中吟唱的残诗"
-			'''
-	}
-
-	FadingGlory: {
-		DisplayName: 残怨
-		Tooltip:
-			'''
-			真近战击中目标，如果目标是有机体，将会治疗玩家，如果目标是无机体，将会释放大量火花
-			非真近战时将会主动发射剑刃，击中目标后额外生成追踪的孤魂切并在爆炸时释放出一条血触手
-			'''
-	}
-
-	NeutronScythe: {
-		DisplayName: 黑洞使者
-		Tooltip:
-			'''
-			镰刀会向敌人发射伽马射线，并在飞行途中留下数个翘曲点
-			潜伏攻击会丢出一圈镰刀
-			'''
-	}
-
-	RebelBlade: {
-		DisplayName: 叛逆之刃
-		Tooltip:
-			'''
-			真近战会在目标周围生成大量恶魔光球
-			右键操控剑刃飞行，并向光标处进行斩切
-			'''
-	}
-
-	MG42: {
-		DisplayName: MG42
-		Tooltip:
-			'''
-			连续射击会让枪管过热
-			将火枪子弹转化为穿甲弹
-			'''
-	}
-
-	DragonsWord: {
-		DisplayName: 龙言
-		Tooltip:
-			'''
-			发射龙泪，自旋一段时间后追踪敌人
-			右键在光标处施展龙令魔法，对范围内的敌人下达死亡的命令
-			"龙一生只能流一次泪"
-			'''
-	}
-
-	SnowQuayMK2: {
-		DisplayName: 雪蝰MK2
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			一把大口径雪炮，发射冰雪混合炮弹
-			开火不再需要预热
-			'''
-	}
-
-	HghExplosiveBox: {
-		DisplayName: 高爆弹药箱
-		Tooltip:
-			'''
-			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-			特种弹药可以和原来的子弹效果叠加
-			弹头将包含高爆炸药，击中目标时制造一次小型爆炸
-			"把他们都炸上天!"
-			'''
-	}
-
-	JusticeUnveiled: {
-		DisplayName: 正义的显现
-		Tooltip:
-			'''
-			远程攻击会积蓄'正义一击'次数，最多可存储五次
-			按下 [UP] 消耗一次，召唤巨大的神圣冲击粉碎敌人
-			"如果正义被需要的话，不管何处我都会前往"
-			'''
-	}
-
-	WeaverGrievances: {
-		DisplayName: 纠缠之怨
-		Tooltip:
-			'''
-			释放大量怨灵之爪，在地狱、地牢环境中拥有特殊效果
-			右键向光标方向翻滚，翻滚过程中撞击到敌人会给予玩家无敌帧
-			近距离翻滚将视为一次完美闪避
-			[legend]
-			'''
-		Legend:
-			'''
-			恒古不变的地牢横亘大地，其墙壁刻满古战士的铭文与嘶喊。每一块砖石都渗透凝滞的怨念，宛如亡魂的锁链，将其困缚于时间尽头的无尽黑夜。  
-			这些战士曾是君王的利刃，为其征战四方。他们的剑光曾照亮无数战场，鲜血浇筑泰拉的巍峨。他们的忠诚如星辰恒久，信念如铁石坚不可摧。
-			然而，当战争终结，魔君的旗帜在君王脚下撕裂，和平降临的瞬间，君王却下令将他们投入黑暗深渊。  
-			“吾辈未曾背叛，君王却叛于我！”怨灵的哀号撕裂虚空，贯穿亘古的寂静。他们的英灵未能归于尘土，而是被囚于虚无深渊，成为永夜的见证者。
-			那些不休的哭喊化作无声的指控，刺向星界的尽头。  
-			传言，君王因恐惧他们的忠诚与怒火，听从魔君术士的低语，选择将这些战士化为历史的阴影。
-			可怨念如潮，扭曲了地牢的现实。他们的痛苦撼动时空屏障，编织出复仇的预言：  
-			“魔君终将归来，虚空将被撕裂，吾辈怒焰将焚尽一切！”  
-			当泰拉再度面临覆灭的危机，这些亡灵将从黑暗中崛起。他们的剑将不再为泰拉的荣耀而战，而是为了审判背叛者。  
-			荣耀与忠诚早已湮灭，复仇的烈焰终将吞噬一切。
-			'''
-	}
-
-	Starship: {
-		DisplayName: 群星巨舰
-		Tooltip: ""
-	}
-
-	SandDagger: {
-		DisplayName: 潜沙匕首
-		Tooltip:
-			'''
-			投掷到沙地上会在一段时间后跳到空中爆炸
-			潜伏攻击会投掷出强化匕首
-			'''
-	}
-
-	UnderTheSand: {
-		DisplayName: 沙之下
-		Tooltip: 生成几个沙球
-	}
-
-	WastelandFang: {
-		DisplayName: 荒芜牙猎
-		Tooltip:
-			'''
-			与物块发生反弹，并加速收回
-			会张开嘴吐出几团沙球
-			'''
-	}
-
-	Flawless: {
-		DisplayName: 化境
-		Tooltip: ""
-	}
-
-	MelodyTheSand: {
-		DisplayName: 沙中曲
-		Tooltip: 抛射一片沙刺，受重力影响并穿透敌人
-	}
-
-	SandVortexOfTheDecayedSea: {
-		DisplayName: 腐海沙涡
-		Tooltip:
-			'''
-			呕出数颗蒸硫球
-			"呕吐大师"
-			'''
-	}
-
-	SeasonalKunai: {
-		DisplayName: 季节苦无
-		Tooltip:
-			'''
-			丢出三枚追踪敌人的苦无
-			潜伏攻击会掷出大型苦无，在飞行轨迹末尾分裂
-			"映射四季"
-			'''
-	}
-
-	WraithKunai: {
-		DisplayName: 幽魂苦无
-		Tooltip:
-			'''
-			丢出三枚追踪敌人的苦无
-			潜伏攻击会生成一片悬停在玩家周围的幽灵匕首
-			'''
-	}
-
-	CalSelfPortrait: {
-		DisplayName: 被遗忘的照片
-		Tooltip:
-			'''
-			一张被遗忘的照片
-			[legend]
-			'''
-		Legend: 你还想看什么呢？:)
-	}
-
-	WUTIVSelfPortrait: {
-		DisplayName: 谢谢你雾梯
-		Tooltip: ""
-	}
-
-	HandmadeDoll: {
-		DisplayName: 手工缝制玩偶
-		Tooltip:
-			'''
-			在地狱使用以召唤血肉之墙
-			如果向导存活，则使用时会被献祭
-			"纯手工制作，向导并不知情"
-			'''
-	}
-
-	Snowblindness: {
-		DisplayName: 雪盲症
-		Tooltip:
-			'''
-			高频率发射雪球和极寒射线
-			命中敌人后在四周生成数道EX极寒射线
-			"迷失在暴雪中，永恒的等待，痛苦地图，弯道超车，
-			冻裂的镜片，干涸的血迹，红色的冰，哭泣的海狸，冰中人影"
-			'''
-	}
-
-	WhiplashGalactica: {
-		DisplayName: 银河鞭挞
-		Tooltip:
-			'''
-			{$CommonItemTooltip.Whips}
-			击中敌人后进行死亡标记，并发射宇宙火球
-			"那条宇宙巨蛇的脊柱，充盈着宇宙能量，引导着宇宙的怒火"
-			'''
-	}
-
-	FocusingGrimoire: {
-		DisplayName: 聚能魔典
-		Tooltip:
-			'''
-			左键发射追踪的热能环
-			右键快速发射死亡射线
-			"一本更比六本强"
-			'''
-	}
-
-	CommandersStaff: {
-		DisplayName: 统帅之杖
-		Tooltip:
-			'''
-			发射一道热能分解射线穿透敌人
-			"从那台机械的手臂上拆下来的，试试用灵能代替柴油供能?"
-			'''
-	}
-
-	RaiderGun: {
-		DisplayName: 突袭者
-		Tooltip:
-			'''
-			将火枪子弹转化为高速子弹
-			右键可以翻滚冲刺，并将弹匣填满
-			翻滚后的第一发子弹会被转化为毁灭者榴弹
-			"非常适合用于室内人质解救"
-			'''
-	}
-
-	HyperionBarrage: {
-		DisplayName: 海伯利昂自动炮
-		Tooltip:
-			'''
-			发射热射巡航弹
-			"物尽其用"
-			'''
-	}
-
-	RaiderGunEX: {
-		DisplayName: 突袭者EX
-		Tooltip:
-			'''
-			将火枪子弹转化为高速子弹
-			额外发射大量毁灭者归航弹
-			右键可以翻滚冲刺，并将弹匣填满
-			翻滚后的第一发子弹会被转化为毁灭者榴弹
-			"狂轰滥炸"
-			'''
-	}
-
-	CommandersChainsaw: {
-		DisplayName: 统帅链锯
-		Tooltip:
-			'''
-			击中目标时生成火花
-			"多加点柴油"
-			'''
-	}
-
-	GeminisTribute: {
-		DisplayName: 双生礼赞
-		Tooltip:
-			'''
-			投掷出一把快速来回切割的镰刀
-			潜伏攻击会生成大量毁灭者巡航弹
-			"只能存在一个主人格，很明显是魔焰眼胜利了"
-			'''
-	}
-
-	Dicoria: {
-		DisplayName: 重瞳
-		Tooltip:
-			'''
-			发射双发子弹，射击可以蓄力
-			蓄力满后会发射一道热能射线
-			"话说我们这样会不会斗鸡眼"
-			'''
-	}
-
-	GeminisTributeEX: {
-		DisplayName: 双生礼赞EX
-		Tooltip:
-			'''
-			投掷出一把快速来回切割的镰刀
-			击中敌人后会生成两把额外的伴生之镰
-			"只能存在一个主人格，很明显是魔焰眼胜利了"
-			'''
-	}
-
-	DestroyersBlade: {
-		DisplayName: 毁灭者之刃
-		Tooltip:
-			'''
-			发射热能弹幕
-			"蕴含着毁灭者强大的能量核心"
-			'''
-	}
-
-	Observer: {
-		DisplayName: 观察者
-		Tooltip: '''"它还在盯着你"'''
-	}
-
-	StaffoftheDestroyer: {
-		DisplayName: 毁灭者召唤杖
-		Tooltip:
-			'''
-			召唤一条微型毁灭者为你而战
-			召唤栏上限越高毁灭者越强
-			至少需要4格召唤栏位
-			'''
-	}
-
-	ForgedLash: {
-		DisplayName: 锻钢之鞭
-		Tooltip: '''"不适合当废铁买"'''
-	}
-
-	CommandersClaw: {
-		DisplayName: 统帅之钳
-		Tooltip:
-			'''
-			投掷到敌人身上并钳制它们
-			潜伏攻击会生成数枚毁灭者榴弹
-			'''
-	}
-
-	DraedonsRemote: {
-		DisplayName: 嘉登遥控器
-		Tooltip:
-			'''
-			召唤EX机械三王
-			只能在夜晚使用
-			'''
-		DontUseByDeath: 当前游戏难度不允许发送信号!
-	}
-
-	CommandersStaffEX: {
-		DisplayName: 统帅之杖EX
-		Tooltip:
-			'''
-			发射多道扩散的热能射线
-			"适合切割金属"
-			'''
-	}
-
-	CommandersChainsawEX: {
-		DisplayName: 统帅链锯EX
-		Tooltip: '''"切碎挡在你面前的一切"'''
-	}
-
-	ForgedLashEX: {
-		DisplayName: 锻钢之鞭EX
-		Tooltip: 在鞭打过程中释放追踪的热力球
-	}
-
-	SoulofFrightEX: {
-		DisplayName: 恐惧之魂EX
-		Tooltip:
-			'''
-			浓缩的恐惧之力在其中跃动  
-			在机械暴乱中击败叛乱机械以获取
-			'''
-	}
-
-	SoulofMightEX: {
-		DisplayName: 力量之魂EX
-		Tooltip:
-			'''
-			浓缩的毁灭之力在其中跃动  
-			在机械暴乱中击败叛乱机械以获取
-			'''
-	}
-
-	SoulofSightEX: {
-		DisplayName: 视域之魂EX
-		Tooltip:
-			'''
-			浓缩的智慧之力在其中跃动  
-			在机械暴乱中击败叛乱机械以获取
-			'''
-	}
-
-	DestroyersBladeEX: {
-		DisplayName: 毁灭者之刃EX
-		Tooltip:
-			'''
-			发射热能弹幕
-			"摧毁永远比建造容易"
-			'''
-	}
-
-	ThermalGenerator: {
-		DisplayName: 火力发电机
-		Tooltip:
-			'''
-			放入燃料进行发电
-			右键物块可以快速放入燃料，Shft右键取出
-			'''
-	}
-
-	ThermalBattery: {
-		DisplayName: 热能电池
-		Tooltip: 存储一定的电能
-	}
-
-	WindGrivenGenerator: {
-		DisplayName: 风力发电机
-		Tooltip: 随风而动，生产电能
-		UnderstandWindGriven: 需要对风力发电的工作原理有初步的了解
-		UnderstandWindGriven2: 需要在小行星上采掘破旧的风力机来了解它们的制作原理
-	}
-
-	WindGrivenGeneratorMK2: {
-		DisplayName: 风力发电机MK2
-		Tooltip: 随风而动，生产电能
-		UnderstandWindGrivenMK2: 需要对风力发电的工作原理有深入的了解
-		UnderstandWindGrivenMK2Remind: 需要挖掘小行星上的巨型风力涡轮机来了解它们的制作原理
-	}
-
-	ThermalGeneratorMK2: {
-		DisplayName: 火力发电机MK2
-		Tooltip:
-			'''
-			放入燃料进行发电
-			右键物块可以快速放入燃料，Shft右键取出
-			'''
-	}
-
-	WGGMK2Wilderness: {
-		DisplayName: 荒野中的巨型风力发电机
-		Tooltip: ""
-	}
-
-	WGGWilderness: {
-		DisplayName: 荒野中的风力发电机
-		Tooltip: ""
-	}
-
-	MedicalBox: {
-		DisplayName: 医疗补给箱
-		Tooltip:
-			'''
-			长按部署至地面
-			右键部署后的医疗箱可以治疗自己
-			'''
-	}
-
-	TeslaElectromagneticTower: {
-		DisplayName: 特斯拉电磁塔
-		Tooltip:
-			'''
-			需要电能才能工作
-			放置到地面后右键可以在攻击模式和护卫模式之间切换
-			攻击模式会向附近的敌人发射电弧
-			护卫模式会对范围内的所有敌人造成带电减益，如果玩家在范围内，
-			并手持可充能物品，电磁塔将发射电弧为玩家远程充能
-			"工程师请勿靠近"
-			'''
-	}
-
-	EmblemOfDread: {
-		DisplayName: 惧亡者之证
-		Tooltip:
-			'''
-			增加100%近战伤害
-			增加100%近战暴击率
-			增加100%近战攻速
-			增加100点防御值，无视全部防御衰减
-			受到的伤害减少75%，并让攻击者受到100倍的反弹伤害
-			所有近战攻击将对敌人造成虚空侵蚀减益
-			如果敌人的血量低于25万，真近战攻击将有可能直接抹杀敌人
-			高速移动时会在路径上留下数个翘曲点，对接触到的敌人造成极高伤害
-			获得重力突刺的能力，双击方向键进行超长距离突刺，并释放出大量引力射线
-			如果受到了致死攻击，将立刻回复满血量并给予你一个重力护盾，该效果具有60秒冷却
-			敌人将更容易以你为目标
-			[c/d94fff:"圣洁的天使覆上了你的双眸，呢喃着永恒的甜蜜谎言"]
-			[c/ff4d4d:"浴血的屠夫执起了你的双刃，宣告着杀戮方能成就荣耀"]
-			[c/4da6ff:"湛蓝的信鸽啄破了你的额心，讥笑着你那微不足道的挣扎"]
-			'''
-	}
-
-	ElectricMinRocket: {
-		DisplayName: 电动迷你火箭
-		Tooltip:
-			'''
-			右键使用火箭，或者放置在地上右键点击即可启动飞行
-			空中按左右方向键调整方向
-			长按向下方向键缓降，飞行会缓慢消耗电力
-			按下空格键可以中断飞行
-			"苏联制造，坚固耐用，当年差点飞去月球"
-			'''
-	}
-
-	UEPipeline: {
-		DisplayName: 能量管道
-		Tooltip:
-			'''
-			用于传输电能
-			右键可快速拆除目标位置的管道并回收
-			连接发电机等能量来源，将电能传输至电池或其他用电设备
-			'''
-	}
-
-	EnergySword: {
-		DisplayName: 能量剑
-		Tooltip:
-			'''
-			消耗能量发射激光，穿透多个敌人
-			"利用率并不高"
-			'''
-	}
-
-	LaserPistol: {
-		DisplayName: 镭射手枪
-		Tooltip:
-			'''
-			消耗能量发射激光，穿透多个敌人
-			"利用率并不高"
-			'''
-	}
-
-	HyperionBarrageEX: {
-		DisplayName: 海伯利昂自动炮EX
-		Tooltip:
-			'''
-			发射热射巡航弹，击中目标后会分裂成六个子航弹造成二次伤害
-			"物超其用"
-			'''
-	}
-
-	MiningMachine: {
-		DisplayName: 采矿机
-		Tooltip:
-			'''
-			消耗电能钻探矿物
-			需要放置在合适的地方才能正常工作
-			在特殊环境中可以挖掘出特殊矿物
-			'''
-		DontWork: 需要放置在坚硬的地面上才能进行采矿作业
-	}
-
-	HoChaMeditatorItem: {
-		DisplayName: 沉思者HoCha
-		Tooltip: ""
-	}
-
-	Collector: {
-		DisplayName: 收集者
-		Tooltip:
-			'''
-			消耗电力进行拾取工作
-			自动拾取周围的掉落物放到在最近的箱子中
-			如果周围没有箱子就不会工作
-			手持物品右键收集者可以进行标记，让其只拾取该类物品
-			'''
-		Text1: 数量过多!
-		Text2: 周围缺少箱子!
-		Text3: 电力不足!
-	}
-
-	WGGCollector: {
-		DisplayName: 拾荒者
-		Tooltip:
-			'''
-			它热衷于回收一切废品——包括你
-			在它眼中，塑料瓶和脊柱骨没什么本质区别
-			'''
-	}
-
-	LaserEnergyTrans: {
-		DisplayName: 激光传导器
-		Tooltip:
-			'''
-			远程传输电力
-			放置后右键启动激光导航，再右键其他电力建筑进行链接
-			传输距离越远能量损耗越大，最大为100%损耗
-			'''
-	}
-
-	MetalMusicBox: {
-		DisplayName: 音乐盒(机械暴乱)
-		Tooltip: 演奏由 'Ryusa' 创作的曲子《位元堕落》
-	}
-
-	Hydroelectric: {
-		DisplayName: 水力发电机
-		Tooltip:
-			'''
-			放置在水中进行发电
-			"流体力学的一种应用"
-			'''
-	}
-
-	HydroelectricMK2: {
-		DisplayName: 水力发电机MK2
-		Tooltip:
-			'''
-			放置在水中进行发电
-			"流体力学的一种应用"
-			'''
-	}
-
-	CreativeUEPipeline: {
-		DisplayName: 上帝能量管道
-		Tooltip: ""
-	}
-
-	ItemFilter: {
-		DisplayName: 物品过滤板
-		Tooltip:
-			'''
-			使用可以打开过滤面板
-			右键具备相应接口的机器以应用
-			左键点击箱子可以复制内部的物品作为过滤内容
-			'''
-	}
-
-	SporeBubbleBlaster: {
-		DisplayName: 喷菇炮
-		Tooltip: 喷射一串孢子气流
-	}
-
-	TomeofFungalDecay: {
-		DisplayName: 腐菌秘典
-		Tooltip: 喷射一圈孢子气流
-	}
-
-	FungalRevolver: {
-		DisplayName: 蘑菇左轮
-		Tooltip:
-			'''
-			将火枪子弹转换为真菌子弹
-			"洗干净后反而不能用了"
-			'''
-	}
-
-	FungalFeed: {
-		DisplayName: 真菌饲料
-		Tooltip:
-			'''
-			可投掷给菌生蟹，用于驯服
-			被驯服的菌生蟹会跟随你，并与你并肩作战
-			可为其装备[i:CalamityOverhaul/MushroomSaddle]蘑菇鞍，将其变为坐骑
-			"它们最爱蘑菇"
-			'''
-	}
-
-	MushroomSaddle: {
-		DisplayName: 蘑菇鞍
-		Tooltip:
-			'''
-			可装备在用[i:CalamityOverhaul/FungalFeed]真菌饲料驯服的菌生蟹身上
-			手持鞍具左键点击菌生蟹进行装备
-			右键点击装有鞍具的菌生蟹即可骑乘
-			'''
-		UseCombat: 只能安放到菌生蟹上
-	}
-
-	SporeboundRoller: {
-		DisplayName: 牵滚菌
-		Tooltip:
-			'''
-			击中敌人后生成一个飘逸的小蘑菇
-			"它们喜欢滚来滚去"
-			'''
-	}
-
-	Spectrometer: {
-		DisplayName: 光谱机
-		Tooltip:
-			'''
-			允许使用染料给物品上色
-			需要消耗电力才能运行
-			'''
-	}
-
-	SporeburstPouch: {
-		DisplayName: 菌泡囊
-		Tooltip:
-			'''
-			投出一个脆弱的菌泡囊，撞击时会猛烈爆裂
-			发动潜行攻击将触发一场巨大的真菌引爆，并释放出一大群追踪敌人的孢子精魄
-			'''
-	}
-
-	Pallbearer: {
-		DisplayName: 扶柩者
-		Tooltip:
-			'''
-			左键长按蓄力，松开后发射出护柩者之箭
-			蓄力时间越长，箭矢越强大
-			右键可以将弩投掷出去，
-			命中敌人后大幅加强下一次发射的箭矢并加快蓄力速度
-			"也叫抬棺人"
-			'''
-	}
-
-	EncyclopediaofOceanicKnowledge: {
-		DisplayName: 海洋知识百科全书
-		Tooltip:
-			'''
-			使用后瞬间领悟所有鱼类知识
-			解锁全部鱼类技能
-			[c/FFD700:海洋的智慧将汇聚于你]
-			'''
-		Text1: 你已经掌握了所有知识
-		Text2: 习得了[NUM]种鱼类知识！
-	}
-
-	TheForgottenTome: {
-		DisplayName: 遗忘世界之书
-		Tooltip:
-			'''
-			使用后瞬间遗忘所有世间的经历
-			人生鬼相，永堕无间，众生皆孽，无往来世
-			我叫[NAME]，当你看到这句话的时候，我已经死了
-			'''
-		CompletionText: 你已经遗忘所有
-		ConditionsText: 达成任意剧情结局
-	}
-
-	Fishoil: {
-		DisplayName: 瓶装鱼油
-		Tooltip:
-			'''
-			增加10%渔力
-			允许水下呼吸
-			对一些诡异的事物有着额外的压制效果
-			'''
-	}
-
-	SirenMusicalBox: {
-		DisplayName: 海妖八音盒
-		Tooltip:
-			'''
-			右键点击播放诡异的八音盒音乐
-			听者皆会被诅咒，在音乐持续时无法死去
-			音乐结束后会受到必死袭击
-			'''
-		DeathText: "{0}在未知的袭击下化作腐尸"
-	}
-
-	Heartcarver: {
-		DisplayName: 刻心者
-		Tooltip:
-			'''
-			生成三把额外的仪式匕首围绕玩家旋转
-			蓄力完成后飞向目标
-			右键进行短距离突刺
-			'''
-	}
-
-	OniMachete: {
-		DisplayName: 鬼面刀
-		Tooltip:
-			'''
-			手持时会生成六条鬼手协助战斗
-			真近战攻击会释放出鬼火
-			'''
-	}
-
-	Pandemonium: {
-		DisplayName: 万魔殿
-		Tooltip:
-			'''
-			左键蓄力释放超位魔法
-			右键在光标处施放硫火符文
-			按下[PandemoniumQSkill]施展硫磺火天罚
-			按下[PandemoniumRSkill]施展万魔终焉
-			'''
-	}
-
-	Proverbs: {
-		DisplayName: 箴言
-		Tooltip:
-			'''
-			在你背后生成一个小型硫火符文
-			免疫大多数火系减益
-			你的绝大多数攻击将对敌人造成衰祟诅咒减益
-			[Content]
-			'''
-		L1: 对硫火女巫造成双倍伤害，硫火女巫的攻击将可能对你造成暴击
-		L2:
-			'''
-			如果你能读到这段话，我应该已经不在了。
-			这枚戒指曾是我漫长岁月里，唯一能感到冰冷的东西。
-			但不知从何时起，它沾染了凡人的体温，变得有些……烫手了。
-			我已回归硫火，化作时代的灰烬。
-			本该两手空空地离开，可唯独这一抹温度，我竟产生了贪念，想要将其留存。
-			戴着它吧。
-			当你向神明挥剑的那一刻……
-			即便这世间皆是寒冬，我也依然会在你指尖燃烧。
-			'''
-	}
-
-	AncientStormGoddessSpear: {
-		DisplayName: 远古风暴女神之矛
-		Tooltip:
-			'''
-			发射出带有毁灭电弧的风暴之吻
-			"它已经是时代的过去了，但仍旧管用"
-			[legend]
-			'''
-		Legend:
-			'''
-			阿莉娜，泰拉曾最为锐利的锋刃。
-			她信仰坚定，勇猛骁战。铁屑银枪，丝发乱舞。雷暴之刃，呼啸而过。
-			然而，再锋利的剑刃也会溃败崩摧，信仰却换来了神明的冷漠。
-			当至高降下神罚，她的战友、亲族、誓言与荣耀一同化为灰烬。
-			亲眼见证，何所谓正义践踏一切...血泪...尘土......何以借秩序的名义行驶最卑鄙的毁灭。
-			神明啊......阿莉娜不再仰望神明。
-			她退回深渊，摧毁了自己，让古老的禁忌之力任意蚕食她的灵魂
-			阿莉娜的身甲融作深渊铁铸的残躯。
-			那往日的残云、赤血遮日与过往交织，战友...还有亲族死前的凝视......阿莉娜...一切都已结束。
-			她已不再是曾经的阿莉娜，那位守护泰拉的战神
-			她的怒火如狂风般归来，卷入战场的蝼蚁，她的雷霆横空霹雳，洪声震开云与天空，裂开王座与大地。
-			风暴女神，阿莉娜，无情地带来了毁灭与复仇。
-			'''
-	}
-
-	ConstructionBlueprintQET: {
-		DisplayName: 构造蓝图(量子纠缠塔)
-		Tooltip:
-			'''
-			使用后学习制作[i:CalamityOverhaul/CQETConstructor]自我搭建器的知识
-			"你的双手将因此能够铸造连接两个世界的基石与高塔"
-			'''
-		L1: 已获得制作自我搭建器(量子纠缠塔)的知识!
-		L2: 你已经学习过这个图纸了!
-	}
-
-	CQETConstructor: {
-		DisplayName: 自我搭建器(量子纠缠塔)
-		Tooltip:
-			'''
-			放置后用于搭建量子纠缠塔
-			需要消耗大量[i:CalamityOverhaul/StarflowPlatedBlock]星流电镀块
-			'''
-		UseConstructionBlueprint: 学习构造蓝图(量子纠缠塔)
-	}
-
-	DeploySignaltower: {
-		DisplayName: 量子纠缠塔
-		Tooltip:
-			'''
-			重要的通讯设备，可以充当亚空间中的灯塔
-			"野孩子在森林中举起火把，大喊我在这里"
-			'''
-	}
-
-	StarflowPlatedBlock: {
-		DisplayName: 星流电镀块
-		Tooltip:
-			'''
-			搭建量子纠缠塔[i:CalamityOverhaul/DeploySignaltower]的基础材料
-			"将流动的星光铸造成不朽的基石"
-			'''
-	}
-
-	PQCD: {
-		DisplayName: 便携式量子通讯器
-		Tooltip:
-			'''
-			使用以联络嘉登，开启嘉登工业的全息购物界面
-			"理论上可以用来发起灭绝令，但似乎权限不足"
-			'''
-		NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
-		SignalTowerProgressText: 信号塔部署进度: {0}/{1}
-	}
-
-	Unsunghero: {
-		DisplayName: 英雄无冕
-		Tooltip:
-			'''
-			增加10点潜伏值上限
-			潜伏速度将不会降低潜伏伤害
-			"若你一去不回呢？"
-			"那便一去不回。"
-			'''
-	}
-
-	AriaofTheCosmos: {
-		DisplayName: 寰宇咏叹调
-		Tooltip:
-			'''
-			左键长按可以凝聚出强大的类星体，释放后对敌人造成毁灭性的伤害
-			右键可以释放出一个微型黑洞，成型后发射出大量伽马射线
-			按下[AriaofTheCosmosQSkill]召唤星环护卫
-			按下[AriaofTheCosmosRSkill]生成伽马射线爆发
-			'''
-	}
-
-	Oceanfragments: {
-		DisplayName: 海洋残片
-		Tooltip: 一种神秘的小物件，老公爵可能会对它感兴趣
-	}
-
-	OceanRaiders: {
-		WorkingText: 正在工作中...
-		NoWaterText: 需要放置在水域上方才能工作！
-		NoEnergyText: 能量不足！
-		DisplayName: 海洋吞噬者
-		Tooltip:
-			'''
-			消耗电力从水域中提取资源
-			右键打开内部存储箱
-			'''
-	}
-
-	OldDuchest: {
-		StorageText: 大型储物箱
-		DisplayName: 老箱子
-		Tooltip:
-			'''
-			一个容量巨大的储物箱
-			"老公爵从前的储物箱，如果他在附近，他可能会往里面扔些东西"
-			'''
-	}
-
-	QuestLogBook: {
-		DisplayName: 任务书
-		Tooltip: 使用以打开或者关闭任务界面
-	}
-
-	MermanRod: {
-		Text1: 世界中已经放置了一座鱼人钓!
-		DisplayName: 鱼人钓
-		Tooltip:
-			'''
-			在附近钓鱼时增加20点渔力
-			老公爵会将营地搬来此处
-			'''
-	}
-
-	MiningMachineMk2: {
-		DontWork: 需要放置在坚硬的表面上才能进行挖掘作业
-		DisplayName: 采矿机MK2
-		Tooltip:
-			'''
-			消耗电能钻探矿物
-			需要放置在合适的地方才能正常工作
-			在特殊环境中可以挖掘出特殊矿物
-			'''
-	}
-
-	UniversalFrost: {
-		DisplayName: 万象霜天
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			发射冰雹和极寒新星球，冰晶球会反弹追踪并在爆炸时释放冰霜光束
-			持续射击会积蓄寒冰能量，能量满后下次开火将引发冰河纪元
-			冰河纪元会在光标位置召唤巨大的冰柱阵和暴风雪场
-			"当万象归于寂静，唯有永恒的霜雪覆盖世间"
-			'''
-	}
-
-	GodslayerScabbard: {
-		DisplayName: 弑神者剑鞘
-		Tooltip:
-			'''
-			手持近战武器不攻击时会积蓄拔刀值
-			拔刀值满后攻击可获得2秒无敌时间
-			"刃虽未出鞘，杀意已凛然
-			待时机成熟，斩神不过转瞬"
-			'''
-	}
-
-	Lumberjack: {
-		Text1: 数量过多!
-		Text2: 电力不足!
-		CycleModeText: 循环模式
-		ClearModeText: 清理模式
-		DisplayName: 伐木者
-		Tooltip:
-			'''
-			消耗电力进行伐木工作
-			自动砍伐周围的树木
-			右键在循环模式和清理模式之间切换
-			循环模式会持续砍伐树木，并让树苗重新生长
-			清理模式只会砍伐树木，不会让树苗重新生长
-			'''
-	}
-
-	LifeWeaver: {
-		NoValidPositionText: 周围没有种植空位!
-		NoEnergyText: 电力不足!
-		DisplayName: 植树者
-		Tooltip: 消耗电力向周围种植树木
-	}
-
-	WGGLumberjack: {
-		DisplayName: 荒野中的伐木者
-		Tooltip: ""
-	}
-
-	WGGLifeWeaver: {
-		DisplayName: 荒野中的植树者
-		Tooltip: ""
-	}
-
-	Incinerator: {
-		DisplayName: 电动焚化炉
-		Tooltip:
-			'''
-			消耗电力熔炼物品
-			右键打开操控面板
-			Shift右键可以快速放入熔炼物，或者取出熔炼产物
-			熔炼物品可以得到双倍的产出物
-			'''
-	}
-
-	ItemPipeline: {
-		DisplayName: 物流管道
-		Tooltip:
-			'''
-			用于传输物品
-			右键可快速拆除目标位置的管道并回收，此功能在手持管道时可用
-			右键端点位置的管道可以在输出模式和输入模式之间切换，此功能在手持管道时不可用
-			输出模式的管道会抽取连接的容器内的物品，传输到连接的输入模式管道连接的物品中
-			'''
-	}
-
-	Thrower: {
-		NoEnergyText: 能量不足!
-		NoItemText: 没有可投掷的物品!
-		WorkingText: 投掷中...
-		IdleText: 待机
-		DisplayName: 投掷者
-		Tooltip:
-			'''
-			消耗电力投掷物品
-			右键打开操控面板
-			'''
-	}
-
+ElementWhip: {
+	DisplayName: 元素长鞭
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		让敌人被元素之火灼烧
+		"泰拉的本源连同宇宙的元素一同贯穿世界"
+		'''
+}
+
+TheRelicLuxor: {
+	DisplayName: 卢克索的圣物
+	Tooltip:
+		'''
+		灼热的灵力将伴随你的每一次攻击，耀界之神与你同在
+		[tips]
+		'''
+}
+
+TheLuxirSoulArtifact: {
+	DisplayName: 卢克索的灵魂圣器
+	Tooltip:
+		'''
+		无论是神还是不朽，皆承认你的荣耀
+		[tips]
+		'''
+}
+
+AzureDragonRage: {
+	DisplayName: 青龙之怒
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		有一股浓厚的青草气味
+		'''
+}
+
+BleedingScourge: {
+	DisplayName: 血色鞭挞
+	Tooltip: 击中敌人后进行死亡标记，并令血雨降下
+}
+
+GhostFireWhip: {
+	DisplayName: 鬼火鞭
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		一把很长的鞭子，由地牢冤魂的怒火编制而成
+		[c/d4bc75:纯粹的热情从地狱散发出来，鼓励你找出谁冤枉了你]
+		'''
+}
+
+AllhallowsGoldWhip: {
+	DisplayName: 金源长鞭
+	Tooltip: 它实际上还没有完成
+}
+
+DivineSourceBlade: {
+	DisplayName: 金源灭却刃
+	Tooltip:
+		'''
+		挥舞金源之力
+		"生命不息"
+		'''
+}
+
+FoodStallChair: {
+	DisplayName: 大排档塑料椅子
+	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
+}
+
+AnnihilatingUniverse: {
+	DisplayName: 湮宇星矢
+	Tooltip:
+		'''
+		箭矢击中敌人后在原地留下一颗璀璨之星
+		右键以噬神者之力摧毁敌人
+		'''
+}
+
+HeavenfallLongbow: {
+	DisplayName: 天堂陨落长弓
+	Tooltip:
+		'''
+		发射无尽之箭，终焉彩虹能量将随后而至
+		右键让天堂之箭从天而降
+		蓄力完成后按下[KEY]启动万象审判
+		[legend]
+		'''
+	Legend:
+		'''
+
+		百亿年前的战火并未熄灭，它们如炽烈的余烬，穿越无尽时光，至今燃烧不息。
+		那是众神黄昏的遗迹，是古老宇宙裂变时刻的余光，是生生不息的回响。
+		耀界之神，银河秩序的化身，在那场宇宙间最伟大的反叛中陨落。
+		祂的身躯如同星辰碎裂，化作无数璀璨的神辉，散落至银河的每一个角落。
+		那些光辉孕育了生命、知识与奇迹，也带来了贪婪、毁灭与亵渎。凡人崇拜着祂的残骸，称之为神圣遗迹；
+		而那些奇迹之物，不过是对祂力量的拙劣复制，是凡人不知敬畏的狂妄象征。
+		但在无尽的遗忘与遗迹之中，有一物品超越了神迹，它不仅见证了至高神的陨落，更亲手将其送入永夜的深渊——这是一把传说中的长弓。
+		它曾在天堂的怒火中燃烧，射出那致命的一箭，粉碎了至高神的权能，终结了众神的野望。
+		随着战争的终结，这柄弓也随时间的洪流被埋葬在无尽的神秘与传说中。
+		而如今，命运的齿轮再次转动，天堂的怒火重新点燃。那柄杀神之弓，将在众星的赞歌中复现，再次将历史书写于鲜血与星尘之上
+
+		'''
+}
+
+TestItem: {
+	DisplayName: 测试物品
+	Tooltip: 嗯...你不应该拥有它
+}
+
+BaseSingularity: {
+	DisplayName: 奇点基类
+	Tooltip: 嗯...你不应该拥有它
+}
+
+InfiniteIngot: {
+	DisplayName: 无尽锭
+	Tooltip: 寰宇之力，就在掌中
+}
+
+TransmutationOfMatterItem: {
+	DisplayName: 终焉物质聚合仪
+	Tooltip:
+		'''
+		放置后右键打开合成台
+		"你的贪婪之旅将正式启程"
+		'''
+}
+
+DarkMatterCompressorItem: {
+	DisplayName: 暗物质压缩机
+	Tooltip: 如黑洞般重构物质
+}
+
+InfinitePick: {
+	DisplayName: 寰宇贪婪镐
+	Tooltip:
+		'''
+		右键摧毁触及的一切
+		按下[KEY]切换形态
+		"你可以感觉到，每当你握住，泰拉瑞亚的土地就会在恐惧中颤抖"
+		'''
+}
+
+DarkMatterBall: {
+	DisplayName: 暗物质球
+	Tooltip:
+		'''
+		它已经被压缩成了黑洞，但却奇迹般的保持住了稳定状态
+		手持物品右键可以将物品存入其中
+		空手右键可以将容纳物取出
+		'''
+	Contents: 内容物:
+}
+
+NeutronStarIngot: {
+	DisplayName: 中子星锭
+	Tooltip: 万物之重，聚合指尖
+}
+
+InfinityCatalyst: {
+	DisplayName: 无尽催化剂
+	Tooltip: 你的贪婪即将达到顶点
+}
+
+DawnshatterAzure: {
+	DisplayName: 苍穹破晓
+	Tooltip:
+		'''
+		射出日冕之影，击中敌人后召唤爆炸龙焰
+		长按右键举枪冲刺
+		"烈火净化灵魂，将你的敌人彻底掠夺干净"
+		'''
+}
+
+DecayParticles: {
+	DisplayName: 虚粒子
+	Tooltip:
+		'''
+		对物质本源的一丝窥视
+		存在本身便是一种奇迹
+		'''
+}
+
+DecaySubstance: {
+	DisplayName: 衰变物质
+	Tooltip:
+		'''
+		它在无穷无尽的衰败着
+		循环着毁灭与新生
+		'''
+}
+
+DissipationSubstance: {
+	DisplayName: 消渐物质
+	Tooltip:
+		'''
+		现实已经难以捕捉它的本质
+		它不断的消散，但又无比庞大
+		'''
+}
+
+SpectralMatter: {
+	DisplayName: 幽灵物质
+	Tooltip: 大约3700000亿吨吧
+}
+
+InfiniteToiletItem: {
+	DisplayName: 无尽马桶
+	Tooltip: "[c/fff08c:寰宇之力，就在桶中]"
+}
+
+StormGoddessSpear: {
+	DisplayName: 风暴女神之矛
+	Tooltip:
+		'''
+		发射出带有毁灭电弧的风暴之吻
+		手持时召唤风暴女神残魂协助作战
+		[legend]
+		'''
+	Legend:
+		'''
+		阿莉娜，泰拉曾最为锐利的锋刃。
+		她信仰坚定，勇猛骁战。铁屑银枪，丝发乱舞。雷暴之刃，呼啸而过。
+		然而，再锋利的剑刃也会溃败崩摧，信仰却换来了神明的冷漠。
+		当至高降下神罚，她的战友、亲族、誓言与荣耀一同化为灰烬。
+		亲眼见证，何所谓正义践踏一切...血泪...尘土......何以借秩序的名义行驶最卑鄙的毁灭。
+		神明啊......阿莉娜不再仰望神明。
+		她退回深渊，摧毁了自己，让古老的禁忌之力任意蚕食她的灵魂
+		阿莉娜的身甲融作深渊铁铸的残躯。那往日的残云、赤血遮日与过往交织，战友...还有亲族死前的凝视......阿莉娜...一切都已结束。
+		她已不再是曾经的阿莉娜，那位守护泰拉的战神
+		她的怒火如狂风般归来，卷入战场的蝼蚁，她的雷霆横空霹雳，洪声震开云与天空，裂开王座与大地。
+		风暴女神，阿莉娜，无情地带来了毁灭与复仇。
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: 龙藻巨刃
+	Tooltip:
+		'''
+		发生螺旋绿藻剑气，击中目标后炸成数团毒藻雾
+		真近战攻击会生成大量毒藻雾
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: 银河之灾
+	Tooltip:
+		'''
+		掷出追踪的银河灾虫
+		潜伏攻击造成一次热射十字爆
+		'''
+}
+
+SpearOfLonginus: {
+	DisplayName: 朗基努斯之枪
+	Tooltip:
+		'''
+		每当潜伏条达到上限时进行一次增幅，最高叠加到六重立场
+		手持时对最近的敌人进行命运标记
+		立场击中标记的敌人后将触发朝圣者之怒
+		[legend]
+		'''
+	Legend:
+		'''
+
+		“破碎的神啊，请允许我赎还我的罪。”
+		战争已经蔓延数个世纪，我，作为逃离伟大文明的溃败者，孤身在这宇宙边缘的荒凉星球上苟且生存。
+		数万光年外，战争的巨械在碾碎星辰，残暴而可怖的攻击能在瞬息间清除数光年的星空，将其变为寂静之域。
+		而这样的战争，持续了数百年，如今，我所属的伟大文明岌岌可危，我将成为宇宙中的罪人，成为那最为不敬的亵渎者。
+		我的血肉已然腐朽，骨骸如同岁月的老化皱纹，我即将沦为我所创造的孱弱机械之一。
+		在此之前，愿神赐予我宽恕，赦免我对这至高存在的不敬之罪，让我在灵魂陨落的那一刻，陷入炼狱的深渊，受那无尽的苦痛。
+		然而，无论如何，为了我所属的文明，为了在这场跨越世纪的战争中取得胜利，我必须汲取这至高之物残缺的力量。
+		为了引导它的神秘力量，我别无选择，只能将冰冷的机械灌注进它破碎的神体之中。
+		这是一场不可避免的亵渎，为了文明的延续，为了战争的胜利，我不得不成为那至高之物最虔诚的信徒，有史以来最不敬的亵渎者。
+		'''
+}
+
+BloodAltar: {
+	DisplayName: 深红祭坛
+	Tooltip:
+		'''
+		右键祭坛用血珠召唤血月
+		自动收集世界上掉落的血珠存放到最近的箱子中
+		"让世界被深红所注视"
+		'''
+}
+
+StarMyriadChanges: {
+	DisplayName: 万变之星
+	Tooltip: 赞美变化之神！
+}
+
+TerminusOver: {
+	DisplayName: 终焉之触
+	Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
+}
+
+PestilenceIngot: {
+	DisplayName: 瘟疫锭
+	Tooltip: 闻起来像发酸的香草方糕
+}
+
+ReminiscenceBreastplate: {
+	DisplayName: 塑神胸甲
+	Tooltip: ""
+}
+
+MurasamaMould: {
+	DisplayName: 血金模具
+	Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
+}
+
+OverhaulTheBibleBook: {
+	DisplayName: 大修宝典
+	Tooltip: 使用以查看相关教程....这里以后可能会包含更多内容
+}
+
+BarrenBow: {
+	DisplayName: 荒芜弓
+	Tooltip: 发射出的箭矢在击中敌人时会爆发出荒芜电流
+}
+
+ElementMuzzleBrake: {
+	DisplayName: 元素稳定器
+	Tooltip:
+		'''
+		减少65%后坐力与膛压
+		远程伤害降低5%
+		远程暴击率增加15%
+		敌人将更不容易发现你
+		'''
+}
+
+NeutronStarMuzzleBrake: {
+	DisplayName: 中子素稳定器
+	Tooltip:
+		'''
+		远程伤害增加100%
+		远程暴击率增加100%
+		远程射速增加100%
+		完全抵消后坐力与膛压
+		极大的增强远程射弹
+		拥有所有下位饰品的能力
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: 高精密稳定器
+	Tooltip:
+		'''
+		减少55%后坐力与膛压
+		远程伤害降低10%
+		远程暴击率增加10%
+		敌人将更不容易发现你
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: 简陋稳定器
+	Tooltip:
+		'''
+		减少40%后坐力与膛压
+		远程伤害降低15%
+		远程暴击率增加5%
+		敌人将更不容易发现你
+		'''
+}
+
+AmmoBoxFire: {
+	DisplayName: 燃烧弹药箱
+	Tooltip:
+		'''
+		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+		特种弹药可以和原来的子弹效果叠加
+		让弹头变得极度易燃，击中目标时发生爆燃
+		"这里不是cod"
+		'''
+}
+
+ArmourPiercerBox: {
+	DisplayName: 破甲弹药箱
+	Tooltip:
+		'''
+		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+		特种弹药可以和原来的子弹效果叠加
+		给弹药镀上一层钨金，增加子弹的破甲能力，无视目标75%护甲
+		"即便如此，你仍旧不要尝试用手枪去击毁坦克"
+		'''
+}
+
+HighExplosiveBox: {
+	DisplayName: 高爆弹药箱
+	Tooltip:
+		'''
+		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+		特种弹药可以和原来的子弹效果叠加
+		让弹头变成高爆炸弹，子弹击中目标时发射剧烈的爆炸
+		"把它们全部炸飞！"
+		'''
+}
+
+DragonBreathBox: {
+	DisplayName: 龙息弹药箱
+	Tooltip:
+		'''
+		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+		特种弹药可以和原来的子弹效果叠加
+		魔法与科技的结合，子弹击中目标后会爆发出一道金属射流，对大范围的敌人造成杀伤
+		"这是那条龙的唾液，你愿意相信吗？"
+		'''
+}
+
+AvalancheM60: {
+	DisplayName: 雪崩 M60
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		发射大量雪球，火力随着弹药减少而变强
+		每开火20次进入一次超频爆发，制造一次小型的雪崩
+		"电次，我们来打雪仗吧"
+		'''
+}
+
+CrystalDimming: {
+	DisplayName: 冰河时代
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		发射极寒冰雹和雪球，冰晶在撞击墙壁后会高速反弹，然后追踪敌人
+		每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
+		'''
+}
+
+DarkFrostSolstice: {
+	DisplayName: 凛冬神性
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		发射冰雹和极地幽火，攻击有概率冻住敌人
+		每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
+		'''
+}
+
+SnowQuay: {
+	DisplayName: 雪蝰
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		一把大口径雪炮，发射冰雪混合炮弹
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: 黑域斩切
+	Tooltip:
+		'''
+		挥舞将发射强大的引力波剑气，击中目标后生成一次中子星爆炸
+		右键持剑蓄力，蓄力完成后松开可以在光标处引发一次大型的中子星爆炸
+		蓄力未完成松开则会让能量倾泻而出
+		'''
+}
+
+NeutronBow: {
+	DisplayName: 洛希之弦
+	Tooltip:
+		'''
+		发射重力箭矢，击中目标后生成数道伽马射线
+		右键进行三级蓄力，蓄满能量后将发射三发强大的引力箭矢
+		'''
+	Lang1: 正在捕获重力
+	Lang2: 正在使重力屈服
+	Lang3: 就绪!!
+}
+
+NeutronGun: {
+	DisplayName: 恒星猎手
+	Tooltip:
+		'''
+		发射重力弹丸，击中目标后生成翘曲点
+		右键切换为狙击形态，发射更为强大引力子弹，引力子弹击中目标后将让数道伽马射线降落
+		每次开火都会给枪械充能，充能满格后再次开火会在鼠标处引发一次中子星爆炸
+		"把太阳射下来!"
+		'''
+}
+
+NeutronWand: {
+	DisplayName: 星墓之光
+	Tooltip:
+		'''
+		发射四颗强大引力星星
+		右键在鼠标处施展重力魔法
+		"传说在远古时期，有一位强大的灵能者用这根法杖将恒星压缩成了黑洞，
+		但已经无从考证，成为星际游牧者口中吟唱的残诗"
+		'''
+}
+
+FadingGlory: {
+	DisplayName: 残怨
+	Tooltip:
+		'''
+		真近战击中目标，如果目标是有机体，将会治疗玩家，如果目标是无机体，将会释放大量火花
+		非真近战时将会主动发射剑刃，击中目标后额外生成追踪的孤魂切并在爆炸时释放出一条血触手
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: 黑洞使者
+	Tooltip:
+		'''
+		镰刀会向敌人发射伽马射线，并在飞行途中留下数个翘曲点
+		潜伏攻击会丢出一圈镰刀
+		'''
+}
+
+RebelBlade: {
+	DisplayName: 叛逆之刃
+	Tooltip:
+		'''
+		真近战会在目标周围生成大量恶魔光球
+		右键操控剑刃飞行，并向光标处进行斩切
+		'''
+}
+
+MG42: {
+	DisplayName: MG42
+	Tooltip:
+		'''
+		连续射击会让枪管过热
+		将火枪子弹转化为穿甲弹
+		'''
+}
+
+DragonsWord: {
+	DisplayName: 龙言
+	Tooltip:
+		'''
+		发射龙泪，自旋一段时间后追踪敌人
+		右键在光标处施展龙令魔法，对范围内的敌人下达死亡的命令
+		"龙一生只能流一次泪"
+		'''
+}
+
+SnowQuayMK2: {
+	DisplayName: 雪蝰MK2
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		一把大口径雪炮，发射冰雪混合炮弹
+		开火不再需要预热
+		'''
+}
+
+HghExplosiveBox: {
+	DisplayName: 高爆弹药箱
+	Tooltip:
+		'''
+		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+		特种弹药可以和原来的子弹效果叠加
+		弹头将包含高爆炸药，击中目标时制造一次小型爆炸
+		"把他们都炸上天!"
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: 正义的显现
+	Tooltip:
+		'''
+		远程攻击会积蓄'正义一击'次数，最多可存储五次
+		按下 [UP] 消耗一次，召唤巨大的神圣冲击粉碎敌人
+		"如果正义被需要的话，不管何处我都会前往"
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: 纠缠之怨
+	Tooltip:
+		'''
+		释放大量怨灵之爪，在地狱、地牢环境中拥有特殊效果
+		右键向光标方向翻滚，翻滚过程中撞击到敌人会给予玩家无敌帧
+		近距离翻滚将视为一次完美闪避
+		[legend]
+		'''
+	Legend:
+		'''
+		恒古不变的地牢横亘大地，其墙壁刻满古战士的铭文与嘶喊。每一块砖石都渗透凝滞的怨念，宛如亡魂的锁链，将其困缚于时间尽头的无尽黑夜。  
+		这些战士曾是君王的利刃，为其征战四方。他们的剑光曾照亮无数战场，鲜血浇筑泰拉的巍峨。他们的忠诚如星辰恒久，信念如铁石坚不可摧。
+		然而，当战争终结，魔君的旗帜在君王脚下撕裂，和平降临的瞬间，君王却下令将他们投入黑暗深渊。  
+		“吾辈未曾背叛，君王却叛于我！”怨灵的哀号撕裂虚空，贯穿亘古的寂静。他们的英灵未能归于尘土，而是被囚于虚无深渊，成为永夜的见证者。
+		那些不休的哭喊化作无声的指控，刺向星界的尽头。  
+		传言，君王因恐惧他们的忠诚与怒火，听从魔君术士的低语，选择将这些战士化为历史的阴影。
+		可怨念如潮，扭曲了地牢的现实。他们的痛苦撼动时空屏障，编织出复仇的预言：  
+		“魔君终将归来，虚空将被撕裂，吾辈怒焰将焚尽一切！”  
+		当泰拉再度面临覆灭的危机，这些亡灵将从黑暗中崛起。他们的剑将不再为泰拉的荣耀而战，而是为了审判背叛者。  
+		荣耀与忠诚早已湮灭，复仇的烈焰终将吞噬一切。
+		'''
+}
+
+Starship: {
+	DisplayName: 群星巨舰
+	Tooltip: ""
+}
+
+SandDagger: {
+	DisplayName: 潜沙匕首
+	Tooltip:
+		'''
+		投掷到沙地上会在一段时间后跳到空中爆炸
+		潜伏攻击会投掷出强化匕首
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: 沙之下
+	Tooltip: 生成几个沙球
+}
+
+WastelandFang: {
+	DisplayName: 荒芜牙猎
+	Tooltip:
+		'''
+		与物块发生反弹，并加速收回
+		会张开嘴吐出几团沙球
+		'''
+}
+
+Flawless: {
+	DisplayName: 化境
+	Tooltip: ""
+}
+
+MelodyTheSand: {
+	DisplayName: 沙中曲
+	Tooltip: 抛射一片沙刺，受重力影响并穿透敌人
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: 腐海沙涡
+	Tooltip:
+		'''
+		呕出数颗蒸硫球
+		"呕吐大师"
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: 季节苦无
+	Tooltip:
+		'''
+		丢出三枚追踪敌人的苦无
+		潜伏攻击会掷出大型苦无，在飞行轨迹末尾分裂
+		"映射四季"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: 幽魂苦无
+	Tooltip:
+		'''
+		丢出三枚追踪敌人的苦无
+		潜伏攻击会生成一片悬停在玩家周围的幽灵匕首
+		'''
+}
+
+CalSelfPortrait: {
+	DisplayName: 被遗忘的照片
+	Tooltip:
+		'''
+		一张被遗忘的照片
+		[legend]
+		'''
+	Legend: 你还想看什么呢？:)
+}
+
+WUTIVSelfPortrait: {
+	DisplayName: 谢谢你雾梯
+	Tooltip: ""
+}
+
+HandmadeDoll: {
+	DisplayName: 手工缝制玩偶
+	Tooltip:
+		'''
+		在地狱使用以召唤血肉之墙
+		如果向导存活，则使用时会被献祭
+		"纯手工制作，向导并不知情"
+		'''
+}
+
+Snowblindness: {
+	DisplayName: 雪盲症
+	Tooltip:
+		'''
+		高频率发射雪球和极寒射线
+		命中敌人后在四周生成数道EX极寒射线
+		"迷失在暴雪中，永恒的等待，痛苦地图，弯道超车，
+		冻裂的镜片，干涸的血迹，红色的冰，哭泣的海狸，冰中人影"
+		'''
+}
+
+WhiplashGalactica: {
+	DisplayName: 银河鞭挞
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		击中敌人后进行死亡标记，并发射宇宙火球
+		"那条宇宙巨蛇的脊柱，充盈着宇宙能量，引导着宇宙的怒火"
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: 聚能魔典
+	Tooltip:
+		'''
+		左键发射追踪的热能环
+		右键快速发射死亡射线
+		"一本更比六本强"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: 统帅之杖
+	Tooltip:
+		'''
+		发射一道热能分解射线穿透敌人
+		"从那台机械的手臂上拆下来的，试试用灵能代替柴油供能?"
+		'''
+}
+
+RaiderGun: {
+	DisplayName: 突袭者
+	Tooltip:
+		'''
+		将火枪子弹转化为高速子弹
+		右键可以翻滚冲刺，并将弹匣填满
+		翻滚后的第一发子弹会被转化为毁灭者榴弹
+		"非常适合用于室内人质解救"
+		'''
+}
+
+HyperionBarrage: {
+	DisplayName: 海伯利昂自动炮
+	Tooltip:
+		'''
+		发射热射巡航弹
+		"物尽其用"
+		'''
+}
+
+RaiderGunEX: {
+	DisplayName: 突袭者EX
+	Tooltip:
+		'''
+		将火枪子弹转化为高速子弹
+		额外发射大量毁灭者归航弹
+		右键可以翻滚冲刺，并将弹匣填满
+		翻滚后的第一发子弹会被转化为毁灭者榴弹
+		"狂轰滥炸"
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: 统帅链锯
+	Tooltip:
+		'''
+		击中目标时生成火花
+		"多加点柴油"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: 双生礼赞
+	Tooltip:
+		'''
+		投掷出一把快速来回切割的镰刀
+		潜伏攻击会生成大量毁灭者巡航弹
+		"只能存在一个主人格，很明显是魔焰眼胜利了"
+		'''
+}
+
+Dicoria: {
+	DisplayName: 重瞳
+	Tooltip:
+		'''
+		发射双发子弹，射击可以蓄力
+		蓄力满后会发射一道热能射线
+		"话说我们这样会不会斗鸡眼"
+		'''
+}
+
+GeminisTributeEX: {
+	DisplayName: 双生礼赞EX
+	Tooltip:
+		'''
+		投掷出一把快速来回切割的镰刀
+		击中敌人后会生成两把额外的伴生之镰
+		"只能存在一个主人格，很明显是魔焰眼胜利了"
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: 毁灭者之刃
+	Tooltip:
+		'''
+		发射热能弹幕
+		"蕴含着毁灭者强大的能量核心"
+		'''
+}
+
+Observer: {
+	DisplayName: 观察者
+	Tooltip: '''"它还在盯着你"'''
+}
+
+StaffoftheDestroyer: {
+	DisplayName: 毁灭者召唤杖
+	Tooltip:
+		'''
+		召唤一条微型毁灭者为你而战
+		召唤栏上限越高毁灭者越强
+		至少需要4格召唤栏位
+		'''
+}
+
+ForgedLash: {
+	DisplayName: 锻钢之鞭
+	Tooltip: '''"不适合当废铁买"'''
+}
+
+CommandersClaw: {
+	DisplayName: 统帅之钳
+	Tooltip:
+		'''
+		投掷到敌人身上并钳制它们
+		潜伏攻击会生成数枚毁灭者榴弹
+		'''
+}
+
+DraedonsRemote: {
+	DisplayName: 嘉登遥控器
+	Tooltip:
+		'''
+		召唤EX机械三王
+		只能在夜晚使用
+		'''
+	DontUseByDeath: 当前游戏难度不允许发送信号!
+}
+
+CommandersStaffEX: {
+	DisplayName: 统帅之杖EX
+	Tooltip:
+		'''
+		发射多道扩散的热能射线
+		"适合切割金属"
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: 统帅链锯EX
+	Tooltip: '''"切碎挡在你面前的一切"'''
+}
+
+ForgedLashEX: {
+	DisplayName: 锻钢之鞭EX
+	Tooltip: 在鞭打过程中释放追踪的热力球
+}
+
+SoulofFrightEX: {
+	DisplayName: 恐惧之魂EX
+	Tooltip:
+		'''
+		浓缩的恐惧之力在其中跃动  
+		在机械暴乱中击败叛乱机械以获取
+		'''
+}
+
+SoulofMightEX: {
+	DisplayName: 力量之魂EX
+	Tooltip:
+		'''
+		浓缩的毁灭之力在其中跃动  
+		在机械暴乱中击败叛乱机械以获取
+		'''
+}
+
+SoulofSightEX: {
+	DisplayName: 视域之魂EX
+	Tooltip:
+		'''
+		浓缩的智慧之力在其中跃动  
+		在机械暴乱中击败叛乱机械以获取
+		'''
+}
+
+DestroyersBladeEX: {
+	DisplayName: 毁灭者之刃EX
+	Tooltip:
+		'''
+		发射热能弹幕
+		"摧毁永远比建造容易"
+		'''
+}
+
+ThermalGenerator: {
+	DisplayName: 火力发电机
+	Tooltip:
+		'''
+		放入燃料进行发电
+		右键物块可以快速放入燃料，Shft右键取出
+		'''
+}
+
+ThermalBattery: {
+	DisplayName: 热能电池
+	Tooltip: 存储一定的电能
+}
+
+WindGrivenGenerator: {
+	DisplayName: 风力发电机
+	Tooltip: 随风而动，生产电能
+	UnderstandWindGriven: 需要对风力发电的工作原理有初步的了解
+	UnderstandWindGriven2: 需要在小行星上采掘破旧的风力机来了解它们的制作原理
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: 风力发电机MK2
+	Tooltip: 随风而动，生产电能
+	UnderstandWindGrivenMK2: 需要对风力发电的工作原理有深入的了解
+	UnderstandWindGrivenMK2Remind: 需要挖掘小行星上的巨型风力涡轮机来了解它们的制作原理
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: 火力发电机MK2
+	Tooltip:
+		'''
+		放入燃料进行发电
+		右键物块可以快速放入燃料，Shft右键取出
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: 荒野中的巨型风力发电机
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: 荒野中的风力发电机
+	Tooltip: ""
+}
+
+MedicalBox: {
+	DisplayName: 医疗补给箱
+	Tooltip:
+		'''
+		长按部署至地面
+		右键部署后的医疗箱可以治疗自己
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: 特斯拉电磁塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		放置到地面后右键可以在攻击模式和护卫模式之间切换
+		攻击模式会向附近的敌人发射电弧
+		护卫模式会对范围内的所有敌人造成带电减益，如果玩家在范围内，
+		并手持可充能物品，电磁塔将发射电弧为玩家远程充能
+		"工程师请勿靠近"
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: 惧亡者之证
+	Tooltip:
+		'''
+		增加100%近战伤害
+		增加100%近战暴击率
+		增加100%近战攻速
+		增加100点防御值，无视全部防御衰减
+		受到的伤害减少75%，并让攻击者受到100倍的反弹伤害
+		所有近战攻击将对敌人造成虚空侵蚀减益
+		如果敌人的血量低于25万，真近战攻击将有可能直接抹杀敌人
+		高速移动时会在路径上留下数个翘曲点，对接触到的敌人造成极高伤害
+		获得重力突刺的能力，双击方向键进行超长距离突刺，并释放出大量引力射线
+		如果受到了致死攻击，将立刻回复满血量并给予你一个重力护盾，该效果具有60秒冷却
+		敌人将更容易以你为目标
+		[c/d94fff:"圣洁的天使覆上了你的双眸，呢喃着永恒的甜蜜谎言"]
+		[c/ff4d4d:"浴血的屠夫执起了你的双刃，宣告着杀戮方能成就荣耀"]
+		[c/4da6ff:"湛蓝的信鸽啄破了你的额心，讥笑着你那微不足道的挣扎"]
+		'''
+}
+
+ElectricMinRocket: {
+	DisplayName: 电动迷你火箭
+	Tooltip:
+		'''
+		右键使用火箭，或者放置在地上右键点击即可启动飞行
+		空中按左右方向键调整方向
+		长按向下方向键缓降，飞行会缓慢消耗电力
+		按下空格键可以中断飞行
+		"苏联制造，坚固耐用，当年差点飞去月球"
+		'''
+}
+
+UEPipeline: {
+	DisplayName: 能量管道
+	Tooltip:
+		'''
+		用于传输电能
+		右键可快速拆除目标位置的管道并回收
+		连接发电机等能量来源，将电能传输至电池或其他用电设备
+		'''
+}
+
+EnergySword: {
+	DisplayName: 能量剑
+	Tooltip:
+		'''
+		消耗能量发射激光，穿透多个敌人
+		"利用率并不高"
+		'''
+}
+
+LaserPistol: {
+	DisplayName: 镭射手枪
+	Tooltip:
+		'''
+		消耗能量发射激光，穿透多个敌人
+		"利用率并不高"
+		'''
+}
+
+HyperionBarrageEX: {
+	DisplayName: 海伯利昂自动炮EX
+	Tooltip:
+		'''
+		发射热射巡航弹，击中目标后会分裂成六个子航弹造成二次伤害
+		"物超其用"
+		'''
+}
+
+MiningMachine: {
+	DisplayName: 采矿机
+	Tooltip:
+		'''
+		消耗电能钻探矿物
+		需要放置在合适的地方才能正常工作
+		在特殊环境中可以挖掘出特殊矿物
+		'''
+	DontWork: 需要放置在坚硬的地面上才能进行采矿作业
+}
+
+HoChaMeditatorItem: {
+	DisplayName: 沉思者HoCha
+	Tooltip: ""
+}
+
+Collector: {
+	DisplayName: 收集者
+	Tooltip:
+		'''
+		消耗电力进行拾取工作
+		自动拾取周围的掉落物放到在最近的箱子中
+		如果周围没有箱子就不会工作
+		手持物品右键收集者可以进行标记，让其只拾取该类物品
+		'''
+	Text1: 数量过多!
+	Text2: 周围缺少箱子!
+	Text3: 电力不足!
+}
+
+WGGCollector: {
+	DisplayName: 拾荒者
+	Tooltip:
+		'''
+		它热衷于回收一切废品——包括你
+		在它眼中，塑料瓶和脊柱骨没什么本质区别
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: 激光传导器
+	Tooltip:
+		'''
+		远程传输电力
+		放置后右键启动激光导航，再右键其他电力建筑进行链接
+		传输距离越远能量损耗越大，最大为100%损耗
+		'''
+}
+
+MetalMusicBox: {
+	DisplayName: 音乐盒(机械暴乱)
+	Tooltip: 演奏由 'Ryusa' 创作的曲子《位元堕落》
+}
+
+Hydroelectric: {
+	DisplayName: 水力发电机
+	Tooltip:
+		'''
+		放置在水中进行发电
+		"流体力学的一种应用"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: 水力发电机MK2
+	Tooltip:
+		'''
+		放置在水中进行发电
+		"流体力学的一种应用"
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: 上帝能量管道
+	Tooltip: ""
+}
+
+ItemFilter: {
+	DisplayName: 物品过滤板
+	Tooltip:
+		'''
+		使用可以打开过滤面板
+		右键具备相应接口的机器以应用
+		左键点击箱子可以复制内部的物品作为过滤内容
+		'''
+}
+
+SporeBubbleBlaster: {
+	DisplayName: 喷菇炮
+	Tooltip: 喷射一串孢子气流
+}
+
+TomeofFungalDecay: {
+	DisplayName: 腐菌秘典
+	Tooltip: 喷射一圈孢子气流
+}
+
+FungalRevolver: {
+	DisplayName: 蘑菇左轮
+	Tooltip:
+		'''
+		将火枪子弹转换为真菌子弹
+		"洗干净后反而不能用了"
+		'''
+}
+
+FungalFeed: {
+	DisplayName: 真菌饲料
+	Tooltip:
+		'''
+		可投掷给菌生蟹，用于驯服
+		被驯服的菌生蟹会跟随你，并与你并肩作战
+		可为其装备[i:CalamityOverhaul/MushroomSaddle]蘑菇鞍，将其变为坐骑
+		"它们最爱蘑菇"
+		'''
+}
+
+MushroomSaddle: {
+	DisplayName: 蘑菇鞍
+	Tooltip:
+		'''
+		可装备在用[i:CalamityOverhaul/FungalFeed]真菌饲料驯服的菌生蟹身上
+		手持鞍具左键点击菌生蟹进行装备
+		右键点击装有鞍具的菌生蟹即可骑乘
+		'''
+	UseCombat: 只能安放到菌生蟹上
+}
+
+SporeboundRoller: {
+	DisplayName: 牵滚菌
+	Tooltip:
+		'''
+		击中敌人后生成一个飘逸的小蘑菇
+		"它们喜欢滚来滚去"
+		'''
+}
+
+Spectrometer: {
+	DisplayName: 光谱机
+	Tooltip:
+		'''
+		允许使用染料给物品上色
+		需要消耗电力才能运行
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: 菌泡囊
+	Tooltip:
+		'''
+		投出一个脆弱的菌泡囊，撞击时会猛烈爆裂
+		发动潜行攻击将触发一场巨大的真菌引爆，并释放出一大群追踪敌人的孢子精魄
+		'''
+}
+
+Pallbearer: {
+	DisplayName: 扶柩者
+	Tooltip:
+		'''
+		左键长按蓄力，松开后发射出护柩者之箭
+		蓄力时间越长，箭矢越强大
+		右键可以将弩投掷出去，
+		命中敌人后大幅加强下一次发射的箭矢并加快蓄力速度
+		"也叫抬棺人"
+		'''
+}
+
+EncyclopediaofOceanicKnowledge: {
+	DisplayName: 海洋知识百科全书
+	Tooltip:
+		'''
+		使用后瞬间领悟所有鱼类知识
+		解锁全部鱼类技能
+		[c/FFD700:海洋的智慧将汇聚于你]
+		'''
+	Text1: 你已经掌握了所有知识
+	Text2: 习得了[NUM]种鱼类知识！
+}
+
+TheForgottenTome: {
+	DisplayName: 遗忘世界之书
+	Tooltip:
+		'''
+		使用后瞬间遗忘所有世间的经历
+		人生鬼相，永堕无间，众生皆孽，无往来世
+		我叫[NAME]，当你看到这句话的时候，我已经死了
+		'''
+	CompletionText: 你已经遗忘所有
+	ConditionsText: 达成任意剧情结局
+}
+
+Fishoil: {
+	DisplayName: 瓶装鱼油
+	Tooltip:
+		'''
+		增加10%渔力
+		允许水下呼吸
+		对一些诡异的事物有着额外的压制效果
+		'''
+}
+
+SirenMusicalBox: {
+	DisplayName: 海妖八音盒
+	Tooltip:
+		'''
+		右键点击播放诡异的八音盒音乐
+		听者皆会被诅咒，在音乐持续时无法死去
+		音乐结束后会受到必死袭击
+		'''
+	DeathText: "{0}在未知的袭击下化作腐尸"
+}
+
+Heartcarver: {
+	DisplayName: 刻心者
+	Tooltip:
+		'''
+		生成三把额外的仪式匕首围绕玩家旋转
+		蓄力完成后飞向目标
+		右键进行短距离突刺
+		'''
+}
+
+OniMachete: {
+	DisplayName: 鬼面刀
+	Tooltip:
+		'''
+		手持时会生成六条鬼手协助战斗
+		真近战攻击会释放出鬼火
+		'''
+}
+
+Pandemonium: {
+	DisplayName: 万魔殿
+	Tooltip:
+		'''
+		左键蓄力释放超位魔法
+		右键在光标处施放硫火符文
+		按下[PandemoniumQSkill]施展硫磺火天罚
+		按下[PandemoniumRSkill]施展万魔终焉
+		'''
+}
+
+Proverbs: {
+	DisplayName: 箴言
+	Tooltip:
+		'''
+		在你背后生成一个小型硫火符文
+		免疫大多数火系减益
+		你的绝大多数攻击将对敌人造成衰祟诅咒减益
+		[Content]
+		'''
+	L1: 对硫火女巫造成双倍伤害，硫火女巫的攻击将可能对你造成暴击
+	L2:
+		'''
+		如果你能读到这段话，我应该已经不在了。
+		这枚戒指曾是我漫长岁月里，唯一能感到冰冷的东西。
+		但不知从何时起，它沾染了凡人的体温，变得有些……烫手了。
+		我已回归硫火，化作时代的灰烬。
+		本该两手空空地离开，可唯独这一抹温度，我竟产生了贪念，想要将其留存。
+		戴着它吧。
+		当你向神明挥剑的那一刻……
+		即便这世间皆是寒冬，我也依然会在你指尖燃烧。
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: 远古风暴女神之矛
+	Tooltip:
+		'''
+		发射出带有毁灭电弧的风暴之吻
+		"它已经是时代的过去了，但仍旧管用"
+		[legend]
+		'''
+	Legend:
+		'''
+		阿莉娜，泰拉曾最为锐利的锋刃。
+		她信仰坚定，勇猛骁战。铁屑银枪，丝发乱舞。雷暴之刃，呼啸而过。
+		然而，再锋利的剑刃也会溃败崩摧，信仰却换来了神明的冷漠。
+		当至高降下神罚，她的战友、亲族、誓言与荣耀一同化为灰烬。
+		亲眼见证，何所谓正义践踏一切...血泪...尘土......何以借秩序的名义行驶最卑鄙的毁灭。
+		神明啊......阿莉娜不再仰望神明。
+		她退回深渊，摧毁了自己，让古老的禁忌之力任意蚕食她的灵魂
+		阿莉娜的身甲融作深渊铁铸的残躯。
+		那往日的残云、赤血遮日与过往交织，战友...还有亲族死前的凝视......阿莉娜...一切都已结束。
+		她已不再是曾经的阿莉娜，那位守护泰拉的战神
+		她的怒火如狂风般归来，卷入战场的蝼蚁，她的雷霆横空霹雳，洪声震开云与天空，裂开王座与大地。
+		风暴女神，阿莉娜，无情地带来了毁灭与复仇。
+		'''
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: 构造蓝图(量子纠缠塔)
+	Tooltip:
+		'''
+		使用后学习制作[i:CalamityOverhaul/CQETConstructor]自我搭建器的知识
+		"你的双手将因此能够铸造连接两个世界的基石与高塔"
+		'''
+	L1: 已获得制作自我搭建器(量子纠缠塔)的知识!
+	L2: 你已经学习过这个图纸了!
+}
+
+CQETConstructor: {
+	DisplayName: 自我搭建器(量子纠缠塔)
+	Tooltip:
+		'''
+		放置后用于搭建量子纠缠塔
+		需要消耗大量[i:CalamityOverhaul/StarflowPlatedBlock]星流电镀块
+		'''
+	UseConstructionBlueprint: 学习构造蓝图(量子纠缠塔)
+}
+
+DeploySignaltower: {
+	DisplayName: 量子纠缠塔
+	Tooltip:
+		'''
+		重要的通讯设备，可以充当亚空间中的灯塔
+		"野孩子在森林中举起火把，大喊我在这里"
+		'''
+}
+
+StarflowPlatedBlock: {
+	DisplayName: 星流电镀块
+	Tooltip:
+		'''
+		搭建量子纠缠塔[i:CalamityOverhaul/DeploySignaltower]的基础材料
+		"将流动的星光铸造成不朽的基石"
+		'''
+}
+
+PQCD: {
+	DisplayName: 便携式量子通讯器
+	Tooltip:
+		'''
+		使用以联络嘉登，开启嘉登工业的全息购物界面
+		"理论上可以用来发起灭绝令，但似乎权限不足"
+		'''
+	NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
+	SignalTowerProgressText: 信号塔部署进度: {0}/{1}
+}
+
+Unsunghero: {
+	DisplayName: 英雄无冕
+	Tooltip:
+		'''
+		增加10点潜伏值上限
+		潜伏速度将不会降低潜伏伤害
+		"若你一去不回呢？"
+		"那便一去不回。"
+		'''
+}
+
+AriaofTheCosmos: {
+	DisplayName: 寰宇咏叹调
+	Tooltip:
+		'''
+		左键长按可以凝聚出强大的类星体，释放后对敌人造成毁灭性的伤害
+		右键可以释放出一个微型黑洞，成型后发射出大量伽马射线
+		按下[AriaofTheCosmosQSkill]召唤星环护卫
+		按下[AriaofTheCosmosRSkill]生成伽马射线爆发
+		'''
+}
+
+Oceanfragments: {
+	DisplayName: 海洋残片
+	Tooltip: 一种神秘的小物件，老公爵可能会对它感兴趣
+}
+
+OceanRaiders: {
+	WorkingText: 正在工作中...
+	NoWaterText: 需要放置在水域上方才能工作！
+	NoEnergyText: 能量不足！
+	DisplayName: 海洋吞噬者
+	Tooltip:
+		'''
+		消耗电力从水域中提取资源
+		右键打开内部存储箱
+		'''
+}
+
+OldDuchest: {
+	StorageText: 大型储物箱
+	DisplayName: 老箱子
+	Tooltip:
+		'''
+		一个容量巨大的储物箱
+		"老公爵从前的储物箱，如果他在附近，他可能会往里面扔些东西"
+		'''
+}
+
+QuestLogBook: {
+	DisplayName: 任务书
+	Tooltip: 使用以打开或者关闭任务界面
+}
+
+MermanRod: {
+	Text1: 世界中已经放置了一座鱼人钓!
+	DisplayName: 鱼人钓
+	Tooltip:
+		'''
+		在附近钓鱼时增加20点渔力
+		老公爵会将营地搬来此处
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: 需要放置在坚硬的表面上才能进行挖掘作业
+	DisplayName: 采矿机MK2
+	Tooltip:
+		'''
+		消耗电能钻探矿物
+		需要放置在合适的地方才能正常工作
+		在特殊环境中可以挖掘出特殊矿物
+		'''
+}
+
+UniversalFrost: {
+	DisplayName: 万象霜天
+	Tooltip:
+		'''
+		使用雪球作为弹药
+		发射冰雹和极寒新星球，冰晶球会反弹追踪并在爆炸时释放冰霜光束
+		持续射击会积蓄寒冰能量，能量满后下次开火将引发冰河纪元
+		冰河纪元会在光标位置召唤巨大的冰柱阵和暴风雪场
+		"当万象归于寂静，唯有永恒的霜雪覆盖世间"
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: 弑神者剑鞘
+	Tooltip:
+		'''
+		手持近战武器不攻击时会积蓄拔刀值
+		拔刀值满后攻击可获得2秒无敌时间
+		"刃虽未出鞘，杀意已凛然
+		待时机成熟，斩神不过转瞬"
+		'''
+}
+
+Lumberjack: {
+	Text1: 数量过多!
+	Text2: 电力不足!
+	CycleModeText: 循环模式
+	ClearModeText: 清理模式
+	DisplayName: 伐木者
+	Tooltip:
+		'''
+		消耗电力进行伐木工作
+		自动砍伐周围的树木
+		右键在循环模式和清理模式之间切换
+		循环模式会持续砍伐树木，并让树苗重新生长
+		清理模式只会砍伐树木，不会让树苗重新生长
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: 周围没有种植空位!
+	NoEnergyText: 电力不足!
+	DisplayName: 植树者
+	Tooltip: 消耗电力向周围种植树木
+}
+
+WGGLumberjack: {
+	DisplayName: 荒野中的伐木者
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	DisplayName: 荒野中的植树者
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: 电动焚化炉
+	Tooltip:
+		'''
+		消耗电力熔炼物品
+		右键打开操控面板
+		Shift右键可以快速放入熔炼物，或者取出熔炼产物
+		熔炼物品可以得到双倍的产出物
+		'''
+}
+
+ItemPipeline: {
+	DisplayName: 物流管道
+	Tooltip:
+		'''
+		用于传输物品
+		右键可快速拆除目标位置的管道并回收，此功能在手持管道时可用
+		右键端点位置的管道可以在输出模式和输入模式之间切换，此功能在手持管道时不可用
+		输出模式的管道会抽取连接的容器内的物品，传输到连接的输入模式管道连接的物品中
+		'''
+}
+
+Thrower: {
+	NoEnergyText: 能量不足!
+	NoItemText: 没有可投掷的物品!
+	WorkingText: 投掷中...
+	IdleText: 待机
+	DisplayName: 投掷者
+	Tooltip:
+		'''
+		消耗电力投掷物品
+		右键打开操控面板
+		'''
+}

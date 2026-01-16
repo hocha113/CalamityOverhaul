@@ -1,22 +1,20 @@
-﻿
-	ADS_Key.DisplayName: Firearms:Open the scope
-	KreLoad_Key.DisplayName: Firearms:Change the ammunition
-	QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
-	HeavenfallLongbowSkillKey.DisplayName: HeavenfallLongbow Skill Key
-	InfinitePickSkillKey.DisplayName: Endless Pick form switch key
-	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
-	Murasama_DownKey.DisplayName: Murasama:Down Key
-	Halibut_Domain.DisplayName: Halibut: Oceanic Domain
-	Halibut_Clone.DisplayName: Halibut: Invasion of the Former Self
-	Halibut_Restart.DisplayName: Halibut: Reboot
-	Halibut_Superposition.DisplayName: Halibut: Superposition
-	Halibut_Teleport.DisplayName: Halibut: Domain Teleport
-	Halibut_UIControl.DisplayName: Halibut: UI Control
-	Halibut_Skill_L.DisplayName: Halibut: Switch to the left skill
-	Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
-	Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
-	Pandemonium_R.DisplayName: Pandemonium: End of All Demons
-	AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
-	AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
-	JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment
-
+ADS_Key.DisplayName: Firearms:Open the scope
+KreLoad_Key.DisplayName: Firearms:Change the ammunition
+QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
+HeavenfallLongbowSkillKey.DisplayName: HeavenfallLongbow Skill Key
+InfinitePickSkillKey.DisplayName: Endless Pick form switch key
+Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
+Murasama_DownKey.DisplayName: Murasama:Down Key
+Halibut_Domain.DisplayName: Halibut: Oceanic Domain
+Halibut_Clone.DisplayName: Halibut: Invasion of the Former Self
+Halibut_Restart.DisplayName: Halibut: Reboot
+Halibut_Superposition.DisplayName: Halibut: Superposition
+Halibut_Teleport.DisplayName: Halibut: Domain Teleport
+Halibut_UIControl.DisplayName: Halibut: UI Control
+Halibut_Skill_L.DisplayName: Halibut: Switch to the left skill
+Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
+Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
+Pandemonium_R.DisplayName: Pandemonium: End of All Demons
+AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
+AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
+JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment

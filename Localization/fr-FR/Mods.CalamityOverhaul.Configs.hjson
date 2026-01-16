@@ -1,1 +1,173 @@
+CWRServerConfig: {
+	DisplayName: Paramétrage du contenu
 
+	WeaponOverhaul: {
+		Label: Refonte des armes
+		Tooltip:
+			'''
+			L’activation modifiera la plupart des armes.
+			[c/FF0000:Pour une expérience optimale du contenu de Calamité, veuillez l'activer !]
+			'''
+	}
+
+	ScreenVibration: {
+		Label: Effet de vibration de l'écran pour les attaques spéciales des armes
+		Tooltip: Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup
+	}
+
+	MurasamaSpaceFragmentationBool: {
+		Label: Effet de fragmentation de l'écran pour la fin de la technique de Murasama
+		Tooltip:
+			'''
+			Activé par défaut, Murasama crée un effet de bris d'écran lorsqu'il utilise sa technique finale pour améliorer la sensation de coup
+			Désactiver ceci désactive ces effets spéciaux, selon vos préférences
+			'''
+	}
+
+	HalibutDomainConciseDisplay: {
+		// Label: Halibut Ocean Domain Minimal Display
+		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+	}
+
+	Headers: {
+		CWRSystem: Paramètres du système de grande réparation
+		CWRWeapon: Paramètres d'armes de grande réparation
+		CWRUI: Paramètres d'interface utilisateur de grande réparation
+	}
+
+	LensEasing: {
+		Label: Adoucissement de la caméra
+		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
+	}
+
+	CartridgeUI_Offset_X_Value: {
+		Label: Valeur de décalage horizontale de l'interface utilisateur du chargeur
+		Tooltip: ""
+	}
+
+	CartridgeUI_Offset_Y_Value: {
+		Label: Valeur de décalage verticale de l'interface utilisateur du chargeur
+		Tooltip: ""
+	}
+
+	WeaponHandheldDisplay: {
+		Label: Affichage portatif des armes
+		Tooltip:
+			'''
+			Lorsqu'activé, la plupart des armes auront des animations de tenue et des actions spéciales
+			Cette fonctionnalité a une priorité très élevée et remplacera la plupart des animations portatives des mods tiers
+			Activé par défaut, et pour des raisons d'expérience visuelle, l'auteur ne recommande pas de le désactiver
+			'''
+	}
+
+	ActivateGunRecoil: {
+		Label: Recul des armes à feu [c/06e33f:(expérimental)]
+		Tooltip: Une fois activé, les armes à feu auront un effet de recul lors du tir. Désactivez-le pour supprimer ces effets.
+	}
+
+	MagazineSystem: {
+		Label: Système de chargeur
+		Tooltip:
+			'''
+			Un système de contenu volumineux, activé pour la plupart des armes aura un mécanisme de chargeur, y compris le rechargement, le mélange de munitions, etc.
+			La désactivation désactivera ce contenu, les armes utilisant le mécanisme de munitions d'origine
+			[c/fff08c:Il convient de noter que] l'équilibre du jeu Calamité est ajusté sur la base de [c/fff08c:l'activation du système de chargeur]
+			Si vous choisissez de le désactiver, [c/de0808:l'équilibre du jeu pour les armes à distance ne sera plus pertinent]
+			[c/fff08c:Si vous modifiez cette option, veuillez entrer à nouveau dans le monde pour vous assurer que tous les effets sont correctement modifiés]
+			'''
+	}
+
+	BowArrowDraw: {
+		Label: Dessin dynamique des flèches de l'arc
+		Tooltip:
+			'''
+			Lorsque les joueurs attaquent avec un arc, une animation dynamique des flèches correspondantes est affichée en temps réel
+			Activé par défaut, ajustable selon les préférences personnelles
+			'''
+	}
+
+	EnableCasingsEntity: {
+		Label: Activer les entités d'étui de cartouches
+		Tooltip: Si vous trouvez les douilles éparpillées dérangeantes, désactiver cette option serait une bonne idée
+	}
+
+	LoadingAA_Volume: {
+		Label: Coefficient de volume des effets sonores de rechargement des armes à feu
+		Tooltip: Plus la valeur est élevée, plus le son est fort. 1 correspond au volume original
+	}
+
+	ShotgunFireForcedReloadInterruption: {
+		Label: Interruption forcée du rechargement par le feu des fusils à pompe [c/06e33f:(expérimental)]
+		Tooltip:
+			'''
+			Certaines armes à feu de type fusil à pompe possèdent cette caractéristique : 
+			lors du rechargement des munitions, tenter de tirer interrompt l'action de rechargement
+			Si activé, cette option donnera cette caractéristique à toutes les armes de type fusil à pompe
+			'''
+	}
+
+	WeaponLazyRotationAngle: {
+		// Label: Weapon Inertia Rotation Angle Update
+		/* Tooltip:
+			'''
+			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
+			where the facing direction changes only once when firing.
+			''' */
+	}
+
+	BiologyOverhaul: {
+		Label: Modification du comportement biologique [c/06e33f:(expérimental)]
+		Tooltip:
+			'''
+			[c/c20909:Non achevé]
+			Activé par défaut, modifie le comportement de l'IA de certaines créatures, comme les BossAI dans le module de mort
+			Cela peut considérablement augmenter la difficulté du jeu, et peut être désactivé selon les préférences personnelles
+			'''
+	}
+
+	EnableSwordLight: {
+		Label: Activer l'éclat de l'épée
+		Tooltip:
+			'''
+			Activé par défaut, de nombreuses épées auront des effets lumineux éclatants.
+			Dans la plupart des cas, cela rendra le jeu plus cool.
+			'''
+	}
+
+	MuraUIStyleType: {
+		Label: Sélection du style d'interface Mura
+		Tooltip:
+			'''
+			Style 1 : Raffiné - Flottant au-dessus de la tête
+			Style 2 : Raffiné - Compact
+			Style 3 : Classique - Flottant au-dessus de la tête
+			Style 4 : Classique - Compact
+			Style 5: Conceal
+			'''
+	}
+
+	MuraPosStyleType: {
+		Label: Sélection de la position d'interface Mura
+		Tooltip:
+			'''
+			Préréglage 1 : En bas à droite
+			Préréglage 2 : En bas à gauche
+			Préréglage 3 : Au centre en haut
+			'''
+	}
+
+	ShowReloadingProgressUI: {
+		// Label: Show Reloading Progress
+		// Tooltip: When opened, the ammo loading progress will be displayed
+	}
+
+	QuestLog: {
+		// Label: Quest Log Guidance
+		/* Tooltip:
+			'''
+			When enabled, the quest log will guide you through game progression
+			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
+			Enabled by default. Disabling this removes all quest guidance
+			''' */
+	}
+}

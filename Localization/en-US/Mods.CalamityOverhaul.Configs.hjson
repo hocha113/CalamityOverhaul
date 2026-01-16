@@ -1,177 +1,175 @@
-﻿
-	CWRServerConfig: {
-		DisplayName: Content Config
+CWRServerConfig: {
+	DisplayName: Content Config
 
-		WeaponOverhaul: {
-			Label: Weapon Overhaul
-			Tooltip:
-				'''
-				Enabling it will modify most weapons.
-				[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
-				'''
-		}
-
-		ScreenVibration: {
-			Label: Weapon Screen Vibration
-			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
-		}
-
-		MurasamaSpaceFragmentationBool: {
-			Label: Murasama Space Fragmentation Bool
-			Tooltip:
-				'''
-				Turned on by default, the polymer cutting edge will create a screen crushing effect to enhance the impact
-				If turned off, these effects are disabled and can be set to your liking
-				'''
-		}
-
-		HalibutDomainConciseDisplay: {
-			Label: Halibut Ocean Domain Minimal Display
-			Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
-		}
-
-		Headers: {
-			CWRSystem: System Configs
-			CWRWeapon: Weapon Configs
-			CWRUI: UI Configs
-		}
-
-		LensEasing: {
-			Label: Lens Easing
-			Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
-		}
-
-		CartridgeUI_Offset_X_Value: {
-			Label: Magazine UI landscape deviation value
-			Tooltip: ""
-		}
-
-		CartridgeUI_Offset_Y_Value: {
-			Label: Magazine UI deviates vertically value
-			Tooltip: ""
-		}
-
-		WeaponHandheldDisplay: {
-			Label: Weapon Handheld Display
-			Tooltip:
-				'''
-				When turned on, most weapons have handheld animations and special use actions
-				This effect has a very high priority and will override most of the handheld animations from third-party mods
-				It is turned on by default, and for visual reasons, the authors do not recommend turning it off
-				If you change this configuration during the game, some effects will need to be reloaded the mod files before they can be changed
-				'''
-		}
-
-		ActivateGunRecoil: {
-			Label: Activate Gun Recoil [c/06e33f:(Experimental)]
-			Tooltip: When enabled, firearms will have a recoil effect when fired. Disable it to turn off these effects.
-		}
-
-		MagazineSystem: {
-			Label: Magazine System
-			Tooltip:
-				'''
-				A sprawling content system, when enabled, introduces magazine mechanisms to the majority of firearms, 
-				including features like reloading and mixing ammunition types.
-				Disabling it will deactivate these features, reverting firearms to their original ammunition mechanisms.
-				[c/fff08c:It's worth noting] that the game's major balance adjustments are made based on the [c/fff08c:enabled magazine system].
-				Opting to disable it may render some ranged weapons [c/de0808:overpowered].
-				Therefore, if this feature is disabled, the [c/de0808:balance of ranged weapons] in the game will no longer be meaningful for discussion.
-				[c/fff08c:If you change this option, re-enter the world to make sure all effects change correctly]
-				'''
-		}
-
-		BowArrowDraw: {
-			Label: Draw the bowstring arrow
-			Tooltip:
-				'''
-				When the player uses the bow class to attack, the corresponding arrow animation will be drawn in real time
-				It is enabled by default and can be set according to personal preferences
-				'''
-		}
-
-		EnableCasingsEntity: {
-			Label: Enable Casings Entity
-			Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off
-		}
-
-		LoadingAA_Volume: {
-			Label: Gun Reload Sound Volume Coefficient
-			Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
-		}
-
-		ShotgunFireForcedReloadInterruption: {
-			Label: Shotgun Fire Forced Reload Interruption [c/06e33f:(Experimental)]
-			Tooltip:
-				'''
-				A small number of shotguns have this feature where attempting to fire while reloading will interrupt the reload action. 
-				If enabled, this option will give all shotgun weapons this feature.
-				'''
-		}
-
-		WeaponLazyRotationAngle: {
-			Label: Weapon Inertia Rotation Angle Update
-			Tooltip:
-				'''
-				If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
-				where the facing direction changes only once when firing.
-				'''
-		}
-
-		BiologyOverhaul: {
-			Label: Biology Overhaul [c/06e33f:(Experimental)]
-			Tooltip:
-				'''
-				[c/c20909:Unfinished]
-				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
-				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
-				'''
-		}
-
-		EnableSwordLight: {
-			Label: Enable Sword Light
-			Tooltip:
-				'''
-				Turned on by default, many sword weapons will have a dazzling bright knife light
-				In the vast majority of cases, this makes the game cooler
-				'''
-		}
-
-		MuraUIStyleType: {
-			Label: Mura UI Style Selection
-			Tooltip:
-				'''
-				Style 1: Refined - Floating Above The Head
-				Style 2: Refined - Compact
-				Style 3: Classic - Floating Above The Head
-				Style 4: Classic - Compact
-				Style 5: Conceal
-				'''
-		}
-
-		MuraPosStyleType: {
-			Label: Mura UI Position Selection
-			Tooltip:
-				'''
-				Preset 1: Bottom Right
-				Preset 2: Bottom Left
-				Preset 3: Top Center
-				'''
-		}
-
-		ShowReloadingProgressUI: {
-			Label: Show Reloading Progress
-			Tooltip: When opened, the ammo loading progress will be displayed
-		}
-
-		QuestLog: {
-			Label: Quest Log Guidance
-			Tooltip:
-				'''
-				When enabled, the quest log will guide you through game progression
-				You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
-				Enabled by default. Disabling this removes all quest guidance
-				'''
-		}
+	WeaponOverhaul: {
+		Label: Weapon Overhaul
+		Tooltip:
+			'''
+			Enabling it will modify most weapons.
+			[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
+			'''
 	}
 
+	ScreenVibration: {
+		Label: Weapon Screen Vibration
+		Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
+	}
+
+	MurasamaSpaceFragmentationBool: {
+		Label: Murasama Space Fragmentation Bool
+		Tooltip:
+			'''
+			Turned on by default, the polymer cutting edge will create a screen crushing effect to enhance the impact
+			If turned off, these effects are disabled and can be set to your liking
+			'''
+	}
+
+	HalibutDomainConciseDisplay: {
+		Label: Halibut Ocean Domain Minimal Display
+		Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+	}
+
+	Headers: {
+		CWRSystem: System Configs
+		CWRWeapon: Weapon Configs
+		CWRUI: UI Configs
+	}
+
+	LensEasing: {
+		Label: Lens Easing
+		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
+	}
+
+	CartridgeUI_Offset_X_Value: {
+		Label: Magazine UI landscape deviation value
+		Tooltip: ""
+	}
+
+	CartridgeUI_Offset_Y_Value: {
+		Label: Magazine UI deviates vertically value
+		Tooltip: ""
+	}
+
+	WeaponHandheldDisplay: {
+		Label: Weapon Handheld Display
+		Tooltip:
+			'''
+			When turned on, most weapons have handheld animations and special use actions
+			This effect has a very high priority and will override most of the handheld animations from third-party mods
+			It is turned on by default, and for visual reasons, the authors do not recommend turning it off
+			If you change this configuration during the game, some effects will need to be reloaded the mod files before they can be changed
+			'''
+	}
+
+	ActivateGunRecoil: {
+		Label: Activate Gun Recoil [c/06e33f:(Experimental)]
+		Tooltip: When enabled, firearms will have a recoil effect when fired. Disable it to turn off these effects.
+	}
+
+	MagazineSystem: {
+		Label: Magazine System
+		Tooltip:
+			'''
+			A sprawling content system, when enabled, introduces magazine mechanisms to the majority of firearms, 
+			including features like reloading and mixing ammunition types.
+			Disabling it will deactivate these features, reverting firearms to their original ammunition mechanisms.
+			[c/fff08c:It's worth noting] that the game's major balance adjustments are made based on the [c/fff08c:enabled magazine system].
+			Opting to disable it may render some ranged weapons [c/de0808:overpowered].
+			Therefore, if this feature is disabled, the [c/de0808:balance of ranged weapons] in the game will no longer be meaningful for discussion.
+			[c/fff08c:If you change this option, re-enter the world to make sure all effects change correctly]
+			'''
+	}
+
+	BowArrowDraw: {
+		Label: Draw the bowstring arrow
+		Tooltip:
+			'''
+			When the player uses the bow class to attack, the corresponding arrow animation will be drawn in real time
+			It is enabled by default and can be set according to personal preferences
+			'''
+	}
+
+	EnableCasingsEntity: {
+		Label: Enable Casings Entity
+		Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off
+	}
+
+	LoadingAA_Volume: {
+		Label: Gun Reload Sound Volume Coefficient
+		Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
+	}
+
+	ShotgunFireForcedReloadInterruption: {
+		Label: Shotgun Fire Forced Reload Interruption [c/06e33f:(Experimental)]
+		Tooltip:
+			'''
+			A small number of shotguns have this feature where attempting to fire while reloading will interrupt the reload action. 
+			If enabled, this option will give all shotgun weapons this feature.
+			'''
+	}
+
+	WeaponLazyRotationAngle: {
+		Label: Weapon Inertia Rotation Angle Update
+		Tooltip:
+			'''
+			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
+			where the facing direction changes only once when firing.
+			'''
+	}
+
+	BiologyOverhaul: {
+		Label: Biology Overhaul [c/06e33f:(Experimental)]
+		Tooltip:
+			'''
+			[c/c20909:Unfinished]
+			Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
+			This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
+			'''
+	}
+
+	EnableSwordLight: {
+		Label: Enable Sword Light
+		Tooltip:
+			'''
+			Turned on by default, many sword weapons will have a dazzling bright knife light
+			In the vast majority of cases, this makes the game cooler
+			'''
+	}
+
+	MuraUIStyleType: {
+		Label: Mura UI Style Selection
+		Tooltip:
+			'''
+			Style 1: Refined - Floating Above The Head
+			Style 2: Refined - Compact
+			Style 3: Classic - Floating Above The Head
+			Style 4: Classic - Compact
+			Style 5: Conceal
+			'''
+	}
+
+	MuraPosStyleType: {
+		Label: Mura UI Position Selection
+		Tooltip:
+			'''
+			Preset 1: Bottom Right
+			Preset 2: Bottom Left
+			Preset 3: Top Center
+			'''
+	}
+
+	ShowReloadingProgressUI: {
+		Label: Show Reloading Progress
+		Tooltip: When opened, the ammo loading progress will be displayed
+	}
+
+	QuestLog: {
+		Label: Quest Log Guidance
+		Tooltip:
+			'''
+			When enabled, the quest log will guide you through game progression
+			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
+			Enabled by default. Disabling this removes all quest guidance
+			'''
+	}
+}

@@ -1,1 +1,877 @@
+FirstMet: {
+	Rolename1: ???
+	Rolename2: Палтус
+	Line0: Сэр... ваша техника рыбной ловли... оставляет желать лучшего.
+	Line1: Можете звать меня Доктор Палтус.
+	Line2: Или просто Палтус — тоже подойдёт.
+	Line3: Благодаря вашему крючку, я был вытащен из той тихой, мёртвой воды.
+	Line4: Если бы не вы, я бы, вероятно, застрял в системном сбое... пока по-настоящему не 'скончался'.
+	Line5: Эта рыба должна была стать вашим уловом. Теперь это подарок в честь нашего знакомства.
+	Line6: ......
+	Line7: Вы удивляетесь, почему я здесь, не так ли.
+	Line8: Я был профессором в Университете Серного Моря, на кафедре Исследований Бездны.
+	Line9: Несколько лет назад мы организовали 'Проект по отбору проб экологии Бездны'.
+	Line10: Я был единственным, кто вернулся.
+	Line11: На дне бездны мы столкнулись... с существованием, которое невозможно постичь.
+	Line12: Это не могло быть живым существом, ни чем-то, что можно 'убить'. Это было больше похоже на... ужас в его концептуальной форме.
+	Line13: Убегая, я нашёл око под коралловым деревом.
+	Line14: Из чистого инстинкта выживания я проглотил его.
+	Line15: Используя силу этого ока, я открыл домен... и прорвал разлом в бездне, чтобы сбежать.
+	Line16: После этого моя память туманна... Я впал в глубокий сон, пока вы меня не выловили.
+	Line17: Вы похожи на Жителя Террарии.
+	Line18: Если вы не против, возьмите меня с собой.
+	Line19: Я помогу вам покорить эту землю.
+	Line20: В обмен... помогите мне решить эту... проблему 'возрождения' с глазами внутри меня.
+	Line21: Если нет возражений, давайте начнём с... изучения этой рыбы.
+}
 
+EyeOfCthulhuGift: {
+	R1: Палтус
+	L0: Ваши движения замедлились... Я-то думал, вы просто позируете.
+	L1: Мы вошли в 'Стадию Наблюдения'. Что означает... больше проблем.
+	L2: Я нашёл это в его... пасти. Возьмите. Рыба-Ктулху. Прямо как её тёзка... она не особо следует логике.
+	L3: Держите, но будьте осторожны. Он заставит вас думать, что вы открыли третий глаз. На самом деле, это просто стимулятор в вашем кровотоке.
+	L4: Мне любопытно, начнёте ли вы теперь подмигивать луне.
+}
+
+KingSlimeGift: {
+	R1: Палтус
+	L0: Эта синяя капля... 'слизень', вы говорите? Больше похоже на... застывшую эмоцию.
+	L1: Возможно, это неуклюжая попытка материи обрести самосознание и эволюционировать.
+	L2: Вот, Слизкая рыба. Не сжимайте. Её чувства могут взорваться.
+	L3: Вы когда-нибудь пробовали приготовить суп из одной из этих?
+	L4: Я имею в виду... да, мы можем готовить суп на дне моря. На морском дне есть даже... ну, моря внутри моря.
+}
+
+QueenBeeGift: {
+	R1: Палтус
+	R2: ???
+	L0: Я чуть не получил порцию мёда в лицо.
+	L1: И всё же, мне удалось вытащить рыбу из лужи мёда на земле.
+	L2: Вот, свежая и... всё ещё тёплая Медовая рыба.
+	L3: Думаю, она идеально подойдёт для кисло-сладкого блюда.
+}
+
+SkeletronGift: {
+	R1: Палтус
+	L0: Какое значительное количество кальция.
+	L1: Его черепная структура напомнила мне о сбежавшем психическом конструкте.
+	L2: Дайте стволу моего оружия остыть. А пока я нашёл здесь рыбу.
+	L3: Смотрите, 'Рыба-Скелетрон'. Говорят, фосфор внутри заставляет ночных рыбаков задуматься о своём существовании.
+	L4: Давайте двигаться. Нас ждут... более 'абстрактные' кости.
+}
+
+AquaticScourgeGift: {
+	R1: Палтус
+	L0: Напоминает мне о недружелюбных соседях из моего родного города. Этот, правда, был довольно дружелюбным. Раньше был главой службы безопасности в Университете Серного Моря. Всегда здоровался.
+	L1: Серное Море — интересное место. Каждое существо там задаёт один и тот же вопрос: 'Почему я всё ещё жив?'
+	L2: Призматическая рыба. Её чешуя преломляет цвета, которых вы никогда не видели. В основном потому, что их не должно существовать.
+	L3: Если долго на неё смотреть, это перезагрузит вашу зрительную систему. Как принудительное обновление, но больнее.
+	L4: Лучше всего использовать её при тусклом свете. Иначе вы почувствуете... кайф.
+}
+
+BrimstoneElementalGift: {
+	R1: Палтус
+	L0: Одно её присутствие было подобно пылкой речи. Хорошо, что нам удалось её заткнуть.
+	L1: Некоторые элементали не создаются. Они просто... странности... которые просачиваются из трещин мира.
+	L2: Обсидиановая рыба. Продукт мгновенно остывшей лавы. Её чешуя твёрже, чем обиды, гноящиеся в аду.
+	L3: Осторожно, она может самопроизвольно воспламениться у вас в руке. В эмоциональном плане.
+	L4: В конце концов, гнев заразителен.
+}
+
+CalamitasCloneGift: {
+	R1: Палтус
+	L0: Дешёвая тень. Напоминает мне о генетических чудовищах, которых я стряпал в своей траншее в университете. В любом случае, у того, кто это сделал, ужасный вкус.
+	L1: У меня плохое предчувствие. Настоящий ужас всё ещё ждёт... глубже. Он даже приближается.
+	L2: Вернёмся к делу. Серная рыба, подобранная из её углей. Если прислушаться, всё ещё можно услышать, как она бормочет чепуху.
+	L3: Если вы начнёте понимать, что она говорит... что ж, поздравляю. Вы сделали первый шаг к безумию.
+	L4: Но не волнуйтесь. Безумие — это просто другая форма ясности, если посмотреть под другим углом.
+}
+
+CrabulonGift: {
+	R1: Палтус
+	L0: Это грибоподобное... существо? Это мудрость или чистый инстинкт, спрятанный под шляпкой?
+	L1: Вы знали, что грибницы могут передавать информацию? Может, оно звало на помощь.
+	L2: Это Грибная рыба. Я едва поймал её среди спор, которые она выпускала.
+	L3: Не волнуйтесь, споры не превратят человека в гриб... наверное.
+	L4: Но если у вас вдруг появится желание пустить корни в тёмном, сыром месте, дайте мне знать.
+}
+
+CryogenGift: {
+	R1: Палтус
+	L0: Замороженная душа...
+	L1: В Архивах Бездны такие низкие температуры обычно используют для 'консервации' безумцев.
+	L2: Крио-пескарь, размороженный из ледяных осколков. Он всё ещё сохраняет позу, в которой был заморожен.
+	L3: Говорят, если съесть его, это охладит вашу кровь, сделает ваши мысли исключительно ясными.
+	L4: Съешьте слишком много, и можете сами стать ледяной скульптурой.
+}
+
+DevourerOfGodsGift: {
+	R1: Палтус
+	L0: Пожиратель Богов... космический змей, обедающий божествами. Его аппетит так же безграничен, как и его амбиции.
+	L1: Знаете, как говорят: когда вы смотрите в бездну, бездна смотрит в ответ. Но эта тварь не просто смотрит. Она хочет вас на закуску.
+	L2: Неоновая Тетра. Она выплыла из разлома пустоты. Свет, который она излучает, не из этого измерения.
+	L3: Когда вы смотрите на неё, ваш мозг пытается воспринять цвета, которые не должен. Это... уникальный опыт.
+	L4: Если вы начнёте видеть новые цвета, поздравляю. Если вы начнёте *нюхать* цвета, вам нужен отдых.
+}
+
+GolemGift: {
+	R1: Палтус
+	L0: Груда движущихся камней. Наследие древней цивилизации... или, возможно, доказательство их неудачи.
+	L1: Возможно, он что-то охраняет. Или просто повторяет программу, которая давно потеряла свой смысл.
+	L2: Каменная рыба, выкопанная из фундамента храма. Её плотность заставляет меня усомниться в собственном существовании.
+	L3: Я пытался её сварить. Мой котелок сдался первым.
+	L4: ...Некоторые вещи существуют просто для того, чтобы мы осознали, что не все проблемы нужно решать.
+}
+
+HiveMindGift: {
+	R1: Палтус
+	L0: Коллективное сознание из порчи... какая отвратительная концепция.
+	L1: Его мыслительный процесс должен быть... уникальным. Бесчисленные гнилые фрагменты, сложенные в единое, искажённое целое.
+	L2: Вот, Гнилая рыба. Вытащил её из той груды падали. Не спрашивайте, как.
+	L3: Пахнет как морепродукты, оставленные на солнце на три дня.
+	L4: Но говорят, она позволяет вам... резонировать с порчей. Что звучит просто неправильно.
+}
+
+LeviathanGift: {
+	R1: Палтус
+	L0: Океанский тиран... и её маленький помощник, который вечно за ней таскается. Некоторая дружба выходит за рамки видов. И логики.
+	L1: Я думаю, что в самых глубоких траншеях живёт не страх, а одиночество. Они просто ищут компанию.
+	L2: Тропи-куда, выловленная из глубоководного вихря. Она выглядит обычной, что как раз и подозрительно.
+	L3: Чем банальнее внешность, тем экстраординарнее прошлое.
+	L4: Прямо как мы.
+}
+
+MoonLordGift: {
+	R1: Палтус
+	L0: Повелитель Луны, ха! Или, *бывший*. Теперь просто плавающая груда глазных яблок и ошмётков.
+	L1: Мы не просто спасли мир; мы закрыли дверь, которая никогда не должна была быть открыта.
+	L2: Я поймал Облачную рыбу. Она спустилась из трещины в небе. В руке кажется невесомой.
+	L3: Говорят, она позволяет видеть будущее... но вы уже переписали это будущее.
+	L4: Мы только что доказали, что даже боги могут кровоточить.
+}
+
+PerforatorGift: {
+	R1: Палтус
+	L0: Куча бурящих червей из плоти... существование этого создания — вызов биологии.
+	L1: Их кровь имеет странную вязкость, как какой-то живой металл.
+	L2: Нашёл это в обломках. Кровавая рыба. Она всё ещё извивается.
+	L3: Не пугайтесь её вида, даже если она выглядит так, будто выползла из кошмара.
+	L4: По крайней мере, она не залезет вам в ухо, пока вы спите... наверное.
+}
+
+PlaguebringerGift: {
+	R1: Палтус
+	L0: Чумной Носитель... механическая пчела с биологическим оружием. Кто это спроектировал? Настоящий ублюдок, посмевший поработить пчёл.
+	L1: Вирусу нет дела до добра и зла. Он просто хочет выжить. Как и мы, только более прямолинейно.
+	L2: Рыба-Самоцвет. Инфицированная и чудом выжившая. Её иммунная система опытнее вас.
+	L3: Говорят, если съесть её, это повысит сопротивляемость. Звучит как другой способ сказать 'что не убивает тебя, делает тебя сильнее'.
+	L4: Но поскольку *мы* только что вышли из чумного улья, этот маленький риск должен быть ничем.
+}
+
+PlanteraGift: {
+	R1: Палтус
+	L0: Цветок... если 'цветок' — это слово для этого конгломерата из лоз-людоедов.
+	L1: Ярость джунглей, выросшая в форме растения. Месть природы никогда не бывает рациональной.
+	L2: Двойная треска. У неё две головы. Джунгли — это как суша-океан; вещам здесь не нужна причина, чтобы отращивать лишние части.
+	L3: Говорят, две головы — вдвое больше мудрости, но они просто выглядят так, будто спорят, в какую сторону плыть.
+	L4: Как 'диета' и 'аппетит'. Всегда борются. Мой аппетит, однако, всегда побеждает.
+}
+
+ProvidenceGift: {
+	R1: Палтус
+	L0: Осквернённая Богиня... противоречие веры и пламени. Довольно жалко.
+	L1: Мы не просто погасили святое пламя, но и угли целой эры.
+	L2: Демоническая Адская Рыба, возрождённая из её пепла. Её температура постоянно зафиксирована на отметке 'ровно столько, чтобы вас не обжечь'.
+	L3: Этот точный контроль заставляет меня подозревать... может, она просто хотела, чтобы её поняли.
+	L4: Но грань между пониманием и войной — всего в одной атаке.
+}
+
+SlimeGodGift: {
+	R1: Палтус
+	L0: Три слизня... или, расколотое божество? Это дуалистическое существование... интересно.
+	L1: Порча и Багрянец. Вечный конфликт этого мира. И мы только что доказали, что конфликт можно 'разрешить'.
+	L2: Пёстрая Сальная рыба. Вычерпнута из жижи. Не спрашивайте о названии.
+	L3: Её цвет меняется в зависимости от настроения наблюдателя. Или, возможно, она имитирует ваш внутренний хаос.
+	L4: Будете смотреть слишком долго — можете начать задаваться вопросом, на чьей вы стороне.
+}
+
+SupremeCalamitasGift: {
+	R1: Палтус
+	L0: Серная Ведьма... мститель. Самый могущественный маг прошлого века.
+	L1: То, что мы только что сделали... мы покончили с легендой или создали новую?
+	L2: Рыба-Принцесса, рождённая из её углей. В ней есть противоречивое изящество, словно цветок, цветущий на руинах.
+	L3: Говорят, она показывает вам человека, которым вы больше всего хотите быть... но эта версия часто меньше всего похожа на вас.
+	L4: Вы приближаетесь к вершине силы Жителя Террарии. Отсюда... предстоит долгий путь вниз.
+}
+
+WallOfFleshGift: {
+	R1: Палтус
+	L0: Стена из плоти и костей... у создателя этого мира, должно быть, были своеобразные идеи.
+	L1: Вы только что нарушили какой-то баланс. Чувствуете? Пульс мира учащается.
+	L2: Нашёл эту Голодную Рыбу в останках. Она выглядит вечно голодной.
+	L3: Прямо как та стена. Всегда преследует, всегда поглощает.
+	L4: Добро пожаловать в 'Сложный Режим'... хотя я не думал, что до этого было 'легко'.
+}
+
+YharonGift: {
+	R1: Палтус
+	L0: Дракон Джунглей... нет, Дракон, Сжигающий Мир. Он горит не плотью, а одержимостью.
+	L1: Верность, настолько чистая, что он сжёг бы себя дотла ради своего хозяина... напоминает мне о косяках рыб, охраняющих коралловые рифы дома.
+	L2: Алая Тигровая рыба. Только что поймал. Мне довольно нравятся её полосы.
+	L3: Держа её, вы чувствуете обжигающую решимость. Это температура воина.
+	L4: Вы победили этого дракона, но мне интересно... в тот момент, когда он пал, нашёл ли он наконец... освобождение?
+}
+
+ADVRewardPopup: {
+	ClickToReceive: Нажмите, чтобы получить
+	ClickToContinue: Нажмите, чтобы продолжить
+	ClickOrWaitToContinue: Нажмите/Подождите, чтобы продолжить
+}
+
+FirstMetSupCal: {
+	Rolename1: ???
+	Rolename2: Серная Ведьма
+	Rolename3: Палтус
+	Line1: Не ожидала, что ты так скоро убьёшь мою 'сестру'.
+	Line2: Ты растёшь... быстрее, чем ожидалось.
+	Line3: Я тебя узнаю... Ты...
+	Line4: Серная Ведьма?! Та, что испепелила половину океана?!
+	Line5: Ха?! Хех... Подумать только, кто-то... или какая-то *рыба*... действительно узнаёт меня. Вы забавные, признаю.
+	Line6: ...Но почему ты жива? Я отчётливо помню, что Серная Ведьма умерла... в прошлом веке.
+	Line7: Занятная рыбка. Моё сознание давно было вплавлено в серное пламя. Это тело... всего лишь труп, управляемый пламенем.
+	Line8: ...Живой разум в нечеловеческом сосуде, связанный с миром через посредника... Ты стала... отклонением?!
+	Line9: Твоё понимание слишком ограничено. Ты не сможешь постичь моё состояние бытия.
+	Line10: Кроме того, я здесь не для этого...
+	QuestionLine: Ну... каков твой выбор?
+	Choice1Text: (Обнажить оружие)
+	Choice2Text: (Хранить молчание)
+	Choice1Response: Тогда позволь мне измерить твою ценность.
+	Choice2Response: ...Жалкий. Действительно 'малёк'. Что ж, прими это как приветственный подарок. Мы ещё встретимся.
+	NoFishLine1: Ты убил мою 'сестру' гораздо раньше, чем я ожидала. И пришёл один?
+	NoFishLine2: Ты становишься сильнее, чем я предполагала.
+	NoFishLine3: Ты спрашиваешь, почему я всё ещё жива? Кажется, ты начал прикасаться к истинам, которые тебе не следовало знать.
+	NoFishLine4: Моё сознание давно было вплавлено в серное пламя. Это тело... всего лишь труп, управляемый
+	NoFishLine5: Но это бессмысленно. Твоё понимание слишком ограничено, чтобы постичь моё состояние бытия.
+	NoFishLine6: Конечно, я явилась не только для того, чтобы объяснять эти тривиальности.
+}
+
+ADVChoiceBox: {
+	TitleText: Выберите
+	DisabledHintFormat: ({0})
+}
+
+SupCalMoonLordReward: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Хахаха...
+	Line2: Так вот как низко он пал.
+	Line3: Ты хоть представляешь, как сейчас выглядит подземелье?
+	Line4: ...Так, зачем ты здесь на этот раз?
+	Line5: Маленькая игрушка для тебя. И небольшое поручение.
+	Line6: Маленький арбалет. Мне нужно, чтобы ты взял его и убил ту... *тварь*... что жалко впитывает геотермальную энергию там, внизу. И помни, ты *должен* использовать этот арбалет.
+	Line7: Если преуспеешь, наше... 'партнёрство'... сможет продолжиться.
+}
+
+SupCalDefeat: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус и [Name]
+	Line1: Подумать только, ты уже достиг этого уровня... Хех. Меня превзошли.
+	Line2: Но ты не сильнейший. Ты можешь быть хорош, но *он* определённо не хуже тебя.
+	Line3: Ярим уже прошёл до конца этого пути. Он достиг вершины того, кем может быть Житель Террарии. Никого нет сильнее.
+	Line4: Жаль, что вы двое не можете встретиться...
+	Line5: Твоё измерение слишком низкое. Ты никогда не поймёшь моё состояние.
+	Line6: ...Моё измерение слишком низкое?
+	Line7: (Я так долго живу, и это первый раз, когда кто-то сказал мне, что моё 'измерение' низкое.)
+	Line8: Я — единственное существо, 'рождённое' эрой. С тех пор как я осмелилась отбросить свою личность Жителя Террарии и объявить себя богом, я, естественно, всемогуща.
+	Line9: Ты говоришь, Ярим может 'взвесить' меня? Тебе придётся принести мне Ксилос.
+	Line10: ......
+}
+
+SupCalPlayerDefeat: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Ты рассыпаешься от прикосновения. Ты из бумаги сделан?
+	Line2: Я-то думала, что нашла игрушку, которая продержится в огне немного дольше.
+	Line3: Я переоценила тебя. Твой нынешний калибр... ты не достоин даже быть моей разминкой.
+	Line4: Возвращайся, когда станешь достаточно силён, чтобы быть достойным моего взгляда.
+	Line5: Хотя... у тебя есть *немного* смелости.
+	Line6: Смертный, который смеет смотреть мне в глаза, не говоря уже о том, чтобы обнажить клинок... ты первый.
+	Line7: (Исчезает в вихре пламени)
+	Line8: Если бы я открыла девятое око, к чёрту последствия... у меня был бы шанс. Если бы до этого дошло...
+	Line9: Эх...
+}
+
+SupCalVictory: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Что... Как это возможно!
+	Line2: Ты... Ты победил меня?!
+	Line3: Невозможно... Это абсолютно невозможно...
+	Line4: Я уже превзошла пределы Жителя Террарии...
+	Line5: ...Кажется, я действительно тебя недооценила.
+	Line6: Но это не конец. Я вернусь.
+	Line7: В следующий раз... В следующий раз я не буду такой неосторожной!
+	Line8: ...Она сбежала.
+}
+
+PallbearerQuestUI: {
+	QuestTitle: Поручение: Охота на Осквернённую Богиню
+	QuestDesc: Победите Осквернённую Богиню, используя только Могильщика.
+	AcceptText: Принять
+	DeclineText: Отказаться
+}
+
+SupCalQuestReward: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Отлично.
+	Line2: Этот арбалет тебе идёт.
+	Line3: Ты решил для меня проблему.
+	Line4: В качестве награды, это твоё.
+	Line5: И этот клинок. Мне нужно, чтобы ты взял его и убил того... *червя*. Не волнуйся, плата будет ещё щедрее.
+	Line6: Я наполнила его частью своего Серного... 'присутствия'. Это должно облегчить тебе задачу.
+	Line7: ......
+}
+
+ResurrectionWarn: {
+	Rolename: Палтус
+	Line0: Постой... ты это почувствовал?
+	Line1: Состояние 'возрождения' приближается к критическому порогу.
+	Line2: Я должен тебя предупредить, это не игра.
+	Line3: Если возрождение завершится... последствия будут ужасны.
+	Line4: Конечный результат... быть поглощённым бездной.
+	Line5: Каждое из этих очей, что открывается во мне... ускоряет процесс возрождения.
+	Line6: Чем больше их открыто, тем быстрее оно нарастает, и тем больше опасность.
+	Line7: Это цена за владение силой бездны. Если я не держу глаза открытыми, мои собственные способности сильно ослабевают.
+	Line8: Нам нужно научиться это балансировать — определять, сколько глаз 'безопасно' держать открытыми во время боя.
+	Line9: Если мы хотим использовать эту силу без последствий...
+	Line10: ...мы должны найти способ заставить эти глаза 'сломаться'.
+}
+
+FishoilQuestScenario: {
+	Rolename: Палтус
+	Line0: Похоже, в последнее время ты поймал изрядное количество обычной рыбы.
+	Line1: Дай мне немного для моих исследований, и я смогу переработать их в бутылку свежего рыбьего жира.
+	Line2: Процесс несложный, просто... утомительный.
+	Line3: У этого рыбьего жира есть потенциал. Он полезнее, чем ты мог бы подумать.
+	Line4: Заинтересован?
+	ChoiceAccept: Хорошо.
+	ChoiceDecline: Не интересует.
+}
+
+FishoilQuestUI: {
+	TitleText: Сбор: Рыба
+	DescText: Положите достаточно рыбы, и я смогу добыть бутылку рыбьего жира
+	SubmitHint: Нажмите, чтобы положить/забрать
+	DeclineText: Отказаться
+	CompletedText: Завершить
+	RewardText: Забрать награду
+	QuickPutText: Быстро добавить
+}
+
+DoGQuestUI: {
+	QuestTitle: Поручение: Пожиратель Богов
+	QuestDesc: Победите Пожирателя Богов, используя Сердцеед (Heartstopper).
+	AcceptText: Принять
+	DeclineText: Отказаться
+}
+
+SupCalDoGQuestReward: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Чистая работа.
+	Line2: Этот клинок... как всегда, приносит удовлетворение.
+	Line3: Когда я ещё была смертной, именно им я вырезала сердце своего мастера. Хорошо работает, не так ли?
+	Line4: Возьми.
+	Line5: Ты когда-нибудь... задумывался, что бы ты сделал, если бы в следующий раз моим поручением было убить МЕНЯ?
+	Line6: Какая жалость. Тебе и ему не суждено встретиться. Вам двоим было бы... о чём поговорить.
+	Line7: ......Я её и правда терпеть не могу.
+}
+
+AchievementToast.AchievementUnlocked: Достижение получено!
+
+SupCalYharonQuestReward: {
+	Rolename1: Серная Ведьма
+	Rolename2: Палтус
+	Line1: Ах... наконец-то всё кончено.
+	Line2: Для меня... тот дракон... был одним из очень немногих существ, достойных уважения.
+	Line3: Знать, что умрёт, и всё равно стоять на своём... Даже если его оживит Ауритовая Душа, тот, кто вернётся — всего лишь копия.
+	Line4: Жаль. Он преуспел в послушании, а ты преуспел в... хм, *выживании*?
+	Line5: Возьми. Ауритовый слиток. Когда-то называемый 'Золотом Чистилища', это предел силы, которого может коснуться смертный.
+	Line6: А теперь... моя очередь.
+	Line7: Это что за шутки...?
+}
+
+YharonQuestUI: {
+	QuestTitle: Поручение: Испепеляющий Дракон
+	QuestDesc: Используйте Мурамасу, чтобы убить Испепеляющего Дракона, Ярона.
+	AcceptText: Принять
+	DeclineText: Отказаться
+}
+
+HelensInterference: {
+	Rolename: Палтус
+	Line0: ...Эй, ты свободен?
+	Line1: Сегодня..... э.... хорошая погода, да?
+	Line2: (Палтус, кажется, что-то прячет.)
+	Question1: ......
+	Choice1_1: Что ты делаешь?
+	Choice1_2: Отдай!
+	Choice1_3: (Молчать)
+	FinalQuestion: Не ходи дальше... пожалуйста. Эта ведьма, её поручения, то, что она хочет... Я не хочу этого видеть. Мы же можем пройти остаток пути сами, да?
+	FinalChoice_Continue: Продолжить поручение
+	FinalChoice_Stop: Прекратить поручение
+
+	Branch_Anger: {
+		Line1: ...Ты правда... *настолько* ей веришь?
+		Line2: Разве ты не заметил? Вещи, которые даёт тебе эта ведьма... они все ненормальные.
+		Line3: Это напоминает мне о чём-то... в Бездне... Я... Я коснулся этого... холодное, ужасающее, вызывающее дрожь... Ух... Я не хочу вспоминать.
+		Line4: Ты должен был это заметить...
+	}
+
+	Branch_Inquiry: {
+		Line1: Мне в последнее время всё тревожнее.
+		Line2: Этот клинок... когда я коснулся его, мне показалось, я слышал... как кто-то *смеётся*.
+		Line3: Они все похожи на... какой-то 'носитель'.
+		Line4: Я не могу позволить тебе идти с ним дальше, по крайней мере...
+	}
+
+	Branch_Silence: {
+		Line1: ...Ты страшнее всего, когда молчишь.
+		Line2: ...Ладно, я спрятал 'Сердцерез'.
+		Line3: Эта ведьма... она опасна, она пришла из ниоткуда. Если это ловушка, ты так просто в неё пойдёшь?
+		Line4: Остановись... пожалуйста. Ради меня.
+	}
+
+	FinalBranch_Continue: {
+		Line1: ...Ладно. Я знал, что ты так выберешь.
+		Line2: ......
+		Line3: Я верну его. Но я надеюсь... когда ты будешь его использовать... ты будешь осторожен.
+		Line4: И с той ведьмой тоже...
+		Line5: Я буду сопровождать тебя... до конца.
+	}
+
+	FinalBranch_Stop: {
+		Line1: ...Ты... ты правда готов остановиться?
+		Line2: ......
+		Line3: Пойдём. А эта ведьма пусть катится в ад.
+	}
+}
+
+HellGift: {
+	R1: Палтус
+	L0: Это чёртово место... Ад становится всё горячее.
+	L1: У меня есть идея. Давай просто прокопаем морское дно и сделаем это место частью океана.
+	L2: Геотермальный горячий источник... охватывающий весь континент.
+	L3: ...Просто думать об этом расслабляет.
+	L4: Ах, да. Я поймал рыбу.
+	L5: Сначала я подумал, что это гид по адским источникам, но... он просто похож на него.
+}
+
+ExoMechdusaSum: {
+	// DraedonName: Draedon
+	// IntroLine1: You understand... this moment has been long anticipated.
+	// IntroLine2: I am fascinated by all apects of the unknown, but nothing fascinates me more than your very nature.
+	// IntroLine3: I will show you my god-surpassing creations.
+	// IntroLine4: And you... you will show me your nature in combat.
+	// IntroLine5: Now. Make your selection.
+	// SelectionPrompt: Make your choice.
+	// BossRushLine: Make your choice. You have 20 seconds.
+	// ChoiceAres: Ares
+	// ChoiceThanatos: Thanatos
+	// ChoiceTwins: Artemis
+}
+
+ExoMechEndingDialogue: {
+	// DraedonName: Draedon
+	// EndLine1: An unknown variable. You... are a singularity.
+	// EndLine2: You are an outsider to this land and its history, just as I am.
+	// EndLine3: ...My apologies. But after a "demonstration" such as that, I must take a moment to collate my thoughts.
+	// EndLine4: The blood spilled thus far has left this continent stagnant and lifeless.
+	// EndLine5: You have spilled your own blood. Perhaps it will be enough to end this era of despair... Regardless, it is a change I wished to see.
+	// EndLine6: You now wish to reach the tyrant. Unfortunately, I cannot assist you.
+	// EndLine7: This is not born from spite. My only goal from the beginning was to observe this battle.
+	// EndLine8: But you have succeeded in the past. You will find a way, eventually.
+	// EndLine9: I must respect and acknowledge your victory. But for now, my attention must return to my mechanisms.
+	// KillAttemptLine: ...Your actions are... unnecessary.
+}
+
+DeploySignaltowerScenario: {
+	// DraedonName: Draedon
+	// IntroLine1: I must conduct a critical experiment, and you are the most suitable individual currently available to assist me.
+	// IntroLine2: One hundred Terran years ago, an energy storm swept through the galaxy, destroying the majority of my facilities on this planet.
+	// IntroLine3: Everything was too distant. By the time I realized my monitoring network on Terra had gone dark, a century had passed.
+	// IntroLine4: After that storm, interstellar travel became extremely unstable. I must, therefore, rebuild my foundational systems on Terra.
+	// IntroLine5: I require your assistance in deploying the latest quantum entanglement array.
+	// IntroLine6: This technology bypasses the limitations of light-speed, achieving instantaneous, galaxy-spanning communication.
+	// IntroLine7: But before it can be applied, this world requires a sufficient number of quantum entanglement nodes.
+	// IntroLine8: This is the quantum signal tower I have designed. Its core utilizes entanglement stabilizers and zero-point energy amplifiers.
+	// TechExplainLine1: Each tower can establish a quantum entanglement link with other nodes, forming a communications network that spans the galaxy.
+	// TechExplainLine2: Under theoretical conditions, its transmission latency can approach zero.
+	// TaskLine: I need you to deploy these signal towers across the world to establish the complete entanglement network.
+	// AcceptPrompt: Well? Do you accept?
+	// ChoiceAccept: Accept commission
+	// ChoiceDecline: Later
+
+	Choice_Accept: {
+		// AcceptResponse: Excellent. Here are the schematics for the towers. Report to me on your progress when you are finished.
+		// L1: This is the first batch of materials. It is limited. Construct the main framework of the signal tower first.
+		// L2: Once the first node is operational, the communication link will begin to stabilize.
+		// L3: At that point, I will be able to transport more resources continuously through subspace for larger-scale construction.
+	}
+
+	// Choice_Decline.DeclineResponse: Understood. You may return to me when you are prepared.
+}
+
+FirstTowerBuiltScenario: {
+	// DraedonName: Draedon
+	// Line1: The new quantum entanglement node is functioning smoothly. The signal is stable.
+	// Line2: Good. This is the first step for the network. Continue deploying the remaining signal towers.
+	// Line3: When the number of nodes reaches the standard, I will be able to conduct precise observations over a much wider area.
+	// Line4: Continue maintaining your efficiency.
+}
+
+QuestCompleteScenario: {
+	// DraedonName: Draedon
+	// Line1: All quantum nodes are online. The network is fully operational.
+	// Line2: Data transmission latency is consistent with theoretical values. No deviations.
+	// Line3: Your performance was faster than my projections. Commendable.
+	// Line4: As payment, I am granting you access to a selection of my equipment and clearances. You may use them as you see fit.
+	// Line5: If you require assistance, you may contact me directly through the communications network.
+}
+
+ExoMechHardDefeat: {
+	// DraedonName: Draedon
+	// HardDefeatLine1: Decision-making under extreme duress. This is the data I wished to see.
+	// HardDefeatLine2: Your ability to maintain rationality under pressure is... satisfactory.
+}
+
+ExoMechQuickDefeat: {
+	// DraedonName: Draedon
+	// QuickDefeatLine1: ...This timeframe is significantly below my predictive models.
+	// QuickDefeatLine2: It seems I underestimated your current combat efficiency.
+	// QuickDefeatLine3: Perhaps it is time to consider... more aggressive... design philosophies.
+}
+
+ExoMechSecondDefeat: {
+	// DraedonName: Draedon
+	// SecondDefeatLine1: Interesting. Your rate of adaptation exceeds my projections.
+	// SecondDefeatLine2: The data indicates you have already made targeted improvements since the last engagement.
+	// SecondDefeatLine3: It appears I must re-evaluate your learning curve.
+}
+
+ExoMechThirdDefeat: {
+	// DraedonName: Draedon
+	// ThirdDefeatLine1: Consistent performance. A component of the perfection I strive for.
+	// ThirdDefeatLine2: You have proven your capabilities are not... a statistical anomaly.
+}
+
+// MusicToast.NowPlaying: Now Playing
+
+EternalBlazingNow: {
+	// Rolename1: Halibut
+	// Rolename2: ???Brimstone Witch???
+	// Line1: Are you kidding me...
+	// Line2: They've vanished... Is this fire... *sealing* the past?!
+	// Line3: This witch... her power is truly no ordinary magic.
+	// Line4: Was she holding back during the fight? No matter. Even against this kind of power, I'm confident I can kill you all over again.
+	// Line5: I cannot die... but... this is close enough.
+	// Line6: You have done well... Perhaps... you truly are the "Era's Chosen" he spoke of, the one worth waiting for.
+	// Line7: So... I have one last thing to ask of you.
+	// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
+	// Line9: But my consciousness... in this endless sea of fire... it will eventually be worn down to nothing.
+	// Line10: I can last 30 more years, at most.
+	// Line11: ...So, you want *him* to replace you?
+	// Line12: That's right. It is the only way.
+	// Line13: When my consciousness fades completely, the entire world will be incinerated.
+	// Line14: Besides... if you wish to end this era, a mortal vessel is far too fragile...
+	// Line15: Absolutely not! Let him become a monster like you?! Over my dead body!
+	// QuestionLine: ......
+	// Choice1Text: (Stop Halibut)
+	// Choice2Text: (Remain silent)
+	// Choice1Line1: ...Is this your choice?
+	// Choice1Line2: I understand...
+
+	HelenEpilogue: {
+		// EpilogueLine1: I'm waiting for an idiot.
+		// EpilogueLine2: ...
+		// EpilogueLine3: Welcome back...
+	}
+
+	// Rolename3: Brimstone Witch
+
+	WitchFarewell: {
+		// FarewellLine1: In this long life, I have seen countless dawns and endings.
+		// FarewellLine2: Flames devour eras, but also illuminate new beginnings. I thought this time would be no exception.
+		// FarewellLine3: I never expected to have a companion on this final road.
+		// FarewellLine4: For me... an ending like this... is more than enough.
+		// FarewellLine5: Your existence proves that this land has not truly withered.
+		// FarewellLine6: I believe you will walk further than I ever did.
+		// FarewellLine7: And I... I can finally rest.
+		// FarewellLine8: Don't look back. There are more important things ahead of you.
+		// FarewellLine9: Just... think of it as me finally reaching my own destination on this long journey.
+		// FarewellLine10: And so... this is enough.
+		// FarewellLine11: Go on, small fry.
+	}
+
+	// AchievementTitle: "[BE] Ending: The Eternally Burning Present"
+	// AchievementTooltip: The past is consumed by fire; an aberrant body touches eternity.
+}
+
+SCalAltarScenario: {
+	// Rolename1: Brimstone Witch
+	// L1: It is not yet time. There is still another enemy blocking your path.
+	// L2: Go piece together that pile of mechanical toys of yours, then defeat him.
+	// L3: ...What? Do I need to repeat myself?
+}
+
+SupCalDisplayText: {
+	// SummonWithProverbs: You... you actually came wearing that ring... Very well. I will show no mercy.
+	// SummonWithoutProverbs: Hahaha... This moment... I have awaited it for so long.
+	// SummonRematchWithProverbs: You're still wearing that ring...
+	// SummonRematchWithoutProverbs: You again... It seems your understanding of death is still... insufficient.
+	// StartLowHealth: You already look to be on your last breath.
+	// StartMediumHealth: Your technique still requires improvement.
+	// StartDefault: How strange. You should be dead already...
+	// StartRematchLowHealth: You already look to be on your last breath.
+	// StartRematchMediumHealth: Wounded? How interesting.
+	// StartRematchDefault: How strange. You should be dead already...
+	// BH3WithHalibut: Wielding such... aberrant... power in a mortal vessel... To have come this far, you are indeed worthy of respect.
+	// BH3WithoutHalibut: You are skilled... but when will you realize you are merely attacking a plume of fire in vain?
+	// BrothersWithHalibut: It is time you met my family. They failed on the path to becoming... 'other'. Do not follow their example.
+	// BrothersWithoutHalibut: It is time you met my family. Should you die at another's hand, I will keep your soul here.
+	// Phase2WithHalibut: Are you certain you do not wish to beg for mercy?
+	// Phase2WithoutHalibut: Are you certain you do not wish to beg?
+	// BH4Text: Stand still and face me!
+	// SeekerRingText: Your power comes from external sources. As you are, you are nothing... It reminds me of that hypocrite.
+	// BH5Text: The scales of victory are... uncertain. You only need to stand still for a moment to change this, understood?
+	// Sepulcher2Text: If only one of us can live today... who do you think I *want* it to be?
+	// Desperation1Text: JUST... STAND... STILL... YOU... SMALL FRY!
+	// Desperation2Text: Don't get arrogant—I was merely toying with you before!
+	// Desperation3Text: *cough*... *cough*... I admit, I am not in peak condition today.
+	// Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
+	// Acceptance1Text: This... is the happiest I have been in a hundred years...
+	// Acceptance2Text: Perhaps... you truly can end this damned era.
+}
+
+SupCalDisplayTextByBossRush: {
+	// SummonBossRush: Heh… The aura on you almost reminds me of the one who has long since perished.
+	// SummonBossRushWithProverbs: That ring… even a mere remnant like me can feel its trembling.
+	// StartBossRush: I may be nothing more than an anomalous construct born from the Golden Soul… but there are duties even I must fulfill.
+	// BH2BossRush: Your strength is impressive… yet still insufficient.
+	// BH3BossRush: The shadows of the past… long since reduced to ashes, scattered on the path you walk. Heh…
+	// BrothersBossRush: These souls… shadows of shadows. The more you copy something, the sadder it becomes, don’t you think?
+	// Phase2BossRush: Even a fabricated life can have something worth fighting for.
+	// BH4BossRush: Stand still! Let me see if you can truly bear the weight of an era!
+	// SeekerRingBossRush: Your power resembles that person in her memories far too closely… mere coincidence?
+	// BH5BossRush: As an anomalous creation, my purpose is to face this very moment.
+	// Sepulcher2BossRush: The final trial begins now… show me whether you are worthy of carrying her path forward.
+	// Desperation1BossRush: Even a fragment…
+	// Desperation2BossRush: Don’t assume victory is yours just yet…
+	// Desperation3BossRush: Heh… the life of a shadow was fragile from the start…
+	// Desperation4BossRush: You’ve won… but her journey is far from over.
+	// Acceptance1BossRush: Perhaps… this is where I was always meant to end.
+	// Acceptance2BossRush: Good luck… small fry.
+}
+
+SupCalDisplayTextNormal: {
+	// SummonText: This sea of brimstone fire... even a vengeful spirit would feel the scorch, wouldn't they?
+	// SummonRematchText: Prove it to me. Survive.
+	// StartText: Mortal shells are always so fragile in this heat... or perhaps, you can surprise me?
+	// StartRematchText: Not burnt to cinders yet? Then let us begin again, until you are forged into steel... or reduced to ash.
+	// BH2Text: You have not yet collapsed within the flames... you burn slower than I imagined.
+	// BH2RematchText: I admit you possess some courage, but your skill is still far from sufficient.
+	// BH3Text: You traveled all this way, just to subject that mortal frame to pain?
+	// BH3RematchText: The last time I rained down such calamity was a century ago. Do you wish to experience it as well?
+	// BrothersText: They once burned everything for the sake of that path... Now, let these ashes measure your worth.
+	// BrothersRematchText: Perhaps they are merely empty shells with a sliver of soul, but they are more than enough to deal with you.
+	// Phase2Text: From here on... the flames will no longer be restrained. Do not die too quickly.
+	// Phase2RematchText: Once again, let us begin.
+	// BH4Text: Do not think you can escape my grasp!
+	// BH4RematchText: I am curious... did you learn anything from our first encounter?
+	// SeekerRingText: How did you dodge that? This is not how it should go... Stop!
+	// SeekerRingRematchText: At least my judgment was not mistaken...
+	// BH5Text: I admit the battle thus far was mere child's play. Now, I will give it my all!
+	// BH5RematchText: ...Isn't this exciting?
+	// Sepulcher2Text: If only one of us can survive this... who do you think I *wish* it to be?
+	// Sepulcher2RematchText: Pay attention. The crawling tomb approaches... and it hungers for a new tenant.
+	// Desperation1Text: Just STOP!
+	// Desperation2Text: If I fail here, then what was the point of it all?!
+	// Desperation3Text: Someone has already walked your path to its end. It is a dead end... What makes you think *you* can be different?!
+	// Desperation4Text: If you merely repeat his madness, you will be nothing more than fresh ash among these embers!
+	// Acceptance1Text: I burned myself into this inhuman form, solely to find that one glimmer of hope...
+	// Acceptance2Text: I have no strength left to stand...
+	// Acceptance3Text: An aberration like you... perhaps you truly can carve out... a future even I have never seen.
+	// Desperation1RematchText: An impressive performance. You fought well.
+	// Desperation2RematchText: Without a doubt, your strength grows with every passing moment.
+	// Desperation3RematchText: I truly hope you will not repeat our mistakes.
+	// Desperation4RematchText: If you can forge a new path... then there is still hope for everything.
+}
+
+FirstMetTzeentch: {
+	// L1: Hush... don't look back.
+	// L2: I've been watching you build these little contraptions.
+	// L3: Ten quantum nodes. Ten pathways. Ten possible futures.
+	// L4: A cute little network. Do you have any idea how many... *things*... it will attract?
+	// L5: Ah, right. I should introduce myself.
+	// L6: Some call me the Oracle. Others, the Feather of Fate...
+	// L7: But I'm more interested in what... *you*... would call me, right now.
+	// L8: Go on. Let me hear it.
+	// Choice1Text: A... Magician...?
+	// Choice2Text: A Liar.
+	// Choice3Text: No. I don't know you.
+	// Choice1_R1: Hah! Such a... gentle term.
+	// Choice1_R2: A pity. I don't perform magic. I only change facts.
+	// Choice1_R3: Continue on. We'll put 'Magician' on the tab for now.
+	// Choice2_R1: Ah. Direct, blunt, honest. Such precious qualities.
+	// Choice2_R2: But I'm afraid I never lie.
+	// Choice2_R3: I simply tell you... what is about to happen.
+	// Choice2_R4: Whether you believe it or not... it has already occurred.
+	// Choice3_R1: You don't? Excellent.
+	// Choice3_R2: All stories begin with those words.
+	// Choice3_R3: It's just... most of the endings are not very pleasant.
+	// EndLine1: Well, then. We will meet again.
+	// EndLine2: Soon.
+}
+
+DyeProtest: {
+	// R1: Halibut
+	// L1: Honestly, I don't really like wearing those bright colors.
+	// L2: Get it washed off, will you? Put it in the dye vat, then use that water bucket.
+}
+
+// GiveBlazingBud.MessageText: The burning embers whisper in the wind, and a strange flower drifts into your hands…
+
+FirstMetOldDuke: {
+	// OldDukeName: Old Duke
+	// HelenName: Halibut
+	// L0: ......
+	// L1: Sheathe your bloodlust, youngster. There is no need for swords to be drawn the moment we meet.
+	// L2: I am old. I have grown weary of such violent games.
+	// L3: We can cooperate.
+	// L4: I am collecting something special: Ocean Scraps.
+	// L5: If you can find more for me, I will make it well worth your while.
+	// L6: Here is a sample.
+	// B1: Have you changed your mind?
+	// B2: Farewell, then.
+	// HL1: The old professor...? Though, he doesn't seem to recognize me.
+	// HL2: His words are credible. We were colleagues at Sulphurous Sea University. He is a titan in the field of marine archaeology.
+	// C1: Accept cooperation
+	// C2: Refuse cooperation
+	// C3: Refuse and draw weapon
+	// C1Response: Excellent. I hope we have a pleasant partnership.
+	// C2Response: ...Then I shall take my leave. If you think it through, you are welcome anytime.
+	// C3Response: ...It seems you insist. Then let me measure your worth.
+}
+
+OldDukeCampsite: {
+	OldDukeCampsiteRenderer: {
+		// InteractHint: "[Right Click] Talk"
+		// GreetingText: Hm? Hello there...
+	}
+
+	// OldDukeCampsite.TitleText: Old Duke's Campsite
+}
+
+CampsiteInteractionDialogue: {
+	// OldDukeName: Old Duke
+	// GreetingLine: What do you require?
+	// Choice1Text: I am here to trade.
+	// Choice2Text: I brought the things you wanted.
+	// Choice3Text: Just wandering around.
+	// Choice4Text: I want to spar with you.
+	// Choice5Text: Tell me about your past.
+	// Choice2DisabledHint: Insufficient Ocean Scraps
+	// Choice1Response: See what I have here.
+	// Choice2Response: Good. These scraps are sufficient. This is your due reward.
+	// Choice3Response: ......
+	// QuestCompleteLine: Hmm... Do you have any new discoveries? I am very busy right now.
+	// B1: I will spend the next few days deciphering these scraps. I will notify you once I am finished.
+	// Choice4_R1: I may be old, but I haven't lost the skills of my youth.
+	// Choice4_R2: Then let us see if you have improved recently.
+	// Choice4_R3: Using me as a whetstone is not a wise move...
+
+	CampsiteChatDialogue: {
+		// OldDukeName: Old Duke
+		// GreetingLine: Want to chat?
+		// Choice_BackToMain: Change topic
+		// Choice_EndConversation: That is all
+		// Choice_PastStory: About your current state
+		// Choice_Research: What are you piecing together?
+		// Choice_SulfurSeaHistory: The truth of this sea
+		// Choice_AboutFragments: About those fragments
+		// Choice_PersonalLife: You don't look so good
+		// Choice_Farewell: Goodbye
+		// Past_Intro: That is a past deliberately wiped away. Or perhaps, there are few fish left who know of it.
+		// Past_University: We were arrogant then, thinking we could measure the whole world with a ruler. Until we dug up something... illogical at the bottom of the abyss.
+		// Past_Prime: That thing could not be killed, nor destroyed. It was not a living creature.
+		// Past_Accident: There were no survivors in that incident. When I was being assimilated by that coldness, I made a manic decision.
+		// Past_Mutation: Since there was no escape, I joined it. I forced it into my body. Since then, I am not truly alive, nor can I die.
+		// Past_Exile: It is just as well. This body is strong enough to suppress this sea.
+		// Past_Reflection: I just want to guard this sea. If those things try to crawl out of the abyss, that will be the moment I risk total resurgence and death to stop them.
+		// Research_Intro: I am trying to reconstruct a story, or rather, recover a lost form of experience.
+		// Research_CurrentWork: These fragments cling to memories of the past. They record how that ancient civilization sought a path to survival in a desperate situation.
+		// Research_Breakthrough: To fight that kind of terror, brute force is useless. You must find their 'killing rules' and exploit them.
+		// Research_Difficulties: But deciphering them is dangerous. These fragments are mediums themselves. Stare at them too long, and you might hear sounds you shouldn't.
+		// Research_Theory: If I can assemble all the pieces, perhaps I can find a way to permanently seal the source of the abyss.
+		// Choice_Research_Details: What do you mean by 'killing rules'?
+		// Choice_Research_Help: What do I need to do?
+		// Choice_Research_Back: Sounds crazy
+		// Research_Details1: For example, there are things you cannot look at, names you cannot speak. Once a medium is triggered, death is inevitable. That civilization tried to bind gods with rules.
+		// Research_Details2: They even built massive containers, attempting to imprison those things. Unfortunately, the containers leaked.
+		// Research_Help: Help me find more fragments. The rest of my life will be spent researching this.
+		// History_Intro: The Sulphurous Sea is merely a facade. This is the residue left after the encroachment of that thing's domain.
+		// History_Origin: This was once the Sapphire Sea, until the source went out of control.
+		// History_Civilization: That ancient civilization was powerful. They learned to utilize that eerie power. They built cities, like dancing on a powder keg.
+		// History_Cataclysm: Naturally, the balance broke. Some terror revived, and all living things were erased in an instant, becoming part of this dead silence.
+		// History_Ruins: What you see now is merely the residue after that event. The water changed color because it died. Completely died.
+		// History_Warning: If you ever see the dead waving at you, or hear familiar calls... remember, that is just this sea of corpses mimicking the living.
+		// Choice_History_MoreRuins: Where is the most dangerous place?
+		// Choice_History_Dangers: Are there any countermeasures?
+		// Choice_History_Back: Unsettling
+		// History_MoreRuins1: At the very bottom of that corpse sea. There is a door. Do not knock. No one can handle what is locked behind it, unless that tyrant comes.
+		// History_MoreRuins2: There are still unopened rooms in those sunken ruins. They are secret chambers cast from special heavy metals, designed to cut off the perception of those things.
+		// History_Dangers1: Aside from the mutated walking dead, beware of things you cannot see. Sometimes, the fatal strike is invisible.
+		// History_Dangers2: Do not trust your eyes. Do not respond to inexplicable calls. In that sea of corpses, the living are the anomalies.
+		// Fragments_Intro: Ocean Scraps... in my eyes, they are bloodstained archives.
+		// Fragments_Nature: They are the residue of a phenomenon. Like compressed curses.
+		// Fragments_Power: Each fragment is a 'medium'. Alone, they may be harmless, but when enough gather, they create a collision of eerie forces.
+		// Fragments_Collection: They are scattered across every corner of the dead sea—some buried under ruins, others grown into the flesh of creatures.
+		// Fragments_Purpose: I am still piecing them together, trying to reconstruct the source of that disaster. Only by figuring out how that thing killed can I find a way to imprison it.
+		// Personal_Intro: Getting by.
+		// Personal_Daily: I spend most of my time sleeping to reduce fluctuations in my consciousness. If my emotions get too intense, the thing inside me gets... restless.
+		// Personal_Loneliness: Solitude is good. If it gets too lively around here, it must be because 'they' have come. I am used to being a lone fish. It is safer for me, and for the world.
+		// Personal_Memories: My memory is blurry. Sometimes I cannot tell which memories are mine, and which are... the memories of other individuals remaining in this body.
+		// Personal_Hope: Seeing you reminds me of myself back then. Ignorant and fearless. I hope you don't end up like me, turning yourself into this shape.
+		// Choice_Personal_Tea: What are you drinking?
+		// Choice_Personal_Past: Are you still considered... a fish?
+		// Choice_Personal_Back: Take care
+		// Personal_Tea1: This is brewed from several special plants in the abyss. The taste... is like rotting mud.
+		// Personal_Tea2: Want a cup? It will calm you down like a dead fish.
+		// Personal_Past1: Who knows? Maybe the real me died long ago, and I am just a... ghost with the Old Duke's memories? Every death triggers a restart, returning to the moment before death.
+		// Personal_Past2: But I still remember the feeling of sunlight on my face, the touch of books. As long as I remember these, I consider myself alive.
+		// Personal_Past3: If not for that accident... I would probably be lying peacefully in a grave by now. Instead of being like this, unable to die even if I wanted to.
+		// Farewell_Normal: Let's leave it at that. Come find me if you need anything.
+		// Farewell_Friendly: Be careful, youngster. In this world, a peaceful end is a luxury.
+	}
+}
+
+FirstCampsiteDialogue: {
+	// OldDukeName: Old Duke
+	// L0: You've come.
+	// L1: I have been collecting these scraps for quite some years.
+	// L2: They are... peculiar. They do not look like products of natural evolution, but rather foreign objects that "invaded" this world.
+	// L3: I hope you understand what I mean. My intuition tells me they should have been formless things, merely choosing a form that Terrarian creatures could comprehend.
+	// L4: Regardless... I wish to decipher them, but I lack sufficient quantity.
+	// L5: I hope you can help me collect enough Ocean Scraps.
+	// L6: I will provide you with appropriate compensation.
+}
+
+ComeCampsiteFindMe: {
+	// OldDukeName: Old Duke
+	// B1: ...Come have a cup of tea when you have time.
+	// C1: I have business with you.
+	// C2: I was just fishing for fun...
+	// B1_NO: Come find me first. You'd best learn the path.
+}

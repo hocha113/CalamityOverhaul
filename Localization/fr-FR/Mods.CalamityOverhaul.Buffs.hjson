@@ -1,1 +1,29 @@
+SoulBurning: {
+	DisplayName: Feu de l'âme
+	Description: Flamme de l'enfer
+}
 
+HellburnBuff: {
+	DisplayName: Explosion de feu de l'enfer
+	Description: Flamme de l'enfer
+}
+
+VoidErosion: {
+	DisplayName: Érosion du vide
+	Description: Se transforme peu à peu en néant
+}
+
+DestroyerSummonBuff: {
+	// DisplayName: Destroyer Summon Buff
+	// Description: The Mini Destroyer will follow you into battle
+}
+
+FrenziedMachineSoul: {
+	// DisplayName: Frenzied Machine Soul
+	// Description: The Machine Spirit is overjoyed!
+}
+
+FishoilBuff: {
+	// DisplayName: Fishoil
+	// Description: You feel that your skin is becoming oily
+}

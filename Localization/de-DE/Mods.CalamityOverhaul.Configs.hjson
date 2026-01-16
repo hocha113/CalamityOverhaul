@@ -1,1 +1,173 @@
+CWRServerConfig: {
+	DisplayName: Inhalt eingeben
 
+	WeaponOverhaul: {
+		Label: Waffen Überholung
+		Tooltip:
+			'''
+			Durch Aktivierung werden die meisten Waffen geändert.
+			[c/FF0000:wenn Sie die optimale Erfahrung des Katastrophe-Overhaul-Inhalts wünschen, aktivieren Sie es bitte!]
+			'''
+	}
+
+	ScreenVibration: {
+		Label: Bildschirmvibration für spezielle Waffenangriffe
+		Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
+	}
+
+	MurasamaSpaceFragmentationBool: {
+		Label: Murasama-Endeffekt der Raumfragmentierung
+		Tooltip:
+			'''
+			Standardmäßig aktiviert, erzeugt Murasama bei der Ausführung von Endtechniken einen Bildschirmeffekt der Fragmentierung, um den Schlag zu verstärken
+			Durch Deaktivieren werden diese Effekte ausgeschaltet, je nach persönlichen Vorlieben einstellbar
+			'''
+	}
+
+	HalibutDomainConciseDisplay: {
+		// Label: Halibut Ocean Domain Minimal Display
+		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+	}
+
+	Headers: {
+		CWRSystem: Großreparatursystemeinstellungen
+		CWRWeapon: Großreparaturwaffeneinstellungen
+		CWRUI: Großreparatur-UI-Einstellungen
+	}
+
+	LensEasing: {
+		Label: Objektiv-Easing
+		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
+	}
+
+	CartridgeUI_Offset_X_Value: {
+		Label: Patronen-UI-Horizontalversatzwert
+		Tooltip: ""
+	}
+
+	CartridgeUI_Offset_Y_Value: {
+		Label: Patronen-UI-Vertikalversatzwert
+		Tooltip: ""
+	}
+
+	WeaponHandheldDisplay: {
+		Label: Anzeige für handgehaltene Waffen
+		Tooltip:
+			'''
+			Wenn aktiviert, haben die meisten Waffen Handanimations- und spezielle Nutzungsaktionen
+			Dieser Effekt hat eine hohe Priorität und überschreibt die Handanimations der meisten Drittanbieter-Module
+			Standardmäßig aktiviert und aus visuellen Gründen wird empfohlen, ihn nicht zu deaktivieren
+			'''
+	}
+
+	ActivateGunRecoil: {
+		Label: Schusswaffen-Rückstoß [c/06e33f:(Experimentell)]
+		Tooltip: Nach der Aktivierung haben Schusswaffen einen Rückstoßeffekt beim Feuern. Deaktivieren Sie es, um diese Effekte auszuschalten.
+	}
+
+	MagazineSystem: {
+		Label: Magazinsystem
+		Tooltip:
+			'''
+			Ein umfangreiches Inhaltsystem, das die meisten Waffen mit einem Magazinsystem ausstattet, einschließlich Nachladen und Mischen von Munition
+			Das Deaktivieren deaktiviert diese Inhalte, Waffen verwenden dann das Originalmunitionssystem
+			[c/fff08c:Beachten Sie], dass das Spielgleichgewicht der Großreparatur auf dem [c/fff08c:Magazinsystem aktivieren] basiert
+			Wenn Sie es deaktivieren, können einige Fernwaffen [c/de0808:übermäßig stark] werden
+			Daher wird das Spielgleichgewicht der Fernwaffen [c/de0808:nicht diskussionswürdig sein], wenn Sie diese Option deaktivieren
+			[c/fff08c:Wenn Sie diese Option ändern, betreten Sie die Welt erneut, um sicherzustellen, dass alle Effekte korrekt angepasst sind]
+			'''
+	}
+
+	BowArrowDraw: {
+		Label: Bogenpfeilzeichnung
+		Tooltip:
+			'''
+			Zeigt beim Angriff mit einem Bogen animierte Pfeilzeichnungen in Echtzeit an
+			Standardmäßig aktiviert, kann je nach persönlicher Vorliebe eingestellt werden
+			'''
+	}
+
+	EnableCasingsEntity: {
+		Label: Aktiviere Hülsenentitäten
+		Tooltip: Wenn Sie das störende Aufsammeln von Hülsen vermeiden möchten, ist das Deaktivieren dieser Option eine gute Idee
+	}
+
+	LoadingAA_Volume: {
+		Label: Lade-SFX Lautstärke Faktor
+		Tooltip: Je höher der Wert, desto lauter ist der Sound; 1 entspricht der Originallautstärke
+	}
+
+	ShotgunFireForcedReloadInterruption: {
+		Label: Schrotflintenfeuer erzwingt Unterbrechung der Zwangsladung[c/06e33f:(Experimentell)]
+		Tooltip:
+			'''
+			Einige Schrotflinten besitzen diese Funktion: Beim Laden von Patronen wird der Versuch, zu feuern, den Ladevorgang unterbrechen
+			Wenn aktiviert, besitzen alle Schrotflintenwaffen diese Funktion
+			'''
+	}
+
+	WeaponLazyRotationAngle: {
+		// Label: Weapon Inertia Rotation Angle Update
+		/* Tooltip:
+			'''
+			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
+			where the facing direction changes only once when firing.
+			''' */
+	}
+
+	BiologyOverhaul: {
+		Label: Biologische Verhaltensüberlagerung[c/06e33f:(Experimentell)]
+		Tooltip:
+			'''
+			[c/c20909:Nicht vollständig implementiert]
+			Standardmäßig aktiviert, ändert das Verhalten einiger Kreaturen, z. B. Boss-KIs unter dem Einfluss des Tod-Moduls
+			Dies kann die Spielherausforderung erhöhen, je nach Vorliebe kann dies deaktiviert werden
+			'''
+	}
+
+	EnableSwordLight: {
+		Label: Schwertlicht aktivieren
+		Tooltip:
+			'''
+			Standardmäßig aktiviert, viele Schwertwaffen werden schillernde Lichteffekte haben.
+			In den meisten Fällen wird dies das Spiel cooler machen.
+			'''
+	}
+
+	MuraUIStyleType: {
+		Label: Mura UI-Stil Auswahl
+		Tooltip:
+			'''
+			Stil 1: Verfeinert - Schwebend über dem Kopf
+			Stil 2: Verfeinert - Kompakt
+			Stil 3: Klassisch - Schwebend über dem Kopf
+			Stil 4: Klassisch - Kompakt
+			Stil 5: Conceal
+			'''
+	}
+
+	MuraPosStyleType: {
+		Label: Mura UI-Position Auswahl
+		Tooltip:
+			'''
+			Voreinstellung 1: Unten rechts
+			Voreinstellung 2: Unten links
+			Voreinstellung 3: Oben zentriert
+			'''
+	}
+
+	ShowReloadingProgressUI: {
+		// Label: Show Reloading Progress
+		// Tooltip: When opened, the ammo loading progress will be displayed
+	}
+
+	QuestLog: {
+		// Label: Quest Log Guidance
+		/* Tooltip:
+			'''
+			When enabled, the quest log will guide you through game progression
+			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
+			Enabled by default. Disabling this removes all quest guidance
+			''' */
+	}
+}

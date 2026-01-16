@@ -1,1 +1,29 @@
+SoulBurning: {
+	DisplayName: Огонь душ
+	Description: Из пламени Ада
+}
 
+HellburnBuff: {
+	DisplayName: Адский жар
+	Description: Из пламени Ада
+}
+
+VoidErosion: {
+	DisplayName: Эрозия пустоты
+	Description: Постепенно превращается в ничто
+}
+
+DestroyerSummonBuff: {
+	DisplayName: Бафф Призыва Разрушителя
+	Description: Мини-Разрушитель будет следовать за вами в бою
+}
+
+FrenziedMachineSoul: {
+	DisplayName: Душа Машины в Ярости
+	Description: Машинный дух вне себя от радости!
+}
+
+FishoilBuff: {
+	// DisplayName: Fishoil
+	// Description: You feel that your skin is becoming oily
+}
