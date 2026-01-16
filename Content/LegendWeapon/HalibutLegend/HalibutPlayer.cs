@@ -412,6 +412,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
+            if (Player.TryGetModPlayer<HalibutSave>(out var halibutSave) && halibutSave.FishSkill != null) {
+                SkillID = halibutSave.FishSkill.ID;
+            }
+
             ResurrectionSystem.Player = Player;
             if (HeldHalibut && Player.Alives()) {
                 if (CanCloseEye) {
