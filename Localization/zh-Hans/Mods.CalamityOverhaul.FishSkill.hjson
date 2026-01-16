@@ -1,1 +1,448 @@
 
+FishSkill: {
+	FishSwarm: {
+		DisplayName: 鱼形换影
+		Tooltip:
+			'''
+			右键可以化形为鱼群进行穿梭
+			左键点击让鱼群射向光标方向
+			'''
+		Studied: 平平无奇的鱼，但它颇有潜力
+	}
+
+	FishSparkling: {
+		DisplayName: 闪光皇舞
+		Tooltip:
+			'''
+			开火时周期性的召唤数条闪光皇后鱼进行轮射
+			开火期间冷却时间不会减少
+			'''
+		Studied: 我认为研究这条鱼可以让激光笔技术更进一步
+	}
+
+	FishZombie: {
+		DisplayName: 鱼跃尸群
+		Tooltip:
+			'''
+			右键可以召唤一群溺尸冲向敌人
+			靠近敌人后造成一次爆炸
+			'''
+		Studied: 散发着臭味的鱼，它还活着吗？
+	}
+
+	FishCloud: {
+		DisplayName: 腾鱼驾雾
+		Tooltip:
+			'''
+			右键可以乘上雨云进行高速移动
+			乘上雨云后可以穿墙，并使用武器
+			移动路径上将落下雨滴
+			'''
+		Studied: 看起来是鱼，其实是会游泳的云
+	}
+
+	FishVoodoo: {
+		DisplayName: 替死娃娃
+		Tooltip:
+			'''
+			装配该技能时，受伤时拒绝死亡，将伤害转移到附近的敌人身上，并进入冷却
+			开启领域时转移到领域内所有敌人身上
+			'''
+		Studied: 不错的鱼，它能让我想到一些有趣的实验
+	}
+
+	FishDemonicHell: {
+		DisplayName: 地狱炎爆
+		Tooltip:
+			'''
+			射击时周期性的召唤地狱炎阵，
+			蓄力完成后发射出一枚地狱火球
+			地狱火球飞行一段时间后爆炸
+			'''
+		Studied: 它在地狱中燃烧
+	}
+
+	FishDynamite: {
+		DisplayName: 闪光鱼雷
+		Tooltip:
+			'''
+			右键可以投掷一条受重力影响的雷管鱼
+			鱼雷会在接触到敌人或一段时间后爆炸
+			'''
+		Studied: 它的内脏结构非常复杂，主要由“轰”的那部分组成
+	}
+
+	FishBone: {
+		DisplayName: 鱼骨回旋
+		Tooltip:
+			'''
+			开火时周期性的生成环绕自身的回旋骨
+			环绕一段时间后飞出并返回
+			当受伤时这些骨头会直接碎裂
+			'''
+		Studied: 用它炖汤或许不错，好喝又补钙
+	}
+
+	FishHarpy: {
+		DisplayName: 飞天鱼羽
+		Tooltip:
+			'''
+			开火时周期性的生成环绕自身的鸟妖羽毛
+			持续开火时羽毛将在盘旋一段时间后向四周飞出
+			'''
+		Studied: 我不认为这条鱼会飞，但它确实有翅膀
+	}
+
+	FishFallenStar: {
+		DisplayName: 漫天星鱼
+		Tooltip:
+			'''
+			开火时会伴随着星星发射，星星周围围绕着伴生星
+			每发射一定数量的星星会召唤一阵坠星落下
+			'''
+		Studied: 如果在白天，它或许会变成星星消失
+	}
+
+	FishHunger: {
+		DisplayName: 鱼中饿鬼
+		Tooltip:
+			'''
+			开火时周期性的生成环绕自身的饿鬼
+			饿鬼数量达到上限时将追随你的指引撕咬敌人
+			'''
+		Studied: 它看起来很饿
+	}
+
+	FishBat: {
+		DisplayName: 群蝠幻流
+		Tooltip:
+			'''
+			右键可以化形为蝙蝠群进行快速移动
+			攻击将退出化形状态
+			'''
+		Studied: 这条鱼被倒挂着会睡着吗？
+	}
+
+	FishEaterofPlankton: {
+		DisplayName: 腐虫漫迹
+		Tooltip:
+			'''
+			开火时射出小噬魂虫
+			小噬魂虫将会不停的蠕动并攻击敌人
+			'''
+		Studied: 这条鱼长虫子了！
+	}
+
+	FishAmanita: {
+		DisplayName: 毒孢鱼泡
+		Tooltip:
+			'''
+			开火时伴随着四种轮换的真菌子弹，每次射击都将切换到下种子弹
+			爆炸蘑菇：散射3发爆炸蘑菇，命中时爆炸造成小范围伤害
+			追踪孢子：散射5发追踪孢子，将快速的追踪至最近目标
+			毒雾蘑菇：散射2发毒雾蘑菇，命中时产生毒雾持续造成伤害
+			闪电孢子：散射5发闪电孢子，命中时将进行一次折射
+			'''
+		Studied: 这条鱼代表着蘑菇地的生态系统
+	}
+
+	FishHoney: {
+		DisplayName: 蜜诏群蜂
+		Tooltip:
+			'''
+			右键可以召唤一群环绕自身的蜜蜂
+			在发现敌人时蜜蜂将主动出击攻击敌人
+			'''
+		Studied: 不知为何它很畏惧鲶鱼
+	}
+
+	Fishotroning: {
+		DisplayName: 骷臂掴击
+		Tooltip:
+			'''
+			开火时会长出骷髅王之手辅助战斗，受伤时将会损失一只骷髅王之手
+			远距离时骷髅王之手将会蓄力丢出骨头
+			近距离时骷髅王之手将会蓄力拍向目标
+			'''
+		Studied: 它不止四手！
+	}
+
+	FishIchorn: {
+		DisplayName: 灵流蚀甲
+		Tooltip:
+			'''
+			开火时会伴随着散射灵液射流
+			灵液射流命中时将给予目标灵液效果
+			'''
+		Studied: 这条鱼的口水十分有用！
+	}
+
+	FishCursed: {
+		DisplayName: 冥焰迸发
+		Tooltip:
+			'''
+			开火时会伴随着散射诅咒火焰
+			诅咒火焰射出后将反重力下坠
+			'''
+		Studied: 它居然不会烧坏钓竿！？
+	}
+
+	FishSlime: {
+		DisplayName: 胶着行迹
+		Tooltip:
+			'''
+			移动时将投出史莱姆凝胶
+			史莱姆凝胶将粘在触碰到它的目标身上
+			'''
+		Studied: 它看起来很"胶着"
+	}
+
+	FishBunny: {
+		DisplayName: 蹦蹦炸弹
+		Tooltip:
+			'''
+			右键可以投掷一群受重力影响的弹跳兔兔鱼
+			兔兔鱼会在接触到敌人或一段时间后爆炸
+			'''
+		Studied: 危险的毛绒绒!
+	}
+
+	FishCat: {
+		DisplayName: 哈基鱼雷
+		Tooltip:
+			'''
+			右键可以投掷一群受重力影响的每次弹跳会发出叫声的弹跳鲶鱼
+			鲶鱼会在接触到敌人或一段时间后爆炸
+			'''
+		Studied: 这条鱼看起来很爱吃蜂蜜
+	}
+
+	FishDirt: {
+		DisplayName: 土鱼环游
+		Tooltip:
+			'''
+			移动时召唤土鱼群在身周环游
+			聚集足够数量后可发射土球攻击
+			土球会弹跳并最终在地面滚动造成持续伤害
+			同一时间土球只能存在一个
+			'''
+		Studied:
+			'''
+			泥土的味道让我想起故乡的海床
+			这些小家伙倒是挺会抱团取暖
+			'''
+	}
+
+	FishMud: {
+		DisplayName: 泥沼哨兵
+		Tooltip:
+			'''
+			开火时从地面召唤泥鱼哨兵
+			泥鱼会从地下冒出并向敌人发射受重力影响的泥球
+			攻击完毕后潜回地下消失
+			'''
+		Studied: 这些家伙的躲藏技术了得
+	}
+
+	FishPeng: {
+		DisplayName: 神风鹅鱼
+		Tooltip:
+			'''
+			开火时在敌人头顶召唤企鹅
+			企鹅会从天空坠落砸向目标
+			砸击造成范围伤害和击退
+			'''
+		Studied: 它们可能来自马达加斯加
+	}
+
+	FishDrizzle: {
+		DisplayName: 炼鱼硫火
+		Tooltip:
+			'''
+			开火时周期性的召唤数条硫火喷吐鱼喷吐火焰
+			开火期间冷却时间不会减少
+			'''
+		Studied: 我认为它不止能用来点燃篝火
+	}
+
+	FishofCthulu: {
+		DisplayName: 深渊凝视
+		Tooltip:
+			'''
+			开火时召唤凝视之瞳观察敌人
+			凝视之瞳靠近敌人时将变换形态进行冲刺
+			'''
+		Studied: 它一直盯着你…
+	}
+
+	FishJewel: {
+		DisplayName: 虹彩序曲
+		Tooltip:
+			'''
+			开火时按顺序发射散射宝石弹
+			不同宝石弹在发射时有不同的音效
+			'''
+		Studied: 六色序曲……也许真能用它演奏一曲彩虹乐章
+	}
+
+	FishTunabeard: {
+		DisplayName: 激流一闪
+		Tooltip:
+			'''
+			右键将向鼠标方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 对鱼来说海盗和强盗有区别吗？
+	}
+
+	FishBloodyManowar: {
+		DisplayName: 猩红裁决
+		Tooltip:
+			'''
+			开火时召唤一群血腥水母向敌人聚拢
+			血腥水母群聚拢会造成大范围伤害
+			'''
+		Studied: 它们的关系是共生还是上下级？
+	}
+
+	FishUnicorn: {
+		DisplayName: 虹光穿刺
+		Tooltip:
+			'''
+			右键将向水平方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 传说只有纯洁的少女才能钓到它！
+	}
+
+	FishWyverntail: {
+		DisplayName: 长白贯影
+		Tooltip:
+			'''
+			开火后一段时间内持续召唤白龙
+			白龙将快速飞向敌人并造成伤害
+			'''
+		Studied: 我觉得它应该属于传说生物的一种
+	}
+
+	FishScorpio: {
+		DisplayName: 沙蝎哨兵
+		Tooltip:
+			'''
+			开火时召唤在地面移动的蝎子哨兵
+			蝎子哨兵将向敌人发射沙龙卷
+			'''
+		Studied: 它的体内全是沙子
+	}
+
+	FishPrismite: {
+		DisplayName: 彩虹冲击
+		Tooltip:
+			'''
+			开火时将射出子弹改变为发射棱彩冲击波
+			棱彩冲击波命中敌人或者物块后将分裂成多道冲击波继续前进
+			'''
+		Studied: 这条鱼的美丽来自于重金属超标
+	}
+
+	FishObsidian: {
+		DisplayName: 黑石要塞
+		Tooltip:
+			'''
+			开火时生成黑曜石鱼围绕玩家旋转
+			黑曜石鱼将持续对触碰的敌人造成伤害
+			每受伤一次会让一条黑曜石鱼碎裂
+			'''
+		Studied: 黑曜石其实很脆
+	}
+
+	FishRock: {
+		DisplayName: 岩锤叩击
+		Tooltip:
+			'''
+			周期性自动生成岩鱼锤追踪附近敌人
+			到达目标头顶后蓄力并向下锤击
+			'''
+		Studied: 从来没有人问过这可怜的家伙想不想被当作锤子用
+	}
+
+	FishVariegatedLard: {
+		DisplayName: 斑驳油渍
+		Tooltip:
+			'''
+			攻击命中敌人时，将从敌人身上喷洒油渍
+			油渍将黏着在方块或敌人身上并产生更多油渍
+			'''
+		Studied: 我需要很多很多洗洁精
+	}
+
+	FishPrincess: {
+		DisplayName: 绚丽童话
+		Tooltip:
+			'''
+			开火时召唤公主鱼为你战斗
+			公主鱼会向敌人发射散射魔法弹
+			'''
+		Studied: 很显然它不是王子
+	}
+
+	FishCrimsonTiger: {
+		DisplayName: 猩红巡弋
+		Tooltip:
+			'''
+			右键召唤一群猩红虎鱼追随你
+			猩红虎鱼发现敌人后将主动出击攻击敌人
+			'''
+		Studied: 它们看起来相当凶猛
+	}
+
+	FishTropicalBarracuda: {
+		DisplayName: 热带穿梭
+		Tooltip:
+			'''
+			开火时从屏幕边缘召唤热带梭鱼群
+			梭鱼群会从随机一个方向快速穿梭整个屏幕
+			'''
+		Studied: 它们的速度十分快
+	}
+
+	FishNeonTetra: {
+		DisplayName: 霓虹足迹
+		Tooltip:
+			'''
+			移动过程中留下发光的霓虹鱼
+			霓虹鱼将照亮路径上的敌人并对其造成伤害
+			'''
+		Studied: 我喜欢它的鳞片
+	}
+
+	FishBrimlish: {
+		DisplayName: 硫火逸散
+		Tooltip:
+			'''
+			开火时周期性的召唤一只小硫火鱼
+			小硫火鱼将会向敌人吐出大量散射硫火球
+			'''
+		Studied: 温度高的吓人
+	}
+
+	FishDoubleCod: {
+		DisplayName: 双鳕伴飞
+		Tooltip:
+			'''
+			开火时周期性发射追踪敌人的鳕鱼
+			鳕鱼将持续追踪敌人并造成接触伤害
+			'''
+		Studied: 很奇特的一种鱼
+	}
+
+	FishFrostMinnow: {
+		DisplayName: 凝霜宣言
+		Tooltip:
+			'''
+			开火时周期性的召唤一只寒霜鱼
+			寒霜鱼将会向敌人吐出大量散射寒霜球
+			'''
+		Studied: 准备冻手！
+	}
+}
