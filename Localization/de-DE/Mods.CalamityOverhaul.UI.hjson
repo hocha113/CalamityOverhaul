@@ -260,10 +260,10 @@ Incinerator: {
 }
 
 ItemPipeline: {
-	// Normal: 普通
-	// Output: 输出
-	// Input: 输入
-	// NotEndpointHint: 只能在管道末端设置输入输出
+	// Normal: Normal
+	// Output: Output
+	// Input: Input
+	// NotEndpointHint: Input/Output modes can only be set at pipe endpoints
 }
 
 ThrowerUI: {
