@@ -13,6 +13,70 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
+    /// <summary>
+    /// 对话框生命周期状态
+    /// </summary>
+    public enum DialogueBoxState
+    {
+        /// <summary>
+        /// 空闲状态，对话框未激活
+        /// </summary>
+        Idle,
+        /// <summary>
+        /// 正在打开，播放打开动画中
+        /// </summary>
+        Opening,
+        /// <summary>
+        /// 激活状态，正在显示对话
+        /// </summary>
+        Active,
+        /// <summary>
+        /// 暂停状态，对话暂停但仍然显示
+        /// </summary>
+        Paused,
+        /// <summary>
+        /// 正在关闭，播放关闭动画中
+        /// </summary>
+        Closing,
+        /// <summary>
+        /// 已关闭，完成关闭动画后的状态
+        /// </summary>
+        Closed
+    }
+
+    /// <summary>
+    /// 对话框生命周期事件参数
+    /// </summary>
+    public class DialogueBoxLifecycleEventArgs : EventArgs
+    {
+        /// <summary>
+        /// 触发事件的对话框
+        /// </summary>
+        public DialogueBoxBase DialogueBox { get; }
+
+        /// <summary>
+        /// 之前的状态
+        /// </summary>
+        public DialogueBoxState PreviousState { get; }
+
+        /// <summary>
+        /// 当前状态
+        /// </summary>
+        public DialogueBoxState CurrentState { get; }
+
+        /// <summary>
+        /// 是否被强制关闭
+        /// </summary>
+        public bool WasForceClosed { get; }
+
+        public DialogueBoxLifecycleEventArgs(DialogueBoxBase box, DialogueBoxState previous, DialogueBoxState current, bool forceClosed = false) {
+            DialogueBox = box;
+            PreviousState = previous;
+            CurrentState = current;
+            WasForceClosed = forceClosed;
+        }
+    }
+
     public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {
         public class DialoguePreProcessArgs
@@ -25,6 +89,277 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         //移除静态事件，改为由场景主动设置预处理器
         public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
+
+        #region 生命周期管理系统
+
+        /// <summary>
+        /// 当前对话框状态
+        /// </summary>
+        private DialogueBoxState _state = DialogueBoxState.Idle;
+
+        /// <summary>
+        /// 获取当前对话框状态
+        /// </summary>
+        public DialogueBoxState State => _state;
+
+        /// <summary>
+        /// 对话框是否处于可交互状态
+        /// </summary>
+        public bool IsInteractive => _state == DialogueBoxState.Active;
+
+        /// <summary>
+        /// 对话框是否正在运行（包括打开、激活、暂停状态）
+        /// </summary>
+        public bool IsRunning => _state == DialogueBoxState.Opening || _state == DialogueBoxState.Active || _state == DialogueBoxState.Paused;
+
+        /// <summary>
+        /// 对话框正在打开时触发
+        /// </summary>
+        public event EventHandler<DialogueBoxLifecycleEventArgs> OnOpening;
+
+        /// <summary>
+        /// 对话框完全打开后触发
+        /// </summary>
+        public event EventHandler<DialogueBoxLifecycleEventArgs> OnOpened;
+
+        /// <summary>
+        /// 对话框开始关闭时触发
+        /// </summary>
+        public event EventHandler<DialogueBoxLifecycleEventArgs> OnClosing;
+
+        /// <summary>
+        /// 对话框完全关闭后触发
+        /// </summary>
+        public event EventHandler<DialogueBoxLifecycleEventArgs> OnClosed;
+
+        /// <summary>
+        /// 对话框状态改变时触发
+        /// </summary>
+        public event EventHandler<DialogueBoxLifecycleEventArgs> OnStateChanged;
+
+        /// <summary>
+        /// 标记是否为强制关闭
+        /// </summary>
+        private bool _wasForceClosed = false;
+
+        /// <summary>
+        /// 改变对话框状态并触发相应事件
+        /// </summary>
+        protected void SetState(DialogueBoxState newState, bool forceClosed = false) {
+            if (_state == newState) return;
+
+            var previousState = _state;
+            _state = newState;
+            _wasForceClosed = forceClosed;
+
+            var args = new DialogueBoxLifecycleEventArgs(this, previousState, newState, forceClosed);
+
+            //触发状态改变事件
+            OnStateChanged?.Invoke(this, args);
+
+            //触发特定状态事件
+            switch (newState) {
+                case DialogueBoxState.Opening:
+                    OnOpening?.Invoke(this, args);
+                    break;
+                case DialogueBoxState.Active:
+                    if (previousState == DialogueBoxState.Opening) {
+                        OnOpened?.Invoke(this, args);
+                    }
+                    break;
+                case DialogueBoxState.Closing:
+                    OnClosing?.Invoke(this, args);
+                    break;
+                case DialogueBoxState.Closed:
+                case DialogueBoxState.Idle:
+                    if (previousState == DialogueBoxState.Closing || forceClosed) {
+                        OnClosed?.Invoke(this, args);
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 优雅地关闭对话框（播放关闭动画）
+        /// </summary>
+        /// <returns>是否成功开始关闭</returns>
+        public virtual bool Close() {
+            if (_state == DialogueBoxState.Closing || _state == DialogueBoxState.Closed || _state == DialogueBoxState.Idle) {
+                return false;
+            }
+
+            //检查全身立绘是否阻止关闭
+            if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueClose) {
+                return false;
+            }
+
+            BeginClose();
+            return true;
+        }
+
+        /// <summary>
+        /// 强制立即关闭对话框（跳过动画）
+        /// </summary>
+        /// <param name="clearQueue">是否清空对话队列</param>
+        /// <param name="triggerCallbacks">是否触发当前对话的完成回调</param>
+        public virtual void ForceClose(bool clearQueue = true, bool triggerCallbacks = false) {
+            if (_state == DialogueBoxState.Idle) {
+                return;
+            }
+
+            //可选触发当前对话的完成回调
+            if (triggerCallbacks && current != null) {
+                current.OnFinish?.Invoke();
+            }
+
+            //隐藏全身立绘
+            HideFullBodyPortrait();
+
+            //清空状态
+            if (clearQueue) {
+                queue.Clear();
+            }
+            current = null;
+            closing = false;
+            showProgress = 0f;
+            hideProgress = 0f;
+            contentFade = 0f;
+            lastSpeaker = null;
+            speakerSwitchProgress = 1f;
+            playedCount = 0;
+            visibleCharCount = 0;
+            finishedCurrent = false;
+            waitingForAdvance = false;
+            fastModeAutoAdvanceTimer = 0;
+
+            //清理解析器
+            if (DialogueUIRegistry.Current == this) {
+                DialogueUIRegistry.SetResolver(null);
+            }
+
+            //设置状态为已关闭
+            SetState(DialogueBoxState.Idle, forceClosed: true);
+        }
+
+        /// <summary>
+        /// 跳过当前对话，立即显示完整内容并进入等待推进状态
+        /// </summary>
+        /// <returns>是否成功跳过</returns>
+        public virtual bool SkipCurrentDialogue() {
+            if (current == null || _state != DialogueBoxState.Active) {
+                return false;
+            }
+
+            if (!finishedCurrent) {
+                visibleCharCount = current.Content.Length;
+                finishedCurrent = true;
+                waitingForAdvance = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 跳过当前对话并自动推进到下一条
+        /// </summary>
+        /// <returns>是否成功跳过并推进</returns>
+        public virtual bool SkipAndAdvance() {
+            if (current == null || _state != DialogueBoxState.Active) {
+                return false;
+            }
+
+            //检查全身立绘是否阻止推进
+            if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                return false;
+            }
+
+            //如果当前对话还没显示完，先显示完整
+            if (!finishedCurrent) {
+                visibleCharCount = current.Content.Length;
+                finishedCurrent = true;
+            }
+
+            //触发完成回调并推进
+            current.OnFinish?.Invoke();
+            StartNext();
+            return true;
+        }
+
+        /// <summary>
+        /// 跳过所有对话，直接完成（优雅地关闭）
+        /// </summary>
+        /// <param name="triggerAllCallbacks">是否触发所有对话的完成回调</param>
+        public virtual void SkipAll(bool triggerAllCallbacks = false) {
+            if (_state == DialogueBoxState.Idle || _state == DialogueBoxState.Closing || _state == DialogueBoxState.Closed) {
+                return;
+            }
+
+            //触发当前对话的完成回调
+            if (triggerAllCallbacks && current != null) {
+                current.OnFinish?.Invoke();
+            }
+
+            //触发队列中所有对话的完成回调
+            if (triggerAllCallbacks) {
+                while (queue.Count > 0) {
+                    var segment = queue.Dequeue();
+                    segment.OnFinish?.Invoke();
+                }
+            }
+            else {
+                queue.Clear();
+            }
+
+            current = null;
+            BeginClose();
+        }
+
+        /// <summary>
+        /// 暂停对话
+        /// </summary>
+        /// <returns>是否成功暂停</returns>
+        public virtual bool Pause() {
+            if (_state != DialogueBoxState.Active) {
+                return false;
+            }
+
+            SetState(DialogueBoxState.Paused);
+            return true;
+        }
+
+        /// <summary>
+        /// 恢复对话
+        /// </summary>
+        /// <returns>是否成功恢复</returns>
+        public virtual bool Resume() {
+            if (_state != DialogueBoxState.Paused) {
+                return false;
+            }
+
+            SetState(DialogueBoxState.Active);
+            return true;
+        }
+
+        /// <summary>
+        /// 重置对话框到初始状态
+        /// </summary>
+        public virtual void ResetDialogueBox() {
+            ForceClose(clearQueue: true, triggerCallbacks: false);
+        }
+
+        /// <summary>
+        /// 清除所有生命周期事件订阅
+        /// </summary>
+        public void ClearLifecycleEvents() {
+            OnOpening = null;
+            OnOpened = null;
+            OnClosing = null;
+            OnClosed = null;
+            OnStateChanged = null;
+        }
+
+        #endregion
 
         internal class DialogueSegment
         {
@@ -47,6 +382,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected const int TypeInterval = 2;
         protected bool fastMode = false;
         protected bool finishedCurrent = false;
+        /// <summary>
+        /// 快进模式下自动推进的计时器
+        /// </summary>
+        protected int fastModeAutoAdvanceTimer = 0;
+        /// <summary>
+        /// 快进模式下自动推进的延迟帧数（给玩家短暂阅读时间）
+        /// </summary>
+        protected virtual int FastModeAutoAdvanceDelay => 12;
         internal int playedCount = 0;
         protected Vector2 anchorPos;
         internal float panelHeight = 160f;
@@ -336,6 +679,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             closing = true;
             hideProgress = 0f;
 
+            //设置状态为关闭中
+            SetState(DialogueBoxState.Closing);
+
             //关闭对话框时隐藏全身立绘
             HideFullBodyPortrait();
         }
@@ -451,10 +797,21 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (current == null && queue.Count > 0 && !closing) {
                 StartNext();
             }
+
+            //处理开始状态转换
+            if (!closing && _state == DialogueBoxState.Idle && (current != null || queue.Count > 0)) {
+                SetState(DialogueBoxState.Opening);
+            }
+
             if (!closing) {
                 if (showProgress < 1f && (current != null || queue.Count > 0)) {
                     showProgress += 1f / ShowDuration;
                     showProgress = Math.Clamp(showProgress, 0f, 1f);
+
+                    //打开动画完成，转换到激活状态
+                    if (showProgress >= 1f && _state == DialogueBoxState.Opening) {
+                        SetState(DialogueBoxState.Active);
+                    }
                 }
             }
             else {
@@ -472,10 +829,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                         if (DialogueUIRegistry.Current == this) {
                             DialogueUIRegistry.SetResolver(null);
                         }
+
+                        //关闭动画完成，转换到空闲状态
+                        SetState(DialogueBoxState.Idle);
                     }
                 }
             }
-            if (current != null && !closing) {
+
+            //暂停状态下不处理打字效果
+            if (current != null && !closing && _state != DialogueBoxState.Paused) {
                 if (!finishedCurrent) {
                     typeTimer++;
                     int interval = fastMode ? 1 : TypeInterval;
@@ -495,6 +857,23 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
                 else {
                     advanceBlinkTimer++;
+
+                    //快进模式下自动推进到下一条对话
+                    if (fastMode && waitingForAdvance) {
+                        //检查全身立绘是否阻止推进
+                        if (activeFullBodyPortrait == null || !activeFullBodyPortrait.BlockDialogueAdvance) {
+                            fastModeAutoAdvanceTimer++;
+                            //添加短暂延迟，避免过快跳过（给玩家一点阅读时间）
+                            if (fastModeAutoAdvanceTimer >= FastModeAutoAdvanceDelay) {
+                                fastModeAutoAdvanceTimer = 0;
+                                current.OnFinish?.Invoke();
+                                StartNext();
+                            }
+                        }
+                    }
+                    else {
+                        fastModeAutoAdvanceTimer = 0;
+                    }
                 }
                 if (contentFade < 1f) {
                     contentFade += 0.12f;
@@ -554,6 +933,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
             if (closing) {
+                return;
+            }
+            //暂停状态下不处理输入
+            if (_state == DialogueBoxState.Paused) {
                 return;
             }
             Rectangle panelRect = GetPanelRect();

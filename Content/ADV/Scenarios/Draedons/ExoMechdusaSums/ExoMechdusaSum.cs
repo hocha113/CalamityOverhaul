@@ -189,16 +189,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     CountDownTimer = 0;
                     //完成当前场景
                     Complete();
-                    ADVChoiceBox.Hide();//手动清理选项框
-                    DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
+                    //使用新的统一关闭接口
+                    CloseDialogue();
                 }
             }
             if (CompatibleMode && DraedonEffect.IsActive && CWRRef.HasExo()) {
                 //完成当前场景
                 Complete();
-                ADVChoiceBox.Hide();//手动清理选项框
-                DialogueUIRegistry.ForceCloseBox(DefaultDialogueStyle());
+                //使用新的统一关闭接口
+                CloseDialogue();
             }
+        }
+
+        /// <summary>
+        /// 统一的对话框关闭方法
+        /// </summary>
+        private void CloseDialogue() {
+            ADVChoiceBox.Hide();
+            var dialogueBox = DefaultDialogueStyle?.Invoke();
+            dialogueBox?.ForceClose(clearQueue: true, triggerCallbacks: false);
         }
 
         private void SummonMech(ExoMechType mechType) {

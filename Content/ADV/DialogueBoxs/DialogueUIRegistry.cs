@@ -116,20 +116,53 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
 
-            //清空队列和当前对话
-            box.queue.Clear();
-            box.current = null;
+            //使用新的生命周期管理方法
+            box.ForceClose(clearQueue: true, triggerCallbacks: false);
+        }
 
-            //重置状态
-            box.closing = false;
-            box.showProgress = 0f;
-            box.hideProgress = 0f;
+        /// <summary>
+        /// 优雅地关闭对话框（播放关闭动画）
+        /// </summary>
+        /// <param name="box">要关闭的对话框，如果为 null 则关闭当前对话框</param>
+        /// <returns>是否成功开始关闭</returns>
+        public static bool CloseBox(DialogueBoxBase box = null) {
+            box ??= Current;
+            return box?.Close() ?? false;
+        }
+
+        /// <summary>
+        /// 关闭所有对话框
+        /// </summary>
+        /// <param name="force">是否强制关闭（跳过动画）</param>
+        public static void CloseAll(bool force = false) {
+            var current = Current;
+            if (current != null) {
+                if (force) {
+                    current.ForceClose(clearQueue: true, triggerCallbacks: false);
+                }
+                else {
+                    current.Close();
+                }
+            }
+
+            if (_lastUsedBox != null && _lastUsedBox != current) {
+                if (force) {
+                    _lastUsedBox.ForceClose(clearQueue: true, triggerCallbacks: false);
+                }
+                else {
+                    _lastUsedBox.Close();
+                }
+            }
+
+            _resolver = null;
+            _lastUsedBox = null;
         }
 
         /// <summary>
         /// 重置所有对话框状态
         /// </summary>
         public static void ResetAll() {
+            CloseAll(force: true);
             _resolver = null;
             _lastUsedBox = null;
         }
