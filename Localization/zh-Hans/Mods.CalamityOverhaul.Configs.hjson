@@ -1,4 +1,4 @@
-CWRServerConfig: {
+﻿CWRServerConfig: {
 	DisplayName: 内容设置
 
 	WeaponOverhaul: {
@@ -170,5 +170,10 @@ CWRServerConfig: {
 			可以使用任务书物品、背包中的启动UI，或者快捷键打开任务书界面查看当前任务
 			默认开启，禁用后将不会有任何任务指引
 			'''
+	}
+
+	DialogueBox_Scale_Value: {
+		Label: 对话框缩放
+		Tooltip: 调整对话框的整体大小
 	}
 }

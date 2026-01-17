@@ -361,6 +361,209 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #endregion
 
+        #region 缩放系统
+
+        /// <summary>
+        /// 当前对话框缩放值（最小为1，默认为1）
+        /// </summary>
+        private float _scale = 1f;
+
+        /// <summary>
+        /// 目标缩放值（用于平滑过渡）
+        /// </summary>
+        private float _targetScale = 1f;
+
+        /// <summary>
+        /// 缩放过渡速度
+        /// </summary>
+        protected virtual float ScaleTransitionSpeed => 0.12f;
+
+        /// <summary>
+        /// 最小缩放值
+        /// </summary>
+        public const float MinScale = 1f;
+
+        /// <summary>
+        /// 最大缩放值
+        /// </summary>
+        public const float MaxScale = 2f;
+
+        /// <summary>
+        /// 获取当前缩放值
+        /// </summary>
+        public float Scale => _scale;
+
+        /// <summary>
+        /// 获取或设置目标缩放值
+        /// </summary>
+        public float TargetScale {
+            get => _targetScale;
+            set => _targetScale = Math.Clamp(value, MinScale, MaxScale);
+        }
+
+        /// <summary>
+        /// 缩放改变时触发的事件
+        /// </summary>
+        public event Action<float> OnScaleChanged;
+
+        /// <summary>
+        /// 设置缩放值（立即生效）
+        /// </summary>
+        /// <param name="scale">缩放值（会被限制在 MinScale 和 MaxScale 之间）</param>
+        public void SetScale(float scale) {
+            scale = Math.Clamp(scale, MinScale, MaxScale);
+            if (Math.Abs(_scale - scale) > 0.001f) {
+                _scale = scale;
+                _targetScale = scale;
+                OnScaleChanged?.Invoke(_scale);
+            }
+        }
+
+        /// <summary>
+        /// 设置目标缩放值（平滑过渡）
+        /// </summary>
+        /// <param name="scale">目标缩放值</param>
+        public void SetTargetScale(float scale) {
+            TargetScale = scale;
+        }
+
+        /// <summary>
+        /// 重置缩放到默认值
+        /// </summary>
+        public void ResetScale() {
+            SetScale(MinScale);
+        }
+
+        /// <summary>
+        /// 更新缩放过渡
+        /// </summary>
+        protected void UpdateScaleTransition() {
+            if (Math.Abs(_scale - _targetScale) > 0.001f) {
+                float oldScale = _scale;
+                _scale = MathHelper.Lerp(_scale, _targetScale, ScaleTransitionSpeed);
+
+                //接近目标时直接设置
+                if (Math.Abs(_scale - _targetScale) < 0.005f) {
+                    _scale = _targetScale;
+                }
+
+                if (Math.Abs(oldScale - _scale) > 0.001f) {
+                    OnScaleChanged?.Invoke(_scale);
+                }
+            }
+        }
+
+        #region 缩放辅助方法
+
+        /// <summary>
+        /// 获取缩放后的面板宽度
+        /// </summary>
+        protected float ScaledPanelWidth => PanelWidth * _scale;
+
+        /// <summary>
+        /// 获取缩放后的面板高度
+        /// </summary>
+        protected float ScaledPanelHeight => panelHeight * _scale;
+
+        /// <summary>
+        /// 获取缩放后的内边距（边框粗细不变，但内部空间增大）
+        /// </summary>
+        protected int ScaledPadding => (int)(Padding * _scale);
+
+        /// <summary>
+        /// 获取缩放后的行间距
+        /// </summary>
+        protected int ScaledLineSpacing => (int)(LineSpacing * _scale);
+
+        /// <summary>
+        /// 获取缩放后的最小高度
+        /// </summary>
+        protected float ScaledMinHeight => MinHeight * _scale;
+
+        /// <summary>
+        /// 获取缩放后的最大高度
+        /// </summary>
+        protected float ScaledMaxHeight => MaxHeight * _scale;
+
+        /// <summary>
+        /// 获取缩放后的文字大小
+        /// </summary>
+        protected float ScaledTextScale => TextScale * _scale;
+
+        /// <summary>
+        /// 获取缩放后的名字大小
+        /// </summary>
+        protected float ScaledNameScale => NameScale * _scale;
+
+        /// <summary>
+        /// 获取缩放后的继续提示大小
+        /// </summary>
+        protected float ScaledContinueHintScale => ContinueHintScale * _scale;
+
+        /// <summary>
+        /// 获取缩放后的快进提示大小
+        /// </summary>
+        protected float ScaledFastHintScale => FastHintScale * _scale;
+
+        /// <summary>
+        /// 获取缩放后的头像宽度
+        /// </summary>
+        protected float ScaledPortraitWidth => PortraitWidth * _scale;
+
+        /// <summary>
+        /// 获取缩放后的头像内边距
+        /// </summary>
+        protected float ScaledPortraitInnerPadding => PortraitInnerPadding * _scale;
+
+        /// <summary>
+        /// 获取缩放后的头像左边距
+        /// </summary>
+        protected float ScaledPortraitLeftMargin => PortraitLeftMargin * _scale;
+
+        /// <summary>
+        /// 获取缩放后的头像最小高度
+        /// </summary>
+        protected float ScaledPortraitMinHeight => PortraitMinHeight * _scale;
+
+        /// <summary>
+        /// 获取缩放后的头像最大高度
+        /// </summary>
+        protected float ScaledPortraitMaxHeight => PortraitMaxHeight * _scale;
+
+        /// <summary>
+        /// 获取缩放后的名字顶部偏移
+        /// </summary>
+        protected float ScaledTopNameOffsetBase => TopNameOffsetBase * _scale;
+
+        /// <summary>
+        /// 获取缩放后的文本块顶部偏移
+        /// </summary>
+        protected float ScaledTextBlockOffsetBase => TextBlockOffsetBase * _scale;
+
+        /// <summary>
+        /// 获取缩放后的名字光晕半径
+        /// </summary>
+        protected float ScaledNameGlowRadius => NameGlowRadius * _scale;
+
+        /// <summary>
+        /// 获取缩放后的分隔线Y偏移
+        /// </summary>
+        protected float ScaledDividerLineOffsetY => DividerLineOffsetY * _scale;
+
+        /// <summary>
+        /// 缩放一个尺寸值（用于需要缩放的元素）
+        /// </summary>
+        protected float ApplyScale(float value) => value * _scale;
+
+        /// <summary>
+        /// 缩放一个向量值
+        /// </summary>
+        protected Vector2 ApplyScale(Vector2 value) => value * _scale;
+
+        #endregion
+
+        #endregion
+
         internal class DialogueSegment
         {
             public string Speaker;
@@ -755,15 +958,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             string[] manual = raw.Split('\n');
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             //计算可用宽度(考虑立绘与文字缩放)
-            float textScale = 0.8f;
-            float baseWidth = PanelWidth - Padding * 2 - 24f;
+            float textScale = ScaledTextScale;
+            float baseWidth = ScaledPanelWidth - ScaledPadding * 2 - ApplyScale(24f);
             bool hasPortrait = false;
             string wrapPortraitKey = current.PortraitKey ?? current.Speaker;
             if (!string.IsNullOrEmpty(wrapPortraitKey) && portraits.TryGetValue(wrapPortraitKey, out var pd) && pd.Texture != null) {
                 hasPortrait = true;
             }
             if (hasPortrait) {
-                baseWidth -= PortraitWidth + 20f;
+                baseWidth -= ScaledPortraitWidth + ApplyScale(20f);
             }
             if (baseWidth < 60f) {
                 baseWidth = 60f;
@@ -784,16 +987,20 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             wrappedLines = [.. allLines];
             int textLines = wrappedLines.Length;
-            int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
+            int lineHeight = (int)(font.MeasureString("A").Y * textScale) + ScaledLineSpacing;
 
-            int headerHeight = 38;
+            int headerHeight = (int)ApplyScale(38f);
 
-            float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
-            panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
+            float contentHeight = textLines * lineHeight + ScaledPadding * 2 + headerHeight;
+            panelHeight = MathHelper.Clamp(contentHeight, ScaledMinHeight, ScaledMaxHeight);
         }
         public override void Update() { HandleInput(); }
         public new void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
+
+            //更新缩放过渡
+            UpdateScaleTransition();
+
             if (current == null && queue.Count > 0 && !closing) {
                 StartNext();
             }
@@ -919,11 +1126,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return Rectangle.Empty;
             }
             float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
-            float width = PanelWidth;
-            float height = panelHeight;
+            float width = ScaledPanelWidth;
+            float height = panelHeight; //panelHeight 已在 WrapCurrent 中应用缩放
             Vector2 panelOrigin = new(width / 2f, height);
             Vector2 drawPos = anchorPos - panelOrigin;
-            drawPos.Y += (1f - eased) * 90f;
+            drawPos.Y += (1f - eased) * ApplyScale(90f);
             Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             return panelRect;
         }
@@ -1086,6 +1293,53 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
         }
 
+        /// <summary>
+        /// 计算头像的绘制信息（支持缩放）
+        /// </summary>
+        protected virtual PortraitSizeInfo CalculatePortraitSizeScaled(
+            PortraitData portraitData,
+            Rectangle panelRect,
+            float appearScale = 1f,
+            float? availHeight = null,
+            float? maxPortraitHeight = null) {
+            if (portraitData?.Texture == null) {
+                return default;
+            }
+
+            Texture2D ptex = portraitData.Texture;
+            Rectangle? sourceRect = portraitData.SourceRect;
+
+            //确定纹理的实际尺寸
+            Vector2 textureSize = sourceRect.HasValue
+                ? new Vector2(sourceRect.Value.Width, sourceRect.Value.Height)
+                : ptex.Size();
+
+            //计算可用高度和最大头像高度（使用缩放后的值）
+            float actualAvailHeight = availHeight ?? (panelRect.Height - ApplyScale(60f));
+            float actualMaxHeight = maxPortraitHeight ?? Math.Clamp(actualAvailHeight, ScaledPortraitMinHeight, ScaledPortraitMaxHeight);
+
+            //计算基础缩放（使用缩放后的头像宽度）
+            float scaleBase = Math.Min(ScaledPortraitWidth / textureSize.X, actualMaxHeight / textureSize.Y);
+            float finalScale = scaleBase * appearScale;
+
+            //计算绘制后的尺寸
+            Vector2 drawSize = textureSize * finalScale;
+
+            //计算绘制位置（使用缩放后的内边距）
+            Vector2 drawPosition = new Vector2(
+                panelRect.X + ScaledPadding + ScaledPortraitInnerPadding,
+                panelRect.Y + panelRect.Height - drawSize.Y - ScaledPadding - ApplyScale(12f)
+            );
+
+            return new PortraitSizeInfo {
+                Scale = finalScale,
+                DrawSize = drawSize,
+                DrawPosition = drawPosition,
+                SourceRectangle = sourceRect,
+                TextureSize = textureSize
+            };
+        }
+
         #endregion
 
         #region 内容绘制模板方法系统
@@ -1118,6 +1372,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             //立绘尺寸信息
             public PortraitSizeInfo PortraitSizeInfo;
+
+            //缩放值（供子类使用）
+            public float Scale;
         }
 
         /// <summary>
@@ -1193,9 +1450,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float portraitAppearScale = MathHelper.Lerp(PortraitScaleMin, PortraitScaleMax, switchEase);
             float portraitExtraAlpha = MathHelper.Clamp(switchEase, 0f, 1f);
 
-            float leftOffset = Padding;
-            float topNameOffset = TopNameOffsetBase;
-            float textBlockOffsetY = Padding + TextBlockOffsetBase;
+            //使用缩放后的值
+            float leftOffset = ScaledPadding;
+            float topNameOffset = ScaledTopNameOffsetBase;
+            float textBlockOffsetY = ScaledPadding + ScaledTextBlockOffsetBase;
 
             var ctx = new ContentDrawContext {
                 SpriteBatch = spriteBatch,
@@ -1211,17 +1469,18 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 PortraitExtraAlpha = portraitExtraAlpha,
                 LeftOffset = leftOffset,
                 TopNameOffset = topNameOffset,
-                TextBlockOffsetY = textBlockOffsetY
+                TextBlockOffsetY = textBlockOffsetY,
+                Scale = _scale
             };
 
-            //计算立绘尺寸
+            //计算立绘尺寸（使用缩放后的值）
             if (hasPortrait) {
-                ctx.PortraitSizeInfo = CalculatePortraitSize(
+                ctx.PortraitSizeInfo = CalculatePortraitSizeScaled(
                     speakerPortrait,
                     panelRect,
                     portraitAppearScale,
-                    panelRect.Height - PortraitAvailHeightOffset,
-                    Math.Clamp(panelRect.Height - PortraitAvailHeightOffset, PortraitMinHeight, PortraitMaxHeight)
+                    panelRect.Height - ApplyScale(PortraitAvailHeightOffset),
+                    Math.Clamp(panelRect.Height - ApplyScale(PortraitAvailHeightOffset), ScaledPortraitMinHeight, ScaledPortraitMaxHeight)
                 );
             }
 
@@ -1240,12 +1499,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             sizeInfo.DrawPosition = finalPosition;
             ctx.PortraitSizeInfo = sizeInfo;
 
-            //绘制头像边框
+            //绘制头像边框（边框粗细不随缩放变化，保持清晰）
+            float framePadding = ApplyScale(PortraitFramePadding);
             Rectangle frameRect = new(
-                (int)(finalPosition.X - PortraitFramePadding),
-                (int)(finalPosition.Y - PortraitFramePadding),
-                (int)(sizeInfo.DrawSize.X + PortraitFramePadding * 2),
-                (int)(sizeInfo.DrawSize.Y + PortraitFramePadding * 2)
+                (int)(finalPosition.X - framePadding),
+                (int)(finalPosition.Y - framePadding),
+                (int)(sizeInfo.DrawSize.X + framePadding * 2),
+                (int)(sizeInfo.DrawSize.Y + framePadding * 2)
             );
             DrawPortraitFrame(ctx, frameRect);
 
@@ -1256,16 +1516,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             DrawPortrait(ctx.SpriteBatch, pd, sizeInfo, drawColor);
 
             //绘制立绘光效
+            float glowPadding = ApplyScale(PortraitGlowPadding);
             Rectangle glowRect = new(
-                (int)(finalPosition.X - PortraitGlowPadding),
-                (int)(finalPosition.Y - PortraitGlowPadding),
-                (int)(sizeInfo.DrawSize.X + PortraitGlowPadding * 2),
-                (int)(sizeInfo.DrawSize.Y + PortraitGlowPadding * 2)
+                (int)(finalPosition.X - glowPadding),
+                (int)(finalPosition.Y - glowPadding),
+                (int)(sizeInfo.DrawSize.X + glowPadding * 2),
+                (int)(sizeInfo.DrawSize.Y + glowPadding * 2)
             );
             DrawPortraitGlow(ctx, glowRect);
 
-            //更新左偏移
-            ctx.LeftOffset += PortraitWidth + PortraitLeftMargin;
+            //更新左偏移（使用缩放后的值）
+            ctx.LeftOffset += ScaledPortraitWidth + ScaledPortraitLeftMargin;
         }
 
         /// <summary>
@@ -1334,12 +1595,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             //绘制名字光晕
             DrawNameGlow(ctx, speakerPos, nameAlpha);
 
-            //绘制名字本体
-            Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, speakerPos, Color.White * nameAlpha, NameScale);
+            //绘制名字本体（使用缩放后的字体大小）
+            Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, speakerPos, Color.White * nameAlpha, ScaledNameScale);
 
             //绘制分隔线
-            Vector2 divStart = speakerPos + new Vector2(0, DividerLineOffsetY);
-            Vector2 divEnd = divStart + new Vector2(ctx.PanelRect.Width - ctx.LeftOffset - Padding, 0);
+            Vector2 divStart = speakerPos + new Vector2(0, ScaledDividerLineOffsetY);
+            Vector2 divEnd = divStart + new Vector2(ctx.PanelRect.Width - ctx.LeftOffset - ScaledPadding, 0);
             DrawDividerLine(ctx, divStart, divEnd, nameAlpha);
         }
 
@@ -1349,7 +1610,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual Vector2 GetSpeakerNamePosition(ContentDrawContext ctx) {
             return new Vector2(
                 ctx.PanelRect.X + ctx.LeftOffset,
-                ctx.PanelRect.Y + ctx.TopNameOffset - (1f - ctx.SwitchEase) * 6f
+                ctx.PanelRect.Y + ctx.TopNameOffset - (1f - ctx.SwitchEase) * ApplyScale(6f)
             );
         }
 
@@ -1360,8 +1621,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Color nameGlow = new Color(140, 200, 255) * alpha * 0.7f;
             for (int i = 0; i < NameGlowCount; i++) {
                 float a = MathHelper.TwoPi * i / NameGlowCount;
-                Vector2 off = a.ToRotationVector2() * NameGlowRadius * ctx.SwitchEase;
-                Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, position + off, nameGlow * 0.55f, NameScale);
+                Vector2 off = a.ToRotationVector2() * ScaledNameGlowRadius * ctx.SwitchEase;
+                Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, position + off, nameGlow * 0.55f, ScaledNameScale);
             }
         }
 
@@ -1381,8 +1642,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual void DrawTextContent(ContentDrawContext ctx) {
             Vector2 textStart = new(ctx.PanelRect.X + ctx.LeftOffset, ctx.PanelRect.Y + ctx.TextBlockOffsetY);
             int remaining = visibleCharCount;
-            int lineHeight = (int)(ctx.Font.MeasureString("A").Y * TextScale) + LineSpacing;
-            int maxLines = (int)((ctx.PanelRect.Height - (textStart.Y - ctx.PanelRect.Y) - Padding) / lineHeight);
+            int lineHeight = (int)(ctx.Font.MeasureString("A").Y * ScaledTextScale) + ScaledLineSpacing;
+            int maxLines = (int)((ctx.PanelRect.Height - (textStart.Y - ctx.PanelRect.Y) - ScaledPadding) / lineHeight);
 
             for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
@@ -1404,7 +1665,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
 
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > ctx.PanelRect.Bottom - Padding) {
+                if (linePos.Y + lineHeight > ctx.PanelRect.Bottom - ScaledPadding) {
                     break;
                 }
 
@@ -1417,8 +1678,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 //绘制文本光晕（可选）
                 DrawTextLineGlow(ctx, visLine, finalPos, i);
 
-                //绘制文本
-                Utils.DrawBorderString(ctx.SpriteBatch, visLine, finalPos, lineColor, TextScale);
+                //绘制文本（使用缩放后的字体大小）
+                Utils.DrawBorderString(ctx.SpriteBatch, visLine, finalPos, lineColor, ScaledTextScale);
             }
         }
 
@@ -1471,11 +1732,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual void DrawContinueHint(ContentDrawContext ctx) {
             float blink = (float)Math.Sin(advanceBlinkTimer / 12f * MathHelper.TwoPi) * 0.5f + 0.5f;
             string hint = GetContinueHintText();
-            Vector2 hintSize = ctx.Font.MeasureString(hint) * (ContinueHintScale * 0.75f);
-            Vector2 hintPos = new(ctx.PanelRect.Right - Padding - hintSize.X, ctx.PanelRect.Bottom - Padding - hintSize.Y);
+            Vector2 hintSize = ctx.Font.MeasureString(hint) * (ScaledContinueHintScale * 0.75f);
+            Vector2 hintPos = new(ctx.PanelRect.Right - ScaledPadding - hintSize.X, ctx.PanelRect.Bottom - ScaledPadding - hintSize.Y);
 
             Color hintColor = GetContinueHintColor(ctx, blink);
-            Utils.DrawBorderString(ctx.SpriteBatch, hint, hintPos, hintColor, ContinueHintScale);
+            Utils.DrawBorderString(ctx.SpriteBatch, hint, hintPos, hintColor, ScaledContinueHintScale);
         }
 
         /// <summary>
@@ -1490,11 +1751,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// </summary>
         protected virtual void DrawFastHint(ContentDrawContext ctx) {
             string fast = FastHint.Value;
-            Vector2 fastSize = ctx.Font.MeasureString(fast) * (FastHintScale * 0.85f);
-            Vector2 fastPos = new(ctx.PanelRect.Right - Padding - fastSize.X, ctx.PanelRect.Bottom - Padding - fastSize.Y - 16);
+            Vector2 fastSize = ctx.Font.MeasureString(fast) * (ScaledFastHintScale * 0.85f);
+            Vector2 fastPos = new(ctx.PanelRect.Right - ScaledPadding - fastSize.X, ctx.PanelRect.Bottom - ScaledPadding - fastSize.Y - ApplyScale(16f));
 
             Color fastColor = GetFastHintColor(ctx);
-            Utils.DrawBorderString(ctx.SpriteBatch, fast, fastPos, fastColor, FastHintScale);
+            Utils.DrawBorderString(ctx.SpriteBatch, fast, fastPos, fastColor, ScaledFastHintScale);
         }
 
         /// <summary>
@@ -1552,11 +1813,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
             float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
-            float width = PanelWidth;
-            float height = panelHeight;
+            float width = ScaledPanelWidth;
+            float height = panelHeight; //panelHeight 已在 WrapCurrent 中应用缩放
             Vector2 panelOrigin = new(width / 2f, height);
             Vector2 drawPos = anchorPos - panelOrigin;
-            drawPos.Y += (1f - eased) * 90f;
+            drawPos.Y += (1f - eased) * ApplyScale(90f);
             Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             float alpha = progress;
             float contentAlpha = contentFade * alpha;

@@ -202,6 +202,12 @@ namespace CalamityOverhaul.Common
             set => Data.CartridgeUI_Offset_Y = value;
         }
 
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
+        [Range(1f, 2f)]
+        [DefaultValue(1)]
+        public float DialogueBox_Scale_Value { get; set; }//对话框缩放比例
+
         public override void OnLoaded() {
             Instance = this;
             Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
@@ -217,26 +223,6 @@ namespace CalamityOverhaul.Common
             //ChangedPlayerItem();
             ChangedRangedProperty();
         }
-
-        //private void ChangedPlayerItem() {
-        //  if (Main.LocalPlayer == null || Main.LocalPlayer.inventory == null) {
-        //      return;
-        //  }
-
-        //  bool canSet = Data.OldWeaponHandheldDisplay != WeaponHandheldDisplay;
-        //  Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
-
-        //  if (!canSet) {
-        //      return;
-        //  }
-
-        //  foreach (var item in Main.LocalPlayer.inventory) {
-        //      if (item == null || item.IsAir || !ItemOverride.ByID.ContainsKey(item.type)) {
-        //          continue;
-        //      }
-        //      item.SetDefaults(item.type);
-        //  }
-        //}
 
         private void ChangedRangedProperty() {
             if (Main.projectile == null) {

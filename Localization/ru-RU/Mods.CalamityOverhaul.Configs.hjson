@@ -184,4 +184,9 @@ CWRServerConfig: {
 			Enabled by default. Disabling this removes all quest guidance
 			''' */
 	}
+
+	DialogueBox_Scale_Value: {
+		// Label: Dialogue Box Scale
+		// Tooltip: Adjusts the overall size of the dialogue box
+	}
 }

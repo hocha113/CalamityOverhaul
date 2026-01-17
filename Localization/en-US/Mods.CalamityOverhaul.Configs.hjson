@@ -1,4 +1,4 @@
-CWRServerConfig: {
+﻿CWRServerConfig: {
 	DisplayName: Content Config
 
 	WeaponOverhaul: {
@@ -171,5 +171,10 @@ CWRServerConfig: {
 			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
 			Enabled by default. Disabling this removes all quest guidance
 			'''
+	}
+
+	DialogueBox_Scale_Value: {
+		Label: Dialogue Box Scale
+		Tooltip: Adjusts the overall size of the dialogue box
 	}
 }
