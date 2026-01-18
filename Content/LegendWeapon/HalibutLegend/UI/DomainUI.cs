@@ -159,13 +159,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //激活动画（眼睛飞向中心并放大）
         private readonly List<EyeActivationAnimation> activationAnimations = [];
 
-        //复苏增长相关常量
-        private const float BaseResurrectionRatePerEye = 0.02f;//单层基础复苏速度
-        private const float GeometricFactor = 1.2f;//几何倍率（每更高一层的额外提高倍率）
-        private const float CrashedEyeSideEffectRate = 0.0001f;//死机眼睛的极小副作用
+        ///<summary>
+        ///获取第十眼（额外之眼）是否激活
+        ///</summary>
+        public bool IsExtraEyeActive => extraEye?.IsActive ?? false;
 
         ///<summary>
-        ///获取当前激活的眼睛数量（即领域层数）
+        ///获取当前激活的眼睛数量（即领域层数）- 仅用于UI显示
+        ///核心数据请使用 HalibutPlayer.SeaDomainLayers
         ///</summary>
         public int ActiveEyeCount {
             get {
@@ -189,16 +190,86 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///</summary>
         public static bool ShouldShow => HalibutUIPanel.Instance.Sengs >= 1f;
 
-        ///<summary>
-        ///纯逻辑更新 (由系统层调用)
-        ///</summary>
-        internal new void LogicUpdate() {
-            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+        /// <summary>
+        /// 逻辑更新，用于处理不应受帧率影响的动画和状态更新
+        /// </summary>
+        public override void LogicUpdate() {
+            if (expandProgress < 0.01f) {
                 return;
             }
 
-            halibutPlayer.SeaDomainLayers = ActiveEyeCount;//同步层数
-            UpdateResurrectionRate();//更新复苏速度
+            //更新大比目鱼旋转动画（固定速度，不受帧率影响）
+            halibutRotation += 0.005f;
+            if (halibutRotation > MathHelper.TwoPi) {
+                halibutRotation -= MathHelper.TwoPi;
+            }
+
+            //更新锁定状态相关的计时器
+            UpdateLockTimers();
+
+            //更新粒子生命周期
+            UpdateParticleLifecycles();
+
+            //更新圆环动画
+            foreach (var ring in rings) {
+                ring.LogicUpdate();
+            }
+
+            //更新激活动画
+            for (int i = activationAnimations.Count - 1; i >= 0; i--) {
+                activationAnimations[i].LogicUpdate();
+            }
+
+            //更新脉冲效果
+            for (int i = halibutPulses.Count - 1; i >= 0; i--) {
+                halibutPulses[i].LogicUpdate();
+            }
+        }
+
+        /// <summary>
+        /// 更新锁定状态相关的计时器（固定频率）
+        /// </summary>
+        private void UpdateLockTimers() {
+            if (isInteractionLocked) {
+                lockPulseTimer += 0.05f;
+                lockIconRotation += 0.02f;
+
+                if (lockPulseTimer > MathHelper.TwoPi * 10f) {
+                    lockPulseTimer -= MathHelper.TwoPi * 10f;
+                }
+                if (lockIconRotation > MathHelper.TwoPi) {
+                    lockIconRotation -= MathHelper.TwoPi;
+                }
+            }
+
+            if (lockShakeTimer > 0) {
+                lockShakeTimer--;
+                lockShakeOffset = (float)Math.Sin(lockShakeTimer * 0.8f) * (lockShakeTimer * 0.3f);
+            }
+            else {
+                lockShakeOffset = 0f;
+            }
+        }
+
+        /// <summary>
+        /// 更新粒子生命周期（固定频率）
+        /// </summary>
+        private void UpdateParticleLifecycles() {
+            //更新普通粒子
+            for (int i = particles.Count - 1; i >= 0; i--) {
+                particles[i].Life++;
+                if (particles[i].Life >= particles[i].MaxLife) {
+                    particles.RemoveAt(i);
+                }
+            }
+
+            //更新锁定粒子
+            for (int i = lockParticles.Count - 1; i >= 0; i--) {
+                lockParticles[i].Life++;
+                if (lockParticles[i].Life >= lockParticles[i].MaxLife) {
+                    lockParticles.RemoveAt(i);
+                }
+            }
         }
 
         public override void Update() {
@@ -265,8 +336,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 player.mouseInterface = true;
             }
 
-            //更新大比目鱼动画
-            halibutRotation += 0.005f;
+            //更新大比目鱼脉动动画（视觉效果，可受帧率影响）
             halibutPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.1f + 0.9f;
 
             //内容淡入（延迟开始）
@@ -335,17 +405,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             for (int i = rings.Count - 1; i >= 0; i--) {
                 rings[i].Center = halibutCenter;
-                rings[i].Update();
+                rings[i].Update();//视觉更新
                 if (rings[i].ShouldRemove) {
                     rings.RemoveAt(i);
                 }
             }
 
-            for (int i = particles.Count - 1; i >= 0; i--) {
-                particles[i].Update();
-                if (particles[i].Life >= particles[i].MaxLife) {
-                    particles.RemoveAt(i);
-                }
+            //粒子位置更新（视觉插值）
+            foreach (var particle in particles) {
+                particle.Update();
             }
 
             //生成环境粒子
@@ -357,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             for (int i = activationAnimations.Count - 1; i >= 0; i--) {
-                activationAnimations[i].Update(halibutCenter);
+                activationAnimations[i].Update(halibutCenter);//视觉更新
                 if (activationAnimations[i].Finished) {
                     halibutPulses.Add(new HalibutPulseEffect(halibutCenter));
                     activationAnimations.RemoveAt(i);
@@ -365,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             for (int i = halibutPulses.Count - 1; i >= 0; i--) {
-                halibutPulses[i].Update();
+                halibutPulses[i].Update();//视觉更新
                 if (halibutPulses[i].Finished) {
                     halibutPulses.RemoveAt(i);
                 }
@@ -373,7 +441,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         ///<summary>
-        ///更新锁定动画效果
+        ///更新锁定动画效果（视觉状态更新，在Update中调用）
         ///</summary>
         private void UpdateLockAnimation() {
             //获取锁定时间
@@ -381,11 +449,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 remainingLockTime = halibutPlayer.IsInteractionLockedTime;
             }
 
-            //更新覆盖层透明度
+            //更新覆盖层透明度（视觉插值）
             if (isInteractionLocked) {
                 lockOverlayAlpha = Math.Min(lockOverlayAlpha + 0.08f, 0.65f);
-                lockPulseTimer += 0.05f;
-                lockIconRotation += 0.02f;
 
                 //倒计时动画
                 int currentSecond = (int)Math.Ceiling(remainingLockTime / 60f);
@@ -397,7 +463,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f, Pitch = 0.3f });
                     }
                 }
-                //缩放动画衰减
+                //缩放动画衰减（视觉插值）
                 if (countdownScale > 1f) {
                     countdownScale = MathHelper.Lerp(countdownScale, 1f, 0.15f);
                 }
@@ -407,21 +473,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 countdownScale = 1f;
             }
 
-            //更新震动效果
-            if (lockShakeTimer > 0) {
-                lockShakeTimer--;
-                lockShakeOffset = (float)Math.Sin(lockShakeTimer * 0.8f) * (lockShakeTimer * 0.3f);
-            }
-            else {
-                lockShakeOffset = 0f;
-            }
-
-            //更新锁定粒子
-            for (int i = lockParticles.Count - 1; i >= 0; i--) {
-                lockParticles[i].Update();
-                if (lockParticles[i].Life >= lockParticles[i].MaxLife) {
-                    lockParticles.RemoveAt(i);
-                }
+            //注意：lockShakeTimer、lockPulseTimer、lockIconRotation 的更新已移至 LogicUpdate
+            //这里只更新粒子位置（视觉插值）
+            foreach (var lockParticle in lockParticles) {
+                lockParticle.Position += lockParticle.Velocity;
+                lockParticle.Velocity *= 0.95f;
+                lockParticle.Rotation += 0.08f;
             }
         }
 
@@ -437,51 +494,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
                 lockParticles.Add(new LockParticle(Main.MouseScreen, velocity, new Color(255, 150, 150)));
             }
-        }
-
-        /// <summary>
-        /// 根据激活眼睛数量与层级计算复苏速度：
-        /// 未死机的眼睛：Base * GeometricFactor^(层级-1)
-        /// 死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
-        /// 结果为绝对设置，不进行累加，保证稳定性
-        /// </summary>
-        private void UpdateResurrectionRate() {
-            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
-            }
-
-            float rate = 0f;
-            int crashLevel = halibutPlayer.CrashesLevel();
-
-            for (int i = 0; i < ActivationSequence.Count; i++) {
-                SeaEyeButton eye = ActivationSequence[i];
-                if (!eye.IsActive) {
-                    continue;
-                }
-
-                int layer = eye.LayerNumber ?? 1;
-                bool isCrashed = layer <= crashLevel;
-
-                if (isCrashed) {
-                    rate += CrashedEyeSideEffectRate;
-                }
-                else {
-                    float eyeRate = BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, layer - 1);
-                    rate += eyeRate;
-                }
-            }
-
-            if (extraEye.IsActive) {
-                bool crashed = 10 <= crashLevel;
-                if (crashed) {
-                    rate += CrashedEyeSideEffectRate;
-                }
-                else {
-                    rate += BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, 9);
-                }
-            }
-
-            halibutPlayer.ResurrectionSystem.ResurrectionRate = rate;
         }
 
         private void HandleEyeToggle(SeaEyeButton eye) {
@@ -1532,7 +1544,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             public void Update() {
-                Life++;
+                //注意：Life的增加已移至DomainUI.LogicUpdate中的UpdateParticleLifecycles
                 Position += Velocity;
                 Velocity *= 0.95f;
                 Rotation += 0.08f;

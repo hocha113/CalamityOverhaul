@@ -192,19 +192,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Alpha = 0f;
             ShouldRemove = false;
         }
-        public void Update() {
+        /// <summary>
+        /// 固定频率更新（进度和旋转）
+        /// </summary>
+        public void LogicUpdate() {
             if (spawnProgress < 1f) {
                 spawnProgress += 1f / SpawnDuration;
                 spawnProgress = Math.Clamp(spawnProgress, 0f, 1f);
-                float easedProgress = CWRUtils.EaseOutCubic(spawnProgress);
-                CurrentRadius = TargetRadius * easedProgress;
-                Alpha = easedProgress;
-            }
-            else {
-                CurrentRadius = TargetRadius;
-                Alpha = 1f;
             }
             rotation += 0.005f * (1f + LayerIndex * 0.1f);
+            if (rotation > MathHelper.TwoPi) {
+                rotation -= MathHelper.TwoPi;
+            }
+        }
+        /// <summary>
+        /// 视觉更新（插值和缓动）
+        /// </summary>
+        public void Update() {
+            float easedProgress = CWRUtils.EaseOutCubic(spawnProgress);
+            CurrentRadius = TargetRadius * easedProgress;
+            Alpha = easedProgress;
         }
         public void Draw(SpriteBatch spriteBatch, float panelAlpha) {
             if (Alpha < 0.01f) {
@@ -250,8 +257,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Color = color;
         }
+        /// <summary>
+        /// 视觉更新（位置插值），Life的增加已移至DomainUI.LogicUpdate
+        /// </summary>
         public void Update() {
-            Life++;
             Position += Velocity;
             Velocity *= 0.95f;
             Rotation += 0.05f;
@@ -281,7 +290,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             eyeLayerNumber = layerNumber;
         }
 
-        public void Update(Vector2 target) {
+        /// <summary>
+        /// 固定频率更新（进度）
+        /// </summary>
+        public void LogicUpdate() {
             if (Finished) {
                 return;
             }
@@ -290,6 +302,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (progress >= 1f) {
                 Finished = true;
             }
+        }
+
+        /// <summary>
+        /// 视觉更新（位置插值）
+        /// </summary>
+        public void Update(Vector2 target) {
+            //视觉更新无需额外操作，绘制时直接使用progress
         }
 
         public void Draw(SpriteBatch spriteBatch, float alpha) {
@@ -358,12 +377,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             center = c;
             progress = 0f;
         }
-        public void Update() {
+        /// <summary>
+        /// 固定频率更新（进度）
+        /// </summary>
+        public void LogicUpdate() {
             if (Finished) {
                 return;
             }
             progress += 1f / Duration;
             progress = Math.Clamp(progress, 0f, 1f);
+        }
+        /// <summary>
+        /// 视觉更新（无需额外操作）
+        /// </summary>
+        public void Update() {
+            //视觉更新无需额外操作，绘制时直接使用progress
         }
         public void Draw(SpriteBatch spriteBatch, float alpha) {
             if (Finished) {

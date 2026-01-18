@@ -85,6 +85,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 深渊复苏系统实例
         /// </summary>
         public ResurrectionSystem ResurrectionSystem { get; private set; } = new();
+
+        //复苏增长相关常量
+        private const float BaseResurrectionRatePerEye = 0.02f;//单层基础复苏速度
+        private const float GeometricFactor = 1.2f;//几何倍率（每更高一层的额外提高倍率）
+        private const float CrashedEyeSideEffectRate = 0.0001f;//死机眼睛的极小副作用
         #endregion
 
         #region ADV场景数据
@@ -289,6 +294,85 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return HalibutData.GetLevel(Main.LocalPlayer.GetItem()) == 14;
         }
 
+        /// <summary>
+        /// 计算当前激活的领域层数（基于眼睛激活状态）
+        /// </summary>
+        public int CalculateActiveDomainLayers() {
+            if (!Player.TryGetModPlayer<HalibutSave>(out var save)) {
+                return 0;
+            }
+
+            int baseCount = 0;
+            foreach (var eye in save.activationSequence) {
+                if (eye.IsActive) {
+                    baseCount++;
+                }
+            }
+
+            //检查第十眼（额外之眼）
+            if (save.activationSequence.Count >= 9 && TheOnlyBornOfAnEra()) {
+                //第十眼的激活状态需要从DomainUI获取（因为它是UI专属的额外眼睛）
+                //但核心计数逻辑在这里，UI只负责显示
+                if (DomainUI.Instance?.IsExtraEyeActive == true) {
+                    baseCount++;
+                }
+            }
+
+            return baseCount;
+        }
+
+        /// <summary>
+        /// 更新复苏速度（基于激活的眼睛层级）
+        /// 未死机的眼睛：Base * GeometricFactor^(层级-1)
+        /// 死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
+        /// </summary>
+        public void UpdateResurrectionRate() {
+            if (!Player.TryGetModPlayer<HalibutSave>(out var save)) {
+                return;
+            }
+
+            float rate = 0f;
+            int crashLevel = CrashesLevel();
+
+            foreach (var eye in save.activationSequence) {
+                if (!eye.IsActive) {
+                    continue;
+                }
+
+                int layer = eye.LayerNumber ?? 1;
+                bool isCrashed = layer <= crashLevel;
+
+                if (isCrashed) {
+                    rate += CrashedEyeSideEffectRate;
+                }
+                else {
+                    float eyeRate = BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, layer - 1);
+                    rate += eyeRate;
+                }
+            }
+
+            //第十眼的复苏贡献
+            if (DomainUI.Instance?.IsExtraEyeActive == true) {
+                bool crashed = 10 <= crashLevel;
+                if (crashed) {
+                    rate += CrashedEyeSideEffectRate;
+                }
+                else {
+                    rate += BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, 9);
+                }
+            }
+
+            ResurrectionSystem.ResurrectionRate = rate;
+        }
+
+        /// <summary>
+        /// 更新领域系统核心数据（层数和复苏速度）
+        /// </summary>
+        public void UpdateDomainSystemData() {
+            SeaDomainLayers = CalculateActiveDomainLayers();
+            UpdateResurrectionRate();
+        }
+
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type != CWRMessageType.HalibutMouseWorld) {
                 return;
@@ -422,6 +506,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     CanCloseEye = false;
                     CloseEyes();
                 }
+                //更新领域系统核心数据（层数和复苏速度）
+                UpdateDomainSystemData();
                 //更新深渊复苏系统
                 ResurrectionSystem.Update();
                 //同步最大生命值
