@@ -344,13 +344,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
 
                 //如果有选项，设置显示选项框的回调
                 if (line.Choices != null && line.Choices.Count > 0) {
-                    //捕获当前行的选项框样式
+                    //捕获当前行的选项框样式和定时配置
                     ADVChoiceBox.ChoiceBoxStyle capturedStyle = line.ChoiceBoxStyle;
+                    var capturedTimedConfig = line.TimedConfig;
+                    var capturedChoices = line.Choices;
 
                     completeCallback = () => {
-                        //显示选项框，传递样式参数
-                        ADVChoiceBox.Show(line.Choices, null, capturedStyle);//使用捕获的样式
-                        //暂停对话推进，等待选择
+                        //检查是否需要继承定时配置到选项框
+                        if (capturedTimedConfig != null) {
+                            //从对话框获取剩余时间
+                            var dialogueBox = DialogueUIRegistry.Current;
+                            int remainingFrames = dialogueBox?.TimedRemainingFrames ?? 0;
+
+                            if (remainingFrames > 0) {
+                                //创建选项框的定时配置，继承剩余时间
+                                var choiceTimedConfig = ChoiceBoxTimedConfig.FromRemainingFrames(
+                                    remainingFrames,
+                                    capturedTimedConfig.OnTimeExpired
+                                );
+
+                                //显示定时选项框
+                                ADVChoiceBox.ShowTimed(capturedChoices, choiceTimedConfig, null, capturedStyle);
+                            }
+                            else {
+                                //没有剩余时间，直接显示普通选项框
+                                ADVChoiceBox.Show(capturedChoices, null, capturedStyle);
+                            }
+                        }
+                        else {
+                            //非定时对话，显示普通选项框
+                            ADVChoiceBox.Show(capturedChoices, null, capturedStyle);
+                        }
                     };
                 }
                 else if (line.OnComplete != null || isLast) {

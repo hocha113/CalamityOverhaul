@@ -84,6 +84,67 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
         private static Func<Vector2> AnchorProvider = null;
 
+        #region 定时系统
+
+        /// <summary>
+        /// 当前定时配置
+        /// </summary>
+        private ChoiceBoxTimedConfig timedConfig;
+
+        /// <summary>
+        /// 剩余时间（帧）
+        /// </summary>
+        private int timedRemainingFrames;
+
+        /// <summary>
+        /// 总时间（帧）
+        /// </summary>
+        private int timedTotalFrames;
+
+        /// <summary>
+        /// 是否为定时选项框
+        /// </summary>
+        public bool IsTimed => timedConfig != null && timedTotalFrames > 0;
+
+        /// <summary>
+        /// 获取定时选项框的剩余时间比例（0~1，1为刚开始）
+        /// </summary>
+        public float TimedProgress => timedTotalFrames > 0 ? timedRemainingFrames / (float)timedTotalFrames : 0f;
+
+        /// <summary>
+        /// 获取定时选项框的已过时间比例（0~1，1为结束）
+        /// </summary>
+        public float TimedElapsed => 1f - TimedProgress;
+
+        /// <summary>
+        /// 获取剩余帧数（用于继承到其他系统）
+        /// </summary>
+        public static int RemainingFrames => Instance?.timedRemainingFrames ?? 0;
+
+        /// <summary>
+        /// 是否正在显示定时选项框
+        /// </summary>
+        public static bool IsTimedActive => Instance?.IsTimed == true && Instance?.isSelecting == true;
+
+        /// <summary>
+        /// 进度条默认颜色
+        /// </summary>
+        private static readonly Color DefaultProgressColor = new(100, 200, 255);
+        private static readonly Color DefaultWarningColor = new(255, 150, 80);
+        private static readonly Color DefaultDangerColor = new(255, 80, 80);
+
+        /// <summary>
+        /// 进度条粗细
+        /// </summary>
+        private const float ProgressBorderThickness = 2.5f;
+
+        /// <summary>
+        /// 进度条透明度
+        /// </summary>
+        private const float ProgressAlpha = 0.85f;
+
+        #endregion
+
         //布局常量
         private const float MinWidth = 200f;
         private const float MaxWidth = 420f;
@@ -123,6 +184,37 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         /// <param name="anchorProvider">锚点位置提供者</param>
         /// <param name="style">选项框样式</param>
         public static void Show(List<Choice> choices, Func<Vector2> anchorProvider = null, ChoiceBoxStyle style = ChoiceBoxStyle.Default) {
+            Show(choices, anchorProvider, style, null);
+        }
+
+        /// <summary>
+        /// 显示定时选项框
+        /// </summary>
+        /// <param name="choices">选项列表</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="anchorProvider">锚点位置提供者</param>
+        /// <param name="style">选项框样式</param>
+        public static void ShowTimed(List<Choice> choices, ChoiceBoxTimedConfig timedConfig, Func<Vector2> anchorProvider = null, ChoiceBoxStyle style = ChoiceBoxStyle.Default) {
+            Show(choices, anchorProvider, style, timedConfig);
+        }
+
+        /// <summary>
+        /// 显示定时选项框（从剩余帧数继承）
+        /// </summary>
+        /// <param name="choices">选项列表</param>
+        /// <param name="remainingFrames">剩余帧数</param>
+        /// <param name="onTimeExpired">时间耗尽回调</param>
+        /// <param name="anchorProvider">锚点位置提供者</param>
+        /// <param name="style">选项框样式</param>
+        public static void ShowTimedFromFrames(List<Choice> choices, int remainingFrames, Action onTimeExpired = null, Func<Vector2> anchorProvider = null, ChoiceBoxStyle style = ChoiceBoxStyle.Default) {
+            var config = ChoiceBoxTimedConfig.FromRemainingFrames(remainingFrames, onTimeExpired);
+            Show(choices, anchorProvider, style, config);
+        }
+
+        /// <summary>
+        /// 显示选项框（完整参数）
+        /// </summary>
+        private static void Show(List<Choice> choices, Func<Vector2> anchorProvider, ChoiceBoxStyle style, ChoiceBoxTimedConfig timedConfig) {
             ADVChoiceBox inst = Instance;
             inst.choices.Clear();
             inst.choices.AddRange(choices);
@@ -132,6 +224,17 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             inst.hideProgress = 0f;
             inst.hoveredIndex = -1;
             inst.selectedIndex = -1;
+
+            //设置定时配置
+            inst.timedConfig = timedConfig;
+            if (timedConfig != null) {
+                inst.timedTotalFrames = (int)(timedConfig.Duration * 60f);
+                inst.timedRemainingFrames = inst.timedTotalFrames;
+            }
+            else {
+                inst.timedTotalFrames = 0;
+                inst.timedRemainingFrames = 0;
+            }
 
             //切换样式
             inst.currentStyleType = style;
@@ -161,6 +264,11 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             var inst = Instance;
             inst.closing = true;
             inst.hideProgress = 0f;
+
+            //重置定时状态
+            inst.timedConfig = null;
+            inst.timedTotalFrames = 0;
+            inst.timedRemainingFrames = 0;
 
             //清空事件订阅
             OnHoverChanged = null;
@@ -243,12 +351,22 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                         closing = false;
                         showProgress = 0f;
                         isSelecting = false;
+
+                        //清理定时状态
+                        timedConfig = null;
+                        timedTotalFrames = 0;
+                        timedRemainingFrames = 0;
                     }
                 }
             }
 
             if (closing || showProgress < 0.5f) {
                 return;
+            }
+
+            //更新定时逻辑（只有在选项框完全显示后才开始计时）
+            if (showProgress >= 1f) {
+                UpdateTimedLogic();
             }
 
             //在动画完成后每帧更新锚点位置
@@ -326,6 +444,31 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
         }
 
+        /// <summary>
+        /// 更新定时逻辑
+        /// </summary>
+        private void UpdateTimedLogic() {
+            if (!IsTimed || !isSelecting) {
+                return;
+            }
+
+            if (timedRemainingFrames > 0) {
+                timedRemainingFrames--;
+
+                //触发进度更新回调
+                timedConfig.OnProgressUpdate?.Invoke(TimedProgress);
+
+                //时间耗尽
+                if (timedRemainingFrames <= 0) {
+                    //触发时间耗尽回调
+                    timedConfig.OnTimeExpired?.Invoke();
+
+                    //隐藏选项框
+                    Hide();
+                }
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {
                 return;
@@ -348,7 +491,238 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
 
             DrawContent(spriteBatch, panelRect, alpha);
+
+            //绘制定时进度条（在内容之后绘制，作为叠加层）
+            if (IsTimed && showProgress >= 1f && !closing) {
+                DrawTimedProgressIndicator(spriteBatch, panelRect, alpha);
+            }
         }
+
+        #region 定时进度条绘制
+
+        /// <summary>
+        /// 绘制定时进度指示器（环绕边框渐变）
+        /// </summary>
+        private void DrawTimedProgressIndicator(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
+            if (timedConfig == null || !timedConfig.ShowProgressIndicator) {
+                return;
+            }
+
+            float progress = TimedProgress;
+            Color progressColor = GetTimedProgressColor(progress) * alpha * ProgressAlpha;
+
+            //添加呼吸效果（时间越少脉动越快）
+            float pulseSpeed = MathHelper.Lerp(1f, 4f, 1f - progress);
+            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.15f + 0.85f;
+            progressColor *= pulse;
+
+            DrawProgressBorder(spriteBatch, panelRect, progress, progressColor);
+        }
+
+        /// <summary>
+        /// 获取当前定时进度的颜色
+        /// </summary>
+        private Color GetTimedProgressColor(float progress) {
+            Color baseColor = timedConfig?.ProgressColor ?? DefaultProgressColor;
+            Color warningColor = timedConfig?.WarningColor ?? DefaultWarningColor;
+            Color dangerColor = timedConfig?.DangerColor ?? DefaultDangerColor;
+
+            float warningThreshold = timedConfig?.WarningThreshold ?? 0.35f;
+            float dangerThreshold = timedConfig?.DangerThreshold ?? 0.15f;
+
+            if (progress <= dangerThreshold) {
+                return dangerColor;
+            }
+            else if (progress <= warningThreshold) {
+                float t = (progress - dangerThreshold) / (warningThreshold - dangerThreshold);
+                return Color.Lerp(dangerColor, warningColor, t);
+            }
+            else {
+                float t = (progress - warningThreshold) / (1f - warningThreshold);
+                return Color.Lerp(warningColor, baseColor, t);
+            }
+        }
+
+        /// <summary>
+        /// 绘制进度边框
+        /// </summary>
+        private void DrawProgressBorder(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float thickness = ProgressBorderThickness;
+
+            //计算总周长
+            float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
+            float visibleLength = totalPerimeter * progress;
+
+            //分段长度
+            float topLength = panelRect.Width;
+            float rightLength = panelRect.Height;
+            float bottomLength = panelRect.Width;
+            float leftLength = panelRect.Height;
+
+            float drawnLength = 0f;
+
+            //1. 绘制顶部边框（从左到右）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(topLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / topLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.X, panelRect.Y),
+                    new Vector2(panelRect.X + panelRect.Width * segmentProgress, panelRect.Y),
+                    thickness, color, 1f, MathHelper.Lerp(1f, 0.9f, segmentProgress));
+
+                drawnLength += topLength;
+            }
+
+            //2. 绘制右侧边框（从上到下）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(rightLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / rightLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.Right - thickness, panelRect.Y),
+                    new Vector2(panelRect.Right - thickness, panelRect.Y + panelRect.Height * segmentProgress),
+                    thickness, color, 0.9f, MathHelper.Lerp(0.9f, 0.7f, segmentProgress), true);
+
+                drawnLength += rightLength;
+            }
+
+            //3. 绘制底部边框（从右到左）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(bottomLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / bottomLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.Right, panelRect.Bottom - thickness),
+                    new Vector2(panelRect.Right - panelRect.Width * segmentProgress, panelRect.Bottom - thickness),
+                    thickness, color, 0.7f, MathHelper.Lerp(0.7f, 0.5f, segmentProgress));
+
+                drawnLength += bottomLength;
+            }
+
+            //4. 绘制左侧边框（从下到上）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(leftLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / leftLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.X, panelRect.Bottom),
+                    new Vector2(panelRect.X, panelRect.Bottom - panelRect.Height * segmentProgress),
+                    thickness, color, 0.5f, MathHelper.Lerp(0.5f, 0.3f, segmentProgress), true);
+            }
+
+            //绘制角落发光点
+            DrawProgressCornerGlow(spriteBatch, panelRect, progress, color);
+        }
+
+        /// <summary>
+        /// 绘制进度条的一段
+        /// </summary>
+        private void DrawProgressSegment(
+            SpriteBatch spriteBatch,
+            Texture2D pixel,
+            Vector2 start,
+            Vector2 end,
+            float thickness,
+            Color color,
+            float startAlpha,
+            float endAlpha,
+            bool vertical = false) {
+            if (vertical) {
+                float height = Math.Abs(end.Y - start.Y);
+                if (height < 1f) return;
+
+                float minY = Math.Min(start.Y, end.Y);
+                int segments = Math.Max(1, (int)(height / 8f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float y1 = minY + height * t;
+                    float y2 = minY + height * t2;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
+
+                    Rectangle rect = new((int)start.X, (int)y1, (int)thickness, (int)(y2 - y1 + 1));
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+            else {
+                float width = Math.Abs(end.X - start.X);
+                if (width < 1f) return;
+
+                float minX = Math.Min(start.X, end.X);
+                int segments = Math.Max(1, (int)(width / 8f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float x1 = minX + width * t;
+                    float x2 = minX + width * t2;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
+
+                    Rectangle rect = new((int)x1, (int)start.Y, (int)(x2 - x1 + 1), (int)thickness);
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制进度条角落的发光效果
+        /// </summary>
+        private void DrawProgressCornerGlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+            if (progress <= 0.01f) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float glowSize = ProgressBorderThickness * 2.5f;
+
+            //计算总周长
+            float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
+            float visibleLength = totalPerimeter * progress;
+
+            //顶部起始点发光
+            float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.6f;
+            DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Y), glowSize, color * cornerAlpha);
+
+            //根据进度绘制其他角落
+            if (visibleLength > panelRect.Width) {
+                float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.5f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Y), glowSize, color * rightTopAlpha);
+            }
+
+            if (visibleLength > panelRect.Width + panelRect.Height) {
+                float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.4f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Bottom), glowSize, color * rightBottomAlpha);
+            }
+
+            if (visibleLength > 2 * panelRect.Width + panelRect.Height) {
+                float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.3f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Bottom), glowSize, color * leftBottomAlpha);
+            }
+        }
+
+        /// <summary>
+        /// 绘制单个角落的发光
+        /// </summary>
+        private void DrawCornerGlow(SpriteBatch spriteBatch, Texture2D pixel, Vector2 position, float size, Color color) {
+            Rectangle glowRect = new(
+                (int)(position.X - size / 2),
+                (int)(position.Y - size / 2),
+                (int)size,
+                (int)size
+            );
+            spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.4f);
+
+            Rectangle centerRect = new(
+                (int)(position.X - size / 4),
+                (int)(position.Y - size / 4),
+                (int)(size / 2),
+                (int)(size / 2)
+            );
+            spriteBatch.Draw(pixel, centerRect, new Rectangle(0, 0, 1, 1), color * 0.7f);
+        }
+
+        #endregion
 
         private void DrawContent(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             //绘制标题

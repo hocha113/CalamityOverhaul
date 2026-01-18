@@ -523,6 +523,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public float TimedElapsed => 1f - TimedProgress;
 
         /// <summary>
+        /// 获取当前定时对话的剩余帧数
+        /// </summary>
+        public int TimedRemainingFrames => timedRemainingFrames;
+
+        /// <summary>
         /// 定时对话进度条的基础颜色
         /// </summary>
         protected virtual Color TimedProgressBaseColor => new Color(100, 200, 255);
