@@ -54,8 +54,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 return false;
             }
         }
-        public static bool CountDown;
-        public static int CountDownTimer;
+
+        /// <summary>
+        /// 简洁模式下的选择时间限制（秒）
+        /// </summary>
+        private const float TimeLimitSeconds = 20f;
 
         //设置场景默认使用嘉登科技风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
@@ -65,8 +68,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 
         void IWorldInfo.OnWorldLoad() {
             SimpleMode = false;
-            CountDown = false;
-            CountDownTimer = 0;
         }
 
         public override void SetStaticDefaults() {
@@ -89,10 +90,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
 
         protected override void OnScenarioStart() {
-            if (SimpleMode) {
-                CountDown = true;
-                CountDownTimer = 60 * 20;
-            }
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();
 
@@ -108,8 +105,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 save.FristExoMechdusaSum = true;//标记已触发机甲嘉登场景
             }
             SimpleMode = false;
-            CountDown = false;
-            CountDownTimer = 0;
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
 
@@ -142,12 +137,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     });
                 }
                 else {
-                    //正常模式：显示自定义选项框
-                    AddWithChoices(DraedonName.Value + red, BossRushLine.Value, [
-                        new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
-                        new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
-                        new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
-                    ], choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon);
+                    //正常模式：使用定时选项框，20秒后随机选择
+                    AddTimedWithChoices(
+                        DraedonName.Value + red,
+                        BossRushLine.Value,
+                        [
+                            new Choice(ChoiceAres.Value, () => SummonMech(ExoMechType.Prime)),
+                            new Choice(ChoiceThanatos.Value, () => SummonMech(ExoMechType.Destroyer)),
+                            new Choice(ChoiceTwins.Value, () => SummonMech(ExoMechType.Twins))
+                        ],
+                        TimeLimitSeconds,
+                        onTimeExpired: () => {
+                            //时间耗尽，随机选择一个机甲
+                            ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
+                            ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
+                            ADVChoiceBox.Hide();
+                            SummonMech(selectedMech);
+                        },
+                        choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Draedon
+                    );
                 }
             }
             else {
@@ -177,23 +185,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            if (CountDown) {
-                if (CountDownTimer > 0) {
-                    CountDownTimer--;
-                }
-                else {
-                    ExoMechType[] mechOptions = [ExoMechType.Destroyer, ExoMechType.Prime, ExoMechType.Twins];
-                    ExoMechType selectedMech = mechOptions[Main.rand.Next(mechOptions.Length)];
-                    SummonMech(selectedMech);
-                    SimpleMode = false;
-                    CountDown = false;
-                    CountDownTimer = 0;
-                    //完成当前场景
-                    Complete();
-                    //使用新的统一关闭接口
-                    CloseDialogue();
-                }
-            }
+            //兼容模式下，检测是否已召唤机甲来完成场景
             if (CompatibleMode && DraedonEffect.IsActive && CWRRef.HasExo()) {
                 //完成当前场景
                 Complete();

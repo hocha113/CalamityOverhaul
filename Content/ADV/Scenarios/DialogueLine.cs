@@ -28,6 +28,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         public List<Choice> Choices { get; set; }
         public ADVChoiceBox.ChoiceBoxStyle ChoiceBoxStyle { get; set; } = ADVChoiceBox.ChoiceBoxStyle.Default;
 
+        /// <summary>
+        /// 定时对话配置，如果为null则为普通对话（无时间限制）
+        /// </summary>
+        public TimedDialogueConfig TimedConfig { get; set; }
+
+        /// <summary>
+        /// 是否为定时对话
+        /// </summary>
+        public bool IsTimed => TimedConfig != null;
+
         public DialogueLine(string speaker, string content) {
             Speaker = speaker;
             Content = content;

@@ -162,6 +162,142 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
             lines.Add(line);
         }
 
+        #region 定时对话方法
+
+        /// <summary>
+        /// 添加定时对话（指定秒数后自动推进）
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="durationSeconds">持续秒数</param>
+        /// <param name="onComplete">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public void AddTimed(string speaker, string content, float durationSeconds, Action onComplete = null, Action onStart = null) {
+            var line = new DialogueLine(speaker, content) {
+                OnStart = onStart,
+                OnComplete = onComplete,
+                TimedConfig = TimedDialogueConfig.WithDuration(durationSeconds)
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
+        /// 添加定时对话（使用完整配置）
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="onComplete">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public void AddTimed(string speaker, string content, TimedDialogueConfig timedConfig, Action onComplete = null, Action onStart = null) {
+            var line = new DialogueLine(speaker, content) {
+                OnStart = onStart,
+                OnComplete = onComplete,
+                TimedConfig = timedConfig
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
+        /// 添加定时对话（角色名和立绘分离）
+        /// </summary>
+        /// <param name="speaker">显示的说话者名称</param>
+        /// <param name="portraitKey">立绘键</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="durationSeconds">持续秒数</param>
+        /// <param name="onComplete">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public void AddTimed(string speaker, string portraitKey, string content, float durationSeconds, Action onComplete = null, Action onStart = null) {
+            var line = new DialogueLine(speaker, portraitKey, content) {
+                OnStart = onStart,
+                OnComplete = onComplete,
+                TimedConfig = TimedDialogueConfig.WithDuration(durationSeconds)
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
+        /// 添加定时对话（完整配置，角色名和立绘分离）
+        /// </summary>
+        /// <param name="speaker">显示的说话者名称</param>
+        /// <param name="portraitKey">立绘键</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="onComplete">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        /// <param name="styleOverride">样式重写</param>
+        public void AddTimed(string speaker, string portraitKey, string content, TimedDialogueConfig timedConfig, Action onComplete = null, Action onStart = null, Func<DialogueBoxBase> styleOverride = null) {
+            var line = new DialogueLine(speaker, portraitKey, content) {
+                OnStart = onStart,
+                OnComplete = onComplete,
+                TimedConfig = timedConfig,
+                StyleOverride = styleOverride
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
+        /// 添加带选项的定时对话（时间耗尽后触发默认选项或回调）
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="choices">选项列表</param>
+        /// <param name="durationSeconds">持续秒数</param>
+        /// <param name="onTimeExpired">时间耗尽时的回调（如果为null且有选项，则随机选择一个）</param>
+        /// <param name="onStart">对话开始时的回调</param>
+        /// <param name="styleOverride">对话框样式重写</param>
+        /// <param name="choiceBoxStyle">选项框样式</param>
+        public void AddTimedWithChoices(string speaker, string content, List<Choice> choices, float durationSeconds, Action onTimeExpired = null, Action onStart = null, Func<DialogueBoxBase> styleOverride = null, ADVChoiceBox.ChoiceBoxStyle choiceBoxStyle = ADVChoiceBox.ChoiceBoxStyle.Default) {
+            var timedConfig = new TimedDialogueConfig {
+                Duration = durationSeconds,
+                ShowProgressIndicator = true,
+                AllowManualAdvance = true, //允许玩家主动点击选项来推进
+                SkipOnFinishWhenExpired = true, //时间耗尽后跳过 OnFinish（避免重复弹出选项框）
+                OnTimeExpired = onTimeExpired ?? (() => {
+                    //默认行为：随机选择一个选项
+                    if (choices != null && choices.Count > 0) {
+                        var randomChoice = choices[Terraria.Main.rand.Next(choices.Count)];
+                        ADVChoiceBox.Hide();
+                        randomChoice.OnSelect?.Invoke();
+                    }
+                })
+            };
+
+            var line = new DialogueLine(speaker, content) {
+                OnStart = onStart,
+                StyleOverride = styleOverride,
+                Choices = choices,
+                ChoiceBoxStyle = choiceBoxStyle,
+                TimedConfig = timedConfig,
+                OnComplete = null //选项对话的完成由选项选择触发
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
+        /// 添加带选项的定时对话（完整配置）
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="choices">选项列表</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="onStart">对话开始时的回调</param>
+        /// <param name="styleOverride">对话框样式重写</param>
+        /// <param name="choiceBoxStyle">选项框样式</param>
+        public void AddTimedWithChoices(string speaker, string content, List<Choice> choices, TimedDialogueConfig timedConfig, Action onStart = null, Func<DialogueBoxBase> styleOverride = null, ADVChoiceBox.ChoiceBoxStyle choiceBoxStyle = ADVChoiceBox.ChoiceBoxStyle.Default) {
+            var line = new DialogueLine(speaker, content) {
+                OnStart = onStart,
+                StyleOverride = styleOverride,
+                Choices = choices,
+                ChoiceBoxStyle = choiceBoxStyle,
+                TimedConfig = timedConfig,
+                OnComplete = null //选项对话的完成由选项选择触发
+            };
+            lines.Add(line);
+        }
+
+        #endregion
+
         /// <summary>
         /// 使用 DialogueLine 对象添加对话
         /// </summary>
@@ -251,7 +387,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 }
 
                 //获取当前实际使用的对话框来入队(传递独立的立绘键)
-                initialBox.EnqueueDialogue(line.Speaker, line.PortraitKey, line.Content, completeCallback, startCallback);
+                //根据是否为定时对话选择不同的入队方法
+                if (line.IsTimed) {
+                    initialBox.EnqueueTimedDialogue(line.Speaker, line.PortraitKey, line.Content, line.TimedConfig, completeCallback, startCallback);
+                }
+                else {
+                    initialBox.EnqueueDialogue(line.Speaker, line.PortraitKey, line.Content, completeCallback, startCallback);
+                }
             }
         }
 

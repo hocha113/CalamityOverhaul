@@ -32,5 +32,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// 允许角色名和立绘显示分离
         /// </summary>
         public string PortraitKey;
+
+        /// <summary>
+        /// 定时对话配置，如果为null则为普通对话（无时间限制）
+        /// </summary>
+        public TimedDialogueConfig TimedConfig;
+
+        /// <summary>
+        /// 是否为定时对话
+        /// </summary>
+        public bool IsTimed => TimedConfig != null;
     }
 }

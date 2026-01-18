@@ -160,6 +160,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             waitingForAdvance = false;
             fastModeAutoAdvanceTimer = 0;
 
+            //重置定时对话状态
+            ResetTimedDialogue();
+
             //清理解析器
             if (DialogueUIRegistry.Current == this) {
                 DialogueUIRegistry.SetResolver(null);
@@ -492,6 +495,151 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #endregion
 
+        #region 定时对话系统
+
+        /// <summary>
+        /// 当前定时对话的剩余时间（帧）
+        /// </summary>
+        protected int timedRemainingFrames = 0;
+
+        /// <summary>
+        /// 当前定时对话的总时间（帧）
+        /// </summary>
+        protected int timedTotalFrames = 0;
+
+        /// <summary>
+        /// 当前对话是否为定时对话
+        /// </summary>
+        public bool IsCurrentTimed => current?.IsTimed == true;
+
+        /// <summary>
+        /// 获取定时对话的剩余时间比例（0~1，1为刚开始）
+        /// </summary>
+        public float TimedProgress => timedTotalFrames > 0 ? timedRemainingFrames / (float)timedTotalFrames : 0f;
+
+        /// <summary>
+        /// 获取定时对话的已过时间比例（0~1，1为结束）
+        /// </summary>
+        public float TimedElapsed => 1f - TimedProgress;
+
+        /// <summary>
+        /// 定时对话进度条的基础颜色
+        /// </summary>
+        protected virtual Color TimedProgressBaseColor => new Color(100, 200, 255);
+
+        /// <summary>
+        /// 定时对话进度条的警告颜色（时间不足时）
+        /// </summary>
+        protected virtual Color TimedProgressWarningColor => new Color(255, 150, 80);
+
+        /// <summary>
+        /// 定时对话进度条的危险颜色（即将结束时）
+        /// </summary>
+        protected virtual Color TimedProgressDangerColor => new Color(255, 80, 80);
+
+        /// <summary>
+        /// 进入警告状态的阈值（剩余时间比例）
+        /// </summary>
+        protected virtual float TimedWarningThreshold => 0.35f;
+
+        /// <summary>
+        /// 进入危险状态的阈值（剩余时间比例）
+        /// </summary>
+        protected virtual float TimedDangerThreshold => 0.15f;
+
+        /// <summary>
+        /// 进度条描边的基础粗细
+        /// </summary>
+        protected virtual float TimedProgressBorderThickness => 3f;
+
+        /// <summary>
+        /// 进度条的透明度
+        /// </summary>
+        protected virtual float TimedProgressAlpha => 0.85f;
+
+        /// <summary>
+        /// 初始化定时对话计时器
+        /// </summary>
+        protected void InitializeTimedDialogue() {
+            if (current?.TimedConfig != null) {
+                timedTotalFrames = (int)(current.TimedConfig.Duration * 60f);
+                timedRemainingFrames = timedTotalFrames;
+            }
+            else {
+                timedTotalFrames = 0;
+                timedRemainingFrames = 0;
+            }
+        }
+
+        /// <summary>
+        /// 更新定时对话逻辑
+        /// </summary>
+        protected void UpdateTimedDialogue() {
+            if (!IsCurrentTimed || current?.TimedConfig == null) {
+                return;
+            }
+
+            //只有在对话完全显示后才开始计时
+            if (!finishedCurrent) {
+                return;
+            }
+
+            var config = current.TimedConfig;
+
+            if (timedRemainingFrames > 0) {
+                timedRemainingFrames--;
+
+                //触发进度更新回调
+                config.OnProgressUpdate?.Invoke(TimedProgress);
+
+                //时间耗尽
+                if (timedRemainingFrames <= 0) {
+                    //检查全身立绘是否阻止推进
+                    if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                        return;
+                    }
+
+                    //触发时间耗尽回调（这里可能会执行选择逻辑）
+                    config.OnTimeExpired?.Invoke();
+
+                    //根据配置决定是否触发 OnFinish 回调
+                    //对于带选项的定时对话，OnTimeExpired 已经处理了选择逻辑，不需要再触发 OnFinish（否则会弹出选项框）
+                    if (!config.SkipOnFinishWhenExpired) {
+                        current.OnFinish?.Invoke();
+                    }
+
+                    StartNext();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重置定时对话状态
+        /// </summary>
+        protected void ResetTimedDialogue() {
+            timedRemainingFrames = 0;
+            timedTotalFrames = 0;
+        }
+
+        /// <summary>
+        /// 获取当前定时进度的颜色
+        /// </summary>
+        protected virtual Color GetTimedProgressColor(float progress) {
+            if (progress <= TimedDangerThreshold) {
+                return TimedProgressDangerColor;
+            }
+            else if (progress <= TimedWarningThreshold) {
+                float t = (progress - TimedDangerThreshold) / (TimedWarningThreshold - TimedDangerThreshold);
+                return Color.Lerp(TimedProgressDangerColor, TimedProgressWarningColor, t);
+            }
+            else {
+                float t = (progress - TimedWarningThreshold) / (1f - TimedWarningThreshold);
+                return Color.Lerp(TimedProgressWarningColor, TimedProgressBaseColor, t);
+            }
+        }
+
+        #endregion
+
         public abstract string LocalizationCategory { get; }
         internal readonly Queue<DialogueSegment> queue = new();
         internal DialogueSegment current;
@@ -767,6 +915,57 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 PortraitKey = portraitKey
             });
         }
+
+        /// <summary>
+        /// 入队定时对话
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="onFinish">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public virtual void EnqueueTimedDialogue(string speaker, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
+            queue.Enqueue(new DialogueSegment {
+                Speaker = speaker,
+                Content = content ?? string.Empty,
+                OnStart = onStart,
+                OnFinish = onFinish,
+                PortraitKey = null,
+                TimedConfig = timedConfig
+            });
+        }
+
+        /// <summary>
+        /// 入队定时对话(支持独立立绘键)
+        /// </summary>
+        /// <param name="speaker">说话者名称(显示用)</param>
+        /// <param name="portraitKey">立绘键</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="timedConfig">定时配置</param>
+        /// <param name="onFinish">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public virtual void EnqueueTimedDialogue(string speaker, string portraitKey, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
+            queue.Enqueue(new DialogueSegment {
+                Speaker = speaker,
+                Content = content ?? string.Empty,
+                OnStart = onStart,
+                OnFinish = onFinish,
+                PortraitKey = portraitKey,
+                TimedConfig = timedConfig
+            });
+        }
+
+        /// <summary>
+        /// 入队定时对话(使用默认6秒配置)
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="durationSeconds">持续秒数</param>
+        /// <param name="onFinish">完成回调</param>
+        /// <param name="onStart">开始回调</param>
+        public virtual void EnqueueTimedDialogue(string speaker, string content, float durationSeconds, Action onFinish = null, Action onStart = null) {
+            EnqueueTimedDialogue(speaker, content, TimedDialogueConfig.WithDuration(durationSeconds), onFinish, onStart);
+        }
         public virtual void ReplaceDialogue(IEnumerable<(string speaker, string content, Action callback)> segments) {
             queue.Clear();
             current = null;
@@ -839,6 +1038,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             fastMode = false;
             finishedCurrent = false;
             waitingForAdvance = false;
+
+            //初始化定时对话
+            InitializeTimedDialogue();
+
             if (playedCount <= 1 || showProgress < 1f) {
                 contentFade = 0f;
             }
@@ -970,10 +1173,21 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 else {
                     advanceBlinkTimer++;
 
+                    //更新定时对话
+                    UpdateTimedDialogue();
+
                     //快进模式下自动推进到下一条对话
+                    //注意：如果是定时对话且禁止手动推进，则不允许快进跳过
                     if (fastMode && waitingForAdvance) {
+                        //检查定时对话是否禁止手动推进
+                        if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
+                            //定时对话禁止手动推进，不执行快进
+                        }
                         //检查全身立绘是否阻止推进
-                        if (activeFullBodyPortrait == null || !activeFullBodyPortrait.BlockDialogueAdvance) {
+                        else if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                            //立绘阻止推进
+                        }
+                        else {
                             fastModeAutoAdvanceTimer++;
                             //添加短暂延迟，避免过快跳过（给玩家一点阅读时间）
                             if (fastModeAutoAdvanceTimer >= FastModeAutoAdvanceDelay) {
@@ -1063,6 +1277,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                         waitingForAdvance = true;
                     }
                     else {
+                        //检查定时对话是否禁止手动推进
+                        if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
+                            return;
+                        }
+
                         //检查全身立绘是否阻止推进
                         if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                             return;
@@ -1645,6 +1864,227 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
 
         #endregion
+
+        #region 定时对话进度条绘制系统
+
+        /// <summary>
+        /// 绘制定时对话进度指示器（环绕边框渐变）
+        /// 子类可重写以自定义样式
+        /// </summary>
+        protected virtual void DrawTimedProgressIndicator(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
+            if (!IsCurrentTimed || current?.TimedConfig?.ShowProgressIndicator != true) {
+                return;
+            }
+
+            //只有在文字显示完后才绘制进度条
+            if (!finishedCurrent) {
+                return;
+            }
+
+            float progress = TimedProgress;
+            Color progressColor = GetTimedProgressColor(progress) * alpha * TimedProgressAlpha;
+
+            //添加呼吸效果（时间越少脉动越快）
+            float pulseSpeed = MathHelper.Lerp(1f, 4f, 1f - progress);
+            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.15f + 0.85f;
+            progressColor *= pulse;
+
+            DrawProgressBorder(spriteBatch, panelRect, progress, progressColor);
+        }
+
+        /// <summary>
+        /// 绘制进度边框（从上到下渐变消失）
+        /// 子类可重写以自定义边框样式
+        /// </summary>
+        protected virtual void DrawProgressBorder(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float thickness = TimedProgressBorderThickness;
+
+            //计算总周长
+            float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
+            float visibleLength = totalPerimeter * progress;
+
+            //绘制顺序：顶部(从中间向两边) -> 两侧(向下) -> 底部(向中间)
+            //这样消失效果是从底部向上消失
+
+            float halfTopWidth = panelRect.Width / 2f;
+            float sideHeight = panelRect.Height;
+            float halfBottomWidth = panelRect.Width / 2f;
+
+            //分段长度
+            float topLength = panelRect.Width;           //顶部
+            float rightLength = panelRect.Height;        //右侧
+            float bottomLength = panelRect.Width;        //底部
+            float leftLength = panelRect.Height;         //左侧
+
+            float drawnLength = 0f;
+
+            //1. 绘制顶部边框（从左到右）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(topLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / topLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.X, panelRect.Y),
+                    new Vector2(panelRect.X + panelRect.Width * segmentProgress, panelRect.Y),
+                    thickness, color, 1f, MathHelper.Lerp(1f, 0.9f, segmentProgress));
+
+                drawnLength += topLength;
+            }
+
+            //2. 绘制右侧边框（从上到下）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(rightLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / rightLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.Right - thickness, panelRect.Y),
+                    new Vector2(panelRect.Right - thickness, panelRect.Y + panelRect.Height * segmentProgress),
+                    thickness, color, 0.9f, MathHelper.Lerp(0.9f, 0.7f, segmentProgress), true);
+
+                drawnLength += rightLength;
+            }
+
+            //3. 绘制底部边框（从右到左）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(bottomLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / bottomLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.Right, panelRect.Bottom - thickness),
+                    new Vector2(panelRect.Right - panelRect.Width * segmentProgress, panelRect.Bottom - thickness),
+                    thickness, color, 0.7f, MathHelper.Lerp(0.7f, 0.5f, segmentProgress));
+
+                drawnLength += bottomLength;
+            }
+
+            //4. 绘制左侧边框（从下到上）
+            if (drawnLength < visibleLength) {
+                float segmentToDraw = Math.Min(leftLength, visibleLength - drawnLength);
+                float segmentProgress = segmentToDraw / leftLength;
+
+                DrawProgressSegment(spriteBatch, pixel,
+                    new Vector2(panelRect.X, panelRect.Bottom),
+                    new Vector2(panelRect.X, panelRect.Bottom - panelRect.Height * segmentProgress),
+                    thickness, color, 0.5f, MathHelper.Lerp(0.5f, 0.3f, segmentProgress), true);
+            }
+
+            //绘制角落发光点
+            DrawProgressCornerGlow(spriteBatch, panelRect, progress, color);
+        }
+
+        /// <summary>
+        /// 绘制进度条的一段
+        /// </summary>
+        protected virtual void DrawProgressSegment(
+            SpriteBatch spriteBatch,
+            Texture2D pixel,
+            Vector2 start,
+            Vector2 end,
+            float thickness,
+            Color color,
+            float startAlpha,
+            float endAlpha,
+            bool vertical = false) {
+            if (vertical) {
+                float height = Math.Abs(end.Y - start.Y);
+                if (height < 1f) return;
+
+                float minY = Math.Min(start.Y, end.Y);
+                int segments = Math.Max(1, (int)(height / 8f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float y1 = minY + height * t;
+                    float y2 = minY + height * t2;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
+
+                    Rectangle rect = new((int)start.X, (int)y1, (int)thickness, (int)(y2 - y1 + 1));
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+            else {
+                float width = Math.Abs(end.X - start.X);
+                if (width < 1f) return;
+
+                float minX = Math.Min(start.X, end.X);
+                int segments = Math.Max(1, (int)(width / 8f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float x1 = minX + width * t;
+                    float x2 = minX + width * t2;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
+
+                    Rectangle rect = new((int)x1, (int)start.Y, (int)(x2 - x1 + 1), (int)thickness);
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制进度条角落的发光效果
+        /// 子类可重写以自定义角落样式
+        /// </summary>
+        protected virtual void DrawProgressCornerGlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+            if (progress <= 0.01f) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float glowSize = TimedProgressBorderThickness * 2.5f;
+
+            //根据进度决定绘制哪些角落
+            float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
+            float visibleLength = totalPerimeter * progress;
+
+            //顶部起始点发光
+            float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.6f;
+            DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Y), glowSize, color * cornerAlpha);
+
+            //根据进度绘制其他角落
+            if (visibleLength > panelRect.Width) {
+                //右上角
+                float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.5f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Y), glowSize, color * rightTopAlpha);
+            }
+
+            if (visibleLength > panelRect.Width + panelRect.Height) {
+                //右下角
+                float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.4f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Bottom), glowSize, color * rightBottomAlpha);
+            }
+
+            if (visibleLength > 2 * panelRect.Width + panelRect.Height) {
+                //左下角
+                float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.3f;
+                DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Bottom), glowSize, color * leftBottomAlpha);
+            }
+        }
+
+        /// <summary>
+        /// 绘制单个角落的发光
+        /// </summary>
+        protected virtual void DrawCornerGlow(SpriteBatch spriteBatch, Texture2D pixel, Vector2 position, float size, Color color) {
+            Rectangle glowRect = new(
+                (int)(position.X - size / 2),
+                (int)(position.Y - size / 2),
+                (int)size,
+                (int)size
+            );
+            spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.4f);
+
+            //中心更亮
+            Rectangle centerRect = new(
+                (int)(position.X - size / 4),
+                (int)(position.Y - size / 4),
+                (int)(size / 2),
+                (int)(size / 2)
+            );
+            spriteBatch.Draw(pixel, centerRect, new Rectangle(0, 0, 1, 1), color * 0.7f);
+        }
+
+        #endregion
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {
                 return;
@@ -1667,6 +2107,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             activeFullBodyPortrait?.Draw(spriteBatch, alpha);
 
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
+
+            //绘制定时对话进度指示器(在对话框之后绘制，作为叠加层)
+            DrawTimedProgressIndicator(spriteBatch, panelRect, alpha);
         }
         protected abstract void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress);
     }
