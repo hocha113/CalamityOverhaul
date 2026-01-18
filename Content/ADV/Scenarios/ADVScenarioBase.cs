@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
 
         public override void Unload() { }
 
-        public virtual void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) { }
+        public virtual void PreProcessSegment(DialoguePreProcessArgs args) { }
 
         /// <summary>
         /// 启动场景

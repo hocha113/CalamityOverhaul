@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             }
         }
 
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 3) { //Line4时发放奖励
                 ADVRewardPopup.ShowReward(ModContent.ItemType<OniMachete>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {

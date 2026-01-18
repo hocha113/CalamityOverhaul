@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             }
         }
 
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 4) {//在Line5时发放奖励
                 ADVRewardPopup.ShowReward(CWRID.Item_AuricBar, 302, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {

@@ -15,14 +15,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {
-        public class DialoguePreProcessArgs
-        {
-            public string Speaker;
-            public string Content;
-            public int Index;
-            public int Total;
-        }
-
         //移除静态事件，改为由场景主动设置预处理器
         public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
 
@@ -500,18 +492,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #endregion
 
-        internal class DialogueSegment
-        {
-            public string Speaker;
-            public string Content;
-            public Action OnStart;
-            public Action OnFinish;
-            /// <summary>
-            /// 立绘键，如果为null则使用Speaker作为立绘键
-            /// 允许角色名和立绘显示分离
-            /// </summary>
-            public string PortraitKey;
-        }
         public abstract string LocalizationCategory { get; }
         internal readonly Queue<DialogueSegment> queue = new();
         internal DialogueSegment current;
@@ -659,18 +639,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             ContinueHint = this.GetLocalization(nameof(ContinueHint), () => "继续");
             FastHint = this.GetLocalization(nameof(FastHint), () => "加速");
         }
-        protected class PortraitData
-        {
-            public Texture2D Texture;
-            public Color BaseColor = Color.White;
-            public bool Silhouette;
-            public float Fade;
-            public float TargetFade;
-            /// <summary>
-            /// 用于纹理裁剪的源矩形区域，如果为 null 则绘制整个纹理
-            /// </summary>
-            public Rectangle? SourceRect;
-        }
+
         protected static readonly Dictionary<string, PortraitData> portraits = new(StringComparer.Ordinal);
         protected float portraitFadeSpeed = 0.15f;
         protected const float PortraitWidth = 120f;
@@ -1115,37 +1084,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         #region 头像绘制辅助系统
 
         /// <summary>
-        /// 头像尺寸信息结构体
-        /// </summary>
-        protected struct PortraitSizeInfo
-        {
-            /// <summary>
-            /// 计算后的缩放值
-            /// </summary>
-            public float Scale;
-
-            /// <summary>
-            /// 绘制后的实际尺寸
-            /// </summary>
-            public Vector2 DrawSize;
-
-            /// <summary>
-            /// 绘制位置
-            /// </summary>
-            public Vector2 DrawPosition;
-
-            /// <summary>
-            /// 用于绘制的源矩形（考虑裁剪）
-            /// </summary>
-            public Rectangle? SourceRectangle;
-
-            /// <summary>
-            /// 纹理的实际尺寸（考虑裁剪）
-            /// </summary>
-            public Vector2 TextureSize;
-        }
-
-        /// <summary>
         /// 计算头像的绘制信息
         /// </summary>
         /// <param name="portraitData">头像数据</param>
@@ -1279,39 +1217,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         #endregion
 
         #region 内容绘制模板方法系统
-
-        /// <summary>
-        /// 内容绘制上下文，包含绘制过程中的所有共享状态
-        /// </summary>
-        protected class ContentDrawContext
-        {
-            public SpriteBatch SpriteBatch;
-            public Rectangle PanelRect;
-            public float Alpha;
-            public float ContentAlpha;
-            public DynamicSpriteFont Font;
-
-            //立绘相关
-            public bool HasPortrait;
-            public PortraitData PortraitData;
-            public string PortraitKey;
-
-            //动画进度
-            public float SwitchEase;
-            public float PortraitAppearScale;
-            public float PortraitExtraAlpha;
-
-            //布局偏移
-            public float LeftOffset;
-            public float TopNameOffset;
-            public float TextBlockOffsetY;
-
-            //立绘尺寸信息
-            public PortraitSizeInfo PortraitSizeInfo;
-
-            //缩放值（供子类使用）
-            public float Scale;
-        }
 
         /// <summary>
         /// 样式配置，子类可重写以自定义各种参数

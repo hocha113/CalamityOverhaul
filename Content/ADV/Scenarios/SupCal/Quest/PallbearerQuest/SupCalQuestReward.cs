@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             }
         }
 
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 3) {//在Line4时发放奖励
                 ADVRewardPopup.ShowReward(CWRID.Item_AshesofAnnihilation, 199, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {

@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 5) {
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {

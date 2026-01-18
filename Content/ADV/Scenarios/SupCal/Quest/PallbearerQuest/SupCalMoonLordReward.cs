@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             currentIndex++; //5 or 6
         }
 
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             //使用动态计算的索引而不是硬编码的5
             if (args.Index == rewardLineIndex) { //Line6 - 奖励物品
                 ADVRewardPopup.ShowReward(ModContent.ItemType<Pallbearer>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             Add(R1.Value, L2.Value); //奖励
             Add(R1.Value, L3.Value);
         }
-        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+        public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 2) {
                 ADVRewardPopup.ShowReward(ItemID.Honeyfin, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
