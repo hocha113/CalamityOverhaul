@@ -555,12 +555,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <summary>
         /// 进度条描边的基础粗细
         /// </summary>
-        protected virtual float TimedProgressBorderThickness => 3f;
+        protected virtual float TimedProgressBorderThickness => 3.5f;
 
         /// <summary>
         /// 进度条的透明度
         /// </summary>
-        protected virtual float TimedProgressAlpha => 0.85f;
+        protected virtual float TimedProgressAlpha => 0.95f;
+
+        /// <summary>
+        /// 进度条发光层数
+        /// </summary>
+        protected virtual int TimedProgressGlowLayers => 3;
 
         /// <summary>
         /// 初始化定时对话计时器
@@ -1887,52 +1892,66 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
 
             float progress = TimedProgress;
-            Color progressColor = GetTimedProgressColor(progress) * alpha * TimedProgressAlpha;
+            Color baseProgressColor = GetTimedProgressColor(progress);
 
             //添加呼吸效果（时间越少脉动越快）
-            float pulseSpeed = MathHelper.Lerp(1f, 4f, 1f - progress);
-            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.15f + 0.85f;
-            progressColor *= pulse;
+            float pulseSpeed = MathHelper.Lerp(1.5f, 6f, 1f - progress);
+            float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.2f + 0.8f;
 
-            DrawProgressBorder(spriteBatch, panelRect, progress, progressColor);
+            //添加流动效果
+            float flowOffset = Main.GameUpdateCount * 0.02f * MathHelper.Lerp(1f, 3f, 1f - progress);
+
+            //绘制多层发光效果（从外到内）
+            for (int layer = TimedProgressGlowLayers - 1; layer >= 0; layer--) {
+                float layerAlpha = (1f - layer / (float)TimedProgressGlowLayers) * 0.4f;
+                float layerThickness = TimedProgressBorderThickness + layer * 2.5f;
+                Color layerColor = baseProgressColor * (alpha * TimedProgressAlpha * layerAlpha * pulse);
+
+                DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, layerColor, layerThickness, flowOffset, layer > 0);
+            }
+
+            //绘制主进度条（最亮的核心层）
+            Color coreColor = baseProgressColor * (alpha * TimedProgressAlpha * pulse);
+            DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, coreColor, TimedProgressBorderThickness, flowOffset, false);
+
+            //绘制角落发光点
+            DrawProgressCornerGlow(spriteBatch, panelRect, progress, baseProgressColor * (alpha * pulse));
+
+            //绘制进度头部的亮点（追踪点）
+            DrawProgressHead(spriteBatch, panelRect, progress, baseProgressColor * alpha, flowOffset);
         }
 
         /// <summary>
-        /// 绘制进度边框（从上到下渐变消失）
-        /// 子类可重写以自定义边框样式
+        /// 绘制带流动效果的进度边框
         /// </summary>
-        protected virtual void DrawProgressBorder(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+        protected virtual void DrawProgressBorderWithFlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float thickness, float flowOffset, bool isGlowLayer) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float thickness = TimedProgressBorderThickness;
 
             //计算总周长
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            //绘制顺序：顶部(从中间向两边) -> 两侧(向下) -> 底部(向中间)
-            //这样消失效果是从底部向上消失
-
-            float halfTopWidth = panelRect.Width / 2f;
-            float sideHeight = panelRect.Height;
-            float halfBottomWidth = panelRect.Width / 2f;
-
             //分段长度
-            float topLength = panelRect.Width;           //顶部
-            float rightLength = panelRect.Height;        //右侧
-            float bottomLength = panelRect.Width;        //底部
-            float leftLength = panelRect.Height;         //左侧
+            float topLength = panelRect.Width;
+            float rightLength = panelRect.Height;
+            float bottomLength = panelRect.Width;
+            float leftLength = panelRect.Height;
 
             float drawnLength = 0f;
+
+            //流动效果的alpha调制
+            float flowAlphaBase = isGlowLayer ? 0.6f : 1f;
 
             //1. 绘制顶部边框（从左到右）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(topLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / topLength;
 
-                DrawProgressSegment(spriteBatch, pixel,
+                DrawProgressSegmentWithFlow(spriteBatch, pixel,
                     new Vector2(panelRect.X, panelRect.Y),
                     new Vector2(panelRect.X + panelRect.Width * segmentProgress, panelRect.Y),
-                    thickness, color, 1f, MathHelper.Lerp(1f, 0.9f, segmentProgress));
+                    thickness, color, 1f * flowAlphaBase, MathHelper.Lerp(1f, 0.85f, segmentProgress) * flowAlphaBase,
+                    flowOffset, false);
 
                 drawnLength += topLength;
             }
@@ -1942,10 +1961,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float segmentToDraw = Math.Min(rightLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / rightLength;
 
-                DrawProgressSegment(spriteBatch, pixel,
+                DrawProgressSegmentWithFlow(spriteBatch, pixel,
                     new Vector2(panelRect.Right - thickness, panelRect.Y),
                     new Vector2(panelRect.Right - thickness, panelRect.Y + panelRect.Height * segmentProgress),
-                    thickness, color, 0.9f, MathHelper.Lerp(0.9f, 0.7f, segmentProgress), true);
+                    thickness, color, 0.85f * flowAlphaBase, MathHelper.Lerp(0.85f, 0.7f, segmentProgress) * flowAlphaBase,
+                    flowOffset, true);
 
                 drawnLength += rightLength;
             }
@@ -1955,10 +1975,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float segmentToDraw = Math.Min(bottomLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / bottomLength;
 
-                DrawProgressSegment(spriteBatch, pixel,
+                DrawProgressSegmentWithFlow(spriteBatch, pixel,
                     new Vector2(panelRect.Right, panelRect.Bottom - thickness),
                     new Vector2(panelRect.Right - panelRect.Width * segmentProgress, panelRect.Bottom - thickness),
-                    thickness, color, 0.7f, MathHelper.Lerp(0.7f, 0.5f, segmentProgress));
+                    thickness, color, 0.7f * flowAlphaBase, MathHelper.Lerp(0.7f, 0.55f, segmentProgress) * flowAlphaBase,
+                    flowOffset, false);
 
                 drawnLength += bottomLength;
             }
@@ -1968,14 +1989,159 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 float segmentToDraw = Math.Min(leftLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / leftLength;
 
-                DrawProgressSegment(spriteBatch, pixel,
+                DrawProgressSegmentWithFlow(spriteBatch, pixel,
                     new Vector2(panelRect.X, panelRect.Bottom),
                     new Vector2(panelRect.X, panelRect.Bottom - panelRect.Height * segmentProgress),
-                    thickness, color, 0.5f, MathHelper.Lerp(0.5f, 0.3f, segmentProgress), true);
+                    thickness, color, 0.55f * flowAlphaBase, MathHelper.Lerp(0.55f, 0.4f, segmentProgress) * flowAlphaBase,
+                    flowOffset, true);
             }
+        }
 
-            //绘制角落发光点
-            DrawProgressCornerGlow(spriteBatch, panelRect, progress, color);
+        /// <summary>
+        /// 绘制进度头部的追踪亮点
+        /// </summary>
+        protected virtual void DrawProgressHead(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float flowOffset) {
+            if (progress <= 0.01f) return;
+
+            Texture2D pixel = CWRAsset.SoftGlow.Value;
+
+            //计算进度头部位置
+            float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
+            float currentLength = totalPerimeter * progress;
+
+            Vector2 headPos = GetPositionOnBorder(panelRect, currentLength);
+
+            //绘制多层发光的追踪点
+            float baseSize = pixel.Width / 2;
+
+            //脉动效果
+            float headPulse = (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.3f + 0.7f;
+
+            //外层大发光
+            float outerSize = baseSize * 2.5f * headPulse;
+            Rectangle outerRect = new(
+                (int)(headPos.X - outerSize / 2),
+                (int)(headPos.Y - outerSize / 2),
+                (int)outerSize,
+                (int)outerSize
+            );
+            spriteBatch.Draw(pixel, outerRect, null, color with { A = 0 } * 0.15f);
+
+            //中层发光
+            float midSize = baseSize * 1.5f * headPulse;
+            Rectangle midRect = new(
+                (int)(headPos.X - midSize / 2),
+                (int)(headPos.Y - midSize / 2),
+                (int)midSize,
+                (int)midSize
+            );
+            spriteBatch.Draw(pixel, midRect, null, color with { A = 0 } * 0.4f);
+
+            //核心亮点
+            float coreSize = baseSize * 0.8f;
+            Rectangle coreRect = new(
+                (int)(headPos.X - coreSize / 2),
+                (int)(headPos.Y - coreSize / 2),
+                (int)coreSize,
+                (int)coreSize
+            );
+            spriteBatch.Draw(pixel, coreRect, null, Color.White with { A = 0 } * 0.9f);
+        }
+
+        /// <summary>
+        /// 根据边框上的长度获取位置
+        /// </summary>
+        protected virtual Vector2 GetPositionOnBorder(Rectangle rect, float length) {
+            float topLength = rect.Width;
+            float rightLength = rect.Height;
+            float bottomLength = rect.Width;
+
+            //顶部
+            if (length <= topLength) {
+                return new Vector2(rect.X + length, rect.Y);
+            }
+            length -= topLength;
+
+            //右侧
+            if (length <= rightLength) {
+                return new Vector2(rect.Right, rect.Y + length);
+            }
+            length -= rightLength;
+
+            //底部
+            if (length <= bottomLength) {
+                return new Vector2(rect.Right - length, rect.Bottom);
+            }
+            length -= bottomLength;
+
+            //左侧
+            return new Vector2(rect.X, rect.Bottom - length);
+        }
+
+        /// <summary>
+        /// 绘制带流动效果的进度条段
+        /// </summary>
+        protected virtual void DrawProgressSegmentWithFlow(
+            SpriteBatch spriteBatch,
+            Texture2D pixel,
+            Vector2 start,
+            Vector2 end,
+            float thickness,
+            Color color,
+            float startAlpha,
+            float endAlpha,
+            float flowOffset,
+            bool vertical) {
+            if (vertical) {
+                float height = Math.Abs(end.Y - start.Y);
+                if (height < 1f) return;
+
+                float minY = Math.Min(start.Y, end.Y);
+                int segments = Math.Max(1, (int)(height / 6f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float y1 = minY + height * t;
+                    float y2 = minY + height * t2;
+
+                    //添加流动的明暗变化
+                    float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
+
+                    Rectangle rect = new((int)start.X, (int)y1, (int)thickness, (int)(y2 - y1 + 1));
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+            else {
+                float width = Math.Abs(end.X - start.X);
+                if (width < 1f) return;
+
+                float minX = Math.Min(start.X, end.X);
+                int segments = Math.Max(1, (int)(width / 6f));
+
+                for (int i = 0; i < segments; i++) {
+                    float t = i / (float)segments;
+                    float t2 = (i + 1) / (float)segments;
+                    float x1 = minX + width * t;
+                    float x2 = minX + width * t2;
+
+                    //添加流动的明暗变化
+                    float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
+                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
+
+                    Rectangle rect = new((int)x1, (int)start.Y, (int)(x2 - x1 + 1), (int)thickness);
+                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制进度边框（从上到下渐变消失）
+        /// 子类可重写以自定义边框样式
+        /// </summary>
+        protected virtual void DrawProgressBorder(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
+            DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, color, TimedProgressBorderThickness, 0f, false);
         }
 
         /// <summary>
@@ -1991,42 +2157,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float startAlpha,
             float endAlpha,
             bool vertical = false) {
-            if (vertical) {
-                float height = Math.Abs(end.Y - start.Y);
-                if (height < 1f) return;
-
-                float minY = Math.Min(start.Y, end.Y);
-                int segments = Math.Max(1, (int)(height / 8f));
-
-                for (int i = 0; i < segments; i++) {
-                    float t = i / (float)segments;
-                    float t2 = (i + 1) / (float)segments;
-                    float y1 = minY + height * t;
-                    float y2 = minY + height * t2;
-                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
-
-                    Rectangle rect = new((int)start.X, (int)y1, (int)thickness, (int)(y2 - y1 + 1));
-                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
-                }
-            }
-            else {
-                float width = Math.Abs(end.X - start.X);
-                if (width < 1f) return;
-
-                float minX = Math.Min(start.X, end.X);
-                int segments = Math.Max(1, (int)(width / 8f));
-
-                for (int i = 0; i < segments; i++) {
-                    float t = i / (float)segments;
-                    float t2 = (i + 1) / (float)segments;
-                    float x1 = minX + width * t;
-                    float x2 = minX + width * t2;
-                    float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t);
-
-                    Rectangle rect = new((int)x1, (int)start.Y, (int)(x2 - x1 + 1), (int)thickness);
-                    spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), color * segAlpha);
-                }
-            }
+            DrawProgressSegmentWithFlow(spriteBatch, pixel, start, end, thickness, color, startAlpha, endAlpha, 0f, vertical);
         }
 
         /// <summary>
@@ -2037,32 +2168,34 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (progress <= 0.01f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float glowSize = TimedProgressBorderThickness * 2.5f;
+            float glowSize = TimedProgressBorderThickness * 3f;
+
+            //脉动效果
+            float cornerPulse = (float)Math.Sin(Main.GameUpdateCount * 0.08f) * 0.2f + 0.8f;
 
             //根据进度决定绘制哪些角落
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            //顶部起始点发光
-            float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.6f;
+            //顶部起始点发光（左上角）
+            float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.7f * cornerPulse;
             DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Y), glowSize, color * cornerAlpha);
 
-            //根据进度绘制其他角落
+            //右上角
             if (visibleLength > panelRect.Width) {
-                //右上角
-                float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.5f;
+                float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.6f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Y), glowSize, color * rightTopAlpha);
             }
 
+            //右下角
             if (visibleLength > panelRect.Width + panelRect.Height) {
-                //右下角
-                float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.4f;
+                float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.5f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Bottom), glowSize, color * rightBottomAlpha);
             }
 
+            //左下角
             if (visibleLength > 2 * panelRect.Width + panelRect.Height) {
-                //左下角
-                float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.3f;
+                float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.4f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Bottom), glowSize, color * leftBottomAlpha);
             }
         }
@@ -2071,13 +2204,24 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// 绘制单个角落的发光
         /// </summary>
         protected virtual void DrawCornerGlow(SpriteBatch spriteBatch, Texture2D pixel, Vector2 position, float size, Color color) {
+            //外层大发光
+            float outerSize = size * 1.8f;
+            Rectangle outerRect = new(
+                (int)(position.X - outerSize / 2),
+                (int)(position.Y - outerSize / 2),
+                (int)outerSize,
+                (int)outerSize
+            );
+            spriteBatch.Draw(pixel, outerRect, new Rectangle(0, 0, 1, 1), color * 0.2f);
+
+            //中层发光
             Rectangle glowRect = new(
                 (int)(position.X - size / 2),
                 (int)(position.Y - size / 2),
                 (int)size,
                 (int)size
             );
-            spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.4f);
+            spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.5f);
 
             //中心更亮
             Rectangle centerRect = new(
@@ -2086,7 +2230,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 (int)(size / 2),
                 (int)(size / 2)
             );
-            spriteBatch.Draw(pixel, centerRect, new Rectangle(0, 0, 1, 1), color * 0.7f);
+            spriteBatch.Draw(pixel, centerRect, new Rectangle(0, 0, 1, 1), color * 0.8f);
         }
 
         #endregion
@@ -2112,9 +2256,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             activeFullBodyPortrait?.Draw(spriteBatch, alpha);
 
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
-
-            //绘制定时对话进度指示器(在对话框之后绘制，作为叠加层)
-            DrawTimedProgressIndicator(spriteBatch, panelRect, alpha);
         }
         protected abstract void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress);
     }

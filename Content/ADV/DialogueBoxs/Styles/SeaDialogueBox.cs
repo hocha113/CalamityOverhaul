@@ -172,6 +172,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 s.DrawEnhanced(spriteBatch, alpha * 0.45f);
             }
 
+            //绘制定时对话进度指示器(在对话框之后绘制，作为叠加层)
+            DrawTimedProgressIndicator(spriteBatch, panelRect, alpha);
+
             if (current == null || contentAlpha <= 0.01f) {
                 return;
             }
