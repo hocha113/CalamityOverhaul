@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;

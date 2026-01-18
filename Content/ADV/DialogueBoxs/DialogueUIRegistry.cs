@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
+using System;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {

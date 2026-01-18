@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
     /// 奸奇风格对话框

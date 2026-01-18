@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.DialogueBoxs
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
     /// 硫磺海风格 GalGame 对话框

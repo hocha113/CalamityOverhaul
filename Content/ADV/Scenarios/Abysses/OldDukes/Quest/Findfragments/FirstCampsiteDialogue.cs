@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using System;
 using Terraria;
@@ -8,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFragments
 {
     /// <summary>
-    /// Ê×´ÎÓªµØ¶Ô»°£¬´¥·¢Ñ°ÕÒº£ÑóËéÆ¬ÈÎÎñ
+    /// é¦–æ¬¡è¥åœ°å¯¹è¯ï¼Œè§¦å‘å¯»æ‰¾æµ·æ´‹ç¢ç‰‡ä»»åŠ¡
     /// </summary>
     internal class FirstCampsiteDialogue : ADVScenarioBase, ILocalizedModType
     {
@@ -16,10 +17,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
 
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
-        //½ÇÉ«Ãû³Æ
+        //è§’è‰²åç§°
         public static LocalizedText OldDukeName { get; private set; }
 
-        //¶Ô»°Ì¨´Ê
+        //å¯¹è¯å°è¯
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -29,19 +30,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         public static LocalizedText L6 { get; private set; }
 
         public override void SetStaticDefaults() {
-            OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "ÀÏ¹«¾ô");
+            OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "è€å…¬çˆµ");
 
-            L0 = this.GetLocalization(nameof(L0), () => "ÄãÀ´ÁË");
-            L1 = this.GetLocalization(nameof(L1), () => "ÎÒÊÕ¼¯ÕâĞ©²ĞÆ¬ÒÑ¾­ºÜ¾ÃÁË");
-            L2 = this.GetLocalization(nameof(L2), () => "ÕâĞ©²ĞÆ¬ºÜ¹îÒì£¬ËüÃÇ×ÜÏñÊÇ...ÈëÇÖ½øÕâ¸öÊÀ½çµÄ²úÎï");
-            L3 = this.GetLocalization(nameof(L3), () => "ÎÒÏ£ÍûÄãÄÜÃ÷°×ÎÒµÄÒâË¼£¬ÎÒµÄÖ±¾õ¸æËßÎÒËüÃÇ±¾Ó¦ÊÇÎŞĞÎÖ®Îï£¬Ö»ÊÇÑ¡ÔñÁËÄ³ÖÖ¿ÉÒÔ±»Ì©À­ÉúÎïÀí½âµÄĞÎÌ¬");
-            L4 = this.GetLocalization(nameof(L4), () => "×ÜÖ®...ÎÒÏëÒª½â¶ÁËüÃÇ£¬µ«ÊıÁ¿»¹²»¹»");
-            L5 = this.GetLocalization(nameof(L5), () => "ÎÒÏ£ÍûÄãÄÜ°ïÎÒÊÕ¼¯×ã¹»¶àµÄº£Ñó²ĞÆ¬");
-            L6 = this.GetLocalization(nameof(L6), () => "ÎÒ½«¸øÓèÄãÏàÓ¦µÄ±¨³ê");
+            L0 = this.GetLocalization(nameof(L0), () => "ä½ æ¥äº†");
+            L1 = this.GetLocalization(nameof(L1), () => "æˆ‘æ”¶é›†è¿™äº›æ®‹ç‰‡å·²ç»å¾ˆä¹…äº†");
+            L2 = this.GetLocalization(nameof(L2), () => "è¿™äº›æ®‹ç‰‡å¾ˆè¯¡å¼‚ï¼Œå®ƒä»¬æ€»åƒæ˜¯...å…¥ä¾µè¿›è¿™ä¸ªä¸–ç•Œçš„äº§ç‰©");
+            L3 = this.GetLocalization(nameof(L3), () => "æˆ‘å¸Œæœ›ä½ èƒ½æ˜ç™½æˆ‘çš„æ„æ€ï¼Œæˆ‘çš„ç›´è§‰å‘Šè¯‰æˆ‘å®ƒä»¬æœ¬åº”æ˜¯æ— å½¢ä¹‹ç‰©ï¼Œåªæ˜¯é€‰æ‹©äº†æŸç§å¯ä»¥è¢«æ³°æ‹‰ç”Ÿç‰©ç†è§£çš„å½¢æ€");
+            L4 = this.GetLocalization(nameof(L4), () => "æ€»ä¹‹...æˆ‘æƒ³è¦è§£è¯»å®ƒä»¬ï¼Œä½†æ•°é‡è¿˜ä¸å¤Ÿ");
+            L5 = this.GetLocalization(nameof(L5), () => "æˆ‘å¸Œæœ›ä½ èƒ½å¸®æˆ‘æ”¶é›†è¶³å¤Ÿå¤šçš„æµ·æ´‹æ®‹ç‰‡");
+            L6 = this.GetLocalization(nameof(L6), () => "æˆ‘å°†ç»™äºˆä½ ç›¸åº”çš„æŠ¥é…¬");
         }
 
         protected override void Build() {
-            //×¢²áÀÏ¹«¾ôÁ¢»æ£¨Ê¹ÓÃ¼ôÓ°£©
+            //æ³¨å†Œè€å…¬çˆµç«‹ç»˜ï¼ˆä½¿ç”¨å‰ªå½±ï¼‰
             DialogueBoxBase.RegisterPortrait(OldDukeName.Value, OldDukeCampsite.OldDuke, OldDukeCampsite.PortraitRec, null, true);
 
             Add(OldDukeName.Value, L0.Value);
@@ -59,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         }
 
         protected override void OnScenarioComplete() {
-            //±ê¼ÇÈÎÎñÒÑ´¥·¢
+            //æ ‡è®°ä»»åŠ¡å·²è§¦å‘
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.OldDukeFindFragmentsQuestTriggered = true;
             }

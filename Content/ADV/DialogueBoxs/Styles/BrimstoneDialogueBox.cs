@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.DialogueBoxs
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
     /// 至尊灾厄硫磺火风格对话框

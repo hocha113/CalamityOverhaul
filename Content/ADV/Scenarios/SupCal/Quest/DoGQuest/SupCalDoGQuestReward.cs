@@ -1,7 +1,8 @@
-using CalamityOverhaul.Content.ADV.ADVQuestTracker;
+ï»¿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -15,7 +16,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
 {
     /// <summary>
-    /// ÉñÃ÷ÍÌÊÉÕßÈÎÎñ½±Àø³¡¾°
+    /// ç¥æ˜åå™¬è€…ä»»åŠ¡å¥–åŠ±åœºæ™¯
     /// </summary>
     internal class SupCalDoGQuestReward : ADVScenarioBase, ILocalizedModType
     {
@@ -24,11 +25,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public static bool Spawned = false;
         public static int RandomTimer;
 
-        //½ÇÉ«Ãû³Æ±¾µØ»¯
+        //è§’è‰²åç§°æœ¬åœ°åŒ–
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
 
-        //¶Ô»°ÎÄ±¾±¾µØ»¯
+        //å¯¹è¯æ–‡æœ¬æœ¬åœ°åŒ–
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -38,16 +39,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public static LocalizedText Line7 { get; private set; }
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "Áò»ğÅ®Î×");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "±ÈÄ¿Óã");
+            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "ç¡«ç«å¥³å·«");
+            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "æ¯”ç›®é±¼");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "¸É¾»ÀûÂä");
-            Line2 = this.GetLocalization(nameof(Line2), () => "Õâ°Ñµ¶£¬Ò»Èç¼ÈÍùµØÁîÈËÂúÒâ");
-            Line3 = this.GetLocalization(nameof(Line3), () => "µ±ÄêÎÒ»¹ÊÇ·²ÈËÖ®ÇûÊ±£¬¾ÍÊÇÓÃËüÇ×ÊÖÍÚ³öÀÏÊ¦µÄĞÄÔà£¬ºÜºÃÓÃ£¬²»ÊÇÂğ£¿");
-            Line4 = this.GetLocalization(nameof(Line4), () => "ÄÃºÃ");
-            Line5 = this.GetLocalization(nameof(Line5), () => "ÄãÓĞÃ»ÓĞÏë¹ı£¬Èç¹ûÏÂÒ»´Î£¬ÎÒÊÇÎ¯ÍĞÄãÀ´É±ÎÒ£¬Äã»áÔõÃ´×ö£¿");
-            Line6 = this.GetLocalization(nameof(Line6), () => "ÕæÒÅº¶£¬ÄãºÍËû×¢¶¨¼û²»ÁËÃæ¡£²»È»ÄãÃÇÒ»¶¨ÁÄµÃºÜÍ¶»ú");
-            Line7 = this.GetLocalization(nameof(Line7), () => "......ÎÒÔ½À´Ô½ÊÜ²»ÁËÕâ¼Ò»ïÁË");
+            Line1 = this.GetLocalization(nameof(Line1), () => "å¹²å‡€åˆ©è½");
+            Line2 = this.GetLocalization(nameof(Line2), () => "è¿™æŠŠåˆ€ï¼Œä¸€å¦‚æ—¢å¾€åœ°ä»¤äººæ»¡æ„");
+            Line3 = this.GetLocalization(nameof(Line3), () => "å½“å¹´æˆ‘è¿˜æ˜¯å‡¡äººä¹‹èº¯æ—¶ï¼Œå°±æ˜¯ç”¨å®ƒäº²æ‰‹æŒ–å‡ºè€å¸ˆçš„å¿ƒè„ï¼Œå¾ˆå¥½ç”¨ï¼Œä¸æ˜¯å—ï¼Ÿ");
+            Line4 = this.GetLocalization(nameof(Line4), () => "æ‹¿å¥½");
+            Line5 = this.GetLocalization(nameof(Line5), () => "ä½ æœ‰æ²¡æœ‰æƒ³è¿‡ï¼Œå¦‚æœä¸‹ä¸€æ¬¡ï¼Œæˆ‘æ˜¯å§”æ‰˜ä½ æ¥æ€æˆ‘ï¼Œä½ ä¼šæ€ä¹ˆåšï¼Ÿ");
+            Line6 = this.GetLocalization(nameof(Line6), () => "çœŸé—æ†¾ï¼Œä½ å’Œä»–æ³¨å®šè§ä¸äº†é¢ã€‚ä¸ç„¶ä½ ä»¬ä¸€å®šèŠå¾—å¾ˆæŠ•æœº");
+            Line7 = this.GetLocalization(nameof(Line7), () => "......æˆ‘è¶Šæ¥è¶Šå—ä¸äº†è¿™å®¶ä¼™äº†");
         }
 
         protected override void OnScenarioStart() {
@@ -77,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             Add(Rolename1.Value, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
             Add(Rolename1.Value, Line3.Value);
-            Add(Rolename1.Value, Line4.Value); //½±Àø
+            Add(Rolename1.Value, Line4.Value); //å¥–åŠ±
             Add(Rolename1.Value, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
 
@@ -87,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            if (args.Index == 3) { //Line4Ê±·¢·Å½±Àø
+            if (args.Index == 3) { //Line4æ—¶å‘æ”¾å¥–åŠ±
                 ADVRewardPopup.ShowReward(ModContent.ItemType<OniMachete>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
@@ -106,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             if (save.SupCalDoGQuestRewardSceneComplete) {
                 return;
             }
-            //Èç¹ûÍæ¼ÒÄÃ×Å´ó±ÈÄ¿Óã£¬Ôò±ØĞëÏÈ»ñµÃ¹ı±ÈÄ¿ÓãĞ¡½ã¸øµÄÀñÎï²ÅÄÜ´¥·¢£¬±ÜÃâÕâÁ½¸ö³¡¾°³åÍ»
+            //å¦‚æœç©å®¶æ‹¿ç€å¤§æ¯”ç›®é±¼ï¼Œåˆ™å¿…é¡»å…ˆè·å¾—è¿‡æ¯”ç›®é±¼å°å§ç»™çš„ç¤¼ç‰©æ‰èƒ½è§¦å‘ï¼Œé¿å…è¿™ä¸¤ä¸ªåœºæ™¯å†²çª
             if (halibutPlayer.HeldHalibut && !save.DevourerOfGodsGift) {
                 return;
             }
@@ -124,11 +125,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     }
 
     /// <summary>
-    /// ×·×ÙÍæ¼ÒÊ¹ÓÃHeartcarver»÷É±ÉñÃ÷ÍÌÊÉÕß
+    /// è¿½è¸ªç©å®¶ä½¿ç”¨Heartcarverå‡»æ€ç¥æ˜åå™¬è€…
     /// </summary>
     internal class DoGQuestTracker : BaseDamageTracker
     {
-        internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%ÉËº¦¹±Ï×¶ÈÒªÇó
+        internal const float REQUIRED_CONTRIBUTION = 0.8f; //80%ä¼¤å®³è´¡çŒ®åº¦è¦æ±‚
 
         internal override int TargetNPCType => CWRID.NPC_DevourerofGodsHead;
 
@@ -149,14 +150,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 return false;
             }
 
-            if (!halibutPlayer.ADVSave.SupCalQuestReward//ÏÈÍê³ÉÇ°ÖÃÈÎÎñ
-                || halibutPlayer.ADVSave.SupCalDoGQuestDeclined//ÇÒÎ´¾Ü¾øµ±Ç°ÈÎÎñ
+            if (!halibutPlayer.ADVSave.SupCalQuestReward//å…ˆå®Œæˆå‰ç½®ä»»åŠ¡
+                || halibutPlayer.ADVSave.SupCalDoGQuestDeclined//ä¸”æœªæ‹’ç»å½“å‰ä»»åŠ¡
                 ) {
                 return false;
             }
 
             if (halibutPlayer.ADVSave.SupCalDoGQuestReward) {
-                return false;//ÈÎÎñÒÑ¾­Íê³É
+                return false;//ä»»åŠ¡å·²ç»å®Œæˆ
             }
 
             return true;
@@ -167,10 +168,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 return;
             }
 
-            //±ê¼ÇÈÎÎñÍê³É
+            //æ ‡è®°ä»»åŠ¡å®Œæˆ
             halibutPlayer.ADVSave.SupCalDoGQuestReward = true;
 
-            //ÑÓ³Ù´¥·¢½±Àø³¡¾°
+            //å»¶è¿Ÿè§¦å‘å¥–åŠ±åœºæ™¯
             SupCalDoGQuestReward.Spawned = true;
             SupCalDoGQuestReward.RandomTimer = 60 * Main.rand.Next(3, 5);
         }
@@ -184,9 +185,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public override int TargetNPCType => CWRID.NPC_DevourerofGodsHead;
 
         protected override void SetupLocalizedTexts() {
-            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "Î¯ÍĞ£ºÁÔÉ±ÉñÃ÷ÍÌÊÉÕß");
-            DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "¿ÌĞÄÕßÉËº¦");
-            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "ĞèÇó: 80%");
+            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "å§”æ‰˜ï¼šçŒæ€ç¥æ˜åå™¬è€…");
+            DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "åˆ»å¿ƒè€…ä¼¤å®³");
+            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "éœ€æ±‚: 80%");
         }
 
         protected override (float current, float total, bool isActive) GetTrackingData() {

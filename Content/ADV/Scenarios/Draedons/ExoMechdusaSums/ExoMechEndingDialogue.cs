@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
 using System;
 using Terraria;
@@ -8,17 +9,17 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
     /// <summary>
-    /// ¼ÎµÇÕ½¶·½áÊø¶Ô»°³¡¾°
+    /// å˜‰ç™»æˆ˜æ–—ç»“æŸå¯¹è¯åœºæ™¯
     /// </summary>
     internal class ExoMechEndingDialogue : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        //ÔÊĞíÖØ¸´²¥·Å£¨ÓÃÓÚ»÷É±³¢ÊÔºóÖØĞÂ²¥·ÅÕı³£½áÊø£©
+        //å…è®¸é‡å¤æ’­æ”¾ï¼ˆç”¨äºå‡»æ€å°è¯•åé‡æ–°æ’­æ”¾æ­£å¸¸ç»“æŸï¼‰
         public override bool CanRepeat => true;
 
-        //½ÇÉ«Ãû³Æ
+        //è§’è‰²åç§°
         public static LocalizedText DraedonName { get; private set; }
 
-        //½áÊø¶Ô»°
+        //ç»“æŸå¯¹è¯
         public static LocalizedText EndLine1 { get; private set; }
         public static LocalizedText EndLine2 { get; private set; }
         public static LocalizedText EndLine3 { get; private set; }
@@ -29,39 +30,39 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         public static LocalizedText EndLine8 { get; private set; }
         public static LocalizedText EndLine9 { get; private set; }
 
-        //Íæ¼Ò³¢ÊÔ»÷É±¼ÎµÇÊ±µÄ¶Ô»°
+        //ç©å®¶å°è¯•å‡»æ€å˜‰ç™»æ—¶çš„å¯¹è¯
         public static LocalizedText KillAttemptLine { get; private set; }
 
-        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃ¼ÎµÇ¿Æ¼¼·ç¸ñ
+        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨å˜‰ç™»ç§‘æŠ€é£æ ¼
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() {
-            //ÖØÖÃ×´Ì¬
+            //é‡ç½®çŠ¶æ€
         }
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "¼ÎµÇ");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "å˜‰ç™»");
 
-            //½áÊø¶Ô»°(¶ÔÓ¦Ô­ÓÎÏ·µÄ DraedonEndText ÏµÁĞ)
-            EndLine1 = this.GetLocalization(nameof(EndLine1), () => "Ò»¸öÎ´ÖªÒòËØ¡ª¡ªÄã£¬ÊÇÒ»¸öÌØÒìµã");
-            EndLine2 = this.GetLocalization(nameof(EndLine2), () => "Äã¶ÔÕâÆ¬´óµØºÍËüµÄÀúÊ·¶øÑÔ£¬Ö»ÊÇÍâÀ´Ö®ÈË£¬¾ÍºÍÎÒÒ»Ñù");
-            EndLine3 = this.GetLocalization(nameof(EndLine3), () => "¡­¡­ºÜ±§Ç¸£¬µ«ÔÚ¿´ÁËÕâÑùÒ»³¡\"Õ¹Ê¾\"Ö®ºó£¬ÎÒ±ØĞëµÃ»¨µãÊ±¼äÕûÀíÎÒµÄË¼Ğ÷");
-            EndLine4 = this.GetLocalization(nameof(EndLine4), () => "Æù½ñÎªÖ¹ÅçÈ÷µÄÑªÒºÒÑ¾­ÈÃÕâÆ¬´óÂ½±äµÃ³Â¸¯ÎŞ±È£¬ºÁÎŞÉúÆø");
-            EndLine5 = this.GetLocalization(nameof(EndLine5), () => "ÄãÒ²»ÓÈ÷ÁË×Ô¼ºµÄÏÊÑª£¬µ«Õâ¿ÉÄÜ×ãÒÔ´øÀ´Ò»¸öĞÂµÄÊ±´ú¡­¡­ÊÇÊ²Ã´£¬ÎÒ²»ÖªµÀµ«ÄÇÒ»¶¨ÊÇÎÒËù¿ÊÍû¿´µ½µÄÊ±´ú");
-            EndLine6 = this.GetLocalization(nameof(EndLine6), () => "ÏÖÔÚ£¬ÄãÏëÒª½Ó´¥ÄÇÎ»±©¾ı¿ÉÏ§ÎÒÎŞ·¨°ïµ½Äã");
-            EndLine7 = this.GetLocalization(nameof(EndLine7), () => "Õâ²¢·Ç³ö×ÔÔ¹ºŞ£¬±Ï¾¹´ÓÒ»¿ªÊ¼£¬ÎÒµÄÄ¿±ê¾ÍÖ»ÓĞ¹Û²ì¸Õ²ÅµÄÕâÒ»³¡Õ½¶·");
-            EndLine8 = this.GetLocalization(nameof(EndLine8), () => "µ«Äã¹ıÈ¥Ò²³É¹¦¹ı£¬ËùÒÔÄã×îºó»áÕÒµ½°ì·¨µÄ");
-            EndLine9 = this.GetLocalization(nameof(EndLine9), () => "ÎÒ±ØĞë×ğÖØ²¢³ĞÈÏÄãµÄÊ¤Àû£¬µ«ÏÖÔÚ£¬ÎÒµÃ°Ñ×¢ÒâÁ¦·Å»Øµ½ÎÒµÄ»úĞµÉÏÁË");
+            //ç»“æŸå¯¹è¯(å¯¹åº”åŸæ¸¸æˆçš„ DraedonEndText ç³»åˆ—)
+            EndLine1 = this.GetLocalization(nameof(EndLine1), () => "ä¸€ä¸ªæœªçŸ¥å› ç´ â€”â€”ä½ ï¼Œæ˜¯ä¸€ä¸ªç‰¹å¼‚ç‚¹");
+            EndLine2 = this.GetLocalization(nameof(EndLine2), () => "ä½ å¯¹è¿™ç‰‡å¤§åœ°å’Œå®ƒçš„å†å²è€Œè¨€ï¼Œåªæ˜¯å¤–æ¥ä¹‹äººï¼Œå°±å’Œæˆ‘ä¸€æ ·");
+            EndLine3 = this.GetLocalization(nameof(EndLine3), () => "â€¦â€¦å¾ˆæŠ±æ­‰ï¼Œä½†åœ¨çœ‹äº†è¿™æ ·ä¸€åœº\"å±•ç¤º\"ä¹‹åï¼Œæˆ‘å¿…é¡»å¾—èŠ±ç‚¹æ—¶é—´æ•´ç†æˆ‘çš„æ€ç»ª");
+            EndLine4 = this.GetLocalization(nameof(EndLine4), () => "è¿„ä»Šä¸ºæ­¢å–·æ´’çš„è¡€æ¶²å·²ç»è®©è¿™ç‰‡å¤§é™†å˜å¾—é™ˆè…æ— æ¯”ï¼Œæ¯«æ— ç”Ÿæ°”");
+            EndLine5 = this.GetLocalization(nameof(EndLine5), () => "ä½ ä¹ŸæŒ¥æ´’äº†è‡ªå·±çš„é²œè¡€ï¼Œä½†è¿™å¯èƒ½è¶³ä»¥å¸¦æ¥ä¸€ä¸ªæ–°çš„æ—¶ä»£â€¦â€¦æ˜¯ä»€ä¹ˆï¼Œæˆ‘ä¸çŸ¥é“ä½†é‚£ä¸€å®šæ˜¯æˆ‘æ‰€æ¸´æœ›çœ‹åˆ°çš„æ—¶ä»£");
+            EndLine6 = this.GetLocalization(nameof(EndLine6), () => "ç°åœ¨ï¼Œä½ æƒ³è¦æ¥è§¦é‚£ä½æš´å›å¯æƒœæˆ‘æ— æ³•å¸®åˆ°ä½ ");
+            EndLine7 = this.GetLocalization(nameof(EndLine7), () => "è¿™å¹¶éå‡ºè‡ªæ€¨æ¨ï¼Œæ¯•ç«Ÿä»ä¸€å¼€å§‹ï¼Œæˆ‘çš„ç›®æ ‡å°±åªæœ‰è§‚å¯Ÿåˆšæ‰çš„è¿™ä¸€åœºæˆ˜æ–—");
+            EndLine8 = this.GetLocalization(nameof(EndLine8), () => "ä½†ä½ è¿‡å»ä¹ŸæˆåŠŸè¿‡ï¼Œæ‰€ä»¥ä½ æœ€åä¼šæ‰¾åˆ°åŠæ³•çš„");
+            EndLine9 = this.GetLocalization(nameof(EndLine9), () => "æˆ‘å¿…é¡»å°Šé‡å¹¶æ‰¿è®¤ä½ çš„èƒœåˆ©ï¼Œä½†ç°åœ¨ï¼Œæˆ‘å¾—æŠŠæ³¨æ„åŠ›æ”¾å›åˆ°æˆ‘çš„æœºæ¢°ä¸Šäº†");
 
-            //»÷É±³¢ÊÔ¶Ô»°
-            KillAttemptLine = this.GetLocalization(nameof(KillAttemptLine), () => "¡­¡­ÄãµÄĞĞÎªÃ»Ê²Ã´±ØÒª");
+            //å‡»æ€å°è¯•å¯¹è¯
+            KillAttemptLine = this.GetLocalization(nameof(KillAttemptLine), () => "â€¦â€¦ä½ çš„è¡Œä¸ºæ²¡ä»€ä¹ˆå¿…è¦");
         }
 
         protected override void Build() {
-            //×¢²á¼ÎµÇÁ¢»æ
+            //æ³¨å†Œå˜‰ç™»ç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2RedADV, silhouette: false);
 
-            //Õı³£½áÊø¶Ô»°
+            //æ­£å¸¸ç»“æŸå¯¹è¯
             Add(DraedonName.Value, EndLine1.Value);
             Add(DraedonName.Value, EndLine2.Value);
             Add(DraedonName.Value, EndLine3.Value);
@@ -83,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             DraedonEffect.Send();
             DeploySignaltowerScenario.SetTurnOn();
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
-                save.ExoMechEndingDialogue = true;//±ê¼ÇÒÑ¹Û¿´½áÊø¶Ô»°
+                save.ExoMechEndingDialogue = true;//æ ‡è®°å·²è§‚çœ‹ç»“æŸå¯¹è¯
             }
         }
     }

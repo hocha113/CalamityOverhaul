@@ -1,5 +1,6 @@
-using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+ï»¿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -11,34 +12,34 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     /// <summary>
-    /// ÈÎÎñÍê³É³¡¾°
+    /// ä»»åŠ¡å®Œæˆåœºæ™¯
     /// </summary>
     internal class QuestCompleteScenario : ADVScenarioBase, ILocalizedModType
     {
-        //½ÇÉ«Ãû³Æ±¾µØ»¯
+        //è§’è‰²åç§°æœ¬åœ°åŒ–
         public static LocalizedText DraedonName { get; private set; }
 
-        //¶Ô»°Ì¨´Ê
+        //å¯¹è¯å°è¯
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
         public static LocalizedText Line4 { get; private set; }
         public static LocalizedText Line5 { get; private set; }
 
-        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃ¼ÎµÇ¿Æ¼¼·ç¸ñ
+        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨å˜‰ç™»ç§‘æŠ€é£æ ¼
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         private const string red = " ";
         private const string alt = " " + " ";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "¼ÎµÇ");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "å˜‰ç™»");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "Á¿×Ó¾À²øÍøÂçÒÑÍêÈ«½¨Á¢£¬ËùÓĞ½ÚµãÔËĞĞÎÈ¶¨");
-            Line2 = this.GetLocalization(nameof(Line2), () => "Êı¾İ´«ÊäÑÓ³Ù´ïµ½ÁËÔ¤ÆÚµÄÆÕÀÊ¿ËÊ±¼ä¼¶±ğ£¬ÍêÃÀ·ûºÏÀíÂÛÔ¤²â");
-            Line3 = this.GetLocalization(nameof(Line3), () => "ÄãµÄĞ§ÂÊÈÃÎÒÓ¡ÏóÉî¿Ì¡£ÓĞÁËÕâ¸öÍøÂç£¬ÎÒÄÜ¹»ÊµÊ±¼à¿ØÕû¸öĞÇÏµµÄÒì³£²¨¶¯");
-            Line4 = this.GetLocalization(nameof(Line4), () => "×÷Îª±¨³ê£¬ÎÒ»á¿ª·Å²¿·Ö¸ß¼¶¿Æ¼¼µÄ·ÃÎÊÈ¨ÏŞ¸øÄã");
-            Line5 = this.GetLocalization(nameof(Line5), () => "Èç¹ûÓĞĞèÒª£¬ËæÊ±¿ÉÒÔÍ¨¹ıÁ¿×ÓÍ¨Ñ¶ÍøÂçÁªÏµÎÒ");
+            Line1 = this.GetLocalization(nameof(Line1), () => "é‡å­çº ç¼ ç½‘ç»œå·²å®Œå…¨å»ºç«‹ï¼Œæ‰€æœ‰èŠ‚ç‚¹è¿è¡Œç¨³å®š");
+            Line2 = this.GetLocalization(nameof(Line2), () => "æ•°æ®ä¼ è¾“å»¶è¿Ÿè¾¾åˆ°äº†é¢„æœŸçš„æ™®æœ—å…‹æ—¶é—´çº§åˆ«ï¼Œå®Œç¾ç¬¦åˆç†è®ºé¢„æµ‹");
+            Line3 = this.GetLocalization(nameof(Line3), () => "ä½ çš„æ•ˆç‡è®©æˆ‘å°è±¡æ·±åˆ»ã€‚æœ‰äº†è¿™ä¸ªç½‘ç»œï¼Œæˆ‘èƒ½å¤Ÿå®æ—¶ç›‘æ§æ•´ä¸ªæ˜Ÿç³»çš„å¼‚å¸¸æ³¢åŠ¨");
+            Line4 = this.GetLocalization(nameof(Line4), () => "ä½œä¸ºæŠ¥é…¬ï¼Œæˆ‘ä¼šå¼€æ”¾éƒ¨åˆ†é«˜çº§ç§‘æŠ€çš„è®¿é—®æƒé™ç»™ä½ ");
+            Line5 = this.GetLocalization(nameof(Line5), () => "å¦‚æœæœ‰éœ€è¦ï¼Œéšæ—¶å¯ä»¥é€šè¿‡é‡å­é€šè®¯ç½‘ç»œè”ç³»æˆ‘");
         }
 
         private static void Give(int id, int num) {
@@ -62,22 +63,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
 
-            //±ê¼ÇÈÎÎñÍê³É±£´æ
+            //æ ‡è®°ä»»åŠ¡å®Œæˆä¿å­˜
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADVSave.DeploySignaltowerQuestCompleted = true;
             }
             DSTPlayer.HasDeploySignaltowerQuestByWorld = false;
-            //¿ªÆôÓë±ä½ÚÕßµÄºóĞø¶Ô»°
+            //å¼€å¯ä¸å˜èŠ‚è€…çš„åç»­å¯¹è¯
             FirstMetTzeentch.Open();
         }
 
         protected override void Build() {
-            //×¢²á¼ÎµÇÁ¢»æ
+            //æ³¨å†Œå˜‰ç™»ç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2ADV, silhouette: false);
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + alt, ADVAsset.DraedonADV, silhouette: false);
 
-            //¹¹½¨¶Ô»°Á÷³Ì
+            //æ„å»ºå¯¹è¯æµç¨‹
             Add(DraedonName.Value + red, Line1.Value);
             Add(DraedonName.Value + alt, Line2.Value);
             Add(DraedonName.Value, Line3.Value);

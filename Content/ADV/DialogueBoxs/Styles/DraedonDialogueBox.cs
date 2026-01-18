@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.DialogueBoxs
+namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
     /// 特化的嘉登科技风格 GalGame 对话框

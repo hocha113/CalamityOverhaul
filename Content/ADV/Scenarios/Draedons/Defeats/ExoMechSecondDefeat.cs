@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -7,39 +8,39 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
 {
     /// <summary>
-    /// ¼ÎµÇµÚ¶ş´ÎÕ½°Ü¶Ô»°³¡¾°
+    /// å˜‰ç™»ç¬¬äºŒæ¬¡æˆ˜è´¥å¯¹è¯åœºæ™¯
     /// </summary>
     internal class ExoMechSecondDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override bool CanRepeat => false;
 
-        //½ÇÉ«Ãû³Æ
+        //è§’è‰²åç§°
         public static LocalizedText DraedonName { get; private set; }
 
-        //µÚ¶ş´ÎÕ½°Ü¶Ô»°
+        //ç¬¬äºŒæ¬¡æˆ˜è´¥å¯¹è¯
         public static LocalizedText SecondDefeatLine1 { get; private set; }
         public static LocalizedText SecondDefeatLine2 { get; private set; }
         public static LocalizedText SecondDefeatLine3 { get; private set; }
 
-        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃ¼ÎµÇ¿Æ¼¼·ç¸ñ
+        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨å˜‰ç™»ç§‘æŠ€é£æ ¼
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() { }
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "¼ÎµÇ");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "å˜‰ç™»");
 
-            //µÚ¶ş´ÎÕ½°Ü¶Ô»°£º±íÏÖ³ö¶ÔÍæ¼ÒÑ§Ï°ÄÜÁ¦µÄÈÏ¿É
-            SecondDefeatLine1 = this.GetLocalization(nameof(SecondDefeatLine1), () => "ÓĞÈ¤£¬ÄãµÄÊÊÓ¦ËÙ¶È³¬³öÁËÎÒµÄÔ¤ÆÚ");
-            SecondDefeatLine2 = this.GetLocalization(nameof(SecondDefeatLine2), () => "Êı¾İÏÔÊ¾ÄãÔÚÉÏ´ÎÕ½¶·ºóÒÑ¾­½øĞĞÁËÕë¶ÔĞÔµÄ¸Ä½ø");
-            SecondDefeatLine3 = this.GetLocalization(nameof(SecondDefeatLine3), () => "¿´À´ÎÒĞèÒªÖØĞÂÆÀ¹ÀÄãµÄÑ§Ï°ÇúÏßÁË");
+            //ç¬¬äºŒæ¬¡æˆ˜è´¥å¯¹è¯ï¼šè¡¨ç°å‡ºå¯¹ç©å®¶å­¦ä¹ èƒ½åŠ›çš„è®¤å¯
+            SecondDefeatLine1 = this.GetLocalization(nameof(SecondDefeatLine1), () => "æœ‰è¶£ï¼Œä½ çš„é€‚åº”é€Ÿåº¦è¶…å‡ºäº†æˆ‘çš„é¢„æœŸ");
+            SecondDefeatLine2 = this.GetLocalization(nameof(SecondDefeatLine2), () => "æ•°æ®æ˜¾ç¤ºä½ åœ¨ä¸Šæ¬¡æˆ˜æ–—åå·²ç»è¿›è¡Œäº†é’ˆå¯¹æ€§çš„æ”¹è¿›");
+            SecondDefeatLine3 = this.GetLocalization(nameof(SecondDefeatLine3), () => "çœ‹æ¥æˆ‘éœ€è¦é‡æ–°è¯„ä¼°ä½ çš„å­¦ä¹ æ›²çº¿äº†");
         }
 
         protected override void Build() {
-            //×¢²á¼ÎµÇÁ¢»æ
+            //æ³¨å†Œå˜‰ç™»ç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2RedADV, silhouette: false);
 
-            //µÚ¶ş´ÎÕ½°ÜµÄ¼ò¶Ì¶Ô»°
+            //ç¬¬äºŒæ¬¡æˆ˜è´¥çš„ç®€çŸ­å¯¹è¯
             Add(DraedonName.Value, SecondDefeatLine1.Value);
             Add(DraedonName.Value, SecondDefeatLine2.Value);
             Add(DraedonName.Value, SecondDefeatLine3.Value);

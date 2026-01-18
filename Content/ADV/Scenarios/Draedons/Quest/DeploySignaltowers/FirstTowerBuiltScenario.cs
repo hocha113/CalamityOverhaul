@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -6,31 +7,31 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
     /// <summary>
-    /// µÚÒ»×ùĞÅºÅËş´î½¨ºóµÄ³¡¾°
+    /// ç¬¬ä¸€åº§ä¿¡å·å¡”æ­å»ºåçš„åœºæ™¯
     /// </summary>
     internal class FirstTowerBuiltScenario : ADVScenarioBase, ILocalizedModType
     {
-        //½ÇÉ«Ãû³Æ±¾µØ»¯
+        //è§’è‰²åç§°æœ¬åœ°åŒ–
         public static LocalizedText DraedonName { get; private set; }
 
-        //¶Ô»°Ì¨´Ê
+        //å¯¹è¯å°è¯
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
         public static LocalizedText Line4 { get; private set; }
 
-        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃ¼ÎµÇ¿Æ¼¼·ç¸ñ
+        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨å˜‰ç™»ç§‘æŠ€é£æ ¼
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         private const string red = " ";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "¼ÎµÇ");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "å˜‰ç™»");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "¼ì²âµ½Á¿×Ó¾À²ø½ÚµãÒÑ½¨Á¢£¬ĞÅºÅÇ¿¶ÈÎÈ¶¨");
-            Line2 = this.GetLocalization(nameof(Line2), () => "ºÜºÃ£¬µÚÒ»×ùĞÅºÅËşÒÑ¾­¿ªÊ¼ÔË×÷¡£¼ÌĞø²¿ÊğÊ£ÓàµÄ½Úµã");
-            Line3 = this.GetLocalization(nameof(Line3), () => "µ±ÍøÂçÍê³Éºó£¬ÎÒ½«ÄÜ¹»¸ü¾«È·µØ¶¨Î»ºÍ¼à¿ØÕû¸öĞÇÏµµÄÄÜÁ¿²¨¶¯");
-            Line4 = this.GetLocalization(nameof(Line4), () => "±£³ÖÕâ¸öËÙ¶È£¬ºÜ¿ìÎÒÃÇ¾ÍÄÜ½¨Á¢ÍêÕûµÄÍ¨Ñ¶ÍøÂç");
+            Line1 = this.GetLocalization(nameof(Line1), () => "æ£€æµ‹åˆ°é‡å­çº ç¼ èŠ‚ç‚¹å·²å»ºç«‹ï¼Œä¿¡å·å¼ºåº¦ç¨³å®š");
+            Line2 = this.GetLocalization(nameof(Line2), () => "å¾ˆå¥½ï¼Œç¬¬ä¸€åº§ä¿¡å·å¡”å·²ç»å¼€å§‹è¿ä½œã€‚ç»§ç»­éƒ¨ç½²å‰©ä½™çš„èŠ‚ç‚¹");
+            Line3 = this.GetLocalization(nameof(Line3), () => "å½“ç½‘ç»œå®Œæˆåï¼Œæˆ‘å°†èƒ½å¤Ÿæ›´ç²¾ç¡®åœ°å®šä½å’Œç›‘æ§æ•´ä¸ªæ˜Ÿç³»çš„èƒ½é‡æ³¢åŠ¨");
+            Line4 = this.GetLocalization(nameof(Line4), () => "ä¿æŒè¿™ä¸ªé€Ÿåº¦ï¼Œå¾ˆå¿«æˆ‘ä»¬å°±èƒ½å»ºç«‹å®Œæ•´çš„é€šè®¯ç½‘ç»œ");
         }
 
         protected override void OnScenarioStart() {
@@ -44,11 +45,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         protected override void Build() {
-            //×¢²á¼ÎµÇÁ¢»æ
+            //æ³¨å†Œå˜‰ç™»ç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2ADV, silhouette: false);
             DialogueBoxBase.RegisterPortrait(DraedonName.Value + red, ADVAsset.Draedon2RedADV, silhouette: false);
 
-            //¹¹½¨¶Ô»°Á÷³Ì
+            //æ„å»ºå¯¹è¯æµç¨‹
             Add(DraedonName.Value + red, Line1.Value);
             Add(DraedonName.Value, Line2.Value);
             Add(DraedonName.Value, Line3.Value);

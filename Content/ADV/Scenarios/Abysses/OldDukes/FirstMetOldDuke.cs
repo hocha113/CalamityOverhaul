@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;

@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
+ï»¿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -6,39 +7,39 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
 {
     /// <summary>
-    /// ¼ÎµÇ¿ìËÙÕ½°Ü¶Ô»°³¡¾°£¨Íæ¼ÒÓÃºÜ¶ÌÊ±¼ä»÷°Ü»ú¼×£©
+    /// å˜‰ç™»å¿«é€Ÿæˆ˜è´¥å¯¹è¯åœºæ™¯ï¼ˆç©å®¶ç”¨å¾ˆçŸ­æ—¶é—´å‡»è´¥æœºç”²ï¼‰
     /// </summary>
     internal class ExoMechQuickDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override bool CanRepeat => true;
 
-        //½ÇÉ«Ãû³Æ
+        //è§’è‰²åç§°
         public static LocalizedText DraedonName { get; private set; }
 
-        //¿ìËÙÕ½°Ü¶Ô»°
+        //å¿«é€Ÿæˆ˜è´¥å¯¹è¯
         public static LocalizedText QuickDefeatLine1 { get; private set; }
         public static LocalizedText QuickDefeatLine2 { get; private set; }
         public static LocalizedText QuickDefeatLine3 { get; private set; }
 
-        //ÉèÖÃ³¡¾°Ä¬ÈÏÊ¹ÓÃ¼ÎµÇ¿Æ¼¼·ç¸ñ
+        //è®¾ç½®åœºæ™¯é»˜è®¤ä½¿ç”¨å˜‰ç™»ç§‘æŠ€é£æ ¼
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => DraedonDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() { }
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "¼ÎµÇ");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "å˜‰ç™»");
 
-            //¿ìËÙÕ½°Ü¶Ô»°£º±íÏÖ³ö¶ÔÍæ¼ÒÑ¹µ¹ĞÔÊµÁ¦µÄ¾ªÑÈ
-            QuickDefeatLine1 = this.GetLocalization(nameof(QuickDefeatLine1), () => "¡­¡­Õâ¸öÊ±¼äÔ¶µÍÓÚÎÒµÄÔ¤²âÄ£ĞÍ");
-            QuickDefeatLine2 = this.GetLocalization(nameof(QuickDefeatLine2), () => "¿´À´ÎÒµÍ¹ÀÁËÄãµ±Ç°µÄÕ½¶·Ğ§ÂÊ");
-            QuickDefeatLine3 = this.GetLocalization(nameof(QuickDefeatLine3), () => "»òĞíÊÇÊ±ºò¿¼ÂÇ¸ü¼¤½øµÄÉè¼Æ·½°¸ÁË");
+            //å¿«é€Ÿæˆ˜è´¥å¯¹è¯ï¼šè¡¨ç°å‡ºå¯¹ç©å®¶å‹å€’æ€§å®åŠ›çš„æƒŠè®¶
+            QuickDefeatLine1 = this.GetLocalization(nameof(QuickDefeatLine1), () => "â€¦â€¦è¿™ä¸ªæ—¶é—´è¿œä½äºæˆ‘çš„é¢„æµ‹æ¨¡å‹");
+            QuickDefeatLine2 = this.GetLocalization(nameof(QuickDefeatLine2), () => "çœ‹æ¥æˆ‘ä½ä¼°äº†ä½ å½“å‰çš„æˆ˜æ–—æ•ˆç‡");
+            QuickDefeatLine3 = this.GetLocalization(nameof(QuickDefeatLine3), () => "æˆ–è®¸æ˜¯æ—¶å€™è€ƒè™‘æ›´æ¿€è¿›çš„è®¾è®¡æ–¹æ¡ˆäº†");
         }
 
         protected override void Build() {
-            //×¢²á¼ÎµÇÁ¢»æ
+            //æ³¨å†Œå˜‰ç™»ç«‹ç»˜
             DialogueBoxBase.RegisterPortrait(DraedonName.Value, ADVAsset.Draedon2RedADV, silhouette: false);
 
-            //¿ìËÙÕ½°ÜµÄ¶Ô»°
+            //å¿«é€Ÿæˆ˜è´¥çš„å¯¹è¯
             Add(DraedonName.Value, QuickDefeatLine1.Value);
             Add(DraedonName.Value, QuickDefeatLine2.Value);
             Add(DraedonName.Value, QuickDefeatLine3.Value);
