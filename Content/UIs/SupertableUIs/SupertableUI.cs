@@ -233,6 +233,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             SetZenithWorldRecipesData();
 
+            //重新初始化控制器的配方引擎（确保天顶世界的配方也被加载到匹配引擎中）
+            Instance?._controller?.InitializeRecipes(AllRecipes);
+
             //重新初始化侧边栏配方元素
             Instance?._sidebarManager?.InitializeRecipeElements();
             Instance?._recipeNavigator?.LoadAllRecipes();
