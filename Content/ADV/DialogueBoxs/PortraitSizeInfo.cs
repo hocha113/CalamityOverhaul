@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.ADV.DialogueBoxs
+﻿namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
     /// 头像尺寸信息结构体，包含头像绘制所需的计算结果

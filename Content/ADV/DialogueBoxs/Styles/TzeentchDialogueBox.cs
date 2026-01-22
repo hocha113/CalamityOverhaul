@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
