@@ -56,9 +56,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         protected virtual float HorizontalWaveAmplitude => 10f;
 
         /// <summary>
-        /// 运动平滑度(0-1，越小越平滑)
+        /// 运动平滑度(0-1，越大越快速响应)
         /// </summary>
-        protected virtual float MovementSmoothness => 0.08f;
+        protected virtual float MovementSmoothness => 0.15f;
 
         /// <summary>
         /// 是否启用螺旋运动
@@ -69,6 +69,21 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         /// 是否启用脉冲式移动(靠近-远离)
         /// </summary>
         protected virtual bool UsePulseMotion => false;
+
+        /// <summary>
+        /// 3D轨道倾斜角度(弧度)，每个门徒不同以避免重叠
+        /// </summary>
+        protected virtual float OrbitTiltAngle => DiscipleIndex * 0.15f;
+
+        /// <summary>
+        /// 3D轨道倾斜方向(弧度)
+        /// </summary>
+        protected virtual float OrbitTiltDirection => DiscipleIndex * MathHelper.TwoPi / 12f;
+
+        /// <summary>
+        /// 轨道高度层级(-1到1)，用于避免同层碰撞
+        /// </summary>
+        protected virtual float OrbitHeightLayer => (DiscipleIndex % 3 - 1) * 0.4f;
 
         #endregion
 
@@ -97,6 +112,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         private Vector2 velocitySmooth;         //平滑速度
         private float radiusOffset;             //半径偏移(用于脉冲运动)
 
+        //伪3D相关
+        private float pseudo3DDepth;            //伪3D深度值(用于缩放)
+        private float currentScale = 1f;        //当前缩放
+
+        //防碰撞
+        private Vector2 avoidanceOffset;        //避让偏移
+        private const float MinDiscipleDistance = 35f; //门徒最小间距
+
         #endregion
 
         public override void SetDefaults() {
@@ -110,8 +133,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Projectile.timeLeft = 999999;
             Projectile.DamageType = DamageClass.Magic;
 
-            //初始化个人相位偏移，基于门徒索引
-            personalPhaseOffset = DiscipleIndex * 0.523f; //约30度间隔
+            //初始化个人相位偏移，基于门徒索引，使用黄金角度分布
+            float goldenAngle = MathHelper.Pi * (3f - (float)Math.Sqrt(5f)); //约137.5度
+            personalPhaseOffset = DiscipleIndex * goldenAngle;
         }
 
         public override void AI() {
@@ -198,7 +222,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         #region 通用方法
 
         /// <summary>
-        /// 更新环绕运动 - 优化版
+        /// 更新环绕运动 - 伪3D版本，行星环绕风格
         /// </summary>
         protected void UpdateOrbitMovement() {
             int totalDisciples = 1;
@@ -208,67 +232,93 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                 discipleOrder = GetDiscipleOrder();
             }
 
-            //基础环绕参数
-            float baseRadius = 90f + totalDisciples * 6f;
-            float angleSpacing = MathHelper.TwoPi / totalDisciples;
-            float baseAngleOffset = angleSpacing * discipleOrder;
+            //基础环绕参数 - 较大的轨道半径
+            float baseRadius = 100f + totalDisciples * 10f;
 
-            //更新环绕角度(考虑个人速度差异)
-            float orbitSpeed = 0.015f * OrbitSpeedMultiplier;
-            //门徒越多，整体旋转越慢，但更协调
-            orbitSpeed *= 1f - totalDisciples * 0.02f;
+            //使用黄金角度分布，确保门徒均匀分散
+            float goldenAngle = MathHelper.Pi * (3f - (float)Math.Sqrt(5f));
+            float baseAngleOffset = goldenAngle * discipleOrder;
+
+            //更新环绕角度 - 更快的基础速度，行星环绕感
+            float orbitSpeed = 0.035f * OrbitSpeedMultiplier;
             orbitAngle += orbitSpeed;
 
-            //计算主环绕位置
-            float currentAngle = orbitAngle + baseAngleOffset;
-            Vector2 baseOrbitPos = Owner.Center + currentAngle.ToRotationVector2() * baseRadius;
+            //当前在轨道上的角度
+            float currentAngle = orbitAngle + baseAngleOffset + personalPhaseOffset * 0.3f;
 
-            //呼吸效果 - 所有门徒同步呼吸，但有细微相位差
-            float breathe = (float)Math.Sin(breathePhase + personalPhaseOffset * 0.5f) * 12f;
-            baseOrbitPos += currentAngle.ToRotationVector2() * breathe;
+            //============ 伪3D轨道计算 ============
 
-            //垂直波动 - 创造浮动感
-            float verticalWave = (float)Math.Sin(pulsePhase * 1.2f + personalPhaseOffset) * VerticalWaveAmplitude;
-            //水平波动 - 左右轻微摆动
-            float horizontalWave = (float)Math.Cos(pulsePhase * 0.8f + personalPhaseOffset * 1.5f) * HorizontalWaveAmplitude;
+            //计算3D空间中的位置 - 倾斜椭圆轨道
+            float tiltAngle = OrbitTiltAngle + (float)Math.Sin(breathePhase * 0.3f) * 0.05f;
+            float tiltDirection = OrbitTiltDirection;
 
-            //将波动转换为相对于环绕切线方向的偏移
+            //3D坐标计算
+            float x3D = (float)Math.Cos(currentAngle) * baseRadius;
+            float y3D = (float)Math.Sin(currentAngle) * baseRadius;
+            float z3D = (float)Math.Sin(currentAngle + tiltDirection) * baseRadius * (float)Math.Sin(tiltAngle);
+
+            //添加高度层级偏移
+            float heightOffset = OrbitHeightLayer * 25f;
+            float verticalOscillation = (float)Math.Sin(pulsePhase * 0.6f + personalPhaseOffset) * VerticalWaveAmplitude * 0.5f;
+            z3D += heightOffset + verticalOscillation;
+
+            //将3D坐标投影到2D屏幕
+            //z轴影响y坐标(上下位置)和缩放(远近感)
+            Vector2 projected2D = Owner.Center + new Vector2(x3D, y3D * 0.5f - z3D * 0.35f);
+
+            //根据深度调整缩放 - 只改变大小，不改变透明度
+            pseudo3DDepth = z3D / baseRadius; //-1到1
+            float targetScale = MathHelper.Clamp(0.65f + pseudo3DDepth * 0.35f, 0.5f, 1.15f);
+            currentScale = MathHelper.Lerp(currentScale, targetScale, 0.15f);
+
+            //============ 额外运动效果 ============
+
+            //呼吸效果 - 轻微的半径波动
+            float breathe = (float)Math.Sin(breathePhase + personalPhaseOffset * 0.5f) * 6f;
+            Vector2 breatheOffset = currentAngle.ToRotationVector2() * breathe;
+
+            //切线方向波动 - 轻微摆动
             Vector2 tangent = (currentAngle + MathHelper.PiOver2).ToRotationVector2();
-            Vector2 waveOffset = tangent * horizontalWave + new Vector2(0, verticalWave * 0.5f);
+            float horizontalWave = (float)Math.Cos(pulsePhase * 0.5f + personalPhaseOffset * 1.5f) * HorizontalWaveAmplitude * 0.5f;
+            Vector2 waveOffset = tangent * horizontalWave;
 
             //螺旋运动(可选)
             Vector2 spiralOffset = Vector2.Zero;
             if (UseSpiralMotion) {
-                float spiralRadius = (float)Math.Sin(spiralPhase * 2f + personalPhaseOffset) * 20f;
+                float spiralRadius = (float)Math.Sin(spiralPhase * 2f + personalPhaseOffset) * 12f;
                 float spiralAngle = spiralPhase * 3f + personalPhaseOffset;
-                spiralOffset = spiralAngle.ToRotationVector2() * spiralRadius * 0.5f;
+                spiralOffset = spiralAngle.ToRotationVector2() * spiralRadius * 0.4f;
             }
 
-            //脉冲运动(可选) - 周期性靠近和远离玩家
+            //脉冲运动(可选)
             if (UsePulseMotion) {
-                float targetRadiusOffset = (float)Math.Sin(pulsePhase * 0.5f + personalPhaseOffset) * 25f;
-                radiusOffset = MathHelper.Lerp(radiusOffset, targetRadiusOffset, 0.05f);
-                baseOrbitPos += currentAngle.ToRotationVector2() * radiusOffset;
+                float targetRadiusOffset = (float)Math.Sin(pulsePhase * 0.3f + personalPhaseOffset) * 15f;
+                radiusOffset = MathHelper.Lerp(radiusOffset, targetRadiusOffset, 0.08f);
+                projected2D += currentAngle.ToRotationVector2() * radiusOffset;
             }
 
             //子类自定义偏移
             Vector2 customOffset = CalculateCustomOffset();
 
+            //============ 防碰撞处理 ============
+            Vector2 avoidance = CalculateAvoidance();
+            avoidanceOffset = Vector2.Lerp(avoidanceOffset, avoidance, 0.2f);
+
             //最终目标位置
-            Vector2 targetPos = baseOrbitPos + waveOffset + spiralOffset + customOffset;
+            Vector2 targetPos = projected2D + breatheOffset + waveOffset + spiralOffset + customOffset + avoidanceOffset;
 
-            //跟随玩家移动 - 当玩家移动时，门徒会有轻微滞后
-            Vector2 playerVelocityInfluence = Owner.velocity * 0.15f;
+            //跟随玩家移动 - 快速响应
+            Vector2 playerVelocityInfluence = Owner.velocity * 0.2f;
 
-            //平滑移动到目标位置
+            //平滑移动到目标位置 - 更快的响应速度
             Vector2 toTarget = targetPos - Projectile.Center + playerVelocityInfluence;
-            velocitySmooth = Vector2.Lerp(velocitySmooth, toTarget * MovementSmoothness * 2f, 0.1f);
+            velocitySmooth = Vector2.Lerp(velocitySmooth, toTarget * MovementSmoothness * 3f, 0.2f);
             Projectile.Center += velocitySmooth;
 
-            //额外的位置修正，防止偏离太远
+            //位置修正 - 防止偏离太远
             float distToTarget = Vector2.Distance(Projectile.Center, targetPos);
-            if (distToTarget > 100f) {
-                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.15f);
+            if (distToTarget > 60f) {
+                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.25f);
             }
 
             //更新轨迹
@@ -276,12 +326,46 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         }
 
         /// <summary>
+        /// 计算避让偏移，防止门徒重叠
+        /// </summary>
+        private Vector2 CalculateAvoidance() {
+            if (!Owner.TryGetModPlayer<ElysiumPlayer>(out var ep)) return Vector2.Zero;
+
+            Vector2 totalAvoidance = Vector2.Zero;
+            int avoidCount = 0;
+
+            foreach (int projIdx in ep.ActiveDisciples) {
+                if (projIdx == Projectile.whoAmI) continue;
+                if (projIdx < 0 || projIdx >= Main.maxProjectiles) continue;
+
+                Projectile other = Main.projectile[projIdx];
+                if (!other.active) continue;
+
+                float dist = Vector2.Distance(Projectile.Center, other.Center);
+                if (dist < MinDiscipleDistance && dist > 1f) {
+                    //计算排斥力，距离越近排斥越强
+                    Vector2 awayDir = (Projectile.Center - other.Center).SafeNormalize(Vector2.UnitX);
+                    float strength = (MinDiscipleDistance - dist) / MinDiscipleDistance;
+                    strength = (float)Math.Pow(strength, 1.5f); //非线性增强近距离排斥
+
+                    totalAvoidance += awayDir * strength * 25f;
+                    avoidCount++;
+                }
+            }
+
+            if (avoidCount > 0) {
+                totalAvoidance /= avoidCount;
+            }
+
+            return totalAvoidance;
+        }
+
+        /// <summary>
         /// 更新轨迹记录
         /// </summary>
         private void UpdateTrail() {
-            //每隔几帧记录一次位置，使轨迹更平滑
             if (actionTimer % 2 == 0) {
-                if (trailPositions.Count > 12) trailPositions.RemoveAt(0);
+                if (trailPositions.Count > 15) trailPositions.RemoveAt(0);
                 trailPositions.Add(Projectile.Center);
             }
         }
@@ -332,7 +416,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         protected void UpdateVisuals() {
             glowIntensity = 0.5f + (float)Math.Sin(pulsePhase) * 0.3f;
             //旋转随运动方向变化
-            Projectile.rotation = velocitySmooth.ToRotation() * 0.1f + pulsePhase * 0.3f;
+            float targetRotation = velocitySmooth.ToRotation() * 0.1f + pulsePhase * 0.15f;
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.15f);
         }
 
         #endregion
@@ -343,24 +428,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //获取门徒纹理(自动加载同名纹理)
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
             //绘制光晕底层
             Texture2D glowTex = CWRAsset.SoftGlow?.Value;
             if (glowTex != null) {
                 Color glowColor = DiscipleColor with { A = 0 } * glowIntensity * 0.5f;
-                sb.Draw(glowTex, drawPos, null, glowColor, 0, glowTex.Size() / 2, 1.5f, SpriteEffects.None, 0);
+                sb.Draw(glowTex, drawPos, null, glowColor, 0, glowTex.Size() / 2, 1.5f * currentScale, SpriteEffects.None, 0);
 
                 Color innerGlow = Color.White with { A = 0 } * glowIntensity * 0.3f;
-                sb.Draw(glowTex, drawPos, null, innerGlow, 0, glowTex.Size() / 2, 0.8f, SpriteEffects.None, 0);
+                sb.Draw(glowTex, drawPos, null, innerGlow, 0, glowTex.Size() / 2, 0.8f * currentScale, SpriteEffects.None, 0);
             }
 
             //绘制轨迹
             DrawTrail(sb, tex);
 
-            //绘制门徒主体
-            sb.Draw(tex, drawPos, null, lightColor, Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None, 0);
+            //绘制门徒主体（带深度缩放，无透明度变化）
+            sb.Draw(tex, drawPos, null, lightColor, 0, tex.Size() / 2, currentScale, SpriteEffects.None, 0);
 
             //绘制十字架光环
             DrawCrossHalo(sb, drawPos);
@@ -372,7 +456,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         }
 
         /// <summary>
-        /// 绘制轨迹 - 优化版
+        /// 绘制轨迹 - 带深度感
         /// </summary>
         private void DrawTrail(SpriteBatch sb, Texture2D tex) {
             if (trailPositions.Count < 2) return;
@@ -381,11 +465,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                 float progress = (i + 1) / (float)(trailPositions.Count + 1);
                 Vector2 trailPos = trailPositions[i] - Main.screenPosition;
 
-                //使用Catmull-Rom样条插值使轨迹更平滑
+                //轨迹颜色渐变，不受深度透明度影响
                 Color trailColor = DiscipleColor with { A = 0 } * progress * 0.25f;
-                float trailScale = progress * 0.4f + 0.1f;
+                float trailScale = (progress * 0.35f + 0.1f) * currentScale;
 
-                //轨迹透明度渐变
                 float alphaMod = (float)Math.Pow(progress, 1.5f);
                 trailColor *= alphaMod;
 
@@ -401,8 +484,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             if (pixel == null) return;
 
             Color crossColor = DiscipleColor with { A = 0 } * glowIntensity * 0.6f;
-            float crossSize = 20f;
-            float thickness = 2f;
+            float crossSize = 20f * currentScale;
+            float thickness = 2f * currentScale;
 
             sb.Draw(pixel, center - new Vector2(thickness / 2, crossSize / 2), null, crossColor, 0, Vector2.Zero, new Vector2(thickness, crossSize), SpriteEffects.None, 0);
             sb.Draw(pixel, center - new Vector2(crossSize / 2, thickness / 2), null, crossColor, 0, Vector2.Zero, new Vector2(crossSize, thickness), SpriteEffects.None, 0);

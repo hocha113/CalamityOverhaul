@@ -17,10 +17,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 200, 255); //奇迹粉
         public override int AbilityCooldownTime => 240;
 
-        //达泰是奇迹者，运动神秘难测
+        //达泰是奇迹者，运动神秘
         protected override bool UseSpiralMotion => true;
         protected override bool UsePulseMotion => true;
-        protected override float VerticalWaveAmplitude => 16f;
+        protected override float VerticalWaveAmplitude => 12f;
+        protected override float MovementSmoothness => 0.14f;
+
+        //3D轨道：达泰在上层
+        protected override float OrbitTiltAngle => 0.38f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 1.7f;
+        protected override float OrbitHeightLayer => 0.5f;
 
         protected override void ExecuteAbility() {
             //随机触发一个奇迹效果

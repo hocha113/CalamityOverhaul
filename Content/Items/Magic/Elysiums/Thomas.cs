@@ -15,9 +15,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 165, 0); //怀疑橙
         public override int AbilityCooldownTime => 200;
 
-        //多马是怀疑者，运动有犹豫感，时近时远
+        //多马是怀疑者，运动有脉冲感
         protected override bool UsePulseMotion => true;
-        protected override float MovementSmoothness => 0.06f;
+        protected override float MovementSmoothness => 0.12f;
+
+        //3D轨道：多马在外层
+        protected override float OrbitTiltAngle => 0.4f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 1.1f;
+        protected override float OrbitHeightLayer => 0.2f;
 
         protected override void ExecuteAbility() {
             //给予玩家一个短暂的必定暴击状态

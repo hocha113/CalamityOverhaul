@@ -15,10 +15,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 215, 0); //金色
         public override int AbilityCooldownTime => 60;
 
-        //彼得作为磐石，运动稳重缓慢
-        protected override float OrbitSpeedMultiplier => 0.8f;
-        protected override float VerticalWaveAmplitude => 8f; //较小的波动
-        protected override float MovementSmoothness => 0.05f; //更平滑
+        //彼得作为磐石，运动稳重但流畅
+        protected override float OrbitSpeedMultiplier => 0.9f;
+        protected override float VerticalWaveAmplitude => 8f;
+        protected override float MovementSmoothness => 0.12f;
+
+        //3D轨道：彼得在中心层
+        protected override float OrbitTiltAngle => 0.1f;
+        protected override float OrbitHeightLayer => 0f;
 
         protected override void ExecuteAbility() {
             //每秒产生一次防护脉冲

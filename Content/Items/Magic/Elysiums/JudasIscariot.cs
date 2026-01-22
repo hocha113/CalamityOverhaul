@@ -19,11 +19,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         private int ominousTimer = 0;
 
-        //犹大是背叛者，运动阴森不定，时常游离
-        protected override float OrbitSpeedMultiplier => 0.7f; //缓慢，似乎在观察
-        protected override bool UsePulseMotion => true; //时近时远，令人不安
-        protected override float VerticalWaveAmplitude => 25f;
-        protected override float MovementSmoothness => 0.03f; //缓慢而阴森
+        //犹大是背叛者，运动阴森但流畅
+        protected override float OrbitSpeedMultiplier => 0.75f;
+        protected override bool UsePulseMotion => true;
+        protected override float VerticalWaveAmplitude => 20f;
+        protected override float MovementSmoothness => 0.08f;
+
+        //3D轨道：犹大在最下层
+        protected override float OrbitTiltAngle => 0.5f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 0.6f;
+        protected override float OrbitHeightLayer => -0.8f;
 
         protected override void ExecuteAbility() {
             //产生阴暗的视觉效果

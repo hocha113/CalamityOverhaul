@@ -18,11 +18,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         private bool isEnraged = false;
 
-        //西门是狂热者，运动激烈而快速
-        protected override float OrbitSpeedMultiplier => 1.4f;
-        protected override float VerticalWaveAmplitude => 12f;
-        protected override float HorizontalWaveAmplitude => 18f;
-        protected override float MovementSmoothness => 0.15f; //快速响应
+        //西门是狂热者，运动最快
+        protected override float OrbitSpeedMultiplier => 1.6f;
+        protected override float VerticalWaveAmplitude => 10f;
+        protected override float HorizontalWaveAmplitude => 14f;
+        protected override float MovementSmoothness => 0.22f;
+
+        //3D轨道：西门在最上层
+        protected override float OrbitTiltAngle => 0.45f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 1.9f;
+        protected override float OrbitHeightLayer => 0.8f;
 
         protected override void ExecuteAbility() {
             //检测附近是否有敌人

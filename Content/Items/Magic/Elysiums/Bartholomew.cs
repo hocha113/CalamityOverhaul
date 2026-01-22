@@ -16,10 +16,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(200, 100, 255); //真言紫
         public override int AbilityCooldownTime => 150;
 
-        //巴多罗买揭示真相，运动沉稳而深邃
-        protected override float OrbitSpeedMultiplier => 0.9f;
-        protected override float VerticalWaveAmplitude => 18f;
+        //巴多罗买揭示真相，运动沉稳
+        protected override float OrbitSpeedMultiplier => 0.95f;
+        protected override float VerticalWaveAmplitude => 14f;
         protected override float HorizontalWaveAmplitude => 8f;
+        protected override float MovementSmoothness => 0.14f;
+
+        //3D轨道：巴多罗买在中下层
+        protected override float OrbitTiltAngle => 0.2f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 0.9f;
+        protected override float OrbitHeightLayer => -0.3f;
 
         protected override void ExecuteAbility() {
             NPC target = FindNearestEnemy(300f);

@@ -15,10 +15,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 215, 100); //财富金
         public override int AbilityCooldownTime => 120;
 
-        //马修原为税吏，运动有条不紊、精确
+        //马修原为税吏，运动精确流畅
         protected override float OrbitSpeedMultiplier => 1.0f;
         protected override float VerticalWaveAmplitude => 10f;
-        protected override float HorizontalWaveAmplitude => 12f;
+        protected override float HorizontalWaveAmplitude => 10f;
+        protected override float MovementSmoothness => 0.16f;
+
+        //3D轨道：马修在中层
+        protected override float OrbitTiltAngle => 0.18f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 1.3f;
+        protected override float OrbitHeightLayer => -0.1f;
 
         protected override void ExecuteAbility() {
             //金币视觉效果

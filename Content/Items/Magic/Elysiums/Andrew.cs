@@ -15,9 +15,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(100, 149, 237); //矢车菊蓝
         public override int AbilityCooldownTime => 90;
 
-        //安德鲁是渔夫，运动如波浪般起伏
-        protected override float VerticalWaveAmplitude => 22f;
-        protected override float HorizontalWaveAmplitude => 15f;
+        //安德鲁是渔夫，运动如海浪般流畅
+        protected override float VerticalWaveAmplitude => 18f;
+        protected override float HorizontalWaveAmplitude => 12f;
+        protected override float MovementSmoothness => 0.15f;
+
+        //3D轨道：安德鲁在下层
+        protected override float OrbitTiltAngle => 0.25f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 0.3f;
+        protected override float OrbitHeightLayer => -0.6f;
 
         protected override void ExecuteAbility() {
             bool hitAny = false;

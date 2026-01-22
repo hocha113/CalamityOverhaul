@@ -16,10 +16,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(100, 255, 100); //治愈绿
         public override int AbilityCooldownTime => 180;
 
-        //小雅各是奉献者，运动柔和平缓
-        protected override float OrbitSpeedMultiplier => 0.85f;
-        protected override float VerticalWaveAmplitude => 20f; //大幅度的柔和波动
-        protected override float MovementSmoothness => 0.04f; //非常平滑
+        //小雅各是奉献者，运动柔和流畅
+        protected override float OrbitSpeedMultiplier => 0.9f;
+        protected override float VerticalWaveAmplitude => 16f;
+        protected override float MovementSmoothness => 0.1f;
+
+        //3D轨道：小雅各在下层
+        protected override float OrbitTiltAngle => 0.22f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 1.5f;
+        protected override float OrbitHeightLayer => -0.5f;
 
         protected override void ExecuteAbility() {
             if (Owner.statLife < Owner.statLifeMax2) {

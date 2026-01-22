@@ -15,9 +15,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 255, 200); //引导浅金
         public override int AbilityCooldownTime => 5; //高频率但弱效果
 
-        //腓力是引路人，会主动靠近鼠标指向
-        protected override float OrbitSpeedMultiplier => 1.1f;
-        protected override float MovementSmoothness => 0.1f;
+        //腓力是引路人，运动活跃
+        protected override float OrbitSpeedMultiplier => 1.15f;
+        protected override float MovementSmoothness => 0.18f;
+
+        //3D轨道：腓力在中层偏前
+        protected override float OrbitTiltAngle => 0.15f;
+        protected override float OrbitTiltDirection => MathHelper.Pi * 0.7f;
+        protected override float OrbitHeightLayer => 0.1f;
 
         protected override void ExecuteAbility() {
             //持续发出引导光线指向鼠标
