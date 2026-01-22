@@ -285,3 +285,17 @@ ThrowerUI: {
 	// AmmoModeOffText: Throw Item
 	// AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
 }
+
+ElysiumUI: {
+	// TitleText: 天国极乐
+	// DiscipleCountText: 门徒
+	// TotalBonusText: 圣恩加持
+	// DamageText: 伤害
+	// DefenseText: 防御
+	// CritText: 暴击
+	// RegenText: 恢复
+	// EmptySlotText: 空缺
+	// JudasWarningText: 警告：犹大的背叛潜伏于此
+	// BonusLabel: 被动
+	// AbilityLabel: 能力
+}
