@@ -100,10 +100,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Lighting.AddLight(Projectile.Center, intensity, intensity, intensity);
         }
 
+        private bool ist;
         /// <summary>
         /// 更新位置和旋转
         /// </summary>
         private void UpdatePositionAndRotation() {
+            if (!ist) {
+                ist = true;
+                if (Owner.direction == 1) {
+                    staffRotation = MathHelper.ToRadians(-160);
+                }
+            }
+
             Vector2 toMouse = Main.MouseWorld - Owner.Center;
             float targetRot = toMouse.ToRotation();
 
@@ -262,6 +270,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             //绘制圣环
             DrawHolyRings(sb);
 
+            Vector2 drawPos2 = drawPos + staffRotation.ToRotationVector2() * 110;
             //绘制蓄力光晕
             if (ChargeTime > 20 && GlowAsset?.IsLoaded == true) {
                 float glowScale = 0.5f + (ChargeTime / 120f) * 1f;
@@ -269,20 +278,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
                 //白色外层光晕
                 Color outerGlow = Color.White with { A = 0 } * 0.3f * pulse;
-                sb.Draw(GlowAsset.Value, drawPos, null, outerGlow, 0, GlowAsset.Value.Size() / 2, glowScale * 2f, SpriteEffects.None, 0);
+                sb.Draw(GlowAsset.Value, drawPos2, null, outerGlow, 0, GlowAsset.Value.Size() / 2, glowScale * 2f, SpriteEffects.None, 0);
 
                 //金色内层光晕
                 Color innerGlow = new Color(255, 215, 100) with { A = 0 } * 0.5f * pulse;
-                sb.Draw(GlowAsset.Value, drawPos, null, innerGlow, 0, GlowAsset.Value.Size() / 2, glowScale, SpriteEffects.None, 0);
+                sb.Draw(GlowAsset.Value, drawPos2, null, innerGlow, 0, GlowAsset.Value.Size() / 2, glowScale, SpriteEffects.None, 0);
             }
 
             //绘制权杖
-            Vector2 origin = new Vector2(staffTex.Width * 0.1f, staffTex.Height * 0.9f);
-            SpriteEffects effect = Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            float drawRot = Projectile.rotation;
-            if (Owner.direction < 0) {
-                drawRot += MathHelper.Pi;
-            }
+            //纹理是垂直的(头部在上，手柄在下)，原点设在底部中心(手柄位置)
+            Vector2 origin = new Vector2(Owner.direction > 0 ? 10 : 20, staffTex.Height - 65f);
+
+            //计算绘制旋转：纹理默认朝上，需要旋转到指向鼠标的方向
+            //staffRotation是指向鼠标的角度，纹理需要额外旋转90度(从朝上变为朝右作为基准)
+            float drawRot = staffRotation + MathHelper.ToRadians(76);
+
+            //朝左时不需要翻转，只需要正确的旋转即可
+            SpriteEffects effect = SpriteEffects.None;
 
             sb.Draw(staffTex, drawPos, null, lightColor, drawRot, origin, 1f, effect, 0);
 
