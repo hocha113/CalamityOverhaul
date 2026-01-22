@@ -1,7 +1,5 @@
 ﻿using System;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 {
