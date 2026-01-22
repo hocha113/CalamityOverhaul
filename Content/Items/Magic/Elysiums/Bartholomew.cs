@@ -16,6 +16,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(200, 100, 255); //真言紫
         public override int AbilityCooldownTime => 150;
 
+        //巴多罗买揭示真相，运动沉稳而深邃
+        protected override float OrbitSpeedMultiplier => 0.9f;
+        protected override float VerticalWaveAmplitude => 18f;
+        protected override float HorizontalWaveAmplitude => 8f;
+
         protected override void ExecuteAbility() {
             NPC target = FindNearestEnemy(300f);
             if (target != null) {

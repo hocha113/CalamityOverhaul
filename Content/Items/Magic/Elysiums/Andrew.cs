@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(100, 149, 237); //矢车菊蓝
         public override int AbilityCooldownTime => 90;
 
+        //安德鲁是渔夫，运动如波浪般起伏
+        protected override float VerticalWaveAmplitude => 22f;
+        protected override float HorizontalWaveAmplitude => 15f;
+
         protected override void ExecuteAbility() {
             bool hitAny = false;
             foreach (NPC npc in Main.npc) {

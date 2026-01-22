@@ -19,6 +19,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         private int ominousTimer = 0;
 
+        //犹大是背叛者，运动阴森不定，时常游离
+        protected override float OrbitSpeedMultiplier => 0.7f; //缓慢，似乎在观察
+        protected override bool UsePulseMotion => true; //时近时远，令人不安
+        protected override float VerticalWaveAmplitude => 25f;
+        protected override float MovementSmoothness => 0.03f; //缓慢而阴森
+
         protected override void ExecuteAbility() {
             //产生阴暗的视觉效果
             Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Shadowflame, Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);

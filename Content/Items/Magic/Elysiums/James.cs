@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 255, 100); //雷霆黄
         public override int AbilityCooldownTime => 120;
 
+        //雅各布是雷霆之子，运动迅捷有力
+        protected override float OrbitSpeedMultiplier => 1.3f;
+        protected override float MovementSmoothness => 0.12f; //更快速的响应
+
         protected override void ExecuteAbility() {
             NPC target = FindNearestEnemy(400f);
             if (target != null) {

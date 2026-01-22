@@ -15,6 +15,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(255, 215, 100); //财富金
         public override int AbilityCooldownTime => 120;
 
+        //马修原为税吏，运动有条不紊、精确
+        protected override float OrbitSpeedMultiplier => 1.0f;
+        protected override float VerticalWaveAmplitude => 10f;
+        protected override float HorizontalWaveAmplitude => 12f;
+
         protected override void ExecuteAbility() {
             //金币视觉效果
             for (int i = 0; i < 8; i++) {

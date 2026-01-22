@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         #region 更新逻辑
 
         public override void Update() {
-            bool holdingElysium = player.HeldItem?.type == ModContent.ItemType<Elysium>();
+            bool holdingElysium = player.HeldItem?.type == ModContent.ItemType<Elysium>() && Main.keyState.PressingShift();
 
             //检测切换
             if (holdingElysium && !wasHoldingElysium) {

@@ -16,6 +16,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override Color DiscipleColor => new(200, 200, 255); //启示白蓝
         public override int AbilityCooldownTime => 180;
 
+        //约翰是启示者，运动带有神秘的螺旋
+        protected override bool UseSpiralMotion => true;
+        protected override float VerticalWaveAmplitude => 12f;
+
         protected override void ExecuteAbility() {
             int markedCount = 0;
             //标记范围内所有敌人
