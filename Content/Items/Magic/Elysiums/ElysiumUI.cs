@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override bool Active {
             get {
                 //当玩家持有天国极乐时显示UI
-                bool holdingElysium = player.HeldItem?.type == ModContent.ItemType<Elysium>();
+                bool holdingElysium = player.HeldItem?.type == ModContent.ItemType<Elysium>() && Main.keyState.PressingShift();
                 return holdingElysium || uiFadeAlpha > 0.01f;
             }
         }
@@ -271,15 +271,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             float pulse = (float)Math.Sin(pulseTimer) * 0.15f + 0.85f;
 
             //最外层柔和光晕
-            Color outerGlow = new Color(255, 230, 180, 0);
+            Color outerGlow = new Color(255, 230, 180, 0) * alpha;
             sb.Draw(glow, DrawPosition, null, outerGlow, 0, glow.Size() / 2, OuterRadius / 32f * 1.5f, SpriteEffects.None, 0);
 
             //中层金色光晕
-            Color midGlow = new Color(255, 200, 100, 0);
+            Color midGlow = new Color(255, 200, 100, 0) * alpha;
             sb.Draw(glow, DrawPosition, null, midGlow, 0, glow.Size() / 2, OuterRadius / 32f, SpriteEffects.None, 0);
 
             //内层白色光晕
-            Color innerGlow = Color.White with { A = 0 };
+            Color innerGlow = Color.White with { A = 0 } * alpha;
             sb.Draw(glow, DrawPosition, null, innerGlow, 0, glow.Size() / 2, InnerRadius / 32f * 1.2f, SpriteEffects.None, 0);
         }
 
