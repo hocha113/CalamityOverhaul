@@ -1546,3 +1546,8 @@ Thrower: {
 		右键打开操控面板
 		'''
 }
+
+Elysium: {
+	// DisplayName: Elysium
+	// Tooltip: ""
+}

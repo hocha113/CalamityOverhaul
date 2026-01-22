@@ -1,6 +1,39 @@
-﻿namespace CalamityOverhaul.Content.Items.Magic.Elysiums
+﻿using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 {
-    internal class Zealot
+    /// <summary>
+    /// 第十一门徒：西门/狂热者（狂热之力）
+    /// 能力：在靠近敌人时增加攻击速度
+    /// 象征物：锯
+    /// </summary>
+    internal class Zealot : BaseDisciple
     {
+        public override int DiscipleIndex => 10;
+        public override string DiscipleName => "西门";
+        public override Color DiscipleColor => new(255, 100, 100); //狂热红
+        public override int AbilityCooldownTime => 10;
+
+        private bool isEnraged = false;
+
+        protected override void ExecuteAbility() {
+            //检测附近是否有敌人
+            NPC nearestEnemy = FindNearestEnemy(300f);
+            isEnraged = nearestEnemy != null;
+
+            if (isEnraged) {
+                //狂热粒子
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(2f, 2f), 100, Color.Red, 1.5f);
+                d.noGravity = true;
+            }
+            SetCooldown();
+        }
+
+        protected override void PassiveEffect() {
+            //被动：增加攻击速度，靠近敌人时更强
+            Owner.GetAttackSpeed(DamageClass.Generic) += isEnraged ? 0.2f : 0.05f;
+        }
     }
 }

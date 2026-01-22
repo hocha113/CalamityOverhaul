@@ -1553,3 +1553,8 @@ Thrower: {
 		Right-click to open the control panel
 		''' */
 }
+
+Elysium: {
+	// DisplayName: Elysium
+	// Tooltip: ""
+}

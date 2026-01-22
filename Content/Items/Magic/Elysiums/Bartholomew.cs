@@ -1,6 +1,33 @@
-﻿namespace CalamityOverhaul.Content.Items.Magic.Elysiums
+﻿using System;
+using Terraria;
+using Terraria.ID;
+
+namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 {
-    internal class Bartholomew
+    /// <summary>
+    /// 第六门徒：巴多罗买（真言揭示）
+    /// 能力：降低敌人的防御
+    /// 象征物：刀
+    /// </summary>
+    internal class Bartholomew : BaseDisciple
     {
+        public override int DiscipleIndex => 5;
+        public override string DiscipleName => "巴多罗买";
+        public override Color DiscipleColor => new(200, 100, 255); //真言紫
+        public override int AbilityCooldownTime => 150;
+
+        protected override void ExecuteAbility() {
+            NPC target = FindNearestEnemy(300f);
+            if (target != null) {
+                target.defense = Math.Max(0, target.defense - 10);
+                CombatText.NewText(target.Hitbox, Color.Purple, "真言揭示");
+                //紫色光芒效果
+                for (int i = 0; i < 15; i++) {
+                    Dust d = Dust.NewDustPerfect(target.Center, DustID.PurpleTorch, Main.rand.NextVector2Circular(5f, 5f), 100, default, 1.5f);
+                    d.noGravity = true;
+                }
+                SetCooldown(120);
+            }
+        }
     }
 }
