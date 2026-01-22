@@ -246,6 +246,153 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         }
 
         /// <summary>
+        /// 将一个门徒交换到另一个槽位（改变门徒身份）
+        /// </summary>
+        /// <param name="fromSlotIndex">源槽位索引（0-11）</param>
+        /// <param name="toSlotIndex">目标槽位索引（0-11）</param>
+        /// <returns>是否交换成功</returns>
+        public bool SwapDiscipleToSlot(int fromSlotIndex, int toSlotIndex) {
+            if (fromSlotIndex < 0 || fromSlotIndex >= 12 || toSlotIndex < 0 || toSlotIndex >= 12) {
+                return false;
+            }
+
+            if (fromSlotIndex == toSlotIndex) {
+                return false;
+            }
+
+            int fromType = DiscipleTypes[fromSlotIndex];
+            int toType = DiscipleTypes[toSlotIndex];
+
+            bool hasFromDisciple = HasDiscipleOfType(fromType);
+            bool hasToDisciple = HasDiscipleOfType(toType);
+
+            if (!hasFromDisciple) {
+                return false; //源位置没有门徒，无法交换
+            }
+
+            //找到源门徒的弹幕
+            int fromProjIndex = -1;
+            Vector2 fromPosition = Player.Center;
+
+            for (int i = 0; i < ActiveDisciples.Count; i++) {
+                int projIdx = ActiveDisciples[i];
+                if (projIdx >= 0 && projIdx < Main.maxProjectiles) {
+                    Projectile proj = Main.projectile[projIdx];
+                    if (proj.active && proj.type == fromType && proj.owner == Player.whoAmI) {
+                        fromProjIndex = i;
+                        fromPosition = proj.Center;
+                        break;
+                    }
+                }
+            }
+
+            if (fromProjIndex < 0) {
+                return false;
+            }
+
+            //如果目标位置也有门徒，需要双向交换
+            int toProjIndex = -1;
+            Vector2 toPosition = Player.Center;
+
+            if (hasToDisciple) {
+                for (int i = 0; i < ActiveDisciples.Count; i++) {
+                    int projIdx = ActiveDisciples[i];
+                    if (projIdx >= 0 && projIdx < Main.maxProjectiles) {
+                        Projectile proj = Main.projectile[projIdx];
+                        if (proj.active && proj.type == toType && proj.owner == Player.whoAmI) {
+                            toProjIndex = i;
+                            toPosition = proj.Center;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //执行交换：删除旧弹幕，创建新弹幕
+
+            //删除源门徒
+            if (fromProjIndex >= 0 && ActiveDisciples[fromProjIndex] >= 0) {
+                Main.projectile[ActiveDisciples[fromProjIndex]].Kill();
+                ActiveDisciples.RemoveAt(fromProjIndex);
+
+                //调整目标索引（如果目标在源之后）
+                if (toProjIndex > fromProjIndex) {
+                    toProjIndex--;
+                }
+            }
+
+            //删除目标门徒（如果有）
+            if (toProjIndex >= 0 && toProjIndex < ActiveDisciples.Count && ActiveDisciples[toProjIndex] >= 0) {
+                Main.projectile[ActiveDisciples[toProjIndex]].Kill();
+                ActiveDisciples.RemoveAt(toProjIndex);
+            }
+
+            //在源位置创建目标类型的新门徒（如果原来有目标门徒）
+            if (hasToDisciple) {
+                int newFromProj = Projectile.NewProjectile(
+                    Player.GetSource_FromThis(),
+                    fromPosition,
+                    Vector2.Zero,
+                    fromType, //源类型现在在目标位置
+                    0, 0,
+                    Player.whoAmI
+                );
+
+                if (newFromProj >= 0 && newFromProj < Main.maxProjectiles) {
+                    ActiveDisciples.Add(newFromProj);
+                }
+            }
+
+            //在目标位置创建源类型的新门徒
+            int newToProj = Projectile.NewProjectile(
+                Player.GetSource_FromThis(),
+                toPosition,
+                Vector2.Zero,
+                toType, //目标类型
+                0, 0,
+                Player.whoAmI
+            );
+
+            if (newToProj >= 0 && newToProj < Main.maxProjectiles) {
+                ActiveDisciples.Add(newToProj);
+            }
+
+            //生成转换特效
+            SpawnSwapEffect(fromPosition, toPosition);
+
+            return true;
+        }
+
+        /// <summary>
+        /// 生成交换特效
+        /// </summary>
+        private void SpawnSwapEffect(Vector2 from, Vector2 to) {
+            //在两个位置生成金色圣光粒子
+            for (int i = 0; i < 20; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
+                Dust d1 = Dust.NewDustPerfect(from, DustID.GoldFlame, vel, 100, default, 1.5f);
+                d1.noGravity = true;
+
+                Dust d2 = Dust.NewDustPerfect(to, DustID.GoldFlame, vel, 100, default, 1.5f);
+                d2.noGravity = true;
+            }
+
+            //沿路径生成粒子
+            int steps = 10;
+            for (int i = 0; i <= steps; i++) {
+                float t = i / (float)steps;
+                Vector2 pos = Vector2.Lerp(from, to, t);
+                //弧形偏移
+                float arc = MathF.Sin(t * MathHelper.Pi) * 20f;
+                Vector2 perpendicular = (to - from).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+                pos += perpendicular * arc;
+
+                Dust d = Dust.NewDustPerfect(pos, DustID.GoldFlame, Vector2.Zero, 100, default, 1f);
+                d.noGravity = true;
+            }
+        }
+
+        /// <summary>
         /// 应用门徒增益效果
         /// </summary>
         private void ApplyDiscipleBonuses() {

@@ -76,6 +76,26 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         private int hoveringDiscipleIndex = -1;
         private bool wasHoldingElysium;
 
+        //拖动系统
+        private bool isDragging = false;              //是否正在拖动
+        private int dragSourceIndex = -1;             //拖动源门徒索引
+        private int dragTargetIndex = -1;             //拖动目标门徒索引
+        private Vector2 dragCurrentPos;               //当前拖动位置
+        private Vector2 dragStartPos;                 //拖动起始位置
+        private float dragAlpha = 0f;                 //拖动图标透明度
+        private bool wasMouseDown = false;            //上一帧鼠标状态
+
+        //交换动画
+        private bool isSwapAnimating = false;         //是否正在播放交换动画
+        private float swapAnimProgress = 0f;          //交换动画进度
+        private int swapFromIndex = -1;               //交换源索引
+        private int swapToIndex = -1;                 //交换目标索引
+        private Vector2 swapFromPos;                  //交换源位置
+        private Vector2 swapToPos;                    //交换目标位置
+
+        //连接线动画
+        private readonly List<DragConnectionLine> connectionLines = [];
+
         //粒子系统
         private readonly List<HolyLightPRT> holyParticles = [];
         private int particleSpawnTimer;
@@ -103,6 +123,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         protected static LocalizedText JudasWarningText;
         protected static LocalizedText BonusLabel;
         protected static LocalizedText AbilityLabel;
+        protected static LocalizedText DragHintText;
+        protected static LocalizedText SwapSuccessText;
+        protected static LocalizedText SwapFailText;
+        protected static LocalizedText CannotSwapText;
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "天国极乐");
@@ -116,6 +140,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             JudasWarningText = this.GetLocalization(nameof(JudasWarningText), () => "警告：犹大的背叛潜伏于此");
             BonusLabel = this.GetLocalization(nameof(BonusLabel), () => "被动");
             AbilityLabel = this.GetLocalization(nameof(AbilityLabel), () => "能力");
+            DragHintText = this.GetLocalization(nameof(DragHintText), () => "拖动门徒可变换其身份");
+            SwapSuccessText = this.GetLocalization(nameof(SwapSuccessText), () => "身份转换完成");
+            SwapFailText = this.GetLocalization(nameof(SwapFailText), () => "转换失败");
+            CannotSwapText = this.GetLocalization(nameof(CannotSwapText), () => "无法转换至此位置");
         }
 
         #endregion
@@ -174,24 +202,207 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             //检测门徒槽位悬停
             UpdateHovering();
 
+            //更新拖动逻辑
+            UpdateDragging();
+
+            //更新交换动画
+            UpdateSwapAnimation();
+
+            //更新连接线
+            UpdateConnectionLines();
+
             //更新粒子
             UpdateParticles();
         }
 
         private void UpdateHovering() {
+            //如果正在拖动，不更新普通悬停
+            if (isDragging) {
+                dragTargetIndex = -1;
+                Vector2 mousePos = new(Main.mouseX, Main.mouseY);
+
+                for (int i = 0; i < 12; i++) {
+                    if (i == dragSourceIndex) continue;
+
+                    float angle = MathHelper.TwoPi * i / 12f - MathHelper.PiOver2 + rotationAngle;
+                    Vector2 slotPos = DrawPosition + angle.ToRotationVector2() * DiscipleRadius;
+
+                    if (Vector2.Distance(mousePos, slotPos) < DiscipleSlotSize / 2f + 10f) {
+                        dragTargetIndex = i;
+                        break;
+                    }
+                }
+
+                player.mouseInterface = true;
+                return;
+            }
+
             hoveringDiscipleIndex = -1;
-            Vector2 mousePos = new(Main.mouseX, Main.mouseY);
+            Vector2 mousePos2 = new(Main.mouseX, Main.mouseY);
 
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f - MathHelper.PiOver2 + rotationAngle;
                 Vector2 slotPos = DrawPosition + angle.ToRotationVector2() * DiscipleRadius;
 
-                if (Vector2.Distance(mousePos, slotPos) < DiscipleSlotSize / 2f + 5f) {
+                if (Vector2.Distance(mousePos2, slotPos) < DiscipleSlotSize / 2f + 5f) {
                     hoveringDiscipleIndex = i;
                     player.mouseInterface = true;
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// 更新拖动逻辑
+        /// </summary>
+        private void UpdateDragging() {
+            if (!player.TryGetModPlayer<ElysiumPlayer>(out var ep)) return;
+
+            bool mouseDown = Main.mouseLeft;
+            Vector2 mousePos = new(Main.mouseX, Main.mouseY);
+
+            //开始拖动
+            if (mouseDown && !wasMouseDown && !isDragging && !isSwapAnimating) {
+                if (hoveringDiscipleIndex >= 0 && ep.HasDiscipleOfType(ElysiumPlayer.DiscipleTypes[hoveringDiscipleIndex])) {
+                    isDragging = true;
+                    dragSourceIndex = hoveringDiscipleIndex;
+                    dragStartPos = GetSlotPosition(dragSourceIndex);
+                    dragCurrentPos = mousePos;
+                    dragAlpha = 0f;
+
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = 0.2f });
+                }
+            }
+
+            //更新拖动位置
+            if (isDragging) {
+                dragCurrentPos = Vector2.Lerp(dragCurrentPos, mousePos, 0.3f);
+                dragAlpha = Math.Min(1f, dragAlpha + 0.15f);
+
+                //添加连接线粒子
+                if (Main.GameUpdateCount % 3 == 0) {
+                    Vector2 startPos = GetSlotPosition(dragSourceIndex);
+                    connectionLines.Add(new DragConnectionLine(startPos, dragCurrentPos, GetDiscipleColor(dragSourceIndex)));
+                }
+            }
+
+            //结束拖动
+            if (!mouseDown && wasMouseDown && isDragging) {
+                CompleteDrag(ep);
+            }
+
+            wasMouseDown = mouseDown;
+        }
+
+        /// <summary>
+        /// 完成拖动操作
+        /// </summary>
+        private void CompleteDrag(ElysiumPlayer ep) {
+            isDragging = false;
+
+            if (dragTargetIndex >= 0 && dragTargetIndex != dragSourceIndex) {
+                //检查目标槽位是否可以交换
+                bool sourceHasDisciple = ep.HasDiscipleOfType(ElysiumPlayer.DiscipleTypes[dragSourceIndex]);
+                bool targetHasDisciple = ep.HasDiscipleOfType(ElysiumPlayer.DiscipleTypes[dragTargetIndex]);
+
+                if (sourceHasDisciple) {
+                    //执行交换
+                    bool success = ep.SwapDiscipleToSlot(dragSourceIndex, dragTargetIndex);
+
+                    if (success) {
+                        //播放成功交换动画
+                        StartSwapAnimation(dragSourceIndex, dragTargetIndex);
+                        SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = 0.4f });
+
+                        CombatText.NewText(player.Hitbox, new Color(255, 220, 150), SwapSuccessText.Value);
+                    }
+                    else {
+                        //交换失败
+                        SoundEngine.PlaySound(SoundID.Item16 with { Volume = 0.5f, Pitch = -0.3f });
+                        CombatText.NewText(player.Hitbox, new Color(200, 100, 100), SwapFailText.Value);
+                    }
+                }
+            }
+            else {
+                //取消拖动音效
+                SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.4f });
+            }
+
+            //重置拖动状态
+            dragSourceIndex = -1;
+            dragTargetIndex = -1;
+            dragAlpha = 0f;
+        }
+
+        /// <summary>
+        /// 开始交换动画
+        /// </summary>
+        private void StartSwapAnimation(int fromIndex, int toIndex) {
+            isSwapAnimating = true;
+            swapAnimProgress = 0f;
+            swapFromIndex = fromIndex;
+            swapToIndex = toIndex;
+            swapFromPos = GetSlotPosition(fromIndex);
+            swapToPos = GetSlotPosition(toIndex);
+
+            //生成交换粒子
+            SpawnSwapParticles(swapFromPos, swapToPos, GetDiscipleColor(fromIndex), GetDiscipleColor(toIndex));
+        }
+
+        /// <summary>
+        /// 更新交换动画
+        /// </summary>
+        private void UpdateSwapAnimation() {
+            if (!isSwapAnimating) return;
+
+            swapAnimProgress += 0.05f;
+
+            if (swapAnimProgress >= 1f) {
+                isSwapAnimating = false;
+                swapFromIndex = -1;
+                swapToIndex = -1;
+            }
+        }
+
+        /// <summary>
+        /// 生成交换粒子效果
+        /// </summary>
+        private void SpawnSwapParticles(Vector2 from, Vector2 to, Color colorFrom, Color colorTo) {
+            //从源到目标的弧形粒子
+            int particleCount = 15;
+            for (int i = 0; i < particleCount; i++) {
+                float t = i / (float)particleCount;
+                Vector2 pos = Vector2.Lerp(from, to, t);
+                //添加弧形偏移
+                float arcOffset = MathF.Sin(t * MathHelper.Pi) * 30f;
+                Vector2 perpendicular = (to - from).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+                pos += perpendicular * arcOffset;
+
+                holyParticles.Add(new HolyLightPRT(pos, Vector2.Lerp(from, to, 0.5f)) {
+                    ParticleColor = Color.Lerp(colorFrom, colorTo, t),
+                    MaxLife = 40 + i * 2,
+                    Life = 40 + i * 2
+                });
+            }
+        }
+
+        /// <summary>
+        /// 更新连接线
+        /// </summary>
+        private void UpdateConnectionLines() {
+            for (int i = connectionLines.Count - 1; i >= 0; i--) {
+                if (connectionLines[i].Update()) {
+                    connectionLines.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取槽位位置
+        /// </summary>
+        private Vector2 GetSlotPosition(int index) {
+            float angle = MathHelper.TwoPi * index / 12f - MathHelper.PiOver2 + rotationAngle;
+            return DrawPosition + angle.ToRotationVector2() * DiscipleRadius;
         }
 
         private void UpdateParticles() {
@@ -253,8 +464,24 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             }
 
             //绘制悬停信息
-            if (hoveringDiscipleIndex >= 0) {
+            if (hoveringDiscipleIndex >= 0 && !isDragging) {
                 DrawDiscipleTooltip(spriteBatch, alpha);
+            }
+
+            //绘制拖动提示
+            DrawDragHint(spriteBatch, alpha);
+
+            //绘制连接线
+            DrawConnectionLines(spriteBatch, alpha);
+
+            //绘制拖动中的门徒
+            if (isDragging) {
+                DrawDraggingDisciple(spriteBatch, alpha);
+            }
+
+            //绘制交换动画
+            if (isSwapAnimating) {
+                DrawSwapAnimation(spriteBatch, alpha);
             }
 
             //绘制犹大警告
@@ -403,12 +630,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                 bool hasDisciple = ep != null && ep.HasDiscipleOfType(ElysiumPlayer.DiscipleTypes[i]);
                 bool isHovering = hoveringDiscipleIndex == i;
                 bool isJudas = i == 11;
+                bool isDragSource = isDragging && dragSourceIndex == i;
+                bool isDragTarget = isDragging && dragTargetIndex == i;
 
                 //槽位背景
                 float slotPulse = (float)Math.Sin(pulseTimer + i * 0.5f) * 0.1f + 0.9f;
                 Color bgColor;
 
-                if (hasDisciple) {
+                if (isDragSource) {
+                    //拖动源槽位变暗
+                    bgColor = new Color(15, 12, 10) * 0.6f;
+                }
+                else if (isDragTarget) {
+                    //拖动目标槽位高亮
+                    float targetPulse = (float)Math.Sin(glowTimer * 5) * 0.2f + 0.8f;
+                    bgColor = Color.Lerp(new Color(40, 35, 25), GetDiscipleColor(i), 0.3f * targetPulse);
+                }
+                else if (hasDisciple) {
                     if (isJudas && ep.GetDiscipleCount() == 12) {
                         //犹大特殊颜色(危险)
                         float dangerFlash = (float)Math.Sin(glowTimer * 3) * 0.3f + 0.7f;
@@ -422,7 +660,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                     bgColor = new Color(20, 18, 15) * 0.8f;
                 }
 
-                if (isHovering) {
+                if (isHovering && !isDragging) {
                     bgColor = Color.Lerp(bgColor, new Color(60, 50, 35), 0.4f);
                 }
 
@@ -431,17 +669,29 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
                 //槽位边框
                 Color borderColor;
-                if (hasDisciple) {
+                if (isDragTarget) {
+                    //拖动目标边框高亮脉冲
+                    float targetPulse = (float)Math.Sin(glowTimer * 6) * 0.3f + 0.7f;
+                    borderColor = Color.Lerp(GetDiscipleColor(dragSourceIndex), GetDiscipleColor(i), 0.5f) * targetPulse;
+                    borderColor = Color.Lerp(borderColor, Color.White, 0.3f);
+                }
+                else if (isDragSource) {
+                    //拖动源边框变暗
+                    borderColor = GetDiscipleColor(i) * 0.4f;
+                }
+                else if (hasDisciple) {
                     borderColor = GetDiscipleColor(i);
                     if (isHovering) borderColor = Color.Lerp(borderColor, Color.White, 0.3f);
                 }
                 else {
                     borderColor = new Color(80, 70, 50) * 0.6f;
                 }
-                DrawCircleOutline(sb, px, slotPos, DiscipleSlotSize / 2f, 2f, borderColor * alpha);
+
+                float borderThickness = isDragTarget ? 3f : 2f;
+                DrawCircleOutline(sb, px, slotPos, DiscipleSlotSize / 2f, borderThickness, borderColor * alpha);
 
                 //门徒图标或空缺标记
-                if (hasDisciple) {
+                if (hasDisciple && !isDragSource) {
                     //绘制门徒纹理
                     int projType = ElysiumPlayer.DiscipleTypes[i];
                     string texPath = GetDiscipleTexturePath(i);
@@ -454,6 +704,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                         iconColor = Color.Lerp(iconColor, new Color(150, 100, 100), 1f - shadowPulse);
                     }
 
+                    //如果是拖动目标，稍微缩小显示
+                    if (isDragTarget) {
+                        iconScale *= 0.8f;
+                        iconColor *= 0.7f;
+                    }
+
                     sb.Draw(discipleTex, slotPos, null, iconColor, 0, discipleTex.Size() / 2, iconScale, SpriteEffects.None, 0);
 
                     //光晕效果
@@ -463,9 +719,26 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                         sb.Draw(glow, slotPos, null, glowColor, 0, glow.Size() / 2, DiscipleSlotSize / 32f, SpriteEffects.None, 0);
                     }
                 }
+                else if (isDragSource) {
+                    //拖动源显示虚影
+                    string texPath = GetDiscipleTexturePath(i);
+                    Texture2D discipleTex = ModContent.Request<Texture2D>(texPath).Value;
+
+                    float iconScale = (DiscipleSlotSize - 12f) / Math.Max(discipleTex.Width, discipleTex.Height);
+                    Color ghostColor = GetDiscipleColor(i) * (alpha * 0.25f);
+
+                    sb.Draw(discipleTex, slotPos, null, ghostColor, 0, discipleTex.Size() / 2, iconScale * 0.9f, SpriteEffects.None, 0);
+                }
                 else {
                     //空缺标记(十字虚线)
                     Color emptyColor = new Color(60, 50, 40) * (alpha * 0.5f);
+
+                    //如果是拖动目标且目标为空，显示加号提示
+                    if (isDragTarget) {
+                        float plusPulse = (float)Math.Sin(glowTimer * 4) * 0.3f + 0.7f;
+                        emptyColor = GetDiscipleColor(dragSourceIndex) * (alpha * 0.6f * plusPulse);
+                    }
+
                     float crossSize = 12f;
                     sb.Draw(px, slotPos, null, emptyColor, 0, new Vector2(0.5f), new Vector2(crossSize, 2f), SpriteEffects.None, 0);
                     sb.Draw(px, slotPos, null, emptyColor, MathHelper.PiOver2, new Vector2(0.5f), new Vector2(crossSize, 2f), SpriteEffects.None, 0);
@@ -475,6 +748,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                 string numText = (i + 1).ToString();
                 Vector2 numPos = slotPos + new Vector2(0, DiscipleSlotSize / 2f + 8f);
                 Color numColor = hasDisciple ? new Color(200, 180, 140) : new Color(100, 90, 70);
+                if (isDragTarget) {
+                    numColor = Color.Lerp(numColor, GetDiscipleColor(dragSourceIndex), 0.5f);
+                }
                 Vector2 numSize = FontAssets.MouseText.Value.MeasureString(numText) * 0.4f;
                 Utils.DrawBorderString(sb, numText, numPos - numSize / 2, numColor * alpha, 0.4f);
             }
@@ -666,6 +942,184 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Utils.DrawBorderString(sb, warning, warningPos, warningColor, 0.4f);
         }
 
+        /// <summary>
+        /// 绘制拖动提示
+        /// </summary>
+        private void DrawDragHint(SpriteBatch sb, float alpha) {
+            if (!player.TryGetModPlayer<ElysiumPlayer>(out var ep)) return;
+            if (ep.GetDiscipleCount() == 0) return;
+            if (isDragging || isSwapAnimating) return;
+
+            //在悬停门徒时显示拖动提示
+            if (hoveringDiscipleIndex >= 0 && ep.HasDiscipleOfType(ElysiumPlayer.DiscipleTypes[hoveringDiscipleIndex])) {
+                string hint = DragHintText.Value;
+                Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.35f;
+                Vector2 hintPos = DrawPosition + new Vector2(0, -OuterRadius - 20f) - hintSize / 2;
+
+                float pulse = (float)Math.Sin(glowTimer * 3) * 0.2f + 0.8f;
+                Color hintColor = new Color(200, 180, 140) * (alpha * 0.7f * pulse);
+                Utils.DrawBorderString(sb, hint, hintPos, hintColor, 0.35f);
+            }
+        }
+
+        /// <summary>
+        /// 绘制连接线
+        /// </summary>
+        private void DrawConnectionLines(SpriteBatch sb, float alpha) {
+            foreach (var line in connectionLines) {
+                line.Draw(sb, alpha);
+            }
+        }
+
+        /// <summary>
+        /// 绘制正在拖动的门徒
+        /// </summary>
+        private void DrawDraggingDisciple(SpriteBatch sb, float alpha) {
+            if (dragSourceIndex < 0) return;
+
+            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (px == null) return;
+
+            float effectiveAlpha = alpha * dragAlpha;
+
+            //绘制源槽位的虚线框（表示原位置）
+            Vector2 sourcePos = GetSlotPosition(dragSourceIndex);
+            Color outlineColor = GetDiscipleColor(dragSourceIndex) * (effectiveAlpha * 0.5f);
+            DrawDashedCircle(sb, px, sourcePos, DiscipleSlotSize / 2f + 3f, 2f, outlineColor);
+
+            //绘制从源到当前位置的连接线
+            Color lineColor = GetDiscipleColor(dragSourceIndex) * (effectiveAlpha * 0.6f);
+            DrawGradientLine(sb, px, sourcePos, dragCurrentPos, 2f, lineColor * 0.3f, lineColor);
+
+            //如果有有效目标，绘制目标高亮
+            if (dragTargetIndex >= 0) {
+                Vector2 targetPos = GetSlotPosition(dragTargetIndex);
+
+                //目标槽位高亮
+                float highlightPulse = (float)Math.Sin(glowTimer * 5) * 0.3f + 0.7f;
+                Color highlightColor = GetDiscipleColor(dragTargetIndex) * (effectiveAlpha * highlightPulse);
+
+                if (glow != null) {
+                    sb.Draw(glow, targetPos, null, highlightColor with { A = 0 }, 0, glow.Size() / 2, DiscipleSlotSize / 20f, SpriteEffects.None, 0);
+                }
+
+                DrawCircleOutline(sb, px, targetPos, DiscipleSlotSize / 2f + 5f, 3f, highlightColor);
+
+                //绘制箭头指示
+                DrawArrowIndicator(sb, px, dragCurrentPos, targetPos, highlightColor);
+
+                //显示目标门徒名称
+                string targetName = ElysiumPlayer.DiscipleNames[dragTargetIndex];
+                Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(targetName) * 0.4f;
+                Vector2 namePos = targetPos - new Vector2(0, DiscipleSlotSize / 2f + 18f) - nameSize / 2;
+                Utils.DrawBorderString(sb, targetName, namePos, highlightColor, 0.4f);
+            }
+
+            //绘制拖动中的门徒图标
+            string texPath = GetDiscipleTexturePath(dragSourceIndex);
+            Texture2D discipleTex = ModContent.Request<Texture2D>(texPath).Value;
+
+            //图标光晕
+            if (glow != null) {
+                Color glowColor = GetDiscipleColor(dragSourceIndex) * (effectiveAlpha * 0.6f);
+                glowColor.A = 0;
+                sb.Draw(glow, dragCurrentPos, null, glowColor, 0, glow.Size() / 2, DiscipleSlotSize / 24f, SpriteEffects.None, 0);
+            }
+
+            //图标本身（稍大，带脉冲）
+            float iconPulse = 1.1f + (float)Math.Sin(glowTimer * 4) * 0.1f;
+            float iconScale = (DiscipleSlotSize - 8f) / Math.Max(discipleTex.Width, discipleTex.Height) * iconPulse;
+            sb.Draw(discipleTex, dragCurrentPos, null, Color.White * effectiveAlpha, 0, discipleTex.Size() / 2, iconScale, SpriteEffects.None, 0);
+
+            //门徒名称跟随
+            string sourceName = ElysiumPlayer.DiscipleNames[dragSourceIndex];
+            Vector2 sourceNameSize = FontAssets.MouseText.Value.MeasureString(sourceName) * 0.45f;
+            Vector2 sourceNamePos = dragCurrentPos + new Vector2(0, DiscipleSlotSize / 2f + 5f) - sourceNameSize / 2;
+            Utils.DrawBorderString(sb, sourceName, sourceNamePos, GetDiscipleColor(dragSourceIndex) * effectiveAlpha, 0.45f);
+        }
+
+        /// <summary>
+        /// 绘制交换动画
+        /// </summary>
+        private void DrawSwapAnimation(SpriteBatch sb, float alpha) {
+            if (swapFromIndex < 0 || swapToIndex < 0) return;
+
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            if (glow == null || px == null) return;
+
+            //使用缓动函数使动画更流畅
+            float eased = EaseOutBack(swapAnimProgress);
+            float fadeAlpha = 1f - swapAnimProgress;
+
+            //计算当前动画位置
+            Vector2 fromCurrentPos = Vector2.Lerp(swapFromPos, swapToPos, eased);
+            Vector2 toCurrentPos = Vector2.Lerp(swapToPos, swapFromPos, eased);
+
+            //绘制弧形轨迹
+            float arcHeight = 40f * (float)Math.Sin(swapAnimProgress * MathHelper.Pi);
+            Vector2 perpendicular = (swapToPos - swapFromPos).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+            fromCurrentPos += perpendicular * arcHeight;
+            toCurrentPos -= perpendicular * arcHeight;
+
+            //绘制移动中的光球
+            Color fromColor = GetDiscipleColor(swapFromIndex) * (alpha * fadeAlpha);
+            Color toColor = GetDiscipleColor(swapToIndex) * (alpha * fadeAlpha);
+
+            float glowScale = 0.8f + (float)Math.Sin(swapAnimProgress * MathHelper.Pi) * 0.4f;
+            sb.Draw(glow, fromCurrentPos, null, fromColor with { A = 0 }, 0, glow.Size() / 2, glowScale, SpriteEffects.None, 0);
+            sb.Draw(glow, toCurrentPos, null, toColor with { A = 0 }, 0, glow.Size() / 2, glowScale, SpriteEffects.None, 0);
+
+            //绘制连接两个位置的神圣光线
+            if (swapAnimProgress < 0.7f) {
+                Color lineColor = Color.Lerp(fromColor, toColor, 0.5f) * (1f - swapAnimProgress / 0.7f);
+                DrawGradientLine(sb, px, fromCurrentPos, toCurrentPos, 2f, lineColor, lineColor * 0.3f);
+            }
+        }
+
+        /// <summary>
+        /// 绘制虚线圆
+        /// </summary>
+        private static void DrawDashedCircle(SpriteBatch sb, Texture2D px, Vector2 center, float radius, float thickness, Color color) {
+            int segments = 24;
+            for (int i = 0; i < segments; i += 2) { //每隔一个绘制，形成虚线效果
+                float angle1 = MathHelper.TwoPi * i / segments;
+                float angle2 = MathHelper.TwoPi * (i + 1) / segments;
+
+                Vector2 p1 = center + angle1.ToRotationVector2() * radius;
+                Vector2 p2 = center + angle2.ToRotationVector2() * radius;
+
+                DrawLine(sb, px, p1, p2, thickness, color);
+            }
+        }
+
+        /// <summary>
+        /// 绘制箭头指示器
+        /// </summary>
+        private static void DrawArrowIndicator(SpriteBatch sb, Texture2D px, Vector2 from, Vector2 to, Color color) {
+            Vector2 direction = (to - from).SafeNormalize(Vector2.UnitX);
+            Vector2 arrowTip = to - direction * 25f;
+
+            //箭头两翼
+            float arrowAngle = 0.4f;
+            float arrowLength = 12f;
+            Vector2 wing1 = arrowTip - direction.RotatedBy(arrowAngle) * arrowLength;
+            Vector2 wing2 = arrowTip - direction.RotatedBy(-arrowAngle) * arrowLength;
+
+            DrawLine(sb, px, arrowTip, wing1, 2f, color);
+            DrawLine(sb, px, arrowTip, wing2, 2f, color);
+        }
+
+        /// <summary>
+        /// 缓出回弹缓动函数
+        /// </summary>
+        private static float EaseOutBack(float t) {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * MathF.Pow(t - 1f, 3f) + c1 * MathF.Pow(t - 1f, 2f);
+        }
+
         #endregion
 
         #region 辅助绘制方法
@@ -826,6 +1280,46 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             drawColor.A = 0;
 
             sb.Draw(glow, Position, null, drawColor, 0, glow.Size() / 2, scale, SpriteEffects.None, 0);
+        }
+    }
+
+    /// <summary>
+    /// 拖动连接线粒子
+    /// </summary>
+    internal class DragConnectionLine
+    {
+        public Vector2 Start;
+        public Vector2 End;
+        public Color LineColor;
+        public float Life;
+        public float MaxLife;
+
+        public DragConnectionLine(Vector2 start, Vector2 end, Color color) {
+            Start = start;
+            End = end;
+            LineColor = color;
+            MaxLife = 15f;
+            Life = MaxLife;
+        }
+
+        public bool Update() {
+            Life--;
+            return Life <= 0;
+        }
+
+        public void Draw(SpriteBatch sb, float alpha) {
+            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            if (px == null) return;
+
+            float lifeRatio = Life / MaxLife;
+            Color drawColor = LineColor * (lifeRatio * alpha * 0.4f);
+
+            //绘制渐变线段
+            Vector2 diff = End - Start;
+            float length = diff.Length();
+            if (length < 1f) return;
+
+            sb.Draw(px, Start, new Rectangle(0, 0, 1, 1), drawColor * 0.3f, diff.ToRotation(), Vector2.Zero, new Vector2(length, 1.5f * lifeRatio), SpriteEffects.None, 0f);
         }
     }
 

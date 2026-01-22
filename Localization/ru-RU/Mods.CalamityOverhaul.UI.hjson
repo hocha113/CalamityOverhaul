@@ -298,4 +298,8 @@ ElysiumUI: {
 	// JudasWarningText: 警告：犹大的背叛潜伏于此
 	// BonusLabel: 被动
 	// AbilityLabel: 能力
+	// DragHintText: 拖动门徒可变换其身份
+	// SwapSuccessText: 身份转换完成
+	// SwapFailText: 转换失败
+	// CannotSwapText: 无法转换至此位置
 }
