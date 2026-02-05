@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void OnKill(int timeLeft) {
-            int dustType = CWRRef.GetSeasonDustID();
+            int dustType = Utils.SelectRandom(Main.rand, 245, 157, 107);
 
             SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
 

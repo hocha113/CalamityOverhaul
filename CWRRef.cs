@@ -19,10 +19,8 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
-using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameSystem;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -1029,18 +1027,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         public static IList<Type> GetTEBaseTurretTypesInner() => VaultUtils.GetDerivedTypes<TEBaseTurret>();
 
-        public static int GetSeasonDustID() => Has ? GetSeasonDustIDInner() : 0;
-        [CWRJITEnabled]
-        private static int GetSeasonDustIDInner() {
-            return CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107),
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),
-                _ => 0
-            };
-        }
-
         public static void DrawStarTrail(Projectile projectile, Color outer, Color inner, float auraHeight = 10f) {
             if (!Has) return;
             DrawStarTrailInner(projectile, outer, inner, auraHeight);
@@ -1052,39 +1038,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static int GetProjectileDamageInner(Projectile projectile, int projType) => projectile.GetProjectileDamage(projType);
 
-        public static void SpawnDestroyerPRTEffect(NPC npc, float value, float value2, int idleTime) {
-            if (!Has) return;
-            SpawnDestroyerPRTEffectInner(npc, value, value2, idleTime);
-        }
-        [CWRJITEnabled]
-        private static void SpawnDestroyerPRTEffectInner(NPC npc, float value, float value2, int idleTime) {
-            if (value != 0 || Main.dedServ) {
-                return;
-            }
-            Color telegraphColor;
-            Particle spark;
-
-            switch (value2 % 3) {
-                case 0:
-                    telegraphColor = Color.Red;
-                    spark = new DestroyerReticleTelegraph(npc, telegraphColor, 1.5f, 0.15f, idleTime + 20);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                    break;
-                case 1:
-                    telegraphColor = Color.Green;
-                    spark = new DestroyerSparkTelegraph(npc, telegraphColor * 2f, Color.White, 3f, idleTime + 20,
-                            Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
-                    GeneralParticleHandler.SpawnParticle(spark);
-                    break;
-                case 2:
-                    telegraphColor = Color.Cyan;
-                    spark = new DestroyerSparkTelegraph(npc, telegraphColor * 2f, Color.White, 3f, idleTime + 20,
-                            Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
-                    GeneralParticleHandler.SpawnParticle(spark);
-                    break;
-            }
-        }
-
         public static void CosmicFireEffect(Projectile Projectile) {
             if (!Has) return;
             CosmicFireEffectInner(Projectile);
@@ -1092,57 +1045,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void CosmicFireEffectInner(Projectile Projectile) {
             StreamGougeMetaball.SpawnParticle(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
-        }
-
-        public static void FadingGloryRapierHitDustEffect(Projectile Projectile, NPC npc) {
-            if (!Has) {
-                return;
-            }
-            FadingGloryRapierHitDustEffectInner(Projectile, npc);
-        }
-        [CWRJITEnabled]
-        private static void FadingGloryRapierHitDustEffectInner(Projectile Projectile, NPC npc) {
-            Vector2 bloodSpawnPosition = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 0.04f;
-            Vector2 splatterDirection = (Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
-            if (CWRLoad.NPCValue.ISTheofSteel(npc)) {
-                for (int j = 0; j < 3; j++) {
-                    float sparkScale = Main.rand.NextFloat(1.2f, 2.33f);
-                    int sparkLifetime = Main.rand.Next(22, 36);
-                    Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
-                    Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
-                    if (Has) {
-                        PRT_Spark spark = new PRT_Spark(bloodSpawnPosition, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                        PRTLoader.AddParticle(spark);
-                    }
-                }
-            }
-            else {
-                for (int i = 0; i < 6; i++) {
-                    int bloodLifetime = Main.rand.Next(22, 36);
-                    float bloodScale = Main.rand.NextFloat(0.6f, 0.8f);
-                    Color bloodColor = Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat());
-                    bloodColor = Color.Lerp(bloodColor, new Color(51, 22, 94), Main.rand.NextFloat(0.65f));
-
-                    if (Main.rand.NextBool(20))
-                        bloodScale *= 2f;
-
-                    Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.81f) * Main.rand.NextFloat(11f, 23f);
-                    bloodVelocity.Y -= 12f;
-                    if (Has) {
-                        BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
-                        GeneralParticleHandler.SpawnParticle(blood);
-                    }
-                }
-                for (int i = 0; i < 3; i++) {
-                    float bloodScale = Main.rand.NextFloat(0.2f, 0.33f);
-                    Color bloodColor = Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.5f, 1f));
-                    Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(9f, 14.5f);
-                    if (Has) {
-                        BloodParticle2 blood = new BloodParticle2(bloodSpawnPosition, bloodVelocity, 20, bloodScale, bloodColor);
-                        GeneralParticleHandler.SpawnParticle(blood);
-                    }
-                }
-            }
         }
 
         public static void UpdateDestroyerBodyDRIncrease(NPC npc) {
