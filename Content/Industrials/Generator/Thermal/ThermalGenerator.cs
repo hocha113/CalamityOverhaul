@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 CreateRecipe().
                 AddIngredient(ItemID.Furnace).
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
                 return;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             CreateRecipe().
                 AddIngredient(ItemID.Furnace).
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
                 AddIngredient(CWRID.Item_DubiousPlating, 10).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
                 AddTile(TileID.Anvils).

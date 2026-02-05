@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddRecipeGroup(RecipeGroupID.IronBar, 2).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
                 return;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).
                 AddRecipeGroup(RecipeGroupID.IronBar, 2).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
         }

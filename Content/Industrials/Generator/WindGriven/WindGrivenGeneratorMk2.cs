@@ -59,8 +59,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddIngredient<WindGrivenGenerator>().
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
                 AddCondition(WindGrivenRecipeCondition(out var condition2), condition2).
                 AddTile(TileID.MythrilAnvil).
                 Register();
@@ -70,8 +70,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 AddIngredient<WindGrivenGenerator>().
                 AddIngredient(CWRID.Item_DubiousPlating, 20).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
                 AddCondition(WindGrivenRecipeCondition(out var condition), condition).
                 AddTile(TileID.MythrilAnvil).
                 Register();

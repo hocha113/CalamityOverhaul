@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 10).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 4).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 4).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 4).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 4).
                 AddTile(TileID.Anvils).
                 Register();
         }

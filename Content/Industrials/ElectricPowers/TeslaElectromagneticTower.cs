@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe().
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
                 AddTile(TileID.Anvils).
                 Register();
 
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe().
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
                 AddTile(TileID.Anvils).
                 Register();
 

@@ -40,8 +40,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 AddIngredient<Hydroelectric>().
                 AddIngredient(ItemID.InletPump).
                 AddIngredient(ItemID.OutletPump).
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
                 AddTile(TileID.MythrilAnvil).
                 Register();
                 return;
@@ -52,8 +52,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 AddIngredient(ItemID.OutletPump).
                 AddIngredient(CWRID.Item_DubiousPlating, 20).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
                 AddTile(TileID.MythrilAnvil).
                 Register();
         }

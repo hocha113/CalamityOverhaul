@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe(333).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
                 return;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             CreateRecipe(333).
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
         }

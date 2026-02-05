@@ -427,7 +427,7 @@ namespace CalamityOverhaul
 
         public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) =>
              recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
-            .AddOnCraftCallback(CWRRecipes.SpawnAction);
+            .AddOnCraftCallback(CWRCrafted.SpawnAction);
 
         /// <summary>
         /// 用于将一个武器设置为手持刀剑类，这个函数若要正确设置物品的近战属性，需要让其在初始化函数中最后调用

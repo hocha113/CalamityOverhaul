@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe().
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
                 return;
@@ -50,8 +50,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
         }

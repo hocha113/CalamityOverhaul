@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddIngredient(ItemID.DyeVat).
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
                 AddTile(TileID.Anvils).
                 Register();
                 return;

@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             CreateRecipe().
                 AddIngredient(ItemID.EmptyBucket, 4).
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddIngredient(CWRID.Item_DubiousPlating, 10).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
                 AddTile(TileID.Anvils).

@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content
 {
-    internal class CWRRecipes : ModSystem
+    internal class CWRCrafted : ModSystem
     {
         public static string Any => Language.GetTextValue("LegacyMisc.37");
         public static RecipeGroup ARGroup;

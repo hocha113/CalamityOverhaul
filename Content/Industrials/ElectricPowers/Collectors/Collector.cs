@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe().
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 8).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
                 AddIngredient(ItemID.Hook, 3).
                 AddTile(TileID.Anvils).
                 Register();
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
-                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 8).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
                 AddIngredient(ItemID.Hook, 3).
                 AddTile(TileID.Anvils).
                 Register();

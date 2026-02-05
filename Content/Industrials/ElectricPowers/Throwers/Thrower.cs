@@ -50,12 +50,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe()
-                    .AddRecipeGroup(CWRRecipes.TinBarGroup, 10)
+                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
                     .AddIngredient(ItemID.IronBow, 1)
                     .AddTile(TileID.Anvils)
                     .Register();
                 CreateRecipe()
-                    .AddRecipeGroup(CWRRecipes.TinBarGroup, 10)
+                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
                     .AddIngredient(ItemID.LeadBow, 1)
                     .AddTile(TileID.Anvils)
                     .Register();
@@ -64,14 +64,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             CreateRecipe()
                 .AddIngredient(CWRID.Item_DubiousPlating, 8)
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                .AddRecipeGroup(CWRRecipes.TinBarGroup, 10)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
                 .AddIngredient(ItemID.IronBow, 1)
                 .AddTile(TileID.Anvils)
                 .Register();
             CreateRecipe()
                 .AddIngredient(CWRID.Item_DubiousPlating, 8)
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                .AddRecipeGroup(CWRRecipes.TinBarGroup, 10)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
                 .AddIngredient(ItemID.LeadBow, 1)
                 .AddTile(TileID.Anvils)
                 .Register();

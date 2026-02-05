@@ -42,14 +42,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddIngredient<MiningMachine>().
-                AddRecipeGroup(CWRRecipes.AdamantiteBarGroup, 25).
+                AddRecipeGroup(CWRCrafted.AdamantiteBarGroup, 25).
                 AddTile(TileID.MythrilAnvil).
                 Register();
                 return;
             }
             CreateRecipe().
                 AddIngredient<MiningMachine>().
-                AddRecipeGroup(CWRRecipes.AdamantiteBarGroup, 25).
+                AddRecipeGroup(CWRCrafted.AdamantiteBarGroup, 25).
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddTile(TileID.MythrilAnvil).

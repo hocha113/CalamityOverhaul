@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddIngredient(ItemID.Glass, 50).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
                 return;
@@ -44,8 +44,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient(ItemID.Glass, 50).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
         }

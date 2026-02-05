@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void AddRecipes() {
             if (!CWRRef.Has) {
                 CreateRecipe()
-                .AddRecipeGroup(CWRRecipes.GoldBarGroup, 5)
+                .AddRecipeGroup(CWRCrafted.GoldBarGroup, 5)
                 .AddTile(TileID.Anvils)
                 .Register();
                 return;

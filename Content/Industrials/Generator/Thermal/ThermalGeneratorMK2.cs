@@ -35,16 +35,16 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (!CWRRef.Has) {
                 CreateRecipe().
                 AddIngredient<ThermalGenerator>().
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddTile(TileID.MythrilAnvil).
                 Register();
                 return;
             }
             CreateRecipe().
                 AddIngredient<ThermalGenerator>().
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddIngredient(CWRID.Item_DubiousPlating, 20).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
                 AddTile(TileID.MythrilAnvil).

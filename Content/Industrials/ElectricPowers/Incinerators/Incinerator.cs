@@ -31,18 +31,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             if (!CWRRef.Has) {
                 CreateRecipe()
                     .AddIngredient(ItemID.Furnace)
-                    .AddRecipeGroup(CWRRecipes.TinBarGroup, 20)
+                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 20)
                     .AddRecipeGroup(RecipeGroupID.IronBar, 15)
-                    .AddRecipeGroup(CWRRecipes.GoldBarGroup, 15)
+                    .AddRecipeGroup(CWRCrafted.GoldBarGroup, 15)
                     .AddTile(TileID.Anvils)
                     .Register();
                 return;
             }
             CreateRecipe()
                 .AddIngredient(ItemID.Furnace)
-                .AddRecipeGroup(CWRRecipes.TinBarGroup, 20)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 20)
                 .AddRecipeGroup(RecipeGroupID.IronBar, 15)
-                .AddRecipeGroup(CWRRecipes.GoldBarGroup, 15)
+                .AddRecipeGroup(CWRCrafted.GoldBarGroup, 15)
                 .AddIngredient(CWRID.Item_DubiousPlating, 8)
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 8)
                 .AddTile(TileID.Anvils)
