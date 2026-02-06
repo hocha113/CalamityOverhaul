@@ -38,6 +38,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return false;
             }
 
+            //阵列模式：由DestroyerProbeMatrixState控制，跳过自身AI
+            if (npc.ai[3] == -1f) {
+                npc.timeLeft = 600;
+                Lighting.AddLight(npc.Center, Color.Red.ToVector3() * npc.scale);
+                return false;
+            }
+
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 

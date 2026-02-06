@@ -156,10 +156,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 ApplySpeedModifiers(ref speed, ref turnSpeed, ref segmentVelocity, velocityMultiplier);
             }
 
-            if (npc.type == NPCID.TheDestroyerBody) {
-                HandleProbeRegeneration();
-            }
-
             if (npc.life > SegmentNPC.life) {
                 npc.life = SegmentNPC.life;
             }
@@ -335,56 +331,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 speed *= 1.2f;
                 turnSpeed *= 1.2f;
             }
-        }
-
-        /// <summary>
-        /// 处理探测器的生成
-        /// </summary>
-        private void HandleProbeRegeneration() {
-            bool probeLaunched = npc.ai[2] == 1f;
-
-            if (enrageScale > 0f && !CWRWorld.BossRush) {
-                ai[2] = Math.Min(ai[2] + 1f, 480f);
-            }
-            else {
-                ai[2] = Math.Max(ai[2] - 1f, 0f);
-            }
-
-            if (!CWRWorld.MasterMode || !probeLaunched) {
-                return;
-            }
-
-            npc.localAI[2] += 1f;
-            if (npc.localAI[2] < 600f) {
-                return;
-            }
-
-            int maxProbes = 40;
-            bool regenerateProbeSegment = NPC.CountNPCS(NPCID.Probe) < maxProbes;
-
-            if (regenerateProbeSegment) {
-                int maxNPCs = totalSegments + maxProbes;
-                int numNPCs = 0;
-                for (int i = 0; i < Main.maxNPCs; i++) {
-                    if (!Main.npc[i].active) {
-                        continue;
-                    }
-                    numNPCs++;
-                    if (numNPCs < maxNPCs) {
-                        continue;
-                    }
-                    regenerateProbeSegment = false;
-                    break;
-                }
-            }
-
-            if (regenerateProbeSegment) {
-                npc.ai[2] = 0f;
-                npc.netUpdate = true;
-            }
-
-            npc.localAI[2] = 0f;
-            NetAISend();
         }
 
         private bool ShouldFly() {
