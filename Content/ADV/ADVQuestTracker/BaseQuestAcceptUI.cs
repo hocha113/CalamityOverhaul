@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                     questDeclined = false;
                     OnQuestDeclined();
                 }
-                embers.Clear();
+                ResetAnimations();
                 return;
             }
 
@@ -195,7 +195,6 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                     hideProgress = 1f;
                     closing = false;
                     showingQuest = false;
-                    ResetAnimations();
                 }
             }
 

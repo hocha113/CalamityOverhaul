@@ -55,7 +55,7 @@ namespace CalamityOverhaul
         public override void UpdateInventory(Player player) {
             player.GetDamage(DamageClass.Generic) += 100;
             if (player.TryGetADVSave(out ADVSave save)) {
-                //save.SupCalQuestRewardSceneComplete.Domp();
+                //save.SupCalQuestAccepted.Domp();
             }
         }
 
