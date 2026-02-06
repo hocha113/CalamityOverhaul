@@ -571,6 +571,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool CheckActive() => false;
         #endregion
+
+        #region 地图图标
+        public override void BossHeadSlot(ref int index) {
+            if (!HeadPrimeAI.DontReform()) {
+                index = iconIndex;
+            }
+        }
+
+        public override void BossHeadRotation(ref float rotation) {
+            if (!HeadPrimeAI.DontReform()) {
+                rotation = npc.rotation + MathHelper.Pi;
+            }
+        }
+
+        public override void ModifyDrawNPCHeadBoss(ref float x, ref float y, ref int bossHeadId,
+            ref byte alpha, ref float headScale, ref float rotation, ref SpriteEffects effects) {
+            if (!HeadPrimeAI.DontReform()) {
+                bossHeadId = iconIndex;
+                rotation = npc.rotation + MathHelper.Pi;
+            }
+        }
+        #endregion
     }
 }
 
