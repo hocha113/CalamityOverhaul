@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static int iconIndex_Void;
 
         internal const int StretchTime = 360;
+        internal const int BodyCount = 80;
 
         private const int STATE_INTRO = 0;
         private const int STATE_IDLE_PATROL = 1;
@@ -477,10 +478,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void SpawnBody() {
             int index = npc.whoAmI;
             int oldIndex;
-            for (int i = 0; i < 80; i++) { //增加体节数量
+            for (int i = 0; i < BodyCount; i++) { //增加体节数量
                 oldIndex = index;
                 index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
-                    , i == 79 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody
+                    , i == (BodyCount - 1) ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody
                     , 0, ai0: oldIndex, ai1: index, ai2: 0, ai3: npc.whoAmI);
                 Main.npc[index].realLife = npc.whoAmI;
                 Main.npc[index].netUpdate = true;
