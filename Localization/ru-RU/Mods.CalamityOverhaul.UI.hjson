@@ -1,305 +1,303 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
-	HintText2: ЛКМ, чтобы убрать предмет
-	CloseHint: Нажмите [ESC] или [ПКМ], чтобы закрыть
+	HintText2: ЛКМ, чтобы удалить предмет
+	CloseHint: [ESC] или [ПКМ], чтобы закрыть
 }
 
 LegendUpgradeConfirmUI: {
 	TitleText: Подтверждение улучшения легендарного оружия
 	DescText:
 		'''
-		Обнаружено, что текущий уровень мира выше уровня оружия.
+		Уровень мира выше уровня оружия.
 		Улучшить {0} до уровня {1}?
 		'''
-	ConfirmText: Подтвердить улучшение
+	ConfirmText: Подтвердить
 	CancelText: Отмена
-	Success: "[ITEM] был улучшен до уровня [LEVEL]."
+	Success: "[ITEM] улучшен до уровня [LEVEL]"
 }
 
 QuestTracker: {
 	DamageTrackerSystem: {
 		QuestFailedPrefix: Задание провалено
 		QuestCompletedPrefix: Задание выполнено!
-		FailureReasonWrongWeapon: Смертельный удар нанесён не указанным оружием
-		FailureReasonInsufficientDamage: Недостаточный вклад урона от оружия
-		SuccessDamageContribution: Вклад урона
+		FailureReasonWrongWeapon: Последний удар нанесен не требуемым оружием
+		FailureReasonInsufficientDamage: Недостаточно урона требуемым оружием
+		SuccessDamageContribution: Вклад в урон
 	}
 }
 
 DoGQuestTrackerUI: {
-	QuestTitle: Поручение: Охота на Пожирателя Богов
-	DamageContribution: Урон от Сердцереза
+	QuestTitle: Заказ: Охота на Пожирателя богов
+	DamageContribution: Урон Пронзателя сердец
 	RequiredContribution: Требуется: 80%
 }
 
 PallbearerQuestTrackerUI: {
-	QuestTitle: Поручение: Охота на Осквернённую Богиню
-	DamageContribution: Урон от Могильщика
+	QuestTitle: Заказ: Охота на Провиденс
+	DamageContribution: Урон Гробовщика
 	RequiredContribution: Требуется: 80%
 }
 
 YharonQuestTrackerUI: {
-	QuestTitle: Поручение: Охота на Дракона Испепеления
-	DamageContribution: Урон от Мачете Они
+	QuestTitle: Заказ: Охота на Ярона
+	DamageContribution: Урон Лика Они
 	RequiredContribution: Требуется: 75%
 }
 
 SeaDialogueBox: {
-	ContinueHint: Продолжить
+	ContinueHint: Далее
 	FastHint: Ускорить
 }
 
 BrimstoneDialogueBox: {
-	ContinueHint: Продолжить
+	ContinueHint: Далее
 	FastHint: Ускорить
 }
 
 DraedonDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Далее
+	FastHint: Ускорить
 }
 
 ExoMechdusaSumRender: {
-	// ThanatosDescription: Thanatos, a terrifying giant serpent equipped with heavy armor and countless autocannons.
-	// AresDescription: Ares, a colossus armed with four super-Gausspulse weapons.
-	// ArtemisApolloDescription: Artemis and Apollo, an exceptionally durable pair of automata with highly unstable energy reserves.
+	ThanatosDescription: Танатос: ужасающий змей, закованный в тяжелую броню и оснащенный бесчисленными пушками.
+	AresDescription: Арес: колоссальная машина, несущая четыре супероружия, работающих на энергии экзо-призм.
+	ArtemisApolloDescription: Артемида и Аполлон: пара сверхпрочных автоматов с крайне нестабильными запасами энергии.
 }
 
 CQETConstructorTP: {
-	// GuideText_NeedBlocks: Needs {0} Starflow Plated Block
-	// GuideText_Ready: Ready!
-	// GuideText_GroundIncomplete: The Ground Is Incomplete!
+	GuideText_NeedBlocks: Требуется {0} Блоков звездного потока
+	GuideText_Ready: Готов к работе!
+	GuideText_GroundIncomplete: Поверхность неровная!
 }
 
 DeploySignaltowerTrackerUI: {
-	// QuestTitle: Quantum Entanglement Network Deployment
-	// DamageContribution: Deployment Progress
-	// RequiredContribution: Goal: 10 Signal Towers
-	// NearestTargetText: Nearest Target Point
-	// NodeText: Entanglement Node #[NUM]
-	// StatusText: Status
-	// InRangeText: In Range
-	// DistanceText: Distance
-	// QuestCompleteText: Mission Complete!
+	QuestTitle: Развертывание квантовой сети
+	DamageContribution: Прогресс
+	RequiredContribution: Цель: 10 сигнальных башен
+	NearestTargetText: Ближайшая точка
+	NodeText: Узел запутанности №[NUM]
+	StatusText: Статус
+	InRangeText: В зоне действия
+	DistanceText: Дистанция
+	QuestCompleteText: Задание выполнено!
 }
 
 SignalTowerTargetRenderer: {
-	// InRangeText: In Range
-	// TargetCompletedText: Target Point [NUM] Complete!
-	// AllCompletedText: Quantum Entanglement Network Complete!
+	InRangeText: В зоне действия
+	TargetCompletedText: Точка [NUM] завершена!
+	AllCompletedText: Квантовая сеть запутанности построена!
 }
 
 DraedonCallUI: {
-	// TitleText: Call Draedon
-	// TitleTextDisabled: Call Disabled
-	// CallButtonText: Initiate Call
-	// CallingText: Calling...
-	// DisabledButtonText: Disabled
-	// ConnectingText: Connecting...
-	// ConnectedText: Connected
-	// DisabledReasonText: Draedon Has Been Called
+	TitleText: Вызов Дрэйдона
+	TitleTextDisabled: Вызов отключен
+	CallButtonText: Начать вызов
+	CallingText: Вызов...
+	DisabledButtonText: Отключено
+	ConnectingText: Соединение...
+	ConnectedText: Соединено
+	DisabledReasonText: Дрэйдон уже вызван
 }
 
 TzeentchDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Далее
+	FastHint: Ускорить
 }
 
 EnchantUI: {
-	// ExpandHint: Expand Enchant Menu
-	// CollapseHint: Collapse Enchant Menu
-	// EnchantTitle: Enchant
+	ExpandHint: Развернуть меню ковки
+	CollapseHint: Свернуть меню ковки
+	EnchantTitle: Ковка
 }
 
 ConstructionBlueprintUI: {
-	// UITitle: Self-Constructor (Quantum Entanglement Tower)
-	// MaterialsRequired: Materials Required:
-	// CloseHint: Click to Close
-	// CraftingStation: Crafting Station:
+	UITitle: Автосборщик (Башня квантовой запутанности)
+	MaterialsRequired: Требуемые материалы:
+	CloseHint: Нажмите, чтобы закрыть
+	CraftingStation: Рабочее место:
 }
 
 Generator: {
 	ThermalGeneratorUI: {
-		// TitleText: Thermal Generator
-		// FuelLabel: Fuel
-		// TemperatureLabel: Temperature
-		// PowerLabel: Power
-		// StatusLabel: Status:
-		// ActiveText: Active
-		// IdleText: Idle
-		// EfficiencyText: Efficiency: {0}%
-		// InsertFuelHint: Click to Insert/Extract Fuel
-		// TemperatureUnit: °C
-		// PowerUnit: UE
+		TitleText: Тепловой генератор
+		FuelLabel: Топливо
+		TemperatureLabel: Температура
+		PowerLabel: Энергия
+		StatusLabel: Статус:
+		ActiveText: Работает
+		IdleText: Ожидание
+		EfficiencyText: Эффективность: {0}%
+		InsertFuelHint: Нажмите, чтобы положить/забрать топливо
+		TemperatureUnit: °C
+		PowerUnit: UE
 	}
 }
 
 ChargingStationUI: {
-	// TitleText: Charging Station
-	// ItemSlotLabel: Charging Item
-	// BatterySlotLabel: Battery
-	// StationEnergyLabel: Station Energy
-	// ItemChargeLabel: Item Charge
-	// StatusLabel: Status:
-	// ChargingText: Charging
-	// IdleText: Idle
-	// InsertItemHint: Insert item to charge
-	// InsertBatteryHint: Insert Draedon Power Cell
-	// EnergyUnit: UE
-	// StationText1: Only accepts rechargeable items!
-	// StationText2: Only accepts Draedon Power Cells!
+	TitleText: Зарядная станция
+	ItemSlotLabel: Предмет
+	BatterySlotLabel: Батарея
+	StationEnergyLabel: Энергия станции
+	ItemChargeLabel: Заряд предмета
+	StatusLabel: Статус:
+	ChargingText: Зарядка
+	IdleText: Ожидание
+	InsertItemHint: Положите предмет для зарядки
+	InsertBatteryHint: Положите батарею Дрэйдона
+	EnergyUnit: UE
+	StationText1: Можно класть только заряжаемые предметы!
+	StationText2: Можно класть только батареи Дрэйдона!
 }
 
 SulfseaDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Далее
+	FastHint: Ускорить
 }
 
 OldDukeShopUI: {
-	// TitleText: Old Duke's Shop
-	// CurrencyName: Ocean Scraps
-	// HintTooltip: Scroll/Drag Bar
+	TitleText: Магазин Старого герцога
+	CurrencyName: Океанические фрагменты
+	HintTooltip: Прокрутка / Ползунок
 }
 
 FindCampsiteUI: {
-	// QuestTitle: The Abyss Beckons
-	// DamageContribution: Quest Progress
-	// RequiredContribution: Objective: Find and speak to the Old Duke
-	// ObjectiveText: Objective
-	// LocationText: Go to the Old Duke's Campsite
-	// DistanceText: Distance
-	// InteractText: Speak to the Old Duke
-	// QuestCompleteText: Quest Complete!
-	// HoldFragmentHintText: Hold Ocean Scraps to view direction
+	QuestTitle: Зов Бездны
+	DamageContribution: Прогресс
+	RequiredContribution: Цель: Найти Старого герцога и поговорить с ним
+	ObjectiveText: Задача
+	LocationText: Идите в лагерь Старого герцога
+	DistanceText: Дистанция
+	InteractText: Поговорите со Старым герцогом
+	QuestCompleteText: Задание выполнено!
+	HoldFragmentHintText: Держите Океанический фрагмент, чтобы увидеть направление
 }
 
 FindFragmentUI: {
-	// QuestTitle: The Abyss Beckons
-	// DamageContribution: Collection Progress
-	// RequiredContribution: Objective: Collect 777 Ocean Scraps
-	// ObjectiveText: Objective
-	// CollectFragmentsText: Collect Ocean Scraps
-	// CurrentFragmentsText: Currently Held
-	// ReturnToCampsiteText: Return to campsite to submit
-	// QuestCompleteText: Quest Complete!
-	// HintText: Fish or loot creatures in the Ocean
+	QuestTitle: Зов Бездны
+	DamageContribution: Сбор
+	RequiredContribution: Цель: Собрать 777 океанических фрагментов
+	ObjectiveText: Задача
+	CollectFragmentsText: Собрать фрагменты
+	CurrentFragmentsText: Сейчас в наличии
+	ReturnToCampsiteText: Вернитесь в лагерь для сдачи
+	QuestCompleteText: Задание выполнено!
+	HintText: Рыбачьте или собирайте лут с существ в океане
 }
 
 OceanRaidersUI: {
-	// TitleText: Ocean Devourer Storage
-	// StorageText: Storage
+	TitleText: Хранилище Поглотителя
+	StorageText: Хранилище
 }
 
 OldDuchestUI: {
-	// TitleText: Old Chest
-	// StorageText: Storage Space
+	TitleText: Старый сундук
+	StorageText: Хранилище
 }
 
 QuestLog: {
-	// ObjectiveText: Objective
-	// RewardText: Reward
-	// ReceiveAwardText: Claim Reward
-	// ProgressText: Quest Progress
-	// QuickReceiveAwardText: Quick Claim
-	// StyleSwitchText: Switch Style
-	// NightModeText: Night Mode
-	// ResetViewText: Reset View
-	// SunModeText: Daytime Mode
-	// LauncherHoverText: Left-Click Toggle, Right-Click Drag
+	ObjectiveText: Цели
+	RewardText: Награды
+	ReceiveAwardText: Получить
+	ProgressText: Прогресс
+	QuickReceiveAwardText: Получить всё
+	StyleSwitchText: Сменить стиль
+	NightModeText: Ночной режим
+	ResetViewText: Сброс вида
+	SunModeText: Дневной режим
+	LauncherHoverText: ЛКМ: Взаимодействие, ПКМ: Перетаскивание
 }
 
-// QuestNotificationSystem.Text1: Quest Complete
+QuestNotificationSystem.Text1: Задание выполнено
 
 CompatibilityAlert: {
-	// TitleText: Compatibility Mode Active
-	/* ContentText:
+	TitleText: Режим совместимости
+	ContentText:
 		'''
-		Major content mods are missing or version conflicts have been detected. 
-		Some features are disabled or running in restricted mode.
-		If this is intentional, please ignore this message.
-		If this is due to outdated versions, please wait for an update.
-		The development team usually releases compatibility patches within 12 hours.
-		''' */
+		Обнаружено отсутствие основного контента или конфликт версий. Некоторые функции отключены или работают в ограниченном режиме.
+		Если вы сделали это намеренно, проигнорируйте это сообщение.
+		Если это вызвано устаревшей версией, пожалуйста, дождитесь обновления.
+		Команда разработчиков обычно выпускает патчи совместимости в течение 12 часов.
+		'''
 }
 
 QuestWorldConfirmUI: {
-	// TitleText: Quest Check Confirmation
-	/* DescText:
+	TitleText: Проверка заданий
+	DescText:
 		'''
-		Detected entry from another world.
-		Do you want to check quest progress 
-		in the current world?
-		''' */
-	// ConfirmText: Check Quests
-	// CancelText: Skip
-	// EnabledText: Quest Check Enabled
-	// DisabledText: Quest Check Skipped
-	/* DisabledOverlayText:
+		Обнаружен вход из другого мира.
+		Проверить прогресс заданий в текущем мире?
 		'''
-		Quest checking is disabled in this world.
-		Re-enter the world to choose again.
-		''' */
+	ConfirmText: Проверить
+	CancelText: Пропустить
+	EnabledText: Проверка заданий включена
+	DisabledText: Проверка заданий пропущена
+	DisabledOverlayText:
+		'''
+		Проверка заданий отключена в этом мире.
+		Перезайдите в мир, чтобы выбрать снова.
+		'''
 }
 
 Incinerator: {
 	IncineratorUI: {
-		// TitleText: Electric Incinerator
-		// InputLabel: Input
-		// OutputLabel: Output
-		// ProgressLabel: Progress
-		// PowerLabel: Power
-		// StatusLabel: Status:
-		// SmeltingText: Incinerating
-		// IdleText: Idle
-		// NoPowerText: No Power
-		// InputHint: Place items to incinerate
-		// OutputHint: Click to retrieve output
-		// PowerUnit: UE
+		TitleText: Электрический инсинератор
+		InputLabel: Вход
+		OutputLabel: Выход
+		ProgressLabel: Прогресс
+		PowerLabel: Энергия
+		StatusLabel: Статус:
+		SmeltingText: Сжигание
+		IdleText: Ожидание
+		NoPowerText: Нет энергии
+		InputHint: Положите предметы для сжигания
+		OutputHint: Нажмите, чтобы забрать результат
+		PowerUnit: UE
 	}
 }
 
 ItemPipeline: {
-	// Normal: Normal
-	// Output: Output
-	// Input: Input
-	// NotEndpointHint: Input/Output modes can only be set at pipe endpoints
+	Normal: Обычный
+	Output: Выход
+	Input: Вход
+	NotEndpointHint: Вход/Выход можно ставить только на концах трубы
 }
 
 ThrowerUI: {
-	// TitleText: Item Thrower
-	// InventoryLabel: Storage
-	// ControlLabel: Control Panel
-	// SpeedLabel: Throw Velocity
-	// AngleLabel: Spread Angle
-	// IntervalLabel: Throw Interval
-	// DirectionLabel: Throw Direction
-	// StartText: Start
-	// StopText: Stop
-	// StatusRunning: Running
-	// StatusIdle: Idle
-	// StatusNoEnergy: No Energy
-	// StatusNoItems: No Items
-	// EnergyLabel: Energy
-	// DropHint: Place Items
-	// AmmoModeOnText: Fire Ammo
-	// AmmoModeOffText: Throw Item
-	// AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
+	TitleText: Выбрасыватель предметов
+	InventoryLabel: Хранилище
+	ControlLabel: Панель управления
+	SpeedLabel: Сила броска
+	AngleLabel: Угол разброса
+	IntervalLabel: Интервал
+	DirectionLabel: Направление
+	StartText: Старт
+	StopText: Стоп
+	StatusRunning: Работает
+	StatusIdle: Ожидание
+	StatusNoEnergy: Нет энергии
+	StatusNoItems: Нет предметов
+	EnergyLabel: Энергия
+	DropHint: Положите предметы
+	AmmoModeOnText: Режим стрельбы
+	AmmoModeOffText: Режим броска
+	AmmoModeHint: Режим стрельбы: Выстреливает снарядами, соответствующими боеприпасам
 }
 
 ElysiumUI: {
-	// TitleText: 天国极乐
-	// DiscipleCountText: 门徒
-	// TotalBonusText: 圣恩加持
-	// DamageText: 伤害
-	// DefenseText: 防御
-	// CritText: 暴击
-	// RegenText: 恢复
-	// EmptySlotText: 空缺
-	// JudasWarningText: 警告：犹大的背叛潜伏于此
-	// BonusLabel: 被动
-	// AbilityLabel: 能力
-	// DragHintText: 拖动门徒可变换其身份
-	// SwapSuccessText: 身份转换完成
-	// SwapFailText: 转换失败
-	// CannotSwapText: 无法转换至此位置
+	TitleText: Элизиум
+	DiscipleCountText: Апостолы
+	TotalBonusText: Благословение
+	DamageText: Урон
+	DefenseText: Защита
+	CritText: Крит
+	RegenText: Реген
+	EmptySlotText: Пусто
+	JudasWarningText: Внимание: Здесь таится предательство Иуды
+	BonusLabel: Пассивный
+	AbilityLabel: Способность
+	DragHintText: Перетащите апостола, чтобы сменить его роль
+	SwapSuccessText: Роль изменена
+	SwapFailText: Ошибка смены
+	CannotSwapText: Нельзя переместить в эту ячейку
 }

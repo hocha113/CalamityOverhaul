@@ -1,4 +1,4 @@
-CWRServerConfig: {
+﻿CWRServerConfig: {
 	DisplayName: Конфигурация контента
 
 	WeaponOverhaul: {
@@ -176,17 +176,17 @@ CWRServerConfig: {
 	}
 
 	QuestLog: {
-		// Label: Quest Log Guidance
-		/* Tooltip:
+		Label: Руководство по заданиям
+		Tooltip:
 			'''
-			When enabled, the quest log will guide you through game progression
-			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
-			Enabled by default. Disabling this removes all quest guidance
-			''' */
+			Если включено, книга заданий будет направлять игрока по ходу игры
+			Вы можете открыть интерфейс заданий с помощью предмета "Книга заданий", кнопки в инвентаре или горячей клавиши, чтобы просмотреть текущие задачи
+			Включено по умолчанию. Если отключить, подсказок по заданиям не будет
+			'''
 	}
 
 	DialogueBox_Scale_Value: {
-		// Label: Dialogue Box Scale
-		// Tooltip: Adjusts the overall size of the dialogue box
+		Label: Масштаб диалогового окна
+		Tooltip: Регулирует общий размер диалогового окна
 	}
 }

@@ -1,20 +1,20 @@
-ADS_Key.DisplayName: Открыть Прицел
+﻿ADS_Key.DisplayName: Прицеливание
 KreLoad_Key.DisplayName: Перезарядка
-// QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
-HeavenfallLongbowSkillKey.DisplayName: Небесный Лук Падения: Суд Вселенной
-InfinitePickSkillKey.DisplayName: Бесконечная Кирка: Изменение Формы
-Murasama_TriggerKey.DisplayName: Мурасама: Восходящий удар
+QuestLog_Key.DisplayName: Книга заданий: Открыть/Закрыть
+HeavenfallLongbowSkillKey.DisplayName: Длинный лук Небесного падения: Вселенский суд
+InfinitePickSkillKey.DisplayName: Бесконечная кирка: Смена режима
+Murasama_TriggerKey.DisplayName: Мурасама: Спусковой крючок
 Murasama_DownKey.DisplayName: Мурасама: Удар в падении
-// Halibut_Domain.DisplayName: Halibut: Oceanic Domain
-// Halibut_Clone.DisplayName: Halibut: Invasion of the Former Self
-// Halibut_Restart.DisplayName: Halibut: Reboot
-// Halibut_Superposition.DisplayName: Halibut: Superposition
-// Halibut_Teleport.DisplayName: Halibut: Domain Teleport
-// Halibut_UIControl.DisplayName: Halibut: UI Control
-// Halibut_Skill_L.DisplayName: Halibut: Switch to the left skill
-// Halibut_Skill_R.DisplayName: Halibut: Switch to the right skill
-// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
-// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
-// AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
-// AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
-// JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment
+Halibut_Domain.DisplayName: Палтус: Океанический домен
+Halibut_Clone.DisplayName: Палтус: Вторжение прошлого
+Halibut_Restart.DisplayName: Палтус: Перезагрузка
+Halibut_Superposition.DisplayName: Палтус: Суперпозиция
+Halibut_Teleport.DisplayName: Палтус: Телепортация в домен
+Halibut_UIControl.DisplayName: Палтус: Панель управления
+Halibut_Skill_L.DisplayName: Палтус: Предыдущий навык
+Halibut_Skill_R.DisplayName: Палтус: Следующий навык
+Pandemonium_Q.DisplayName: Пандемониум: Кара серного огня
+Pandemonium_R.DisplayName: Пандемониум: Конец всех демонов
+AriaofTheCosmos_Q.DisplayName: Ария Космоса: Страж звездного кольца
+AriaofTheCosmos_R.DisplayName: Ария Космоса: Гамма-всплеск
+JusticeUnveiled.DisplayName: Явление правосудия: Свершить правосудие

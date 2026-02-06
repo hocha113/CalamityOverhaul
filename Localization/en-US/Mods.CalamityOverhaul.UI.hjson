@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -288,19 +288,19 @@ ThrowerUI: {
 }
 
 ElysiumUI: {
-	TitleText: 天国极乐
-	DiscipleCountText: 门徒
-	TotalBonusText: 圣恩加持
-	DamageText: 伤害
-	DefenseText: 防御
-	CritText: 暴击
-	RegenText: 恢复
-	EmptySlotText: 空缺
-	JudasWarningText: 警告：犹大的背叛潜伏于此
-	BonusLabel: 被动
-	AbilityLabel: 能力
-	DragHintText: 拖动门徒可变换其身份
-	SwapSuccessText: 身份转换完成
-	SwapFailText: 转换失败
-	CannotSwapText: 无法转换至此位置
+	TitleText: Elysium
+	DiscipleCountText: Disciples
+	TotalBonusText: Divine Blessing
+	DamageText: Damage
+	DefenseText: Defense
+	CritText: Crit
+	RegenText: Regen
+	EmptySlotText: Empty
+	JudasWarningText: Warning: Judas's betrayal lurks here
+	BonusLabel: Passive
+	AbilityLabel: Ability
+	DragHintText: Drag Disciples to swap identities
+	SwapSuccessText: Identity swap complete
+	SwapFailText: Swap failed
+	CannotSwapText: Cannot swap to this position
 }

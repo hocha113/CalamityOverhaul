@@ -1,4 +1,4 @@
-SoulBurning: {
+﻿SoulBurning: {
 	DisplayName: Огонь душ
 	Description: Из пламени Ада
 }
@@ -24,6 +24,6 @@ FrenziedMachineSoul: {
 }
 
 FishoilBuff: {
-	// DisplayName: Fishoil
-	// Description: You feel that your skin is becoming oily
+	DisplayName: Рыбий жир
+	Description: Вы чувствуете, что ваша кожа становится жирной
 }

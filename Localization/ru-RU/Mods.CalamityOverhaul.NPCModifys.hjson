@@ -1,88 +1,88 @@
-ModifyCrabulon: {
-	CrouchText: Ожидать
+﻿ModifyCrabulon: {
+	CrouchText: Ждать
 	CrouchAltText: Следовать
-	MountHoverText: ЛКМ, чтобы установить седло
-	RideHoverText: ПКМ, чтобы поехать
-	ChangeSaddleText: ЛКМ, чтобы сменить седло
-	DismountText: ПКМ, чтобы спешиться
-	// DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
+	MountHoverText: ЛКМ: Надеть седло
+	RideHoverText: ПКМ: Оседлать
+	ChangeSaddleText: ЛКМ: Сменить седло
+	DismountText: ПКМ: Слезть
+	DontDismountText: Временно нельзя оседлать в мультиплеере!
 }
 
 ModifyTruffle: {
 	SleepName: ???
-	ButtonText: Пробудить
+	ButtonText: Разбудить
 	Chat0:
 		'''
-		В животе у того краба было так уютно, я всё это время там жил.
-		Но ты вспорол его — теперь я бездомный.
+		В животе этого краба было так уютно, я жил там всё это время.
+		Но ты вспорол ему брюхо, и теперь я бездомен.
 		'''
-	/* Chat1:
+	Chat1:
 		'''
-		I once ran a mushroom farm, with my children helping me.  
-		One day I found out half of them were growing inside someone else’s stomach.  
-		''' */
-	Chat2: «Красная шляпка, белая ножка… съешь и лежи плашмя вечно».
-	Chat3: «Можешь продать мне грибы, но взамен не получишь абсолютно ничего».
-	Chat4: «Здесь все хотят меня съесть».
+		У меня когда-то была грибная ферма, детишки отлично помогали мне с ней управляться.
+		Пока однажды я не обнаружил половину детей в чьих-то желудках.
+		'''
+	Chat2: Красная шляпка, белая ножка... Съешь такой — и сразу в гроб.
+	Chat3: Можешь продать мне грибы, но ты ничего не получишь взамен.
+	Chat4: Здесь каждый хочет меня съесть.
 	Chat5:
 		'''
-		Я однажды видел грибное дерево, высотой не меньше 2000 метров.
-		Говорят, если забраться на вершину и спрыгнуть, попадёшь в Грибной Мир.
+		Я видел грибное дерево высотой не меньше 2000 метров.
+		Говорят, если залезть на самый верх и спрыгнуть, попадешь в Грибной мир.
 		'''
 	Chat6:
 		'''
-		Если нужен суп, купи мои грибы.
-		По крайней мере, они не будут кричать в котелке.
+		Если тебе нужно сварить суп, купи мои грибы.
+		По крайней мере, они не будут визжать в котле.
 		'''
-	Chat7: «Все грибы здесь — мои».
+	Chat7: Все грибы здесь принадлежат мне.
 	Chat8:
 		'''
-		Десять лет назад ты мог нанять меня, чтобы я провёл тебя в Грибное Королевство под землёй.
-		Я слышал, сейчас там распродажа.
+		Десять лет назад ты мог бы нанять меня проводником в Подземное грибное королевство.
+		Там сейчас, должно быть, распродажа.
 		'''
 	Chat9:
 		'''
-		Думаю, у тебя в лёгких растёт какой-то грибок.
-		Загляни в мой магазин — у меня есть идеальное лекарство.
+		Мне кажется, у тебя грибок в легких.
+		Загляни в мой магазин, у меня есть особое лекарство.
 		'''
-	Chat10: «Ох, как же я ненавижу этого красного парня».
+	Chat10: Ох, я ненавижу того красного парня.
 	Chat11:
 		'''
-		Ненавижу такую кровавую луну.
-		Она заставляет меня увядать… как сморщенный гриб, который никому не нужен.
+		Ненавижу Кровавую луну.
+		Из-за нее я выцветаю, как никому не нужный сморщенный гриб.
 		'''
 }
 
 ModifyWITCH: {
-	// Homeless0: Apologies, I have nothing to offer you. Perhaps you could try reforging some items, then return to me...
-	// Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
-	// Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
-	// Homeless3: No vacant housing? What... you expect me to pay rent?
-	// L0: I cannot afford rent. Perhaps I could perform an exorcism for your town to offset some of the cost?
-	// L1: I have never believed in the concept of souls. Any attempt to resurrect the dead only invites greater catastrophe.
-	/* L2:
+	Homeless0: Прости, мне нечего тебе дать. Может, попробуешь перековать что-нибудь, а потом вернешься ко мне...
+	Homeless1: У тебя есть где остановиться? Я имею в виду... Я собираюсь разбить лагерь неподалеку.
+	Homeless2: Знаешь, как жили люди в прошлую эпоху? У них не было домов, они жили в дуплах огромных деревьев. Найди мне хотя бы дупло, ладно?
+	Homeless3: Нет свободных домов? Что... ты требуешь с меня арендную плату?
+	L0: Я не могу платить аренду. Может, я изгоню злых духов из твоего города в счет оплаты?
+	L1: Я никогда не верила в души. Попытки воскресить мертвых приносят лишь большие бедствия.
+	L2:
 		'''
-		In the last century, I once stepped into a small town.
-		The streets were crowded with 'friends and family' who were supposed to be dead. They smiled, waved, and even cried for help...
-		I attempted to bring back my 'mother' from there.
-		She looked exactly as she did in life, her tone flawless... until I realized she had no heartbeat, and she found amusement in that fact.
-		''' */
-	/* L3:
+		В прошлом веке я забрела в один городок.
+		Улицы были полны "родных и друзей", которые уже давно умерли. Они улыбались, махали руками, звали на помощь, даже плакали...
+		Я попыталась вернуть оттуда свою "мать".
+		Она выглядела точь-в-точь как живая, даже говорила так же... пока я не поняла, что у нее нет сердцебиения, и её это только забавляет.
 		'''
-		I feel you are sometimes overly confident; you will achieve nothing at this rate.
-		I have seen too many like you perish on their quest for power.
-		''' */
-	/* L4:
+	L3:
 		'''
-		I know you are interested in my magic, but it is... not magic.
-		I hope you stay away from it. Those who touch these powers meet no good end.
-		''' */
-	// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
-	// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
-	// Night0: Night is when the spirits haunt. I have no desire to be outside at such a time.
-	// Night1: Long ago, I performed a divination every night before sleep. Until once, for seven consecutive nights, I foresaw that I would die on the eighth.
-	// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
-	// Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
+		Мне кажется, иногда ты слишком самоуверен. Так дела не делаются.
+		Я видела слишком многих, похожих на тебя; все они погибли в погоне за силой.
+		'''
+	L4:
+		'''
+		Я знаю, тебя интересует моя магия, но на самом деле... это вовсе не магия.
+		Я надеюсь, ты будешь держаться от этого подальше. Те, кто прикасается к этим силам, плохо кончают.
+		'''
+	BloodMoon0: Эта неестественная кроваво-красная ночь. Совсем не похожа на цвет моего серного пламени.
+	BloodMoon1: Я не могу работать в такую ночь. Кажется, даже звезды сжались от страха.
+	Night0: Ночь — время призраков, я бы не хотела оставаться снаружи в такое время.
+	Night1: Давным-давно я гадала каждую ночь перед сном. Пока семь ночей подряд мне не выпадало, что я умру на восьмую.
+	SeaKing: Морской король всегда смотрит на меня с такой скорбью. Кажется, он не хочет моей смерти. Я не понимаю, откуда у него такое глубокое сочувствие ко мне.
+	Party: Я отказываюсь от любых приглашений на танец, потому что мои партнеры обычно превращались в обгорелые трупы.
 }
 
-// ModifyOldDuke.LeavingDiveText: The Old Duke dove into the water...
+ModifyOldDuke.LeavingDiveText: Старый герцог нырнул под воду...

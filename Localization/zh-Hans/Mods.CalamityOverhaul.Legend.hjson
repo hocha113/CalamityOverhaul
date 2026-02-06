@@ -20,7 +20,7 @@
 		Hover2: 右键: 置顶
 		Hover3: 滚轮: 滚动
 		Hover4: 长按: 拖拽
-		// Hover5: W键: 收入库中
+		Hover5: W键: 收入库中
 	}
 
 	DomainUI: {

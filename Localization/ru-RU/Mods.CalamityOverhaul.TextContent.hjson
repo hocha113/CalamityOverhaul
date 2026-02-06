@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	TemperatureText: Температура сгорания
 	EnergyShortage: Недостаток энергии
 	ChargingStation_Text1: Положите предметы для зарядки
@@ -311,7 +311,7 @@ CWRLocText: {
 	IconUI_Text6: Тестирование баланса
 	IconUI_Text7: Список изменений
 	IconUI_Text8: Wiki мода
-	// IconUI_Text9: Musician
+	IconUI_Text9: Musician
 	SPU_Text0: В процессе
 	SPU_Text1: завершения синтеза
 	SPU_Text2: Получено при синтезе:
@@ -346,18 +346,16 @@ CWRLocText: {
 	MachineRebellion_SpawnInfo: Используйте садовый пульт управления ночью
 	MachineRebellion_DespawnMessage: Используйте садовый пульт управления ночью
 	MachineRebellion_DisplayName: Мятеж Машин
-	// Notbound: "[Unbound keys]"
-	/* DisableMotionInterpolationMessage:
+	Notbound: "[Не назначено]"
+	DisableMotionInterpolationMessage:
 		'''
-		Detected that you have enabled the HighFPSSupport: [Motion Smoothing] feature.
-		To ensure the stability of certain visual effects in the mod,
-		this feature has been automatically disabled for you.
-		To make sure the change takes effect,
-		it is strongly recommended that you manually toggle and keep this feature turned off.
-		''' */
-	/* LegendItemUpgradeDisable:
+		Обнаружено, что у вас включена функция HighFPSSupport: [Интерполяция движения]
+		Она была автоматически отключена для обеспечения стабильной работы визуальных эффектов мода
+		Для корректного применения изменений настоятельно рекомендуется вручную убедиться, что эта функция выключена
 		'''
-		This legendary weapon has been set to disable upgrades in the current world.
-		To lift this restriction, please re-enter the world.
-		''' */
+	LegendItemUpgradeDisable:
+		'''
+		Улучшение этого легендарного оружия отключено в текущем мире
+		Если требуется снять это ограничение, пожалуйста, перезайдите в мир
+		'''
 }
