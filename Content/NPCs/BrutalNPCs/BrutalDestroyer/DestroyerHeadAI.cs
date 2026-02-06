@@ -36,6 +36,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private float speed;
         private float turnSpeed;
         private bool isEnraged;
+        private int dashCount;
+        private float chargeProgress;
+        private Vector2 dashDirection;
 
         [VaultLoaden(CWRConstant.NPC + "BTD/BTD_Head")]
         internal static Asset<Texture2D> HeadIcon = null;
@@ -168,23 +171,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         /// <summary>
-        /// 巡空
+        /// 巡空：在玩家周围做立体椭圆轨迹盘旋，带有高度起伏
         /// </summary>
         private void ExecutePatrolState() {
-            //移动逻辑：在玩家上方或下方盘旋
-            float patrolRadius = 800f;
-            float timeFactor = Main.GameUpdateCount * 0.02f;
-            Vector2 offset = new Vector2((float)Math.Cos(timeFactor), (float)Math.Sin(timeFactor) * 0.5f) * patrolRadius;
-            targetPosition = targetPlayer.Center + offset;
+            float patrolTime = AI_Timer * 0.015f;
+            float horizontalRadius = 900f;
+            float verticalRadius = 400f;
 
-            //速度控制
-            speed = 18f;
-            turnSpeed = 0.4f;
+            //椭圆轨迹带高度变化，产生立体的盘旋感
+            float offsetX = (float)Math.Cos(patrolTime) * horizontalRadius;
+            float offsetY = (float)Math.Sin(patrolTime * 1.3f) * verticalRadius - 300f;
+            targetPosition = targetPlayer.Center + new Vector2(offsetX, offsetY);
 
-            //状态切换逻辑
+            //渐进加速：从刚切入巡逻时的慢速平滑加速到巡航速度
+            float accelProgress = Math.Min(AI_Timer / 90f, 1f);
+            speed = MathHelper.Lerp(10f, isEnraged ? 22f : 18f, accelProgress);
+            turnSpeed = MathHelper.Lerp(0.2f, 0.5f, accelProgress);
+
             AI_Timer++;
-            if (AI_Timer > 300) {
-                //随机选择下一个攻击状态
+
+            int patrolDuration = isEnraged ? 240 : 300;
+            if (AI_Timer > patrolDuration) {
                 int nextState = Main.rand.Next(3) switch {
                     0 => STATE_LASER_BARRAGE,
                     1 => STATE_ENCIRCLE_TRAP,
@@ -198,130 +205,200 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 协同所有体节进行有规律的激光射击
         /// </summary>
         private void ExecuteLaserBarrageState() {
-            //减速以便稳定射击
-            speed = 10f;
-            turnSpeed = 0.8f;
-            targetPosition = targetPlayer.Center + targetPlayer.velocity * 30f; //预判移动
+            speed = 12f;
+            turnSpeed = 0.6f;
+            targetPosition = targetPlayer.Center + targetPlayer.velocity * 30f;
 
             AI_Timer++;
-            int fireRate = isEnraged ? 3 : 5; //狂暴状态射速更快
+            int fireRate = isEnraged ? 3 : 5;
+            int chargeTime = 60;
+            int fireTime = 240;
 
-            //阶段1：充能预警
-            if (AI_Timer < 60) {
-                if (AI_Timer % 10 == 0) {
-                    Dust.NewDust(npc.Center, npc.width, npc.height, DustID.FireworkFountain_Red, 0, 0, 100, default, 2f);
+            //阶段1：充能预警，体节沿身体依次发出红色粒子
+            if (AI_Timer < chargeTime) {
+                chargeProgress = AI_Timer / (float)chargeTime;
+                if (!VaultUtils.isServer && AI_Timer % 4 == 0 && bodySegments.Count > 0) {
+                    int warningIndex = (int)(chargeProgress * bodySegments.Count);
+                    warningIndex = Math.Clamp(warningIndex, 0, bodySegments.Count - 1);
+                    NPC warningSegment = bodySegments[warningIndex];
+                    if (warningSegment.active) {
+                        for (int i = 0; i < 3; i++) {
+                            Dust dust = Dust.NewDustDirect(warningSegment.Center + Main.rand.NextVector2Circular(20, 20)
+                                , 1, 1, DustID.FireworkFountain_Red, 0, 0, 100, default, 1.8f);
+                            dust.noGravity = true;
+                            dust.velocity = (warningSegment.Center - dust.position).SafeNormalize(Vector2.Zero) * 2f;
+                        }
+                    }
                 }
             }
             //阶段2：波次射击
-            else if (AI_Timer < 240) {
-                if (AI_Timer % fireRate == 0) {
-                    //这里的逻辑是让体节轮流发射，形成波浪感
-                    int segmentIndex = (int)((AI_Timer - 60) / fireRate) % bodySegments.Count;
-                    if (segmentIndex < bodySegments.Count) {
-                        NPC segment = bodySegments[segmentIndex];
-                        if (segment.active) {
-                            FireLaser(segment, targetPlayer.Center);
-                        }
+            else if (AI_Timer < fireTime) {
+                chargeProgress = 0f;
+                if (bodySegments.Count > 0 && AI_Timer % fireRate == 0) {
+                    int segmentIndex = (int)((AI_Timer - chargeTime) / fireRate) % bodySegments.Count;
+                    NPC segment = bodySegments[segmentIndex];
+                    if (segment.active) {
+                        FireLaser(segment, targetPlayer.Center);
                     }
                 }
             }
             //阶段3：结束
             else {
+                chargeProgress = 0f;
                 SwitchState(STATE_IDLE_PATROL);
             }
         }
 
         /// <summary>
-        /// 快速包围玩家，收缩包围圈
+        /// 快速包围玩家，收缩包围圈，体节激光密度随半径缩小而递增
         /// </summary>
         private void ExecuteEncircleState() {
-            //计算环绕目标点
-            float angle = AI_Timer * 0.05f;
-            float radius = MathHelper.Lerp(1600f, 800f, Math.Min(AI_Timer / 300f, 1f)); //半径逐渐缩小
+            //角速度随时间递增，产生加速旋转的压迫感
+            float angularSpeed = MathHelper.Lerp(0.03f, isEnraged ? 0.08f : 0.06f, Math.Min(AI_Timer / 300f, 1f));
+            float angle = AI_Timer * angularSpeed;
+
+            //半径使用平滑的缓出曲线收缩
+            float shrinkProgress = Math.Min(AI_Timer / 360f, 1f);
+            float easeOut = 1f - (1f - shrinkProgress) * (1f - shrinkProgress);
+            float radius = MathHelper.Lerp(1500f, 600f, easeOut);
             Vector2 offset = angle.ToRotationVector2() * radius;
             targetPosition = targetPlayer.Center + offset;
 
-            //极高的移动速度和转向能力
-            speed = 35f;
-            turnSpeed = 1.2f;
+            speed = MathHelper.Lerp(28f, 40f, shrinkProgress);
+            turnSpeed = MathHelper.Lerp(0.8f, 1.5f, shrinkProgress);
 
             AI_Timer++;
 
-            int randNum = 160;
-            if (CWRWorld.Death) {
-                randNum -= 40;
-            }
-            //在环绕过程中，体节向圆心发射激光
-            if (AI_Timer > 60 && AI_Timer % 10 == 0) {
+            //体节激光：半径越小开火越密集
+            int baseFireChance = CWRWorld.Death ? 100 : 140;
+            int fireChance = (int)(baseFireChance * (1f - easeOut * 0.6f));
+            fireChance = Math.Max(fireChance, 20);
+
+            if (AI_Timer > 60 && AI_Timer % 8 == 0 && bodySegments.Count > 0) {
                 foreach (var segment in bodySegments) {
-                    if (Main.rand.NextBool(randNum)) { //随机体节开火
+                    if (segment.active && Main.rand.NextBool(fireChance)) {
                         FireLaser(segment, targetPlayer.Center);
                     }
                 }
             }
 
-            if (AI_Timer > 360) {
-                SwitchState(STATE_DASH_ASSAULT); //环绕结束后直接接冲刺
+            if (AI_Timer > 400) {
+                SwitchState(STATE_DASH_ASSAULT);
             }
         }
 
+        private int MaxDashCount => isEnraged ? 5 : 3;
+        private int ChargeTime => isEnraged ? 35 : 50;
+        private int DashDuration => 35;
+        private int CooldownTime => isEnraged ? 40 : 55;
+        private float DashSpeed => isEnraged ? 55f : 42f;
+
         /// <summary>
-        /// 连续冲刺
+        /// 连续冲刺：蓄力预警→爆发冲刺→减速回转，循环数次
+        /// 子状态: 0=蓄力对准 1=冲刺 2=冷却回转
         /// </summary>
         private void ExecuteDashAssaultState() {
-            //子状态管理
-            //0: 瞄准/蓄力
-            //1: 冲刺
-            //2: 减速/回转
-
             switch ((int)AI_SubState) {
-                case 0: //瞄准
-                    speed = 5f;
-                    turnSpeed = 2.5f; //极快转向对准玩家
-                    Vector2 toPlayer = targetPlayer.Center - npc.Center;
-                    targetPosition = targetPlayer.Center + toPlayer.SafeNormalize(Vector2.Zero) * 200f; //稍微越过玩家一点
-
-                    //强制头部指向玩家
-                    float targetAngle = toPlayer.ToRotation() + MathHelper.PiOver2;
-                    npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.2f);
-
-                    AI_Counter++;
-                    if (AI_Counter > 40) { //蓄力时间
-                        AI_SubState = 1;
-                        AI_Counter = 0;
-                        SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-                        //冲刺向量确定
-                        moveVector = toPlayer.SafeNormalize(Vector2.Zero) * (isEnraged ? 55f : 45f);
-                    }
+                case 0: //蓄力对准
+                    ExecuteDashCharge();
                     break;
-
-                case 1: //冲刺
-                    npc.velocity = moveVector;
-                    npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
-
-                    AI_Counter++;
-                    if (AI_Counter > 40) { //冲刺持续时间
-                        AI_SubState = 2;
-                        AI_Counter = 0;
-                    }
+                case 1: //冲刺中
+                    ExecuteDashRush();
                     break;
-
-                case 2: //冷却/准备下一次
-                    npc.velocity *= 0.99f; //摩擦力减速
-                    AI_Counter++;
-                    if (AI_Counter > 60) {
-                        AI_SubState = 0;
-                        AI_Counter = 0;
-
-                        //检查是否结束冲刺阶段
-                        if (AI_Timer > 4) { //已经冲刺了4次
-                            SwitchState(STATE_IDLE_PATROL);
-                        }
-                        else {
-                            AI_Timer++; //记录冲刺次数
-                        }
-                    }
+                case 2: //冷却回转
+                    ExecuteDashCooldown();
                     break;
+            }
+        }
+
+        private void ExecuteDashCharge() {
+            //减速制动
+            npc.velocity *= 0.92f;
+
+            Vector2 toPlayer = targetPlayer.Center - npc.Center;
+            dashDirection = toPlayer.SafeNormalize(Vector2.UnitY);
+
+            //平滑转向对准目标
+            float targetAngle = toPlayer.ToRotation() + MathHelper.PiOver2;
+            npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.15f);
+
+            //蓄力进度
+            chargeProgress = Math.Min(AI_Counter / (float)ChargeTime, 1f);
+
+            //蓄力粒子：从体节向头部聚集
+            if (!VaultUtils.isServer && AI_Counter % 3 == 0) {
+                for (int i = 0; i < (int)(chargeProgress * 5) + 1; i++) {
+                    Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(40, 40);
+                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.FireworkFountain_Red, 0, 0, 100, default, 1.5f + chargeProgress);
+                    dust.noGravity = true;
+                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (2f + chargeProgress * 4f);
+                }
+            }
+
+            //蓄力后期震动
+            if (chargeProgress > 0.6f && !VaultUtils.isServer) {
+                float shakeMagnitude = (chargeProgress - 0.6f) * 5f;
+                npc.Center += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
+            }
+
+            AI_Counter++;
+
+            if (AI_Counter >= ChargeTime) {
+                //蓄力完成，释放冲刺
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.2f }, npc.Center);
+                moveVector = dashDirection * DashSpeed;
+                npc.velocity = moveVector;
+                chargeProgress = 0f;
+                AI_SubState = 1;
+                AI_Counter = 0;
+                npc.netUpdate = true;
+            }
+        }
+
+        private void ExecuteDashRush() {
+            //保持冲刺速度，略微追踪玩家
+            float trackingFactor = isEnraged ? 0.02f : 0.01f;
+            Vector2 toPlayer = (targetPlayer.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+            npc.velocity = Vector2.Lerp(npc.velocity, toPlayer * DashSpeed, trackingFactor);
+            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+
+            AI_Counter++;
+
+            if (AI_Counter >= DashDuration) {
+                AI_SubState = 2;
+                AI_Counter = 0;
+                dashCount++;
+                npc.netUpdate = true;
+            }
+        }
+
+        private void ExecuteDashCooldown() {
+            //平滑减速
+            npc.velocity *= 0.95f;
+
+            //缓慢回转朝向玩家
+            Vector2 toPlayer = targetPlayer.Center - npc.Center;
+            float targetAngle = toPlayer.ToRotation() + MathHelper.PiOver2;
+            npc.rotation = npc.rotation.AngleLerp(targetAngle, 0.05f);
+
+            //以玩家上方为回归点
+            targetPosition = targetPlayer.Center + new Vector2(0, -500);
+            speed = 8f;
+            turnSpeed = 0.3f;
+
+            AI_Counter++;
+
+            if (AI_Counter >= CooldownTime) {
+                if (dashCount >= MaxDashCount) {
+                    dashCount = 0;
+                    SwitchState(STATE_IDLE_PATROL);
+                }
+                else {
+                    //继续下一次冲刺蓄力
+                    AI_SubState = 0;
+                    AI_Counter = 0;
+                    npc.netUpdate = true;
+                }
             }
         }
 
@@ -402,6 +479,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             AI_Timer = 0;
             AI_SubState = 0;
             AI_Counter = 0;
+            chargeProgress = 0f;
+            if (newState != STATE_DASH_ASSAULT) {
+                dashCount = 0;
+            }
             npc.netUpdate = true;
         }
 
@@ -535,23 +616,88 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Rectangle frameRec = texture.GetRectangle(frame, 4);
             Rectangle glowRec = texture.GetRectangle(glowFrame, 4);
             Vector2 origin = frameRec.Size() / 2;
+            Vector2 mainPos = npc.Center - screenPos;
 
-            //在冲刺时绘制残影
+            //蓄力阶段特效
+            if (AI_State == STATE_DASH_ASSAULT && AI_SubState == 0 && chargeProgress > 0.1f) {
+                DrawChargeEffect(spriteBatch, mainPos);
+            }
+
+            //冲刺残影
             if (AI_State == STATE_DASH_ASSAULT && AI_SubState == 1) {
-                for (int i = 1; i < npc.oldPos.Length; i += 2) {
+                for (int i = 0; i < npc.oldPos.Length; i++) {
+                    if (npc.oldPos[i] == Vector2.Zero) continue;
+                    float trailFade = 1f - i / (float)npc.oldPos.Length;
                     Vector2 drawPos = npc.oldPos[i] - screenPos + npc.Size / 2;
-                    Color trailColor = Color.Red * 0.5f * (1f - i / (float)npc.oldPos.Length);
-                    spriteBatch.Draw(texture, drawPos, frameRec, trailColor, npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
+                    Color trailColor = Color.Lerp(Color.OrangeRed, Color.DarkRed, i / (float)npc.oldPos.Length) * (0.5f * trailFade);
+                    float trailScale = npc.scale * (0.9f + 0.1f * trailFade);
+                    spriteBatch.Draw(texture, drawPos, frameRec, trailColor, npc.rotation + MathHelper.Pi, origin, trailScale, SpriteEffects.None, 0f);
                 }
             }
 
             //绘制本体
-            spriteBatch.Draw(texture, npc.Center - screenPos, frameRec, drawColor, npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, mainPos, frameRec, drawColor, npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
 
             //绘制发光层
-            spriteBatch.Draw(Head_Glow.Value, npc.Center - screenPos, glowRec, Color.White, npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Head_Glow.Value, mainPos, glowRec, Color.White, npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
 
             return false;
+        }
+
+        /// <summary>
+        /// 绘制冲刺蓄力阶段的视觉预警特效
+        /// </summary>
+        private void DrawChargeEffect(SpriteBatch spriteBatch, Vector2 drawPos) {
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
+            Color chargeColor = Color.Lerp(Color.OrangeRed, Color.Red, chargeProgress);
+
+            //切换到叠加混合
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicClamp
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            //内圈光晕：随蓄力进度增大增亮
+            float glowScale = 1.2f + chargeProgress * 2f;
+            float glowAlpha = chargeProgress * 0.6f;
+            Main.EntitySpriteDraw(glowTex, drawPos, null, chargeColor * glowAlpha
+                , 0f, glowTex.Size() / 2f, glowScale, SpriteEffects.None, 0);
+
+            //收缩圆环
+            float circleScale = 2f - chargeProgress * 1.5f;
+            float circleAlpha = chargeProgress * 0.5f;
+            Main.EntitySpriteDraw(circleTex, drawPos, null, chargeColor * circleAlpha
+                , Main.GlobalTimeWrappedHourly * 3f, circleTex.Size() / 2f, circleScale, SpriteEffects.None, 0);
+
+            //瞄准方向指示线
+            if (chargeProgress > 0.4f) {
+                DrawAimIndicator(drawPos, chargeColor);
+            }
+
+            //恢复正常混合
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>
+        /// 绘制蓄力阶段的瞄准方向指示线
+        /// </summary>
+        private void DrawAimIndicator(Vector2 drawPos, Color baseColor) {
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            float lineLength = 1300f * (chargeProgress - 0.4f) / 0.6f;
+            int segments = (int)(lineLength / 18f);
+            float aimAlpha = (chargeProgress - 0.4f) / 0.6f;
+
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)Math.Max(segments, 1);
+                Vector2 segPos = drawPos + dashDirection * (40f + t * lineLength);
+                float segAlpha = aimAlpha * (1f - t) * 0.6f;
+                float pulse = 0.7f + 0.3f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + t * 6f);
+
+                Main.EntitySpriteDraw(glowTex, segPos, null, baseColor * segAlpha * pulse
+                    , 0f, glowTex.Size() / 2f, 0.25f * (1f - t * 0.5f), SpriteEffects.None, 0);
+            }
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
