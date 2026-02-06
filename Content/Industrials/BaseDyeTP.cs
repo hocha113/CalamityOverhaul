@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using System.IO;
 using Terraria;

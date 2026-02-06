@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;

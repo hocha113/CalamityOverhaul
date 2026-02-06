@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

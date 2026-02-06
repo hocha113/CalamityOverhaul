@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 {
     internal class Spectrometer : ModItem
     {

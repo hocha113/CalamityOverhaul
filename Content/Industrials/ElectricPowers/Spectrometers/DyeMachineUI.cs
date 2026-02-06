@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Industrials;
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,7 +7,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs
+namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 {
     #region 资源与常量
     [VaultLoaden(CWRConstant.UI + "DyeMachineUI")]
@@ -58,7 +57,7 @@ namespace CalamityOverhaul.Content.UIs
     {
         internal bool CanOpen;
         internal float sengs;
-        internal virtual Texture2D UITex => (this is SpectrometerUI) ? DyeMachineAsset.SpectrometerUI : DyeMachineAsset.DyeVatUI;
+        internal virtual Texture2D UITex => this is SpectrometerUI ? DyeMachineAsset.SpectrometerUI : DyeMachineAsset.DyeVatUI;
 
         public abstract BaseDyeMachineSlot DyeSlot { get; }
         public abstract BaseDyeMachineSlot BeDyedItem { get; }
@@ -132,7 +131,7 @@ namespace CalamityOverhaul.Content.UIs
         internal float sengs;
         internal float hoverSengs;
         internal float scale; //用于实现悬停放大动画
-        public virtual Texture2D SlotTex => (ParentUI is SpectrometerUI) ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
+        public virtual Texture2D SlotTex => ParentUI is SpectrometerUI ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
         public abstract Texture2D SymbolTex { get; }
         public abstract Texture2D SymbolTexAlt { get; }
 
@@ -217,7 +216,7 @@ namespace CalamityOverhaul.Content.UIs
                 Main.hoverItemName = Item.Name;
             }
 
-            VaultUtils.SafeLoadItem(Item);
+            Item.SafeLoadItem();
             float mode = 0.6f + 0.4f * hoverSengs;
             Color itemColor = new Color(mode, mode, mode, 1f) * sengs;
 
@@ -236,7 +235,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         private void DrawEmptySymbol(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 origin) {
-            float symbolScale = scale * (1 + (hoverSengs * 0.1f)); //符号也跟随轻微放大
+            float symbolScale = scale * (1 + hoverSengs * 0.1f); //符号也跟随轻微放大
             Vector2 symbolOrigin = SymbolTex.Size() / 2f;
             //淡入淡出效果
             spriteBatch.Draw(SymbolTex, drawPos, null, Color.White * (1f - hoverSengs) * sengs, 0, symbolOrigin, symbolScale, SpriteEffects.None, 0);
