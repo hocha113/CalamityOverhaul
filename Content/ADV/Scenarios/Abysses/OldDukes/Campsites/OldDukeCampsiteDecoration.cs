@@ -1,4 +1,5 @@
-﻿using InnoVault.PRT;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests;
+using InnoVault.PRT;
 using InnoVault.RenderHandles;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -287,7 +288,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             int baseTileX = (int)(searchPos.X / 16f);
             int baseTileY = (int)(searchPos.Y / 16f) - upOffsetValue;
 
-            int chestType = ModContent.TileType<Items.OldDuchests.OldDuchestTile>();
+            int chestType = ModContent.TileType<OldDuchestTile>();
 
             //向下搜索地面
             for (int y = baseTileY; y < baseTileY + upOffsetValue * 2; y++) {
@@ -361,7 +362,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     var tp = TileProcessorLoader.AddInWorld(chestType, point, null);
 
                     //填充箱子内容
-                    if (tp != null && TileProcessorLoader.ByPositionGetTP(point, out Items.OldDuchests.OldDuchestTP chestTP)) {
+                    if (tp != null && TileProcessorLoader.ByPositionGetTP(point, out OldDuchestTP chestTP)) {
                         FillChestWithItems(chestTP);
                     }
 
@@ -379,7 +380,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// <summary>
         /// 向箱子TP实体中填充随机物品
         /// </summary>
-        private static void FillChestWithItems(Items.OldDuchests.OldDuchestTP chestTP) {
+        private static void FillChestWithItems(OldDuchestTP chestTP) {
             if (chestTP == null) {
                 return;
             }

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

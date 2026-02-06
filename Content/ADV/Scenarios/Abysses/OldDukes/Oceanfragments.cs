@@ -2,7 +2,7 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
     internal class Oceanfragments : ModItem
     {

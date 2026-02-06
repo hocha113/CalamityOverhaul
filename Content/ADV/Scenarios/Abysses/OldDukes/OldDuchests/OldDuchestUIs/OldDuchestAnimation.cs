@@ -1,32 +1,32 @@
-using System;
+ï»¿using System;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs
 {
     /// <summary>
-    /// ÀÏÏä×ÓUI¶¯»­×´Ì¬¹ÜÀíÆ÷
+    /// è€ç®±å­UIåŠ¨ç”»çŠ¶æ€ç®¡ç†å™¨
     /// </summary>
     internal class OldDuchestAnimation
     {
-        //UI»ù´¡¶¯»­
+        //UIåŸºç¡€åŠ¨ç”»
         public float UIAlpha { get; set; } = 0f;
         public float PanelSlideProgress { get; set; } = 0f;
         private const float FadeSpeed = 0.08f;
         private const float SlideSpeed = 0.12f;
 
-        //Ä¾ÖÊÏä×ÓÌØĞ§¼ÆÊ±Æ÷
+        //æœ¨è´¨ç®±å­ç‰¹æ•ˆè®¡æ—¶å™¨
         public float WoodGrainPhase { get; private set; } = 0f;
         public float DustTimer { get; private set; } = 0f;
         public float GlowTimer { get; private set; } = 0f;
 
-        //²ÛÎ»ĞüÍ£¶¯»­
-        public float[] SlotHoverProgress { get; private set; } = new float[240]; //20x12=240¸ñ
+        //æ§½ä½æ‚¬åœåŠ¨ç”»
+        public float[] SlotHoverProgress { get; private set; } = new float[240]; //20x12=240æ ¼
         private const float HoverSpeed = 0.15f;
 
         /// <summary>
-        /// ¸üĞÂUI½¥Èë½¥³ö¶¯»­
+        /// æ›´æ–°UIæ¸å…¥æ¸å‡ºåŠ¨ç”»
         /// </summary>
         public void UpdateUIAnimation(bool isActive) {
-            //µ­Èëµ­³ö
+            //æ·¡å…¥æ·¡å‡º
             if (isActive) {
                 UIAlpha = Math.Min(1f, UIAlpha + FadeSpeed);
                 PanelSlideProgress = Math.Min(1f, PanelSlideProgress + SlideSpeed);
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¸üĞÂÀÏÏä×ÓÌØĞ§¼ÆÊ±Æ÷
+        /// æ›´æ–°è€ç®±å­ç‰¹æ•ˆè®¡æ—¶å™¨
         /// </summary>
         public void UpdateEffects() {
             WoodGrainPhase += 0.01f;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¸üĞÂ²ÛÎ»ĞüÍ£¶¯»­
+        /// æ›´æ–°æ§½ä½æ‚¬åœåŠ¨ç”»
         /// </summary>
         public void UpdateSlotHoverAnimations(int hoveredSlot) {
             for (int i = 0; i < SlotHoverProgress.Length; i++) {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ÖØÖÃËùÓĞ¶¯»­×´Ì¬
+        /// é‡ç½®æ‰€æœ‰åŠ¨ç”»çŠ¶æ€
         /// </summary>
         public void Reset() {
             UIAlpha = 0f;

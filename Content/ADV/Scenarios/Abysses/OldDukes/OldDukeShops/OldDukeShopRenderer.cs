@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
-using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
+ï»¿using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -11,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     /// <summary>
-    /// ÀÏ¹«¾ôÉÌµêäÖÈ¾Æ÷
+    /// è€å…¬çˆµå•†åº—æ¸²æŸ“å™¨
     /// </summary>
     internal class OldDukeShopRenderer
     {
@@ -29,12 +28,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ¼ÆËãÃæ°åÖĞĞÄÎ»ÖÃ
+        /// è®¡ç®—é¢æ¿ä¸­å¿ƒä½ç½®
         /// </summary>
         public Vector2 CalculatePanelPosition() {
             Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
 
-            //Ê¹ÓÃ»º¶¯º¯ÊıÊµÏÖ»¬Èë¶¯»­£¨´ÓÓÒ²à»¬Èë£¬ÓëDraedonµÄ×ó²à²»Í¬£©
+            //ä½¿ç”¨ç¼“åŠ¨å‡½æ•°å®ç°æ»‘å…¥åŠ¨ç”»ï¼ˆä»å³ä¾§æ»‘å…¥ï¼Œä¸Draedonçš„å·¦ä¾§ä¸åŒï¼‰
             float slideOffset = (1f - CWRUtils.EaseOutCubic(animation.PanelSlideProgress)) * 200f;
 
             return new Vector2(
@@ -44,34 +43,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// »æÖÆÖ÷Ãæ°åºÍÄÚÈİ
+        /// ç»˜åˆ¶ä¸»é¢æ¿å’Œå†…å®¹
         /// </summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, OldDukeShopEffects effects) {
             if (animation.UIAlpha <= 0f) return;
 
-            //»æÖÆÖ÷Ãæ°å
+            //ç»˜åˆ¶ä¸»é¢æ¿
             DrawMainPanel(spriteBatch, panelPosition);
 
-            //»æÖÆÌØĞ§Á£×Ó£¨ÔÚÄÚÈİÏÂ·½£©
+            //ç»˜åˆ¶ç‰¹æ•ˆç²’å­ï¼ˆåœ¨å†…å®¹ä¸‹æ–¹ï¼‰
             effects.DrawEffects(spriteBatch, animation.UIAlpha);
 
-            //»æÖÆ±êÌâ
+            //ç»˜åˆ¶æ ‡é¢˜
             DrawHeader(spriteBatch, panelPosition);
 
-            //»æÖÆ»õ±ÒÏÔÊ¾
+            //ç»˜åˆ¶è´§å¸æ˜¾ç¤º
             DrawCurrencyDisplay(spriteBatch, panelPosition);
 
-            //»æÖÆÎïÆ·ÁĞ±í
+            //ç»˜åˆ¶ç‰©å“åˆ—è¡¨
             DrawItemList(spriteBatch, panelPosition);
 
-            //»æÖÆ¹ö¶¯Ìõ
+            //ç»˜åˆ¶æ»šåŠ¨æ¡
             interaction.DrawScrollBar(spriteBatch, panelPosition, animation.UIAlpha, animation.SulfurPulse);
 
-            //»æÖÆ¹ö¶¯ÌáÊ¾
+            //ç»˜åˆ¶æ»šåŠ¨æç¤º
             DrawScrollHint(spriteBatch, panelPosition);
         }
 
-        #region Ö÷Ãæ°å»æÖÆ
+        #region ä¸»é¢æ¿ç»˜åˆ¶
         private void DrawMainPanel(SpriteBatch spriteBatch, Vector2 panelPosition) {
             Rectangle panelRect = new Rectangle(
                 (int)panelPosition.X,
@@ -82,29 +81,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //ÒõÓ°
+            //é˜´å½±
             Rectangle shadow = panelRect;
             shadow.Offset(6, 8);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (animation.UIAlpha * 0.60f));
 
-            //»æÖÆ½¥±ä±³¾°
+            //ç»˜åˆ¶æ¸å˜èƒŒæ™¯
             DrawGradientBackground(spriteBatch, panelRect, pixel);
 
-            //ÕÎÆø¸²¸Ç²ã
+            //ç˜´æ°”è¦†ç›–å±‚
             float miasmaEffect = (float)Math.Sin(animation.MiasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (animation.UIAlpha * 0.4f * miasmaEffect);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
 
-            //»æÖÆ¶¾²¨ÎÆÀíĞ§¹û
+            //ç»˜åˆ¶æ¯’æ³¢çº¹ç†æ•ˆæœ
             DrawToxicWaveOverlay(spriteBatch, panelRect, pixel);
 
-            //ÄÚ±ß¿òÎ¢¹â
+            //å†…è¾¹æ¡†å¾®å…‰
             float pulse = (float)Math.Sin(animation.SulfurPulse) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1), new Color(80, 100, 35) * (animation.UIAlpha * 0.09f * (0.5f + pulse * 0.5f)));
 
-            //»æÖÆÁò»Ç¿ò¼Ü
+            //ç»˜åˆ¶ç¡«ç£ºæ¡†æ¶
             DrawSulfseaFrame(spriteBatch, panelRect, pulse, pixel);
         }
 
@@ -117,7 +116,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //Áò»Çº£ÅäÉ«
+                //ç¡«ç£ºæµ·é…è‰²
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -161,13 +160,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private void DrawSulfseaFrame(SpriteBatch spriteBatch, Rectangle rect, float pulse, Texture2D pixel) {
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (animation.UIAlpha * 0.85f);
 
-            //Ö÷±ß¿ò
+            //ä¸»è¾¹æ¡†
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            //ÄÚ±ß¿ò
+            //å†…è¾¹æ¡†
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (animation.UIAlpha * 0.22f * pulse);
@@ -176,7 +175,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            //½ÇĞÇ×°ÊÎ
+            //è§’æ˜Ÿè£…é¥°
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), animation.UIAlpha * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), animation.UIAlpha * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Bottom - 10), animation.UIAlpha * 0.65f);
@@ -192,7 +191,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
         #endregion
 
-        #region ±êÌâ»æÖÆ
+        #region æ ‡é¢˜ç»˜åˆ¶
         private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.DeathText.Value;
             string title = OldDukeShopUI.TitleText.Value;
@@ -201,7 +200,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             Vector2 titleSize = font.MeasureString(title) * titleSclse;
             titlePos.X -= titleSize.X / 2f;
 
-            //±êÌâ·¢¹âĞ§¹û
+            //æ ‡é¢˜å‘å…‰æ•ˆæœ
             Color glowColor = new Color(160, 190, 80) * (animation.UIAlpha * 0.75f);
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
@@ -211,15 +210,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, titleSclse);
 
-            //»æÖÆ¹Ø±Õ°´Å¥
+            //ç»˜åˆ¶å…³é—­æŒ‰é’®
             DrawCloseButton(spriteBatch, panelPosition);
 
-            //·Ö¸îÏß
+            //åˆ†å‰²çº¿
             DrawHeaderDivider(spriteBatch, panelPosition);
         }
 
         /// <summary>
-        /// »æÖÆ¹Ø±Õ°´Å¥
+        /// ç»˜åˆ¶å…³é—­æŒ‰é’®
         /// </summary>
         private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -235,13 +234,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             bool isHovered = interaction.IsCloseButtonHovered;
             float hoverProgress = isHovered ? 1f : 0f;
 
-            //°´Å¥±³¾°
+            //æŒ‰é’®èƒŒæ™¯
             Color bgBase = new Color(30, 40, 15) * (animation.UIAlpha * 0.6f);
             Color bgHover = new Color(80, 50, 40) * (animation.UIAlpha * 0.8f);
             Color buttonBg = Color.Lerp(bgBase, bgHover, hoverProgress);
             spriteBatch.Draw(pixel, closeButtonRect, new Rectangle(0, 0, 1, 1), buttonBg);
 
-            //ĞüÍ£Ê±µÄ·¢¹âĞ§¹û
+            //æ‚¬åœæ—¶çš„å‘å…‰æ•ˆæœ
             if (isHovered) {
                 float glowPulse = (float)Math.Sin(animation.SulfurPulse * 2f) * 0.5f + 0.5f;
                 Color glowColor = new Color(180, 90, 70) * (animation.UIAlpha * 0.3f * glowPulse);
@@ -250,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor);
             }
 
-            //°´Å¥±ß¿ò
+            //æŒ‰é’®è¾¹æ¡†
             Color edgeColor = Color.Lerp(
                 new Color(70, 100, 35) * (animation.UIAlpha * 0.6f),
                 new Color(180, 90, 70) * (animation.UIAlpha * 0.9f),
@@ -265,7 +264,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height),
                 new Rectangle(0, 0, 1, 1), edgeColor);
 
-            //»æÖÆX·ûºÅ
+            //ç»˜åˆ¶Xç¬¦å·
             Vector2 center = new Vector2(closeButtonRect.X + closeButtonRect.Width / 2f, closeButtonRect.Y + closeButtonRect.Height / 2f);
             float xSize = 12f + hoverProgress * 2f;
             float thickness = 2.5f + hoverProgress * 0.5f;
@@ -276,12 +275,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 hoverProgress
             );
 
-            //×óÉÏµ½ÓÒÏÂµÄÏß
+            //å·¦ä¸Šåˆ°å³ä¸‹çš„çº¿
             Vector2 start1 = center + new Vector2(-xSize, -xSize);
             Vector2 end1 = center + new Vector2(xSize, xSize);
             DrawXLine(spriteBatch, start1, end1, xColor, thickness, pixel);
 
-            //ÓÒÉÏµ½×óÏÂµÄÏß
+            //å³ä¸Šåˆ°å·¦ä¸‹çš„çº¿
             Vector2 start2 = center + new Vector2(xSize, -xSize);
             Vector2 end2 = center + new Vector2(-xSize, xSize);
             DrawXLine(spriteBatch, start2, end2, xColor, thickness, pixel);
@@ -328,7 +327,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
         #endregion
 
-        #region »õ±ÒÏÔÊ¾
+        #region è´§å¸æ˜¾ç¤º
         private long CalculateTotalCurrency() {
             long totalCopper = 0;
             CalculateInventory(player.inventory, ref totalCopper);
@@ -355,25 +354,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private void DrawCurrencyDisplay(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //»ñÈ¡º£Ñó²ĞÆ¬ÊıÁ¿
+            //è·å–æµ·æ´‹æ®‹ç‰‡æ•°é‡
             int oceanFragmentCount = (int)CalculateTotalCurrency();
 
-            //»æÖÆ»õ±ÒÍ¼±êºÍÊıÁ¿
+            //ç»˜åˆ¶è´§å¸å›¾æ ‡å’Œæ•°é‡
             Vector2 currencyPos = panelPosition + new Vector2(40, 100);
 
-            //»æÖÆº£Ñó²ĞÆ¬Í¼±ê
+            //ç»˜åˆ¶æµ·æ´‹æ®‹ç‰‡å›¾æ ‡
             Item oceanFragmentItem = new Item(ModContent.ItemType<Oceanfragments>());
             Main.instance.LoadItem(oceanFragmentItem.type);
 
             float iconScale = 0.8f + (float)Math.Sin(animation.CurrencyDisplayPulse) * 0.1f;
             VaultUtils.SimpleDrawItem(spriteBatch, oceanFragmentItem.type, currencyPos + new Vector2(16, 16), 10, iconScale * 4f, 0, Color.White * animation.UIAlpha);
 
-            //»æÖÆÊıÁ¿ÎÄ±¾
+            //ç»˜åˆ¶æ•°é‡æ–‡æœ¬
             string countText = oceanFragmentCount.ToString();
             Vector2 textPos = currencyPos + new Vector2(40, 8);
             Utils.DrawBorderString(spriteBatch, countText, textPos, Color.White * animation.UIAlpha, 1f);
 
-            //»õ±ÒÃû³Æ
+            //è´§å¸åç§°
             string currencyName = OldDukeShopUI.CurrencyName.Value;
             Vector2 nameSize = font.MeasureString(currencyName) * 0.7f;
             Vector2 namePos = currencyPos + new Vector2(40, 26);
@@ -381,7 +380,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
         #endregion
 
-        #region ÎïÆ·ÁĞ±í»æÖÆ
+        #region ç‰©å“åˆ—è¡¨ç»˜åˆ¶
         private void DrawItemList(SpriteBatch spriteBatch, Vector2 panelPosition) {
             if (shopItems.Count == 0) return;
 
@@ -413,29 +412,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 OldDukeShopInteraction.ItemSlotHeight - 6
             );
 
-            //»æÖÆ²ÛÎ»±³¾°
+            //ç»˜åˆ¶æ§½ä½èƒŒæ™¯
             DrawSlotBackground(spriteBatch, slotRect, isHovered, isSelected, isHolding, hoverProgress);
 
-            //»æÖÆ³¤°´½ø¶ÈÌõ
+            //ç»˜åˆ¶é•¿æŒ‰è¿›åº¦æ¡
             if (isHolding) {
                 DrawHoldProgressBar(spriteBatch, slotRect);
             }
 
-            //»æÖÆÁ¬Ğø¹ºÂò¼ÆÊıÆ÷
+            //ç»˜åˆ¶è¿ç»­è´­ä¹°è®¡æ•°å™¨
             if (interaction.ConsecutivePurchaseCount > 0 && isHolding) {
                 DrawPurchaseCounter(spriteBatch, slotRect);
             }
 
-            //»æÖÆÎïÆ·Í¼±ê
+            //ç»˜åˆ¶ç‰©å“å›¾æ ‡
             DrawItemIcon(spriteBatch, shopItem, position + new Vector2(10, 10), hoverProgress);
 
-            //»æÖÆÎïÆ·Ãû³Æ
+            //ç»˜åˆ¶ç‰©å“åç§°
             DrawItemName(spriteBatch, shopItem, position + new Vector2(70, 15), hoverProgress);
 
-            //»æÖÆ¼Û¸ñ
+            //ç»˜åˆ¶ä»·æ ¼
             DrawPriceDisplay(spriteBatch, shopItem, position + new Vector2(70, 42), hoverProgress);
 
-            //»æÖÆËáÒºÊı¾İÁ÷Ğ§¹û
+            //ç»˜åˆ¶é…¸æ¶²æ•°æ®æµæ•ˆæœ
             if (hoverProgress > 0.3f) {
                 DrawAcidStreamEffect(spriteBatch, position, hoverProgress);
             }
@@ -445,21 +444,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             bool isSelected, bool isHolding, float hoverProgress) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //²ÛÎ»±³¾°
+            //æ§½ä½èƒŒæ™¯
             Color bgBase = new Color(20, 30, 10) * (animation.UIAlpha * 0.3f);
             Color bgHover = new Color(50, 70, 25) * (animation.UIAlpha * 0.5f);
             Color slotBg = Color.Lerp(bgBase, bgHover, hoverProgress);
 
             spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), slotBg);
 
-            //ĞüÍ£Ê±µÄ¶¾ÒºĞ§¹û
+            //æ‚¬åœæ—¶çš„æ¯’æ¶²æ•ˆæœ
             if (hoverProgress > 0.01f) {
                 float toxicGlow = (float)Math.Sin(animation.ToxicWavePhase * 2f + hoverProgress * 3f) * 0.5f + 0.5f;
                 Color toxicColor = new Color(100, 140, 50) * (animation.UIAlpha * 0.15f * hoverProgress * toxicGlow);
                 spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), toxicColor);
             }
 
-            //²ÛÎ»±ß¿ò
+            //æ§½ä½è¾¹æ¡†
             Color edgeColor = Color.Lerp(
                 new Color(60, 80, 35) * (animation.UIAlpha * 0.25f),
                 new Color(130, 160, 65) * (animation.UIAlpha * 0.6f),
@@ -510,7 +509,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             Color nameColor = Color.White * animation.UIAlpha;
 
-            //ĞüÍ£·¢¹â
+            //æ‚¬åœå‘å…‰
             if (hoverProgress > 0.3f) {
                 Color glowColor = new Color(160, 190, 80) * (animation.UIAlpha * hoverProgress * 0.5f);
                 for (int i = 0; i < 4; i++) {
@@ -524,17 +523,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         private void DrawPriceDisplay(SpriteBatch spriteBatch, OldDukeShopItem shopItem, Vector2 position, float hoverProgress) {
-            //¼ì²éÊÇ·ñÓĞ×ã¹»µÄº£Ñó²ĞÆ¬
+            //æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿçš„æµ·æ´‹æ®‹ç‰‡
             int oceanFragmentCount = player.InquireItem(true, ModContent.ItemType<Oceanfragments>());
             bool canAfford = oceanFragmentCount >= shopItem.price;
 
-            //»æÖÆº£Ñó²ĞÆ¬Í¼±ê
+            //ç»˜åˆ¶æµ·æ´‹æ®‹ç‰‡å›¾æ ‡
             Item oceanFragmentItem = new Item(ModContent.ItemType<Oceanfragments>());
             float iconScale = 0.6f + hoverProgress * 0.1f;
             VaultUtils.SimpleDrawItem(spriteBatch, oceanFragmentItem.type, position + new Vector2(8, 8),
                 10, iconScale * 3f, 0, Color.White * animation.UIAlpha);
 
-            //¼Û¸ñÎÄ±¾
+            //ä»·æ ¼æ–‡æœ¬
             string priceText = shopItem.price.ToString();
             Vector2 textPos = position + new Vector2(24, 0);
 
@@ -560,7 +559,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
         #endregion
 
-        #region ¹ö¶¯ÌáÊ¾
+        #region æ»šåŠ¨æç¤º
         private void DrawScrollHint(SpriteBatch spriteBatch, Vector2 panelPosition) {
             if (shopItems.Count <= OldDukeShopInteraction.MaxVisibleItems) return;
 

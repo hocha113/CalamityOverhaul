@@ -1,14 +1,14 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses.OceanRaidersUIs
 {
     /// <summary>
-    /// º£ÑóÍÌÊÉÕßUIäÖÈ¾Æ÷
+    /// æµ·æ´‹åå™¬è€…UIæ¸²æŸ“å™¨
     /// </summary>
     internal class OceanRaidersRenderer
     {
@@ -17,16 +17,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         private readonly OceanRaidersAnimation animation;
         private readonly OceanRaidersInteraction interaction;
 
-        //UI³ß´ç³£Á¿ - µ÷ÕûÒÔÊÊÓ¦20x18¸ñ×Ó
+        //UIå°ºå¯¸å¸¸é‡ - è°ƒæ•´ä»¥é€‚åº”20x18æ ¼å­
         private const int PanelWidth = 760;
         private const int PanelHeight = 760;
         private const int SlotSize = 32;
         private const int SlotPadding = 4;
         private const int SlotsPerRow = 20;
         private const int SlotRows = 17;
-        private const int HeaderHeight = 80; //±êÌâÇøÓò¸ß¶È
-        private const int StorageStartX = 20; //´æ´¢Çø×ó±ß¾à
-        private const int StorageStartY = HeaderHeight + 10; //´æ´¢Çø¶¥²¿±ß¾à
+        private const int HeaderHeight = 80; //æ ‡é¢˜åŒºåŸŸé«˜åº¦
+        private const int StorageStartX = 20; //å­˜å‚¨åŒºå·¦è¾¹è·
+        private const int StorageStartY = HeaderHeight + 10; //å­˜å‚¨åŒºé¡¶éƒ¨è¾¹è·
 
         public OceanRaidersRenderer(Player player, OceanRaidersTP machine,
             OceanRaidersAnimation animation, OceanRaidersInteraction interaction) {
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¼ÆËãÃæ°åÎ»ÖÃ
+        /// è®¡ç®—é¢æ¿ä½ç½®
         /// </summary>
         public Vector2 CalculatePanelPosition() {
             float slideOffset = (1f - animation.PanelSlideProgress) * 100f;
@@ -52,33 +52,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// Ö÷»æÖÆº¯Êı
+        /// ä¸»ç»˜åˆ¶å‡½æ•°
         /// </summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, OceanRaidersEffects effects) {
             if (animation.UIAlpha <= 0f) return;
 
-            //»æÖÆÁ£×ÓĞ§¹û£¨±³¾°²ã£©
+            //ç»˜åˆ¶ç²’å­æ•ˆæœï¼ˆèƒŒæ™¯å±‚ï¼‰
             effects.DrawEffects(spriteBatch, animation.UIAlpha * 0.6f);
 
-            //»æÖÆÖ÷Ãæ°å
+            //ç»˜åˆ¶ä¸»é¢æ¿
             DrawMainPanel(spriteBatch, panelPosition);
 
-            //»æÖÆ±êÌâ
+            //ç»˜åˆ¶æ ‡é¢˜
             DrawHeader(spriteBatch, panelPosition);
 
-            //»æÖÆ¹Ø±Õ°´Å¥
+            //ç»˜åˆ¶å…³é—­æŒ‰é’®
             DrawCloseButton(spriteBatch, panelPosition);
 
-            //»æÖÆ·Ö¸ôÏß
+            //ç»˜åˆ¶åˆ†éš”çº¿
             DrawHeaderDivider(spriteBatch, panelPosition);
 
-            //»æÖÆ´æ´¢²ÛÎ»
+            //ç»˜åˆ¶å­˜å‚¨æ§½ä½
             DrawStorageSlots(spriteBatch, panelPosition);
 
-            //»æÖÆµ×²¿ĞÅÏ¢
+            //ç»˜åˆ¶åº•éƒ¨ä¿¡æ¯
             DrawFooter(spriteBatch, panelPosition);
 
-            //»æÖÆÇ°¾°Á£×ÓĞ§¹û
+            //ç»˜åˆ¶å‰æ™¯ç²’å­æ•ˆæœ
             effects.DrawEffects(spriteBatch, animation.UIAlpha * 0.4f);
         }
 
@@ -92,25 +92,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //»æÖÆÒõÓ°
+            //ç»˜åˆ¶é˜´å½±
             Rectangle shadow = panelRect;
             shadow.Offset(6, 8);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (animation.UIAlpha * 0.60f));
 
-            //»æÖÆ½¥±ä±³¾°
+            //ç»˜åˆ¶æ¸å˜èƒŒæ™¯
             DrawGradientBackground(spriteBatch, panelRect, pixel);
 
-            //»æÖÆ¶¾ĞÔ²¨ÀË¸²¸Ç
+            //ç»˜åˆ¶æ¯’æ€§æ³¢æµªè¦†ç›–
             DrawToxicWaveOverlay(spriteBatch, panelRect, pixel);
 
-            //»æÖÆÄÚ²¿·¢¹â
+            //ç»˜åˆ¶å†…éƒ¨å‘å…‰
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.2f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1),
                 new Color(80, 100, 35) * (animation.UIAlpha * 0.09f * (0.5f + pulse * 0.5f)));
 
-            //»æÖÆÁò»Çº£±ß¿ò
+            //ç»˜åˆ¶ç¡«ç£ºæµ·è¾¹æ¡†
             DrawSulfseaFrame(spriteBatch, panelRect, pulse, pixel);
         }
 
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //Áò»Çº£ÅäÉ«
+                //ç¡«ç£ºæµ·é…è‰²
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //µş¼ÓÕÎÆø²ã
+            //å åŠ ç˜´æ°”å±‚
             float miasmaEffect = (float)Math.Sin(animation.MiasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (animation.UIAlpha * 0.4f * miasmaEffect);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
@@ -173,13 +173,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             float alpha = 0.85f;
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * alpha;
 
-            //Íâ¿ò
+            //å¤–æ¡†
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            //ÄÚ¿ò
+            //å†…æ¡†
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (alpha * 0.22f * pulse);
@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            //ËÄ½ÇĞÇ±ê
+            //å››è§’æ˜Ÿæ ‡
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f);
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Vector2 titleSize = font.MeasureString(title);
             Vector2 titlePos = panelPosition + new Vector2(PanelWidth / 2 - titleSize.X / 2 * 1.1f, 15);
 
-            //·¢¹âĞ§¹û
+            //å‘å…‰æ•ˆæœ
             Color titleGlow = new Color(160, 190, 80) * (animation.UIAlpha * 0.75f);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             spriteBatch.Draw(pixel, buttonRect, new Rectangle(0, 0, 1, 1), buttonColor * 0.5f);
 
-            //»æÖÆX
+            //ç»˜åˆ¶X
             float crossSize = buttonSize * 0.5f;
             Vector2 center = buttonRect.Center.ToVector2();
             DrawLine(spriteBatch, center - new Vector2(crossSize / 2, crossSize / 2),
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //»æÖÆËùÓĞ²ÛÎ»
+            //ç»˜åˆ¶æ‰€æœ‰æ§½ä½
             for (int row = 0; row < SlotRows; row++) {
                 for (int col = 0; col < SlotsPerRow; col++) {
                     int index = row * SlotsPerRow + col;
@@ -310,39 +310,39 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Rectangle slotRect = new Rectangle((int)position.X, (int)position.Y, SlotSize, SlotSize);
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //²ÛÎ»±³¾°
+            //æ§½ä½èƒŒæ™¯
             Color bgColor = new Color(20, 28, 15) * (animation.UIAlpha * 0.8f);
             if (isHovered) {
                 bgColor = Color.Lerp(bgColor, new Color(60, 80, 40), hoverProgress * 0.6f);
             }
             spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //²ÛÎ»±ß¿ò
+            //æ§½ä½è¾¹æ¡†
             Color borderColor = new Color(80, 100, 45) * (animation.UIAlpha * 0.7f);
             if (isHovered) {
                 borderColor = Color.Lerp(borderColor, new Color(140, 170, 70), hoverProgress);
             }
             DrawSlotBorder(spriteBatch, slotRect, borderColor);
 
-            //»ñÈ¡²¢»æÖÆÎïÆ·
+            //è·å–å¹¶ç»˜åˆ¶ç‰©å“
             if (index < machine.storedItems.Count) {
                 Item item = machine.storedItems[index];
                 if (item != null && item.type > ItemID.None && item.stack > 0) {
-                    //Ô¤¼ÓÔØÎïÆ·ÎÆÀí
+                    //é¢„åŠ è½½ç‰©å“çº¹ç†
                     Main.instance.LoadItem(item.type);
 
-                    //»æÖÆÎïÆ·Í¼±ê
+                    //ç»˜åˆ¶ç‰©å“å›¾æ ‡
                     float scale = SlotSize * 0.9f / 32f;
                     Vector2 itemPos = position + new Vector2(SlotSize / 2);
 
-                    //ĞüÍ£Ê±·Å´ó
+                    //æ‚¬åœæ—¶æ”¾å¤§
                     if (isHovered) {
                         scale *= 1f + hoverProgress * 0.15f;
                     }
 
                     VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos, itemWidth: 32, size: scale);
 
-                    //»æÖÆÊıÁ¿
+                    //ç»˜åˆ¶æ•°é‡
                     if (item.stack > 1) {
                         string stackText = item.stack.ToString();
                         Vector2 stackSize = font.MeasureString(stackText) * 0.7f;
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                             Color.White * animation.UIAlpha, 0.7f);
                     }
 
-                    //ĞüÍ£ÏÔÊ¾ÎïÆ·Ãû³Æ
+                    //æ‚¬åœæ˜¾ç¤ºç‰©å“åç§°
                     if (isHovered && hoverProgress > 0.5f) {
                         DrawItemTooltip(spriteBatch, item, position + new Vector2(SlotSize / 2, -20));
                     }
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Vector2 textSize = font.MeasureString(itemName) * 0.7f;
             Vector2 tooltipPos = position - new Vector2(textSize.X / 2, 0);
 
-            //±³¾°
+            //èƒŒæ™¯
             Rectangle bgRect = new Rectangle(
                 (int)(tooltipPos.X - 4),
                 (int)(tooltipPos.Y - 2),
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1),
                 new Color(15, 20, 10) * (animation.UIAlpha * 0.9f));
 
-            //ÎÄ±¾
+            //æ–‡æœ¬
             Utils.DrawBorderString(spriteBatch, itemName, tooltipPos,
                 Color.White * animation.UIAlpha, 0.7f);
         }

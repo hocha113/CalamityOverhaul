@@ -1,15 +1,15 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
+namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
 {
     /// <summary>
-    /// Áò»Çº£·ç¸ñ
+    /// ç¡«ç£ºæµ·é£æ ¼
     /// </summary>
     internal class SulfseaTrackerStyle : BaseTrackerStyle
     {
-        //Áò»Çº£·ç¸ñ¶¯»­²ÎÊı
+        //ç¡«ç£ºæµ·é£æ ¼åŠ¨ç”»å‚æ•°
         private float toxicWavePhase;
         private float sulfurPulse;
         private float miasmaTimer;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public override void Update(Rectangle panelRect, bool active) {
             base.Update(panelRect, active);
 
-            //¸üĞÂÁò»Çº£·ç¸ñ¶¯»­
+            //æ›´æ–°ç¡«ç£ºæµ·é£æ ¼åŠ¨ç”»
             toxicWavePhase += 0.022f;
             sulfurPulse += 0.015f;
             miasmaTimer += 0.032f;
@@ -33,23 +33,23 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //»æÖÆÒõÓ°
+            //ç»˜åˆ¶é˜´å½±
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 8);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.6f));
 
-            //»æÖÆÁò»Çº£½¥±ä±³¾°
+            //ç»˜åˆ¶ç¡«ç£ºæµ·æ¸å˜èƒŒæ™¯
             DrawSulfurBackground(spriteBatch, panelRect, alpha);
 
-            //»æÖÆÕÎÆø¸²¸Ç²ã
+            //ç»˜åˆ¶ç˜´æ°”è¦†ç›–å±‚
             float miasmaEffect = (float)Math.Sin(miasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (alpha * 0.4f * miasmaEffect);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
 
-            //»æÖÆ¶¾ĞÔ²¨ÀË¸²¸Ç
+            //ç»˜åˆ¶æ¯’æ€§æ³¢æµªè¦†ç›–
             DrawToxicWaveOverlay(spriteBatch, panelRect, alpha * 0.85f);
 
-            //»æÖÆÆøÅİ×°ÊÎ
+            //ç»˜åˆ¶æ°”æ³¡è£…é¥°
             DrawBubbleDecoration(spriteBatch, panelRect, alpha);
         }
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                 int y2 = (int)(panelRect.Y + t2 * panelRect.Height);
                 Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //Áò»Çº£ÅäÉ«
+                //ç¡«ç£ºæµ·é…è‰²
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -112,12 +112,12 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         private void DrawBubbleDecoration(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //»æÖÆ¼¸¸öÆ¯¸¡µÄÁò»ÇÆøÅİ
+            //ç»˜åˆ¶å‡ ä¸ªæ¼‚æµ®çš„ç¡«ç£ºæ°”æ³¡
             for (int i = 0; i < 4; i++) {
                 float offset = (bubbleTimer + i * MathHelper.PiOver2) % MathHelper.TwoPi;
                 float yPos = rect.Y + 20 + (float)Math.Sin(offset) * 15f + i * 30f;
                 float xPos = rect.X + 15 + i * 60f;
-                xPos *= (rect.Width / 220f);
+                xPos *= rect.Width / 220f;
 
                 if (yPos > rect.Y + 10 && yPos < rect.Bottom - 10) {
                     float bubbleSize = 3f + (float)Math.Sin(offset * 2f) * 1.5f;
@@ -133,13 +133,13 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), borderGlow) * (alpha * 0.85f);
 
-            //Íâ±ß¿ò
+            //å¤–è¾¹æ¡†
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - 2, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - 2, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            //ÄÚ±ß¿ò
+            //å†…è¾¹æ¡†
             Rectangle inner = panelRect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (alpha * 0.22f * borderGlow);
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
             spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            //½ÇÂä×°ÊÎ
+            //è§’è½è£…é¥°
             DrawCornerStar(spriteBatch, new Vector2(panelRect.X + 10, panelRect.Y + 10), alpha * 0.9f, borderGlow);
             DrawCornerStar(spriteBatch, new Vector2(panelRect.Right - 10, panelRect.Y + 10), alpha * 0.9f, borderGlow);
             DrawCornerStar(spriteBatch, new Vector2(panelRect.X + 10, panelRect.Bottom - 10), alpha * 0.65f, borderGlow);

@@ -1,27 +1,27 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs
 {
     /// <summary>
-    /// ÀÏÏä×ÓUIÊÓ¾õÌØĞ§¹ÜÀíÆ÷
+    /// è€ç®±å­UIè§†è§‰ç‰¹æ•ˆç®¡ç†å™¨
     /// </summary>
     internal class OldDuchestEffects
     {
-        //Á£×ÓÁĞ±í
+        //ç²’å­åˆ—è¡¨
         private readonly List<DustParticle> dustParticles = new();
         private int dustSpawnTimer = 0;
 
         /// <summary>
-        /// ¸üĞÂËùÓĞÁ£×ÓºÍÌØĞ§
+        /// æ›´æ–°æ‰€æœ‰ç²’å­å’Œç‰¹æ•ˆ
         /// </summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateDustParticles(isActive, panelPosition, panelWidth, panelHeight);
         }
 
         private void UpdateDustParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
-            //¸üĞÂÏÖÓĞÁ£×Ó
+            //æ›´æ–°ç°æœ‰ç²’å­
             for (int i = dustParticles.Count - 1; i >= 0; i--) {
                 dustParticles[i].Update();
                 if (dustParticles[i].ShouldRemove()) {
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
 
-            //Éú³ÉĞÂÁ£×Ó
+            //ç”Ÿæˆæ–°ç²’å­
             dustSpawnTimer++;
             if (isActive && dustSpawnTimer >= 20 && dustParticles.Count < 10) {
                 dustSpawnTimer = 0;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// »æÖÆËùÓĞÌØĞ§
+        /// ç»˜åˆ¶æ‰€æœ‰ç‰¹æ•ˆ
         /// </summary>
         public void DrawEffects(SpriteBatch spriteBatch, float uiAlpha) {
             foreach (var dust in dustParticles) {
@@ -51,14 +51,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// Çå¿ÕËùÓĞÌØĞ§
+        /// æ¸…ç©ºæ‰€æœ‰ç‰¹æ•ˆ
         /// </summary>
         public void Clear() {
             dustParticles.Clear();
             dustSpawnTimer = 0;
         }
 
-        //¼òµ¥µÄ»Ò³¾Á£×Ó
+        //ç®€å•çš„ç°å°˜ç²’å­
         private class DustParticle
         {
             public Vector2 Position;

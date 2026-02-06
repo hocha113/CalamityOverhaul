@@ -1,13 +1,13 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs
 {
     /// <summary>
-    /// ÀÏÏä×ÓUIäÖÈ¾Æ÷
+    /// è€ç®±å­UIæ¸²æŸ“å™¨
     /// </summary>
     internal class OldDuchestRenderer
     {

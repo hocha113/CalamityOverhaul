@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
+ï»¿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.Findfragments;
 using CalamityOverhaul.OtherMods.ImproveGame.Ammos;
 using System;
 using System.Collections.Generic;
@@ -12,19 +11,19 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     /// <summary>
-    /// ÀÏ¹«¾ôÉÌµê½»»¥Âß¼­´¦ÀíÆ÷
+    /// è€å…¬çˆµå•†åº—äº¤äº’é€»è¾‘å¤„ç†å™¨
     /// </summary>
     internal class OldDukeShopInteraction
     {
         private readonly Player player;
         private readonly List<OldDukeShopItem> shopItems;
 
-        //Ñ¡ÖĞºÍĞüÍ£×´Ì¬
+        //é€‰ä¸­å’Œæ‚¬åœçŠ¶æ€
         public int SelectedIndex { get; set; } = -1;
         public int HoveredIndex { get; private set; } = -1;
         public int ScrollOffset { get; set; } = 0;
 
-        //³¤°´¹ºÂòÂß¼­
+        //é•¿æŒ‰è´­ä¹°é€»è¾‘
         private int holdingPurchaseIndex = -1;
         private int holdingPurchaseTimer = 0;
         private int purchaseCooldown = 20;
@@ -33,14 +32,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private const int HoldThreshold = 20;
         public int ConsecutivePurchaseCount { get; private set; } = 0;
 
-        //UI³ß´ç³£Á¿ 
-        public const int MaxVisibleItems = 7;//ÏÔÊ¾ÏîÊıÁ¿
-        public const int ItemSlotHeight = 78;//ÉÔÎ¢Ğ¡Ò»µãµÄ¸ß¶È
+        //UIå°ºå¯¸å¸¸é‡ 
+        public const int MaxVisibleItems = 7;//æ˜¾ç¤ºé¡¹æ•°é‡
+        public const int ItemSlotHeight = 78;//ç¨å¾®å°ä¸€ç‚¹çš„é«˜åº¦
 
-        //¹ö¶¯Ìõ
+        //æ»šåŠ¨æ¡
         private readonly OldDukeScrollBar scrollBar = new();
 
-        //¹Ø±Õ°´Å¥
+        //å…³é—­æŒ‰é’®
         public bool IsCloseButtonHovered { get; private set; } = false;
         public const int CloseButtonSize = 32;
 
@@ -54,10 +53,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ´¦Àí¹öÂÖ¹ö¶¯
+        /// å¤„ç†æ»šè½®æ»šåŠ¨
         /// </summary>
         public void HandleScroll() {
-            //Èç¹û¹ö¶¯ÌõÕıÔÚÍÏ¶¯£¬²»ÏìÓ¦¹öÂÖ
+            //å¦‚æœæ»šåŠ¨æ¡æ­£åœ¨æ‹–åŠ¨ï¼Œä¸å“åº”æ»šè½®
             if (scrollBar.IsDragging) return;
 
             int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ¸üĞÂ¹ö¶¯Ìõ
+        /// æ›´æ–°æ»šåŠ¨æ¡
         /// </summary>
         public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition,
             bool mouseLeftDown, bool mouseLeftRelease) {
@@ -89,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// »æÖÆ¹ö¶¯Ìõ
+        /// ç»˜åˆ¶æ»šåŠ¨æ¡
         /// </summary>
         public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch,
             Vector2 panelPosition, float uiAlpha, float sulfurPulseTimer) {
@@ -103,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ¸üĞÂ¹Ø±Õ°´Å¥½»»¥
+        /// æ›´æ–°å…³é—­æŒ‰é’®äº¤äº’
         /// </summary>
         public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, bool mouseLeftRelease) {
             Rectangle closeButtonRect = new Rectangle(
@@ -116,12 +115,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             bool wasHovered = IsCloseButtonHovered;
             IsCloseButtonHovered = closeButtonRect.Contains(mousePoint);
 
-            //ĞüÍ£ÒôĞ§
+            //æ‚¬åœéŸ³æ•ˆ
             if (IsCloseButtonHovered && !wasHovered) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.3f });
             }
 
-            //µã»÷¹Ø±Õ
+            //ç‚¹å‡»å…³é—­
             if (IsCloseButtonHovered && mouseLeftRelease) {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
                 return true;
@@ -131,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ¸üĞÂÎïÆ·Ñ¡ÔñºÍ¹ºÂòÂß¼­
+        /// æ›´æ–°ç‰©å“é€‰æ‹©å’Œè´­ä¹°é€»è¾‘
         /// </summary>
         public void UpdateItemSelection(Point mousePoint, Vector2 itemListPos, int panelWidth) {
             int itemListY = (int)itemListPos.Y;
@@ -151,7 +150,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 if (itemRect.Contains(mousePoint)) {
                     HoveredIndex = index;
 
-                    //ĞüÍ£ÒôĞ§
+                    //æ‚¬åœéŸ³æ•ˆ
                     if (oldHoveredIndex != HoveredIndex && HoveredIndex != -1) {
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.2f });
                     }
@@ -161,7 +160,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 }
             }
 
-            //Êó±êÀë¿ªËùÓĞÎïÆ·£¬ÖØÖÃ³¤°´×´Ì¬
+            //é¼ æ ‡ç¦»å¼€æ‰€æœ‰ç‰©å“ï¼Œé‡ç½®é•¿æŒ‰çŠ¶æ€
             if (HoveredIndex == -1) {
                 ResetHoldingState();
             }
@@ -170,7 +169,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private void HandlePurchaseInput(int index) {
             if (Main.mouseLeft) {
                 if (Main.mouseLeftRelease) {
-                    //Ê×´Îµã»÷
+                    //é¦–æ¬¡ç‚¹å‡»
                     SelectedIndex = index;
                     holdingPurchaseIndex = index;
                     holdingPurchaseTimer = 0;
@@ -179,17 +178,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                     TryPurchaseItem(index);
                 }
                 else {
-                    //³ÖĞø°´×¡
+                    //æŒç»­æŒ‰ä½
                     if (holdingPurchaseIndex == index) {
                         holdingPurchaseTimer++;
 
-                        //´ïµ½ãĞÖµ£¬¿ªÊ¼Á¬Ğø¹ºÂò
+                        //è¾¾åˆ°é˜ˆå€¼ï¼Œå¼€å§‹è¿ç»­è´­ä¹°
                         if (holdingPurchaseTimer >= HoldThreshold) {
                             if (holdingPurchaseTimer % purchaseCooldown == 0) {
                                 TryPurchaseItem(index);
                                 ConsecutivePurchaseCount++;
 
-                                //Öğ½¥¼ÓËÙ£¬Ã¿¹ºÂò5´Î£¬ÀäÈ´¼õÉÙ20%
+                                //é€æ¸åŠ é€Ÿï¼Œæ¯è´­ä¹°5æ¬¡ï¼Œå†·å´å‡å°‘20%
                                 if (ConsecutivePurchaseCount % 5 == 0) {
                                     purchaseCooldown = Math.Max(
                                         MinPurchaseCooldown,
@@ -200,7 +199,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                         }
                     }
                     else {
-                        //ÇĞ»»µ½²»Í¬ÎïÆ·£¬ÖØÖÃ
+                        //åˆ‡æ¢åˆ°ä¸åŒç‰©å“ï¼Œé‡ç½®
                         holdingPurchaseIndex = index;
                         holdingPurchaseTimer = 0;
                         ConsecutivePurchaseCount = 0;
@@ -209,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                 }
             }
             else {
-                //ËÉ¿ªÊó±ê£¬ÖØÖÃ³¤°´×´Ì¬
+                //æ¾å¼€é¼ æ ‡ï¼Œé‡ç½®é•¿æŒ‰çŠ¶æ€
                 if (holdingPurchaseIndex == index) {
                     ResetHoldingState();
                 }
@@ -221,15 +220,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 
             OldDukeShopItem shopItem = shopItems[index];
 
-            //¼ì²éÊÇ·ñÓĞ×ã¹»µÄº£Ñó²ĞÆ¬
+            //æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿçš„æµ·æ´‹æ®‹ç‰‡
             int oceanFragmentCount = FindFragmentUI.GetFragmentCount();
 
             if (oceanFragmentCount >= shopItem.price) {
-                //ÏûºÄº£Ñó²ĞÆ¬£¬´ÓËùÓĞ´¢ÎïÎ»ÖÃÑ­»·É¾³ıÖ±µ½´ïµ½ËùĞèÊıÁ¿
+                //æ¶ˆè€—æµ·æ´‹æ®‹ç‰‡ï¼Œä»æ‰€æœ‰å‚¨ç‰©ä½ç½®å¾ªç¯åˆ é™¤ç›´åˆ°è¾¾åˆ°æ‰€éœ€æ•°é‡
                 int remainingToConsume = shopItem.price;
 
                 var bigBags = player.GetBigBagItems() ?? [];
-                //ÒÀ´Î´Ó¸÷¸ö´¢ÎïÎ»ÖÃÏûºÄ
+                //ä¾æ¬¡ä»å„ä¸ªå‚¨ç‰©ä½ç½®æ¶ˆè€—
                 Item[][] inventories = [
                     player.inventory,
                     player.bank.item,
@@ -257,21 +256,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
                     }
                 }
 
-                //¸øÓèÎïÆ·
+                //ç»™äºˆç‰©å“
                 player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
 
-                //¹ºÂòÒôĞ§
+                //è´­ä¹°éŸ³æ•ˆ
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.7f, Pitch = -0.1f });
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.2f });
             }
             else {
-                //Íæ¼Ò²»×ãÒôĞ§
+                //ç©å®¶ä¸è¶³éŸ³æ•ˆ
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f, Volume = 0.8f });
             }
         }
 
         /// <summary>
-        /// ÖØÖÃ³¤°´¹ºÂò×´Ì¬
+        /// é‡ç½®é•¿æŒ‰è´­ä¹°çŠ¶æ€
         /// </summary>
         public void ResetHoldingState() {
             holdingPurchaseIndex = -1;
@@ -281,7 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
-        /// ÖØÖÃËùÓĞ½»»¥×´Ì¬
+        /// é‡ç½®æ‰€æœ‰äº¤äº’çŠ¶æ€
         /// </summary>
         public void Reset() {
             HoveredIndex = -1;

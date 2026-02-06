@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
     /// <summary>
-    /// ÓªµØ·½ÏòÖ¸Ê¾Æ÷
+    /// è¥åœ°æ–¹å‘æŒ‡ç¤ºå™¨
     /// </summary>
     internal class CampsiteDirectionIndicator : ModSystem
     {
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         private static float wavePhase;
         private static float glowTimer;
 
-        //¶¯»­²ÎÊı
+        //åŠ¨ç”»å‚æ•°
         private const float FadeSpeed = 0.08f;
         private const float MaxAlpha = 0.95f;
 
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ¸üĞÂÖ¸Ê¾Æ÷×´Ì¬
+        /// æ›´æ–°æŒ‡ç¤ºå™¨çŠ¶æ€
         /// </summary>
         private static void UpdateIndicatorState() {
             Player player = Main.LocalPlayer;
@@ -37,19 +37,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return;
             }
 
-            //¼ì²éÍæ¼ÒÊÇ·ñ³ÖÓĞº£ÑóËéÆ¬
+            //æ£€æŸ¥ç©å®¶æ˜¯å¦æŒæœ‰æµ·æ´‹ç¢ç‰‡
             bool holdingFragment = false;
             if (player.HeldItem != null && !player.HeldItem.IsAir) {
-                holdingFragment = player.HeldItem.type == ModContent.ItemType<Items.Oceanfragments>();
+                holdingFragment = player.HeldItem.type == ModContent.ItemType<Oceanfragments>();
             }
 
-            //¼ì²éÓªµØÊÇ·ñÒÑÉú³É
+            //æ£€æŸ¥è¥åœ°æ˜¯å¦å·²ç”Ÿæˆ
             bool campsiteExists = OldDukeCampsite.IsGenerated;
 
-            //Ö»ÓĞ³ÖÓĞËéÆ¬ÇÒÓªµØÒÑÉú³ÉÊ±²ÅÏÔÊ¾
+            //åªæœ‰æŒæœ‰ç¢ç‰‡ä¸”è¥åœ°å·²ç”Ÿæˆæ—¶æ‰æ˜¾ç¤º
             shouldShow = holdingFragment && campsiteExists;
 
-            //¸üĞÂÍ¸Ã÷¶È
+            //æ›´æ–°é€æ˜åº¦
             if (shouldShow) {
                 if (indicatorAlpha < MaxAlpha) {
                     indicatorAlpha += FadeSpeed;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// ¸üĞÂ¶¯»­¼ÆÊ±Æ÷
+        /// æ›´æ–°åŠ¨ç”»è®¡æ—¶å™¨
         /// </summary>
         private static void UpdateAnimations() {
             if (indicatorAlpha > 0.01f) {
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆÖ¸Ê¾Æ÷
+        /// ç»˜åˆ¶æŒ‡ç¤ºå™¨
         /// </summary>
         public override void PostDrawInterface(SpriteBatch spriteBatch) {
             if (indicatorAlpha <= 0.01f || !OldDukeCampsite.IsGenerated) {
@@ -95,55 +95,55 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Vector2 playerScreenPos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
             Vector2 campsiteWorldPos = OldDukeCampsite.CampsitePosition;
 
-            //¼ÆËã·½Ïò
+            //è®¡ç®—æ–¹å‘
             Vector2 directionToCampsite = campsiteWorldPos - player.Center;
             float distance = directionToCampsite.Length();
 
-            //Èç¹ûÍæ¼Ò·Ç³£½Ó½üÓªµØ£¬²»ÏÔÊ¾Ö¸Ê¾Æ÷
+            //å¦‚æœç©å®¶éå¸¸æ¥è¿‘è¥åœ°ï¼Œä¸æ˜¾ç¤ºæŒ‡ç¤ºå™¨
             if (distance < 300f) {
                 return;
             }
 
             directionToCampsite.Normalize();
 
-            //¼ÆËã¼ıÍ·ÆğÊ¼Î»ÖÃ£¨¾àÀëÍæ¼ÒÒ»¶¨¾àÀë£©
+            //è®¡ç®—ç®­å¤´èµ·å§‹ä½ç½®ï¼ˆè·ç¦»ç©å®¶ä¸€å®šè·ç¦»ï¼‰
             Vector2 arrowStartOffset = directionToCampsite * 180f;
             Vector2 arrowStartPos = playerScreenPos + arrowStartOffset;
 
-            //»æÖÆÖ¸Ê¾Æ÷
+            //ç»˜åˆ¶æŒ‡ç¤ºå™¨
             DrawSulfurIndicator(spriteBatch, arrowStartPos, directionToCampsite, distance);
         }
 
         /// <summary>
-        /// »æÖÆÁò»Çº£·ç¸ñµÄÖ¸Ê¾Æ÷
+        /// ç»˜åˆ¶ç¡«ç£ºæµ·é£æ ¼çš„æŒ‡ç¤ºå™¨
         /// </summary>
         private static void DrawSulfurIndicator(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance) {
             float rotation = direction.ToRotation();
 
-            //Âö³åĞ§¹û
+            //è„‰å†²æ•ˆæœ
             float pulse = (float)Math.Sin(pulseTimer * 2.2f) * 0.5f + 0.5f;
             float glow = (float)Math.Sin(glowTimer * 1.8f) * 0.5f + 0.5f;
 
-            //»æÖÆÍâ·¢¹â
+            //ç»˜åˆ¶å¤–å‘å…‰
             DrawGlowRing(spriteBatch, position, rotation, pulse, indicatorAlpha);
 
-            //»æÖÆ¾àÀëÎÄ×Ö
+            //ç»˜åˆ¶è·ç¦»æ–‡å­—
             DrawDistanceText(spriteBatch, position, distance, indicatorAlpha);
 
-            //»æÖÆĞéÏß¼ıÍ·
+            //ç»˜åˆ¶è™šçº¿ç®­å¤´
             DrawDashedArrow(spriteBatch, position, direction, rotation, pulse, indicatorAlpha);
 
-            //»æÖÆ¼ıÍ·Í·²¿
+            //ç»˜åˆ¶ç®­å¤´å¤´éƒ¨
             DrawArrowHead(spriteBatch, position, direction, rotation, pulse, glow, indicatorAlpha);
 
-            //»æÖÆ×°ÊÎĞÔÁ£×ÓĞ§¹û
+            //ç»˜åˆ¶è£…é¥°æ€§ç²’å­æ•ˆæœ
             DrawToxicParticles(spriteBatch, position, rotation, indicatorAlpha);
         }
 
-        #region »æÖÆ×é¼ş
+        #region ç»˜åˆ¶ç»„ä»¶
 
         /// <summary>
-        /// »æÖÆÍâ·¢¹â»·
+        /// ç»˜åˆ¶å¤–å‘å…‰ç¯
         /// </summary>
         private static void DrawGlowRing(SpriteBatch spriteBatch, Vector2 position, float rotation, float pulse, float alpha) {
             Texture2D pixel = CWRAsset.SoftGlow.Value;
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆĞéÏß¼ıÍ·
+        /// ç»˜åˆ¶è™šçº¿ç®­å¤´
         /// </summary>
         private static void DrawDashedArrow(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -176,12 +176,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             float dashGap = dashLength * 0.45f;
             float dashWidth = 2.8f + pulse * 0.6f;
 
-            //Áò»Çº£ÅäÉ«£ºÉîÂÌµ½»ÆÂÌ½¥±ä
+            //ç¡«ç£ºæµ·é…è‰²ï¼šæ·±ç»¿åˆ°é»„ç»¿æ¸å˜
             Color dashColorStart = new Color(140, 180, 70);
             Color dashColorEnd = new Color(100, 140, 50);
 
             for (int i = 0; i < dashCount; i++) {
-                //Ìí¼Ó²¨¶¯Ğ§¹û
+                //æ·»åŠ æ³¢åŠ¨æ•ˆæœ
                 float waveOffset = (float)Math.Sin(wavePhase + i * 0.4f) * 2f;
 
                 float t = i / (float)dashCount;
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 Color dashColor = Color.Lerp(dashColorStart, dashColorEnd, t);
                 dashColor *= alpha * (0.85f + pulse * 0.15f);
 
-                //»æÖÆĞéÏß¶Î
+                //ç»˜åˆ¶è™šçº¿æ®µ
                 spriteBatch.Draw(
                     pixel,
                     dashPos,
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f
                 );
 
-                //»æÖÆĞéÏß¶ÎµÄ·¢¹âĞ§¹û
+                //ç»˜åˆ¶è™šçº¿æ®µçš„å‘å…‰æ•ˆæœ
                 Color glowColor = new Color(160, 190, 80) * (alpha * 0.35f * pulse);
                 spriteBatch.Draw(
                     pixel,
@@ -225,36 +225,36 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆ¼ıÍ·Í·²¿
+        /// ç»˜åˆ¶ç®­å¤´å¤´éƒ¨
         /// </summary>
         private static void DrawArrowHead(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float glow, float alpha) {
             float arrowLength = 65f + pulse * 8f;
             Vector2 arrowTipPos = startPos + direction * arrowLength;
 
-            //¼ıÍ·Í·²¿³ß´ç
+            //ç®­å¤´å¤´éƒ¨å°ºå¯¸
             float headLength = 16f + pulse * 3f;
             float headWidth = 11f + pulse * 2f;
 
-            //Ö÷¼ıÍ·ÑÕÉ«
+            //ä¸»ç®­å¤´é¢œè‰²
             Color arrowColor = new Color(140, 180, 70) * (alpha * (0.9f + glow * 0.1f));
             Color arrowGlow = new Color(160, 190, 80) * (alpha * 0.5f * glow);
 
-            //»æÖÆ¼ıÍ·Í·²¿·¢¹â
+            //ç»˜åˆ¶ç®­å¤´å¤´éƒ¨å‘å…‰
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength * 1.2f, headWidth * 1.3f, arrowGlow);
 
-            //»æÖÆ¼ıÍ·Í·²¿Ö÷Ìå
+            //ç»˜åˆ¶ç®­å¤´å¤´éƒ¨ä¸»ä½“
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength, headWidth, arrowColor);
 
-            //»æÖÆ¼ıÍ·Í·²¿ÄÚ·¢¹â
+            //ç»˜åˆ¶ç®­å¤´å¤´éƒ¨å†…å‘å…‰
             Color innerGlow = new Color(200, 220, 100) * (alpha * 0.6f * glow);
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength * 0.6f, headWidth * 0.6f, innerGlow);
         }
 
         /// <summary>
-        /// »æÖÆÈı½ÇĞÎ£¨¼ıÍ·Í·²¿£©
+        /// ç»˜åˆ¶ä¸‰è§’å½¢ï¼ˆç®­å¤´å¤´éƒ¨ï¼‰
         /// </summary>
         private static void DrawTriangle(SpriteBatch spriteBatch, Vector2 position, float rotation, float length, float width, Color color) {
-            //»æÖÆÈı½ÇĞÎµÄÈıÌõ±ß
+            //ç»˜åˆ¶ä¸‰è§’å½¢çš„ä¸‰æ¡è¾¹
             Vector2 tip = position;
             Vector2 direction = rotation.ToRotationVector2();
             Vector2 perpendicular = new Vector2(-direction.Y, direction.X);
@@ -263,14 +263,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Vector2 baseLeft = baseCenter - perpendicular * (width * 0.5f);
             Vector2 baseRight = baseCenter + perpendicular * (width * 0.5f);
 
-            //×ó±ß
+            //å·¦è¾¹
             DrawLine(spriteBatch, tip, baseLeft, color, 2.5f);
-            //ÓÒ±ß
+            //å³è¾¹
             DrawLine(spriteBatch, tip, baseRight, color, 2.5f);
-            //µ×±ß
+            //åº•è¾¹
             DrawLine(spriteBatch, baseLeft, baseRight, color, 2.5f);
 
-            //Ìî³äÈı½ÇĞÎÄÚ²¿
+            //å¡«å……ä¸‰è§’å½¢å†…éƒ¨
             int segments = 8;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆÏß¶Î
+        /// ç»˜åˆ¶çº¿æ®µ
         /// </summary>
         private static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -306,15 +306,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆ¾àÀëÎÄ×Ö
+        /// ç»˜åˆ¶è·ç¦»æ–‡å­—
         /// </summary>
         private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, float distance, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //¼ÆËãÎÄ×ÖÎ»ÖÃ£¨ÔÚ¼ıÍ·ÅÔ±ß£©
+            //è®¡ç®—æ–‡å­—ä½ç½®ï¼ˆåœ¨ç®­å¤´æ—è¾¹ï¼‰
             Vector2 textPos = position + new Vector2(0, 28);
 
-            //¸ñÊ½»¯¾àÀë
+            //æ ¼å¼åŒ–è·ç¦»
             int distanceInTiles = (int)(distance / 16f);
             string distanceText = $"{distanceInTiles}m";
             string locationText = OldDukeCampsite.TitleText.Value;
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Vector2 distanceSize = font.MeasureString(distanceText) * 0.7f;
             Vector2 locationSize = font.MeasureString(locationText) * 0.75f;
 
-            //»æÖÆ±³¾°
+            //ç»˜åˆ¶èƒŒæ™¯
             float padding = 8f;
             Rectangle distanceBg = new Rectangle(
                 (int)(textPos.X - padding),
@@ -339,23 +339,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //Áò»Çº£·ç¸ñ±³¾°
+            //ç¡«ç£ºæµ·é£æ ¼èƒŒæ™¯
             Color bgColor = new Color(12, 18, 8) * (alpha * 0.85f);
             Color borderColor = new Color(100, 140, 50) * (alpha * 0.75f);
 
-            //¾àÀë±³¾°
+            //è·ç¦»èƒŒæ™¯
             spriteBatch.Draw(pixel, distanceBg, new Rectangle(0, 0, 1, 1), bgColor);
             DrawRectBorder(spriteBatch, distanceBg, borderColor, 2);
 
-            //Î»ÖÃ±³¾°
+            //ä½ç½®èƒŒæ™¯
             spriteBatch.Draw(pixel, locationBg, new Rectangle(0, 0, 1, 1), bgColor);
             DrawRectBorder(spriteBatch, locationBg, borderColor, 2);
 
-            //»æÖÆÎÄ×Ö
+            //ç»˜åˆ¶æ–‡å­—
             Color textColor = new Color(200, 220, 150) * alpha;
             Color glowColor = new Color(140, 180, 70) * (alpha * 0.6f);
 
-            //¾àÀëÎÄ×Ö
+            //è·ç¦»æ–‡å­—
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.5f;
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
             Utils.DrawBorderString(spriteBatch, distanceText, textPos, textColor, 0.7f);
 
-            //Î»ÖÃÎÄ×Ö
+            //ä½ç½®æ–‡å­—
             Vector2 locationTextPos = textPos + new Vector2(0, distanceSize.Y + 4);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
@@ -374,23 +374,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// »æÖÆ¾ØĞÎ±ß¿ò
+        /// ç»˜åˆ¶çŸ©å½¢è¾¹æ¡†
         /// </summary>
         private static void DrawRectBorder(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //ÉÏ
+            //ä¸Š
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
-            //ÏÂ
+            //ä¸‹
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
-            //×ó
+            //å·¦
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
-            //ÓÒ
+            //å³
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
         }
 
         /// <summary>
-        /// »æÖÆ¶¾ĞÔÁ£×Ó×°ÊÎĞ§¹û
+        /// ç»˜åˆ¶æ¯’æ€§ç²’å­è£…é¥°æ•ˆæœ
         /// </summary>
         private static void DrawToxicParticles(SpriteBatch spriteBatch, Vector2 position, float rotation, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     0f
                 );
 
-            //»æÖÆÎ§ÈÆ¼ıÍ·µÄĞ¡Á£×Ó
+            //ç»˜åˆ¶å›´ç»•ç®­å¤´çš„å°ç²’å­
             int particleCount = 5;
             for (int i = 0; i < particleCount; i++) {
                 float angle = wavePhase + i * MathHelper.TwoPi / particleCount;
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 );
             }
 
-            //»æÖÆÍÏÎ²Á£×ÓĞ§¹û
+            //ç»˜åˆ¶æ‹–å°¾ç²’å­æ•ˆæœ
             for (int i = 0; i < 3; i++) {
                 float trailOffset = -15f - i * 8f;
                 Vector2 trailPos = position + rotation.ToRotationVector2() * trailOffset;

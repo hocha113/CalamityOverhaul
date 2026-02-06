@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

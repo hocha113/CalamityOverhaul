@@ -1,65 +1,65 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
-namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
+namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
 {
     /// <summary>
-    /// ÈÎÎñ×·×ÙUIÑùÊ½½Ó¿Ú
+    /// ä»»åŠ¡è¿½è¸ªUIæ ·å¼æ¥å£
     /// </summary>
     internal interface IQuestTrackerStyle
     {
         /// <summary>
-        /// ¸üĞÂÑùÊ½¶¯»­
+        /// æ›´æ–°æ ·å¼åŠ¨ç”»
         /// </summary>
         void Update(Rectangle panelRect, bool active);
 
         /// <summary>
-        /// »æÖÆÃæ°å±³¾°
+        /// ç»˜åˆ¶é¢æ¿èƒŒæ™¯
         /// </summary>
         void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha);
 
         /// <summary>
-        /// »æÖÆÃæ°å±ß¿ò
+        /// ç»˜åˆ¶é¢æ¿è¾¹æ¡†
         /// </summary>
         void DrawFrame(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float borderGlow);
 
         /// <summary>
-        /// »æÖÆ·Ö¸ôÏß
+        /// ç»˜åˆ¶åˆ†éš”çº¿
         /// </summary>
         void DrawDivider(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float alpha);
 
         /// <summary>
-        /// »æÖÆ½ø¶ÈÌõ
+        /// ç»˜åˆ¶è¿›åº¦æ¡
         /// </summary>
         void DrawProgressBar(SpriteBatch spriteBatch, Rectangle barRect, float progress, float alpha);
 
         /// <summary>
-        /// »ñÈ¡±êÌâÑÕÉ«
+        /// è·å–æ ‡é¢˜é¢œè‰²
         /// </summary>
         Color GetTitleColor(float alpha);
 
         /// <summary>
-        /// »ñÈ¡ÎÄ±¾ÑÕÉ«
+        /// è·å–æ–‡æœ¬é¢œè‰²
         /// </summary>
         Color GetTextColor(float alpha);
 
         /// <summary>
-        /// »ñÈ¡Êı×ÖÑÕÉ«£¨¸ù¾İ½ø¶È£©
+        /// è·å–æ•°å­—é¢œè‰²ï¼ˆæ ¹æ®è¿›åº¦ï¼‰
         /// </summary>
         Color GetNumberColor(float progress, float targetProgress, float alpha);
 
         /// <summary>
-        /// ÖØÖÃÑùÊ½×´Ì¬
+        /// é‡ç½®æ ·å¼çŠ¶æ€
         /// </summary>
         void Reset();
 
         /// <summary>
-        /// »ñÈ¡ÑùÊ½ÌØ¶¨Á£×ÓÁĞ±í£¨ÓÃÓÚ»æÖÆ£©
+        /// è·å–æ ·å¼ç‰¹å®šç²’å­åˆ—è¡¨ï¼ˆç”¨äºç»˜åˆ¶ï¼‰
         /// </summary>
         void GetParticles(out List<object> particles);
 
         /// <summary>
-        /// ¸üĞÂÑùÊ½ÌØ¶¨Á£×Ó
+        /// æ›´æ–°æ ·å¼ç‰¹å®šç²’å­
         /// </summary>
         void UpdateParticles(Vector2 basePos, float panelFade);
     }

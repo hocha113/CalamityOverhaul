@@ -8,7 +8,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
 {
     internal class OldDuchest : ModItem
     {

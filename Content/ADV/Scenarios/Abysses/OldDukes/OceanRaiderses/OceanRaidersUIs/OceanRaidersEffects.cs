@@ -1,20 +1,20 @@
-using CalamityOverhaul.Content.ADV.UIEffect;
+ï»¿using CalamityOverhaul.Content.ADV.UIEffect;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses.OceanRaidersUIs
 {
     /// <summary>
-    /// º£ÑóÍÌÊÉÕßUIÊÓ¾õÌØĞ§¹ÜÀíÆ÷
+    /// æµ·æ´‹åå™¬è€…UIè§†è§‰ç‰¹æ•ˆç®¡ç†å™¨
     /// </summary>
     internal class OceanRaidersEffects
     {
-        //Á£×ÓÁĞ±í
+        //ç²’å­åˆ—è¡¨
         private readonly List<BubblePRT> bubbles = [];
         private readonly List<AshPRT> ashParticles = [];
         private readonly List<SeaStarPRT> seaStars = [];
 
-        //Á£×ÓË¢ĞÂ¼ÆÊ±Æ÷
+        //ç²’å­åˆ·æ–°è®¡æ—¶å™¨
         private int bubbleSpawnTimer = 0;
         private int ashSpawnTimer = 0;
         private int starSpawnTimer = 0;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         private const float SulfseaSideMargin = 30f;
 
         /// <summary>
-        /// ¸üĞÂËùÓĞÁ£×ÓºÍÌØĞ§
+        /// æ›´æ–°æ‰€æœ‰ç²’å­å’Œç‰¹æ•ˆ
         /// </summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateBubbles(isActive, panelPosition, panelWidth, panelHeight);
@@ -89,27 +89,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// »æÖÆËùÓĞÌØĞ§
+        /// ç»˜åˆ¶æ‰€æœ‰ç‰¹æ•ˆ
         /// </summary>
         public void DrawEffects(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, float uiAlpha) {
-            //ÏÈ»æÖÆ»Ò½ı£¬ÔÚµ×²ã
+            //å…ˆç»˜åˆ¶ç°çƒ¬ï¼Œåœ¨åº•å±‚
             foreach (var ash in ashParticles) {
                 ash.Draw(spriteBatch, uiAlpha * 0.75f);
             }
 
-            //È»ºó»æÖÆÆøÅİ
+            //ç„¶åç»˜åˆ¶æ°”æ³¡
             foreach (var b in bubbles) {
                 b.DrawEnhanced(spriteBatch, uiAlpha * 0.9f);
             }
 
-            //×îºó»æÖÆº£ĞÇ
+            //æœ€åç»˜åˆ¶æµ·æ˜Ÿ
             foreach (var s in seaStars) {
                 s.DrawEnhanced(spriteBatch, uiAlpha * 0.4f);
             }
         }
 
         /// <summary>
-        /// Çå¿ÕËùÓĞÌØĞ§
+        /// æ¸…ç©ºæ‰€æœ‰ç‰¹æ•ˆ
         /// </summary>
         public void Clear() {
             bubbles.Clear();

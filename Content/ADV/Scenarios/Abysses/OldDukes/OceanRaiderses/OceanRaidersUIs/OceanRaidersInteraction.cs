@@ -1,34 +1,34 @@
-using Microsoft.Xna.Framework.Input;
+ï»¿using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses.OceanRaidersUIs
 {
     /// <summary>
-    /// º£ÑóÍÌÊÉÕßUI½»»¥Âß¼­´¦ÀíÆ÷
+    /// æµ·æ´‹åå™¬è€…UIäº¤äº’é€»è¾‘å¤„ç†å™¨
     /// </summary>
     internal class OceanRaidersInteraction
     {
         private readonly Player player;
         private OceanRaidersTP machine;
 
-        //²ÛÎ»³£Á¿
+        //æ§½ä½å¸¸é‡
         private const int SlotsPerRow = 20;
         private const int SlotRows = 18;
         private const int TotalSlots = SlotsPerRow * SlotRows;
         private const int SlotSize = 32;
         private const int SlotPadding = 4;
 
-        //½»»¥×´Ì¬
+        //äº¤äº’çŠ¶æ€
         public int HoveredSlot { get; private set; } = -1;
 
-        //¹Ø±Õ°´Å¥
+        //å…³é—­æŒ‰é’®
         public bool IsCloseButtonHovered { get; private set; } = false;
         public const int CloseButtonSize = 32;
 
-        //ÒôĞ§ÀäÈ´
+        //éŸ³æ•ˆå†·å´
         private int soundCooldown = 0;
         private const int SoundCooldownMax = 15;
         private int lastQuickTransferSlot = -1;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¸üĞÂ¹Ø±Õ°´Å¥ĞüÍ£
+        /// æ›´æ–°å…³é—­æŒ‰é’®æ‚¬åœ
         /// </summary>
         public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, bool mouseLeftRelease) {
             Rectangle buttonRect = new Rectangle(
@@ -64,18 +64,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¸üĞÂ²ÛÎ»½»»¥
+        /// æ›´æ–°æ§½ä½äº¤äº’
         /// </summary>
         public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos,
             bool leftPressed, bool leftHeld, bool rightPressed, bool rightHeld) {
-            //¸üĞÂÒôĞ§ÀäÈ´
+            //æ›´æ–°éŸ³æ•ˆå†·å´
             if (soundCooldown > 0) {
                 soundCooldown--;
             }
 
             HoveredSlot = -1;
 
-            //¼ÆËãÊó±êËùÔÚµÄ²ÛÎ»
+            //è®¡ç®—é¼ æ ‡æ‰€åœ¨çš„æ§½ä½
             for (int row = 0; row < SlotRows; row++) {
                 for (int col = 0; col < SlotsPerRow; col++) {
                     int index = row * SlotsPerRow + col;
@@ -99,51 +99,51 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 return;
             }
 
-            //»ñÈ¡µ±Ç°²ÛÎ»µÄÎïÆ·
+            //è·å–å½“å‰æ§½ä½çš„ç‰©å“
             Item slotItem = GetItem(HoveredSlot);
             if (slotItem != null && slotItem.type > ItemID.None && slotItem.stack > 0) {
                 Main.HoverItem = slotItem;
                 Main.hoverItemName = slotItem.Name;
             }
 
-            //¼ì²âShift¼ü×´Ì¬
+            //æ£€æµ‹Shifté”®çŠ¶æ€
             KeyboardState keyboard = Keyboard.GetState();
             bool shiftPressed = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
 
-            //Shift+×ó¼ü£º×ªÒÆµ½±³°ü
+            //Shift+å·¦é”®ï¼šè½¬ç§»åˆ°èƒŒåŒ…
             if (shiftPressed && leftPressed) {
                 QuickTransferToInventory(HoveredSlot);
                 return;
             }
 
-            //ÖØÖÃ¿ìËÙ×ªÒÆ²ÛÎ»¼ÇÂ¼
+            //é‡ç½®å¿«é€Ÿè½¬ç§»æ§½ä½è®°å½•
             if (!shiftPressed) {
                 lastQuickTransferSlot = -1;
             }
 
-            //´¦Àí×ó¼ü½»»¥
+            //å¤„ç†å·¦é”®äº¤äº’
             if (leftPressed) {
                 HandleLeftClick(slotItem);
             }
 
-            //ÓÒ¼üµ¥´Î½»»¥
+            //å³é”®å•æ¬¡äº¤äº’
             if (rightPressed) {
                 HandleRightClick(slotItem);
             }
 
-            //ÓÒ¼üÍÏ×§·ÅÖÃ
+            //å³é”®æ‹–æ‹½æ”¾ç½®
             if (rightHeld) {
                 HandleDragPlace(slotItem);
             }
 
-            //Shift+Êó±êĞüÍ£+ÊÖ³Ö¿ÕÎïÆ·Ê±£º¾Û¼¯ÏàÍ¬ÎïÆ·
+            //Shift+é¼ æ ‡æ‚¬åœ+æ‰‹æŒç©ºç‰©å“æ—¶ï¼šèšé›†ç›¸åŒç‰©å“
             if (shiftPressed && Main.mouseItem.type == ItemID.None) {
                 GatherSameItems(HoveredSlot);
             }
         }
 
         /// <summary>
-        /// »ñÈ¡²ÛÎ»ÎïÆ·
+        /// è·å–æ§½ä½ç‰©å“
         /// </summary>
         private Item GetItem(int slotIndex) {
             if (slotIndex < 0 || slotIndex >= machine.storedItems.Count) {
@@ -153,27 +153,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ÉèÖÃ²ÛÎ»ÎïÆ·
+        /// è®¾ç½®æ§½ä½ç‰©å“
         /// </summary>
         private void SetItem(int slotIndex, Item item) {
-            //È·±£ÁĞ±í×ã¹»³¤
+            //ç¡®ä¿åˆ—è¡¨è¶³å¤Ÿé•¿
             while (machine.storedItems.Count <= slotIndex) {
                 machine.storedItems.Add(new Item());
             }
 
             machine.storedItems[slotIndex] = item;
 
-            //ÇåÀíÎ²²¿¿Õ²ÛÎ»
+            //æ¸…ç†å°¾éƒ¨ç©ºæ§½ä½
             CleanEmptySlots();
             machine.SendData();
         }
 
         /// <summary>
-        /// ´¦Àí×ó¼ü½»»¥
+        /// å¤„ç†å·¦é”®äº¤äº’
         /// </summary>
         private void HandleLeftClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //ÊÖÉÏÃ»ÓĞÎïÆ·£¬Ê°È¡²ÛÎ»ÎïÆ·
+                //æ‰‹ä¸Šæ²¡æœ‰ç‰©å“ï¼Œæ‹¾å–æ§½ä½ç‰©å“
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     Main.mouseItem = slotItem.Clone();
                     SetItem(HoveredSlot, new Item());
@@ -181,15 +181,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
             else {
-                //ÊÖÉÏÓĞÎïÆ·
+                //æ‰‹ä¸Šæœ‰ç‰©å“
                 if (slotItem == null || slotItem.type == ItemID.None) {
-                    //²ÛÎ»Îª¿Õ£¬·ÅÏÂÊÖÉÏµÄÎïÆ·
+                    //æ§½ä½ä¸ºç©ºï¼Œæ”¾ä¸‹æ‰‹ä¸Šçš„ç‰©å“
                     SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem.TurnToAir();
                     PlaySound(SoundID.Grab);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                    //ÏàÍ¬ÎïÆ·£¬×Ô¶¯¶Ñµş
+                    //ç›¸åŒç‰©å“ï¼Œè‡ªåŠ¨å †å 
                     int spaceLeft = slotItem.maxStack - slotItem.stack;
                     int amountToAdd = Math.Min(spaceLeft, Main.mouseItem.stack);
 
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                     PlaySound(SoundID.Grab);
                 }
                 else {
-                    //²»Í¬ÎïÆ·£¬½»»»
+                    //ä¸åŒç‰©å“ï¼Œäº¤æ¢
                     Item temp = slotItem.Clone();
                     SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem = temp;
@@ -214,11 +214,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ÓÒ¼üµ¥´Î½»»¥
+        /// å³é”®å•æ¬¡äº¤äº’
         /// </summary>
         private void HandleRightClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //ÊÖÉÏÃ»ÓĞÎïÆ·£¬ÄÃÈ¡Ò»°ë
+                //æ‰‹ä¸Šæ²¡æœ‰ç‰©å“ï¼Œæ‹¿å–ä¸€åŠ
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     int halfStack = (slotItem.stack + 1) / 2;
                     Main.mouseItem = slotItem.Clone();
@@ -236,9 +236,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
             else {
-                //ÊÖÉÏÓĞÎïÆ·£¬·ÅÏÂÒ»¸ö
+                //æ‰‹ä¸Šæœ‰ç‰©å“ï¼Œæ”¾ä¸‹ä¸€ä¸ª
                 if (slotItem == null || slotItem.type == ItemID.None) {
-                    //²ÛÎ»Îª¿Õ£¬·ÅÏÂÒ»¸ö
+                    //æ§½ä½ä¸ºç©ºï¼Œæ”¾ä¸‹ä¸€ä¸ª
                     Item newItem = Main.mouseItem.Clone();
                     newItem.stack = 1;
                     SetItem(HoveredSlot, newItem);
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                     PlaySound(SoundID.Grab, 0.1f);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                    //ÏàÍ¬ÎïÆ·£¬·ÅÏÂÒ»¸ö
+                    //ç›¸åŒç‰©å“ï¼Œæ”¾ä¸‹ä¸€ä¸ª
                     slotItem.stack++;
                     Main.mouseItem.stack--;
 
@@ -266,13 +266,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ÓÒ¼üÍÏ×§·ÅÖÃ´¦Àí
+        /// å³é”®æ‹–æ‹½æ”¾ç½®å¤„ç†
         /// </summary>
         private void HandleDragPlace(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) return;
 
             if (slotItem == null || slotItem.type == ItemID.None) {
-                //²ÛÎ»Îª¿Õ£¬·ÅÏÂÒ»¸ö
+                //æ§½ä½ä¸ºç©ºï¼Œæ”¾ä¸‹ä¸€ä¸ª
                 Item newItem = Main.mouseItem.Clone();
                 newItem.stack = 1;
                 SetItem(HoveredSlot, newItem);
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
             else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                //ÏàÍ¬ÎïÆ·£¬·ÅÏÂÒ»¸ö
+                //ç›¸åŒç‰©å“ï¼Œæ”¾ä¸‹ä¸€ä¸ª
                 slotItem.stack++;
                 Main.mouseItem.stack--;
 
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¿ìËÙ×ªÒÆµ½±³°ü
+        /// å¿«é€Ÿè½¬ç§»åˆ°èƒŒåŒ…
         /// </summary>
         private void QuickTransferToInventory(int slotIndex) {
             if (slotIndex < 0 || slotIndex >= TotalSlots) return;
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Item item = GetItem(slotIndex);
             if (item == null || item.type <= ItemID.None || item.stack <= 0) return;
 
-            //³¢ÊÔÌí¼Óµ½Íæ¼Ò±³°ü
+            //å°è¯•æ·»åŠ åˆ°ç©å®¶èƒŒåŒ…
             Item leftover = player.GetItem(player.whoAmI, item.Clone(),
                 GetItemSettings.InventoryUIToInventorySettings);
 
@@ -312,18 +312,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             bool partialSuccess = false;
 
             if (leftover == null || leftover.stack == 0) {
-                //ÍêÈ«Ìí¼Ó³É¹¦
+                //å®Œå…¨æ·»åŠ æˆåŠŸ
                 SetItem(slotIndex, new Item());
                 success = true;
             }
             else if (leftover.stack < item.stack) {
-                //²¿·ÖÌí¼Ó
+                //éƒ¨åˆ†æ·»åŠ 
                 item.stack = leftover.stack;
                 SetItem(slotIndex, item);
                 partialSuccess = true;
             }
 
-            //Ö»ÔÚ²»ÓëÉÏ´Î³É¹¦µÄ²ÛÎ»ÏàÍ¬ÇÒÒôĞ§ÀäÈ´½áÊøÊ±²Å²¥·ÅÒôĞ§
+            //åªåœ¨ä¸ä¸ä¸Šæ¬¡æˆåŠŸçš„æ§½ä½ç›¸åŒä¸”éŸ³æ•ˆå†·å´ç»“æŸæ—¶æ‰æ’­æ”¾éŸ³æ•ˆ
             if ((success || partialSuccess) && CanPlaySound()) {
                 if (success) {
                     PlayQuickTransferSound();
@@ -333,14 +333,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
 
-            //¼ÇÂ¼±¾´Î¿ìËÙ×ªÒÆµÄ²ÛÎ»
+            //è®°å½•æœ¬æ¬¡å¿«é€Ÿè½¬ç§»çš„æ§½ä½
             if (success || partialSuccess) {
                 lastQuickTransferSlot = slotIndex;
             }
         }
 
         /// <summary>
-        /// ¾Û¼¯ÏàÍ¬ÎïÆ·
+        /// èšé›†ç›¸åŒç‰©å“
         /// </summary>
         private void GatherSameItems(int targetSlot) {
             Item targetItem = GetItem(targetSlot);
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
             bool gathered = false;
 
-            //±éÀúËùÓĞ²ÛÎ»ÊÕ¼¯ÏàÍ¬ÎïÆ·
+            //éå†æ‰€æœ‰æ§½ä½æ”¶é›†ç›¸åŒç‰©å“
             for (int i = 0; i < TotalSlots; i++) {
                 if (i == targetSlot) continue;
                 if (targetItem.stack >= targetItem.maxStack) break;
@@ -381,23 +381,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ÇåÀíÎ²²¿¿Õ²ÛÎ»
+        /// æ¸…ç†å°¾éƒ¨ç©ºæ§½ä½
         /// </summary>
         private void CleanEmptySlots() {
-            //´ÓºóÍùÇ°ÇåÀí¿Õ²ÛÎ»
+            //ä»åå¾€å‰æ¸…ç†ç©ºæ§½ä½
             for (int i = machine.storedItems.Count - 1; i >= 0; i--) {
                 Item item = machine.storedItems[i];
                 if (item == null || item.type <= ItemID.None || item.stack <= 0) {
                     machine.storedItems.RemoveAt(i);
                 }
                 else {
-                    break; //Óöµ½·Ç¿Õ²ÛÎ»¾ÍÍ£Ö¹
+                    break; //é‡åˆ°éç©ºæ§½ä½å°±åœæ­¢
                 }
             }
         }
 
         /// <summary>
-        /// ²¥·ÅÒôĞ§
+        /// æ’­æ”¾éŸ³æ•ˆ
         /// </summary>
         private void PlaySound(SoundStyle sound, float pitch = 0f) {
             if (CanPlaySound()) {
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ²¥·Å¿ìËÙ×ªÒÆÒôĞ§
+        /// æ’­æ”¾å¿«é€Ÿè½¬ç§»éŸ³æ•ˆ
         /// </summary>
         private void PlayQuickTransferSound(float pitch = 0f) {
             SoundEngine.PlaySound(SoundID.Grab with { Pitch = pitch });
@@ -415,14 +415,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¼ì²éÊÇ·ñ¿ÉÒÔ²¥·ÅÒôĞ§
+        /// æ£€æŸ¥æ˜¯å¦å¯ä»¥æ’­æ”¾éŸ³æ•ˆ
         /// </summary>
         private bool CanPlaySound() {
             return soundCooldown <= 0;
         }
 
         /// <summary>
-        /// ÖØÖÃ½»»¥×´Ì¬
+        /// é‡ç½®äº¤äº’çŠ¶æ€
         /// </summary>
         public void Reset() {
             HoveredSlot = -1;

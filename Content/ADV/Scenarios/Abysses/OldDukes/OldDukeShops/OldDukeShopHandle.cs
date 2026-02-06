@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

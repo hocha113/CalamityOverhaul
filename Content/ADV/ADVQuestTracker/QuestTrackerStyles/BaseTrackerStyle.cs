@@ -1,19 +1,19 @@
-using Microsoft.Xna.Framework.Graphics;
+ï»¿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
+namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
 {
     /// <summary>
-    /// ÈÎÎñ×·×ÙÑùÊ½»ùÀà£¬Ìá¹©Í¨ÓÃÊµÏÖ
+    /// ä»»åŠ¡è¿½è¸ªæ ·å¼åŸºç±»ï¼Œæä¾›é€šç”¨å®ç°
     /// </summary>
     internal abstract class BaseTrackerStyle : IQuestTrackerStyle
     {
-        //¶¯»­²ÎÊı
+        //åŠ¨ç”»å‚æ•°
         protected float pulseTimer = 0f;
         protected float animTimer = 0f;
 
-        //Á£×ÓÁĞ±í
+        //ç²’å­åˆ—è¡¨
         protected readonly List<object> particles = [];
 
         public virtual void Update(Rectangle panelRect, bool active) {
@@ -33,10 +33,10 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public virtual void DrawProgressBar(SpriteBatch spriteBatch, Rectangle barRect, float progress, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //±³¾°
+            //èƒŒæ™¯
             spriteBatch.Draw(pixel, barRect, new Rectangle(0, 0, 1, 1), GetProgressBarBgColor(alpha));
 
-            //½ø¶ÈÌî³ä
+            //è¿›åº¦å¡«å……
             float fillWidth = barRect.Width * Math.Min(progress, 1f);
 
             if (fillWidth > 0) {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                 Color fillStart = GetProgressBarStartColor(alpha);
                 Color fillEnd = GetProgressBarEndColor(alpha);
 
-                //»æÖÆ½¥±ä½ø¶ÈÌõ
+                //ç»˜åˆ¶æ¸å˜è¿›åº¦æ¡
                 int segmentCount = 20;
                 for (int i = 0; i < segmentCount; i++) {
                     float t = i / (float)segmentCount;
@@ -60,13 +60,13 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                         segColor * pulse);
                 }
 
-                //·¢¹âĞ§¹û
+                //å‘å…‰æ•ˆæœ
                 Color glowColor = GetProgressBarGlowColor(alpha);
                 spriteBatch.Draw(pixel, new Rectangle(barFill.X, barFill.Y - 1, barFill.Width, 1), glowColor);
                 spriteBatch.Draw(pixel, new Rectangle(barFill.X, barFill.Bottom, barFill.Width, 1), glowColor);
             }
 
-            //±ß¿ò
+            //è¾¹æ¡†
             Color borderColor = GetProgressBarBorderColor(alpha);
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, barRect.Width, 1), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Bottom - 1, barRect.Width, 1), borderColor);
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public virtual void UpdateParticles(Vector2 basePos, float panelFade) { }
 
         /// <summary>
-        /// »æÖÆ½¥±äÏß
+        /// ç»˜åˆ¶æ¸å˜çº¿
         /// </summary>
         protected static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;

@@ -1,12 +1,11 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests;
-using InnoVault.Storages;
+﻿using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 
-namespace CalamityOverhaul.Content.Industrials.Storage
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
 {
     /// <summary>
     /// 老公爵营地箱子存储提供者工厂
@@ -192,7 +191,7 @@ namespace CalamityOverhaul.Content.Industrials.Storage
                     continue;
                 }
 
-                int take = System.Math.Min(remaining, slotItem.stack);
+                int take = Math.Min(remaining, slotItem.stack);
                 slotItem.stack -= take;
                 result.stack += take;
                 remaining -= take;

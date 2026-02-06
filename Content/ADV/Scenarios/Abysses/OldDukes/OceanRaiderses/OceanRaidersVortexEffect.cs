@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
+ï»¿using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -8,29 +8,29 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
 {
     /// <summary>
-    /// º£ÑóÍÌÊÉÕß¹¤×÷Ê±µÄÊÓ¾õĞ§¹û¹ÜÀíÆ÷
+    /// æµ·æ´‹åå™¬è€…å·¥ä½œæ—¶çš„è§†è§‰æ•ˆæœç®¡ç†å™¨
     /// </summary>
     internal class OceanRaidersVortexEffect
     {
         private readonly OceanRaidersTP machine;
 
-        //Ë®Áú¾í×ÊÔ´
+        //æ°´é¾™å·èµ„æº
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> Cyclone { get; set; }
 
-        //Ë®Áú¾íĞ§¹û²ÎÊı
+        //æ°´é¾™å·æ•ˆæœå‚æ•°
         private float vortexRotation = 0f;
         private float vortexIntensity = 0f;
         private float vortexPulse = 0f;
 
-        //Ë®ÅİÁ£×ÓÁĞ±í
+        //æ°´æ³¡ç²’å­åˆ—è¡¨
         private readonly List<PRT_HomeBubble> risingBubbles = new();
         private int bubbleSpawnTimer = 0;
 
-        //Ë®Á÷Á£×Ó
+        //æ°´æµç²’å­
         private readonly List<WaterStreamParticle> waterStreams = new();
         private int streamSpawnTimer = 0;
 
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¸üĞÂËùÓĞĞ§¹û
+        /// æ›´æ–°æ‰€æœ‰æ•ˆæœ
         /// </summary>
         public void Update() {
             if (!machine.isWorking) {
@@ -48,44 +48,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 return;
             }
 
-            //ÔöÇ¿Ë®Áú¾íÇ¿¶È
+            //å¢å¼ºæ°´é¾™å·å¼ºåº¦
             if (vortexIntensity < 1f) {
                 vortexIntensity += 0.03f;
             }
 
-            //¸üĞÂË®Áú¾íĞı×ª
+            //æ›´æ–°æ°´é¾™å·æ—‹è½¬
             vortexRotation += 0.08f + vortexIntensity * 0.12f;
             if (vortexRotation > MathHelper.TwoPi) {
                 vortexRotation -= MathHelper.TwoPi;
             }
 
-            //¸üĞÂÂö³å
+            //æ›´æ–°è„‰å†²
             vortexPulse += 0.05f;
             if (vortexPulse > MathHelper.TwoPi) {
                 vortexPulse -= MathHelper.TwoPi;
             }
 
-            //¸üĞÂË®Åİ
+            //æ›´æ–°æ°´æ³¡
             UpdateBubbles();
 
-            //¸üĞÂË®Á÷
+            //æ›´æ–°æ°´æµ
             UpdateWaterStreams();
         }
 
         /// <summary>
-        /// ¸üĞÂÆøÅİĞ§¹û
+        /// æ›´æ–°æ°”æ³¡æ•ˆæœ
         /// </summary>
         private void UpdateBubbles() {
             if (VaultUtils.isServer) return;
 
-            //¸üĞÂÏÖÓĞÆøÅİ
+            //æ›´æ–°ç°æœ‰æ°”æ³¡
             for (int i = risingBubbles.Count - 1; i >= 0; i--) {
                 if (!risingBubbles[i].active) {
                     risingBubbles.RemoveAt(i);
                 }
             }
 
-            //Éú³ÉĞÂÆøÅİ
+            //ç”Ÿæˆæ–°æ°”æ³¡
             bubbleSpawnTimer++;
             if (bubbleSpawnTimer >= Math.Max(4, 10 - (int)(vortexIntensity * 6))) {
                 bubbleSpawnTimer = 0;
@@ -98,20 +98,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// Éú³Éµ¥¸öÆøÅİ
+        /// ç”Ÿæˆå•ä¸ªæ°”æ³¡
         /// </summary>
         private void SpawnBubble() {
-            //´ÓÎüÈë¿ÚÏÂ·½µÄË®ÓòÉú³ÉÆøÅİ
+            //ä»å¸å…¥å£ä¸‹æ–¹çš„æ°´åŸŸç”Ÿæˆæ°”æ³¡
             Vector2 waterSurfacePos = FindWaterSurface();
             if (waterSurfacePos == Vector2.Zero) return;
 
-            //ÔÚË®ÓòËæ»úÎ»ÖÃÉú³É
+            //åœ¨æ°´åŸŸéšæœºä½ç½®ç”Ÿæˆ
             Vector2 spawnPos = waterSurfacePos + new Vector2(
                 Main.rand.NextFloat(-60f, 60f),
                 Main.rand.NextFloat(20f, 100f)
             );
 
-            //È·±£Éú³ÉÎ»ÖÃÔÚË®ÖĞ
+            //ç¡®ä¿ç”Ÿæˆä½ç½®åœ¨æ°´ä¸­
             Tile tile = Framing.GetTileSafely(spawnPos);
             if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
                 Vector2 targetPos = machine.intakeCenter;
@@ -132,12 +132,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ¸üĞÂË®Á÷Ğ§¹û
+        /// æ›´æ–°æ°´æµæ•ˆæœ
         /// </summary>
         private void UpdateWaterStreams() {
             if (VaultUtils.isServer) return;
 
-            //¸üĞÂÏÖÓĞË®Á÷
+            //æ›´æ–°ç°æœ‰æ°´æµ
             for (int i = waterStreams.Count - 1; i >= 0; i--) {
                 waterStreams[i].Update();
                 if (waterStreams[i].ShouldRemove()) {
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
 
-            //Éú³ÉĞÂË®Á÷Á£×Ó
+            //ç”Ÿæˆæ–°æ°´æµç²’å­
             streamSpawnTimer++;
             if (streamSpawnTimer >= 2) {
                 streamSpawnTimer = 0;
@@ -154,20 +154,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// Éú³ÉË®Á÷Á£×Ó
+        /// ç”Ÿæˆæ°´æµç²’å­
         /// </summary>
         private void SpawnWaterStream() {
             Vector2 waterSurfacePos = FindWaterSurface();
             if (waterSurfacePos == Vector2.Zero) return;
 
-            //ÔÚË®Áú¾íÖÜÎ§Éú³ÉÂİĞıË®Á÷
+            //åœ¨æ°´é¾™å·å‘¨å›´ç”Ÿæˆèºæ—‹æ°´æµ
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float radius = Main.rand.NextFloat(30f, 80f);
             Vector2 offset = angle.ToRotationVector2() * radius;
 
             Vector2 spawnPos = waterSurfacePos + offset + new Vector2(0, Main.rand.NextFloat(0, 60f));
 
-            //È·±£ÔÚË®ÖĞ
+            //ç¡®ä¿åœ¨æ°´ä¸­
             Tile tile = Framing.GetTileSafely(spawnPos);
             if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
                 waterStreams.Add(new WaterStreamParticle(
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ²éÕÒË®ÃæÎ»ÖÃ
+        /// æŸ¥æ‰¾æ°´é¢ä½ç½®
         /// </summary>
         private Vector2 FindWaterSurface() {
             Point startPoint = (machine.Position + new Point16(3, 6)).ToPoint();
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// »æÖÆË®Áú¾íĞ§¹û
+        /// ç»˜åˆ¶æ°´é¾™å·æ•ˆæœ
         /// </summary>
         public void DrawVortex(SpriteBatch spriteBatch) {
             if (vortexIntensity <= 0.01f || VaultUtils.isServer) return;
@@ -212,34 +212,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
             Texture2D vortexTexture = Cyclone.Value;
             Vector2 intakePos = machine.intakeCenter;
 
-            //¼ÆËãË®Áú¾íµÄ³¤¶È
+            //è®¡ç®—æ°´é¾™å·çš„é•¿åº¦
             float vortexLength = Vector2.Distance(intakePos, waterSurfacePos);
             if (vortexLength < 10f) return;
 
-            //»æÖÆ¶à²ãĞı×ªµÄË®Áú¾í
+            //ç»˜åˆ¶å¤šå±‚æ—‹è½¬çš„æ°´é¾™å·
             int layerCount = 4;
             for (int layer = 0; layer < layerCount; layer++) {
                 float layerProgress = layer / (float)layerCount;
                 float rotationOffset = vortexRotation + layerProgress * MathHelper.TwoPi;
 
-                //¼ÆËãËõ·Å£¨ÉÏĞ¡ÏÂ´ó£©
+                //è®¡ç®—ç¼©æ”¾ï¼ˆä¸Šå°ä¸‹å¤§ï¼‰
                 float topScale = 0.3f + (float)Math.Sin(vortexPulse + layerProgress) * 0.1f;
                 float bottomScale = 1.2f + (float)Math.Sin(vortexPulse + layerProgress + MathHelper.Pi) * 0.2f;
 
-                //»æÖÆÅ¤ÇúµÄË®Áú¾í¶Î
+                //ç»˜åˆ¶æ‰­æ›²çš„æ°´é¾™å·æ®µ
                 int segmentCount = 92;
                 for (int i = 0; i < segmentCount; i++) {
                     float t = i / (float)segmentCount;
                     Vector2 segmentPos = Vector2.Lerp(intakePos, waterSurfacePos, t);
 
-                    //ÂİĞıÅ¤ÇúÆ«ÒÆ
+                    //èºæ—‹æ‰­æ›²åç§»
                     float spiralOffset = (float)Math.Sin(vortexRotation * 2 + t * MathHelper.TwoPi * 2 + layerProgress) * 15f * vortexIntensity;
                     segmentPos.X += spiralOffset;
 
-                    //²åÖµËõ·Å
+                    //æ’å€¼ç¼©æ”¾
                     float segmentScale = MathHelper.Lerp(topScale, bottomScale, t) * vortexIntensity;
 
-                    //ÑÕÉ«½¥±ä£¨ÉÏ·½Í¸Ã÷£¬ÏÂ·½¸üÅ¨£©
+                    //é¢œè‰²æ¸å˜ï¼ˆä¸Šæ–¹é€æ˜ï¼Œä¸‹æ–¹æ›´æµ“ï¼‰
                     float alpha = MathHelper.Lerp(0.15f, 0.4f, t) * vortexIntensity;
                     Color drawColor = Color.Lerp(
                         new Color(100, 200, 255),
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
 
                     drawColor.A = 0;
 
-                    //»æÖÆ
+                    //ç»˜åˆ¶
                     Vector2 drawPos = segmentPos - Main.screenPosition;
                     spriteBatch.Draw(
                         vortexTexture,
@@ -265,18 +265,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 }
             }
 
-            //»æÖÆ¶îÍâµÄ·¢¹â²ã
+            //ç»˜åˆ¶é¢å¤–çš„å‘å…‰å±‚
             DrawVortexGlow(spriteBatch, intakePos, waterSurfacePos, vortexLength);
         }
 
         /// <summary>
-        /// »æÖÆË®Áú¾í·¢¹âĞ§¹û
+        /// ç»˜åˆ¶æ°´é¾™å·å‘å…‰æ•ˆæœ
         /// </summary>
         private void DrawVortexGlow(SpriteBatch spriteBatch, Vector2 topPos, Vector2 bottomPos, float length) {
             Texture2D vortexTexture = Cyclone.Value;
             float glowIntensity = (float)Math.Sin(vortexPulse) * 0.3f + 0.5f;
 
-            //¶¥²¿·¢¹â
+            //é¡¶éƒ¨å‘å…‰
             Vector2 topDrawPos = topPos - Main.screenPosition;
             Color topGlow = new Color(150, 220, 255, 0) * (glowIntensity * vortexIntensity * 0.6f);
             spriteBatch.Draw(
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 0f
             );
 
-            //µ×²¿·¢¹â
+            //åº•éƒ¨å‘å…‰
             Vector2 bottomDrawPos = bottomPos - Main.screenPosition;
             Color bottomGlow = new Color(100, 200, 255, 0) * (glowIntensity * vortexIntensity * 0.8f);
             spriteBatch.Draw(
@@ -308,7 +308,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         /// <summary>
-        /// ÇåÀíËùÓĞÁ£×Ó
+        /// æ¸…ç†æ‰€æœ‰ç²’å­
         /// </summary>
         private void ClearParticles() {
             risingBubbles.Clear();
@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
     }
 
     /// <summary>
-    /// Ë®Á÷Á£×ÓÀà
+    /// æ°´æµç²’å­ç±»
     /// </summary>
     internal class WaterStreamParticle
     {
@@ -339,17 +339,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         public void Update() {
-            //ÒÆ¶¯µ½Ä¿±ê
+            //ç§»åŠ¨åˆ°ç›®æ ‡
             Vector2 direction = (TargetPosition - Position).SafeNormalize(Vector2.Zero);
             float speed = 3f + (1f - Life / (float)maxLife) * 5f;
             Position += direction * speed;
 
-            //ÂİĞıÔË¶¯
+            //èºæ—‹è¿åŠ¨
             float spiralAngle = Life * 0.15f;
             Vector2 spiralOffset = spiralAngle.ToRotationVector2() * 8f;
             Position += spiralOffset;
 
-            //µ­³ö
+            //æ·¡å‡º
             Alpha = Life / (float)maxLife;
             Scale *= 0.98f;
 
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public bool ShouldRemove() => Life <= 0 || Vector2.Distance(Position, TargetPosition) < 20f;
 
         public void Draw(SpriteBatch spriteBatch) {
-            //Ê¹ÓÃ¼òµ¥µÄÏñËØ»æÖÆË®Á÷
+            //ä½¿ç”¨ç®€å•çš„åƒç´ ç»˜åˆ¶æ°´æµ
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Color drawColor = new Color(120, 200, 255) * (Alpha * 0.6f);

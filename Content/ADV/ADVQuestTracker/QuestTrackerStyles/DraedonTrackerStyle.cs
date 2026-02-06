@@ -1,24 +1,24 @@
-using CalamityOverhaul.Content.ADV.UIEffect;
+ï»¿using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
+namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
 {
     /// <summary>
-    /// ¼ÎµÇ¿Æ¼¼·ç¸ñ
+    /// å˜‰ç™»ç§‘æŠ€é£æ ¼
     /// </summary>
     internal class DraedonTrackerStyle : BaseTrackerStyle
     {
-        //¿Æ¼¼¶¯»­²ÎÊı
+        //ç§‘æŠ€åŠ¨ç”»å‚æ•°
         private float scanLineTimer = 0f;
         private float hologramFlicker = 0f;
         private float circuitPulseTimer = 0f;
         private float dataStreamTimer = 0f;
         private float hexGridPhase = 0f;
 
-        //Á£×ÓÏµÍ³
+        //ç²’å­ç³»ç»Ÿ
         private readonly List<DraedonDataPRT> dataParticles = [];
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int dataParticleSpawnTimer = 0;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public override void Update(Rectangle panelRect, bool active) {
             base.Update(panelRect, active);
 
-            //¿Æ¼¼¶¯»­¼ÆÊ±Æ÷
+            //ç§‘æŠ€åŠ¨ç”»è®¡æ—¶å™¨
             scanLineTimer += 0.048f;
             hologramFlicker += 0.12f;
             circuitPulseTimer += 0.025f;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
             var panelRect = basePos.GetRectangle(220, 120);
             var panelSize = new Vector2(220, 120);
 
-            //Êı¾İÁ£×ÓË¢ĞÂ
+            //æ•°æ®ç²’å­åˆ·æ–°
             dataParticleSpawnTimer++;
             if (dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleSpawnTimer = 0;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                 }
             }
 
-            //µçÂ·½ÚµãË¢ĞÂ
+            //ç”µè·¯èŠ‚ç‚¹åˆ·æ–°
             circuitNodeSpawnTimer++;
             if (circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8) {
                 circuitNodeSpawnTimer = 0;
@@ -82,12 +82,12 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //ÒõÓ°
+            //é˜´å½±
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(4, 4);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.6f));
 
-            //Ö÷±³¾°½¥±ä(¿Æ¼¼À¶É«µ÷)
+            //ä¸»èƒŒæ™¯æ¸å˜(ç§‘æŠ€è“è‰²è°ƒ)
             int segs = 25;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -108,21 +108,21 @@ namespace CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //È«Ï¢É¨ÃèĞ§¹û
+            //å…¨æ¯æ‰«ææ•ˆæœ
             float scanPulse = (float)Math.Sin(pulseTimer * 1.5f) * 0.5f + 0.5f;
             Color scanOverlay = new Color(20, 50, 80) * (alpha * 0.2f * scanPulse);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), scanOverlay);
 
-            //»æÖÆÁ£×Ó
+            //ç»˜åˆ¶ç²’å­
             foreach (var node in circuitNodes) {
                 var origX = node.Pos.X;
-                node.Pos.X *= (panelRect.Width / 220f);
+                node.Pos.X *= panelRect.Width / 220f;
                 node.Draw(spriteBatch, alpha * 0.85f);
                 node.Pos.X = origX;
             }
             foreach (var particle in dataParticles) {
                 var origX = particle.Pos.X;
-                particle.Pos.X *= (panelRect.Width / 220f);
+                particle.Pos.X *= panelRect.Width / 220f;
                 particle.Draw(spriteBatch, alpha * 0.75f);
                 particle.Pos.X = origX;
             }

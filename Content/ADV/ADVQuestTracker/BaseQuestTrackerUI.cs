@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Common.QuestTrackerStyles;
+﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;

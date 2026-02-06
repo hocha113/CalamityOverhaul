@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;

@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.UIs
+namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     internal class CrabulonMountLifeBar : UIHandle
     {
@@ -91,7 +90,7 @@ namespace CalamityOverhaul.Content.UIs
 
             Vector2 uiSize = new Vector2((lifeSize.X + liveMargin) * crabulonLiveLine, (lifeSize.Y + liveMargin) * crabulonLiveColumn);
 
-            DrawPosition = new Vector2(((int)(Main.screenWidth / 2 - uiSize.X / 2)), ((int)(Main.screenHeight / 2 + uiSize.X / 2 + Main.screenHeight / 10 * 1)));
+            DrawPosition = new Vector2((int)(Main.screenWidth / 2 - uiSize.X / 2), (int)(Main.screenHeight / 2 + uiSize.X / 2 + Main.screenHeight / 10 * 1));
 
             UIHitBox = DrawPosition.GetRectangle(uiSize);
 
@@ -103,8 +102,8 @@ namespace CalamityOverhaul.Content.UIs
                 var crabulonLive = crabulonLives[i];
                 crabulonLive.DrawPosition = DrawPosition + CrabulonLife.Life.Size() / 2;
                 crabulonLive.npc = npc;
-                crabulonLive.DrawPosition.X += (i % crabulonLiveLine) * (lifeSize.X + liveMargin);
-                crabulonLive.DrawPosition.Y += (i / crabulonLiveLine) * (lifeSize.Y + liveMargin);
+                crabulonLive.DrawPosition.X += i % crabulonLiveLine * (lifeSize.X + liveMargin);
+                crabulonLive.DrawPosition.Y += i / crabulonLiveLine * (lifeSize.Y + liveMargin);
                 crabulonLive.sengs = sengs;
                 crabulonLive.waveShakeTime = waveShakeTime;//将波浪抖动计时器传递给每个生命单元
                 crabulonLive.isLowHealth = isLowHealth;//传递低血量状态

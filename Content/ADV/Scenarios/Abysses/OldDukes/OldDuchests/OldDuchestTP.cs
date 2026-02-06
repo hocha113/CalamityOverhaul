@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using System;
@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
 {
     /// <summary>
     /// 老箱子的TileProcessor
@@ -543,7 +543,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
             storedItems.Clear();
-            storedItems = Campsites.OldDuchestLootGenerator.GenerateDailyLoot();
+            storedItems = OldDuchestLootGenerator.GenerateDailyLoot();
             lastRefreshCycle = refreshCycle;
             hasBeenOpened = false;
             SendData();

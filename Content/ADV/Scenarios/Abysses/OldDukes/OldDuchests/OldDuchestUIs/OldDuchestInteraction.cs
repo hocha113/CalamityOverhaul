@@ -1,34 +1,34 @@
-using Microsoft.Xna.Framework.Input;
+ï»¿using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuchests.OldDuchestUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs
 {
     /// <summary>
-    /// ÀÏÏä×ÓUI½»»¥Âß¼­´¦ÀíÆ÷
+    /// è€ç®±å­UIäº¤äº’é€»è¾‘å¤„ç†å™¨
     /// </summary>
     internal class OldDuchestInteraction
     {
         private readonly Player player;
         private readonly OldDuchestUI ui;
 
-        //²ÛÎ»³£Á¿
+        //æ§½ä½å¸¸é‡
         private const int SlotsPerRow = 20;
         private const int SlotRows = 12;
         private const int TotalSlots = SlotsPerRow * SlotRows;
         private const int SlotSize = 32;
         private const int SlotPadding = 4;
 
-        //½»»¥×´Ì¬
+        //äº¤äº’çŠ¶æ€
         public int HoveredSlot { get; private set; } = -1;
 
-        //¹Ø±Õ°´Å¥
+        //å…³é—­æŒ‰é’®
         public bool IsCloseButtonHovered { get; private set; } = false;
         public const int CloseButtonSize = 32;
 
-        //ÒôĞ§ÀäÈ´
+        //éŸ³æ•ˆå†·å´
         private int soundCooldown = 0;
         private const int SoundCooldownMax = 15;
         private int lastQuickTransferSlot = -1;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¸üĞÂ¹Ø±Õ°´Å¥ĞüÍ£
+        /// æ›´æ–°å…³é—­æŒ‰é’®æ‚¬åœ
         /// </summary>
         public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, bool mouseLeftRelease) {
             Rectangle buttonRect = new Rectangle(
@@ -59,18 +59,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¸üĞÂ²ÛÎ»½»»¥
+        /// æ›´æ–°æ§½ä½äº¤äº’
         /// </summary>
         public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos,
             bool leftPressed, bool leftHeld, bool rightPressed, bool rightHeld) {
-            //¸üĞÂÒôĞ§ÀäÈ´
+            //æ›´æ–°éŸ³æ•ˆå†·å´
             if (soundCooldown > 0) {
                 soundCooldown--;
             }
 
             HoveredSlot = -1;
 
-            //¼ÆËãÊó±êËùÔÚµÄ²ÛÎ»
+            //è®¡ç®—é¼ æ ‡æ‰€åœ¨çš„æ§½ä½
             for (int row = 0; row < SlotRows; row++) {
                 for (int col = 0; col < SlotsPerRow; col++) {
                     int index = row * SlotsPerRow + col;
@@ -94,55 +94,55 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 return;
             }
 
-            //»ñÈ¡µ±Ç°²ÛÎ»µÄÎïÆ·
+            //è·å–å½“å‰æ§½ä½çš„ç‰©å“
             Item slotItem = ui.GetItem(HoveredSlot);
             if (slotItem.Alives()) {
                 Main.HoverItem = slotItem;
                 Main.hoverItemName = slotItem.Name;
             }
 
-            //¼ì²éShift¼ü×´Ì¬
+            //æ£€æŸ¥Shifté”®çŠ¶æ€
             KeyboardState keyboard = Keyboard.GetState();
             bool shiftPressed = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
 
-            //Shift+×ó¼ü¿ìËÙ×ªÒÆµ½±³°ü
+            //Shift+å·¦é”®å¿«é€Ÿè½¬ç§»åˆ°èƒŒåŒ…
             if (shiftPressed && leftPressed) {
                 QuickTransferToInventory(HoveredSlot);
                 return;
             }
 
-            //ÖØÖÃ¿ìËÙ×ªÒÆ²ÛÎ»¼ÇÂ¼
+            //é‡ç½®å¿«é€Ÿè½¬ç§»æ§½ä½è®°å½•
             if (!shiftPressed) {
                 lastQuickTransferSlot = -1;
             }
 
-            //×ó¼üµã»÷½»»¥
+            //å·¦é”®ç‚¹å‡»äº¤äº’
             if (leftPressed) {
                 HandleLeftClick(slotItem);
             }
 
-            //ÓÒ¼üµã»÷½»»¥
+            //å³é”®ç‚¹å‡»äº¤äº’
             if (rightPressed) {
                 HandleRightClick(slotItem);
             }
 
-            //ÓÒ¼üÍÏ×§·ÅÖÃ
+            //å³é”®æ‹–æ‹½æ”¾ç½®
             if (rightHeld) {
                 HandleDragPlace(slotItem);
             }
 
-            //Shift+Êó±êĞüÍ£+ÎŞÊÖ³ÖÎïÆ·Ê±£¬¾Û¼¯ÏàÍ¬ÎïÆ·
+            //Shift+é¼ æ ‡æ‚¬åœ+æ— æ‰‹æŒç‰©å“æ—¶ï¼Œèšé›†ç›¸åŒç‰©å“
             if (shiftPressed && Main.mouseItem.type == ItemID.None) {
                 GatherSameItems(HoveredSlot);
             }
         }
 
         /// <summary>
-        /// ×ó¼üµã»÷´¦Àí
+        /// å·¦é”®ç‚¹å‡»å¤„ç†
         /// </summary>
         private void HandleLeftClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //ÊÖÉÏÃ»ÓĞÎïÆ·£¬ÄÃÆğ²ÛÎ»ÎïÆ·
+                //æ‰‹ä¸Šæ²¡æœ‰ç‰©å“ï¼Œæ‹¿èµ·æ§½ä½ç‰©å“
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     Main.mouseItem = slotItem.Clone();
                     ui.SetItem(HoveredSlot, new Item());
@@ -150,15 +150,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
             else {
-                //ÊÖÉÏÓĞÎïÆ·
+                //æ‰‹ä¸Šæœ‰ç‰©å“
                 if (slotItem == null || slotItem.type == ItemID.None) {
-                    //²ÛÎ»Îª¿Õ£¬·ÅÏÂÊÖÉÏµÄÎïÆ·
+                    //æ§½ä½ä¸ºç©ºï¼Œæ”¾ä¸‹æ‰‹ä¸Šçš„ç‰©å“
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem.TurnToAir();
                     PlaySound(SoundID.Grab);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                    //ÏàÍ¬ÎïÆ·£¬³¢ÊÔ¶Ñµş
+                    //ç›¸åŒç‰©å“ï¼Œå°è¯•å †å 
                     int spaceLeft = slotItem.maxStack - slotItem.stack;
                     int amountToAdd = Math.Min(spaceLeft, Main.mouseItem.stack);
 
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     PlaySound(SoundID.Grab);
                 }
                 else {
-                    //²»Í¬ÎïÆ·£¬½»»»
+                    //ä¸åŒç‰©å“ï¼Œäº¤æ¢
                     Item temp = slotItem.Clone();
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem = temp;
@@ -183,11 +183,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ÓÒ¼üµã»÷´¦Àí
+        /// å³é”®ç‚¹å‡»å¤„ç†
         /// </summary>
         private void HandleRightClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //ÊÖÉÏÃ»ÓĞÎïÆ·£¬ÄÃÆğÒ»°ë
+                //æ‰‹ä¸Šæ²¡æœ‰ç‰©å“ï¼Œæ‹¿èµ·ä¸€åŠ
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     int halfStack = (slotItem.stack + 1) / 2;
                     Main.mouseItem = slotItem.Clone();
@@ -205,9 +205,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
             else {
-                //ÊÖÉÏÓĞÎïÆ·£¬·ÅÖÃÒ»¸ö
+                //æ‰‹ä¸Šæœ‰ç‰©å“ï¼Œæ”¾ç½®ä¸€ä¸ª
                 if (slotItem == null || slotItem.type == ItemID.None) {
-                    //²ÛÎ»Îª¿Õ£¬·ÅÏÂÒ»¸ö
+                    //æ§½ä½ä¸ºç©ºï¼Œæ”¾ä¸‹ä¸€ä¸ª
                     ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     ui.GetItem(HoveredSlot).stack = 1;
                     Main.mouseItem.stack--;
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                     PlaySound(SoundID.Grab, 0.1f);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                    //ÏàÍ¬ÎïÆ·£¬Ìí¼ÓÒ»¸ö
+                    //ç›¸åŒç‰©å“ï¼Œæ·»åŠ ä¸€ä¸ª
                     slotItem.stack++;
                     Main.mouseItem.stack--;
 
@@ -234,13 +234,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ÓÒ¼üÍÏ×§·ÅÖÃ´¦Àí
+        /// å³é”®æ‹–æ‹½æ”¾ç½®å¤„ç†
         /// </summary>
         private void HandleDragPlace(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) return;
 
             if (slotItem == null || slotItem.type == ItemID.None) {
-                //²ÛÎ»Îª¿Õ£¬·ÅÖÃÒ»¸ö
+                //æ§½ä½ä¸ºç©ºï¼Œæ”¾ç½®ä¸€ä¸ª
                 ui.SetItem(HoveredSlot, Main.mouseItem.Clone());
                 ui.GetItem(HoveredSlot).stack = 1;
                 Main.mouseItem.stack--;
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
             else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                //ÏàÍ¬ÎïÆ·£¬Ìí¼ÓÒ»¸ö
+                //ç›¸åŒç‰©å“ï¼Œæ·»åŠ ä¸€ä¸ª
                 slotItem.stack++;
                 Main.mouseItem.stack--;
 
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¿ìËÙ×ªÒÆµ½±³°ü
+        /// å¿«é€Ÿè½¬ç§»åˆ°èƒŒåŒ…
         /// </summary>
         private void QuickTransferToInventory(int slotIndex) {
             if (slotIndex < 0 || slotIndex >= TotalSlots) return;
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             Item item = ui.GetItem(slotIndex);
             if (item == null || item.type <= ItemID.None || item.stack <= 0) return;
 
-            //³¢ÊÔÌí¼Óµ½Íæ¼Ò±³°ü
+            //å°è¯•æ·»åŠ åˆ°ç©å®¶èƒŒåŒ…
             Item leftover = player.GetItem(player.whoAmI, item.Clone(),
                 GetItemSettings.InventoryUIToInventorySettings);
 
@@ -279,18 +279,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
             bool partialSuccess = false;
 
             if (leftover == null || leftover.stack == 0) {
-                //ÍêÈ«Ìí¼Ó³É¹¦
+                //å®Œå…¨æ·»åŠ æˆåŠŸ
                 ui.SetItem(slotIndex, new Item());
                 success = true;
             }
             else if (leftover.stack < item.stack) {
-                //²¿·ÖÌí¼Ó
+                //éƒ¨åˆ†æ·»åŠ 
                 item.stack = leftover.stack;
                 ui.SetItem(slotIndex, item);
                 partialSuccess = true;
             }
 
-            //Ö»ÓĞÔÚ²Ù×÷³É¹¦ÇÒÒôĞ§ÀäÈ´½áÊøÊ±²Å²¥·ÅÒôĞ§
+            //åªæœ‰åœ¨æ“ä½œæˆåŠŸä¸”éŸ³æ•ˆå†·å´ç»“æŸæ—¶æ‰æ’­æ”¾éŸ³æ•ˆ
             if ((success || partialSuccess) && CanPlaySound()) {
                 if (success) {
                     PlayQuickTransferSound();
@@ -300,14 +300,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
                 }
             }
 
-            //¼ÇÂ¼±¾´Î¿ìËÙ×ªÒÆµÄ²ÛÎ»
+            //è®°å½•æœ¬æ¬¡å¿«é€Ÿè½¬ç§»çš„æ§½ä½
             if (success || partialSuccess) {
                 lastQuickTransferSlot = slotIndex;
             }
         }
 
         /// <summary>
-        /// ¾Û¼¯ÏàÍ¬ÎïÆ·
+        /// èšé›†ç›¸åŒç‰©å“
         /// </summary>
         private void GatherSameItems(int targetSlot) {
             Item targetItem = ui.GetItem(targetSlot);
@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
 
             bool gathered = false;
 
-            //´ÓÆäËû²ÛÎ»ÊÕ¼¯ÏàÍ¬ÎïÆ·
+            //ä»å…¶ä»–æ§½ä½æ”¶é›†ç›¸åŒç‰©å“
             for (int i = 0; i < TotalSlots; i++) {
                 if (i == targetSlot) continue;
                 if (targetItem.stack >= targetItem.maxStack) break;
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ²¥·ÅÒôĞ§
+        /// æ’­æ”¾éŸ³æ•ˆ
         /// </summary>
         private void PlaySound(SoundStyle sound, float pitch = 0f) {
             if (CanPlaySound()) {
@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ²¥·Å¿ìËÙ×ªÒÆÒôĞ§
+        /// æ’­æ”¾å¿«é€Ÿè½¬ç§»éŸ³æ•ˆ
         /// </summary>
         private void PlayQuickTransferSound(float pitch = 0f) {
             SoundEngine.PlaySound(SoundID.Grab with { Pitch = pitch });
@@ -366,14 +366,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OldDuche
         }
 
         /// <summary>
-        /// ¼ì²éÊÇ·ñ¿ÉÒÔ²¥·ÅÒôĞ§
+        /// æ£€æŸ¥æ˜¯å¦å¯ä»¥æ’­æ”¾éŸ³æ•ˆ
         /// </summary>
         private bool CanPlaySound() {
             return soundCooldown <= 0;
         }
 
         /// <summary>
-        /// ÖØÖÃ½»»¥×´Ì¬
+        /// é‡ç½®äº¤äº’çŠ¶æ€
         /// </summary>
         public void Reset() {
             HoveredSlot = -1;

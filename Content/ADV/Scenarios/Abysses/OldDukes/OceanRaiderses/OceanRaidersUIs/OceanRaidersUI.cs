@@ -1,4 +1,5 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -7,16 +8,16 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRaiderses.OceanRaidersUIs
+namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses.OceanRaidersUIs
 {
     /// <summary>
-    /// º£ÑóÍÌÊÉÕß×¨ÊôÏä×ÓUI
+    /// æµ·æ´‹åå™¬è€…ä¸“å±ç®±å­UI
     /// </summary>
     internal class OceanRaidersUI : UIHandle, ILocalizedModType
     {
         public static OceanRaidersUI Instance => UIHandleLoader.GetUIHandleOfType<OceanRaidersUI>();
 
-        //UI×´Ì¬
+        //UIçŠ¶æ€
         private bool _active;
         public override bool Active {
             get => _active || animation.UIAlpha > 0f;
@@ -27,29 +28,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         public static LocalizedText TitleText;
         public static LocalizedText StorageText;
 
-        //UI³ß´ç
+        //UIå°ºå¯¸
         private const int PanelWidth = 760;
         private const int PanelHeight = 700;
         private const int HeaderHeight = 80;
         private const int StorageStartX = 20;
         private const int StorageStartY = HeaderHeight + 10;
 
-        //µ±Ç°°ó¶¨µÄ»úÆ÷
+        //å½“å‰ç»‘å®šçš„æœºå™¨
         private OceanRaidersTP currentMachine;
 
-        //×é¼ş
+        //ç»„ä»¶
         private readonly OceanRaidersAnimation animation = new();
         private readonly OceanRaidersEffects effects = new();
         private OceanRaidersInteraction interaction;
         private OceanRaidersRenderer renderer;
 
         public override void SetStaticDefaults() {
-            TitleText = this.GetLocalization(nameof(TitleText), () => "º£ÑóÍÌÊÉÕß´æ´¢");
-            StorageText = this.GetLocalization(nameof(StorageText), () => "´æ´¢¿Õ¼ä");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "æµ·æ´‹åå™¬è€…å­˜å‚¨");
+            StorageText = this.GetLocalization(nameof(StorageText), () => "å­˜å‚¨ç©ºé—´");
         }
 
         /// <summary>
-        /// ´ò¿ªUI²¢°ó¶¨»úÆ÷
+        /// æ‰“å¼€UIå¹¶ç»‘å®šæœºå™¨
         /// </summary>
         public void Interactive(OceanRaidersTP machine) {
             if (machine == null) return;
@@ -58,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 currentMachine = machine;
                 _active = true;
 
-                //³õÊ¼»¯×é¼ş
+                //åˆå§‹åŒ–ç»„ä»¶
                 if (interaction == null || renderer == null) {
                     interaction = new OceanRaidersInteraction(player, machine);
                     renderer = new OceanRaidersRenderer(player, machine, animation, interaction);
@@ -76,7 +77,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
         }
 
         public override void Update() {
-            //¸üĞÂ¶¯»­½ø¶È
+            //æ›´æ–°åŠ¨ç”»è¿›åº¦
             animation.UpdateUIAnimation(_active);
 
             if (animation.UIAlpha <= 0f) {
@@ -84,27 +85,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 return;
             }
 
-            //¼ì²é»úÆ÷ÊÇ·ñÈÔÈ»ÓĞĞ§
+            //æ£€æŸ¥æœºå™¨æ˜¯å¦ä»ç„¶æœ‰æ•ˆ
             if (currentMachine == null || !currentMachine.Active || currentMachine.CenterInWorld.To(player.Center).Length() > 220) {
                 _active = false;
                 return;
             }
 
-            //¸üĞÂÁò»Çº£¶¯»­
+            //æ›´æ–°ç¡«ç£ºæµ·åŠ¨ç”»
             animation.UpdateSulfseaEffects();
 
-            //¼ÆËãÃæ°åÎ»ÖÃ
+            //è®¡ç®—é¢æ¿ä½ç½®
             Vector2 panelPosition = renderer.CalculatePanelPosition();
 
-            //¸üĞÂÁ£×ÓºÍÌØĞ§
+            //æ›´æ–°ç²’å­å’Œç‰¹æ•ˆ
             effects.UpdateParticles(_active, panelPosition, PanelWidth, PanelHeight);
 
-            //¸üĞÂUI½»»¥
+            //æ›´æ–°UIäº¤äº’
             if (_active && animation.PanelSlideProgress > 0.9f) {
                 UpdateInteraction(panelPosition);
             }
 
-            //¸üĞÂ²ÛÎ»ĞüÍ£¶¯»­
+            //æ›´æ–°æ§½ä½æ‚¬åœåŠ¨ç”»
             animation.UpdateSlotHoverAnimations(interaction.HoveredSlot);
         }
 
@@ -122,14 +123,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 player.mouseInterface = true;
                 player.CWR().DontSwitchWeaponTime = 2;
 
-                //ÓÅÏÈ¼ì²é¹Ø±Õ°´Å¥
+                //ä¼˜å…ˆæ£€æŸ¥å…³é—­æŒ‰é’®
                 if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, keyLeftPressState == KeyPressState.Pressed)) {
                     _active = false;
                     SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
                     return;
                 }
 
-                //¸üĞÂ²ÛÎ»½»»¥
+                //æ›´æ–°æ§½ä½äº¤äº’
                 Vector2 storageStartPos = panelPosition + new Vector2(StorageStartX, StorageStartY);
                 interaction.UpdateSlotInteraction(
                     MousePosition.ToPoint(),
@@ -145,7 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Items.OceanRai
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
             }
 
-            //ESC¹Ø±Õ
+            //ESCå…³é—­
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
                 _active = false;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
