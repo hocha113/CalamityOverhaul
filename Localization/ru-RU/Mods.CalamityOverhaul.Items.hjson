@@ -1,4 +1,4 @@
-ElementWhip: {
+﻿ElementWhip: {
 	DisplayName: Элементальный хлыст
 	Tooltip:
 		'''
@@ -1251,7 +1251,7 @@ TheForgottenTome: {
 		Меня зовут [NAME], и когда вы увидите эту фразу, я уже буду мёртв
 		'''
 	CompletionText: Вы всё забыли
-	// ConditionsText: Achieve any story ending
+	ConditionsText: В конце любой истории
 }
 
 Fishoil: {
@@ -1306,277 +1306,270 @@ Pandemonium: {
 }
 
 Proverbs: {
-	DisplayName: Заповедь
+	DisplayName: Притчи
 	Tooltip:
 		'''
-		Создаёт за вашей спиной малую серную руну
-		Иммунитет к большинству огненных дебаффов
-		Большинство ваших атак накладывают на врагов дебафф Проклятия Упадка
-		Наносит двойной урон Серной Ведьме
-		Атаки Серной Ведьмы могут нанести вам критический урон
+		Призывает малую руну серного огня у вас за спиной
+		Дает иммунитет к большинству огненных дебаффов
+		Большинство ваших атак накладывают на врагов проклятие порчи
+		[Content]
 		'''
-	/* L1:
+	L1: Наносит двойной урон Серной ведьме, но атаки Серной ведьмы могут нанести вам критический удар
+	L2:
 		'''
-		Deals double damage to the Brimstone Witch; 
-		her attacks have a chance to critically strike you
-		''' */
-	/* L2:
+		Если ты читаешь это, меня, должно быть, уже нет.
+		Это кольцо было единственным, что дарило холод в моей долгой жизни.
+		Но с каких-то пор оно впитало тепло смертных и стало... обжигающим.
+		Я возвращаюсь в серный огонь, превращаясь в пепел эпохи.
+		Я должна была уйти с пустыми руками, но возжелала сохранить лишь это тепло... я поддалась жадности.
+		Носи его.
+		В тот миг, когда ты занесёшь меч над богами...
+		Даже если мир окутает вечная зима, я буду гореть на кончиках твоих пальцев.
 		'''
-		If you are reading this, then I am likely already gone.
-		Throughout my long years, this ring was the only thing that felt truly cold.
-		But somewhere along the way, it absorbed a mortal's warmth... and became... too hot to let go.
-		I have returned to the Brimstone, reduced to the ashes of an era.
-		I should have departed with nothing, 
-		yet I found myself greedy for this singular warmth, wishing to preserve it.
-		Wear it.
-		And when you finally raise your blade against the gods...
-		Know that even if the world freezes over, I will still be burning at your fingertips.
-		''' */
 }
 
 AncientStormGoddessSpear: {
-	// DisplayName: Ancient Storm Goddess Spear
-	/* Tooltip:
+	DisplayName: Древнее копье Богини штормов
+	Tooltip:
 		'''
-		A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
-		"It is already a thing of the past, but it still works."
+		Выпускает поцелуй шторма с разрушительными электрическими дугами
+		"Это пережиток эпохи, но всё ещё работает"
 		[legend]
-		''' */
-	/* Legend:
 		'''
-		Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
-		her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
-		When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
-		She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
-		She no longer sought the light but reforged herself in the abyss. An ancient, 
-		forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
-		Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
-		She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
-		Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
-		She fought not for justice, not for Terra, not for the gods.  
-		She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
-		''' */
+	Legend:
+		'''
+		Алина, некогда острейший клинок Терры.
+		Её вера была тверда, а доблесть — безупречна. Железная стружка, серебряное копье, развевающиеся волосы. Клинок грозы, проносящийся со свистом.
+		Но даже острейший клинок ломается, а ответом на веру стало безразличие богов.
+		Когда Высшие обрушили кару, её соратники, родня, клятвы и слава обратились в пепел.
+		Она видела своими глазами, как так называемая справедливость растаптывает всё... кровавые слёзы... прах... Как именем порядка творится подлейшее разрушение.
+		Боги... Алина больше не взирала на богов.
+		Она отступила в Бездну, разрушив себя, позволив древней запретной силе пожирать её душу.
+		Доспехи Алины сплавились с изувеченным телом, выкованным Бездной.
+		Остатки облаков прошлого, красная кровь, затмевающая солнце, переплелись с воспоминаниями... предсмертные взгляды соратников... Алина... всё кончено.
+		Она больше не была той Алиной, богом войны, защищавшим Терру.
+		Её ярость вернулась подобно урагану, сметая муравьёв на поле битвы. Её гром раскалывал небеса, разрывая трон и землю.
+		Богиня штормов, Алина, безжалостно принесла разрушение и месть.
+		'''
 }
 
 ConstructionBlueprintQET: {
-	// DisplayName: Construction Blueprint (Quantum Entanglement Tower)
-	/* Tooltip:
+	DisplayName: Чертеж (Башня квантовой запутанности)
+	Tooltip:
 		'''
-		Use to learn how to craft the [i:CalamityOverhaul/CQETConstructor] Self-Constructor
-		"Your hands will forge the cornerstone and tower that connect two worlds"
-		''' */
-	// L1: Learned to craft the Self-Constructor (Quantum Entanglement Tower)!
-	// L2: You have already learned this blueprint!
+		Используйте для изучения конструкции [i:CalamityOverhaul/CQETConstructor] Автосборщика
+		"Твои руки теперь способны создать фундамент и башню, соединяющие два мира"
+		'''
+	L1: Получено знание о создании Автосборщика (Башня квантовой запутанности)!
+	L2: Вы уже изучили этот чертеж!
 }
 
 CQETConstructor: {
-	// DisplayName: Self-Constructor (Quantum Entanglement Tower)
-	/* Tooltip:
+	DisplayName: Автосборщик (Башня квантовой запутанности)
+	Tooltip:
 		'''
-		Place to construct a Quantum Entanglement Tower
-		Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Starflow Plated Blocks
-		''' */
-	// UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
+		Разместите для автоматического строительства Башни квантовой запутанности
+		Требует большое количество [i:CalamityOverhaul/StarflowPlatedBlock] Блоков звездного потока
+		'''
+	UseConstructionBlueprint: Изучить чертеж (Башня квантовой запутанности)
 }
 
 DeploySignaltower: {
-	// DisplayName: Quantum Entanglement Tower
-	/* Tooltip:
+	DisplayName: Башня квантовой запутанности
+	Tooltip:
 		'''
-		An important communication device that acts as a lighthouse in subspace
-		"A wild child raises a torch in the forest, shouting I am here"
-		''' */
+		Важное устройство связи, может служить маяком в подпространстве
+		"Дикое дитя поднимает факел в лесу, крича: я здесь"
+		'''
 }
 
 StarflowPlatedBlock: {
-	// DisplayName: Starflow Plated Block
-	/* Tooltip:
+	DisplayName: Блок звездного потока
+	Tooltip:
 		'''
-		Basic material for building the [i:CalamityOverhaul/DeploySignaltower] Quantum Entanglement Tower
-		"Forging flowing starlight into an immortal foundation"
-		''' */
+		Базовый материал для строительства Башни квантовой запутанности [i:CalamityOverhaul/DeploySignaltower]
+		"Отливая струящийся звездный свет в нерушимый фундамент"
+		'''
 }
 
 PQCD: {
-	// DisplayName: Portable Quantum Communicator
-	/* Tooltip:
+	DisplayName: Портативный квантовый коммуникатор
+	Tooltip:
 		'''
-		Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
-		"Theoretically capable of issuing an Extermination Order, but authorization seems insufficient"
-		''' */
-	// NeedSignalTowersText: Quantum entanglement link incomplete! Requires all {0} Signal Towers to be deployed.
-	// SignalTowerProgressText: Signal Tower Deployment Progress: {0}/{1}
+		Используйте для связи с Дрэйдоном и открытия голографического магазина "Draedon Industries"
+		"Теоретически можно использовать для приказа об истреблении, но прав доступа недостаточно"
+		'''
+	NeedSignalTowersText: Цепь квантовой запутанности не завершена! Требуется развернуть все {0} сигнальные башни для использования.
+	SignalTowerProgressText: Прогресс развертывания башен: {0}/{1}
 }
 
 Unsunghero: {
-	// DisplayName: Unsung Hero
-	/* Tooltip:
+	DisplayName: Некоронованный герой
+	Tooltip:
 		'''
-		Increases maximum stealth by 10
-		Stealth regeneration speed no longer reduces stealth damage
-		"What if you never return?"
-		"Then I shall never return."
-		''' */
+		Увеличивает максимальный запас скрытности на 10
+		Скорость передвижения в скрытности не снижает урон от скрытности
+		"А если ты не вернешься?"
+		"Значит, не вернусь."
+		'''
 }
 
 AriaofTheCosmos: {
-	// DisplayName: Aria of the Cosmos
-	/* Tooltip:
+	DisplayName: Ария Космоса
+	Tooltip:
 		'''
-		Hold left-click to charge a powerful quasar, dealing devastating damage upon release
-		Right-click to release a miniature black hole that fires a barrage of gamma rays once formed
-		Press [AriaofTheCosmosQSkill] to summon a Star Ring Guardian
-		Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
-		''' */
+		Удерживайте ЛКМ, чтобы сконденсировать мощный квазар, наносящий разрушительный урон при высвобождении
+		ПКМ создает микро-черную дыру, которая после формирования выпускает поток гамма-лучей
+		Нажмите [AriaofTheCosmosQSkill] для призыва Звездного стража
+		Нажмите [AriaofTheCosmosRSkill] для генерации гамма-всплеска
+		'''
 }
 
 Oceanfragments: {
-	// DisplayName: Ocean Scraps
-	// Tooltip: A mysterious trinket. The Old Duke might be interested in it.
+	DisplayName: Океанический фрагмент
+	Tooltip: Таинственная безделушка, Старый герцог может заинтересоваться ею
 }
 
 OceanRaiders: {
-	// WorkingText: Working...
-	// NoWaterText: Must be placed above water to operate!
-	// NoEnergyText: Insufficient Power!
-	// DisplayName: Ocean Devourer
-	/* Tooltip:
+	WorkingText: Работает...
+	NoWaterText: Требуется размещение над водой для работы!
+	NoEnergyText: Недостаточно энергии!
+	DisplayName: Океанический поглотитель
+	Tooltip:
 		'''
-		Consumes power to extract resources from water bodies
-		Right-click to open internal storage
-		''' */
+		Потребляет энергию для извлечения ресурсов из воды
+		Нажмите ПКМ, чтобы открыть внутреннее хранилище
+		'''
 }
 
 OldDuchest: {
-	// StorageText: Large Storage Chest
-	// DisplayName: Old Duchest
-	/* Tooltip:
+	StorageText: Большое хранилище
+	DisplayName: Старый сундук
+	Tooltip:
 		'''
-		A storage chest with immense capacity
-		"The Old Duke's former chest. If he is nearby, he might toss some things inside."
-		''' */
+		Сундук огромной вместимости
+		"Бывший сундук Старого герцога. Если он окажется поблизости, то может что-нибудь туда закинуть"
+		'''
 }
 
 QuestLogBook: {
-	// DisplayName: Quest Book
-	// Tooltip: Use to open or close the quest interface
+	DisplayName: Книга заданий
+	Tooltip: Используйте, чтобы открыть или закрыть интерфейс заданий
 }
 
 MermanRod: {
-	// Text1: A Merman's Perch has already been placed in the world!
-	// DisplayName: Merman's Perch
-	/* Tooltip:
+	Text1: В этом мире уже установлена Удочка рыболюда!
+	DisplayName: Удочка рыболюда
+	Tooltip:
 		'''
-		Increases fishing power by 20 when fishing nearby
-		The Old Duke will move his campsite here
-		''' */
+		Увеличивает силу рыбалки на 20, если находится рядом
+		Старый герцог перенесет свой лагерь в это место
+		'''
 }
 
 MiningMachineMk2: {
-	// DontWork: It needs to be placed on a hard surface in order to carry out excavation work.
-	// DisplayName: Mining Machine Mk2
-	/* Tooltip:
+	DontWork: Требуется размещение на твердой поверхности для бурения
+	DisplayName: Буровая установка MK2
+	Tooltip:
 		'''
-		Drilling minerals by consuming electrical energy
-		It needs to be placed in an appropriate location to work properly
-		Special minerals can be extracted in special environments
-		''' */
+		Потребляет энергию для добычи руды
+		Должна быть размещена в подходящем месте для корректной работы
+		В особых биомах может добывать уникальные минералы
+		'''
 }
 
 UniversalFrost: {
-	// DisplayName: Universal Frost
-	/* Tooltip:
+	DisplayName: Вселенская стужа
+	Tooltip:
 		'''
-		Uses Snowballs as ammo
-		Fires hailstones and frigid nova orbs
-		The orbs bounce, home in on enemies, and release frost beams upon explosion
-		Continuous firing accumulates ice energy
-		When fully charged, the next attack unleashes the Glacial Age
-		The Glacial Age summons a massive array of icicles and a blizzard field at the cursor position
-		"When all creation falls into silence, only eternal frost shall blanket the world"
-		''' */
+		Использует снежки в качестве боеприпасов
+		Выстреливает градом и ледяными новами. Кристальные сферы отскакивают, наводятся и испускают морозные лучи при взрыве
+		Непрерывная стрельба накапливает морозную энергию. При полном заряде следующий выстрел вызовет Ледниковый период
+		Ледниковый период призывает массивные ледяные шипы и снежную бурю в месте курсора
+		"Когда всё сущее умолкнет, лишь вечный иней покроет мир"
+		'''
 }
 
 GodslayerScabbard: {
-	// DisplayName: Godslayer Scabbard
-	/* Tooltip:
+	DisplayName: Ножны Богоубийцы
+	Tooltip:
 		'''
-		Accumulates charge while holding a melee weapon without attacking
-		Attacking with full charge grants 2 second of invulnerability
-		"Though the blade remains sheathed, its killing intent is palpable.
-		When the time is right, slaying a god takes but an instant."
-		''' */
+		Накапливает заряд "Иайдо", когда вы держите оружие ближнего боя, но не атакуете
+		Атака при полном заряде дает 2 секунды неуязвимости
+		"Клинок еще в ножнах, но жажда убийства уже пронзает холод.
+		Когда придет час, убийство бога займет лишь мгновение"
+		'''
 }
 
 Lumberjack: {
-	// Text1: Excessive Quantity!
-	// Text2: Lack of Electricity!
-	// CycleModeText: Cycle Mode
-	// ClearModeText: Clear Mode
-	// DisplayName: Lumberjack
-	/* Tooltip:
+	Text1: Слишком много предметов!
+	Text2: Недостаточно энергии!
+	CycleModeText: Цикличный режим
+	ClearModeText: Режим очистки
+	DisplayName: Дровосек
+	Tooltip:
 		'''
-		Consumes power to harvest timber
-		Automatically chops down surrounding trees
-		Right-click to switch between Cycle Mode and Clear Mode
-		Cycle Mode continuously harvests trees and replants saplings
-		Clear Mode only harvests trees without replanting
-		''' */
+		Потребляет энергию для вырубки леса
+		Автоматически рубит деревья вокруг
+		Нажмите ПКМ для переключения между Цикличным режимом и Режимом очистки
+		Цикличный режим непрерывно рубит деревья и позволяет саженцам расти заново
+		Режим очистки только рубит деревья, не позволяя саженцам расти
+		'''
 }
 
 LifeWeaver: {
-	// NoValidPositionText: No valid planting spots nearby!
-	// NoEnergyText: Insufficient power!
-	// DisplayName: Life Weaver
-	// Tooltip: Consumes power to plant trees nearby
+	NoValidPositionText: Рядом нет места для посадки!
+	NoEnergyText: Недостаточно энергии!
+	DisplayName: Ткач жизни
+	Tooltip: Потребляет энергию для посадки деревьев вокруг
 }
 
 WGGLumberjack: {
-	// DisplayName: Wilderness Lumberjack
-	// Tooltip: ""
+	DisplayName: Дровосек пустошей
+	Tooltip: ""
 }
 
 WGGLifeWeaver: {
-	// DisplayName: Wilderness Life Weaver
-	// Tooltip: ""
+	DisplayName: Ткач жизни пустошей
+	Tooltip: ""
 }
 
 Incinerator: {
-	// DisplayName: Electric Incinerator
-	/* Tooltip:
+	DisplayName: Электрический инсинератор
+	Tooltip:
 		'''
-		Consumes power to smelt items
-		Right-click to open the control panel
-		Shift + Right-click to quickly deposit ingredients or retrieve products
-		Smelting items yields double output
-		''' */
+		Потребляет энергию для переплавки предметов
+		Нажмите ПКМ, чтобы открыть панель управления
+		Shift + ПКМ позволяет быстро положить сырье или забрать результат переплавки
+		Переплавка предметов дает удвоенное количество материалов
+		'''
 }
 
 ItemPipeline: {
-	// DisplayName: Item Pipeline
-	/* Tooltip:
+	DisplayName: Логистическая труба
+	Tooltip:
 		'''
-		Used to transport items
-		Right-click to quickly dismantle and retrieve the target pipe (only when holding a pipeline)
-		Right-click a pipe endpoint to switch between Output and Input modes (only when NOT holding a pipeline)
-		Pipes in Output mode extract items from connected containers and transfer them to containers connected to Input mode pipes
-		''' */
+		Используется для транспортировки предметов
+		Нажмите ПКМ, чтобы быстро демонтировать и забрать трубу (работает, когда труба в руках)
+		Нажмите ПКМ по концу трубы, чтобы переключить режим Входа/Выхода (работает, когда в руках нет трубы)
+		Труба в режиме Выхода извлекает предметы из контейнера и передает их в контейнер, подключенный к трубе в режиме Входа
+		'''
 }
 
 Thrower: {
-	// NoEnergyText: Insufficient energy!
-	// NoItemText: No items to throw!
-	// WorkingText: Throwing...
-	// IdleText: Idle
-	// DisplayName: Thrower
-	/* Tooltip:
+	NoEnergyText: Недостаточно энергии!
+	NoItemText: Нет предметов для броска!
+	WorkingText: Бросок...
+	IdleText: Ожидание
+	DisplayName: Выбрасыватель
+	Tooltip:
 		'''
-		Consumes power to throw items
-		Right-click to open the control panel
-		''' */
+		Потребляет энергию для выбрасывания предметов
+		Нажмите ПКМ, чтобы открыть панель управления
+		'''
 }
 
 Elysium: {
-	// DisplayName: Elysium
-	// Tooltip: ""
+	DisplayName: Элизиум
+	Tooltip: ""
 }
