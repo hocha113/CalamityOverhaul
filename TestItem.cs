@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios;
+﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -52,6 +53,10 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
+            player.GetDamage(DamageClass.Generic) += 100;
+            if (player.TryGetADVSave(out ADVSave save)) {
+                //save.SupCalQuestRewardSceneComplete.Domp();
+            }
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

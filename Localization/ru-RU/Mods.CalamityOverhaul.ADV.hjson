@@ -1,4 +1,4 @@
-﻿FirstMet: {
+FirstMet: {
 	Rolename1: ???
 	Rolename2: Палтус
 	Line0: Сэр... ваша техника рыбной ловли... оставляет желать лучшего.
@@ -653,6 +653,10 @@ SupCalDisplayText: {
 	Desperation4Text: Похоже, я проиграла... Встретить тебя было удачей.
 	Acceptance1Text: Это мой самый счастливый день за сотню лет...
 	Acceptance2Text: Быть может, ты действительно сможешь положить конец этой проклятой эпохе.
+	// Story1: Story
+	// Story2: Story
+	// Story3: Story
+	// Story4: Story
 }
 
 SupCalDisplayTextByBossRush: {

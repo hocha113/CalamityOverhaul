@@ -1,8 +1,12 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -57,6 +61,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             if (InWorldBossPhase.Level12) {
                 damage *= 1.25f;
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            if (Main.LocalPlayer.TryGetADVSave(out ADVSave save) && save.SupCalQuestReward) {
+                TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story1.Value);
+                line.OverrideColor = Color.OrangeRed;
+                tooltips.Add(line);
             }
         }
 

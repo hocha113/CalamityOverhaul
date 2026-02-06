@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -6,6 +8,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -57,6 +60,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             if (InWorldBossPhase.Level12) {
                 damage *= 1.25f;
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            if (Main.LocalPlayer.TryGetADVSave(out ADVSave save) && save.SupCalDoGQuestReward) {
+                TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story2.Value);
+                line.OverrideColor = Color.OrangeRed;
+                tooltips.Add(line);
             }
         }
 

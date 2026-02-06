@@ -653,6 +653,10 @@ SupCalDisplayText: {
 	// Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
 	// Acceptance1Text: This... is the happiest I have been in a hundred years...
 	// Acceptance2Text: Perhaps... you truly can end this damned era.
+	// Story1: Story
+	// Story2: Story
+	// Story3: Story
+	// Story4: Story
 }
 
 SupCalDisplayTextByBossRush: {

@@ -96,6 +96,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
         //Acceptance阶段文本
         public LocalizedText Acceptance1Text { get; private set; }
         public LocalizedText Acceptance2Text { get; private set; }
+
+        //故事文本
+        public static LocalizedText Story1 { get; private set; }
+        public static LocalizedText Story2 { get; private set; }
+        public static LocalizedText Story3 { get; private set; }
+        public static LocalizedText Story4 { get; private set; }
         #endregion
 
         private void LoadLocalization() {
@@ -133,6 +139,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
 
             Acceptance1Text = this.GetLocalization(nameof(Acceptance1Text), () => "这是我百年来最开心的一天……");
             Acceptance2Text = this.GetLocalization(nameof(Acceptance2Text), () => "或许，你真的能终结这个该死的时代");
+
+            Story1 = this.GetLocalization(nameof(Story1), () => "Story");
+            Story2 = this.GetLocalization(nameof(Story2), () => "Story");
+            Story3 = this.GetLocalization(nameof(Story3), () => "Story");
+            Story4 = this.GetLocalization(nameof(Story4), () => "Story");
         }
 
         public override void SetStaticDefaults() {

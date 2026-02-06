@@ -1,4 +1,6 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -37,6 +39,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             if (InWorldBossPhase.Level12) {
                 damage *= 1.25f;
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            if (Main.LocalPlayer.TryGetADVSave(out ADVSave save) && save.SupCalYharonQuestReward) {
+                TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story3.Value);
+                line.OverrideColor = Color.OrangeRed;
+                tooltips.Add(line);
             }
         }
 
