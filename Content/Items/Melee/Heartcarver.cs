@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -9,6 +10,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -71,21 +73,19 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
-            //右键冲刺突击
             if (player.altFunctionUse == 2) {
                 Projectile.NewProjectile(source, position, velocity.SafeNormalize(Vector2.Zero),
                     ModContent.ProjectileType<HeartcarverDash>(), (int)(damage * 1.5f), knockback * 2f, player.whoAmI);
                 return false;
             }
 
-            //普通左键攻击
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
     }
 
     /// <summary>
-    /// 刻心者短剑的手持弹幕
+    /// 刻心者短剑的手持弹幕 — 三连刺+终结斩连击系统
     /// </summary>
     internal class HeartcarverHeld : BaseKnife
     {
@@ -93,7 +93,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<Heartcarver>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
-        private static int stabCounter = 0;//刺击计数器
+        private static int stabCounter = 0;
+        private static int comboStep = 0;
 
         public override void SetKnifeProperty() {
             Projectile.DamageType = DamageClass.Generic;
@@ -104,6 +105,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailTopWidth = 30;
             drawTrailBtommWidth = 10;
             Projectile.ArmorPenetration = 32767;
+        }
+
+        public override void KnifeInitialize() {
+            if (++comboStep > 3) {
+                comboStep = 0;
+            }
         }
 
         public override bool PreSwingAI() {
@@ -117,45 +124,113 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.Kill();
                 return false;
             }
-            //短剑刺击行为
+
+            if (comboStep == 3) {
+                //终结斩蓄力阶段的血色能量粒子
+                if (Time < maxSwingTime * 0.3f && Time % 2 == 0) {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float dist = Main.rand.NextFloat(60f, 120f);
+                    Vector2 spawnPos = Owner.Center + angle.ToRotationVector2() * dist;
+                    Vector2 vel = (Owner.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 8f);
+                    PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                        spawnPos, vel, false, Main.rand.Next(10, 18),
+                        Main.rand.NextFloat(1.5f, 2.5f),
+                        Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
+                    );
+                    PRTLoader.AddParticle(spark);
+                }
+            }
+
+            //普通三连刺 — 逐刺加速加距
+            float speedBonus = 1f + comboStep * 0.15f;
+            float lengthBonus = comboStep * 8f;
+
             StabBehavior(
                 initialLength: 35,
-                lifetime: maxSwingTime,
-                scaleFactorDenominator: 420f,
-                minLength: 45,
-                maxLength: 65,
-                canDrawSlashTrail: true
+                lifetime: (int)(maxSwingTime / speedBonus),
+                scaleFactorDenominator: 380f - comboStep * 30f,
+                minLength: (int)(25 + lengthBonus),
+                maxLength: (int)(50 + lengthBonus),
+                canDrawSlashTrail: false
             );
+
             if (Time == 1) {
-                SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item1 with {
+                    Pitch = comboStep * 0.15f,
+                    Volume = 0.9f + comboStep * 0.1f
+                }, Projectile.Center);
             }
+
+            //连刺加速时的拖尾粒子
+            if (comboStep >= 1 && Time % 3 == 0) {
+                Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
+                Dust trail = Dust.NewDustPerfect(dustPos, DustID.Blood,
+                    -ShootVelocity * 0.3f, 100, default, 1.2f + comboStep * 0.3f);
+                trail.noGravity = true;
+            }
+
             return false;
         }
 
         public override void Shoot() {
-            //每次刺击都会生成环绕匕首
             int daggerType = ModContent.ProjectileType<HeartcarverDagger>();
             if (stabCounter > 3) {
                 stabCounter = 0;
             }
-            //限制最多3把匕首
+
+            //终结斩：生成2把匕首 + 屏幕微震
+            if (comboStep == 3) {
+                int spawnCount = Math.Min(2, 3 - Owner.ownedProjectileCounts[daggerType]);
+                for (int i = 0; i < spawnCount; i++) {
+                    Projectile.NewProjectile(
+                        Source, ShootSpanPos, Vector2.Zero,
+                        daggerType, (int)(Projectile.damage * 1.2f), Projectile.knockBack,
+                        Owner.whoAmI, ai0: stabCounter
+                    );
+                    stabCounter++;
+                }
+                return;
+            }
+
+            //普通刺击
             if (Owner.ownedProjectileCounts[daggerType] < 3) {
                 Projectile.NewProjectile(
-                    Source,
-                    ShootSpanPos,
-                    Vector2.Zero,
-                    daggerType,
-                    Projectile.damage,
-                    Projectile.knockBack,
-                    Owner.whoAmI,
-                    ai0: stabCounter //传入刺击索引用于错开动画
+                    Source, ShootSpanPos, Vector2.Zero,
+                    daggerType, Projectile.damage, Projectile.knockBack,
+                    Owner.whoAmI, ai0: stabCounter
                 );
                 stabCounter++;
             }
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Bleeding, 180);
+            target.AddBuff(BuffID.Bleeding, 180 + comboStep * 60);
+
+            //终结斩命中：强力打击反馈
+            if (comboStep == 3 && Projectile.numHits <= 1) {
+                SoundEngine.PlaySound(SoundID.NPCHit18 with {
+                    Volume = 0.8f, Pitch = 0.4f
+                }, target.Center);
+
+                for (int i = 0; i < 20; i++) {
+                    Vector2 vel = Main.rand.NextVector2Circular(10f, 10f);
+                    Dust hitDust = Dust.NewDustPerfect(
+                        target.Center, DustID.Blood, vel, 100, default,
+                        Main.rand.NextFloat(1.8f, 2.8f)
+                    );
+                    hitDust.noGravity = true;
+                    hitDust.fadeIn = 1.3f;
+                }
+
+                for (int i = 0; i < 6; i++) {
+                    PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                        target.Center, Main.rand.NextVector2Circular(10f, 10f),
+                        false, Main.rand.Next(12, 20), Main.rand.NextFloat(1.5f, 2.5f),
+                        Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat())
+                    );
+                    PRTLoader.AddParticle(spark);
+                }
+            }
         }
     }
 
@@ -163,6 +238,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Placeholder;
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Heartcarver>()).DisplayName;
+        private const int CooldownDuration = 120;
+
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Generic;
             Projectile.width = 60;
@@ -172,18 +249,58 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = CooldownDuration;
         }
 
         public override void AI() {
             Projectile.Center = Owner.Center;
-            for (int i = 0; i < 6; i++) {
-                Dust.NewDust(Owner.position, Owner.width, Owner.height, DustID.Blood);
+            float progress = 1f - Projectile.timeLeft / (float)CooldownDuration;
+
+            //冷却期间粒子逐渐减少，最后几帧爆发充能完成提示
+            int dustCount = (int)MathHelper.Lerp(4f, 1f, progress);
+            for (int i = 0; i < dustCount; i++) {
+                Dust d = Dust.NewDustPerfect(
+                    Owner.Center + Main.rand.NextVector2Circular(Owner.width * 0.5f, Owner.height * 0.5f),
+                    DustID.Blood, Vector2.Zero, 100, default,
+                    MathHelper.Lerp(1.2f, 0.6f, progress)
+                );
+                d.noGravity = true;
+                d.fadeIn = 0.8f;
+            }
+
+            //充能接近完成时的脉冲提示
+            if (Projectile.timeLeft == 15) {
+                SoundEngine.PlaySound(SoundID.Item28 with {
+                    Volume = 0.4f, Pitch = 0.5f
+                }, Owner.Center);
+
+                for (int i = 0; i < 16; i++) {
+                    float angle = MathHelper.TwoPi * i / 16f;
+                    PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                        Owner.Center,
+                        angle.ToRotationVector2() * 5f,
+                        false, 15, Main.rand.NextFloat(1.5f, 2.5f),
+                        Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat())
+                    );
+                    PRTLoader.AddParticle(spark);
+                }
             }
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.1f, Volume = 0.8f }, Owner.Center);
+
+            //充能完成爆发
+            for (int i = 0; i < 12; i++) {
+                float angle = MathHelper.TwoPi * i / 12f;
+                Dust burst = Dust.NewDustPerfect(
+                    Owner.Center, DustID.Blood,
+                    angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f),
+                    100, default, Main.rand.NextFloat(1.5f, 2f)
+                );
+                burst.noGravity = true;
+                burst.fadeIn = 1.2f;
+            }
         }
     }
 
@@ -194,14 +311,23 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
-        private const int DashDuration = 25; //冲刺持续时间
-        private const float DashSpeed = 35f; //冲刺速度
-        private float currentDashSpeed;
+        //冲刺分为两阶段：前冲 + 回刺
+        private const int ForwardDuration = 18;
+        private const int ReturnDuration = 10;
+        private const int TotalDuration = ForwardDuration + ReturnDuration;
+        private const float DashSpeed = 38f;
+
         private Vector2 dashDirection;
-        private int hitCount; //击中计数
+        private Vector2 dashStartPos;
+        private Vector2 dashPeakPos;
+        private Vector2 dashPerpendicularDir;
+        private int hitCount;
+        private int dashTimer;
+        private bool isReturning;
+        private float arcIntensity;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 18;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -214,9 +340,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = DashDuration;
+            Projectile.timeLeft = TotalDuration;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = 6;
             Projectile.ArmorPenetration = 32767;
         }
 
@@ -232,188 +358,235 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.localAI[0] = 1f;
             }
 
+            dashTimer++;
             Owner.direction = Projectile.direction = Math.Sign(dashDirection.X);
 
-            //更新冲刺状态
-            UpdateDashMovement();
+            if (!isReturning && dashTimer >= ForwardDuration) {
+                //切换到回刺阶段
+                isReturning = true;
+                dashPeakPos = Owner.Center;
+                dashTimer = 0;
 
-            //更新视觉效果
+                //回刺瞬间的强力音效
+                SoundEngine.PlaySound(SoundID.Item71 with {
+                    Volume = 0.8f, Pitch = 0.5f
+                }, Owner.Center);
+
+                //方向反转粒子爆发
+                for (int i = 0; i < 20; i++) {
+                    float angle = MathHelper.TwoPi * i / 20f;
+                    Dust flip = Dust.NewDustPerfect(
+                        Owner.Center, DustID.Blood,
+                        angle.ToRotationVector2() * Main.rand.NextFloat(6f, 12f),
+                        100, default, Main.rand.NextFloat(1.5f, 2.2f)
+                    );
+                    flip.noGravity = true;
+                    flip.fadeIn = 1.2f;
+                }
+            }
+
+            if (isReturning) {
+                UpdateReturnMovement();
+            }
+            else {
+                UpdateForwardMovement();
+            }
+
             UpdateVisualEffects();
-
-            //给予玩家免疫帧
-            Owner.GivePlayerImmuneState(4);
-
-            //锁定玩家
+            Owner.GivePlayerImmuneState(36);
             Projectile.Center = Owner.Center;
             Owner.heldProj = Projectile.whoAmI;
-        }
-
-        private void InitializeDash() {
-            //计算冲刺方向
-            dashDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
-            currentDashSpeed = DashSpeed;
-
-            //播放冲刺音效
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                Volume = 0.7f,
-                Pitch = -0.3f
-            }, Owner.Center);
-
-            SoundEngine.PlaySound(SoundID.Item71 with {
-                Volume = 0.5f,
-                Pitch = 0.2f
-            }, Owner.Center);
-
-            //生成冲刺起始特效
-            SpawnDashStartEffect();
-        }
-
-        private void UpdateDashMovement() {
-            //冲刺逐渐减速
-            float progress = 1f - (Projectile.timeLeft / (float)DashDuration);
-            currentDashSpeed = MathHelper.Lerp(DashSpeed, DashSpeed * 0.3f, CWRUtils.EaseOutCubic(progress));
-
-            //应用冲刺速度
-            Projectile.velocity = dashDirection * currentDashSpeed;
-
-            //更新旋转
-            Projectile.rotation = dashDirection.ToRotation() + (Projectile.direction > 0 ? MathHelper.PiOver4 : -MathHelper.Pi - MathHelper.PiOver4);
-
-            Owner.Center = Projectile.Center;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
         }
 
+        private void InitializeDash() {
+            dashDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
+            dashStartPos = Owner.Center;
+            dashPerpendicularDir = new Vector2(-dashDirection.Y, dashDirection.X);
+            arcIntensity = Main.rand.NextBool() ? 1f : -1f;
+
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                Volume = 0.8f, Pitch = -0.2f
+            }, Owner.Center);
+
+            SoundEngine.PlaySound(SoundID.Item71 with {
+                Volume = 0.6f, Pitch = 0.1f
+            }, Owner.Center);
+
+            if (CWRServerConfig.Instance.ScreenVibration) {
+                PunchCameraModifier modifier = new PunchCameraModifier(
+                    Owner.Center, dashDirection, 5f, 6f, 10, 600f, FullName
+                );
+                Main.instance.CameraModifiers.Add(modifier);
+            }
+
+            SpawnDashStartEffect();
+        }
+
+        private void UpdateForwardMovement() {
+            float t = dashTimer / (float)ForwardDuration;
+            //使用三次贝塞尔曲线实现弧形冲刺轨迹
+            float easedT = t < 0.5f ? 4f * t * t * t : 1f - MathF.Pow(-2f * t + 2f, 3f) / 2f;
+
+            //贝塞尔控制点：起点 → 弧形偏移控制点 → 终点
+            Vector2 endPos = dashStartPos + dashDirection * DashSpeed * ForwardDuration * 0.6f;
+            Vector2 controlPoint = dashStartPos + dashDirection * DashSpeed * ForwardDuration * 0.3f
+                + dashPerpendicularDir * 80f * arcIntensity;
+
+            //二阶贝塞尔曲线
+            Vector2 targetPos = Vector2.Lerp(
+                Vector2.Lerp(dashStartPos, controlPoint, easedT),
+                Vector2.Lerp(controlPoint, endPos, easedT),
+                easedT
+            );
+
+            Projectile.velocity = targetPos - Owner.Center;
+            Owner.Center = targetPos;
+
+            //匕首始终朝向运动方向
+            if (Projectile.velocity.LengthSquared() > 0.01f) {
+                float targetRot = Projectile.velocity.ToRotation();
+                Projectile.rotation = targetRot + (Projectile.direction > 0 ? MathHelper.PiOver4 : -MathHelper.Pi - MathHelper.PiOver4);
+            }
+        }
+
+        private void UpdateReturnMovement() {
+            float t = dashTimer / (float)ReturnDuration;
+            //回刺使用强力的缓入缓出
+            float easedT = t * t * (3f - 2f * t);
+
+            Vector2 returnTarget = dashStartPos;
+            Owner.Center = Vector2.Lerp(dashPeakPos, returnTarget, easedT);
+            Projectile.velocity = Owner.Center - (dashPeakPos + (returnTarget - dashPeakPos) * (easedT - 0.05f));
+
+            //回刺方向旋转
+            Vector2 returnDir = (returnTarget - dashPeakPos).SafeNormalize(Vector2.UnitX);
+            Projectile.rotation = returnDir.ToRotation() + (Projectile.direction > 0 ? MathHelper.PiOver4 : -MathHelper.Pi - MathHelper.PiOver4);
+
+            if (dashTimer >= ReturnDuration) {
+                Projectile.Kill();
+            }
+        }
+
         private void UpdateVisualEffects() {
-            //生成血色拖尾粒子
-            if (Main.rand.NextBool(2)) {
-                Vector2 spawnPos = Owner.Center + Main.rand.NextVector2Circular(30f, 30f);
+            //密集血色拖尾
+            for (int i = 0; i < 2; i++) {
+                Vector2 spawnPos = Owner.Center + Main.rand.NextVector2Circular(25f, 25f);
                 Dust trail = Dust.NewDustPerfect(
-                    spawnPos,
-                    DustID.Blood,
-                    -dashDirection * Main.rand.NextFloat(2f, 5f),
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    spawnPos, DustID.Blood,
+                    -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 7f),
+                    100, default, Main.rand.NextFloat(1.3f, 2f)
                 );
                 trail.noGravity = true;
-                trail.fadeIn = 1.1f;
+                trail.fadeIn = 1.2f;
             }
 
-            //额外的冲击波效果
-            if (Projectile.timeLeft % 5 == 0) {
-                SpawnImpactRing();
+            //高速运动时的Spark粒子
+            if (dashTimer % 3 == 0) {
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                    Owner.Center + Main.rand.NextVector2Circular(15f, 15f),
+                    -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f),
+                    false, Main.rand.Next(8, 15), Main.rand.NextFloat(1.2f, 2f),
+                    Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
+                );
+                PRTLoader.AddParticle(spark);
             }
 
-            //照明效果
-            Lighting.AddLight(Owner.Center, 0.9f, 0.2f, 0.2f);
+            Lighting.AddLight(Owner.Center, 1.1f, 0.25f, 0.25f);
         }
 
         private void SpawnDashStartEffect() {
-            //爆发式粒子效果
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 15f);
+            //定向锥形爆发（朝冲刺方向散开）
+            for (int i = 0; i < 25; i++) {
+                float spread = Main.rand.NextFloat(-0.8f, 0.8f);
+                Vector2 velocity = dashDirection.RotatedBy(spread) * Main.rand.NextFloat(8f, 18f);
 
                 Dust burst = Dust.NewDustPerfect(
-                    Owner.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
+                    Owner.Center, DustID.Blood, velocity,
+                    100, default, Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 burst.noGravity = true;
                 burst.fadeIn = 1.3f;
             }
 
-            //环形冲击波
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                Vector2 velocity = angle.ToRotationVector2() * 8f;
+            //反方向气流粒子
+            for (int i = 0; i < 10; i++) {
+                float spread = Main.rand.NextFloat(-0.5f, 0.5f);
+                Vector2 velocity = (-dashDirection).RotatedBy(spread) * Main.rand.NextFloat(5f, 10f);
 
+                Dust wake = Dust.NewDustPerfect(
+                    Owner.Center, DustID.Smoke, velocity,
+                    150, new Color(120, 40, 40), Main.rand.NextFloat(1.2f, 2f)
+                );
+                wake.noGravity = true;
+            }
+
+            //环形Spark冲击波
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
                 PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     Owner.Center,
-                    velocity,
-                    false,
-                    20,
-                    Main.rand.NextFloat(2f, 3f),
+                    angle.ToRotationVector2() * 10f,
+                    false, 18, Main.rand.NextFloat(2f, 3.5f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
                 );
                 PRTLoader.AddParticle(spark);
             }
         }
 
-        private void SpawnImpactRing() {
-            //环形粒子效果
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 velocity = angle.ToRotationVector2() * 3f;
-
-                Dust ring = Dust.NewDustPerfect(
-                    Owner.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 1.6f)
-                );
-                ring.noGravity = true;
-                ring.fadeIn = 1.1f;
-            }
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中音效
             SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                Volume = 0.6f,
-                Pitch = 0.3f
+                Volume = 0.7f, Pitch = 0.3f + (isReturning ? 0.2f : 0f)
             }, target.Center);
 
-            //流血Buff
             target.AddBuff(BuffID.Bleeding, 300);
 
-            //击中特效
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+            //定向血液飞溅（从冲刺方向扩散）
+            Vector2 hitDir = (target.Center - Owner.Center).SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 18; i++) {
+                float spread = Main.rand.NextFloat(-1f, 1f);
+                Vector2 vel = hitDir.RotatedBy(spread) * Main.rand.NextFloat(4f, 12f);
                 Dust hitDust = Dust.NewDustPerfect(
-                    target.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.2f)
+                    target.Center, DustID.Blood, vel,
+                    100, default, Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 hitDust.noGravity = true;
                 hitDust.fadeIn = 1.2f;
             }
 
-            //击中计数
             hitCount++;
 
-            //每击中3个敌人额外爆发一次
+            //回刺命中时额外屏幕震动
+            if (isReturning && CWRServerConfig.Instance.ScreenVibration) {
+                PunchCameraModifier modifier = new PunchCameraModifier(
+                    target.Center, hitDir, 4f, 5f, 8, 500f, FullName
+                );
+                Main.instance.CameraModifiers.Add(modifier);
+            }
+
             if (hitCount % 3 == 0) {
                 SpawnDashStartEffect();
             }
         }
 
         public override void OnKill(int timeLeft) {
-            //结束时的粒子效果
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+            //回刺终结时的收束粒子效果
+            for (int i = 0; i < 24; i++) {
+                float angle = MathHelper.TwoPi * i / 24f;
+                float dist = Main.rand.NextFloat(40f, 80f);
+                Vector2 startPos = Owner.Center + angle.ToRotationVector2() * dist;
+                Vector2 vel = (Owner.Center - startPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 8f);
+
                 Dust killDust = Dust.NewDustPerfect(
-                    Owner.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2f)
+                    startPos, DustID.Blood, vel,
+                    100, default, Main.rand.NextFloat(1.3f, 2f)
                 );
                 killDust.noGravity = true;
+                killDust.fadeIn = 1.1f;
             }
 
-            //重置玩家速度
-            Owner.velocity *= 0.5f;
+            Owner.velocity *= 0.3f;
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Owner.FromObjectGetParent(), Owner.Center, Vector2.Zero
@@ -428,66 +601,58 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = sourceRect.Size() / 2f;
             SpriteEffects spriteEffects = Projectile.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //绘制残影拖尾
+            //绘制残影拖尾 — 颜色随阶段变化
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
+                if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
                 float progress = 1f - i / (float)Projectile.oldPos.Length;
-                float alpha = progress * 0.8f;
-                float scale = Projectile.scale * MathHelper.Lerp(0.7f, 1f, progress);
+                float alpha = progress * 0.85f;
+                float scale = Projectile.scale * MathHelper.Lerp(0.65f, 1.05f, progress);
 
-                Color trailColor = Color.Lerp(
-                    new Color(200, 50, 50),
-                    new Color(255, 100, 100),
-                    progress
-                ) * alpha;
+                Color trailColor;
+                if (isReturning) {
+                    trailColor = Color.Lerp(new Color(255, 80, 80), new Color(180, 30, 30), 1f - progress) * alpha;
+                }
+                else {
+                    trailColor = Color.Lerp(new Color(200, 50, 50), new Color(255, 120, 120), progress) * alpha;
+                }
 
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
 
                 Main.spriteBatch.Draw(
-                    texture,
-                    trailPos,
-                    sourceRect,
-                    trailColor,
-                    Projectile.rotation,
-                    origin,
-                    scale,
-                    spriteEffects,
-                    0
+                    texture, trailPos, sourceRect, trailColor,
+                    Projectile.oldRot.Length > i ? Projectile.oldRot[i] : Projectile.rotation,
+                    origin, scale, spriteEffects, 0
                 );
             }
 
             //绘制主体
             Main.spriteBatch.Draw(
-                texture,
-                drawPos,
-                sourceRect,
-                lightColor,
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                spriteEffects,
-                0
+                texture, drawPos, sourceRect, lightColor,
+                Projectile.rotation, origin, Projectile.scale, spriteEffects, 0
             );
 
-            //发光效果
-            Color glowColor = new Color(220, 50, 50) * 0.6f;
+            //多层发光效果
+            float glowPulse = 0.5f + MathF.Sin(dashTimer * 0.4f) * 0.15f;
+            Color glowColor = new Color(220, 50, 50) * glowPulse;
             Main.spriteBatch.Draw(
-                texture,
-                drawPos,
-                sourceRect,
-                glowColor,
-                Projectile.rotation,
-                origin,
-                Projectile.scale * 1.1f,
-                spriteEffects,
-                0
+                texture, drawPos, sourceRect, glowColor,
+                Projectile.rotation, origin, Projectile.scale * 1.08f, spriteEffects, 0
+            );
+
+            Color glowColor2 = new Color(255, 100, 100) * (glowPulse * 0.4f);
+            Main.spriteBatch.Draw(
+                texture, drawPos, sourceRect, glowColor2,
+                Projectile.rotation, origin, Projectile.scale * 1.18f, spriteEffects, 0
             );
 
             return false;
         }
     }
 
+    /// <summary>
+    /// 刻心者环绕匕首
+    /// </summary>
     internal class HeartcarverDagger : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
@@ -495,13 +660,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> SoftGlow = null;
 
-        //状态机
         private enum DaggerState
         {
-            Gathering,//聚集阶段
-            Orbiting,//环绕阶段
-            Charging,//蓄力阶段
-            Launching//发射阶段
+            Gathering,
+            Orbiting,
+            Charging,
+            Launching
         }
 
         private DaggerState State {
@@ -512,24 +676,27 @@ namespace CalamityOverhaul.Content.Items.Melee
         private ref float DaggerIndex => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[2];
 
-        //环绕参数
-        private float orbitRadius = 120f;
+        //环绕参数 — 椭圆轨道
+        private float orbitRadiusX = 100f;
+        private float orbitRadiusY = 55f;
         private float orbitAngle = 0f;
-        private float orbitSpeed = 0.04f;
-        private const float MaxOrbitSpeed = 0.35f;
+        private float orbitSpeed = 0.05f;
+        private float orbitTiltAngle = 0f;
+        private const float MaxOrbitSpeed = 0.45f;
 
-        //蓄力参数
-        private const int GatherDuration = 20;
-        private const int OrbitDuration = 60;
-        private const int ChargeDuration = 40;
-        private const float LaunchSpeed = 26f;
+        //缩短各阶段时间，节奏更紧凑
+        private const int GatherDuration = 12;
+        private const int OrbitDuration = 35;
+        private const int ChargeDuration = 25;
+        private const float LaunchSpeed = 32f;
 
         //视觉效果
         private float glowIntensity = 0f;
         private float trailIntensity = 0f;
+        private float daggerScale = 1f;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 14;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -541,11 +708,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = 3;
+            Projectile.penetrate = 5;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 8;
             Projectile.ArmorPenetration = 32767;
+        }
+
+        public override bool? CanDamage() {
+            return State == DaggerState.Launching ? null : false;
         }
 
         public override void AI() {
@@ -556,7 +727,6 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             StateTimer++;
 
-            //状态机
             switch (State) {
                 case DaggerState.Gathering:
                     GatheringPhaseAI(Owner);
@@ -572,268 +742,245 @@ namespace CalamityOverhaul.Content.Items.Melee
                     break;
             }
 
-            //旋转
-            Projectile.rotation += MathHelper.Lerp(0.1f, 0.6f, orbitSpeed / MaxOrbitSpeed);
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            //血红色照明
-            float lightIntensity = glowIntensity * 0.7f;
+            float lightIntensity = glowIntensity * 0.8f;
             Lighting.AddLight(Projectile.Center,
-             0.9f * lightIntensity,
-                0.2f * lightIntensity,
-               0.2f * lightIntensity);
+                0.9f * lightIntensity, 0.2f * lightIntensity, 0.2f * lightIntensity);
         }
 
-        //聚集阶段：匕首快速飞向玩家附近
+        //椭圆轨道位置计算（带倾斜面）
+        private Vector2 GetEllipseOrbitPos(Vector2 center, float angle, float radiusX, float radiusY, float tilt) {
+            float x = MathF.Cos(angle) * radiusX;
+            float y = MathF.Sin(angle) * radiusY;
+            //倾斜面旋转：绕X轴倾斜制造伪3D效果
+            float tiltedY = y * MathF.Cos(tilt);
+            return center + new Vector2(x, tiltedY).RotatedBy(tilt * 0.3f);
+        }
+
+        //基于椭圆位置计算伪深度缩放
+        private float GetDepthScale(float angle, float tilt) {
+            float depth = MathF.Sin(angle) * MathF.Sin(tilt);
+            return MathHelper.Lerp(0.7f, 1.3f, (depth + 1f) * 0.5f);
+        }
+
         private void GatheringPhaseAI(Player owner) {
             float progress = StateTimer / GatherDuration;
 
-            //计算初始环绕位置
-            float targetAngle = MathHelper.TwoPi * DaggerIndex / 8f;
-            Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
+            //初始化每把匕首的轨道倾斜角（错开120度均匀分布）
+            orbitTiltAngle = MathHelper.PiOver4 + DaggerIndex * 0.4f;
+            float targetAngle = MathHelper.TwoPi * DaggerIndex / 3f;
+            Vector2 targetPos = GetEllipseOrbitPos(owner.Center, targetAngle, orbitRadiusX, orbitRadiusY, orbitTiltAngle);
 
-            //使用缓动创造有力的冲刺感
-            float easeProgress = CWRUtils.EaseOutCubic(progress);
-            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.35f);
+            //弹性缓出：快速逼近后减速
+            float easeProgress = 1f - MathF.Pow(1f - progress, 3f);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.5f);
 
-            //提前开始旋转
             orbitAngle = targetAngle;
+            glowIntensity = MathHelper.Lerp(0f, 0.6f, progress);
+            daggerScale = MathHelper.Lerp(0.5f, 1f, easeProgress);
 
-            glowIntensity = MathHelper.Lerp(0f, 0.5f, progress);
-
-            //聚集血色粒子
-            if (Main.rand.NextBool(4)) {
+            if (Main.rand.NextBool(3)) {
                 SpawnGatherParticle();
             }
 
-            //转入环绕阶段
             if (StateTimer >= GatherDuration) {
                 State = DaggerState.Orbiting;
                 StateTimer = 0;
 
-                //匕首碰撞音效
                 SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.4f,
-                    Pitch = 0.2f
+                    Volume = 0.5f, Pitch = 0.3f + DaggerIndex * 0.1f
                 }, Projectile.Center);
             }
         }
 
-        //环绕阶段：环绕玩家并逐渐加速
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
 
-            //加速旋转
-            float speedProgress = CWRUtils.EaseInQuad(progress);
-            orbitSpeed = MathHelper.Lerp(0.04f, MaxOrbitSpeed * 0.6f, speedProgress);
+            //加速旋转 — 使用缓入
+            float speedProgress = progress * progress;
+            orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.55f, speedProgress);
 
-            //半径脉冲营造能量聚集感
-            float radiusPulse = MathF.Sin(StateTimer * 0.3f) * 10f;
-            float currentRadius = orbitRadius + radiusPulse * progress;
+            //椭圆半径呼吸效果
+            float breathe = MathF.Sin(StateTimer * 0.2f) * 8f * progress;
+            float currentRadiusX = orbitRadiusX + breathe;
+            float currentRadiusY = orbitRadiusY + breathe * 0.5f;
 
-            //更新环绕角度
             orbitAngle += orbitSpeed;
 
-            //计算环绕位置
-            Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = owner.Center + orbitOffset;
+            Vector2 targetPos = GetEllipseOrbitPos(owner.Center, orbitAngle, currentRadiusX, currentRadiusY, orbitTiltAngle);
+            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.35f);
 
-            //平滑跟随
-            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.3f);
+            //伪3D深度缩放
+            daggerScale = GetDepthScale(orbitAngle, orbitTiltAngle);
 
-            //辉光强度增加
-            glowIntensity = MathHelper.Lerp(0.5f, 0.8f, progress);
+            glowIntensity = MathHelper.Lerp(0.5f, 0.85f, progress);
             trailIntensity = progress;
 
-            //血色粒子环绕
-            if (Main.rand.NextBool(3)) {
+            if (Main.rand.NextBool(4)) {
                 SpawnOrbitParticle(owner.Center, progress);
             }
 
-            //周期性匕首切割音效
-            if (StateTimer % (int)MathHelper.Lerp(25, 8, progress) == 0) {
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.2f * progress,
-                    Pitch = -0.3f + progress * 0.4f
-                }, Projectile.Center);
-            }
-
-            //转入蓄力阶段
             if (StateTimer >= OrbitDuration) {
                 State = DaggerState.Charging;
                 StateTimer = 0;
 
-                //蓄力音效
                 SoundEngine.PlaySound(SoundID.Item28 with {
-                    Volume = 0.6f,
-                    Pitch = -0.3f
+                    Volume = 0.6f, Pitch = -0.2f
                 }, Projectile.Center);
             }
         }
 
-        //蓄力阶段：最高速旋转准备发射
         private void ChargingPhaseAI(Player owner) {
             float progress = StateTimer / ChargeDuration;
 
-            //达到最高旋转速度
-            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
+            //最高旋转速度
+            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.55f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
 
-            //半径脉动蓄力震荡感
-            float radiusOscillation = MathF.Sin(StateTimer * 0.5f) * 15f * progress;
-            float currentRadius = orbitRadius - 20f * progress + radiusOscillation;
+            //半径急剧收缩 — 匕首向玩家集中
+            float shrinkFactor = 1f - progress * 0.6f;
+            float oscillation = MathF.Sin(StateTimer * 0.7f) * 12f * (1f - progress);
+            float currentRadiusX = orbitRadiusX * shrinkFactor + oscillation;
+            float currentRadiusY = orbitRadiusY * shrinkFactor + oscillation * 0.5f;
 
-            //更新环绕
             orbitAngle += orbitSpeed;
-            Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = owner.Center + orbitOffset;
-            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.4f);
+            Vector2 targetPos = GetEllipseOrbitPos(owner.Center, orbitAngle, currentRadiusX, currentRadiusY, orbitTiltAngle);
+            Projectile.velocity = Projectile.Center.To(targetPos) * 0.45f;
 
-            //最大辉光
-            glowIntensity = 0.9f + MathF.Sin(StateTimer * 0.8f) * 0.1f;
+            daggerScale = GetDepthScale(orbitAngle, orbitTiltAngle) * MathHelper.Lerp(1f, 1.2f, progress);
+
+            //辉光脉冲加剧
+            glowIntensity = 0.9f + MathF.Sin(StateTimer * 1f) * 0.1f;
             trailIntensity = 1f;
 
-            //密集血色粒子
-            if (Main.rand.NextBool()) {
+            //密集能量聚合粒子
+            if (Main.rand.NextBool(2)) {
                 SpawnChargeParticle(owner.Center, progress);
             }
 
-            //蓄力血色脉冲
-            if (StateTimer % 10 == 0) {
-                SpawnChargePulse(owner.Center);
+            if (StateTimer % 8 == 0) {
+                SpawnChargePulse();
             }
 
-            //高频匕首音效
-            if (StateTimer % 6 == 0) {
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.15f + progress * 0.25f,
-                    Pitch = 0.2f + progress * 0.4f
-                }, Projectile.Center);
-            }
-
-            //转入发射阶段
-            if (StateTimer >= ChargeDuration + DaggerIndex * 10) {
+            //所有匕首同时发射（不再错开）
+            if (StateTimer >= ChargeDuration) {
                 LaunchToTarget(owner);
             }
         }
 
-        //发射向目标
         private void LaunchToTarget(Player owner) {
-            NPC target = owner.Center.FindClosestNPC(1200);
+            NPC target = owner.Center.FindClosestNPC(1500);
 
             Vector2 launchDir;
             if (target != null) {
-                launchDir = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                //预判目标位置
+                float travelTime = Vector2.Distance(Projectile.Center, target.Center) / LaunchSpeed;
+                Vector2 predictedPos = target.Center + target.velocity * travelTime * 0.5f;
+                launchDir = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
             }
             else {
-                launchDir = (orbitAngle - MathHelper.PiOver2).ToRotationVector2();
+                launchDir = (InMousePos - Projectile.Center).SafeNormalize(
+                    (orbitAngle - MathHelper.PiOver2).ToRotationVector2()
+                );
             }
 
-            //计算发射速度基于当前旋转速度增加动量感
             float momentumBonus = orbitSpeed / MaxOrbitSpeed;
-            float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
+            float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.3f);
 
             Projectile.velocity = launchDir * finalSpeed;
-            Projectile.tileCollide = true;
+            Projectile.tileCollide = false;
 
             State = DaggerState.Launching;
             StateTimer = 0;
 
-            //爆发式血色粒子
             SpawnLaunchBurst();
 
-            //强力发射音效
             SoundEngine.PlaySound(SoundID.Item71 with {
-                Volume = 0.7f,
-                Pitch = 0.3f
+                Volume = 0.8f, Pitch = 0.4f
             }, Projectile.Center);
         }
 
-        //向目标飞行
         private void LaunchingPhaseAI(Player owner) {
-            //速度衰减
-            Projectile.velocity *= 0.99f;
-
-            //追踪敌人
-            NPC target = Projectile.Center.FindClosestNPC(800);
-            if (target != null && Projectile.timeLeft < 570 && Projectile.numHits == 0) {
-                Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.08f);
+            //更激进的追踪
+            NPC target = Projectile.Center.FindClosestNPC(1200);
+            if (target != null && Projectile.numHits == 0) {
+                Projectile.SmoothHomingBehavior(target.Center, 1.03f, 0.12f);
             }
-            else {
-                Projectile.SmoothHomingBehavior(InMousePos, 1.01f, 0.08f);
+            else if (target != null) {
+                //击中后弱追踪，不会死板飞行
+                Projectile.SmoothHomingBehavior(target.Center, 1.005f, 0.03f);
             }
 
-            //轨迹强度保持
+            //速度维持（几乎不衰减）
+            float speed = Projectile.velocity.Length();
+            if (speed < LaunchSpeed * 0.7f) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * LaunchSpeed * 0.7f;
+            }
+
             trailIntensity = 1f;
-            glowIntensity = 0.9f;
+            glowIntensity = 0.95f;
+            daggerScale = 1.1f;
 
-            //飞行血色粒子
-            if (Main.rand.NextBool(3)) {
+            //匕首朝向运动方向
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+            if (Main.rand.NextBool(2)) {
                 SpawnLaunchTrailParticle();
             }
 
-            //超时消失
-            if (StateTimer > 180) {
+            if (StateTimer > 150) {
                 Projectile.Kill();
             }
         }
 
         private void SpawnGatherParticle() {
-            Dust gather = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                DustID.Blood,
-                (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f),
-                100,
-                default,
-                Main.rand.NextFloat(0.8f, 1.3f)
+            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+            float dist = Main.rand.NextFloat(30f, 60f);
+            Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * dist;
+            Vector2 vel = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f);
+
+            PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                spawnPos, vel, false, Main.rand.Next(8, 14),
+                Main.rand.NextFloat(1f, 1.8f),
+                Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
             );
-            gather.noGravity = true;
-            gather.fadeIn = 1.1f;
+            PRTLoader.AddParticle(spark);
         }
 
         private void SpawnOrbitParticle(Vector2 ownerCenter, float progress) {
-            Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(0.5f, 2f) * progress;
+            Vector2 tangent = new Vector2(-MathF.Sin(orbitAngle), MathF.Cos(orbitAngle));
+            Vector2 velocity = tangent * orbitSpeed * 30f * progress;
 
             Dust orbit = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                DustID.Blood,
-                velocity,
-                100,
-                default,
-                Main.rand.NextFloat(0.9f, 1.4f)
+                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                DustID.Blood, velocity * 0.3f,
+                100, default, Main.rand.NextFloat(0.9f, 1.4f)
             );
             orbit.noGravity = true;
             orbit.fadeIn = 1.1f;
         }
 
         private void SpawnChargeParticle(Vector2 ownerCenter, float progress) {
-            Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(2f, 5f) * progress;
+            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+            float dist = Main.rand.NextFloat(20f, 60f) * (1f - progress * 0.5f);
+            Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * dist;
+            Vector2 vel = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 9f) * progress;
 
-            Dust charge = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.Blood,
-                velocity,
-                100,
-                default,
-                Main.rand.NextFloat(1.2f, 1.9f)
+            PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                spawnPos, vel, false, Main.rand.Next(8, 16),
+                Main.rand.NextFloat(1.2f, 2.2f),
+                Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat())
             );
-            charge.noGravity = true;
-            charge.fadeIn = 1.2f;
+            PRTLoader.AddParticle(spark);
         }
 
-        private void SpawnChargePulse(Vector2 ownerCenter) {
-            //环形血色脉冲
-            for (int i = 0; i < 10; i++) {
-                float angle = MathHelper.TwoPi * i / 10f;
-                Vector2 velocity = angle.ToRotationVector2() * 2.5f;
-
+        private void SpawnChargePulse() {
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
                 Dust pulse = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 1.8f)
+                    Projectile.Center, DustID.Blood,
+                    angle.ToRotationVector2() * 3f,
+                    100, default, Main.rand.NextFloat(1.3f, 1.8f)
                 );
                 pulse.noGravity = true;
                 pulse.fadeIn = 1.2f;
@@ -841,31 +988,25 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SpawnLaunchBurst() {
-            //爆发式血色粒子
-            for (int i = 0; i < 25; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f);
+            //定向锥形爆发（朝发射方向）
+            Vector2 launchDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 18; i++) {
+                float spread = Main.rand.NextFloat(-0.6f, 0.6f);
+                Vector2 vel = launchDir.RotatedBy(spread) * Main.rand.NextFloat(6f, 14f);
 
                 Dust burst = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.4f, 2.2f)
+                    Projectile.Center, DustID.Blood, vel,
+                    100, default, Main.rand.NextFloat(1.4f, 2.2f)
                 );
                 burst.noGravity = true;
                 burst.fadeIn = 1.3f;
             }
 
-            //额外发光粒子
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 6; i++) {
                 PRT_SparkAlpha spark = new PRT_SparkAlpha(
                     Projectile.Center,
-                    Main.rand.NextVector2Circular(8f, 8f),
-                    false,
-                    Main.rand.Next(15, 25),
-                    Main.rand.NextFloat(1.5f, 2.5f),
+                    launchDir.RotatedBy(Main.rand.NextFloat(-0.8f, 0.8f)) * Main.rand.NextFloat(4f, 10f),
+                    false, Main.rand.Next(12, 22), Main.rand.NextFloat(1.5f, 2.5f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
                 );
                 PRTLoader.AddParticle(spark);
@@ -876,84 +1017,55 @@ namespace CalamityOverhaul.Content.Items.Melee
             Dust trail = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
                 DustID.Blood,
-                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f),
-                100,
-                default,
-                Main.rand.NextFloat(0.9f, 1.4f)
+                -Projectile.velocity * Main.rand.NextFloat(0.08f, 0.2f),
+                100, default, Main.rand.NextFloat(1f, 1.5f)
             );
             trail.noGravity = true;
             trail.fadeIn = 1.1f;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            //碰撞后反弹
-            if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
-                Projectile.velocity.X = -oldVelocity.X * 0.7f;
-            }
-            if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon) {
-                Projectile.velocity.Y = -oldVelocity.Y * 0.7f;
-            }
-
-            //碰撞音效
-            SoundEngine.PlaySound(SoundID.Dig with {
-                Volume = 0.5f,
-                Pitch = 0.3f
-            }, Projectile.Center);
-
-            //碰撞血色碎片
-            for (int i = 0; i < 5; i++) {
-                Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Blood,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
-                );
-            }
-
+            //穿透地形，匕首不应被地形阻挡
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中血色粒子效果
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+            //定向血液飞溅
+            Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 15; i++) {
+                float spread = Main.rand.NextFloat(-0.8f, 0.8f);
+                Vector2 vel = hitDir.RotatedBy(spread) * Main.rand.NextFloat(3f, 10f);
                 Dust hitDust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2f)
+                    target.Center, DustID.Blood, vel,
+                    100, default, Main.rand.NextFloat(1.3f, 2f)
                 );
                 hitDust.noGravity = true;
                 hitDust.fadeIn = 1.2f;
             }
 
-            //击中音效
             SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                Volume = 0.5f,
-                Pitch = 0.2f
+                Volume = 0.6f, Pitch = 0.3f
             }, Projectile.Center);
 
-            //添加流血Buff
             target.AddBuff(BuffID.Bleeding, 240);
 
-            //爆发式血色粒子
-            SpawnLaunchBurst();
+            //命中Spark爆发
+            for (int i = 0; i < 5; i++) {
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(
+                    target.Center, Main.rand.NextVector2Circular(8f, 8f),
+                    false, Main.rand.Next(10, 18), Main.rand.NextFloat(1.2f, 2f),
+                    Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat())
+                );
+                PRTLoader.AddParticle(spark);
+            }
         }
 
         public override void OnKill(int timeLeft) {
-            //消失时的血色粒子效果
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
+            for (int i = 0; i < 12; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
                 Dust killDust = Dust.NewDustPerfect(
-                  Projectile.Center,
-                    DustID.Blood,
-               velocity,
-             100,
-                    default,
-           Main.rand.NextFloat(1.2f, 1.8f)
+                    Projectile.Center, DustID.Blood, vel,
+                    100, default, Main.rand.NextFloat(1.2f, 1.8f)
                 );
                 killDust.noGravity = true;
             }
@@ -966,112 +1078,88 @@ namespace CalamityOverhaul.Content.Items.Melee
             Rectangle sourceRect = daggerTex.Frame(1, 1);
             Vector2 origin = sourceRect.Size() / 2f;
 
+            SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            float rot = Projectile.rotation + (Projectile.velocity.X > 0 ? 0 : MathHelper.PiOver2);
+
             Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
+            float drawScale = Projectile.scale * daggerScale;
 
-            //绘制匕首残影拖尾
+            //残影拖尾
             if (State == DaggerState.Orbiting || State == DaggerState.Charging || State == DaggerState.Launching) {
-                DrawDaggerAfterimages(sb, daggerTex, sourceRect, origin, baseColor, alpha);
+                DrawDaggerAfterimages(sb, daggerTex, sourceRect, origin, baseColor, alpha, drawScale);
             }
 
-            //绘制光晕
+            //光晕
             if (glowIntensity > 0.3f && SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
-                float glowScale = Projectile.scale * (0.9f + glowIntensity * 0.5f);
-                float glowAlpha = (glowIntensity - 0.3f) * alpha * 0.4f;
+                float glowScale = drawScale * (0.8f + glowIntensity * 0.6f);
+                float glowAlpha = (glowIntensity - 0.3f) * alpha * 0.5f;
 
                 if (State == DaggerState.Charging) {
-                    glowAlpha *= 1.5f;
+                    glowAlpha *= 1.8f;
+                    glowScale *= 1f + MathF.Sin(StateTimer * 0.8f) * 0.1f;
                 }
 
                 sb.Draw(
-                    glow,
-                    drawPos,
-                    null,
-                    new Color(255, 100, 100, 0) * glowAlpha,
-                    Projectile.rotation,
-                    glow.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                     0f
+                    glow, drawPos, null,
+                    new Color(255, 80, 80, 0) * glowAlpha,
+                    rot, glow.Size() / 2f,
+                    glowScale, spriteEffects, 0f
                 );
             }
 
-            //绘制主体匕首
+            //主体
             sb.Draw(
-                daggerTex,
-                drawPos,
-                sourceRect,
-                baseColor * alpha,
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
+                daggerTex, drawPos, sourceRect,
+                baseColor * alpha, rot, origin,
+                drawScale, spriteEffects, 0
             );
 
-            //蓄力/发射时的血红辉光覆盖层
+            //血红辉光覆盖层（蓄力/发射时）
             if ((State == DaggerState.Charging || State == DaggerState.Launching) && glowIntensity > 0.5f) {
-                float lightAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.5f;
-                Color daggerLight = new Color(220, 50, 50);
-
+                float lightAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.6f;
                 sb.Draw(
-                    daggerTex,
-                    drawPos,
-                    sourceRect,
-                    daggerLight * lightAlpha,
-                    Projectile.rotation,
-                    origin,
-                    Projectile.scale * 1.05f,
-                    SpriteEffects.None,
-                    0
+                    daggerTex, drawPos, sourceRect,
+                    new Color(220, 50, 50) * lightAlpha,
+                    rot, origin,
+                    drawScale * 1.06f, spriteEffects, 0
                 );
             }
 
             return false;
         }
 
-        //绘制匕首残影拖尾
         private void DrawDaggerAfterimages(SpriteBatch sb, Texture2D daggerTex, Rectangle sourceRect,
-            Vector2 origin, Color baseColor, float alpha) {
+            Vector2 origin, Color baseColor, float alpha, float drawScale) {
+            SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            
+            int count = State == DaggerState.Launching ? 14 : (State == DaggerState.Charging ? 10 : 6);
 
-            int afterimageCount = State == DaggerState.Launching ? 12 : (State == DaggerState.Charging ? 10 : 6);
-
-            for (int i = 0; i < afterimageCount; i++) {
+            for (int i = 0; i < count; i++) {
                 if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
 
-                float afterimageProgress = 1f - i / (float)afterimageCount;
-                float afterimageAlpha = afterimageProgress * trailIntensity * alpha;
+                float prog = 1f - i / (float)count;
+                float afterAlpha = prog * trailIntensity * alpha;
 
-                //残影颜色：环绕时淡红蓄力时增强发射时最强
-                Color afterimageColor;
+                Color afterColor;
                 if (State == DaggerState.Launching) {
-                    afterimageColor = Color.Lerp(
-                    new Color(200, 50, 50),
-                    new Color(255, 100, 100),
-                    afterimageProgress
-                ) * (afterimageAlpha * 0.7f);
+                    afterColor = Color.Lerp(new Color(180, 40, 40), new Color(255, 110, 110), prog) * (afterAlpha * 0.75f);
                 }
                 else if (State == DaggerState.Charging) {
-                    afterimageColor = new Color(210, 60, 60) * (afterimageAlpha * 0.6f);
+                    afterColor = Color.Lerp(new Color(200, 50, 50), new Color(240, 80, 80), prog) * (afterAlpha * 0.65f);
                 }
                 else {
-                    afterimageColor = baseColor * (afterimageAlpha * 0.5f);
+                    afterColor = baseColor * (afterAlpha * 0.45f);
                 }
 
-                Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float afterimageScale = Projectile.scale * MathHelper.Lerp(0.85f, 1f, afterimageProgress);
-
+                Vector2 afterPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float afterScale = drawScale * MathHelper.Lerp(0.8f, 1f, prog);
+                float rot = (Projectile.oldRot.Length > i ? Projectile.oldRot[i] : Projectile.rotation) + (Projectile.velocity.X > 0 ? 0 : MathHelper.PiOver2);
                 sb.Draw(
-                    daggerTex,
-                    afterimagePos,
-                    sourceRect,
-                    afterimageColor,
-                    Projectile.rotation - i * 0.1f * (orbitSpeed / MaxOrbitSpeed),
-                    origin,
-                    afterimageScale,
-                    SpriteEffects.None,
-                    0
+                    daggerTex, afterPos, sourceRect, afterColor,
+                    rot,
+                    origin, afterScale, spriteEffects, 0
                 );
             }
         }
