@@ -1,7 +1,7 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы удалить предмет
-	CloseHint: [ESC] или [ПКМ], чтобы закрыть
+	CloseHint: "[ESC] или [ПКМ], чтобы закрыть"
 }
 
 LegendUpgradeConfirmUI: {

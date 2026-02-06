@@ -1,4 +1,4 @@
-﻿MurasamaHeld.DisplayName: Молекулярный разрез
+MurasamaHeld.DisplayName: Молекулярный разрез
 MuraTriggerDash.DisplayName: Молекулярный разрез
 MuraBreakerSlash.DisplayName: Восходящий дракон-полумесяц
 MuraExecutionCut.DisplayName: Разрез измерения: Конец
@@ -420,6 +420,7 @@ WGGLumberjackSaw.DisplayName: Ржавая цепная пила
 WGGLifeWeaverAcorn.DisplayName: Желудь
 Andrew.DisplayName: Андрей
 Bartholomew.DisplayName: Варфоломей
+ElysiumHeld.DisplayName: Элизиум
 James.DisplayName: Иаков
 John.DisplayName: Иоанн
 JudasIscariot.DisplayName: Иуда Искариот
@@ -428,9 +429,8 @@ Lesser.DisplayName: Иаков Младший
 Matthew.DisplayName: Матфей
 Philip.DisplayName: Филипп
 SimonPeter.DisplayName: Симон Петр
+SnakeConversionWave.DisplayName: Змеиная волна
 Thomas.DisplayName: Фома
 Zealot.DisplayName: Симон Зилот
-ElysiumHeld.DisplayName: Элизиум
-SnakeConversionWave.DisplayName: Змеиная волна
 JudgmentLightning.DisplayName: Молния суда
 HolySerpent.DisplayName: Священный змей

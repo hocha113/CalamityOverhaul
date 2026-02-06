@@ -1,4 +1,4 @@
-﻿MurasamaHeld.DisplayName: 分子斩切
+MurasamaHeld.DisplayName: 分子斩切
 MuraTriggerDash.DisplayName: 分子斩切
 MuraBreakerSlash.DisplayName: 升龙半月
 MuraExecutionCut.DisplayName: 次元斩·终
@@ -420,6 +420,7 @@ WGGLumberjackSaw.DisplayName: 生锈动力锯
 WGGLifeWeaverAcorn.DisplayName: 橡子
 Andrew.DisplayName: 安德烈
 Bartholomew.DisplayName: 巴多罗买
+ElysiumHeld.DisplayName: 天国极乐
 James.DisplayName: 雅各
 John.DisplayName: 约翰
 JudasIscariot.DisplayName: 加略人犹大
@@ -428,9 +429,8 @@ Lesser.DisplayName: 小雅各
 Matthew.DisplayName: 马太
 Philip.DisplayName: 腓力
 SimonPeter.DisplayName: 西门彼得
+SnakeConversionWave.DisplayName: 化蛇波动
 Thomas.DisplayName: 多马
 Zealot.DisplayName: 奋锐者
-ElysiumHeld.DisplayName: 天国极乐
-SnakeConversionWave.DisplayName: 化蛇波动
 JudgmentLightning.DisplayName: 审判之雷
 HolySerpent.DisplayName: 神圣巨蛇
