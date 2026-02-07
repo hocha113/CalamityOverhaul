@@ -8,7 +8,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using ThoriumMod.Projectiles.Enemy;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
