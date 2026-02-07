@@ -655,38 +655,38 @@ SupCalDisplayText: {
 	Acceptance2Text: Perhaps... you truly can end this damned era.
 	Story1:
 		'''
-		The wood of this crossbow comes from a pitch-black coffin buried underground for a century. 
-		It reeks of earth and rot that just won't wash off.
-		Down there, it was used to suppress a horror that even I found difficult to handle.
-		Pure destruction is meaningless against those things. They cannot be killed.
-		You have to fire heavy wedges to pin them back to the ground and force them into silence.
+		The wood of this crossbow is hewn from a pitch-black coffin buried for a century. 
+		It reeks of an earthy stench that simply won't wash off.
+		Down there, it served to suppress a horror that even I found difficult to handle.
+		Against such things, pure destruction is meaningless. They cannot be killed.
+		Fire the wedge. Pin them back to the earth and force them into silence.
 		As for why you throw the crossbow first?
-		Hah... If the guest isn't tainted by the scent of the coffin first, how will the casket know who to collect?
+		Hah... If the guest isn't tainted by the scent of the casket, how will the coffin know who to collect?
 		'''
 	Story2:
 		'''
-		This wretched blade is dull, because it doesn't cut flesh—it cuts mediums.
-		When I was still an apprentice, a mouth that wouldn't close grew on my master's heart.
-		He died later, but that heart kept beating. 
-		Every time it beat, the mouth screamed, and one person around us disappeared.
-		To survive, I had to dig his heart out before the next beat.
-		Even now, it still hungers to hear the sound of a heart being gouged out.
+		This wretched blade is dull because it doesn't cut flesh—it severs mediums.
+		When I was still an apprentice, a mouth that would never close grew upon my teacher's heart.
+		He died later, yet that heart kept beating. With every beat, the mouth screamed, 
+		and one person around us simply vanished.
+		To survive, I had to gouge that heart out before its next beat.
+		Even now, it hungers to hear the sound of a heart being carved out again.
 		'''
 	Story3:
 		'''
-		Think it's heavy? It should be.
-		It's laced with excessive gold and wrapped in Brimstone flames, 
-		just to lock down those six restless ghostly hands on the blade.
-		Those six idiots tried to dismember each other and stitch themselves back together to delay their own recovery... 
-		but they ended up as a twisted mess that only knows how to choke the living.
-		Grip it tight. Once the Brimstone suppression fails, the first neck they’ll snap is the wielder's.
-		Snapping the neck of whoever touches the blade... that's about the only instinct they have left.
+		Find it heavy? Good. It should be.
+		It is laced with excessive gold and wreathed in Brimstone flames, 
+		all to lock down the six restless ghostly hands upon the blade.
+		Those three idiots tried to dismember and stitch themselves together to delay their own 'recovery'... 
+		but they ended up as a twisted monstrosity that knows only how to strangle.
+		Grip it tight. Once the Brimstone suppression fails, the first neck they will snap is yours.
+		Snapping the neck of whoever touches the blade... that is the only instinct they have left.
 		'''
 	Story4:
 		'''
-		Mortals call it magic, but I call it... borrowing.
-		This isn't a spellbook; it's a high-density cage.
-		Every page seals a terrifying specter that once silenced entire city-states into death.
+		Mortals call this magic, but I call it... borrowing.
+		This is no spellbook; it is a high-density cage.
+		Every page seals a horror that once silenced entire city-states into death.
 		'''
 }
 
