@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content
         public override void AutoStaticDefaults() => AutoStaticDefaults(this);
 
         public static void AutoStaticDefaults(ModProjectile projectile) {
-            TextureAssets.Projectile[projectile.Projectile.type] = ModContent.HasAsset(projectile.Texture) 
+            TextureAssets.Projectile[projectile.Projectile.type] = ModContent.HasAsset(projectile.Texture)
                 ? ModContent.Request<Texture2D>(projectile.Texture) : ModContent.Request<Texture2D>(CWRConstant.Placeholder3);
             Main.projFrames[projectile.Projectile.type] = 1;
             if (projectile.Projectile.hostile) {
