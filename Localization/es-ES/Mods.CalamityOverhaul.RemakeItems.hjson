@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: Cañón de Halibut
 	Tooltip:
 		'''
@@ -37,6 +37,7 @@ SHPCOverride: {
 		'''
 		Lanza una esfera láser de fase que permanece en el aire y provoca una explosión enorme
 		Haz clic derecho para disparar un poderoso rayo de energía
+		Hold Shift to open the Soul Control Panel
 		legend_Text
 		[Lang4]
 		[Text]

@@ -284,6 +284,19 @@ ThrowerUI: {
 	AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
 }
 
+SHPCSoulSelectUI: {
+	TitleText: 魂核
+	SoulNameLight: 光明
+	SoulNameNight: 暗影
+	SoulNameFlight: 飞翔
+	SoulNameMight: 力量
+	SoulNameSight: 视域
+	SoulNameFright: 恐惧
+	TooltipSoulPrefix: ""
+	StatusActive: "[已激活]"
+	StatusClickToSelect: "[点击选择]"
+}
+
 ElysiumUI: {
 	TitleText: 天国极乐
 	DiscipleCountText: 门徒

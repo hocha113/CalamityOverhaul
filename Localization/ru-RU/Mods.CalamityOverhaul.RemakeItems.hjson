@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: "{$Mods.CalamityMod.Items.Weapons.Ranged.HalibutCannon.DisplayName}"
 	Tooltip:
 		'''
@@ -30,11 +30,12 @@ MurasamaOverride: {
 }
 
 SHPCOverride: {
-	DisplayName: СНПП
+	DisplayName: SHPC
 	Tooltip:
 		'''
-		Выпускает фазовые лазерные шары, задерживающиеся в воздухе и вызывающие огромные взрывы
-		Правый клик для запуска мощного энергетического луча
+		Стреляет фазовыми лазерными сферами, которые зависают в воздухе и вызывают мощный взрыв
+		Нажмите ПКМ, чтобы выпустить мощный луч энергии
+		Удерживайте Shift, чтобы открыть панель управления душами
 		legend_Text
 		[Lang4]
 		[Text]

@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: Heilbutt-Kanone
 	Tooltip:
 		'''
@@ -31,6 +31,7 @@ SHPCOverride: {
 		'''
 		Feuert phasenverschobene Laserkugeln ab, die in der Luft stehen bleiben und massive Explosionen verursachen
 		Rechtsklick für einen starken Energieschuss
+		Hold Shift to open the Soul Control Panel
 		legend_Text
 		[Lang4]
 		[Text]

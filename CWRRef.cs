@@ -785,6 +785,32 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         public static Type GetNPC_SupCal_TypeInner() => typeof(SupremeCalamitas);
 
+        /// <summary>
+        /// 设置SHPC的装填魂魄类型
+        /// </summary>
+        public static void SetSHPCStoredSoulType(Item item, int soulType) {
+            if (!Has) return;
+            SetSHPCStoredSoulTypeInner(item, soulType);
+        }
+        [CWRJITEnabled]
+        private static void SetSHPCStoredSoulTypeInner(Item item, int soulType) {
+            if (item.ModItem is SHPC shpc) {
+                shpc.storedSoulType = soulType;
+            }
+        }
+
+        /// <summary>
+        /// 获取SHPC的装填魂魄类型
+        /// </summary>
+        public static int GetSHPCStoredSoulType(Item item) => Has ? GetSHPCStoredSoulTypeInner(item) : ItemID.SoulofLight;
+        [CWRJITEnabled]
+        private static int GetSHPCStoredSoulTypeInner(Item item) {
+            if (item.ModItem is SHPC shpc) {
+                return shpc.storedSoulType;
+            }
+            return ItemID.SoulofLight;
+        }
+
         public static bool GetEarlyHardmodeProgressionReworkBool() => Has && GetEarlyHardmodeProgressionReworkBoolInner();
         [CWRJITEnabled]
         private static bool GetEarlyHardmodeProgressionReworkBoolInner() => CalamityServerConfig.Instance.EarlyHardmodeProgressionRework;

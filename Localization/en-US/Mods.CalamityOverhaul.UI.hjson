@@ -287,6 +287,19 @@ ThrowerUI: {
 	AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
 }
 
+SHPCSoulSelectUI: {
+	TitleText: SOUL CORE
+	SoulNameLight: Light
+	SoulNameNight: Night
+	SoulNameFlight: Flight
+	SoulNameMight: Might
+	SoulNameSight: Sight
+	SoulNameFright: Fright
+	TooltipSoulPrefix: "Soul of "
+	StatusActive: "[ACTIVE]"
+	StatusClickToSelect: "[CLICK TO SELECT]"
+}
+
 ElysiumUI: {
 	TitleText: Elysium
 	DiscipleCountText: Disciples

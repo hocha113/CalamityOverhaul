@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы удалить предмет
 	CloseHint: "[ESC] или [ПКМ], чтобы закрыть"
@@ -282,6 +282,19 @@ ThrowerUI: {
 	AmmoModeOnText: Режим стрельбы
 	AmmoModeOffText: Режим броска
 	AmmoModeHint: Режим стрельбы: Выстреливает снарядами, соответствующими боеприпасам
+}
+
+SHPCSoulSelectUI: {
+	TitleText: Ядро души
+	SoulNameLight: Свет
+	SoulNameNight: Ночь
+	SoulNameFlight: Полет
+	SoulNameMight: Могущество
+	SoulNameSight: Прозрение
+	SoulNameFright: Ужас
+	TooltipSoulPrefix: ""
+	StatusActive: "[Активно]"
+	StatusClickToSelect: "[Нажмите для выбора]"
 }
 
 ElysiumUI: {

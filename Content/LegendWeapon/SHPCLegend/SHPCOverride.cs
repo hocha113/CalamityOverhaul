@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
+        /// <summary>
+        /// 当前选中的魂魄类型，UI选择后会更新这个值
+        /// </summary>
+        public static int SelectedSoulType = ItemID.SoulofLight;
         public override int TargetID => GetCalItemID("SHPC");
         private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
@@ -29,7 +33,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (type != null) {
                 MethodInfo methodInfo = type.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
                 VaultHook.Add(methodInfo, OnSHPCToolFunc);
+                methodInfo = type.GetMethod("FindSoulForAmmo", BindingFlags.Public | BindingFlags.Static);
+                VaultHook.Add(methodInfo, OnFindSoulForAmmoFunc);
             }
+        }
+        private static int OnFindSoulForAmmoFunc(Func<Player, int> orig, Player player) {
+            return SelectedSoulType;
         }
         /// <summary>
         /// 获得成长等级
@@ -82,7 +91,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();
             Item.damage = GetStartDamage;
-            Item.SetHeldProj<SHPCHeld>();
             Item.CWR().LegendData = new SHPCData();
         }
 

@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: Canon Hippoglosse
 	Tooltip:
 		'''
@@ -31,6 +31,7 @@ SHPCOverride: {
 		'''
 		Tire une sphère laser de phase qui reste en suspension dans l'air et provoque une énorme explosion
 		Clic droit pour tirer un faisceau d'énergie puissant
+		Hold Shift to open the Soul Control Panel
 		Légende_Text
 		[Lang4]
 		[Text]

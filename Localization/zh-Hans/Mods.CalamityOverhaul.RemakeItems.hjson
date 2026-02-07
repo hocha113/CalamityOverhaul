@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: 大比目鱼炮
 	Tooltip:
 		'''
@@ -31,6 +31,7 @@ SHPCOverride: {
 		'''
 		发射会停留在空中并引发巨大爆炸的相位激光球
 		右键发射强大的能量束
+		按住Shift键可以打开精魄控制板
 		legend_Text
 		[Lang4]
 		[Text]

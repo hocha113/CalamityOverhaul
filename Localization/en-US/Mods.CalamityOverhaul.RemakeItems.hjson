@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	DisplayName: Halibut Cannon
 	Tooltip:
 		'''
@@ -33,8 +33,9 @@ SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
 		'''
-		Launch a phase laser ball that stays in the air and causes a huge explosion
+		Fires phasing laser orbs that linger in the air and cause massive explosions
 		Right click to fire a powerful energy beam
+		Hold Shift to open the Soul Control Panel
 		legend_Text
 		[Lang4]
 		[Text]
