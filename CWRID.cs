@@ -351,7 +351,7 @@ namespace CalamityOverhaul
         public static int Proj_UltimaBolt => Get();
         public static int Proj_UltimaRay => Get();
         public static int Proj_UltimaSpark => Get();
-        public static int Proj_Bolt => Get();
+        public static int Proj_TheStormLightningShot => Get();
         public static int Proj_TelluricGlareArrow => Get();
         public static int Proj_AcidRocket => Get();
         public static int Proj_StormSurgeTornado => Get();

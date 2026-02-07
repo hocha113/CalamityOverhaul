@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 {
     internal class EXDemonBlast : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonBlast";
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonFork";
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public Vector2 MoveVector2;
         public Vector2 ChargeBackPosition; //蓄力后退位置

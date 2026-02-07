@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 {
     internal class EXOathblade : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Cay_Proj_Melee + "Oathblade";
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "ForbiddenOathbladeProjectile";
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;

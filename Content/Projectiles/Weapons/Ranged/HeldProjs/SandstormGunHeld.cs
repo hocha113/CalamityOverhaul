@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class SandstormGunHeld : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "SandstormGun";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Sandblaster";
         public override void SetRangedProperty() {
             KreloadMaxTime = 90;
             FireTime = 15;

@@ -20,13 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         /// </summary>
         /// <param name="itemKey"></param>
         /// <returns></returns>
-        public static int GetCalItemID(string itemKey) {
-            int id = VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
-            if (id == ItemID.None) {
-                ($"没能找到内部名为{itemKey}的物品").LoggerDomp(CWRMod.Instance);
-            }
-            return id;
-        }
+        public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
         public sealed override void PostSetStaticDefaults() {
             HandlerCanOverride.CanOverrideByID.Add(TargetID, true);

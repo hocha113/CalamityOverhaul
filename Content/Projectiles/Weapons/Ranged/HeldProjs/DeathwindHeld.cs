@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class DeathwindHeld : BaseBow
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Deathwind";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ThreadOfEradication";
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             FiringDefaultSound = false;

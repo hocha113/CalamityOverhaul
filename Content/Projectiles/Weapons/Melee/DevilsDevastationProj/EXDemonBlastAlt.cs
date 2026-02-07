@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 {
     internal class EXDemonBlastAlt : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonBlast";
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonFork";
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public Vector2 MoveVector2;
         public Vector2 FromeOwnerMoveSet;
@@ -53,10 +53,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             MoveVector2.Y = (float)(Math.Cos(angle) * Rand);
             Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
-            if (Main.zenithWorld || Main.getGoodWorld) {
-                Projectile.originalDamage = Projectile.damage *= 2;
-                Projectile.hostile = true;
-            }
         }
 
         public override bool? CanCutTiles() => Projectile.ai[0] != 0;

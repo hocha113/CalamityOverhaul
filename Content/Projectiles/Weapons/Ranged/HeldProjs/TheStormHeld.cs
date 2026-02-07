@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void BowShoot() {
             for (int i = 0; i < 12; i++) {
                 if (Owner.IsWoodenAmmo(AmmoTypes)) {
-                    AmmoTypes = CWRID.Proj_Bolt;
+                    AmmoTypes = CWRID.Proj_TheStormLightningShot;
                 }
                 Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-120, 120), Main.rand.Next(-732, -623));
                 Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 27;
