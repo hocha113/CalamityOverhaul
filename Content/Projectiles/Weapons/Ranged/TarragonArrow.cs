@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class TarragonArrow : ModProjectile
     {
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/TarragonThrowingDart";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

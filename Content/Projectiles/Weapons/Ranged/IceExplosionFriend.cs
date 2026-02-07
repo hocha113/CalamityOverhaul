@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class IceExplosionFriend : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Masking + "Fog";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public float randomX;
         public float randomY;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 184;
             Projectile.tileCollide = false;

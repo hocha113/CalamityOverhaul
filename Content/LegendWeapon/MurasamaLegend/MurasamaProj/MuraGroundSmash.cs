@@ -9,14 +9,13 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
     internal class MuraGroundSmash : MuraTriggerDash
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+
         private enum GroundSmashState
         {
             ChargeUp,      //蓄力阶段
@@ -56,6 +55,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             impactPosition = reader.ReadVector2();
             hasImpacted = reader.ReadBoolean();
         }
+
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
 
         public override void SetStaticDefaults() {
             base.SetStaticDefaults();

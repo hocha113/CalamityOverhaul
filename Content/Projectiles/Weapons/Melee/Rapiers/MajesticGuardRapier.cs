@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "MajesticGuard";
         public override string GlowPath => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetRapiers() {
             overHitModeing = 73;
             SkialithVarSpeedMode = 3;

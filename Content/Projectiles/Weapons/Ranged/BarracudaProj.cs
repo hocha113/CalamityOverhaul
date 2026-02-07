@@ -7,11 +7,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class BarracudaProj : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "MechanicalBarracuda";
 
         private float offsetRot;
         private bool damageZengs;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 22;
             Projectile.height = 22;

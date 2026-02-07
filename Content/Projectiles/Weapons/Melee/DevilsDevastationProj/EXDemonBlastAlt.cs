@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     internal class EXDemonBlastAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonBlast";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public Vector2 MoveVector2;
         public Vector2 FromeOwnerMoveSet;

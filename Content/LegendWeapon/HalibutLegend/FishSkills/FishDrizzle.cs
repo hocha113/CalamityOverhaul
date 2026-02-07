@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class DrizzleFishHolder : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Item + "Fishing/BrimstoneCragCatches/DragoonDrizzlefish";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+
         public Player Owner;
         internal bool Fired {
             get => Projectile.ai[2] == 1f;
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool shouldDepart = false;
         private int departureTimer = 0;
         private const int FireInterval = 16;
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 40; Projectile.height = 40;
             Projectile.penetrate = -1;

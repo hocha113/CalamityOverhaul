@@ -69,7 +69,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class BrimfishSpitterProjectile : ModProjectile
     {
         public override string Texture => "CalamityMod/Items/Fishing/BrimstoneCragCatches/Brimlish";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
 
         private enum FishState
         {
@@ -103,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //攻击参数
         private const float SearchRange = 1200f;
         private static int FlameCount => 6 + HalibutData.GetDomainLayer() / 2; //喷射火焰数量
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
         }

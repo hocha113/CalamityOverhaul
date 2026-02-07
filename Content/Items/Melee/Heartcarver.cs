@@ -220,7 +220,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             //终结斩命中：强力打击反馈
             if (comboStep == 3 && Projectile.numHits <= 1) {
                 SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                    Volume = 0.8f, Pitch = 0.4f
+                    Volume = 0.8f,
+                    Pitch = 0.4f
                 }, target.Center);
 
                 for (int i = 0; i < 20; i++) {
@@ -282,7 +283,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             //充能接近完成时的脉冲提示
             if (Projectile.timeLeft == 15) {
                 SoundEngine.PlaySound(SoundID.Item28 with {
-                    Volume = 0.4f, Pitch = 0.5f
+                    Volume = 0.4f,
+                    Pitch = 0.5f
                 }, Owner.Center);
 
                 for (int i = 0; i < 16; i++) {
@@ -380,7 +382,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 //回刺瞬间的强力音效
                 SoundEngine.PlaySound(SoundID.Item71 with {
-                    Volume = 0.8f, Pitch = 0.5f
+                    Volume = 0.8f,
+                    Pitch = 0.5f
                 }, Owner.Center);
 
                 //方向反转粒子爆发
@@ -418,11 +421,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             arcIntensity = Main.rand.NextBool() ? 1f : -1f;
 
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                Volume = 0.8f, Pitch = -0.2f
+                Volume = 0.8f,
+                Pitch = -0.2f
             }, Owner.Center);
 
             SoundEngine.PlaySound(SoundID.Item71 with {
-                Volume = 0.6f, Pitch = 0.1f
+                Volume = 0.6f,
+                Pitch = 0.1f
             }, Owner.Center);
 
             if (CWRServerConfig.Instance.ScreenVibration) {
@@ -548,7 +553,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                Volume = 0.7f, Pitch = 0.3f + (isReturning ? 0.2f : 0f)
+                Volume = 0.7f,
+                Pitch = 0.3f + (isReturning ? 0.2f : 0f)
             }, target.Center);
 
             target.AddBuff(BuffID.Bleeding, 300);
@@ -800,7 +806,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 StateTimer = 0;
 
                 SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.5f, Pitch = 0.3f + DaggerIndex * 0.1f
+                    Volume = 0.5f,
+                    Pitch = 0.3f + DaggerIndex * 0.1f
                 }, Projectile.Center);
             }
         }
@@ -837,7 +844,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 StateTimer = 0;
 
                 SoundEngine.PlaySound(SoundID.Item28 with {
-                    Volume = 0.6f, Pitch = -0.2f
+                    Volume = 0.6f,
+                    Pitch = -0.2f
                 }, Projectile.Center);
             }
         }
@@ -907,7 +915,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             SpawnLaunchBurst();
 
             SoundEngine.PlaySound(SoundID.Item71 with {
-                Volume = 0.8f, Pitch = 0.4f
+                Volume = 0.8f,
+                Pitch = 0.4f
             }, Projectile.Center);
         }
 
@@ -1055,7 +1064,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                Volume = 0.6f, Pitch = 0.3f
+                Volume = 0.6f,
+                Pitch = 0.3f
             }, Projectile.Center);
 
             target.AddBuff(BuffID.Bleeding, 240);
@@ -1144,7 +1154,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void DrawDaggerAfterimages(SpriteBatch sb, Texture2D daggerTex, Rectangle sourceRect,
             Vector2 origin, Color baseColor, float alpha, float drawScale) {
             SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            
+
             int count = State == DaggerState.Launching ? 14 : (State == DaggerState.Charging ? 10 : 6);
 
             for (int i = 0; i < count; i++) {

@@ -158,9 +158,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class WeaverGrievancesDash : BaseHeldProj
     {
         public override string Texture => "CalamityMod/NPCs/Polterghast/Polterghast";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private ref float Time => ref Projectile.ai[0];
         private ref float SwingDir => ref Projectile.ai[1];
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
@@ -324,7 +324,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class WeaverBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public static Color sloudColor1 => new Color(100, 43, 69);
         public static Color sloudColor2 => new Color(200, 111, 145);

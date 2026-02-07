@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
@@ -21,7 +20,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
     internal class ModifyDyeVat : TileOverride
     {
         public override int TargetID => TileID.DyeVat;
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override bool? RightClick(int i, int j, Tile tile) {
             if (TPUtils.TryGetTPAt(i, j, out DyeVatTP tp)) {
                 tp.RightClick(Main.LocalPlayer);

@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
 {
     internal class PhaseEnergySphere : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 4;
         private int explodeTime = 30;
         public override void SetDefaults() {

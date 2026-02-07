@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class SparklingFishHolder : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Item + "Fishing/SunkenSeaCatches/SparklingEmpress";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+
         public Player Owner;
         internal bool Fired {
             get => Projectile.ai[2] == 1f;
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float glowPulse;
         private float fadeOut;
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 40; Projectile.height = 40;
             Projectile.penetrate = -1;

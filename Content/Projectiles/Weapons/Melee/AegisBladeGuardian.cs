@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AegisBladeGuardian : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;

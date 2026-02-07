@@ -216,7 +216,7 @@ namespace CalamityOverhaul
             targetNpcTypes3 = [CWRID.NPC_PrimordialWyrmHead, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_PrimordialWyrmTail];
             targetNpcTypes4 = [CWRID.NPC_PerforatorHeadLarge, CWRID.NPC_PerforatorBodyLarge, CWRID.NPC_PerforatorTailLarge];
             targetNpcTypes5 = [CWRID.NPC_PerforatorHeadMedium, CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorTailMedium];
-            targetNpcTypes6 = [ ];
+            targetNpcTypes6 = [];
             targetNpcTypes7 = [CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_AresBody, CWRID.NPC_ThanatosHead, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_ThanatosTail];
             targetNpcTypes7_1 = [CWRID.NPC_AresBody, CWRID.NPC_AresLaserCannon, CWRID.NPC_AresPlasmaFlamethrower, CWRID.NPC_AresTeslaCannon, CWRID.NPC_AresGaussNuke];
             targetNpcTypes8 = [CWRID.NPC_DevourerofGodsHead, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail];

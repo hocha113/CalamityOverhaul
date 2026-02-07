@@ -6,8 +6,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class DeepSeaSharks : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "MiniSharkron";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 2;
         }

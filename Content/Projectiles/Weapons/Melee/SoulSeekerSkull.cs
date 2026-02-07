@@ -8,16 +8,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class SoulSeekerSkull : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MourningSkull";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
-
         public override void SetDefaults() => Projectile.CloneDefaults(CWRID.Proj_MourningSkull);
-
         public override void AI() {
             if (Projectile.ai[0] < 0f) {
                 Projectile.alpha = 0;

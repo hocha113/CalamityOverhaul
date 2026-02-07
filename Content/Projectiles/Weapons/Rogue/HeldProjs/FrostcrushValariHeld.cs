@@ -1,13 +1,11 @@
 ﻿using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
     internal class FrostcrushValariHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Rogue + "FrostcrushValari";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public static int FireIndex = 1;
         internal bool accompanying {
             get => Projectile.ai[2] == 1;

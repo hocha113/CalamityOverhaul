@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AirBomb : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Cyclone";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         private bool span;
         const float MaxAttractionRange = 600f; //最大吸引距离

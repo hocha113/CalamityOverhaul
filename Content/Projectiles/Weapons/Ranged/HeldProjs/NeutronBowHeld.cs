@@ -25,9 +25,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private bool level1 = true;
         private bool level2 = true;
         private bool level3 = true;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return true;
-        }
         public override void SetRangedProperty() {
             MaxFrame = 7;
             InOwner_HandState_AlwaysSetInFireRoding = true;

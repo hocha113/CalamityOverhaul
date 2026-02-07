@@ -93,8 +93,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class EXOathblade2 : BaseHeldProj
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "ForbiddenOathbladeProjectile";
         public Vector2 MoveVector2;
         public Vector2 FromeOwnerMoveSet;
@@ -104,6 +102,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         private int Time2;
         private bool shoot;
         private bool shoot2;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DontCancelChannelOnKill[Type] = true;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;

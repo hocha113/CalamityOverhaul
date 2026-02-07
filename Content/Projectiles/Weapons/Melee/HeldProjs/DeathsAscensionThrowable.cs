@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     internal class DeathsAscensionThrowable : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DeathsAscension";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
 
         private bool inOut;
         private bool outFive;

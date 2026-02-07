@@ -9,14 +9,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class SickleLife : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "LifeScythe";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-
         public override void SetDefaults() {
             Projectile.width = 62;
             Projectile.height = 72;

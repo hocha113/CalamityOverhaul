@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -9,7 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Lucrecia";
         public override string GlowPath => CWRConstant.Cay_Wap_Melee + "Lucrecia";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetRapiers() {
             PremanentToSkialthRot = 16;
             overHitModeing = 73;

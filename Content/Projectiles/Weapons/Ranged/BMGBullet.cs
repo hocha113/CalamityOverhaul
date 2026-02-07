@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class BMGBullet : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Ranged/AMRShot";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 4;
             Projectile.height = 4;

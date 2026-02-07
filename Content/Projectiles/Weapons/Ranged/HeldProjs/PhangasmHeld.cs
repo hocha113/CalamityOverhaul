@@ -1,13 +1,11 @@
 ﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class PhangasmHeld : BaseBow
     {
         public override string Texture => "CalamityMod/Items/Weapons/Ranged/Phangasm";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             DrawArrowMode = -24;

@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Tiles
     internal class InfiniteToiletTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
-        public override bool IsLoadingEnabled(Mod mod) => true;
         public override void SetStaticDefaults() {
             RegisterItemDrop(ModContent.ItemType<InfiniteToiletItem>(), 1);
             RegisterItemDrop(ModContent.ItemType<InfiniteToiletItem>());

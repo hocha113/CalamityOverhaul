@@ -20,9 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         private int Time2;
-        public override void SetStaticDefaults() {
-            CWRRef.GetPierceResistExceptionList().Add(Type);
-        }
+        public override void SetStaticDefaults() => CWRRef.GetPierceResistExceptionList().Add(Type);
         public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
             Projectile.aiStyle = AIType = ProjectileID.None;

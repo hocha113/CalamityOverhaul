@@ -9,9 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
     internal class SoulSeeker : ModProjectile
     {
         public override string Texture => "CalamityMod/NPCs/SupremeCalamitas/SoulSeekerSupreme";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private NPC Target => Main.npc[(int)Projectile.ai[0]];
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

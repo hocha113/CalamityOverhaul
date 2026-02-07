@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
     public class RWaveSkipperProjectile : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/WaveSkipper";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public int Time = 0;
         public int TimeUnderground = 0;
         public bool PostExitTiles = false;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public Vector2 SavedOldVelocity;
         public Vector2 NPCDestination;
         public bool SetPierce = false;
-
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

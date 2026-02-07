@@ -13,12 +13,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class NurgleArrow : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ContagionArrow";
         protected List<Bee> bees = [];
         private int addBallTimer = 10;
         private float rot;
         private Vector2 pos;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

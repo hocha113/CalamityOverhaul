@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
     internal class LifehuntScytheThrowable : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "LifehuntScythe";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 17;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

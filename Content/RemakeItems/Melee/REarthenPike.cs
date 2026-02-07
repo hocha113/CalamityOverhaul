@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class EarthenPikeAlt : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EarthenPike";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private bool onTIle;
         private float tileRot;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

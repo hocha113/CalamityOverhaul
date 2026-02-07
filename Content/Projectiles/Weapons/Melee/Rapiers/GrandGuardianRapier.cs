@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "GrandGuardian";
         public override string GlowPath => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void SetRapiers() {
             overHitModeing = 113;
             drawOrig = new Vector2(0, 130);

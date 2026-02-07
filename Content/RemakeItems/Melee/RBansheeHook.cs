@@ -180,7 +180,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
     internal class SoulSearchScythe : ModProjectile
     {
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
         public override void SetStaticDefaults() {
@@ -239,8 +238,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class BansheeHookHeldAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
-        public override bool IsLoadingEnabled(Mod mod) => CWRRef.Has;
         private int drawUIalp = 0;
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 40;
             Projectile.DamageType = DamageClass.Melee;
