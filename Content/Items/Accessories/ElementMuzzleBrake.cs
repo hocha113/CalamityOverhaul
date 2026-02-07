@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
-            return incomingItem.type != ModContent.ItemType<NeutronStarMuzzleBrake>()
+            return incomingItem.type != ModContent.ItemType<EyeOfSingularity>()
                 && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<SimpleMuzzleBrake>();
         }

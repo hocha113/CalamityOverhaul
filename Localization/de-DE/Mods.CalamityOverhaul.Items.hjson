@@ -1,4 +1,4 @@
-ElementWhip: {
+﻿ElementWhip: {
 	DisplayName: Elementarpeitsche
 	Tooltip:
 		'''
@@ -334,7 +334,7 @@ ElementMuzzleBrake: {
 		'''
 }
 
-NeutronStarMuzzleBrake: {
+EyeOfSingularity: {
 	DisplayName: Neutronenstern-Stabilisator
 	Tooltip:
 		'''

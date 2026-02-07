@@ -1,4 +1,4 @@
-ElementWhip: {
+﻿ElementWhip: {
 	DisplayName: Latigo Elemental
 	Tooltip:
 		'''
@@ -338,7 +338,7 @@ ElementMuzzleBrake: {
 		'''
 }
 
-NeutronStarMuzzleBrake: {
+EyeOfSingularity: {
 	DisplayName: Freno de Boca de Estado Neutro
 	Tooltip:
 		'''

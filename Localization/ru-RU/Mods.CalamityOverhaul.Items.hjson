@@ -341,7 +341,7 @@ ElementMuzzleBrake: {
 		'''
 }
 
-NeutronStarMuzzleBrake: {
+EyeOfSingularity: {
 	DisplayName: Стабилизатор нейтронной звезды
 	Tooltip:
 		'''

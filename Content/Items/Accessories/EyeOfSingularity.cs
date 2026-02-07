@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
 {
-    internal class NeutronStarMuzzleBrake : ModItem
+    internal class EyeOfSingularity : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "MuzzleBrakeIV";
         public override void SetStaticDefaults() {
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = CWRID.Rarity_Turquoise;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronStarMuzzleBrake;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_EyeOfSingularity;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

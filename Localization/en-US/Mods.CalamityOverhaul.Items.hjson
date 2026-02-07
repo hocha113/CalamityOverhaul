@@ -1,4 +1,4 @@
-ElementWhip: {
+﻿ElementWhip: {
 	DisplayName: Element Whip
 	Tooltip: A Whip infused with the energy of the Moon and the Elements.
 }
@@ -330,7 +330,7 @@ ElementMuzzleBrake: {
 		'''
 }
 
-NeutronStarMuzzleBrake: {
+EyeOfSingularity: {
 	DisplayName: Neutron Star Stabilizer
 	Tooltip:
 		'''

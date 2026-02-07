@@ -254,7 +254,7 @@
         /// <summary>
         /// 中子素态稳定器
         /// </summary>
-        public readonly static string[] FullItems_NeutronStarMuzzleBrake = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
+        public readonly static string[] FullItems_EyeOfSingularity = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
             "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/ElementalQuiver", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0",
@@ -263,7 +263,7 @@
             "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronStarMuzzleBrake"
+            "CalamityOverhaul/EyeOfSingularity"
         ];
         /// <summary>
         /// 惧亡者之证
