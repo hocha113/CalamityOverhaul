@@ -7,6 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
     internal class MeleeFossilShard : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "FossilShard";
+        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;
