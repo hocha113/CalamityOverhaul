@@ -1255,13 +1255,17 @@ namespace CalamityOverhaul
             }
 
             MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
-            VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+            if (methodInfo != null) {
+                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+            }
 
             //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
             if (CWRMod.Instance.luminance != null) {
                 var utType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.luminance), "Utilities");
                 methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
-                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+                if (methodInfo != null) {
+                    VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+                }
             }
 
             var math = typeof(CalamityPlayer).GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
