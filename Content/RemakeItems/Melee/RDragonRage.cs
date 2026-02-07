@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDragonRage : CWRItemOverride
     {
-        public static readonly SoundStyle SwingSound = new("CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash1");
+        public static readonly SoundStyle SwingSound = "CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash1".GetSound();
         private int Level;
         private int LevelAlt;
         internal static bool CoolWorld => Main.zenithWorld || Main.getGoodWorld || Main.drunkWorld || Main.worldName == "HoCha113";
