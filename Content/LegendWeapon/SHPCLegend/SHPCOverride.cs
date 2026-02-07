@@ -32,9 +32,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             var type = CWRRef.GetItem_SHPC_Type();
             if (type != null) {
                 MethodInfo methodInfo = type.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-                VaultHook.Add(methodInfo, OnSHPCToolFunc);
+                if (methodInfo != null) {
+                    VaultHook.Add(methodInfo, OnSHPCToolFunc);
+                }  
                 methodInfo = type.GetMethod("FindSoulForAmmo", BindingFlags.Public | BindingFlags.Static);
-                VaultHook.Add(methodInfo, OnFindSoulForAmmoFunc);
+                if (methodInfo != null) {
+                    VaultHook.Add(methodInfo, OnFindSoulForAmmoFunc);
+                }
             }
         }
         private static int OnFindSoulForAmmoFunc(Func<Player, int> orig, Player player) {
