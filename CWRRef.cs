@@ -1254,7 +1254,7 @@ namespace CalamityOverhaul
                 CWRUtils.LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
             }
 
-            MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("DisplayLocalizedText", BindingFlags.Static | BindingFlags.Public);
+            MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
             VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
 
             //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
