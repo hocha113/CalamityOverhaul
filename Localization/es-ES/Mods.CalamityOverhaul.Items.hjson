@@ -1,4 +1,4 @@
-﻿ElementWhip: {
+ElementWhip: {
 	DisplayName: Latigo Elemental
 	Tooltip:
 		'''
@@ -992,18 +992,18 @@ EmblemOfDread: {
 		'''
 		Increases melee damage by 100%
 		Increases melee critical strike chance by 100%
-		Increases melee attack speed by 100%
-		Grants 100 defense, ignoring all defense reduction
-		Reduces damage taken by 75%, and inflicts 100x reflected damage to attackers
-		All melee attacks inflict the Void Corrosion debuff on enemies
-		If an enemy's health is below 250,000, true melee attacks may directly erase them
-		While moving at high speeds, leaves behind multiple warp points that deal immense damage to enemies on contact
-		Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
-		Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
+		Increases melee speed by 100%
+		Increases defense by 100, ignoring all defense damage and reduction
+		Reduces incoming damage by 75% and reflects 100x damage back to the attacker
+		All melee attacks inflict the 'Void Erosion' debuff
+		True melee attacks have a chance to instantly erase enemies with less than 250,000 HP
+		Moving at high speeds leaves warp points in your path, dealing extreme damage to enemies
+		Grants the ability to use Gravity Dash; press [KEY] to dash a long distance and release massive gravitational rays
+		If you receive fatal damage, you immediately regain full HP and gain a Gravity Shield (60 second cooldown)
 		Enemies are more likely to target you
-		[c/d94fff:"A radiant angel veils your sight, whispering sweet lies of eternal salvation."]
-		[c/ff4d4d:"A bloodied butcher lifts your blades, proclaiming slaughter as the path to glory."]
-		[c/4da6ff:"A sapphire dove pecks your brow, mocking your feeble struggle against fate."]
+		[c/d94fff:"A sanctified angel veils your gaze, whispering eternal, saccharine lies"]
+		[c/ff4d4d:"A blood-soaked butcher raises your twin blades, declaring that only slaughter brings glory"]
+		[c/4da6ff:"An azure dove pecks through your brow, mocking your insignificant struggle"]
 		''' */
 }
 

@@ -7,6 +7,7 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -52,6 +53,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
             return incomingItem.type != ModContent.ItemType<ElementMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<SimpleMuzzleBrake>();
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.InsertHotkeyBinding(CWRKeySystem.EyeOfSingularity_QuantumLeap, "[KEY]", CWRLocText.Instance.Notbound.Value);
         }
     }
 
@@ -438,14 +443,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
         private Vector2 lastPosition;
         /// <summary> 伽马射线暴内部冷却(帧) </summary>
         public int GammaRayBurstCooldown;
-        /// <summary> 量子迁跃方向键状态 </summary>
-        public const int DashDown = 0;
-        public const int DashUp = 1;
-        public const int DashRight = 2;
-        public const int DashLeft = 3;
-        public int DashDir = -1;
-        /// <summary> 上一帧的Alive状态，用于延迟冲刺检测 </summary>
-        private bool prevAlive;
 
         public override void Initialize() {
             Alive = false;
@@ -455,8 +452,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void ResetEffects() {
-            //在重置Alive之前先保存上帧状态，用于冲刺检测
-            prevAlive = Alive;
             Alive = false;
 
             if (CollapseProtocolCooldown > 0) {
@@ -477,9 +472,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (SupernovaCooldown > 0) {
                 SupernovaCooldown--;
             }
-
-            //使用上一帧的Alive状态来检测冲刺，因为此时本帧的Alive还未被UpdateAccessory设置
-            UpdateDashState();
         }
 
         public override void PostUpdateMiscEffects() {
@@ -629,38 +621,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        public void UpdateDashState() {
-            //使用prevAlive而不是Alive，因为此方法在ResetEffects中调用
-            //此时Alive已被重置为false，而UpdateAccessory还未执行
-            if (Main.myPlayer != Player.whoAmI || !prevAlive) {
-                DashDir = -1;
-                return;
-            }
-
-            if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[DashDown] < 15) {
-                DashDir = DashDown;
-            }
-            else if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[DashUp] < 15) {
-                DashDir = DashUp;
-            }
-            else if (Player.controlRight && Player.releaseRight && Player.doubleTapCardinalTimer[DashRight] < 15) {
-                DashDir = DashRight;
-            }
-            else if (Player.controlLeft && Player.releaseLeft && Player.doubleTapCardinalTimer[DashLeft] < 15) {
-                DashDir = DashLeft;
-            }
-            else {
-                DashDir = -1;
-            }
-        }
-
         public override void PreUpdateMovement() {
             if (!Alive) {
                 return;
             }
 
-            //量子迁跃，双击方向键瞬移至光标位置
-            if (DashDir != -1 && QuantumLeapCooldown <= 0 && Player.whoAmI == Main.myPlayer) {
+            //量子迁跃，按下专属按键瞬移至光标位置
+            if (CWRKeySystem.EyeOfSingularity_QuantumLeap.JustPressed && QuantumLeapCooldown <= 0 && Player.whoAmI == Main.myPlayer) {
                 Player.dashType = 0;
                 Player.SetPlayerDashID(string.Empty);
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero

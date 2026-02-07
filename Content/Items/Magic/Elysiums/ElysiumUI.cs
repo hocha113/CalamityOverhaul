@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         public override bool Active {
             get {
                 //当玩家持有天国极乐时显示UI
-                bool holdingElysium = player.HeldItem?.type == ModContent.ItemType<Elysium>() && Main.keyState.PressingShift();
+                bool holdingElysium = player.GetItem()?.type == ModContent.ItemType<Elysium>() && player.GetItem()?.type > ItemID.None && Main.keyState.PressingShift();
                 return holdingElysium || uiFadeAlpha > 0.01f;
             }
         }

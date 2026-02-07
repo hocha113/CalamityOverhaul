@@ -1,4 +1,4 @@
-ADS_Key.DisplayName: Firearms:Open the scope
+﻿ADS_Key.DisplayName: Firearms:Open the scope
 KreLoad_Key.DisplayName: Firearms:Change the ammunition
 QuestLog_Key.DisplayName: Quest Book: Toggle Main Interface
 HeavenfallLongbowSkillKey.DisplayName: HeavenfallLongbow Skill Key
@@ -18,3 +18,5 @@ Pandemonium_R.DisplayName: Pandemonium: End of All Demons
 AriaofTheCosmos_Q.DisplayName: Aria of the Cosmos: Star Ring Guardian
 AriaofTheCosmos_R.DisplayName: Aria of the Cosmos: Gamma Ray Burst
 JusticeUnveiled.DisplayName: Justice Unveiled: Trigger Judgment
+EmblemOfDread_Dash.DisplayName: Emblem of Dread: Gravity Dash
+EyeOfSingularity_QuantumLeap.DisplayName: Eye of Singularity: Quantum Leap

@@ -71,6 +71,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
             return true;
         }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.InsertHotkeyBinding(CWRKeySystem.EmblemOfDread_Dash, "[KEY]", CWRLocText.Instance.Notbound.Value);
+        }
     }
 
     public class WarpingPoint : ModProjectile, IWarpDrawable
@@ -275,7 +279,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void Initialize() {
             SlotId = SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeath".GetSound() with { Pitch = -0.2f }, Owner.Center);
-            Owner.GetModPlayer<EmblemOfDreadPlayer>().SetDash((int)Projectile.ai[0]);
+            Owner.GetModPlayer<EmblemOfDreadPlayer>().SetDash();
             Projectile.localAI[0] = EmblemOfDreadPlayer.DashVelocity;
         }
 
@@ -284,18 +288,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 || Owner.GetModPlayer<EmblemOfDreadPlayer>().DashTimer <= 0) {
                 Projectile.Kill();
                 return;
-            }
-
-            if (Projectile.ai[1] == 0 && Projectile.ai[0] == 0) {
-                Owner.velocity = new Vector2(Owner.velocity.X, 100);
-                Vector2 collVer = Collision.TileCollision(Projectile.position, Owner.velocity, Projectile.width, Projectile.height);
-                if (collVer == Owner.velocity) {
-                    Owner.position.Y += Projectile.localAI[0];
-                }
-                else {
-                    Projectile.ai[1]++;
-                }
-                Projectile.localAI[0] *= 0.996f;
             }
 
             Projectile.Center = Owner.Center;
@@ -319,7 +311,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 sound.Position = Owner.Center;
             }
 
-            if (Projectile.ai[1] == 0 && !VaultUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 for (int j = 0; j < 53; j++) {
                     BasePRT spark = new PRT_HeavenfallStar(Owner.Center
                         , Owner.velocity.UnitVector() * (0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
@@ -348,15 +340,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class EmblemOfDreadPlayer : ModPlayer
     {
         public bool Alive = false;
-        public const int DashDown = 0;
-        public const int DashUp = 1;
-        public const int DashRight = 2;
-        public const int DashLeft = 3;
         public const float DashVelocity = 100f;
         public const int KilllineByLife = 250000;
         public const int DashCooldown = 50;
         public const int DashDuration = 35;
-        public int DashDir = -1;
         public int DashDelay = 0;
         public int DashTimer = 0;
         public int TheGravityShieldTime;
@@ -372,59 +359,19 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (DashTimer > 0) {
                 DashTimer--;
             }
-
-            UpdateDashState();
         }
 
         /// <summary>
         /// 设置冲刺时的各种信息
         /// </summary>
-        /// <param name="dashDir"></param>
-        public void SetDash(int dashDir) {
-            Vector2 newVelocity = Player.velocity;
-            switch (dashDir) {
-                case DashUp when Player.velocity.Y > -DashVelocity:
-                case DashDown when Player.velocity.Y < DashVelocity: {
-                    float dashDirection = dashDir == DashDown ? 1 : -1.3f;
-                    newVelocity.Y = dashDirection * DashVelocity;
-                    break;
-                }
-                case DashLeft when Player.velocity.X > -DashVelocity:
-                case DashRight when Player.velocity.X < DashVelocity: {
-                    float dashDirection = dashDir == DashRight ? 1 : -1;
-                    newVelocity.X = dashDirection * DashVelocity;
-                    break;
-                }
-                default:
-                    return;
-            }
+        public void SetDash() {
+            Vector2 dashDirection = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.UnitX);
+            Vector2 newVelocity = dashDirection * DashVelocity;
 
             Player.maxFallSpeed = DashVelocity;
             DashDelay = DashCooldown;
             DashTimer = DashDuration;
             Player.velocity = newVelocity;
-        }
-
-        public void UpdateDashState() {
-            if (Main.myPlayer != Player.whoAmI) {
-                return;
-            }
-
-            if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[DashDown] < 15) {
-                DashDir = DashDown;
-            }
-            else if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[DashUp] < 15) {
-                DashDir = DashUp;
-            }
-            else if (Player.controlRight && Player.releaseRight && Player.doubleTapCardinalTimer[DashRight] < 15) {
-                DashDir = DashRight;
-            }
-            else if (Player.controlLeft && Player.releaseLeft && Player.doubleTapCardinalTimer[DashLeft] < 15) {
-                DashDir = DashLeft;
-            }
-            else {
-                DashDir = -1;
-            }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp
@@ -492,10 +439,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            if (!Player.mount.Active && !Player.setSolar && DashDir != -1
-                && DashDelay == 0 && Player.whoAmI == Main.myPlayer) {
+            if (!Player.mount.Active && !Player.setSolar
+                && DashDelay == 0 && Player.whoAmI == Main.myPlayer
+                && CWRKeySystem.EmblemOfDread_Dash.JustPressed) {
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<EmblemOfDreadDashProj>(), 8000, 8, Player.whoAmI, DashDir);
+                    , ModContent.ProjectileType<EmblemOfDreadDashProj>(), 8000, 8, Player.whoAmI);
             }
 
             if (DashTimer > 0) {

@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Common
         public static ModKeybind AriaofTheCosmos_Q { get; private set; }
         public static ModKeybind AriaofTheCosmos_R { get; private set; }
         public static ModKeybind JusticeUnveiled { get; private set; }
+        public static ModKeybind EmblemOfDread_Dash { get; private set; }
+        public static ModKeybind EyeOfSingularity_QuantumLeap { get; private set; }
 
         void ICWRLoader.LoadData() {
             Mod mod = CWRMod.Instance;
@@ -47,6 +49,8 @@ namespace CalamityOverhaul.Common
             AriaofTheCosmos_Q = KeybindLoader.RegisterKeybind(mod, "AriaofTheCosmos_Q", "Q");
             AriaofTheCosmos_R = KeybindLoader.RegisterKeybind(mod, "AriaofTheCosmos_R", "R");
             JusticeUnveiled = KeybindLoader.RegisterKeybind(mod, "JusticeUnveiled", "W");
+            EmblemOfDread_Dash = KeybindLoader.RegisterKeybind(mod, "EmblemOfDread_Dash", "V");
+            EyeOfSingularity_QuantumLeap = KeybindLoader.RegisterKeybind(mod, "EyeOfSingularity_QuantumLeap", "B");
         }
 
         void ICWRLoader.UnLoadData() {
@@ -70,6 +74,8 @@ namespace CalamityOverhaul.Common
             AriaofTheCosmos_Q = null;
             AriaofTheCosmos_R = null;
             JusticeUnveiled = null;
+            EmblemOfDread_Dash = null;
+            EyeOfSingularity_QuantumLeap = null;
         }
     }
 }

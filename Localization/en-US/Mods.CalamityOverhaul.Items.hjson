@@ -331,15 +331,26 @@ ElementMuzzleBrake: {
 }
 
 EyeOfSingularity: {
-	DisplayName: Neutron Star Stabilizer
+	DisplayName: Eye of Singularity
 	Tooltip:
 		'''
 		Increases ranged damage by 100%
 		Increases ranged critical strike chance by 100%
-		Increases ranged attack speed by 100%
-		Completely negates recoil and chamber pressure
-		Greatly enhances ranged projectiles
-		Grants all abilities of lower-tier accessories
+		Increases ranged firing speed by 100% and prevents ammo consumption
+		Sets the critical damage multiplier for all ranged weapons to 500%
+		Your ranged projectiles tear through space, creating miniature black holes on impact that drag in and crush enemies
+		While standing still, you enter the 'Event Horizon' state:
+		  - Grants invisibility and immunity to all contact damage
+		  - Attacks release additional Gamma Ray Bursts that track enemies
+		Grants the ability to Quantum Leap; press [KEY] to teleport to the cursor, erasing enemy projectiles along the path
+		Right-click to activate 'Collapse Protocol':
+		  - Consumes all mana to make all ranged attacks ignore immunity frames and force critical hits for 10 seconds
+		  - 60 second cooldown
+		If you receive fatal damage, you become a Supernova, dealing extreme area damage, and reform at a safe location after 3 seconds
+		This effect has a 60 second cooldown
+		[c/33ff33:"The slumbering Dragon God jacks into your nerves, deconstructing the Machine Spirit's basal logic"]
+		[c/ffaa00:"A ravenous constellation devours your muzzle flash, draining the final warmth of dying stars"]
+		[c/00ffff:"The formless Reaper becomes your shadow, harvesting the equal, inevitable doom of all sentient life"]
 		'''
 }
 
@@ -990,18 +1001,18 @@ EmblemOfDread: {
 		'''
 		Increases melee damage by 100%
 		Increases melee critical strike chance by 100%
-		Increases melee attack speed by 100%
-		Grants 100 defense, ignoring all defense reduction
-		Reduces damage taken by 75%, and inflicts 100x reflected damage to attackers
-		All melee attacks inflict the Void Corrosion debuff on enemies
-		If an enemy's health is below 250,000, true melee attacks may directly erase them
-		While moving at high speeds, leaves behind multiple warp points that deal immense damage to enemies on contact
-		Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
-		Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
+		Increases melee speed by 100%
+		Increases defense by 100, ignoring all defense damage and reduction
+		Reduces incoming damage by 75% and reflects 100x damage back to the attacker
+		All melee attacks inflict the 'Void Erosion' debuff
+		True melee attacks have a chance to instantly erase enemies with less than 250,000 HP
+		Moving at high speeds leaves warp points in your path, dealing extreme damage to enemies
+		Grants the ability to use Gravity Dash; press [KEY] to dash a long distance and release massive gravitational rays
+		If you receive fatal damage, you immediately regain full HP and gain a Gravity Shield (60 second cooldown)
 		Enemies are more likely to target you
-		[c/d94fff:"A radiant angel veils your sight, whispering sweet lies of eternal salvation."]
-		[c/ff4d4d:"A bloodied butcher lifts your blades, proclaiming slaughter as the path to glory."]
-		[c/4da6ff:"A sapphire dove pecks your brow, mocking your feeble struggle against fate."]
+		[c/d94fff:"A sanctified angel veils your gaze, whispering eternal, saccharine lies"]
+		[c/ff4d4d:"A blood-soaked butcher raises your twin blades, declaring that only slaughter brings glory"]
+		[c/4da6ff:"An azure dove pecks through your brow, mocking your insignificant struggle"]
 		'''
 }
 
