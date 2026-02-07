@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.useTime = 0;
             item.damage = BaseDamage;
             item.CWR().Scope = true;
-            item.SetItemCanFirePointBlankShots(true);
             item.SetCartridgeGun<SniperRifleHeldProj>(4);
         }
 

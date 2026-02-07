@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.channel = true;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 4, 75, 0);
-            Item.rare = CWRID.Rarity_Violet;
+            Item.rare = CWRID.Rarity_BurnishedAuric;
             Item.shoot = ModContent.ProjectileType<DragonsScaleGreatswordBeam>();
             Item.shootSpeed = 7f;
             Item.SetKnifeHeld<DragonsScaleGreatswordHeld>();

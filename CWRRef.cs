@@ -50,11 +50,11 @@ namespace CalamityOverhaul
         /// </summary>
         public static bool Has {
             get {
-                _has ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == new Version(2, 0, 7, 2);
+                _has ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == new Version(2, 1);
                 return _has.Value;
             }
         }
-        private static bool dummyBool;
+
         private static int dummyInt;
         private static float dummyFloat;
 
@@ -379,7 +379,7 @@ namespace CalamityOverhaul
             SetPlayerWarbannerOfTheSunInner(player, value);
         }
         [CWRJITEnabled]
-        private static void SetPlayerWarbannerOfTheSunInner(Player player, bool value) => player.Calamity().warbannerOfTheSun = value;
+        private static void SetPlayerWarbannerOfTheSunInner(Player player, bool value) => player.Calamity().WarbanneroftheRighteous = value;
 
         public static bool GetPlayerBladeArmEnchant(this Player player) => Has && GetPlayerBladeArmEnchantInner(player);
         [CWRJITEnabled]
@@ -397,13 +397,6 @@ namespace CalamityOverhaul
         public static bool GetPlayerAdrenalineMode(this Player player) => Has && GetPlayerAdrenalineModeInner(player);
         [CWRJITEnabled]
         private static bool GetPlayerAdrenalineModeInner(Player player) => player.Calamity().adrenalineModeActive;
-
-        public static void SetProjPointBlankShotDuration(this Projectile projectile, int value) {
-            if (!Has) return;
-            SetProjPointBlankShotDurationInner(projectile, value);
-        }
-        [CWRJITEnabled]
-        private static void SetProjPointBlankShotDurationInner(Projectile projectile, int value) => projectile.Calamity().pointBlankShotDuration = value;
 
         public static void LargeFieryExplosion(Projectile projectile) {
             if (!Has) return;
@@ -484,10 +477,11 @@ namespace CalamityOverhaul
         public static void SummonExoInner(int exoType, Player player) {
             CalamityWorld.DraedonMechToSummon = (ExoMech)exoType;
             if (VaultUtils.isClient) {//客户端发送网络数据到服务器
-                var netMessage = CWRMod.Instance.calamity.GetPacket();
-                netMessage.Write((byte)CalamityModMessageType.ExoMechSelection);
-                netMessage.Write((int)CalamityWorld.DraedonMechToSummon);
-                netMessage.Send();
+                //通过反射直接调用 ExoMechSelectionPacket.Send()
+                var calMod = ModLoader.GetMod("CalamityMod");
+                var packetType = calMod.Code.GetType("CalamityMod.Packets.ExoMechSelectionPacket");
+                var sendMethod = packetType.GetMethod("Send", BindingFlags.Public | BindingFlags.Static);
+                sendMethod.Invoke(null, [/* toClient */ -1, /* ignoreClient */ -1]);
                 return;
             }
             switch (CalamityWorld.DraedonMechToSummon) {
@@ -562,13 +556,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void HomeInOnNPCInner(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
 
-        public static void SpawnLifeStealProjectile(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier = 1f) {
-            if (!Has) return;
-            SpawnLifeStealProjectileInner(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
-        }
-        [CWRJITEnabled]
-        private static void SpawnLifeStealProjectileInner(Projectile projectile, Player player, float healAmount, int healProjectileType, float distanceRequired, float cooldownMultiplier) => CalamityGlobalProjectile.SpawnLifeStealProjectile(projectile, player, healAmount, healProjectileType, distanceRequired, cooldownMultiplier);
-
         public static Projectile ProjectileBarrage(IEntitySource source, Vector2 originVec, Vector2 targetPos, bool fromRight, float xOffsetMin, float xOffsetMax
             , float yOffsetMin, float yOffsetMax, float projSpeed, int projType, int damage, float knockback, int owner, bool clamped = false, float inaccuracyOffset = 5f)
             => Has ? ProjectileBarrageInner(source, originVec, targetPos, fromRight, xOffsetMin, xOffsetMax, yOffsetMin, yOffsetMax, projSpeed, projType, damage, knockback, owner, clamped, inaccuracyOffset) : null;
@@ -600,7 +587,7 @@ namespace CalamityOverhaul
 
         public static List<int> GetPierceResistExceptionList() => Has ? GetPierceResistExceptionListInner() : new List<int>();
         [CWRJITEnabled]
-        private static List<int> GetPierceResistExceptionListInner() => CalamityLists.projectileDestroyExceptionList;
+        private static List<int> GetPierceResistExceptionListInner() => new List<int>();// CalamityLists.projectileDestroyExceptionList;//TODO
 
         public static bool HasExo() => Has && HasExoInner();
         [CWRJITEnabled]
@@ -652,7 +639,7 @@ namespace CalamityOverhaul
             SetAllProjectilesHomeInner(projectile, value);
         }
         [CWRJITEnabled]
-        private static void SetAllProjectilesHomeInner(Projectile projectile, bool value) => projectile.Calamity().allProjectilesHome = value;
+        private static void SetAllProjectilesHomeInner(Projectile projectile, bool value) => projectile.Calamity().conditionalHomingRange = (value ? 450 : 0);
 
         public static void SetBetterLifeBullet1(this Projectile projectile, bool value) {
             if (!Has) return;
@@ -794,7 +781,7 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         public static Type GetItem_SHPC_TypeInner() => typeof(SHPC);
         [CWRJITEnabled]
-        public static Type GetNPC_WITCH_TypeInner() => typeof(WITCH);
+        public static Type GetNPC_WITCH_TypeInner() => typeof(BrimstoneWitch);
         [CWRJITEnabled]
         public static Type GetNPC_SupCal_TypeInner() => typeof(SupremeCalamitas);
 
@@ -846,13 +833,6 @@ namespace CalamityOverhaul
         private static void HorsemansBladeOnHitInner(Player player, int targetIdx, int damage, float knockback
             , int extraUpdateAmt, int type)
             => CalamityPlayer.HorsemansBladeOnHit(player, targetIdx, damage, knockback, extraUpdateAmt, type);
-
-        public static void SetItemCanFirePointBlankShots(this Item item, bool value) {
-            if (!Has) return;
-            SetItemCanFirePointBlankShotsInner(item, value);
-        }
-        [CWRJITEnabled]
-        private static void SetItemCanFirePointBlankShotsInner(Item item, bool value) => item.Calamity().canFirePointBlankShots = value;
 
         public static bool GetProjStealthStrike(this Projectile projectile) => Has && GetProjStealthStrikeInner(projectile);
         [CWRJITEnabled]
@@ -943,14 +923,9 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static bool GetItemUsesChargeInner(Item item) => item.Calamity().UsesCharge;
 
-        public static ref bool RefItemUsesCharge(this Item item) {
-            if (!Has) {
-                return ref dummyBool;
-            }
-            return ref RefItemUsesChargeInner(item);
-        }
+        public static bool SetItemUsesCharge(this Item item, bool value) => Has && SetItemUsesChargeInner(item, value);
         [CWRJITEnabled]
-        private static ref bool RefItemUsesChargeInner(Item item) => ref item.Calamity().UsesCharge;
+        private static bool SetItemUsesChargeInner(Item item, bool value) => item.Calamity().UsesCharge = value;
 
         public static DamageClass GetRogueDamageClass() {
             if (!Has) {
@@ -1008,10 +983,8 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void SetNSMBPlayerInner(Player player) {
             CalamityPlayer calPlayer = player.Calamity();
-            calPlayer.rangedAmmoCost *= 0.8f;
             calPlayer.deadshotBrooch = true;
             calPlayer.dynamoStemCells = true;
-            calPlayer.MiniSwarmers = true;
             calPlayer.eleResist = true;
             calPlayer.voidField = true;
         }
@@ -1033,10 +1006,6 @@ namespace CalamityOverhaul
         }
         [CWRJITEnabled]
         private static void DrawStarTrailInner(Projectile projectile, Color outer, Color inner, float auraHeight) => CalamityUtils.DrawStarTrail(projectile, outer, inner, auraHeight);
-
-        public static int GetProjectileDamage(Projectile projectile, int projType) => Has ? GetProjectileDamageInner(projectile, projType) : 0;
-        [CWRJITEnabled]
-        private static int GetProjectileDamageInner(Projectile projectile, int projType) => projectile.GetProjectileDamage(projType);
 
         public static void CosmicFireEffect(Projectile Projectile) {
             if (!Has) return;

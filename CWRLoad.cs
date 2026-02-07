@@ -216,10 +216,10 @@ namespace CalamityOverhaul
             targetNpcTypes3 = [CWRID.NPC_PrimordialWyrmHead, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_PrimordialWyrmTail];
             targetNpcTypes4 = [CWRID.NPC_PerforatorHeadLarge, CWRID.NPC_PerforatorBodyLarge, CWRID.NPC_PerforatorTailLarge];
             targetNpcTypes5 = [CWRID.NPC_PerforatorHeadMedium, CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorTailMedium];
-            targetNpcTypes6 = [CWRID.NPC_ArmoredDiggerHead, CWRID.NPC_ArmoredDiggerBody, CWRID.NPC_ArmoredDiggerTail];
+            targetNpcTypes6 = [ ];
             targetNpcTypes7 = [CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_AresBody, CWRID.NPC_ThanatosHead, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_ThanatosTail];
             targetNpcTypes7_1 = [CWRID.NPC_AresBody, CWRID.NPC_AresLaserCannon, CWRID.NPC_AresPlasmaFlamethrower, CWRID.NPC_AresTeslaCannon, CWRID.NPC_AresGaussNuke];
-            targetNpcTypes8 = [CWRID.NPC_DevourerofGodsHead, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail, CWRID.NPC_CosmicGuardianHead, CWRID.NPC_CosmicGuardianBody, CWRID.NPC_CosmicGuardianTail];
+            targetNpcTypes8 = [CWRID.NPC_DevourerofGodsHead, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail];
             targetNpcTypes9 = [CWRID.NPC_DesertScourgeHead, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertScourgeTail, CWRID.NPC_DesertNuisanceHead, CWRID.NPC_DesertNuisanceBody, CWRID.NPC_DesertNuisanceTail];
             targetNpcTypes10 = [CWRID.NPC_AstrumDeusHead, CWRID.NPC_AstrumDeusBody, CWRID.NPC_AstrumDeusTail];
             targetNpcTypes11 = [CWRID.NPC_AquaticScourgeHead, CWRID.NPC_AquaticScourgeBody, CWRID.NPC_AquaticScourgeTail];
@@ -230,8 +230,8 @@ namespace CalamityOverhaul
             targetNpcTypes16 = [CWRID.NPC_RavagerBody, CWRID.NPC_RavagerClawLeft, CWRID.NPC_RavagerClawRight, CWRID.NPC_RavagerHead, CWRID.NPC_RavagerLegLeft, CWRID.NPC_RavagerLegRight];
             targetNpcTypes17 = [CWRID.NPC_PerforatorHeadSmall, CWRID.NPC_PerforatorBodySmall, CWRID.NPC_PerforatorTailSmall];
 
-            WormBodys = [ CWRID.NPC_AquaticScourgeBody, CWRID.NPC_StormWeaverBody, CWRID.NPC_ArmoredDiggerBody, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertNuisanceBody,
-                CWRID.NPC_DesertNuisanceBodyYoung, CWRID.NPC_CosmicGuardianBody, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_AstrumDeusBody
+            WormBodys = [ CWRID.NPC_AquaticScourgeBody, CWRID.NPC_StormWeaverBody, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertNuisanceBody,
+                CWRID.NPC_DesertNuisanceBodyYoung, CWRID.NPC_PrimordialWyrmBody, CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_AstrumDeusBody
                 , CWRID.NPC_SepulcherBody, CWRID.NPC_PerforatorBodyLarge, CWRID.NPC_PerforatorBodyMedium, CWRID.NPC_PerforatorBodySmall, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
             AddMaxStackItemsIn64 = [

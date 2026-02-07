@@ -73,9 +73,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
                 if (Main.player[Main.myPlayer].lifeSteal <= 0f || heal <= 0)
                     return;
-
-                CWRRef.SpawnLifeStealProjectile(Projectile, Main.player[Projectile.owner]
-                    , heal, CWRID.Proj_ReaverHealOrb, 100);
+                //TODO
+                //CWRRef.SpawnLifeStealProjectile(Projectile, Main.player[Projectile.owner], heal, CWRID.Proj_ReaverHealOrb, 100);
             }
 
             int slashCreatorID = CWRID.Proj_TerratomereSlashCreator;

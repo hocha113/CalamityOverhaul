@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = Item.buyPrice(0, 0, 75, 5);
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.SetHeldProj<LaserPistolHeld>();
-            Item.RefItemUsesCharge() = true;
+            Item.SetItemUsesCharge(true);
             Item.RefItemMaxCharge() = 40;
         }
 

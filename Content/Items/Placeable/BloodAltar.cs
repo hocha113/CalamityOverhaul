@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
             }
             CreateRecipe()
                 .AddIngredient(CWRID.Item_BloodOrb, 5)
-                .AddIngredient(CWRID.Item_BloodSample, 5)
                 .AddIngredient(ItemID.Vertebrae, 5)
                 .AddIngredient(ItemID.SoulofNight, 5)
                 .AddIngredient(ItemID.CrimstoneBlock, 50)
@@ -40,7 +39,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 .Register();
             CreateRecipe()
                 .AddIngredient(CWRID.Item_BloodOrb, 5)
-                .AddIngredient(CWRID.Item_RottenMatter, 5)
                 .AddIngredient(ItemID.RottenChunk, 5)
                 .AddIngredient(ItemID.SoulofNight, 5)
                 .AddIngredient(ItemID.EbonstoneBlock, 50)

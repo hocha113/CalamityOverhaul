@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 AddIngredient<SnowQuayMK2>().
                 AddIngredient(ItemID.ShroomiteBar, 3).
                 AddIngredient(CWRID.Item_CryonicBar, 3).
-                AddIngredient(CWRID.Item_CoreofEleum, 5).
+                AddIngredient(CWRID.Item_EssenceofEleum, 5).
                 AddIngredient(ItemID.BeetleHusk, 5).
                 AddTile(TileID.MythrilAnvil).
                 Register();

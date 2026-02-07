@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Item.value = Item.buyPrice(0, 18, 25, 0);
             Item.shoot = ModContent.ProjectileType<AncientStormGoddessSpearHeld>();
             Item.shootSpeed = 15f;
-            Item.rare = CWRID.Rarity_DarkBlue;
+            Item.rare = CWRID.Rarity_CosmicPurple;
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 7;

@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Item.noUseGraphic = true;
             Item.knockBack = 6;
             Item.value = Item.sellPrice(platinum: 10);
-            Item.rare = CWRID.Rarity_Violet;
+            Item.rare = CWRID.Rarity_BurnishedAuric;
             Item.UseSound = SoundID.Item117;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<ElysiumHeld>();

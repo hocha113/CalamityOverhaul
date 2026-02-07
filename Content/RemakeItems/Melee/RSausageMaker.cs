@@ -84,8 +84,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 if (Main.player[Main.myPlayer].lifeSteal <= 0f || heal <= 0 || target.lifeMax <= 5) {
                     return;
                 }
-
-                CWRRef.SpawnLifeStealProjectile(Projectile, Owner, heal, ProjectileID.VampireHeal, 3000f);
+                //TODO
+                //CWRRef.SpawnLifeStealProjectile(Projectile, Owner, heal, ProjectileID.VampireHeal, 3000f);
                 if (Projectile.ai[1] == 0) {
                     Projectile.NewProjectile(Source, Projectile.Center, AbsolutelyShootVelocity, Type, 0, 0f, Projectile.owner, 0, 1);
                 }

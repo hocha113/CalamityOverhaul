@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.RemakeItems
 {
     internal class RWarbanneroftheSun : CWRItemOverride
     {
-        public override int TargetID => CWRID.Item_WarbanneroftheSun;
+        public override int TargetID => CWRID.Item_WarbanneroftheRighteous;
         public override bool DrawingInfo => false;
 
         public override bool On_UpdateAccessory(Item item, Player player, bool hideVisual) {

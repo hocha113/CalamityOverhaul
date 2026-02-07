@@ -681,7 +681,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.extraUpdates = (int)(1 + ChargeLevel);
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

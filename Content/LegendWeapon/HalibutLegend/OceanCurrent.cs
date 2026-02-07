@@ -85,7 +85,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 6;
             Projectile.arrow = true;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

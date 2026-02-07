@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.timeLeft = 360;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

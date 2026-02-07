@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             AIType = ProjectileID.BulletHighVelocity;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 600;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

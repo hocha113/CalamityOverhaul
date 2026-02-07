@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useTime = 60;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.maxStack = 1;
-            Item.rare = CWRID.Rarity_Violet;
+            Item.rare = CWRID.Rarity_BurnishedAuric;
             Item.value = Item.sellPrice(platinum: 10);
             Item.UseSound = SoundID.Item29;
         }

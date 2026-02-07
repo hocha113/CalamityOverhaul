@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(220, 25, 5, 5); ;
             Item.rare = ItemRarityID.Red;
-            Item.SetItemCanFirePointBlankShots(true);
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_AnnihilatingUniverse;
         }
 

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 7;
             AmmoTypeAffectedByMagazine = false;
             ForcedConversionTargetAmmoFunc = () => true;
-            ToTargetAmmo = CWRID.Proj_SulphuricBlast;
+            ToTargetAmmo = CWRID.Proj_AcidRocket;
         }
     }
 }

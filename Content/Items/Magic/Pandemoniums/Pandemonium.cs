@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.noMelee = true;
             Item.knockBack = 5;
             Item.value = Item.sellPrice(platinum: 10);
-            Item.rare = CWRID.Rarity_Violet;
+            Item.rare = CWRID.Rarity_BurnishedAuric;
             Item.UseSound = SoundID.Item113;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();

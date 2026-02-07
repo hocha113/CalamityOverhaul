@@ -34,7 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 600;
             Projectile.extraUpdates = 1;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {

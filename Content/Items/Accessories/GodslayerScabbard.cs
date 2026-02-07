@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(0, 25, 0, 0);
-            Item.rare = CWRID.Rarity_DarkBlue;
+            Item.rare = CWRID.Rarity_CosmicPurple;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

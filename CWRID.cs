@@ -108,9 +108,7 @@ namespace CalamityOverhaul
         public static int Item_PlaguebringerPistons => Get();
         public static int Item_Lazhar => Get();
         public static int Item_ScoriaBar => Get();
-        public static int Item_BloodSample => Get();
         public static int Item_BlightedGel => Get();
-        public static int Item_RottenMatter => Get();
         public static int Item_MidasPrime => Get();
         public static int Item_CrackshotColt => Get();
         public static int Item_HolyCollider => Get();
@@ -118,7 +116,6 @@ namespace CalamityOverhaul
         public static int Item_DivineGeode => Get();
         public static int Item_StormRuler => Get();
         public static int Item_StormlionMandible => Get();
-        public static int Item_DiseasedPike => Get();
         public static int Item_HellionFlowerSpear => Get();
         public static int Item_Pandemic => Get();
         public static int Item_SulphurousGrabber => Get();
@@ -137,11 +134,10 @@ namespace CalamityOverhaul
         public static int Item_MysteriousCircuitry => Get();
         public static int Item_EncryptedSchematicHell => Get();
         public static int Item_LuxorsGift => Get();
-        public static int Item_WarbanneroftheSun => Get();
+        public static int Item_WarbanneroftheRighteous => Get();
         public static int Item_EternalBlizzard => Get();
         public static int Item_Arbalest => Get();
         public static int Item_AshesofCalamity => Get();
-        public static int Item_CoreofEleum => Get();
         public static int Item_Condemnation => Get();
         public static int Item_AshesofAnnihilation => Get();
         public static int Item_Vehemence => Get();
@@ -246,9 +242,6 @@ namespace CalamityOverhaul
         public static int NPC_PerforatorHeadSmall => Get();
         public static int NPC_PerforatorBodySmall => Get();
         public static int NPC_PerforatorTailSmall => Get();
-        public static int NPC_ArmoredDiggerHead => Get();
-        public static int NPC_ArmoredDiggerBody => Get();
-        public static int NPC_ArmoredDiggerTail => Get();
         public static int NPC_Apollo => Get();
         public static int NPC_Artemis => Get();
         public static int NPC_AresBody => Get();
@@ -259,9 +252,6 @@ namespace CalamityOverhaul
         public static int NPC_ThanatosBody1 => Get();
         public static int NPC_ThanatosBody2 => Get();
         public static int NPC_ThanatosTail => Get();
-        public static int NPC_CosmicGuardianHead => Get();
-        public static int NPC_CosmicGuardianBody => Get();
-        public static int NPC_CosmicGuardianTail => Get();
         public static int NPC_DesertScourgeBody => Get();
         public static int NPC_DesertScourgeTail => Get();
         public static int NPC_DesertNuisanceHead => Get();
@@ -363,7 +353,7 @@ namespace CalamityOverhaul
         public static int Proj_UltimaSpark => Get();
         public static int Proj_Bolt => Get();
         public static int Proj_TelluricGlareArrow => Get();
-        public static int Proj_SulphuricBlast => Get();
+        public static int Proj_AcidRocket => Get();
         public static int Proj_StormSurgeTornado => Get();
         public static int Proj_SputterCometBig => Get();
         public static int Proj_PlasmaBlast => Get();
@@ -534,11 +524,11 @@ namespace CalamityOverhaul
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
         #region 稀有度ID引用
-        public static int Rarity_Violet => Get();
+        public static int Rarity_BurnishedAuric => Get();
         public static int Rarity_Turquoise => Get();
         public static int Rarity_HotPink => Get();
         public static int Rarity_PureGreen => Get();
-        public static int Rarity_DarkBlue => Get();
+        public static int Rarity_CosmicPurple => Get();
         public static int Rarity_DarkOrange => Get();
         #endregion
         #region 物品组ID引用

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<EnergySwordHeld>();
-            Item.RefItemUsesCharge() = true;
+            Item.SetItemUsesCharge(true);
             Item.RefItemMaxCharge() = 40;
         }
 

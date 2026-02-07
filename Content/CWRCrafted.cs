@@ -190,12 +190,6 @@ namespace CalamityOverhaul.Content
             }
             //瘟疫系列修改
             {
-                //瘟疫大剑
-                if (recipe.HasResult(CWRID.Item_PlagueKeeper)) {
-                    recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
-                    recipe.AddIngredient(CWRID.Item_Hellkite);//添加地狱龙锋
-                    recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                }
                 //瘟疫
                 if (recipe.HasResult(CWRID.Item_Contagion)) {
                     recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
@@ -218,12 +212,6 @@ namespace CalamityOverhaul.Content
                     recipe.RemoveIngredient(CWRID.Item_InfectedArmorPlating);//移除瘟疫装甲镀层的配方
                     recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
                     recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                }
-            }
-            //修改拉扎尔射线
-            {
-                if (recipe.HasResult(CWRID.Item_Lazhar)) {
-                    recipe.RemoveIngredient(ItemID.SpaceGun);//移除太空枪的配方
                 }
             }
         }
@@ -272,13 +260,6 @@ namespace CalamityOverhaul.Content
             //添加血泪的额外合成
             {
                 Recipe.Create(ItemID.BloodMoonStarter)
-                    .AddIngredient(CWRID.Item_BloodSample, 50)
-                    .AddIngredient(CWRID.Item_BlightedGel, 75)
-                    .AddTile(TileID.DemonAltar)
-                    .DisableDecraft()
-                    .Register();
-                Recipe.Create(ItemID.BloodMoonStarter)
-                    .AddIngredient(CWRID.Item_RottenMatter, 50)
                     .AddIngredient(CWRID.Item_BlightedGel, 75)
                     .AddTile(TileID.DemonAltar)
                     .DisableDecraft()
@@ -325,13 +306,6 @@ namespace CalamityOverhaul.Content
             }
             //添加瘟疫系列的合成
             {
-                //添加瘟疫长矛的合成
-                Recipe.Create(CWRID.Item_DiseasedPike)
-                    .AddIngredient(CWRID.Item_HellionFlowerSpear)//添加刺花长矛
-                    .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
                 //添加瘟疫悠悠球的合成
                 Recipe.Create(CWRID.Item_Pandemic)
                     .AddIngredient(CWRID.Item_SulphurousGrabber)//添加硫磺掠夺者
@@ -463,7 +437,7 @@ namespace CalamityOverhaul.Content
             {
                 Recipe.Create(CWRID.Item_EternalBlizzard)
                     .AddIngredient(CWRID.Item_Arbalest)
-                    .AddIngredient(CWRID.Item_CoreofEleum, 6)
+                    .AddIngredient(CWRID.Item_EssenceofEleum, 6)
                     .AddIngredient(ItemID.IceBlock, 500)
                     .AddTile(TileID.IceMachine)
                     .Register();

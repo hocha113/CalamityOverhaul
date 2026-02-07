@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 28f;
             Item.crit = 10;
             Item.useAmmo = AmmoID.Snowball;
-            Item.SetItemCanFirePointBlankShots(true);
             Item.SetCartridgeGun<SnowblindnessHeld>(500);
         }
 

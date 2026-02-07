@@ -20,14 +20,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.knockBack = 2.5f;
             Item.value = Item.buyPrice(0, 32, 0, 0);
-            Item.rare = CWRID.Rarity_DarkBlue;
+            Item.rare = CWRID.Rarity_CosmicPurple;
             Item.UseSound = CWRSound.Gun_Snowblindness_Shoot with { Volume = 0.35f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 32f;
             Item.crit = 12;
             Item.useAmmo = AmmoID.Snowball;
-            Item.SetItemCanFirePointBlankShots(true);
             Item.SetCartridgeGun<UniversalFrostHeld>(800);
         }
 
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 AddIngredient<CrystalDimming>().
                 AddIngredient(CWRID.Item_CosmiliteBar, 5).
                 AddIngredient(CWRID.Item_EndothermicEnergy, 20).
-                AddIngredient(CWRID.Item_CoreofEleum, 3).
+                AddIngredient(CWRID.Item_EssenceofEleum, 3).
                 AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
         }

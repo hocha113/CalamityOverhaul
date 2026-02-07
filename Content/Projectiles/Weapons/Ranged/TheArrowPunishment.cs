@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = 3;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 5;
-            Projectile.SetProjPointBlankShotDuration(18);
         }
 
         public override void AI() {
