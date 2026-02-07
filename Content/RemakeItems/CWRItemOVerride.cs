@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
@@ -19,7 +20,13 @@ namespace CalamityOverhaul.Content.RemakeItems
         /// </summary>
         /// <param name="itemKey"></param>
         /// <returns></returns>
-        public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
+        public static int GetCalItemID(string itemKey) {
+            int id = VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
+            if (id == ItemID.None) {
+                ($"没能找到内部名为{itemKey}的物品").LoggerDomp(CWRMod.Instance);
+            }
+            return id;
+        }
 
         public sealed override void PostSetStaticDefaults() {
             HandlerCanOverride.CanOverrideByID.Add(TargetID, true);
