@@ -146,18 +146,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-
-            if (projectile.IsOwnedByLocalPlayer() && !projectile.hide && projectile.friendly) {
-                CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
-                if (modPlayer.LoadMuzzleBrakeLevel == 4
-                    && projectile.DamageType.CountsAsClass<RangedDamageClass>()) {
-                    projectile.extraUpdates += 2;
-                    if (Main.rand.NextBool(5)) {
-                        projectile.scale *= 2.25f;
-                    }
-                    projectile.netUpdate = true;
-                }
-            }
         }
 
         public void SendProjectileDyeItemID(Projectile projectile) {
