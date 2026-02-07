@@ -1,4 +1,4 @@
-ModifyCrabulon: {
+﻿ModifyCrabulon: {
 	CrouchText: Ждать
 	CrouchAltText: Следовать
 	MountHoverText: ЛКМ: Надеть седло
@@ -6,6 +6,13 @@ ModifyCrabulon: {
 	ChangeSaddleText: ЛКМ: Сменить седло
 	DismountText: ПКМ: Слезть
 	DontDismountText: Временно нельзя оседлать в мультиплеере!
+	RecallText: Призвать
+	SaddleText: Седло
+	ReleaseText: Отпустить
+	ReleasedText: "{0} был отпущен"
+	StatusRestText: "[ОЖИДАНИЕ]"
+	StatusMountText: "[ВЕРХОМ]"
+	StatusFollowText: "[СЛЕДОВАНИЕ]"
 }
 
 ModifyTruffle: {

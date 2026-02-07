@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     /// <summary>
-    /// ¾úÉúĞ·Æï³ËÏµÍ³
+    /// èŒç”ŸèŸ¹éª‘ä¹˜ç³»ç»Ÿ
     /// </summary>
     internal class CrabulonMountSystem
     {
@@ -23,13 +23,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.physics = physics;
         }
 
-        //»ñÈ¡Æï³ËÎ»ÖÃ
+        //è·å–éª‘ä¹˜ä½ç½®
         public Vector2 GetMountPosition() {
             float yOffset = owner.ai[9] > 0 ? owner.ai[9] : npc.gfxOffY;
             return npc.Top + new Vector2(0, yOffset);
         }
 
-        //¹Ø±ÕÆï³Ë×´Ì¬
+        //å…³é—­éª‘ä¹˜çŠ¶æ€
         public void Dismount() {
             if (!owner.Owner.Alives()) {
                 return;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.SendNetWork();
         }
 
-        //´¦ÀíÆï³ËAI
+        //å¤„ç†éª‘ä¹˜AI
         public bool ProcessMountAI() {
             if (owner.DontMount > 0) {
                 owner.DontMount--;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return HandleMountedMovement();
         }
 
-        //´¦ÀíÉÏÂíÇëÇó
+        //å¤„ç†ä¸Šé©¬è¯·æ±‚
         private bool HandleMountRequest() {
             if (owner.CrabulonPlayer != null) {
                 owner.CrabulonPlayer.MountCrabulon = null;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
 
-        //ÅĞ¶ÏÊÇ·ñÓ¦¸Ã¿ªÊ¼ÉÏÂí
+        //åˆ¤æ–­æ˜¯å¦åº”è¯¥å¼€å§‹ä¸Šé©¬
         private bool ShouldStartMount() {
             return owner.Owner.whoAmI == Main.myPlayer
                 && owner.SaddleItem.Alives()
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 && owner.rightPressed;
         }
 
-        //ÏÔÊ¾¶àÈËÓÎÏ·¾¯¸æ
+        //æ˜¾ç¤ºå¤šäººæ¸¸æˆè­¦å‘Š
         private void ShowMultiplayerWarning() {
             CombatText text = Main.combatText[CombatText.NewText(
                 owner.Owner.Hitbox,
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             text.lifeTime = 320;
         }
 
-        //²¥·ÅÉÏÂíÒôĞ§
+        //æ’­æ”¾ä¸Šé©¬éŸ³æ•ˆ
         private void PlayMountSound() {
             if (VaultUtils.isServer) {
                 return;
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }, owner.Owner.Center);
         }
 
-        //´¦ÀíÉÏÂí¶¯»­
+        //å¤„ç†ä¸Šé©¬åŠ¨ç”»
         private void ProcessMountAnimation() {
             owner.Owner.RemoveAllGrapplingHooks();
             owner.Owner.mount.Dismount(owner.Owner);
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //Íê³ÉÉÏÂíÁ÷³Ì
+        //å®Œæˆä¸Šé©¬æµç¨‹
         private void CompleteMountProcess() {
             owner.ai[5] = 0f;
             owner.Mount = true;
@@ -151,8 +151,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.NetAISend();
         }
 
-        //´¦ÀíÆï³Ë×´Ì¬ÏÂµÄÒÆ¶¯
+        //å¤„ç†éª‘ä¹˜çŠ¶æ€ä¸‹çš„ç§»åŠ¨
         private bool HandleMountedMovement() {
+            //éå…·è¢«ç§»é™¤æ—¶è‡ªåŠ¨ä¸‹é©¬
+            if (!owner.SaddleItem.Alives()) {
+                Dismount();
+                return true;
+            }
+
             if (owner.CrabulonPlayer != null) {
                 CrabulonPlayer.CloseDuringDash(owner.Owner);
                 owner.CrabulonPlayer.MountCrabulon = owner;
@@ -180,7 +186,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //´¦ÀíÆï³ËÊäÈë
+        //å¤„ç†éª‘ä¹˜è¾“å…¥
         private void ProcessMountedInput() {
             float accel = CrabulonConstants.BaseAcceleration + owner.Owner.runAcceleration;
             float maxSpeed = CalculateMaxSpeed();
@@ -197,7 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             physics.AutoStepClimbing();
         }
 
-        //¼ÆËã×î´óËÙ¶È
+        //è®¡ç®—æœ€å¤§é€Ÿåº¦
         private float CalculateMaxSpeed() {
             return MathHelper.Clamp(
                 CrabulonConstants.BaseSpeed * owner.Owner.moveSpeed * owner.Owner.maxRunSpeed / 6f,
@@ -206,7 +212,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             );
         }
 
-        //»ñÈ¡Íæ¼ÒÊäÈë
+        //è·å–ç©å®¶è¾“å…¥
         private Vector2 GetPlayerInput() {
             Vector2 input = Vector2.Zero;
             if (owner.Owner.controlRight) input.X += 1f;
@@ -214,7 +220,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return input;
         }
 
-        //´¦ÀíÏÂÆ½Ì¨
+        //å¤„ç†ä¸‹å¹³å°
         private void HandleDownPlatform() {
             if (!owner.Owner.controlDown || Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {
                 return;
@@ -227,7 +233,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´¦ÀíÌøÔ¾
+        //å¤„ç†è·³è·ƒ
         private void HandleJump(float maxSpeed) {
             if (owner.Owner.controlJump && npc.collideY) {
                 npc.velocity.Y = MathHelper.Clamp(
@@ -238,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´¦ÀíºáÏòÒÆ¶¯
+        //å¤„ç†æ¨ªå‘ç§»åŠ¨
         private void HandleHorizontalMovement(float inputX, float accel, float maxSpeed, float friction) {
             if (inputX != 0f) {
                 npc.velocity.X = MathHelper.Clamp(npc.velocity.X + inputX * accel, -maxSpeed, maxSpeed);
@@ -251,7 +257,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //¸üĞÂÆï³Ë¶¯»­
+        //æ›´æ–°éª‘ä¹˜åŠ¨ç”»
         private void UpdateMountAnimation() {
             npc.ai[0] = Math.Abs(npc.velocity.X) > 0.1f ? 1f : 0f;
             if (Math.Abs(npc.velocity.Y) > 1f) {
@@ -267,12 +273,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //¼ì²éÏÂÂíÊäÈë
+        //æ£€æŸ¥ä¸‹é©¬è¾“å…¥
         private bool CheckDismountInput() {
             return owner.Owner.whoAmI == Main.myPlayer && owner.hoverNPC && owner.rightPressed;
         }
 
-        //ÂäµØ³å»÷Ğ§¹û
+        //è½åœ°å†²å‡»æ•ˆæœ
         private void JumpFloorEffect() {
             if (!npc.collideY) {
                 owner.ai[3] += Math.Abs(npc.velocity.Y);
@@ -296,7 +302,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.NetAISend();
         }
 
-        //´´½¨³å»÷Ğ§¹û
+        //åˆ›å»ºå†²å‡»æ•ˆæœ
         private void CreateImpactEffects(float impactStrength) {
             float volume = CrabulonConstants.ImpactSoundVolume + Math.Min(
                 impactStrength / CrabulonConstants.ImpactVolumeMultiplier,
@@ -319,7 +325,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //´´½¨³å»÷Á£×Ó
+        //åˆ›å»ºå†²å‡»ç²’å­
         private void CreateImpactDust(float impactStrength) {
             Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
             int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
@@ -328,7 +334,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
         }
 
-        //´´½¨³å»÷µ¯Ä»
+        //åˆ›å»ºå†²å‡»å¼¹å¹•
         private void CreateImpactProjectile(float impactStrength) {
             float multiplicative = owner.Owner.GetDamage(DamageClass.Generic).Multiplicative;
             int baseDmg = CrabulonConstants.BaseDamage + (int)(impactStrength / CrabulonConstants.DamagePerImpact);

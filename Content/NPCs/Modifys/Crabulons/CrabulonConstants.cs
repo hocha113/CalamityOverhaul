@@ -1,47 +1,49 @@
-namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
+ï»¿namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     /// <summary>
-    /// ¾úÉúĞ·³£Á¿¶¨Òå
+    /// èŒç”ŸèŸ¹å¸¸é‡å®šä¹‰
     /// </summary>
     internal static class CrabulonConstants
     {
-        //ÉúÃüÖµÏà¹Ø
+        //ç”Ÿå‘½å€¼ç›¸å…³
         public const int LifeMaxMaster = 8000;
         public const int LifeMaxNormal = 6000;
         public const int HealAmount = 10;
         public const int HealInterval = 60;
 
-        //Ñ±·şÏà¹Ø
+        //é©¯æœç›¸å…³
         public const float FeedValuePerFeed = 500f;
+        public const float MaxFeedValue = 5000f;
+        public const int FeedHealAmount = 20;
         public const int DigestTime = 120;
 
-        //ÒÆ¶¯Ïà¹Ø
+        //ç§»åŠ¨ç›¸å…³
         public const float MoveSpeed = 4f;
         public const float MoveInertia = 15f;
         public const float FollowDistance = 150f;
         public const float AttackMoveSpeed = 8f;
         public const float AttackFollowDistance = 100f;
 
-        //ÌøÔ¾Ïà¹Ø
+        //è·³è·ƒç›¸å…³
         public const float JumpVelocity = -20f;
         public const float HighJumpVelocity = -12f;
         public const int MaxStepHeight = 116;
         public const int StepCheckInterval = 8;
 
-        //´«ËÍÏà¹Ø
+        //ä¼ é€ç›¸å…³
         public const float TeleportDistance = 2600f;
         public const int TeleportDelay = 160;
         public const int TeleportEffectCount = 132;
         public const float TeleportSpawnHeight = -200f;
 
-        //±ß½çÏŞÖÆ
+        //è¾¹ç•Œé™åˆ¶
         public const ushort WorldBorder = 560;
 
-        //¶×·üÏà¹Ø
+        //è¹²ä¼ç›¸å…³
         public const int CrouchAnimationMax = 60;
         public const int CrouchAnimationSpeed = 2;
 
-        //Æï³ËÏà¹Ø
+        //éª‘ä¹˜ç›¸å…³
         public const float BaseAcceleration = 0.4f;
         public const float BaseSpeed = 6f;
         public const float MinSpeed = 3f;
@@ -53,11 +55,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public const int MountTimeout = 60;
         public const int DismountCooldown = 30;
 
-        //µØÃæ¼ì²âÏà¹Ø
+        //åœ°é¢æ£€æµ‹ç›¸å…³
         public const float MaxGroundDistance = 1000f;
         public const int GroundCheckInterval = 16;
 
-        //ÂäµØ³å»÷Ïà¹Ø
+        //è½åœ°å†²å‡»ç›¸å…³
         public const int MinImpactDistance = 300;
         public const float ImpactSoundVolume = 0.5f;
         public const float ImpactVolumeMultiplier = 600f;
@@ -68,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public const int DamagePerImpact = 60;
         public const float ImpactKnockback = 2f;
 
-        //Ö¡¶¯»­Ïà¹Ø
+        //å¸§åŠ¨ç”»ç›¸å…³
         public const float FrameLerpSpeed = 0.1f;
         public const float FallFrameLerpSpeed = 0.2f;
         public const int JumpFrame = 1;
@@ -78,10 +80,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public const float CrouchIdleFrameSpeed = 0.1f;
         public const int MaxIdleFrames = 2;
 
-        //ËÑµĞÏà¹Ø
+        //æœæ•Œç›¸å…³
         public const float SearchRange = 1000f;
 
-        //AI¼ÆÊ±Æ÷Ïà¹Ø
+        //AIè®¡æ—¶å™¨ç›¸å…³
         public const int VerticalChaseTime = 110;
         public const int PlatformFallTime = 10;
         public const int TurnDelayTime = 10;

@@ -83,8 +83,22 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            modifyCrabulon.Feed(Projectile);
+            if (modifyCrabulon.FeedValue > 0f) {
+                modifyCrabulon.FeedTamed(Projectile);
+            }
+            else {
+                modifyCrabulon.Feed(Projectile);
+            }
             modifyCrabulon.SendFeedPacket(Projectile.identity);
+        }
+
+        public override bool? CanHitNPC(NPC target) {
+            if (target.type == CWRID.NPC_Crabulon
+                && target.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)
+                && modifyCrabulon.FeedValue > 0f) {
+                return true;
+            }
+            return null;
         }
 
         public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {

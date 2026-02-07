@@ -37,16 +37,20 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private float crouchHoverAnim;
         private float recallHoverAnim;
         private float saddleHoverAnim;
+        private float releaseHoverAnim;
         private float crouchPressAnim;
         private float recallPressAnim;
         private float saddlePressAnim;
+        private float releasePressAnim;
 
         //按钮区域
         private Rectangle crouchButtonRect;
         private Rectangle recallButtonRect;
+        private Rectangle releaseButtonRect;
         private Rectangle saddleSlotRect;
         private bool hoveringCrouch;
         private bool hoveringRecall;
+        private bool hoveringRelease;
         private bool hoveringSaddle;
 
         //血量条动画
@@ -57,10 +61,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 
         //布局常量
         private const float PanelWidth = 340f;
-        private const float PanelHeight = 200f;
+        private const float PanelHeight = 210f;
         private const float Padding = 14f;
-        private const float ButtonHeight = 30f;
-        private const float ButtonWidth = 96f;
+        private const float ButtonHeight = 28f;
+        private const float ButtonWidth = 82f;
         private const float BarHeight = 12f;
         private const float SaddleSlotSize = 44f;
         private const float CornerRadius = 10f;
@@ -161,9 +165,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             //按钮区域计算
             float btnY = DrawPosition.Y + PanelHeight - Padding - ButtonHeight;
             float btnStartX = DrawPosition.X + Padding;
+            float btnSpacing = 6f;
 
             crouchButtonRect = new Rectangle((int)btnStartX, (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
-            recallButtonRect = new Rectangle((int)(btnStartX + ButtonWidth + 8), (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
+            recallButtonRect = new Rectangle((int)(btnStartX + ButtonWidth + btnSpacing), (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
+            releaseButtonRect = new Rectangle((int)(btnStartX + (ButtonWidth + btnSpacing) * 2), (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
 
             //鞍具槽位在右侧
             float saddleX = DrawPosition.X + PanelWidth - Padding - SaddleSlotSize;
@@ -173,15 +179,18 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             //悬停检测
             hoveringCrouch = crouchButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
             hoveringRecall = recallButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
+            hoveringRelease = releaseButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
             hoveringSaddle = saddleSlotRect.Contains(MouseHitBox) && sengs > 0.5f;
 
             //按钮悬停动画
             float hoverSpeed = 0.15f;
             crouchHoverAnim += ((hoveringCrouch ? 1f : 0f) - crouchHoverAnim) * hoverSpeed;
             recallHoverAnim += ((hoveringRecall ? 1f : 0f) - recallHoverAnim) * hoverSpeed;
+            releaseHoverAnim += ((hoveringRelease ? 1f : 0f) - releaseHoverAnim) * hoverSpeed;
             saddleHoverAnim += ((hoveringSaddle ? 1f : 0f) - saddleHoverAnim) * hoverSpeed;
             crouchPressAnim *= 0.85f;
             recallPressAnim *= 0.85f;
+            releasePressAnim *= 0.85f;
             saddlePressAnim *= 0.85f;
 
             //血量条平滑
@@ -189,7 +198,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 float targetHealth = modify.npc.lifeMax > 0 ? (float)modify.npc.life / modify.npc.lifeMax : 0f;
                 healthBarAnim += (targetHealth - healthBarAnim) * 0.1f;
 
-                float maxFeed = CrabulonConstants.FeedValuePerFeed * 10f;
+                float maxFeed = CrabulonConstants.MaxFeedValue;
                 float targetFeed = Math.Clamp(modify.FeedValue / maxFeed, 0f, 1f);
                 feedBarAnim += (targetFeed - feedBarAnim) * 0.1f;
 
@@ -210,6 +219,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 else if (hoveringRecall && !modify.Mount) {
                     recallPressAnim = 1f;
                     OnRecall();
+                }
+                else if (hoveringRelease && !modify.Mount) {
+                    releasePressAnim = 1f;
+                    OnRelease();
                 }
                 else if (hoveringSaddle) {
                     saddlePressAnim = 1f;
@@ -262,11 +275,26 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
             //手上为空或非鞍具→卸鞍
             else if (modify.SaddleItem.Alives()) {
+                //如果正在骑乘，先下马
+                if (modify.Mount) {
+                    modify.CloseMount();
+                }
                 VaultUtils.SpwanItem(modify.npc.FromObjectGetParent(), modify.npc.Top, new Vector2(32), modify.SaddleItem);
                 modify.SaddleItem.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f });
                 modify.SendNetWork();
             }
+        }
+
+        private void OnRelease() {
+            if (modify == null || !modify.npc.Alives()) return;
+
+            string name = modify.npc.GivenOrTypeName;
+            modify.ReleaseTame();
+            SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = -0.3f });
+
+            string message = string.Format(ModifyCrabulon.ReleasedText.Value, name);
+            CombatText.NewText(player.Hitbox, new Color(100, 200, 255), message);
         }
 
         #region 粒子系统
@@ -399,8 +427,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 string crouchLabel = modify.Crouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
                 DrawMushroomButton(spriteBatch, crouchButtonRect, crouchLabel, crouchHoverAnim, crouchPressAnim, contentAlpha, MushroomCyan);
 
-                string recallLabel = "Recall";
-                DrawMushroomButton(spriteBatch, recallButtonRect, recallLabel, recallHoverAnim, recallPressAnim, contentAlpha, MushroomGreen);
+                DrawMushroomButton(spriteBatch, recallButtonRect, ModifyCrabulon.RecallText.Value, recallHoverAnim, recallPressAnim, contentAlpha, MushroomGreen);
+
+                DrawMushroomButton(spriteBatch, releaseButtonRect, ModifyCrabulon.ReleaseText.Value, releaseHoverAnim, releasePressAnim, contentAlpha, new Color(200, 80, 80));
             }
 
             //鞍具槽
@@ -427,7 +456,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, 0.85f);
 
             //状态标签
-            string statusTag = modify.Crouch ? "[REST]" : modify.Mount ? "[MOUNT]" : "[FOLLOW]";
+            string statusTag = modify.Crouch ? ModifyCrabulon.StatusRestText.Value : modify.Mount ? ModifyCrabulon.StatusMountText.Value : ModifyCrabulon.StatusFollowText.Value;
             Color tagColor = modify.Crouch ? new Color(100, 180, 255) : modify.Mount ? new Color(255, 200, 100) : MushroomGreen;
             float tagPulse = 0.7f + MathF.Sin(globalTime * 2.5f) * 0.3f;
             Vector2 tagPos = titlePos + new Vector2(FontAssets.MouseText.Value.MeasureString(title).X * 0.85f + 10, 3);
@@ -482,7 +511,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             float barY = DrawPosition.Y + 76;
             float barWidth = PanelWidth - Padding * 2 - SaddleSlotSize - 16;
 
-            float maxFeed = CrabulonConstants.FeedValuePerFeed * 10f;
+            float maxFeed = CrabulonConstants.MaxFeedValue;
             string feedLabel = $"Feed: {(int)modify.FeedValue}/{(int)maxFeed}";
             Utils.DrawBorderString(spriteBatch, feedLabel, new Vector2(barX, barY - 2), MushroomTextColor * alpha, 0.65f);
 
@@ -546,7 +575,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
 
             //鞍具标签
-            string saddleLabel = "Saddle";
+            string saddleLabel = ModifyCrabulon.SaddleText.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(saddleLabel) * 0.55f;
             Vector2 labelPos = new(saddleSlotRect.X + SaddleSlotSize / 2f - labelSize.X / 2f, saddleSlotRect.Y - 14);
             Utils.DrawBorderString(spriteBatch, saddleLabel, labelPos, MushroomTextColor * (alpha * 0.7f), 0.55f);

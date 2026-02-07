@@ -36,6 +36,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public static LocalizedText ChangeSaddleText { get; set; }
         public static LocalizedText DismountText { get; set; }
         public static LocalizedText DontDismountText { get; set; }
+        public static LocalizedText RecallText { get; set; }
+        public static LocalizedText SaddleText { get; set; }
+        public static LocalizedText ReleaseText { get; set; }
+        public static LocalizedText ReleasedText { get; set; }
+        public static LocalizedText StatusRestText { get; set; }
+        public static LocalizedText StatusMountText { get; set; }
+        public static LocalizedText StatusFollowText { get; set; }
 
         public string LocalizationCategory => "NPCModifys";
 
@@ -73,6 +80,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             ChangeSaddleText = this.GetLocalization(nameof(ChangeSaddleText), () => "Right-Click To Change Saddle");
             DismountText = this.GetLocalization(nameof(DismountText), () => "Right-Click To Dismount");
             DontDismountText = this.GetLocalization(nameof(DontDismountText), () => "The mount feature is temporarily unavailable in multiplayer mode!");
+            RecallText = this.GetLocalization(nameof(RecallText), () => "Recall");
+            SaddleText = this.GetLocalization(nameof(SaddleText), () => "Saddle");
+            ReleaseText = this.GetLocalization(nameof(ReleaseText), () => "Release");
+            ReleasedText = this.GetLocalization(nameof(ReleasedText), () => "{0} has been released");
+            StatusRestText = this.GetLocalization(nameof(StatusRestText), () => "[REST]");
+            StatusMountText = this.GetLocalization(nameof(StatusMountText), () => "[MOUNT]");
+            StatusFollowText = this.GetLocalization(nameof(StatusFollowText), () => "[FOLLOW]");
         }
 
         public override void SetProperty() {
@@ -95,6 +109,50 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             FeedValue += CrabulonConstants.FeedValuePerFeed;
             ai[8] = CrabulonConstants.DigestTime;
             npc.ai[0] = npc.ai[1] = npc.ai[2] = 0f;
+        }
+
+        //对已驯服的菌生蟹投喂
+        public void FeedTamed(Projectile projectile) {
+            float maxFeed = CrabulonConstants.MaxFeedValue;
+            if (FeedValue >= maxFeed) {
+                //饱食度已满，回复少量血量
+                if (npc.life < npc.lifeMax) {
+                    npc.life = (int)MathHelper.Clamp(npc.life + CrabulonConstants.FeedHealAmount, 0, npc.lifeMax);
+                    npc.netUpdate = true;
+                }
+            }
+            else {
+                FeedValue += CrabulonConstants.FeedValuePerFeed;
+                if (FeedValue > maxFeed) FeedValue = maxFeed;
+            }
+            ai[8] = CrabulonConstants.DigestTime;
+            npc.ai[0] = npc.ai[1] = npc.ai[2] = 0f;
+        }
+
+        //解除驯服
+        public void ReleaseTame() {
+            if (SaddleItem.Alives()) {
+                SaddleItem.SpwanItem(npc.FromObjectGetParent(), npc.Hitbox);
+                SaddleItem = new Item();
+            }
+            if (Mount) {
+                CloseMount();
+            }
+            FeedValue = 0f;
+            Owner = null;
+            Crouch = false;
+            Mount = false;
+            MountACrabulon = false;
+            DontMount = 0;
+            DyeItemID = 0;
+            npc.friendly = false;
+            npc.boss = true;
+            npc.damage = npc.defDamage;
+            npc.npcSlots = 2f;
+            if (CrabulonPlayer != null) {
+                CrabulonPlayer.IsMount = false;
+            }
+            npc.netUpdate = true;
         }
 
         //设置驯服状态

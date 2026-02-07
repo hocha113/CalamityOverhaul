@@ -653,10 +653,41 @@ SupCalDisplayText: {
 	// Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
 	// Acceptance1Text: This... is the happiest I have been in a hundred years...
 	// Acceptance2Text: Perhaps... you truly can end this damned era.
-	// Story1: Story
-	// Story2: Story
-	// Story3: Story
-	// Story4: Story
+	/* Story1:
+		'''
+		The wood of this crossbow comes from a pitch-black coffin buried underground for a century. 
+		It reeks of earth and rot that just won't wash off.
+		Down there, it was used to suppress a horror that even I found difficult to handle.
+		Pure destruction is meaningless against those things. They cannot be killed.
+		You have to fire heavy wedges to pin them back to the ground and force them into silence.
+		As for why you throw the crossbow first?
+		Hah... If the guest isn't tainted by the scent of the coffin first, how will the casket know who to collect?
+		''' */
+	/* Story2:
+		'''
+		This wretched blade is dull, because it doesn't cut flesh—it cuts mediums.
+		When I was still an apprentice, a mouth that wouldn't close grew on my master's heart.
+		He died later, but that heart kept beating. 
+		Every time it beat, the mouth screamed, and one person around us disappeared.
+		To survive, I had to dig his heart out before the next beat.
+		Even now, it still hungers to hear the sound of a heart being gouged out.
+		''' */
+	/* Story3:
+		'''
+		Think it's heavy? It should be.
+		It's laced with excessive gold and wrapped in Brimstone flames, 
+		just to lock down those six restless ghostly hands on the blade.
+		Those six idiots tried to dismember each other and stitch themselves back together to delay their own recovery... 
+		but they ended up as a twisted mess that only knows how to choke the living.
+		Grip it tight. Once the Brimstone suppression fails, the first neck they’ll snap is the wielder's.
+		Snapping the neck of whoever touches the blade... that's about the only instinct they have left.
+		''' */
+	/* Story4:
+		'''
+		Mortals call it magic, but I call it... borrowing.
+		This isn't a spellbook; it's a high-density cage.
+		Every page seals a terrifying specter that once silenced entire city-states into death.
+		''' */
 }
 
 SupCalDisplayTextByBossRush: {

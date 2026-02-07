@@ -6,6 +6,13 @@
 	ChangeSaddleText: 左键更换鞍具
 	DismountText: 右键取消骑乘
 	DontDismountText: 在多人模式中暂时无法骑乘!
+	RecallText: 召回
+	SaddleText: 鞍具
+	ReleaseText: 放生
+	ReleasedText: "{0} 已被放生"
+	StatusRestText: "[待机]"
+	StatusMountText: "[骑乘]"
+	StatusFollowText: "[跟随]"
 }
 
 ModifyTruffle: {

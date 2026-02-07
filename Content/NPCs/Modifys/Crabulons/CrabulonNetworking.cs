@@ -145,7 +145,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return;
             }
 
-            modifyCrabulon.Feed(match);
+            if (modifyCrabulon.FeedValue > 0f) {
+                modifyCrabulon.FeedTamed(match);
+            }
+            else {
+                modifyCrabulon.Feed(match);
+            }
 
             if (!VaultUtils.isServer) {
                 return;
