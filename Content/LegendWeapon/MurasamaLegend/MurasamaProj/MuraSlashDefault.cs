@@ -345,19 +345,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
 
-            //对黄沙恶虫造成1.32倍伤害
+            //对黄沙恶虫仅造成66%伤害
             if (CWRLoad.targetNpcTypes9.Contains(target.type)) {
                 modifiers.FinalDamage *= 1.32f;
             }
 
-            //对渊海灾虫仅造成30%伤害
+            //对渊海灾虫仅造成50%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.3f;
+                modifiers.FinalDamage *= 1f;
             }
 
-            //对渊海灾虫体节仅造成10%伤害
+            //对渊海灾虫体节仅造成25%伤害
             if (target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
-                modifiers.FinalDamage *= 0.1f;
+                modifiers.FinalDamage *= 0.5f;
+            }
+
+            //对毁灭者造成1倍伤害
+            if (target.type == NPCID.TheDestroyerBody || target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
+                modifiers.FinalDamage *= 2f;
             }
 
             //对毁灭魔像飞出的头仅造成50%伤害
@@ -383,18 +388,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //对塔纳托斯体节造成1.32倍伤害
             if (target.type == CWRID.NPC_ThanatosBody1 || target.type == CWRID.NPC_ThanatosBody2 || target.type == CWRID.NPC_ThanatosTail) {
-                modifiers.FinalDamage *= 1.32f;
+                modifiers.FinalDamage *= 2.64f;
             }
 
             //对塔纳托斯头造成5.7倍伤害
             if (target.type == CWRID.NPC_ThanatosHead) {
-                modifiers.FinalDamage *= 5.7f;
+                modifiers.FinalDamage *= 11.4f;
             }
 
             //对神明吞噬者头尾、风编尾造成2倍伤害
             if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail
                 || target.type == CWRID.NPC_StormWeaverTail) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 4f;
             }
 
             //对星流双子造成1.66倍伤害

@@ -25,10 +25,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 damage += 10;
             }
 
-            if (NPC.downedMechBoss1 && Downed8.Invoke()) {//毁灭者和渊灾
+            if (NPC.downedMechBoss1 && Downed7.Invoke()) {//双子和硫磺火
                 damage += 7;
             }
-            if (NPC.downedMechBoss3 && Downed7.Invoke()) {//机械统帅和硫磺火
+            if (NPC.downedMechBoss3 && Downed6.Invoke()) {//机械统帅和冰灵
                 damage += 8;
             }
         }
