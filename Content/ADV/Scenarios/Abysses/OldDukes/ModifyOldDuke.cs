@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 判断是否应该将NPC重定向到营地（消失并触发营地对话）。
+        /// 判断是否应该将NPC重定向到营地（消失并触发营地对话）
         /// 条件：营地已生成、不在切磋状态、当前玩家是本地玩家、不在服务端
         /// </summary>
         private static bool ShouldRedirectToCampsite(Player target) {
@@ -262,7 +262,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         public override bool AI() {
             canDraw = true;
             npc.alpha = 0;
-
             //战败后的潜水离开，优先级最高，无论什么状态都要执行
             if (IsInLeavingDive) {
                 State = (float)OldDukeAIState.LeavingDive;
@@ -285,7 +284,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return RunStorylineAI();
             }
 
-            //接受合作后，需要执行离开潜水动画
+            //营地重定向必须在ShouldLeaveAfterCooperation之前检查
+            //因为AcceptedCooperation是永久状态，如果先检查ShouldLeaveAfterCooperation，
+            //营地建成后每次召唤老公爵都会直接进入LeavingDive消失，永远到不了营地重定向
+            if (ShouldRedirectToCampsite(target)) {
+                ExecuteCampsiteRedirect();
+                return false;
+            }
+
+            //接受合作后但营地尚未建立（或当前不在本地玩家视角），执行离开潜水动画
             if (ShouldLeaveAfterCooperation(target)) {
                 if (State != (float)OldDukeAIState.LeavingDive) {
                     State = (float)OldDukeAIState.LeavingDive;
@@ -293,12 +300,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     SubState = 0;
                 }
                 return RunStorylineAI();
-            }
-
-            //营地已建立的情况下，NPC实体应该消失并重定向到营地对话
-            if (ShouldRedirectToCampsite(target)) {
-                ExecuteCampsiteRedirect();
-                return false;
             }
 
             KillDukeSummonerProjectiles();
@@ -494,11 +495,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 }
             }
             else if (SubState == 1) {
-                //阶段2：淡出消失
-                npc.alpha += 15;
-                npc.velocity *= 0.98f;
-
-                if (npc.alpha >= 255 || Timer > 300) {
+                //阶段2：消失
+                if (npc.alpha >= 255 || Timer > 120) {
                     FinalizeDespawn();
                 }
             }

@@ -157,6 +157,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 return false;
             }
 
+            //检查老公爵不在的时候
+            if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
+                return false;
+            }
+
             //检查是否在子世界中
             if (SubWorldRef.AnyActiveSubWorld()) {
                 return false;
