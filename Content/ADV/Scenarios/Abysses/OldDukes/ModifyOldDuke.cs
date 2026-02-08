@@ -13,7 +13,7 @@ using static CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.CampsiteInt
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
     /// <summary>
-    /// 老公爵NPC行为覆盖，负责管理初见剧情、战败潜水、切磋战斗、营地重定向等功能。
+    /// 老公爵NPC行为覆盖，负责管理初见剧情、战败潜水、切磋战斗、营地重定向等功能
     /// <para>AI行为模式分为两大类：剧情模式和战斗模式</para>
     /// <para>剧情模式：初见对话(接近玩家->等待对话->根据选择离开或开战)和战败后潜入海中</para>
     /// <para>战斗模式：切磋或选择战斗后执行原版AI</para>
