@@ -355,11 +355,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// 检测是否在和老公爵切磋
         /// </summary>
         private static void CheckWannaToFight() {
-            if (WannaToFight) {//检测是否在和老公爵切磋
+            if (WannaToFight) {
                 if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                    WannaToFight = false;//老公爵已被击败，重置切磋状态
-                    OldDukeEffect.IsActive = false;//停止硫磺海效果
-                    OldDukeEffect.Send();
+                    WannaToFight = false;
+                    //OldDukeEffect.IsActive由声明式计算自动管理
+                    //NPC消失后ComputeShouldBeActive()将返回false
                 }
             }
         }

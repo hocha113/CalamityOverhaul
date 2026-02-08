@@ -538,6 +538,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
     /// <summary>
     /// 硫磺海场景效果管理器
+    /// <para>生命周期采用声明式计算：IsActive每帧从可观察状态推导，而非手动开关</para>
+    /// <para>激活条件（满足任一即可）：</para>
+    /// <para>1. 老公爵NPC存在且处于友好剧情模式（非战斗状态）</para>
+    /// <para>2. 老公爵相关的对话场景正在运行中</para>
+    /// <para>外部代码不需要手动设置IsActive，只需在需要网络同步OldDukeState等数据时调用Send()</para>
     /// </summary>
     internal class OldDukeEffect : ModSystem
     {
@@ -548,6 +553,59 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         private int acidMistTimer = 0;
         private int corrosionTimer = 0;
         private int poisonWaveTimer = 0;
+
+        /// <summary>
+        /// 声明式计算当前帧IsActive应有的值
+        /// 这是唯一决定IsActive的地方，不依赖任何手动开关
+        /// </summary>
+        private static bool ComputeShouldBeActive() {
+            //条件1：老公爵NPC存在
+            if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
+                return true;
+            }
+
+            //条件2：老公爵相关对话场景正在运行
+            if (ScenarioManager.IsActive()) {
+                //检查是否是老公爵相关的场景
+                if (IsOldDukeScenarioRunning()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 检查当前运行的场景是否是老公爵相关场景
+        /// </summary>
+        private static bool IsOldDukeScenarioRunning() {
+            return ScenarioManager.IsActive(nameof(FirstMetOldDuke))
+                || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue))
+                || ScenarioManager.IsActive(nameof(CampsiteChatDialogue))
+                || ScenarioManager.IsActive(nameof(ComeCampsiteFindMe))
+                //子场景
+                || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue.CampsiteInteractionDialogue_Choice1))
+                || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue.CampsiteInteractionDialogue_Choice2))
+                || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue.CampsiteInteractionDialogue_Choice3))
+                || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue.CampsiteInteractionDialogue_Choice4))
+                || ScenarioManager.IsActive("FirstMetOldDuke_Choice1")
+                || ScenarioManager.IsActive("FirstMetOldDuke_Choice2")
+                || ScenarioManager.IsActive("FirstMetOldDuke_Choice3")
+                || ScenarioManager.IsActive("FirstCampsiteDialogue")
+                //聊天子场景
+                || ScenarioManager.IsActive("CampsiteChatDialogue_Past")
+                || ScenarioManager.IsActive("CampsiteChatDialogue_Research")
+                || ScenarioManager.IsActive("CampsiteChatDialogue_History")
+                || ScenarioManager.IsActive("CampsiteChatDialogue_Fragments")
+                || ScenarioManager.IsActive("CampsiteChatDialogue_Personal")
+                || ScenarioManager.IsActive("CampsiteChatDialogue_End")
+                || ScenarioManager.IsActive("Research_Details")
+                || ScenarioManager.IsActive("Research_HelpDialogue")
+                || ScenarioManager.IsActive("History_Ruins_Dialogue")
+                || ScenarioManager.IsActive("History_Dangers_Dialogue")
+                || ScenarioManager.IsActive("Personal_Tea_Dialogue")
+                || ScenarioManager.IsActive("Personal_PastLife_Dialogue");
+        }
 
         internal static void Send() {
             if (VaultUtils.isSinglePlayer) {
@@ -592,17 +650,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         public override void PostUpdateEverything() {
-            if (!IsActive
-                && !CWRRef.GetBossRushActive()
-                && Main.LocalPlayer.TryGetADVSave(out var save)
-                && !save.OldDukeChoseToFight
-                && NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                IsActive = true;
-                Send();
-            }
+            //声明式计算：每帧从当前游戏状态推导IsActive，而非依赖手动开关
+            //这样即使某处代码遗漏了关闭调用，效果也会在条件不满足时自动消失
+            bool shouldBeActive = ComputeShouldBeActive();
 
-            if (CWRRef.GetBossRushActive()) {
-                IsActive = NPC.AnyNPCs(CWRID.NPC_OldDuke);
+            //仅在状态发生变化时触发网络同步，避免每帧发包
+            if (IsActive != shouldBeActive) {
+                IsActive = shouldBeActive;
+                Send();
             }
 
             if (IsActive) {
@@ -647,12 +702,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     if (index.TryGetNPC(out var npc) && npc.friendly) {
                         Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityModMusic/Sounds/Music/AcidRainTier1");
                     }
-                }
-
-                //超时保护（3分钟）
-                if (ActiveTimer > 60 * 60 * 3) {
-                    IsActive = false;
-                    ActiveTimer = 0;
                 }
             }
             else {

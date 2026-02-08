@@ -76,9 +76,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         protected override void OnScenarioStart() {
-            //开启硫磺海效果
-            OldDukeEffect.IsActive = true;
-            OldDukeEffect.Send();
+            //OldDukeEffect.IsActive由声明式计算自动管理
+            //场景启动后ComputeShouldBeActive()会检测到并自动激活效果
         }
 
         protected override void Build() {
@@ -183,6 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.OldDukeState = OldDukeInteractionState.AcceptedCooperation;
             }
+            //同步OldDukeState到其他端，IsActive由声明式计算自动管理
             OldDukeEffect.Send();
             ScenarioManager.Reset<FirstMetOldDuke_Choice1>();
             ScenarioManager.Start<FirstMetOldDuke_Choice1>();
@@ -199,9 +199,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //停止硫磺海效果
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
@@ -231,9 +229,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                //停止硫磺海效果
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
@@ -255,20 +251,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SulfseaDialogueBox.Instance;
 
             protected override void Build() {
-                Add(OldDukeName.Value, C3Response.Value);
+                AddTimed(OldDukeName.Value, C3Response.Value, 2);
             }
 
             protected override void OnScenarioComplete() {
-                //停止硫磺海效果
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
         protected override void OnScenarioComplete() {
-            //场景完成时停止硫磺海效果
-            OldDukeEffect.IsActive = false;
-            OldDukeEffect.Send();
+            //OldDukeEffect.IsActive由声明式计算自动管理
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

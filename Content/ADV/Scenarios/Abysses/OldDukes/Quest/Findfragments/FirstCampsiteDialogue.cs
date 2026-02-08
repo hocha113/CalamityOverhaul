@@ -55,8 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
         }
 
         protected override void OnScenarioStart() {
-            OldDukeEffect.IsActive = true;
-            OldDukeEffect.Send();
+            //OldDukeEffect.IsActive由声明式计算自动管理
         }
 
         protected override void OnScenarioComplete() {
@@ -64,9 +63,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.OldDukeFindFragmentsQuestTriggered = true;
             }
-
-            OldDukeEffect.IsActive = false;
-            OldDukeEffect.Send();
+            //OldDukeEffect.IsActive由声明式计算自动管理
         }
     }
 }

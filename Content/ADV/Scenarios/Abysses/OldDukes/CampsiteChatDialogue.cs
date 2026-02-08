@@ -768,14 +768,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
         protected override void OnScenarioStart() {
-            OldDukeEffect.IsActive = true;
-            OldDukeEffect.Send();
+            //OldDukeEffect.IsActive由声明式计算自动管理
         }
 
         protected override void OnScenarioComplete() {

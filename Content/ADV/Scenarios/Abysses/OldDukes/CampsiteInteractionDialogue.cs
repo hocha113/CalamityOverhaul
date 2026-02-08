@@ -208,8 +208,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 //打开商店
                 OldDukeShopUI.Instance.InitializeShop();
                 OldDukeShopUI.Instance.Active = true;
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
@@ -260,8 +259,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
@@ -282,8 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             }
 
             protected override void OnScenarioComplete() {
-                OldDukeEffect.IsActive = false;
-                OldDukeEffect.Send();
+                //OldDukeEffect.IsActive由声明式计算自动管理
             }
         }
 
@@ -301,33 +298,33 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             protected override void Build() {
                 List<LocalizedText> localizedTexts = [Choice4_R1, Choice4_R2, Choice4_R3];
-                Add(OldDukeName.Value, localizedTexts[Main.rand.Next(localizedTexts.Count)].Value);
+                AddTimed(OldDukeName.Value, localizedTexts[Main.rand.Next(localizedTexts.Count)].Value, 2);
             }
 
             protected override void OnScenarioComplete() {
-                if (!NPC.AnyNPCs(CWRID.NPC_OldDuke) && SpwanOldDuke()) {
-                    OldDukeCampsite.WannaToFight = true;
-                    OldDukeEffect.IsActive = false;
-                    OldDukeEffect.Send();
+                if (NPC.AnyNPCs(CWRID.NPC_OldDuke) || CWRMod.Instance.calamity is null) {
+                    return;
                 }
-            }
 
-            private static bool SpwanOldDuke() {
-                if (CWRMod.Instance.calamity is null) {
-                    return false;
-                }
+                //必须在生成NPC之前设置WannaToFight，否则NPC首帧AI会因为
+                //ShouldLeaveAfterCooperation()返回true而立即进入LeavingDive消失
+                OldDukeCampsite.WannaToFight = true;
 
                 if (VaultUtils.isSinglePlayer) {
-                    return VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, CWRID.NPC_OldDuke);
+                    //单人模式：先设置标记，再生成NPC
+                    NPC.NewNPC(NPC.GetBossSpawnSource(Main.myPlayer),
+                        (int)Main.LocalPlayer.Center.X, (int)Main.LocalPlayer.Center.Y - 200,
+                        CWRID.NPC_OldDuke);
                 }
                 else {
+                    //多人模式：发包给服务端，服务端先设置WannaToFight再生成NPC
                     var netMessage = CWRMod.Instance.GetPacket();
                     netMessage.Write((byte)CWRMessageType.SpwanOldDukeWannaToFight);
                     netMessage.Write(Main.myPlayer);
                     netMessage.Send();
+                    //Send()同步本地WannaToFight=true到服务端
+                    OldDukeEffect.Send();
                 }
-
-                return true;
             }
         }
 
@@ -339,7 +336,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         protected override void OnScenarioStart() {
-            OldDukeEffect.IsActive = true;
+            //OldDukeEffect.IsActive由声明式计算自动管理
         }
 
         protected override void OnScenarioComplete() {

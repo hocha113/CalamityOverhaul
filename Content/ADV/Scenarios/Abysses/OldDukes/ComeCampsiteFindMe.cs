@@ -38,7 +38,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             if (FindCampsiteUI.Instance.CanOpne) {
                 //任务未完成，提示去找营地
-                Add(OldDukeName.Value, B1_NO.Value, onComplete: () => OldDukeEffect.IsActive = false);
+                //OldDukeEffect.IsActive由声明式计算自动管理，场景结束后自动关闭
+                Add(OldDukeName.Value, B1_NO.Value);
                 return;
             }
 
