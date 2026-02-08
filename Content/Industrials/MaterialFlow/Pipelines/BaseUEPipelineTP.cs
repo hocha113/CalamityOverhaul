@@ -4,6 +4,6 @@
     public abstract class BaseUEPipelineTP : MachineTP
     {
         public virtual Color BaseColor => Color.White;
-        public override float MaxUEValue => 20;
+        public override float MaxUEValue => 100;
     }
 }

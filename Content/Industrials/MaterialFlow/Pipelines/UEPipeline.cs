@@ -181,7 +181,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// 更新机器状态
         /// </summary>
         public override void UpdateMachine() {
-            //每帧开始时重置供电状态
+            //每帧开始时重置供电状态，由连接检测重新确定
+            //注意:IsNetworkPowered会在HandleGeneratorConnection和HandlePipelineConnection中被重新设置
             IsNetworkPowered = false;
 
             //更新每个方向的连接状态和电力传输
@@ -240,7 +241,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
-            float energyRatio = MachineData.UEvalue / 10f;
+            float energyRatio = MachineData.UEvalue / (MaxUEValue * 0.5f);
             Color energyColor = BaseColor * energyRatio;
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
 

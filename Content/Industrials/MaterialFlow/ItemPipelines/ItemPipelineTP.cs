@@ -147,7 +147,22 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>
         /// 抽取间隔(帧)
         /// </summary>
-        private const int ExtractInterval = 3;
+        private const int ExtractInterval = 1;
+
+        /// <summary>
+        /// 每次抽取的最大物品数量
+        /// </summary>
+        private const int ExtractBatchSize = 64;
+
+        /// <summary>
+        /// 物品卡住计数器(当物品连续多帧无法传递时递增)
+        /// </summary>
+        private int stuckCounter = 0;
+
+        /// <summary>
+        /// 物品卡住后强制掉落的阈值(帧)
+        /// </summary>
+        private const int StuckDropThreshold = 300;
 
         /// <summary>
         /// 流动动画器(只有输出端点才会使用)
@@ -326,9 +341,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         continue;//没有输入点，不抽取
                     }
 
-                    //尝试取出1个物品
-                    Item withdrawn = storage.WithdrawItem(storedItem.type, 1);
+                    //批量抽取物品(取min(库存, 批次上限))
+                    int extractAmount = Math.Min(storedItem.stack, ExtractBatchSize);
+                    Item withdrawn = storage.WithdrawItem(storedItem.type, extractAmount);
                     if (withdrawn != null && !withdrawn.IsAir) {
+                        //SourceDirection设为存储方向索引，表示物品从存储侧进入管道
+                        //TryPassToNextPipeline会跳过此方向，但该方向连接的是存储(非Pipeline)，
+                        //所以不会影响管道方向的选择
                         CurrentItem = new TransportingItem(withdrawn.type, withdrawn.stack, withdrawn.prefix) {
                             TargetPosition = targetInput,
                             SourceDirection = side.DirectionIndex
@@ -394,10 +413,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// </summary>
         private void UpdateTransportingItem() {
             if (!CurrentItem.HasValue) {
+                stuckCounter = 0;
                 return;
             }
 
             var item = CurrentItem.Value;
+
+            //安全检查:确保Speed有效
+            if (item.Speed <= 0f) {
+                item.Speed = 0.2f;
+            }
+
             item.Progress += item.Speed;
 
             //物品到达管道中心(50%)或末端(100%)
@@ -413,26 +439,35 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 //传递到下一个管道
                 if (TryPassToNextPipeline(ref item)) {
                     CurrentItem = null;
+                    stuckCounter = 0;
                 }
                 else {
-                    //无法传递，物品卡住
+                    //无法传递(下游管道都被占用)，等待重试
+                    stuckCounter++;
                     CurrentItem = item;
+
+                    //长时间卡住则掉落物品，避免永久阻塞
+                    if (stuckCounter >= StuckDropThreshold && !VaultUtils.isClient) {
+                        DropCurrentItem();
+                        stuckCounter = 0;
+                    }
                 }
             }
             else {
+                stuckCounter = 0;
                 CurrentItem = item;
             }
         }
 
         /// <summary>
-        /// 尝试将物品传递到下一个管道(分叉时随机分流)
+        /// 尝试将物品传递到下一个管道，优先选择朝向目标输入点的方向
         /// </summary>
         private bool TryPassToNextPipeline(ref TransportingItem item) {
             //收集所有可用的下一个管道(排除来源方向)
             List<int> availableDirections = [];
             for (int i = 0; i < 4; i++) {
                 if (i == item.SourceDirection) {
-                    continue;//不往回走
+                    continue;
                 }
 
                 var side = SideStates[i];
@@ -445,13 +480,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
             }
 
-            //没有可用路径
             if (availableDirections.Count == 0) {
                 return false;
             }
 
-            //随机选择一个方向(平均分流)
-            int selectedDir = availableDirections[Main.rand.Next(availableDirections.Count)];
+            //只有一个方向时直接选择
+            int selectedDir;
+            if (availableDirections.Count == 1) {
+                selectedDir = availableDirections[0];
+            }
+            else {
+                //多个方向时，优先选择能到达目标输入点的方向
+                selectedDir = SelectBestDirection(availableDirections, item.TargetPosition);
+            }
+
             var selectedSide = SideStates[selectedDir];
 
             //传递物品
@@ -459,6 +501,61 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             item.SourceDirection = GetOppositeDirection(selectedDir);
             selectedSide.LinkedPipeline.CurrentItem = item;
             return true;
+        }
+
+        /// <summary>
+        /// 在多个可选方向中选择最优方向(能到达目标的优先，否则随机)
+        /// </summary>
+        private int SelectBestDirection(List<int> directions, Point16 target) {
+            if (target == Point16.NegativeOne) {
+                return directions[Main.rand.Next(directions.Count)];
+            }
+
+            //检查每个方向是否能到达目标
+            List<int> reachable = [];
+            foreach (int dir in directions) {
+                var pipeline = SideStates[dir].LinkedPipeline;
+                if (pipeline != null && CanReachTarget(pipeline, GetOppositeDirection(dir), target)) {
+                    reachable.Add(dir);
+                }
+            }
+
+            //有可达方向时从中选择，否则从全部方向中选择
+            var candidates = reachable.Count > 0 ? reachable : directions;
+            return candidates[Main.rand.Next(candidates.Count)];
+        }
+
+        /// <summary>
+        /// 检查从指定管道出发(排除来源方向)是否能到达目标位置
+        /// </summary>
+        private static bool CanReachTarget(ItemPipelineTP start, int sourceDir, Point16 target) {
+            HashSet<Point16> visited = [];
+            Queue<(ItemPipelineTP tp, int fromDir)> queue = new();
+            queue.Enqueue((start, sourceDir));
+            visited.Add(start.Position);
+
+            while (queue.Count > 0) {
+                var (current, currentFromDir) = queue.Dequeue();
+
+                if (current.Position == target) {
+                    return true;
+                }
+
+                foreach (var side in current.SideStates) {
+                    if (side.DirectionIndex == currentFromDir) {
+                        continue;
+                    }
+
+                    if (side.LinkType == ItemPipelineLinkType.Pipeline && side.LinkedPipeline != null) {
+                        if (!visited.Contains(side.LinkedPipeline.Position)) {
+                            visited.Add(side.LinkedPipeline.Position);
+                            queue.Enqueue((side.LinkedPipeline, GetOppositeDirection(side.DirectionIndex)));
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -472,6 +569,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 3 => 2,//右->左
                 _ => -1
             };
+        }
+
+        /// <summary>
+        /// 掉落当前管道内的物品
+        /// </summary>
+        private void DropCurrentItem() {
+            if (!CurrentItem.HasValue) return;
+            var item = CurrentItem.Value;
+            Item drop = new Item(item.ItemType, item.Stack);
+            drop.prefix = (byte)item.Prefix;
+            int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, drop);
+            if (VaultUtils.isServer) {
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
+            }
+            CurrentItem = null;
         }
 
         /// <summary>
@@ -624,7 +736,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     ItemType = reader.ReadInt32(),
                     Stack = reader.ReadInt32(),
                     Prefix = reader.ReadInt32(),
-                    Progress = reader.ReadSingle()
+                    Progress = reader.ReadSingle(),
+                    Speed = 0.2f
                 };
                 CurrentItem = item;
             }

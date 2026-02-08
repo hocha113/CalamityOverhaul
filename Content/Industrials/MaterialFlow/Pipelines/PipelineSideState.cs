@@ -15,7 +15,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
-        internal const float TRANSFER_RATE = 2f;
+        /// <summary>
+        /// 管道传输速率(UE/帧)，决定了整个电网的最大吞吐能力
+        /// </summary>
+        internal const float TRANSFER_RATE = 10f;
         internal TileProcessor externalTP;
         internal UEPipelineTP coreTP;
         internal PipelineLinkType LinkType { get; private set; } = PipelineLinkType.None;
@@ -64,7 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         /// <summary>
-        /// 处理与发电机的连接
+        /// 处理与发电机的连接:始终从发电机抽取电力到管道
         /// </summary>
         private void HandleGeneratorConnection(BaseGeneratorTP generator) {
             if (generator.MachineData == null || coreTP.MachineData == null) return;
@@ -85,27 +88,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         /// <summary>
-        /// 处理与另一个管道的连接
+        /// 处理与另一个管道的连接:基于压差均衡电力
         /// </summary>
         private void HandlePipelineConnection(BaseUEPipelineTP otherPipe) {
             if (otherPipe.MachineData == null || coreTP.MachineData == null) return;
 
-            //管道之间均衡电力
-            float totalUE = coreTP.MachineData.UEvalue + otherPipe.MachineData.UEvalue;
-            float averageUE = totalUE / 2f;
-            float diff = coreTP.MachineData.UEvalue - averageUE;
-            float transfer = Math.Min(TRANSFER_RATE, Math.Abs(diff));
+            //管道之间基于压差均衡电力，传输量与压差成正比
+            float diff = coreTP.MachineData.UEvalue - otherPipe.MachineData.UEvalue;
+            //压差越大传输越快，但不超过TRANSFER_RATE
+            float transfer = Math.Min(TRANSFER_RATE, Math.Abs(diff) * 0.5f);
 
-            if (diff > 0) {
+            if (diff > 0.1f) {
                 coreTP.MachineData.UEvalue -= transfer;
                 otherPipe.MachineData.UEvalue += transfer;
             }
-            else if (diff < 0) {
+            else if (diff < -0.1f) {
                 coreTP.MachineData.UEvalue += transfer;
                 otherPipe.MachineData.UEvalue -= transfer;
             }
 
-            //传播供电状态
+            //双向传播供电状态
             if (otherPipe is UEPipelineTP normalOther) {
                 if (coreTP.IsNetworkPowered || normalOther.IsNetworkPowered) {
                     coreTP.IsNetworkPowered = true;
@@ -117,16 +119,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         /// <summary>
-        /// 处理与电池的连接
+        /// 处理与电池/用电器的连接:
+        /// - ReceivedEnergy=true(用电器/需要充能的设备): 管道始终向其供电
+        /// - ReceivedEnergy=false(储能电池): 双向压差传输，管道电力多则充电池，少则从电池取电
         /// </summary>
         private void HandleBatteryConnection(BaseBattery battery) {
             if (battery.MachineData == null || coreTP.MachineData == null) return;
 
-            if (coreTP.IsNetworkPowered || battery.ReceivedEnergy) {
-                //充电:管道向电池传输
+            if (battery.ReceivedEnergy) {
+                //用电器类设备:始终从管道向其供电(单向)
                 float available = coreTP.MachineData.UEvalue;
-                float batterySpace = battery.MaxUEValue - battery.MachineData.UEvalue;
-                float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, batterySpace));
+                float deviceSpace = battery.MaxUEValue - battery.MachineData.UEvalue;
+                float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, deviceSpace));
 
                 if (transfer > 0) {
                     battery.MachineData.UEvalue += transfer;
@@ -134,14 +138,40 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
             else {
-                //放电:电池向管道传输
-                float available = battery.MachineData.UEvalue;
-                float pipeSpace = coreTP.MaxUEValue - coreTP.MachineData.UEvalue;
-                float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, pipeSpace));
+                //储能电池:基于压差双向传输
+                //计算管道和电池的填充比例，用比例差决定方向和力度
+                float pipeRatio = coreTP.MachineData.UEvalue / coreTP.MaxUEValue;
+                float batteryRatio = battery.MachineData.UEvalue / battery.MaxUEValue;
+                float ratioDiff = pipeRatio - batteryRatio;
 
-                if (transfer > 0) {
-                    coreTP.MachineData.UEvalue += transfer;
-                    battery.MachineData.UEvalue -= transfer;
+                if (ratioDiff > 0.05f) {
+                    //管道比例更高，向电池充电
+                    float available = coreTP.MachineData.UEvalue;
+                    float batterySpace = battery.MaxUEValue - battery.MachineData.UEvalue;
+                    float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, batterySpace));
+                    transfer *= Math.Min(ratioDiff * 2f, 1f);
+
+                    if (transfer > 0) {
+                        battery.MachineData.UEvalue += transfer;
+                        coreTP.MachineData.UEvalue -= transfer;
+                    }
+                }
+                else if (ratioDiff < -0.05f) {
+                    //电池比例更高，从电池取电到管道
+                    float available = battery.MachineData.UEvalue;
+                    float pipeSpace = coreTP.MaxUEValue - coreTP.MachineData.UEvalue;
+                    float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, pipeSpace));
+                    transfer *= Math.Min(Math.Abs(ratioDiff) * 2f, 1f);
+
+                    if (transfer > 0) {
+                        coreTP.MachineData.UEvalue += transfer;
+                        battery.MachineData.UEvalue -= transfer;
+                    }
+                }
+
+                //储能电池有电时也标记网络为有电源(作为后备电源)
+                if (battery.MachineData.UEvalue > 0) {
+                    coreTP.IsNetworkPowered = true;
                 }
             }
 
@@ -173,7 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
 
             //绘制能量流动效果
-            float energyRatio = coreTP.MachineData.UEvalue / 10f;
+            float energyRatio = coreTP.MachineData.UEvalue / (coreTP.MaxUEValue * 0.5f);
             Color energyColor = coreTP.BaseColor * energyRatio;
             spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, energyColor, drawRot, orig, 1, SpriteEffects.None, 0);
 

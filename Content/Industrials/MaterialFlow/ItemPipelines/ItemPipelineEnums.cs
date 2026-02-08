@@ -104,7 +104,7 @@
             Stack = stack;
             Prefix = prefix;
             Progress = 0f;
-            Speed = 0.1f;//默认速度
+            Speed = 0.2f;
             TargetPosition = Terraria.DataStructures.Point16.NegativeOne;
             SourceDirection = -1;
         }

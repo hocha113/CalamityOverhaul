@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         public override int TargetTileID => ModContent.TileType<LaserEnergyTransTile>();
         public override int TargetItem => ModContent.ItemType<LaserEnergyTrans>();
         public override bool ReceivedEnergy => true;
-        public override float MaxUEValue => 20;
+        public override float MaxUEValue => 100;
         internal Vector2 TrueCenter => CenterInWorld - new Vector2(0, 12);
         internal Player fromePlayer;
         internal MachineTP targetMachine;
