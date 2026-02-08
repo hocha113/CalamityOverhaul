@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Item.useTime = 30;
             GunPressure = 0.3f;
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                , CWRID.Proj_PlasmaShot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                , CWRID.Proj_PlasmaRifleShot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Item.useTime = 10;
             GunPressure = 0.1f;
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                , CWRID.Proj_PlasmaBolt, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                , CWRID.Proj_PlasmaRifleShot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1f);
         }
     }
 }

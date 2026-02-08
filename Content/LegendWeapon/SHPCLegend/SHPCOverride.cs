@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 MethodInfo methodInfo = type.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
                 if (methodInfo != null) {
                     VaultHook.Add(methodInfo, OnSHPCToolFunc);
-                }  
+                }
                 methodInfo = type.GetMethod("FindSoulForAmmo", BindingFlags.Public | BindingFlags.Static);
                 if (methodInfo != null) {
                     VaultHook.Add(methodInfo, OnFindSoulForAmmoFunc);

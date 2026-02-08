@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             RecoilRetroForceMagnitude = 6;
-            EjectCasingProjSize = 2f;
+            EjectCasingProjSize = 1.4f;
             CanRightClick = true;
             RepeatedCartridgeChange = true;
             EnableRecoilRetroEffect = true;
@@ -56,14 +56,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, Item.shoot
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, CWRID.Proj_ChickenRocket
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
             for (int i = 0; i < Main.maxProjectiles; ++i) {
                 Projectile p = Main.projectile[i];
-                if (!p.active || p.owner != Owner.whoAmI || p.type != Item.shoot) {
+                if (!p.active || p.owner != Owner.whoAmI || p.type != CWRID.Proj_ChickenRocket) {
                     continue;
                 }
                 p.timeLeft = 1;

@@ -280,6 +280,7 @@ namespace CalamityOverhaul
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();
         public static int Proj_DNA => Get();
+        public static int Proj_ChickenRocket => Get();
         public static int Proj_SeashineSwordProj => Get();
         public static int Proj_EldritchTentacle => Get();
         public static int Proj_DrataliornusExoArrow => Get();
@@ -291,8 +292,7 @@ namespace CalamityOverhaul
         public static int Proj_StormBeam => Get();
         public static int Proj_ForbiddenOathbladeProjectile => Get();
         public static int Proj_EutrophicScimitarProj => Get();
-        public static int Proj_PlasmaBolt => Get();
-        public static int Proj_PlasmaShot => Get();
+        public static int Proj_PlasmaRifleShot => Get();
         public static int Item_DragonRage => Get();
         public static int Proj_SepticSkewerHarpoon => Get();
         public static int Proj_BrimstoneSwordExplosion => Get();

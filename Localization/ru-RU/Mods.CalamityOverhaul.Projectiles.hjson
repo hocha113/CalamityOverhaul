@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: Молекулярный разрез
+﻿MurasamaHeld.DisplayName: Молекулярный разрез
 MuraTriggerDash.DisplayName: Молекулярный разрез
 MuraBreakerSlash.DisplayName: Восходящий дракон-полумесяц
 MuraExecutionCut.DisplayName: Разрез измерения: Конец
@@ -434,7 +434,8 @@ Thomas.DisplayName: Фома
 Zealot.DisplayName: Симон Зилот
 JudgmentLightning.DisplayName: Молния суда
 HolySerpent.DisplayName: Священный змей
-// GammaRayBurst.DisplayName: Gamma Ray Burst
-// QuantumLeapProj.DisplayName: Quantum Leap Proj
-// SingularityBlackHole.DisplayName: Singularity Black Hole
-// SupernovaExplosion.DisplayName: Supernova Explosion
+GammaRayBurst.DisplayName: Гамма-всплеск
+QuantumLeapProj.DisplayName: Квантовый скачок
+SingularityBlackHole.DisplayName: Сингулярность черной дыры
+SupernovaExplosion.DisplayName: Взрыв сверхновой
+StarfuryFallingStar.DisplayName: Падающая звезда Звездной ярости

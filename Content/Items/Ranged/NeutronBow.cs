@@ -8,15 +8,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class NeutronBow : ModItem, ICWRLoader
+    internal class NeutronBow : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
-        public static int PType;
         public static LocalizedText Lang1;
         public static LocalizedText Lang2;
         public static LocalizedText Lang3;
         public float Charge;
-        public void SetupData() => PType = ModContent.ItemType<NeutronBow>();
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));

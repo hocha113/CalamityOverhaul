@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NeutronBowHeld : BaseBow
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
-        public override int TargetID => NeutronBow.PType;
+        public override int TargetID => ModContent.ItemType<NeutronBow>();
         private float Charge {
             get => ((NeutronBow)Item.ModItem).Charge;
             set => ((NeutronBow)Item.ModItem).Charge = value;
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
-            if (Item != null && !Item.IsAir && Item.type == NeutronBow.PType) {
+            if (Item != null && !Item.IsAir && Item.type == ModContent.ItemType<NeutronBow>()) {
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge / 60f * 80, uiframe);
             }
             Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, MaxFrame), CanFire ? Color.White : lightColor

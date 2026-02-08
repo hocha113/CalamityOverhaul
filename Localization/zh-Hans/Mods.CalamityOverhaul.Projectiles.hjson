@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: 分子斩切
+﻿MurasamaHeld.DisplayName: 分子斩切
 MuraTriggerDash.DisplayName: 分子斩切
 MuraBreakerSlash.DisplayName: 升龙半月
 MuraExecutionCut.DisplayName: 次元斩·终
@@ -434,7 +434,8 @@ Thomas.DisplayName: 多马
 Zealot.DisplayName: 奋锐者
 JudgmentLightning.DisplayName: 审判之雷
 HolySerpent.DisplayName: 神圣巨蛇
-// GammaRayBurst.DisplayName: Gamma Ray Burst
-// QuantumLeapProj.DisplayName: Quantum Leap Proj
-// SingularityBlackHole.DisplayName: Singularity Black Hole
-// SupernovaExplosion.DisplayName: Supernova Explosion
+GammaRayBurst.DisplayName: 伽马射线暴
+QuantumLeapProj.DisplayName: 量子跃迁
+SingularityBlackHole.DisplayName: 奇点黑洞
+SupernovaExplosion.DisplayName: 超新星爆发
+StarfuryFallingStar.DisplayName: 星怒落星

@@ -283,14 +283,6 @@ namespace CalamityOverhaul.Content
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
             }
-            //添加圣火之刃的合成
-            {
-                Recipe.Create(CWRID.Item_HolyCollider)
-                .AddIngredient(CWRID.Item_CelestialClaymore)
-                .AddIngredient(CWRID.Item_DivineGeode, 16)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-            }
             //添加风暴长矛的合成
             {
                 Recipe.Create(ItemID.ThunderSpear)

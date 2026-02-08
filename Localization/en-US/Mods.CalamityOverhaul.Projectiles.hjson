@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: Murasama
+﻿MurasamaHeld.DisplayName: Murasama
 MuraTriggerDash.DisplayName: Murasama
 MuraBreakerSlash.DisplayName: Crescent Moon Slash
 MuraExecutionCut.DisplayName: Dimensional Severance - Finale
@@ -435,6 +435,7 @@ Zealot.DisplayName: Zealot
 JudgmentLightning.DisplayName: Judgment Lightning
 HolySerpent.DisplayName: Holy Serpent
 GammaRayBurst.DisplayName: Gamma Ray Burst
-QuantumLeapProj.DisplayName: Quantum Leap Proj
+QuantumLeapProj.DisplayName: Quantum Leap
 SingularityBlackHole.DisplayName: Singularity Black Hole
 SupernovaExplosion.DisplayName: Supernova Explosion
+StarfuryFallingStar.DisplayName: Starfury Falling Star
