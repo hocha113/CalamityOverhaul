@@ -283,14 +283,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private static void ApplyBossDamageModifiers(NPC target, ref NPC.HitModifiers modifiers) {
-            //对克苏鲁之眼造成1.5倍伤害
+            //对克苏鲁之眼造成1.25倍伤害
             if (target.type == NPCID.EyeofCthulhu) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-
-            //对红宝石、蓝宝石仅造成75%伤害
-            if (target.type == CWRID.NPC_KingSlimeJewelRuby || target.type == CWRID.NPC_KingSlimeJewelSapphire) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 1.25f;
             }
 
             //对飞眼怪仅造成25%伤害
@@ -323,12 +318,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
 
-            //对肉山眼仅造成50%伤害
-            if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.5f;
+            //对饿鬼造成3倍伤害
+            if (target.type == NPCID.TheHungry || target.type == NPCID.TheHungryII) {
+                modifiers.FinalDamage *= 1.5f;
             }
 
-            //对双子魔眼造成1.5倍伤害
+            //对双子魔眼造成1倍伤害
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 1f;
             }

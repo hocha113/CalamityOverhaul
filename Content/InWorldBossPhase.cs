@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content
 
         public static bool Level4 => Downed5.Invoke() || DownedV4.Invoke();
 
-        public static bool Level5 => Downed6.Invoke() && Downed7.Invoke() && Downed8.Invoke();
+        public static bool Level5 => Downed6.Invoke() && NPC.downedMechBoss2;
 
         public static bool Level6 => Downed10.Invoke();
 
