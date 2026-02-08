@@ -80,11 +80,33 @@ namespace CalamityOverhaul.Content
     public class CWRProjectile : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
+        /// <summary>
+        /// 是否不受特殊效果影响（如脉冲箭等）
+        /// </summary>
         public bool NotSubjectToSpecialEffects;
+        /// <summary>
+        /// 是否具有粘滞效果
+        /// </summary>
         public bool Viscosity;
+        /// <summary>
+        /// 是否具有穿甲抗性
+        /// </summary>
+        public bool PierceResist;
+        /// <summary>
+        /// 弹幕的发射源类型
+        /// </summary>
         public byte SpanTypes;
+        /// <summary>
+        /// 弹幕的命中属性
+        /// </summary>
         public HitAttributeStruct HitAttribute;
+        /// <summary>
+        /// 弹幕的发射源
+        /// </summary>
         public IEntitySource Source;
+        /// <summary>
+        /// 弹幕所属的CWR物品
+        /// </summary>
         private CWRItem cwrItem;
         private NPC hitNPC;
         private Vector2 offsetHitPos;

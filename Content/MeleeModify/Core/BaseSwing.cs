@@ -288,6 +288,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 Projectile.penetrate = -1;
                 Rotation = MathHelper.ToRadians(3);
                 Projectile.CWR().NotSubjectToSpecialEffects = true;
+                Projectile.CWR().PierceResist = true;
                 SetSwingProperty();
             }
             PostSwingProperty();

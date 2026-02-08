@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -257,7 +258,7 @@ namespace CalamityOverhaul
             }
 
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
-                Item item = new Item(itemType);
+                Item item = ContentSamples.ItemsByType[itemType];
                 ItemIsHeldSwing[itemType] = false;
                 ItemIsHeldSwingDontStopOrigShoot[itemType] = false;
                 ItemIsGun[itemType] = false;
@@ -335,13 +336,35 @@ namespace CalamityOverhaul
             }
 
             for (int i = 0; i < NPCLoader.NPCCount; i++) {
-                NPC npc = new NPC();
-                npc.SetDefaults(i);
                 NPCValue.ImmuneFrozen.TryAdd(i, false);
+            }
+
+            //尝试将此弹幕注册为 Calamity 穿刺抗性豁免
+            HashSet<int> exemptSet = null;
+            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
+                //找到 PierceResistNPC 类型
+                var pierceResistNPCType = calamity.Code.GetType("CalamityMod.NPCs.PierceResistNPC");
+                if (pierceResistNPCType != null) {
+                    //获取 exemptProjectiles 字段
+                    var field = pierceResistNPCType.GetField("exemptProjectiles",
+                        BindingFlags.Static | BindingFlags.NonPublic);
+
+                    if (field?.GetValue(null) is HashSet<int> reset) {
+                        exemptSet = reset;
+                    }
+                }
             }
 
             for (int i = 0; i < ProjectileLoader.ProjectileCount; i++) {
                 ProjValue.ImmuneFrozen.TryAdd(i, false);
+                Projectile projectile = ContentSamples.ProjectilesByType[i];
+                if (projectile != null && projectile.type != ProjectileID.None) {
+                    CWRProjectile cwrProjectile = projectile.CWR();
+                    //尝试将此弹幕注册为 Calamity 穿刺抗性豁免
+                    if (exemptSet != null && cwrProjectile.PierceResist) {
+                        exemptSet.Add(projectile.type);
+                    }
+                }
             }
 
             LogBoss();

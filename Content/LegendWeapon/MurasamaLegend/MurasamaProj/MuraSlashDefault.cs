@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.idStaticNPCHitCooldown = 6;
             Projectile.frameCounter = 0;
             Projectile.alpha = 255;
+            Projectile.CWR().PierceResist = true;
         }
         #endregion
 
