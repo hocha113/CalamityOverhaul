@@ -174,13 +174,22 @@
 
 MuraText: {
 	Subtest_Text0: 我们必须去地狱释放光明与黑暗的力量，这会引发亚空间风暴，但我们不得不做，新兵，为征途写下宏伟的一笔!
-	Subtest_Text1: 一个巨大的钢铁蠕虫挡住了我们的征途，将它剁成碎片
-	Subtest_Text2: 我能感觉到两道目光在注视着我们，去解决它们
-	Subtest_Text3:
+	Subtest_Text1:
 		'''
+		我怀念硫火之崖的火焰淬炼，去会会那儿的守护者吧
+		我能感觉到两道目光在注视着我们，去解决它们
+		'''
+	Subtest_Text2:
+		'''
+		臻冰壁垒中的监狱，那里关押着一个强大的灵能者，释放他，他会成为我们收复泰拉的一大助力
 		一次决战要到来了，那些破铜烂铁计划联合在一起，妄图阻挡我们
 		以刀与血来告诉它们，我们远征的步伐将碾碎一切异形邪祟和憎恶智能
 		'''
+	/* Subtest_Text3:
+		'''
+		A decisive battle is approaching. Those piles of scrap metal plan to unite in a vain attempt to stop us.
+		Tell them with blade and blood: the pace of our expedition will crush all alien evils and abominable intelligences.
+		''' */
 	World_Text0: 上次升级的世界:<{0}>|记录等级:<{1}>
 	Subtest_Text4: 丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
 	Subtest_Text5: 血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它

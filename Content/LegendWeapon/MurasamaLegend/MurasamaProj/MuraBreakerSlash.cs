@@ -171,11 +171,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.15f;
             }
 
-            //对血肉蠕虫仅造成66%伤害
-            if (CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type) || CWRLoad.targetNpcTypes17.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.66f;
-            }
-
             //对骷髅王之手仅造成50%伤害并限制最大伤害
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.5f;
@@ -192,9 +187,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.25f;
             }
 
-            //对肉山眼仅造成50%伤害
-            if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.5f;
+            //对饿鬼造成3倍伤害
+            if (target.type == NPCID.TheHungry || target.type == NPCID.TheHungryII) {
+                modifiers.FinalDamage *= 1.5f;
             }
 
             //对灾眼兄弟仅造成50%伤害
@@ -227,14 +222,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.25f;
             }
 
-            //对渊海灾虫仅造成60%伤害
+            //对渊海灾虫仅造成20%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.6f;
+                modifiers.FinalDamage *= 0.8f;
             }
 
             //对渊海灾虫体节仅造成10%伤害
             if (target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
-                modifiers.FinalDamage *= 0.1f;
+                modifiers.FinalDamage *= 0.4f;
+            }
+
+            //对毁灭者造成50%倍伤害
+            if (target.type == NPCID.TheDestroyerBody || target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
+                modifiers.FinalDamage *= 2f;
             }
 
             //对塔纳托斯体节造成2倍伤害
@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
 
-            //对双子魔眼造成2倍伤害
+            //对双子魔眼造成1倍伤害
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 1f;
             }

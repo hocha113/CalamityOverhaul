@@ -25,50 +25,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 return;
             }
             if (!Level5) {
-                //没有击败全部灾三王，不提示机械三王
+                //没有击败毁灭者和渊灾，不显示后续
                 return;
             }
             //根据击败的Boss数量来确定提示
-            //击败了所有三个机械Boss
-            if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3) {
+            //击败了所有两对Boss
+            if (Downed7.Invoke() && Downed6.Invoke() && NPC.downedMechBoss2 && NPC.downedMechBoss3) {
                 //全部击败，不需要提示
                 return;
             }
-            //击败了两个Boss的情况
-            if (NPC.downedMechBoss2 && NPC.downedMechBoss3 && !NPC.downedMechBoss1) {
-                //击败了双子和机械统帅，还差毁灭者
-                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败毁灭者
-                num += "-3";
-            }
-            else if (NPC.downedMechBoss1 && NPC.downedMechBoss3 && !NPC.downedMechBoss2) {
-                //击败了毁灭者和机械统帅，还差双子
-                newContent = MuraText.GetTextValue("Subtest_Text2");  //提示击败双子
-                num += "-3";
-            }
-            else if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && !NPC.downedMechBoss3) {
-                //击败了毁灭者和双子，还差机械统帅
-                newContent = MuraText.GetTextValue("Subtest_Text3");  //提示击败机械统帅
-                num += "-3";
-            }
-            //击败了一个Boss的情况
-            else if (NPC.downedMechBoss3 && !NPC.downedMechBoss1 && !NPC.downedMechBoss2) {
-                //只击败了机械统帅
-                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败毁灭者（优先）
+            //击败了一对Boss的情况
+            else if (NPC.downedMechBoss3 && Downed6.Invoke() && !NPC.downedMechBoss2 && !Downed7.Invoke()) {
+                //只击败了机械统帅和冰灵
+                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败双子和硫磺火
                 num += "-2";
             }
-            else if (NPC.downedMechBoss2 && !NPC.downedMechBoss1 && !NPC.downedMechBoss3) {
-                //只击败了双子 - 这是问题所在！
-                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败机械统帅
-                num += "-2";  //修复：改为-2而不是-3
-            }
-            else if (NPC.downedMechBoss1 && !NPC.downedMechBoss2 && !NPC.downedMechBoss3) {
-                //只击败了毁灭者
-                newContent = MuraText.GetTextValue("Subtest_Text2");  //提示击败双子
+            else if (NPC.downedMechBoss2 && Downed7.Invoke() && !NPC.downedMechBoss3 && !Downed6.Invoke()) {
+                //只击败了双子和硫磺火
+                newContent = MuraText.GetTextValue("Subtest_Text2");  //提示击败机械统帅和冰灵
                 num += "-2";
             }
             //一个都没击败
             else if (Level5) {
-                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败毁灭者（第一个）
+                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败双子和硫磺火
                 num += "-1";
             }
         }
