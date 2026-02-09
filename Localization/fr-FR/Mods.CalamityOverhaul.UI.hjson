@@ -323,5 +323,8 @@ ElysiumUI: {
 OverhaulSettingsUI: {
 	// TitleText: Overhaul Settings
 	// CloseText: Close
-	// PlaceholderText: Settings will be added in future updates...
+	// ContentSettingsText: Content Settings
+	// ReloadHintText: "[c/FF6666:* Options marked with this require mod reload to take effect]"
 }
+
+// OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

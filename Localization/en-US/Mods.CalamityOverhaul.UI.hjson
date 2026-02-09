@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -323,5 +323,8 @@ MenuModify.OverhaulSettingsButtonText: Overhaul Settings
 OverhaulSettingsUI: {
 	TitleText: Overhaul Settings
 	CloseText: Close
-	PlaceholderText: Settings will be added in future updates...
+	ContentSettingsText: Content Settings
+	ReloadHintText: "[c/FF6666:* Options marked with this require mod reload to take effect]"
 }
+
+OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

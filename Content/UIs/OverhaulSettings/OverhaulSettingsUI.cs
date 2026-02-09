@@ -1,14 +1,17 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
@@ -19,7 +22,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText CloseText { get; private set; }
-        public static LocalizedText PlaceholderText { get; private set; }
+        public static LocalizedText ContentSettingsText { get; private set; }
+        public static LocalizedText ReloadHintText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -52,13 +56,40 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private const float ButtonWidth = 130f;
         private const float CornerRadius = 10f;
         private const float TitleBarHeight = 50f;
+        private const float CategoryHeight = 40f;
+        private const float ToggleRowHeight = 34f;
+        private const float ToggleBoxSize = 22f;
 
         //按钮
         private Rectangle closeButtonRect;
         private bool hoveringClose;
 
-        //设置项列表(预留)
-        private readonly List<SettingEntry> settingEntries = [];
+        //内容设置分类
+        private bool contentSettingsExpanded;
+        private float contentSettingsExpandAnim;
+        private float categoryHoverAnim;
+        private Rectangle categoryHitBox;
+        private bool hoveringCategory;
+
+        //设置项
+        private readonly List<SettingToggle> settingToggles = [];
+        private bool settingsInitialized;
+
+        //滚动
+        private float scrollOffset;
+        private float scrollTarget;
+        private float maxScroll;
+        private Rectangle scrollAreaRect;
+
+        //悬浮提示
+        private string hoverTooltip;
+        private Vector2 hoverTooltipPos;
+
+        //需要重新加载的标记
+        private bool needsReload;
+
+        //滚动处理
+        private int oldScrollWheelValue;
 
         //粒子结构
         private struct SettingsParticle
@@ -73,16 +104,21 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public Color BaseColor;
         }
 
-        //设置项结构(预留)
-        internal class SettingEntry
+        //设置项开关
+        internal class SettingToggle
         {
-            public string Name;
-            public string Description;
-            public bool Value;
-            public Action<bool> OnChanged;
+            public string ConfigPropertyName;
+            public Func<bool> Getter;
+            public Action<bool> Setter;
+            public bool RequiresReload;
             public float HoverAnim;
+            public float ToggleAnim;
             public Rectangle HitBox;
+            public bool Hovering;
         }
+
+        //ConfigManager.Save的反射缓存
+        private static MethodInfo _configManagerSave;
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
@@ -97,12 +133,17 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "大修设置");
             CloseText = this.GetLocalization(nameof(CloseText), () => "关闭");
-            PlaceholderText = this.GetLocalization(nameof(PlaceholderText), () => "设置项将在后续版本中添加...");
+            ContentSettingsText = this.GetLocalization(nameof(ContentSettingsText), () => "内容设置");
+            ReloadHintText = this.GetLocalization(nameof(ReloadHintText), () => "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]");
+
+            _configManagerSave = typeof(ConfigManager)
+                .GetMethod("Save", BindingFlags.Static | BindingFlags.NonPublic);
         }
 
         public override void UnLoad() {
             _sengs = 0;
             _active = false;
+            _configManagerSave = null;
         }
 
         private void ResetAnimations() {
@@ -115,6 +156,70 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             closing = false;
             hideProgress = 0f;
             particles.Clear();
+            scrollOffset = 0f;
+            scrollTarget = 0f;
+            hoverTooltip = null;
+        }
+
+        private void InitializeSettings() {
+            if (settingsInitialized) return;
+            settingsInitialized = true;
+            settingToggles.Clear();
+
+            if (CWRServerConfig.Instance == null) return;
+
+            var config = CWRServerConfig.Instance;
+
+            //CWRSystem组(需要重载)
+            AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
+            AddToggle("WeaponOverhaul", () => config.WeaponOverhaul, v => config.WeaponOverhaul = v, true);
+            AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
+
+            //CWRWeapon组
+            AddToggle("WeaponHandheldDisplay", () => config.WeaponHandheldDisplay, v => config.WeaponHandheldDisplay = v, false);
+            AddToggle("EnableSwordLight", () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
+            AddToggle("ActivateGunRecoil", () => config.ActivateGunRecoil, v => config.ActivateGunRecoil = v, false);
+            AddToggle("MagazineSystem", () => config.MagazineSystem, v => config.MagazineSystem = v, false);
+            AddToggle("EnableCasingsEntity", () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
+            AddToggle("BowArrowDraw", () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
+            AddToggle("ShotgunFireForcedReloadInterruption", () => config.ShotgunFireForcedReloadInterruption, v => config.ShotgunFireForcedReloadInterruption = v, false);
+            AddToggle("WeaponLazyRotationAngle", () => config.WeaponLazyRotationAngle, v => config.WeaponLazyRotationAngle = v, false);
+            AddToggle("ScreenVibration", () => config.ScreenVibration, v => config.ScreenVibration = v, false);
+            AddToggle("MurasamaSpaceFragmentationBool", () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
+            AddToggle("HalibutDomainConciseDisplay", () => config.HalibutDomainConciseDisplay, v => config.HalibutDomainConciseDisplay = v, false);
+            AddToggle("LensEasing", () => config.LensEasing, v => config.LensEasing = v, false);
+
+            //CWRUI组
+            AddToggle("ShowReloadingProgressUI", () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
+        }
+
+        private void AddToggle(string propertyName, Func<bool> getter, Action<bool> setter, bool requiresReload) {
+            settingToggles.Add(new SettingToggle {
+                ConfigPropertyName = propertyName,
+                Getter = getter,
+                Setter = setter,
+                RequiresReload = requiresReload,
+                HoverAnim = 0f,
+                ToggleAnim = getter() ? 1f : 0f,
+            });
+        }
+
+        private static string GetConfigLabel(string propertyName) {
+            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{propertyName}.Label";
+            string value = Language.GetTextValue(key);
+            return value == key ? propertyName : value;
+        }
+
+        private static string GetConfigTooltip(string propertyName) {
+            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{propertyName}.Tooltip";
+            string value = Language.GetTextValue(key);
+            return value == key ? "" : value;
+        }
+
+        private static void SaveConfig() {
+            if (CWRServerConfig.Instance == null) return;
+            CWRServerConfig.Instance.OnChanged();
+            _configManagerSave?.Invoke(null, [CWRServerConfig.Instance]);
         }
 
         public override void Update() {
@@ -157,6 +262,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 return;
             }
 
+            InitializeSettings();
+
             //面板滑入动画
             float targetSlide = _active && !closing ? 0f : 60f;
             panelSlideOffset += (targetSlide - panelSlideOffset) * 0.15f;
@@ -178,10 +285,25 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             breatheAnim = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 2f;
 
+            //分类展开动画
+            float expandTarget = contentSettingsExpanded ? 1f : 0f;
+            contentSettingsExpandAnim += (expandTarget - contentSettingsExpandAnim) * 0.12f;
+            if (Math.Abs(contentSettingsExpandAnim - expandTarget) < 0.001f) {
+                contentSettingsExpandAnim = expandTarget;
+            }
+
             //按钮动画
             float hoverSpeed = 0.15f;
             closeHoverAnim += ((hoveringClose ? 1f : 0f) - closeHoverAnim) * hoverSpeed;
             closePressAnim *= 0.85f;
+            categoryHoverAnim += ((hoveringCategory ? 1f : 0f) - categoryHoverAnim) * hoverSpeed;
+
+            //更新开关动画
+            foreach (var toggle in settingToggles) {
+                float target = toggle.Getter() ? 1f : 0f;
+                toggle.ToggleAnim += (target - toggle.ToggleAnim) * 0.15f;
+                toggle.HoverAnim += ((toggle.Hovering ? 1f : 0f) - toggle.HoverAnim) * hoverSpeed;
+            }
 
             //更新粒子
             UpdateParticles();
@@ -206,12 +328,66 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //悬停检测
             hoveringClose = closeButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
+            hoveringCategory = categoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
+
+            //清除悬浮提示
+            hoverTooltip = null;
+
+            //更新设置项悬停
+            if (contentSettingsExpandAnim > 0.5f) {
+                foreach (var toggle in settingToggles) {
+                    toggle.Hovering = toggle.HitBox.Contains(MouseHitBox) && scrollAreaRect.Contains(MouseHitBox) && contentFade > 0.5f;
+                    if (toggle.Hovering) {
+                        string tip = GetConfigTooltip(toggle.ConfigPropertyName);
+                        if (!string.IsNullOrEmpty(tip)) {
+                            hoverTooltip = tip;
+                            hoverTooltipPos = MousePosition;
+                        }
+                    }
+                }
+            }
+
+            //滚动处理
+            if (hoverInMainPage && contentSettingsExpanded) {
+                MouseState currentMouseState = Mouse.GetState();
+                int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
+                oldScrollWheelValue = currentMouseState.ScrollWheelValue;
+                if (scrollDelta != 0) {
+                    scrollTarget -= scrollDelta * 0.3f;
+                    scrollTarget = Math.Clamp(scrollTarget, 0f, Math.Max(0f, maxScroll));
+                }
+            }
+            else {
+                oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+            }
+            scrollOffset += (scrollTarget - scrollOffset) * 0.2f;
 
             //点击处理
             if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringClose) {
                     closePressAnim = 1f;
                     OnClose();
+                }
+                else if (hoveringCategory) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.3f });
+                    contentSettingsExpanded = !contentSettingsExpanded;
+                    if (!contentSettingsExpanded) {
+                        scrollTarget = 0f;
+                    }
+                }
+                else if (contentSettingsExpandAnim > 0.5f) {
+                    foreach (var toggle in settingToggles) {
+                        if (toggle.Hovering) {
+                            bool newVal = !toggle.Getter();
+                            toggle.Setter(newVal);
+                            SaveConfig();
+                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f, Pitch = newVal ? 0.5f : -0.2f });
+                            if (toggle.RequiresReload) {
+                                needsReload = true;
+                            }
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -227,7 +403,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         private void OnClose() {
             SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
-            Main.menuMode = 0;//恢复主菜单
+            Main.menuMode = 0;
             if (!closing) {
                 closing = true;
                 hideProgress = 0f;
@@ -275,17 +451,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override void Draw(SpriteBatch spriteBatch) {
             if (_sengs <= 0.001f) return;
 
-            //运行环境比较敏感，防止资源释放后的交互
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
                 _active = false;
                 return;
             }
 
             float alpha = _sengs;
-
-            //绘制背景遮罩
-            //暂时不决定启用这个的绘制
-            //DrawBackdrop(spriteBatch, alpha * 0.6f);
 
             //绘制粒子(在面板后面)
             DrawParticles(spriteBatch, alpha);
@@ -297,13 +468,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             if (contentFade > 0.01f) {
                 DrawContent(spriteBatch, alpha * contentFade);
             }
-        }
 
-        private void DrawBackdrop(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            spriteBatch.Draw(pixel, Vector2.Zero
-                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
-                , Color.Black * alpha, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+            //绘制悬浮提示(最上层)
+            if (hoverTooltip != null && contentFade > 0.5f) {
+                DrawTooltip(spriteBatch, hoverTooltip, hoverTooltipPos, alpha * contentFade);
+            }
         }
 
         private void DrawParticles(SpriteBatch spriteBatch, float alpha) {
@@ -325,7 +494,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle panelRect = UIHitBox;
 
             //多层阴影
@@ -348,7 +516,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //流光边框
             DrawAnimatedBorder(spriteBatch, panelRect, alpha);
 
-            //顶部标题栏分割(深红高光条)
+            //顶部标题栏分割
             int titleBarBottom = panelRect.Y + (int)(TitleBarHeight * panelScaleAnim);
             float highlightAlpha = 0.5f + breatheAnim * 0.2f;
             Rectangle highlightBar = new(panelRect.X + 15, titleBarBottom, panelRect.Width - 30, 2);
@@ -360,11 +528,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void DrawAnimatedBorder(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
-            //基础边框
             Color baseColor = new Color(100, 35, 35) * (alpha * 0.8f);
             DrawRoundedRectBorder(spriteBatch, rect, baseColor, CornerRadius, 2);
 
-            //流光效果(暗红色)
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float shimmerPos = shimmerPhase % 4f / 4f;
 
@@ -420,11 +586,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             ];
 
             for (int i = 0; i < 4; i++) {
-                //菱形装饰
                 spriteBatch.Draw(pixel, corners[i], new Rectangle(0, 0, 1, 1), ornamentColor,
                     MathHelper.PiOver4, new Vector2(0.5f), new Vector2(5f, 5f), SpriteEffects.None, 0f);
 
-                //光芒
                 for (int j = 0; j < 4; j++) {
                     float rayRot = j * MathHelper.PiOver2 + globalTime * 0.3f;
                     Vector2 rayDir = rayRot.ToRotationVector2();
@@ -435,13 +599,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void DrawContent(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float scale = panelScaleAnim;
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale * 0.6f);
             string title = TitleText.Value;
 
-            //标题光晕
             float titleGlow = 0.4f + breatheAnim * 0.4f;
             Color titleGlowColor = new Color(200, 60, 60) * (alpha * titleGlow * 0.35f);
             for (int i = 0; i < 6; i++) {
@@ -450,38 +614,87 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlowColor, scale * 1.1f);
             }
 
-            //标题主体
             Color titleColor = Color.Lerp(new Color(240, 200, 200), new Color(220, 100, 100), breatheAnim * 0.3f);
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale * 1.1f);
 
-            //内容区域(标题栏下方)
-            float contentTop = DrawPosition.Y + TitleBarHeight * scale + 15f * scale;
+            //内容区域
+            float contentTop = DrawPosition.Y + TitleBarHeight * scale + 10f * scale;
             float contentLeft = DrawPosition.X + Padding * scale;
             float contentWidth = Size.X - Padding * scale * 2;
-            float contentHeight = Size.Y - TitleBarHeight * scale - Padding * scale - ButtonHeight * scale - 20f * scale;
+            float contentBottom = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale - 15f * scale;
+            float contentHeight = contentBottom - contentTop;
 
-            //占位提示文本
-            if (settingEntries.Count == 0) {
-                string placeholder = PlaceholderText.Value;
-                Vector2 placeholderSize = FontAssets.MouseText.Value.MeasureString(placeholder) * 0.8f * scale;
-                Vector2 placeholderPos = new(
-                    contentLeft + contentWidth / 2f - placeholderSize.X / 2f,
-                    contentTop + contentHeight / 2f - placeholderSize.Y / 2f
-                );
-                Color phColor = new Color(150, 100, 100) * (alpha * 0.6f);
-                Utils.DrawBorderString(spriteBatch, placeholder, placeholderPos, phColor, 0.8f * scale);
+            scrollAreaRect = new Rectangle((int)contentLeft, (int)contentTop, (int)contentWidth, (int)contentHeight);
 
-                //装饰分割线
-                Vector2 lineStart = new(contentLeft + 40f * scale, contentTop + contentHeight / 2f - 25f * scale);
-                Vector2 lineEnd = new(contentLeft + contentWidth - 40f * scale, contentTop + contentHeight / 2f - 25f * scale);
-                DrawDividerLine(spriteBatch, lineStart, lineEnd, alpha * 0.5f);
+            //绘制内容设置分类按钮
+            float catY = contentTop;
+            Rectangle catRect = new((int)contentLeft, (int)catY, (int)contentWidth, (int)(CategoryHeight * scale));
+            categoryHitBox = catRect;
+            DrawCategoryButton(spriteBatch, catRect, ContentSettingsText.Value, contentSettingsExpanded,
+                categoryHoverAnim, alpha, scale);
 
-                Vector2 lineStart2 = new(contentLeft + 40f * scale, contentTop + contentHeight / 2f + 25f * scale);
-                Vector2 lineEnd2 = new(contentLeft + contentWidth - 40f * scale, contentTop + contentHeight / 2f + 25f * scale);
-                DrawDividerLine(spriteBatch, lineStart2, lineEnd2, alpha * 0.5f);
+            //展开的设置项列表
+            if (contentSettingsExpandAnim > 0.01f) {
+                float listTop = catY + CategoryHeight * scale + 6f * scale;
+                float listHeight = contentBottom - listTop;
+
+                //计算总内容高度
+                float totalContentH = settingToggles.Count * ToggleRowHeight * scale;
+                //加上底部重载提示的高度
+                if (needsReload) {
+                    totalContentH += 30f * scale;
+                }
+                maxScroll = Math.Max(0f, totalContentH - listHeight);
+
+                //裁剪区域
+                Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
+
+                //使用RasterizerState进行裁剪
+                spriteBatch.End();
+                Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
+                spriteBatch.GraphicsDevice.ScissorRectangle = clipRect;
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+
+                float itemAlpha = alpha * contentSettingsExpandAnim;
+                float yPos = listTop - scrollOffset;
+
+                for (int i = 0; i < settingToggles.Count; i++) {
+                    var toggle = settingToggles[i];
+                    float rowY = yPos + i * ToggleRowHeight * scale;
+
+                    Rectangle rowRect = new((int)contentLeft, (int)rowY, (int)contentWidth, (int)(ToggleRowHeight * scale));
+                    toggle.HitBox = rowRect;
+
+                    //只绘制可见的行
+                    if (rowRect.Bottom >= listTop && rowRect.Y <= listTop + listHeight) {
+                        DrawToggleRow(spriteBatch, toggle, rowRect, itemAlpha, scale);
+                    }
+                }
+
+                //重载提示
+                if (needsReload) {
+                    float hintY = yPos + settingToggles.Count * ToggleRowHeight * scale + 8f * scale;
+                    if (hintY < listTop + listHeight) {
+                        string hint = ReloadHintText.Value;
+                        Utils.DrawBorderString(spriteBatch, hint,
+                            new Vector2(contentLeft + 10f * scale, hintY),
+                            new Color(255, 100, 100) * (itemAlpha * 0.8f), 0.7f * scale);
+                    }
+                }
+
+                spriteBatch.End();
+                spriteBatch.GraphicsDevice.ScissorRectangle = prevScissor;
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, new RasterizerState { ScissorTestEnable = false }, null, Main.UIScaleMatrix);
+
+                //滚动条
+                if (maxScroll > 0f) {
+                    DrawScrollBar(spriteBatch, clipRect, alpha * contentSettingsExpandAnim);
+                }
             }
 
-            //关闭按钮(底部居中)
+            //关闭按钮
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
             float buttonCenterX = DrawPosition.X + Size.X / 2f;
             float scaledButtonWidth = ButtonWidth * scale;
@@ -497,70 +710,220 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DrawButton(spriteBatch, closeButtonRect, CloseText.Value, closeHoverAnim, closePressAnim, alpha, scale);
         }
 
-        private void DrawDividerLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float alpha) {
+        private void DrawCategoryButton(SpriteBatch spriteBatch, Rectangle rect, string text,
+            bool expanded, float hoverAnim, float alpha, float scale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float length = (end - start).Length();
-            if (length < 1f) return;
 
-            //底层线条
-            Color baseColor = new Color(100, 40, 40) * (alpha * 0.5f);
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), baseColor, 0f,
-                Vector2.Zero, new Vector2(length, 1f), SpriteEffects.None, 0f);
+            //背景
+            Color bgColor = Color.Lerp(new Color(45, 18, 18), new Color(65, 25, 25), hoverAnim);
+            DrawRoundedRect(spriteBatch, rect, bgColor * (alpha * 0.9f), 6f);
 
-            //流光效果
-            float shimmerT = globalTime * 0.5f % 1f;
-            Vector2 shimmerPos = Vector2.Lerp(start, end, shimmerT);
-            Color shimmerColor = new Color(200, 80, 80, 0) * (alpha * 0.6f);
+            //边框
+            Color borderColor = Color.Lerp(new Color(120, 50, 50), new Color(180, 70, 70), hoverAnim);
+            DrawRoundedRectBorder(spriteBatch, rect, borderColor * (alpha * 0.7f), 6f, 1);
 
-            Texture2D softGlow = CWRAsset.SoftGlow.Value;
-            float glowScale = 0.12f;
-            spriteBatch.Draw(softGlow, shimmerPos, null, shimmerColor * 0.5f, 0f,
-                softGlow.Size() / 2f, new Vector2(glowScale * 2f, glowScale * 0.5f), SpriteEffects.None, 0f);
+            //展开指示箭头
+            float arrowRot = expanded ? MathHelper.PiOver2 : 0f;
+            float animArrowRot = MathHelper.Lerp(0f, MathHelper.PiOver2, contentSettingsExpandAnim);
+            Vector2 arrowPos = new(rect.X + 18f * scale, rect.Y + rect.Height / 2f);
+            Color arrowColor = Color.Lerp(new Color(180, 120, 120), new Color(240, 160, 160), hoverAnim) * alpha;
+
+            //三角箭头
+            float arrowSize = 5f * scale;
+            Vector2 p1 = arrowPos + (animArrowRot - MathHelper.PiOver4).ToRotationVector2() * arrowSize;
+            Vector2 p2 = arrowPos + (animArrowRot + MathHelper.PiOver4).ToRotationVector2() * arrowSize;
+            spriteBatch.Draw(pixel, arrowPos, new Rectangle(0, 0, 1, 1), arrowColor, animArrowRot,
+                new Vector2(0f, 0.5f), new Vector2(arrowSize * 1.5f, 2f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, arrowPos, new Rectangle(0, 0, 1, 1), arrowColor, animArrowRot + MathHelper.PiOver2,
+                new Vector2(0f, 0.5f), new Vector2(arrowSize, 2f), SpriteEffects.None, 0f);
+
+            //文字
+            Vector2 textPos = new(rect.X + 36f * scale, rect.Y + rect.Height / 2f - 10f * scale);
+            Color textColor = Color.Lerp(new Color(220, 180, 180), Color.White, hoverAnim);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.9f * scale);
+
+            //悬停时的内发光
+            if (hoverAnim > 0.01f) {
+                DrawInnerGlow(spriteBatch, rect, new Color(180, 60, 60) * (alpha * hoverAnim * 0.1f), 6f, 6);
+            }
+        }
+
+        private void DrawToggleRow(SpriteBatch spriteBatch, SettingToggle toggle, Rectangle rect,
+            float alpha, float scale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //行背景(悬停时高亮)
+            if (toggle.HoverAnim > 0.01f) {
+                Color rowBg = new Color(60, 25, 25) * (alpha * toggle.HoverAnim * 0.5f);
+                spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), rowBg);
+            }
+
+            //开关盒子
+            float boxSize = ToggleBoxSize * scale;
+            float boxX = rect.X + 12f * scale;
+            float boxY = rect.Y + (rect.Height - boxSize) / 2f;
+            Rectangle boxRect = new((int)boxX, (int)boxY, (int)boxSize, (int)boxSize);
+
+            //盒子背景
+            Color boxBg = Color.Lerp(new Color(35, 14, 14), new Color(50, 20, 20), toggle.HoverAnim);
+            spriteBatch.Draw(pixel, boxRect, new Rectangle(0, 0, 1, 1), boxBg * alpha);
+
+            //盒子边框
+            Color boxBorder = Color.Lerp(new Color(100, 45, 45), new Color(160, 65, 65), toggle.HoverAnim);
+            DrawSimpleBorder(spriteBatch, boxRect, boxBorder * alpha, 1);
+
+            //勾选状态填充
+            if (toggle.ToggleAnim > 0.01f) {
+                int inset = (int)(3f * scale);
+                Rectangle fillRect = new(boxRect.X + inset, boxRect.Y + inset,
+                    boxRect.Width - inset * 2, boxRect.Height - inset * 2);
+
+                Color fillColor = Color.Lerp(new Color(160, 50, 50), new Color(200, 70, 70), toggle.HoverAnim) * (alpha * toggle.ToggleAnim);
+                spriteBatch.Draw(pixel, fillRect, new Rectangle(0, 0, 1, 1), fillColor);
+
+                //对勾
+                if (toggle.ToggleAnim > 0.5f) {
+                    float checkAlpha = (toggle.ToggleAnim - 0.5f) * 2f;
+                    Color checkColor = new Color(255, 220, 220) * (alpha * checkAlpha);
+                    Vector2 checkCenter = boxRect.Center.ToVector2();
+                    float cs = boxSize * 0.2f;
+                    //对勾的两条线段
+                    spriteBatch.Draw(pixel, checkCenter + new Vector2(-cs, 0),
+                        new Rectangle(0, 0, 1, 1), checkColor, MathHelper.PiOver4,
+                        new Vector2(0f, 0.5f), new Vector2(cs * 1.2f, 2f * scale), SpriteEffects.None, 0f);
+                    spriteBatch.Draw(pixel, checkCenter + new Vector2(-cs * 0.1f, cs * 0.3f),
+                        new Rectangle(0, 0, 1, 1), checkColor, -MathHelper.PiOver4,
+                        new Vector2(0f, 0.5f), new Vector2(cs * 2.2f, 2f * scale), SpriteEffects.None, 0f);
+                }
+            }
+
+            //标签文字
+            string label = GetConfigLabel(toggle.ConfigPropertyName);
+            if (toggle.RequiresReload) {
+                label = "[c/FF6666:*] " + label;
+            }
+            Vector2 textPos = new(boxX + boxSize + 10f * scale, rect.Y + rect.Height / 2f - 9f * scale);
+            Color textColor = Color.Lerp(new Color(200, 175, 170), new Color(240, 210, 210), toggle.HoverAnim);
+            Utils.DrawBorderString(spriteBatch, label, textPos, textColor * alpha, 0.78f * scale);
+
+            //底部分隔线
+            Color lineColor = new Color(80, 35, 35) * (alpha * 0.4f);
+            spriteBatch.Draw(pixel, new Rectangle(rect.X + (int)(20f * scale), rect.Bottom - 1,
+                rect.Width - (int)(40f * scale), 1), new Rectangle(0, 0, 1, 1), lineColor);
+        }
+
+        private void DrawScrollBar(SpriteBatch spriteBatch, Rectangle clipRect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            float barWidth = 4f;
+            float trackX = clipRect.Right - barWidth - 4f;
+            float trackHeight = clipRect.Height;
+
+            //轨道
+            Rectangle trackRect = new((int)trackX, clipRect.Y, (int)barWidth, (int)trackHeight);
+            spriteBatch.Draw(pixel, trackRect, new Rectangle(0, 0, 1, 1), new Color(60, 25, 25) * (alpha * 0.5f));
+
+            //滑块
+            float totalContent = settingToggles.Count * ToggleRowHeight * panelScaleAnim;
+            if (needsReload) totalContent += 30f * panelScaleAnim;
+            float viewRatio = Math.Min(1f, trackHeight / totalContent);
+            float thumbHeight = Math.Max(20f, trackHeight * viewRatio);
+            float scrollRatio = maxScroll > 0 ? scrollOffset / maxScroll : 0f;
+            float thumbY = clipRect.Y + scrollRatio * (trackHeight - thumbHeight);
+
+            Rectangle thumbRect = new((int)trackX, (int)thumbY, (int)barWidth, (int)thumbHeight);
+            Color thumbColor = new Color(160, 60, 60) * (alpha * 0.8f);
+            spriteBatch.Draw(pixel, thumbRect, new Rectangle(0, 0, 1, 1), thumbColor);
+        }
+
+        private static void DrawTooltip(SpriteBatch spriteBatch, string text, Vector2 mousePos, float alpha) {
+            if (string.IsNullOrEmpty(text)) return;
+
+            //清理掉配色标记用于测量
+            string cleanText = text.Replace("\n", "\n");
+            string[] lines = cleanText.Split('\n');
+
+            float tipScale = 0.75f;
+            float maxWidth = 0;
+            float totalHeight = 0;
+            var font = FontAssets.MouseText.Value;
+
+            foreach (string line in lines) {
+                //去掉颜色标记来估算宽度
+                string measureLine = System.Text.RegularExpressions.Regex.Replace(line, @"\[c/[0-9a-fA-F]+:", "");
+                measureLine = measureLine.Replace("]", "");
+                Vector2 lineSize = font.MeasureString(measureLine) * tipScale;
+                maxWidth = Math.Max(maxWidth, lineSize.X);
+                totalHeight += lineSize.Y;
+            }
+
+            float padX = 12f;
+            float padY = 8f;
+            float tipX = mousePos.X + 16f;
+            float tipY = mousePos.Y + 16f;
+
+            //防止溢出屏幕
+            if (tipX + maxWidth + padX * 2 > Main.screenWidth) {
+                tipX = mousePos.X - maxWidth - padX * 2 - 8f;
+            }
+            if (tipY + totalHeight + padY * 2 > Main.screenHeight) {
+                tipY = mousePos.Y - totalHeight - padY * 2 - 8f;
+            }
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle bgRect = new((int)(tipX - padX), (int)(tipY - padY),
+                (int)(maxWidth + padX * 2), (int)(totalHeight + padY * 2));
+
+            //背景
+            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(25, 10, 10) * (alpha * 0.95f));
+            //边框
+            DrawSimpleBorder(spriteBatch, bgRect, new Color(120, 50, 50) * (alpha * 0.7f), 1);
+
+            //绘制文字
+            float lineY = tipY;
+            Color textColor = new Color(220, 200, 190) * alpha;
+            foreach (string line in lines) {
+                Utils.DrawBorderString(spriteBatch, line, new Vector2(tipX, lineY), textColor, tipScale);
+                string measureLine = System.Text.RegularExpressions.Regex.Replace(line, @"\[c/[0-9a-fA-F]+:", "");
+                measureLine = measureLine.Replace("]", "");
+                lineY += font.MeasureString(measureLine).Y * tipScale;
+            }
         }
 
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
             float hoverAnim, float pressAnim, float alpha, float scale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //按压效果
             Rectangle drawRect = rect;
             if (pressAnim > 0.01f) {
                 int pressOffset = (int)(pressAnim * 2f);
                 drawRect.Y += pressOffset;
             }
 
-            //悬停膨胀
             int expandAmount = (int)(hoverAnim * 3f);
             drawRect.Inflate(expandAmount, expandAmount / 2);
 
-            //背景渐变(暗红色)
             Color bgTop = Color.Lerp(new Color(55, 20, 20), new Color(80, 30, 30), hoverAnim);
             Color bgBottom = Color.Lerp(new Color(40, 15, 15), new Color(60, 22, 22), hoverAnim);
             DrawGradientRoundedRect(spriteBatch, drawRect, bgTop * (alpha * 0.95f), bgBottom * (alpha * 0.95f), 6f);
 
-            //边框
             Color borderColor = Color.Lerp(new Color(140, 60, 60), new Color(220, 90, 90), hoverAnim);
             DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)hoverAnim);
 
-            //悬停时的内发光
             if (hoverAnim > 0.01f) {
                 Color innerGlow = new Color(200, 80, 80) * (alpha * hoverAnim * 0.15f);
                 DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 8);
             }
 
-            //按钮文字
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f * scale;
             Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
 
-            //文字阴影
             Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
                 Color.Black * (alpha * 0.5f), 0.85f * scale);
 
-            //文字主体
             Color textColor = Color.Lerp(new Color(200, 180, 170), Color.White, hoverAnim);
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f * scale);
 
-            //悬停文字光晕
             if (hoverAnim > 0.3f) {
                 Color textGlow = new Color(220, 100, 100) * (alpha * (hoverAnim - 0.3f) * 0.4f);
                 Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
@@ -568,6 +931,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         #region 绘制辅助方法
+
+        private static void DrawSimpleBorder(SpriteBatch sb, Rectangle rect, Color color, int thickness) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
+            sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
+        }
 
         private static void DrawRoundedRect(SpriteBatch sb, Rectangle rect, Color color, float radius) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -584,7 +955,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             for (int i = 0; i < r; i++) {
                 float t = i / (float)r;
                 int cornerWidth = (int)(r * MathF.Sqrt(1f - (1f - t) * (1f - t)));
-
                 sb.Draw(pixel, new Rectangle(rect.X + r - cornerWidth, rect.Y + i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
                 sb.Draw(pixel, new Rectangle(rect.Right - r, rect.Y + i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
                 sb.Draw(pixel, new Rectangle(rect.X + r - cornerWidth, rect.Bottom - 1 - i, cornerWidth, 1), new Rectangle(0, 0, 1, 1), color);
@@ -597,10 +967,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
                 Color color = Color.Lerp(topColor, bottomColor, t);
-
                 int y = rect.Y + i;
                 int inset = 0;
-
                 int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
                 if (i < r) {
                     float cornerT = i / (float)r;
@@ -610,7 +978,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     float cornerT = (rect.Height - i) / (float)r;
                     inset = (int)(r * (1f - MathF.Sqrt(1f - (1f - cornerT) * (1f - cornerT))));
                 }
-
                 Rectangle line = new(rect.X + inset, y, rect.Width - inset * 2, 1);
                 sb.Draw(VaultAsset.placeholder2.Value, line, new Rectangle(0, 0, 1, 1), color);
             }
@@ -619,12 +986,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static void DrawRoundedRectBorder(SpriteBatch sb, Rectangle rect, Color color, float radius, int thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
-
             sb.Draw(pixel, new Rectangle(rect.X + r, rect.Y, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.X + r, rect.Bottom - thickness, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
-
             DrawCornerArc(sb, new Vector2(rect.X + r, rect.Y + r), r, MathHelper.Pi, MathHelper.PiOver2, color, thickness);
             DrawCornerArc(sb, new Vector2(rect.Right - r, rect.Y + r), r, -MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);
             DrawCornerArc(sb, new Vector2(rect.X + r, rect.Bottom - r), r, MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);
@@ -634,7 +999,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static void DrawCornerArc(SpriteBatch sb, Vector2 center, float radius, float startAngle, float sweep, Color color, int thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int segments = Math.Max(4, (int)(radius * sweep / 2f));
-
             for (int i = 0; i <= segments; i++) {
                 float angle = startAngle + sweep * i / segments;
                 Vector2 pos = center + angle.ToRotationVector2() * radius;
@@ -647,10 +1011,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 float t = i / (float)glowSize;
                 float glowAlpha = (1f - t) * (1f - t);
                 Color glowColor = color * glowAlpha;
-
                 Rectangle glowRect = rect;
                 glowRect.Inflate(-i, -i);
-
                 if (glowRect.Width > 0 && glowRect.Height > 0) {
                     DrawRoundedRectBorder(sb, glowRect, glowColor, Math.Max(0, radius - i), 1);
                 }
@@ -659,7 +1021,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         private static void DrawHorizontalGradient(SpriteBatch sb, Rectangle rect, Color left, Color center, Color right) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-
             for (int i = 0; i < rect.Width; i++) {
                 float t = i / (float)rect.Width;
                 Color color;
@@ -669,7 +1030,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 else {
                     color = Color.Lerp(center, right, (t - 0.5f) * 2f);
                 }
-
                 sb.Draw(pixel, new Rectangle(rect.X + i, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), color);
             }
         }

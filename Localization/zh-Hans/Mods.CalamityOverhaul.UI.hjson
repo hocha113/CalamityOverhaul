@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: 左键点击可添加项目
 	HintText2: 左键点击可移除项目
 	CloseHint: "[ESC]键或[右键点击]可关闭"
@@ -320,5 +320,8 @@ MenuModify.OverhaulSettingsButtonText: 大修设置
 OverhaulSettingsUI: {
 	TitleText: 大修设置
 	CloseText: 关闭
-	PlaceholderText: 设置项将在后续版本中添加...
+	ContentSettingsText: 内容设置
+	ReloadHintText: "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]"
 }
+
+// OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

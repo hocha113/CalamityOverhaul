@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы удалить предмет
 	CloseHint: "[ESC] или [ПКМ], чтобы закрыть"
@@ -320,5 +320,8 @@ MenuModify.OverhaulSettingsButtonText: Настройки Overhaul
 OverhaulSettingsUI: {
 	TitleText: Настройки Overhaul
 	CloseText: Закрыть
-	PlaceholderText: Настройки будут добавлены в будущих обновлениях...
+	ContentSettingsText: Настройки контента
+	ReloadHintText: "[c/FF6666:* Опции с этой отметкой требуют перезагрузки мода]"
 }
+
+// OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置
