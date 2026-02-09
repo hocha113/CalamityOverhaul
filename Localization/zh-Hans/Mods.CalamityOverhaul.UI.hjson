@@ -322,6 +322,7 @@ OverhaulSettingsUI: {
 	CloseText: 关闭
 	ContentSettingsText: 内容设置
 	ReloadHintText: "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]"
+	// WeaponOverrideText: 武器修改管理
 }
 
 // OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

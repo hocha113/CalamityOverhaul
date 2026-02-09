@@ -4,14 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
@@ -24,6 +22,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText CloseText { get; private set; }
         public static LocalizedText ContentSettingsText { get; private set; }
         public static LocalizedText ReloadHintText { get; private set; }
+        public static LocalizedText WeaponOverrideText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -64,29 +63,17 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private Rectangle closeButtonRect;
         private bool hoveringClose;
 
-        //内容设置分类
-        private bool contentSettingsExpanded;
-        private float contentSettingsExpandAnim;
-        private float categoryHoverAnim;
-        private Rectangle categoryHitBox;
-        private bool hoveringCategory;
-
-        //设置项
-        private readonly List<SettingToggle> settingToggles = [];
-        private bool settingsInitialized;
-
-        //滚动
-        private float scrollOffset;
-        private float scrollTarget;
-        private float maxScroll;
+        //分类列表
+        private readonly List<SettingsCategory> categories = [];
+        private bool categoriesInitialized;
         private Rectangle scrollAreaRect;
+
+        //当前展开的分类索引(-1表示无)
+        private int expandedCategoryIndex = -1;
 
         //悬浮提示
         private string hoverTooltip;
         private Vector2 hoverTooltipPos;
-
-        //需要重新加载的标记
-        private bool needsReload;
 
         //滚动处理
         private int oldScrollWheelValue;
@@ -115,10 +102,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public float ToggleAnim;
             public Rectangle HitBox;
             public bool Hovering;
+            /// <summary>
+            /// 可选：关联的物品类型ID，用于绘制物品图标
+            /// </summary>
+            public int ItemType;
         }
-
-        //ConfigManager.Save的反射缓存
-        private static MethodInfo _configManagerSave;
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
@@ -135,15 +123,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             CloseText = this.GetLocalization(nameof(CloseText), () => "关闭");
             ContentSettingsText = this.GetLocalization(nameof(ContentSettingsText), () => "内容设置");
             ReloadHintText = this.GetLocalization(nameof(ReloadHintText), () => "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]");
+            WeaponOverrideText = this.GetLocalization(nameof(WeaponOverrideText), () => "武器修改管理");
 
-            _configManagerSave = typeof(ConfigManager)
-                .GetMethod("Save", BindingFlags.Static | BindingFlags.NonPublic);
+            ContentSettingsCategory.LoadReflection();
         }
 
         public override void UnLoad() {
             _sengs = 0;
             _active = false;
-            _configManagerSave = null;
+            ContentSettingsCategory.UnloadReflection();
         }
 
         private void ResetAnimations() {
@@ -156,70 +144,25 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             closing = false;
             hideProgress = 0f;
             particles.Clear();
-            scrollOffset = 0f;
-            scrollTarget = 0f;
             hoverTooltip = null;
+            foreach (var cat in categories) {
+                cat.ScrollOffset = 0f;
+                cat.ScrollTarget = 0f;
+            }
         }
 
-        private void InitializeSettings() {
-            if (settingsInitialized) return;
-            settingsInitialized = true;
-            settingToggles.Clear();
+        private void InitializeCategories() {
+            if (categoriesInitialized) return;
+            categoriesInitialized = true;
+            categories.Clear();
 
-            if (CWRServerConfig.Instance == null) return;
+            var contentCat = new ContentSettingsCategory();
+            contentCat.EnsureInitialized();
+            categories.Add(contentCat);
 
-            var config = CWRServerConfig.Instance;
-
-            //CWRSystem组(需要重载)
-            AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
-            AddToggle("WeaponOverhaul", () => config.WeaponOverhaul, v => config.WeaponOverhaul = v, true);
-            AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
-
-            //CWRWeapon组
-            AddToggle("WeaponHandheldDisplay", () => config.WeaponHandheldDisplay, v => config.WeaponHandheldDisplay = v, false);
-            AddToggle("EnableSwordLight", () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
-            AddToggle("ActivateGunRecoil", () => config.ActivateGunRecoil, v => config.ActivateGunRecoil = v, false);
-            AddToggle("MagazineSystem", () => config.MagazineSystem, v => config.MagazineSystem = v, false);
-            AddToggle("EnableCasingsEntity", () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
-            AddToggle("BowArrowDraw", () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
-            AddToggle("ShotgunFireForcedReloadInterruption", () => config.ShotgunFireForcedReloadInterruption, v => config.ShotgunFireForcedReloadInterruption = v, false);
-            AddToggle("WeaponLazyRotationAngle", () => config.WeaponLazyRotationAngle, v => config.WeaponLazyRotationAngle = v, false);
-            AddToggle("ScreenVibration", () => config.ScreenVibration, v => config.ScreenVibration = v, false);
-            AddToggle("MurasamaSpaceFragmentationBool", () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
-            AddToggle("HalibutDomainConciseDisplay", () => config.HalibutDomainConciseDisplay, v => config.HalibutDomainConciseDisplay = v, false);
-            AddToggle("LensEasing", () => config.LensEasing, v => config.LensEasing = v, false);
-
-            //CWRUI组
-            AddToggle("ShowReloadingProgressUI", () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
-        }
-
-        private void AddToggle(string propertyName, Func<bool> getter, Action<bool> setter, bool requiresReload) {
-            settingToggles.Add(new SettingToggle {
-                ConfigPropertyName = propertyName,
-                Getter = getter,
-                Setter = setter,
-                RequiresReload = requiresReload,
-                HoverAnim = 0f,
-                ToggleAnim = getter() ? 1f : 0f,
-            });
-        }
-
-        private static string GetConfigLabel(string propertyName) {
-            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{propertyName}.Label";
-            string value = Language.GetTextValue(key);
-            return value == key ? propertyName : value;
-        }
-
-        private static string GetConfigTooltip(string propertyName) {
-            string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{propertyName}.Tooltip";
-            string value = Language.GetTextValue(key);
-            return value == key ? "" : value;
-        }
-
-        private static void SaveConfig() {
-            if (CWRServerConfig.Instance == null) return;
-            CWRServerConfig.Instance.OnChanged();
-            _configManagerSave?.Invoke(null, [CWRServerConfig.Instance]);
+            var weaponCat = new WeaponOverrideCategory();
+            weaponCat.EnsureInitialized();
+            categories.Add(weaponCat);
         }
 
         public override void Update() {
@@ -262,7 +205,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 return;
             }
 
-            InitializeSettings();
+            InitializeCategories();
 
             //面板滑入动画
             float targetSlide = _active && !closing ? 0f : 60f;
@@ -285,25 +228,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             breatheAnim = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 2f;
 
-            //分类展开动画
-            float expandTarget = contentSettingsExpanded ? 1f : 0f;
-            contentSettingsExpandAnim += (expandTarget - contentSettingsExpandAnim) * 0.12f;
-            if (Math.Abs(contentSettingsExpandAnim - expandTarget) < 0.001f) {
-                contentSettingsExpandAnim = expandTarget;
-            }
-
             //按钮动画
             float hoverSpeed = 0.15f;
             closeHoverAnim += ((hoveringClose ? 1f : 0f) - closeHoverAnim) * hoverSpeed;
             closePressAnim *= 0.85f;
-            categoryHoverAnim += ((hoveringCategory ? 1f : 0f) - categoryHoverAnim) * hoverSpeed;
-
-            //更新开关动画
-            foreach (var toggle in settingToggles) {
-                float target = toggle.Getter() ? 1f : 0f;
-                toggle.ToggleAnim += (target - toggle.ToggleAnim) * 0.15f;
-                toggle.HoverAnim += ((toggle.Hovering ? 1f : 0f) - toggle.HoverAnim) * hoverSpeed;
-            }
 
             //更新粒子
             UpdateParticles();
@@ -328,39 +256,36 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //悬停检测
             hoveringClose = closeButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
-            hoveringCategory = categoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
 
             //清除悬浮提示
             hoverTooltip = null;
 
-            //更新设置项悬停
-            if (contentSettingsExpandAnim > 0.5f) {
-                foreach (var toggle in settingToggles) {
-                    toggle.Hovering = toggle.HitBox.Contains(MouseHitBox) && scrollAreaRect.Contains(MouseHitBox) && contentFade > 0.5f;
-                    if (toggle.Hovering) {
-                        string tip = GetConfigTooltip(toggle.ConfigPropertyName);
-                        if (!string.IsNullOrEmpty(tip)) {
-                            hoverTooltip = tip;
-                            hoverTooltipPos = MousePosition;
-                        }
-                    }
+            //更新所有分类
+            bool anyExpanded = false;
+            foreach (var cat in categories) {
+                cat.HoveringCategory = cat.CategoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
+                cat.Update(contentFade, hoverInMainPage, MouseHitBox, MousePosition, scrollAreaRect);
+                if (cat.Expanded) anyExpanded = true;
+                //收集悬浮提示
+                if (cat.HoverTooltip != null && hoverTooltip == null) {
+                    hoverTooltip = cat.HoverTooltip;
+                    hoverTooltipPos = cat.HoverTooltipPos;
                 }
             }
 
-            //滚动处理
-            if (hoverInMainPage && contentSettingsExpanded) {
-                MouseState currentMouseState = Mouse.GetState();
-                int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
-                oldScrollWheelValue = currentMouseState.ScrollWheelValue;
-                if (scrollDelta != 0) {
-                    scrollTarget -= scrollDelta * 0.3f;
-                    scrollTarget = Math.Clamp(scrollTarget, 0f, Math.Max(0f, maxScroll));
+            //确保同时只有一个分类展开
+            for (int i = 0; i < categories.Count; i++) {
+                if (categories[i].Expanded && i != expandedCategoryIndex) {
+                    //新的分类展开了，折叠旧的
+                    if (expandedCategoryIndex >= 0 && expandedCategoryIndex < categories.Count) {
+                        categories[expandedCategoryIndex].Expanded = false;
+                        categories[expandedCategoryIndex].ScrollTarget = 0f;
+                    }
+                    expandedCategoryIndex = i;
+                    break;
                 }
             }
-            else {
-                oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
-            }
-            scrollOffset += (scrollTarget - scrollOffset) * 0.2f;
+            if (!anyExpanded) expandedCategoryIndex = -1;
 
             //点击处理
             if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
@@ -368,25 +293,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     closePressAnim = 1f;
                     OnClose();
                 }
-                else if (hoveringCategory) {
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.3f });
-                    contentSettingsExpanded = !contentSettingsExpanded;
-                    if (!contentSettingsExpanded) {
-                        scrollTarget = 0f;
-                    }
-                }
-                else if (contentSettingsExpandAnim > 0.5f) {
-                    foreach (var toggle in settingToggles) {
-                        if (toggle.Hovering) {
-                            bool newVal = !toggle.Getter();
-                            toggle.Setter(newVal);
-                            SaveConfig();
-                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f, Pitch = newVal ? 0.5f : -0.2f });
-                            if (toggle.RequiresReload) {
-                                needsReload = true;
-                            }
-                            break;
-                        }
+                else {
+                    foreach (var cat in categories) {
+                        if (cat.HandleClick(MouseHitBox)) break;
                     }
                 }
             }
@@ -626,95 +535,94 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             scrollAreaRect = new Rectangle((int)contentLeft, (int)contentTop, (int)contentWidth, (int)contentHeight);
 
-            //绘制内容设置分类按钮
+            //绘制所有分类
             float catY = contentTop;
-            Rectangle catRect = new((int)contentLeft, (int)catY, (int)contentWidth, (int)(CategoryHeight * scale));
-            categoryHitBox = catRect;
-            DrawCategoryButton(spriteBatch, catRect, ContentSettingsText.Value, contentSettingsExpanded,
-                categoryHoverAnim, alpha, scale);
+            foreach (var cat in categories) {
+                Rectangle catRect = new((int)contentLeft, (int)catY, (int)contentWidth, (int)(CategoryHeight * scale));
+                cat.CategoryHitBox = catRect;
+                DrawCategoryButton(spriteBatch, catRect, cat.Title, cat.Expanded,
+                    cat.CategoryHoverAnim, alpha, scale, cat.ExpandAnim);
 
-            //展开的设置项列表
-            if (contentSettingsExpandAnim > 0.01f) {
-                float listTop = catY + CategoryHeight * scale + 6f * scale;
-                float listHeight = contentBottom - listTop;
+                //展开的设置项列表
+                if (cat.ExpandAnim > 0.01f) {
+                    float listTop = catY + CategoryHeight * scale + 6f * scale;
+                    float listHeight = contentBottom - listTop;
 
-                //计算总内容高度
-                float totalContentH = settingToggles.Count * ToggleRowHeight * scale;
-                //加上底部重载提示的高度
-                if (needsReload) {
-                    totalContentH += 30f * scale;
-                }
-                maxScroll = Math.Max(0f, totalContentH - listHeight);
+                    //计算总内容高度
+                    float totalContentH = cat.Toggles.Count * ToggleRowHeight * scale;
+                    if (cat.ShowFooter) {
+                        totalContentH += 30f * scale;
+                    }
+                    cat.MaxScroll = Math.Max(0f, totalContentH - listHeight);
 
-                //裁剪区域
-                Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
+                    //裁剪区域
+                    Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
 
-                //列表容器背景和边框(在裁剪之前绘制，这样边框不会被裁掉)
-                float containerAlpha = alpha * contentSettingsExpandAnim;
-                int containerPad = (int)(4f * scale);
-                Rectangle containerRect = new(
-                    clipRect.X - containerPad,
-                    clipRect.Y - containerPad,
-                    clipRect.Width + containerPad * 2,
-                    clipRect.Height + containerPad * 2);
+                    //列表容器背景和边框
+                    float containerAlpha = alpha * cat.ExpandAnim;
+                    int containerPad = (int)(4f * scale);
+                    Rectangle containerRect = new(
+                        clipRect.X - containerPad,
+                        clipRect.Y - containerPad,
+                        clipRect.Width + containerPad * 2,
+                        clipRect.Height + containerPad * 2);
 
-                //容器背景(深色半透明)
-                DrawRoundedRect(spriteBatch, containerRect,
-                    new Color(22, 9, 9) * (containerAlpha * 0.6f), 5f);
+                    DrawRoundedRect(spriteBatch, containerRect,
+                        new Color(22, 9, 9) * (containerAlpha * 0.6f), 5f);
 
-                //容器描边边框
-                Color containerBorderColor = Color.Lerp(
-                    new Color(90, 38, 38), new Color(120, 50, 50), breatheAnim * 0.3f);
-                DrawRoundedRectBorder(spriteBatch, containerRect,
-                    containerBorderColor * (containerAlpha * 0.65f), 5f, 1);
+                    Color containerBorderColor = Color.Lerp(
+                        new Color(90, 38, 38), new Color(120, 50, 50), breatheAnim * 0.3f);
+                    DrawRoundedRectBorder(spriteBatch, containerRect,
+                        containerBorderColor * (containerAlpha * 0.65f), 5f, 1);
 
-                //容器内发光(微弱)
-                DrawInnerGlow(spriteBatch, containerRect,
-                    new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
+                    DrawInnerGlow(spriteBatch, containerRect,
+                        new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
 
-                //使用RasterizerState进行裁剪
-                spriteBatch.End();
-                Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                    DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
-                spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipRect);
+                    //使用RasterizerState进行裁剪
+                    spriteBatch.End();
+                    Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                        DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+                    spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipRect);
 
-                float itemAlpha = alpha * contentSettingsExpandAnim;
-                float yPos = listTop - scrollOffset;
+                    float itemAlpha = alpha * cat.ExpandAnim;
+                    float yPos = listTop - cat.ScrollOffset;
 
-                for (int i = 0; i < settingToggles.Count; i++) {
-                    var toggle = settingToggles[i];
-                    float rowY = yPos + i * ToggleRowHeight * scale;
+                    for (int i = 0; i < cat.Toggles.Count; i++) {
+                        var toggle = cat.Toggles[i];
+                        float rowY = yPos + i * ToggleRowHeight * scale;
 
-                    Rectangle rowRect = new((int)contentLeft, (int)rowY, (int)contentWidth, (int)(ToggleRowHeight * scale));
-                    toggle.HitBox = rowRect;
+                        Rectangle rowRect = new((int)contentLeft, (int)rowY, (int)contentWidth, (int)(ToggleRowHeight * scale));
+                        toggle.HitBox = rowRect;
 
-                    //只绘制可见的行
-                    if (rowRect.Bottom >= listTop && rowRect.Y <= listTop + listHeight) {
-                        DrawToggleRow(spriteBatch, toggle, rowRect, itemAlpha, scale);
+                        if (rowRect.Bottom >= listTop && rowRect.Y <= listTop + listHeight) {
+                            DrawToggleRow(spriteBatch, toggle, rowRect, itemAlpha, scale, cat);
+                        }
+                    }
+
+                    //底部提示
+                    if (cat.ShowFooter && !string.IsNullOrEmpty(cat.FooterHint)) {
+                        float hintY = yPos + cat.Toggles.Count * ToggleRowHeight * scale + 8f * scale;
+                        if (hintY < listTop + listHeight) {
+                            Utils.DrawBorderString(spriteBatch, cat.FooterHint,
+                                new Vector2(contentLeft + 10f * scale, hintY),
+                                new Color(255, 100, 100) * (itemAlpha * 0.8f), 0.7f * scale);
+                        }
+                    }
+
+                    spriteBatch.End();
+                    spriteBatch.GraphicsDevice.ScissorRectangle = prevScissor;
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                        DepthStencilState.None, new RasterizerState { ScissorTestEnable = false }, null, Main.UIScaleMatrix);
+
+                    if (cat.MaxScroll > 0f) {
+                        DrawScrollBar(spriteBatch, clipRect, alpha * cat.ExpandAnim, cat);
                     }
                 }
 
-                //重载提示
-                if (needsReload) {
-                    float hintY = yPos + settingToggles.Count * ToggleRowHeight * scale + 8f * scale;
-                    if (hintY < listTop + listHeight) {
-                        string hint = ReloadHintText.Value;
-                        Utils.DrawBorderString(spriteBatch, hint,
-                            new Vector2(contentLeft + 10f * scale, hintY),
-                            new Color(255, 100, 100) * (itemAlpha * 0.8f), 0.7f * scale);
-                    }
-                }
-
-                spriteBatch.End();
-                spriteBatch.GraphicsDevice.ScissorRectangle = prevScissor;
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                    DepthStencilState.None, new RasterizerState { ScissorTestEnable = false }, null, Main.UIScaleMatrix);
-
-                //滚动条
-                if (maxScroll > 0f) {
-                    DrawScrollBar(spriteBatch, clipRect, alpha * contentSettingsExpandAnim);
-                }
+                //下一个分类的Y位置
+                catY += CategoryHeight * scale + 4f * scale;
+                catY += cat.GetExpandedHeight(scale);
             }
 
             //关闭按钮
@@ -734,7 +642,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void DrawCategoryButton(SpriteBatch spriteBatch, Rectangle rect, string text,
-            bool expanded, float hoverAnim, float alpha, float scale) {
+            bool expanded, float hoverAnim, float alpha, float scale, float expandAnim = 0f) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //背景
@@ -746,8 +654,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DrawRoundedRectBorder(spriteBatch, rect, borderColor * (alpha * 0.7f), 6f, 1);
 
             //展开指示箭头
-            float arrowRot = expanded ? MathHelper.PiOver2 : 0f;
-            float animArrowRot = MathHelper.Lerp(0f, MathHelper.PiOver2, contentSettingsExpandAnim);
+            float animArrowRot = MathHelper.Lerp(0f, MathHelper.PiOver2, expandAnim);
             Vector2 arrowPos = new(rect.X + 18f * scale, rect.Y + rect.Height / 2f);
             Color arrowColor = Color.Lerp(new Color(180, 120, 120), new Color(240, 160, 160), hoverAnim) * alpha;
 
@@ -772,7 +679,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private void DrawToggleRow(SpriteBatch spriteBatch, SettingToggle toggle, Rectangle rect,
-            float alpha, float scale) {
+            float alpha, float scale, SettingsCategory category = null) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //行背景(悬停时高亮)
@@ -810,7 +717,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     Color checkColor = new Color(255, 220, 220) * (alpha * checkAlpha);
                     Vector2 checkCenter = boxRect.Center.ToVector2();
                     float cs = boxSize * 0.2f;
-                    //对勾的两条线段
                     spriteBatch.Draw(pixel, checkCenter + new Vector2(-cs, 0),
                         new Rectangle(0, 0, 1, 1), checkColor, MathHelper.PiOver4,
                         new Vector2(0f, 0.5f), new Vector2(cs * 1.2f, 2f * scale), SpriteEffects.None, 0f);
@@ -820,12 +726,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
+            //子类额外绘制(如物品图标)
+            category?.DrawRowExtra(spriteBatch, toggle, rect, alpha, scale);
+
             //标签文字
-            string label = GetConfigLabel(toggle.ConfigPropertyName);
-            if (toggle.RequiresReload) {
-                label = "[c/FF6666:*] " + label;
-            }
-            Vector2 textPos = new(boxX + boxSize + 10f * scale, rect.Y + rect.Height / 2f - 9f * scale);
+            string label = category?.GetLabel(toggle) ?? toggle.ConfigPropertyName;
+            float labelOffset = category?.GetLabelOffsetX(scale) ?? 0f;
+            Vector2 textPos = new(boxX + boxSize + 10f * scale + labelOffset, rect.Y + rect.Height / 2f - 9f * scale);
             Color textColor = Color.Lerp(new Color(200, 175, 170), new Color(240, 210, 210), toggle.HoverAnim);
             Utils.DrawBorderString(spriteBatch, label, textPos, textColor * alpha, 0.78f * scale);
 
@@ -835,7 +742,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 rect.Width - (int)(40f * scale), 1), new Rectangle(0, 0, 1, 1), lineColor);
         }
 
-        private void DrawScrollBar(SpriteBatch spriteBatch, Rectangle clipRect, float alpha) {
+        private void DrawScrollBar(SpriteBatch spriteBatch, Rectangle clipRect, float alpha, SettingsCategory category = null) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             float barWidth = 4f;
@@ -847,11 +754,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             spriteBatch.Draw(pixel, trackRect, new Rectangle(0, 0, 1, 1), new Color(60, 25, 25) * (alpha * 0.5f));
 
             //滑块
-            float totalContent = settingToggles.Count * ToggleRowHeight * panelScaleAnim;
-            if (needsReload) totalContent += 30f * panelScaleAnim;
-            float viewRatio = Math.Min(1f, trackHeight / totalContent);
+            int toggleCount = category?.Toggles.Count ?? 0;
+            bool hasFooter = category?.ShowFooter ?? false;
+            float totalContent = toggleCount * ToggleRowHeight * panelScaleAnim;
+            if (hasFooter) totalContent += 30f * panelScaleAnim;
+            float viewRatio = Math.Min(1f, trackHeight / Math.Max(1f, totalContent));
             float thumbHeight = Math.Max(20f, trackHeight * viewRatio);
-            float scrollRatio = maxScroll > 0 ? scrollOffset / maxScroll : 0f;
+            float catMaxScroll = category?.MaxScroll ?? 0f;
+            float catScrollOffset = category?.ScrollOffset ?? 0f;
+            float scrollRatio = catMaxScroll > 0 ? catScrollOffset / catMaxScroll : 0f;
             float thumbY = clipRect.Y + scrollRatio * (trackHeight - thumbHeight);
 
             Rectangle thumbRect = new((int)trackX, (int)thumbY, (int)barWidth, (int)thumbHeight);

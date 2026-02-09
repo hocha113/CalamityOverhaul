@@ -325,6 +325,7 @@ OverhaulSettingsUI: {
 	CloseText: Close
 	ContentSettingsText: Content Settings
 	ReloadHintText: "[c/FF6666:* Options marked with this require mod reload to take effect]"
+	WeaponOverrideText: 武器修改管理
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

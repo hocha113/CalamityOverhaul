@@ -322,6 +322,7 @@ OverhaulSettingsUI: {
 	CloseText: Закрыть
 	ContentSettingsText: Настройки контента
 	ReloadHintText: "[c/FF6666:* Опции с этой отметкой требуют перезагрузки мода]"
+	// WeaponOverrideText: 武器修改管理
 }
 
 // OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置
