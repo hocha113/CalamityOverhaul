@@ -36,10 +36,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public byte PhosphorescentGauntletHitCount = 0;
         /// <summary>
-        /// 携序之刃攻击计数
-        /// </summary>
-        public byte OrderbringerOnHitNum = 0;
-        /// <summary>
         /// 鞭子击中次数
         /// </summary>
         public byte WhipHitNum = 0;
@@ -90,7 +86,6 @@ namespace CalamityOverhaul.Content
             cwr.CreateHitPlayer = CreateHitPlayer;
             cwr.ContagionOnHitNum = ContagionOnHitNum;
             cwr.PhosphorescentGauntletHitCount = PhosphorescentGauntletHitCount;
-            cwr.OrderbringerOnHitNum = OrderbringerOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
             cwr.WhipHitType = WhipHitType;
             cwr.LonginusSign = LonginusSign;
