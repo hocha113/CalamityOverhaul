@@ -50,10 +50,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public Rectangle ScrollbarTrackRect;
         public Rectangle ScrollbarThumbRect;
 
-        //搜索过滤
-        public string SearchText = "";
-        public List<SettingToggle> FilteredToggles;
-
         //悬浮提示(由主UI读取)
         public string HoverTooltip;
         public Vector2 HoverTooltipPos;
@@ -117,10 +113,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// </summary>
         public void Update(float contentFade, bool hoverInMainPage, Rectangle mouseHitBox,
             Vector2 mousePosition, Rectangle scrollAreaRect) {
-            //展开动画
+            //展开动画：使用更平滑的缓动曲线
             float expandTarget = Expanded ? 1f : 0f;
-            ExpandAnim += (expandTarget - ExpandAnim) * 0.12f;
-            if (Math.Abs(ExpandAnim - expandTarget) < 0.001f) {
+            float expandSpeed = Expanded ? 0.14f : 0.18f;
+            ExpandAnim += (expandTarget - ExpandAnim) * expandSpeed;
+            if (Math.Abs(ExpandAnim - expandTarget) < 0.005f) {
                 ExpandAnim = expandTarget;
             }
 
@@ -238,46 +235,20 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
+        /// 获取当前可见的开关列表
+        /// </summary>
+        public List<SettingToggle> GetVisibleToggles() => Toggles;
+
+        /// <summary>
         /// 计算展开后占用的总高度(不含分类按钮本身)
         /// </summary>
-        /// <summary>
-        /// 获取当前可见的开关列表(考虑搜索过滤)
-        /// </summary>
-        public List<SettingToggle> GetVisibleToggles() => FilteredToggles ?? Toggles;
-
-        /// <summary>
-        /// 应用搜索过滤
-        /// </summary>
-        public virtual void ApplyFilter(string searchText) {
-            SearchText = searchText ?? "";
-            if (string.IsNullOrEmpty(SearchText)) {
-                FilteredToggles = null;
-                return;
-            }
-            string lower = SearchText.ToLowerInvariant();
-            FilteredToggles = [];
-            foreach (var toggle in Toggles) {
-                string label = GetLabel(toggle).ToLowerInvariant();
-                if (label.Contains(lower) || MatchesPinyin(label, lower) || toggle.ConfigPropertyName.ToLowerInvariant().Contains(lower)) {
-                    FilteredToggles.Add(toggle);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 简单的拼音首字母匹配
-        /// </summary>
-        protected static bool MatchesPinyin(string text, string query) {
-            var initials = PinyinHelper.GetInitials(text);
-            var fullPinyin = PinyinHelper.GetFullPinyin(text);
-            return initials.Contains(query) || fullPinyin.Contains(query);
-        }
-
         public float GetExpandedHeight(float scale) {
             if (ExpandAnim <= 0.01f) return 0f;
             float totalContentH = GetVisibleToggles().Count * ToggleRowHeight * scale;
             if (ShowFooter) totalContentH += 30f * scale;
-            return (totalContentH + 6f * scale) * ExpandAnim;
+            //使用缓动曲线让高度变化更自然
+            float easedExpand = 1f - (1f - ExpandAnim) * (1f - ExpandAnim);
+            return (totalContentH + 6f * scale) * easedExpand;
         }
     }
 }

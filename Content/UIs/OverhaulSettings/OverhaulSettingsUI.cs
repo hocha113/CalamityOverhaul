@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText ContentSettingsText { get; private set; }
         public static LocalizedText ReloadHintText { get; private set; }
         public static LocalizedText WeaponOverrideText { get; private set; }
-        public static LocalizedText SearchHintText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -75,12 +74,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private string hoverTooltip;
         private Vector2 hoverTooltipPos;
 
-        //搜索框
-        private string searchText = "";
-        private bool searchBoxFocused;
-        private Rectangle searchBoxRect;
-        private float searchBoxCursorBlink;
-
         //滚动条拖动
         private int oldScrollWheelValue;
 
@@ -130,7 +123,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             ContentSettingsText = this.GetLocalization(nameof(ContentSettingsText), () => "内容设置");
             ReloadHintText = this.GetLocalization(nameof(ReloadHintText), () => "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]");
             WeaponOverrideText = this.GetLocalization(nameof(WeaponOverrideText), () => "武器修改管理");
-            SearchHintText = this.GetLocalization(nameof(SearchHintText), () => "搜索武器名称或拼音...");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -178,7 +170,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //淡入淡出
             if (_active && !closing) {
                 if (_sengs < 1f) {
-                    _sengs += 0.05f;
+                    _sengs += 0.1f;
                 }
                 if (_sengs > 1f) {
                     _sengs = 1f;
@@ -198,7 +190,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
                 else {
                     if (_sengs > 0f) {
-                        _sengs -= 0.05f;
+                        _sengs -= 0.1f;
                     }
                     if (_sengs <= 0f) {
                         _sengs = 0f;
@@ -300,13 +292,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     closePressAnim = 1f;
                     OnClose();
                 }
-                else if (searchBoxRect.Width > 0 && searchBoxRect.Contains(MouseHitBox)) {
-                    searchBoxFocused = true;
-                }
                 else {
-                    if (searchBoxFocused && !searchBoxRect.Contains(MouseHitBox)) {
-                        searchBoxFocused = false;
-                    }
                     foreach (var cat in categories) {
                         if (cat.HandleClick(MouseHitBox)) break;
                     }
@@ -318,19 +304,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 KeyboardState currentKeyState = Main.keyState;
                 KeyboardState previousKeyState = Main.oldKeyState;
                 if (currentKeyState.IsKeyDown(Keys.Escape) && !previousKeyState.IsKeyDown(Keys.Escape)) {
-                    if (searchBoxFocused) {
-                        searchBoxFocused = false;
-                    }
-                    else {
-                        OnClose();
-                    }
+                    OnClose();
                 }
-            }
-
-            //搜索框文本输入
-            if (searchBoxFocused && contentFade > 0.5f) {
-                searchBoxCursorBlink += 0.05f;
-                HandleSearchInput();
             }
         }
 
@@ -535,9 +510,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float scale = panelScaleAnim;
 
-            //标题
-            Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale * 0.6f);
+            //标题(居中)
             string title = TitleText.Value;
+            Vector2 titleMeasure = FontAssets.MouseText.Value.MeasureString(title) * scale * 1.1f;
+            Vector2 titlePos = new Vector2(
+                DrawPosition.X + (Size.X - titleMeasure.X) / 2f,
+                DrawPosition.Y + Padding * scale * 0.6f);
 
             float titleGlow = 0.4f + breatheAnim * 0.4f;
             Color titleGlowColor = new Color(200, 60, 60) * (alpha * titleGlow * 0.35f);
@@ -569,17 +547,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
                 //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
-                    //搜索框(仅对WeaponOverrideCategory显示)
-                    float searchBoxHeight = 0f;
-                    if (cat is WeaponOverrideCategory) {
-                        searchBoxHeight = 32f * scale;
-                        float sbY = catY + CategoryHeight * scale + 4f * scale;
-                        Rectangle sbRect = new((int)contentLeft, (int)sbY, (int)contentWidth, (int)searchBoxHeight);
-                        searchBoxRect = sbRect;
-                        DrawSearchBox(spriteBatch, sbRect, alpha, scale);
-                    }
-
-                    float listTop = catY + CategoryHeight * scale + 6f * scale + searchBoxHeight;
+                    float listTop = catY + CategoryHeight * scale + 6f * scale;
                     float listHeight = contentBottom - listTop;
 
                     //获取可见的开关列表
@@ -595,8 +563,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     //裁剪区域
                     Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
 
-                    //列表容器背景和边框
-                    float containerAlpha = alpha * cat.ExpandAnim;
+                    //展开动画：使用缓动后的alpha实现淡入淡出
+                    float easedExpand = EaseOutQuad(cat.ExpandAnim);
+                    float containerAlpha = alpha * easedExpand;
                     int containerPad = (int)(4f * scale);
                     Rectangle containerRect = new(
                         clipRect.X - containerPad,
@@ -622,8 +591,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                         DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
                     spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipRect);
 
-                    float itemAlpha = alpha * cat.ExpandAnim;
-                    float yPos = listTop - cat.ScrollOffset;
+                    float itemAlpha = alpha * easedExpand;
+                    //展开/收起时内容向上滑入/滑出
+                    float slideOffset = (1f - easedExpand) * 20f * scale;
+                    float yPos = listTop - cat.ScrollOffset + slideOffset;
 
                     for (int i = 0; i < visibleToggles.Count; i++) {
                         var toggle = visibleToggles[i];
@@ -704,8 +675,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             spriteBatch.Draw(pixel, arrowPos, new Rectangle(0, 0, 1, 1), arrowColor, animArrowRot + MathHelper.PiOver2,
                 new Vector2(0f, 0.5f), new Vector2(arrowSize, 2f), SpriteEffects.None, 0f);
 
-            //文字
-            Vector2 textPos = new(rect.X + 36f * scale, rect.Y + rect.Height / 2f - 10f * scale);
+            //文字(居中显示)
+            Vector2 textMeasure = FontAssets.MouseText.Value.MeasureString(text) * 0.9f * scale;
+            Vector2 textPos = new(
+                rect.X + (rect.Width - textMeasure.X) / 2f,
+                rect.Y + (rect.Height - textMeasure.Y) / 2f);
             Color textColor = Color.Lerp(new Color(220, 180, 180), Color.White, hoverAnim);
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.9f * scale);
 
@@ -929,70 +903,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
             }
         }
-
-        #region 搜索框
-
-        private void HandleSearchInput() {
-            //使用tModLoader的输入处理，它内部已包含退格、IME等所有键盘输入逻辑
-            string input = Main.GetInputText(searchText);
-            if (input != searchText) {
-                searchText = input;
-                ApplySearchFilter();
-            }
-        }
-
-        private void ApplySearchFilter() {
-            foreach (var cat in categories) {
-                if (cat is WeaponOverrideCategory) {
-                    cat.ApplyFilter(searchText);
-                    cat.ScrollTarget = 0f;
-                }
-            }
-        }
-
-        private void DrawSearchBox(SpriteBatch spriteBatch, Rectangle rect, float alpha, float scale) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //背景
-            Color bgColor = searchBoxFocused ? new Color(50, 22, 22) : new Color(35, 16, 16);
-            spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), bgColor * (alpha * 0.9f));
-
-            //边框
-            Color borderColor = searchBoxFocused ? new Color(180, 70, 70) : new Color(100, 45, 45);
-            DrawSimpleBorder(spriteBatch, rect, borderColor * (alpha * 0.8f), 1);
-
-            //搜索图标 🔍
-            Vector2 iconPos = new(rect.X + 10f * scale, rect.Y + rect.Height / 2f - 8f * scale);
-            Utils.DrawBorderString(spriteBatch, "⌕", iconPos, new Color(160, 120, 120) * (alpha * 0.7f), 0.75f * scale);
-
-            //文字
-            float textX = rect.X + 26f * scale;
-            float textY = rect.Y + rect.Height / 2f - 9f * scale;
-
-            if (string.IsNullOrEmpty(searchText) && !searchBoxFocused) {
-                string hint = SearchHintText?.Value ?? "搜索武器名称或拼音...";
-                Utils.DrawBorderString(spriteBatch, hint, new Vector2(textX, textY),
-                    new Color(120, 100, 100) * (alpha * 0.5f), 0.72f * scale);
-            }
-            else {
-                string displayText = searchText;
-                //闪烁光标
-                if (searchBoxFocused) {
-                    if (MathF.Sin(searchBoxCursorBlink * 4f) > 0) {
-                        displayText += "|";
-                    }
-                }
-                Utils.DrawBorderString(spriteBatch, displayText, new Vector2(textX, textY),
-                    new Color(220, 200, 200) * alpha, 0.72f * scale);
-            }
-
-            //聚焦时内发光
-            if (searchBoxFocused) {
-                DrawInnerGlow(spriteBatch, rect, new Color(180, 60, 60) * (alpha * 0.08f), 3f, 3);
-            }
-        }
-
-        #endregion
 
         #region 绘制辅助方法
 
