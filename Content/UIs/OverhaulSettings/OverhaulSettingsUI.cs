@@ -649,12 +649,35 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 //裁剪区域
                 Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
 
+                //列表容器背景和边框(在裁剪之前绘制，这样边框不会被裁掉)
+                float containerAlpha = alpha * contentSettingsExpandAnim;
+                int containerPad = (int)(4f * scale);
+                Rectangle containerRect = new(
+                    clipRect.X - containerPad,
+                    clipRect.Y - containerPad,
+                    clipRect.Width + containerPad * 2,
+                    clipRect.Height + containerPad * 2);
+
+                //容器背景(深色半透明)
+                DrawRoundedRect(spriteBatch, containerRect,
+                    new Color(22, 9, 9) * (containerAlpha * 0.6f), 5f);
+
+                //容器描边边框
+                Color containerBorderColor = Color.Lerp(
+                    new Color(90, 38, 38), new Color(120, 50, 50), breatheAnim * 0.3f);
+                DrawRoundedRectBorder(spriteBatch, containerRect,
+                    containerBorderColor * (containerAlpha * 0.65f), 5f, 1);
+
+                //容器内发光(微弱)
+                DrawInnerGlow(spriteBatch, containerRect,
+                    new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
+
                 //使用RasterizerState进行裁剪
                 spriteBatch.End();
                 Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
-                spriteBatch.GraphicsDevice.ScissorRectangle = clipRect;
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                     DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+                spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipRect);
 
                 float itemAlpha = alpha * contentSettingsExpandAnim;
                 float yPos = listTop - scrollOffset;
