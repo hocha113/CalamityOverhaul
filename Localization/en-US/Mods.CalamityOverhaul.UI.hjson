@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -324,8 +324,9 @@ OverhaulSettingsUI: {
 	TitleText: Overhaul Settings
 	CloseText: Close
 	ContentSettingsText: Content Settings
-	ReloadHintText: "[c/FF6666:* Options marked with this require mod reload to take effect]"
-	WeaponOverrideText: 武器修改管理
+	ReloadHintText: "[c/FF6666:* Options marked with this require a mod reload to take effect]"
+	WeaponOverrideText: Weapon Override Management
+	SearchHintText: Search weapon name or keywords...
 }
 
-OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置
+OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

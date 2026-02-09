@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText ContentSettingsText { get; private set; }
         public static LocalizedText ReloadHintText { get; private set; }
         public static LocalizedText WeaponOverrideText { get; private set; }
+        public static LocalizedText SearchHintText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -75,7 +76,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private string hoverTooltip;
         private Vector2 hoverTooltipPos;
 
-        //滚动处理
+        //搜索框
+        private string searchText = "";
+        private bool searchBoxFocused;
+        private Rectangle searchBoxRect;
+        private float searchBoxCursorBlink;
+
+        //滚动条拖动
         private int oldScrollWheelValue;
 
         //粒子结构
@@ -124,6 +131,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             ContentSettingsText = this.GetLocalization(nameof(ContentSettingsText), () => "内容设置");
             ReloadHintText = this.GetLocalization(nameof(ReloadHintText), () => "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]");
             WeaponOverrideText = this.GetLocalization(nameof(WeaponOverrideText), () => "武器修改管理");
+            SearchHintText = this.GetLocalization(nameof(SearchHintText), () => "搜索武器名称或拼音...");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -293,7 +301,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     closePressAnim = 1f;
                     OnClose();
                 }
+                else if (searchBoxRect.Width > 0 && searchBoxRect.Contains(MouseHitBox)) {
+                    searchBoxFocused = true;
+                }
                 else {
+                    if (searchBoxFocused && !searchBoxRect.Contains(MouseHitBox)) {
+                        searchBoxFocused = false;
+                    }
                     foreach (var cat in categories) {
                         if (cat.HandleClick(MouseHitBox)) break;
                     }
@@ -305,8 +319,19 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 KeyboardState currentKeyState = Main.keyState;
                 KeyboardState previousKeyState = Main.oldKeyState;
                 if (currentKeyState.IsKeyDown(Keys.Escape) && !previousKeyState.IsKeyDown(Keys.Escape)) {
-                    OnClose();
+                    if (searchBoxFocused) {
+                        searchBoxFocused = false;
+                    }
+                    else {
+                        OnClose();
+                    }
                 }
+            }
+
+            //搜索框文本输入
+            if (searchBoxFocused && contentFade > 0.5f) {
+                searchBoxCursorBlink += 0.05f;
+                HandleSearchInput();
             }
         }
 
@@ -545,11 +570,24 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
                 //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
-                    float listTop = catY + CategoryHeight * scale + 6f * scale;
+                    //搜索框(仅对WeaponOverrideCategory显示)
+                    float searchBoxHeight = 0f;
+                    if (cat is WeaponOverrideCategory) {
+                        searchBoxHeight = 32f * scale;
+                        float sbY = catY + CategoryHeight * scale + 4f * scale;
+                        Rectangle sbRect = new((int)contentLeft, (int)sbY, (int)contentWidth, (int)searchBoxHeight);
+                        searchBoxRect = sbRect;
+                        DrawSearchBox(spriteBatch, sbRect, alpha, scale);
+                    }
+
+                    float listTop = catY + CategoryHeight * scale + 6f * scale + searchBoxHeight;
                     float listHeight = contentBottom - listTop;
 
+                    //获取可见的开关列表
+                    var visibleToggles = cat.GetVisibleToggles();
+
                     //计算总内容高度
-                    float totalContentH = cat.Toggles.Count * ToggleRowHeight * scale;
+                    float totalContentH = visibleToggles.Count * ToggleRowHeight * scale;
                     if (cat.ShowFooter) {
                         totalContentH += 30f * scale;
                     }
@@ -588,8 +626,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     float itemAlpha = alpha * cat.ExpandAnim;
                     float yPos = listTop - cat.ScrollOffset;
 
-                    for (int i = 0; i < cat.Toggles.Count; i++) {
-                        var toggle = cat.Toggles[i];
+                    for (int i = 0; i < visibleToggles.Count; i++) {
+                        var toggle = visibleToggles[i];
                         float rowY = yPos + i * ToggleRowHeight * scale;
 
                         Rectangle rowRect = new((int)contentLeft, (int)rowY, (int)contentWidth, (int)(ToggleRowHeight * scale));
@@ -602,7 +640,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
                     //底部提示
                     if (cat.ShowFooter && !string.IsNullOrEmpty(cat.FooterHint)) {
-                        float hintY = yPos + cat.Toggles.Count * ToggleRowHeight * scale + 8f * scale;
+                        float hintY = yPos + visibleToggles.Count * ToggleRowHeight * scale + 8f * scale;
                         if (hintY < listTop + listHeight) {
                             Utils.DrawBorderString(spriteBatch, cat.FooterHint,
                                 new Vector2(contentLeft + 10f * scale, hintY),
@@ -745,29 +783,58 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private void DrawScrollBar(SpriteBatch spriteBatch, Rectangle clipRect, float alpha, SettingsCategory category = null) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            float barWidth = 4f;
-            float trackX = clipRect.Right - barWidth - 4f;
+            float barWidth = 8f;
+            float trackX = clipRect.Right - barWidth - 2f;
             float trackHeight = clipRect.Height;
 
             //轨道
             Rectangle trackRect = new((int)trackX, clipRect.Y, (int)barWidth, (int)trackHeight);
-            spriteBatch.Draw(pixel, trackRect, new Rectangle(0, 0, 1, 1), new Color(60, 25, 25) * (alpha * 0.5f));
+            spriteBatch.Draw(pixel, trackRect, new Rectangle(0, 0, 1, 1), new Color(40, 18, 18) * (alpha * 0.6f));
 
             //滑块
-            int toggleCount = category?.Toggles.Count ?? 0;
+            var visibleToggles = category?.GetVisibleToggles();
+            int toggleCount = visibleToggles?.Count ?? 0;
             bool hasFooter = category?.ShowFooter ?? false;
             float totalContent = toggleCount * ToggleRowHeight * panelScaleAnim;
             if (hasFooter) totalContent += 30f * panelScaleAnim;
             float viewRatio = Math.Min(1f, trackHeight / Math.Max(1f, totalContent));
-            float thumbHeight = Math.Max(20f, trackHeight * viewRatio);
+            float thumbHeight = Math.Max(30f, trackHeight * viewRatio);
             float catMaxScroll = category?.MaxScroll ?? 0f;
             float catScrollOffset = category?.ScrollOffset ?? 0f;
             float scrollRatio = catMaxScroll > 0 ? catScrollOffset / catMaxScroll : 0f;
             float thumbY = clipRect.Y + scrollRatio * (trackHeight - thumbHeight);
 
             Rectangle thumbRect = new((int)trackX, (int)thumbY, (int)barWidth, (int)thumbHeight);
-            Color thumbColor = new Color(160, 60, 60) * (alpha * 0.8f);
+
+            //检测悬停
+            bool hoveringThumb = thumbRect.Contains(MouseHitBox);
+            bool hoveringTrack = trackRect.Contains(MouseHitBox);
+            bool isDragging = category?.IsDraggingScrollbar ?? false;
+
+            Color trackBorderColor = new Color(80, 35, 35) * (alpha * 0.4f);
+            DrawSimpleBorder(spriteBatch, trackRect, trackBorderColor, 1);
+
+            Color thumbColor;
+            if (isDragging) {
+                thumbColor = new Color(220, 80, 80) * (alpha * 0.95f);
+            }
+            else if (hoveringThumb) {
+                thumbColor = new Color(200, 75, 75) * (alpha * 0.9f);
+            }
+            else {
+                thumbColor = new Color(160, 60, 60) * (alpha * 0.8f);
+            }
             spriteBatch.Draw(pixel, thumbRect, new Rectangle(0, 0, 1, 1), thumbColor);
+
+            //滑块边框
+            Color thumbBorderColor = isDragging ? new Color(255, 100, 100) * (alpha * 0.7f) : new Color(120, 50, 50) * (alpha * 0.5f);
+            DrawSimpleBorder(spriteBatch, thumbRect, thumbBorderColor, 1);
+
+            //存储轨道和滑块的矩形供拖动检测使用
+            if (category != null) {
+                category.ScrollbarTrackRect = trackRect;
+                category.ScrollbarThumbRect = thumbRect;
+            }
         }
 
         private static void DrawTooltip(SpriteBatch spriteBatch, string text, Vector2 mousePos, float alpha) {
@@ -863,6 +930,83 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
             }
         }
+
+        #region 搜索框
+
+        private void HandleSearchInput() {
+            KeyboardState ks = Main.keyState;
+            KeyboardState oldKs = Main.oldKeyState;
+
+            //退格键
+            if (ks.IsKeyDown(Keys.Back) && !oldKs.IsKeyDown(Keys.Back)) {
+                if (searchText.Length > 0) {
+                    searchText = searchText[..^1];
+                    ApplySearchFilter();
+                }
+                return;
+            }
+
+            //获取tModLoader的输入字符串
+            string input = Main.GetInputText(searchText);
+            if (input != searchText) {
+                searchText = input;
+                ApplySearchFilter();
+            }
+        }
+
+        private void ApplySearchFilter() {
+            foreach (var cat in categories) {
+                if (cat is WeaponOverrideCategory) {
+                    cat.ApplyFilter(searchText);
+                    cat.ScrollTarget = 0f;
+                }
+            }
+        }
+
+        private void DrawSearchBox(SpriteBatch spriteBatch, Rectangle rect, float alpha, float scale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            //背景
+            Color bgColor = searchBoxFocused ? new Color(50, 22, 22) : new Color(35, 16, 16);
+            spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), bgColor * (alpha * 0.9f));
+
+            //边框
+            Color borderColor = searchBoxFocused ? new Color(180, 70, 70) : new Color(100, 45, 45);
+            DrawSimpleBorder(spriteBatch, rect, borderColor * (alpha * 0.8f), 1);
+
+            //搜索图标 🔍
+            Vector2 iconPos = new(rect.X + 10f * scale, rect.Y + rect.Height / 2f - 8f * scale);
+            Utils.DrawBorderString(spriteBatch, "⌕", iconPos, new Color(160, 120, 120) * (alpha * 0.7f), 0.75f * scale);
+
+            //文字
+            float textX = rect.X + 26f * scale;
+            float textY = rect.Y + rect.Height / 2f - 9f * scale;
+
+            if (string.IsNullOrEmpty(searchText) && !searchBoxFocused) {
+                string hint = SearchHintText?.Value ?? "搜索武器名称或拼音...";
+                Utils.DrawBorderString(spriteBatch, hint, new Vector2(textX, textY),
+                    new Color(120, 100, 100) * (alpha * 0.5f), 0.72f * scale);
+            }
+            else {
+                string displayText = searchText;
+                //闪烁光标
+                if (searchBoxFocused) {
+                    searchBoxCursorBlink += 0.016f;
+                    if (MathF.Sin(searchBoxCursorBlink * 4f) > 0) {
+                        displayText += "|";
+                    }
+                }
+                Utils.DrawBorderString(spriteBatch, displayText, new Vector2(textX, textY),
+                    new Color(220, 200, 200) * alpha, 0.72f * scale);
+            }
+
+            //聚焦时内发光
+            if (searchBoxFocused) {
+                DrawInnerGlow(spriteBatch, rect, new Color(180, 60, 60) * (alpha * 0.08f), 3f, 3);
+            }
+        }
+
+        #endregion
 
         #region 绘制辅助方法
 

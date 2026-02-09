@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: 左键点击可添加项目
 	HintText2: 左键点击可移除项目
 	CloseHint: "[ESC]键或[右键点击]可关闭"
@@ -322,7 +322,8 @@ OverhaulSettingsUI: {
 	CloseText: 关闭
 	ContentSettingsText: 内容设置
 	ReloadHintText: "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]"
-	// WeaponOverrideText: 武器修改管理
+	WeaponOverrideText: 武器修改管理
+	SearchHintText: 搜索武器名称或拼音...
 }
 
-// OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置
+OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

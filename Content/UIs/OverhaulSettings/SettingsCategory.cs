@@ -43,6 +43,17 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public float MaxScroll;
         private int oldScrollWheelValue;
 
+        //滚动条拖动
+        public bool IsDraggingScrollbar;
+        public float DragStartY;
+        public float DragStartScrollTarget;
+        public Rectangle ScrollbarTrackRect;
+        public Rectangle ScrollbarThumbRect;
+
+        //搜索过滤
+        public string SearchText = "";
+        public List<SettingToggle> FilteredToggles;
+
         //悬浮提示(由主UI读取)
         public string HoverTooltip;
         public Vector2 HoverTooltipPos;
@@ -142,8 +153,26 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
+            //滚动条拖动处理
+            if (IsDraggingScrollbar) {
+                MouseState ms = Mouse.GetState();
+                if (ms.LeftButton == ButtonState.Pressed) {
+                    float trackHeight = ScrollbarTrackRect.Height;
+                    float thumbHeight = ScrollbarThumbRect.Height;
+                    float maxThumbY = trackHeight - thumbHeight;
+                    if (maxThumbY > 0 && MaxScroll > 0) {
+                        float deltaY = ms.Y - DragStartY;
+                        float scrollRatio = deltaY / maxThumbY;
+                        ScrollTarget = Math.Clamp(DragStartScrollTarget + scrollRatio * MaxScroll, 0f, MaxScroll);
+                    }
+                }
+                else {
+                    IsDraggingScrollbar = false;
+                }
+            }
+
             //滚动处理
-            if (hoverInMainPage && Expanded) {
+            if (hoverInMainPage && Expanded && !IsDraggingScrollbar) {
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
                 oldScrollWheelValue = currentMouseState.ScrollWheelValue;
@@ -152,7 +181,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     ScrollTarget = Math.Clamp(ScrollTarget, 0f, Math.Max(0f, MaxScroll));
                 }
             }
-            else {
+            else if (!IsDraggingScrollbar) {
                 oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
             }
             ScrollOffset += (ScrollTarget - ScrollOffset) * 0.2f;
@@ -171,8 +200,30 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 return true;
             }
 
+            //滚动条拖动检测
+            if (ExpandAnim > 0.5f && MaxScroll > 0f) {
+                if (ScrollbarThumbRect.Width > 0 && ScrollbarThumbRect.Contains(mouseHitBox)) {
+                    IsDraggingScrollbar = true;
+                    DragStartY = Mouse.GetState().Y;
+                    DragStartScrollTarget = ScrollTarget;
+                    return true;
+                }
+                //点击轨道跳转
+                if (ScrollbarTrackRect.Width > 0 && ScrollbarTrackRect.Contains(mouseHitBox)) {
+                    float clickY = Mouse.GetState().Y;
+                    float trackHeight = ScrollbarTrackRect.Height;
+                    float relativeY = clickY - ScrollbarTrackRect.Y;
+                    float ratio = relativeY / trackHeight;
+                    ScrollTarget = Math.Clamp(ratio * MaxScroll, 0f, MaxScroll);
+                    IsDraggingScrollbar = true;
+                    DragStartY = Mouse.GetState().Y;
+                    DragStartScrollTarget = ScrollTarget;
+                    return true;
+                }
+            }
+
             if (ExpandAnim > 0.5f) {
-                foreach (var toggle in Toggles) {
+                foreach (var toggle in GetVisibleToggles()) {
                     if (toggle.Hovering) {
                         bool newVal = !toggle.Getter();
                         toggle.Setter(newVal);
@@ -189,9 +240,42 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// <summary>
         /// 计算展开后占用的总高度(不含分类按钮本身)
         /// </summary>
+        /// <summary>
+        /// 获取当前可见的开关列表(考虑搜索过滤)
+        /// </summary>
+        public List<SettingToggle> GetVisibleToggles() => FilteredToggles ?? Toggles;
+
+        /// <summary>
+        /// 应用搜索过滤
+        /// </summary>
+        public virtual void ApplyFilter(string searchText) {
+            SearchText = searchText ?? "";
+            if (string.IsNullOrEmpty(SearchText)) {
+                FilteredToggles = null;
+                return;
+            }
+            string lower = SearchText.ToLowerInvariant();
+            FilteredToggles = [];
+            foreach (var toggle in Toggles) {
+                string label = GetLabel(toggle).ToLowerInvariant();
+                if (label.Contains(lower) || MatchesPinyin(label, lower) || toggle.ConfigPropertyName.ToLowerInvariant().Contains(lower)) {
+                    FilteredToggles.Add(toggle);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 简单的拼音首字母匹配
+        /// </summary>
+        protected static bool MatchesPinyin(string text, string query) {
+            var initials = PinyinHelper.GetInitials(text);
+            var fullPinyin = PinyinHelper.GetFullPinyin(text);
+            return initials.Contains(query) || fullPinyin.Contains(query);
+        }
+
         public float GetExpandedHeight(float scale) {
             if (ExpandAnim <= 0.01f) return 0f;
-            float totalContentH = Toggles.Count * ToggleRowHeight * scale;
+            float totalContentH = GetVisibleToggles().Count * ToggleRowHeight * scale;
             if (ShowFooter) totalContentH += 30f * scale;
             return (totalContentH + 6f * scale) * ExpandAnim;
         }

@@ -2,13 +2,14 @@
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSettingsUI.SettingToggle;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
     /// <summary>
-    /// 武器修改管理分类：显示所有注册在 HandlerCanOverride.CanOverrideByID 中的武器，
+    /// 武器修改管理分类：显示所有注册在 CWRItemOverride.CanOverrideByID 中的武器，
     /// 允许逐个启用或禁用其修改覆写
     /// </summary>
     internal class WeaponOverrideCategory : SettingsCategory
@@ -16,17 +17,23 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override string Title => OverhaulSettingsUI.WeaponOverrideText?.Value ?? "武器修改管理";
 
         public override void Initialize() {
-            foreach (var pair in HandlerCanOverride.CanOverrideByID) {
+            foreach (var pair in CWRItemOverride.CanOverrideByID) {
                 int itemType = pair.Key;
                 if (itemType <= 0) continue;
+                Item item = ContentSamples.ItemsByType[itemType];
+                if (!item.Alives()) continue; //跳过无效物品
+                if (item.damage <= 0) continue; //只显示有伤害的物品（武器）
+                if (item.ModItem is not null && item.ModItem.Mod == CWRMod.Instance) continue; //不显示本Mod自带的物品
+                if (item.CWR().LegendData is not null) continue; //不显示传说物品，避免有人乱按关了重要内容不正常又不知道自己干了什么来瞎几把问烦死人了
+                if (ItemOverride.TryFetchByID(item.type, out ItemOverride itemOverride) && !itemOverride.DrawingInfo) continue; //跳过不需要绘制的覆写物品
 
                 //使用物品的内部名称作为属性名
                 Item sample = new(itemType);
                 string displayName = sample.Name ?? itemType.ToString();
 
                 AddToggle(displayName,
-                    () => HandlerCanOverride.CanOverrideByID.TryGetValue(itemType, out bool v) && v,
-                    v => HandlerCanOverride.CanOverrideByID[itemType] = v,
+                    () => CWRItemOverride.CanOverrideByID.TryGetValue(itemType, out bool v) && v,
+                    v => CWRItemOverride.CanOverrideByID[itemType] = v,
                     false);
 
                 //在最后一个Toggle上存储物品类型ID，方便绘制图标

@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы удалить предмет
 	CloseHint: "[ESC] или [ПКМ], чтобы закрыть"
@@ -318,11 +318,12 @@ ElysiumUI: {
 MenuModify.OverhaulSettingsButtonText: Настройки Overhaul
 
 OverhaulSettingsUI: {
-	TitleText: Настройки Overhaul
+	TitleText: Настройки мода
 	CloseText: Закрыть
 	ContentSettingsText: Настройки контента
-	ReloadHintText: "[c/FF6666:* Опции с этой отметкой требуют перезагрузки мода]"
-	// WeaponOverrideText: 武器修改管理
+	ReloadHintText: "[c/FF6666:* Опции, помеченные этим знаком, требуют перезагрузки мода]"
+	WeaponOverrideText: Управление модификацией оружия
+	SearchHintText: Поиск по названию или ключевым словам...
 }
 
-// OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置
+OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

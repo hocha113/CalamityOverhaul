@@ -1,10 +1,16 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
+using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
     internal abstract class CWRItemOverride : ItemOverride
     {
+        /// <summary>
+        /// 是否受到修改实例的影响，在<see cref="CWRServerConfig.Instance.ModifiIntercept"/>启用后生效
+        /// </summary>
+        public static Dictionary<int, bool> CanOverrideByID { get; internal set; } = [];
+
         public override int TargetID => GetCalItemID(Name[1..]);
 
         /// <summary>
@@ -22,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
         public sealed override void PostSetStaticDefaults() {
-            HandlerCanOverride.CanOverrideByID.Add(TargetID, true);
+            CanOverrideByID.Add(TargetID, true);
             AfterLoadenContent();
         }
 
@@ -36,8 +42,9 @@ namespace CalamityOverhaul.Content.RemakeItems
                 return false;//若全局配置未启用，则直接返回false
             }
 
-            if (HandlerCanOverride.CanLoad) {//若启用了兜底加载器，则尝试获取兜底判断
-                return HandlerCanOverride.CanOverrideByID[TargetID];
+            //检查单个武器的覆写开关，若字典中对应值为false则禁用该武器的修改
+            if (CanOverrideByID.TryGetValue(TargetID, out bool canOverride) && !canOverride) {
+                return false;
             }
 
             return true;

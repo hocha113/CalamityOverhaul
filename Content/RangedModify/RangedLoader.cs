@@ -137,11 +137,6 @@ namespace CalamityOverhaul.Content.RangedModify
 
         private static bool PreShootHook(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true) {
-            if (HandlerCanOverride.CanOverrideByID.TryGetValue(item.type, out bool value) && !value) {
-                //return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
-                return true;
-            }
-
             bool? rest;
             if (ItemOverride.TryFetchByID(item.type, out ItemOverride ritem)) {
                 rest = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);

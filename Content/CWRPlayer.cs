@@ -370,8 +370,6 @@ namespace CalamityOverhaul.Content
 
             SpearOfLonginus.ZenithWorldAsset();
 
-            HandlerCanOverride.ModifiIntercept_OnEnterWorld();
-
             HighFPSRef.DisableMotionInterpolation();
 
             LegendData.ResetInventory(Player);
