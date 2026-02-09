@@ -933,19 +933,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         #region 搜索框
 
         private void HandleSearchInput() {
-            KeyboardState ks = Main.keyState;
-            KeyboardState oldKs = Main.oldKeyState;
-
-            //退格键
-            if (ks.IsKeyDown(Keys.Back) && !oldKs.IsKeyDown(Keys.Back)) {
-                if (searchText.Length > 0) {
-                    searchText = searchText[..^1];
-                    ApplySearchFilter();
-                }
-                return;
-            }
-
-            //获取tModLoader的输入字符串
+            //使用tModLoader的输入处理，它内部已包含退格、IME等所有键盘输入逻辑
             string input = Main.GetInputText(searchText);
             if (input != searchText) {
                 searchText = input;
@@ -990,7 +978,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 string displayText = searchText;
                 //闪烁光标
                 if (searchBoxFocused) {
-                    searchBoxCursorBlink += 0.016f;
                     if (MathF.Sin(searchBoxCursorBlink * 4f) > 0) {
                         displayText += "|";
                     }
