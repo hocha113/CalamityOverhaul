@@ -314,3 +314,11 @@ ElysiumUI: {
 	SwapFailText: 转换失败
 	CannotSwapText: 无法转换至此位置
 }
+
+MenuModify.OverhaulSettingsButtonText: 大修设置
+
+OverhaulSettingsUI: {
+	TitleText: 大修设置
+	CloseText: 关闭
+	PlaceholderText: 设置项将在后续版本中添加...
+}

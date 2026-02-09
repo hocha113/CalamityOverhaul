@@ -314,3 +314,11 @@ ElysiumUI: {
 	SwapFailText: Ошибка смены
 	CannotSwapText: Нельзя переместить в эту ячейку
 }
+
+MenuModify.OverhaulSettingsButtonText: Настройки Overhaul
+
+OverhaulSettingsUI: {
+	TitleText: Настройки Overhaul
+	CloseText: Закрыть
+	PlaceholderText: Настройки будут добавлены в будущих обновлениях...
+}

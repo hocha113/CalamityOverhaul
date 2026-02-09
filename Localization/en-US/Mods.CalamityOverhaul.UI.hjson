@@ -317,3 +317,11 @@ ElysiumUI: {
 	SwapFailText: Swap failed
 	CannotSwapText: Cannot swap to this position
 }
+
+MenuModify.OverhaulSettingsButtonText: Overhaul Settings
+
+OverhaulSettingsUI: {
+	TitleText: Overhaul Settings
+	CloseText: Close
+	PlaceholderText: Settings will be added in future updates...
+}
