@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using System.ComponentModel;
 using Terraria;
 using Terraria.ID;
@@ -232,17 +233,15 @@ namespace CalamityOverhaul.Common
         }
 
         public override void OnChanged() {
-            if (Main.gameMenu) {
+            if (!VaultLoad.LoadenContent) {
                 return;
             }
-            //事实证明这个东西可能是不安全的，重新设置一个物品可能会导致它的一些属性变成null或者是其他错误的值，
-            //这个情况的来源是他人所编写的不安全代码，总之这是危险代码，只能注释并阉割功能
-            //ChangedPlayerItem();
+            WorldGenDensitySave.SyncFromConfig();
             ChangedRangedProperty();
         }
 
         private void ChangedRangedProperty() {
-            if (Main.projectile == null) {
+            if (Main.gameMenu || Main.projectile == null) {
                 return;
             }
 

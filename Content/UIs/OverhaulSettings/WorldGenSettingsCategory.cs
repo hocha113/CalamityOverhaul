@@ -111,20 +111,32 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
+        /// 防止双向同步时循环调用
+        /// </summary>
+        private static bool _syncing;
+
+        /// <summary>
         /// 将密度等级同步到CWRServerConfig的布尔字段
         /// </summary>
         internal static void SyncToConfig(string structName, StructureDensity density) {
+            if (_syncing) return;
             var config = CWRServerConfig.Instance;
             if (config == null) return;
-            bool enabled = density != StructureDensity.Extinction;
-            switch (structName) {
-                case "WindGrivenGenerator": config.GenWindGrivenGenerator = enabled; break;
-                case "WGGCollector": config.GenWGGCollector = enabled; break;
-                case "JunkmanBase": config.GenJunkmanBase = enabled; break;
-                case "RocketHut": config.GenRocketHut = enabled; break;
-                case "SylvanOutpost": config.GenSylvanOutpost = enabled; break;
+            _syncing = true;
+            try {
+                bool enabled = density != StructureDensity.Extinction;
+                switch (structName) {
+                    case "WindGrivenGenerator": config.GenWindGrivenGenerator = enabled; break;
+                    case "WGGCollector": config.GenWGGCollector = enabled; break;
+                    case "JunkmanBase": config.GenJunkmanBase = enabled; break;
+                    case "RocketHut": config.GenRocketHut = enabled; break;
+                    case "SylvanOutpost": config.GenSylvanOutpost = enabled; break;
+                }
+                ContentSettingsCategory.SaveConfigStatic();
             }
-            ContentSettingsCategory.SaveConfigStatic();
+            finally {
+                _syncing = false;
+            }
         }
 
         /// <summary>
@@ -132,14 +144,21 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// 如果配置为关闭但密度不是灭绝，则设为灭绝；如果配置为开启但密度是灭绝，则恢复默认密度
         /// </summary>
         internal static void SyncFromConfig() {
+            if (_syncing) return;
             var config = CWRServerConfig.Instance;
             if (config == null) return;
-            SyncOneFromConfig("WindGrivenGenerator", config.GenWindGrivenGenerator);
-            SyncOneFromConfig("WGGCollector", config.GenWGGCollector);
-            SyncOneFromConfig("JunkmanBase", config.GenJunkmanBase);
-            SyncOneFromConfig("RocketHut", config.GenRocketHut);
-            SyncOneFromConfig("SylvanOutpost", config.GenSylvanOutpost);
-            Save();
+            _syncing = true;
+            try {
+                SyncOneFromConfig("WindGrivenGenerator", config.GenWindGrivenGenerator);
+                SyncOneFromConfig("WGGCollector", config.GenWGGCollector);
+                SyncOneFromConfig("JunkmanBase", config.GenJunkmanBase);
+                SyncOneFromConfig("RocketHut", config.GenRocketHut);
+                SyncOneFromConfig("SylvanOutpost", config.GenSylvanOutpost);
+                Save();
+            }
+            finally {
+                _syncing = false;
+            }
         }
 
         private static void SyncOneFromConfig(string structName, bool configEnabled) {
