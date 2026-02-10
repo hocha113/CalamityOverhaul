@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы удалить предмет
 	CloseHint: "[ESC] или [ПКМ], чтобы закрыть"
@@ -328,17 +328,12 @@ OverhaulSettingsUI: {
 	DisableAllText: Отключить всё
 	WorldGenSettingsText: Настройки генерации мира
 	WorldGenFooterHintText: Эти настройки вступят в силу при следующем создании мира.
-	// DensityExtinctionText: 灭绝
-	// DensityRareText: 稀少
-	// DensityNormalText: 普通
-	// DensityCommonText: 常见
-	// DensityFloodText: 泛滥
-	// DensityEverywhereText: 无处不在
-	// WorldGen_WindGrivenGeneratorText: 风力发电机密度
-	// WorldGen_WGGCollectorText: 拾荒者收集器密度
-	// WorldGen_JunkmanBaseText: 拾荒者基地密度
-	// WorldGen_RocketHutText: 火箭小屋密度
-	// WorldGen_SylvanOutpostText: 护林者前哨密度
+	DensityExtinctionText: Вымирание
+	DensityRareText: Редко
+	DensityNormalText: Обычное
+	DensityCommonText: Часто
+	DensityFloodText: Изобилие
+	DensityEverywhereText: Повсюду
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

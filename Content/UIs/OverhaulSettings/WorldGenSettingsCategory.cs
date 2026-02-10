@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 DoSave<WorldGenDensitySave>();
             }
             DoLoad<WorldGenDensitySave>();
+            SyncFromConfig();
         }
 
         public override void SaveData(TagCompound tag) {
@@ -99,6 +100,56 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static void SetDensity(string name, StructureDensity density) {
             DensityByName[name] = density;
             Save();
+            SyncToConfig(name, density);
+        }
+
+        /// <summary>
+        /// 结构名称到配置属性名的映射
+        /// </summary>
+        internal static string GetConfigPropertyName(string structName) {
+            return "Gen" + structName;
+        }
+
+        /// <summary>
+        /// 将密度等级同步到CWRServerConfig的布尔字段
+        /// </summary>
+        internal static void SyncToConfig(string structName, StructureDensity density) {
+            var config = CWRServerConfig.Instance;
+            if (config == null) return;
+            bool enabled = density != StructureDensity.Extinction;
+            switch (structName) {
+                case "WindGrivenGenerator": config.GenWindGrivenGenerator = enabled; break;
+                case "WGGCollector": config.GenWGGCollector = enabled; break;
+                case "JunkmanBase": config.GenJunkmanBase = enabled; break;
+                case "RocketHut": config.GenRocketHut = enabled; break;
+                case "SylvanOutpost": config.GenSylvanOutpost = enabled; break;
+            }
+            ContentSettingsCategory.SaveConfigStatic();
+        }
+
+        /// <summary>
+        /// 从 CWRServerConfig 的布尔字段同步到密度等级（当Config被外部修改时调用）
+        /// 如果配置为关闭但密度不是灭绝，则设为灭绝；如果配置为开启但密度是灭绝，则恢复默认密度
+        /// </summary>
+        internal static void SyncFromConfig() {
+            var config = CWRServerConfig.Instance;
+            if (config == null) return;
+            SyncOneFromConfig("WindGrivenGenerator", config.GenWindGrivenGenerator);
+            SyncOneFromConfig("WGGCollector", config.GenWGGCollector);
+            SyncOneFromConfig("JunkmanBase", config.GenJunkmanBase);
+            SyncOneFromConfig("RocketHut", config.GenRocketHut);
+            SyncOneFromConfig("SylvanOutpost", config.GenSylvanOutpost);
+            Save();
+        }
+
+        private static void SyncOneFromConfig(string structName, bool configEnabled) {
+            var current = GetDensity(structName);
+            if (!configEnabled && current != StructureDensity.Extinction) {
+                DensityByName[structName] = StructureDensity.Extinction;
+            }
+            else if (configEnabled && current == StructureDensity.Extinction) {
+                DensityByName[structName] = GetDefaultDensity(structName);
+            }
         }
 
         /// <summary>
@@ -158,20 +209,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             };
         }
 
-        /// <summary>
-        /// 获取密度等级对应的结构名称本地化
-        /// </summary>
-        private static string GetStructureDisplayName(string structName) {
-            return structName switch {
-                "WindGrivenGenerator" => OverhaulSettingsUI.WorldGen_WindGrivenGeneratorText?.Value ?? "风力发电机密度",
-                "WGGCollector" => OverhaulSettingsUI.WorldGen_WGGCollectorText?.Value ?? "拾荒者收集器密度",
-                "JunkmanBase" => OverhaulSettingsUI.WorldGen_JunkmanBaseText?.Value ?? "拾荒者基地密度",
-                "RocketHut" => OverhaulSettingsUI.WorldGen_RocketHutText?.Value ?? "火箭小屋密度",
-                "SylvanOutpost" => OverhaulSettingsUI.WorldGen_SylvanOutpostText?.Value ?? "护林者前哨密度",
-                _ => structName
-            };
-        }
-
         private static readonly Color[] DensityLevelColors = [
             new(100, 40, 40),    // Extinction - 暗红
             new(90, 130, 180),   // Rare - 冷蓝
@@ -212,11 +249,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public override string GetLabel(SettingToggle toggle) {
             if (IsDensityToggle(toggle)) {
-                return GetStructureDisplayName(GetStructureName(toggle));
+                string structName = GetStructureName(toggle);
+                string configProp = WorldGenDensitySave.GetConfigPropertyName(structName);
+                string configKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{configProp}.Label";
+                string configValue = Language.GetTextValue(configKey);
+                return configValue == configKey ? structName : configValue;
             }
-            string configKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{toggle.ConfigPropertyName}.Label";
-            string configValue = Language.GetTextValue(configKey);
-            return configValue == configKey ? toggle.ConfigPropertyName : configValue;
+            string key2 = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{toggle.ConfigPropertyName}.Label";
+            string value2 = Language.GetTextValue(key2);
+            return value2 == key2 ? toggle.ConfigPropertyName : value2;
         }
 
         public override string GetTooltip(SettingToggle toggle) {
@@ -225,11 +266,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 var density = WorldGenDensitySave.GetDensity(structName);
                 int level = (int)density;
                 string levelText = GetDensityLevelText(level);
-                string displayName = GetStructureDisplayName(structName);
-                string configKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.Gen{structName}.Tooltip";
-                string configDesc = Language.GetTextValue(configKey);
+                string configProp = WorldGenDensitySave.GetConfigPropertyName(structName);
+                string labelKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{configProp}.Label";
+                string displayName = Language.GetTextValue(labelKey);
+                if (displayName == labelKey) displayName = structName;
+                string tooltipKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{configProp}.Tooltip";
+                string configDesc = Language.GetTextValue(tooltipKey);
                 string tip = $"{displayName}: [c/{DensityLevelColors[level].Hex3()}:{levelText}]";
-                if (configDesc != configKey) {
+                if (configDesc != tooltipKey) {
                     tip += "\n" + configDesc;
                 }
                 return tip;

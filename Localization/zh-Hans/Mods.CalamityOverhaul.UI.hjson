@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: 左键点击可添加项目
 	HintText2: 左键点击可移除项目
 	CloseHint: "[ESC]键或[右键点击]可关闭"
@@ -328,17 +328,12 @@ OverhaulSettingsUI: {
 	DisableAllText: 禁用全部
 	WorldGenSettingsText: 世界生成设置
 	WorldGenFooterHintText: 这些设置将在下次创建世界时生效
-	// DensityExtinctionText: 灭绝
-	// DensityRareText: 稀少
-	// DensityNormalText: 普通
-	// DensityCommonText: 常见
-	// DensityFloodText: 泛滥
-	// DensityEverywhereText: 无处不在
-	// WorldGen_WindGrivenGeneratorText: 风力发电机密度
-	// WorldGen_WGGCollectorText: 拾荒者收集器密度
-	// WorldGen_JunkmanBaseText: 拾荒者基地密度
-	// WorldGen_RocketHutText: 火箭小屋密度
-	// WorldGen_SylvanOutpostText: 护林者前哨密度
+	DensityExtinctionText: 灭绝
+	DensityRareText: 稀少
+	DensityNormalText: 普通
+	DensityCommonText: 常见
+	DensityFloodText: 泛滥
+	DensityEverywhereText: 无处不在
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

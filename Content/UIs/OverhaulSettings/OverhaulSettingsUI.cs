@@ -32,11 +32,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText DensityCommonText { get; private set; }
         public static LocalizedText DensityFloodText { get; private set; }
         public static LocalizedText DensityEverywhereText { get; private set; }
-        public static LocalizedText WorldGen_WindGrivenGeneratorText { get; private set; }
-        public static LocalizedText WorldGen_WGGCollectorText { get; private set; }
-        public static LocalizedText WorldGen_JunkmanBaseText { get; private set; }
-        public static LocalizedText WorldGen_RocketHutText { get; private set; }
-        public static LocalizedText WorldGen_SylvanOutpostText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -145,11 +140,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DensityCommonText = this.GetLocalization(nameof(DensityCommonText), () => "常见");
             DensityFloodText = this.GetLocalization(nameof(DensityFloodText), () => "泛滥");
             DensityEverywhereText = this.GetLocalization(nameof(DensityEverywhereText), () => "无处不在");
-            WorldGen_WindGrivenGeneratorText = this.GetLocalization(nameof(WorldGen_WindGrivenGeneratorText), () => "风力发电机密度");
-            WorldGen_WGGCollectorText = this.GetLocalization(nameof(WorldGen_WGGCollectorText), () => "拾荒者收集器密度");
-            WorldGen_JunkmanBaseText = this.GetLocalization(nameof(WorldGen_JunkmanBaseText), () => "拾荒者基地密度");
-            WorldGen_RocketHutText = this.GetLocalization(nameof(WorldGen_RocketHutText), () => "火箭小屋密度");
-            WorldGen_SylvanOutpostText = this.GetLocalization(nameof(WorldGen_SylvanOutpostText), () => "护林者前哨密度");
 
             ContentSettingsCategory.LoadReflection();
         }

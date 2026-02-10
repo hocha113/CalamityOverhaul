@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -331,17 +331,12 @@ OverhaulSettingsUI: {
 	DisableAllText: Disable All
 	WorldGenSettingsText: World Generation Settings
 	WorldGenFooterHintText: These settings will take effect upon the next world creation.
-	DensityExtinctionText: 灭绝
-	DensityRareText: 稀少
-	DensityNormalText: 普通
-	DensityCommonText: 常见
-	DensityFloodText: 泛滥
-	DensityEverywhereText: 无处不在
-	WorldGen_WindGrivenGeneratorText: 风力发电机密度
-	WorldGen_WGGCollectorText: 拾荒者收集器密度
-	WorldGen_JunkmanBaseText: 拾荒者基地密度
-	WorldGen_RocketHutText: 火箭小屋密度
-	WorldGen_SylvanOutpostText: 护林者前哨密度
+	DensityExtinctionText: Extinct
+	DensityRareText: Rare
+	DensityNormalText: Normal
+	DensityCommonText: Common
+	DensityFloodText: Abundant
+	DensityEverywhereText: Everywhere
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings
