@@ -337,6 +337,8 @@ OverhaulSettingsUI: {
 	// DensityCommonText: Common
 	// DensityFloodText: Abundant
 	// DensityEverywhereText: Everywhere
+	// ResetDefaultText: Reset to Default
+	// DensityTooltipText: Structure Generation Density
 }
 
 // OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

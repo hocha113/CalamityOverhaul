@@ -334,6 +334,8 @@ OverhaulSettingsUI: {
 	DensityCommonText: Часто
 	DensityFloodText: Изобилие
 	DensityEverywhereText: Повсюду
+	ResetDefaultText: Сбросить по умолчанию
+	DensityTooltipText: Плотность генерации структур
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

@@ -334,6 +334,8 @@ OverhaulSettingsUI: {
 	DensityCommonText: 常见
 	DensityFloodText: 泛滥
 	DensityEverywhereText: 无处不在
+	ResetDefaultText: 重置为默认
+	DensityTooltipText: 结构生成密度
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

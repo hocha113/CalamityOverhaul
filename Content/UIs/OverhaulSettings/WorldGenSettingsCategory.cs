@@ -256,6 +256,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     false);
             }
 
+            ActionButtons.Add(new ActionButton {
+                Label = OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
+                OnClick = ResetAllToDefault
+            });
+
             ShowFooter = true;
             FooterHint = OverhaulSettingsUI.WorldGenFooterHintText?.Value ?? "";
         }
@@ -285,13 +290,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 var density = WorldGenDensitySave.GetDensity(structName);
                 int level = (int)density;
                 string levelText = GetDensityLevelText(level);
+                string densityLabel = OverhaulSettingsUI.DensityTooltipText?.Value ?? "结构生成密度";
+                string tip = $"{densityLabel}: [c/{DensityLevelColors[level].Hex3()}:{levelText}]";
                 string configProp = WorldGenDensitySave.GetConfigPropertyName(structName);
-                string labelKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{configProp}.Label";
-                string displayName = Language.GetTextValue(labelKey);
-                if (displayName == labelKey) displayName = structName;
                 string tooltipKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{configProp}.Tooltip";
                 string configDesc = Language.GetTextValue(tooltipKey);
-                string tip = $"{displayName}: [c/{DensityLevelColors[level].Hex3()}:{levelText}]";
                 if (configDesc != tooltipKey) {
                     tip += "\n" + configDesc;
                 }
@@ -305,6 +308,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override void OnToggleChanged(SettingToggle toggle, bool newValue) {
             if (!IsDensityToggle(toggle)) {
                 SaveConfig();
+            }
+        }
+
+        private static void ResetAllToDefault() {
+            foreach (string name in WorldGenDensitySave.StructureNames) {
+                WorldGenDensitySave.SetDensity(name, WorldGenDensitySave.GetDefaultDensity(name));
             }
         }
 
