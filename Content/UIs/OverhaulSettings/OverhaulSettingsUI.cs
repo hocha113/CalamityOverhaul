@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText ContentSettingsText { get; private set; }
         public static LocalizedText ReloadHintText { get; private set; }
         public static LocalizedText WeaponOverrideText { get; private set; }
+        public static LocalizedText EnableAllText { get; private set; }
+        public static LocalizedText DisableAllText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -74,9 +76,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private string hoverTooltip;
         private Vector2 hoverTooltipPos;
 
-        //滚动条拖动
-        private int oldScrollWheelValue;
-
         //粒子结构
         private struct SettingsParticle
         {
@@ -123,6 +122,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             ContentSettingsText = this.GetLocalization(nameof(ContentSettingsText), () => "内容设置");
             ReloadHintText = this.GetLocalization(nameof(ReloadHintText), () => "[c/FF6666:* 带此标记的选项需要重新加载模组才能生效]");
             WeaponOverrideText = this.GetLocalization(nameof(WeaponOverrideText), () => "武器修改管理");
+            EnableAllText = this.GetLocalization(nameof(EnableAllText), () => "启用全部");
+            DisableAllText = this.GetLocalization(nameof(DisableAllText), () => "禁用全部");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -547,8 +548,31 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
                 //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
-                    float listTop = catY + CategoryHeight * scale + 6f * scale;
-                    float listHeight = contentBottom - listTop;
+                    float actionBarHeight = 0f;
+                    //绘制操作按钮栏(如启用全部/禁用全部)
+                    if (cat.ActionButtons.Count > 0) {
+                        float easedExpandForBar = EaseOutQuad(cat.ExpandAnim);
+                        actionBarHeight = 36f * scale;
+                        float barY = catY + CategoryHeight * scale + 4f * scale;
+                        float barAlpha = alpha * easedExpandForBar;
+                        float btnWidth = 100f * scale;
+                        float btnHeight = 28f * scale;
+                        float gap = 8f * scale;
+                        float totalBtnWidth = cat.ActionButtons.Count * btnWidth + (cat.ActionButtons.Count - 1) * gap;
+                        float startX = contentLeft + (contentWidth - totalBtnWidth) / 2f;
+
+                        for (int bi = 0; bi < cat.ActionButtons.Count; bi++) {
+                            var btn = cat.ActionButtons[bi];
+                            float bx = startX + bi * (btnWidth + gap);
+                            Rectangle btnRect = new((int)bx, (int)(barY + 2f * scale), (int)btnWidth, (int)btnHeight);
+                            btn.HitBox = btnRect;
+                            btn.Hovering = btnRect.Contains(MouseHitBox) && contentFade > 0.5f && cat.ExpandAnim > 0.5f;
+                            DrawSmallButton(spriteBatch, btnRect, btn.Label, btn.HoverAnim, barAlpha, scale);
+                        }
+                    }
+
+                    float listTop = catY + CategoryHeight * scale + 6f * scale + actionBarHeight;
+                    float listHeight = Math.Max(0f, contentBottom - listTop);
 
                     //获取可见的开关列表
                     var visibleToggles = cat.GetVisibleToggles();
@@ -557,6 +581,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     float totalContentH = visibleToggles.Count * ToggleRowHeight * scale;
                     if (cat.ShowFooter) {
                         totalContentH += 30f * scale;
+                    }
+                    if (cat.ActionButtons.Count > 0) {
+                        totalContentH += 36f * scale;
                     }
                     cat.MaxScroll = Math.Max(0f, totalContentH - listHeight);
 
@@ -905,6 +932,26 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         #region 绘制辅助方法
+
+        private void DrawSmallButton(SpriteBatch spriteBatch, Rectangle rect, string text,
+            float hoverAnim, float alpha, float scale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+
+            Color bgColor = Color.Lerp(new Color(45, 18, 18), new Color(70, 28, 28), hoverAnim);
+            spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), bgColor * (alpha * 0.9f));
+
+            Color borderColor = Color.Lerp(new Color(110, 45, 45), new Color(180, 70, 70), hoverAnim);
+            DrawSimpleBorder(spriteBatch, rect, borderColor * (alpha * 0.7f), 1);
+
+            Vector2 textMeasure = FontAssets.MouseText.Value.MeasureString(text) * 0.72f * scale;
+            Vector2 textPos = rect.Center.ToVector2() - textMeasure / 2f + new Vector2(0, 1);
+            Color textColor = Color.Lerp(new Color(200, 170, 170), Color.White, hoverAnim);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.72f * scale);
+
+            if (hoverAnim > 0.01f) {
+                DrawInnerGlow(spriteBatch, rect, new Color(180, 60, 60) * (alpha * hoverAnim * 0.1f), 3f, 3);
+            }
+        }
 
         private static void DrawSimpleBorder(SpriteBatch sb, Rectangle rect, Color color, int thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;

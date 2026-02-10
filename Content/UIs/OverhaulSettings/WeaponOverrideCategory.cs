@@ -1,33 +1,77 @@
 ﻿using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSettingsUI.SettingToggle;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+using static CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSettingsUI;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
+    /// <summary>
+    /// 武器覆写设置的持久化存储，保存被禁用的武器ID列表
+    /// </summary>
+    internal class WeaponOverrideSave : SaveMod
+    {
+        public override void SetStaticDefaults() {
+            if (!HasSave) {
+                DoSave<WeaponOverrideSave>();
+            }
+            DoLoad<WeaponOverrideSave>();
+        }
+
+        public override void SaveData(TagCompound tag) {
+            List<string> disabledList = [];
+            foreach (var pair in CWRItemOverride.CanOverrideByID) {
+                if (!pair.Value) {
+                    string fullName = pair.Key < ItemID.Count
+                        ? pair.Key.ToString()
+                        : ItemLoader.GetItem(pair.Key)?.FullName;
+                    if (!string.IsNullOrEmpty(fullName)) {
+                        disabledList.Add(fullName);
+                    }
+                }
+            }
+            tag["DisabledWeaponNames"] = disabledList;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            if (tag.TryGet<List<string>>("DisabledWeaponNames", out var disabledNames)) {
+                foreach (string fullName in disabledNames) {
+                    int id = VaultUtils.GetItemTypeFromFullName(fullName);
+                    if (id > 0 && CWRItemOverride.CanOverrideByID.ContainsKey(id)) {
+                        CWRItemOverride.CanOverrideByID[id] = false;
+                    }
+                }
+                return;
+            }
+        }
+
+        public static void Save() => DoSave<WeaponOverrideSave>();
+    }
+
     /// <summary>
     /// 武器修改管理分类：显示所有注册在 CWRItemOverride.CanOverrideByID 中的武器，
     /// 允许逐个启用或禁用其修改覆写
     /// </summary>
     internal class WeaponOverrideCategory : SettingsCategory
     {
-        public override string Title => OverhaulSettingsUI.WeaponOverrideText?.Value ?? "武器修改管理";
+        public override string Title => WeaponOverrideText?.Value ?? "武器修改管理";
 
         public override void Initialize() {
             foreach (var pair in CWRItemOverride.CanOverrideByID) {
                 int itemType = pair.Key;
                 if (itemType <= 0) continue;
                 Item item = ContentSamples.ItemsByType[itemType];
-                if (!item.Alives()) continue; //跳过无效物品
-                if (item.damage <= 0) continue; //只显示有伤害的物品（武器）
-                if (item.ModItem is not null && item.ModItem.Mod == CWRMod.Instance) continue; //不显示本Mod自带的物品
-                if (item.CWR().LegendData is not null) continue; //不显示传说物品，避免有人乱按关了重要内容不正常又不知道自己干了什么来瞎几把问烦死人了
-                if (ItemOverride.TryFetchByID(item.type, out ItemOverride itemOverride) && !itemOverride.DrawingInfo) continue; //跳过不需要绘制的覆写物品
+                if (!item.Alives()) continue;
+                if (item.damage <= 0) continue;
+                if (item.ModItem is not null && item.ModItem.Mod == CWRMod.Instance) continue;
+                if (item.CWR().LegendData is not null) continue;
+                if (ItemOverride.TryFetchByID(item.type, out ItemOverride itemOverride) && !itemOverride.DrawingInfo) continue;
 
-                //使用物品的内部名称作为属性名
                 Item sample = new(itemType);
                 string displayName = sample.Name ?? itemType.ToString();
 
@@ -36,9 +80,32 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     v => CWRItemOverride.CanOverrideByID[itemType] = v,
                     false);
 
-                //在最后一个Toggle上存储物品类型ID，方便绘制图标
                 Toggles[^1].ItemType = itemType;
             }
+
+            //添加操作按钮
+            ActionButtons.Add(new ActionButton {
+                Label = EnableAllText?.Value ?? "启用全部",
+                OnClick = EnableAll
+            });
+            ActionButtons.Add(new ActionButton {
+                Label = DisableAllText?.Value ?? "禁用全部",
+                OnClick = DisableAll
+            });
+        }
+
+        private void EnableAll() {
+            foreach (var toggle in Toggles) {
+                toggle.Setter(true);
+            }
+            WeaponOverrideSave.Save();
+        }
+
+        private void DisableAll() {
+            foreach (var toggle in Toggles) {
+                toggle.Setter(false);
+            }
+            WeaponOverrideSave.Save();
         }
 
         public override string GetLabel(SettingToggle toggle) {
@@ -62,8 +129,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override void OnToggleChanged(SettingToggle toggle, bool newValue) {
-            //这里只是改变字典值，不需要额外操作
-            //如果未来需要实时生效可以调用 ResetValueByWorld
+            WeaponOverrideSave.Save();
         }
 
         public override float GetLabelOffsetX(float scale) => 28f * scale;
@@ -72,7 +138,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Rectangle rect, float alpha, float scale) {
             if (toggle.ItemType <= 0) return;
 
-            //在开关盒子右边、标签左边绘制物品小图标
             float boxSize = ToggleBoxSize * scale;
             float iconX = rect.X + 12f * scale + boxSize + 4f * scale;
             float iconY = rect.Y + rect.Height / 2f;

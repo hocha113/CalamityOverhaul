@@ -58,6 +58,21 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public string FooterHint;
         public bool ShowFooter;
 
+        //操作按钮(如"全部启用"/"全部禁用")
+        public readonly List<ActionButton> ActionButtons = [];
+
+        /// <summary>
+        /// 操作按钮数据
+        /// </summary>
+        public class ActionButton
+        {
+            public string Label;
+            public Action OnClick;
+            public Rectangle HitBox;
+            public float HoverAnim;
+            public bool Hovering;
+        }
+
         /// <summary>
         /// 子类实现：初始化开关项列表
         /// </summary>
@@ -182,6 +197,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
             }
             ScrollOffset += (ScrollTarget - ScrollOffset) * 0.2f;
+
+            //更新操作按钮悬停动画
+            foreach (var btn in ActionButtons) {
+                btn.HoverAnim += ((btn.Hovering ? 1f : 0f) - btn.HoverAnim) * hoverSpeed;
+            }
         }
 
         /// <summary>
@@ -220,6 +240,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
 
             if (ExpandAnim > 0.5f) {
+                //操作按钮点击
+                foreach (var btn in ActionButtons) {
+                    if (btn.Hovering) {
+                        btn.OnClick?.Invoke();
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.2f });
+                        return true;
+                    }
+                }
+
                 foreach (var toggle in GetVisibleToggles()) {
                     if (toggle.Hovering) {
                         bool newVal = !toggle.Getter();
@@ -241,14 +270,19 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         /// <summary>
         /// 计算展开后占用的总高度(不含分类按钮本身)
+        /// 高度会被限制在可用面板空间内，超出部分通过滚动访问
         /// </summary>
         public float GetExpandedHeight(float scale) {
             if (ExpandAnim <= 0.01f) return 0f;
             float totalContentH = GetVisibleToggles().Count * ToggleRowHeight * scale;
             if (ShowFooter) totalContentH += 30f * scale;
+            if (ActionButtons.Count > 0) totalContentH += 36f * scale;
+            //限制最大展开高度，避免大量项目撑破面板
+            float maxVisualH = Main.screenHeight * 0.8f * 0.55f;
+            float clampedH = Math.Min(totalContentH + 6f * scale, maxVisualH);
             //使用缓动曲线让高度变化更自然
             float easedExpand = 1f - (1f - ExpandAnim) * (1f - ExpandAnim);
-            return (totalContentH + 6f * scale) * easedExpand;
+            return clampedH * easedExpand;
         }
     }
 }

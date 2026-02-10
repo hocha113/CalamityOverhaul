@@ -327,6 +327,8 @@ OverhaulSettingsUI: {
 	ReloadHintText: "[c/FF6666:* Options marked with this require a mod reload to take effect]"
 	WeaponOverrideText: Weapon Override Management
 	SearchHintText: Search weapon name or keywords...
+	EnableAllText: Enable All
+	DisableAllText: Disable All
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

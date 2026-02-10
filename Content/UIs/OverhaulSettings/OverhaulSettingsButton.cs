@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Type interfaceType = typeof(Main).Assembly.GetType("Terraria.ModLoader.UI.Interface");
             //反射获取 internal 方法
             MethodInfo targetMethod = interfaceType.GetMethod("AddMenuButtons", BindingFlags.Static | BindingFlags.NonPublic);
-
             VaultHook.Add(targetMethod, OnAddMenuButtonsHook);
         }
 

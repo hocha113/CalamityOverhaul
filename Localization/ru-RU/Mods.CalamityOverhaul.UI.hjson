@@ -324,6 +324,8 @@ OverhaulSettingsUI: {
 	ReloadHintText: "[c/FF6666:* Опции, помеченные этим знаком, требуют перезагрузки мода]"
 	WeaponOverrideText: Управление модификацией оружия
 	SearchHintText: Поиск по названию или ключевым словам...
+	EnableAllText: Включить всё
+	DisableAllText: Отключить всё
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul
