@@ -203,8 +203,6 @@ namespace CalamityOverhaul
         public static int NPC_Crabulon => Get();
         public static int NPC_CrabShroom => Get();
         public static int NPC_BrimstoneElemental => Get();
-        public static int NPC_KingSlimeJewelRuby => Get();
-        public static int NPC_KingSlimeJewelSapphire => Get();
         public static int NPC_EbonianPaladin => Get();
         public static int NPC_CrimulanPaladin => Get();
         public static int NPC_SplitEbonianPaladin => Get();

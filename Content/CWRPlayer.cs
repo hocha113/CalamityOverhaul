@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
 
-            if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
+            if (Player.name == "HoCha113") {
                 string text = CWRItemOverride.ByID.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }

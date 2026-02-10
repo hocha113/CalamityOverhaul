@@ -35,7 +35,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRSystem组(需要重载)
             AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
-            AddToggle("WeaponOverhaul", () => config.WeaponOverhaul, v => config.WeaponOverhaul = v, true);
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon组

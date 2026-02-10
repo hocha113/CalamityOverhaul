@@ -118,6 +118,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.CWR().LegendData = new HalibutData();
         }
 
+        public override bool? CanCWROverride() => true;
+
         public override bool? CanUseItem(Item item, Player player) {
             item.UseSound = SoundID.Item38 with { Volume = 0.6f };
             if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {

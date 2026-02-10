@@ -38,10 +38,6 @@ namespace CalamityOverhaul.Content.RemakeItems
                 return result.Value;
             }
 
-            if (!CWRServerConfig.Instance.WeaponOverhaul) {
-                return false;//若全局配置未启用，则直接返回false
-            }
-
             //检查单个武器的覆写开关，若字典中对应值为false则禁用该武器的修改
             if (CanOverrideByID.TryGetValue(TargetID, out bool canOverride) && !canOverride) {
                 return false;
