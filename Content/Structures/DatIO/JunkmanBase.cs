@@ -1,4 +1,5 @@
-﻿using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
+using InnoVault.GameSystem;
 using System;
 using System.IO;
 using Terraria;
@@ -16,13 +17,33 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         public override void SaveData(TagCompound tag)
             => SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
         public override void LoadData(TagCompound tag) {
+            var density = WorldGenDensitySave.GetDensity("JunkmanBase");
+            if (density == StructureDensity.Extinction) {
+                TagCache.Invalidate(SavePath);
+                return;
+            }
+
+            int spawnCount = density switch {
+                StructureDensity.Rare => 1,
+                StructureDensity.Normal => WorldGen.genRand.Next(1, 3),
+                StructureDensity.Common => WorldGen.genRand.Next(2, 4),
+                StructureDensity.Flood => WorldGen.genRand.Next(3, 6),
+                StructureDensity.Everywhere => WorldGen.genRand.Next(5, 9),
+                _ => 1
+            };
+
             RegionSaveData region = tag.GetRegionSaveData();
-            //初始化起始位置
-            Point16 startPos = new Point16(Main.spawnTileX + WorldGen.genRand.Next(-16, 16) * WorldGen.GetWorldSize() * 16
-                , Main.spawnTileY + 420 + (WorldGen.GetWorldSize() * 100) + 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(116));
-            startPos = FindSafePlacement(region.Size, startPos, 300, 300, 100, (Tile tile) => tile.TileType < TileID.Count && tile.LiquidAmount == 0);
-            LoadChest(LoadRegion(region, startPos), startPos);
-            TagCache.Invalidate(SavePath);//释放缓存
+            for (int i = 0; i < spawnCount; i++) {
+                int offsetX = WorldGen.genRand.Next(-16, 16) * WorldGen.GetWorldSize() * 16
+                    + (i > 0 ? WorldGen.genRand.Next(-400, 400) * (i + 1) : 0);
+                int offsetY = 420 + (WorldGen.GetWorldSize() * 100) + 20 + (WorldGen.GetWorldSize() * 2)
+                    + WorldGen.genRand.Next(116) + (i > 0 ? WorldGen.genRand.Next(50, 150) * i : 0);
+                Point16 startPos = new Point16(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
+                startPos = FindSafePlacement(region.Size, startPos, 300 + i * 100, 300, 100,
+                    (Tile tile) => tile.TileType < TileID.Count && tile.LiquidAmount == 0);
+                LoadChest(LoadRegion(region, startPos), startPos);
+            }
+            TagCache.Invalidate(SavePath);
         }
 
         private static void LoadChest(RegionSaveData regionSaveData, Point16 orig) {

@@ -48,11 +48,23 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         internal static readonly string[] StructureNames = [
             "WindGrivenGenerator",
             "WGGCollector",
+            "JunkmanBase",
+            "RocketHut",
         ];
+
+        /// <summary>
+        /// 各结构的默认密度等级
+        /// </summary>
+        internal static StructureDensity GetDefaultDensity(string name) {
+            return name switch {
+                "JunkmanBase" or "RocketHut" => StructureDensity.Rare,
+                _ => StructureDensity.Normal
+            };
+        }
 
         public override void SetStaticDefaults() {
             foreach (string name in StructureNames) {
-                DensityByName.TryAdd(name, StructureDensity.Normal);
+                DensityByName.TryAdd(name, GetDefaultDensity(name));
             }
             if (!HasSave) {
                 DoSave<WorldGenDensitySave>();
@@ -72,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     DensityByName[name] = (StructureDensity)Math.Clamp(level, 0, 5);
                 }
                 else {
-                    DensityByName[name] = StructureDensity.Normal;
+                    DensityByName[name] = GetDefaultDensity(name);
                 }
             }
         }
@@ -152,6 +164,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             return structName switch {
                 "WindGrivenGenerator" => OverhaulSettingsUI.WorldGen_WindGrivenGeneratorText?.Value ?? "风力发电机密度",
                 "WGGCollector" => OverhaulSettingsUI.WorldGen_WGGCollectorText?.Value ?? "拾荒者收集器密度",
+                "JunkmanBase" => OverhaulSettingsUI.WorldGen_JunkmanBaseText?.Value ?? "拾荒者基地密度",
+                "RocketHut" => OverhaulSettingsUI.WorldGen_RocketHutText?.Value ?? "火箭小屋密度",
                 _ => structName
             };
         }
@@ -216,7 +230,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 var density = WorldGenDensitySave.GetDensity(structName);
                 int level = (int)density;
                 string levelText = GetDensityLevelText(level);
-                return $"[c/{DensityLevelColors[level].Hex3()}:{levelText}]";
+                string displayName = GetStructureDisplayName(structName);
+                string configKey = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.Gen{structName}.Tooltip";
+                string configDesc = Language.GetTextValue(configKey);
+                string tip = $"{displayName}: [c/{DensityLevelColors[level].Hex3()}:{levelText}]";
+                if (configDesc != configKey) {
+                    tip += "\n" + configDesc;
+                }
+                return tip;
             }
             string key = $"Mods.CalamityOverhaul.Configs.CWRServerConfig.{toggle.ConfigPropertyName}.Tooltip";
             string value = Language.GetTextValue(key);

@@ -336,6 +336,8 @@ OverhaulSettingsUI: {
 	// DensityEverywhereText: 无处不在
 	// WorldGen_WindGrivenGeneratorText: 风力发电机密度
 	// WorldGen_WGGCollectorText: 拾荒者收集器密度
+	// WorldGen_JunkmanBaseText: 拾荒者基地密度
+	// WorldGen_RocketHutText: 火箭小屋密度
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

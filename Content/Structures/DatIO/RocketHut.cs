@@ -1,4 +1,5 @@
-﻿using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
+using InnoVault.GameSystem;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -13,12 +14,32 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         public override void SaveData(TagCompound tag)
             => SaveRegion(tag, new Point16(4187, 576).GetRectangleFromPoints(new Point16(4202, 586)));
         public override void LoadData(TagCompound tag) {
+            var density = WorldGenDensitySave.GetDensity("RocketHut");
+            if (density == StructureDensity.Extinction) {
+                TagCache.Invalidate(SavePath);
+                return;
+            }
+
+            int spawnCount = density switch {
+                StructureDensity.Rare => 1,
+                StructureDensity.Normal => WorldGen.genRand.Next(1, 3),
+                StructureDensity.Common => WorldGen.genRand.Next(2, 4),
+                StructureDensity.Flood => WorldGen.genRand.Next(3, 6),
+                StructureDensity.Everywhere => WorldGen.genRand.Next(5, 9),
+                _ => 1
+            };
+
             RegionSaveData region = tag.GetRegionSaveData();
-            Point16 startPos = new(Main.spawnTileX + WorldGen.genRand.Next(-16, 16)
-                , Main.spawnTileY + 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(6));
-            startPos = FindSafePlacement(region.Size, startPos, 300, 60, 10);
-            SetChestItem(LoadRegion(region, startPos), startPos);
-            TagCache.Invalidate(SavePath);//释放缓存
+            for (int i = 0; i < spawnCount; i++) {
+                int offsetX = WorldGen.genRand.Next(-16, 16)
+                    + (i > 0 ? WorldGen.genRand.Next(-200, 200) * (i + 1) : 0);
+                int offsetY = 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(6)
+                    + (i > 0 ? WorldGen.genRand.Next(20, 60) * i : 0);
+                Point16 startPos = new(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
+                startPos = FindSafePlacement(region.Size, startPos, 300 + i * 80, 60, 10);
+                SetChestItem(LoadRegion(region, startPos), startPos);
+            }
+            TagCache.Invalidate(SavePath);
         }
 
         private static void SetChestItem(RegionSaveData regionSaveData, Point16 orig) {
