@@ -548,13 +548,50 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
                 //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
-                    float actionBarHeight = 0f;
-                    //绘制操作按钮栏(如启用全部/禁用全部)
+                    float easedExpand = EaseOutQuad(cat.ExpandAnim);
+
+                    //展开高度由动画驱动，统一控制裁剪和布局
+                    float expandedH = cat.GetExpandedHeight(scale);
+                    float actionBarHeight = cat.ActionButtons.Count > 0 ? 36f * scale : 0f;
+
+                    //整个展开区域的裁剪范围(包含操作按钮和列表)
+                    float expandAreaTop = catY + CategoryHeight * scale + 4f * scale;
+                    float expandAreaHeight = Math.Min(expandedH, Math.Max(0f, contentBottom - expandAreaTop));
+
+                    //展开区域的容器背景(在裁剪前绘制，但尺寸受动画控制)
+                    float containerAlpha = alpha * easedExpand;
+                    int containerPad = (int)(4f * scale);
+                    Rectangle expandClipRect = new(
+                        (int)contentLeft, (int)expandAreaTop,
+                        (int)contentWidth, (int)expandAreaHeight);
+                    Rectangle containerRect = new(
+                        expandClipRect.X - containerPad,
+                        expandClipRect.Y - containerPad,
+                        expandClipRect.Width + containerPad * 2,
+                        expandClipRect.Height + containerPad * 2);
+
+                    DrawRoundedRect(spriteBatch, containerRect,
+                        new Color(22, 9, 9) * (containerAlpha * 0.6f), 5f);
+
+                    Color containerBorderColor = Color.Lerp(
+                        new Color(90, 38, 38), new Color(120, 50, 50), breatheAnim * 0.3f);
+                    DrawRoundedRectBorder(spriteBatch, containerRect,
+                        containerBorderColor * (containerAlpha * 0.65f), 5f, 1);
+
+                    DrawInnerGlow(spriteBatch, containerRect,
+                        new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
+
+                    //使用RasterizerState对整个展开区域进行裁剪
+                    spriteBatch.End();
+                    Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                        DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+                    spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, expandClipRect);
+
+                    //绘制操作按钮栏(在裁剪区域内)
                     if (cat.ActionButtons.Count > 0) {
-                        float easedExpandForBar = EaseOutQuad(cat.ExpandAnim);
-                        actionBarHeight = 36f * scale;
-                        float barY = catY + CategoryHeight * scale + 4f * scale;
-                        float barAlpha = alpha * easedExpandForBar;
+                        float barY = expandAreaTop;
+                        float barAlpha = alpha * easedExpand;
                         float btnWidth = 100f * scale;
                         float btnHeight = 28f * scale;
                         float gap = 8f * scale;
@@ -571,8 +608,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                         }
                     }
 
-                    float listTop = catY + CategoryHeight * scale + 6f * scale + actionBarHeight;
-                    float listHeight = Math.Max(0f, contentBottom - listTop);
+                    //列表区域
+                    float listTop = expandAreaTop + actionBarHeight + 2f * scale;
+                    float listHeight = Math.Max(0f, expandAreaTop + expandAreaHeight - listTop);
 
                     //获取可见的开关列表
                     var visibleToggles = cat.GetVisibleToggles();
@@ -582,41 +620,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     if (cat.ShowFooter) {
                         totalContentH += 30f * scale;
                     }
-                    if (cat.ActionButtons.Count > 0) {
-                        totalContentH += 36f * scale;
-                    }
                     cat.MaxScroll = Math.Max(0f, totalContentH - listHeight);
-
-                    //裁剪区域
-                    Rectangle clipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
-
-                    //展开动画：使用缓动后的alpha实现淡入淡出
-                    float easedExpand = EaseOutQuad(cat.ExpandAnim);
-                    float containerAlpha = alpha * easedExpand;
-                    int containerPad = (int)(4f * scale);
-                    Rectangle containerRect = new(
-                        clipRect.X - containerPad,
-                        clipRect.Y - containerPad,
-                        clipRect.Width + containerPad * 2,
-                        clipRect.Height + containerPad * 2);
-
-                    DrawRoundedRect(spriteBatch, containerRect,
-                        new Color(22, 9, 9) * (containerAlpha * 0.6f), 5f);
-
-                    Color containerBorderColor = Color.Lerp(
-                        new Color(90, 38, 38), new Color(120, 50, 50), breatheAnim * 0.3f);
-                    DrawRoundedRectBorder(spriteBatch, containerRect,
-                        containerBorderColor * (containerAlpha * 0.65f), 5f, 1);
-
-                    DrawInnerGlow(spriteBatch, containerRect,
-                        new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
-
-                    //使用RasterizerState进行裁剪
-                    spriteBatch.End();
-                    Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                        DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
-                    spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipRect);
 
                     float itemAlpha = alpha * easedExpand;
                     //展开/收起时内容向上滑入/滑出
@@ -650,8 +654,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                         DepthStencilState.None, new RasterizerState { ScissorTestEnable = false }, null, Main.UIScaleMatrix);
 
+                    //滚动条绘制在裁剪外(始终可见)
+                    Rectangle scrollClipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
                     if (cat.MaxScroll > 0f) {
-                        DrawScrollBar(spriteBatch, clipRect, alpha * cat.ExpandAnim, cat);
+                        DrawScrollBar(spriteBatch, scrollClipRect, alpha * cat.ExpandAnim, cat);
                     }
                 }
 
