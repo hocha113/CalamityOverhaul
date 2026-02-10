@@ -20,21 +20,20 @@ namespace CalamityOverhaul.Content.Structures
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
-            var config = CWRServerConfig.Instance;
-            if (config == null || config.GenWindGrivenGenerator) {
+            if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
                 SpawnWindGrivenGenerator();
             }
-            if (Main.getGoodWorld && (config == null || config.GenWGGCollector)) {
+            if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
                 SpawnWGGCollectorTile();
             }
             if (CWRRef.Has) {
-                if (config == null || config.GenJunkmanBase) {
+                if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
                     JunkmanBase.DoLoad<JunkmanBase>();
                 }
-                if (config == null || config.GenRocketHut) {
+                if (WorldGenDensitySave.GetDensity("RocketHut") != StructureDensity.Extinction) {
                     RocketHut.DoLoad<RocketHut>();
                 }
-                if (config == null || config.GenSylvanOutpost) {
+                if (WorldGenDensitySave.GetDensity("SylvanOutpost") != StructureDensity.Extinction) {
                     SylvanOutpost.DoLoad<SylvanOutpost>();
                 }
             }

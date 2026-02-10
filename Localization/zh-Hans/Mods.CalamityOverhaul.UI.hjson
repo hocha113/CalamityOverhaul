@@ -338,6 +338,7 @@ OverhaulSettingsUI: {
 	// WorldGen_WGGCollectorText: 拾荒者收集器密度
 	// WorldGen_JunkmanBaseText: 拾荒者基地密度
 	// WorldGen_RocketHutText: 火箭小屋密度
+	// WorldGen_SylvanOutpostText: 护林者前哨密度
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

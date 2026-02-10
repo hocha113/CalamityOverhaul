@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             "WGGCollector",
             "JunkmanBase",
             "RocketHut",
+            "SylvanOutpost",
         ];
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// </summary>
         internal static StructureDensity GetDefaultDensity(string name) {
             return name switch {
-                "JunkmanBase" or "RocketHut" => StructureDensity.Rare,
+                "JunkmanBase" or "RocketHut" or "SylvanOutpost" => StructureDensity.Rare,
                 _ => StructureDensity.Normal
             };
         }
@@ -166,6 +167,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 "WGGCollector" => OverhaulSettingsUI.WorldGen_WGGCollectorText?.Value ?? "拾荒者收集器密度",
                 "JunkmanBase" => OverhaulSettingsUI.WorldGen_JunkmanBaseText?.Value ?? "拾荒者基地密度",
                 "RocketHut" => OverhaulSettingsUI.WorldGen_RocketHutText?.Value ?? "火箭小屋密度",
+                "SylvanOutpost" => OverhaulSettingsUI.WorldGen_SylvanOutpostText?.Value ?? "护林者前哨密度",
                 _ => structName
             };
         }
@@ -189,13 +191,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public override void Initialize() {
             if (CWRServerConfig.Instance == null) return;
-            var config = CWRServerConfig.Instance;
-
-            AddToggle("GenWindGrivenGenerator", () => config.GenWindGrivenGenerator, v => config.GenWindGrivenGenerator = v, false);
-            AddToggle("GenWGGCollector", () => config.GenWGGCollector, v => config.GenWGGCollector = v, false);
-            AddToggle("GenJunkmanBase", () => config.GenJunkmanBase, v => config.GenJunkmanBase = v, false);
-            AddToggle("GenRocketHut", () => config.GenRocketHut, v => config.GenRocketHut = v, false);
-            AddToggle("GenSylvanOutpost", () => config.GenSylvanOutpost, v => config.GenSylvanOutpost = v, false);
 
             foreach (string structName in WorldGenDensitySave.StructureNames) {
                 string toggleName = DensityPrefix + structName;

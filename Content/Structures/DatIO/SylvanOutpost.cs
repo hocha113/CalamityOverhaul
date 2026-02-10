@@ -1,4 +1,5 @@
-﻿using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
+using InnoVault.GameSystem;
 using System;
 using System.IO;
 using Terraria;
@@ -16,37 +17,54 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         public override void SaveData(TagCompound tag)//测试用的复制代码，不用管
             => SaveRegion(tag, new Point16(4311, 478).GetRectangleFromPoints(new Point16(4407, 450)));
         public override void LoadData(TagCompound tag) {
-            RegionSaveData region = tag.GetRegionSaveData();//获取建筑数据
-            Point16 startPos = FindForestSurfacePosition(region.Size);
-            if (startPos == Point16.Zero) {
+            var density = WorldGenDensitySave.GetDensity("SylvanOutpost");
+            if (density == StructureDensity.Extinction) {
                 TagCache.Invalidate(SavePath);
-                return;//找不到合适的位置则跳过生成
+                return;
             }
-            //执行地形清理和融合处理
-            PrepareTerrainForOutpost(startPos, region.Size);
-            LoadRegion(region, startPos);//这个区域宽97高29(物块)
-            //建筑放置后进行地基修复确保自然融入
-            RepairFoundation(startPos, region.Size);
-            SetChestItem(region, startPos);
-            TagCache.Invalidate(SavePath);//释放缓存
+
+            int spawnCount = density switch {
+                StructureDensity.Rare => 1,
+                StructureDensity.Normal => WorldGen.genRand.Next(1, 3),
+                StructureDensity.Common => WorldGen.genRand.Next(2, 4),
+                StructureDensity.Flood => WorldGen.genRand.Next(3, 5),
+                StructureDensity.Everywhere => WorldGen.genRand.Next(4, 7),
+                _ => 1
+            };
+
+            RegionSaveData region = tag.GetRegionSaveData();
+            for (int i = 0; i < spawnCount; i++) {
+                Point16 startPos = FindForestSurfacePosition(region.Size, i);
+                if (startPos == Point16.Zero) {
+                    continue;
+                }
+                PrepareTerrainForOutpost(startPos, region.Size);
+                var placed = LoadRegion(region, startPos);
+                RepairFoundation(startPos, region.Size);
+                SetChestItem(placed, startPos);
+            }
+            TagCache.Invalidate(SavePath);
         }
 
         /// <summary>
         /// 寻找森林环境下的地表位置，采用更激进的搜索策略
         /// </summary>
-        private static Point16 FindForestSurfacePosition(Point16 regionSize) {
+        private static Point16 FindForestSurfacePosition(Point16 regionSize, int instanceIndex = 0) {
             int width = regionSize.X;
             int height = regionSize.Y;
-            int minDistFromSpawn = 180 + WorldGen.GetWorldSize() * 60;//保证最小距离
+            int minDistFromSpawn = 180 + WorldGen.GetWorldSize() * 60
+                + instanceIndex * 120;
 
             //第一阶段：优先在理想距离内搜索森林
-            Point16 result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 200), 600, true);
+            int searchMinDist = Math.Max(minDistFromSpawn, 200) + instanceIndex * 150;
+            int searchMaxDist = 600 + instanceIndex * 200;
+            Point16 result = SearchInRange(width, height, searchMinDist, searchMaxDist, true);
             if (result != Point16.Zero) {
                 return result;
             }
 
             //第二阶段：扩大范围，放宽森林要求
-            result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 150), 900, false);
+            result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 150), 900 + instanceIndex * 200, false);
             if (result != Point16.Zero) {
                 return result;
             }
