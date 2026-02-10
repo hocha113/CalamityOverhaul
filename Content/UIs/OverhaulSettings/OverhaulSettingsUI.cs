@@ -26,6 +26,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText DisableAllText { get; private set; }
         public static LocalizedText WorldGenSettingsText { get; private set; }
         public static LocalizedText WorldGenFooterHintText { get; private set; }
+        public static LocalizedText DensityExtinctionText { get; private set; }
+        public static LocalizedText DensityRareText { get; private set; }
+        public static LocalizedText DensityNormalText { get; private set; }
+        public static LocalizedText DensityCommonText { get; private set; }
+        public static LocalizedText DensityFloodText { get; private set; }
+        public static LocalizedText DensityEverywhereText { get; private set; }
+        public static LocalizedText WorldGen_WindGrivenGeneratorText { get; private set; }
+        public static LocalizedText WorldGen_WGGCollectorText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -128,6 +136,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DisableAllText = this.GetLocalization(nameof(DisableAllText), () => "禁用全部");
             WorldGenSettingsText = this.GetLocalization(nameof(WorldGenSettingsText), () => "世界生成设置");
             WorldGenFooterHintText = this.GetLocalization(nameof(WorldGenFooterHintText), () => "这些设置将在下次创建世界时生效");
+            DensityExtinctionText = this.GetLocalization(nameof(DensityExtinctionText), () => "灭绝");
+            DensityRareText = this.GetLocalization(nameof(DensityRareText), () => "稀少");
+            DensityNormalText = this.GetLocalization(nameof(DensityNormalText), () => "普通");
+            DensityCommonText = this.GetLocalization(nameof(DensityCommonText), () => "常见");
+            DensityFloodText = this.GetLocalization(nameof(DensityFloodText), () => "泛滥");
+            DensityEverywhereText = this.GetLocalization(nameof(DensityEverywhereText), () => "无处不在");
+            WorldGen_WindGrivenGeneratorText = this.GetLocalization(nameof(WorldGen_WindGrivenGeneratorText), () => "风力发电机密度");
+            WorldGen_WGGCollectorText = this.GetLocalization(nameof(WorldGen_WGGCollectorText), () => "拾荒者收集器密度");
 
             ContentSettingsCategory.LoadReflection();
         }

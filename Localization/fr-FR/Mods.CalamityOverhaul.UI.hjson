@@ -331,6 +331,14 @@ OverhaulSettingsUI: {
 	// DisableAllText: Disable All
 	// WorldGenSettingsText: World Generation Settings
 	// WorldGenFooterHintText: These settings will take effect upon the next world creation.
+	// DensityExtinctionText: 灭绝
+	// DensityRareText: 稀少
+	// DensityNormalText: 普通
+	// DensityCommonText: 常见
+	// DensityFloodText: 泛滥
+	// DensityEverywhereText: 无处不在
+	// WorldGen_WindGrivenGeneratorText: 风力发电机密度
+	// WorldGen_WGGCollectorText: 拾荒者收集器密度
 }
 
 // OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

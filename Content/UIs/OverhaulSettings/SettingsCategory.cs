@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// <summary>
         /// 处理点击事件，返回true表示消耗了点击
         /// </summary>
-        public bool HandleClick(Rectangle mouseHitBox) {
+        public virtual bool HandleClick(Rectangle mouseHitBox) {
             if (HoveringCategory) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.3f });
                 Expanded = !Expanded;

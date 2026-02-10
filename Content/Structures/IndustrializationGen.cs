@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Structures.DatIO;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,9 +118,10 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //稀疏性筛选，过滤靠得太近的点位 
+            //稀疏性筛选，过滤靠得太近的点位
             List<Point16> sparseFiltered = new();
-            int minDistance = 60; //曼哈顿距离最小值
+            float distanceFactor = WorldGenDensitySave.GetDistanceFactor("WGGCollector");
+            int minDistance = (int)(60 * distanceFactor); //曼哈顿距离最小值，受密度等级影响
 
             Shuffle(candidateSpots); //打乱点位以避免集中排序偏差
 
@@ -159,10 +161,13 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //最多保留300个（世界级限制）
-            if (finalSpots.Count > 300) {
+            //最多保留的数量受密度等级影响
+            float densityMultiplier = WorldGenDensitySave.GetMultiplier("WGGCollector");
+            int maxCount = (int)(300 * densityMultiplier);
+            if (maxCount <= 0) return;
+            if (finalSpots.Count > maxCount) {
                 Shuffle(finalSpots);
-                finalSpots = finalSpots.Take(300).ToList();
+                finalSpots = finalSpots.Take(maxCount).ToList();
             }
 
             //最后正式放置
@@ -255,9 +260,12 @@ namespace CalamityOverhaul.Content.Structures
                     continue;
                 }
 
+                float windGenDistanceFactor = WorldGenDensitySave.GetDistanceFactor("WindGrivenGenerator");
+                int windGenMinSpacing = (int)(32 * windGenDistanceFactor);
+
                 if (pos.Y == pos2.Y && pos2.Y == pos3.Y
                     && Framing.GetTileSafely(pos2).HasSolidTile() && Framing.GetTileSafely(pos3).HasSolidTile()
-                    && Math.Abs(oldPos.X - pos.X) > 32) {
+                    && Math.Abs(oldPos.X - pos.X) > windGenMinSpacing) {
                     if (WorldGen.InWorld(pos.X, pos3.Y - 1)) {
                         WorldGen.KillTile(pos.X, pos3.Y - 1);
                     }
