@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private float particleSpawnTimer;
 
         //面板尺寸
-        private static float PanelWidth => Main.screenWidth * 0.8f;
+        private static float PanelWidth => Main.screenWidth * 0.6f;
         private static float PanelHeight => Main.screenHeight * 0.8f;
         //布局常量
         private const float Padding = 24f;
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
-
+        public override float RenderPriority => 1.1f;
         public static bool OnActive() {
             if (Instance == null) {
                 return false;
@@ -286,8 +286,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //计算面板位置(居中)
             float scaledWidth = PanelWidth * panelScaleAnim;
             float scaledHeight = PanelHeight * panelScaleAnim;
-            Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight / 2f + panelSlideOffset);
-            DrawPosition = panelCenter - new Vector2(scaledWidth, scaledHeight) / 2f;
+            Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight / 2 + panelSlideOffset);
+            DrawPosition = panelCenter - new Vector2(scaledWidth, scaledHeight) / 2f + new Vector2(0, (Main.screenHeight - PanelHeight) / 2);
             Size = new Vector2(scaledWidth, scaledHeight);
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)scaledWidth, (int)scaledHeight);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
         }
 
-        private void OnClose() {
+        public void OnClose() {
             SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
             Main.menuMode = 0;
             if (!closing) {

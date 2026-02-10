@@ -205,8 +205,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "腐巢意志/血肉宿主");
             Description = this.GetLocalization(nameof(Description), () => "击败腐巢意志或血肉宿主");
 
-            IconType = QuestIconType.NPC;
-            IconNPCType = CWRID.NPC_HiveMind;
+            IconType = QuestIconType.Texture;
+            IconTexturePath = "CalamityMod/NPCs/HiveMind/HiveMind_Head_Boss";
             Position = new Vector2(150, 0);
             AddParent<EaterofWorldsQuest>();
 

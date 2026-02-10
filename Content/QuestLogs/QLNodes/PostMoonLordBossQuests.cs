@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria.ModLoader;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.NPC;
             //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "Bumblefuck", out ModNPC bumblefuckNPC)) {
+            if (ModContent.TryFind("CalamityMod", "Dragonfolly", out ModNPC bumblefuckNPC)) {
                 IconNPCType = bumblefuckNPC.Type;
             }
             Position = new Vector2(0, 150);

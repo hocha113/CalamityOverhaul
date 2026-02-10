@@ -1,4 +1,5 @@
-using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
+ï»¿using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,26 +8,26 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
-    /// Ö÷²Ëµ¥Á¢»æUI»ùÀà
+    /// ä¸»èœå•ç«‹ç»˜UIåŸºç±»
     /// </summary>
     internal abstract class BasePortraitUI : UIHandle, ICWRLoader
     {
-        #region Í¨ÓÃ×Ö¶Î
-        protected float _iconAlpha = 0f; //Í·Ïñ¿òÍ¸Ã÷¶È
-        protected Vector2 _portraitOffset = Vector2.Zero; //Á¢»æÆ«ÒÆ
-        protected int _autoSaveTimer = 0; //×Ô¶¯±£´æ¼ÆÊ±Æ÷
-        protected const int AutoSaveInterval = 300; //5Ãë×Ô¶¯±£´æÒ»´Î(60Ö¡*5Ãë)
-        protected bool _needsSave = false; //±ê¼ÇÊÇ·ñĞèÒª±£´æ
+        #region é€šç”¨å­—æ®µ
+        protected float _iconAlpha = 0f; //å¤´åƒæ¡†é€æ˜åº¦
+        protected Vector2 _portraitOffset = Vector2.Zero; //ç«‹ç»˜åç§»
+        protected int _autoSaveTimer = 0; //è‡ªåŠ¨ä¿å­˜è®¡æ—¶å™¨
+        protected const int AutoSaveInterval = 300; //5ç§’è‡ªåŠ¨ä¿å­˜ä¸€æ¬¡(60å¸§*5ç§’)
+        protected bool _needsSave = false; //æ ‡è®°æ˜¯å¦éœ€è¦ä¿å­˜
 
-        //¶¯»­¼ÆÊ±Æ÷
+        //åŠ¨ç”»è®¡æ—¶å™¨
         protected float _pulseTimer = 0f;
 
-        //UIÎ»ÖÃºÍ³ß´ç
+        //UIä½ç½®å’Œå°ºå¯¸
         protected const float IconSize = 60f;
         protected const float IconBottomMargin = 46f;
-        protected const float IconSpacing = 80f; //ÓëÁíÒ»¸öÍ·ÏñµÄ¼ä¾à
+        protected const float IconSpacing = 80f; //ä¸å¦ä¸€ä¸ªå¤´åƒçš„é—´è·
 
-        //Í¼±êÎ»ÖÃ(ÓÉ×ÓÀàÊµÏÖ¾ßÌåÆ«ÒÆ)
+        //å›¾æ ‡ä½ç½®(ç”±å­ç±»å®ç°å…·ä½“åç§»)
         protected abstract Vector2 GetIconBasePosition();
 
         protected Vector2 IconPosition => GetIconBasePosition() + _portraitOffset;
@@ -40,50 +41,51 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
-        //È·±£×ÊÔ´ÒÑ¼ÓÔØ
+        //ç¡®ä¿èµ„æºå·²åŠ è½½
         public override bool Active => MenuSave.IsPortraitUnlocked() &&
                                       CWRLoad.OnLoadContentBool &&
                                       Main.gameMenu &&
                                       IsResourceLoaded();
 
-        //¼ì²é×ÊÔ´ÊÇ·ñÒÑÕıÈ·¼ÓÔØ(ÓÉ×ÓÀàÊµÏÖ)
+        //æ£€æŸ¥èµ„æºæ˜¯å¦å·²æ­£ç¡®åŠ è½½(ç”±å­ç±»å®ç°)
         protected abstract bool IsResourceLoaded();
         #endregion
 
-        #region Í¨ÓÃ·½·¨
+        #region é€šç”¨æ–¹æ³•
         /// <summary>
-        /// ¼ì²éÍæ¼ÒÊÇ·ñÔÚÖ÷²Ëµ¥(menuMode == 0),¶ø²»ÊÇÔÚ×Ó²Ëµ¥ÖĞ
+        /// æ£€æŸ¥ç©å®¶æ˜¯å¦åœ¨ä¸»èœå•(menuMode == 0),è€Œä¸æ˜¯åœ¨å­èœå•ä¸­
         /// </summary>
         protected static bool IsInMainMenu() {
             return Main.menuMode == 0;
         }
 
         /// <summary>
-        /// ¼ì²éÍ¼±êÊÇ·ñÓ¦¸Ã¿É¼û(½öÔÚÖ÷²Ëµ¥ÏÔÊ¾,½øÈë×Ó²Ëµ¥Ê±Òş²Ø)
+        /// æ£€æŸ¥å›¾æ ‡æ˜¯å¦åº”è¯¥å¯è§(ä»…åœ¨ä¸»èœå•æ˜¾ç¤º,è¿›å…¥å­èœå•æ—¶éšè—)
         /// </summary>
         protected static bool ShouldShowIcon() {
             return IsInMainMenu();
         }
 
         /// <summary>
-        /// ¼ì²éÊÇ·ñ¿ÉÒÔ½»»¥
+        /// æ£€æŸ¥æ˜¯å¦å¯ä»¥äº¤äº’
         /// </summary>
         protected static bool CanInteract() {
             return IsInMainMenu() &&
+                   !OverhaulSettingsUI.OnActive() &&
                    !FeedbackUI.Instance.OnActive() &&
                    !AcknowledgmentUI.OnActive();
         }
 
         /// <summary>
-        /// ±ê¼ÇĞèÒª±£´æ
+        /// æ ‡è®°éœ€è¦ä¿å­˜
         /// </summary>
         protected void MarkNeedsSave() {
             _needsSave = true;
-            _autoSaveTimer = 0; //ÖØÖÃ×Ô¶¯±£´æ¼ÆÊ±Æ÷
+            _autoSaveTimer = 0; //é‡ç½®è‡ªåŠ¨ä¿å­˜è®¡æ—¶å™¨
         }
 
         /// <summary>
-        /// ´¦Àí×Ô¶¯±£´æÂß¼­
+        /// å¤„ç†è‡ªåŠ¨ä¿å­˜é€»è¾‘
         /// </summary>
         protected void HandleAutoSave() {
             if (_needsSave) {
@@ -96,7 +98,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         /// <summary>
-        /// ¸üĞÂÍ¼±êÍ¸Ã÷¶È
+        /// æ›´æ–°å›¾æ ‡é€æ˜åº¦
         /// </summary>
         protected void UpdateIconAlpha() {
             if (!Main.gameMenu || !IsResourceLoaded()) {
@@ -104,15 +106,15 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //½øÈë×Ó²Ëµ¥Ê±¿ìËÙµ­³öÍ¼±ê
+            //è¿›å…¥å­èœå•æ—¶å¿«é€Ÿæ·¡å‡ºå›¾æ ‡
             if (!ShouldShowIcon()) {
                 if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; //¿ìËÙµ­³ö
+                    _iconAlpha -= 0.1f; //å¿«é€Ÿæ·¡å‡º
                     if (_iconAlpha < 0f) _iconAlpha = 0f;
                 }
             }
             else {
-                //½öÔÚÖ÷²Ëµ¥Ê±½¥ÈëÍ¼±ê
+                //ä»…åœ¨ä¸»èœå•æ—¶æ¸å…¥å›¾æ ‡
                 if (_iconAlpha < 1f) {
                     _iconAlpha += 0.02f;
                 }
@@ -120,7 +122,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         /// <summary>
-        /// ¸üĞÂÂö³å¼ÆÊ±Æ÷
+        /// æ›´æ–°è„‰å†²è®¡æ—¶å™¨
         /// </summary>
         protected void UpdatePulseTimer() {
             _pulseTimer += 0.02f;
@@ -130,12 +132,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         /// <summary>
-        /// »æÖÆ»ù´¡±³¾°¿ò
+        /// ç»˜åˆ¶åŸºç¡€èƒŒæ™¯æ¡†
         /// </summary>
         protected void DrawBaseBackground(SpriteBatch sb, Rectangle bgRect, float alpha, bool hoverIcon, Color bgColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //ĞüÍ£¹âĞ§(ÓÉ×ÓÀàÌá¹©ÑÕÉ«)
+            //æ‚¬åœå…‰æ•ˆ(ç”±å­ç±»æä¾›é¢œè‰²)
             if (hoverIcon) {
                 Color hoverGlow = GetHoverGlowColor() * (alpha * 0.35f);
                 for (int i = 0; i < 6; i++) {
@@ -146,34 +148,34 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //Âö³å±³¾°
+            //è„‰å†²èƒŒæ™¯
             float pulse = (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f;
             Color pulseColor = GetPulseColor() * (alpha * 0.15f * pulse);
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
         }
 
         /// <summary>
-        /// »ñÈ¡ĞüÍ£¹âÔÎÑÕÉ«(ÓÉ×ÓÀàÊµÏÖ)
+        /// è·å–æ‚¬åœå…‰æ™•é¢œè‰²(ç”±å­ç±»å®ç°)
         /// </summary>
         protected abstract Color GetHoverGlowColor();
 
         /// <summary>
-        /// »ñÈ¡Âö³åÑÕÉ«(ÓÉ×ÓÀàÊµÏÖ)
+        /// è·å–è„‰å†²é¢œè‰²(ç”±å­ç±»å®ç°)
         /// </summary>
         protected abstract Color GetPulseColor();
 
         /// <summary>
-        /// ´ÓMenuSave¼ÓÔØ±£´æµÄUI×´Ì¬(ÓÉ×ÓÀàÊµÏÖ)
+        /// ä»MenuSaveåŠ è½½ä¿å­˜çš„UIçŠ¶æ€(ç”±å­ç±»å®ç°)
         /// </summary>
         public abstract void LoadSavedState();
 
         /// <summary>
-        /// ±£´æµ±Ç°UI×´Ì¬µ½MenuSave(ÓÉ×ÓÀàÊµÏÖ)
+        /// ä¿å­˜å½“å‰UIçŠ¶æ€åˆ°MenuSave(ç”±å­ç±»å®ç°)
         /// </summary>
         public abstract void SaveCurrentState();
         #endregion
 
-        #region ÉúÃüÖÜÆÚ
+        #region ç”Ÿå‘½å‘¨æœŸ
         void ICWRLoader.SetupData() { }
 
         public override void SetStaticDefaults() {
@@ -191,18 +193,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             SaveCurrentState();
             OnUnLoad();
 
-            //ÖØÖÃ»ù´¡×´Ì¬
+            //é‡ç½®åŸºç¡€çŠ¶æ€
             _iconAlpha = 0f;
             _portraitOffset = Vector2.Zero;
         }
 
         /// <summary>
-        /// ×ÓÀàµÄSetStaticDefaultsÂß¼­
+        /// å­ç±»çš„SetStaticDefaultsé€»è¾‘
         /// </summary>
         protected virtual void OnSetStaticDefaults() { }
 
         /// <summary>
-        /// ×ÓÀàµÄUnLoadÂß¼­
+        /// å­ç±»çš„UnLoadé€»è¾‘
         /// </summary>
         protected virtual void OnUnLoad() { }
         #endregion

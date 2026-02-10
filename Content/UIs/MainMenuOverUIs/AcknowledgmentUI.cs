@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private const int projTimer = 4600;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
-
+        public override float RenderPriority => 1.2f;
         internal class NPCGhostItem : ProjItem
         {
             private float rotation;
