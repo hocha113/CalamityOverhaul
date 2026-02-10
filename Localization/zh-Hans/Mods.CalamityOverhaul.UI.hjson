@@ -336,6 +336,16 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: 无处不在
 	ResetDefaultText: 重置为默认
 	DensityTooltipText: 结构生成密度
+	CompatibilitySettingsText: 兼容性设置
+	CompatibilityFooterHintText: 这些选项用于处理与其他模组的兼容性问题
+	CompatHighFPSLabelText: 自动关闭 HighFPSSupport 运动插值
+	CompatHighFPSTooltipText:
+		'''
+		HighFPSSupport 的运动插值功能会导致部分手持武器显示、弹壳抛射等视觉效果出现严重错位
+		开启此选项后，会在进入世界时自动关闭该功能以保证表现正常
+		[c/FF6666:不建议关闭此选项，除非您明确接受部分视觉效果的损坏并理解缘由]
+		'''
+	CompatHighFPSNotInstalledText: "[c/888888:（当前未安装 HighFPSSupport 模组，此选项暂无效果）]"
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

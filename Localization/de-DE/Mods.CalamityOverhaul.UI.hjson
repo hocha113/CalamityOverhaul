@@ -1,344 +1,351 @@
 ItemFilterUI: {
-	// HintText: Left-click to add an item
-	// HintText2: Left-click to remove an item
-	// CloseHint: Press [ESC] or [Right-click] to close
+	HintText: Linksklick zum Hinzufügen
+	HintText2: Linksklick zum Entfernen
+	CloseHint: "[ESC] oder [Rechtsklick] zum Schließen"
 }
 
 LegendUpgradeConfirmUI: {
-	// TitleText: Legendary Weapon Upgrade Confirmation
-	/* DescText:
+	TitleText: Bestätigung für Legendäres Waffen-Upgrade
+	DescText:
 		'''
-		Current world level detected 
-		as higher than weapon level.
-		Upgrade {0} to level {1}?
-		''' */
-	// ConfirmText: Confirm Upgrade
-	// CancelText: Cancel
-	// Success: "[ITEM] has been upgraded to level [LEVEL]."
+		Das aktuelle Weltlevel ist höher als das Waffenlevel.
+		Möchtest du {0} auf Level {1} aufwerten?
+		'''
+	ConfirmText: Upgrade bestätigen
+	CancelText: Abbrechen
+	Success: "[ITEM] wurde auf Level [LEVEL] aufgewertet"
 }
 
 QuestTracker: {
 	DamageTrackerSystem: {
-		// QuestFailedPrefix: Quest Failed
-		// QuestCompletedPrefix: Quest Completed!
-		// FailureReasonWrongWeapon: Did not land the killing blow with the specified weapon
-		// FailureReasonInsufficientDamage: Insufficient damage contribution from the weapon
-		// SuccessDamageContribution: Damage Contribution
+		QuestFailedPrefix: Quest fehlgeschlagen
+		QuestCompletedPrefix: Quest abgeschlossen!
+		FailureReasonWrongWeapon: Letzter Schlag nicht mit der geforderten Waffe ausgeführt
+		FailureReasonInsufficientDamage: Waffenschaden-Anteil unzureichend
+		SuccessDamageContribution: Schaden-Anteil
 	}
 }
 
 DoGQuestTrackerUI: {
-	// QuestTitle: Commission: Hunt the Devourer of Gods
-	// DamageContribution: Heartcarver Damage
-	// RequiredContribution: Required: 80%
+	QuestTitle: Auftrag: Jagd auf den Götterfresser
+	DamageContribution: Herzensbrecher-Schaden
+	RequiredContribution: Benötigt: 80%
 }
 
 PallbearerQuestTrackerUI: {
-	// QuestTitle: Commission: Hunt the Profaned Goddess
-	// DamageContribution: Pallbearer Damage
-	// RequiredContribution: Required: 80%
+	QuestTitle: Auftrag: Jagd auf die Entweihten Wächter
+	DamageContribution: Sargträger-Schaden
+	RequiredContribution: Benötigt: 80%
 }
 
 YharonQuestTrackerUI: {
-	// QuestTitle: Commission: Hunt the Incineration Dragon
-	// DamageContribution: Oni Machete Damage
-	// RequiredContribution: Required: 75%
+	QuestTitle: Auftrag: Jagd auf den Dschungeldrachen
+	DamageContribution: Geisterklingen-Schaden
+	RequiredContribution: Benötigt: 75%
 }
 
 SeaDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Weiter
+	FastHint: Beschleunigen
 }
 
 BrimstoneDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Weiter
+	FastHint: Beschleunigen
 }
 
 DraedonDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Weiter
+	FastHint: Beschleunigen
 }
 
 ExoMechdusaSumRender: {
-	// ThanatosDescription: Thanatos, a terrifying giant serpent equipped with heavy armor and countless autocannons.
-	// AresDescription: Ares, a colossus armed with four super-Gausspulse weapons.
-	// ArtemisApolloDescription: Artemis and Apollo, an exceptionally durable pair of automata with highly unstable energy reserves.
+	ThanatosDescription: Thanatos, eine schreckliche Schlange mit dicker Panzerung und zahllosen Maschinenkanonen
+	AresDescription: Ares, ein gewaltiges Konstrukt, ausgestattet mit vier Exo-Superwaffen
+	ArtemisApolloDescription: Artemis und Apollo, ein Paar extrem widerstandsfähiger Automaten mit instabilen Energiereserven
 }
 
 CQETConstructorTP: {
-	// GuideText_NeedBlocks: Needs {0} Starflow Plated Block
-	// GuideText_Ready: Ready!
-	// GuideText_GroundIncomplete: The Ground Is Incomplete!
+	GuideText_NeedBlocks: Benötigt {0} Exo-Plattierungen
+	GuideText_Ready: Bereit!
+	GuideText_GroundIncomplete: Untergrund unvollständig!
 }
 
 DeploySignaltowerTrackerUI: {
-	// QuestTitle: Quantum Entanglement Network Deployment
-	// DamageContribution: Deployment Progress
-	// RequiredContribution: Goal: 10 Signal Towers
-	// NearestTargetText: Nearest Target Point
-	// NodeText: Entanglement Node #[NUM]
-	// StatusText: Status
-	// InRangeText: In Range
-	// DistanceText: Distance
-	// QuestCompleteText: Mission Complete!
+	QuestTitle: Quantenverschränkungs-Netzwerk
+	DamageContribution: Bereitstellungsfortschritt
+	RequiredContribution: Ziel: 10 Signaltürme
+	NearestTargetText: Nächstes Ziel
+	NodeText: Verschränkungsknoten Nr. [NUM]
+	StatusText: Status
+	InRangeText: In Reichweite
+	DistanceText: Distanz
+	QuestCompleteText: Quest abgeschlossen!
 }
 
 SignalTowerTargetRenderer: {
-	// InRangeText: In Range
-	// TargetCompletedText: Target Point [NUM] Complete!
-	// AllCompletedText: Quantum Entanglement Network Complete!
+	InRangeText: In Reichweite
+	TargetCompletedText: Zielpunkt [NUM] fertiggestellt!
+	AllCompletedText: Quantenverschränkungs-Netzwerk fertiggestellt!
 }
 
 DraedonCallUI: {
-	// TitleText: Call Draedon
-	// TitleTextDisabled: Call Disabled
-	// CallButtonText: Initiate Call
-	// CallingText: Calling...
-	// DisabledButtonText: Disabled
-	// ConnectingText: Connecting...
-	// ConnectedText: Connected
-	// DisabledReasonText: Draedon Has Been Called
+	TitleText: Draedon rufen
+	TitleTextDisabled: Anruf deaktiviert
+	CallButtonText: Anruf starten
+	CallingText: Rufe an...
+	DisabledButtonText: Deaktiviert
+	ConnectingText: Verbinde...
+	ConnectedText: Verbunden
+	DisabledReasonText: Draedon wurde bereits gerufen
 }
 
 TzeentchDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Weiter
+	FastHint: Beschleunigen
 }
 
 EnchantUI: {
-	// ExpandHint: Expand Enchant Menu
-	// CollapseHint: Collapse Enchant Menu
-	// EnchantTitle: Enchant
+	ExpandHint: Schmiede-Interface erweitern
+	CollapseHint: Schmiede-Interface einklappen
+	EnchantTitle: Schmieden
 }
 
 ConstructionBlueprintUI: {
-	// UITitle: Self-Constructor (Quantum Entanglement Tower)
-	// MaterialsRequired: Materials Required:
-	// CloseHint: Click to Close
-	// CraftingStation: Crafting Station:
+	UITitle: Autokonstrukteur (Quantenturm)
+	MaterialsRequired: Benötigte Materialien:
+	CloseHint: Klicken zum Schließen
+	CraftingStation: Handwerksstation:
 }
 
 Generator: {
 	ThermalGeneratorUI: {
-		// TitleText: Thermal Generator
-		// FuelLabel: Fuel
-		// TemperatureLabel: Temperature
-		// PowerLabel: Power
-		// StatusLabel: Status:
-		// ActiveText: Active
-		// IdleText: Idle
-		// EfficiencyText: Efficiency: {0}%
-		// InsertFuelHint: Click to Insert/Extract Fuel
-		// TemperatureUnit: °C
-		// PowerUnit: UE
+		TitleText: Wärmegenerator
+		FuelLabel: Treibstoff
+		TemperatureLabel: Temperatur
+		PowerLabel: Energie
+		StatusLabel: Status:
+		ActiveText: Aktiv
+		IdleText: Leerlauf
+		EfficiencyText: Effizienz: {0}%
+		InsertFuelHint: Klicken zum Einlegen/Entnehmen von Treibstoff
+		TemperatureUnit: °C
+		PowerUnit: UE
 	}
 }
 
 ChargingStationUI: {
-	// TitleText: Charging Station
-	// ItemSlotLabel: Charging Item
-	// BatterySlotLabel: Battery
-	// StationEnergyLabel: Station Energy
-	// ItemChargeLabel: Item Charge
-	// StatusLabel: Status:
-	// ChargingText: Charging
-	// IdleText: Idle
-	// InsertItemHint: Insert item to charge
-	// InsertBatteryHint: Insert Draedon Power Cell
-	// EnergyUnit: UE
-	// StationText1: Only accepts rechargeable items!
-	// StationText2: Only accepts Draedon Power Cells!
+	TitleText: Ladestation
+	ItemSlotLabel: Lade-Item
+	BatterySlotLabel: Batterie
+	StationEnergyLabel: Stationsenergie
+	ItemChargeLabel: Item-Ladung
+	StatusLabel: Status:
+	ChargingText: Lädt
+	IdleText: Leerlauf
+	InsertItemHint: Aufladbares Item einlegen
+	InsertBatteryHint: Draedon-Energiezelle einlegen
+	EnergyUnit: UE
+	StationText1: Nur aufladbare Items erlaubt!
+	StationText2: Nur Draedon-Energiezellen erlaubt!
 }
 
 SulfseaDialogueBox: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
+	ContinueHint: Weiter
+	FastHint: Beschleunigen
 }
 
 OldDukeShopUI: {
-	// TitleText: Old Duke's Shop
-	// CurrencyName: Ocean Scraps
-	// HintTooltip: Scroll/Drag Bar
+	TitleText: Laden des alten Herzogs
+	CurrencyName: Ozeanfragmente
+	HintTooltip: Scrollen/Leiste ziehen
 }
 
 FindCampsiteUI: {
-	// QuestTitle: The Abyss Beckons
-	// DamageContribution: Quest Progress
-	// RequiredContribution: Objective: Find and speak to the Old Duke
-	// ObjectiveText: Objective
-	// LocationText: Go to the Old Duke's Campsite
-	// DistanceText: Distance
-	// InteractText: Speak to the Old Duke
-	// QuestCompleteText: Quest Complete!
-	// HoldFragmentHintText: Hold Ocean Scraps to view direction
+	QuestTitle: Der Abgrund ruft
+	DamageContribution: Quest-Fortschritt
+	RequiredContribution: Ziel: Finde den alten Herzog und sprich mit ihm
+	ObjectiveText: Ziel
+	LocationText: Gehe zum Lager des alten Herzogs
+	DistanceText: Distanz
+	InteractText: Sprich mit dem alten Herzog
+	QuestCompleteText: Quest abgeschlossen!
+	HoldFragmentHintText: Halte ein Ozeanfragment, um die Richtung zu sehen
 }
 
 FindFragmentUI: {
-	// QuestTitle: The Abyss Beckons
-	// DamageContribution: Collection Progress
-	// RequiredContribution: Objective: Collect 777 Ocean Scraps
-	// ObjectiveText: Objective
-	// CollectFragmentsText: Collect Ocean Scraps
-	// CurrentFragmentsText: Currently Held
-	// ReturnToCampsiteText: Return to campsite to submit
-	// QuestCompleteText: Quest Complete!
-	// HintText: Fish or loot creatures in the Ocean
+	QuestTitle: Der Abgrund ruft
+	DamageContribution: Sammelfortschritt
+	RequiredContribution: Ziel: Sammle 777 Ozeanfragmente
+	ObjectiveText: Ziel
+	CollectFragmentsText: Ozeanfragmente sammeln
+	CurrentFragmentsText: Aktuell im Besitz
+	ReturnToCampsiteText: Zum Lager zurückkehren und abgeben
+	QuestCompleteText: Quest abgeschlossen!
+	HintText: Fische oder plündere Kreaturen in der Ozeanzone
 }
 
 OceanRaidersUI: {
-	// TitleText: Ocean Devourer Storage
-	// StorageText: Storage
+	TitleText: Speicher des Ozeanfressers
+	StorageText: Lagerraum
 }
 
 OldDuchestUI: {
-	// TitleText: Old Chest
-	// StorageText: Storage Space
+	TitleText: Alte Truhe
+	StorageText: Lagerraum
 }
 
 QuestLog: {
-	// ObjectiveText: Objective
-	// RewardText: Reward
-	// ReceiveAwardText: Claim Reward
-	// ProgressText: Quest Progress
-	// QuickReceiveAwardText: Quick Claim
-	// StyleSwitchText: Switch Style
-	// NightModeText: Night Mode
-	// ResetViewText: Reset View
-	// SunModeText: Daytime Mode
-	// LauncherHoverText: Left-Click Toggle, Right-Click Drag
+	ObjectiveText: Questziel
+	RewardText: Belohnung
+	ReceiveAwardText: Belohnung abholen
+	ProgressText: Fortschritt
+	QuickReceiveAwardText: Alles abholen
+	StyleSwitchText: Stil wechseln
+	NightModeText: Nachtmodus
+	ResetViewText: Ansicht zurücksetzen
+	SunModeText: Tagmodus
+	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
 }
 
-// QuestNotificationSystem.Text1: Quest Complete
+QuestNotificationSystem.Text1: Quest abgeschlossen
 
 CompatibilityAlert: {
-	// TitleText: Compatibility Mode Active
-	/* ContentText:
+	TitleText: Kompatibilitätsmodus aktiv
+	ContentText:
 		'''
-		Major content mods are missing or version conflicts have been detected. 
-		Some features are disabled or running in restricted mode.
-		If this is intentional, please ignore this message.
-		If this is due to outdated versions, please wait for an update.
-		The development team usually releases compatibility patches within 12 hours.
-		''' */
+		Hauptinhalte fehlen oder Versionskonflikte erkannt. Einige Funktionen wurden automatisch deaktiviert oder herabgestuft.
+		Wenn dies beabsichtigt ist, ignoriere diese Warnung.
+		Wenn dies auf veraltete Versionen zurückzuführen ist, warte bitte auf ein Mod-Update.
+		Das Entwicklerteam veröffentlicht Kompatibilitätspatches normalerweise innerhalb von 12 Stunden.
+		'''
 }
 
 QuestWorldConfirmUI: {
-	// TitleText: Quest Check Confirmation
-	/* DescText:
+	TitleText: Quest-Prüfung bestätigen
+	DescText:
 		'''
-		Detected entry from another world.
-		Do you want to check quest progress 
-		in the current world?
-		''' */
-	// ConfirmText: Check Quests
-	// CancelText: Skip
-	// EnabledText: Quest Check Enabled
-	// DisabledText: Quest Check Skipped
-	/* DisabledOverlayText:
+		Du hast diese Welt von einer anderen Welt aus betreten.
+		Soll der Quest-Fortschritt in der aktuellen Welt geprüft werden?
 		'''
-		Quest checking is disabled in this world.
-		Re-enter the world to choose again.
-		''' */
+	ConfirmText: Quest prüfen
+	CancelText: Überspringen
+	EnabledText: Quest-Prüfung aktiviert
+	DisabledText: Quest-Prüfung übersprungen
+	DisabledOverlayText:
+		'''
+		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.
+		Betritt die Welt erneut, um die Konfiguration neu zu wählen.
+		'''
 }
 
 Incinerator: {
 	IncineratorUI: {
-		// TitleText: Electric Incinerator
-		// InputLabel: Input
-		// OutputLabel: Output
-		// ProgressLabel: Progress
-		// PowerLabel: Power
-		// StatusLabel: Status:
-		// SmeltingText: Incinerating
-		// IdleText: Idle
-		// NoPowerText: No Power
-		// InputHint: Place items to incinerate
-		// OutputHint: Click to retrieve output
-		// PowerUnit: UE
+		TitleText: Elektrischer Verbrennungsofen
+		InputLabel: Eingang
+		OutputLabel: Ausgang
+		ProgressLabel: Fortschritt
+		PowerLabel: Energie
+		StatusLabel: Status:
+		SmeltingText: Verbrennt
+		IdleText: Leerlauf
+		NoPowerText: Kein Strom
+		InputHint: Verbrennbares Material einlegen
+		OutputHint: Klicken, um Produkt zu entnehmen
+		PowerUnit: UE
 	}
 }
 
 ItemPipeline: {
-	// Normal: Normal
-	// Output: Output
-	// Input: Input
-	// NotEndpointHint: Input/Output modes can only be set at pipe endpoints
+	Normal: Normal
+	Output: Ausgang
+	Input: Eingang
+	NotEndpointHint: Eingang/Ausgang kann nur am Ende der Leitung gesetzt werden
 }
 
 ThrowerUI: {
-	// TitleText: Item Thrower
-	// InventoryLabel: Storage
-	// ControlLabel: Control Panel
-	// SpeedLabel: Throw Velocity
-	// AngleLabel: Spread Angle
-	// IntervalLabel: Throw Interval
-	// DirectionLabel: Throw Direction
-	// StartText: Start
-	// StopText: Stop
-	// StatusRunning: Running
-	// StatusIdle: Idle
-	// StatusNoEnergy: No Energy
-	// StatusNoItems: No Items
-	// EnergyLabel: Energy
-	// DropHint: Place Items
-	// AmmoModeOnText: Fire Ammo
-	// AmmoModeOffText: Throw Item
-	// AmmoModeHint: Ammo Mode: Fires projectiles corresponding to inserted ammo
+	TitleText: Item-Werfer
+	InventoryLabel: Lager
+	ControlLabel: Kontrollpanel
+	SpeedLabel: Wurfkraft
+	AngleLabel: Streuwinkel
+	IntervalLabel: Wurfintervall
+	DirectionLabel: Wurfrichtung
+	StartText: Start
+	StopText: Stopp
+	StatusRunning: Läuft
+	StatusIdle: Leerlauf
+	StatusNoEnergy: Zu wenig Energie
+	StatusNoItems: Keine Items
+	EnergyLabel: Energie
+	DropHint: Items hier ablegen
+	AmmoModeOnText: Munitionsmodus
+	AmmoModeOffText: Item-Wurfmodus
+	AmmoModeHint: Munitionsmodus: Feuert entsprechende Projektile ab, wenn Munition eingelegt wird
 }
 
 SHPCSoulSelectUI: {
-	// TitleText: SOUL CORE
-	// SoulNameLight: Light
-	// SoulNameNight: Night
-	// SoulNameFlight: Flight
-	// SoulNameMight: Might
-	// SoulNameSight: Sight
-	// SoulNameFright: Fright
-	// TooltipSoulPrefix: "Soul of "
-	// StatusActive: "[ACTIVE]"
-	// StatusClickToSelect: "[CLICK TO SELECT]"
+	TitleText: Seelenkern
+	SoulNameLight: Licht
+	SoulNameNight: Nacht
+	SoulNameFlight: Flug
+	SoulNameMight: Macht
+	SoulNameSight: Sicht
+	SoulNameFright: Schrecken
+	TooltipSoulPrefix: ""
+	StatusActive: "[AKTIV]"
+	StatusClickToSelect: "[KLICKEN ZUM WÄHLEN]"
 }
 
 ElysiumUI: {
-	// TitleText: Elysium
-	// DiscipleCountText: Disciples
-	// TotalBonusText: Divine Blessing
-	// DamageText: Damage
-	// DefenseText: Defense
-	// CritText: Crit
-	// RegenText: Regen
-	// EmptySlotText: Empty
-	// JudasWarningText: Warning: Judas's betrayal lurks here
-	// BonusLabel: Passive
-	// AbilityLabel: Ability
-	// DragHintText: Drag Disciples to swap identities
-	// SwapSuccessText: Identity swap complete
-	// SwapFailText: Swap failed
-	// CannotSwapText: Cannot swap to this position
+	TitleText: Elysium
+	DiscipleCountText: Jünger
+	TotalBonusText: Heiliger Segen
+	DamageText: Schaden
+	DefenseText: Abwehr
+	CritText: Kritisch
+	RegenText: Regeneration
+	EmptySlotText: Leer
+	JudasWarningText: WARNUNG: Der Verrat des Judas lauert hier
+	BonusLabel: Passiv
+	AbilityLabel: Fähigkeit
+	DragHintText: Ziehe Jünger, um ihre Identität zu ändern
+	SwapSuccessText: Identitätswechsel abgeschlossen
+	SwapFailText: Wechsel fehlgeschlagen
+	CannotSwapText: Wechsel an diese Position nicht möglich
 }
 
-// MenuModify.OverhaulSettingsButtonText: Overhaul Settings
+MenuModify.OverhaulSettingsButtonText: Overhaul-Einstellungen
 
 OverhaulSettingsUI: {
-	// TitleText: Overhaul Settings
-	// CloseText: Close
-	// ContentSettingsText: Content Settings
-	// ReloadHintText: "[c/FF6666:* Options marked with this require a mod reload to take effect]"
-	// WeaponOverrideText: Weapon Override Management
-	// SearchHintText: Search weapon name or keywords...
-	// EnableAllText: Enable All
-	// DisableAllText: Disable All
-	// WorldGenSettingsText: World Generation Settings
-	// WorldGenFooterHintText: These settings will take effect upon the next world creation.
-	// DensityExtinctionText: Extinct
-	// DensityRareText: Rare
-	// DensityNormalText: Normal
-	// DensityCommonText: Common
-	// DensityFloodText: Abundant
-	// DensityEverywhereText: Everywhere
-	// ResetDefaultText: Reset to Default
-	// DensityTooltipText: Structure Generation Density
+	TitleText: Overhaul-Einstellungen
+	CloseText: Schließen
+	ContentSettingsText: Inhaltseinstellungen
+	ReloadHintText: "[c/FF6666:* Optionen mit dieser Markierung erfordern ein Neuladen der Mod]"
+	WeaponOverrideText: Waffenmodifikations-Verwaltung
+	SearchHintText: Waffennamen oder Stichwort suchen...
+	EnableAllText: Alle aktivieren
+	DisableAllText: Alle deaktivieren
+	WorldGenSettingsText: Weltgenerierungs-Einstellungen
+	WorldGenFooterHintText: Diese Einstellungen werden bei der nächsten Welterstellung wirksam
+	DensityExtinctionText: Ausgestorben
+	DensityRareText: Selten
+	DensityNormalText: Normal
+	DensityCommonText: Häufig
+	DensityFloodText: Im Überfluss
+	DensityEverywhereText: Überall
+	ResetDefaultText: Auf Standard zurücksetzen
+	DensityTooltipText: Strukturgenerierungsdichte
+	CompatibilitySettingsText: Kompatibilitätseinstellungen
+	CompatibilityFooterHintText: Diese Optionen dienen zur Behebung von Problemen mit anderen Mods
+	CompatHighFPSLabelText: HighFPSSupport Bewegungsinterpolation automatisch deaktivieren
+	CompatHighFPSTooltipText:
+		'''
+		Die Bewegungsinterpolation von HighFPSSupport verursacht starke Darstellungsfehler bei gehaltenen Waffen, Patronenhülsen usw.
+		Das Aktivieren dieser Option schaltet die Funktion beim Betreten der Welt automatisch aus, um eine korrekte Darstellung zu gewährleisten.
+		[c/FF6666:Es wird nicht empfohlen, diese Option zu deaktivieren, es sei denn, du akzeptierst visuelle Fehler und verstehst die Ursache.]
+		'''
+	CompatHighFPSNotInstalledText: "[c/888888:(HighFPSSupport Mod ist nicht installiert, Option hat keine Wirkung)]"
 }
 
-// OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings
+OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul-Einstellungen

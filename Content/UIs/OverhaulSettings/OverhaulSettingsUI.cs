@@ -34,6 +34,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText DensityFloodText { get; private set; }
         public static LocalizedText DensityEverywhereText { get; private set; }
         public static LocalizedText DensityTooltipText { get; private set; }
+        public static LocalizedText CompatibilitySettingsText { get; private set; }
+        public static LocalizedText CompatibilityFooterHintText { get; private set; }
+        public static LocalizedText CompatHighFPSLabelText { get; private set; }
+        public static LocalizedText CompatHighFPSTooltipText { get; private set; }
+        public static LocalizedText CompatHighFPSNotInstalledText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -144,6 +149,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DensityFloodText = this.GetLocalization(nameof(DensityFloodText), () => "泛滥");
             DensityEverywhereText = this.GetLocalization(nameof(DensityEverywhereText), () => "无处不在");
             DensityTooltipText = this.GetLocalization(nameof(DensityTooltipText), () => "结构生成密度");
+            CompatibilitySettingsText = this.GetLocalization(nameof(CompatibilitySettingsText), () => "兼容性设置");
+            CompatibilityFooterHintText = this.GetLocalization(nameof(CompatibilityFooterHintText), () => "这些选项用于处理与其他模组的兼容性问题");
+            CompatHighFPSLabelText = this.GetLocalization(nameof(CompatHighFPSLabelText), () => "自动关闭 HighFPSSupport 运动插值");
+            CompatHighFPSTooltipText = this.GetLocalization(nameof(CompatHighFPSTooltipText), () => "HighFPSSupport 的运动插值功能会导致部分手持武器显示、弹壳抛射等视觉效果出现严重错位\n开启此选项后，会在进入世界时自动关闭该功能以保证表现正常\n[c/FF6666:不建议关闭此选项，除非您明确接受部分视觉效果的损坏并理解缘由]");
+            CompatHighFPSNotInstalledText = this.GetLocalization(nameof(CompatHighFPSNotInstalledText), () => "[c/888888:（当前未安装 HighFPSSupport 模组，此选项暂无效果）]");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -187,6 +197,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             var worldGenCat = new WorldGenSettingsCategory();
             worldGenCat.EnsureInitialized();
             categories.Add(worldGenCat);
+
+            var compatCat = new CompatibilitySettingsCategory();
+            compatCat.EnsureInitialized();
+            categories.Add(compatCat);
         }
 
         public override void Update() {

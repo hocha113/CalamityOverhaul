@@ -339,6 +339,16 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Everywhere
 	ResetDefaultText: Reset to Default
 	DensityTooltipText: Structure Generation Density
+	CompatibilitySettingsText: Compatibility Settings
+	CompatibilityFooterHintText: These options are used to resolve compatibility issues with other mods.
+	CompatHighFPSLabelText: Automatically disable HighFPSSupport Motion Interpolation
+	CompatHighFPSTooltipText:
+		'''
+		The motion interpolation feature of HighFPSSupport causes severe misalignment in some held weapon displays and shell casing ejections.
+		Enabling this option will automatically turn off that feature upon entering the world to ensure correct visual performance.
+		[c/FF6666:Disabling this option is not recommended unless you explicitly accept the broken visuals and understand the cause.]
+		'''
+	CompatHighFPSNotInstalledText: "[c/888888:(HighFPSSupport mod is not currently installed; this option has no effect.)]"
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

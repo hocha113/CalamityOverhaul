@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using System;
 using System.Reflection;
 using Terraria;
@@ -52,6 +53,9 @@ namespace CalamityOverhaul.OtherMods.HighFPSSupport
         /// </summary>
         public static void DisableMotionInterpolation() {
             if (!Has) {
+                return;
+            }
+            if (!CompatibilitySettingsSave.AutoDisableHighFPSMotionInterpolation) {
                 return;
             }
             if (!GetMotionInterpolationValue()) {

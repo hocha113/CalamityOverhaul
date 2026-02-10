@@ -336,6 +336,16 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Повсюду
 	ResetDefaultText: Сбросить по умолчанию
 	DensityTooltipText: Плотность генерации структур
+	CompatibilitySettingsText: Настройки совместимости
+	CompatibilityFooterHintText: Эти параметры используются для решения проблем совместимости с другими модами.
+	CompatHighFPSLabelText: Автоматически отключать интерполяцию движения HighFPSSupport
+	CompatHighFPSTooltipText:
+		'''
+		Функция интерполяции движения в HighFPSSupport вызывает серьезное смещение некоторых визуальных эффектов, таких как отображение удерживаемого оружия и выброс гильз.
+		Включение этой опции автоматически отключит данную функцию при входе в мир для обеспечения корректного отображения.
+		[c/FF6666:Не рекомендуется отключать эту опцию, если вы явно не готовы к визуальным артефактам и понимаете их причину.]
+		'''
+	CompatHighFPSNotInstalledText: "[c/888888:(Мод HighFPSSupport не установлен; этот параметр сейчас не активен.)]"
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul
