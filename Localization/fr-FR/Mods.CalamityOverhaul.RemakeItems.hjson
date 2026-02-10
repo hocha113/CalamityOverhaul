@@ -29,10 +29,13 @@ SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
 		'''
-		Tire une sphère laser de phase qui reste en suspension dans l'air et provoque une énorme explosion
-		Clic droit pour tirer un faisceau d'énergie puissant
-		Hold Shift to open the Soul Control Panel
-		Légende_Text
+		Tire des orbes d'énergie d'âme instables et concentrés qui persistent et explosent après un délai
+		Les orbes libèrent des âmes chercheuses et des âmes résiduelles ramassables après leur effondrement
+		Les effets des orbes varient selon le type d'âme utilisé
+		Utilisez le Clic droit pour utiliser la machine comme un aspirateur, attirant les âmes résiduelles
+		Relâcher la touche décharge un torrent de lasers d'âme proportionnel au nombre d'âmes aspirées
+		Maintenez la touche Maj pour ouvrir le panneau de contrôle du Noyau d'Âme
+		legend_Text
 		[Lang4]
 		[Text]
 		'''

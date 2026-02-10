@@ -33,9 +33,12 @@ SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
 		'''
-		Fires phasing laser orbs that linger in the air and cause massive explosions
-		Right click to fire a powerful energy beam
-		Hold Shift to open the Soul Control Panel
+		Ejects orbs of unstable, concentrated soul energy that linger and explode after a delay
+		Orbs release seeking souls and lingering pickup souls after collapse
+		Orb effects vary depending on the Soul type used
+		Right Click to use the machine as a vacuum, pulling in lingering souls
+		Releasing the key discharges a torrent of soul lasers scaling with the number of souls pulled in
+		Hold Shift to open the Soul Core control panel
 		legend_Text
 		[Lang4]
 		[Text]

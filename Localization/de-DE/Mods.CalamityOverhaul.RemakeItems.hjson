@@ -29,9 +29,12 @@ SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
 		'''
-		Feuert phasenverschobene Laserkugeln ab, die in der Luft stehen bleiben und massive Explosionen verursachen
-		Rechtsklick für einen starken Energieschuss
-		Hold Shift to open the Soul Control Panel
+		Feuert instabile, konzentrierte Seelenenergiekugeln ab, die verweilen und nach einer Verzögerung explodieren
+		Nach dem Zerfall setzen die Kugeln verfolgende Seelen und einsammelbare Restseelen frei
+		Die Kugeleffekte variieren je nach verwendetem Seelentyp
+		Mache einen Rechtsklick, um die Maschine als Vakuum zu nutzen und Restseelen einzusaugen
+		Beim Loslassen wird ein Strom aus Seelenlasern abgefeuert, der mit der Anzahl der eingesaugten Seelen skaliert
+		Halte die Umschalttaste (Shift), um das Seelenkern-Kontrollfeld zu öffnen
 		legend_Text
 		[Lang4]
 		[Text]
