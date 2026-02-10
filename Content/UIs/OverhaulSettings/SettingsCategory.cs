@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         /// </summary>
         public class ActionButton
         {
-            public string Label;
+            public Func<string> Label;
             public Action OnClick;
             public Rectangle HitBox;
             public float HoverAnim;

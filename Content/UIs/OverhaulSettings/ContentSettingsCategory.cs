@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle("ShowReloadingProgressUI", () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
 
             ActionButtons.Add(new ActionButton {
-                Label = OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
+                Label = () => OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
                 OnClick = ResetAllToDefault
             });
         }

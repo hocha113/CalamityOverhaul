@@ -85,11 +85,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //添加操作按钮
             ActionButtons.Add(new ActionButton {
-                Label = EnableAllText?.Value ?? "启用全部",
+                Label = () => EnableAllText?.Value ?? "启用全部",
                 OnClick = EnableAll
             });
             ActionButtons.Add(new ActionButton {
-                Label = DisableAllText?.Value ?? "禁用全部",
+                Label = () => DisableAllText?.Value ?? "禁用全部",
                 OnClick = DisableAll
             });
         }

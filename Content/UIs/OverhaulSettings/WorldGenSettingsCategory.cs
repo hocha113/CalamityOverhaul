@@ -133,8 +133,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     case "SylvanOutpost": config.GenSylvanOutpost = enabled; break;
                 }
                 ContentSettingsCategory.SaveConfigStatic();
-            }
-            finally {
+            } finally {
                 _syncing = false;
             }
         }
@@ -155,8 +154,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 SyncOneFromConfig("RocketHut", config.GenRocketHut);
                 SyncOneFromConfig("SylvanOutpost", config.GenSylvanOutpost);
                 Save();
-            }
-            finally {
+            } finally {
                 _syncing = false;
             }
         }
@@ -257,7 +255,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
 
             ActionButtons.Add(new ActionButton {
-                Label = OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
+                Label = () => OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
                 OnClick = ResetAllToDefault
             });
 

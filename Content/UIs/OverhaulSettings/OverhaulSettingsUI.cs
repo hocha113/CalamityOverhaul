@@ -648,7 +648,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                             Rectangle btnRect = new((int)bx, (int)(barY + 2f * scale), (int)btnWidth, (int)btnHeight);
                             btn.HitBox = btnRect;
                             btn.Hovering = btnRect.Contains(MouseHitBox) && contentFade > 0.5f && cat.ExpandAnim > 0.5f;
-                            DrawSmallButton(spriteBatch, btnRect, btn.Label, btn.HoverAnim, barAlpha, scale);
+                            DrawSmallButton(spriteBatch, btnRect, btn.Label.Invoke(), btn.HoverAnim, barAlpha, scale);
                         }
                     }
 
