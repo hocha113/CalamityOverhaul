@@ -14,11 +14,11 @@ using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSett
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
     /// <summary>
-    /// 结构密度等级枚举（饥荒风格）
+    /// 结构密度等级枚举
     /// </summary>
     internal enum StructureDensity
     {
-        /// <summary>灭绝 - 不生成</summary>
+        /// <summary>灭绝（不生成）</summary>
         Extinction = 0,
         /// <summary>稀少</summary>
         Rare = 1,
