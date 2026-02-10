@@ -12,7 +12,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
-using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
 using Terraria.ModLoader;
 

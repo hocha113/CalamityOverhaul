@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.OtherMods.ImproveGame;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;

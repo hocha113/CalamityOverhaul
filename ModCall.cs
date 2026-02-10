@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify;
+﻿using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
 using Terraria;

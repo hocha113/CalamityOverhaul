@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.EternalBlazingNow;

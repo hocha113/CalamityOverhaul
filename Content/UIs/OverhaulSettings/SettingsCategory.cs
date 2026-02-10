@@ -1,11 +1,9 @@
-﻿using InnoVault.UIHandles;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSettingsUI.SettingToggle;
 
@@ -53,6 +51,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         //悬浮提示(由主UI读取)
         public string HoverTooltip;
         public Vector2 HoverTooltipPos;
+
+        //展开区域的实际裁剪矩形(由主UI在绘制时设置)
+        public Rectangle ExpandClipRect;
 
         //底部额外提示
         public string FooterHint;
@@ -150,11 +151,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //悬浮提示清除
             HoverTooltip = null;
 
-            //更新开关项悬停
-            if (ExpandAnim > 0.5f) {
+            //更新开关项悬停：使用实际裁剪区域判定，排除滚动条区域
+            if (ExpandAnim > 0.5f && ExpandClipRect.Width > 0 && ExpandClipRect.Height > 0) {
+                bool mouseInScrollbar = ScrollbarTrackRect.Width > 0 && ScrollbarTrackRect.Contains(mouseHitBox);
                 foreach (var toggle in Toggles) {
                     toggle.Hovering = toggle.HitBox.Contains(mouseHitBox)
-                        && scrollAreaRect.Contains(mouseHitBox) && contentFade > 0.5f;
+                        && ExpandClipRect.Contains(mouseHitBox)
+                        && !mouseInScrollbar
+                        && contentFade > 0.5f;
                     if (toggle.Hovering) {
                         string tip = GetTooltip(toggle);
                         if (!string.IsNullOrEmpty(tip)) {

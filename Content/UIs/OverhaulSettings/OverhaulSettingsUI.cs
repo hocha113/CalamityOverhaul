@@ -260,10 +260,24 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //清除悬浮提示
             hoverTooltip = null;
 
+            //判定鼠标是否在某个展开分类的内容区域内(用于遮挡层级)
+            int expandedContentOwner = -1;
+            for (int i = 0; i < categories.Count; i++) {
+                var cat = categories[i];
+                if (cat.ExpandAnim > 0.5f && cat.ExpandClipRect.Width > 0
+                    && cat.ExpandClipRect.Contains(MouseHitBox)) {
+                    expandedContentOwner = i;
+                    break;
+                }
+            }
+
             //更新所有分类
             bool anyExpanded = false;
-            foreach (var cat in categories) {
-                cat.HoveringCategory = cat.CategoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
+            for (int i = 0; i < categories.Count; i++) {
+                var cat = categories[i];
+                //分类按钮悬停：如果鼠标被另一个分类的展开内容遮挡，则不判定悬停
+                bool blocked = expandedContentOwner >= 0 && expandedContentOwner != i;
+                cat.HoveringCategory = !blocked && cat.CategoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
                 cat.Update(contentFade, hoverInMainPage, MouseHitBox, MousePosition, scrollAreaRect);
                 if (cat.Expanded) anyExpanded = true;
                 //收集悬浮提示
@@ -546,6 +560,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 DrawCategoryButton(spriteBatch, catRect, cat.Title, cat.Expanded,
                     cat.CategoryHoverAnim, alpha, scale, cat.ExpandAnim);
 
+                //未展开时清除裁剪区域，避免残留的ExpandClipRect影响层级判定
+                if (cat.ExpandAnim <= 0.01f) {
+                    cat.ExpandClipRect = Rectangle.Empty;
+                }
+
                 //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
                     float easedExpand = EaseOutQuad(cat.ExpandAnim);
@@ -564,6 +583,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     Rectangle expandClipRect = new(
                         (int)contentLeft, (int)expandAreaTop,
                         (int)contentWidth, (int)expandAreaHeight);
+                    cat.ExpandClipRect = expandClipRect;
                     Rectangle containerRect = new(
                         expandClipRect.X - containerPad,
                         expandClipRect.Y - containerPad,
