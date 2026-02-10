@@ -30,14 +30,15 @@
 	}
 
 	HalibutDomainConciseDisplay: {
-		// Label: Halibut Ocean Domain Minimal Display
-		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Label: Упрощенное отображение Океанического домена Палтуса
+		Tooltip: По умолчанию отключено. При включении скрывает большинство визуальных эффектов внутри домена.
 	}
 
 	Headers: {
-		CWRSystem: Система Overhaul
+		CWRSystem: Системные настройки Overhaul
 		CWRWeapon: Настройки оружия Overhaul
-		CWRUI: Настройки пользовательского интерфейса Overhaul
+		CWRUI: Настройки интерфейса Overhaul
+		CWRWorldGen: Настройки генерации структур Overhaul
 	}
 
 	LensEasing: {
@@ -188,5 +189,30 @@
 	DialogueBox_Scale_Value: {
 		Label: Масштаб диалогового окна
 		Tooltip: Регулирует общий размер диалогового окна
+	}
+
+	GenWindGrivenGenerator: {
+		Label: Генерация ветрогенератора
+		Tooltip: Размещает в мире структуры ветряных генераторов.
+	}
+
+	GenWGGCollector: {
+		Label: Генерация построек мусорщиков
+		Tooltip: Случайно создает враждебные постройки мусорщиков по всему миру. Этот параметр работает только в мирах сложности «Легенда».
+	}
+
+	GenJunkmanBase: {
+		Label: Генерация базы Старьевщика
+		Tooltip: Создает укрепленную базу мусорщиков в пустошах или под землей.
+	}
+
+	GenRocketHut: {
+		Label: Генерация хижины ракетчика
+		Tooltip: Создает таинственную постройку, содержащую детали ракет или технические реликвии.
+	}
+
+	GenSylvanOutpost: {
+		Label: Генерация лесного аванпоста
+		Tooltip: Создает деревянные посты эльфов или лесных стражей в глубине чащи.
 	}
 }

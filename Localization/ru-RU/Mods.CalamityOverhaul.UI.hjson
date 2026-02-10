@@ -326,6 +326,8 @@ OverhaulSettingsUI: {
 	SearchHintText: Поиск по названию или ключевым словам...
 	EnableAllText: Включить всё
 	DisableAllText: Отключить всё
+	WorldGenSettingsText: Настройки генерации мира
+	WorldGenFooterHintText: Эти настройки вступят в силу при следующем создании мира.
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

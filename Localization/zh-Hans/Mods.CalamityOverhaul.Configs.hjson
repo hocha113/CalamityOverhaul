@@ -33,6 +33,7 @@
 		CWRSystem: 大修系统设置
 		CWRWeapon: 大修武器设置
 		CWRUI: 大修UI设置
+		CWRWorldGen: 大修结构设置
 	}
 
 	LensEasing: {
@@ -175,5 +176,30 @@
 	DialogueBox_Scale_Value: {
 		Label: 对话框缩放
 		Tooltip: 调整对话框的整体大小
+	}
+
+	GenWindGrivenGenerator: {
+		Label: 生成风力发电机
+		Tooltip: 在世界中放置风力驱动的发电机结构
+	}
+
+	GenWGGCollector: {
+		Label: 生成拾荒者
+		Tooltip: 在世界各处随机生成拾荒者敌对建筑，这个设置只会在传奇世界中生效
+	}
+
+	GenJunkmanBase: {
+		Label: 生成拾荒者基地
+		Tooltip: 在荒原或地下生成拾荒者的据点基地
+	}
+
+	GenRocketHut: {
+		Label: 生成火箭小屋
+		Tooltip: 生成一个含有火箭零件或科技遗物的神秘小屋
+	}
+
+	GenSylvanOutpost: {
+		Label: 生成森之哨站
+		Tooltip: 在森林深处生成木制的精灵或森林守卫哨站
 	}
 }

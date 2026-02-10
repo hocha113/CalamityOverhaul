@@ -80,6 +80,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private static void SaveConfig() {
+            SaveConfigStatic();
+        }
+
+        internal static void SaveConfigStatic() {
             if (CWRServerConfig.Instance == null) return;
             CWRServerConfig.Instance.OnChanged();
             _configManagerSave?.Invoke(null, [CWRServerConfig.Instance]);

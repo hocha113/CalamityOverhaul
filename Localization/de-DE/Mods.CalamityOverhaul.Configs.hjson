@@ -33,6 +33,7 @@ CWRServerConfig: {
 		CWRSystem: Großreparatursystemeinstellungen
 		CWRWeapon: Großreparaturwaffeneinstellungen
 		CWRUI: Großreparatur-UI-Einstellungen
+		// CWRWorldGen: World Gen Configs
 	}
 
 	LensEasing: {
@@ -174,5 +175,30 @@ CWRServerConfig: {
 	DialogueBox_Scale_Value: {
 		// Label: Dialogue Box Scale
 		// Tooltip: Adjusts the overall size of the dialogue box
+	}
+
+	GenWindGrivenGenerator: {
+		// Label: Generate Wind-Driven Generator
+		// Tooltip: Places wind-powered generator structures throughout the world.
+	}
+
+	GenWGGCollector: {
+		// Label: Generate Scavenger Outposts
+		// Tooltip: Randomly spawns hostile scavenger structures throughout the world. This setting only takes effect in Legendary worlds.
+	}
+
+	GenJunkmanBase: {
+		// Label: Generate Junkman's Base
+		// Tooltip: Spawns a scavenger stronghold base in wastelands or underground.
+	}
+
+	GenRocketHut: {
+		// Label: Generate Rocket Hut
+		// Tooltip: Generates a mysterious shack containing rocket components or technological relics.
+	}
+
+	GenSylvanOutpost: {
+		// Label: Generate Sylvan Outpost
+		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
 	}
 }

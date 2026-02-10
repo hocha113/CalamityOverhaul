@@ -19,14 +19,23 @@ namespace CalamityOverhaul.Content.Structures
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
-            SpawnWindGrivenGenerator();
-            if (Main.getGoodWorld) {
+            var config = CWRServerConfig.Instance;
+            if (config == null || config.GenWindGrivenGenerator) {
+                SpawnWindGrivenGenerator();
+            }
+            if (Main.getGoodWorld && (config == null || config.GenWGGCollector)) {
                 SpawnWGGCollectorTile();
             }
             if (CWRRef.Has) {
-                JunkmanBase.DoLoad<JunkmanBase>();
-                RocketHut.DoLoad<RocketHut>();
-                SylvanOutpost.DoLoad<SylvanOutpost>();
+                if (config == null || config.GenJunkmanBase) {
+                    JunkmanBase.DoLoad<JunkmanBase>();
+                }
+                if (config == null || config.GenRocketHut) {
+                    RocketHut.DoLoad<RocketHut>();
+                }
+                if (config == null || config.GenSylvanOutpost) {
+                    SylvanOutpost.DoLoad<SylvanOutpost>();
+                }
             }
         }
 

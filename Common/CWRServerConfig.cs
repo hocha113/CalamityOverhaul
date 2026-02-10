@@ -123,6 +123,28 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool LensEasing { get; set; }//镜头缓动
 
+        [Header("CWRWorldGen")]
+
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenWindGrivenGenerator { get; set; }
+
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenWGGCollector { get; set; }
+
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenJunkmanBase { get; set; }
+
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenRocketHut { get; set; }
+
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenSylvanOutpost { get; set; }
+
         [Header("CWRUI")]
 
         [BackgroundColor(45, 175, 225, 255)]

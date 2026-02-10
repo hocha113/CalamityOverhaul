@@ -326,6 +326,8 @@ OverhaulSettingsUI: {
 	SearchHintText: 搜索武器名称或拼音...
 	EnableAllText: 启用全部
 	DisableAllText: 禁用全部
+	WorldGenSettingsText: 世界生成设置
+	WorldGenFooterHintText: 这些设置将在下次创建世界时生效
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

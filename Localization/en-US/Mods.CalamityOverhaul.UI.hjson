@@ -329,6 +329,8 @@ OverhaulSettingsUI: {
 	SearchHintText: Search weapon name or keywords...
 	EnableAllText: Enable All
 	DisableAllText: Disable All
+	WorldGenSettingsText: World Generation Settings
+	WorldGenFooterHintText: These settings will take effect upon the next world creation.
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

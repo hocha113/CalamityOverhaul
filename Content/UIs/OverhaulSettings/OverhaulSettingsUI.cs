@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText WeaponOverrideText { get; private set; }
         public static LocalizedText EnableAllText { get; private set; }
         public static LocalizedText DisableAllText { get; private set; }
+        public static LocalizedText WorldGenSettingsText { get; private set; }
+        public static LocalizedText WorldGenFooterHintText { get; private set; }
 
         //UI控制
         internal bool _active;
@@ -124,6 +126,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             WeaponOverrideText = this.GetLocalization(nameof(WeaponOverrideText), () => "武器修改管理");
             EnableAllText = this.GetLocalization(nameof(EnableAllText), () => "启用全部");
             DisableAllText = this.GetLocalization(nameof(DisableAllText), () => "禁用全部");
+            WorldGenSettingsText = this.GetLocalization(nameof(WorldGenSettingsText), () => "世界生成设置");
+            WorldGenFooterHintText = this.GetLocalization(nameof(WorldGenFooterHintText), () => "这些设置将在下次创建世界时生效");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -163,6 +167,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             var weaponCat = new WeaponOverrideCategory();
             weaponCat.EnsureInitialized();
             categories.Add(weaponCat);
+
+            var worldGenCat = new WorldGenSettingsCategory();
+            worldGenCat.EnsureInitialized();
+            categories.Add(worldGenCat);
         }
 
         public override void Update() {
