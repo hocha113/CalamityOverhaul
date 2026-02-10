@@ -167,8 +167,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private void ResetAnimations() {
             _sengs = 0f;
             contentFade = 0f;
-            panelSlideOffset = 60f;
-            panelScaleAnim = 0.85f;
+            panelSlideOffset = 20f;
+            panelScaleAnim = 0.92f;
             closeHoverAnim = 0f;
             closePressAnim = 0f;
             closing = false;
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //淡入淡出
             if (_active && !closing) {
                 if (_sengs < 1f) {
-                    _sengs += 0.1f;
+                    _sengs += 0.25f;
                 }
                 if (_sengs > 1f) {
                     _sengs = 1f;
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
             else if (!_active || closing) {
                 if (closing) {
-                    hideProgress += 0.06f;
+                    hideProgress += 0.15f;
                     if (hideProgress >= 1f) {
                         hideProgress = 1f;
                         closing = false;
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
                 else {
                     if (_sengs > 0f) {
-                        _sengs -= 0.1f;
+                        _sengs -= 0.25f;
                     }
                     if (_sengs <= 0f) {
                         _sengs = 0f;
@@ -246,19 +246,19 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             InitializeCategories();
 
             //面板滑入动画
-            float targetSlide = _active && !closing ? 0f : 60f;
-            panelSlideOffset += (targetSlide - panelSlideOffset) * 0.15f;
+            float targetSlide = _active && !closing ? 0f : 20f;
+            panelSlideOffset += (targetSlide - panelSlideOffset) * 0.35f;
 
             //面板缩放动画
-            float targetScale = _active && !closing ? 1f : 0.85f;
-            panelScaleAnim += (targetScale - panelScaleAnim) * 0.1f;
+            float targetScale = _active && !closing ? 1f : 0.92f;
+            panelScaleAnim += (targetScale - panelScaleAnim) * 0.3f;
 
             //内容淡入
-            if (_sengs > 0.5f && !closing) {
-                contentFade += (1f - contentFade) * 0.12f;
+            if (_sengs > 0.3f && !closing) {
+                contentFade += (1f - contentFade) * 0.3f;
             }
             else {
-                contentFade *= 0.85f;
+                contentFade *= 0.6f;
             }
             contentFade = Math.Clamp(contentFade, 0f, 1f);
 
@@ -267,9 +267,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             shimmerPhase = globalTime * 2f;
 
             //按钮动画
-            float hoverSpeed = 0.15f;
+            float hoverSpeed = 0.3f;
             closeHoverAnim += ((hoveringClose ? 1f : 0f) - closeHoverAnim) * hoverSpeed;
-            closePressAnim *= 0.85f;
+            closePressAnim *= 0.7f;
 
             //更新粒子
             UpdateParticles();
