@@ -52,6 +52,52 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRUI组
             AddToggle("ShowReloadingProgressUI", () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
+
+            ActionButtons.Add(new ActionButton {
+                Label = OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
+                OnClick = ResetAllToDefault
+            });
+        }
+
+        private void ResetAllToDefault() {
+            var config = CWRServerConfig.Instance;
+            if (config == null) return;
+
+            //CWRSystem组
+            config.QuestLog = true;
+            config.BiologyOverhaul = true;
+
+            //CWRWeapon组
+            config.WeaponHandheldDisplay = true;
+            config.EnableSwordLight = true;
+            config.ActivateGunRecoil = false;
+            config.MagazineSystem = true;
+            config.EnableCasingsEntity = true;
+            config.BowArrowDraw = true;
+            config.ShotgunFireForcedReloadInterruption = false;
+            config.WeaponLazyRotationAngle = false;
+            config.ScreenVibration = true;
+            config.MurasamaSpaceFragmentationBool = true;
+            config.HalibutDomainConciseDisplay = false;
+            config.LensEasing = true;
+
+            //CWRUI组
+            config.ShowReloadingProgressUI = false;
+
+            SaveConfig();
+
+            bool hasReloadToggle = false;
+            foreach (var toggle in Toggles) {
+                if (toggle.RequiresReload) {
+                    hasReloadToggle = true;
+                    break;
+                }
+            }
+            if (hasReloadToggle) {
+                needsReload = true;
+                ShowFooter = true;
+                FooterHint = OverhaulSettingsUI.ReloadHintText?.Value ?? "";
+            }
         }
 
         public override string GetLabel(SettingToggle toggle) {
