@@ -261,6 +261,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override void Shoot() => OrigItemShoot();
+        public override void Shoot() {
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack / 2, Projectile.owner);
+        }
     }
 }
