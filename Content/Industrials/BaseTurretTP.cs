@@ -123,10 +123,10 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual string BodyGlowPath => "";
         public virtual string BarrelPath => "";
         public virtual string BarrelGlowPath => "";
-        public virtual Asset<Texture2D> GetBodyAsset => ModifyTurretLoader.BodyAssetDic[ID];
-        public virtual Asset<Texture2D> GetBodyGlowAsset => ModifyTurretLoader.BodyGlowAssetDic[ID];
-        public virtual Asset<Texture2D> GetBarrelAsset => ModifyTurretLoader.BarrelAssetDic[ID];
-        public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic[ID];
+        public virtual Asset<Texture2D> GetBodyAsset => ModifyTurretLoader.BodyAssetDic.TryGetValue(ID, out Asset<Texture2D> value) ? value : VaultAsset.placeholder3;
+        public virtual Asset<Texture2D> GetBodyGlowAsset => ModifyTurretLoader.BodyGlowAssetDic.TryGetValue(ID, out Asset<Texture2D> value) ? value : VaultAsset.placeholder3;
+        public virtual Asset<Texture2D> GetBarrelAsset => ModifyTurretLoader.BarrelAssetDic.TryGetValue(ID, out Asset<Texture2D> value) ? value : VaultAsset.placeholder3;
+        public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic.TryGetValue(ID, out Asset<Texture2D> value) ? value : VaultAsset.placeholder3;
         #endregion
         public override bool IsLoadingEnabled(Mod mod) => TargetTileID > 0;
         public override void SetBattery() {

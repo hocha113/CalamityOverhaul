@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops;
 using InnoVault.UIHandles;
@@ -16,32 +16,32 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
     /// <summary>
-    /// ºô½Ğ¿ò½ûÓÃ×´Ì¬½Ó¿Ú
+    /// å‘¼å«æ¡†ç¦ç”¨çŠ¶æ€æ¥å£
     /// </summary>
     public interface IDraedonCallDisabledProvider
     {
         /// <summary>
-        /// ÊÇ·ñ½ûÓÃºô½Ğ¹¦ÄÜ
+        /// æ˜¯å¦ç¦ç”¨å‘¼å«åŠŸèƒ½
         /// </summary>
         bool IsCallDisabled { get; }
 
         /// <summary>
-        /// ½ûÓÃÔ­ÒòÎÄ±¾
+        /// ç¦ç”¨åŸå› æ–‡æœ¬
         /// </summary>
         string DisabledReason { get; }
     }
 
     /// <summary>
-    /// ¼ÎµÇºô½Ğ½ûÓÃ×´Ì¬Ìá¹©ÕßÊ¾ÀıÊµÏÖ
+    /// å˜‰ç™»å‘¼å«ç¦ç”¨çŠ¶æ€æä¾›è€…ç¤ºä¾‹å®ç°
     /// </summary>
     internal class DraedonCallDisabledProvider : IDraedonCallDisabledProvider
     {
         /// <summary>
-        /// ¼ì²é¼ÎµÇÊÇ·ñÒÑ¾­´æÔÚÓÚÊÀ½çÖĞ
+        /// æ£€æŸ¥å˜‰ç™»æ˜¯å¦å·²ç»å­˜åœ¨äºä¸–ç•Œä¸­
         /// </summary>
         public bool IsCallDisabled {
             get {
-                //¼ì²éÊÇ·ñÓĞ¼ÎµÇNPC´æÔÚ
+                //æ£€æŸ¥æ˜¯å¦æœ‰å˜‰ç™»NPCå­˜åœ¨
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
                     if (npc.active && npc.type == CWRID.NPC_Draedon) {
@@ -53,24 +53,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         /// <summary>
-        /// ½ûÓÃÔ­ÒòÎÄ±¾
+        /// ç¦ç”¨åŸå› æ–‡æœ¬
         /// </summary>
         public string DisabledReason => DraedonCallUI.DisabledReasonText?.Value ?? "UNAVAILABLE";
     }
 
     /// <summary>
-    /// ¼ÎµÇºô½ĞUI
+    /// å˜‰ç™»å‘¼å«UI
     /// </summary>
     internal class DraedonCallUI : UIHandle, ILocalizedModType
     {
         public static DraedonCallUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonCallUI>();
 
         /// <summary>
-        /// ÉèÖÃ½ûÓÃ×´Ì¬Ìá¹©Õß
+        /// è®¾ç½®ç¦ç”¨çŠ¶æ€æä¾›è€…
         /// </summary>
         public static IDraedonCallDisabledProvider DisabledProvider = new DraedonCallDisabledProvider();
 
-        //UI×´Ì¬
+        //UIçŠ¶æ€
         private bool _active;
         public override bool Active {
             get => _active || uiAlpha > 0f;
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
         public string LocalizationCategory => "UI";
 
-        //±¾µØ»¯ÎÄ±¾
+        //æœ¬åœ°åŒ–æ–‡æœ¬
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText TitleTextDisabled { get; private set; }
         public static LocalizedText CallButtonText { get; private set; }
@@ -92,30 +92,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         public static LocalizedText DisabledReasonText { get; private set; }
 
         public override void SetStaticDefaults() {
-            TitleText = this.GetLocalization(nameof(TitleText), () => "ºô½Ğ¼ÎµÇ");
-            TitleTextDisabled = this.GetLocalization(nameof(TitleTextDisabled), () => "ºô½Ğ½ûÓÃ");
-            CallButtonText = this.GetLocalization(nameof(CallButtonText), () => "Æô¶¯ºô½Ğ");
-            CallingText = this.GetLocalization(nameof(CallingText), () => "ÕıÔÚºô½Ğ...");
-            DisabledButtonText = this.GetLocalization(nameof(DisabledButtonText), () => "½ûÓÃÖĞ");
-            ConnectingText = this.GetLocalization(nameof(ConnectingText), () => "ÕıÔÚÁ¬½Ó...");
-            ConnectedText = this.GetLocalization(nameof(ConnectedText), () => "ÒÑÁ¬½Ó");
-            DisabledReasonText = this.GetLocalization(nameof(DisabledReasonText), () => "¼ÎµÇÒÑ±»ºô½Ğ");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "å‘¼å«å˜‰ç™»");
+            TitleTextDisabled = this.GetLocalization(nameof(TitleTextDisabled), () => "å‘¼å«ç¦ç”¨");
+            CallButtonText = this.GetLocalization(nameof(CallButtonText), () => "å¯åŠ¨å‘¼å«");
+            CallingText = this.GetLocalization(nameof(CallingText), () => "æ­£åœ¨å‘¼å«...");
+            DisabledButtonText = this.GetLocalization(nameof(DisabledButtonText), () => "ç¦ç”¨ä¸­");
+            ConnectingText = this.GetLocalization(nameof(ConnectingText), () => "æ­£åœ¨è¿æ¥...");
+            ConnectedText = this.GetLocalization(nameof(ConnectedText), () => "å·²è¿æ¥");
+            DisabledReasonText = this.GetLocalization(nameof(DisabledReasonText), () => "å˜‰ç™»å·²è¢«å‘¼å«");
         }
 
-        //¶¯»­²ÎÊı
+        //åŠ¨ç”»å‚æ•°
         private float uiAlpha = 0f;
         private float panelSlideProgress = 0f;
         private const float FadeSpeed = 0.08f;
         private const float SlideSpeed = 0.12f;
 
-        //¿Æ¼¼¶¯»­²ÎÊı
+        //ç§‘æŠ€åŠ¨ç”»å‚æ•°
         private float scanLineTimer = 0f;
         private float circuitPulseTimer = 0f;
         private float hologramFlicker = 0f;
         private float portraitGlowPulse = 0f;
         private float callButtonPulse = 0f;
 
-        //½ûÓÃ×´Ì¬¶¯»­²ÎÊı
+        //ç¦ç”¨çŠ¶æ€åŠ¨ç”»å‚æ•°
         private float banLineTimer = 0f;
         private float disabledPulse = 0f;
         private float warningFlash = 0f;
@@ -125,59 +125,59 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private readonly List<BanLine> banLines = new();
         private int banLineSpawnTimer = 0;
 
-        //UI³ß´ç
+        //UIå°ºå¯¸
         private const int PanelWidth = 280;
         private const int PanelHeight = 360;
         private Vector2 panelPosition;
 
-        //¼ÎµÇÍ·Ïñ²ÎÊı
+        //å˜‰ç™»å¤´åƒå‚æ•°
         private static float PortraitSize => 140f;
         private Vector2 portraitPosition;
         private float portraitRotation = 0f;
         private bool isHoveringPortrait = false;
         private float portraitHoverProgress = 0f;
 
-        //ºô½Ğ°´Å¥²ÎÊı
+        //å‘¼å«æŒ‰é’®å‚æ•°
         private Rectangle callButtonRect;
         private bool isHoveringButton = false;
         private float buttonHoverProgress = 0f;
         private bool isCalling = false;
         private float callProgress = 0f;
 
-        //¿Æ¼¼Á£×Ó
+        //ç§‘æŠ€ç²’å­
         private readonly List<TechParticle> techParticles = new();
         private int particleSpawnTimer = 0;
 
-        //×´Ì¬ÎÄ±¾
+        //çŠ¶æ€æ–‡æœ¬
         private string statusText = "";
         private float statusTextAlpha = 0f;
 
         public override void Update() {
-            //Í¬²½ÉÌµêUIµÄ¼¤»î×´Ì¬
+            //åŒæ­¥å•†åº—UIçš„æ¿€æ´»çŠ¶æ€
             _active = DraedonShopUI.Instance.Active;
 
-            //¼ì²é½ûÓÃ×´Ì¬
+            //æ£€æŸ¥ç¦ç”¨çŠ¶æ€
             bool newDisabledState = DisabledProvider?.IsCallDisabled ?? false;
             if (newDisabledState != isDisabled) {
                 isDisabled = newDisabledState;
                 if (isDisabled) {
-                    //½øÈë½ûÓÃ×´Ì¬
+                    //è¿›å…¥ç¦ç”¨çŠ¶æ€
                     isCalling = false;
                     callProgress = 0f;
                     statusText = DisabledProvider?.DisabledReason ?? "UNAVAILABLE";
                 }
                 else {
-                    //ÍË³ö½ûÓÃ×´Ì¬
+                    //é€€å‡ºç¦ç”¨çŠ¶æ€
                     statusText = "";
                     banLines.Clear();
                 }
             }
 
-            //¸üĞÂ½ûÓÃ×´Ì¬¹ı¶É
+            //æ›´æ–°ç¦ç”¨çŠ¶æ€è¿‡æ¸¡
             float targetDisabledTransition = isDisabled ? 1f : 0f;
             disabledTransition = MathHelper.Lerp(disabledTransition, targetDisabledTransition, 0.1f);
 
-            //¸üĞÂ¶¯»­½ø¶È
+            //æ›´æ–°åŠ¨ç”»è¿›åº¦
             if (_active) {
                 if (uiAlpha < 1f) uiAlpha += FadeSpeed;
                 if (panelSlideProgress < 1f) panelSlideProgress += SlideSpeed;
@@ -194,26 +194,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             uiAlpha = MathHelper.Clamp(uiAlpha, 0f, 1f);
             panelSlideProgress = MathHelper.Clamp(panelSlideProgress, 0f, 1f);
 
-            //¸üĞÂ¿Æ¼¼¶¯»­
+            //æ›´æ–°ç§‘æŠ€åŠ¨ç”»
             UpdateTechEffects();
 
-            //¸üĞÂ½ûÓÃ¶¯»­
+            //æ›´æ–°ç¦ç”¨åŠ¨ç”»
             if (isDisabled) {
                 UpdateDisabledEffects();
             }
 
-            //¸üĞÂÁ£×Ó
+            //æ›´æ–°ç²’å­
             UpdateParticles();
 
-            //¼ÆËãÃæ°åÎ»ÖÃ£¬´Ó×ó²à»¬Èë£¬Î»ÓÚÉÌµêUI×ó²à
+            //è®¡ç®—é¢æ¿ä½ç½®ï¼Œä»å·¦ä¾§æ»‘å…¥ï¼Œä½äºå•†åº—UIå·¦ä¾§
             float slideOffset = (1f - CWRUtils.EaseOutCubic(panelSlideProgress)) * PanelWidth;
             Vector2 shopPanelPos = new Vector2(Main.screenWidth - 680, (Main.screenHeight - 640) / 2f);
             panelPosition = new Vector2(shopPanelPos.X - PanelWidth - 20 + slideOffset, shopPanelPos.Y + (640 - PanelHeight) / 2f);
 
-            //¼ÆËãÍ·ÏñÎ»ÖÃ
+            //è®¡ç®—å¤´åƒä½ç½®
             portraitPosition = panelPosition + new Vector2(PanelWidth / 2f, 100);
 
-            //¼ÆËãºô½Ğ°´Å¥¾ØĞÎ
+            //è®¡ç®—å‘¼å«æŒ‰é’®çŸ©å½¢
             callButtonRect = new Rectangle(
                 (int)(panelPosition.X + (PanelWidth - 180) / 2f),
                 (int)(panelPosition.Y + 240),
@@ -221,15 +221,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 50
             );
 
-            //¸üĞÂUI½»»¥
+            //æ›´æ–°UIäº¤äº’
             if (_active && panelSlideProgress > 0.9f) {
                 UpdateInteraction();
             }
 
-            //¸üĞÂĞüÍ£¶¯»­
+            //æ›´æ–°æ‚¬åœåŠ¨ç”»
             UpdateHoverAnimations();
 
-            //¸üĞÂºô½Ğ½ø¶È
+            //æ›´æ–°å‘¼å«è¿›åº¦
             if (isCalling && !isDisabled) {
                 callProgress += 0.015f;
                 if (callProgress >= 1f) {
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             if (warningFlash > MathHelper.TwoPi) warningFlash -= MathHelper.TwoPi;
             if (glitchTimer > MathHelper.TwoPi) glitchTimer -= MathHelper.TwoPi;
 
-            //Éú³É·â½ûÏß
+            //ç”Ÿæˆå°ç¦çº¿
             banLineSpawnTimer++;
             if (banLineSpawnTimer >= 8 && banLines.Count < 15) {
                 banLineSpawnTimer = 0;
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 banLines.Add(new BanLine(spawnPos, angle));
             }
 
-            //¸üĞÂ·â½ûÏß
+            //æ›´æ–°å°ç¦çº¿
             for (int i = banLines.Count - 1; i >= 0; i--) {
                 if (banLines[i].Update()) {
                     banLines.RemoveAt(i);
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void UpdateParticles() {
-            //¿Æ¼¼Á£×ÓË¢ĞÂ
+            //ç§‘æŠ€ç²’å­åˆ·æ–°
             particleSpawnTimer++;
             if (_active && particleSpawnTimer >= 12 && techParticles.Count < 20) {
                 particleSpawnTimer = 0;
@@ -306,15 +306,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void UpdateHoverAnimations() {
-            //Í·ÏñĞüÍ£¶¯»­
+            //å¤´åƒæ‚¬åœåŠ¨ç”»
             float targetPortraitHover = isHoveringPortrait ? 1f : 0f;
             portraitHoverProgress = MathHelper.Lerp(portraitHoverProgress, targetPortraitHover, 0.15f);
 
-            //°´Å¥ĞüÍ£¶¯»­
+            //æŒ‰é’®æ‚¬åœåŠ¨ç”»
             float targetButtonHover = isHoveringButton ? 1f : 0f;
             buttonHoverProgress = MathHelper.Lerp(buttonHoverProgress, targetButtonHover, 0.15f);
 
-            //×´Ì¬ÎÄ±¾µ­Èëµ­³ö
+            //çŠ¶æ€æ–‡æœ¬æ·¡å…¥æ·¡å‡º
             if (!string.IsNullOrEmpty(statusText)) {
                 statusTextAlpha = Math.Min(statusTextAlpha + 0.05f, 1f);
             }
@@ -349,19 +349,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             if (hoverInMainPage) {
                 player.mouseInterface = true;
 
-                //¼ì²âÍ·ÏñĞüÍ£
+                //æ£€æµ‹å¤´åƒæ‚¬åœ
                 float distToPortrait = Vector2.Distance(MousePosition, portraitPosition);
                 isHoveringPortrait = distToPortrait <= PortraitSize / 2f;
 
-                //¼ì²â°´Å¥ĞüÍ£
+                //æ£€æµ‹æŒ‰é’®æ‚¬åœ
                 isHoveringButton = callButtonRect.Contains(MousePosition.ToPoint());
 
-                //°´Å¥µã»÷£¨½ûÓÃÊ±ÎŞ·¨µã»÷£©
+                //æŒ‰é’®ç‚¹å‡»ï¼ˆç¦ç”¨æ—¶æ— æ³•ç‚¹å‡»ï¼‰
                 if (isHoveringButton && Main.mouseLeft && Main.mouseLeftRelease && !isCalling && !isDisabled) {
                     StartCall();
                 }
                 else if (isHoveringButton && Main.mouseLeft && Main.mouseLeftRelease && isDisabled) {
-                    //µã»÷½ûÓÃ°´Å¥Ê±²¥·Å´íÎóÒôĞ§
+                    //ç‚¹å‡»ç¦ç”¨æŒ‰é’®æ—¶æ’­æ”¾é”™è¯¯éŸ³æ•ˆ
                     SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f, Pitch = -0.5f });
                 }
             }
@@ -372,13 +372,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void StartCall() {
-            if (CWRRef.Has) {
-                isCalling = true;
-                callProgress = 0f;
-                statusText = ConnectingText.Value;
-            }
+            isCalling = true;
+            callProgress = 0f;
+            statusText = ConnectingText.Value;
 
-            //²¥·ÅÒôĞ§
+            //æ’­æ”¾éŸ³æ•ˆ
             SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.3f });
             SoundEngine.PlaySound("CalamityMod/Sounds/Custom/CodebreakerBeam".GetSound() with { Volume = 0.7f });
         }
@@ -386,7 +384,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private void OnCallComplete() {
             statusText = ConnectedText.Value;
 
-            //²¥·ÅÍê³ÉÒôĞ§
+            //æ’­æ”¾å®ŒæˆéŸ³æ•ˆ
             SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.8f, Pitch = 0.5f });
 
             ExoMechdusaSum.SimpleMode = true;
@@ -394,7 +392,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             _active = false;
             DraedonShopUI.Instance.Active = false;
 
-            //ÖØÖÃ×´Ì¬
+            //é‡ç½®çŠ¶æ€
             isCalling = false;
             callProgress = 0f;
         }
@@ -410,25 +408,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             DrawDarkenBackground(spriteBatch);
 
-            //»æÖÆÖ÷Ãæ°å
+            //ç»˜åˆ¶ä¸»é¢æ¿
             DrawMainPanel(spriteBatch);
 
-            //»æÖÆ¼ÎµÇÍ·Ïñ
+            //ç»˜åˆ¶å˜‰ç™»å¤´åƒ
             DrawDraedonPortrait(spriteBatch);
 
-            //±êÌâ
+            //æ ‡é¢˜
             DrawTitle(spriteBatch);
 
-            //»æÖÆºô½Ğ°´Å¥
+            //ç»˜åˆ¶å‘¼å«æŒ‰é’®
             DrawCallButton(spriteBatch);
 
-            //»æÖÆ×´Ì¬ÎÄ±¾
+            //ç»˜åˆ¶çŠ¶æ€æ–‡æœ¬
             DrawStatusText(spriteBatch);
 
-            //»æÖÆ¿Æ¼¼Á£×Ó
+            //ç»˜åˆ¶ç§‘æŠ€ç²’å­
             DrawTechParticles(spriteBatch);
 
-            //»æÖÆ½ûÓÃ×´Ì¬Ğ§¹û
+            //ç»˜åˆ¶ç¦ç”¨çŠ¶æ€æ•ˆæœ
             if (disabledTransition > 0.01f) {
                 DrawDisabledEffects(spriteBatch);
             }
@@ -443,12 +441,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 PanelHeight
             );
 
-            //Éî¶ÈÒõÓ°
+            //æ·±åº¦é˜´å½±
             Rectangle shadow = panelRect;
             shadow.Offset(5, 6);
             spriteBatch.Draw(pixel, shadow, Color.Black * (uiAlpha * 0.6f));
 
-            //Ö÷±³¾°½¥±ä
+            //ä¸»èƒŒæ™¯æ¸å˜
             int segments = 30;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -462,7 +460,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Color disabledDark = new Color(18, 8, 8);
                 Color disabledMid = new Color(30, 12, 12);
 
-                //¸ù¾İ½ûÓÃ×´Ì¬»ìºÏÑÕÉ«
+                //æ ¹æ®ç¦ç”¨çŠ¶æ€æ··åˆé¢œè‰²
                 Color baseDark = Color.Lerp(techDark, disabledDark, disabledTransition);
                 Color baseMid = Color.Lerp(techMid, disabledMid, disabledTransition);
 
@@ -472,7 +470,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 spriteBatch.Draw(pixel, segment, finalColor);
             }
 
-            //È«Ï¢ÉÁË¸µş¼Ó
+            //å…¨æ¯é—ªçƒå åŠ 
             float flicker = (float)Math.Sin(hologramFlicker * 1.5f) * 0.5f + 0.5f;
             Color hologramColor = Color.Lerp(
                 new Color(15, 30, 45),
@@ -481,10 +479,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             );
             spriteBatch.Draw(pixel, panelRect, hologramColor * (uiAlpha * 0.2f * flicker));
 
-            //É¨ÃèÏß
+            //æ‰«æçº¿
             DrawScanLines(spriteBatch, panelRect);
 
-            //ÄÚ²¿Âö³å·¢¹â
+            //å†…éƒ¨è„‰å†²å‘å…‰
             float innerPulse = (float)Math.Sin(circuitPulseTimer * 1.3f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-4, -4);
@@ -495,7 +493,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             );
             spriteBatch.Draw(pixel, inner, innerGlowColor * (uiAlpha * 0.1f * innerPulse));
 
-            //¿Æ¼¼±ß¿ò
+            //ç§‘æŠ€è¾¹æ¡†
             DrawTechFrame(spriteBatch, panelRect, innerPulse);
         }
 
@@ -523,13 +521,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color disabledBorder = Color.Lerp(new Color(200, 40, 40), new Color(255, 80, 80), pulse);
             Color borderColor = Color.Lerp(normalBorder, disabledBorder, disabledTransition) * (uiAlpha * 0.9f);
 
-            //Íâ±ß¿ò
+            //å¤–è¾¹æ¡†
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), borderColor * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), borderColor * 0.9f);
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), borderColor * 0.9f);
 
-            //ÄÚ·¢¹â±ß¿ò
+            //å†…å‘å…‰è¾¹æ¡†
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color normalGlow = new Color(100, 200, 255);
@@ -547,7 +545,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Vector2 titleSize = font.MeasureString(title) * 1.1f;
             Vector2 titlePos = panelPosition + new Vector2((PanelWidth - titleSize.X) / 2f, 20);
 
-            //±êÌâ·¢¹âĞ§¹û
+            //æ ‡é¢˜å‘å…‰æ•ˆæœ
             Color normalGlow = new Color(80, 220, 255);
             Color disabledGlow = new Color(255, 100, 100);
             Color glowColor = Color.Lerp(normalGlow, disabledGlow, disabledTransition) * (uiAlpha * 0.8f);
@@ -563,34 +561,34 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawDraedonPortrait(SpriteBatch spriteBatch) {
-            //»ñÈ¡¼ÎµÇÍ·ÏñÎÆÀí
+            //è·å–å˜‰ç™»å¤´åƒçº¹ç†
             Texture2D portraitTexture = (isCalling || isDisabled)
                 ? ADVAsset.DraedonRedADV
                 : ADVAsset.DraedonADV;
 
             if (portraitTexture == null) return;
 
-            //¼ÆËãËõ·Å
+            //è®¡ç®—ç¼©æ”¾
             float baseScale = (PortraitSize / Math.Max(portraitTexture.Width, portraitTexture.Height));
             float hoverScale = 1f + portraitHoverProgress * 0.08f;
             float callScale = 1f + callProgress * 0.15f;
             float disabledScale = 1f - disabledTransition * 0.1f;
             float finalScale = baseScale * hoverScale * callScale * disabledScale;
 
-            //¼ÆËãÍ¸Ã÷¶È
+            //è®¡ç®—é€æ˜åº¦
             float alpha = uiAlpha * (0.9f + portraitHoverProgress * 0.1f);
             float disabledAlpha = alpha * (0.5f + 0.5f * (1f - disabledTransition));
 
-            //»æÖÆÍ·Ïñ±³¾°¹â»·
+            //ç»˜åˆ¶å¤´åƒèƒŒæ™¯å…‰ç¯
             DrawPortraitGlow(spriteBatch, portraitPosition, PortraitSize * hoverScale * callScale * disabledScale, disabledAlpha);
 
-            //»æÖÆÍ·Ïñ±ß¿ò
+            //ç»˜åˆ¶å¤´åƒè¾¹æ¡†
             DrawPortraitBorder(spriteBatch, portraitPosition, PortraitSize * hoverScale * callScale * disabledScale, disabledAlpha);
 
-            //»æÖÆÍ·Ïñ
+            //ç»˜åˆ¶å¤´åƒ
             float rotation = portraitRotation * (1f + callProgress * 2f);
 
-            //½ûÓÃÊ±µÄÑÕÉ«µ÷ÖÆ
+            //ç¦ç”¨æ—¶çš„é¢œè‰²è°ƒåˆ¶
             Color portraitColor = Color.Lerp(Color.White, new Color(255, 150, 150), disabledTransition) * disabledAlpha;
 
             spriteBatch.Draw(
@@ -605,7 +603,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 0f
             );
 
-            //ºô½ĞÊ±µÄ¶îÍâĞ§¹û
+            //å‘¼å«æ—¶çš„é¢å¤–æ•ˆæœ
             if (isCalling && !isDisabled) {
                 DrawCallingEffect(spriteBatch, portraitPosition, PortraitSize, alpha);
             }
@@ -615,7 +613,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float pulse = (float)Math.Sin(portraitGlowPulse) * 0.5f + 0.5f;
 
-            //¶à²ã¹âÔÎ
+            //å¤šå±‚å…‰æ™•
             for (int i = 0; i < 3; i++) {
                 float glowSize = size * (1.15f + i * 0.12f);
                 float glowAlpha = alpha * (0.2f - i * 0.05f) * pulse;
@@ -644,7 +642,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color disabledBorder = Color.Lerp(new Color(200, 40, 40), new Color(255, 80, 80), pulse);
             Color borderColor = Color.Lerp(normalBorder, disabledBorder, disabledTransition) * (alpha * 0.8f);
 
-            //Ô²ĞÎ±ß¿òĞ§¹û
+            //åœ†å½¢è¾¹æ¡†æ•ˆæœ
             int segments = 32;
             float radius = size / 2f;
             for (int i = 0; i < segments; i++) {
@@ -658,7 +656,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawCallingEffect(SpriteBatch spriteBatch, Vector2 position, float size, float alpha) {
-            //Ğı×ªµÄÄÜÁ¿»·
+            //æ—‹è½¬çš„èƒ½é‡ç¯
             for (int ring = 0; ring < 3; ring++) {
                 float ringRadius = size * (0.6f + ring * 0.2f) * callProgress;
                 float ringRotation = portraitRotation * (2f + ring * 0.5f);
@@ -677,7 +675,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 }
             }
             Texture2D softGlow = CWRAsset.SoftGlow.Value;
-            //ÖĞĞÄ¹âÇò
+            //ä¸­å¿ƒå…‰çƒ
             float coreSize = size * callProgress * 0.1f;
             Color coreColor = new Color(255, 150, 150, 0) * (alpha * 0.8f * callProgress);
             spriteBatch.Draw(
@@ -697,7 +695,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Texture2D pixel = VaultAsset.placeholder2.Value;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //°´Å¥±³¾°
+            //æŒ‰é’®èƒŒæ™¯
             Color normalBg = Color.Lerp(new Color(20, 60, 100), new Color(40, 100, 160), buttonHoverProgress);
             Color disabledBg = Color.Lerp(new Color(60, 20, 20), new Color(80, 30, 30), buttonHoverProgress * 0.5f);
             Color callingBg = Color.Lerp(new Color(60, 20, 20), new Color(100, 40, 40), buttonHoverProgress);
@@ -707,7 +705,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 
             spriteBatch.Draw(pixel, callButtonRect, buttonBg);
 
-            //°´Å¥±ß¿ò
+            //æŒ‰é’®è¾¹æ¡†
             float pulse = (float)Math.Sin(callButtonPulse) * 0.5f + 0.5f;
             Color normalBorder = Color.Lerp(new Color(60, 180, 255), new Color(100, 220, 255), pulse);
             Color disabledBorder = Color.Lerp(new Color(150, 50, 50), new Color(200, 80, 80), pulse);
@@ -721,7 +719,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             spriteBatch.Draw(pixel, new Rectangle(callButtonRect.X, callButtonRect.Y, 3, callButtonRect.Height), borderColor * 0.9f);
             spriteBatch.Draw(pixel, new Rectangle(callButtonRect.Right - 3, callButtonRect.Y, 3, callButtonRect.Height), borderColor * 0.9f);
 
-            //ºô½Ğ½ø¶ÈÌõ
+            //å‘¼å«è¿›åº¦æ¡
             if (isCalling && callProgress > 0f && !isDisabled) {
                 Rectangle progressBar = new Rectangle(
                     callButtonRect.X + 5,
@@ -732,7 +730,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 spriteBatch.Draw(pixel, progressBar, new Color(255, 150, 150) * (uiAlpha * 0.9f));
             }
 
-            //°´Å¥ÎÄ×Ö
+            //æŒ‰é’®æ–‡å­—
             string buttonText = isDisabled ? DisabledButtonText.Value : (isCalling ? CallingText.Value : CallButtonText.Value);
             Vector2 textSize = font.MeasureString(buttonText) * 1.0f;
             Vector2 textPos = new Vector2(
@@ -747,7 +745,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color textColor = isCalling ? callingText : Color.Lerp(normalText, disabledText, disabledTransition);
             textColor *= uiAlpha;
 
-            //ÎÄ×Ö·¢¹â
+            //æ–‡å­—å‘å…‰
             if (buttonHoverProgress > 0.01f || isCalling || isDisabled) {
                 Color glowColor = borderColor * 0.5f;
                 for (int i = 0; i < 4; i++) {
@@ -772,7 +770,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             Color textColor = Color.Lerp(normalText, disabledText, disabledTransition);
             textColor *= uiAlpha * statusTextAlpha;
 
-            //ÎÄ×Ö·¢¹â
+            //æ–‡å­—å‘å…‰
             Color glowColor = textColor * 0.6f;
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
@@ -784,20 +782,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawDisabledEffects(SpriteBatch spriteBatch) {
-            //»æÖÆ·â½ûÏß
+            //ç»˜åˆ¶å°ç¦çº¿
             foreach (var banLine in banLines) {
                 banLine.Draw(spriteBatch, uiAlpha * disabledTransition);
             }
 
-            //»æÖÆ¾¯¸æÉÁË¸
+            //ç»˜åˆ¶è­¦å‘Šé—ªçƒ
             if (isDisabled) {
                 DrawWarningFlash(spriteBatch);
             }
 
-            //»æÖÆXĞÎ·â½û±ê¼Ç
+            //ç»˜åˆ¶Xå½¢å°ç¦æ ‡è®°
             DrawBanMarks(spriteBatch);
 
-            //»æÖÆ¹ÊÕÏĞ§¹û
+            //ç»˜åˆ¶æ•…éšœæ•ˆæœ
             DrawGlitchEffect(spriteBatch);
         }
 
@@ -818,19 +816,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         }
 
         private void DrawBanMarks(SpriteBatch spriteBatch) {
-            //ÔÚÍ·ÏñÉÏ»æÖÆXĞÎ±ê¼Ç
+            //åœ¨å¤´åƒä¸Šç»˜åˆ¶Xå½¢æ ‡è®°
             Vector2 center = portraitPosition;
             float size = PortraitSize * 0.7f;
             float thickness = 4f;
 
             Color banColor = new Color(255, 80, 80) * (uiAlpha * disabledTransition * 0.9f);
 
-            //×óÉÏµ½ÓÒÏÂ
+            //å·¦ä¸Šåˆ°å³ä¸‹
             Vector2 p1 = center + new Vector2(-size / 2f, -size / 2f);
             Vector2 p2 = center + new Vector2(size / 2f, size / 2f);
             DrawLine(spriteBatch, p1, p2, banColor, thickness);
 
-            //ÓÒÉÏµ½×óÏÂ
+            //å³ä¸Šåˆ°å·¦ä¸‹
             Vector2 p3 = center + new Vector2(size / 2f, -size / 2f);
             Vector2 p4 = center + new Vector2(-size / 2f, size / 2f);
             DrawLine(spriteBatch, p3, p4, banColor, thickness);
@@ -839,7 +837,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
         private void DrawGlitchEffect(SpriteBatch spriteBatch) {
             if (!isDisabled) return;
 
-            //Ëæ»ú¹ÊÕÏÌõÎÆ
+            //éšæœºæ•…éšœæ¡çº¹
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float glitch = (float)Math.Sin(glitchTimer * 3f);
 
@@ -891,7 +889,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             );
         }
 
-        #region Á£×ÓÌØĞ§Àà
+        #region ç²’å­ç‰¹æ•ˆç±»
         private class TechParticle
         {
             public Vector2 Position;
@@ -965,12 +963,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             public bool Update() {
                 Life++;
 
-                //ÏßÌõÉú³¤
+                //çº¿æ¡ç”Ÿé•¿
                 if (Length < 200f) {
                     Length += Speed;
                 }
 
-                //ÑØ·½ÏòÒÆ¶¯
+                //æ²¿æ–¹å‘ç§»åŠ¨
                 Position += Angle.ToRotationVector2() * 1.5f;
 
                 return Life >= MaxLife;
@@ -985,11 +983,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
                 Texture2D px = VaultAsset.placeholder2.Value;
                 Vector2 endPos = Position + Angle.ToRotationVector2() * Length;
 
-                //»æÖÆÖ÷Ïß
+                //ç»˜åˆ¶ä¸»çº¿
                 Color lineColor = new Color(255, 80, 80) * (alpha * 0.8f * fade);
                 DrawLine(sb, Position, endPos, lineColor, Thickness);
 
-                //»æÖÆ·¢¹âĞ§¹û
+                //ç»˜åˆ¶å‘å…‰æ•ˆæœ
                 Color glowColor = new Color(255, 150, 150) * (alpha * 0.4f * fade);
                 DrawLine(sb, Position, endPos, glowColor, Thickness * 2f);
             }

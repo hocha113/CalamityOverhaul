@@ -20,27 +20,49 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelGlowAssetDic { get; set; } = [];
         void ICWRLoader.LoadData() {
-            if (!CWRRef.Has) {
+            if (!ModLoader.TryGetMod("CalamityMod", out var calamity)) {
                 return;
             }
-
-            IList<Type> turretTypes = CWRRef.GetTEBaseTurretTypes();
+            Type teBaseTurretType = calamity.Code.GetType("CalamityMod.TileEntities.TEBaseTurret");
+            if (teBaseTurretType is null) {
+                return;
+            }
+            IList<Type> turretTypes = GetDerivedTypes(teBaseTurretType);
             if (turretTypes is null) {
                 return;
             }
             foreach (var type in turretTypes) {
                 MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
-                VaultHook.Add(info, OnUpdateHook);
+                if (info != null)
+                    VaultHook.Add(info, OnUpdateHook);
                 info = type.GetMethod("Update", BindingFlags.Public | BindingFlags.Instance);
-                VaultHook.Add(info, OnUpdateHook);
+                if (info != null)
+                    VaultHook.Add(info, OnUpdateHook);
             }
         }
 
-        void ICWRLoader.LoadAsset() {
-            if (!CWRRef.Has) {
-                return;
+        private static IList<Type> GetDerivedTypes(Type baseType) {
+            IList<Type> types = [];
+
+            Type[] allTypes = VaultUtils.GetAnyModCodeType();
+
+            foreach (Type type in allTypes) {
+                //核心筛选逻辑:
+                //类型必须是类 (IsClass)
+                //类型不能是抽象类 (!IsAbstract)
+                //类型必须可以赋值给 TBase (IsAssignableFrom)，这同时适用于类继承和接口实现
+                //类型不能是基类型本身 (type != baseType)，避免自己实例化自己
+                if (!type.IsClass || type.IsAbstract || !baseType.IsAssignableFrom(type) || type == baseType) {
+                    continue;
+                }
+
+                types.Add(type);
             }
 
+            return types;
+        }
+
+        void ICWRLoader.LoadAsset() {
             TurretBase = CWRUtils.GetT2DAsset(CWRConstant.Turrets + "TurretBase");
 
             List<BaseTurretTP> baseTurretTPs = VaultUtils.GetDerivedInstances<BaseTurretTP>();
