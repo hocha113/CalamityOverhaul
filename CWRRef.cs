@@ -50,7 +50,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static bool Has {
             get {
-                _has ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == new Version(2, 1);
+                _has ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == new Version(2, 1, 1);
                 return _has.Value;
             }
         }
