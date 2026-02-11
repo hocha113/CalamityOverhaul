@@ -25,16 +25,20 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
             IList<Type> turretTypes = GetDerivedTypes(teBaseTurretType);
-            if (turretTypes is null) {
+            if (turretTypes is null || turretTypes.Count == 0) {
                 return;
             }
             foreach (var type in turretTypes) {
-                MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
-                if (info != null)
-                    VaultHook.Add(info, OnUpdateHook);
-                info = type.GetMethod("Update", BindingFlags.Public | BindingFlags.Instance);
-                if (info != null)
-                    VaultHook.Add(info, OnUpdateHook);
+                try {
+                    MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
+                    if (info != null)
+                        VaultHook.Add(info, OnUpdateHook);
+                    info = type.GetMethod("Update", BindingFlags.Public | BindingFlags.Instance);
+                    if (info != null)
+                        VaultHook.Add(info, OnUpdateHook);
+                } catch (Exception e) {
+                    CWRMod.Instance.Logger.Warn($"[ModifyTurretLoader] Failed to hook turret type {type.FullName}: {e.Message}");
+                }
             }
         }
 
@@ -92,12 +96,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     BarrelGlowAssetDic.Add(tp.ID, null);
                 }
 
-                TextureAssets.Tile[tp.TargetTileID] = TurretBase;
+                if (tp.TargetTileID > 0 && tp.TargetTileID < TextureAssets.Tile.Length) {
+                    TextureAssets.Tile[tp.TargetTileID] = TurretBase;
+                }
             }
 
             List<BaseTurretItem> baseTurretItem = VaultUtils.GetDerivedInstances<BaseTurretItem>();
             foreach (var item in baseTurretItem) {
-                TextureAssets.Item[item.TargetID] = CWRUtils.GetT2DAsset(string.Concat(CWRConstant.Turrets, item.Name.AsSpan(6), "Item"));
+                if (item.TargetID > 0 && item.TargetID < TextureAssets.Item.Length) {
+                    TextureAssets.Item[item.TargetID] = CWRUtils.GetT2DAsset(string.Concat(CWRConstant.Turrets, item.Name.AsSpan(6), "Item"));
+                }
             }
         }
 
@@ -115,7 +123,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             SendKillTE(te);
         }
 
-        public static void KillTE(ModTileEntity te) => te.Kill(te.Position.X, te.Position.Y);
+        public static void KillTE(ModTileEntity te) {
+            if (te == null) {
+                return;
+            }
+            te.Kill(te.Position.X, te.Position.Y);
+        }
 
         public static void SendKillTE(ModTileEntity te) {
             if (VaultUtils.isSinglePlayer) {
@@ -133,7 +146,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             if (!TileEntity.ByPosition.TryGetValue(point, out TileEntity te)) {
                 return;
             }
-            KillTE((ModTileEntity)te);
+            if (te is not ModTileEntity modTE) {
+                return;
+            }
+            KillTE(modTE);
             if (VaultUtils.isServer) {
                 ModPacket modPacket = CWRMod.Instance.GetPacket();
                 modPacket.Write((byte)CWRMessageType.KillTileEntity);
