@@ -60,9 +60,13 @@ namespace CalamityOverhaul
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Setup();
             foreach (var load in ILoaders) {
-                load.SetupData();
-                if (!Main.dedServ) {
-                    load.LoadAsset();
+                try {
+                    load.SetupData();
+                    if (!Main.dedServ) {
+                        load.LoadAsset();
+                    }
+                } catch {
+                    Logger.Error("An error occurred while post-setup " + load.GetType().Name);
                 }
             }
         }
@@ -77,13 +81,21 @@ namespace CalamityOverhaul
 
             ILoaders = VaultUtils.GetDerivedInstances<ICWRLoader>();
             foreach (var load in ILoaders) {
-                load.LoadData();
+                try {
+                    load.LoadData();
+                } catch {
+                    Logger.Error("An error occurred while loading " + load.GetType().Name);
+                }
             }
         }
 
         public override void Unload() {
             foreach (var load in ILoaders) {
-                load.UnLoadData();
+                try {
+                    load.UnLoadData();
+                } catch {
+                    Logger.Error("An error occurred while unloading " + load.GetType().Name);
+                }
             }
 
             EmptyMod();
