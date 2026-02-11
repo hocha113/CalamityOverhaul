@@ -5,6 +5,7 @@ using CalamityMod.CustomRecipes;
 using CalamityMod.DataStructures;
 using CalamityMod.Events;
 using CalamityMod.Graphics.Metaballs;
+using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.ExoMechs;
@@ -766,15 +767,17 @@ namespace CalamityOverhaul
             }
         }
 
-        public static Type GetItem_SHPC_Type() => Has ? GetItem_SHPC_TypeInner() : null;
-        public static Type GetNPC_WITCH_Type() => Has ? GetNPC_WITCH_TypeInner() : null;
-        public static Type GetNPC_SupCal_Type() => Has ? GetNPC_SupCal_TypeInner() : null;
-        [CWRJITEnabled]
-        public static Type GetItem_SHPC_TypeInner() => typeof(SHPC);
-        [CWRJITEnabled]
-        public static Type GetNPC_WITCH_TypeInner() => typeof(BrimstoneWitch);
-        [CWRJITEnabled]
-        public static Type GetNPC_SupCal_TypeInner() => typeof(SupremeCalamitas);
+        public static Type FindCalamityType(string key) {
+            if (CWRMod.Instance.calamity != null) {
+                return CWRMod.Instance.calamity.Code.GetType(key);
+            }
+            return null;
+        }
+
+        public static Type GetItem_SHPC_Type() => FindCalamityType("CalamityMod.Items.Weapons.Magic.SHPC");
+        public static Type GetNPC_WITCH_Type() => FindCalamityType("CalamityMod.NPCs.TownNPCs.BrimstoneWitch");
+        public static Type GetNPC_SupCal_Type() => FindCalamityType("CalamityMod.NPCs.SupremeCalamitas.SupremeCalamitas");
+        public static Type GetTEBaseTurret_Type() => FindCalamityType("CalamityMod.TileEntities.TEBaseTurret");
 
         /// <summary>
         /// 设置SHPC的装填魂魄类型
@@ -820,8 +823,6 @@ namespace CalamityOverhaul
             }
             return num;
         }
-        //[CWRJITEnabled]
-        //private static int GetProjectileDamageInner(NPC npc, int projType) => npc.GetProjectileDamage(projType);
 
         public static void SetPlayerInfiniteFlight(this Player player, bool value) {
             if (!Has) return;

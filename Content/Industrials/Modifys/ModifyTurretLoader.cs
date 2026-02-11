@@ -20,10 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelGlowAssetDic { get; set; } = [];
         void ICWRLoader.LoadData() {
-            if (!ModLoader.TryGetMod("CalamityMod", out var calamity)) {
-                return;
-            }
-            Type teBaseTurretType = calamity.Code.GetType("CalamityMod.TileEntities.TEBaseTurret");
+            Type teBaseTurretType = CWRRef.GetTEBaseTurret_Type();
             if (teBaseTurretType is null) {
                 return;
             }
