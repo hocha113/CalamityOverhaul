@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName(MurasamaOverride.ID);
-        public ref int HitCooldown => ref Owner.GetMurasamaHitCooldown();
+        public int HitCooldown;
         public bool onspan;
         public bool CanAttemptDead;
         public bool Slashing = false;
@@ -105,6 +105,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private void UpdateSlashState() {
+            if (HitCooldown > 0) {
+                HitCooldown--;
+            }
             if (Slash2) {
                 PlaySlashSound(-0.1f, 0.2f);
                 SetSlashingState();

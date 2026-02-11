@@ -611,15 +611,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void SetProjtimesPiercedInner(Projectile projectile, int value) => projectile.Calamity().timesPierced = value;
 
-        public static ref int GetMurasamaHitCooldown(this Player player) {
-            if (!Has) {
-                return ref dummyInt;
-            }
-            return ref GetMurasamaHitCooldownInner(player);
-        }
-        [CWRJITEnabled]
-        private static ref int GetMurasamaHitCooldownInner(Player player) => ref player.Calamity().murasamaHitCooldown;
-
         public static void SetBrimstoneBullets(this Projectile projectile, bool value) {
             if (!Has) return;
             SetBrimstoneBulletsInner(projectile, value);
