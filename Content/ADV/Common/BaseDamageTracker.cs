@@ -1,5 +1,6 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.ADV.Common.BaseDamageTracker;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Common
     {
         public string LocalizationCategory => "UI.QuestTracker";
 
-        //±¾µØ»¯ÎÄ±¾
+        //æœ¬åœ°åŒ–æ–‡æœ¬
         public static LocalizedText QuestFailedPrefix { get; private set; }
         public static LocalizedText QuestCompletedPrefix { get; private set; }
         public static LocalizedText FailureReasonWrongWeapon { get; private set; }
@@ -19,15 +20,15 @@ namespace CalamityOverhaul.Content.ADV.Common
         public static LocalizedText SuccessDamageContribution { get; private set; }
 
         public override void SetStaticDefaults() {
-            QuestFailedPrefix = this.GetLocalization(nameof(QuestFailedPrefix), () => "ÈÎÎñÊ§°Ü");
-            QuestCompletedPrefix = this.GetLocalization(nameof(QuestCompletedPrefix), () => "ÈÎÎñÍê³É!");
-            FailureReasonWrongWeapon = this.GetLocalization(nameof(FailureReasonWrongWeapon), () => "Î´Ê¹ÓÃÖ¸¶¨ÎäÆ÷Íê³É×îºóÒ»»÷");
-            FailureReasonInsufficientDamage = this.GetLocalization(nameof(FailureReasonInsufficientDamage), () => "ÎäÆ÷ÉËº¦Õ¼±È²»×ã");
-            SuccessDamageContribution = this.GetLocalization(nameof(SuccessDamageContribution), () => "ÉËº¦Õ¼±È");
+            QuestFailedPrefix = this.GetLocalization(nameof(QuestFailedPrefix), () => "ä»»åŠ¡å¤±è´¥");
+            QuestCompletedPrefix = this.GetLocalization(nameof(QuestCompletedPrefix), () => "ä»»åŠ¡å®Œæˆ!");
+            FailureReasonWrongWeapon = this.GetLocalization(nameof(FailureReasonWrongWeapon), () => "æœªä½¿ç”¨æŒ‡å®šæ­¦å™¨å®Œæˆæœ€åä¸€å‡»");
+            FailureReasonInsufficientDamage = this.GetLocalization(nameof(FailureReasonInsufficientDamage), () => "æ­¦å™¨ä¼¤å®³å æ¯”ä¸è¶³");
+            SuccessDamageContribution = this.GetLocalization(nameof(SuccessDamageContribution), () => "ä¼¤å®³å æ¯”");
         }
 
         internal static void DealtReset() {
-            //BossÒÑ¾­±»»÷°Ü»òÕßÏûÊ§£¬ÖØÖÃ×·×ÙÊı¾İ
+            //Bosså·²ç»è¢«å‡»è´¥æˆ–è€…æ¶ˆå¤±ï¼Œé‡ç½®è¿½è¸ªæ•°æ®
             TargetWeaponDamageDealt = 0f;
             TotalBossDamage = 0f;
             IsBossFightActive = false;
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         public override void PostUpdateNPCs() {
-            if (!IsBossFightActive) {//Ã»ÓĞÕıÔÚ½øĞĞµÄBossÕ½¶·£¬ÖØÖÃ×·×ÙÊı¾İ
+            if (!IsBossFightActive) {//æ²¡æœ‰æ­£åœ¨è¿›è¡Œçš„Bossæˆ˜æ–—ï¼Œé‡ç½®è¿½è¸ªæ•°æ®
                 DealtReset();
                 return;
             }
@@ -43,7 +44,7 @@ namespace CalamityOverhaul.Content.ADV.Common
             if (CurrentDamageTrackerInstance != null
                 && CurrentDamageTrackerInstance.NPC.Alives()
                 && NPC.AnyNPCs(CurrentDamageTrackerInstance.NPC.type)) {
-                return;//BossÈÔÈ»´æÔÚ£¬¼ÌĞø×·×Ù
+                return;//Bossä»ç„¶å­˜åœ¨ï¼Œç»§ç»­è¿½è¸ª
             }
 
             DealtReset();
@@ -51,20 +52,20 @@ namespace CalamityOverhaul.Content.ADV.Common
     }
 
     /// <summary>
-    /// Í¨ÓÃµÄÉËº¦×·×ÙÏµÍ³»ùÀà£¬ÓÃÓÚ×·×ÙÍæ¼Ò¶ÔÌØ¶¨NPCÊ¹ÓÃÌØ¶¨ÎäÆ÷Ôì³ÉµÄÉËº¦
+    /// é€šç”¨çš„ä¼¤å®³è¿½è¸ªç³»ç»ŸåŸºç±»ï¼Œç”¨äºè¿½è¸ªç©å®¶å¯¹ç‰¹å®šNPCä½¿ç”¨ç‰¹å®šæ­¦å™¨é€ æˆçš„ä¼¤å®³
     /// </summary>
     internal abstract class BaseDamageTracker : DeathTrackingNPC, IWorldInfo
     {
-        //ÉËº¦×·×ÙÊı¾İ
+        //ä¼¤å®³è¿½è¸ªæ•°æ®
         internal static float TargetWeaponDamageDealt = 0f;
         internal static float TotalBossDamage = 0f;
         internal static bool IsBossFightActive = false;
         /// <summary>
-        /// µ±Ç°ÕıÔÚ´¦ÀíµÄÉËº¦×·×ÙÊµÀı
+        /// å½“å‰æ­£åœ¨å¤„ç†çš„ä¼¤å®³è¿½è¸ªå®ä¾‹
         /// </summary>
         internal static BaseDamageTracker CurrentDamageTrackerInstance { get; set; }
 
-        //ĞèÒª×ÓÀàÊµÏÖµÄÅäÖÃ
+        //éœ€è¦å­ç±»å®ç°çš„é…ç½®
         internal abstract int TargetNPCType { get; }
         internal virtual HashSet<int> OtherNPCType => [];
 
@@ -73,23 +74,23 @@ namespace CalamityOverhaul.Content.ADV.Common
         internal abstract float RequiredContribution { get; }
 
         /// <summary>
-        /// ±»×·×ÙµÄNPCÊµÀı£¬×¢ÒâÒòÎª¸üĞÂÖÜÆÚÔ­Òò£¬¸ÃÊµÀı¿ÉÄÜ²¢²»×ÜÊÇ´æÔÚ
+        /// è¢«è¿½è¸ªçš„NPCå®ä¾‹ï¼Œæ³¨æ„å› ä¸ºæ›´æ–°å‘¨æœŸåŸå› ï¼Œè¯¥å®ä¾‹å¯èƒ½å¹¶ä¸æ€»æ˜¯å­˜åœ¨
         /// </summary>
         internal NPC NPC { get; private set; }
 
-        public override bool InstancePerEntity => true;//¶ÔÓ¦NPCÊµÀı´´½¨Ò»¸öÊµÀı
+        public override bool InstancePerEntity => true;//å¯¹åº”NPCå®ä¾‹åˆ›å»ºä¸€ä¸ªå®ä¾‹
 
-        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);//¼ì²éNPCÊÇ·ñÎªÄ¿±êNPC
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);//Ó¦ÓÃÓÚÄ¿±êNPC
+        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);//æ£€æŸ¥NPCæ˜¯å¦ä¸ºç›®æ ‡NPC
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);//åº”ç”¨äºç›®æ ‡NPC
 
         void IWorldInfo.OnWorldLoad() {
-            ResetDamageTracking();//½øÈëÊÀ½çÊ±ÖØÖÃ×·×ÙÊı¾İ
+            ResetDamageTracking();//è¿›å…¥ä¸–ç•Œæ—¶é‡ç½®è¿½è¸ªæ•°æ®
         }
 
         /// <summary>
-        /// ¼ì²éÈÎÎñÊÇ·ñÆôÓÃ/¼¤»î£¬×ÓÀà±ØĞëÊµÏÖ´Ë·½·¨À´¶¨ÒåÈÎÎñµÄ¼¤»îÌõ¼ş
+        /// æ£€æŸ¥ä»»åŠ¡æ˜¯å¦å¯ç”¨/æ¿€æ´»ï¼Œå­ç±»å¿…é¡»å®ç°æ­¤æ–¹æ³•æ¥å®šä¹‰ä»»åŠ¡çš„æ¿€æ´»æ¡ä»¶
         /// </summary>
-        /// <returns>Èç¹ûÈÎÎñ´¦ÓÚ¼¤»î×´Ì¬·µ»Øtrue£¬·ñÔò·µ»Øfalse</returns>
+        /// <returns>å¦‚æœä»»åŠ¡å¤„äºæ¿€æ´»çŠ¶æ€è¿”å›trueï¼Œå¦åˆ™è¿”å›false</returns>
         public abstract bool IsQuestActive(Player player);
 
         protected virtual void ResetDamageTracking() {
@@ -104,17 +105,17 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return true;
             }
 
-            //Boss´æÔÚÊ±±ê¼ÇÕ½¶·¼¤»î
+            //Bosså­˜åœ¨æ—¶æ ‡è®°æˆ˜æ–—æ¿€æ´»
             IsBossFightActive = npc.active;
-            //¼ÇÂ¼Boss×ÜÉúÃüÖµ
+            //è®°å½•Bossæ€»ç”Ÿå‘½å€¼
             TotalBossDamage = npc.lifeMax;
 
             if (npc.Alives()) {
-                foreach (var n in npc.EntityGlobals) {//±éÀúËùÓĞGlobalNPC
-                    if (n is BaseDamageTracker tracker) {//¼ì²éÊÇ·ñÎªBaseDamageTrackerµÄ×ÓÀà
-                        CurrentDamageTrackerInstance = tracker;//¼ÇÂ¼µ±Ç°ÊµÀı
-                        CurrentDamageTrackerInstance.NPC = npc;//¼ÇÂ¼NPCÊµÀı
-                        break;//ÕÒµ½µÚÒ»¸öÊµÀıºóÍË³öÑ­»·
+                foreach (var n in npc.EntityGlobals) {//éå†æ‰€æœ‰GlobalNPC
+                    if (n is BaseDamageTracker tracker) {//æ£€æŸ¥æ˜¯å¦ä¸ºBaseDamageTrackerçš„å­ç±»
+                        CurrentDamageTrackerInstance = tracker;//è®°å½•å½“å‰å®ä¾‹
+                        CurrentDamageTrackerInstance.NPC = npc;//è®°å½•NPCå®ä¾‹
+                        break;//æ‰¾åˆ°ç¬¬ä¸€ä¸ªå®ä¾‹åé€€å‡ºå¾ªç¯
                     }
                 }
             }
@@ -126,12 +127,12 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
 
-            //¼ì²éÈÎÎñÊÇ·ñ¼¤»î
+            //æ£€æŸ¥ä»»åŠ¡æ˜¯å¦æ¿€æ´»
             if (!IsQuestActive(player)) {
                 return;
             }
 
-            //×·×ÙÊµ¼ÊÔì³ÉµÄÉËº¦
+            //è¿½è¸ªå®é™…é€ æˆçš„ä¼¤å®³
             if (IsTargetWeapon(item.type)) {
                 TargetWeaponDamageDealt += hit.Damage;
             }
@@ -147,20 +148,26 @@ namespace CalamityOverhaul.Content.ADV.Common
                 player = owner;
             }
 
-            //¼ì²éÈÎÎñÊÇ·ñ¼¤»î
+            //æ£€æŸ¥ä»»åŠ¡æ˜¯å¦æ¿€æ´»
             if (!IsQuestActive(player)) {
                 return;
             }
 
-            //¼ì²âµ¯Ä»ÊÇ·ñÀ´×ÔÄ¿±êÎäÆ÷
+            //æ£€æµ‹å¼¹å¹•æ˜¯å¦æ¥è‡ªç›®æ ‡æ­¦å™¨
             if (IsTargetProjectile(projectile)) {
+                TargetWeaponDamageDealt += hit.Damage;
+                return;
+            }
+
+            //é¢å¤–æ£€æµ‹æ˜¯å¦ä¸ºç›®æ ‡æ­¦å™¨å‘å°„çš„å¼¹å¹•
+            if (projectile.Alives() && projectile.CWR().Source is EntitySource_ItemUse itemSource && IsTargetWeapon(itemSource.Item.type)) {
                 TargetWeaponDamageDealt += hit.Damage;
             }
         }
 
         public sealed override void OnKill(NPC npc) {
-            if (IsTargetByID(npc)) {//Õâ¸öÅĞ¶¨ÊÇ²»±ØÒªµÄ£¬²»¹ı»¹ÊÇĞ´ÉÏ°É
-                Check(npc);//×÷Îª DeathTrackingNPC µÄ×ÓÀà£¬OnKill»á±»¿Í»§¶Ëµ÷ÓÃ£¬ËùÒÔÕâÀïµÄÔËĞĞ²»»á³öÏÖÎÊÌâ
+            if (IsTargetByID(npc)) {//è¿™ä¸ªåˆ¤å®šæ˜¯ä¸å¿…è¦çš„ï¼Œä¸è¿‡è¿˜æ˜¯å†™ä¸Šå§
+                Check(npc);//ä½œä¸º DeathTrackingNPC çš„å­ç±»ï¼ŒOnKillä¼šè¢«å®¢æˆ·ç«¯è°ƒç”¨ï¼Œæ‰€ä»¥è¿™é‡Œçš„è¿è¡Œä¸ä¼šå‡ºç°é—®é¢˜
             }
         }
 
@@ -169,60 +176,60 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
 
-            //¼ì²éÈÎÎñÊÇ·ñ¼¤»î
+            //æ£€æŸ¥ä»»åŠ¡æ˜¯å¦æ¿€æ´»
             if (!IsQuestActive(Main.LocalPlayer)) {
                 return;
             }
 
             CheckQuestCompletion();
 
-            //ÖØÖÃ×·×ÙÊı¾İ
+            //é‡ç½®è¿½è¸ªæ•°æ®
             ResetDamageTracking();
         }
 
         /// <summary>
-        /// ¼ì²éÈÎÎñÊÇ·ñÍê³É
+        /// æ£€æŸ¥ä»»åŠ¡æ˜¯å¦å®Œæˆ
         /// </summary>
         protected virtual void CheckQuestCompletion() {
             Player player = Main.LocalPlayer;
 
-            //¼ì²âÊÇ·ñÔì³É×ã¹»µÄÉËº¦¹±Ï×
+            //æ£€æµ‹æ˜¯å¦é€ æˆè¶³å¤Ÿçš„ä¼¤å®³è´¡çŒ®
             float contribution = TotalBossDamage > 0 ? TargetWeaponDamageDealt / TotalBossDamage : 0f;
             if (contribution < RequiredContribution) {
                 ShowFailureMessage(player, $"{FailureReasonInsufficientDamage.Value} ({contribution:P0}/{RequiredContribution:P0})");
                 return;
             }
 
-            //ÈÎÎñÍê³É
+            //ä»»åŠ¡å®Œæˆ
             OnQuestCompleted(player, contribution);
             ShowSuccessMessage(player, contribution);
         }
 
         /// <summary>
-        /// µ±ÈÎÎñÍê³ÉÊ±µ÷ÓÃ£¬×ÓÀà¿ÉÖØĞ´ÒÔÊµÏÖ×Ô¶¨ÒåÂß¼­
+        /// å½“ä»»åŠ¡å®Œæˆæ—¶è°ƒç”¨ï¼Œå­ç±»å¯é‡å†™ä»¥å®ç°è‡ªå®šä¹‰é€»è¾‘
         /// </summary>
         public abstract void OnQuestCompleted(Player player, float contribution);
 
         /// <summary>
-        /// ÏÔÊ¾ÈÎÎñÊ§°ÜÏûÏ¢
+        /// æ˜¾ç¤ºä»»åŠ¡å¤±è´¥æ¶ˆæ¯
         /// </summary>
         public virtual void ShowFailureMessage(Player player, string reason) {
             int combat = CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}", true);
-            Main.combatText[combat].lifeTime = 300;//ÑÓ³¤ÏÔÊ¾Ê±¼ä
+            Main.combatText[combat].lifeTime = 300;//å»¶é•¿æ˜¾ç¤ºæ—¶é—´
             VaultUtils.Text($"{QuestFailedPrefix.Value}: {reason}", Color.Red);
         }
 
         /// <summary>
-        /// ÏÔÊ¾ÈÎÎñ³É¹¦ÏûÏ¢
+        /// æ˜¾ç¤ºä»»åŠ¡æˆåŠŸæ¶ˆæ¯
         /// </summary>
         public virtual void ShowSuccessMessage(Player player, float contribution) {
             int combat = CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", true);
-            Main.combatText[combat].lifeTime = 300;//ÑÓ³¤ÏÔÊ¾Ê±¼ä
+            Main.combatText[combat].lifeTime = 300;//å»¶é•¿æ˜¾ç¤ºæ—¶é—´
             VaultUtils.Text($"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", Color.Gold);
         }
 
         /// <summary>
-        /// ¼ì²éÎïÆ·ÊÇ·ñÊÇÄ¿±êÎäÆ÷
+        /// æ£€æŸ¥ç‰©å“æ˜¯å¦æ˜¯ç›®æ ‡æ­¦å™¨
         /// </summary>
         protected virtual bool IsTargetWeapon(int itemType) {
             foreach (int weaponType in TargetWeaponTypes) {
@@ -234,7 +241,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         /// <summary>
-        /// ¼ì²éµ¯Ä»ÊÇ·ñÀ´×ÔÄ¿±êÎäÆ÷
+        /// æ£€æŸ¥å¼¹å¹•æ˜¯å¦æ¥è‡ªç›®æ ‡æ­¦å™¨
         /// </summary>
         protected virtual bool IsTargetProjectile(Projectile projectile) {
             foreach (int projType in TargetProjectileTypes) {
@@ -246,7 +253,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÉËº¦×·×ÙÊı¾İ¹©UIÊ¹ÓÃ
+        /// è·å–å½“å‰ä¼¤å®³è¿½è¸ªæ•°æ®ä¾›UIä½¿ç”¨
         /// </summary>
         public static (float targetWeaponDamage, float totalDamage, bool isActive) GetDamageTrackingData() {
             return (TargetWeaponDamageDealt, TotalBossDamage, IsBossFightActive);
