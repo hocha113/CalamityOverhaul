@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
@@ -44,6 +45,7 @@ namespace CalamityOverhaul
         ResurrectionRate,
         DespawnDestroyer,
         MachineEffect,
+        DeathTrackingNPCKill,
     }
 
     public static class CWRNetWork
@@ -95,6 +97,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.DespawnDestroyer) {
                 DestroyerHeadAI.HandleDespawn();
+            }
+            else if (type == CWRMessageType.DeathTrackingNPCKill) {
+                DeathTrackingNPC.HandleKillSync(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

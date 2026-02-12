@@ -1,31 +1,26 @@
 ﻿using CalamityOverhaul.Content.ADV.Common;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    internal class ADVHook : ICWRLoader
+    /// <summary>
+    /// 用于在服务端拦截NPC击杀事件并通过网络同步到所有客户端，
+    /// 保证DeathTrackingNPC的OnKill在全端都能被正确调用
+    /// </summary>
+    internal class ADVHook : GlobalNPC
     {
-        void ICWRLoader.LoadData() {
-            On_NPC.NPCLoot += OnNPCLootHook;
-        }
-
-        void ICWRLoader.UnLoadData() {
-            On_NPC.NPCLoot -= OnNPCLootHook;
-        }
-
-        private void OnNPCLootHook(On_NPC.orig_NPCLoot orig, NPC npc) {
-            orig.Invoke(npc);
+        public override void OnKill(NPC npc) {
             if (!VaultLoad.LoadenContent) {
                 return;
             }
-            if (!VaultUtils.isClient) {//仅客户端处理
+            //单人模式下直接派发，不需要网络同步
+            if (VaultUtils.isSinglePlayer) {
                 return;
             }
-            foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
-                if (n is not DeathTrackingNPC tracker) {//检查是否为DeathTrackingNPC的子类
-                    continue;
-                }
-                tracker.OnKill(npc);//调用OnKill方法进行任务完成检查
+            //服务端处理：发送网络包通知所有客户端，服务端自身的OnKill由tModLoader自动调用
+            if (VaultUtils.isServer) {
+                DeathTrackingNPC.SendKillSync(npc.whoAmI, npc.type);
             }
         }
     }
