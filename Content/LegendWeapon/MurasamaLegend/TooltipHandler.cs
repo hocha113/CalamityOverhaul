@@ -30,17 +30,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
             //根据击败的Boss数量来确定提示
             //击败了所有两对Boss
-            if (Downed7.Invoke() && Downed6.Invoke() && NPC.downedMechBoss2 && NPC.downedMechBoss3) {
+            if (DownedCalamityandMechBoss3 && DownedCalamityandMechBoss2) {
                 //全部击败，不需要提示
                 return;
             }
             //击败了一对Boss的情况
-            else if (NPC.downedMechBoss3 && Downed6.Invoke() && !NPC.downedMechBoss2 && !Downed7.Invoke()) {
+            else if (DownedCalamityandMechBoss3 && !DownedCalamityandMechBoss2) {
                 //只击败了机械统帅和冰灵
                 newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败双子和硫磺火
                 num += "-2";
             }
-            else if (NPC.downedMechBoss2 && Downed7.Invoke() && !NPC.downedMechBoss3 && !Downed6.Invoke()) {
+            else if (DownedCalamityandMechBoss2 && !DownedCalamityandMechBoss3) {
                 //只击败了双子和硫磺火
                 newContent = MuraText.GetTextValue("Subtest_Text2");  //提示击败机械统帅和冰灵
                 num += "-2";

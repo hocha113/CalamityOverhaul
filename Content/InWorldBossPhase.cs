@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content
 
         public static bool Level4 => Downed5.Invoke() || DownedV4.Invoke();
 
-        public static bool Level5 => Downed8.Invoke() && NPC.downedMechBoss1;
+        public static bool Level5 => DownedCalamityandMechBoss1;
 
         public static bool Level6 => Downed10.Invoke();
 
@@ -38,6 +38,18 @@ namespace CalamityOverhaul.Content
         /// 击败所有机械Boss
         /// </summary>
         public static bool DownedAnyMechBoss => NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
+        /// <summary>
+        /// 击败毁灭者和渊灾
+        /// </summary>
+        public static bool DownedCalamityandMechBoss1 => NPC.downedMechBoss1 && Downed8.Invoke();
+        /// <summary>
+        /// 击败双子魔眼和硫磺火元素
+        /// </summary>
+        public static bool DownedCalamityandMechBoss2 => NPC.downedMechBoss2 && Downed7.Invoke();
+        /// <summary>
+        /// 击败机械骷髅王和极地冰灵
+        /// </summary>
+        public static bool DownedCalamityandMechBoss3 => NPC.downedMechBoss3 && Downed6.Invoke();
         /// <summary>
         /// 击败所有石后灾厄Boss
         /// </summary>
@@ -489,8 +501,8 @@ namespace CalamityOverhaul.Content
             else {
                 return level;
             }
-            //不仅仅要通过灾厄三王，还得判断是否通过机械三王
-            if (Level5 && DownedAnyMechBoss) {
+            //判断击杀所有3对boss
+            if (Level5 && DownedCalamityandMechBoss2 && DownedCalamityandMechBoss3) {
                 level = 6;
             }
             else {
