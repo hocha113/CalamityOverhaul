@@ -92,10 +92,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             FindTarget();
             UpdateStateContext();
 
-            if (InfernumRef.InfernumModeOpenState) {
-                return true;
-            }
-
             //更新状态机
             stateMachine?.Update();
 

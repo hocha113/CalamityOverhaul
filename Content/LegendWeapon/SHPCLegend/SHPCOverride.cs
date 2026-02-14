@@ -69,21 +69,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
-                {0, 8 },
-                {1, 10 },
-                {2, 16 },
-                {3, 20 },
-                {4, 28 },
-                {5, 36 },
-                {6, 44 },
-                {7, 66 },
-                {8, 80 },
-                {9, 100 },
-                {10, 150 },
-                {11, 180 },
-                {12, 240 },
-                {13, 360 },
-                {14, 1200 }
+                {0, 12 },
+                {1, 22 },
+                {2, 32 },
+                {3, 40 },
+                {4, 52 },
+                {5, 60 },
+                {6, 80 },
+                {7, 120 },
+                {8, 160 },
+                {9, 200 },
+                {10, 280 },
+                {11, 350 },
+                {12, 500 },
+                {13, 700 },
+                {14, 2200 }
             };
         }
 
