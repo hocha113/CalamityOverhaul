@@ -1,6 +1,4 @@
 ﻿using InnoVault.GameSystem;
-using System;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,28 +7,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
-    internal class OverhaulSettingsButton : ModSystem, ILocalizedModType
+    internal class OverhaulSettingsButton : MenuOverride, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
         public static LocalizedText OverhaulSettingsButtonText { get; private set; }
 
-        //必须与原方法签名完全匹配的委托
-        private delegate void orig_AddMenuButtons(
-            Main main, int selectedMenu,
-            string[] buttonNames, float[] buttonScales,
-            ref int offY, ref int spacing,
-            ref int buttonIndex, ref int numButtons);
-
         public override void SetStaticDefaults() {
             OverhaulSettingsButtonText = this.GetLocalization(nameof(OverhaulSettingsButtonText), () => "大修设置");
-        }
-
-        public override void Load() {
-            //通过程序集反射获取 internal 类型
-            Type interfaceType = typeof(Main).Assembly.GetType("Terraria.ModLoader.UI.Interface");
-            //反射获取 internal 方法
-            MethodInfo targetMethod = interfaceType.GetMethod("AddMenuButtons", BindingFlags.Static | BindingFlags.NonPublic);
-            VaultHook.Add(targetMethod, OnAddMenuButtonsHook);
         }
 
         //这个方法会在主菜单添加按钮时被调用
@@ -41,16 +24,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         //他们为什么不直接提供一个公开的钩子？或者来一个event？保留一个这种空的并且是 internal 的方法实在是让人费解
         //不过不管如何，目前这个方法是可行的
         //——HoCha113 2026-2-10 4:01
-        private static void OnAddMenuButtonsHook(
-            orig_AddMenuButtons orig,
-            Main main, int selectedMenu,
-            string[] buttonNames, float[] buttonScales,
-            ref int offY, ref int spacing,
-            ref int buttonIndex, ref int numButtons) {
-            //先调用原方法
-            orig(main, selectedMenu, buttonNames, buttonScales,
-                 ref offY, ref spacing, ref buttonIndex, ref numButtons);
-
+        public override void AddMenuButtons(Main main, int selectedMenu, string[] buttonNames, float[] buttonScales, ref int offY, ref int spacing, ref int buttonIndex, ref int numButtons) {
             //插入'大修设置'按钮
             numButtons++;
             buttonNames[buttonIndex] = OverhaulSettingsButtonText?.Value ?? "大修设置";
