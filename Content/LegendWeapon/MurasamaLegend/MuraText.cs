@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public LocalizedText Subtest_Text0 { get; private set; }
         public LocalizedText Subtest_Text1 { get; private set; }
         public LocalizedText Subtest_Text2 { get; private set; }
-        public LocalizedText Subtest_Text3 { get; private set; }
         public LocalizedText Subtest_Text4 { get; private set; }
         public LocalizedText Subtest_Text5 { get; private set; }
         public LocalizedText Subtest_Text6 { get; private set; }

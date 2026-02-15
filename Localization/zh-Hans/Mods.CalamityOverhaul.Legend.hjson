@@ -185,11 +185,6 @@ MuraText: {
 		一次决战要到来了，那些破铜烂铁计划联合在一起，妄图阻挡我们
 		以刀与血来告诉它们，我们远征的步伐将碾碎一切异形邪祟和憎恶智能
 		'''
-	/* Subtest_Text3:
-		'''
-		A decisive battle is approaching. Those piles of scrap metal plan to unite in a vain attempt to stop us.
-		Tell them with blade and blood: the pace of our expedition will crush all alien evils and abominable intelligences.
-		''' */
 	World_Text0: 上次升级的世界:<{0}>|记录等级:<{1}>
 	Subtest_Text4: 丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
 	Subtest_Text5: 血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (DownedCalamityandMechBoss2) {//双子和硫磺火
                 damage += 8;
             }
-            if (DownedCalamityandMechBoss2) {//机械统帅和冰灵
+            if (DownedCalamityandMechBoss3) {//机械统帅和冰灵
                 damage += 10;
             }
         }

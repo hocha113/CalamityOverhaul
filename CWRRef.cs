@@ -586,10 +586,6 @@ namespace CalamityOverhaul
             return 0f;
         }
 
-        public static List<int> GetPierceResistExceptionList() => Has ? GetPierceResistExceptionListInner() : new List<int>();
-        [CWRJITEnabled]
-        private static List<int> GetPierceResistExceptionListInner() => new List<int>();// CalamityLists.projectileDestroyExceptionList;//TODO
-
         public static bool HasExo() => Has && HasExoInner();
         [CWRJITEnabled]
         private static bool HasExoInner() => Draedon.ExoMechIsPresent;
@@ -688,16 +684,6 @@ namespace CalamityOverhaul
         private static void Spawn_Effect_1Inner(Vector2 spawnPos, Vector2 vel) {
             Particle spark2 = new LineParticle(spawnPos, vel, false, Main.rand.Next(15, 25 + 1), Main.rand.NextFloat(1.5f, 2f), Main.rand.NextBool() ? Color.MediumOrchid : Color.DarkViolet);
             GeneralParticleHandler.SpawnParticle(spark2);
-        }
-
-        public static void Spawn_Effect_2(Vector2 spawnPos, Vector2 vel, int sparkLifetime, float sparkScale, Color sparkColor) {
-            if (!Has) return;
-            Spawn_Effect_2Inner(spawnPos, vel, sparkLifetime, sparkScale, sparkColor);
-        }
-        [CWRJITEnabled]
-        private static void Spawn_Effect_2Inner(Vector2 spawnPos, Vector2 vel, int sparkLifetime, float sparkScale, Color sparkColor) {
-            SparkParticle spark = new SparkParticle(spawnPos, vel, false, sparkLifetime, sparkScale, sparkColor);
-            GeneralParticleHandler.SpawnParticle(spark);
         }
 
         public static void SetDownedCalamitas(bool value) {

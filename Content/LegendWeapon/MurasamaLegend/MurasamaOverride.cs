@@ -205,25 +205,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[TargetID] = true;
-
-            List<int> list = CWRRef.GetPierceResistExceptionList();
-            //防止鬼妖受到蠕虫伤害衰减
-            if (list != null) {
-                list.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                list.Add(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
-            if (list != null) {
-                list.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                list.Add(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
-        }
-
-        public override void Unload() {
-            List<int> list = CWRRef.GetPierceResistExceptionList();
-            if (list != null) {
-                list.Remove(ModContent.ProjectileType<MuraSlashDefault>());
-                list.Remove(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
         }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

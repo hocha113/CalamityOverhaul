@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -173,20 +173,58 @@ HalibutText: {
 }
 
 MuraText: {
-	Subtest_Text0: We must go to Hell to unleash the powers of light and darkness. It will trigger a subspace storm, but we have no choice, Rookie. Write a grand stroke for the crusade!
-	Subtest_Text1: A giant steel worm blocks our path. Chop it into pieces.
-	Subtest_Text2: I can feel two gazes watching us. Eliminate them.
-	Subtest_Text3:
+	Subtest_Text0:
 		'''
-		A decisive battle is approaching. Those piles of scrap metal plan to unite in a vain attempt to stop us.
-		Tell them with blade and blood: the pace of our expedition will crush all alien evils and abominable intelligences.
+		We must descend into the Underworld to unleash the spirits of Light and Dark. 
+		It will trigger a subspace storm, but it is a necessary risk. 
+		Recruit, etch a magnificent mark upon our crusade!
 		'''
-	World_Text0: Last upgraded world: <{0}> | Record Level: <{1}>
-	Subtest_Text4: In the jungle, someone's clumsy past work is still wandering. As a failure, it deserves to be treated like a pile of scrap iron.
-	Subtest_Text5: A husk of interwoven flesh, a vengeful spirit from the ancient battlefield, a golem of ceaseless destruction. It destroys all things, and we destroy it.
-	Subtest_Text6: The star god of old has long since fallen; what remains now is barely a maggot. Let us end the era of the star god completely.
-	Subtest_Text7: Let that amalgamation of souls in the dungeon wither under my blade. Its soul will be the best nourishment.
-	Subtest_Text8: A pitiful god surviving by feeding on stellar heat. Its heretical fire needs to be extinguished completely.
-	Subtest_Text9: That alien plant deep in the jungle... tear its petals, crush its bulb, and let its juices dye this land.
-	Subtest_Text10: The witch who cast herself into chaos has a twisted clone sister. Kill that aberration and offer blood and fire to the blade.
+	Subtest_Text1:
+		'''
+		I long for the tempering flames of the Brimstone Crag. Go, pay a visit to the guardian there.
+		I can feel two gazes fixed upon us. Eliminate them.
+		'''
+	Subtest_Text2:
+		'''
+		In the bastion of true ice lies a prison holding a powerful psionic. 
+		Release him; he will be a great asset in our reclamation of Terra.
+		A decisive battle approaches. Those piles of scrap metal are plotting to unite to block our path.
+		Show them with blade and blood: our expedition's march will crush all alien filth and abominable intelligence.
+		'''
+	World_Text0: Last Upgraded World: <{0}> | Record Level: <{1}>
+	Subtest_Text4:
+		'''
+		Within the Jungle, someone's clumsy prototype still wanders. 
+		As a failed experiment, it deserves to be nothing more than a heap of scrap.
+		'''
+	Subtest_Text5:
+		'''
+		A shell of woven flesh, the vengeful spirits of an ancient battlefield, 
+		a golem of ceaseless destruction. It destroys all, and we shall destroy it.
+		'''
+	Subtest_Text6:
+		'''
+		The star god of old has long since fallen; what remains is barely a worm. 
+		Let us bring a definitive end to the astral era.
+		'''
+	Subtest_Text7:
+		'''
+		Let that amalgamation of spirits in the Dungeon wither beneath my edge. 
+		Its souls shall serve as the finest nourishment.
+		'''
+	Subtest_Text8:
+		'''
+		A pathetic god lingering on by leeching the heat of stars. 
+		Her heretical flame must be thoroughly extinguished.
+		'''
+	Subtest_Text9:
+		'''
+		That botanical aberration deep in the Jungle... 
+		tear its petals, crush its bulb, and let its ichor stain this land.
+		'''
+	Subtest_Text10:
+		'''
+		That witch who plunged into chaos has a deformed clone sister. 
+		Slaughter that aberration; offer its blood and flames to the blade.
+		'''
 }
