@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                 canFormOwnerSetDir = false;
                 canSetOwnerArmBver = false;
                 Projectile.usesLocalNPCImmunity = true;
-                Projectile.localNPCHitCooldown = 15;
+                Projectile.localNPCHitCooldown = 10;
                 if (Time == 0) {
                     distanceToOwner = 155;
                     drawTrailTopWidth = 60;
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjs
                             Time = 30 * UpdateRate;
                         }
                         if (Projectile.soundDelay <= 0) {
-                            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash1".GetSound() with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
+                            SoundEngine.PlaySound("CalamityMod/Sounds/Custom/SCalSounds/CatastropheResonanceSlash".GetSound() with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
                             Projectile.soundDelay = 30 * UpdateRate;
                         }
                     }
