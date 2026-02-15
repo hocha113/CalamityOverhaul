@@ -157,9 +157,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             return maxDomainRadius;
         }
 
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
+        }
+
         public override void SetDefaults() {
-            Projectile.width = 2400; //扩大碰撞箱以支持10层
-            Projectile.height = 2400;
+            Projectile.width = 24;
+            Projectile.height = 24;
             Projectile.timeLeft = 2;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
