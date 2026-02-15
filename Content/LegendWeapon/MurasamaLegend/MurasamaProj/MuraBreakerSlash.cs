@@ -242,9 +242,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 4f;
             }
 
-            //对塔纳托斯头造成2.85倍伤害
+            //对塔纳托斯头造成5.85倍伤害
             if (target.type == CWRID.NPC_ThanatosHead) {
-                modifiers.FinalDamage *= 11.4f;
+                modifiers.FinalDamage *= 5.85f;
             }
 
             //对肉山造成1.5倍伤害

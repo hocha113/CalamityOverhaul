@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //对塔纳托斯头造成2.85倍伤害
             if (target.type == CWRID.NPC_ThanatosHead) {
-                modifiers.FinalDamage *= 5.7f;
+                modifiers.FinalDamage *= 2.85f;
             }
 
             //神明吞噬者头尾，风编尾不受上述影响
