@@ -27,13 +27,9 @@ public struct BowstringDataStruct
     /// </summary>
     public Vector2 BottomBowOffset = default;
     /// <summary>
-    /// 点集，为<see cref="DoEffect"/>所用
+    /// 点集，用于弓弦绘制
     /// </summary>
     public Vector2[] Points = new Vector2[3];
-    /// <summary>
-    /// 效果实例
-    /// </summary>
-    public PathEffect DoEffect = null;
     /// <summary>
     /// 是否自动更具<see cref="DeductRectangle"/>的宽度来设置<see cref="thicknessEvaluator"/>，默认为<see langword="true"/>
     /// </summary>

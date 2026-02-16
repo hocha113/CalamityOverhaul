@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.RangedModify.UI;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -484,12 +485,15 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             BowstringData.Points[1] = bowPos - toProjRot * lengsOFstValue;
             BowstringData.Points[2] = posBottom;
 
-            if (BowstringData.DoEffect == null) {
-                BowstringData.colorEvaluator ??= (_) => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16));
-                BowstringData.DoEffect = new PathEffect(BowstringData.thicknessEvaluator, BowstringData.colorEvaluator, handlerTexturePoss: HanderBowstringTexturePoss);
+            BowstringData.colorEvaluator ??= (_) => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16));
+            List<Vector2> pathPoints = Trail.GenerateSmoothPath(BowstringData.Points, Vector2.Zero, 88);
+            if (pathPoints.Count >= 2) {
+                Trail.GenerateInterleavedMesh(pathPoints, BowstringData.thicknessEvaluator, BowstringData.colorEvaluator
+                    , out ColoredVertex[] vertices, out short[] indices
+                    , handlerTexturePoss: HanderBowstringTexturePoss);
+                Main.graphics.GraphicsDevice.Textures[0] = TextureValue;
+                Trail.DrawUserPrimitives(vertices, indices);
             }
-            BowstringData.DoEffect.GetPathData(BowstringData.Points, Vector2.Zero, 88);
-            BowstringData.DoEffect.Draw(TextureValue);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
