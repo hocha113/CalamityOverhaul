@@ -42,10 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 damage += 20;
             }
             if (Downed14.Invoke()) {
-                damage += 5;
+                damage += 7;
             }
             if (Downed15.Invoke()) {
-                damage += 5;
+                damage += 8;
             }
             if (Downed16.Invoke()) {
                 damage += 10;
