@@ -273,28 +273,28 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (DownedV3.Invoke()) {
+            if (DownedV2.Invoke()) {
                 level = 3;
             }
             else {
                 return level;
             }
 
-            if (DownedV4.Invoke()) {
+            if (Downed5.Invoke()) {
                 level = 4;
             }
             else {
                 return level;
             }
 
-            if (DownedV5.Invoke()) {
+            if (Main.hardMode) {
                 level = 5;
             }
             else {
                 return level;
             }
 
-            if (VDownedV7.Invoke()) {
+            if (VDownedV7.Invoke() || Downed10.Invoke()) {
                 level = 6;
             }
             else {
@@ -308,21 +308,21 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (VDownedV16.Invoke()) {
+            if (DownedV8.Invoke()) {
                 level = 8;
             }
             else {
                 return level;
             }
 
-            if (Downed19.Invoke()) {
+            if (VDownedV16.Invoke()) {
                 level = 9;
             }
             else {
                 return level;
             }
 
-            if (Downed23.Invoke()) {
+            if (Downed23.Invoke() || Downed19.Invoke()) {
                 level = 10;
             }
             else {
