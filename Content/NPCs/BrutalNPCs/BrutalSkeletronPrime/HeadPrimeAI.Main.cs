@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+ï»¿using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// °üº¬AIµÄÖ÷ÒªÂß¼­ºÍ×´Ì¬¹ÜÀí
+    /// åŒ…å«AIçš„ä¸»è¦é€»è¾‘å’ŒçŠ¶æ€ç®¡ç†
     /// </summary>
     internal partial class HeadPrimeAI
     {
@@ -50,16 +50,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            //0-³õÊ¼½×¶Î
-            //1-µÇ³¡±íÑİ
-            //2-³õÔª½×¶Î
-            //3-¹¥»÷¸ü¼ÓÃÍÁÒµÄ¶ş½×¶Î
+            //0-åˆå§‹é˜¶æ®µ
+            //1-ç™»åœºè¡¨æ¼”
+            //2-åˆå…ƒé˜¶æ®µ
+            //3-æ”»å‡»æ›´åŠ çŒ›çƒˆçš„äºŒé˜¶æ®µ
             if (npc.ai[0] == 0f) {
                 if (!VaultUtils.isClient) {
                     npc.TargetClosest();
-                    NetAISend();
+                    npc.netUpdate = true;//å¼ºåˆ¶æ›´æ–°NPC
                 }
-                //ÉèÖÃÎª1£¬±íÃ÷Íê³ÉÁËÊ×´Î³õÊ¼»¯
+                //è®¾ç½®ä¸º1ï¼Œè¡¨æ˜å®Œæˆäº†é¦–æ¬¡åˆå§‹åŒ–
                 npc.ai[0] = 1f;
             }
 
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 DealingFury();
             }
 
-            //Õâ¸ö²¿·ÖÊÇ»úĞµ÷¼÷ÃÍõ¸Õ¸Õ½øĞĞtp´«ËÍºóµÄĞĞÎª£¬ÓÉai10ÊôĞÔ¿ØÖÆ£¬ÔÚÕâ¸öÆÚ¼ä£¬
-            //Ëü²»Ó¦¸Ã×öÈÎºÎ¹¥»÷ĞÔµÄÊÂÇé£¬Òª·ÀÖ¹npc.ai[1]Îª3£¬¶øai10Õâ¸öÖµ»á×Ô¶¯Ïû¼õ
+            //è¿™ä¸ªéƒ¨åˆ†æ˜¯æœºæ¢°éª·é«…ç‹åˆšåˆšè¿›è¡Œtpä¼ é€åçš„è¡Œä¸ºï¼Œç”±ai10å±æ€§æ§åˆ¶ï¼Œåœ¨è¿™ä¸ªæœŸé—´ï¼Œ
+            //å®ƒä¸åº”è¯¥åšä»»ä½•æ”»å‡»æ€§çš„äº‹æƒ…ï¼Œè¦é˜²æ­¢npc.ai[1]ä¸º3ï¼Œè€Œai10è¿™ä¸ªå€¼ä¼šè‡ªåŠ¨æ¶ˆå‡
             if (InIdleAI()) {
                 return false;
             }
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 KillArm_OneToTwoStages();
             }
 
-            //Èç¹ûÊÖ±ÛÒÑ¾­Ã»ÁË²¢ÇÒ»¹ÊÇ´¦ÓÚ½×¶Î¶ş£¬ÄÇÃ´¾ÍÊÖ¶¯ÇĞ»»ÖÁÈı½×¶Î
+            //å¦‚æœæ‰‹è‡‚å·²ç»æ²¡äº†å¹¶ä¸”è¿˜æ˜¯å¤„äºé˜¶æ®µäºŒï¼Œé‚£ä¹ˆå°±æ‰‹åŠ¨åˆ‡æ¢è‡³ä¸‰é˜¶æ®µ
             if (noArm && npc.ai[0] == 2) {
                 SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 npc.ai[0] = 3;

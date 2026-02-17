@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria;
@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// ����AI�ĸ����׶��߼�
+    /// 包含AI的各个阶段逻辑
     /// </summary>
     internal partial class HeadPrimeAI
     {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                         }
                         ai11 = 0;
-                        NetAISend();
+                        npc.netUpdate = true;//强制更新NPC
                     }
                     npc.TargetClosest();
                     npc.netUpdate = true;
@@ -197,10 +197,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (ai6 == 0 && ai9 > 2 && death && !bossRush) {
                 ai3 = 3;
                 ai6 = 1;
-                if (npc.ai[1] != 2) {//�����ʱ�����ٻ�˫��
+                if (npc.ai[1] != 2) {//白天狂暴时不用召唤双子
                     SpawnEye();
                 }
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             int type = ProjectileID.RocketSkeleton;
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                         ai4 = 0;
                         ai5++;
-                        NetAISend();
+                        npc.netUpdate = true;//强制更新NPC
                     }
 
                     if (ai5 > 3 || npc.ai[1] == 1) {
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai8++;
-                        NetAISend();
+                        npc.netUpdate = true;//强制更新NPC
                     }
                     break;
                 case 1:
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        NetAISend();
+                        npc.netUpdate = true;//强制更新NPC
                     }
 
                     ai4++;
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             ai4 = 0;
                             ai5 = 0;
                             ai7 = 0;
-                            NetAISend();
+                            npc.netUpdate = true;//强制更新NPC
                             return false;
                         }
 
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        NetAISend();
+                        npc.netUpdate = true;//强制更新NPC
                     }
 
                     break;

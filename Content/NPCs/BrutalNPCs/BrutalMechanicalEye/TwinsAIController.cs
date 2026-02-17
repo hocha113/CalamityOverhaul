@@ -369,7 +369,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     ai[1] = 0;
                 }
                 ai[0] = (int)PrimaryAIState.Flee;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             //更新上下文
@@ -609,7 +609,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 npc.damage = npc.defDamage;
                 ai[0] = 2;
                 ai[1] = 0;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
                 return false;
             }
 
@@ -659,7 +659,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
                 }
                 ai[0] = 1;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             if (ai[0] == 1) {
@@ -704,7 +704,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
             else if (ai[8] != 0) {
                 ai[8] = 0;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             if (skeletronPrimeInSprint || ai[7] > 0) {
@@ -782,7 +782,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (ai[8] == Mechanicalworm.DontAttackTime + 10) {
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             if (ai[8] > Mechanicalworm.DontAttackTime + 10) {
@@ -812,7 +812,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         );
                     }
                     ai[5] = 0;
-                    NetAISend();
+                    npc.netUpdate = true;//强制更新NPC
                 }
 
                 ai[4]++;
@@ -876,7 +876,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[7] = 10;
                 ai[1] = 1;
                 ai[2] = 0;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             ai[2]++;
@@ -907,7 +907,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 }
                 ai[3]++;
                 ai[2] = 0;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
 
             if (ai[2] == 2) {
@@ -921,13 +921,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     }
                     ai[9] *= ai[10];
                     ai[10] *= -1;
-                    NetAISend();
+                    npc.netUpdate = true;//强制更新NPC
                 }
                 else {
                     if (!VaultUtils.isClient) {
                         ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
                     }
-                    NetAISend();
+                    npc.netUpdate = true;//强制更新NPC
                 }
             }
 
@@ -936,7 +936,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[2] = 0;
                 ai[1] = 0;
                 ai[7] = 0;
-                NetAISend();
+                npc.netUpdate = true;//强制更新NPC
             }
             else if (ai[7] < 2) {
                 ai[7] = 2;

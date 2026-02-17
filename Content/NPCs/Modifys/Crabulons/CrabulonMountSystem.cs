@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.SendNetWork();
             }
 
-            owner.NetAISend();
+            npc.netUpdate = true;//强制更新NPC
         }
 
         //处理骑乘状态下的移动
@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 if (owner.ai[3] > owner.ai[4] && npc.velocity.Y > 0) {
                     owner.ai[4] = owner.ai[3];
                 }
-                owner.NetAISend();
+                npc.netUpdate = true;
                 return;
             }
 
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             owner.ai[3] = 0;
             owner.ai[4] = 0;
-            owner.NetAISend();
+            npc.netUpdate = true;//强制更新NPC
         }
 
         //创建冲击效果

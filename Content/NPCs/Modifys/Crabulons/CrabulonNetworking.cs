@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Write(projIdentity);
             netMessage.Send(-1, whoAmI);
 
-            modifyCrabulon.NetAISend();
+            npc.netUpdate = true;//强制更新NPC
         }
 
         //处理网络消息
