@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	// TemperatureText: Combustion Temperature
 	// EnergyShortage: Energy Shortage
 	// ChargingStation_Text1: Put in charge items
@@ -148,75 +148,93 @@ CWRLocText: {
 	SHPC_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
 	SHPC_TextDictionary_Content_0:
 		'''
-		Amigo, la tarea de revivir la civilización finalmente recae en nuestras manos, es un asunto glorioso...
-		Nuestro primer objetivo es un enorme polímero azul, es muy grande, revéntalo desde adentro
+		Amigo, la tarea de restaurar la civilización
+		finalmente ha caído en nuestras manos. Es una empresa gloriosa...
+		Nuestro primer objetivo es un enorme polímero de gel azul.
+		Hazlo estallar desde adentro.
 		'''
 	SHPC_TextDictionary_Content_1:
 		'''
-		Necesitamos acabar con ese gran ojo, proviene de un poderoso organismo
-		Necesito diseccionarlo para ver cómo logra la antigravedad
+		Necesitamos eliminar a ese ojo gigante; proviene de un organismo poderoso.
+		Necesito diseccionarlo para ver cómo logra la antigravedad.
 		'''
 	SHPC_TextDictionary_Content_2:
 		'''
-		La colmena de la jungla se ha vuelto muy inquieta, las abejas están a punto de eclosionar
-		Necesito urgentemente estudiar su proceso de metamorfosis, ve a ver
+		Ya sea el gusano gigante en la corrupción
+		o el cerebro dominando la carne carmesí, son excelentes muestras bioquímicas.
+		Extrae sus núcleos; quiero estudiar esta aterradora invasividad ecológica.
 		'''
 	SHPC_TextDictionary_Content_3:
 		'''
-		Los enormes huesos pueden flotar en el aire, eso es muy poco científico
-		Necesitamos ir a la profunda prisión en el fin del mundo
+		¿El gel realmente ha derivado en un dios?
+		Siento que es solo una sucia agregación de demasiadas impurezas.
+		Vamos a someterlo a una separación de purificación completa
+		para ver qué queda de este supuesto dios.
 		'''
 	SHPC_TextDictionary_Content_4:
 		'''
-		La tierra tiembla, los engranajes rugen, la electricidad fluye
-		Un montón de robots nos espera, es hora de mostrarles el poder de la tecnología
+		Un muro de carne que cruza el Inframundo; es un sello de la antigua era.
+		Necesitamos suficiente potencia de fuego para perforar esta barrera orgánica.
+		Este será nuestro acto de apertura para la nueva era.
 		'''
 	SHPC_TextDictionary_Content_5:
 		'''
-		Debajo de la jungla, varias grandes y llamativas flores han florecido
-		Necesitamos ir a ver y recolectar algunos datos experimentales
+		En las profundidades de la Selva, han florecido unos extraños bulbos.
+		Necesitamos investigar y recolectar datos experimentales.
+		El clon de esa bruja también deambula por ahí.
+		Aunque es solo una torpe imitación de nigromancia,
+		es suficiente para probar el rendimiento de nuestras armas.
+		Destruye esa falsificación.
 		'''
 	SHPC_TextDictionary_Content_6:
 		'''
-		Los antiguos robots en las profundidades del templo esperan una recarga para activar
-		Visitemos, además de retroceder en la tecnología antigua
+		El antiguo robot en lo profundo del Templo espera una recarga para activarse.
+		Hagámosle una visita y, de paso,
+		hagamos ingeniería inversa a esa tecnología antigua.
 		'''
 	SHPC_TextDictionary_Content_7:
 		'''
-		Los secretos del lado oculto de la luna serán revelados por nosotros
-		El mundo volverá a su forma original
+		Esos fanáticos en la entrada de la Mazmorra celebran un antiguo ritual,
+		intentando bloquear información del exterior.
+		Interrúmpelos. Sus hechizos supersticiosos no detendrán nuestra tecnología.
+		Necesito esas coordenadas estelares ocultas.
 		'''
 	SHPC_TextDictionary_Content_8:
 		'''
-		La deidad que parasita el núcleo de la tierra ha notado nuestra presencia
-		Ve al infierno, necesito conocimientos sobre el uso del calor
+		Los secretos del lado oscuro de la luna nos serán revelados.
+		El mundo volverá a su estado original.
 		'''
 	SHPC_TextDictionary_Content_9:
 		'''
-		Los espíritus rencorosos de la prisión se han agrupado, formando un enorme organismo simbiótico
-		Esto es muy interesante, necesitamos ir a verlo ahora
+		El dios parásito en el núcleo del planeta nos ha notado.
+		Ve al Inframundo; necesito conocimientos sobre el uso de energía térmica.
+		Los espíritus de la Mazmorra se han reunido en un simbionte masivo.
+		Esto es demasiado interesante, debemos ir a verlo ahora mismo.
 		'''
 	SHPC_TextDictionary_Content_10:
 		'''
-		Puedo asegurar que no es vida basada en carbono, puede desgarrar la membrana del espacio con su cuerpo
-		Devora a las deidades, pero nosotros no somos dioses, creo que nos invitará a tomar té
+		Se confirma que no es vida basada en carbono.
+		Puede rasgar la membrana espacial solo con su cuerpo.
+		Devora dioses, pero no somos dioses;
+		imagino que tal vez nos invite a tomar el té.
 		'''
 	SHPC_TextDictionary_Content_11:
 		'''
-		El último descendiente de dragón en el mundo, ¡wow, eso es genial!
-		Llévame a verlo, quiero obtener sus plumas
+		El último Sangre de Dragón del mundo. ¡Guau, esto es genial!
+		Llévame a verlo, quiero obtener sus plumas.
 		'''
 	SHPC_TextDictionary_Content_12:
 		'''
-		Es hora de visitar a mi creador
-		O a esa bruja, su existencia me perturba
+		Es hora de visitar a mi creador.
+		O a esa bruja; su existencia me perturba.
 		'''
 	SHPC_TextDictionary_Content_13:
 		'''
-		¡Gran batalla! Los enemigos que alguna vez derrotamos se han unido, preparándose para un asalto total
-		Prepárate, necesitamos una victoria perfecta
+		¡Una gran contienda! Enemigos que una vez derrotamos se han unido,
+		preparándose para lanzar un asalto total contra nosotros.
+		Prepárate, necesitamos una victoria perfecta.
 		'''
-	SHPC_TextDictionary_Content_14: El protocolo HMOI-0001 ha sido desbloqueado
+	SHPC_TextDictionary_Content_14: Protocolo HMOI-0001 Desbloqueado
 	Halibut_No_legend_Content_1: Desbloquear después de la caída del dragón
 	Halibut_No_legend_Content_2: Hermano, he estado aquí todo el tiempo
 	Halibut_No_legend_Content_3: "[c/fff08c:Me vuelvo más fuerte a medida que avanza el viaje]"

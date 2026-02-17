@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	// TemperatureText: Combustion Temperature
 	// EnergyShortage: Energy Shortage
 	// ChargingStation_Text1: Put in charge items
@@ -140,73 +140,91 @@ CWRLocText: {
 	SHPC_No_legend_Content_4: "[c/00707d:L'éclat légendaire s'estompe déjà...]"
 	SHPC_TextDictionary_Content_0:
 		'''
-		Ami, la tâche de restaurer la civilisation repose enfin entre nos mains, c'est un honneur...
-		Notre première cible est une masse géante de gel bleu, elle est énorme, exploses-la de l'intérieur
+		Mon ami, la tâche de restaurer la civilisation nous incombe enfin.
+		C'est une entreprise glorieuse...
+		Notre première cible est un énorme polymère de gel bleu.
+		Faites-le exploser de l'intérieur.
 		'''
 	SHPC_TextDictionary_Content_1:
 		'''
-		Nous devons abattre cet œil géant, il provient d'une créature puissante
-		J'ai besoin de l'analyser pour comprendre comment il parvient à annuler la gravité
+		Nous devons éliminer cet oeil géant ; il provient d'un organisme puissant.
+		Je dois le disséquer pour comprendre comment il défie la gravité.
 		'''
 	SHPC_TextDictionary_Content_2:
 		'''
-		Les nids de guêpes dans la jungle deviennent très agités, les larves vont bientôt éclore
-		J'ai un besoin urgent d'étudier leur processus de métamorphose, allons voir ça
+		Qu'il s'agisse du ver géant lové dans la corruption
+		ou du cerveau dominant les chairs pourpres,
+		ce sont d'excellents échantillons biochimiques.
+		Coupez leurs noyaux ; je veux étudier cette terrifiante invasivité écologique.
 		'''
 	SHPC_TextDictionary_Content_3:
 		'''
-		De gros os peuvent flotter dans les airs, ce n'est pas du tout scientifique
-		Nous devons nous rendre dans les profondeurs du monde pour visiter la prison
+		Le gel a-t-il vraiment engendré un dieu ?
+		J'ai l'impression que ce n'est qu'un agrégat immonde saturé d'impuretés.
+		Procédons à une séparation et une purification complètes
+		pour voir ce qu'il restera de ce soi-disant dieu.
 		'''
 	SHPC_TextDictionary_Content_4:
 		'''
-		La terre tremble, les engrenages vrombissent, les flux électriques affluent
-		Un groupe de robots nous attend, il est temps de leur montrer la puissance de la technologie
+		Un mur de chair traversant l'Enfer ; c'est un sceau de l'ancien temps.
+		Il nous faut assez de puissance de feu pour percer cette barrière organique.
+		Ce sera notre coup d'envoi pour la nouvelle ère.
 		'''
 	SHPC_TextDictionary_Content_5:
 		'''
-		Il y a plusieurs grands bourgeons de fleurs exotiques qui ont éclos sous la jungle
-		Nous devons y aller, collecter des données expérimentales
+		Dans les profondeurs de la Jungle, d'étranges bulbes ont éclos.
+		Nous devons aller voir et collecter des données expérimentales.
+		Le clone de cette sorcière rôde aussi par là.
+		Bien que ce ne soit qu'une imitation maladroite de nécromancie,
+		cela suffira amplement pour tester nos armes. Allez détruire cette contrefaçon.
 		'''
 	SHPC_TextDictionary_Content_6:
 		'''
-		Les anciens robots au cœur du temple attendent un rechargement
-		Allons les visiter, et profitons-en pour inverser leur technologie ancienne
+		L'ancien robot au fond du Temple attend une recharge pour s'activer.
+		Rendons-lui visite et profitons-en pour faire
+		de la rétro-ingénierie sur cette technologie antique.
 		'''
 	SHPC_TextDictionary_Content_7:
 		'''
-		Nous découvrirons les secrets cachés derrière la face cachée de la lune
-		Le monde reviendra à son état originel
+		Ces fanatiques à l'entrée du Donjon tiennent un ancien rituel,
+		tentant de bloquer les informations venant du ciel.
+		Interrompez-les. Leurs sorts superstitieux ne peuvent arrêter notre technologie.
+		J'ai besoin de ces coordonnées stellaires cachées.
 		'''
 	SHPC_TextDictionary_Content_8:
 		'''
-		Les divinités parasites au cœur de la Terre nous ont remarqués
-		Allons en enfer, j'ai besoin de connaître l'utilisation de l'énergie thermique
+		Les secrets de la face cachée de la lune nous seront révélés.
+		Le monde retrouvera son état originel.
 		'''
 	SHPC_TextDictionary_Content_9:
 		'''
-		Les esprits tourmentés se rassemblent dans le donjon, formant un grand organisme symbiotique
-		C'est très intéressant, allons y jeter un œil maintenant
+		Le dieu parasitant le noyau de la planète nous a remarqués.
+		Allez en Enfer ; j'ai besoin de connaissances sur l'utilisation de l'énergie thermique.
+		Les esprits du Donjon se sont rassemblés en un symbiote massif.
+		C'est trop intéressant, nous devons aller voir ça tout de suite.
 		'''
 	SHPC_TextDictionary_Content_10:
 		'''
-		On peut être sûr qu'il ne s'agit pas de vie à base de carbone, capable de déchirer l'espace rien qu'avec son corps
-		Il dévore les divinités, mais nous ne sommes pas des dieux, je pense qu'il voudrait bien nous inviter à prendre le thé
+		Il est confirmé qu'il ne s'agit pas d'une forme de vie carbonée.
+		Il peut déchirer la membrane spatiale avec son seul corps.
+		Il dévore les dieux, mais nous ne sommes pas des dieux ;
+		j'imagine qu'il nous invitera peut-être à prendre le thé.
 		'''
 	SHPC_TextDictionary_Content_11:
 		'''
-		Le dernier descendant du dragon encore en vie dans le monde, wow c'est génial !
-		Emmène-moi le voir, je veux récupérer ses plumes
+		Le dernier Enfant de Dragon au monde. Wow, c'est trop cool !
+		Emmenez-moi le voir, je veux obtenir ses plumes.
 		'''
 	SHPC_TextDictionary_Content_12:
 		'''
-		Il est temps de rendre visite à mon créateur
-		Ou cette sorcière, sa présence me trouble
+		Il est temps de rendre visite à mon créateur.
+		Ou à cette sorcière ; son existence me dérange.
 		'''
 	SHPC_TextDictionary_Content_13:
 		'''
-		Grand chaos ! Les ennemis que nous avons autrefois vaincus s'unissent maintenant pour nous attaquer
-		Soyez prêt, nous avons besoin d'une victoire parfaite cette fois-ci
+		Une grande mêlée ! Les ennemis que nous avons vaincus se sont unis
+		et préparent un assaut total contre nous.
+		Préparez-vous, nous avons besoin d'une victoire parfaite.
 		'''
 	SHPC_TextDictionary_Content_14: Protocole HMOI-0001 déverrouillé
 	Halibut_No_legend_Content_1: Déverrouillé après la chute du grand dragon

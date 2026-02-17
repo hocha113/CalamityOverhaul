@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	TemperatureText: Combustion Temperature
 	EnergyShortage: Energy Shortage
 	ChargingStation_Text1: Put in charge items
@@ -98,75 +98,91 @@ CWRLocText: {
 	SHPC_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
 	SHPC_TextDictionary_Content_0:
 		'''
-		Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-		Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
+		Friend, the task of restoring civilization has finally fallen into our hands.
+		This is a glorious undertaking...
+		Our first target is a massive blue gel polymer.
+		Blast it open from the inside.
 		'''
 	SHPC_TextDictionary_Content_1:
 		'''
-		We need to take down that giant eyeball. It comes from a powerful entity.
+		We need to eliminate that giant eye; it comes from a powerful organism.
 		I need to dissect it to see how it achieves anti-gravity.
 		'''
 	SHPC_TextDictionary_Content_2:
 		'''
-		The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-		I urgently need to study its metamorphic process. Go and take a look.
+		Whether it is the giant worm coiling in the corruption,
+		or the brain dominating the crimson flesh, they are excellent biochemical samples.
+		Cut out their cores; I want to study this terrifying ecological invasiveness.
 		'''
 	SHPC_TextDictionary_Content_3:
 		'''
-		Giant bones floating in the air... it's very unscientific.
-		We need to head to the deep dungeon at the world's end.
+		Gel has actually derived a god?
+		I feel it is just a filthy aggregation that swallowed too many impurities.
+		Let us help it undergo a thorough purification separation
+		to see what remains of this so-called god.
 		'''
 	SHPC_TextDictionary_Content_4:
 		'''
-		The earth trembles, gears roar, and currents surge.
-		A bunch of robots are waiting for us. It's time to show them the power of technology.
+		A wall of flesh spanning the Underworld; it is a seal of the old era.
+		We need enough firepower to blast through this organic barrier.
+		This will be our opening act for the new era.
 		'''
 	SHPC_TextDictionary_Content_5:
 		'''
-		A few flamboyant large flower buds have bloomed underground in the jungle.
-		We need to check them out and collect some experimental data.
+		Deep in the Jungle, several flamboyant buds have bloomed.
+		We need to investigate and collect experimental data.
+		That witch's clone is also wandering about.
+		Though just a clumsy imitation of necromancy,
+		it is more than enough to test our weapon performance.
+		Go destroy that counterfeit.
 		'''
 	SHPC_TextDictionary_Content_6:
 		'''
-		Ancient robots deep within the temple await a recharge activation.
-		Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+		The ancient robot deep in the Temple awaits a recharge activation.
+		Let us pay a visit and reverse-engineer that ancient technology while we're at it.
 		'''
 	SHPC_TextDictionary_Content_7:
 		'''
-		The secrets on the dark side of the moon will be revealed to us.
-		The world will return to its original state.
+		Those fanatics at the Dungeon entrance are holding some ancient ritual,
+		attempting to block information from beyond the sky.
+		Interrupt them. Their superstitious spells cannot stop our technology.
+		I need those hidden star coordinates.
 		'''
 	SHPC_TextDictionary_Content_8:
 		'''
-		The deity parasitizing the earth's core has noticed us.
-		Go to the underworld. I need knowledge on thermal energy utilization.
+		The secrets of the dark side of the moon shall be known to us.
+		The world will return to its original state.
 		'''
 	SHPC_TextDictionary_Content_9:
 		'''
-		The spirits of the dungeon are gathering into a massive symbiotic entity.
-		This is fascinating. We need to check it out immediately.
+		The god parasitic in the planet's core has noticed us.
+		Go to the Underworld; I need knowledge on thermal energy utilization.
+		The spirits of the Dungeon have gathered into a massive symbiote.
+		This is too interesting; we must go see it now.
 		'''
 	SHPC_TextDictionary_Content_10:
 		'''
-		It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-		It devours gods, but we are not gods. I think it will invite us for tea.
+		It is confirmed to be non-carbon-based life,
+		capable of tearing the spatial membrane with just its body.
+		It devours gods, but we are not gods; I imagine it might invite us for tea.
 		'''
 	SHPC_TextDictionary_Content_11:
 		'''
-		The last dragonborn in the world, wow, that's so cool!
-		Take me to see it. I need to get its feathers.
+		The world's last Dragonborn. Wow, this is too cool!
+		Take me to see it; I want to obtain its feathers.
 		'''
 	SHPC_TextDictionary_Content_12:
 		'''
-		It's time to visit my creator.
-		Or that witch, her existence troubles me.
+		It is time to visit my creator.
+		Or that witch; her existence troubles me.
 		'''
 	SHPC_TextDictionary_Content_13:
 		'''
-		A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-		Get ready; we need a perfect victory.
+		A grand melee! Enemies we once defeated have united,
+		preparing to launch a total assault on us.
+		Get ready; we need a flawless victory.
 		'''
-	SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+	SHPC_TextDictionary_Content_14: HMOI-0001 Protocol Unlocked
 	Halibut_No_legend_Content_1: Unlocked after the fall of the great dragon
 	Halibut_No_legend_Content_2: Hey, I've been here all along
 	Halibut_No_legend_Content_3: "[c/fff08c:Growing stronger with each step of the journey]"

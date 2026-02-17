@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	// TemperatureText: Combustion Temperature
 	// EnergyShortage: Energy Shortage
 	// ChargingStation_Text1: Put in charge items
@@ -127,75 +127,92 @@ CWRLocText: {
 	SHPC_No_legend_Content_4: "[c/00707d:Die Glorie der Legende ist bereits verblasst...]"
 	SHPC_TextDictionary_Content_0:
 		'''
-		Freund, die Aufgabe der Wiederbelebung der Zivilisation liegt endlich in unseren Händen, das ist eine glorreiche Sache...
-		Unser erstes Ziel ist ein Klumpen blauer Gelmasse, er ist enorm groß, sprengen wir ihn von innen auf.
+		Mein Freund, die Aufgabe, die Zivilisation wiederherzustellen,
+		liegt endlich in unseren Händen. Es ist ein glorreiches Unterfangen...
+		Unser erstes Ziel ist ein riesiges blaues Gelpolymer.
+		Sprenge es von innen auf.
 		'''
 	SHPC_TextDictionary_Content_1:
 		'''
-		Wir müssen dieses große Auge loswerden, es stammt von einem mächtigen Lebenswesen.
-		Ich muss es sezieren, um zu sehen, wie es die Antischwerkraft erreicht.
+		Wir müssen dieses riesige Auge eliminieren; es stammt von einem mächtigen Organismus.
+		Ich muss es sezieren, um zu sehen, wie es die Antigravitation bewerkstelligt.
 		'''
 	SHPC_TextDictionary_Content_2:
 		'''
-		Die Bienenwaben im Dschungel werden sehr unruhig, die Bienenpuppen schlüpfen bald.
-		Ich muss dringend ihren Transformationsprozess untersuchen, lass uns hingehen und nachsehen.
+		Egal, ob es der Riesenwurm im Verderben
+		oder das Gehirn im Purpur ist, beides sind hervorragende biochemische Proben.
+		Schneide ihre Kerne heraus; ich will diese schreckliche ökologische Invasivität untersuchen.
 		'''
 	SHPC_TextDictionary_Content_3:
 		'''
-		Riesige Knochen können in der Luft schweben, das ist sehr ungewöhnlich.
-		Wir müssen zum tiefsten Gefängnis am Ende der Welt gehen.
+		Gel hat tatsächlich eine Gottheit hervorgebracht?
+		Ich habe das Gefühl, es ist nur eine schmutzige Ansammlung von zu vielen Verunreinigungen.
+		Lass es uns einer gründlichen Reinigungsseparation unterziehen,
+		um zu sehen, was von diesem sogenannten Gott übrig bleibt.
 		'''
 	SHPC_TextDictionary_Content_4:
 		'''
-		Die Erde bebt, die Zahnräder knirschen, Strom fließt.
-		Es warten eine Menge Roboter auf uns, es ist Zeit, ihnen die Kraft der Technologie zu zeigen.
+		Eine Fleischwand, die sich durch die Unterwelt zieht; ein Siegel der alten Ära.
+		Wir brauchen genug Feuerkraft, um diese organische Barriere zu durchbrechen.
+		Das wird unser Auftakt für das neue Zeitalter.
 		'''
 	SHPC_TextDictionary_Content_5:
 		'''
-		Unter dem Dschungel blühen bereits mehrere prächtige große Blütenknospen.
-		Wir müssen hingehen und einige experimentelle Daten sammeln.
+		Tief im Dschungel sind einige seltsame Knospen aufgeblüht.
+		Wir müssen nachsehen und experimentelle Daten sammeln.
+		Der Klon dieser Hexe treibt sich auch dort herum.
+		Auch wenn es nur eine plumpe Nachahmung von Nekromantie ist,
+		reicht es völlig aus, um unsere Waffenleistung zu testen. Zerstöre diese Fälschung.
 		'''
 	SHPC_TextDictionary_Content_6:
 		'''
-		Tief im Tempel warten alte Roboter auf eine Ladung.
-		Lass uns hingehen und antikes Wissen über Technologie gewinnen.
+		Der antike Roboter tief im Tempel wartet auf eine Aufladung zur Aktivierung.
+		Statten wir ihm einen Besuch ab und betreiben dabei
+		gleich etwas Reverse-Engineering an dieser uralten Technologie.
 		'''
 	SHPC_TextDictionary_Content_7:
 		'''
-		Die Geheimnisse auf der Rückseite des Mondes werden uns bekannt werden.
-		Die Welt wird wieder in ihren ursprünglichen Zustand zurückkehren.
+		Diese Fanatiker am Dungeoneingang halten ein uraltes Ritual ab
+		und versuchen, Informationen aus dem All zu blockieren.
+		Unterbrich sie. Ihre abergläubischen Zaubersprüche können unsere Technologie nicht aufhalten.
+		Ich brauche diese verborgenen Sternenkoordinaten.
 		'''
 	SHPC_TextDictionary_Content_8:
 		'''
-		Die Götter, die im Erdkern parasitieren, haben uns bemerkt.
-		Geh zur Hölle und ich brauche Wissen über die Nutzung von Thermalenergie.
+		Die Geheimnisse der dunklen Seite des Mondes werden uns offenbart.
+		Die Welt wird in ihren ursprünglichen Zustand zurückkehren.
 		'''
 	SHPC_TextDictionary_Content_9:
 		'''
-		Die Geister im Verlies versammeln sich und bilden einen riesigen Symbionten.
-		Das ist sehr interessant, lass uns jetzt hingehen und uns umsehen.
+		Der Gott, der im Planetenkern parasitiert, hat uns bemerkt.
+		Geh in die Unterwelt; ich brauche Wissen über die Nutzung thermischer Energie.
+		Die Geister des Dungeons haben sich zu einem massiven Symbionten vereint.
+		Das ist zu interessant, das müssen wir uns sofort ansehen.
 		'''
 	SHPC_TextDictionary_Content_10:
 		'''
-		Es ist sicher, dass es keine Kohlenstoff-basiertes Leben ist, es kann nur mit seinem Körper den Raummembran durchbrechen.
-		Es verschlingt Götter, aber wir sind keine Götter, ich denke, es wird uns Tee anbieten.
+		Es ist bestätigt, dass es sich nicht um kohlenstoffbasiertes Leben handelt.
+		Es kann die Raummembran allein mit seinem Körper zerreißen.
+		Es verschlingt Götter, aber wir sind keine Götter;
+		ich nehme an, es wird uns zum Tee einladen.
 		'''
 	SHPC_TextDictionary_Content_11:
 		'''
-		Der letzte Drachennachkomme auf der Welt, wow, das ist cool!
-		Bring mich hin, ich will seine Federn bekommen.
+		Das letzte Drachenblut der Welt. Wow, das ist zu cool!
+		Bring mich zu ihm, ich will seine Federn haben.
 		'''
 	SHPC_TextDictionary_Content_12:
 		'''
-		Es ist Zeit, meinen Schöpfer zu besuchen.
-		Oder diese Hexe, ihr Dasein beunruhigt mich.
+		Es ist an der Zeit, meinen Schöpfer zu besuchen.
+		Oder diese Hexe; ihre Existenz stört mich.
 		'''
 	SHPC_TextDictionary_Content_13:
 		'''
-		Große Schlacht! Die Feinde, die wir einst besiegt haben, haben sich vereint und bereiten einen Gesamtangriff auf uns vor.
+		Ein großes Gemetzel! Feinde, die wir einst besiegt haben, haben sich vereint
+		und bereiten einen totalen Angriff auf uns vor.
 		Mach dich bereit, wir brauchen einen perfekten Sieg.
 		'''
-	SHPC_TextDictionary_Content_14: HMOI-0001-Protokoll wurde entsperrt.
+	SHPC_TextDictionary_Content_14: Protokoll HMOI-0001 freigeschaltet
 	Halibut_No_legend_Content_1: Freigeschaltet nach dem Fall des großen Drachen
 	Halibut_No_legend_Content_2: Kumpel, ich war die ganze Zeit hier
 	Halibut_No_legend_Content_3: "[c/fff08c:Stärker geworden mit jeder Reise]"
