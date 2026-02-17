@@ -68,6 +68,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             List<BaseTurretTP> baseTurretTPs = VaultUtils.GetDerivedInstances<BaseTurretTP>();
             foreach (var tp in baseTurretTPs) {
+                if (tp.TargetTileID == 0) {
+                    continue;
+                }
+
                 if (tp.BodyPath != "") {
                     BodyAssetDic.Add(tp.ID, CWRUtils.GetT2DAsset(tp.BodyPath));
                 }
