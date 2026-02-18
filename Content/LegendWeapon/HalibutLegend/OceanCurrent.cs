@@ -89,10 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
-                modifiers.FinalDamage *= 0.8f;
-            }
-            if (target.type == CWRID.NPC_DevourerofGodsHead || target.type == CWRID.NPC_DevourerofGodsTail) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 0.75f;
             }
         }
 
