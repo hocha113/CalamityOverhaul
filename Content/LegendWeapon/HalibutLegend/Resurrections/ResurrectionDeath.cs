@@ -113,6 +113,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
         #region 主更新逻辑
         public override void PreUpdate() {
+            if (!Player.Alives()) {
+                return;
+            }
+
             var system = Player.GetResurrectionSystem();
             if (system == null) {
                 ResetState();
