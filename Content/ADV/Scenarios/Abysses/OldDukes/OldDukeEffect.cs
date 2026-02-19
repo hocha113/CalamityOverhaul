@@ -559,12 +559,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         /// 这是唯一决定IsActive的地方，不依赖任何手动开关
         /// </summary>
         private static bool ComputeShouldBeActive() {
-            //条件1：老公爵NPC存在
-            if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                return true;
-            }
-
-            //条件2：老公爵相关对话场景正在运行
+            //条件：老公爵相关对话场景正在运行
             if (ScenarioManager.IsActive()) {
                 //检查是否是老公爵相关的场景
                 if (IsOldDukeScenarioRunning()) {
