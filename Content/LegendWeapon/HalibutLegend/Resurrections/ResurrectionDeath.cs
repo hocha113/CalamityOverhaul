@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Items.Tools;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -365,6 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 DeathText.ToNetworkText(Player.name)
             );
 
+            SirenMusicalBoxPlayerDeath.MusichasEnded = true;
             //杀死玩家
             Player.KillMe(damageSource, Player.statLife + 1, 0, false);
 
