@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         //——HoCha113 2026-2-10 4:01
         public override void AddMenuButtons(Main main, int selectedMenu, string[] buttonNames, float[] buttonScales, ref int offY, ref int spacing, ref int buttonIndex, ref int numButtons) {
             //插入'大修设置'按钮
+            //处于界面设计的考量，取消对于主界面按钮的添加，改为在主页面消息栏添加
             //numButtons++;
             //buttonNames[buttonIndex] = OverhaulSettingsButtonText?.Value ?? "大修设置";
             //buttonScales[buttonIndex] = 1f;
