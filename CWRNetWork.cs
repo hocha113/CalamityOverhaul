@@ -40,7 +40,6 @@ namespace CalamityOverhaul
         RequestOldDukeCampsiteData,
         HandleOldDukeCampsiteDataServer,
         HandleOldDukeCampsiteDataClient,
-        SpwanOldDukeWannaToFight,
         StartCampsiteFindMeScenario,
         ResurrectionRate,
         DespawnDestroyer,
@@ -82,9 +81,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.HandleOldDukeCampsiteDataClient) {
                 OldDukeCampsite.HandleOldDukeCampsiteDataClient(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.SpwanOldDukeWannaToFight) {
-                ModifyOldDuke.SpwanOldDukeByWannaToFightNetWork(reader, whoAmI);
             }
             else if (type == CWRMessageType.OldDukeCampsiteDecorationsSync) {
                 OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);

@@ -505,6 +505,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Sengs = Math.Clamp(Sengs, 0f, 1f);
 
+            //面板关闭时兜底清除悬停状态
+            if (Sengs <= 0f) {
+                SkillSlot.ClearHoveredState();
+            }
+
             Size = Panel.Size();
             int leftWeith = (int)(20 - 200 * (1f - Sengs));
             int topHeight = (int)Size.Y;
@@ -563,6 +568,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     anySlotHovered = true;
                 }
             }
+            //兜底：如果HoveredSlot引用了不在主面板列表中的槽位，强制清除
+            if (SkillSlot.HoveredSlot != null && !halibutUISkillSlots.Contains(SkillSlot.HoveredSlot)) {
+                SkillSlot.ClearHoveredState();
+            }
             if (!anySlotHovered) {
                 SkillTooltipPanel.Instance.Hide();//如果没有槽位被悬停，隐藏介绍面板（带延迟）
             }
@@ -574,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 draggingSlot.DrawPosition = new Vector2(dragVisualX, MathHelper.Lerp(draggingSlot.DrawPosition.Y, mouse.Y, 0.5f));
 
                 //拖拽时清除悬停状态，防止提示窗口残留
-                SkillSlot.HoveredSlot = null;
+                SkillSlot.ClearHoveredState();
                 SkillTooltipPanel.Instance.ForceHide();
 
                 //检测是否悬停在技能库区域，设置高亮
@@ -667,9 +676,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             halibutUISkillSlots.RemoveAt(idx);
             halibutUISkillSlots.Insert(0, slot);
-            //重新设置出现动画：被移动的放大闪动
+            //重新设置出现动画：被移动的放大闪动（动画期间不响应悬停）
             slot.appearProgress = 0f;
             slot.isAppearing = true;
+            SkillSlot.ClearHoveredState();
             //为了视觉平滑, 将滚动偏移重置到0并快速过渡
             scrollOffset = 0;
             //辅以轻微提示音

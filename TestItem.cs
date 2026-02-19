@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios;
+﻿using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -54,7 +52,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            
+
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

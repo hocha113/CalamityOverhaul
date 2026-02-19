@@ -321,6 +321,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
+            //移除前清除悬停状态，避免引用悬空
+            if (SkillSlot.HoveredSlot == slot) {
+                SkillSlot.ClearHoveredState();
+            }
+
             mainSlots.Remove(slot);
             LibrarySlots.Add(slot);
 
@@ -344,6 +349,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             var mainSlots = player.GetModPlayer<HalibutSave>().halibutUISkillSlots;
             if (!mainSlots.Contains(slot)) {
                 return;
+            }
+
+            //移除前清除悬停状态，避免引用悬空
+            if (SkillSlot.HoveredSlot == slot) {
+                SkillSlot.ClearHoveredState();
             }
 
             mainSlots.Remove(slot);
@@ -394,6 +404,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
+            //移除前清除悬停状态
+            if (SkillSlot.HoveredSlot == slot) {
+                SkillSlot.ClearHoveredState();
+            }
+
             LibrarySlots.Remove(slot);
             var mainSlots = player.GetModPlayer<HalibutSave>().halibutUISkillSlots;
             mainSlots.Add(slot);
@@ -412,6 +427,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             if (!LibrarySlots.Contains(slot)) {
                 return;
+            }
+
+            //移除前清除悬停状态
+            if (SkillSlot.HoveredSlot == slot) {
+                SkillSlot.ClearHoveredState();
             }
 
             LibrarySlots.Remove(slot);

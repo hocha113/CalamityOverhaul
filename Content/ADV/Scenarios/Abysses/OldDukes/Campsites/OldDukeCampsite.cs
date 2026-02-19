@@ -88,6 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (IsGenerated) {
                 writer.WriteVector2(CampsitePosition);
             }
+            writer.Write(WannaToFight);
         }
 
         public override void NetReceive(BinaryReader reader) {
@@ -95,6 +96,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             if (IsGenerated) {
                 CampsitePosition = reader.ReadVector2();
             }
+            WannaToFight = reader.ReadBoolean();
         }
 
         public override void SetStaticDefaults() {
@@ -365,6 +367,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                     WannaToFight = false;
                     //OldDukeEffect.IsActive由声明式计算自动管理
                     //NPC消失后ComputeShouldBeActive()将返回false
+                    if (VaultUtils.isServer) {
+                        NetMessage.SendData(MessageID.WorldData);
+                    }
                 }
             }
         }
@@ -380,6 +385,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
             if (OldDukeEffect.IsActive) {
                 return false;//如果硫磺海效果已经启用，就不要进行交互
+            }
+
+            if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
+                return false;//如果老公爵还在，就不要进行交互
             }
 
             if (Main.LocalPlayer.mouseInterface) {

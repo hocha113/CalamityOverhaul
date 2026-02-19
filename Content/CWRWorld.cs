@@ -169,13 +169,15 @@ namespace CalamityOverhaul.Content
 
         public override void NetSend(BinaryWriter writer) {
             BitsByte flags1 = new BitsByte();
-            flags1[0] = MachineRebellionDowned;
+            flags1[0] = MachineRebellion;
+            flags1[1] = MachineRebellionDowned;
             writer.Write(flags1);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BitsByte flags1 = reader.ReadByte();
-            MachineRebellionDowned = flags1[0];
+            MachineRebellion = flags1[0];
+            MachineRebellionDowned = flags1[1];
         }
 
         public override void SaveWorldData(TagCompound tag) {
