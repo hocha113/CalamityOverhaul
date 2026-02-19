@@ -206,42 +206,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 处理切磋生成老公爵的网络消息。
-        /// 服务端收到后设置状态并生成NPC
-        /// </summary>
-        /// <summary>
-        /// 处理切磋生成老公爵的网络消息。
-        /// 服务端收到后：先广播WannaToFight=true给所有客户端，再生成NPC。
-        /// 这样保证所有客户端在NPC到达前就已知道这是切磋模式，
-        /// 避免NPC首帧AI因ShouldLeaveAfterCooperation()而消失。
-        /// </summary>
-        internal static void SpwanOldDukeByWannaToFightNetWork(BinaryReader reader, int whoAmI) {
-            int playerIndex = reader.ReadInt32();
-            Player player = Main.player[playerIndex];
-
-            if (!VaultUtils.isServer) {
-                return;
-            }
-
-            //步骤1：先设置服务端状态
-            OldDukeCampsite.WannaToFight = true;
-
-            //步骤2：先广播WannaToFight=true给所有客户端
-            //这样客户端在收到NPC同步包之前就已经知道这是切磋模式
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.OldDukeEffect);
-            packet.Write(false); //IsActive由声明式计算管理，这里写false
-            packet.Write(true);  //WannaToFight = true
-            packet.Write(playerIndex);
-            packet.Write((byte)OldDukeInteractionState.AcceptedCooperation);
-            packet.Send();
-
-            //步骤3：最后才生成NPC（NPC同步包会在OldDukeEffect包之后到达客户端）
-            NPC.NewNPC(NPC.GetBossSpawnSource(player.whoAmI),
-                (int)player.Center.X, (int)player.Center.Y - 200, CWRID.NPC_OldDuke);
-        }
-
-        /// <summary>
         /// 根据当前是否在酸雨事件中，触发对应的营地场景对话
         /// </summary>
         private static void TriggerCampsiteScenario() {

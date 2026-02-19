@@ -306,25 +306,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                     return;
                 }
 
-                //必须在生成NPC之前设置WannaToFight，否则NPC首帧AI会因为
-                //ShouldLeaveAfterCooperation()返回true而立即进入LeavingDive消失
-                OldDukeCampsite.WannaToFight = true;
-
-                if (VaultUtils.isSinglePlayer) {
-                    //单人模式：先设置标记，再生成NPC
-                    NPC.NewNPC(NPC.GetBossSpawnSource(Main.myPlayer),
-                        (int)Main.LocalPlayer.Center.X, (int)Main.LocalPlayer.Center.Y - 200,
-                        CWRID.NPC_OldDuke);
-                }
-                else {
-                    //多人模式：发包给服务端，服务端先设置WannaToFight再生成NPC
-                    var netMessage = CWRMod.Instance.GetPacket();
-                    netMessage.Write((byte)CWRMessageType.SpwanOldDukeWannaToFight);
-                    netMessage.Write(Main.myPlayer);
-                    netMessage.Send();
-                    //Send()同步本地WannaToFight=true到服务端
-                    OldDukeEffect.Send();
-                }
+                //通过弹幕的全端同步机制实现切磋生成：
+                //弹幕AI在所有端先设置WannaToFight=true，再由服务端/单人生成NPC，
+                //保证NPC到达各客户端时WannaToFight已为true，避免首帧消失
+                Projectile.NewProjectile(Main.LocalPlayer.FromObjectGetParent(),
+                    Main.LocalPlayer.Center, Vector2.Zero,
+                    ModContent.ProjectileType<SpawnOldDukeWannaToFight>(), 0, 0, Main.myPlayer);
             }
         }
 
