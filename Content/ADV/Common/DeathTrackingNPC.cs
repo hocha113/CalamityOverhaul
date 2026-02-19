@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         internal static void HandleKillSync(BinaryReader reader, int whoAmI) {
             int npcWhoAmI = reader.ReadInt32();
             int npcType = reader.ReadInt32();
-            if (npcWhoAmI.TryGetNPC(out NPC npc)) {
+            if (npcWhoAmI.TryGetNPC(out NPC npc) && npc.type == npcType) {
                 DispatchOnKill(npc);
             }
         }
