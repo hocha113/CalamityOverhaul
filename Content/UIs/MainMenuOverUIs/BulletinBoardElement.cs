@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 textColor = new Color(Main.DiscoR, 200, Main.DiscoB);
             }
             if (BulletinBoardUI.Instance.hoverInMainPage || Disabled) {
-                textColor *= 0.6f;
+                textColor *= 0.5f;
             }
             Utils.DrawBorderStringFourWay(spriteBatch, BulletinBoardUI.Font.Value, VaultUtils.WrapTextToWidth(textContent.Value, TextSize, 1000)
                 , trueDrawPos.X, trueDrawPos.Y, textColor * BulletinBoardUI.sengs, Color.Black, new Vector2(0.2f), 1);
