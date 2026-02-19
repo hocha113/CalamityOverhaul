@@ -17,6 +17,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int RapidFireRate => Context.IsMachineRebellion ? 10 : 15;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        public RetinazerHorizontalBarrageState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -61,20 +66,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 SoundEngine.PlaySound(SoundID.Item12, npc.Center);
             }
 
-            //随机切换到不同的特殊招式
+            //弹幕结束，回到垂直弹幕继续套路循环
             if (Timer >= Duration) {
                 //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
 
-                int choice = Main.rand.Next(4);
-                return choice switch {
-                    0 => new RetinazerFocusedBeamState(),
-                    1 => new RetinazerLaserMatrixState(),
-                    2 => new RetinazerPrecisionSniperState(),
-                    _ => new RetinazerVerticalBarrageState()
-                };
+                return new RetinazerVerticalBarrageState(comboStep);
             }
 
             return null;

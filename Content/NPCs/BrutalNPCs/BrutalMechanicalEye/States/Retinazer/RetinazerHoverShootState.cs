@@ -18,6 +18,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        /// <summary>
+        /// 一阶段固定招式套路: 悬停射击→激光扫射→悬停射击→调整位置，循环往复
+        /// comboStep 为偶数时进入激光扫射，奇数时进入调整位置
+        /// </summary>
+        public RetinazerHoverShootState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -53,14 +62,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 Counter++;
             }
 
-            //射击次数后切换状态
+            //射击次数后按固定套路切换状态
             if (Counter >= MaxShootCount) {
-                //60%概率使用激光扫射，40%概率调整位置
-                if (Main.rand.Next(5) < 3) {
-                    return new RetinazerLaserSweepState();
+                //固定交替: 激光扫射 → 调整位置 → 激光扫射 → 调整位置...
+                if (comboStep % 2 == 0) {
+                    return new RetinazerLaserSweepState(comboStep + 1);
                 }
                 else {
-                    return new RetinazerRepositionState();
+                    return new RetinazerRepositionState(comboStep + 1);
                 }
             }
 

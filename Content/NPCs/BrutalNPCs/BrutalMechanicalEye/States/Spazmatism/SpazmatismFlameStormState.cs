@@ -61,6 +61,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private float stormRadius;
         private bool hasStartedStorm;
         private bool hasPlayedWarningSound;
+        private int comboStep;
+
+        public SpazmatismFlameStormState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -104,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 if (context.IsSoloRageMode) {
                     return new SpazmatismSoloRageState();
                 }
-                return new SpazmatismFlameChaseState();
+                return new SpazmatismFlameChaseState(comboStep);
             }
 
             return null;

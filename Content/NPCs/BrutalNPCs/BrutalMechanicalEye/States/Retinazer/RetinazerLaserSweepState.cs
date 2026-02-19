@@ -46,6 +46,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private TwinsStateContext Context;
         private Vector2 sweepStartDir;
         private bool hasFiredWarningShot;
+        private int comboStep;
+
+        public RetinazerLaserSweepState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -76,9 +81,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //状态结束
+            //状态结束，回到悬停射击继续套路循环
             if (Timer >= TotalDuration) {
-                return new RetinazerHoverShootState();
+                return new RetinazerHoverShootState(comboStep);
             }
 
             return null;

@@ -18,9 +18,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         private TwinsStateContext Context;
         private int dashCount;
+        private int comboStep;
 
-        public SpazmatismPhase2DashPrepareState(int currentDashCount = 0) {
+        public SpazmatismPhase2DashPrepareState(int currentDashCount = 0, int currentComboStep = 0) {
             dashCount = currentDashCount;
+            comboStep = currentComboStep;
         }
 
         public override void OnEnter(TwinsStateContext context) {
@@ -59,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 //设置冲刺速度
                 npc.velocity = GetDirectionToTarget(context) * DashSpeed;
 
-                return new SpazmatismPhase2DashingState(dashCount, DashCountMax);
+                return new SpazmatismPhase2DashingState(dashCount, DashCountMax, comboStep);
             }
 
             return null;

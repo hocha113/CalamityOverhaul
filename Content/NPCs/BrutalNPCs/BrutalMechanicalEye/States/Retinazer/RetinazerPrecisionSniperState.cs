@@ -25,9 +25,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         private TwinsStateContext Context;
         private int sniperCount;
+        private int comboStep;
 
-        public RetinazerPrecisionSniperState(int currentCount = 0) {
+        public RetinazerPrecisionSniperState(int currentCount = 0, int currentComboStep = 0) {
             sniperCount = currentCount;
+            comboStep = currentComboStep;
         }
 
         public override void OnEnter(TwinsStateContext context) {
@@ -41,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //减速
             npc.velocity *= 0.9f;
-            FaceTarget(npc, player.Center);
+            npc.EntityToRot((player.Center - npc.Center).ToRotation() - MathHelper.PiOver2, 0.16f);
 
             //设置蓄力状态
             context.SetChargeState(2, Math.Min(Timer / (float)ChargeTime, 1f));
@@ -62,7 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
                 //警告线特效
                 if (!VaultUtils.isServer && Timer % 10 == 0 && Timer > 20) {
-                    Vector2 toPlayer = GetDirectionToTarget(context);
+                    Vector2 toPlayer = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
                     for (int i = 0; i < 8; i++) {
                         Vector2 dustPos = npc.Center + toPlayer * (50 + i * 40);
                         Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.RedTorch, 0, 0, 150, default, 1.2f);
@@ -76,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 context.ResetChargeState();
 
                 if (!VaultUtils.isClient) {
-                    Vector2 toPlayer = GetDirectionToTarget(context);
+                    Vector2 toPlayer = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
                     float spreadRad = MathHelper.ToRadians(SpreadAngle);
 
                     for (int i = 0; i < ProjectileCount; i++) {
@@ -97,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 SoundEngine.PlaySound(SoundID.Item33, npc.Center);
 
                 //后坐力
-                npc.velocity = -GetDirectionToTarget(context) * 12f;
+                npc.velocity = -(npc.rotation + MathHelper.PiOver2).ToRotationVector2() * 12f;
             }
 
             //恢复阶段结束
@@ -110,17 +112,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
 
                 if (sniperCount >= MaxSniperCount) {
-                    //狙击次数用完，随机切换到其他特殊招式
-                    int choice = Main.rand.Next(3);
-                    return choice switch {
-                        0 => new RetinazerFocusedBeamState(),
-                        1 => new RetinazerLaserMatrixState(),
-                        _ => new RetinazerVerticalBarrageState()
-                    };
+                    //狙击次数用完，回到垂直弹幕继续套路循环
+                    return new RetinazerVerticalBarrageState(comboStep);
                 }
                 else {
                     //继续下一次狙击
-                    return new RetinazerPrecisionSniperState(sniperCount);
+                    return new RetinazerPrecisionSniperState(sniperCount, comboStep);
                 }
             }
 

@@ -24,6 +24,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private float BulletSpeed => Context.IsDeathMode ? 7f : 6f;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        public SpazmatismFireVortexState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -76,9 +81,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             Timer++;
 
-            //状态结束
+            //状态结束，回到悬停射击继续套路循环
             if (Timer >= TotalDuration) {
-                return new SpazmatismHoverShootState();
+                return new SpazmatismHoverShootState(comboStep);
             }
 
             return null;

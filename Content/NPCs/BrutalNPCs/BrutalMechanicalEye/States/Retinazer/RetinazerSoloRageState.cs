@@ -108,6 +108,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         }
 
         /// <summary>
+        /// 固定狂暴模式攻击循环:
+        /// 激光风暴(远程弹幕)→交叉射线(爆发输出)→追踪激光(持续追踪)→激光矩阵(区域封锁)→(循环)
+        /// 设计思路: 远程压制→爆发打击→追踪施压→区域控制，节奏分明
+        /// </summary>
+        private static readonly RageAttackMode[] RageComboSequence =
+        [
+            RageAttackMode.LaserStorm,
+            RageAttackMode.CrossBeams,
+            RageAttackMode.HomingLaser,
+            RageAttackMode.LaserMatrix
+        ];
+
+        /// <summary>
         /// 切换到下一个攻击模式
         /// </summary>
         private void SwitchToNextMode() {
@@ -117,11 +130,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             hasPlayedModeSound = false;
             sweepAngle = 0f;
 
-            //随机选择下一个模式
-            RageAttackMode previousMode = currentMode;
-            do {
-                currentMode = (RageAttackMode)Main.rand.Next(4);
-            } while (currentMode == previousMode && Main.rand.NextFloat() < 0.7f);
+            //按固定套路循环切换模式
+            currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
 
             //重新初始化矩阵点
             if (currentMode == RageAttackMode.LaserMatrix) {
@@ -146,8 +156,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //快速发射激光
             if (modeTimer % LaserStormFireRate == 0 && !VaultUtils.isClient) {
                 Vector2 toPlayer = GetDirectionToTarget(Context);
-                //添加轻微散射
-                float scatter = (Main.rand.NextFloat() - 0.5f) * 0.15f;
+                //基于计时器的确定性散射
+                int shotIndex = modeTimer / LaserStormFireRate;
+                float scatter = MathHelper.Lerp(-0.075f, 0.075f, (shotIndex % 10) / 9f);
                 Vector2 shootDir = toPlayer.RotatedBy(scatter);
 
                 Projectile.NewProjectile(

@@ -109,6 +109,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         }
 
         /// <summary>
+        /// 固定狂暴模式攻击循环:
+        /// 疯狂冲刺→爆发射击→追踪冲刺→火焰漩涡→(循环)
+        /// 设计思路: 近战冲刺→远程射击→追踪压制→区域控制，节奏分明
+        /// </summary>
+        private static readonly RageAttackMode[] RageComboSequence =
+        [
+            RageAttackMode.FrenziedDash,
+            RageAttackMode.BurstFire,
+            RageAttackMode.HomingDash,
+            RageAttackMode.FlameVortex
+        ];
+
+        /// <summary>
         /// 切换到下一个攻击模式
         /// </summary>
         private void SwitchToNextMode() {
@@ -119,11 +132,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //切换模式时默认禁用碰撞伤害
             DisableContactDamage(Context.Npc);
 
-            //随机选择下一个模式，但避免连续相同
-            RageAttackMode previousMode = currentMode;
-            do {
-                currentMode = (RageAttackMode)Main.rand.Next(4);
-            } while (currentMode == previousMode && Main.rand.NextFloat() < 0.7f);
+            //按固定套路循环切换模式
+            currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
         }
 
         /// <summary>
@@ -294,8 +304,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 if (modeTimer % BurstFireRate == 0 && attackCount < BurstCount) {
                     if (!VaultUtils.isClient) {
                         Vector2 toPlayer = GetDirectionToTarget(Context);
-                        //添加散射
-                        float scatter = (Main.rand.NextFloat() - 0.5f) * 0.3f;
+                        //固定扇形散射，基于当前攻击计数确定角度
+                        float scatterRange = 0.3f;
+                        float scatter = -scatterRange / 2f + scatterRange * (attackCount / (float)BurstCount);
                         Vector2 shootDir = toPlayer.RotatedBy(scatter);
 
                         Projectile.NewProjectile(

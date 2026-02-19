@@ -60,6 +60,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         private bool hasCollided;
         private bool hasBurst;
         private float chargeSpeed;
+        private int comboStep;
+
+        public TwinsCombinedAttackState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -130,14 +135,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         }
 
         /// <summary>
-        /// 获取默认返回状态
+        /// 获取默认返回状态，保持招式套路循环
         /// </summary>
         private ITwinsState GetDefaultState() {
             if (Context.IsSpazmatism) {
-                return new Spazmatism.SpazmatismFlameChaseState();
+                return new Spazmatism.SpazmatismFlameChaseState(comboStep);
             }
             else {
-                return new RetinazerVerticalBarrageState();
+                return new RetinazerVerticalBarrageState(comboStep);
             }
         }
 

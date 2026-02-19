@@ -13,12 +13,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     {
         public override string StateName => "SpazmatismFlameChase";
 
+        /// <summary>
+        /// 二阶段固定招式套路(有搭档时):
+        /// 喷火追击→二阶冲刺→影分身冲刺→喷火追击→火焰风暴→合击→(循环)
+        /// 
+        /// 二阶段固定招式套路(独眼时):
+        /// 喷火追击→二阶冲刺→影分身冲刺→喷火追击→火焰风暴→二阶冲刺→(循环)
+        /// </summary>
+        private static readonly string[] ComboSequenceWithPartner =
+        [
+            "Phase2Dash",
+            "ShadowDash",
+            "FlameChase",
+            "FlameStorm",
+            "CombinedAttack"
+        ];
+
+        private static readonly string[] ComboSequenceSolo =
+        [
+            "Phase2Dash",
+            "ShadowDash",
+            "FlameChase",
+            "FlameStorm",
+            "Phase2Dash"
+        ];
+
         private float ChaseSpeed => Context.IsMachineRebellion ? 10f : (Context.IsDeathMode ? 8f : 6f);
         private float TurnSpeed => Context.IsMachineRebellion ? 0.2f : (Context.IsDeathMode ? 0.16f : 0.12f);
         private int FlameDuration => Context.IsMachineRebellion ? 200 : (Context.IsDeathMode ? 120 : 150);
         private int FlameInterval => Context.IsDeathMode ? 6 : 8;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        /// <param name="currentComboStep">二阶段固定招式循环的当前步骤索引</param>
+        public SpazmatismFlameChaseState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -58,23 +89,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 SoundEngine.PlaySound(SoundID.Item34, npc.Center);
             }
 
-            //喷火结束，随机切换到特殊招式
+            //喷火结束，按固定套路切换到下一招式
             if (Timer >= FlameDuration) {
                 //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new SpazmatismSoloRageState();
                 }
 
-                int choice = Main.rand.Next(5);
-                return choice switch {
-                    0 => new SpazmatismShadowDashState(),
-                    1 => new SpazmatismFlameStormState(),
-                    2 => HasPartner() ? new TwinsCombinedAttackState() : new SpazmatismPhase2DashPrepareState(),
-                    _ => new SpazmatismPhase2DashPrepareState()
-                };
+                return GetNextComboState();
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 根据固定套路获取下一个状态
+        /// </summary>
+        private ITwinsState GetNextComboState() {
+            bool hasPartner = HasPartner();
+            string[] sequence = hasPartner ? ComboSequenceWithPartner : ComboSequenceSolo;
+            string nextMove = sequence[comboStep % sequence.Length];
+            int nextStep = comboStep + 1;
+
+            return nextMove switch {
+                "Phase2Dash" => new SpazmatismPhase2DashPrepareState(0, nextStep),
+                "ShadowDash" => new SpazmatismShadowDashState(nextStep),
+                "FlameChase" => new SpazmatismFlameChaseState(nextStep),
+                "FlameStorm" => new SpazmatismFlameStormState(nextStep),
+                "CombinedAttack" => new TwinsCombinedAttackState(nextStep),
+                _ => new SpazmatismPhase2DashPrepareState(0, nextStep)
+            };
         }
 
         /// <summary>

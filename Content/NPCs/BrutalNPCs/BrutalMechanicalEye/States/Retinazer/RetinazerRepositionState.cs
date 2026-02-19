@@ -14,15 +14,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         private float MoveSpeed => Context.IsMachineRebellion ? 14f : 10f;
 
+        /// <summary>
+        /// 基于comboStep的固定位置偏移角度表，确保确定性行为
+        /// </summary>
+        private static readonly float[] PositionAngles =
+        [
+            MathHelper.PiOver4,                  // 右上 45°
+            MathHelper.Pi - MathHelper.PiOver4,   // 左上 135°
+            -MathHelper.PiOver4,                  // 右下 -45°
+            MathHelper.Pi + MathHelper.PiOver4    // 左下 225°
+        ];
+
         private TwinsStateContext Context;
         private Vector2 targetPosition;
+        private int comboStep;
+
+        public RetinazerRepositionState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
             Context = context;
 
-            //随机选择一个位置
-            targetPosition = context.Target.Center + Main.rand.NextVector2CircularEdge(400, 400);
+            //基于comboStep选择固定位置，确保多人模式同步
+            float angle = PositionAngles[comboStep % PositionAngles.Length];
+            targetPosition = context.Target.Center + angle.ToRotationVector2() * 400f;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -34,9 +51,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             Timer++;
 
-            //到达目标或超时
+            //到达目标或超时，回到悬停射击继续套路循环
             if (Timer >= MaxDuration || Vector2.Distance(npc.Center, targetPosition) < 50) {
-                return new RetinazerHoverShootState();
+                return new RetinazerHoverShootState(comboStep);
             }
 
             return null;

@@ -406,10 +406,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         /// </summary>
         private ITwinsState GetPhase2InitialState() {
             if (Context.IsSpazmatism) {
-                return new Spazmatism.SpazmatismFlameChaseState();
+                return new Spazmatism.SpazmatismFlameChaseState(0);
             }
             else {
-                return new Retinazer.RetinazerVerticalBarrageState();
+                return new Retinazer.RetinazerVerticalBarrageState(0);
             }
         }
 
