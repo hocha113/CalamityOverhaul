@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
@@ -32,6 +33,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             //仅在服务端或单人模式下生成NPC，避免重复生成
             if (Projectile.ai[0] == 0 && !VaultUtils.isClient) {
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+
                 Player player = Main.player[Projectile.owner];
                 if (player.Alives() && !NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
                     NPC.NewNPC(NPC.GetBossSpawnSource(player.whoAmI),
