@@ -39,7 +39,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public static void OnOpen() {
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = 0.1f });
+            if (Main.menuMode == 888) {
+                SoundEngine.PlaySound(SoundID.Unlock);
+                return;
+            }
             Main.menuMode = 888;
             //激活设置UI
             var instance = OverhaulSettingsUI.Instance;

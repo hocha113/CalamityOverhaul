@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
 
             BulletinBoardElement overhaulSettingsButtonBoard = new BulletinBoardElement()
-                .Setproperty(OverhaulSettingsButton.OverhaulSettingsButtonText, OverhaulSettingsButton.OnOpen);
+                .Setproperty(OverhaulSettingsButton.OverhaulSettingsButtonText, OverhaulSettingsButton.OnOpen, disabledFunc: () => Main.menuMode == 888);
             bulletinBoardElements.Add(overhaulSettingsButtonBoard);
         }
         public override void UnLoad() {
