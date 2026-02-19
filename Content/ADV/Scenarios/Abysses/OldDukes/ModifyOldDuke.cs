@@ -68,6 +68,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         #region 生命周期
 
         public override bool CanOverride() {
+            if (!CWRRef.Has) {//如果没有灾厄Mod，就不覆盖AI，避免潜在的兼容性问题
+                return false;
+            }
             if (CWRRef.GetBossRushActive()) {
                 return false;
             }
