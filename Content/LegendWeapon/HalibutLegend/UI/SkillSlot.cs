@@ -35,6 +35,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int HintDelay = 10;//10帧后出现提示
         internal static SkillSlot HoveredSlot;//当前悬停的槽位(供面板调用绘制提示)
 
+        /// <summary>
+        /// 安全清除悬停状态，在任何可能导致HoveredSlot悬空的操作中调用
+        /// </summary>
+        internal static void ClearHoveredState() {
+            if (HoveredSlot != null) {
+                HoveredSlot.hoverTimer = 0;
+                HoveredSlot.hintTimer = 0;
+                HoveredSlot.hoverInMainPage = false;
+                HoveredSlot = null;
+            }
+        }
+
         //拖拽相关字段
         internal bool beingDragged;//是否正被拖拽(由面板设置)
 
@@ -97,6 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     !Main.oldKeyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W)) {
                     if (FishSkill != null && !beingDragged) {
                         Vector2 startPos = DrawPosition + Size / 2;
+                        ClearHoveredState();
                         SkillLibraryUI.Instance?.MoveToLibraryWithAnimation(this, startPos);
                     }
                 }
@@ -148,6 +161,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         internal void DrawHint(SpriteBatch spriteBatch) {
             if (this != HoveredSlot) {
+                return;
+            }
+            //兜底校验：如果面板已关闭、正在拖拽、或鼠标实际不在此槽位上，强制清除
+            if (!hoverInMainPage || beingDragged || HalibutUIPanel.Instance.Sengs <= 0f || HalibutUIPanel.Instance.IsDragging) {
+                ClearHoveredState();
                 return;
             }
             if (hintTimer < HintDelay) {
