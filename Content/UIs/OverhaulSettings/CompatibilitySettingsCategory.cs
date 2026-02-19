@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.OtherMods.HighFPSSupport;
 using InnoVault.GameSystem;
-using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSettingsUI.SettingToggle;
 
