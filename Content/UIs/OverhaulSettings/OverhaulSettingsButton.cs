@@ -26,22 +26,25 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         //——HoCha113 2026-2-10 4:01
         public override void AddMenuButtons(Main main, int selectedMenu, string[] buttonNames, float[] buttonScales, ref int offY, ref int spacing, ref int buttonIndex, ref int numButtons) {
             //插入'大修设置'按钮
-            numButtons++;
-            buttonNames[buttonIndex] = OverhaulSettingsButtonText?.Value ?? "大修设置";
-            buttonScales[buttonIndex] = 1f;
+            //numButtons++;
+            //buttonNames[buttonIndex] = OverhaulSettingsButtonText?.Value ?? "大修设置";
+            //buttonScales[buttonIndex] = 1f;
 
-            if (selectedMenu == buttonIndex) {
-                SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.6f, Pitch = 0.1f });
-                Main.menuMode = 888;
+            //if (selectedMenu == buttonIndex) {
+            //    OnOpen();
+            //}
 
-                //激活设置UI
-                var instance = OverhaulSettingsUI.Instance;
-                if (instance != null) {
-                    instance._active = true;
-                }
+            //buttonIndex++;
+        }
+
+        public static void OnOpen() {
+            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = 0.1f });
+            Main.menuMode = 888;
+            //激活设置UI
+            var instance = OverhaulSettingsUI.Instance;
+            if (instance != null) {
+                instance._active = true;
             }
-
-            buttonIndex++;
         }
     }
 }

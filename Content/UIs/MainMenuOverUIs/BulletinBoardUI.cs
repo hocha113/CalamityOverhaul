@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -63,6 +64,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             BulletinBoardElement acknowledgmentNulletinBoard = new BulletinBoardElement()
                 .Setproperty(CWRLocText.Instance.IconUI_Text2, () => AcknowledgmentUI.Instance._active = true);
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
+
+            BulletinBoardElement overhaulSettingsButtonBoard = new BulletinBoardElement()
+                .Setproperty(OverhaulSettingsButton.OverhaulSettingsButtonText, OverhaulSettingsButton.OnOpen);
+            bulletinBoardElements.Add(overhaulSettingsButtonBoard);
         }
         public override void UnLoad() {
             Font = null;
