@@ -232,6 +232,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
                 return RunStorylineAI();
             }
 
+            if (CWRRef.GetBossRushActive()) {
+                return true;//以防万一，虽然CanOverride已经禁止了这种情况，但多一层保险总是好的
+            }
+
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
