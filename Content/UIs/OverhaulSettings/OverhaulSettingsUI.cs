@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public void OnClose() {
-            SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
+            SoundEngine.PlaySound(SoundID.MenuClose);
             Main.menuMode = 0;
             if (!closing) {
                 closing = true;
