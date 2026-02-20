@@ -477,6 +477,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (ai[0] == (int)PrimaryAIState.Initialization) {
                 ai[0] = (int)PrimaryAIState.Debut;
                 ai[1] = 0;
+                npc.netUpdate = true;//强制更新NPC
             }
 
             //登场演出
@@ -489,6 +490,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
                     //初始化状态机
                     InitializeStateMachine();
+                    npc.netUpdate = true;//强制更新NPC
                 }
                 return false;
             }
@@ -560,6 +562,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 //切换到转阶段动画状态而不是直接进入二阶段
                 TwinsPhaseTransitionState transitionState = new TwinsPhaseTransitionState();
                 stateMachine.ForceChangeState(transitionState);
+                npc.netUpdate = true;//强制更新NPC
             }
         }
 
