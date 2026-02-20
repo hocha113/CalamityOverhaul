@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismShadowDashState : TwinsStateBase
     {
         public override string StateName => "SpazmatismShadowDash";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismShadowDash;
 
         /// <summary>
         /// 聚集阶段

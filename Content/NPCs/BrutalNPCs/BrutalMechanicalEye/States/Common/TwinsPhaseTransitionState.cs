@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     internal class TwinsPhaseTransitionState : TwinsStateBase
     {
         public override string StateName => "TwinsPhaseTransition";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsPhaseTransition;
 
         /// <summary>
         /// 集合移动阶段

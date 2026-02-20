@@ -519,15 +519,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private void InitializeStateMachine() {
             ITwinsState initialState;
 
-            if (stateContext.IsSpazmatism) {
-                initialState = stateContext.IsSecondPhase
-                    ? new SpazmatismFlameChaseState()
-                    : new SpazmatismHoverShootState();
+            //客户端从 npc.ai[1] 恢复服务端当前状态
+            if (VaultUtils.isClient) {
+                int serverStateIndex = (int)npc.ai[1];
+                initialState = TwinsStateMachine.CreateStateFromIndex((TwinsStateIndex)serverStateIndex);
             }
             else {
-                initialState = stateContext.IsSecondPhase
-                    ? new RetinazerVerticalBarrageState()
-                    : new RetinazerHoverShootState();
+                initialState = null;
+            }
+
+            if (initialState == null) {
+                if (stateContext.IsSpazmatism) {
+                    initialState = stateContext.IsSecondPhase
+                        ? new SpazmatismFlameChaseState()
+                        : new SpazmatismHoverShootState();
+                }
+                else {
+                    initialState = stateContext.IsSecondPhase
+                        ? new RetinazerVerticalBarrageState()
+                        : new RetinazerHoverShootState();
+                }
             }
 
             stateMachine.SetInitialState(initialState);
@@ -562,7 +573,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 //切换到转阶段动画状态而不是直接进入二阶段
                 TwinsPhaseTransitionState transitionState = new TwinsPhaseTransitionState();
                 stateMachine.ForceChangeState(transitionState);
-                npc.netUpdate = true;//强制更新NPC
             }
         }
 

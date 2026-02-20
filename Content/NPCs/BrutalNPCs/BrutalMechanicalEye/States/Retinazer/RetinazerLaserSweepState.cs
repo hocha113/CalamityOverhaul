@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerLaserSweepState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserSweep";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserSweep;
 
         /// <summary>
         /// 进入位置阶段

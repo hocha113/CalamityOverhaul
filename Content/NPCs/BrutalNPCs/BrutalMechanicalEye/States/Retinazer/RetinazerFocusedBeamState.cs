@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
         public override string StateName => "RetinazerFocusedBeam";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerFocusedBeam;
 
         /// <summary>
         /// 锁定阶段

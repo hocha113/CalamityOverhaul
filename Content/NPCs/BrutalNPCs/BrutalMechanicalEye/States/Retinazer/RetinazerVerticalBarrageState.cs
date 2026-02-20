@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerVerticalBarrageState : TwinsStateBase
     {
         public override string StateName => "RetinazerVerticalBarrage";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
 
         /// <summary>
         /// 二阶段固定招式套路(有搭档时):

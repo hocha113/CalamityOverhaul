@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismHoverShootState : TwinsStateBase
     {
         public override string StateName => "SpazmatismHoverShoot";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismHoverShoot;
 
         private int ShootRate => Context.IsMachineRebellion ? 55 : (Context.IsDeathMode ? 60 : 80);
         private float MoveSpeed => Context.IsMachineRebellion ? 16f : (Context.IsDeathMode ? 14f : 12f);
@@ -59,7 +60,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         Main.myPlayer
                     );
                 }
-                SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                }
                 Timer = 0;
                 Counter++;
             }

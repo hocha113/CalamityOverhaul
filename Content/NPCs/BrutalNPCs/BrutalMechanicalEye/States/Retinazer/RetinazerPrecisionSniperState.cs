@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerPrecisionSniperState : TwinsStateBase
     {
         public override string StateName => "RetinazerPrecisionSniper";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerPrecisionSniper;
 
         private int ChargeTime => Context.IsMachineRebellion ? 60 : (Context.IsDeathMode ? 65 : 80);
         private int RecoveryTime => Context.IsMachineRebellion ? 90 : (Context.IsDeathMode ? 95 : 110);

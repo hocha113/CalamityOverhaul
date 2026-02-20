@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismFireVortexState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFireVortex";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFireVortex;
 
         private int ChargeTime => Context.IsMachineRebellion ? 40 : (Context.IsDeathMode ? 45 : 60);
         private int TotalDuration => Context.IsMachineRebellion ? 60 : (Context.IsDeathMode ? 70 : 90);
@@ -60,7 +61,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
             else if (Timer == ChargeTime) {
                 //释放环形火焰弹幕
-                SoundEngine.PlaySound(SoundID.Item45, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item45, npc.Center);
+                }
                 if (!VaultUtils.isClient) {
                     for (int i = 0; i < BulletCount; i++) {
                         float bulletAngle = MathHelper.TwoPi / BulletCount * i;

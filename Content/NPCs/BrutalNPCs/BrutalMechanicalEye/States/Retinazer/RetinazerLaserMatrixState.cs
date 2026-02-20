@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerLaserMatrixState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserMatrix";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserMatrix;
 
         /// <summary>
         /// 定位阶段

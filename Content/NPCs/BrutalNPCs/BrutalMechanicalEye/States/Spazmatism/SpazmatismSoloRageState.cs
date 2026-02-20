@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismSoloRageState : TwinsStateBase
     {
         public override string StateName => "SpazmatismSoloRage";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismSoloRage;
 
         /// <summary>
         /// 当前攻击模式

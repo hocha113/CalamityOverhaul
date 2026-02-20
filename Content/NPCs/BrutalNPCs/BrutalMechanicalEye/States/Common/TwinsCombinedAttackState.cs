@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     internal class TwinsCombinedAttackState : TwinsStateBase
     {
         public override string StateName => "TwinsCombinedAttack";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsCombinedAttack;
 
         /// <summary>
         /// 集合阶段

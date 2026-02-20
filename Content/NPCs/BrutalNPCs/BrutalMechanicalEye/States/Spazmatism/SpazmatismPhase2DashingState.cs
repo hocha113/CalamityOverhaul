@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismPhase2DashingState : TwinsStateBase
     {
         public override string StateName => "SpazmatismPhase2Dashing";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2Dashing;
 
         private const int DashDuration = 30;
 

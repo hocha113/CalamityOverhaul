@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismPhase2DashPrepareState : TwinsStateBase
     {
         public override string StateName => "SpazmatismPhase2DashPrepare";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2DashPrepare;
 
         private int ChargeTime => Context.IsMachineRebellion ? 20 : (Context.IsDeathMode ? 25 : 30);
         private int DashCountMax => Context.IsMachineRebellion ? 6 : (Context.IsDeathMode ? 5 : 4);
@@ -55,12 +56,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //蓄力完成
             if (Timer >= ChargeTime) {
-                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                }
                 context.ResetChargeState();
 
                 //设置冲刺速度
                 npc.velocity = GetDirectionToTarget(context) * DashSpeed;
-
+                npc.netUpdate = true;
                 return new SpazmatismPhase2DashingState(dashCount, DashCountMax, comboStep);
             }
 

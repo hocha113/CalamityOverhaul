@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismFlameChaseState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameChase";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameChase;
 
         /// <summary>
         /// 二阶段固定招式套路(有搭档时):
@@ -86,7 +87,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         Main.myPlayer
                     );
                 }
-                SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                }
             }
 
             //喷火结束，按固定套路切换到下一招式

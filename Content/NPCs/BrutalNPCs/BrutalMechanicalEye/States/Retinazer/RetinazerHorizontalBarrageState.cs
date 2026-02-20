@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerHorizontalBarrageState : TwinsStateBase
     {
         public override string StateName => "RetinazerHorizontalBarrage";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerHorizontalBarrage;
 
         private const int Duration = 150;
         private int RapidFireRate => Context.IsMachineRebellion ? 10 : 15;

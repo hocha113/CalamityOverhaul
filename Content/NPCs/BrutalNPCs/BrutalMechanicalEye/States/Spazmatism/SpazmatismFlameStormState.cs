@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismFlameStormState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameStorm";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameStorm;
 
         /// <summary>
         /// 上升阶段

@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerHoverShootState : TwinsStateBase
     {
         public override string StateName => "RetinazerHoverShoot";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerHoverShoot;
 
         private int ShootRate => Context.IsMachineRebellion ? 45 : (Context.IsDeathMode ? 50 : 60);
         private float MoveSpeed => Context.IsMachineRebellion ? 14f : (Context.IsDeathMode ? 12f : 10f);

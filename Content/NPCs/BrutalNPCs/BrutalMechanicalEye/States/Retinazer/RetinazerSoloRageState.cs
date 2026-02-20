@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerSoloRageState : TwinsStateBase
     {
         public override string StateName => "RetinazerSoloRage";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerSoloRage;
 
         /// <summary>
         /// 当前攻击模式
@@ -145,7 +146,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private void ExecuteLaserStorm(NPC npc, Player player) {
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
-                SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 1.2f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 1.2f }, npc.Center);
+                }
             }
 
             //快速移动保持在玩家侧面
@@ -154,37 +157,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             FaceTarget(npc, player.Center);
 
             //快速发射激光
-            if (modeTimer % LaserStormFireRate == 0 && !VaultUtils.isClient) {
-                Vector2 toPlayer = GetDirectionToTarget(Context);
-                //基于计时器的确定性散射
-                int shotIndex = modeTimer / LaserStormFireRate;
-                float scatter = MathHelper.Lerp(-0.075f, 0.075f, (shotIndex % 10) / 9f);
-                Vector2 shootDir = toPlayer.RotatedBy(scatter);
+            if (modeTimer % LaserStormFireRate == 0) {
+                if (!VaultUtils.isClient) {
+                    Vector2 toPlayer = GetDirectionToTarget(Context);
+                    //基于计时器的确定性散射
+                    int shotIndex = modeTimer / LaserStormFireRate;
+                    float scatter = MathHelper.Lerp(-0.075f, 0.075f, (shotIndex % 10) / 9f);
+                    Vector2 shootDir = toPlayer.RotatedBy(scatter);
 
-                Projectile.NewProjectile(
-                    npc.GetSource_FromAI(),
-                    npc.Center,
-                    shootDir * LaserSpeed,
-                    ProjectileID.DeathLaser,
-                    30,
-                    0f,
-                    Main.myPlayer
-                );
-
-                //每隔几发发射一个强力激光
-                if (modeTimer % (LaserStormFireRate * 4) == 0) {
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
                         npc.Center,
-                        toPlayer * (LaserSpeed * 0.8f),
-                        ModContent.ProjectileType<DeadLaser>(),
-                        45,
+                        shootDir * LaserSpeed,
+                        ProjectileID.DeathLaser,
+                        30,
                         0f,
                         Main.myPlayer
                     );
+
+                    //每隔几发发射一个强力激光
+                    if (modeTimer % (LaserStormFireRate * 4) == 0) {
+                        Projectile.NewProjectile(
+                            npc.GetSource_FromAI(),
+                            npc.Center,
+                            toPlayer * (LaserSpeed * 0.8f),
+                            ModContent.ProjectileType<DeadLaser>(),
+                            45,
+                            0f,
+                            Main.myPlayer
+                        );
+                    }
                 }
 
-                SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.2f, Volume = 0.6f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.2f, Volume = 0.6f }, npc.Center);
+                }
             }
 
             //发射粒子
@@ -210,7 +217,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
-                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.2f, Volume = 0.9f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.2f, Volume = 0.9f }, npc.Center);
+                }
             }
 
             //悬停在玩家上方
@@ -250,7 +259,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //发射阶段
             else if (modeTimer == chargeTime) {
                 Context.ResetChargeState();
-                SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.1f, Volume = 1.3f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.1f, Volume = 1.3f }, npc.Center);
+                }
 
                 if (!VaultUtils.isClient) {
                     Vector2 toPlayer = GetDirectionToTarget(Context);
@@ -304,7 +315,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
-                SoundEngine.PlaySound(SoundID.Item12 with { Pitch = -0.2f, Volume = 1.1f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item12 with { Pitch = -0.2f, Volume = 1.1f }, npc.Center);
+                }
             }
 
             //围绕玩家移动，保持一定距离
@@ -317,20 +330,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //持续发射激光
             int fireRate = Context.IsMachineRebellion ? 8 : (Context.IsDeathMode ? 10 : 12);
-            if (modeTimer % fireRate == 0 && !VaultUtils.isClient) {
-                Vector2 toPlayer = GetDirectionToTarget(Context);
+            if (modeTimer % fireRate == 0) {
+                if (!VaultUtils.isClient) {
+                    Vector2 toPlayer = GetDirectionToTarget(Context);
 
-                Projectile.NewProjectile(
-                    npc.GetSource_FromAI(),
-                    npc.Center,
-                    toPlayer * LaserSpeed,
-                    ProjectileID.DeathLaser,
-                    28,
-                    0f,
-                    Main.myPlayer
-                );
+                    Projectile.NewProjectile(
+                        npc.GetSource_FromAI(),
+                        npc.Center,
+                        toPlayer * LaserSpeed,
+                        ProjectileID.DeathLaser,
+                        28,
+                        0f,
+                        Main.myPlayer
+                    );
+                }
 
-                SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.1f, Volume = 0.7f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.1f, Volume = 0.7f }, npc.Center);
+                }
             }
 
             //间歇性发射强力激光
@@ -371,7 +388,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
-                SoundEngine.PlaySound(SoundID.Item94 with { Pitch = 0.3f, Volume = 0.9f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item94 with { Pitch = 0.3f, Volume = 0.9f }, npc.Center);
+                }
             }
 
             //悬停在玩家上方
@@ -460,7 +479,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //发射阶段
             else if (modeTimer == deployTime + chargeTime) {
                 Context.ResetChargeState();
-                SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0f, Volume = 1.4f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0f, Volume = 1.4f }, npc.Center);
+                }
 
                 if (!VaultUtils.isClient) {
                     for (int i = 0; i < MatrixPointCount; i++) {
