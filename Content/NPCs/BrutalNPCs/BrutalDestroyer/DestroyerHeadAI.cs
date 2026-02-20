@@ -81,8 +81,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return true;
             }
 
-            CWRPlayer.TheDestroyer = npc.whoAmI;
-
             //延迟初始化保护
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();

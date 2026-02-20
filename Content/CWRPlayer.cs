@@ -217,10 +217,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int DontUseItemTime;
         /// <summary>
-        /// 毁灭者的存在索引
-        /// </summary>
-        internal static int TheDestroyer = -1;
-        /// <summary>
         /// 抬棺人下一发弩箭的伤害倍率，默认为1
         /// </summary>
         public float PallbearerNextArrowDamageMult = 1;
@@ -297,7 +293,6 @@ namespace CalamityOverhaul.Content
             KreloadTimeIncrease = 1;
             HeldStyle = -1;
             ReloadingRatio = 0;
-            TheDestroyer = -1;
             IsUnsunghero = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
