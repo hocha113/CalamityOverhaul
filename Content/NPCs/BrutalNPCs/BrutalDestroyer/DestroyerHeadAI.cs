@@ -66,7 +66,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
             };
             stateMachine = new DestroyerStateMachine(stateContext);
-            stateMachine.SetInitialState(new DestroyerIntroState());
+
+            //客户端加入时从npc.ai[2]恢复服务端当前状态，避免状态desync
+            if (VaultUtils.isClient) {
+                int serverStateIndex = (int)npc.ai[2];
+                IDestroyerState syncedState = DestroyerStateMachine.CreateStateFromIndex((DestroyerStateIndex)serverStateIndex);
+                stateMachine.SetInitialState(syncedState ?? new DestroyerIntroState());
+            }
+            else {
+                stateMachine.SetInitialState(new DestroyerIntroState());
+            }
         }
         #endregion
 
@@ -80,8 +89,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (HeadPrimeAI.DontReform()) {
                 return true;
             }
-
-            CWRPlayer.TheDestroyer = npc.whoAmI;
 
             //延迟初始化保护
             if (stateContext == null || stateMachine == null) {
@@ -189,7 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             targetPlayer = Main.player[npc.target];
 
             if (!targetPlayer.Alives()) {
-                if (stateMachine?.CurrentState is not DestroyerDespawnState) {
+                if (!VaultUtils.isClient && stateMachine?.CurrentState is not DestroyerDespawnState) {
                     stateMachine?.ForceChangeState(new DestroyerDespawnState());
                 }
             }

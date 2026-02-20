@@ -8,8 +8,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,6 +82,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// 状态上下文
         /// </summary>
         protected TwinsStateContext stateContext;
+
+        /// <summary>
+        /// 随从模式AI处理器
+        /// </summary>
+        protected TwinsAccompanyHandler accompanyHandler;
 
         /// <summary>
         /// 目标玩家
@@ -210,6 +213,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             };
 
             stateMachine = new TwinsStateMachine(stateContext);
+            accompanyHandler = new TwinsAccompanyHandler(stateContext);
         }
 
         #endregion
@@ -377,7 +381,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             bool reset;
             if (accompany) {
-                reset = AccompanyAI();
+                reset = accompanyHandler.Update(IsSecondPhase, ExecuteDebutSequence);
             }
             else {
                 reset = ProtogenesisAI();
@@ -473,6 +477,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (ai[0] == (int)PrimaryAIState.Initialization) {
                 ai[0] = (int)PrimaryAIState.Debut;
                 ai[1] = 0;
+                npc.netUpdate = true;//强制更新NPC
             }
 
             //登场演出
@@ -485,6 +490,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
                     //初始化状态机
                     InitializeStateMachine();
+                    npc.netUpdate = true;//强制更新NPC
                 }
                 return false;
             }
@@ -513,15 +519,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private void InitializeStateMachine() {
             ITwinsState initialState;
 
-            if (stateContext.IsSpazmatism) {
-                initialState = stateContext.IsSecondPhase
-                    ? new SpazmatismFlameChaseState()
-                    : new SpazmatismHoverShootState();
+            //客户端从 npc.ai[1] 恢复服务端当前状态
+            if (VaultUtils.isClient) {
+                int serverStateIndex = (int)npc.ai[1];
+                initialState = TwinsStateMachine.CreateStateFromIndex((TwinsStateIndex)serverStateIndex);
             }
             else {
-                initialState = stateContext.IsSecondPhase
-                    ? new RetinazerVerticalBarrageState()
-                    : new RetinazerHoverShootState();
+                initialState = null;
+            }
+
+            if (initialState == null) {
+                if (stateContext.IsSpazmatism) {
+                    initialState = stateContext.IsSecondPhase
+                        ? new SpazmatismFlameChaseState()
+                        : new SpazmatismHoverShootState();
+                }
+                else {
+                    initialState = stateContext.IsSecondPhase
+                        ? new RetinazerVerticalBarrageState()
+                        : new RetinazerHoverShootState();
+                }
             }
 
             stateMachine.SetInitialState(initialState);
@@ -618,331 +635,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             ai[1]++;
 
             return true;
-        }
-
-        #endregion
-
-        #region 随从AI
-
-        /// <summary>
-        /// 随从模式AI(与骷髅王配合)
-        /// </summary>
-        public bool AccompanyAI() {
-            NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
-            float lifeRog = npc.life / (float)npc.lifeMax;
-            bool bossRush = CWRRef.GetBossRushActive();
-            bool death = CWRRef.GetDeathMode() || bossRush;
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            bool lowBloodVolume = lifeRog < 0.7f;
-            bool skeletronPrimeIsDead = !skeletronPrime.Alives();
-            bool skeletronPrimeIsTwo = skeletronPrimeIsDead ? false : (skeletronPrime.ai[0] == 3);
-            bool isSpawnFirstStage = ai[11] == 1;
-            bool isSpawnFirstStageFromeExeunt = false;
-
-            if (!skeletronPrimeIsDead && isSpawnFirstStage) {
-                isSpawnFirstStageFromeExeunt = ((skeletronPrime.life / (float)skeletronPrime.lifeMax) < 0.6f);
-            }
-
-            int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-            int projDamage = 36;
-            if (CWRWorld.MachineRebellion) {
-                projDamage = 92;
-            }
-
-            player = skeletronPrimeIsDead ? Main.player[npc.target] : Main.player[skeletronPrime.target];
-
-            Lighting.AddLight(npc.Center, (isSpazmatism ? Color.OrangeRed : Color.BlueViolet).ToVector3());
-
-            if (ai[0] == 0) {
-                if (!VaultUtils.isServer && isSpazmatism) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TextColor1);
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
-                }
-                ai[0] = 1;
-                npc.netUpdate = true;//强制更新NPC
-            }
-
-            if (ai[0] == 1) {
-                if (ExecuteDebutSequence()) {
-                    return false;
-                }
-            }
-
-            if (IsSecondPhase()) {
-                npc.HitSound = SoundID.NPCHit4;
-            }
-
-            if (skeletronPrimeIsDead || skeletronPrime?.ai[1] == 3 || lowBloodVolume || isSpawnFirstStageFromeExeunt) {
-                ExecuteAccompanyExit(skeletronPrime, isSpazmatism, lowBloodVolume, isSpawnFirstStageFromeExeunt);
-                return false;
-            }
-
-            Vector2 toTarget = npc.Center.To(player.Center);
-            Vector2 toPoint = skeletronPrime.Center;
-            npc.damage = npc.defDamage;
-            HeadPrimeAI headPrime = skeletronPrime.GetOverride<HeadPrimeAI>();
-            bool skeletronPrimeInSprint = skeletronPrime.ai[1] == 1;
-            bool LaserWall = headPrime.ai[3] == 2;
-            bool isDestroyer = HeadPrimeAI.setPosingStarmCount > 0;
-            bool isIdle = headPrime.ai[10] > 0;
-
-            if (isIdle) {
-                toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 50 : -50, -100);
-                SetEyeValue(npc, player, toPoint, toTarget);
-                return false;
-            }
-
-            if (LaserWall) {
-                toPoint = player.Center + new Vector2(isSpazmatism ? 450 : -450, -400);
-                SetEyeValue(npc, player, toPoint, toTarget);
-                return false;
-            }
-
-            if (isDestroyer) {
-                ExecuteDestroyerPhase(isSpazmatism, death, projType, projDamage, toTarget, skeletronPrimeIsTwo);
-                return false;
-            }
-            else if (ai[8] != 0) {
-                ai[8] = 0;
-                npc.netUpdate = true;//强制更新NPC
-            }
-
-            if (skeletronPrimeInSprint || ai[7] > 0) {
-                ExecuteAccompanyAttackPhase(isSpazmatism, death, projType, projDamage, toTarget, skeletronPrimeIsTwo, isDestroyer);
-                return false;
-            }
-
-            if (ai[7] > 0) {
-                ai[7]--;
-            }
-
-            npc.VanillaAI();
-            return false;
-        }
-
-        private void ExecuteAccompanyExit(
-            NPC skeletronPrime,
-            bool isSpazmatism,
-            bool lowBloodVolume,
-            bool isSpawnFirstStageFromeExeunt
-        ) {
-            npc.dontTakeDamage = true;
-            npc.position += new Vector2(0, -36);
-
-            if (ai[6] == 0 && !VaultUtils.isServer) {
-                if (lowBloodVolume) {
-                    if (isSpazmatism) {
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TextColor1);
-                    }
-                    else {
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TextColor2);
-                    }
-
-                    for (int i = 0; i < 13; i++) {
-                        Item.NewItem(npc.GetSource_FromAI(), npc.Hitbox, ItemID.Heart);
-                    }
-                }
-                else if (skeletronPrime?.ai[1] == 3) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
-                }
-                else if (isSpawnFirstStageFromeExeunt) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor2);
-                }
-                else {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor2);
-                }
-            }
-
-            if (ai[6] > 120) {
-                npc.active = false;
-            }
-            ai[6]++;
-        }
-
-        private void ExecuteDestroyerPhase(
-            bool isSpazmatism,
-            bool death,
-            int projType,
-            int projDamage,
-            Vector2 toTarget,
-            bool skeletronPrimeIsTwo
-        ) {
-            Projectile projectile = null;
-            foreach (var p in Main.projectile) {
-                if (!p.active) {
-                    continue;
-                }
-                if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
-                    projectile = p;
-                }
-            }
-
-            if (projectile.Alives()) {
-                ai[8]++;
-            }
-
-            if (ai[8] == Mechanicalworm.DontAttackTime + 10) {
-                npc.netUpdate = true;//强制更新NPC
-            }
-
-            if (ai[8] > Mechanicalworm.DontAttackTime + 10) {
-                int fireTime = 10;
-                Vector2 toPoint;
-
-                if (projectile.Alives()) {
-                    fireTime = death ? 5 : 8;
-                    toTarget = npc.Center.To(projectile.Center);
-                    float speedRot = death ? 0.02f : 0.03f;
-                    toPoint = projectile.Center + (ai[4] * speedRot + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
-                }
-                else {
-                    toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
-                }
-
-                if (++ai[5] > fireTime && ai[4] > 30) {
-                    if (!VaultUtils.isClient) {
-                        float shootSpeed = CWRWorld.MachineRebellion ? 12 : 9;
-                        Projectile.NewProjectile(
-                            npc.GetSource_FromAI(),
-                            npc.Center,
-                            toTarget.UnitVector() * shootSpeed,
-                            projType,
-                            projDamage,
-                            0
-                        );
-                    }
-                    ai[5] = 0;
-                    npc.netUpdate = true;//强制更新NPC
-                }
-
-                ai[4]++;
-                SetEyeValue(npc, player, toPoint, toTarget);
-            }
-        }
-
-        private void ExecuteAccompanyAttackPhase(
-            bool isSpazmatism,
-            bool death,
-            int projType,
-            int projDamage,
-            Vector2 toTarget,
-            bool skeletronPrimeIsTwo,
-            bool isDestroyer
-        ) {
-            if (isDestroyer && ai[8] < Mechanicalworm.DontAttackTime + 10) {
-                npc.damage = 0;
-                Vector2 toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -150);
-                if (death) {
-                    toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -150);
-                }
-                SetEyeValue(npc, player, toPoint, toTarget);
-                return;
-            }
-
-            switch (ai[1]) {
-                case 0:
-                    ExecuteAccompanyAttackCase0(isSpazmatism, death, projType, projDamage, toTarget);
-                    break;
-                case 1:
-                    ExecuteAccompanyAttackCase1(isSpazmatism, death, projType, projDamage, toTarget, skeletronPrimeIsTwo);
-                    break;
-            }
-        }
-
-        private void ExecuteAccompanyAttackCase0(
-            bool isSpazmatism,
-            bool death,
-            int projType,
-            int projDamage,
-            Vector2 toTarget
-        ) {
-            Vector2 toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -650);
-            if (death) {
-                toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -650);
-            }
-
-            if (ai[2] == 30 && !VaultUtils.isClient) {
-                float shootSpeed = death ? 8 : 6;
-                if (CWRWorld.MachineRebellion) {
-                    shootSpeed = 12;
-                }
-                for (int i = 0; i < 6; i++) {
-                    Vector2 ver = (MathHelper.TwoPi / 6f * i).ToRotationVector2() * shootSpeed;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
-                }
-            }
-
-            if (ai[2] > 80) {
-                ai[7] = 10;
-                ai[1] = 1;
-                ai[2] = 0;
-                npc.netUpdate = true;//强制更新NPC
-            }
-
-            ai[2]++;
-            SetEyeValue(npc, player, toPoint, toTarget);
-        }
-
-        private void ExecuteAccompanyAttackCase1(
-            bool isSpazmatism,
-            bool death,
-            int projType,
-            int projDamage,
-            Vector2 toTarget,
-            bool skeletronPrimeIsTwo
-        ) {
-            Vector2 toPoint = player.Center + new Vector2(isSpazmatism ? 700 : -700, ai[9]);
-
-            if (++ai[2] > 24) {
-                if (!VaultUtils.isClient) {
-                    if (skeletronPrimeIsTwo) {
-                        for (int i = 0; i < 3; i++) {
-                            Vector2 ver = toTarget.RotatedBy((-1 + i) * 0.06f).UnitVector() * 5;
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
-                        }
-                    }
-                    else {
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, toTarget.UnitVector() * 6, projType, projDamage, 0);
-                    }
-                }
-                ai[3]++;
-                ai[2] = 0;
-                npc.netUpdate = true;//强制更新NPC
-            }
-
-            if (ai[2] == 2) {
-                if (skeletronPrimeIsTwo) {
-                    if (ai[10] == 0) {
-                        ai[10] = 1;
-                    }
-                    if (!VaultUtils.isClient) {
-                        ai[9] = isSpazmatism ? -600 : 600;
-                        ai[9] += Main.rand.Next(-120, 90);
-                    }
-                    ai[9] *= ai[10];
-                    ai[10] *= -1;
-                    npc.netUpdate = true;//强制更新NPC
-                }
-                else {
-                    if (!VaultUtils.isClient) {
-                        ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
-                    }
-                    npc.netUpdate = true;//强制更新NPC
-                }
-            }
-
-            if (ai[3] > 6) {
-                ai[3] = 0;
-                ai[2] = 0;
-                ai[1] = 0;
-                ai[7] = 0;
-                npc.netUpdate = true;//强制更新NPC
-            }
-            else if (ai[7] < 2) {
-                ai[7] = 2;
-            }
-
-            SetEyeValue(npc, player, toPoint, toTarget);
         }
 
         #endregion

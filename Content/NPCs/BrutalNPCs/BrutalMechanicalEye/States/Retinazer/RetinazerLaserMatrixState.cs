@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerLaserMatrixState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserMatrix";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserMatrix;
 
         /// <summary>
         /// 定位阶段
@@ -59,6 +60,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private Vector2 centerPoint;
         private bool hasDeployed;
         private bool hasFired;
+        private int comboStep;
+
+        public RetinazerLaserMatrixState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -101,7 +107,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
-                return new RetinazerHorizontalBarrageState();
+                return new RetinazerVerticalBarrageState(comboStep);
             }
 
             return null;

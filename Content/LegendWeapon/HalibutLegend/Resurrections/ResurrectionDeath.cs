@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Items.Tools;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -89,6 +90,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 玩家透明度修改
         /// </summary>
         private float playerAlphaMultiplier = 1f;
+        /// <summary>
+        /// 由Kill设置，标记玩家已死亡需要在下次PreUpdate时重置状态
+        /// （PreUpdate在玩家死亡期间不运行，所以不能依赖Player.dead）
+        /// </summary>
+        private bool needsDeathReset = false;
         #endregion
 
         public static LocalizedText DeathText { get; private set; }
@@ -107,17 +113,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
         #region 主更新逻辑
         public override void PreUpdate() {
+            if (!Player.Alives()) {
+                return;
+            }
+
             var system = Player.GetResurrectionSystem();
             if (system == null) {
                 ResetState();
                 return;
             }
 
-            //如果玩家已经死亡，重置状态
-            if (Player.dead) {
-                if (currentState != DeathState.None && currentState != DeathState.Cooldown) {
-                    ResetState();
-                }
+            //如果Kill中标记了需要重置，在此处执行
+            if (needsDeathReset) {
+                needsDeathReset = false;
+                Respawn();
                 return;
             }
 
@@ -365,6 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 DeathText.ToNetworkText(Player.name)
             );
 
+            SirenMusicalBoxPlayerDeath.MusichasEnded = true;
             //杀死玩家
             Player.KillMe(damageSource, Player.statLife + 1, 0, false);
 
@@ -432,6 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             hasExecutedDeath = false;
             midPhaseSoundPlayed = false;
             playerAlphaMultiplier = 1f;
+            needsDeathReset = false;
 
             //清理效果
             abyssParticles.Clear();
@@ -446,7 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 重生处理
-        public override void OnRespawn() {
+        public void Respawn() {
             var system = Player.GetResurrectionSystem();
             if (system == null) {
                 return;
@@ -473,7 +484,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
         }
 
+        public override void OnRespawn() {
+            needsDeathReset = false;
+            Respawn();
+        }
+
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
+            needsDeathReset = true;
             if (Player.TryGetHalibutPlayer(out var halibutPlayer)) {
                 halibutPlayer.CanCloseEye = true;
             }

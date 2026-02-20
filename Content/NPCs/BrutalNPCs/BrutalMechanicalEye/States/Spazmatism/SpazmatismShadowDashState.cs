@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismShadowDashState : TwinsStateBase
     {
         public override string StateName => "SpazmatismShadowDash";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismShadowDash;
 
         /// <summary>
         /// 聚集阶段
@@ -57,6 +58,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private Vector2 centerPoint;
         private float dashSpeed;
         private bool hasDashed;
+        private int comboStep;
+
+        public SpazmatismShadowDashState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -105,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 if (context.IsSoloRageMode) {
                     return new SpazmatismSoloRageState();
                 }
-                return new SpazmatismFlameChaseState();
+                return new SpazmatismFlameChaseState(comboStep);
             }
 
             return null;

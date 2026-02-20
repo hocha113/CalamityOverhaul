@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerIntroState : DestroyerStateBase
     {
         public override string StateName => "Intro";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Intro;
         private bool hasSpawned;
 
         public override void OnEnter(DestroyerStateContext context) {
@@ -25,8 +26,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 if (!VaultUtils.isClient) {
                     DestroyerHeadAI.SpawnBodySegments(context.Npc);
                 }
-                SoundEngine.PlaySound(SoundID.Roar, context.Npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar, context.Npc.Center);
+                }
                 context.Npc.velocity = Vector2.UnitY * -20f;
+                context.Npc.netUpdate = true;
             }
 
             Timer++;

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerPatrolState : DestroyerStateBase
     {
         public override string StateName => "Patrol";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Patrol;
 
         private int PatrolDuration(DestroyerStateContext ctx) => ctx.IsEnraged ? 240 : 300;
 
@@ -33,7 +34,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Timer++;
 
             if (Timer > PatrolDuration(context)) {
-                return ChooseNextAttack(context);
+                //只在服务端/单人端进行随机选择，避免多端desync
+                if (!VaultUtils.isClient) {
+                    return ChooseNextAttack(context);
+                }
             }
 
             return null;

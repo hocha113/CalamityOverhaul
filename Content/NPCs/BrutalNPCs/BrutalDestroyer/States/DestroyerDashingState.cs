@@ -9,10 +9,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerDashingState : DestroyerStateBase
     {
         public override string StateName => "Dashing";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Dashing;
 
         private const int DashDuration = 60;
-        private const int CooldownTime_Normal = 55;
-        private const int CooldownTime_Enraged = 40;
 
         private int currentDashCount;
         private int maxDashCount;
@@ -42,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             if (Timer >= DashDuration) {
                 currentDashCount++;
-
+                npc.netUpdate = true;
                 //进入冷却
                 return new DestroyerDashCooldownState(currentDashCount, maxDashCount);
             }
@@ -62,6 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerDashCooldownState : DestroyerStateBase
     {
         public override string StateName => "DashCooldown";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.DashCooldown;
 
         private int currentDashCount;
         private int maxDashCount;

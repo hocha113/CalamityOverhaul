@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerDespawnState : DestroyerStateBase
     {
         public override string StateName => "Despawn";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Despawn;
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
@@ -42,6 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerDeathState : DestroyerStateBase
     {
         public override string StateName => "Death";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Death;
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
@@ -55,16 +57,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            if (Timer % 5 == 0) {
+            if (Timer % 5 == 0 && !VaultUtils.isServer) {
                 Vector2 randomPos = npc.Center + Main.rand.NextVector2Circular(100, 100);
                 SoundEngine.PlaySound(SoundID.Item14, randomPos);
                 Dust.NewDust(randomPos, 0, 0, DustID.Smoke, 0, 0, 100, default, 3f);
             }
 
             if (Timer > 180) {
-                npc.life = 0;
-                npc.HitEffect();
-                npc.checkDead();
+                if (!VaultUtils.isClient) {
+                    npc.life = 0;
+                    npc.HitEffect();
+                    npc.checkDead();
+                }
             }
 
             return null;

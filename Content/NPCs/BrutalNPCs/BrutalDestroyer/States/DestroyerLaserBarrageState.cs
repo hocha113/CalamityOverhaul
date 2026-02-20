@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
@@ -13,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerLaserBarrageState : DestroyerStateBase
     {
         public override string StateName => "LaserBarrage";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.LaserBarrage;
 
         private const int ChargeTime = 60;
         private const int FireTime = 240;
@@ -71,11 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
             int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser));
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
-                ProjectileID.DeathLaser, damage, 0f, Main.myPlayer);
-
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item12, source.Center);
-            }
+                ProjectileID.DeathLaser, damage, 0f, Main.myPlayer, ai2: context.Npc.target);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismDashPrepareState : TwinsStateBase
     {
         public override string StateName => "SpazmatismDashPrepare";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismDashPrepare;
 
         private int ChargeTime => Context.IsMachineRebellion ? 30 : (Context.IsDeathMode ? 35 : 45);
         private int MaxDashCount => Context.IsMachineRebellion ? 3 : (Context.IsDeathMode ? 3 : 2);
@@ -18,9 +19,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         private TwinsStateContext Context;
         private int currentDashCount;
+        private int comboStep;
 
-        public SpazmatismDashPrepareState(int dashCount = 0) {
+        public SpazmatismDashPrepareState(int dashCount = 0, int currentComboStep = 0) {
             currentDashCount = dashCount;
+            comboStep = currentComboStep;
         }
 
         public override void OnEnter(TwinsStateContext context) {
@@ -53,13 +56,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //蓄力完成，开始冲刺
             if (Timer >= ChargeTime) {
-                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                }
                 context.ResetChargeState();
 
                 //设置冲刺速度
                 npc.velocity = GetDirectionToTarget(context) * DashSpeed;
-
-                return new SpazmatismDashingState(currentDashCount, MaxDashCount);
+                npc.netUpdate = true;
+                return new SpazmatismDashingState(currentDashCount, MaxDashCount, comboStep);
             }
 
             return null;

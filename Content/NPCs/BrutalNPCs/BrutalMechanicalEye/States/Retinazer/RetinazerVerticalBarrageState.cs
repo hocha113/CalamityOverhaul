@@ -13,12 +13,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerVerticalBarrageState : TwinsStateBase
     {
         public override string StateName => "RetinazerVerticalBarrage";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
+
+        /// <summary>
+        /// 二阶段固定招式套路(有搭档时):
+        /// 垂直弹幕→精准狙击→水平弹幕→聚焦光束→激光矩阵→合击→(循环)
+        /// 
+        /// 设计与魔焰眼配合:
+        /// 激光眼:垂直弹幕(远程压制) ←→ 魔焰眼:喷火追击(近战突进)
+        /// 激光眼:精准狙击(爆发输出) ←→ 魔焰眼:二阶冲刺(高速突袭)
+        /// 激光眼:水平弹幕(封锁空间) ←→ 魔焰眼:影分身冲刺(多方向压制)
+        /// 激光眼:聚焦光束(定点打击) ←→ 魔焰眼:喷火追击(持续追击)
+        /// 激光眼:激光矩阵(区域封锁) ←→ 魔焰眼:火焰风暴(区域控制)
+        /// 激光眼:合击(联合爆发)     ←→ 魔焰眼:合击(联合爆发)
+        /// 
+        /// 二阶段固定招式套路(独眼时):
+        /// 垂直弹幕→精准狙击→水平弹幕→聚焦光束→激光矩阵→精准狙击→(循环)
+        /// </summary>
+        private static readonly string[] ComboSequenceWithPartner =
+        [
+            "PrecisionSniper",
+            "HorizontalBarrage",
+            "FocusedBeam",
+            "LaserMatrix",
+            "CombinedAttack"
+        ];
+
+        private static readonly string[] ComboSequenceSolo =
+        [
+            "PrecisionSniper",
+            "HorizontalBarrage",
+            "FocusedBeam",
+            "LaserMatrix",
+            "PrecisionSniper"
+        ];
 
         private int Duration => Context.IsMachineRebellion ? 180 : (Context.IsDeathMode ? 120 : 150);
         private int RapidFireRate => Context.IsMachineRebellion ? 10 : (Context.IsDeathMode ? 12 : 15);
         private float LaserSpeed => Context.IsDeathMode ? 18f : 16f;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        /// <param name="currentComboStep">二阶段固定招式循环的当前步骤索引</param>
+        public RetinazerVerticalBarrageState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -63,24 +103,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 SoundEngine.PlaySound(SoundID.Item12, npc.Center);
             }
 
-            //随机切换到不同的特殊招式
+            //按固定套路切换到下一招式
             if (Timer >= Duration) {
                 //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
 
-                int choice = Main.rand.Next(5);
-                return choice switch {
-                    0 => new RetinazerFocusedBeamState(),
-                    1 => new RetinazerLaserMatrixState(),
-                    2 => new RetinazerPrecisionSniperState(),
-                    3 => HasPartner() ? new TwinsCombinedAttackState() : new RetinazerHorizontalBarrageState(),
-                    _ => new RetinazerHorizontalBarrageState()
-                };
+                return GetNextComboState();
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 根据固定套路获取下一个状态
+        /// </summary>
+        private ITwinsState GetNextComboState() {
+            bool hasPartner = HasPartner();
+            string[] sequence = hasPartner ? ComboSequenceWithPartner : ComboSequenceSolo;
+            string nextMove = sequence[comboStep % sequence.Length];
+            int nextStep = comboStep + 1;
+
+            return nextMove switch {
+                "PrecisionSniper" => new RetinazerPrecisionSniperState(0, nextStep),
+                "HorizontalBarrage" => new RetinazerHorizontalBarrageState(nextStep),
+                "FocusedBeam" => new RetinazerFocusedBeamState(nextStep),
+                "LaserMatrix" => new RetinazerLaserMatrixState(nextStep),
+                "CombinedAttack" => new TwinsCombinedAttackState(nextStep),
+                _ => new RetinazerPrecisionSniperState(0, nextStep)
+            };
         }
 
         /// <summary>

@@ -3,6 +3,40 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
     /// <summary>
+    /// 双子魔眼状态索引，用于网络同步
+    /// 魔焰眼和激光眼共用同一套索引
+    /// </summary>
+    internal enum TwinsStateIndex : int
+    {
+        //魔焰眼一阶段
+        SpazmatismHoverShoot = 0,
+        SpazmatismDashPrepare = 1,
+        SpazmatismDashing = 2,
+        SpazmatismFireVortex = 3,
+        //魔焰眼二阶段
+        SpazmatismFlameChase = 4,
+        SpazmatismPhase2DashPrepare = 5,
+        SpazmatismPhase2Dashing = 6,
+        SpazmatismShadowDash = 7,
+        SpazmatismFlameStorm = 8,
+        SpazmatismSoloRage = 9,
+        //激光眼一阶段
+        RetinazerHoverShoot = 10,
+        RetinazerRepositionState = 11,
+        RetinazerFocusedBeam = 12,
+        //激光眼二阶段
+        RetinazerVerticalBarrage = 13,
+        RetinazerHorizontalBarrage = 14,
+        RetinazerLaserSweep = 15,
+        RetinazerLaserMatrix = 16,
+        RetinazerPrecisionSniper = 17,
+        RetinazerSoloRage = 18,
+        //公共状态
+        TwinsPhaseTransition = 19,
+        TwinsCombinedAttack = 20,
+    }
+
+    /// <summary>
     /// 双子魔眼状态接口
     /// 定义状态的基本行为
     /// </summary>
@@ -12,6 +46,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 状态名称，用于调试
         /// </summary>
         string StateName { get; }
+
+        /// <summary>
+        /// 状态索引，用于网络同步
+        /// </summary>
+        TwinsStateIndex StateIndex { get; }
 
         /// <summary>
         /// 进入状态时调用
@@ -37,6 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
     internal abstract class TwinsStateBase : ITwinsState
     {
         public abstract string StateName { get; }
+        public abstract TwinsStateIndex StateIndex { get; }
 
         /// <summary>
         /// 状态内部计时器

@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerDashPrepareState : DestroyerStateBase
     {
         public override string StateName => "DashPrepare";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.DashPrepare;
 
         private int ChargeTime(DestroyerStateContext ctx) => ctx.IsEnraged ? 35 : 50;
         private float DashSpeed(DestroyerStateContext ctx) => ctx.IsEnraged ? 55f : 42f;
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.SetChargeState(1, progress);
             context.DashDirection = dashDirection;
 
-            //蓄力粒子
+            //蓄力粒子（仅客户端）
             if (!VaultUtils.isServer && Timer % 3 == 0) {
                 for (int i = 0; i < (int)(progress * 5) + 1; i++) {
                     Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(40, 40);
@@ -58,19 +59,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
-            //蓄力后期震动
+            //蓄力后期震动（仅客户端视觉效果，不影响实际位置）
             if (progress > 0.6f && !VaultUtils.isServer) {
                 float shakeMagnitude = (progress - 0.6f) * 5f;
-                npc.Center += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
+                npc.position += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
             }
 
             Timer++;
 
             if (Timer >= chargeTime) {
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.2f }, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.2f }, npc.Center);
+                }
                 context.ResetChargeState();
 
                 npc.velocity = dashDirection * DashSpeed(context);
+                npc.netUpdate = true;
                 return new DestroyerDashingState(currentDashCount, MaxDashCount(context));
             }
 

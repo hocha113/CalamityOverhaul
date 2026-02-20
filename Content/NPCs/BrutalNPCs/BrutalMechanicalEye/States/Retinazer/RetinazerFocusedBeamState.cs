@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
         public override string StateName => "RetinazerFocusedBeam";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerFocusedBeam;
 
         /// <summary>
         /// 锁定阶段
@@ -56,6 +57,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private bool hasPlayedChargeSound;
         private bool hasPlayedFireSound;
         private bool isDirectionLocked;
+        private int comboStep;
+        private int fireCount;
+
+        public RetinazerFocusedBeamState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -65,6 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             isDirectionLocked = false;
             currentDirection = Vector2.Zero;
             finalLockedDirection = Vector2.Zero;
+            fireCount = 0;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -96,7 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
-                return new RetinazerVerticalBarrageState();
+                return new RetinazerVerticalBarrageState(comboStep);
             }
 
             return null;
@@ -244,9 +252,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //持续发射激光
             if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
-                //添加轻微的散射
-                float scatter = (Main.rand.NextFloat() - 0.5f) * 0.1f;
+                //固定扇形散射，基于发射计数确定角度
+                float maxScatter = 0.1f;
+                int totalShots = FirePhase / FireInterval;
+                float scatter = totalShots > 1 ? MathHelper.Lerp(-maxScatter / 2f, maxScatter / 2f, fireCount / (float)(totalShots - 1)) : 0f;
                 Vector2 shootDir = fireDirection.RotatedBy(scatter);
+                fireCount++;
 
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),

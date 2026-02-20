@@ -9,15 +9,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismDashingState : TwinsStateBase
     {
         public override string StateName => "SpazmatismDashing";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismDashing;
 
         private const int DashDuration = 40;
 
         private int currentDashCount;
         private int maxDashCount;
+        private int comboStep;
 
-        public SpazmatismDashingState(int dashCount, int maxCount) {
+        public SpazmatismDashingState(int dashCount, int maxCount, int currentComboStep = 0) {
             currentDashCount = dashCount;
             maxDashCount = maxCount;
+            comboStep = currentComboStep;
         }
 
         public override void OnEnter(TwinsStateContext context) {
@@ -40,12 +43,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 currentDashCount++;
 
                 if (currentDashCount >= maxDashCount) {
-                    //冲刺次数用完，回到悬停
-                    return new SpazmatismHoverShootState();
+                    //冲刺次数用完，回到悬停继续套路循环
+                    return new SpazmatismHoverShootState(comboStep);
                 }
                 else {
                     //继续下一次冲刺准备
-                    return new SpazmatismDashPrepareState(currentDashCount);
+                    return new SpazmatismDashPrepareState(currentDashCount, comboStep);
                 }
             }
 

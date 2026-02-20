@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     internal class TwinsPhaseTransitionState : TwinsStateBase
     {
         public override string StateName => "TwinsPhaseTransition";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsPhaseTransition;
 
         /// <summary>
         /// 集合移动阶段
@@ -406,10 +407,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         /// </summary>
         private ITwinsState GetPhase2InitialState() {
             if (Context.IsSpazmatism) {
-                return new Spazmatism.SpazmatismFlameChaseState();
+                return new Spazmatism.SpazmatismFlameChaseState(0);
             }
             else {
-                return new Retinazer.RetinazerVerticalBarrageState();
+                return new Retinazer.RetinazerVerticalBarrageState(0);
             }
         }
 

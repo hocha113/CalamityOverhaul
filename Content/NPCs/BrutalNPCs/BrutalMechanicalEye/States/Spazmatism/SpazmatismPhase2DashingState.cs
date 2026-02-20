@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
@@ -11,15 +9,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismPhase2DashingState : TwinsStateBase
     {
         public override string StateName => "SpazmatismPhase2Dashing";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2Dashing;
 
         private const int DashDuration = 30;
 
         private int currentDashCount;
         private int maxDashCount;
+        private int comboStep;
 
-        public SpazmatismPhase2DashingState(int dashCount, int maxCount) {
+        public SpazmatismPhase2DashingState(int dashCount, int maxCount, int currentComboStep = 0) {
             currentDashCount = dashCount;
             maxDashCount = maxCount;
+            comboStep = currentComboStep;
         }
 
         public override void OnEnter(TwinsStateContext context) {
@@ -52,18 +53,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         return new SpazmatismSoloRageState();
                     }
 
-                    //冲刺次数用完，随机切换到特殊招式
-                    int choice = Main.rand.Next(4);
-                    return choice switch {
-                        0 => new SpazmatismShadowDashState(),
-                        1 => new SpazmatismFlameStormState(),
-                        2 => HasPartner() ? new TwinsCombinedAttackState() : new SpazmatismFlameChaseState(),
-                        _ => new SpazmatismFlameChaseState()
-                    };
+                    //冲刺次数用完，回到喷火追击继续套路循环
+                    return new SpazmatismFlameChaseState(comboStep);
                 }
                 else {
                     //继续下一次冲刺
-                    return new SpazmatismPhase2DashPrepareState(currentDashCount);
+                    return new SpazmatismPhase2DashPrepareState(currentDashCount, comboStep);
                 }
             }
 
@@ -74,18 +69,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             base.OnExit(context);
             //离开冲刺状态禁用碰撞伤害
             DisableContactDamage(context.Npc);
-        }
-
-        /// <summary>
-        /// 检查是否有另一只眼睛存活
-        /// </summary>
-        private bool HasPartner() {
-            foreach (var n in Main.npc) {
-                if (n.active && n.type == NPCID.Retinazer) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

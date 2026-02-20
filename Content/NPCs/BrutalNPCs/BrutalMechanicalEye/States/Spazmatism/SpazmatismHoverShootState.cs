@@ -13,12 +13,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     internal class SpazmatismHoverShootState : TwinsStateBase
     {
         public override string StateName => "SpazmatismHoverShoot";
+        public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismHoverShoot;
 
         private int ShootRate => Context.IsMachineRebellion ? 55 : (Context.IsDeathMode ? 60 : 80);
         private float MoveSpeed => Context.IsMachineRebellion ? 16f : (Context.IsDeathMode ? 14f : 12f);
         private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
 
         private TwinsStateContext Context;
+        private int comboStep;
+
+        /// <summary>
+        /// 一阶段固定招式套路: 悬停射击→火焰漩涡→悬停射击→冲刺准备，循环往复
+        /// comboStep 为偶数时进入火焰漩涡，奇数时进入冲刺准备
+        /// </summary>
+        public SpazmatismHoverShootState(int currentComboStep = 0) {
+            comboStep = currentComboStep;
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
@@ -50,19 +60,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         Main.myPlayer
                     );
                 }
-                SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                }
                 Timer = 0;
                 Counter++;
             }
 
-            //射击次数后切换状态
+            //射击次数后按固定套路切换状态
             if (Counter >= MaxShootCount) {
-                //50%概率使用火焰漩涡，50%概率冲刺
-                if (Main.rand.NextBool()) {
-                    return new SpazmatismFireVortexState();
+                //固定交替: 火焰漩涡 → 冲刺准备 → 火焰漩涡 → 冲刺准备...
+                if (comboStep % 2 == 0) {
+                    return new SpazmatismFireVortexState(comboStep + 1);
                 }
                 else {
-                    return new SpazmatismDashPrepareState();
+                    return new SpazmatismDashPrepareState(0, comboStep + 1);
                 }
             }
 
