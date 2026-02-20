@@ -3,11 +3,29 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 {
     /// <summary>
+    /// 毁灭者状态索引，用于网络同步
+    /// </summary>
+    internal enum DestroyerStateIndex : int
+    {
+        Intro = 0,
+        Patrol = 1,
+        DashPrepare = 2,
+        Dashing = 3,
+        DashCooldown = 4,
+        LaserBarrage = 5,
+        Encircle = 6,
+        ProbeMatrix = 7,
+        Despawn = 8,
+        Death = 9,
+    }
+
+    /// <summary>
     /// 毁灭者状态接口
     /// </summary>
     internal interface IDestroyerState
     {
         string StateName { get; }
+        DestroyerStateIndex StateIndex { get; }
         void OnEnter(DestroyerStateContext context);
         IDestroyerState OnUpdate(DestroyerStateContext context);
         void OnExit(DestroyerStateContext context);
@@ -19,6 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
     internal abstract class DestroyerStateBase : IDestroyerState
     {
         public abstract string StateName { get; }
+        public abstract DestroyerStateIndex StateIndex { get; }
         protected int Timer { get; set; }
         protected int Counter { get; set; }
 

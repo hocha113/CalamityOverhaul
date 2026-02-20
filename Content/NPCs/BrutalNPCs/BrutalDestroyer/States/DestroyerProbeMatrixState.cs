@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     internal class DestroyerProbeMatrixState : DestroyerStateBase
     {
         public override string StateName => "ProbeMatrix";
+        public override DestroyerStateIndex StateIndex => DestroyerStateIndex.ProbeMatrix;
 
         private const int RoarPhase = 60;
         private const int FormationPhase = 140;
@@ -40,7 +41,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (context.IsDeathMode) probeCount += 4;
 
             probeIndices = new int[probeCount];
-            formationType = Main.rand.Next(3);
+            //阵型类型由服务端决定并通过ai[3]同步
+            if (!VaultUtils.isClient) {
+                formationType = Main.rand.Next(3);
+                context.Npc.ai[3] = formationType;
+                context.Npc.netUpdate = true;
+            }
+            else {
+                formationType = (int)context.Npc.ai[3];
+            }
 
             context.SetChargeState(4, 0f);
         }
@@ -87,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.SetChargeState(4, Timer / (float)RoarPhase * 0.3f);
 
             //咆哮音效
-            if (Timer == 1) {
+            if (Timer == 1 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.3f, Volume = 1.2f }, npc.Center);
             }
 
@@ -179,7 +188,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                         if (!probe.active || probe.type != NPCID.Probe) continue;
 
                         Vector2 dir = (player.Center - probe.Center).SafeNormalize(Vector2.UnitY);
-                        SoundEngine.PlaySound(SoundID.Item12, probe.Center);
 
                         Projectile.NewProjectile(probe.GetSource_FromAI(),
                             probe.Center, dir, projType, damage, 0f,
@@ -203,8 +211,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private void ExecuteRecoveryPhase(DestroyerStateContext context) {
             context.ResetChargeState();
 
-            //攻击完成后快速消灭探针，避免滞留造成混乱
-            KillAllProbes();
+            //攻击完成后快速消灭探针，避免滞留造成混乱（仅服务端执行）
+            if (!VaultUtils.isClient) {
+                KillAllProbes();
+            }
         }
 
         /// <summary>
@@ -266,7 +276,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override void OnExit(DestroyerStateContext context) {
             base.OnExit(context);
             context.ResetChargeState();
-            KillAllProbes();
+            if (!VaultUtils.isClient) {
+                KillAllProbes();
+            }
         }
     }
 }
