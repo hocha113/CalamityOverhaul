@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_SupremeCalamitas;
 
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (FirstMetSupCal.ThisIsToFight && npc.type == CWRID.NPC_SupremeCalamitas) {
                 Player player = Main.LocalPlayer;
                 if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {

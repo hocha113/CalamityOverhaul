@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.Common
             }
         }
 
-        public sealed override void OnKill(NPC npc) {
+        public sealed override void OnNPCDeath(NPC npc) {
             if (IsTargetByID(npc)) {//这个判定是不必要的，不过还是写上吧
                 Check(npc);//作为 DeathTrackingNPC 的子类，OnKill会被客户端调用，所以这里的运行不会出现问题
             }

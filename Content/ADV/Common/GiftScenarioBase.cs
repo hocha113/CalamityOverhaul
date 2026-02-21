@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Common
 
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => GiftScenarioBase.SpawnedDic.Keys.Any(g => g.TargetBossID == entity.type);
 
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (!CWRRef.GetBossRushActive()//Boss Rush时不触发礼物场景
                 && GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var giftScenarioBase)
                 && giftScenarioBase.CanSpawned()) {

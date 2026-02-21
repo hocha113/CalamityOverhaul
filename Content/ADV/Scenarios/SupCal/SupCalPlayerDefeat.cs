@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             return true;
         }
 
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (npc.type == CWRID.NPC_SupremeCalamitas) {
                 //Boss被击杀时重置状态
                 hasRecordedDeath = false;

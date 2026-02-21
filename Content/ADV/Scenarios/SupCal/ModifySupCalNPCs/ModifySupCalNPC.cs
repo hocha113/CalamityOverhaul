@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
     internal class TraceSupCalDeath : DeathTrackingNPC
     {
         internal static bool SupCalDefeated { get; set; }
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (npc.type == CWRID.NPC_SupremeCalamitas) {
                 SupCalDefeated = true;
             }
