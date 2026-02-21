@@ -71,6 +71,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             if (!CWRRef.Has) {//如果没有灾厄Mod，就不覆盖AI，避免潜在的兼容性问题
                 return false;
             }
+            if (!VaultUtils.isSinglePlayer) {
+                return false;//本AI包含多个需要本地玩家驱动的状态转换和场景触发，在多人模式下可能会出现同步问题，暂时只在单人模式启用
+            }
             if (CWRRef.GetBossRushActive()) {
                 return false;
             }
