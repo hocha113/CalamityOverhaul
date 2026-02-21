@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             RandomTimer = 0;
         }
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_CalamitasClone;//应用于目标NPC
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (npc.type == CWRID.NPC_CalamitasClone && !CWRWorld.BossRush) {
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适

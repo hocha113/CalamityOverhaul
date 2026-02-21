@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.ADV.Common
             if (npc.life > 0) {
                 return;
             }
-            OnKill(npc);
+            OnNPCDeath(npc);
         }
 
         /// <summary>
         /// 当NPC被击杀时调用，在客户端或者服务端上均会运行
         /// </summary>
         /// <param name="npc"></param>
-        public new virtual void OnKill(NPC npc) { }
+        public virtual void OnNPCDeath(NPC npc) { }
     }
 }

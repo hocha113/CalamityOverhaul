@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 {
     internal class QLNPC : DeathTrackingNPC
     {
-        public override void OnKill(NPC npc) {//这个钩子会在NPC死亡时被调用，在多人模式中每个客户端都会调用
+        public override void OnNPCDeath(NPC npc) {//这个钩子会在NPC死亡时被调用，在多人模式中每个客户端都会调用
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.IsUnlocked && !quest.IsCompleted) {
                     quest.OnKillByNPC(npc);
