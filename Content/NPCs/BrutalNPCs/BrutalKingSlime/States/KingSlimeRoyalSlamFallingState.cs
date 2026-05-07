@@ -1,5 +1,6 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -115,16 +116,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             if (!VaultUtils.isClient) {
                 int thornDmg = (int)(CWRRef.GetProjectileDamage(npc, ProjectileID.None) * 0.75f);
                 if (thornDmg < 20) thornDmg = 20;
-                int thornCount = 5;
-                for (int side = -1; side <= 1; side += 2) {
+                int thornCount = 1;
+                for (int side = -11; side <= 11; side += 2) {
                     for (int i = 0; i < thornCount; i++) {
                         float prog = (i + 1f) / thornCount;
-                        float downRatio = MathHelper.Lerp(0.06f, 0.38f, prog);
+                        float downRatio = -MathHelper.Lerp(1.26f, 2.68f, prog);
                         float speed = MathHelper.Lerp(9f, 18f, prog);
                         Vector2 vel = new Vector2(side, downRatio).SafeNormalize(Vector2.Zero) * speed;
-                        Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        float scale = 1 + (6 - Math.Abs(side) * 0.2f) * 0.1f;
+                        int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
                             npc.Bottom + new Vector2(side * 20f, -10f),
-                            vel, ProjectileID.SharpTears, thornDmg, 2f, Main.myPlayer);
+                            vel, ProjectileID.SharpTears, thornDmg, 2f, Main.myPlayer,
+                            ai1: scale);
+                        if (proj.TryGetProjectile(out var projInds)) {
+                            projInds.hostile = true;
+                            projInds.friendly = false;
+                        }
                     }
                 }
             }
