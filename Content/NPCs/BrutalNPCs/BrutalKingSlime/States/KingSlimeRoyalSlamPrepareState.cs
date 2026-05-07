@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -8,24 +7,21 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 {
     /// <summary>
-    /// 皇家砸地——蓄力阶段：先蹲伏蓄力，再爆发式跃起，于跃起顶点借皇室凝胶光芒消隐，
-    /// 在玩家头顶位置以爆裂光花重新现身后悬停蓄力，蓄满后切到 Falling 状态。
-    /// 通过"蹲—跃—闪现—现身"四段过渡彻底消除原本"瞬移到玩家头顶"的突兀感。
+    /// 皇家砸地——蓄力阶段：蹲伏蓄力 → 爆发跃起 → 弧线飞行至玩家头顶 → 悬停蓄力，蓄满后切入 Falling。
     /// </summary>
     internal class KingSlimeRoyalSlamPrepareState : KingSlimeStateBase
     {
         public override string StateName => "RoyalSlamPrepare";
         public override KingSlimeStateIndex StateIndex => KingSlimeStateIndex.RoyalSlamPrepare;
 
-        //子阶段：0 蹲伏蓄力 / 1 跃起冲天 / 2 顶点消隐 / 3 头顶炸裂现身 / 4 悬停蓄力
+        //子阶段：0 蹲伏蓄力 / 1 爆发跃起 / 2 弧线飞行 / 3 悬停蓄力
         private const int AnticipationTime = 16;
-        private const int LeapTime = 28;
-        private const int VanishTime = 10;
-        private const int MaterializeTime = 12;
+        private const int LeapTime = 22;
+        private const int FlyArcMaxTime = 110;
         private const int HoverChargeTime = 70;
 
-        //目标悬停高度（玩家头顶之上）
         private const float HoverHeight = 380f;
+        private const float FlyArcSpeed = 22f;
 
         private int subPhase;
         private int phaseTimer;
@@ -49,9 +45,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             switch (subPhase) {
                 case 0: HandleAnticipate(context); break;
                 case 1: HandleLeap(context); break;
-                case 2: HandleVanish(context); break;
-                case 3: HandleMaterialize(context); break;
-                case 4: {
+                case 2: HandleArcFly(context); break;
+                case 3: {
                     var next = HandleHoverCharge(context);
                     if (next != null) return next;
                     break;
@@ -143,15 +138,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
         #endregion
 
-        #region 阶段1：跃起冲天
+        #region 阶段1：爆发跃起
 
-        //强力上跳，身体被纵向拉伸成水滴，沿途留下粒子尾迹
         private void HandleLeap(KingSlimeStateContext context) {
             NPC npc = context.Npc;
 
-            //自定义重力——比较弱，保留滞空感；接近顶点时进一步衰减以"凝固"在峰值
+            //初期弱重力保留腾空感，峰值附近衰减到近零以便衔接弧线飞行
             float t = MathHelper.Clamp(phaseTimer / (float)LeapTime, 0f, 1f);
-            float gravity = MathHelper.Lerp(0.55f, 0.18f, t);
+            float gravity = MathHelper.Lerp(0.45f, 0.05f, t);
             npc.velocity.Y += gravity;
             //空气阻力
             npc.velocity.X *= 0.985f;
@@ -170,18 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 trail.velocity = -npc.velocity * 0.30f;
             }
 
-            //跃起后半段：在玩家头顶预生成"传送门"标记，提前告诉玩家史莱姆王要从哪里下来
-            if (!VaultUtils.isServer && t > 0.4f && phaseTimer % 2 == 0) {
-                SpawnDestinationMarker(context, intensity: (t - 0.4f) / 0.6f);
-            }
-
             if (phaseTimer >= LeapTime) {
-                //进入消隐前先把速度归零，把镜头牢牢锁在跃起顶点
-                npc.velocity = Vector2.Zero;
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item67, npc.Center);
-                    SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.3f, Volume = 0.8f }, npc.Center);
-                }
                 subPhase = 2;
                 phaseTimer = 0;
             }
@@ -189,139 +172,76 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
         #endregion
 
-        #region 阶段2：顶点消隐
+        #region 阶段2：弧线飞行至玩家头顶
 
-        //顶点处皇室光辉将史莱姆王吸入虚空——内爆式收缩光环，外圈粒子涌入身体
-        private void HandleVanish(KingSlimeStateContext context) {
+        private void HandleArcFly(KingSlimeStateContext context) {
             NPC npc = context.Npc;
+            Player player = context.Target;
+            Vector2 hoverPos = player.Center + new Vector2(0, -HoverHeight);
+            Vector2 toTarget = hoverPos - npc.Center;
+            float dist = toTarget.Length();
 
-            npc.velocity = Vector2.Zero;
+            float t = MathHelper.Clamp(phaseTimer / (float)FlyArcMaxTime, 0f, 1f);
 
-            float t = MathHelper.Clamp(phaseTimer / (float)VanishTime, 0f, 1f);
-            //淡出
-            npc.alpha = (int)MathHelper.Lerp(0, 255, t);
-            //先拉伸再急剧收缩，营造"被光吸走"的弹性形变
-            context.SquishY = MathHelper.SmoothStep(-0.42f, 0.40f, t);
-            //蓄力强度回落——视觉焦点交给"现身"那一刻
-            context.SetChargeState(1, MathHelper.Lerp(0.55f, 0.15f, t));
+            if (!VaultUtils.isClient) {
+                float speedScale = MathHelper.Clamp(dist / 300f, 0.25f, 1f);
+                Vector2 desired = toTarget.SafeNormalize(Vector2.Zero) * FlyArcSpeed * speedScale;
+                npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.14f);
+                npc.netUpdate = true;
+            }
 
-            //内爆粒子：从外环涌入身体
-            if (!VaultUtils.isServer) {
-                int count = 4;
-                for (int i = 0; i < count; i++) {
-                    Vector2 dir = Main.rand.NextVector2CircularEdge(1f, 1f);
-                    Vector2 spawn = npc.Center + dir * Main.rand.NextFloat(70f, 130f);
-                    Dust dust = Dust.NewDustDirect(spawn - new Vector2(8, 8), 16, 16,
-                        DustID.RedTorch, 0, 0, 100, default, 1.6f);
-                    dust.noGravity = true;
-                    dust.velocity = -dir * Main.rand.NextFloat(7f, 10f);
-                    dust.fadeIn = 0.5f;
+            context.SquishY = MathHelper.SmoothStep(-0.42f, 0.15f, t);
+            context.SetChargeState(1, MathHelper.Lerp(0.55f, 0.85f, t));
+
+            if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
+                Dust trail = Dust.NewDustDirect(
+                    npc.Center + Main.rand.NextVector2Circular(18f, 18f) - new Vector2(8, 8),
+                    16, 16, DustID.RedTorch, 0, 0, 120, default, 1.4f);
+                trail.noGravity = true;
+                trail.velocity = -npc.velocity * 0.25f;
+            }
+
+            if (dist < 40f || phaseTimer >= FlyArcMaxTime) {
+                if (!VaultUtils.isClient) {
+                    npc.Center = hoverPos;
+                    npc.velocity = Vector2.Zero;
+                    npc.netUpdate = true;
                 }
-            }
-
-            //继续在头顶位置加强目标标记，让玩家清晰预判
-            if (!VaultUtils.isServer && phaseTimer % 1 == 0) {
-                SpawnDestinationMarker(context, intensity: 1f);
-            }
-
-            if (phaseTimer >= VanishTime) {
-                ExecuteTeleport(context);
+                OnArriveAtHover(npc, hoverPos);
                 subPhase = 3;
                 phaseTimer = 0;
             }
         }
 
-        //执行真正的位置传送——只在服务端/单人端写位置，客户端通过 netUpdate 跟随
-        private static void ExecuteTeleport(KingSlimeStateContext context) {
-            NPC npc = context.Npc;
-            Player player = context.Target;
-
-            Vector2 dest = player.Center + new Vector2(0, -HoverHeight);
-
-            if (!VaultUtils.isClient) {
-                npc.position = dest - npc.Size / 2f;
-                npc.velocity = Vector2.Zero;
-                npc.netUpdate = true;
-            }
-            npc.alpha = 255;
-
-            if (!VaultUtils.isServer) {
-                //现身瞬间：响亮的高频闪光音 + 皇家爆裂粒子花
-                SoundEngine.PlaySound(SoundID.Item67 with { Pitch = 0.35f, Volume = 1.2f }, dest);
-                SoundEngine.PlaySound(SoundID.Item109 with { Pitch = 0.2f, Volume = 0.9f }, dest);
-
-                int rays = 26;
-                for (int i = 0; i < rays; i++) {
-                    float ang = MathHelper.TwoPi / rays * i;
-                    Vector2 dir = ang.ToRotationVector2();
-                    Dust dust = Dust.NewDustDirect(dest - new Vector2(8, 8), 16, 16,
-                        DustID.RedTorch,
-                        dir.X * Main.rand.NextFloat(7f, 11f),
-                        dir.Y * Main.rand.NextFloat(7f, 11f),
-                        100, default, 1.8f);
-                    dust.noGravity = true;
-                }
-                //再补一圈高速金色光屑做"皇室"点缀
-                int sparks = 10;
-                for (int i = 0; i < sparks; i++) {
-                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 dir = ang.ToRotationVector2();
-                    Dust spark = Dust.NewDustDirect(dest - new Vector2(8, 8), 16, 16,
-                        DustID.GoldFlame, dir.X * 6f, dir.Y * 6f, 80, default, 1.6f);
-                    spark.noGravity = true;
-                }
-
-                //轻微震屏，让现身和起跳形成节奏呼应
-                Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                    dest, Vector2.UnitX, 5f, 6f, 14, 1500f, "KingSlimeRoyalAppear"));
-            }
-        }
-
-        #endregion
-
-        #region 阶段3：玩家头顶炸裂现身
-
-        //淡入并轻微弹性回弹，把节奏交还给原版的悬停蓄力
-        private void HandleMaterialize(KingSlimeStateContext context) {
-            NPC npc = context.Npc;
-            Player player = context.Target;
-
-            //锁定在玩家头顶，避免现身时位置抖动
-            Vector2 desired = player.Center + new Vector2(0, -HoverHeight);
-            npc.Center = desired;
-            npc.velocity = Vector2.Zero;
-
-            float t = MathHelper.Clamp(phaseTimer / (float)MaterializeTime, 0f, 1f);
-            //淡入
-            npc.alpha = (int)MathHelper.Lerp(255, 0, t);
-            //回弹震荡：从挤压回到平衡，再略微过冲
-            float bounce = (float)Math.Sin(t * MathHelper.Pi) * 0.18f;
-            context.SquishY = MathHelper.SmoothStep(0.40f, 0.10f, t) - bounce * (1f - t);
-            //蓄力强度回升——衔接悬停蓄力
-            context.SetChargeState(1, MathHelper.Lerp(0.25f, 0.50f, t));
-
-            //现身后半段：身体周围有皇室光屑收束
-            if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
-                Vector2 dir = Main.rand.NextVector2CircularEdge(1f, 1f);
-                Vector2 spawn = npc.Center + dir * Main.rand.NextFloat(45f, 90f);
-                Dust dust = Dust.NewDustDirect(spawn - new Vector2(8, 8), 16, 16,
-                    DustID.RedTorch, 0, 0, 100, default, 1.4f);
+        private static void OnArriveAtHover(NPC npc, Vector2 pos) {
+            if (VaultUtils.isServer) return;
+            SoundEngine.PlaySound(SoundID.Item67 with { Pitch = 0.2f, Volume = 0.9f }, pos);
+            int rays = 20;
+            for (int i = 0; i < rays; i++) {
+                float ang = MathHelper.TwoPi / rays * i;
+                Vector2 dir = ang.ToRotationVector2();
+                Dust dust = Dust.NewDustDirect(pos - new Vector2(8, 8), 16, 16,
+                    DustID.RedTorch,
+                    dir.X * Main.rand.NextFloat(5f, 9f),
+                    dir.Y * Main.rand.NextFloat(5f, 9f),
+                    100, default, 1.7f);
                 dust.noGravity = true;
-                dust.velocity = (npc.Center - spawn).SafeNormalize(Vector2.Zero) * 4.5f;
             }
-
-            if (phaseTimer >= MaterializeTime) {
-                npc.alpha = 0;
-                subPhase = 4;
-                phaseTimer = 0;
+            for (int i = 0; i < 8; i++) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 dir = ang.ToRotationVector2();
+                Dust spark = Dust.NewDustDirect(pos - new Vector2(8, 8), 16, 16,
+                    DustID.GoldFlame, dir.X * 5f, dir.Y * 5f, 80, default, 1.5f);
+                spark.noGravity = true;
             }
+            Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                pos, Vector2.UnitX, 4f, 6f, 12, 1200f, "KingSlimeArcArrive"));
         }
 
         #endregion
 
-        #region 阶段4：悬停蓄力
+        #region 阶段3：悬停蓄力
 
-        //追踪玩家头顶位置，纵向被"皇室之力"压扁，蓄满后切到 Falling
         private IKingSlimeState HandleHoverCharge(KingSlimeStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
@@ -330,7 +250,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
             npc.alpha = 0;
 
-            //追踪玩家上方位置——只在服务端/单人端写权威位置
             if (!VaultUtils.isClient) {
                 Vector2 desired = player.Center + new Vector2(0, -HoverHeight);
                 Vector2 toDesired = desired - npc.Center;
@@ -346,11 +265,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 npc.velocity = Vector2.Zero;
             }
 
-            //蓄力可视：纵向压扁，从现身阶段平滑过渡
-            context.SquishY = MathHelper.SmoothStep(0.10f, 0.45f, prog);
-            context.SetChargeState(1, MathHelper.Lerp(0.50f, 1f, prog));
+            context.SquishY = MathHelper.SmoothStep(0.15f, 0.45f, prog);
+            context.SetChargeState(1, MathHelper.Lerp(0.85f, 1f, prog));
 
-            //蓄力中喷发暗红光屑
             if (!VaultUtils.isServer && phaseTimer % 4 == 0) {
                 Vector2 dustOffset = Main.rand.NextVector2Circular(60, 60);
                 Dust dust = Dust.NewDustDirect(npc.Center + dustOffset - new Vector2(8, 8),
@@ -363,28 +280,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 return new KingSlimeRoyalSlamFallingState();
             }
             return null;
-        }
-
-        #endregion
-
-        #region 工具
-
-        //在玩家头顶生成一圈"传送门"预警粒子，提前告诉玩家史莱姆王将从此处坠下
-        private static void SpawnDestinationMarker(KingSlimeStateContext context, float intensity) {
-            Vector2 markerCenter = context.Target.Center + new Vector2(0, -HoverHeight);
-            int ringCount = 6;
-            float radius = MathHelper.Lerp(80f, 50f, MathHelper.Clamp(intensity, 0f, 1f));
-
-            for (int i = 0; i < ringCount; i++) {
-                float ang = MathHelper.TwoPi / ringCount * i + Main.GlobalTimeWrappedHourly * 4f;
-                Vector2 markerPos = markerCenter + ang.ToRotationVector2() * radius;
-                Dust marker = Dust.NewDustDirect(markerPos - new Vector2(4, 4), 8, 8,
-                    DustID.RedTorch, 0, 0, 80, default, 0.9f + 0.4f * intensity);
-                marker.noGravity = true;
-                //粒子向中心汇聚，强度越高汇聚越快
-                marker.velocity = (markerCenter - markerPos).SafeNormalize(Vector2.Zero)
-                    * (1f + 1.8f * intensity);
-            }
         }
 
         #endregion

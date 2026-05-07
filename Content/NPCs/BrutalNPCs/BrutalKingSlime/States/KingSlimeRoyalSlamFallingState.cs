@@ -110,6 +110,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Bottom + new Vector2(90, -8),
                     Vector2.Zero, slamProj, dmg, 4f, Main.myPlayer, ai0: 0.7f);
             }
+
+            //落地后向两侧扩散血荆棘，玩家须跳跃或位移规避
+            if (!VaultUtils.isClient) {
+                int thornDmg = (int)(CWRRef.GetProjectileDamage(npc, ProjectileID.None) * 0.75f);
+                if (thornDmg < 20) thornDmg = 20;
+                int thornCount = 5;
+                for (int side = -1; side <= 1; side += 2) {
+                    for (int i = 0; i < thornCount; i++) {
+                        float prog = (i + 1f) / thornCount;
+                        float downRatio = MathHelper.Lerp(0.06f, 0.38f, prog);
+                        float speed = MathHelper.Lerp(9f, 18f, prog);
+                        Vector2 vel = new Vector2(side, downRatio).SafeNormalize(Vector2.Zero) * speed;
+                        Projectile.NewProjectile(npc.GetSource_FromAI(),
+                            npc.Bottom + new Vector2(side * 20f, -10f),
+                            vel, ProjectileID.SharpTears, thornDmg, 2f, Main.myPlayer);
+                    }
+                }
+            }
         }
 
         public override void OnExit(KingSlimeStateContext context) {
