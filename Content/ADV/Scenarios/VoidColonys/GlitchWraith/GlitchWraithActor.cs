@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.TimeShift;
 using CalamityOverhaul.Content.HackTimes;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
@@ -85,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
         }
 
         public override void AI() {
-            if (!VoidColony.Active || hasExecuted) {
+            if (hasExecuted) {
                 Velocity = Vector2.Zero;
                 return;
             }
@@ -100,7 +99,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
             //骇客时间冻结：与NPC同步被暂停，保留可见度与乱码视觉循环
             if (HackTimeFreeze.IsActive) {
                 Velocity = Vector2.Zero;
-                bool inPastHack = VoidTimeShiftSystem.InPast;
+                bool inPastHack = false;
                 float targetVisHack = inPastHack ? 1f : 0f;
                 if (visibility < targetVisHack) visibility = MathF.Min(targetVisHack, visibility + FadeInStep);
                 else if (visibility > targetVisHack) visibility = MathF.Max(targetVisHack, visibility - FadeOutStep);
@@ -113,7 +112,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
                 stunFrames--;
                 Velocity = Vector2.Zero;
                 //死机期间仍维持可见度变化，便于玩家观察
-                bool inPastStun = VoidTimeShiftSystem.InPast;
+                bool inPastStun = false;
                 float targetVisStun = inPastStun ? 1f : 0f;
                 if (visibility < targetVisStun) visibility = MathF.Min(targetVisStun, visibility + FadeInStep);
                 else if (visibility > targetVisStun) visibility = MathF.Max(targetVisStun, visibility - FadeOutStep);
@@ -130,7 +129,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
                 return;
             }
 
-            bool inPast = VoidTimeShiftSystem.InPast;
+            bool inPast = false;
 
             //可见度根据时代平滑变化
             float targetVis = inPast ? 1f : 0f;
@@ -173,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
             glitchSeed = unchecked(glitchSeed * 1664525 + 1013904223);
 
             //过去视角下与玩家碰撞触发处决
-            if (VoidTimeShiftSystem.InPast && visibility > ContactVisibility && !target.dead && !target.immune) {
+            if (visibility > ContactVisibility && !target.dead && !target.immune) {
                 Rectangle myBox = new((int)Position.X, (int)Position.Y, Width, Height);
                 if (myBox.Intersects(target.Hitbox)) {
                     ExecutePlayer(target);
