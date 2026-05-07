@@ -1,0 +1,44 @@
+VoidTimeShiftLead: {
+	TextTitle: Void Time Invasion
+	TextBound: Press [{0}] to shift between the present and the past
+	TextUnboundWarn: ⚠  Time Invasion key is not bound!
+	TextUnboundDefault: Currently press [{0}] (default key) to perform a time invasion
+	TextBindHint: Consider binding a custom key in  Settings → Controls
+	TextConfirm: Got it
+}
+
+MessageStrings: {
+	MsgHeader: ── Intercepted Fragment ▸ Origin 0x{0} / {1} ──
+	MsgSrcSystem: SYS
+	MsgSrcSignal: SIG
+	MsgSrcArchive: ARC
+	MsgFragment: FRAGMENT
+	MsgSignature: SIGN   ▸ {0}
+	MsgBody0: Terminal accessed. Verification key match at 98.4%.
+	MsgBody1: ...Unlabeled pulse signals remain within the static.
+	MsgBody2: Coordinate offsets point to deep echoes of the collapsing core.
+	MsgBody3: This node is marked as ██CLASSIFIED██, related fragments have been sealed.
+	MsgBody4: The next protocol window will be triggered by your actions.
+	MsgSkipHint: "[Space/Left Click] Skip text animation"
+	MsgCloseHint: "[Space/ESC] Disconnect"
+	MsgAccess: Access: Draedon
+	MsgStatus: Status: Partially Decrypted
+	MsgRec01Title: "[Log-01]"
+	MsgRec01_0: The Great Shriek. Unresolvable wavelengths, as if the entire universe were screaming.
+	MsgRec01_1: Spatial curvature permanently locked. Warp engines completely scrapped. Forced jumps only result in the disintegration of material structures.
+	MsgRec01_2: The end of conventional interstellar travel. Collapse of the old unified physics model.
+	MsgRec02Title: "[Log-02]"
+	MsgRec02_0: After 73,000 destroyed probes, the current Void coordinates have been locked.
+	MsgRec02_1: Established Base Zero. Deployed supporting industrial clusters.
+	MsgRec02_2: The barrier of reality here has been stretched to its limit, allowing for direct visual observation of that chaotic subspace storm.
+	MsgRec02_3: A perfect observation point.
+	MsgRec03Title: "[Log-03]"
+	MsgRec03_0: The storm is leaking.
+	MsgRec03_1: Physics abdicates. Absolute metaphysical rules have begun taking over this industrial sector.
+	MsgRec03_2: Timelines are overlapping. Corpses, echoes of the past, and subspace energy are beginning to fuse.
+	MsgRec03_3: Bizarre anomalies are now frequently observed within the industrial sector.
+	MsgRec04Title: "[Log-04]"
+	MsgRec04_0: Purging these paranormal entities is futile; they cannot be killed. They will be left as an outer barrier for the base.
+	MsgRec04_1: If this log is triggered, it means I have abandoned this place, and all channels to the outside world have been closed.
+	MsgRec04_2: Latecomer, find your own opportunities within the patterns of those foul things.
+}

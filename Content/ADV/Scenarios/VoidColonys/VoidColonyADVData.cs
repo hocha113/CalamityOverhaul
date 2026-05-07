@@ -9,5 +9,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys
         public bool TheHerInThePast;
         //是否看过首次进入虚空聚落的抵达演出
         public bool HasSeenArrival;
+        //时间入侵按键引导是否已阅读过
+        public bool TimeShiftGuideSeen;
     }
 }

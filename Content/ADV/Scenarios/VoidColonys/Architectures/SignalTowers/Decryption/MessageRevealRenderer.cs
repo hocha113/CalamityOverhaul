@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.Architectures.Signa
     /// </summary>
     internal class MessageStrings : ModSystem, ILocalizedModType
     {
-        public string LocalizationCategory => "UI";
+        public string LocalizationCategory => "ADV.VoidColony";
         public static LocalizedText Header { get; private set; }
         public static LocalizedText AccessLine { get; private set; }
         public static LocalizedText StatusLine { get; private set; }

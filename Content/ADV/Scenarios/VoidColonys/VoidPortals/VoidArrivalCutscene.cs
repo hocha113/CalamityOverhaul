@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.TimeShift;
+using InnoVault.Actors;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -395,6 +396,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals
             if (stageTimer >= SettleDuration) {
                 KillPortal();
                 Restore();
+                //传送门演出结束后在出生点上方生成返回传送门
+                if (!Main.dedServ && VoidReturnPortalActor.ValidateActive() == null) {
+                    ActorLoader.NewActor<VoidReturnPortalActor>(spawnCenter + new Vector2(0f, -100f), Vector2.Zero);
+                }
                 var cb = onDone;
                 onDone = null;
                 CurrentStage = Stage.Idle;

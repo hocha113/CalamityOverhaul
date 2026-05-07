@@ -1,0 +1,44 @@
+VoidTimeShiftLead: {
+	TextTitle: 虚空时间入侵
+	TextBound: 按 [{0}] 可在当下与过去之间切换时间线
+	TextUnboundWarn: ⚠  时间入侵按键尚未绑定！
+	TextUnboundDefault: 当前按 [{0}]（默认键）可执行时间入侵
+	TextBindHint: 建议前往  设置 → 控制  中绑定自定义按键
+	TextConfirm: 明白了
+}
+
+MessageStrings: {
+	MsgHeader: ── 截获片段 ▸ 来源 0x{0} / {1} ──
+	MsgSrcSystem: SYS
+	MsgSrcSignal: SIG
+	MsgSrcArchive: ARC
+	MsgFragment: FRAGMENT
+	MsgSignature: SIGN   ▸ {0}
+	MsgBody0: 终端已接入。校验密钥匹配度 98.4%。
+	MsgBody1: ...噪声中仍残留未标注的脉冲信号。
+	MsgBody2: 坐标偏移量指向坍缩核心的深层回声。
+	MsgBody3: 该节点被标记为 ██CLASSIFIED██，相关片段已封存。
+	MsgBody4: 下一个协议窗口将由你的行动触发。
+	MsgSkipHint: "[空格/左键] 跳过逐字显示"
+	MsgCloseHint: "[空格/ESC] 断开连接"
+	MsgAccess: 访问权限： Draedon
+	MsgStatus: 状态： 局部解密
+	MsgRec01Title: "[记录-01]"
+	MsgRec01_0: 大尖啸。无法解析波段，像是整个宇宙都在尖叫。
+	MsgRec01_1: 空间曲率完全锁死。折跃引擎彻底报废。强行跃迁的结果只有物质结构的解体。
+	MsgRec01_2: 常规星际航行终结。旧物理统一模型崩溃。
+	MsgRec02Title: "[记录-02]"
+	MsgRec02_0: 七万三千次探测器损毁后，锁定当前虚空坐标。
+	MsgRec02_1: 建立零号基地。铺设配套工业群。
+	MsgRec02_2: 此处的现实壁垒已被拉扯至极限，可以直接目视那片无序的亚空间风暴。
+	MsgRec02_3: 绝佳的观测点。
+	MsgRec03Title: "[记录-03]"
+	MsgRec03_0: 风暴正在渗漏。
+	MsgRec03_1: 物理学退位。绝对的唯心规则开始接管这片工业区。
+	MsgRec03_2: 时间线出现重叠。尸体、过往残影与亚空间能量开始结合。
+	MsgRec03_3: 工业区中开始频繁观察到怪异现象。
+	MsgRec04Title: "[记录-04]"
+	MsgRec04_0: 清理这些灵异对象属于徒劳，它们无法被杀死。留作基地的外部屏障。
+	MsgRec04_1: 若该日志被触发，意味着我已经放弃此地，所有向外界的通道已经关闭。
+	MsgRec04_2: 后来者，自行在那些脏东西的规律里寻找机会。
+}
