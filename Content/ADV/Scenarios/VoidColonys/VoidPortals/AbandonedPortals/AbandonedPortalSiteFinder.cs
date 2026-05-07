@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
                     }
 
                     for (int y = searchTop; y < searchBottom; y += RowStep) {
-                    if (EvaluateBox(leftTile, y, allowFloorPatch)) {
+                        if (EvaluateBox(leftTile, y, allowFloorPatch)) {
                             //y 是地基行，门体顶部在其上方 TileHeight 行
                             result = new Point(leftTile, y - AbandonedPortalTile.Height);
                             return true;

@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.TileProcessors;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

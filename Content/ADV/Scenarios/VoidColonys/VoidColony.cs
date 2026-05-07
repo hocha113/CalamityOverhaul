@@ -8,7 +8,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.WorldBuilding;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys
 {

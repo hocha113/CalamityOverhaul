@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -157,8 +156,7 @@ namespace CalamityOverhaul.Content.HackTimes
             IsRemoteApply = true;
             try {
                 hack.OnApply(target, caster);
-            }
-            finally {
+            } finally {
                 IsRemoteApply = prev;
             }
         }

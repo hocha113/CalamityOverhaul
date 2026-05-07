@@ -1,9 +1,7 @@
-﻿using CalamityMod.NPCs;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -420,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.33f;
             }
         }
-#endregion
+        #endregion
 
         #region 打击效果
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

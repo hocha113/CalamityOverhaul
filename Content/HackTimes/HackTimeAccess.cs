@@ -91,8 +91,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 bool ok;
                 try {
                     ok = c.IsSatisfied(player);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     //单一条件抛错不应影响整体判定，记录后跳过
                     CWRMod.Instance.Logger.Warn($"HackTimeAccess condition threw: {ex}");
                     continue;
