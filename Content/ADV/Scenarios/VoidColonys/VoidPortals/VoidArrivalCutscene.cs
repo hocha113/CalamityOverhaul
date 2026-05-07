@@ -172,7 +172,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals
 
             if (!player.TryGetADVSave(out var save)) return;
             var data = save.Get<VoidColonyADVData>();
-            if (data.HasSeenArrival) return;
+            if (data.HasSeenArrival) {
+                //已看过抵达演出，重复进入时补充生成返回传送门
+                if (!Main.dedServ && player.whoAmI == Main.myPlayer
+                    && VoidReturnPortalActor.ValidateActive() == null) {
+                    Vector2 anchor = cs.ResolveAnchor(null);
+                    ActorLoader.NewActor<VoidReturnPortalActor>(anchor + new Vector2(0f, -100f), Vector2.Zero);
+                }
+                return;
+            }
 
             //等待进入子世界后玩家稳定再触发，避免生成过程中 spawnTile/Player 位置不稳定
             cs.firstEntryWaitTimer++;
