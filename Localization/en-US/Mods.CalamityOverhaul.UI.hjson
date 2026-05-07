@@ -366,66 +366,66 @@ GalacticCrisisRender: {
 }
 
 TransitionScene: {
-	LoadingText: 数据链接中
-	InitializingText: 正在初始化协议
-	Hint0: 不要问为什么杀异形，而是要问为何不杀
-	Hint1: 阿切隆协议是嘉登最高级别的应急方案之一
-	Hint2: 战术人形无所畏惧，因为恐惧本身就是他们的武器
-	Hint3: 嘉登的机械造物已经超越了现实的极限
-	Hint4: 没有大到无法接受的牺牲，没有小到可以原谅的背叛
-	Hint5: 任何足够先进的技术，皆与魔法无异
-	Hint6: 灾厄之中蕴藏着超越一切的可能性
-	Hint7: 嘉登从不做无意义的事，每一步都是精密计算的结果
-	Hint8: 数据即是力量，知识即是武装
-	Hint9: 机械不会背叛，但操控机械的人或许会
+	LoadingText: Data Linking...
+	InitializingText: Initializing Protocols...
+	Hint0: Do not ask why we kill the aberrations; ask instead why we do not.
+	Hint1: The Acheron Protocol is one of Draedon's highest-level emergency contingencies.
+	Hint2: Tactical Dolls know no fear, for fear itself is their weapon.
+	Hint3: Draedon's mechanical creations have transcended the limits of reality.
+	Hint4: No sacrifice is too great to be accepted, and no betrayal is too small to be forgiven.
+	Hint5: Any sufficiently advanced technology is indistinguishable from magic.
+	Hint6: Within the Calamity lies possibilities that transcend everything.
+	Hint7: Draedon never acts without purpose; every step is the result of precise calculation.
+	Hint8: Data is power, and knowledge is armament.
+	Hint9: Machines do not betray, but those who control them might.
 }
 
 StarStreamDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
+	ContinueHint: Continue
+	FastHint: Fast Forward
 }
 
 ApolliaHeroPanelUI: {
-	TitleText: 阿波利娅
-	HPLabel: 生命值
-	DamageLabel: 伤害
-	DefenseLabel: 防御
-	CommandLabel: 作战指令
-	CmdFollow: 跟随
-	CmdHold: 驻守
-	CmdAggressive: 进攻
-	CmdDefensive: 防御
+	TitleText: Apollia
+	HPLabel: HP
+	DamageLabel: Damage
+	DefenseLabel: Defense
+	CommandLabel: Combat Commands
+	CmdFollow: Follow
+	CmdHold: Hold Position
+	CmdAggressive: Aggressive
+	CmdDefensive: Defensive
 }
 
 DraedonIncomingCall: {
-	IncomingLabel: 来电通讯
-	AnswerHint: 点击接听
-	ConnectingLabel: 连接中
-	EndLabel: 结束
-	NextLabel: 继续
-	TimerLabel: 时长
-	UnknownCaller: 未知
+	IncomingLabel: INCOMING CALL
+	AnswerHint: Click to Answer
+	ConnectingLabel: CONNECTING...
+	EndLabel: END
+	NextLabel: NEXT
+	TimerLabel: DURATION
+	UnknownCaller: Unknown
 	ChannelPrefix: CH
 }
 
 QuestManagerUI: {
-	TitleText: 任务管理
-	CategoryAll: 全部
-	CategoryActive: 进行中
-	CategoryCompleted: 已完成
-	CategorySuspended: 挂起
-	EmptyHintText: 暂无任务...
-	TrackHintText: "[右键] 关注/取消关注"
-	SuspendHintText: "[中键] 挂起/恢复"
-	OpenHintText: 按 [L] 打开任务管理
+	TitleText: Quest Management
+	CategoryAll: All
+	CategoryActive: Active
+	CategoryCompleted: Completed
+	CategorySuspended: Suspended
+	EmptyHintText: No quests available...
+	TrackHintText: "[Right Click] Track/Untrack"
+	SuspendHintText: "[Middle Click] Suspend/Resume"
+	OpenHintText: Press [L] to open Quest Management
 	HeaderStatusTag: ◈ ACTIVE
-	FooterStatsFormat: TOTAL: {0}  |  ACTIVE: {1}
-	ExpandHintText: "[左键] 展开/收起详情"
-	EntryStatusActive: 进行中
-	EntryStatusTracked: 已关注
-	EntryStatusSuspended: 已挂起
-	EntryStatusCompleted: 已完成
-	EntryStatusFailed: 已失败
+	FooterStatsFormat: TOTAL: {0} | ACTIVE: {1}
+	ExpandHintText: "[Left Click] Expand/Collapse Details"
+	EntryStatusActive: Active
+	EntryStatusTracked: Tracked
+	EntryStatusSuspended: Suspended
+	EntryStatusCompleted: Completed
+	EntryStatusFailed: Failed
 }
 
 CyberwareUI: {
@@ -448,17 +448,17 @@ CyberwareUI: {
 }
 
 SHPCDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
+	ContinueHint: Continue
+	FastHint: Fast Forward
 }
 
 EntrustManagerNotification: {
-	LabelNewQuest: 新委托
-	LabelTracked: 已关注
-	LabelUntracked: 取消关注
-	LabelSuspended: 已挂起
-	LabelUnsuspended: 已恢复
-	LabelCompleted: 委托完成
+	LabelNewQuest: New Commission
+	LabelTracked: Tracked
+	LabelUntracked: Untracked
+	LabelSuspended: Suspended
+	LabelUnsuspended: Resumed
+	LabelCompleted: Commission Completed
 }
 
 HackTime: {
