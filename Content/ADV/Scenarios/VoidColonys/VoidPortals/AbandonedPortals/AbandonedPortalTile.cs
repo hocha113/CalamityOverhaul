@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = 0;
 
+        public override bool CanKillTile(int i, int j, ref bool blockDamaged) => false;
+
         public override bool RightClick(int i, int j) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
