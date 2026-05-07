@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void Apply(ref ShootContext ctx) {
             ctx.LaserMode = true;
             ctx.LaserScorchOnHit = true;
-            ctx.LaserScorchDuration = 240;
-            ctx.DamageMul += -0.25f;
+            ctx.LaserScorchDuration = 40;
+            ctx.DamageMul += -0.3f;
             ctx.ManaCostMul += 0.65f;
         }
 
