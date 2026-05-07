@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                         float downRatio = -MathHelper.Lerp(1.26f, 2.68f, prog);
                         float speed = MathHelper.Lerp(9f, 18f, prog);
                         Vector2 vel = new Vector2(side, downRatio).SafeNormalize(Vector2.Zero) * speed;
-                        float scale = 1 + (6 - Math.Abs(side) * 0.2f) * 0.1f;
+                        float scale = (1 + (6 - Math.Abs(side) * 0.2f) * 0.1f) * 0.8f;
                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
                             npc.Bottom + new Vector2(side * 20f, -10f),
                             vel, ProjectileID.SharpTears, thornDmg, 2f, Main.myPlayer,
