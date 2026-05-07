@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             Projectile.width = 80;
             Projectile.height = 80;
             Projectile.friendly = false;
-            Projectile.hostile = true;
+            Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
