@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                 //空中：纵向加速 + 轻微锁定玩家水平位置
                 npc.velocity.Y = MathHelper.Min(npc.velocity.Y + 2.0f, 38f);
                 float aim = MathHelper.Clamp((player.Center.X - npc.Center.X) * 0.05f, -3f, 3f);
-                npc.velocity.X = MathHelper.Lerp(npc.velocity.X, aim, 0.18f);
+                npc.velocity.X = MathHelper.Lerp(npc.velocity.X, aim, 0.08f);
 
                 //可视拉伸——纵向被压成"水滴"
                 context.SquishY = -0.40f;
