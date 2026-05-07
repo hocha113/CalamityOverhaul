@@ -3,7 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 战斗握把：每次击杀（光束/激光命中后目标 life&lt;=0）累积"战意"层数

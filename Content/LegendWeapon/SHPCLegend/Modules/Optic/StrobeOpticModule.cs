@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>
     /// 频闪瞄具：光束每16帧交替切换穿墙状态，模拟数据频闪穿透
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             //以游戏帧为周期切换穿墙，使光束在墙体内外间歇穿越
-            beam.Projectile.tileCollide = (Main.GameUpdateCount % 16) < 8;
+            beam.Projectile.tileCollide = Main.GameUpdateCount % 16 < 8;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

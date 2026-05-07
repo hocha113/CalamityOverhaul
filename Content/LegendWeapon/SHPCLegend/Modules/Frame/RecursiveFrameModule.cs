@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
     /// 递归机匣：追踪光束消亡时从玩家位置沿原方向重发一束伤害略低的副本

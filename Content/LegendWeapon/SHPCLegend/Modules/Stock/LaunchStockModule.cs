@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 弹射枪托：能量球发射瞬间额外喷出3束扇形追踪副光束

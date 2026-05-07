@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 扰场核心：蓄力期间每隔40帧在球体周围触发微型冲击波

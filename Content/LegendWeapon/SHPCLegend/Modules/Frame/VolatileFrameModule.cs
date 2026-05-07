@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     internal sealed class VolatileFrameModule : SHPCModuleItem
     {

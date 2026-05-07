@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 低温核心：能量球爆炸时对范围内敌人施加冰冻

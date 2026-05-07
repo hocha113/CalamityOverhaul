@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 灼烧激光枪管：激光命中NPC时施加持续灼烧debuff

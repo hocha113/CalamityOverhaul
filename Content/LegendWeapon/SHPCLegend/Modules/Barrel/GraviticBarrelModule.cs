@@ -4,7 +4,7 @@ using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 引力枪管：光束飞行时持续在自身周围生成微型引力场，将临近敌人朝光束牵引

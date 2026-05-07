@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 暗物质核心：能量球飞行阶段对周围敌人施加向球方向的持续吸引力

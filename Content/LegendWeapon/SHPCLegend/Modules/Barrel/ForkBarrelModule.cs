@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 叉形枪管：追踪光束飞行期间每50帧向两侧各分叉一束子光束

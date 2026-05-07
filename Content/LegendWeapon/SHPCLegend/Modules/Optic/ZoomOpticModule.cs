@@ -4,7 +4,7 @@ using InnoVault.PRT;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>
     /// 焦距瞄具：远距离命中（玩家与目标 ≥ 阈值）时触发额外白热打击伤害与镜筒粒子爆发

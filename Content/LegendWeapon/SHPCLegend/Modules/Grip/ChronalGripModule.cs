@@ -1,8 +1,8 @@
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 时相握把：命中目标施加减速，配合密集弹幕形成持续控制流

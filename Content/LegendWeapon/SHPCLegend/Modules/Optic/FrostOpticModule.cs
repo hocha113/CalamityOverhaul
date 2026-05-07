@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>
     /// 冰霜光学瞄具：追踪光束命中NPC时施加冰霜灼烧减速

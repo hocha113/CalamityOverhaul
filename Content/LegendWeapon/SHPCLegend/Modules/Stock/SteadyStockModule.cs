@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     internal sealed class SteadyStockModule : SHPCModuleItem
     {

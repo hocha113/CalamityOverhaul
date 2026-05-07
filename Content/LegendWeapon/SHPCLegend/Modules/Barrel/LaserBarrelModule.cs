@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 棱镜激光枪管，将左键攻击模式完全替换为持续跟随光标的激光光柱

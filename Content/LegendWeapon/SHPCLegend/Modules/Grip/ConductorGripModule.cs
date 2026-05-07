@@ -4,7 +4,7 @@ using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 导体握把：增加链式跳跃次数与范围，命中时在击中点生成电弧粒子爆发

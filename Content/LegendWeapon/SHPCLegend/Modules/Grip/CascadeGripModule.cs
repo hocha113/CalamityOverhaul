@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 级联握把：累计命中5次后触发节点爆发，在命中点向8方向辐射伤害光束

@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 奇点核心：能量球飞行阶段持续向最近敌人偏转追踪

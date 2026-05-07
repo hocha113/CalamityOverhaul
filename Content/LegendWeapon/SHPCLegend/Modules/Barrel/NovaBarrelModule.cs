@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>枪管：光束命中时引爆微型脉冲爆炸</summary>
     internal sealed class NovaBarrelModule : SHPCModuleItem

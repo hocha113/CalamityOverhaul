@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
     /// 归档机匣：累积所有 SHPC 命中造成的伤害，达到阈值时在玩家位置释放一次"数据归档"爆破

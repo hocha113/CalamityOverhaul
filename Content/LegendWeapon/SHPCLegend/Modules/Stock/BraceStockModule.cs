@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 支架枪托：彻底消除散布，延长光束飞行距离，牺牲一定攻速换取高度精准

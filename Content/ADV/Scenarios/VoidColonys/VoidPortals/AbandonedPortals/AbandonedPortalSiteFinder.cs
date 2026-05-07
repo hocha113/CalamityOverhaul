@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         //每列内 Y 扫描步长
         private const int RowStep = 2;
         //允许的最低开阔度门槛（找到完美空间时）
-        private const int RequiredOpenWidth = AbandonedPortal.TileWidth + 4;
-        private const int RequiredOpenHeight = AbandonedPortal.TileHeight + 3;
+        private const int RequiredOpenWidth = AbandonedPortalTile.Width + 4;
+        private const int RequiredOpenHeight = AbandonedPortalTile.Height + 3;
         //地基缺口允许的最大百分比，找到大致平整的地面就视为合格
         private const float MaxFloorGapRatio = 0.35f;
         //安全边距
@@ -51,10 +51,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             //阶段 3：实在找不到，就在期望的位置直接挖一个洞
             int forcedY = Math.Min(searchBottom, searchTop + 200);
-            int forcedX = Math.Clamp(spawnX - AbandonedPortal.TileWidth / 2, WorldEdgeMargin,
-                Main.maxTilesX - AbandonedPortal.TileWidth - WorldEdgeMargin);
-            int forcedTopY = Math.Clamp(forcedY - AbandonedPortal.TileHeight, WorldEdgeMargin,
-                Main.maxTilesY - AbandonedPortal.TileHeight - WorldEdgeMargin);
+            int forcedX = Math.Clamp(spawnX - AbandonedPortalTile.Width / 2, WorldEdgeMargin,
+                Main.maxTilesX - AbandonedPortalTile.Width - WorldEdgeMargin);
+            int forcedTopY = Math.Clamp(forcedY - AbandonedPortalTile.Height, WorldEdgeMargin,
+                Main.maxTilesY - AbandonedPortalTile.Height - WorldEdgeMargin);
             return new Point(forcedX, forcedTopY);
         }
 
@@ -68,15 +68,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
                     if (dx == 0 && sign == 1) continue; //中心列只评估一次
 
                     int x = spawnX + dx * sign;
-                    int leftTile = x - AbandonedPortal.TileWidth / 2;
-                    if (leftTile < WorldEdgeMargin || leftTile + AbandonedPortal.TileWidth >= Main.maxTilesX - WorldEdgeMargin) {
+                    int leftTile = x - AbandonedPortalTile.Width / 2;
+                    if (leftTile < WorldEdgeMargin || leftTile + AbandonedPortalTile.Width >= Main.maxTilesX - WorldEdgeMargin) {
                         continue;
                     }
 
                     for (int y = searchTop; y < searchBottom; y += RowStep) {
-                        if (EvaluateBox(leftTile, y, allowFloorPatch)) {
+                    if (EvaluateBox(leftTile, y, allowFloorPatch)) {
                             //y 是地基行，门体顶部在其上方 TileHeight 行
-                            result = new Point(leftTile, y - AbandonedPortal.TileHeight);
+                            result = new Point(leftTile, y - AbandonedPortalTile.Height);
                             return true;
                         }
                     }
@@ -92,13 +92,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         /// </summary>
         private static bool EvaluateBox(int leftTile, int floorY, bool allowFloorPatch) {
             //门体顶部
-            int topY = floorY - AbandonedPortal.TileHeight;
+            int topY = floorY - AbandonedPortalTile.Height;
             if (topY <= WorldEdgeMargin) return false;
             if (floorY + 4 >= Main.maxTilesY - WorldEdgeMargin) return false;
 
             //1) 上方开阔：评估比 Portal 略大的范围（开阔度更友好）
             int openLeft = leftTile - 2;
-            int openRight = leftTile + AbandonedPortal.TileWidth + 1;
+            int openRight = leftTile + AbandonedPortalTile.Width + 1;
             int openTop = topY - 1;
             int openBottom = floorY - 1;
             int openSampleCount = 0;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             int floorSamples = 0;
             int floorSolids = 0;
             int floorLeft = leftTile - 1;
-            int floorRight = leftTile + AbandonedPortal.TileWidth;
+            int floorRight = leftTile + AbandonedPortalTile.Width;
             for (int x = floorLeft; x <= floorRight; x++) {
                 Tile t1 = Framing.GetTileSafely(x, floorY);
                 Tile t2 = Framing.GetTileSafely(x, floorY + 1);
@@ -135,12 +135,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             if (floorRatio < floorThreshold) return false;
 
             //3) 不能有大液体堆积
-            if (HasSignificantLiquid(leftTile, topY, AbandonedPortal.TileWidth, AbandonedPortal.TileHeight)) {
+            if (HasSignificantLiquid(leftTile, topY, AbandonedPortalTile.Width, AbandonedPortalTile.Height)) {
                 return false;
             }
 
             //4) 必须达到最小开阔尺寸（防止位置卡在低矮缝里）
-            if (!HasMinimumChamber(leftTile + AbandonedPortal.TileWidth / 2, topY + AbandonedPortal.TileHeight / 2,
+            if (!HasMinimumChamber(leftTile + AbandonedPortalTile.Width / 2, topY + AbandonedPortalTile.Height / 2,
                     RequiredOpenWidth, RequiredOpenHeight)) {
                 if (!allowFloorPatch) return false;
             }
@@ -191,8 +191,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         /// 准备生成位：①清空门体足迹 ②补齐地基 ③向外消除少量遮挡
         /// </summary>
         internal static void PreparePortalSite(int leftTile, int topTile) {
-            int right = leftTile + AbandonedPortal.TileWidth - 1;
-            int bottom = topTile + AbandonedPortal.TileHeight - 1;
+            int right = leftTile + AbandonedPortalTile.Width - 1;
+            int bottom = topTile + AbandonedPortalTile.Height - 1;
 
             //1) 清空门体内部 + 一格缓冲，让 Actor 能完整可见
             ClearTiles(leftTile - ClearMarginTiles, topTile - ClearMarginTiles,

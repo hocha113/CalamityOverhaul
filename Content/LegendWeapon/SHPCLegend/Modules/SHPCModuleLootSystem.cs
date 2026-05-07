@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

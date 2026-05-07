@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.OtherMods.SubWorld;
-using InnoVault.Actors;
+using InnoVault.TileProcessors;
 using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -9,27 +11,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 {
     internal class AbandonedPortalSystem : ModSystem
     {
-        private const string SaveStateKey = "AbandonedPortalState";
-        private const string SaveRepairTimerKey = "AbandonedPortalRepairTimer";
         private const string SavePosXKey = "AbandonedPortalPosX";
         private const string SavePosYKey = "AbandonedPortalPosY";
         private const string SaveResolvedKey = "AbandonedPortalResolved";
 
-        //OnWorldLoad 设置为 true，表示已请求一次 spawn；首帧 PostUpdateWorld 时执行
         private bool spawnPending;
 
-        internal static byte SavedStateByte { get; private set; }
-        internal static int SavedRepairTimer { get; private set; }
-        //缓存的传送门左上角 tile 坐标（一次世界 = 一次决策）
         internal static int SavedTileX { get; private set; }
         internal static int SavedTileY { get; private set; }
         internal static bool PositionResolved { get; private set; }
-
-        internal static void StorePortalState(AbandonedPortal portal) {
-            if (portal == null) return;
-            SavedStateByte = portal.RepairStateByte;
-            SavedRepairTimer = Math.Clamp(portal.RepairTimer, 0, AbandonedPortalSession.RepairDurationFrames);
-        }
 
         public override void OnWorldLoad() {
             spawnPending = true;
@@ -37,8 +27,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
         public override void OnWorldUnload() {
             spawnPending = false;
-            SavedStateByte = 0;
-            SavedRepairTimer = 0;
             SavedTileX = 0;
             SavedTileY = 0;
             PositionResolved = false;
@@ -54,40 +42,49 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             if (!spawnPending) return;
 
-            //世界已经开放绘制后才执行：避免在 worldgen 早期 / 数据未稳定时介入
-            if (ActorLoader.GetActiveActors<AbandonedPortal>().Count > 0) {
-                spawnPending = false;
-                return;
+            int tileType = ModContent.TileType<AbandonedPortalTile>();
+
+            //位置已知且物块已存在，无需重复放置
+            if (PositionResolved && SavedTileX > 0 && SavedTileY > 0) {
+                Tile t = Framing.GetTileSafely(SavedTileX, SavedTileY);
+                if (t.HasTile && t.TileType == tileType) {
+                    spawnPending = false;
+                    //确保 TP 已注册
+                    if (!TileProcessorLoader.ByPositionGetTP(new Point16(SavedTileX, SavedTileY), out AbandonedPortalTP _)) {
+                        TileProcessorLoader.AddInWorld(tileType, new Point16(SavedTileX, SavedTileY), null);
+                        if (Main.netMode == NetmodeID.Server) {
+                            TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, tileType, new Point16(SavedTileX, SavedTileY));
+                        }
+                    }
+                    return;
+                }
             }
 
-            //尚未持久化的世界，先决策位置并准备生成位（仅首次）
-            bool firstTimeResolved = false;
-            if (!PositionResolved) {
+            bool firstTime = !PositionResolved;
+            if (firstTime) {
                 Point spawnTile = AbandonedPortalSiteFinder.Resolve();
                 SavedTileX = spawnTile.X;
                 SavedTileY = spawnTile.Y;
                 PositionResolved = true;
-                firstTimeResolved = true;
             }
 
-            Vector2 worldPos = new(SavedTileX * 16f, SavedTileY * 16f);
-            //只在首次决策位置时执行地形整理，保留玩家后续对周边的改动
-            if (firstTimeResolved) {
+            if (firstTime) {
                 AbandonedPortalSiteFinder.PreparePortalSite(SavedTileX, SavedTileY);
             }
-            ActorLoader.NewActor<AbandonedPortal>(worldPos, Vector2.Zero);
+
+            WorldGen.PlaceTile(SavedTileX, SavedTileY, tileType, true, true);
+            if (TPUtils.TryGetTopLeft(SavedTileX, SavedTileY, out Point16 topLeft)) {
+                TileProcessorLoader.AddInWorld(tileType, topLeft, null);
+                if (Main.netMode == NetmodeID.Server) {
+                    NetMessage.SendTileSquare(-1, SavedTileX, SavedTileY, AbandonedPortalTile.Width, AbandonedPortalTile.Height);
+                    TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, tileType, topLeft);
+                }
+            }
+
             spawnPending = false;
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            AbandonedPortal portal = AbandonedPortalSession.CurrentPortal;
-            if (portal != null && portal.Active) {
-                StorePortalState(portal);
-            }
-
-            tag[SaveStateKey] = SavedStateByte;
-            tag[SaveRepairTimerKey] = SavedRepairTimer;
-
             if (PositionResolved) {
                 tag[SavePosXKey] = SavedTileX;
                 tag[SavePosYKey] = SavedTileY;
@@ -96,12 +93,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            SavedStateByte = tag.GetByte(SaveStateKey);
-            SavedRepairTimer = Math.Clamp(tag.GetInt(SaveRepairTimerKey), 0, AbandonedPortalSession.RepairDurationFrames);
-            if (SavedRepairTimer >= AbandonedPortalSession.RepairDurationFrames) {
-                SavedStateByte = (byte)AbandonedPortal.RepairState.Repaired;
-            }
-
             if (tag.ContainsKey(SaveResolvedKey) && tag.GetBool(SaveResolvedKey)) {
                 SavedTileX = tag.GetInt(SavePosXKey);
                 SavedTileY = tag.GetInt(SavePosYKey);

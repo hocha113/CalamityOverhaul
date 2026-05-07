@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 风暴握把：每累计若干次命中触发一次"风暴爆发"，在最近一次命中处朝四周喷射多道电弧

@@ -1,33 +1,30 @@
 ﻿using CalamityOverhaul.Common;
-using InnoVault.Actors;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.AbandonedPortals
 {
-    /// <summary>
-    /// 主世界出生点下方洞穴层中的废墟传送门。<br/>
-    /// 用 Actor 承载贴图、悬停反馈与右键交互。修复完成后会启动
-    /// <see cref="VoidTransportPlayer"/> 的传送演出并进入虚空聚落。
-    /// </summary>
-    internal class AbandonedPortal : Actor
+    internal class AbandonedPortalTP : TileProcessor
     {
+        public override int TargetTileID => ModContent.TileType<AbandonedPortalTile>();
+
         [VaultLoaden("CalamityOverhaul/Assets/ADV/VoidColony/AbandonedPortal")]
-        private Texture2D AbandonedPortalTex;
-        internal const int TileWidth = 25;
-        internal const int TileHeight = 19;
+        private static Microsoft.Xna.Framework.Graphics.Texture2D AbandonedPortalTex;
+
         private const float InteractRangePixels = 520f;
+        private const string SaveStateKey = "RepairState";
+        private const string SaveTimerKey = "RepairTimer";
 
-        [SyncVar]
         public byte RepairStateByte;
-
-        [SyncVar]
         public int RepairTimer;
 
-        private bool initialized;
         private float hoverStrength;
         private float hoverSeed;
 
@@ -51,27 +48,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             _ => 0f,
         };
 
-        internal Vector2 WorldCenter => Position + new Vector2(Width * 0.5f, Height * 0.5f);
-        internal Vector2 PortalMouthCenter => Position + new Vector2(Width * 0.55f, Height * 0.46f);
+        internal Vector2 WorldCenter => PosInWorld + new Vector2(AbandonedPortalTile.Width * 8f, AbandonedPortalTile.Height * 8f);
+        internal Vector2 PortalMouthCenter => PosInWorld + new Vector2(AbandonedPortalTile.Width * 16 * 0.55f, AbandonedPortalTile.Height * 16 * 0.46f);
 
-        public override void OnSpawn(params object[] args) {
-            DrawLayer = ActorDrawLayer.AfterTiles;
+        public override void SetProperty() {
             hoverSeed = Main.rand.NextFloat() * 100f;
-            Width = 416;
-            Height = 300;
-            DrawExtendMode = Math.Max(Width, Height) + 32;
-            RepairStateByte = AbandonedPortalSystem.SavedStateByte;
-            RepairTimer = Math.Clamp(AbandonedPortalSystem.SavedRepairTimer, 0, AbandonedPortalSession.RepairDurationFrames);
-            if (RepairTimer >= AbandonedPortalSession.RepairDurationFrames) {
-                State = RepairState.Repaired;
-            }
             AbandonedPortalSession.CurrentPortal ??= this;
         }
 
-        public override void AI() {
-            if (VoidColony.Active) {
+        public override void OnKill() {
+            if (AbandonedPortalSession.CurrentPortal == this) {
                 AbandonedPortalSession.Close();
-                ActorLoader.KillActor(WhoAmI);
+            }
+        }
+
+        public override void Update() {
+            if (VoidColony.Active) {
+                if (AbandonedPortalSession.CurrentPortal == this) {
+                    AbandonedPortalSession.Close();
+                }
                 return;
             }
 
@@ -79,18 +74,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
                 AbandonedPortalSession.CurrentPortal = this;
             }
 
-            Velocity = Vector2.Zero;
             UpdateRepair();
             UpdateLocalHoverAndInteract();
-            initialized = true;
         }
 
         internal void StartRepair() {
             if (State != RepairState.Broken) return;
             State = RepairState.Repairing;
             RepairTimer = 0;
-            AbandonedPortalSystem.StorePortalState(this);
-            NetUpdate = true;
+            SendData();
             SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.65f, Pitch = -0.25f }, WorldCenter);
         }
 
@@ -111,12 +103,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             if (RepairTimer >= AbandonedPortalSession.RepairDurationFrames) {
                 RepairTimer = AbandonedPortalSession.RepairDurationFrames;
                 State = RepairState.Repaired;
-                NetUpdate = true;
+                SendData();
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.75f, Pitch = -0.4f }, WorldCenter);
                 }
             }
-            AbandonedPortalSystem.StorePortalState(this);
         }
 
         private void UpdateLocalHoverAndInteract() {
@@ -134,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
                 && !local.mouseInterface
                 && local.Center.DistanceSQ(WorldCenter) < InteractRangePixels * InteractRangePixels;
 
-            Rectangle aabb = new((int)Position.X, (int)Position.Y, Width, Height);
+            Rectangle aabb = new((int)PosInWorld.X, (int)PosInWorld.Y, AbandonedPortalTile.Width * 16, AbandonedPortalTile.Height * 16);
             bool mouseOver = canHover && aabb.Contains((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y);
 
             float target = mouseOver ? 1f : 0f;
@@ -147,21 +138,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             local.mouseInterface = true;
             local.cursorItemIconEnabled = false;
             local.cursorItemIconID = ItemID.None;
-
-            if (Main.mouseRight && Main.mouseRightRelease) {
-                AbandonedPortalSession.Open(this);
-                Main.mouseRightRelease = false;
-                SoundEngine.PlaySound(SoundID.MenuOpen);
-            }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
+        public override void FrontDraw(SpriteBatch spriteBatch) {
             Texture2D tex = AbandonedPortalTex;
-            if (tex == null) return false;
+            if (tex == null) return;
 
-            Vector2 drawPos = Position - Main.screenPosition;
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
             drawPos.Y += 4;
             float repairGlow = RepairProgress;
+
+            Color drawColor = Lighting.GetColor(Position.X + AbandonedPortalTile.Width / 2, Position.Y + AbandonedPortalTile.Height / 2);
             spriteBatch.Draw(tex, drawPos, drawColor);
 
             if (repairGlow > 0.02f) {
@@ -173,8 +160,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             if (hoverStrength > 0.01f && !AbandonedPortalSession.IsOpen) {
                 DrawHoverOutline(spriteBatch, tex, drawPos, hoverStrength);
             }
-
-            return false;
         }
 
         private void DrawHoverOutline(SpriteBatch sb, Texture2D tex, Vector2 drawPos, float strength) {
@@ -200,6 +185,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             Dust d = Dust.NewDustPerfect(basePos, DustID.Electric, Main.rand.NextVector2Circular(1.6f, 1.6f), 80,
                 Color.Lerp(Color.Cyan, Color.OrangeRed, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.35f));
             d.noGravity = true;
+        }
+
+        public override void SendData(ModPacket data) {
+            data.Write(RepairStateByte);
+            data.Write(RepairTimer);
+        }
+
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            RepairStateByte = reader.ReadByte();
+            RepairTimer = reader.ReadInt32();
+        }
+
+        public override void SaveData(TagCompound tag) {
+            tag[SaveStateKey] = RepairStateByte;
+            tag[SaveTimerKey] = RepairTimer;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            RepairStateByte = tag.GetByte(SaveStateKey);
+            RepairTimer = Math.Clamp(tag.GetInt(SaveTimerKey), 0, AbandonedPortalSession.RepairDurationFrames);
+            if (RepairTimer >= AbandonedPortalSession.RepairDurationFrames) {
+                State = RepairState.Repaired;
+            }
         }
     }
 }

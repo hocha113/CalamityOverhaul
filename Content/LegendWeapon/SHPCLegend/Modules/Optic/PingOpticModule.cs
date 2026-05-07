@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>
     /// 标记瞄具：命中目标时为其打上 <see cref="BuffID.MarkedforDeath"/> 标记

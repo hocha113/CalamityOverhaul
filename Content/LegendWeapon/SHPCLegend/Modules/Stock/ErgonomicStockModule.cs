@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 人体工学枪托：大幅降低法力消耗，提升攻速与精准，持久输出的核心托架

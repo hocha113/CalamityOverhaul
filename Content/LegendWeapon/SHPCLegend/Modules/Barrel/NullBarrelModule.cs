@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 归零枪管：伤害极低但穿透无限，命中施加剧毒数据侵蚀

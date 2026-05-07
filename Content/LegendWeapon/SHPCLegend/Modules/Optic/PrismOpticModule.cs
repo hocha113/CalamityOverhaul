@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>瞄具：光束消亡时分裂出 2 道副光束</summary>
     internal sealed class PrismOpticModule : SHPCModuleItem

@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 风暴细胞：蓄力期间每25帧自动向最近敌人释放一束追踪电击光束

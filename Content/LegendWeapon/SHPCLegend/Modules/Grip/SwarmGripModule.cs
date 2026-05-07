@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>握把：能量球爆炸时撒出迷你追踪光束</summary>
     internal sealed class SwarmGripModule : SHPCModuleItem

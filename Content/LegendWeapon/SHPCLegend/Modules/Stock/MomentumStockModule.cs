@@ -2,7 +2,7 @@
 using InnoVault.PRT;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 动量枪托：玩家移动越快累积越多"动能"层，停下后迅速衰减

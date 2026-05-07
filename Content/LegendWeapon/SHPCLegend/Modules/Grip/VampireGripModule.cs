@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
     /// 虬血握把：光束与激光命中时按伤害比例吸血回复生命值

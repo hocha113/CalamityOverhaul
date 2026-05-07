@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 螺旋枪管：强制发射2束光束，两束绕共同前进轴做螺旋缠绕
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             if (beam.IsDerived) return;
             int id = beam.Projectile.whoAmI;
             if (!_angles.TryGetValue(id, out float angle)) {
-                angle = (id % 2 == 0) ? 0f : MathHelper.Pi;
+                angle = id % 2 == 0 ? 0f : MathHelper.Pi;
             }
             angle += 0.1f;
             _angles[id] = angle;

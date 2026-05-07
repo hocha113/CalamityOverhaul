@@ -1,6 +1,6 @@
 ﻿using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 壁垒枪托：玩家手持 SHPC 时获得少量减伤，付出蓄力时长与法力消耗代价

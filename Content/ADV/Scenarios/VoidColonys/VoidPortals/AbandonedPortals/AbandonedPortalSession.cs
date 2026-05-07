@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
     {
         public const int RepairDurationFrames = 60 * 60 * 3;
 
-        internal static AbandonedPortal CurrentPortal { get; set; }
+        internal static AbandonedPortalTP CurrentPortal { get; set; }
         internal static bool IsOpen => CurrentPortal != null && Phase != PanelPhase.Closed;
         internal static PanelPhase Phase { get; private set; }
         internal static int PhaseTimer { get; private set; }
@@ -23,12 +23,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             Closing,
         }
 
-        internal static void Open(AbandonedPortal portal) {
-            if (portal == null || !portal.Active) return;
+        internal static void Open(AbandonedPortalTP portal) {
+            if (portal == null) return;
             CurrentPortal = portal;
             Phase = portal.State switch {
-                AbandonedPortal.RepairState.Repairing => PanelPhase.Repairing,
-                AbandonedPortal.RepairState.Repaired => PanelPhase.Repaired,
+                AbandonedPortalTP.RepairState.Repairing => PanelPhase.Repairing,
+                AbandonedPortalTP.RepairState.Repaired => PanelPhase.Repaired,
                 _ => PanelPhase.Broken,
             };
             PhaseTimer = 0;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         internal static void Update() {
             if (Phase == PanelPhase.Closed) return;
 
-            if (CurrentPortal == null || !CurrentPortal.Active || Main.gameMenu) {
+            if (CurrentPortal == null || Main.gameMenu) {
                 Close();
                 return;
             }
@@ -62,8 +62,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             if (Phase != PanelPhase.Closing) {
                 Phase = CurrentPortal.State switch {
-                    AbandonedPortal.RepairState.Repairing => PanelPhase.Repairing,
-                    AbandonedPortal.RepairState.Repaired => PanelPhase.Repaired,
+                    AbandonedPortalTP.RepairState.Repairing => PanelPhase.Repairing,
+                    AbandonedPortalTP.RepairState.Repaired => PanelPhase.Repaired,
                     _ => PanelPhase.Broken,
                 };
             }

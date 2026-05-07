@@ -2,7 +2,7 @@
 using InnoVault.PRT;
 using Terraria;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
     /// <summary>
     /// 守望枪托：玩家速度极低（接近静止）时逐帧累积"哨戒精度"层数，移动则迅速衰减

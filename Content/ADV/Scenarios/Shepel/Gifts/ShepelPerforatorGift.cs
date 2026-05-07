@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

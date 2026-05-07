@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
     /// <summary>
     /// 熵核：能量球飞行时持续从附近敌人吸取"熵蓄能"，引爆时按累积量释放第二次余波爆破

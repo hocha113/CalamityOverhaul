@@ -4,7 +4,7 @@ using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
     /// 棱光枪管：光束飞行时持续在两侧生成 RGB 三色色散粒子拖尾

@@ -3,7 +3,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
     /// 数据复制机匣：光束消亡时在原位生成一束短命的低伤回响光束
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 beam.Projectile.Center, vel,
                 ModContent.ProjectileType<CyberTraceBeamProj>(),
                 dmg, 0f, beam.Projectile.owner,
-                ai0: (float)((int)beam.Projectile.ai[0]));
+                ai0: (int)beam.Projectile.ai[0]);
             if (idx >= 0 && idx < Main.maxProjectiles) {
                 Main.projectile[idx].ai[1] = MathHelper.Max(beam.Projectile.ai[1], 1.5f);
                 if (Main.projectile[idx].ModProjectile is CyberTraceBeamProj echo) {

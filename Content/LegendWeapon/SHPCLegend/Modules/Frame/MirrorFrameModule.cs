@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
     /// 镜像机匣：每束新光束生成时立即派生一束180°对称镜像
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, mirrorVel,
                 ModContent.ProjectileType<CyberTraceBeamProj>(),
-                dmg, 0f, beam.Projectile.owner, ai0: (float)((int)beam.Projectile.ai[0]));
+                dmg, 0f, beam.Projectile.owner, ai0: (int)beam.Projectile.ai[0]);
             if (idx >= 0 && idx < Main.maxProjectiles
                 && Main.projectile[idx].ModProjectile is CyberTraceBeamProj mirror) {
                 mirror.IsDerived = true;

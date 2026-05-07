@@ -30,15 +30,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             if (shaderTime > 100f) shaderTime -= 100f;
 
             //根据状态衰减/驱动故障强度
-            AbandonedPortal portal = AbandonedPortalSession.CurrentPortal;
+            AbandonedPortalTP portal = AbandonedPortalSession.CurrentPortal;
             float targetGlitch;
             if (portal == null) {
                 targetGlitch = 0.4f;
             }
             else {
                 targetGlitch = portal.State switch {
-                    AbandonedPortal.RepairState.Broken => 0.85f,
-                    AbandonedPortal.RepairState.Repairing => 0.45f - portal.RepairProgress * 0.30f,
+                    AbandonedPortalTP.RepairState.Broken => 0.85f,
+                    AbandonedPortalTP.RepairState.Repairing => 0.45f - portal.RepairProgress * 0.30f,
                     _ => 0.10f,
                 };
             }
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         }
 
         public override void Draw(SpriteBatch sb) {
-            AbandonedPortal portal = AbandonedPortalSession.CurrentPortal;
+            AbandonedPortalTP portal = AbandonedPortalSession.CurrentPortal;
             if (portal == null) return;
 
             float open = AbandonedPortalSession.OpenProgress;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         }
 
         //═══ 1. 使用 AbandonedPortalPanel 着色器渲染面板背景 ═══
-        private void DrawShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, AbandonedPortal portal) {
+        private void DrawShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, AbandonedPortalTP portal) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             Asset<Effect> effectAsset = EffectLoader.AbandonedPortalPanel;
 
@@ -96,8 +96,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             float repair = portal.RepairProgress;
             float state = portal.State switch {
-                AbandonedPortal.RepairState.Repaired => 2f,
-                AbandonedPortal.RepairState.Repairing => 1f,
+                AbandonedPortalTP.RepairState.Repaired => 2f,
+                AbandonedPortalTP.RepairState.Repairing => 1f,
                 _ => 0f,
             };
 
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         }
 
         //降级面板：着色器未加载时仍能显示
-        private static void DrawFallbackPanel(SpriteBatch sb, Rectangle rect, float alpha, AbandonedPortal portal) {
+        private static void DrawFallbackPanel(SpriteBatch sb, Rectangle rect, float alpha, AbandonedPortalTP portal) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             Color bg = new Color(14, 12, 9) * (0.95f * alpha);
             Color edge = new Color(190, 110, 50) * alpha;
@@ -136,13 +136,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
         }
 
         //═══ 2. 面板内容：标题、状态、诊断、进度条、按钮 ═══
-        private void DrawPanelContent(SpriteBatch sb, Rectangle rect, AbandonedPortal portal, float alpha) {
+        private void DrawPanelContent(SpriteBatch sb, Rectangle rect, AbandonedPortalTP portal, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
             //── 状态色调：损毁=橙红，修复中=蓝橙，已修复=青蓝 ──
             Color accent = portal.State switch {
-                AbandonedPortal.RepairState.Repaired => new Color(140, 230, 250),
-                AbandonedPortal.RepairState.Repairing => Color.Lerp(new Color(245, 130, 60), new Color(150, 220, 245), portal.RepairProgress),
+                AbandonedPortalTP.RepairState.Repaired => new Color(140, 230, 250),
+                AbandonedPortalTP.RepairState.Repairing => Color.Lerp(new Color(245, 130, 60), new Color(150, 220, 245), portal.RepairProgress),
                 _ => new Color(245, 110, 50),
             };
             Color title = new Color(240, 235, 220) * alpha;
@@ -158,17 +158,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             //右上角状态徽章
             string status = portal.State switch {
-                AbandonedPortal.RepairState.Repaired => AbandonedPortalStrings.StatusRepaired.Value,
-                AbandonedPortal.RepairState.Repairing => AbandonedPortalStrings.StatusRepairing.Value,
+                AbandonedPortalTP.RepairState.Repaired => AbandonedPortalStrings.StatusRepaired.Value,
+                AbandonedPortalTP.RepairState.Repairing => AbandonedPortalStrings.StatusRepairing.Value,
                 _ => AbandonedPortalStrings.StatusBroken.Value,
             };
-            float blink = MathF.Sin(shaderTime * (portal.State == AbandonedPortal.RepairState.Broken ? 4.5f : 1.6f)) * 0.3f + 0.7f;
+            float blink = MathF.Sin(shaderTime * (portal.State == AbandonedPortalTP.RepairState.Broken ? 4.5f : 1.6f)) * 0.3f + 0.7f;
             DrawStatusBadge(sb, new Rectangle(rect.Right - 232, rect.Y + 26, 200, 26), status, accent * (alpha * blink));
 
             //── 副标题 ──
             string subtitle = portal.State switch {
-                AbandonedPortal.RepairState.Repairing => AbandonedPortalStrings.RepairingSubtitle.Value,
-                AbandonedPortal.RepairState.Repaired => AbandonedPortalStrings.RepairedSubtitle.Value,
+                AbandonedPortalTP.RepairState.Repairing => AbandonedPortalStrings.RepairingSubtitle.Value,
+                AbandonedPortalTP.RepairState.Repaired => AbandonedPortalStrings.RepairedSubtitle.Value,
                 _ => AbandonedPortalStrings.BrokenSubtitle.Value,
             };
             Utils.DrawBorderString(sb, subtitle, new Vector2(rect.X + padX, rect.Y + padY + 36f), accent * alpha, 0.74f);
@@ -178,8 +178,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             //── 正文（带终端字头） ──
             string body1 = portal.State switch {
-                AbandonedPortal.RepairState.Repairing => AbandonedPortalStrings.RepairingBody.Value,
-                AbandonedPortal.RepairState.Repaired => AbandonedPortalStrings.RepairedBody.Value,
+                AbandonedPortalTP.RepairState.Repairing => AbandonedPortalStrings.RepairingBody.Value,
+                AbandonedPortalTP.RepairState.Repaired => AbandonedPortalStrings.RepairedBody.Value,
                 _ => AbandonedPortalStrings.BrokenBody.Value,
             };
             string[] wrapped = Utils.WordwrapString(body1, font, rect.Width - 90, 6, out _);
@@ -191,8 +191,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
 
             //── 诊断行（终端式 [DIAG] 标签） ──
             string diag = portal.State switch {
-                AbandonedPortal.RepairState.Repairing => AbandonedPortalStrings.DiagnosticRepairing.Value,
-                AbandonedPortal.RepairState.Repaired => AbandonedPortalStrings.DiagnosticRepaired.Value,
+                AbandonedPortalTP.RepairState.Repairing => AbandonedPortalStrings.DiagnosticRepairing.Value,
+                AbandonedPortalTP.RepairState.Repaired => AbandonedPortalStrings.DiagnosticRepaired.Value,
                 _ => AbandonedPortalStrings.DiagnosticBroken.Value,
             };
             string diagFull = AbandonedPortalStrings.DiagnosticHeader.Value + " " + diag;
@@ -217,11 +217,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.VoidPortals.Abandon
             DrawTechButton(sb, close, AbandonedPortalStrings.Close.Value, dim * 1.6f, alpha,
                 AbandonedPortalSession.RequestClose, false);
 
-            if (portal.State == AbandonedPortal.RepairState.Broken) {
+            if (portal.State == AbandonedPortalTP.RepairState.Broken) {
                 DrawTechButton(sb, primary, AbandonedPortalStrings.StartRepair.Value, accent, alpha,
                     () => portal.StartRepair(), true);
             }
-            else if (portal.State == AbandonedPortal.RepairState.Repaired) {
+            else if (portal.State == AbandonedPortalTP.RepairState.Repaired) {
                 DrawTechButton(sb, primary, AbandonedPortalStrings.Teleport.Value, accent, alpha,
                     () => portal.StartTransport(Main.LocalPlayer), true);
             }
