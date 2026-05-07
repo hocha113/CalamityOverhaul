@@ -96,6 +96,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CybCourseSky { get; set; }
         public static Asset<Effect> CybCourseLoading { get; set; }
         public static Asset<Effect> CybCourseEntryReveal { get; set; }
+        public static Asset<Effect> VoidColonyLoading { get; set; }
         public override float Weight => 1.2f;
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             DrawPrimitiveProjectile();
