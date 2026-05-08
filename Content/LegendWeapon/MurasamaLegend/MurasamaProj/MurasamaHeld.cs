@@ -252,8 +252,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
                     Owner.velocity += UnitToMouseV * -3;
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center, UnitToMouseV * (7 + Level * 0.2f)
-                    , breakOutType, (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (0.35f + Level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center, UnitToMouseV * (7 + Level * 0.1f)
+                    , breakOutType, (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (0.35f + Level * 0.025f)), 0, Owner.whoAmI, ai2: 15);
                     }
 
                     RisingDragon = 0;
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     SoundEngine.PlaySound("CalamityMod/Sounds/Item/MurasamaBigSwing".GetSound() with { Pitch = -0.1f, Volume = 0.25f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
-                        , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + Level * 1f)), 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + Level * 0.5f)), 0, Owner.whoAmI);
                     }
 
                     Item.CWR().ai[0] -= 1;//消耗一点能量

@@ -11,6 +11,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.CWR().PierceResist = true;
         }
 
-        public override void Initialize() => Projectile.scale = baseSize * MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner) + Level * 0.024f;
+        public override void Initialize() => Projectile.scale = baseSize * MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner) + Level * 0.012f;
 
         public override void AI() {
             if (++Projectile.ai[1] >= 3) {
@@ -83,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                         int maxSpanNum = 13 + Level;
                         for (int i = 0; i < maxSpanNum; i++) {
                             Vector2 spanPos = Projectile.Center + VaultUtils.RandVr(1380, 2200);
-                            Vector2 vr = spanPos.To(Projectile.Center + VaultUtils.RandVr(180, 320 + Level * 12)).UnitVector() * 12;
+                            Vector2 vr = spanPos.To(Projectile.Center + VaultUtils.RandVr(180, 320 + Level * 6)).UnitVector() * 12;
                             Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
 
@@ -174,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             //对骷髅王之手仅造成1倍伤害并限制最大伤害
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.5f;
-                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.05f)));
             }
 
             //对史神护卫仅造成1倍伤害
@@ -217,14 +218,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.25f;
             }
 
-            //对渊海灾虫仅造成20%伤害
+            //对渊海灾虫仅造成15%伤害
             if (CWRLoad.AquaticScourgeSegments.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.8f;
+                modifiers.FinalDamage *= 0.6f;
             }
 
-            //对渊海灾虫体节仅造成10%伤害
+            //对渊海灾虫体节仅造成7.5%伤害
             if (target.type == CWRID.NPC_AquaticScourgeBodyAlt) {
-                modifiers.FinalDamage *= 0.4f;
+                modifiers.FinalDamage *= 0.3f;
             }
 
             //对毁灭者造成50%伤害
@@ -242,14 +243,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2.85f;
             }
 
-            //对肉山造成1.5倍伤害
-            if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-
             //对双子魔眼造成1.5倍伤害
             if (target.type == NPCID.Spazmatism || target.type == NPCID.Retinazer) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.2f;
             }
 
             //对毁灭魔像身体部位造成50%伤害

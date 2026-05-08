@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -225,12 +225,12 @@ MurasamaTrialQuestLine: {
 	Trial_2: 入侵之者
 	Trial_3: 腐化清除
 	Trial_4: 寄生威胁
-	Trial_5: 凝胶秽神
-	Trial_6: 地牢侵破
+	Trial_5: 地牢侵破
+	Trial_6: 凝胶秽神
 	Trial_7: 通向地狱
-	Trial_8: 冰原桎梏
-	Trial_9: 渊海清扫
-	Trial_10: 硫磺净炎
+	Trial_8: 渊海清扫
+	Trial_9: 硫磺净炎
+	Trial_10: 冰原桎梏
 	Trial_11: 钢铁齿轮
 	Trial_12: 双瞳歼灭
 	Trial_13: 机械王颅
@@ -258,16 +258,16 @@ MurasamaTrialQuestLine: {
 		我要看到你的刀在异形的血肉中飞舞!
 		'''
 	TrialSummary_4: 腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
-	TrialSummary_5: 你感受到了吗？那种充斥着凝胶的恶臭腐败\n将这个污秽聚合体彻底净化
-	TrialSummary_6:
+	TrialSummary_5:
 		'''
 		地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语...
 		击碎那颗大头颅
 		'''
+	TrialSummary_6: 你感受到了吗？那种充斥着凝胶的恶臭腐败\n将这个污秽聚合体彻底净化
 	TrialSummary_7: 走进地狱，那道横亘在熔岩上方的血肉封印——就是我们通向下一个时代的门\n将它撕碎
-	TrialSummary_8: 北境苦寒之地有一头被封印的冰雪造物\n在它彻底解封之前，将其粉碎
-	TrialSummary_9: 硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡
-	TrialSummary_10: 熔岩深处那位硫磺使者的异端之火碍眼，去将其熄灭
+	TrialSummary_8: 硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡
+	TrialSummary_9: 熔岩深处那位硫磺使者的异端之火碍眼，去将其熄灭
+	TrialSummary_10: 北境苦寒之地有一头被封印的冰雪造物\n在它彻底解封之前，将其粉碎
 	TrialSummary_11: 一个巨大的钢铁蠕虫挡住了我们的征途，将它剁成碎片
 	TrialSummary_12: 那双机械的眼睛俯视着我们——用刃将它们刺穿
 	TrialSummary_13: 骷髅领主穿上了钢铁铠甲以为能阻止我们？击碎那颗金属骷髅头
