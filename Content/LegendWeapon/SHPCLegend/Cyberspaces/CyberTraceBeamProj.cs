@@ -546,7 +546,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 return;
             }
             Vector2 dir = (next.Center - source.Center).SafeNormalize(Vector2.UnitX);
-            int dmg = (int)(Projectile.damage * 0.85f);
+            int dmg = (int)(Projectile.damage * 0.55f);
             if (dmg < 1) dmg = 1;
             int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                 source.Center, dir * Speed,
