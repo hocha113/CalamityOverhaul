@@ -1,11 +1,11 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
-using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
     /// <summary>
-    /// 时相握把：命中目标施加减速，配合密集弹幕形成持续控制流
+    /// 时相握把：命中目标施加时相减速，配合密集弹幕形成持续控制流
     /// </summary>
     internal sealed class ChronalGripModule : SHPCModuleItem
     {
@@ -19,11 +19,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Slow, 120);
+            if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
+                eff.ApplyChronalSlow(120);
+            }
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Slow, 60);
+            if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
+                eff.ApplyChronalSlow(60);
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using System;
 using Terraria;
-using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
-    /// 归零枪管：伤害极低但穿透无限，命中施加剧毒数据侵蚀
+    /// 归零枪管：伤害极低但穿透无限，命中施加数据侵蚀
     /// 定位扫射清怪流，配合 Homing 构建全屏覆盖
     /// </summary>
     internal sealed class NullBarrelModule : SHPCModuleItem
@@ -22,7 +23,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Venom, 240);
+            if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
+                eff.ApplyDataErosion(240, Math.Max(3, damageDone / 10));
+            }
         }
     }
 }
