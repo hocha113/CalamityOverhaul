@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content
                 DebuffSet(10000, 8000, ref npc.lifeRegen, ref damage);
             }
             if (HellfireExplosion) {
-                DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);
+                DebuffSet(1000, 8, ref npc.lifeRegen, ref damage);
             }
             if (SoulfireExplosion) {
                 DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);

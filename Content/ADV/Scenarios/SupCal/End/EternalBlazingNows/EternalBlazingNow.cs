@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -241,6 +242,55 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 var halibutPlayer = player.GetOverride<HalibutPlayer>();
                 if (Spwan && halibutPlayer.HasHalubut && StartScenario()) {
                     Spwan = false;
+                }
+            }
+        }
+
+        internal class HelenEpilogueNPC : DeathTrackingNPC
+        {
+            public override void OnNPCDeath(NPC npc) {
+                if (npc.type == CWRID.NPC_PrimordialWyrmHead && HelenEpilogue.Spwan) {
+                    Player player = Main.LocalPlayer;
+                    //插入格默认为当前选中格，异常时回退到第0格
+                    int insertIdx = (player.selectedItem >= 0 && player.selectedItem < 10) ? player.selectedItem : 0;
+                    const int inventoryEnd = 50;
+
+                    //从插入格开始向后寻找第一个空格
+                    int emptyIdx = -1;
+                    for (int i = insertIdx; i < inventoryEnd; i++) {
+                        if (player.inventory[i].IsAir) {
+                            emptyIdx = i;
+                            break;
+                        }
+                    }
+
+                    //背包满时，找出价值最低的物品丢到地上（同价值时优先丢最靠后的格子）
+                    if (emptyIdx == -1) {
+                        int dropIdx = -1;
+                        int lowestValue = int.MaxValue;
+                        for (int i = insertIdx; i < inventoryEnd; i++) {
+                            if (!player.inventory[i].IsAir && player.inventory[i].value <= lowestValue) {
+                                lowestValue = player.inventory[i].value;
+                                dropIdx = i;
+                            }
+                        }
+                        if (dropIdx == -1) return;
+                        int droppedType = player.inventory[dropIdx].type;
+                        int droppedStack = player.inventory[dropIdx].stack;
+                        int droppedPrefix = player.inventory[dropIdx].prefix;
+                        player.inventory[dropIdx].TurnToAir();
+                        Item.NewItem(player.GetSource_DropAsItem(), player.GetRect(), droppedType, droppedStack, false, droppedPrefix);
+                        emptyIdx = dropIdx;
+                    }
+
+                    //将insertIdx到emptyIdx-1的物品依次后移一格
+                    for (int i = emptyIdx; i > insertIdx; i--) {
+                        player.inventory[i] = player.inventory[i - 1];
+                    }
+
+                    //在插入格放置大比目鱼
+                    player.inventory[insertIdx] = new Item();
+                    player.inventory[insertIdx].SetDefaults(HalibutOverride.ID);
                 }
             }
         }
