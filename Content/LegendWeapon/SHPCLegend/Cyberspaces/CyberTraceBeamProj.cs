@@ -502,7 +502,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     SpawnMicroExplosion(target.Center);
                 }
                 //链跳由ChainCount计数控制递减，IsDerived不拦截，保证多段传递
-                if (ChainCount > 0) {
+                if (ChainCount > 0 && Projectile.numHits == 0) {
                     SpawnChainBeam(target);
                 }
             }
