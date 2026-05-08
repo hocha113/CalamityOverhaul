@@ -1,6 +1,11 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+﻿using CalamityOverhaul;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
@@ -21,15 +26,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
             if (Main.netMode == NetmodeID.MultiplayerClient) return;
-            //以爆炸半径（受改件叠加）为准搜索目标
             float baseRadius = 200f * orb.ExplosionRadiusMul;
             float radiusSq = baseRadius * baseRadius;
+            int iceType = ModContent.ProjectileType<CryoCoreParclose>();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
                 if (Vector2.DistanceSquared(npc.Center, orb.Projectile.Center) > radiusSq) continue;
-                npc.AddBuff(BuffID.Frozen, 150);
+                if (npc.boss || npc.IsWormBody() || npc.CWR().IceParclose) continue;
+                Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(), npc.Center, Vector2.Zero,
+                    iceType, 0, 0, orb.Projectile.owner, npc.whoAmI, npc.type, npc.rotation);
             }
         }
+    }
+
+    internal class CryoCoreParclose : ModProjectile
+    {
+        public override string Texture => CWRConstant.Projectile + "IceParclose";
+        public override void SetDefaults() {
+            Projectile.width = 20;
+            Projectile.height = 38;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 20;
+        }
+
+        public override bool? CanDamage() => false;
+
+        public override void AI() {
+            NPC npc = Main.npc[(int)Projectile.ai[0]];
+            if (!npc.Alives()) {
+                Projectile.Kill();
+                return;
+            }
+            if (npc.type != (int)Projectile.ai[1]) {
+                Projectile.Kill();
+                return;
+            }
+
+            if (!Main.dedServ) {
+                Projectile.scale = npc.scale * (npc.height / (float)TextureAssets.Projectile[Type].Value.Height) * 2;
+            }
+
+            npc.Center = Projectile.Center;
+            npc.rotation = Projectile.ai[2];
+            npc.CWR().IceParclose = true;
+            npc.CWR().FrozenActivity = true;
+        }
+
+        public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound("CalamityMod/Sounds/NPCHit/CryogenHit3".GetSound(), Projectile.Center);
+            for (int i = 0; i < 10 * Projectile.scale; i++) {
+                int index2 = Dust.NewDust(Projectile.Center + VaultUtils.RandVr(Projectile.width * Projectile.scale), 1, 1, DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
+                Main.dust[index2].noGravity = true;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }
