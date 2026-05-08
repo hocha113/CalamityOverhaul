@@ -401,11 +401,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
                 npc.rotation, origin, npc.scale, effects, 0f);
 
             if (shaderApplied) {
-                //KingSlimeRenderHelper.EndRoyalAuraShader(spriteBatch);
+                KingSlimeRenderHelper.EndRoyalAuraShader(spriteBatch);
             }
 
             return false;
         }
+
+        public override bool? CheckDead() => true;
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             //本体绘制已经在 Draw 中完成，PostDraw 不再做任何叠加，

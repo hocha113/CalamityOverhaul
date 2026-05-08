@@ -5,9 +5,6 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// �洢AI����ֶκ�����
-    /// </summary>
     internal partial class HeadPrimeAI
     {
         #region Data
@@ -70,7 +67,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAMGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_ForearmGlow")]
         internal static Asset<Texture2D> BSPRAM_ForearmGlow = null;
-        //���������ڻ���ԭ���������ֶ�
         internal static Asset<Texture2D> Vanilla_TwinsBossBag;
         internal static Asset<Texture2D> Vanilla_DestroyerBossBag;
         internal static Asset<Texture2D> Vanilla_SkeletronPrimeBossBag;
