@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (item.type != CWRID.Item_SHPC || lines.Count == 0) return;
+            if (item.type != SHPCOverride.ID || lines.Count == 0) return;
 
             Player player = Main.LocalPlayer;
             SHPCPlayer sp = player.GetModPlayer<SHPCPlayer>();

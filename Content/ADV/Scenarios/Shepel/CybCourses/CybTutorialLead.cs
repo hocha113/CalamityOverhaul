@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.Cyberwares.UIs;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -265,13 +266,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             Player p = Main.LocalPlayer;
             if (p == null || p.dead) return;
             for (int i = 0; i < 10; i++) {
-                if (p.inventory[i].type == CWRID.Item_SHPC) {
+                if (p.inventory[i].type == SHPCOverride.ID) {
                     p.selectedItem = i;
                     return;
                 }
             }
             for (int i = 10; i < 58; i++) {
-                if (p.inventory[i].type == CWRID.Item_SHPC) {
+                if (p.inventory[i].type == SHPCOverride.ID) {
                     var tmp = p.inventory[p.selectedItem];
                     p.inventory[p.selectedItem] = p.inventory[i];
                     p.inventory[i] = tmp;

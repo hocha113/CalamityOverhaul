@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.RAMSystems;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.RAMSystems;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -51,17 +52,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         /// </summary>
         private void EnsureSHPC() {
             for (int i = 0; i < Player.inventory.Length; i++) {
-                if (Player.inventory[i].type == CWRID.Item_SHPC) {
+                if (Player.inventory[i].type == SHPCOverride.ID) {
                     return;
                 }
             }
             if (Player.inventory[0].IsAir) {
-                Player.inventory[0].SetDefaults(CWRID.Item_SHPC);
+                Player.inventory[0].SetDefaults(SHPCOverride.ID);
                 return;
             }
             for (int i = SHPCFallbackSlotStart; i < SHPCFallbackSlotEnd; i++) {
                 if (Player.inventory[i].IsAir) {
-                    Player.inventory[i].SetDefaults(CWRID.Item_SHPC);
+                    Player.inventory[i].SetDefaults(SHPCOverride.ID);
                     return;
                 }
             }

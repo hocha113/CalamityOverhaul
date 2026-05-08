@@ -477,8 +477,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         private static void DrawGunTexture(SpriteBatch sb, Texture2D px,
             Vector2 gun, float time, float a) {
-            Texture2D gunTex = CWRID.Item_SHPC > 0
-                ? TextureAssets.Item[CWRID.Item_SHPC]?.Value
+            Texture2D gunTex = SHPCOverride.ID > 0
+                ? TextureAssets.Item[SHPCOverride.ID]?.Value
                 : null;
 
             //悬浮呼吸脉冲强度

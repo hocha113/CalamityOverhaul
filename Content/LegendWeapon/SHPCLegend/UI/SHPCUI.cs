@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 }
                 //仅在手持SHPC时显示
                 Item held = p.GetItem();
-                if (held == null || held.IsAir || held.type != CWRID.Item_SHPC) {
+                if (held == null || held.IsAir || held.type != SHPCOverride.ID) {
                     return false;
                 }
                 //避让全屏UI

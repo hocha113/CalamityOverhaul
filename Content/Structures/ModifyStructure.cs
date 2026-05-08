@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using InnoVault.GameSystem;
 using System;
 using System.Reflection;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.Structures
         private static void OnPlanetoidChest(SetChest_Delegate orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
-                AddChestContent(chest, CWRID.Item_SHPC, 1, "Shoving SHPC into the chest.");
+                AddChestContent(chest, SHPCOverride.ID, 1, "Shoving SHPC into the chest.");
                 AddChestContent(chest, ModContent.ItemType<UEPipeline>(), WorldGen.genRand.Next(288, 326), "Shoving Energy Input Pipeline into the chest.");
             }
         }

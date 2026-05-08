@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
 using System;
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
 
             //SHPC 上下文校验：切出武器自动挂起、切回武器自动恢复，避免给玩家制造"卡手重开"的感觉
-            bool holdingShpc = Player.HeldItem.type == CWRID.Item_SHPC;
+            bool holdingShpc = Player.HeldItem.type == SHPCOverride.ID;
             if (Active && !holdingShpc) {
                 //静默窗口内的关闭不再播放关闭音效，避免快速切换时重复叠声
                 bool silentClose = swapSilenceTimer > 0;

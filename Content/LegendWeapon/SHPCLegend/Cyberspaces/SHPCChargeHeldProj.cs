@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D weaponTex = TextureAssets.Item[CWRID.Item_SHPC].Value;
+            Texture2D weaponTex = TextureAssets.Item[SHPCOverride.ID].Value;
             if (weaponTex == null) return false;
 
             float rotation = Projectile.rotation;

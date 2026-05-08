@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -56,12 +57,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
         protected override ScenarioPolicy ConfigurePolicy() => new() {
             IsCompleted = save => save.Get<ShepelADVData>().FirstSHPCObtained,
             MarkCompleted = save => save.Get<ShepelADVData>().FirstSHPCObtained = true,
-            CanTrigger = (save, player) => player.HasItem(CWRID.Item_SHPC),
+            CanTrigger = (save, player) => player.HasItem(SHPCOverride.ID),
             BlockedBy = ScenarioBlockers.Boss | ScenarioBlockers.BossRush | ScenarioBlockers.ActiveScenario,
         };
 
         internal static bool CanStartSHPCTrialQuests(Player player) {
-            if (player == null || !player.active || !player.HasItem(CWRID.Item_SHPC)) {
+            if (player == null || !player.active || !player.HasItem(SHPCOverride.ID)) {
                 return false;
             }
 

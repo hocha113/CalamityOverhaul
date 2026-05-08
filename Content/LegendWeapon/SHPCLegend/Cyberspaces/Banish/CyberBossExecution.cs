@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 for (int i = 0; i < owner.inventory.Length; i++) {
                     Item it = owner.inventory[i];
                     if (it == null || it.IsAir) continue;
-                    if (it.type != CWRID.Item_SHPC) continue;
+                    if (it.type != SHPCOverride.ID) continue;
                     int lv = SHPCOverride.GetLevel(it);
                     if (lv > bestLevel) {
                         bestLevel = lv;

@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
                 FightingFormat = TrackerFighting,
                 BriefFormat = TrackerBrief,
                 //左侧追踪窗口仅在玩家手持SHPC时显示，避免常驻打扰
-                TrackerVisibilityCheck = static () => Main.LocalPlayer.GetItem().type == CWRID.Item_SHPC,
+                TrackerVisibilityCheck = static () => Main.LocalPlayer.GetItem().type == SHPCOverride.ID,
             };
         }
     }

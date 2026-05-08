@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void OnPlayerUpdate(Player player) {
             if (player == null || !player.active) return;
             //仅在持有 SHPC 时启用减伤；endurance 由 vanilla 每帧重置，无需手动清理
-            if (player.HeldItem == null || player.HeldItem.type != CWRID.Item_SHPC) return;
+            if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
             player.endurance += EnduranceBoost;
         }
     }

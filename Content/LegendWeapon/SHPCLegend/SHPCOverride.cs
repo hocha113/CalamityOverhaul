@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
     internal class SHPCOverride : ItemOverride, ICWRLoader
     {
+        public static int ID => CWRID.Item_SHPC;
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -44,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// </summary>
         private const float BeamSpreadAngle = 0.08f;
 
-        public override int TargetID => CWRID.Item_SHPC;
+        public override int TargetID => ID;
 
         #region 原版方法屏蔽
 
@@ -126,7 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获得成长等级
         /// </summary>
         public static int GetLevel(Item item) {
-            if (item.type != CWRID.Item_SHPC) {
+            if (item.type != ID) {
                 return 0;
             }
             CWRItem cwrItem = item.CWR();
@@ -175,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void SetStaticDefaults() {
             ItemID.Sets.ShimmerTransformToItem[TargetID] = CWRID.Item_PlasmaDriveCore;
-            HackTimeAccess.Register(player => player.GetItem().type == CWRID.Item_SHPC, "SmartWeapon:SHPC");
+            HackTimeAccess.Register(player => player.GetItem().type == SHPCOverride.ID, "SmartWeapon:SHPC");
         }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.Common;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using System;
 using Terraria;
 
@@ -16,7 +17,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SHPCDialogueBox.Instance;
 
         protected override bool CheckHolderCondition(ADVSave save, Player player) {
-            if (!player.HasItem(CWRID.Item_SHPC)) {
+            if (!player.HasItem(SHPCOverride.ID)) {
                 return false;
             }
             return save.Get<ShepelADVData>().FirstSHPCObtained;
