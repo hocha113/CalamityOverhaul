@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,8 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public override bool PreAI(NPC npc) {
             if (ChronalSlowTime > 0) {
                 ChronalSlowTime--;
-                npc.velocity *= 0.5f;
-                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(8)) {
+                if (!npc.boss) {
+                    npc.position -= npc.velocity * 0.5f;
+                }
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(2)) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
                     Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
                     PRTLoader.AddParticle(new PRT_CyberSquare(
