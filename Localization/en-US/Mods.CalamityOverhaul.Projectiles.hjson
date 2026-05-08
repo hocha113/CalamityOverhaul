@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: Murasama
+﻿MurasamaHeld.DisplayName: Murasama
 MuraTriggerDash.DisplayName: Murasama
 MuraBreakerSlash.DisplayName: Crescent Moon Slash
 MuraExecutionCut.DisplayName: Dimensional Severance - Finale
@@ -529,7 +529,8 @@ CyberPixelDecomposeProj.DisplayName: Cyber Pixel Decomposition
 MimicPhantom.DisplayName: Mimic Phantom
 CyberExecutionBoltProj.DisplayName: Cyber Execution Bolt
 CyberPrismLaserProj.DisplayName: Cyber Prism Laser
-CyberDataArcProj.DisplayName: Cyber Data Arc Proj
-KingSlimeCrownBeamProj.DisplayName: King Slime Crown Beam Proj
-KingSlimeRoyalGelDropletProj.DisplayName: King Slime Royal Gel Droplet Proj
-KingSlimeShockwaveProj.DisplayName: King Slime Shockwave Proj
+CyberDataArcProj.DisplayName: Cyber Data Arc
+KingSlimeCrownBeamProj.DisplayName: King Slime Crown Beam
+KingSlimeRoyalGelDropletProj.DisplayName: King Slime Royal Gel Droplet
+KingSlimeShockwaveProj.DisplayName: King Slime Shockwave
+CryoCoreParclose.DisplayName: Cryo Core Parclose

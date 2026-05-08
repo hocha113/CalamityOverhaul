@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: 分子斩切
+﻿MurasamaHeld.DisplayName: 分子斩切
 MuraTriggerDash.DisplayName: 分子斩切
 MuraBreakerSlash.DisplayName: 升龙半月
 MuraExecutionCut.DisplayName: 次元斩·终
@@ -529,7 +529,8 @@ CyberPixelDecomposeProj.DisplayName: 赛博像素分解
 MimicPhantom.DisplayName: 拟态幻影
 CyberExecutionBoltProj.DisplayName: 故障天雷
 CyberPrismLaserProj.DisplayName: 赛博激光
-// CyberDataArcProj.DisplayName: Cyber Data Arc Proj
-// KingSlimeCrownBeamProj.DisplayName: King Slime Crown Beam Proj
-// KingSlimeRoyalGelDropletProj.DisplayName: King Slime Royal Gel Droplet Proj
-// KingSlimeShockwaveProj.DisplayName: King Slime Shockwave Proj
+CyberDataArcProj.DisplayName: 赛博数据电弧
+KingSlimeCrownBeamProj.DisplayName: 史莱姆王王冠光束
+KingSlimeRoyalGelDropletProj.DisplayName: 史莱姆王皇家凝胶液滴
+KingSlimeShockwaveProj.DisplayName: 史莱姆王冲击波
+CryoCoreParclose.DisplayName: 冰核屏障
