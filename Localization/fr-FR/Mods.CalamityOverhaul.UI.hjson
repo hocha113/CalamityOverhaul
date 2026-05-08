@@ -152,7 +152,7 @@ QuestLog: {
 	ResetViewText: Réinitialiser la vue
 	SunModeText: Mode Jour
 	LauncherHoverText: Clic gauche Interagir, Clic droit Glisser
-	// QuestManagerText: 委托任务
+	// QuestManagerText: Commission
 }
 
 QuestNotificationSystem.Text1: Quête terminée

@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -213,7 +213,7 @@ HalibutTrialQuestLine: {
 	Trial_11: 升温
 	Trial_12: 造物巅峰
 	Trial_13: 回到海里
-	// TrackerBrief: 目标：{0}
+	TrackerBrief: 目标：{0}
 }
 
 MurasamaTrialQuestLine: {
@@ -306,7 +306,7 @@ MurasamaTrialQuestLine: {
 		我们的征服之路早已不可阻挡，破碎那黑渊之下妖龙的铠甲
 		使用那终焉之石，与异形展开最终决战
 		'''
-	// TrackerBrief: 猎杀目标：{0}
+	TrackerBrief: 目标：{0}
 }
 
 SHPCTrialQuestLine: {
@@ -445,7 +445,7 @@ SHPCTrialQuestLine: {
 		主人，之前击败过的敌人已组成联军，准备发起总攻。
 		请做好准备。我会全程监控战场，协助您一次了结。
 		'''
-	// TrackerBrief: 采集目标：{0}
+	TrackerBrief: 目标：{0}
 }
 
 SHPCModuleStat: {

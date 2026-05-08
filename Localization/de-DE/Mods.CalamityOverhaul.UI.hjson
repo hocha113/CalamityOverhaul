@@ -152,7 +152,7 @@ QuestLog: {
 	ResetViewText: Ansicht zurücksetzen
 	SunModeText: Tagmodus
 	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
-	// QuestManagerText: 委托任务
+	// QuestManagerText: Commission
 }
 
 QuestNotificationSystem.Text1: Quest abgeschlossen

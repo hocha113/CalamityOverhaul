@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -213,7 +213,7 @@ HalibutTrialQuestLine: {
 	Trial_11: Heating Up
 	Trial_12: Pinnacle of Creation
 	Trial_13: Back to the Sea
-	TrackerBrief: 目标：{0}
+	TrackerBrief: Target：{0}
 }
 
 MurasamaTrialQuestLine: {
@@ -306,7 +306,7 @@ MurasamaTrialQuestLine: {
 		Our path of conquest is already unstoppable. Shatter the armor of the demonic dragon beneath the black abyss.
 		Use the Terminus and engage in the final decisive battle with the xeno.
 		'''
-	TrackerBrief: 猎杀目标：{0}
+	TrackerBrief: Target：{0}
 }
 
 SHPCTrialQuestLine: {
@@ -445,7 +445,7 @@ SHPCTrialQuestLine: {
 		Master, the enemies you previously defeated have formed a coalition and are preparing a final assault.
 		Please be prepared. I will monitor the battlefield throughout and assist you in settling this once and for all.
 		'''
-	TrackerBrief: 采集目标：{0}
+	TrackerBrief: Target：{0}
 }
 
 SHPCModuleStat: {
