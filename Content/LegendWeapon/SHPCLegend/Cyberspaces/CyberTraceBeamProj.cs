@@ -564,6 +564,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     child.ExplodeRadius = ExplodeRadius;
                 }
             }
+            Projectile.Kill();
+            Projectile.netUpdate = true;
         }
 
         public override void OnKill(int timeLeft) {
