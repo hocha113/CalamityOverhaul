@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         int droppedStack = player.inventory[dropIdx].stack;
                         int droppedPrefix = player.inventory[dropIdx].prefix;
                         player.inventory[dropIdx].TurnToAir();
-                        Item.NewItem(player.GetSource_DropAsItem(), player.GetRect(), droppedType, droppedStack, false, droppedPrefix);
+                        Item.NewItem(player.GetSource_DropAsItem(), player.Hitbox, droppedType, droppedStack, false, droppedPrefix);
                         emptyIdx = dropIdx;
                     }
 
