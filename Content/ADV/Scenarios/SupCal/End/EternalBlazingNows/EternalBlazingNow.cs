@@ -251,6 +251,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             public override void OnNPCDeath(NPC npc) {
                 if (npc.type == CWRID.NPC_PrimordialWyrmHead && HelenEpilogue.Spwan) {
                     Player player = Main.LocalPlayer;
+                    //如果已经有大比目鱼了就不再获得，避免重复获得
+                    if (player.HasItem(HalibutOverride.ID)) return;
                     //插入格默认为当前选中格，异常时回退到第0格
                     int insertIdx = (player.selectedItem >= 0 && player.selectedItem < 10) ? player.selectedItem : 0;
                     const int inventoryEnd = 50;
