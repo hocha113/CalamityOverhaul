@@ -40,11 +40,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private float getBrakSwingDamageSengsValue(int level) {
             float overValue = 0;
-            if (level >= 5) {
-                overValue = level * 0.2f;
+            if (level >= 8) {
+                overValue = level * 0.1f;
             }
             Item.Initialize();
-            return 2.5f + Item.CWR().ai[0] * 0.2f + level * 0.2f + overValue;
+            return 2.5f + Item.CWR().ai[0] * 0.2f + level * 0.1f + overValue;
         }
 
         public override void AI() {
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (Projectile.ai[0] == 0) {//在这一阶段，弹幕负责飞出
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 Projectile.ai[1]++;
-                if (Projectile.ai[1] > 60 + level * 10) {//级别越高，弹幕的飞行时间便会越加的长
+                if (Projectile.ai[1] > 60 + level * 5) {//级别越高，弹幕的飞行时间便会越加的长
                     Projectile.ai[0] = 2;
                     Projectile.ai[1] = 0;
                     Projectile.netUpdate = true;
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             Item.Initialize();
             int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * sengs);
-            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
+            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 2), breakOutVector * 3
             , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
 
             Projectile.Kill();

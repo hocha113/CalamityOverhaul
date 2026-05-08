@@ -325,19 +325,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.25f;
             }
 
-            //对肉山造成1.5倍伤害
-            if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-
             //对饿鬼造成3倍伤害
             if (target.type == NPCID.TheHungry || target.type == NPCID.TheHungryII) {
                 modifiers.FinalDamage *= 1.5f;
             }
 
-            //对双子魔眼造成1.5倍伤害
+            //对双子魔眼造成1.2倍伤害
             if (target.type == NPCID.Spazmatism || target.type == NPCID.Retinazer) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.2f;
             }
 
             //对灾眼兄弟仅造成1倍伤害

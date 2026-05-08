@@ -111,7 +111,7 @@
 	LoadItemRecipe_Condition_Text1: 背包中需要存在一本大修宝典
 	Murasama_Text0: 已解锁
 	Murasama_Text1: 未解锁 需要通过试炼3
-	Murasama_Text2: 未解锁 需要通过试炼7
+	Murasama_Text2: 未解锁 需要通过试炼8
 	Murasama_Text3: 未解锁 需要通过试炼20
 	MouseTextContactPanel_TextContent: 按下[KEY]切换终焉合成配方预览状态
 	CWRItem_IsRemakeItem_TextContent: -大修-

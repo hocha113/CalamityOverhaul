@@ -421,18 +421,18 @@ namespace CalamityOverhaul.Content
             if (DownedV2.Invoke()) level = 4; else return level;
             //试炼4: 灾厄邪恶Boss（腐巢意志/血肉宿主）
             if (Downed3.Invoke() || Downed4.Invoke()) level = 5; else return level;
-            //试炼5: 史莱姆之神
-            if (Downed5.Invoke()) level = 6; else return level;
-            //试炼6: 骷髅王
-            if (DownedV4.Invoke()) level = 7; else return level;
+            //试炼5: 骷髅王
+            if (DownedV4.Invoke()) level = 6; else return level;
+            //试炼6: 史莱姆之神
+            if (Downed5.Invoke()) level = 7; else return level;
             //试炼7: 血肉墙
             if (Main.hardMode) level = 8; else return level;
-            //试炼8: 极地冰灵
-            if (Downed6.Invoke()) level = 9; else return level;
-            //试炼9: 渊海灾虫
-            if (Downed8.Invoke()) level = 10; else return level;
-            //试炼10: 硫磺火元素
-            if (Downed7.Invoke()) level = 11; else return level;
+            //试炼8: 渊海灾虫
+            if (Downed8.Invoke()) level = 9; else return level;
+            //试炼9: 硫磺火元素
+            if (Downed7.Invoke()) level = 10; else return level;
+            //试炼10: 极地冰灵
+            if (Downed6.Invoke()) level = 11; else return level;
             //试炼11: 毁灭者
             if (NPC.downedMechBoss1) level = 12; else return level;
             //试炼12: 双子魔眼

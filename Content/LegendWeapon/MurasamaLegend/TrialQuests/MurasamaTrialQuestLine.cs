@@ -54,12 +54,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
                 "入侵之者",         //2 克苏鲁之眼
                 "腐化清除",         //3 世吞/克脑
                 "寄生威胁",         //4 腐巢意志/血肉宿主
-                "凝胶秽神",         //5 史莱姆之神
-                "地牢侵破",         //6 骷髅王
+                "地牢侵破",         //5 骷髅王
+                "凝胶秽神",         //6 史莱姆之神
                 "通向地狱",         //7 血肉墙
-                "冰原桎梏",         //8 极地冰灵
-                "渊海清扫",         //9 渊海灾虫
-                "硫磺净炎",         //10 硫磺火元素
+                "渊海清扫",         //8 渊海灾虫
+                "硫磺净炎",         //9 硫磺火元素
+                "冰原桎梏",         //10 极地冰灵
                 "钢铁齿轮",         //11 毁灭者
                 "双瞳歼灭",         //12 双子魔眼
                 "机械王颅",         //13 机械骷髅王
@@ -90,12 +90,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
                 "夜月当空，让我们去戳爆那颗在空中乱飞的大眼球，让那个伪神彻底变成瞎子",
                 "伪神的残躯玷污着泰拉的大地，去解放被腐化的大陆\n砍碎那坨伪神的大脑，剁碎那条紫色蠕虫！",
                 "腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！",
-                "你感受到了吗？那种充斥着凝胶的恶臭腐败\n将这个污秽聚合体彻底净化",
                 "地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语\n击碎那颗大头颅",
+                "你感受到了吗？那种充斥着凝胶的恶臭腐败\n将这个污秽聚合体彻底净化",
                 "走进地狱，那道横亘在熔岩上方的血肉封印就是我们通向下一个时代的门\n将它撕碎",
-                "北境苦寒之地有一头被封印的冰雪造物\n在它彻底解封之前，将其粉碎",
                 "硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡",
                 "熔岩深处那位硫磺使者的异端之火碍眼，去将其熄灭",
+                "北境苦寒之地有一头被封印的冰雪造物\n在它彻底解封之前，将其粉碎",
                 "一个巨大的钢铁蠕虫挡住了我们的征途，将它剁成碎片",
                 "那双机械的眼睛俯视着我们——用刃将它们刺穿",
                 "骷髅领主穿上了钢铁铠甲以为能阻止我们？击碎那颗金属骷髅头",
@@ -132,18 +132,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
             trialTargetNpcs[3] = [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu];
             //试炼4 (4→5): 腐巢意志 / 血肉宿主
             trialTargetNpcs[4] = [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive];
-            //试炼5 (5→6): 史莱姆之神
-            trialTargetNpcs[5] = [CWRID.NPC_SlimeGodCore];
-            //试炼6 (6→7): 骷髅王
-            trialTargetNpcs[6] = [NPCID.SkeletronHead];
+            //试炼5 (5→6): 骷髅王
+            trialTargetNpcs[5] = [NPCID.SkeletronHead];
+            //试炼6 (6→7): 史莱姆之神
+            trialTargetNpcs[6] = [CWRID.NPC_SlimeGodCore];
             //试炼7 (7→8): 血肉墙
             trialTargetNpcs[7] = [NPCID.WallofFlesh];
-            //试炼8 (8→9): 极地冰灵
-            trialTargetNpcs[8] = [CWRID.NPC_Cryogen];
-            //试炼9 (9→10): 渊海灾虫
-            trialTargetNpcs[9] = [CWRID.NPC_AquaticScourgeHead];
-            //试炼10 (10→11): 硫磺火元素
-            trialTargetNpcs[10] = [CWRID.NPC_BrimstoneElemental];
+            //试炼8 (8→9): 渊海灾虫
+            trialTargetNpcs[8] = [CWRID.NPC_AquaticScourgeHead];
+            //试炼9 (9→10): 硫磺火元素
+            trialTargetNpcs[9] = [CWRID.NPC_BrimstoneElemental];
+            //试炼10 (10→11): 极地冰灵
+            trialTargetNpcs[10] = [CWRID.NPC_Cryogen];
             //试炼11 (11→12): 毁灭者
             trialTargetNpcs[11] = [NPCID.TheDestroyer];
             //试炼12 (12→13): 双子魔眼
@@ -186,12 +186,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
             trialCompletedChecks[2] = InWorldBossPhase.DownedV1;
             trialCompletedChecks[3] = InWorldBossPhase.DownedV2;
             trialCompletedChecks[4] = () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke();
-            trialCompletedChecks[5] = InWorldBossPhase.Downed5;
-            trialCompletedChecks[6] = InWorldBossPhase.DownedV4;
+            trialCompletedChecks[5] = InWorldBossPhase.DownedV4;
+            trialCompletedChecks[6] = InWorldBossPhase.Downed5;
             trialCompletedChecks[7] = () => Main.hardMode;
-            trialCompletedChecks[8] = InWorldBossPhase.Downed6;
-            trialCompletedChecks[9] = InWorldBossPhase.Downed8;
-            trialCompletedChecks[10] = InWorldBossPhase.Downed7;
+            trialCompletedChecks[8] = InWorldBossPhase.Downed8;
+            trialCompletedChecks[9] = InWorldBossPhase.Downed7;
+            trialCompletedChecks[10] = InWorldBossPhase.Downed6;
             trialCompletedChecks[11] = () => NPC.downedMechBoss1;
             trialCompletedChecks[12] = () => NPC.downedMechBoss2;
             trialCompletedChecks[13] = () => NPC.downedMechBoss3;

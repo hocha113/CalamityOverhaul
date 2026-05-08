@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.velocity.Y += 1.2f;
 
             //限制最大下落速度，级别越高速度越快
-            float maxSpeed = 25f + MurasamaOverride.GetLevel(Item) * 2f;
+            float maxSpeed = 25f + MurasamaOverride.GetLevel(Item) * 1f;
             if (Projectile.velocity.Y > maxSpeed) {
                 Projectile.velocity.Y = maxSpeed;
             }
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //玩家获得向上的推力
             if (StateTimer == 1 && Projectile.IsOwnedByLocalPlayer()) {
-                float upwardForce = -12f - MurasamaOverride.GetLevel(Item) * 1.2f;
+                float upwardForce = -12f - MurasamaOverride.GetLevel(Item) * 0.5f;
                 Owner.velocity = new Vector2(Owner.velocity.X * 0.5f, upwardForce);
             }
 
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             CreateMassiveImpactEffect();
 
             //造成范围伤害
-            Projectile.Explode(300 + MurasamaOverride.GetLevel(Item) * 30);
+            Projectile.Explode(300 + MurasamaOverride.GetLevel(Item) * 20);
 
             //生成地面裂痕（视觉效果）
             SpawnGroundCracks();
@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void CreateMassiveImpactEffect() {
             int level = MurasamaOverride.GetLevel(Item);
-            int particleCount = 60 + level * 10;
+            int particleCount = 60 + level * 5;
 
             //主爆炸粒子
             for (int i = 0; i < particleCount; i++) {
