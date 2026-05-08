@@ -2092,8 +2092,9 @@ CascadeGripModule: {
 	// DisplayName: Cascade Grip
 	/* Tooltip:
 		'''
-		A topological trigger fires a radial burst of 8 beams at the point of impact every 5 hits
-		Burst beams deal moderate damage; creates rhythmic high-density output
+		Every 5 hits, spawns a hovering cascade node at the point of impact
+		The node lingers ~2 seconds and fires 5 homing beams that hunt nearby enemies
+		Slightly reduces base damage
 		''' */
 }
 

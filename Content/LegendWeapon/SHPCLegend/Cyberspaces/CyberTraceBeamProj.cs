@@ -174,8 +174,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 if (themeIndex < 0) themeIndex = 0;
                 theme = Themes[themeIndex];
                 flyAngle = Projectile.velocity.ToRotation();
-                //ai[1] 由发射处注入，>0 时作为追踪倍率，未设置（==0）按 1f 处理
-                homingMul = Projectile.ai[1] > 0f ? Projectile.ai[1] : 1f;
+                //ai[1] 由发射处注入，!=0 时作为追踪倍率，未设置（==0）按 1f 处理；负值表示追踪被压制
+                homingMul = Projectile.ai[1] != 0f ? Projectile.ai[1] : 1f;
                 //首帧消费改件注入：调整穿透与生命预算
                 if (ExtraPierce > 0) {
                     Projectile.penetrate += ExtraPierce;
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (effectiveSpeed > 0.01f) {
                 float searchRange = 120f * MathF.Max(homingMul, 1f);
                 NPC target = Projectile.Center.FindClosestNPC(searchRange, true, true);
-                if (target != null && Projectile.numHits == 0) {
+                if (target != null && Projectile.numHits == 0 && homingMul > 0f) {
                     float targetAngle = (target.Center - Projectile.Center).ToRotation();
                     float angleDiff = MathHelper.WrapAngle(targetAngle - flyAngle);
                     float maxTurn = 0.04f * homingMul;
