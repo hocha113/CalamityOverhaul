@@ -494,7 +494,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     scale, Main.rand.Next(20, 40)
                 ));
             }
-            Projectile.damage = (int)(Projectile.damage * 0.7f);
 
             //改件钩子：仅本地玩家发射方处理派生弹幕，避免重复生成
             if (Projectile.owner == Main.myPlayer) {
@@ -508,6 +507,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
             }
             SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamHitNPC(this, target, hit, damageDone));
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (Projectile.localAI[0] == 0) {
+                Projectile.localAI[0] = Projectile.damage;
+            }
+
+            int hitCount = Projectile.numHits;
+            float multiplier = Math.Max(0.5f, (float)Math.Pow(0.7f, hitCount));
+            modifiers.FinalDamage *= multiplier;
         }
 
         /// <summary>
