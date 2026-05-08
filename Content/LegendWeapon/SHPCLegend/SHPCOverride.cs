@@ -19,6 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
     internal class SHPCOverride : ItemOverride, ICWRLoader
     {
+        /// <summary>
+        /// 目标ID
+        /// </summary>
         public static int ID => CWRID.Item_SHPC;
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
