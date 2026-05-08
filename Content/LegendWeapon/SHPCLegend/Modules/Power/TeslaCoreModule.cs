@@ -11,7 +11,7 @@
             ctx.BeamChainCount += 2;
             ctx.BeamChainRange = 280f;
             ctx.BeamExtraPierce += 1;
-            ctx.ManaCostMul += 0.15f;
+            ctx.ManaCostMul += 1f;
         }
     }
 }
