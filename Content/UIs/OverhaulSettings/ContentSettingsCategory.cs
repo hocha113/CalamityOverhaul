@@ -37,18 +37,18 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon组
-            AddToggle("WeaponHandheldDisplay", () => config.WeaponHandheldDisplay, v => config.WeaponHandheldDisplay = v, false);
-            AddToggle("EnableSwordLight", () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
-            AddToggle("EnableCasingsEntity", () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
-            AddToggle("BowArrowDraw", () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
-            AddToggle("WeaponLazyRotationAngle", () => config.WeaponLazyRotationAngle, v => config.WeaponLazyRotationAngle = v, false);
-            AddToggle("ScreenVibration", () => config.ScreenVibration, v => config.ScreenVibration = v, false);
-            AddToggle("MurasamaSpaceFragmentationBool", () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
-            AddToggle("DomainConciseDisplay", () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
-            AddToggle("LensEasing", () => config.LensEasing, v => config.LensEasing = v, false);
+            AddToggle(nameof(config.WeaponHandheldDisplay), () => config.WeaponHandheldDisplay, v => config.WeaponHandheldDisplay = v, false);
+            AddToggle(nameof(config.EnableSwordLight), () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
+            AddToggle(nameof(config.EnableCasingsEntity), () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
+            AddToggle(nameof(config.BowArrowDraw), () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
+            AddToggle(nameof(config.WeaponLazyRotationAngle), () => config.WeaponLazyRotationAngle, v => config.WeaponLazyRotationAngle = v, false);
+            AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
+            AddToggle(nameof(config.MurasamaSpaceFragmentationBool), () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
+            AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
+            AddToggle(nameof(config.LensEasing), () => config.LensEasing, v => config.LensEasing = v, false);
 
             //CWRUI组
-            AddToggle("ShowReloadingProgressUI", () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
+            AddToggle(nameof(config.ShowReloadingProgressUI), () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
 
             ActionButtons.Add(new ActionButton {
                 Label = () => OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
