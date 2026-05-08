@@ -540,8 +540,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// 子光束 IsDerived=true，避免再次链跳与分裂导致雪崩
         /// </summary>
         private void SpawnChainBeam(NPC source) {
-            NPC next = source.Center.FindClosestNPC(ChainRange, false, true);
-            if (next == null || next.whoAmI == source.whoAmI) {
+            NPC next = source.Center.FindClosestNPC(ChainRange, false, true, new System.Collections.Generic.List<NPC> { source });
+            if (next == null) {
                 //没找到就不消耗链跳次数
                 return;
             }
