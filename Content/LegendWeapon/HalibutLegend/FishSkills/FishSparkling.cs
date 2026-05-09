@@ -2,6 +2,7 @@
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,75 +15,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishSparkling : FishSkill
     {
         internal const float RoingArc = 160f;
-        private static int _sparklingVolleyIdSeed = 0;
         public override int DefaultCooldown => 300 - 24 * HalibutData.GetDomainLayer();
         public override int ResearchDuration => 60 * 12;
         internal static int DepartureDelay => 90 - (HalibutData.GetDomainLayer() * 5);//全部发射后延迟进入离场
         internal static int DepartureDuration => 90 - (HalibutData.GetDomainLayer() * 5);//离场动画时长
-        internal static int shootDir;
         public override int UnlockFishID => CWRID.Item_SparklingEmpress;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             var hp = player.GetOverride<HalibutPlayer>();
-            hp.SparklingUseCounter++;
             TryTriggerSparklingVolley(item, player, hp);
             return null;
         }
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            //仅依据存活的鱼来判断是否处于齐射状态，避免依赖未同步的玩家状态字段
+            //同时不再使用 SparklingVolleyActive / SparklingVolleyTimer，所有齐射状态均存在弹幕本体上
             bool hasSparklingFish = player.CountProjectilesOfID<SparklingFishHolder>() > 0;
-            if (halibutPlayer.SparklingVolleyActive) {
-                if (halibutPlayer.SparklingVolleyTimer > 0 && !hasSparklingFish) {
-                    halibutPlayer.SparklingVolleyActive = false;
-                }
-                halibutPlayer.SparklingVolleyTimer++;
-            }
             return !hasSparklingFish;
         }
         internal void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
-            if (hp.SparklingVolleyActive) {
+            //该方法只在持有玩家的本地客户端运行（Shoot 由该客户端触发）
+            //所有 Projectile.NewProjectile 由本地玩家创建后会通过 NetMessage 自动同步到其它端
+            if (player.CountProjectilesOfID<SparklingFishHolder>() > 0) {
                 return;
             }
             if (Cooldown > 0) {
                 return;
             }
 
-            shootDir = player.direction;
-
-            hp.SparklingDeparturePhase = false;
-            hp.SparklingDepartureTimer = 0;
-
-            hp.SparklingVolleyActive = true;
-            hp.SparklingVolleyTimer = 0;
-            hp.SparklingFishCount = (4 + HalibutData.GetDomainLayer()); // 4+领域数量鱼
-            hp.SparklingNextFireIndex = 0;
-            hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
-
             SetCooldown();
+            int fishCount = 4 + HalibutData.GetDomainLayer(); // 4+领域数量鱼
 
-            Vector2 aimDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
+            //使用同步过的鼠标方向（HalibutPlayer.MouseWorld 已通过专用包广播给其它端）
+            Vector2 aimDir = (hp.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
             float arc = MathHelper.ToRadians(RoingArc); //扇形总角度
             float radius = 90f;
             ShootState shootState = player.GetShootState();
+            //shootDir 完全由 aimDir.X 符号推导（确定性），所有端都能算出同样的扇形朝向
+            sbyte shootDir = aimDir.X >= 0 ? (sbyte)1 : (sbyte)-1;
 
             //中心涟漪出现特效（ai0 = -1 表示中央扩散光环）
             Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero
-                , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, -1, hp.SparklingVolleyId);
+                , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, -1, 0);
 
-            for (int i = 0; i < hp.SparklingFishCount; i++) {
-                float t = hp.SparklingFishCount == 1 ? 0.5f : i / (float)(hp.SparklingFishCount - 1);
+            for (int i = 0; i < fishCount; i++) {
+                float t = fishCount == 1 ? 0.5f : i / (float)(fishCount - 1);
                 float angOff = (t - 0.5f) * arc;
-                Vector2 offsetDir = behind.RotatedBy(angOff);
-                Vector2 spawnPos = player.Center + offsetDir * radius + new Vector2(0, (float)Math.Sin(Main.GameUpdateCount * 0.05f + i) * 6f);
+                Vector2 offsetDir = behind.RotatedBy(angOff * shootDir * -1);
+                Vector2 spawnPos = player.Center + offsetDir * radius;
 
-                int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero,
+                //初始 velocity 用于在所有端 OnSpawn 阶段携带 AimDirection（生成包会同步 velocity）
+                int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, aimDir,
                     ModContent.ProjectileType<SparklingFishHolder>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI,
-                    ai0: hp.SparklingVolleyId, ai1: i);
-                if (Main.projectile[proj].ModProjectile is SparklingFishHolder holder) holder.Owner = player;
+                    ai0: i, ai1: fishCount);
 
-                //鱼体出现定位点爆闪（ai0 = 索引, ai1 = volleyId）
-                Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero
-                    , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, Main.projectile[proj].identity, hp.SparklingVolleyId);
+                if (Main.projectile.IndexInRange(proj)) {
+                    //鱼体出现定位点爆闪（ai0 = 鱼弹幕identity，由弹幕同步保留），通过 identity 跨端定位
+                    Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero
+                        , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, Main.projectile[proj].identity, 0);
+                }
             }
             SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.4f }, player.Center); //预热音
         }
@@ -92,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";//一个圆点光效灰度图，可以考虑用来丰富特效
 
-        private ref float Index => ref Projectile.ai[0]; //-1 = 中心光环 其他=鱼索引
+        private ref float Index => ref Projectile.ai[0]; //-1 = 中心光环 其他=鱼弹幕identity
         private const int LifeTime = 42; //存活时间
         private float seed;
         private float startScale;
@@ -163,6 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.alpha = (int)MathHelper.Lerp(0, 255, (t - 0.75f) / 0.25f);
             }
 
+            //通过 identity 跨端定位关联的鱼弹幕；identity 在所有客户端保持一致
             if (Index.TryGetProjectile(out var fash)) {
                 Projectile.Center = fash.Center + fash.rotation.ToRotationVector2() * 32;
                 if (fash.ai[2] == 0 && Projectile.timeLeft < LifeTime / 2) {
@@ -193,23 +185,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     /// <summary>
     /// 单条闪光皇后鱼的承载弹幕，静止环绕并按顺序发射激光
+    /// 多人模式下采用持有者权威 + 确定性本地推进的混合策略，
+    /// 关键状态（AimDirection、ShootDir、本地计时）通过 OnSpawn 与 SendExtraAI 跨端同步
     /// </summary>
     internal class SparklingFishHolder : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Item + "Fishing/SunkenSeaCatches/SparklingEmpress";
 
-        public Player Owner;
+        //ai[0] = FishIndex（自动同步）
+        //ai[1] = TotalFishCount（自动同步）
+        //ai[2] = Fired 标志（自动同步，供 SparklingSpawnEffect 检测）
+        //localAI[0] = 离场累计位移（确定性，无需同步）
+
+        /// <summary>
+        /// 齐射时的瞄准方向（单位向量），由 OnSpawn 从初始 velocity 中读取
+        /// 各端均能在弹幕生成包到达时立即得到一致值
+        /// </summary>
+        public Vector2 AimDirection { get; private set; } = Vector2.UnitX;
+
+        /// <summary>
+        /// 扇形展开方向，完全由 AimDirection.X 符号推导（确定性，跨端一致）
+        /// </summary>
+        public sbyte ShootDir => AimDirection.X >= 0 ? (sbyte)1 : (sbyte)-1;
+
+        /// <summary>
+        /// 本地确定性计时器，从 0 开始递增，每帧 +1
+        /// 由于鱼在所有端的生成时刻一致，该计时器在各端会自然保持同步
+        /// 持有者会每 60 帧触发一次 netUpdate 把 LocalTimer 同步给其它端做兜底
+        /// </summary>
+        public int LocalTimer;
+
+        public int FishIndex => (int)Projectile.ai[0];
+        public int TotalFishCount => Math.Max(1, (int)Projectile.ai[1]);
         internal bool Fired {
             get => Projectile.ai[2] == 1f;
             set => Projectile.ai[2] = value ? 1f : 0f;
         }
-        private const int PreFireDelay = 16; //鱼出现后到可能开火的最小延迟
 
-        private ref float VolleyId => ref Projectile.ai[0]; //齐射id
-        private ref float FishIndex => ref Projectile.ai[1]; //在该齐射中的序号
+        private const int PreFireDelay = 16; //鱼出现后到可能开火的最小延迟
+        private const int FireInterval = 14; //两条鱼间隔
+        //最后一条鱼开火后再等多久全体进入离场阶段（覆盖激光生命周期 SparklingRay.timeLeft = 40）
+        private const int DepartureGuard = 50;
 
         private float glowPulse;
         private float fadeOut;
+
         public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = 40; Projectile.height = 40;
@@ -221,93 +241,117 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
         }
 
+        public override void OnSpawn(IEntitySource source) {
+            //生成包会把初始 velocity 同步到所有端，因此能在 OnSpawn 中得到一致的 AimDirection
+            if (Projectile.velocity.LengthSquared() > 0.001f) {
+                AimDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            }
+            //鱼是静止漂浮，需要清空 velocity 防止被基类位置更新逻辑推走
+            Projectile.velocity = Vector2.Zero;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write((short)LocalTimer);
+            //AimDirection 由 OnSpawn 中的 velocity 保证一致，但持有者偶发的 netUpdate 也带上一份做兜底
+            writer.WriteVector2(AimDirection);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            LocalTimer = reader.ReadInt16();
+            Vector2 dir = reader.ReadVector2();
+            if (dir.LengthSquared() > 0.5f) {
+                AimDirection = dir.SafeNormalize(AimDirection);
+            }
+        }
+
         public override void AI() {
-            if (Owner == null || !Owner.active) { Projectile.Kill(); return; }
-            var hp = Owner.GetOverride<HalibutPlayer>();
-            if (hp.SparklingVolleyId != (int)VolleyId) { Projectile.Kill(); return; }
+            //owner 由弹幕本身的 owner 字段决定，已是各端一致的玩家索引
+            Player owner = Main.player[Projectile.owner];
+            if (owner == null || !owner.active) { Projectile.Kill(); return; }
+            if (owner.TryGetHalibutPlayer(out var halibutPlayer)) {
+                AimDirection = owner.To(halibutPlayer.MouseWorld).UnitVector();
+            }
+            LocalTimer++;
+            glowPulse = (float)Math.Sin(LocalTimer * 0.25f + FishIndex) * 0.5f + 0.5f;
 
-            glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.25f + FishIndex) * 0.5f + 0.5f;
+            int fishFireTime = PreFireDelay + FishIndex * FireInterval;
+            int allFireTime = PreFireDelay + (TotalFishCount - 1) * FireInterval;
+            int departureStartTime = allFireTime + DepartureGuard;
+            bool inDeparturePhase = LocalTimer >= departureStartTime;
 
-            if (!hp.SparklingDeparturePhase) {
-                Vector2 aimDir = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
-                Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
+            if (!inDeparturePhase) {
+                //位置由同步过的 AimDirection 推算，跨端一致
+                Vector2 behind = (-AimDirection).SafeNormalize(Vector2.UnitX);
                 float arc = MathHelper.ToRadians(FishSparkling.RoingArc);
                 float radius = 190f;
-                float t = hp.SparklingFishCount <= 1 ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
+                float t = TotalFishCount <= 1 ? 0.5f : FishIndex / (float)(TotalFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
-                Vector2 offsetDir = behind.RotatedBy(angOff * FishSparkling.shootDir * -1);
-                Vector2 basePos = Owner.Center + offsetDir * radius;
-                float bob = (float)Math.Sin(Main.GameUpdateCount * 0.08f + FishIndex) * 6f;
+                Vector2 offsetDir = behind.RotatedBy(angOff * ShootDir * -1);
+                Vector2 basePos = owner.Center + offsetDir * radius;
+                float bob = (float)Math.Sin(LocalTimer * 0.08f + FishIndex) * 6f;
                 Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
-                Projectile.rotation = Projectile.To(Main.MouseWorld).ToRotation();
 
-                //逐条依次发射：依据玩家的SparklingVolleyTimer和索引
-                int fireInterval = 14; //两条鱼间隔
-                int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
-                if (!Fired && hp.SparklingVolleyTimer >= startFireTime) {
-                    FireLaser();
+                //朝向使用同步的 AimDirection 来确定一个远点（避免依赖各端不一致的 Main.MouseWorld）
+                Vector2 aimToward = owner.Center + AimDirection * 1500f;
+                Projectile.rotation = Projectile.To(aimToward).ToRotation();
+
+                //仅持有者执行开火逻辑，激光通过 NetMessage 自动同步给其它端
+                if (!Fired && LocalTimer >= fishFireTime && Projectile.IsOwnedByLocalPlayer()) {
                     Fired = true;
+                    FireLaser();
                     Projectile.netUpdate = true;
-                    hp.SparklingNextFireIndex++;
-                }
-                if (hp.SparklingNextFireIndex == hp.SparklingFishCount
-                        && Owner.ownedProjectileCounts[ModContent.ProjectileType<SparklingRay>()] == 0) {
-                    //所有鱼已开火，进入离场延迟等待
-                    hp.SparklingDeparturePhase = true;
-                    hp.SparklingDepartureTimer = 0;
                 }
             }
             else {
-                //离场阶段：先等待，再整体向屏幕外飞行并淡出
-                hp.SparklingDepartureTimer++;
-                if (hp.SparklingDepartureTimer < FishSparkling.DepartureDelay) {
+                int departureTimer = LocalTimer - departureStartTime;
+                if (departureTimer < FishSparkling.DepartureDelay) {
                     //原地轻微旋转漂浮
                     Projectile.rotation += 0.02f * (FishIndex % 2 == 0 ? 1 : -1);
                 }
                 else {
-                    int flyTime = hp.SparklingDepartureTimer - FishSparkling.DepartureDelay;
+                    int flyTime = departureTimer - FishSparkling.DepartureDelay;
                     //平滑加速 0-1
                     float accelProgress = MathHelper.Clamp(flyTime / (float)FishSparkling.DepartureDuration, 0f, 1f);
                     accelProgress = MathF.Pow(accelProgress, 0.65f);
 
-                    //计算目标离开距离：使用屏幕对角尺寸放大，确保真正飞出屏幕再消失
-                    float diag = MathF.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight);
-                    float exitDistance = diag * 1.4f; //1.4 倍对角线
+                    //外向方向完全由出生参数决定，确保所有端一致地飞出去
+                    Vector2 behind = (-AimDirection).SafeNormalize(Vector2.UnitX);
+                    float arc = MathHelper.ToRadians(FishSparkling.RoingArc);
+                    float t = TotalFishCount <= 1 ? 0.5f : FishIndex / (float)(TotalFishCount - 1);
+                    float angOff = (t - 0.5f) * arc;
+                    Vector2 outward = behind.RotatedBy(angOff * ShootDir * -1).SafeNormalize(Vector2.UnitY);
 
-                    //计算外向方向（保持原相对朝向），若与玩家重合则使用玩家朝向
-                    Vector2 outward = Projectile.Center - Owner.Center;
-                    if (outward.LengthSquared() < 4f)
-                        outward = Projectile.Center - Main.MouseWorld;
-                    outward = outward.SafeNormalize(Vector2.UnitY);
-
-                    //当前帧速度（前期更慢，后期加速），再叠加一点随机脉动
+                    //当前帧速度（前期更慢，后期加速），再叠加一点确定性脉动
                     float baseSpeed = MathHelper.Lerp(6f, 32f, accelProgress);
                     baseSpeed *= 1f + 0.15f * (float)Math.Sin(flyTime * 0.18f + FishIndex);
 
                     Vector2 move = outward * baseSpeed;
                     Projectile.Center += move;
 
-                    //使用 localAI[0] 记录累计位移
                     Projectile.localAI[0] += move.Length();
 
-                    //基于行进距离淡出（后半段才开始明显淡出）
+                    //使用一个固定的离场距离，避免依赖各端屏幕尺寸
+                    const float exitDistance = 3200f;
                     float distProgress = MathHelper.Clamp(Projectile.localAI[0] / exitDistance, 0f, 1f);
                     fadeOut = MathHelper.Clamp((distProgress - 0.55f) / 0.45f, 0f, 1f); //55% 距离后开始淡
 
-                    //判定是否离开屏幕区域（加 margin 做缓冲）
-                    Rectangle safeBounds = new((int)Main.screenPosition.X - 180, (int)Main.screenPosition.Y - 180,
-                        Main.screenWidth + 360, Main.screenHeight + 360);
-                    if (!safeBounds.Contains(Projectile.Center.ToPoint()) && (fadeOut > 0.6f || distProgress >= 0.98f)) {
+                    if (distProgress >= 0.98f) {
                         Projectile.Kill();
                     }
                 }
             }
             Projectile.spriteDirection = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
+
+            //持有者每 60 帧广播一次状态，缓解长生命周期下可能的累积漂移
+            if (Projectile.IsOwnedByLocalPlayer() && LocalTimer > 0 && LocalTimer % 60 == 0) {
+                Projectile.netUpdate = true;
+            }
         }
 
         private void FireLaser() {
             SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 0.8f }, Projectile.Center);
-            Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
+            //发射方向使用同步过的 AimDirection，保证激光朝向跨端一致
+            Vector2 dir = AimDirection.SafeNormalize(Vector2.UnitX);
             int damage = (int)(Projectile.damage * (1 + HalibutData.GetDomainLayer() * 0.35));
             int beam = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 10f, dir * 0.1f,
                 ModContent.ProjectileType<SparklingRay>(), damage, 1f, Projectile.owner, Projectile.identity);
@@ -315,6 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.projectile[beam].rotation = dir.ToRotation();
                 Main.projectile[beam].localAI[0] = 0;
                 Main.projectile[beam].localAI[1] = FishIndex; //传递颜色层次
+                Main.projectile[beam].netUpdate = true;
             }
             //发射光尘
             for (int i = 0; i < 12; i++) {
@@ -381,6 +426,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * 2400, 120, ref p);
         }
         public override void AI() {
+            //通过同步的 identity 找到对应的鱼弹幕，使激光跟随鱼的位置和朝向
             if (Projectile.ai[0].TryGetProjectile(out var projectile)) {
                 Projectile.Center = projectile.Center;
                 Projectile.rotation = projectile.rotation;

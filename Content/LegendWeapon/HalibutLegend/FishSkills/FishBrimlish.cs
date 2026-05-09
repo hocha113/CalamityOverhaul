@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -38,10 +39,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnBrimfishSpitter(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
-            //在玩家后方生成
+            //在玩家后方生成。Shoot 仅在持有玩家的本地客户端调用，
+            //Projectile.NewProjectile 会自动通过 NetMessage 同步生成到其它端
             Vector2 behindPlayer = player.Center - new Vector2(player.direction * 120f, 60f);
 
-            int brimfishProj = Projectile.NewProjectile(
+            Projectile.NewProjectile(
                 source,
                 behindPlayer,
                 Vector2.Zero,
@@ -50,10 +52,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 knockback,
                 player.whoAmI
             );
-
-            if (brimfishProj >= 0) {
-                Main.projectile[brimfishProj].netUpdate = true;
-            }
 
             //硫磺火召唤音效
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
@@ -65,6 +63,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     /// <summary>
     /// 硫磺火鱼喷射器弹幕
+    /// 多人模式下采用持有者权威 + 本地视觉镜像的策略：
+    /// 状态机推进、目标锁定、位置移动均由持有者执行，
+    /// 通过 ai 槽位与 SendExtraAI 同步关键状态给其它端。
     /// </summary>
     internal class BrimfishSpitterProjectile : ModProjectile
     {
@@ -78,8 +79,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Fading       //消失
         }
 
+        //ai[0] = 状态枚举（自动同步）
+        //ai[1] = 状态计时（自动同步）
+        //ai[2] = 锁定的目标 NPC 索引 + 1（0 表示无目标，自动同步）
+        //localAI[0] = 蓄力进度（确定性，用于绘制）
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
+        private ref float TargetSlot => ref Projectile.ai[2];
         private ref float ChargeProgress => ref Projectile.localAI[0];
 
         private FishState State {
@@ -87,9 +93,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             set => StateRaw = (float)value;
         }
 
-        private int targetNPCID = -1;
+        /// <summary>
+        /// 当前锁定目标 NPC 索引（-1 表示无），通过 ai[2] 同步
+        /// </summary>
+        private int TargetNPCID {
+            get => (int)TargetSlot - 1;
+            set => TargetSlot = value + 1;
+        }
+
         private float glowIntensity = 0f;
         private float pulsePhase = 0f;
+        private FishState lastVisibleState = FishState.Appearing;
         private readonly List<Vector2> trailPositions = new();
         private const int MaxTrailLength = 12;
 
@@ -124,6 +138,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanDamage() => false; //鱼本身不造成伤害，只有火焰造成伤害
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            //同步旋转角度，因为 Projectile.rotation 默认不参与 NetMessage 同步
+            //同时旋转跟随的目标可能高速移动，需要持有者主导朝向
+            writer.Write(Projectile.rotation);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            Projectile.rotation = reader.ReadSingle();
+        }
+
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
             if (!owner.active || owner.dead) {
@@ -134,20 +158,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             StateTimer++;
             pulsePhase += 0.2f;
 
-            //状态机
+            bool isOwner = Projectile.IsOwnedByLocalPlayer();
+
+            //状态机推进，状态切换时只在持有者侧发生
             switch (State) {
                 case FishState.Appearing:
-                    AppearingBehavior(owner);
+                    AppearingBehavior(owner, isOwner);
                     break;
                 case FishState.Charging:
-                    ChargingBehavior(owner);
+                    ChargingBehavior(owner, isOwner);
                     break;
                 case FishState.Spitting:
-                    SpittingBehavior(owner);
+                    SpittingBehavior(owner, isOwner);
                     break;
                 case FishState.Fading:
-                    FadingBehavior();
+                    FadingBehavior(isOwner);
                     break;
+            }
+
+            //侦测状态切换，便于在所有端播放音效等一次性表现
+            if (State != lastVisibleState) {
+                OnStateEntered(State);
+                lastVisibleState = State;
             }
 
             //更新拖尾
@@ -157,156 +189,177 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float pulse = (float)Math.Sin(pulsePhase) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.8f * pulse * glowIntensity, 0.2f * pulse * glowIntensity, 0.1f * pulse * glowIntensity);
 
-            //硫磺火环境粒子
+            //硫磺火环境粒子（视觉效果，所有端独立生成）
             if (glowIntensity > 0.3f && Main.rand.NextBool(4)) {
                 SpawnBrimstoneAmbient();
             }
 
-            //旋转朝向目标
-            if (State == FishState.Charging || State == FishState.Spitting) {
-                if (IsTargetValid()) {
-                    NPC target = Main.npc[targetNPCID];
-                    Vector2 toTarget = target.Center - Projectile.Center;
-                    Projectile.rotation = MathHelper.Lerp(
-                        Projectile.rotation,
-                        toTarget.ToRotation() + MathHelper.PiOver4,
-                        0.15f
-                    );
-                }
+            //朝向目标：所有端都向同步过的目标进行同样的 Lerp 收敛，
+            //避免远端在两次 netUpdate 之间出现旋转停滞，并以 SendExtraAI 周期校正漂移
+            if ((State == FishState.Charging || State == FishState.Spitting) && IsTargetValid()) {
+                NPC target = Main.npc[TargetNPCID];
+                Vector2 toTarget = target.Center - Projectile.Center;
+                Projectile.rotation = MathHelper.Lerp(
+                    Projectile.rotation,
+                    toTarget.ToRotation() + MathHelper.PiOver4,
+                    0.15f
+                );
+            }
+
+            //持有者周期性广播状态，让其它端的位置/旋转保持收敛
+            if (isOwner && StateTimer > 0 && (int)StateTimer % 12 == 0) {
+                Projectile.netUpdate = true;
             }
         }
 
-        private void AppearingBehavior(Player owner) {
+        private void OnStateEntered(FishState newState) {
+            //在所有端播放对应音效，使其它玩家也能听到
+            switch (newState) {
+                case FishState.Spitting:
+                    SoundEngine.PlaySound(SoundID.Item74 with {
+                        Volume = 0.9f,
+                        Pitch = -0.3f
+                    }, Projectile.Center);
+                    break;
+            }
+        }
+
+        private void AppearingBehavior(Player owner, bool isOwner) {
             float progress = StateTimer / AppearDuration;
 
-            //淡入
+            //淡入（确定性，所有端一致）
             Projectile.alpha = (int)(255 * (1f - progress));
             glowIntensity = progress;
             Projectile.scale = progress;
 
-            //轻微漂浮
-            float floatY = (float)Math.Sin(pulsePhase * 0.8f) * 2f;
-            Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.1f);
+            //轻微漂浮：仅持有者修改位置，避免各端独立漂浮造成位置不一致
+            if (isOwner) {
+                float floatY = (float)Math.Sin(pulsePhase * 0.8f) * 2f;
+                Projectile.Center += new Vector2(0, floatY * 0.1f);
+            }
 
-            //出现时粒子效果
+            //出现时粒子效果（所有端独立生成）
             if (Main.rand.NextBool(3)) {
                 SpawnAppearDust();
             }
 
-            if (StateTimer >= AppearDuration) {
+            if (isOwner && StateTimer >= AppearDuration) {
                 State = FishState.Charging;
                 StateTimer = 0;
 
-                //搜索目标
+                //搜索目标，并通过 ai[2] 同步给其它端
                 NPC target = owner.Center.FindClosestNPC(SearchRange);
-                if (target != null) {
-                    targetNPCID = target.whoAmI;
-                }
+                TargetNPCID = target?.whoAmI ?? -1;
+                Projectile.netUpdate = true;
             }
         }
 
-        private void ChargingBehavior(Player owner) {
+        private void ChargingBehavior(Player owner, bool isOwner) {
             float progress = StateTimer / ChargeDuration;
             ChargeProgress = progress;
 
             //蓄力时发光强度增加
             glowIntensity = 0.6f + progress * 0.4f;
 
-            //轻微漂浮
-            float floatY = (float)Math.Sin(pulsePhase * 1.2f) * 3f;
-            Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.1f);
-
-            //鱼嘴逐渐张开效果（通过缩放模拟）
+            //鱼嘴逐渐张开效果（确定性缩放，所有端一致）
             Projectile.scale = 1f + progress * 0.3f;
+
+            //轻微漂浮：仅持有者修改位置
+            if (isOwner) {
+                float floatY = (float)Math.Sin(pulsePhase * 1.2f) * 3f;
+                Projectile.Center += new Vector2(0, floatY * 0.1f);
+            }
 
             //蓄力时持续生成硫磺火粒子
             if (Main.rand.NextBool(2)) {
                 SpawnChargeDust();
             }
 
-            //蓄力音效
-            if (StateTimer % 10 == 0) {
+            //蓄力音效（所有端按确定性的 StateTimer 播放，节奏接近）
+            if ((int)StateTimer % 10 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with {
                     Volume = 0.3f * progress,
                     Pitch = -0.5f + progress * 0.3f
                 }, Projectile.Center);
             }
 
-            if (StateTimer >= ChargeDuration) {
+            if (isOwner && StateTimer >= ChargeDuration) {
                 State = FishState.Spitting;
                 StateTimer = 0;
 
-                //开始喷射
-                SpitBrimstoneFlames(owner);
+                //开始喷射（仅持有者发射，弹幕通过 NetMessage 同步给其它端）
+                SpitBrimstoneFlames();
 
-                //喷射音效
-                SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.9f,
-                    Pitch = -0.3f
-                }, Projectile.Center);
+                Projectile.netUpdate = true;
             }
         }
 
-        private void SpittingBehavior(Player owner) {
+        private void SpittingBehavior(Player owner, bool isOwner) {
             float progress = StateTimer / SpitDuration;
 
             //喷射时保持强烈发光
             glowIntensity = 1f - progress * 0.3f;
 
-            //喷射时后坐力效果
-            if (IsTargetValid()) {
-                NPC target = Main.npc[targetNPCID];
-                Vector2 toTarget = target.Center - Projectile.Center;
-                Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 2f;
-                Projectile.Center += recoil * 0.1f;
-            }
+            //后坐力 & 漂浮：仅持有者修改位置
+            if (isOwner) {
+                if (IsTargetValid()) {
+                    NPC target = Main.npc[TargetNPCID];
+                    Vector2 toTarget = target.Center - Projectile.Center;
+                    Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 2f;
+                    Projectile.Center += recoil * 0.1f;
+                }
 
-            //持续漂浮
-            float floatY = (float)Math.Sin(pulsePhase) * 2f;
-            Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.05f);
+                float floatY = (float)Math.Sin(pulsePhase) * 2f;
+                Projectile.Center += new Vector2(0, floatY * 0.05f);
+            }
 
             //喷射时持续生成火焰粒子
             if (Main.rand.NextBool(2)) {
                 SpawnSpitEffect();
             }
 
-            if (StateTimer >= SpitDuration) {
+            if (isOwner && StateTimer >= SpitDuration) {
                 State = FishState.Fading;
                 StateTimer = 0;
+                Projectile.netUpdate = true;
             }
         }
 
-        private void FadingBehavior() {
+        private void FadingBehavior(bool isOwner) {
             float progress = StateTimer / FadeDuration;
 
-            //淡出
+            //淡出（确定性，所有端一致）
             Projectile.alpha = (int)(255 * progress);
             glowIntensity = 1f - progress;
             Projectile.scale = 1f - progress * 0.5f;
 
-            //缓慢下沉
-            Projectile.velocity.Y += 0.2f;
+            //缓慢下沉：仅持有者修改速度
+            if (isOwner) {
+                Projectile.velocity.Y += 0.2f;
+            }
 
-            if (StateTimer >= FadeDuration) {
+            if (isOwner && StateTimer >= FadeDuration) {
                 Projectile.Kill();
             }
         }
 
-        private void SpitBrimstoneFlames(Player owner) {
-            if (!IsTargetValid() || Main.myPlayer != Projectile.owner) return;
+        private void SpitBrimstoneFlames() {
+            if (!IsTargetValid() || !Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
 
-            NPC target = Main.npc[targetNPCID];
+            NPC target = Main.npc[TargetNPCID];
 
             //从鱼嘴位置喷射
             Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 20f;
             Vector2 toTarget = (target.Center - mouthPos).SafeNormalize(Vector2.Zero);
 
-            //喷射扇形火焰
+            //喷射扇形火焰（持有者发射，弹幕通过 NetMessage 同步）
             for (int i = 0; i < FlameCount; i++) {
                 float spreadAngle = MathHelper.Lerp(-0.5f, 0.5f, i / (float)(FlameCount - 1));
                 Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(12f, 18f);
 
-                int proj = Projectile.NewProjectile(
+                Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     mouthPos,
                     velocity,
@@ -315,10 +368,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     2f,
                     Projectile.owner
                 );
-                Main.projectile[proj].friendly = true;
             }
 
-            //喷射爆发特效
+            //喷射爆发特效（所有端通过 OnStateEntered 检测进入 Spitting 时执行也可，但此处仅持有者播放即可）
             for (int i = 0; i < 40; i++) {
                 Vector2 velocity = toTarget.RotatedByRandom(0.8f) * Main.rand.NextFloat(8f, 20f);
                 Dust brimstone = Dust.NewDustPerfect(
@@ -356,8 +408,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private bool IsTargetValid() {
-            if (targetNPCID < 0 || targetNPCID >= Main.maxNPCs) return false;
-            NPC target = Main.npc[targetNPCID];
+            int id = TargetNPCID;
+            if (id < 0 || id >= Main.maxNPCs) return false;
+            NPC target = Main.npc[id];
             return target.active && target.CanBeChasedBy();
         }
 
@@ -629,7 +682,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override string Texture => CWRConstant.Placeholder;
 
         private ref float Timer => ref Projectile.ai[0];
-        private float rotationSpeed = 0f;
+        //rotationSpeed 在持有者侧用本地随机决定，通过 ai[1] 同步给其它端
+        private ref float RotationSpeed => ref Projectile.ai[1];
 
         public override void SetDefaults() {
             Projectile.width = 18;
@@ -643,8 +697,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
+        }
 
-            rotationSpeed = Main.rand.NextFloat(-0.3f, 0.3f);
+        public override void OnSpawn(IEntitySource source) {
+            //仅持有者生成随机旋转速度，并通过下一次 netUpdate 同步出去
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                RotationSpeed = Main.rand.NextFloat(-0.3f, 0.3f);
+                Projectile.netUpdate = true;
+            }
         }
 
         public override void AI() {
@@ -653,8 +713,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //减速
             Projectile.velocity *= 0.98f;
 
-            //轻微追踪最近的敌人
-            if (Timer % 15 == 0 && Timer < 60) {
+            //轻微追踪：仅持有者修改速度，避免不同端追踪不同的最近敌人
+            if (Projectile.IsOwnedByLocalPlayer() && Timer % 15 == 0 && Timer < 60) {
                 NPC target = Projectile.Center.FindClosestNPC(400f);
                 if (target != null) {
                     Vector2 toTarget = target.Center - Projectile.Center;
@@ -663,11 +723,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (Projectile.velocity.Length() > 20f) {
                         Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f;
                     }
+                    Projectile.netUpdate = true;
                 }
             }
 
-            //旋转
-            Projectile.rotation += rotationSpeed;
+            //旋转（视觉确定性，所有端随同步过的 RotationSpeed 一致更新）
+            Projectile.rotation += RotationSpeed;
 
             //硫磺火光照
             Lighting.AddLight(Projectile.Center, 0.8f, 0.2f, 0.1f);

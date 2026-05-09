@@ -91,41 +91,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private const float CrashedEyeSideEffectRate = 0.0001f;//死机眼睛的极小副作用
         #endregion
 
-        #region 闪光皇后
-        /// <summary>
-        /// 当前齐射是否激活
-        /// </summary>
-        public bool SparklingVolleyActive { get; set; }
-        /// <summary>
-        /// 当前正在齐射的唯一ID
-        /// </summary>
-        public int SparklingVolleyId { get; set; } = -1;
-        /// <summary>
-        /// 齐射内部计时
-        /// </summary>
-        public int SparklingVolleyTimer { get; set; }
-        /// <summary>
-        /// 武器普通攻击使用计数
-        /// </summary>
-        public int SparklingUseCounter { get; set; }
-        /// <summary>
-        /// 鱼数量
-        /// </summary>
-        public int SparklingFishCount { get; set; }
-        /// <summary>
-        /// 下一条鱼开火索引
-        /// </summary>
-        public int SparklingNextFireIndex { get; set; }
-        /// <summary>
-        /// 全部激光发射完成后的离场阶段
-        /// </summary>
-        public bool SparklingDeparturePhase { get; set; }
-        /// <summary>
-        /// 离场阶段计时
-        /// </summary>
-        public int SparklingDepartureTimer { get; set; }
-        #endregion
-
         #region 鱼形换影
         /// <summary>
         /// 移形换影技能激活状态

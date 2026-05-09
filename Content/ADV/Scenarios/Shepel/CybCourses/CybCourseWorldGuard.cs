@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.OtherMods.ImproveGame;
 using System.Collections.Generic;
 using Terraria;
@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 
         //进入子世界前玩家持有 SHPC 的总数快照（覆盖主背包/各类银行/垃圾槽/QoT大背包）
         //设计要点：基于"前后差量"判定教程产生的多余 SHPC，而不是为兜底物品打标签
-        //  1. 不需要侵入 SHPC / CWRItem 的数据结构，零耦合
-        //  2. 玩家在子世界中自由移动/堆叠/塞进银行均不影响判定
-        //  3. 进入前已合法持有的高等级 SHPC 永远不会被误删（按 Level 升序剔除）
+        //1.不需要侵入 SHPC / CWRItem 的数据结构，零耦合
+        //2.玩家在子世界中自由移动/堆叠/塞进银行均不影响判定
+        //3.进入前已合法持有的高等级 SHPC 永远不会被误删（按 Level 升序剔除）
         //_shpcSnapshotValid 用作"一次性消费"标记，避免静态状态被错位应用
         private static int _shpcOwnedSnapshot;
         private static bool _shpcSnapshotValid;
