@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         #region 战斗状态
         public bool IsEnraged { get; set; }
         public bool IsDeathMode { get; set; }
+        //固定出招顺序的当前索引
+        public int AttackPhaseIndex { get; set; }
         #endregion
 
         #region 蓄力特效数据

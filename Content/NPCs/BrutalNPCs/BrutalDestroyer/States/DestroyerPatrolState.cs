@@ -44,21 +44,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
 
         private IDestroyerState ChooseNextAttack(DestroyerStateContext context) {
-            //加权随机，根据阶段调整权重
-            int roll = Main.rand.Next(100);
+            //固定出招循环顺序
+            //普通: 激光弹幕 → 包围 → 冲刺 → 探针阵列
+            //激怒: 激光弹幕 → 冲刺 → 包围 → 冲刺 → 探针阵列
+            IDestroyerState[] normalSequence = [
+                new DestroyerLaserBarrageState(),
+                new DestroyerEncircleState(),
+                new DestroyerDashPrepareState(),
+                new DestroyerProbeMatrixState()
+            ];
+            IDestroyerState[] enragedSequence = [
+                new DestroyerLaserBarrageState(),
+                new DestroyerDashPrepareState(),
+                new DestroyerEncircleState(),
+                new DestroyerDashPrepareState(),
+                new DestroyerProbeMatrixState()
+            ];
 
-            if (context.IsEnraged) {
-                //半血后探针阵列概率大幅提高
-                if (roll < 20) return new DestroyerLaserBarrageState();
-                if (roll < 35) return new DestroyerEncircleState();
-                if (roll < 55) return new DestroyerDashPrepareState();
-                return new DestroyerProbeMatrixState(); //45%
-            }
-
-            if (roll < 25) return new DestroyerLaserBarrageState();
-            if (roll < 45) return new DestroyerEncircleState();
-            if (roll < 65) return new DestroyerDashPrepareState();
-            return new DestroyerProbeMatrixState(); //35%
+            IDestroyerState[] sequence = context.IsEnraged ? enragedSequence : normalSequence;
+            IDestroyerState next = sequence[context.AttackPhaseIndex % sequence.Length];
+            context.AttackPhaseIndex++;
+            return next;
         }
     }
 }
