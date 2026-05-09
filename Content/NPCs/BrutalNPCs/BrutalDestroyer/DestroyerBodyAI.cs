@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //每节体节用一个稳定但不同的种子（whoAmI），让脉冲扫描带相位错开
             float seed = (npc.whoAmI % 64) / 64f;
 
-            if (time < DestroyerHeadAI.StretchTime || npc.ai[2] == 1) {
+            if (time < DestroyerHeadAI.StretchTime || (npc.ai[2] == 1 && !IsBodyAlt)) {
                 value = Body_Stingless.Value;
                 Vector2 stinglessPos = npc.Center - Main.screenPosition;
                 Vector2 stinglessOrigin = value.Size() / 2;
