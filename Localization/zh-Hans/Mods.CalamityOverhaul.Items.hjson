@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -2196,7 +2196,7 @@ FrostfernBarrelModule: {
 	Tooltip:
 		'''
 		首次命中会在目标身后抽出冰晶脉络，穿线敌人同步承受寒霜
-		它不是单纯冻结，而是把敌群串联成一条会蔓延的霜蕨枝
+		把敌群串联成一条会蔓延的霜蕨枝
 		'''
 }
 

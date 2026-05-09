@@ -100,6 +100,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     ModContent.ProjectileType<SHPCObsidianShardProj>(),
                     shardDamage, 0f, owner);
             }
+            //中央可见冲击：CyberDetonationProj 以 110px 半径 + ai0 = 0.4 触发着色器
+            int centerDmg = Math.Max(damage * 2, 1);
+            int idx = Projectile.NewProjectile(npc.GetSource_FromThis(),
+                npc.Center, Vector2.Zero,
+                ModContent.ProjectileType<CyberDetonationProj>(),
+                centerDmg, 0f, owner, ai0: 0.4f);
+            if (idx >= 0 && idx < Main.maxProjectiles) {
+                Main.projectile[idx].localAI[2] = 110f;
+            }
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 12; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
@@ -108,7 +117,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                         new Color(60, 35, 95), new Color(255, 80, 35),
                         Main.rand.NextFloat(0.7f, 1.5f), Main.rand.Next(16, 30)));
                 }
+                //玻璃环：紫色快速 + 橙色慢速双层
+                PRTLoader.AddParticle(new PRT_StarPulseRing(
+                    npc.Center, Vector2.Zero,
+                    new Color(150, 80, 220, 0), 0.05f, 0.55f, 22));
+                PRTLoader.AddParticle(new PRT_StarPulseRing(
+                    npc.Center, Vector2.Zero,
+                    new Color(255, 110, 50, 0), 0.05f, 0.4f, 28));
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.55f, Pitch = 0.2f }, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.5f, Pitch = -0.3f }, npc.Center);
             }
+            CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel.SHPCNaturalFx.Shake(5f);
         }
 
         public static List<NPC> CollectPheromoneTargets(int owner, Vector2 center, float range, int maxCount) {
