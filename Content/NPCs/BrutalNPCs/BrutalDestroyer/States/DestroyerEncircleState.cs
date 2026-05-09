@@ -64,19 +64,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SetMovement(context, player.Center + offset, speed, turnSpeed);
             context.SetChargeState(3, shrinkProgress);
 
-            //体节激光，降低密度避免无法躲避
-            int baseFireChance = CWRWorld.Death ? 130 : 180;
-            int fireChance = (int)(baseFireChance * (1f - easeOut * 0.5f));
-            fireChance = Math.Max(fireChance, 40);
-
-            if (Timer > 60 && Timer % 8 == 0 && context.BodySegments.Count > 0) {
-                foreach (var segment in context.BodySegments) {
-                    if (segment.active && Main.rand.NextBool(fireChance)) {
-                        FireEncircleLaser(context, segment);
-                    }
-                }
-            }
-
             //包围完成，进入停顿
             if (Timer >= EncircleDuration) {
                 tightenPause = true;
@@ -84,16 +71,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             return null;
-        }
-
-        private static void FireEncircleLaser(DestroyerStateContext context, NPC source) {
-            if (VaultUtils.isClient) return;
-            float speed = CWRWorld.Death ? 6f : 4f;
-            Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
-            //降低激光伤害约25%
-            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.75f);
-            Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
-                ProjectileID.DeathLaser, damage, 0f, Main.myPlayer, ai2: context.Npc.target);
         }
     }
 }
