@@ -190,8 +190,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: 检测任务
 	CancelText: 跳过
+	TrustText: 信任此世界
 	EnabledText: 已启用任务检测
 	DisabledText: 已跳过任务检测
+	TrustedText: 已信任此世界，今后自动启用任务检测
 	DisabledOverlayText:
 		'''
 		任务检测已在当前世界中被禁止

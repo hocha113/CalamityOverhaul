@@ -29,8 +29,10 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText DescText { get; private set; }
         public static LocalizedText ConfirmText { get; private set; }
         public static LocalizedText CancelText { get; private set; }
+        public static LocalizedText TrustText { get; private set; }
         public static LocalizedText EnabledText { get; private set; }
         public static LocalizedText DisabledText { get; private set; }
+        public static LocalizedText TrustedText { get; private set; }
         public static LocalizedText DisabledOverlayText { get; private set; }
 
         //UI控制
@@ -49,8 +51,10 @@ namespace CalamityOverhaul.Content.QuestLogs
         //按钮动画
         private float confirmHoverAnim;
         private float cancelHoverAnim;
+        private float trustHoverAnim;
         private float confirmPressAnim;
         private float cancelPressAnim;
+        private float trustPressAnim;
 
         //图标动画
         private float iconFloatPhase;
@@ -60,24 +64,33 @@ namespace CalamityOverhaul.Content.QuestLogs
         private readonly List<FloatingParticle> particles = [];
         private float particleSpawnTimer;
 
+        //防误触：每次点击后短暂屏蔽再次点击，避免连击同一帧贯穿多个按钮
+        private const int SwapDelayFrames = 12;
+        private int swapDelay;
+
         //布局常量(位置在屏幕上方，避免与LegendUpgradeConfirmUI重叠)
-        private const float PanelWidth = 460f;
-        private const float PanelHeight = 220f;
+        //三个按钮：Confirm / Skip / Trust，所以面板比原来略宽
+        private const float PanelWidth = 540f;
+        private const float PanelHeight = 230f;
         private const float Padding = 24f;
         private const float ButtonHeight = 40f;
-        private const float ButtonWidth = 130f;
         private const float CornerRadius = 12f;
         private const float IconShowcaseWidth = 100f;
 
         //按钮
         private Rectangle confirmButtonRect;
         private Rectangle cancelButtonRect;
+        private Rectangle trustButtonRect;
         private bool hoveringConfirm;
         private bool hoveringCancel;
+        private bool hoveringTrust;
 
         //待处理数据
+        //这些都是本地客户端独占的静态状态：OnEnterWorld 是本地玩家专属回调，
+        //每个客户端进程的 isPending 都互相独立，不会跨网络同步，多人模式下不会互相串流
         private static string pendingWorldName;
         private static string pendingLastWorldName;
+        private static int pendingOwnerWhoAmI = -1;
         private static bool isPending;
 
         //粒子结构
@@ -98,8 +111,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             DescText = this.GetLocalization(nameof(DescText), () => "检测到您从其他世界进入当前世界\n是否在当前世界中检测任务进度？");
             ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "检测任务");
             CancelText = this.GetLocalization(nameof(CancelText), () => "跳过");
+            TrustText = this.GetLocalization(nameof(TrustText), () => "信任此世界");
             EnabledText = this.GetLocalization(nameof(EnabledText), () => "已启用任务检测");
             DisabledText = this.GetLocalization(nameof(DisabledText), () => "已跳过任务检测");
+            TrustedText = this.GetLocalization(nameof(TrustedText), () => "已信任此世界，今后自动启用任务检测");
             DisabledOverlayText = this.GetLocalization(nameof(DisabledOverlayText), () => "任务检测已在当前世界中被禁止\n重新进入世界以重新选择配置");
         }
 
@@ -122,21 +137,42 @@ namespace CalamityOverhaul.Content.QuestLogs
             panelScaleAnim = 0.8f;
             confirmHoverAnim = 0f;
             cancelHoverAnim = 0f;
+            trustHoverAnim = 0f;
             confirmPressAnim = 0f;
             cancelPressAnim = 0f;
+            trustPressAnim = 0f;
+            swapDelay = 0;
             particles.Clear();
         }
 
         /// <summary>
         /// 请求显示世界切换确认UI
+        /// <para>
+        /// 严格的本地客户端校验：
+        /// <list type="bullet">
+        /// <item>服务端永远不会被打扰</item>
+        /// <item>只有本地玩家(<see cref="Main.myPlayer"/>)的 ModPlayer 触发才会入队</item>
+        /// <item>静态字段只在本地进程内共享，多人模式下不会跨客户端串流</item>
+        /// </list>
+        /// </para>
         /// </summary>
-        public static void RequestConfirm(string currentWorldName, string lastWorldName) {
+        public static void RequestConfirm(Player owner, string currentWorldName, string lastWorldName) {
+            //服务端永远不持有 UI 请求
+            if (Main.netMode == NetmodeID.Server) {
+                return;
+            }
+            //只有本地玩家自己的 OnEnterWorld 才会被尊重
+            //OnEnterWorld 在 tModLoader 中本身就是本地回调，这里加一道防御
+            if (owner == null || owner.whoAmI != Main.myPlayer) {
+                return;
+            }
             if (isPending || string.IsNullOrEmpty(currentWorldName)) {
                 return;
             }
 
             pendingWorldName = currentWorldName;
             pendingLastWorldName = lastWorldName;
+            pendingOwnerWhoAmI = owner.whoAmI;
             isPending = true;
 
             SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.1f });
@@ -149,6 +185,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             isPending = false;
             pendingWorldName = null;
             pendingLastWorldName = null;
+            pendingOwnerWhoAmI = -1;
         }
 
         public override void Update() {
@@ -198,10 +235,17 @@ namespace CalamityOverhaul.Content.QuestLogs
             float hoverSpeed = 0.15f;
             confirmHoverAnim += ((hoveringConfirm ? 1f : 0f) - confirmHoverAnim) * hoverSpeed;
             cancelHoverAnim += ((hoveringCancel ? 1f : 0f) - cancelHoverAnim) * hoverSpeed;
+            trustHoverAnim += ((hoveringTrust ? 1f : 0f) - trustHoverAnim) * hoverSpeed;
 
             //按钮按压动画衰减
             confirmPressAnim *= 0.85f;
             cancelPressAnim *= 0.85f;
+            trustPressAnim *= 0.85f;
+
+            //防误触延迟递减
+            if (swapDelay > 0) {
+                swapDelay--;
+            }
 
             //关闭动画
             if (closing) {
@@ -242,9 +286,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             //按钮位置在DrawContent中计算，这里只更新悬停检测
             hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
+            hoveringTrust = trustButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //点击处理
-            if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
+            //点击处理(swapDelay 防止连击穿透)
+            if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f && swapDelay == 0) {
                 if (hoveringConfirm) {
                     confirmPressAnim = 1f;
                     OnConfirm();
@@ -252,6 +297,10 @@ namespace CalamityOverhaul.Content.QuestLogs
                 else if (hoveringCancel) {
                     cancelPressAnim = 1f;
                     OnCancel();
+                }
+                else if (hoveringTrust) {
+                    trustPressAnim = 1f;
+                    OnTrust();
                 }
             }
         }
@@ -305,6 +354,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 SpawnParticle();
             }
 
+            swapDelay = SwapDelayFrames;
             BeginClose();
         }
 
@@ -316,7 +366,48 @@ namespace CalamityOverhaul.Content.QuestLogs
             SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
             CombatText.NewText(player.Hitbox, new Color(200, 150, 100), DisabledText.Value, true);
 
+            swapDelay = SwapDelayFrames;
             BeginClose();
+        }
+
+        private void OnTrust() {
+            //把当前世界加入信任列表，并启用任务检测
+            //之后再进入这个世界会直接静默启用，不再弹窗
+            var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
+            qlPlayer.TrustCurrentQuestWorld();
+            qlPlayer.DontCheckQuestInWorld = string.Empty;
+            qlPlayer.LastWorldFullName = SaveWorld.WorldFullName;
+
+            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.6f });
+            CombatText.NewText(player.Hitbox, new Color(150, 220, 255), TrustedText.Value, true);
+
+            //"信任"操作生成更多偏蓝绿的庆祝粒子，与普通确认作视觉区分
+            for (int i = 0; i < 18; i++) {
+                SpawnTrustParticle();
+            }
+
+            swapDelay = SwapDelayFrames;
+            BeginClose();
+        }
+
+        private void SpawnTrustParticle() {
+            if (particles.Count > 40) return;
+
+            var p = new FloatingParticle {
+                Position = new Vector2(
+                    DrawPosition.X + Main.rand.NextFloat(Size.X),
+                    DrawPosition.Y + Size.Y - 40f
+                ),
+                Velocity = new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), Main.rand.NextFloat(-2.4f, -0.8f)),
+                Life = Main.rand.NextFloat(1.8f, 2.8f),
+                MaxLife = 0f,
+                Size = Main.rand.NextFloat(2.5f, 4.5f),
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                RotationSpeed = Main.rand.NextFloat(-0.08f, 0.08f),
+                BaseColor = Color.Lerp(new Color(120, 220, 220), new Color(180, 250, 255), Main.rand.NextFloat())
+            };
+            p.MaxLife = p.Life;
+            particles.Add(p);
         }
 
         private void BeginClose() {
@@ -528,38 +619,59 @@ namespace CalamityOverhaul.Content.QuestLogs
                 Utils.DrawBorderString(spriteBatch, lines[i], linePos, textColor, 0.85f * scale);
             }
 
-            //右侧图标展示区
+            //右侧图标展示区(高度避让按钮行，避免跨越按钮)
+            float showcaseTop = DrawPosition.Y + Padding * scale;
+            float showcaseBottom = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale - 6f * scale;
             Rectangle showcaseRect = new(
                 (int)(DrawPosition.X + Size.X - showcaseWidth - Padding * scale * 0.5f),
-                (int)(DrawPosition.Y + Padding * scale),
+                (int)showcaseTop,
                 (int)showcaseWidth,
-                (int)(Size.Y - ButtonHeight * scale - Padding * scale * 2f)
+                (int)Math.Max(0, showcaseBottom - showcaseTop)
             );
             DrawIconShowcase(spriteBatch, showcaseRect, alpha, scale);
 
-            //按钮
+            //按钮：横向 3 个，跨整个面板宽度(确认 / 跳过 / 信任此世界)
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
-            float buttonCenterX = DrawPosition.X + Padding * scale + textAreaWidth / 2f;
-            float buttonSpacing = 16f * scale;
-            float scaledButtonWidth = ButtonWidth * scale;
+            float buttonAreaLeft = DrawPosition.X + Padding * scale;
+            float buttonAreaWidth = Size.X - Padding * scale * 2f;
+            float buttonSpacing = 12f * scale;
             float scaledButtonHeight = ButtonHeight * scale;
+            float scaledButtonWidth = (buttonAreaWidth - buttonSpacing * 2f) / 3f;
 
             confirmButtonRect = new Rectangle(
-                (int)(buttonCenterX - scaledButtonWidth - buttonSpacing / 2f),
+                (int)buttonAreaLeft,
                 (int)buttonY,
                 (int)scaledButtonWidth,
                 (int)scaledButtonHeight
             );
 
             cancelButtonRect = new Rectangle(
-                (int)(buttonCenterX + buttonSpacing / 2f),
+                (int)(buttonAreaLeft + scaledButtonWidth + buttonSpacing),
                 (int)buttonY,
                 (int)scaledButtonWidth,
                 (int)scaledButtonHeight
             );
 
-            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, true, scale);
-            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, false, scale);
+            trustButtonRect = new Rectangle(
+                (int)(buttonAreaLeft + (scaledButtonWidth + buttonSpacing) * 2f),
+                (int)buttonY,
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
+            );
+
+            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, ButtonStyle.Confirm, scale);
+            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, ButtonStyle.Cancel, scale);
+            DrawButton(spriteBatch, trustButtonRect, TrustText.Value, trustHoverAnim, trustPressAnim, alpha, ButtonStyle.Trust, scale);
+        }
+
+        /// <summary>
+        /// 按钮配色主题
+        /// </summary>
+        private enum ButtonStyle
+        {
+            Confirm,
+            Cancel,
+            Trust,
         }
 
         private void DrawIconShowcase(SpriteBatch spriteBatch, Rectangle rect, float alpha, float scale) {
@@ -616,7 +728,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
-            float hoverAnim, float pressAnim, float alpha, bool isConfirm, float scale) {
+            float hoverAnim, float pressAnim, float alpha, ButtonStyle style, float scale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             Rectangle drawRect = rect;
@@ -628,39 +740,57 @@ namespace CalamityOverhaul.Content.QuestLogs
             int expandAmount = (int)(hoverAnim * 3f);
             drawRect.Inflate(expandAmount, expandAmount / 2);
 
-            Color bgTop, bgBottom;
-            if (isConfirm) {
-                bgTop = Color.Lerp(new Color(25, 50, 70), new Color(35, 70, 100), hoverAnim);
-                bgBottom = Color.Lerp(new Color(18, 35, 50), new Color(25, 50, 70), hoverAnim);
+            Color bgTop, bgBottom, borderBase, borderHover, glowColor;
+            switch (style) {
+                case ButtonStyle.Confirm:
+                    //蓝色 — 与"启用任务检测"对应
+                    bgTop = Color.Lerp(new Color(25, 50, 70), new Color(35, 70, 100), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(18, 35, 50), new Color(25, 50, 70), hoverAnim);
+                    borderBase = new Color(70, 130, 180);
+                    borderHover = new Color(100, 180, 255);
+                    glowColor = new Color(100, 180, 255);
+                    break;
+                case ButtonStyle.Cancel:
+                    //暗橙色 — 与"跳过"对应
+                    bgTop = Color.Lerp(new Color(50, 40, 35), new Color(70, 55, 45), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(35, 28, 22), new Color(50, 38, 30), hoverAnim);
+                    borderBase = new Color(130, 100, 70);
+                    borderHover = new Color(180, 140, 100);
+                    glowColor = new Color(220, 180, 140);
+                    break;
+                case ButtonStyle.Trust:
+                default:
+                    //青绿色 — 与"信任此世界"语义对应
+                    bgTop = Color.Lerp(new Color(20, 55, 55), new Color(30, 80, 80), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(15, 40, 40), new Color(22, 55, 55), hoverAnim);
+                    borderBase = new Color(80, 160, 160);
+                    borderHover = new Color(140, 230, 230);
+                    glowColor = new Color(150, 240, 240);
+                    break;
             }
-            else {
-                bgTop = Color.Lerp(new Color(50, 40, 35), new Color(70, 55, 45), hoverAnim);
-                bgBottom = Color.Lerp(new Color(35, 28, 22), new Color(50, 38, 30), hoverAnim);
-            }
+
             DrawGradientRoundedRect(spriteBatch, drawRect, bgTop * (alpha * 0.95f), bgBottom * (alpha * 0.95f), 6f);
 
-            Color borderColor = isConfirm
-                ? Color.Lerp(new Color(70, 130, 180), new Color(100, 180, 255), hoverAnim)
-                : Color.Lerp(new Color(130, 100, 70), new Color(180, 140, 100), hoverAnim);
-            DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)(hoverAnim));
+            Color borderColor = Color.Lerp(borderBase, borderHover, hoverAnim);
+            DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)hoverAnim);
 
             if (hoverAnim > 0.01f) {
-                Color innerGlow = (isConfirm ? new Color(100, 180, 255) : new Color(200, 150, 100)) * (alpha * hoverAnim * 0.12f);
+                Color innerGlow = glowColor * (alpha * hoverAnim * 0.12f);
                 DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 8);
             }
 
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f * scale;
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.78f * scale;
             Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
 
             Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
-                Color.Black * (alpha * 0.5f), 0.85f * scale);
+                Color.Black * (alpha * 0.5f), 0.78f * scale);
 
             Color textColor = Color.Lerp(new Color(180, 200, 220), Color.White, hoverAnim);
-            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f * scale);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.78f * scale);
 
             if (hoverAnim > 0.3f) {
-                Color textGlow = (isConfirm ? new Color(100, 180, 255) : new Color(220, 180, 140)) * (alpha * (hoverAnim - 0.3f) * 0.5f);
-                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
+                Color textGlow = glowColor * (alpha * (hoverAnim - 0.3f) * 0.5f);
+                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.78f * scale);
             }
         }
 
@@ -773,5 +903,24 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// 负责在世界生命周期事件中清理<see cref="QuestWorldConfirmUI"/>的全局静态状态
+    /// <para>
+    /// 之前 UI 的<c>isPending</c>等静态字段从未被显式清理。如果玩家在弹窗显示时
+    /// 直接 ESC 退出到主菜单，下次重新进入世界 <see cref="QuestWorldConfirmUI.RequestConfirm"/>
+    /// 会被静默丢弃(因为<c>isPending</c>仍是 true)，新的提示永远出不来
+    /// </para>
+    /// </summary>
+    internal class QuestWorldConfirmUISystem : ModSystem
+    {
+        public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
+
+        public override void OnWorldUnload() => QuestWorldConfirmUI.CancelPending();
+
+        public override void OnWorldLoad() => QuestWorldConfirmUI.CancelPending();
+
+        public override void ClearWorld() => QuestWorldConfirmUI.CancelPending();
     }
 }

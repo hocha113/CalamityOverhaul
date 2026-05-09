@@ -190,8 +190,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: Проверить задания
 	CancelText: Пропустить
+	TrustText: Доверять этому миру
 	EnabledText: Проверка заданий включена
 	DisabledText: Проверка заданий пропущена
+	TrustedText: Мир доверенный; проверка заданий теперь будет включаться автоматически
 	DisabledOverlayText:
 		'''
 		Проверка заданий в этом мире отключена.

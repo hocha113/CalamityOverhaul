@@ -190,8 +190,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: Vérifier
 	CancelText: Passer
+	TrustText: Faire confiance à ce monde
 	EnabledText: Vérification activée
 	DisabledText: Vérification ignorée
+	TrustedText: Monde approuvé : la vérification sera désormais activée automatiquement
 	DisabledOverlayText:
 		'''
 		La vérification des quêtes est désactivée pour ce monde.

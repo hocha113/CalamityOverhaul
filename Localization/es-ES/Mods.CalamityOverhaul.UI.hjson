@@ -190,8 +190,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: Verificar
 	CancelText: Omitir
+	TrustText: Confiar en este mundo
 	EnabledText: Verificación activada
 	DisabledText: Verificación omitida
+	TrustedText: Mundo de confianza; la verificación se activará automáticamente aquí
 	DisabledOverlayText:
 		'''
 		La verificación de misiones está deshabilitada en este mundo.

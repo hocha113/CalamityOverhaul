@@ -190,8 +190,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: Quest prüfen
 	CancelText: Überspringen
+	TrustText: Dieser Welt vertrauen
 	EnabledText: Quest-Prüfung aktiviert
 	DisabledText: Quest-Prüfung übersprungen
+	TrustedText: Welt vertraut; Quest-Prüfung wird hier künftig automatisch aktiviert
 	DisabledOverlayText:
 		'''
 		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.

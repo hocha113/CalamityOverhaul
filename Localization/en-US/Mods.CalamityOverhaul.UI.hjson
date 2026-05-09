@@ -193,8 +193,10 @@ QuestWorldConfirmUI: {
 		'''
 	ConfirmText: Check Quests
 	CancelText: Skip
+	TrustText: Trust This World
 	EnabledText: Quest Check Enabled
 	DisabledText: Quest Check Skipped
+	TrustedText: World trusted; quest check will auto-enable here from now on
 	DisabledOverlayText:
 		'''
 		Quest checking is disabled in this world.
