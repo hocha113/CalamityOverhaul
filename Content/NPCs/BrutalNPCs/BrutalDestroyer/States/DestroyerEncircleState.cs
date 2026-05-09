@@ -8,18 +8,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>
     /// 包围状态：加速旋转+半径收缩，体节激光密度递增
-    /// 改进：包围圈有最小半径限制，玩家不会被完全困死；
-    /// 收缩到最紧时停顿一拍后转入冲刺，给予逃脱窗口
     /// </summary>
     internal class DestroyerEncircleState : DestroyerStateBase
     {
         public override string StateName => "Encircle";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Encircle;
 
-        private const int EncircleDuration = 400;
-        private const int TightenPauseDuration = 40;
-        private const float MinRadius = 1050f;
-        private const float MaxRadius = 1500f;
+        private static int EncircleDuration => 400;
+        private static int TightenPauseDuration => 40;
+        private static float MinRadius => 1050f;
+        private static float MaxRadius => 1500f;
 
         private bool tightenPause;
 
