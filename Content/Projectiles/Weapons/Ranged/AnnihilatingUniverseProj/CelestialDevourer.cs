@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class CelestialDevourer : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        [VaultLoaden("@CalamityMod/Projectiles/StarProj")]
+        [VaultLoaden(CWRConstant.Masking + "Star")]
         private static Asset<Texture2D> starAsset = null;
         public override void SetDefaults() {
             Projectile.height = 24;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             void DrawSprite(float rotation, Vector2 scaleModifier, Color color) {
-                Main.EntitySpriteDraw(texture, drawPos, null, color, rotation, origin, scale * scaleModifier, spriteEffects, 0);
+                Main.EntitySpriteDraw(texture, drawPos, null, color, rotation, origin, scale * scaleModifier * 0.2f, spriteEffects, 0);
             }
 
             for (int i = 0; i < 2; i++) {
