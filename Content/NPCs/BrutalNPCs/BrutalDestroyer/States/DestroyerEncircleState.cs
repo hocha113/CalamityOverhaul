@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private const int EncircleDuration = 400;
         private const int TightenPauseDuration = 40;
-        private const float MinRadius = 650f;
+        private const float MinRadius = 1050f;
         private const float MaxRadius = 1500f;
 
         private bool tightenPause;
