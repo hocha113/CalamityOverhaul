@@ -15,6 +15,7 @@ LegendUpgradeConfirmUI: {
 	ConfirmText: Confirm Upgrade
 	CancelText: Cancel
 	Success: "[ITEM] has been upgraded to level [LEVEL]."
+	QueueIndicator: There are still {0} legendary weapons to be confirmed.
 }
 
 QuestTracker: {

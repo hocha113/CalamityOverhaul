@@ -319,8 +319,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            //玩家手持物品，使用PlayerHolding上下文，跨世界需要确认
-            LegendData?.DoUpdate(item, LegendUpdateContext.PlayerHolding);
+            //玩家手持物品，使用 PlayerHolding 上下文。把 player 一并传入用于 owner 校验，
+            //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
+            LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerHolding);
             if (heldProjType > 0) {
                 //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
                 if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
@@ -342,8 +343,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void UpdateInventory(Item item, Player player) {
-            //玩家背包中的物品，使用PlayerInventory上下文，跨世界需要确认
-            LegendData?.DoUpdate(item, LegendUpdateContext.PlayerInventory);
+            //玩家背包中的物品，使用 PlayerInventory 上下文。把 player 一并传入用于 owner 校验，
+            //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
+            LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerInventory);
             RecoverUnloadedItem.UpdateInventory(item);
             if (InventoryTimer < int.MaxValue)
                 InventoryTimer++;

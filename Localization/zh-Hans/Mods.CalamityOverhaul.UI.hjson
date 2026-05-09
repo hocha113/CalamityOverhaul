@@ -14,6 +14,7 @@ LegendUpgradeConfirmUI: {
 	ConfirmText: 确认升级
 	CancelText: 取消
 	Success: "[ITEM]已经升级到[LEVEL]级"
+	QueueIndicator: 还有 {0} 个传奇武器待确认
 }
 
 QuestTracker: {

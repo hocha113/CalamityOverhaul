@@ -33,6 +33,21 @@ namespace CalamityOverhaul.Content.LegendWeapon
         WorldItem
     }
 
+    /// <summary>
+    /// 传奇武器的可序列化升级数据基类
+    /// <para>
+    /// 数据职责清晰拆分：
+    /// <list type="bullet">
+    /// <item>数据本身：<see cref="Level"/>、<see cref="UpgradeWorldFullName"/> 等</item>
+    /// <item>判断逻辑：<see cref="NeedUpgrade"/>、<see cref="NeedCrossWorldConfirm"/></item>
+    /// <item>升级动作：<see cref="PerformUpgrade"/>、<see cref="MarkSkippedInCurrentWorld"/></item>
+    /// <item>世界感知：所有"是否在升级世界"的判断都集中在 <see cref="IsUpgradeWorld"/></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// UI 弹窗逻辑被完全外置到 <see cref="LegendUpgradeManager"/>，本类不再直接接触 UI
+    /// </para>
+    /// </summary>
     public abstract class LegendData
     {
         /// <summary>
@@ -40,36 +55,47 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// </summary>
         public int Level = 0;
         /// <summary>
-        /// 上一次提升等级的世界名字
+        /// 上一次提升等级的世界名字(显示用)
         /// </summary>
         public string UpgradeWorldName = "";
         /// <summary>
-        /// 上一次提升等级的世界内部名字
+        /// 上一次提升等级的世界完整名字(用于唯一性判断)
         /// </summary>
         public string UpgradeWorldFullName = "";
         /// <summary>
-        /// 标签名是否为空
+        /// 当前会话中被玩家显式跳过的世界完整名字
+        /// <para>该字段是会话级别的，不写入磁盘，玩家重新进入世界时由<see cref="ResetInventory"/>清空</para>
         /// </summary>
-        public bool UpgradeTagNameIsEmpty => UpgradeWorldName == "" || UpgradeWorldFullName == "";
+        public string SkipUpgradeWorldFullName = string.Empty;
+
         /// <summary>
-        /// 当前是否是上次升级的世界
+        /// 升级世界标签是否完全为空(说明这是首次升级)
+        /// </summary>
+        public bool UpgradeTagNameIsEmpty => string.IsNullOrEmpty(UpgradeWorldName) || string.IsNullOrEmpty(UpgradeWorldFullName);
+        /// <summary>
+        /// 当前所在世界是否就是上次升级的世界
         /// </summary>
         public bool IsUpgradeWorld => UpgradeWorldFullName == SaveWorld.WorldFullName;
         /// <summary>
-        /// 这个传奇应该升级到的等级
+        /// 这个传奇应该升级到的等级，由派生类根据世界 Boss 进度等条件计算
         /// </summary>
         public virtual int TargetLevel => 0;
+
         /// <summary>
-        /// 是否跳过升级（用于UI确认后调用）
+        /// 兼容旧字段名：保留对外暴露的<see cref="DontUpgradeName"/>属性
         /// </summary>
-        public string DontUpgradeName = string.Empty;
+        public string DontUpgradeName {
+            get => SkipUpgradeWorldFullName;
+            set => SkipUpgradeWorldFullName = value ?? string.Empty;
+        }
+
+        #region 序列化
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
-            writer.Write(UpgradeWorldName);
-            writer.Write(UpgradeWorldFullName);
-            DontUpgradeName ??= string.Empty;
-            writer.Write(DontUpgradeName);
+            writer.Write(UpgradeWorldName ?? string.Empty);
+            writer.Write(UpgradeWorldFullName ?? string.Empty);
+            writer.Write(SkipUpgradeWorldFullName ?? string.Empty);
             SendLegend(item, writer);
         }
 
@@ -77,20 +103,57 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Level = reader.ReadInt32();
             UpgradeWorldName = reader.ReadString();
             UpgradeWorldFullName = reader.ReadString();
-            DontUpgradeName = reader.ReadString();
+            SkipUpgradeWorldFullName = reader.ReadString();
             ReceiveLegend(item, reader);
         }
 
-        public virtual void SendLegend(Item item, BinaryWriter writer) {
+        public virtual void SendLegend(Item item, BinaryWriter writer) { }
 
+        public virtual void ReceiveLegend(Item item, BinaryReader reader) { }
+
+        public virtual void SaveData(Item item, TagCompound tag) {
+            if (Level > 0) {
+                tag["LegendData:Level"] = Level;
+            }
+            if (!string.IsNullOrEmpty(UpgradeWorldName)) {
+                tag["LegendData:UpgradeWorldName"] = UpgradeWorldName;
+            }
+            if (!string.IsNullOrEmpty(UpgradeWorldFullName)) {
+                tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
+            }
         }
 
-        public virtual void ReceiveLegend(Item item, BinaryReader reader) {
-
+        public virtual void LoadData(Item item, TagCompound tag) {
+            try {
+                if (!tag.TryGet("LegendData:Level", out Level)) {
+                    Level = 0;
+                }
+                if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
+                    UpgradeWorldName = "";
+                }
+                //旧存档兼容：如果只存了 UpgradeWorldName，直接拿来当 UpgradeWorldFullName
+                if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
+                    UpgradeWorldFullName = UpgradeWorldName;
+                }
+                //会话级跳过标记不持久化
+                SkipUpgradeWorldFullName = string.Empty;
+            } catch {
+                Level = 0;
+                UpgradeWorldName = "";
+                UpgradeWorldFullName = "";
+                SkipUpgradeWorldFullName = string.Empty;
+            }
         }
+
+        #endregion
+
+        #region 工具方法
 
         public static string GetWorldUpLines(CWRItem cwrItem) {
             string text = "";
+            if (cwrItem?.LegendData == null) {
+                return text;
+            }
             if (!cwrItem.LegendData.UpgradeTagNameIsEmpty && !cwrItem.LegendData.IsUpgradeWorld) {
                 string worldName = cwrItem.LegendData.UpgradeWorldName;
                 string key = MuraText.GetTextKey("World_Text0");
@@ -108,61 +171,42 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return worldLine + "\n" + trialPreText;
         }
 
-        public virtual void SaveData(Item item, TagCompound tag) {
-            if (Level > 0) {
-                tag["LegendData:Level"] = Level;
-            }
-            if (UpgradeWorldName != "") {
-                tag["LegendData:UpgradeWorldName"] = UpgradeWorldName;
-            }
-            if (UpgradeWorldFullName != "") {
-                tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
-            }
-        }
-
+        /// <summary>
+        /// 进入世界时调用：清理玩家背包内所有传奇武器的会话级跳过标记
+        /// </summary>
         public static void ResetInventory(Player player) {
+            if (player == null) {
+                return;
+            }
             foreach (var i in player.inventory) {
                 if (!i.Alives()) {
                     continue;
                 }
                 try {
-                    var data = i.CWR().LegendData;
+                    var data = i.CWR()?.LegendData;
                     if (data == null) {
                         continue;
                     }
-                    data.DontUpgradeName = string.Empty;//重置跳过升级标记
+                    data.SkipUpgradeWorldFullName = string.Empty;
                 } catch {
                     continue;
                 }
             }
         }
 
-        public virtual void LoadData(Item item, TagCompound tag) {
-            try {
-                if (!tag.TryGet("LegendData:Level", out Level)) {
-                    Level = 0;
-                }
-                if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
-                    UpgradeWorldName = "";
-                }
-                if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
-                    UpgradeWorldFullName = UpgradeWorldName;//这样赋值，如果是第一次加载，可以适配旧存档
-                }
-            } catch {
-                Level = 0;
-                UpgradeWorldName = "";
-                UpgradeWorldFullName = "";
-            }
-        }
+        #endregion
+
+        #region 升级判定与动作
 
         /// <summary>
-        /// 检查物品是否需要升级
+        /// 是否仍然需要升级(综合等级、世界标签、跳过标记的判断)
         /// </summary>
-        /// <returns>如果需要升级返回true</returns>
         public bool NeedUpgrade() {
-            if (DontUpgradeName == SaveWorld.WorldFullName) {
+            //当前世界已显式跳过 -> 不需要
+            if (!string.IsNullOrEmpty(SkipUpgradeWorldFullName) && SkipUpgradeWorldFullName == SaveWorld.WorldFullName) {
                 return false;
             }
+            //已经达到目标等级且记录了来源世界 -> 不需要
             if (TargetLevel <= Level && !UpgradeTagNameIsEmpty) {
                 return false;
             }
@@ -170,65 +214,83 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         /// <summary>
-        /// 检查是否需要跨世界升级确认(即从别的世界带过来的传奇武器)
+        /// 是否需要跨世界确认(从其它世界带过来的传奇武器)
         /// </summary>
-        /// <returns>如果需要跨世界确认返回true</returns>
         public bool NeedCrossWorldConfirm() {
-            //子世界切换不视为跨世界，避免频繁弹出确认窗口
+            //子世界切换不视为跨世界，避免在副本/特殊场景反复弹窗
             if (SubWorldRef.AnyActiveSubWorld()) {
                 return false;
             }
-            return UpgradeWorldFullName != string.Empty && UpgradeWorldFullName != SaveWorld.WorldFullName;
+            //首次升级不算跨世界
+            if (UpgradeTagNameIsEmpty) {
+                return false;
+            }
+            //来源世界与当前世界一致 -> 不需要确认
+            return UpgradeWorldFullName != SaveWorld.WorldFullName;
         }
 
         /// <summary>
-        /// 执行实际的升级操作
+        /// 实际执行一次升级：将等级抬升到<see cref="TargetLevel"/>并记录当前世界
         /// </summary>
-        private void PerformUpgrade() {
+        public void PerformUpgrade() {
             UpgradeWorldName = Main.worldName;
             UpgradeWorldFullName = SaveWorld.WorldFullName;
+            SkipUpgradeWorldFullName = string.Empty;
             Level = TargetLevel;
         }
 
-        public virtual void Update(Item item, LegendUpdateContext context) {
-            //基础检查，如果不需要升级就直接返回
+        /// <summary>
+        /// 在当前世界标记为"跳过升级"，下一次进入世界(<see cref="ResetInventory"/>)时会清除
+        /// </summary>
+        public void MarkSkippedInCurrentWorld() {
+            SkipUpgradeWorldFullName = SaveWorld.WorldFullName;
+        }
+
+        #endregion
+
+        #region 调用入口
+
+        /// <summary>
+        /// 主更新入口
+        /// <para>不同<paramref name="context"/>有不同行为：</para>
+        /// <list type="bullet">
+        /// <item><see cref="LegendUpdateContext.PlayerHolding"/> / <see cref="LegendUpdateContext.PlayerInventory"/>:
+        ///   同世界则静默升级；跨世界且物品归属本地玩家时通过<see cref="LegendUpgradeManager"/>请求 UI 确认</item>
+        /// <item><see cref="LegendUpdateContext.StorageOperation"/> / <see cref="LegendUpdateContext.WorldItem"/>:
+        ///   仅同世界静默升级，跨世界一律不动</item>
+        /// </list>
+        /// </summary>
+        /// <param name="item">承载本数据的物品</param>
+        /// <param name="owner">物品所属玩家(仅 PlayerHolding/PlayerInventory 上下文需要)</param>
+        /// <param name="context">调用上下文</param>
+        public virtual void Update(Item item, Player owner, LegendUpdateContext context) {
             if (!NeedUpgrade()) {
                 return;
             }
 
-            //验证物品有效性
             if (item == null || item.type <= ItemID.None) {
                 return;
             }
 
-            //验证物品的LegendData是否就是当前实例
+            //数据归属校验：必须挂在该物品上才能动它，避免越权写入
             CWRItem cwrItem = item.CWR();
             if (cwrItem == null || cwrItem.LegendData != this) {
                 return;
             }
 
-            //根据上下文决定升级行为
             switch (context) {
                 case LegendUpdateContext.PlayerHolding:
                 case LegendUpdateContext.PlayerInventory:
-                    //玩家背包或手持中的物品，如果是跨世界升级需要确认
                     if (NeedCrossWorldConfirm()) {
-                        //弹出确认UI，等待用户确认
-                        LegendUpgradeConfirmUI.RequestUpgrade(item, this, TargetLevel);
+                        //仅当物品归属本地玩家时弹窗，避免多人模式下 A 的物品在 B 屏幕上弹窗
+                        LegendUpgradeManager.Request(this, item, TargetLevel, owner);
                         return;
                     }
-                    //同世界或首次升级，直接执行
-                    if (!LegendUpgradeConfirmUI.Instance.Active) {
-                        PerformUpgrade();
-                    }
+                    PerformUpgrade();
                     break;
-
                 case LegendUpdateContext.StorageOperation:
                 case LegendUpdateContext.WorldItem:
-                    //存储操作或世界物品，静默升级不弹窗
-                    //这样可以保证箱子里的传奇武器也能正常升级而不会干扰玩家
-                    //但如果是跨世界的传奇武器，需要等玩家主动确认后才能升级
-                    //避免玩家不操作确认窗口直接退出保存时被静默覆盖等级
+                    //存储/世界物品上下文：跨世界一律静默不动，等玩家拿到背包再说
                     if (NeedCrossWorldConfirm()) {
                         return;
                     }
@@ -238,18 +300,26 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         /// <summary>
-        /// 带上下文的更新调用，推荐使用此方法
+        /// 玩家相关上下文(手持/背包)的便捷调用
         /// </summary>
-        public void DoUpdate(Item item, LegendUpdateContext context) {
-            Update(item, context);
+        public void DoUpdate(Item item, Player owner, LegendUpdateContext context) {
+            Update(item, owner, context);
         }
 
         /// <summary>
-        /// 无上下文的更新调用，默认为世界物品上下文(静默升级)
-        /// 保留此重载以兼容旧代码
+        /// 非玩家归属上下文(存档/世界物品)的便捷调用
+        /// </summary>
+        public void DoUpdate(Item item, LegendUpdateContext context) {
+            Update(item, null, context);
+        }
+
+        /// <summary>
+        /// 默认上下文为<see cref="LegendUpdateContext.WorldItem"/>(静默升级)，保留兼容旧调用
         /// </summary>
         public void DoUpdate(Item item) {
-            Update(item, LegendUpdateContext.WorldItem);
+            Update(item, null, LegendUpdateContext.WorldItem);
         }
+
+        #endregion
     }
 }

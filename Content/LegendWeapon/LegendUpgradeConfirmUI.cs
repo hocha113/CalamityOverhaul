@@ -1,10 +1,8 @@
-﻿using InnoVault.GameSystem;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -14,7 +12,15 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon
 {
     /// <summary>
-    /// 传奇武器升级确认UI，在检测到进入高等级世界时弹出确认
+    /// 传奇武器升级确认 UI
+    /// <para>
+    /// 本 UI 是<see cref="LegendUpgradeManager"/>的纯渲染层：
+    /// </para>
+    /// <list type="bullet">
+    /// <item>所有挂起请求/玩家归属/状态判断都在 manager 完成</item>
+    /// <item>UI 仅订阅 manager 的当前请求，不持有任何升级业务状态</item>
+    /// <item>关闭动画期间用本地缓存保持画面连续，避免 manager 清空后立刻"瞬间消失"</item>
+    /// </list>
     /// </summary>
     internal class LegendUpgradeConfirmUI : UIHandle, ILocalizedModType
     {
@@ -27,17 +33,16 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public static LocalizedText ConfirmText { get; private set; }
         public static LocalizedText CancelText { get; private set; }
         public static LocalizedText Success { get; private set; }
+        public static LocalizedText QueueIndicator { get; private set; }
 
         //UI控制
         private float showProgress;
         private float contentFade;
-        private bool closing;
-        private float hideProgress;
 
         //动画时间轴
         private float globalTime;
-        private float panelSlideOffset;
-        private float panelScaleAnim;
+        private float panelSlideOffset = 50f;
+        private float panelScaleAnim = 0.8f;
         private float breatheAnim;
         private float shimmerPhase;
 
@@ -71,11 +76,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private bool hoveringConfirm;
         private bool hoveringCancel;
 
-        //待升级数据
-        private static Item pendingItem;
-        private static LegendData pendingLegendData;
-        private static int targetLevel;
-        private static bool isPending;
+        //展示缓存：在关闭动画期间保持画面内容
+        //这些字段仅用于绘制，不参与升级业务判断
+        private Item displayItem;
+        private int displayTargetLevel;
+        private int displayQueuedCount;
+        private bool everShown;
 
         //粒子结构
         private struct FloatingParticle
@@ -96,18 +102,32 @@ namespace CalamityOverhaul.Content.LegendWeapon
             ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "确认升级");
             CancelText = this.GetLocalization(nameof(CancelText), () => "取消");
             Success = this.GetLocalization(nameof(Success), () => "[ITEM]已经升级到[LEVEL]级");
+            QueueIndicator = this.GetLocalization(nameof(QueueIndicator), () => "还有 {0} 个传奇武器待确认");
         }
 
-        public override bool Active => isPending || showProgress > 0f;
+        /// <summary>
+        /// 当 manager 有挂起请求或者关闭动画尚未结束时为 true
+        /// </summary>
+        public override bool Active => LegendUpgradeManager.HasPending || showProgress > 0.001f;
 
         public override void LoadUIData(TagCompound tag) {
-            CancelPending();
+            //世界数据加载/保存时，确保所有挂起请求被清空
+            //这里使用 manager 而不是再维护一份本地静态状态
+            LegendUpgradeManager.CancelAll();
             ResetAnimations();
+            displayItem = null;
+            displayTargetLevel = 0;
+            displayQueuedCount = 0;
+            everShown = false;
         }
 
         public override void SaveUIData(TagCompound tag) {
-            CancelPending();
+            LegendUpgradeManager.CancelAll();
             ResetAnimations();
+            displayItem = null;
+            displayTargetLevel = 0;
+            displayQueuedCount = 0;
+            everShown = false;
         }
 
         private void ResetAnimations() {
@@ -122,62 +142,55 @@ namespace CalamityOverhaul.Content.LegendWeapon
             particles.Clear();
         }
 
-        /// <summary>
-        /// 请求显示升级确认UI
-        /// </summary>
-        public static void RequestUpgrade(Item item, LegendData legendData, int newLevel) {
-            if (isPending || item == null || legendData == null) {
-                return;
-            }
-
-            pendingItem = item;
-            pendingLegendData = legendData;
-            targetLevel = newLevel;
-            isPending = true;
-
-            //播放打开音效
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.2f });
-        }
-
-        /// <summary>
-        /// 取消待处理的升级请求
-        /// </summary>
-        public static void CancelPending() {
-            isPending = false;
-            pendingItem = null;
-            pendingLegendData = null;
-            targetLevel = 0;
-        }
-
         public override void Update() {
             globalTime += 0.016f;
 
-            //主面板展开动画(带弹性)
-            float targetShow = isPending && !closing ? 1f : 0f;
-            float showSpeed = closing ? 0.12f : 0.08f;
+            //每帧自检：剔除已经失效的挂起请求(物品丢了/数据换了/世界变了)
+            LegendUpgradeManager.TickValidate();
+
+            //从 manager 拉当前请求；只在仍然有效时刷新缓存，否则保留旧缓存让动画顺滑结束
+            var current = LegendUpgradeManager.Current;
+            bool hasRequest = current != null;
+            if (hasRequest) {
+                displayItem = current.Item;
+                displayTargetLevel = current.TargetLevel;
+                displayQueuedCount = LegendUpgradeManager.QueuedCount;
+                everShown = true;
+            }
+
+            //主面板展开动画(打开慢、关闭快)
+            float targetShow = hasRequest ? 1f : 0f;
+            float showSpeed = hasRequest ? 0.08f : 0.12f;
             showProgress += (targetShow - showProgress) * showSpeed;
             if (Math.Abs(showProgress - targetShow) < 0.001f) {
                 showProgress = targetShow;
             }
 
-            if (showProgress <= 0.001f && !isPending) {
-                particles.Clear();
+            //真正空闲时彻底重置
+            if (showProgress <= 0.001f && !hasRequest) {
+                if (everShown) {
+                    ResetAnimations();
+                    displayItem = null;
+                    displayTargetLevel = 0;
+                    displayQueuedCount = 0;
+                    everShown = false;
+                }
                 return;
             }
 
             //面板滑入动画
-            float targetSlide = isPending && !closing ? 0f : 60f;
+            float targetSlide = hasRequest ? 0f : 60f;
             panelSlideOffset += (targetSlide - panelSlideOffset) * 0.15f;
 
             //面板缩放动画(带过冲效果)
-            float targetScale = isPending && !closing ? 1f : 0.85f;
+            float targetScale = hasRequest ? 1f : 0.85f;
             panelScaleAnim += (targetScale - panelScaleAnim) * 0.1f;
             if (panelScaleAnim > 0.98f && targetScale == 1f) {
                 panelScaleAnim += (1.02f - panelScaleAnim) * 0.3f;
             }
 
             //内容淡入(延迟启动)
-            if (showProgress > 0.5f && !closing) {
+            if (showProgress > 0.5f && hasRequest) {
                 float targetFade = 1f;
                 contentFade += (targetFade - contentFade) * 0.12f;
             }
@@ -204,22 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
             confirmPressAnim *= 0.85f;
             cancelPressAnim *= 0.85f;
 
-            //关闭动画
-            if (closing) {
-                hideProgress += 0.06f;
-                if (hideProgress >= 1f) {
-                    hideProgress = 1f;
-                    closing = false;
-                    CancelPending();
-                    ResetAnimations();
-                }
-            }
-
             //更新粒子
             UpdateParticles();
 
             //生成新粒子
-            if (showProgress > 0.3f && !closing) {
+            if (showProgress > 0.3f && hasRequest) {
                 particleSpawnTimer += 1f;
                 if (particleSpawnTimer > 3f) {
                     SpawnParticle();
@@ -240,12 +242,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 player.mouseInterface = true;
             }
 
-            //按钮位置在DrawContent中动态计算，这里只更新悬停检测
+            //按钮位置在 DrawContent 中动态计算，这里只更新悬停检测
             hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //点击处理
-            if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
+            //点击处理：仅在请求仍然有效时响应
+            if (hasRequest && keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringConfirm) {
                     confirmPressAnim = 1f;
                     OnConfirm();
@@ -294,46 +296,32 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private void OnConfirm() {
-            if (pendingLegendData != null && pendingItem != null) {
-                pendingLegendData.UpgradeWorldName = Main.worldName;
-                pendingLegendData.UpgradeWorldFullName = SaveWorld.WorldFullName;
-                pendingLegendData.Level = targetLevel;
+            //把所有业务写入交给 manager，UI 只负责漂亮
+            string itemName = displayItem?.Name ?? string.Empty;
+            int level = displayTargetLevel;
 
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.4f });
+            LegendUpgradeManager.ConfirmCurrent();
 
-                string message = Success.Value.Replace("[ITEM]", pendingItem.Name).Replace("[LEVEL]", targetLevel.ToString());
+            if (!string.IsNullOrEmpty(itemName)) {
+                string message = Success.Value.Replace("[ITEM]", itemName).Replace("[LEVEL]", level.ToString());
                 CombatText.NewText(player.Hitbox, Color.Gold, message, true);
-
-                //生成庆祝粒子
-                for (int i = 0; i < 15; i++) {
-                    SpawnParticle();
-                }
             }
 
-            BeginClose();
+            //生成庆祝粒子
+            for (int i = 0; i < 15; i++) {
+                SpawnParticle();
+            }
         }
 
         private void OnCancel() {
-            SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
-            if (pendingLegendData != null) {
-                pendingLegendData.DontUpgradeName = SaveWorld.WorldFullName;
-            }
-            BeginClose();
-        }
-
-        private void BeginClose() {
-            if (closing) return;
-            closing = true;
-            hideProgress = 0f;
+            LegendUpgradeManager.SkipCurrent();
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.001f) return;
+            if (displayItem == null) return;
 
             float alpha = Math.Min(showProgress * 1.5f, 1f);
-            if (closing) {
-                alpha *= 1f - EaseOutQuad(hideProgress);
-            }
 
             //绘制背景遮罩
             DrawBackdrop(spriteBatch, alpha * 0.4f);
@@ -391,7 +379,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle panelRect = UIHitBox;
 
             //多层阴影(更柔和的投影效果)
@@ -433,7 +420,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
             //流光效果
             float shimmerPos = (shimmerPhase % 4f) / 4f;
-            int perimeter = (rect.Width + rect.Height) * 2;
 
             for (int i = 0; i < 3; i++) {
                 float offset = (shimmerPos + i * 0.33f) % 1f;
@@ -509,6 +495,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         private void DrawContent(SpriteBatch spriteBatch, float alpha) {
             float scale = panelScaleAnim;
+            Item item = displayItem;
+            int targetLevel = displayTargetLevel;
 
             //计算左侧文本区域和右侧物品展示区域
             float showcaseWidth = ItemShowcaseWidth * scale;
@@ -531,43 +519,50 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Color titleColor = Color.Lerp(new Color(255, 240, 200), new Color(255, 200, 100), breatheAnim * 0.3f);
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale);
 
+            //队列指示器(右上角)
+            if (displayQueuedCount > 0) {
+                string queueText = string.Format(QueueIndicator.Value, displayQueuedCount);
+                Vector2 queueSize = FontAssets.MouseText.Value.MeasureString(queueText) * 0.7f * scale;
+                Vector2 queuePos = new(DrawPosition.X + Size.X - Padding * scale - queueSize.X, titlePos.Y + 6f * scale);
+                Color queueColor = new Color(255, 220, 150) * (alpha * 0.85f);
+                Utils.DrawBorderString(spriteBatch, queueText, queuePos, queueColor, 0.7f * scale);
+            }
+
             //分割线(只在文本区域)
             Vector2 dividerStart = titlePos + new Vector2(0, 40 * scale);
             Vector2 dividerEnd = dividerStart + new Vector2(textAreaWidth, 0);
             DrawAnimatedDivider(spriteBatch, dividerStart, dividerEnd, alpha);
 
             //描述文本
-            if (pendingItem != null) {
-                Vector2 descPos = dividerStart + new Vector2(0, 18 * scale);
-                string itemName = pendingItem.Name;
-                string desc = string.Format(DescText.Value, itemName, targetLevel);
-                string[] lines = desc.Split('\n');
+            Vector2 descPos = dividerStart + new Vector2(0, 18 * scale);
+            string itemName = item.Name;
+            string desc = string.Format(DescText.Value, itemName, targetLevel);
+            string[] lines = desc.Split('\n');
 
-                float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y * 0.9f * scale;
-                Color textColor = new Color(220, 210, 190) * alpha;
-                Color highlightColor = new Color(255, 220, 150) * alpha;
+            float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y * 0.9f * scale;
+            Color textColor = new Color(220, 210, 190) * alpha;
+            Color highlightColor = new Color(255, 220, 150) * alpha;
 
-                for (int i = 0; i < lines.Length; i++) {
-                    Vector2 linePos = descPos + new Vector2(0, i * lineHeight);
-                    string lineText = lines[i];
+            for (int i = 0; i < lines.Length; i++) {
+                Vector2 linePos = descPos + new Vector2(0, i * lineHeight);
+                string lineText = lines[i];
 
-                    if (lineText.Contains(itemName) || lineText.Contains(targetLevel.ToString())) {
-                        Utils.DrawBorderString(spriteBatch, lineText, linePos, highlightColor, 0.85f * scale);
-                    }
-                    else {
-                        Utils.DrawBorderString(spriteBatch, lineText, linePos, textColor, 0.85f * scale);
-                    }
+                if (lineText.Contains(itemName) || lineText.Contains(targetLevel.ToString())) {
+                    Utils.DrawBorderString(spriteBatch, lineText, linePos, highlightColor, 0.85f * scale);
                 }
-
-                //右侧物品展示区
-                Rectangle showcaseRect = new(
-                    (int)(DrawPosition.X + Size.X - showcaseWidth - Padding * scale * 0.5f),
-                    (int)(DrawPosition.Y + Padding * scale),
-                    (int)showcaseWidth,
-                    (int)(Size.Y - ButtonHeight * scale)
-                );
-                DrawItemShowcasePanel(spriteBatch, pendingItem, showcaseRect, alpha, scale);
+                else {
+                    Utils.DrawBorderString(spriteBatch, lineText, linePos, textColor, 0.85f * scale);
+                }
             }
+
+            //右侧物品展示区
+            Rectangle showcaseRect = new(
+                (int)(DrawPosition.X + Size.X - showcaseWidth - Padding * scale * 0.5f),
+                (int)(DrawPosition.Y + Padding * scale),
+                (int)showcaseWidth,
+                (int)(Size.Y - ButtonHeight * scale)
+            );
+            DrawItemShowcasePanel(spriteBatch, item, targetLevel, showcaseRect, alpha, scale);
 
             //按钮(放在左侧文本区域下方)
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
@@ -594,9 +589,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, false, scale);
         }
 
-        private void DrawItemShowcasePanel(SpriteBatch spriteBatch, Item item, Rectangle rect, float alpha, float scale) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
+        private void DrawItemShowcasePanel(SpriteBatch spriteBatch, Item item, int targetLevel, Rectangle rect, float alpha, float scale) {
             //展示框背景(深色带渐变)
             Color bgTop = new Color(35, 30, 22) * (alpha * 0.9f);
             Color bgBottom = new Color(25, 22, 16) * (alpha * 0.9f);
@@ -614,14 +607,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
             float floatOffset = MathF.Sin(itemFloatPhase) * 3f;
             Vector2 itemPos = itemCenter + new Vector2(0, floatOffset);
 
-            //使用SoftGlow纹理绘制背景光晕
+            //使用 SoftGlow 纹理绘制背景光晕
             Texture2D softGlow = CWRAsset.SoftGlow.Value;
             float glowScale = (0.8f + itemGlowIntensity * 0.4f) * scale;
             Color glowColor = new Color(255, 180, 80, 0) * (alpha * 0.35f * itemGlowIntensity);
             spriteBatch.Draw(softGlow, itemPos, null, glowColor, 0f,
                 softGlow.Size() / 2f, glowScale, SpriteEffects.None, 0f);
 
-            //使用StarTexture绘制星芒效果
+            //星芒效果
             Texture2D starTex = CWRAsset.SoftGlow.Value;
             float starScale = (0.3f + MathF.Sin(globalTime * 2f) * 0.1f) * scale;
             Color starColor = new Color(255, 220, 150, 0) * (alpha * 0.5f);
@@ -634,7 +627,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 starTex.Size() / 2f, starScale * 0.7f, SpriteEffects.None, 0f);
 
             //物品图标
-            if (item.type > ItemID.None) {
+            if (item != null && item.type > ItemID.None) {
                 float itemScale = 1.3f * scale;
                 VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemPos,
                     item.width, itemScale, itemRotation, Color.White * alpha);
@@ -668,7 +661,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float length = (end - start).Length();
             if (length < 1f) return;
-            Vector2 dir = Vector2.Normalize(end - start);
 
             //底层线条
             Color baseColor = new Color(80, 70, 50) * (alpha * 0.6f);
@@ -680,7 +672,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Vector2 shimmerPos = Vector2.Lerp(start, end, shimmerT);
             Color shimmerColor = new Color(255, 200, 100, 0) * (alpha * 0.8f);
 
-            //使用SoftGlow纹理绘制流光
+            //使用 SoftGlow 纹理绘制流光
             Texture2D softGlow = CWRAsset.SoftGlow.Value;
             float glowScale = 0.15f;
             spriteBatch.Draw(softGlow, shimmerPos, null, shimmerColor * 0.6f, 0f,
@@ -689,8 +681,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
             float hoverAnim, float pressAnim, float alpha, bool isConfirm, float scale) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
             //按压效果
             Rectangle drawRect = rect;
             if (pressAnim > 0.01f) {
@@ -831,8 +821,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private static void DrawInnerGlow(SpriteBatch sb, Rectangle rect, Color color, float radius, int glowSize) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
             for (int i = 0; i < glowSize; i++) {
                 float t = i / (float)glowSize;
                 float alpha = (1f - t) * (1f - t);
@@ -849,7 +837,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         private static void DrawHorizontalGradient(SpriteBatch sb, Rectangle rect, Color left, Color center, Color right) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            int halfWidth = rect.Width / 2;
 
             for (int i = 0; i < rect.Width; i++) {
                 float t = i / (float)rect.Width;
