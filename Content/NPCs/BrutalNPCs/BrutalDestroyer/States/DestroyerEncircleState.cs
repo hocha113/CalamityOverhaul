@@ -45,21 +45,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return null;
             }
 
-            //角速度递增
-            float angularSpeed = MathHelper.Lerp(0.03f,
-                context.IsEnraged ? 0.08f : 0.06f, Math.Min(Timer / 300f, 1f));
-            float angle = Timer * angularSpeed;
-
             //缓出曲线收缩，带最小半径限制
             float shrinkProgress = Math.Min(Timer / (float)EncircleDuration, 1f);
             float easeOut = 1f - (1f - shrinkProgress) * (1f - shrinkProgress);
-            float radius = MathHelper.Lerp(MaxRadius, MinRadius, easeOut);
+            float targetRadius = MathHelper.Lerp(MaxRadius, MinRadius, easeOut);
 
-            Vector2 offset = angle.ToRotationVector2() * radius;
+            //以NPC当前相对玩家的实际角度为基础递增，轨道锚定玩家实时位置
+            float currentAngle = (npc.Center - player.Center).ToRotation();
+            float angularSpeed = MathHelper.Lerp(0.03f,
+                context.IsEnraged ? 0.08f : 0.06f, Math.Min(Timer / 300f, 1f));
+            float nextAngle = currentAngle + angularSpeed;
+
+            Vector2 orbitTarget = player.Center + nextAngle.ToRotationVector2() * targetRadius;
             float speed = MathHelper.Lerp(28f, 40f, shrinkProgress);
             float turnSpeed = MathHelper.Lerp(0.8f, 1.5f, shrinkProgress);
 
-            SetMovement(context, player.Center + offset, speed, turnSpeed);
+            SetMovement(context, orbitTarget, speed, turnSpeed);
             context.SetChargeState(3, shrinkProgress);
 
             //体节激光，降低密度避免无法躲避
