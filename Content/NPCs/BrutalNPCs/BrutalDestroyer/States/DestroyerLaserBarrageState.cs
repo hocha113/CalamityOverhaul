@@ -70,8 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             float speed = CWRWorld.Death ? 6f : 4f;
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
-            //降低激光伤害约25%，避免大师模式下过于致命
-            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.75f);
+            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.5f);
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
                 ProjectileID.DeathLaser, damage, 0f, Main.myPlayer, ai2: context.Npc.target);
         }

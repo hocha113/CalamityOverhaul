@@ -90,8 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (VaultUtils.isClient) return;
             float speed = CWRWorld.Death ? 6f : 4f;
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
-            //降低激光伤害约25%
-            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.55f);
+            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.4f);
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
                 ProjectileID.DeathLaser, damage, 0f, Main.myPlayer, ai2: context.Npc.target);
         }
