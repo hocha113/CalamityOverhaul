@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 if (tag.TryGet("QL_LastWorldFullName", out string lastWorld)) {
                     LastWorldFullName = lastWorld;
                 }
-                //跳过只表示本次会话/本次进世界不检测，不再持久化进玩家档
+                //跳过只表示本次会话，本次进世界不检测
                 DontCheckQuestInWorld = string.Empty;
                 TrustedQuestWorldFullNames = new List<string>();
                 if (tag.TryGet("QL_TrustedQuestWorlds", out List<string> trusted) && trusted != null) {
