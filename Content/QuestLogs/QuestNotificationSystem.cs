@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.QuestLogs
 {
     /// <summary>
-    /// 任务书完成通知——瘦装饰器，将通知委托给统一的 <see cref="NotificationPopupSystem"/>
+    /// 任务书完成通知，将通知委托给统一的 <see cref="NotificationPopupSystem"/>
     /// </summary>
     public class QuestNotificationSystem : ModSystem, ILocalizedModType
     {
