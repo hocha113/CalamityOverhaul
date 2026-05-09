@@ -32,7 +32,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public static LocalizedText DescText { get; private set; }
         public static LocalizedText ConfirmText { get; private set; }
         public static LocalizedText CancelText { get; private set; }
+        public static LocalizedText TrustText { get; private set; }
         public static LocalizedText Success { get; private set; }
+        public static LocalizedText TrustSuccess { get; private set; }
         public static LocalizedText QueueIndicator { get; private set; }
 
         //UI控制
@@ -49,8 +51,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
         //按钮动画
         private float confirmHoverAnim;
         private float cancelHoverAnim;
+        private float trustHoverAnim;
         private float confirmPressAnim;
         private float cancelPressAnim;
+        private float trustPressAnim;
+
+        //切换防误触：每次点击后冷却若干帧，避免连点穿过多个请求
+        private int swapDelay;
 
         //物品图标动画
         private float itemFloatPhase;
@@ -62,19 +69,23 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private float particleSpawnTimer;
 
         //布局常量
-        private const float PanelWidth = 480f;
-        private const float PanelHeight = 240f;
+        private const float PanelWidth = 540f;
+        private const float PanelHeight = 250f;
         private const float Padding = 24f;
-        private const float ButtonHeight = 42f;
-        private const float ButtonWidth = 130f;
+        private const float ButtonHeight = 40f;
+        private const float ButtonWidth = 110f;
         private const float CornerRadius = 12f;
         private const float ItemShowcaseWidth = 120f;
+        //每次点击后等待 12 帧再处理下一个请求，给玩家明显的视觉切换反馈
+        private const int SwapDelayFrames = 12;
 
         //按钮
         private Rectangle confirmButtonRect;
         private Rectangle cancelButtonRect;
+        private Rectangle trustButtonRect;
         private bool hoveringConfirm;
         private bool hoveringCancel;
+        private bool hoveringTrust;
 
         //展示缓存：在关闭动画期间保持画面内容
         //这些字段仅用于绘制，不参与升级业务判断
@@ -100,8 +111,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
             TitleText = this.GetLocalization(nameof(TitleText), () => "传奇武器升级确认");
             DescText = this.GetLocalization(nameof(DescText), () => "检测到当前世界等级高于武器等级\n是否将{0}升级到等级 {1}？");
             ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "确认升级");
-            CancelText = this.GetLocalization(nameof(CancelText), () => "取消");
+            CancelText = this.GetLocalization(nameof(CancelText), () => "本次跳过");
+            TrustText = this.GetLocalization(nameof(TrustText), () => "信任此世界");
             Success = this.GetLocalization(nameof(Success), () => "[ITEM]已经升级到[LEVEL]级");
+            TrustSuccess = this.GetLocalization(nameof(TrustSuccess), () => "[ITEM]已信任本世界，今后将自动同步");
             QueueIndicator = this.GetLocalization(nameof(QueueIndicator), () => "还有 {0} 个传奇武器待确认");
         }
 
@@ -119,6 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             displayTargetLevel = 0;
             displayQueuedCount = 0;
             everShown = false;
+            swapDelay = 0;
         }
 
         public override void SaveUIData(TagCompound tag) {
@@ -128,6 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             displayTargetLevel = 0;
             displayQueuedCount = 0;
             everShown = false;
+            swapDelay = 0;
         }
 
         private void ResetAnimations() {
@@ -137,8 +152,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
             panelScaleAnim = 0.8f;
             confirmHoverAnim = 0f;
             cancelHoverAnim = 0f;
+            trustHoverAnim = 0f;
             confirmPressAnim = 0f;
             cancelPressAnim = 0f;
+            trustPressAnim = 0f;
             particles.Clear();
         }
 
@@ -148,9 +165,16 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //每帧自检：剔除已经失效的挂起请求(物品丢了/数据换了/世界变了)
             LegendUpgradeManager.TickValidate();
 
-            //从 manager 拉当前请求；只在仍然有效时刷新缓存，否则保留旧缓存让动画顺滑结束
+            //切换防误触：在每次确认/跳过/信任之后，强制 UI 进入"短暂闭合"几帧
+            //这样玩家能清晰看到一个弹窗收起、下一个弹窗弹出，不会被连点穿透
+            if (swapDelay > 0) {
+                swapDelay--;
+            }
+
+            //从 manager 拉当前请求；只在仍然有效且不在切换冷却中时刷新缓存
+            //否则保留旧缓存让动画顺滑结束
             var current = LegendUpgradeManager.Current;
-            bool hasRequest = current != null;
+            bool hasRequest = current != null && swapDelay == 0;
             if (hasRequest) {
                 displayItem = current.Item;
                 displayTargetLevel = current.TargetLevel;
@@ -212,10 +236,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
             float hoverSpeed = 0.15f;
             confirmHoverAnim += ((hoveringConfirm ? 1f : 0f) - confirmHoverAnim) * hoverSpeed;
             cancelHoverAnim += ((hoveringCancel ? 1f : 0f) - cancelHoverAnim) * hoverSpeed;
+            trustHoverAnim += ((hoveringTrust ? 1f : 0f) - trustHoverAnim) * hoverSpeed;
 
             //按钮按压动画衰减
             confirmPressAnim *= 0.85f;
             cancelPressAnim *= 0.85f;
+            trustPressAnim *= 0.85f;
 
             //更新粒子
             UpdateParticles();
@@ -245,6 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //按钮位置在 DrawContent 中动态计算，这里只更新悬停检测
             hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
+            hoveringTrust = trustButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
             //点击处理：仅在请求仍然有效时响应
             if (hasRequest && keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
@@ -255,6 +282,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 else if (hoveringCancel) {
                     cancelPressAnim = 1f;
                     OnCancel();
+                }
+                else if (hoveringTrust) {
+                    trustPressAnim = 1f;
+                    OnTrust();
                 }
             }
         }
@@ -301,6 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             int level = displayTargetLevel;
 
             LegendUpgradeManager.ConfirmCurrent();
+            swapDelay = SwapDelayFrames;
 
             if (!string.IsNullOrEmpty(itemName)) {
                 string message = Success.Value.Replace("[ITEM]", itemName).Replace("[LEVEL]", level.ToString());
@@ -315,6 +347,43 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         private void OnCancel() {
             LegendUpgradeManager.SkipCurrent();
+            swapDelay = SwapDelayFrames;
+        }
+
+        private void OnTrust() {
+            string itemName = displayItem?.Name ?? string.Empty;
+
+            LegendUpgradeManager.TrustCurrentAndConfirm();
+            swapDelay = SwapDelayFrames;
+
+            if (!string.IsNullOrEmpty(itemName)) {
+                string message = TrustSuccess.Value.Replace("[ITEM]", itemName);
+                CombatText.NewText(player.Hitbox, new Color(150, 220, 255), message, true);
+            }
+
+            //"信任"操作生成更多带蓝色的庆祝粒子，与普通确认作视觉区分
+            for (int i = 0; i < 20; i++) {
+                SpawnTrustParticle();
+            }
+        }
+
+        private void SpawnTrustParticle() {
+            if (particles.Count > 40) return;
+            var p = new FloatingParticle {
+                Position = new Vector2(
+                    DrawPosition.X + Main.rand.NextFloat(Size.X),
+                    DrawPosition.Y + Size.Y
+                ),
+                Velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-1.8f, -0.6f)),
+                Life = Main.rand.NextFloat(1.8f, 3.2f),
+                MaxLife = 0f,
+                Size = Main.rand.NextFloat(2f, 5f),
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                RotationSpeed = Main.rand.NextFloat(-0.06f, 0.06f),
+                BaseColor = Color.Lerp(new Color(120, 200, 255), new Color(180, 230, 255), Main.rand.NextFloat())
+            };
+            p.MaxLife = p.Life;
+            particles.Add(p);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -519,13 +588,32 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Color titleColor = Color.Lerp(new Color(255, 240, 200), new Color(255, 200, 100), breatheAnim * 0.3f);
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale);
 
-            //队列指示器(右上角)
+            //队列指示器：右对齐到"文本区域"右边缘(即展示区左侧)，带小徽章背景，避免被物品图标挡住
             if (displayQueuedCount > 0) {
                 string queueText = string.Format(QueueIndicator.Value, displayQueuedCount);
-                Vector2 queueSize = FontAssets.MouseText.Value.MeasureString(queueText) * 0.7f * scale;
-                Vector2 queuePos = new(DrawPosition.X + Size.X - Padding * scale - queueSize.X, titlePos.Y + 6f * scale);
-                Color queueColor = new Color(255, 220, 150) * (alpha * 0.85f);
-                Utils.DrawBorderString(spriteBatch, queueText, queuePos, queueColor, 0.7f * scale);
+                float queueScale = 0.7f * scale;
+                Vector2 queueSize = FontAssets.MouseText.Value.MeasureString(queueText) * queueScale;
+
+                //文本区域右边缘
+                float textAreaRight = DrawPosition.X + Padding * scale + textAreaWidth;
+                Vector2 queuePos = new(textAreaRight - queueSize.X, titlePos.Y + 8f * scale);
+
+                //圆角徽章背景，让指示器在深色面板上更醒目
+                int badgePadX = (int)(8f * scale);
+                int badgePadY = (int)(3f * scale);
+                Rectangle badgeRect = new(
+                    (int)queuePos.X - badgePadX,
+                    (int)queuePos.Y - badgePadY,
+                    (int)queueSize.X + badgePadX * 2,
+                    (int)queueSize.Y + badgePadY * 2
+                );
+                Color badgeBg = new Color(45, 35, 20) * (alpha * 0.9f);
+                Color badgeBorder = new Color(180, 140, 70) * (alpha * 0.7f);
+                DrawGradientRoundedRect(spriteBatch, badgeRect, badgeBg, badgeBg * 0.75f, 5f);
+                DrawRoundedRectBorder(spriteBatch, badgeRect, badgeBorder, 5f, 1);
+
+                Color queueColor = new Color(255, 220, 150) * (alpha * 0.95f);
+                Utils.DrawBorderString(spriteBatch, queueText, queuePos, queueColor, queueScale);
             }
 
             //分割线(只在文本区域)
@@ -555,38 +643,60 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 }
             }
 
-            //右侧物品展示区
+            //右侧物品展示区：高度精确计算到按钮顶部上方，留出小间距，避免覆盖按钮
+            float showcaseTop = DrawPosition.Y + Padding * scale;
+            float showcaseBottom = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale - 6f * scale;
             Rectangle showcaseRect = new(
                 (int)(DrawPosition.X + Size.X - showcaseWidth - Padding * scale * 0.5f),
-                (int)(DrawPosition.Y + Padding * scale),
+                (int)showcaseTop,
                 (int)showcaseWidth,
-                (int)(Size.Y - ButtonHeight * scale)
+                (int)Math.Max(0, showcaseBottom - showcaseTop)
             );
             DrawItemShowcasePanel(spriteBatch, item, targetLevel, showcaseRect, alpha, scale);
 
-            //按钮(放在左侧文本区域下方)
+            //按钮：横向 3 个，跨整个面板宽度(确认 / 跳过 / 信任此世界)
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
-            float buttonCenterX = DrawPosition.X + Padding * scale + textAreaWidth / 2f;
-            float buttonSpacing = 16f * scale;
-            float scaledButtonWidth = ButtonWidth * scale;
+            float buttonAreaLeft = DrawPosition.X + Padding * scale;
+            float buttonAreaWidth = Size.X - Padding * scale * 2f;
+            float buttonSpacing = 12f * scale;
             float scaledButtonHeight = ButtonHeight * scale;
+            //3 等分按钮宽度，自适应面板缩放
+            float scaledButtonWidth = (buttonAreaWidth - buttonSpacing * 2f) / 3f;
 
             confirmButtonRect = new Rectangle(
-                (int)(buttonCenterX - scaledButtonWidth - buttonSpacing / 2f),
+                (int)buttonAreaLeft,
                 (int)buttonY,
                 (int)scaledButtonWidth,
                 (int)scaledButtonHeight
             );
 
             cancelButtonRect = new Rectangle(
-                (int)(buttonCenterX + buttonSpacing / 2f),
+                (int)(buttonAreaLeft + scaledButtonWidth + buttonSpacing),
                 (int)buttonY,
                 (int)scaledButtonWidth,
                 (int)scaledButtonHeight
             );
 
-            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, true, scale);
-            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, false, scale);
+            trustButtonRect = new Rectangle(
+                (int)(buttonAreaLeft + (scaledButtonWidth + buttonSpacing) * 2f),
+                (int)buttonY,
+                (int)scaledButtonWidth,
+                (int)scaledButtonHeight
+            );
+
+            DrawButton(spriteBatch, confirmButtonRect, ConfirmText.Value, confirmHoverAnim, confirmPressAnim, alpha, ButtonStyle.Confirm, scale);
+            DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, cancelHoverAnim, cancelPressAnim, alpha, ButtonStyle.Cancel, scale);
+            DrawButton(spriteBatch, trustButtonRect, TrustText.Value, trustHoverAnim, trustPressAnim, alpha, ButtonStyle.Trust, scale);
+        }
+
+        /// <summary>
+        /// 按钮配色主题
+        /// </summary>
+        private enum ButtonStyle
+        {
+            Confirm,
+            Cancel,
+            Trust,
         }
 
         private void DrawItemShowcasePanel(SpriteBatch spriteBatch, Item item, int targetLevel, Rectangle rect, float alpha, float scale) {
@@ -680,7 +790,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text,
-            float hoverAnim, float pressAnim, float alpha, bool isConfirm, float scale) {
+            float hoverAnim, float pressAnim, float alpha, ButtonStyle style, float scale) {
             //按压效果
             Rectangle drawRect = rect;
             if (pressAnim > 0.01f) {
@@ -692,46 +802,61 @@ namespace CalamityOverhaul.Content.LegendWeapon
             int expandAmount = (int)(hoverAnim * 3f);
             drawRect.Inflate(expandAmount, expandAmount / 2);
 
-            //背景渐变
-            Color bgTop, bgBottom;
-            if (isConfirm) {
-                bgTop = Color.Lerp(new Color(50, 45, 25), new Color(70, 60, 30), hoverAnim);
-                bgBottom = Color.Lerp(new Color(35, 30, 18), new Color(50, 42, 22), hoverAnim);
-            }
-            else {
-                bgTop = Color.Lerp(new Color(50, 35, 35), new Color(70, 45, 45), hoverAnim);
-                bgBottom = Color.Lerp(new Color(35, 25, 25), new Color(50, 32, 32), hoverAnim);
+            //不同主题的配色
+            Color bgTop, bgBottom, borderBase, borderHover, glowColor;
+            switch (style) {
+                case ButtonStyle.Confirm:
+                    bgTop = Color.Lerp(new Color(50, 45, 25), new Color(70, 60, 30), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(35, 30, 18), new Color(50, 42, 22), hoverAnim);
+                    borderBase = new Color(150, 130, 70);
+                    borderHover = new Color(255, 200, 100);
+                    glowColor = new Color(255, 200, 100);
+                    break;
+                case ButtonStyle.Cancel:
+                    bgTop = Color.Lerp(new Color(50, 35, 35), new Color(70, 45, 45), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(35, 25, 25), new Color(50, 32, 32), hoverAnim);
+                    borderBase = new Color(150, 100, 100);
+                    borderHover = new Color(220, 150, 150);
+                    glowColor = new Color(255, 150, 150);
+                    break;
+                case ButtonStyle.Trust:
+                default:
+                    //蓝青色，与"信任"语义对应
+                    bgTop = Color.Lerp(new Color(25, 40, 55), new Color(35, 60, 85), hoverAnim);
+                    bgBottom = Color.Lerp(new Color(18, 28, 40), new Color(25, 45, 65), hoverAnim);
+                    borderBase = new Color(80, 130, 170);
+                    borderHover = new Color(120, 200, 255);
+                    glowColor = new Color(120, 200, 255);
+                    break;
             }
             DrawGradientRoundedRect(spriteBatch, drawRect, bgTop * (alpha * 0.95f), bgBottom * (alpha * 0.95f), 6f);
 
             //边框
-            Color borderColor = isConfirm
-                ? Color.Lerp(new Color(150, 130, 70), new Color(255, 200, 100), hoverAnim)
-                : Color.Lerp(new Color(150, 100, 100), new Color(220, 150, 150), hoverAnim);
-            DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)(hoverAnim));
+            Color borderColor = Color.Lerp(borderBase, borderHover, hoverAnim);
+            DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)hoverAnim);
 
             //悬停时的内发光
             if (hoverAnim > 0.01f) {
-                Color innerGlow = (isConfirm ? new Color(255, 200, 100) : new Color(255, 150, 150)) * (alpha * hoverAnim * 0.15f);
+                Color innerGlow = glowColor * (alpha * hoverAnim * 0.15f);
                 DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 10);
             }
 
             //按钮文字
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f * scale;
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.8f * scale;
             Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
 
             //文字阴影
             Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
-                Color.Black * (alpha * 0.5f), 0.85f * scale);
+                Color.Black * (alpha * 0.5f), 0.8f * scale);
 
             //文字主体
             Color textColor = Color.Lerp(new Color(200, 190, 170), Color.White, hoverAnim);
-            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f * scale);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.8f * scale);
 
             //悬停时的文字光晕
             if (hoverAnim > 0.3f) {
-                Color textGlow = (isConfirm ? new Color(255, 200, 100) : new Color(255, 180, 180)) * (alpha * (hoverAnim - 0.3f) * 0.5f);
-                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
+                Color textGlow = glowColor * (alpha * (hoverAnim - 0.3f) * 0.5f);
+                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.8f * scale);
             }
         }
 

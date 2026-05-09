@@ -15,6 +15,8 @@ LegendUpgradeConfirmUI: {
 	CancelText: 取消
 	Success: "[ITEM]已经升级到[LEVEL]级"
 	QueueIndicator: 还有 {0} 个传奇武器待确认
+	TrustText: 信任此世界
+	TrustSuccess: "[ITEM]已信任本世界，今后将自动同步"
 }
 
 QuestTracker: {

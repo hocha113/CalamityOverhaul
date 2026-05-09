@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
     /// <item>请求按物品所有者绑定，只有当物品归属<see cref="Main.myPlayer"/>时才会入队</item>
     /// <item>世界进入/离开/重载时自动清空所有挂起请求，避免静态状态跨世界泄漏</item>
     /// <item>支持队列排队，避免单帧内多个传奇同时请求时丢失提示</item>
+    /// <item>去重严格按 <see cref="LegendData"/> 引用：不同传奇/不同实例都会获得各自的弹窗</item>
     /// </list>
     /// </para>
     /// </summary>
@@ -37,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             public string WorldFullName;
 
             /// <summary>
-            /// 检查请求是否仍然有效（物品仍存在、数据仍归属、世界未变）
+            /// 检查请求是否仍然有效（物品仍存在、数据仍归属、世界未变、仍需要升级）
             /// </summary>
             public bool IsStillValid() {
                 if (Data == null) {
@@ -59,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
         }
 
-        //待处理请求队列(去重)
+        //待处理请求队列
         private static readonly Queue<PendingRequest> queue = new();
         //当前正在展示的请求
         private static PendingRequest current;
@@ -82,7 +83,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>
         /// 请求显示一次跨世界升级确认
         /// <para>
-        /// 该方法会自动过滤：服务端、非本地玩家、重复请求、已挂起的相同物品
+        /// 该方法会自动过滤：服务端、非本地玩家、同一<see cref="LegendData"/>实例的重复请求
+        /// </para>
+        /// <para>
+        /// **去重规则只看<see cref="LegendData"/>引用**：不同传奇(Halibut / Murasama / SHPC)
+        /// 和不同物品实例都会被视为不同的请求，每个都会获得独立的弹窗
         /// </para>
         /// </summary>
         public static void Request(LegendData data, Item item, int targetLevel, Player owner) {
@@ -101,17 +106,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 return;
             }
 
-            int itemType = item.type;
-            int whoAmI = owner.whoAmI;
-
-            //避免重复入队：已经在展示同一物品/同一数据 -> 忽略
-            if (current != null && current.OwnerWhoAmI == whoAmI && (current.Data == data || current.ItemType == itemType)) {
+            //去重：同一个 LegendData 已经在展示或排队中 -> 忽略
+            //(注意只看 Data 引用，不看 ItemType。因为两件同型号的传奇是各自独立的实例)
+            if (current != null && ReferenceEquals(current.Data, data)) {
                 return;
             }
-
-            //避免重复入队：队列中已经有同一物品/同一数据 -> 忽略
             foreach (var pending in queue) {
-                if (pending.OwnerWhoAmI == whoAmI && (pending.Data == data || pending.ItemType == itemType)) {
+                if (ReferenceEquals(pending.Data, data)) {
                     return;
                 }
             }
@@ -120,8 +121,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 Data = data,
                 Item = item,
                 TargetLevel = targetLevel,
-                OwnerWhoAmI = whoAmI,
-                ItemType = itemType,
+                OwnerWhoAmI = owner.whoAmI,
+                ItemType = item.type,
                 WorldFullName = SaveWorld.WorldFullName,
             };
 
@@ -166,6 +167,26 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (req.Data != null) {
                 req.Data.MarkSkippedInCurrentWorld();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
+            }
+
+            AdvanceQueue();
+        }
+
+        /// <summary>
+        /// 用户选择"信任此世界"：把当前世界加入信任列表(持久化到磁盘)，同时执行升级
+        /// <para>之后再进入这个世界时，该传奇会直接静默同步，不再弹出确认</para>
+        /// </summary>
+        public static void TrustCurrentAndConfirm() {
+            if (current == null) {
+                return;
+            }
+            var req = current;
+            current = null;
+
+            if (req.IsStillValid()) {
+                req.Data.TrustCurrentWorld();
+                req.Data.PerformUpgrade();
+                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.6f });
             }
 
             AdvanceQueue();

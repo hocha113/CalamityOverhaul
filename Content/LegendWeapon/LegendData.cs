@@ -2,6 +2,8 @@
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -38,18 +40,27 @@ namespace CalamityOverhaul.Content.LegendWeapon
     /// <para>
     /// 数据职责清晰拆分：
     /// <list type="bullet">
-    /// <item>数据本身：<see cref="Level"/>、<see cref="UpgradeWorldFullName"/> 等</item>
-    /// <item>判断逻辑：<see cref="NeedUpgrade"/>、<see cref="NeedCrossWorldConfirm"/></item>
-    /// <item>升级动作：<see cref="PerformUpgrade"/>、<see cref="MarkSkippedInCurrentWorld"/></item>
-    /// <item>世界感知：所有"是否在升级世界"的判断都集中在 <see cref="IsUpgradeWorld"/></item>
+    /// <item>数据本身：<see cref="Level"/>、<see cref="UpgradeWorldFullName"/>、<see cref="TrustedWorldFullNames"/></item>
+    /// <item>判断逻辑：<see cref="NeedUpgrade"/>、<see cref="NeedCrossWorldConfirm"/>、<see cref="IsTrustedWorld"/></item>
+    /// <item>升级动作：<see cref="PerformUpgrade"/>、<see cref="MarkSkippedInCurrentWorld"/>、<see cref="TrustCurrentWorld"/></item>
     /// </list>
     /// </para>
     /// <para>
-    /// UI 弹窗逻辑被完全外置到 <see cref="LegendUpgradeManager"/>，本类不再直接接触 UI
+    /// 关键安全约束：
+    /// <list type="bullet">
+    /// <item><see cref="PerformUpgrade"/> 使用 <c>Math.Max(Level, TargetLevel)</c>，**等级只升不降**</item>
+    /// <item>无 tag 但 <see cref="Level"/> 大于 0 的"遗留物品"也会触发确认弹窗，避免被静默改写</item>
+    /// <item>"信任世界"列表持久化到磁盘，进入信任世界时跳过弹窗自动同步</item>
+    /// </list>
     /// </para>
     /// </summary>
     public abstract class LegendData
     {
+        /// <summary>
+        /// 单个 LegendData 最多记住的"信任世界"数量上限，避免列表无限增长
+        /// </summary>
+        private const int MaxTrustedWorlds = 32;
+
         /// <summary>
         /// 成长等级
         /// </summary>
@@ -67,6 +78,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <para>该字段是会话级别的，不写入磁盘，玩家重新进入世界时由<see cref="ResetInventory"/>清空</para>
         /// </summary>
         public string SkipUpgradeWorldFullName = string.Empty;
+        /// <summary>
+        /// 玩家选择"信任此世界"的世界完整名字列表
+        /// <para>会持久化到磁盘和网络同步，进入这些世界时直接跳过弹窗、静默升级</para>
+        /// </summary>
+        public List<string> TrustedWorldFullNames = new();
 
         /// <summary>
         /// 升级世界标签是否完全为空(说明这是首次升级)
@@ -96,6 +112,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
             writer.Write(UpgradeWorldName ?? string.Empty);
             writer.Write(UpgradeWorldFullName ?? string.Empty);
             writer.Write(SkipUpgradeWorldFullName ?? string.Empty);
+            //可信世界列表：长度前缀 + 字符串
+            TrustedWorldFullNames ??= new List<string>();
+            writer.Write(TrustedWorldFullNames.Count);
+            foreach (var w in TrustedWorldFullNames) {
+                writer.Write(w ?? string.Empty);
+            }
             SendLegend(item, writer);
         }
 
@@ -104,6 +126,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
             UpgradeWorldName = reader.ReadString();
             UpgradeWorldFullName = reader.ReadString();
             SkipUpgradeWorldFullName = reader.ReadString();
+            int trustedCount = reader.ReadInt32();
+            TrustedWorldFullNames = new List<string>(Math.Max(0, trustedCount));
+            for (int i = 0; i < trustedCount; i++) {
+                TrustedWorldFullNames.Add(reader.ReadString());
+            }
             ReceiveLegend(item, reader);
         }
 
@@ -121,6 +148,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (!string.IsNullOrEmpty(UpgradeWorldFullName)) {
                 tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
             }
+            //仅持久化信任世界列表(SkipUpgradeWorldFullName 是会话级标记，不入档)
+            if (TrustedWorldFullNames != null && TrustedWorldFullNames.Count > 0) {
+                tag["LegendData:TrustedWorlds"] = TrustedWorldFullNames;
+            }
         }
 
         public virtual void LoadData(Item item, TagCompound tag) {
@@ -137,11 +168,21 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 }
                 //会话级跳过标记不持久化
                 SkipUpgradeWorldFullName = string.Empty;
+                //可信世界列表
+                TrustedWorldFullNames = new List<string>();
+                if (tag.TryGet("LegendData:TrustedWorlds", out List<string> trusted) && trusted != null) {
+                    foreach (var w in trusted) {
+                        if (!string.IsNullOrEmpty(w) && !TrustedWorldFullNames.Contains(w)) {
+                            TrustedWorldFullNames.Add(w);
+                        }
+                    }
+                }
             } catch {
                 Level = 0;
                 UpgradeWorldName = "";
                 UpgradeWorldFullName = "";
                 SkipUpgradeWorldFullName = string.Empty;
+                TrustedWorldFullNames = new List<string>();
             }
         }
 
@@ -199,7 +240,37 @@ namespace CalamityOverhaul.Content.LegendWeapon
         #region 升级判定与动作
 
         /// <summary>
-        /// 是否仍然需要升级(综合等级、世界标签、跳过标记的判断)
+        /// 判断当前世界是否已被玩家信任(信任世界进入时跳过弹窗、自动同步)
+        /// </summary>
+        public bool IsTrustedWorld() {
+            if (TrustedWorldFullNames == null || TrustedWorldFullNames.Count == 0) {
+                return false;
+            }
+            string current = SaveWorld.WorldFullName;
+            return !string.IsNullOrEmpty(current) && TrustedWorldFullNames.Contains(current);
+        }
+
+        /// <summary>
+        /// 把当前世界加入信任列表，并持久化到磁盘
+        /// </summary>
+        public void TrustCurrentWorld() {
+            string current = SaveWorld.WorldFullName;
+            if (string.IsNullOrEmpty(current)) {
+                return;
+            }
+            TrustedWorldFullNames ??= new List<string>();
+            if (TrustedWorldFullNames.Contains(current)) {
+                return;
+            }
+            //上限保护：超出时丢弃最早的一个，避免列表无限增长
+            if (TrustedWorldFullNames.Count >= MaxTrustedWorlds) {
+                TrustedWorldFullNames.RemoveAt(0);
+            }
+            TrustedWorldFullNames.Add(current);
+        }
+
+        /// <summary>
+        /// 是否仍然需要升级
         /// </summary>
         public bool NeedUpgrade() {
             //当前世界已显式跳过 -> 不需要
@@ -214,33 +285,47 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         /// <summary>
-        /// 是否需要跨世界确认(从其它世界带过来的传奇武器)
+        /// 是否需要弹窗确认(用于跨世界 / 信任未建立 / 遗留无 tag 等情况)
         /// </summary>
         public bool NeedCrossWorldConfirm() {
             //子世界切换不视为跨世界，避免在副本/特殊场景反复弹窗
             if (SubWorldRef.AnyActiveSubWorld()) {
                 return false;
             }
-            //首次升级不算跨世界
-            if (UpgradeTagNameIsEmpty) {
+            //当前世界已被玩家信任 -> 静默处理
+            if (IsTrustedWorld()) {
                 return false;
             }
-            //来源世界与当前世界一致 -> 不需要确认
+            //无 tag 的物品需要进一步区分：
+            //  - 全新物品(Level == 0)：首次同步，无风险，静默处理
+            //  - 遗留物品(Level > 0 但 tag 丢了)：来源不明，必须显式确认避免静默改写
+            if (UpgradeTagNameIsEmpty) {
+                return Level > 0;
+            }
+            //有 tag 但与当前世界不同 -> 跨世界，需要确认
             return UpgradeWorldFullName != SaveWorld.WorldFullName;
         }
 
         /// <summary>
-        /// 实际执行一次升级：将等级抬升到<see cref="TargetLevel"/>并记录当前世界
+        /// 获取本次升级建议显示给玩家的等级
+        /// <para>始终是<c>max(Level, TargetLevel)</c>，确保 UI 不会展示一个会让玩家"降级"的数字</para>
+        /// </summary>
+        public int GetEffectiveTargetLevel() => Math.Max(Level, TargetLevel);
+
+        /// <summary>
+        /// 实际执行一次升级：把等级抬升到<see cref="TargetLevel"/>并记录当前世界
+        /// <para>**安全网：等级只升不降**，<c>Level = Math.Max(Level, TargetLevel)</c></para>
         /// </summary>
         public void PerformUpgrade() {
             UpgradeWorldName = Main.worldName;
             UpgradeWorldFullName = SaveWorld.WorldFullName;
             SkipUpgradeWorldFullName = string.Empty;
-            Level = TargetLevel;
+            //核心安全约束：等级只升不降。哪怕 TargetLevel 比当前还低，也保留更高值
+            Level = Math.Max(Level, TargetLevel);
         }
 
         /// <summary>
-        /// 在当前世界标记为"跳过升级"，下一次进入世界(<see cref="ResetInventory"/>)时会清除
+        /// 在当前世界标记为"会话级跳过"，下一次进入世界(<see cref="ResetInventory"/>)时会清除
         /// </summary>
         public void MarkSkippedInCurrentWorld() {
             SkipUpgradeWorldFullName = SaveWorld.WorldFullName;
@@ -255,9 +340,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <para>不同<paramref name="context"/>有不同行为：</para>
         /// <list type="bullet">
         /// <item><see cref="LegendUpdateContext.PlayerHolding"/> / <see cref="LegendUpdateContext.PlayerInventory"/>:
-        ///   同世界则静默升级；跨世界且物品归属本地玩家时通过<see cref="LegendUpgradeManager"/>请求 UI 确认</item>
+        ///   需要确认时通过<see cref="LegendUpgradeManager"/>排队请求 UI；其余情况静默升级</item>
         /// <item><see cref="LegendUpdateContext.StorageOperation"/> / <see cref="LegendUpdateContext.WorldItem"/>:
-        ///   仅同世界静默升级，跨世界一律不动</item>
+        ///   需要确认时一律不动；其余情况静默升级</item>
         /// </list>
         /// </summary>
         /// <param name="item">承载本数据的物品</param>
@@ -282,15 +367,17 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 case LegendUpdateContext.PlayerHolding:
                 case LegendUpdateContext.PlayerInventory:
                     if (NeedCrossWorldConfirm()) {
-                        //仅当物品归属本地玩家时弹窗，避免多人模式下 A 的物品在 B 屏幕上弹窗
-                        LegendUpgradeManager.Request(this, item, TargetLevel, owner);
+                        //仅当物品归属本地玩家时弹窗，避免多人模式下 A 玩家的物品在 B 屏幕上弹窗
+                        //同时把"对玩家友好的目标等级"传给 manager(永远不会显示"降级"数字)
+                        LegendUpgradeManager.Request(this, item, GetEffectiveTargetLevel(), owner);
                         return;
                     }
+                    //不需要弹窗：信任世界 / 同世界 / 全新物品 -> 静默升级(等级只升不降)
                     PerformUpgrade();
                     break;
                 case LegendUpdateContext.StorageOperation:
                 case LegendUpdateContext.WorldItem:
-                    //存储/世界物品上下文：跨世界一律静默不动，等玩家拿到背包再说
+                    //存储/世界物品上下文：跨世界一律静默不动，等玩家拿到背包再决定
                     if (NeedCrossWorldConfirm()) {
                         return;
                     }
