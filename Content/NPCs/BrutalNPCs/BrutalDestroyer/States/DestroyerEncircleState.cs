@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override string StateName => "Encircle";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Encircle;
 
-        private static int EncircleDuration => 400;
+        private static int EncircleDuration => 480;
         private static int TightenPauseDuration => 40;
-        private static float MinRadius => 1050f;
-        private static float MaxRadius => 1500f;
+        private static float MinRadius => 800f;
+        private static float MaxRadius => 1080f;
 
         private bool tightenPause;
 
