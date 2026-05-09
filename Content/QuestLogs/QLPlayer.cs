@@ -51,9 +51,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 if (!string.IsNullOrEmpty(LastWorldFullName)) {
                     tag["QL_LastWorldFullName"] = LastWorldFullName;
                 }
-                if (!string.IsNullOrEmpty(DontCheckQuestInWorld)) {
-                    tag["QL_DontCheckQuestInWorld"] = DontCheckQuestInWorld;
-                }
                 if (TrustedQuestWorldFullNames != null && TrustedQuestWorldFullNames.Count > 0) {
                     tag["QL_TrustedQuestWorlds"] = TrustedQuestWorldFullNames;
                 }
@@ -79,10 +76,8 @@ namespace CalamityOverhaul.Content.QuestLogs
                 if (tag.TryGet("QL_LastWorldFullName", out string lastWorld)) {
                     LastWorldFullName = lastWorld;
                 }
+                //跳过只表示本次会话/本次进世界不检测，不再持久化进玩家档
                 DontCheckQuestInWorld = string.Empty;
-                if (tag.TryGet("QL_DontCheckQuestInWorld", out string dontCheck)) {
-                    DontCheckQuestInWorld = dontCheck;
-                }
                 TrustedQuestWorldFullNames = new List<string>();
                 if (tag.TryGet("QL_TrustedQuestWorlds", out List<string> trusted) && trusted != null) {
                     foreach (var w in trusted) {
@@ -144,30 +139,22 @@ namespace CalamityOverhaul.Content.QuestLogs
             TrustedQuestWorldFullNames.Add(current);
         }
 
-        public override void OnEnterWorld() {
-            string currentWorldFullName = SaveWorld.WorldFullName;
+        /// <summary>
+        /// 启用当前世界的任务检测，并记录当前世界为最新任务检测世界
+        /// </summary>
+        public void EnableQuestCheckInCurrentWorld(bool runWorldEnterChecks = false) {
+            DontCheckQuestInWorld = string.Empty;
+            LastWorldFullName = SaveWorld.WorldFullName;
 
-            //子世界切换不视为跨世界，避免频繁弹出确认窗口
-            bool isSubWorld = SubWorldRef.AnyActiveSubWorld();
+            if (runWorldEnterChecks) {
+                RunWorldEnterQuestChecks();
+            }
+        }
 
-            //信任世界：直接静默启用任务检测，跳过任何弹窗逻辑
-            //这样玩家在多个常驻世界之间跳转时，再也不会被问到任务检测的事
-            if (!isSubWorld && IsCurrentQuestWorldTrusted()) {
-                DontCheckQuestInWorld = string.Empty;
-                LastWorldFullName = currentWorldFullName;
-            }
-            //检测是否进入了不同的世界
-            else if (!isSubWorld && !string.IsNullOrEmpty(LastWorldFullName) && LastWorldFullName != currentWorldFullName) {
-                //进入了不同的世界，重置跳过标记并弹出确认窗口
-                DontCheckQuestInWorld = string.Empty;
-                QuestWorldConfirmUI.RequestConfirm(Player, Main.worldName, LastWorldFullName);
-            }
-            else if (string.IsNullOrEmpty(LastWorldFullName)) {
-                //首次进入，正常设置
-                LastWorldFullName = currentWorldFullName;
-            }
-            //同一世界不需要重置，保持之前的选择
-
+        /// <summary>
+        /// 执行进入世界时需要跑的任务解锁/刷新逻辑
+        /// </summary>
+        public static void RunWorldEnterQuestChecks() {
             if (QuestNode.GetQuest<FirstQuest>() != null) {
                 QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
             }
@@ -177,6 +164,34 @@ namespace CalamityOverhaul.Content.QuestLogs
                 quest.OnWorldEnter();
                 quest.CheckUnlock();
             }
+        }
+
+        public override void OnEnterWorld() {
+            string currentWorldFullName = SaveWorld.WorldFullName;
+
+            //子世界切换不视为跨世界，避免频繁弹出确认窗口
+            bool isSubWorld = SubWorldRef.AnyActiveSubWorld();
+
+            //信任世界：直接静默启用任务检测，跳过任何弹窗逻辑
+            //这样玩家在多个常驻世界之间跳转时，再也不会被问到任务检测的事
+            if (!isSubWorld && IsCurrentQuestWorldTrusted()) {
+                EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
+            }
+            //检测是否进入了不同的世界
+            else if (!isSubWorld && !string.IsNullOrEmpty(LastWorldFullName) && LastWorldFullName != currentWorldFullName) {
+                //进入了不同的世界，重置跳过标记并弹出确认窗口
+                DontCheckQuestInWorld = string.Empty;
+                QuestWorldConfirmUI.RequestConfirm(Player, Main.worldName, LastWorldFullName);
+                return;
+            }
+            else if (string.IsNullOrEmpty(LastWorldFullName)) {
+                //首次进入，正常设置
+                EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
+            }
+            else {
+                RunWorldEnterQuestChecks();
+            }
+            //同一世界不需要重置，保持之前的选择
         }
 
         public override void PostUpdate() {

@@ -344,8 +344,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         private void OnConfirm() {
             //启用任务检测
             var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
-            qlPlayer.DontCheckQuestInWorld = string.Empty;
-            qlPlayer.LastWorldFullName = SaveWorld.WorldFullName;
+            qlPlayer.EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
 
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
             CombatText.NewText(player.Hitbox, new Color(100, 200, 255), EnabledText.Value, true);
@@ -375,8 +374,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //之后再进入这个世界会直接静默启用，不再弹窗
             var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
             qlPlayer.TrustCurrentQuestWorld();
-            qlPlayer.DontCheckQuestInWorld = string.Empty;
-            qlPlayer.LastWorldFullName = SaveWorld.WorldFullName;
+            qlPlayer.EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
 
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.6f });
             CombatText.NewText(player.Hitbox, new Color(150, 220, 255), TrustedText.Value, true);
@@ -779,18 +777,24 @@ namespace CalamityOverhaul.Content.QuestLogs
                 DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 8);
             }
 
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.78f * scale;
+            float baseTextScale = 0.78f * scale;
+            Vector2 rawTextSize = FontAssets.MouseText.Value.MeasureString(text);
+            float maxTextWidth = Math.Max(1f, drawRect.Width - 12f * scale);
+            float textScale = rawTextSize.X > 0f
+                ? Math.Min(baseTextScale, maxTextWidth / rawTextSize.X)
+                : baseTextScale;
+            Vector2 textSize = rawTextSize * textScale;
             Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
 
             Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
-                Color.Black * (alpha * 0.5f), 0.78f * scale);
+                Color.Black * (alpha * 0.5f), textScale);
 
             Color textColor = Color.Lerp(new Color(180, 200, 220), Color.White, hoverAnim);
-            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.78f * scale);
+            Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, textScale);
 
             if (hoverAnim > 0.3f) {
                 Color textGlow = glowColor * (alpha * (hoverAnim - 0.3f) * 0.5f);
-                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.78f * scale);
+                Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, textScale);
             }
         }
 
