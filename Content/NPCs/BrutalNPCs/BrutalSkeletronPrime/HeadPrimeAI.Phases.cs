@@ -18,6 +18,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SpawnEye();
                 npc.life = 1;
                 npc.Center = player.Center + new Vector2(0, 1200);
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
+                }
             }
 
             npc.damage = 0;
@@ -26,7 +29,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 toTarget = npc.Center.To(player.Center);
             npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
             npc.velocity = Vector2.Zero;
-            npc.position += player.velocity;
+            if (!VaultUtils.isClient) {
+                npc.position += player.velocity;
+                if (ai0 % 15 == 0) {
+                    npc.netUpdate = true;
+                }
+            }
             Vector2 toPoint = player.Center;
 
             if (ai0 < 60) {
@@ -394,7 +402,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     Vector2 toTarget = npc.Center.To(player.Center);
                     npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
                     npc.velocity = Vector2.Zero;
-                    npc.position += player.velocity;
+                    if (!VaultUtils.isClient) {
+                        npc.position += player.velocity;
+                        if (ai4 % 20 == 0) {
+                            npc.netUpdate = true;
+                        }
+                    }
                     Vector2 toPoint = player.Center;
 
                     toPoint = player.Center + new Vector2(0, death ? -400 : -500);
