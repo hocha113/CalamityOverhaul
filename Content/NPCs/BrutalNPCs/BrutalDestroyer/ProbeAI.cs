@@ -87,7 +87,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
                 case 1f: //蓄力准备
                     npc.velocity *= 0.92f; //更强的刹车感
-                    npc.rotation = npc.AngleTo(target.Center);
+                    //激光发射前持续跟踪目标，发射后锁定方向
+                    if (attackTimer < (int)(ReelBackTime * 0.7f)) {
+                        npc.rotation = npc.AngleTo(target.Center);
+                    }
                     attackTimer++;
 
                     //蓄力时的震动效果
@@ -111,10 +114,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
 
                     if (attackTimer >= ReelBackTime) {
-                        //冲刺方向扰动
-                        float dashAngleOffset = Main.rand.NextFloat(-0.12f, 0.12f);
-                        Vector2 dashDir = npc.To(target.Center).UnitVector().RotatedBy(dashAngleOffset);
-                        //爆发性的冲刺速度
+                        //沿激光发射方向冲刺，保持轨迹一致
+                        Vector2 dashDir = npc.rotation.ToRotationVector2();
                         npc.velocity = dashDir * (hoverSpeed * 1.8f);
 
                         //冲刺音效
