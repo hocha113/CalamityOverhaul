@@ -189,10 +189,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 Projectile.localAI[0] = 1f;
             }
 
-            if (hp == null || !hp.SeaDomainActive) {
-                if (currentState != DomainState.Collapsing) {
-                    StartCollapse();
+            //只有弹幕主人监听SeaDomainActive状态，通过ai[1]向所有客户端广播坍缩信号
+            //队友客户端的hp.SeaDomainActive不会同步，直接读取会导致多人模式下弹幕立即坍缩后循环重生
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                if (hp == null || !hp.SeaDomainActive) {
+                    if (Projectile.ai[1] != 1f) {
+                        Projectile.ai[1] = 1f;
+                        Projectile.netUpdate = true;
+                    }
                 }
+            }
+            if (Projectile.ai[1] == 1f && currentState != DomainState.Collapsing) {
+                StartCollapse();
             }
 
             Projectile.timeLeft = 2;
