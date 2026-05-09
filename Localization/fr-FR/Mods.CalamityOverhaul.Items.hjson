@@ -2138,6 +2138,96 @@ ConcussionBarrelModule: {
 		''' */
 }
 
+ObsidianBarrelModule: {
+	// DisplayName: Obsidian Barrel
+	/* Tooltip:
+		'''
+		Hits carve obsidian cracks into targets; at full stacks they shatter into hunting volcanic glass
+		Orb detonations rupture nearby cracks early, rewarding sustained pressure on clustered enemies
+		''' */
+}
+
+LifebloomBarrelModule: {
+	// DisplayName: Lifebloom Barrel
+	/* Tooltip:
+		'''
+		Beams seed parasitic lifebuds that drain delayed damage and return a little life to the wielder
+		When a host dies, the bud transfers to a nearby enemy and keeps growing
+		''' */
+}
+
+MagmaVentBarrelModule: {
+	// DisplayName: Magma Vent Barrel
+	/* Tooltip:
+		'''
+		Hits and expired beams leave short-lived magma vents that periodically erupt into vertical heat columns
+		Underworld and high-heat liquid conditions make the vents cycle faster for area denial
+		''' */
+}
+
+CumulusBarrelModule: {
+	// DisplayName: Cumulus Barrel
+	/* Tooltip:
+		'''
+		Beam paths condense chargeable cloud nodes that feed on nearby SHPC beams and charge orbs
+		Once full, each cloud drops three short rain-lightning beams for positional firepower
+		''' */
+}
+
+MossboundBarrelModule: {
+	// DisplayName: Mossbound Barrel
+	/* Tooltip:
+		'''
+		Beams sow wet moss patches that slow enemies and build toward a brief root snare
+		Flying charge orbs absorb nearby moss to enlarge their final blast
+		''' */
+}
+
+FrostfernBarrelModule: {
+	// DisplayName: Frostfern Barrel
+	/* Tooltip:
+		'''
+		The first strike draws an ice-vein behind the target, sharing frost with enemies caught along the line
+		It links crowds through branching fern geometry instead of simply freezing one victim
+		''' */
+}
+
+SandstormBarrelModule: {
+	// DisplayName: Sandstorm Barrel
+	/* Tooltip:
+		'''
+		Sustained fire rolls a moving sand curtain forward, abrading enemies and softening hostile projectiles
+		Beams gain extra pierce while mana draw rises to keep the storm moving
+		''' */
+}
+
+CoralReefBarrelModule: {
+	// DisplayName: Coral Reef Barrel
+	/* Tooltip:
+		'''
+		Impact points grow coral anchors that connect into damaging reef lines
+		Orb detonations make nearby anchors release synchronized circular surges
+		''' */
+}
+
+HiveBarrelModule: {
+	// DisplayName: Hive Barrel
+	/* Tooltip:
+		'''
+		Left-click hits tag foes with pheromones, then orb detonations launch cyber bees at marked targets
+		Spread markers across the fight to make the swarm split and cover the field
+		''' */
+}
+
+MoondewBarrelModule: {
+	// DisplayName: Moondew Barrel
+	/* Tooltip:
+		'''
+		Beam trails condense dew prisms that refract later beams into short derived shots
+		Night and near-full moons raise each prism's refraction ceiling and payoff
+		''' */
+}
+
 CrosslinkOpticModule: {
 	// DisplayName: Crosslink Optic
 	/* Tooltip:

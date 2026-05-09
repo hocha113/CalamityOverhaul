@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic;
@@ -53,6 +53,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 ModContent.ItemType<GraviticBarrelModule>(),
                 ModContent.ItemType<PrismaticBarrelModule>(),
                 ModContent.ItemType<ConcussionBarrelModule>(),
+                ModContent.ItemType<ObsidianBarrelModule>(),
+                ModContent.ItemType<LifebloomBarrelModule>(),
+                ModContent.ItemType<MagmaVentBarrelModule>(),
+                ModContent.ItemType<CumulusBarrelModule>(),
+                ModContent.ItemType<MossboundBarrelModule>(),
+                ModContent.ItemType<FrostfernBarrelModule>(),
+                ModContent.ItemType<SandstormBarrelModule>(),
+                ModContent.ItemType<CoralReefBarrelModule>(),
+                ModContent.ItemType<HiveBarrelModule>(),
+                ModContent.ItemType<MoondewBarrelModule>(),
                 ModContent.ItemType<PrecisionOpticModule>(),
                 ModContent.ItemType<AdaptiveOpticModule>(),
                 ModContent.ItemType<ThermalOpticModule>(),

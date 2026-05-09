@@ -1,8 +1,10 @@
-﻿using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -25,6 +27,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public int DataErosionTickDmg;
         /// <summary>时相减速剩余帧数</summary>
         public int ChronalSlowTime;
+        /// <summary>黑曜石裂纹剩余帧数与层数</summary>
+        public int ObsidianCrackTime;
+        public int ObsidianCrackStacks;
+        public int ObsidianCrackOwner = Main.maxPlayers;
+        public int ObsidianCrackDamage;
+        /// <summary>生命芽寄生剩余帧数与 tick 伤害</summary>
+        public int LifebloomTime;
+        public int LifebloomTickDmg;
+        public int LifebloomOwner = Main.maxPlayers;
+        /// <summary>湿苔缠绕剩余帧数与层数</summary>
+        public int MossTime;
+        public int MossStacks;
+        /// <summary>蜂巢信息素标记</summary>
+        public int PheromoneTime;
+        public int PheromoneOwner = Main.maxPlayers;
 
         private static bool _shaderActive;
 
@@ -37,6 +54,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>施加时相减速效果，新时长仅在大于当前剩余时才刷新</summary>
         public void ApplyChronalSlow(int duration) {
             ChronalSlowTime = Math.Max(ChronalSlowTime, duration);
+        }
+
+        public void ApplyObsidianCrack(NPC npc, int duration, int owner, int damage) {
+            ObsidianCrackTime = Math.Max(ObsidianCrackTime, duration);
+            ObsidianCrackOwner = owner;
+            ObsidianCrackDamage = Math.Max(ObsidianCrackDamage, damage);
+            ObsidianCrackStacks++;
+            if (ObsidianCrackStacks >= 3) {
+                BurstObsidian(npc, ObsidianCrackOwner, ObsidianCrackDamage);
+                ObsidianCrackStacks = 0;
+                ObsidianCrackTime = 0;
+                ObsidianCrackDamage = 0;
+            }
+        }
+
+        public void ApplyLifebloom(int duration, int tickDmg, int owner) {
+            LifebloomTime = Math.Max(LifebloomTime, duration);
+            LifebloomTickDmg = Math.Max(LifebloomTickDmg, tickDmg);
+            LifebloomOwner = owner;
+        }
+
+        public void ApplyMoss(int duration, int stacks) {
+            MossTime = Math.Max(MossTime, duration);
+            MossStacks = Math.Min(MossStacks + stacks, 5);
+        }
+
+        public void ApplyPheromone(int duration, int owner) {
+            PheromoneTime = Math.Max(PheromoneTime, duration);
+            PheromoneOwner = owner;
+        }
+
+        public static void BurstObsidian(NPC npc, int owner, int damage) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
+            if (owner < 0 || owner >= Main.maxPlayers) return;
+            int shardDamage = Math.Max(damage, 1);
+            for (int i = 0; i < 4; i++) {
+                NPC target = npc.Center.FindClosestNPC(620f, false, true, new List<NPC> { npc });
+                float angle = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(-0.25f, 0.25f);
+                Vector2 dir = target != null
+                    ? (target.Center - npc.Center).SafeNormalize(angle.ToRotationVector2())
+                    : angle.ToRotationVector2();
+                Projectile.NewProjectile(npc.GetSource_FromThis(),
+                    npc.Center, dir * Main.rand.NextFloat(9f, 13f),
+                    ModContent.ProjectileType<SHPCObsidianShardProj>(),
+                    shardDamage, 0f, owner);
+            }
+            if (Main.netMode != NetmodeID.Server) {
+                for (int i = 0; i < 12; i++) {
+                    Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
+                    PRTLoader.AddParticle(new PRT_CyberSquare(
+                        npc.Center, vel,
+                        new Color(60, 35, 95), new Color(255, 80, 35),
+                        Main.rand.NextFloat(0.7f, 1.5f), Main.rand.Next(16, 30)));
+                }
+            }
+        }
+
+        public static List<NPC> CollectPheromoneTargets(int owner, Vector2 center, float range, int maxCount) {
+            List<NPC> targets = [];
+            float rangeSq = range * range;
+            for (int i = 0; i < Main.maxNPCs && targets.Count < maxCount; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
+                if (Vector2.DistanceSquared(npc.Center, center) > rangeSq) continue;
+                if (!npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) continue;
+                if (eff.PheromoneTime <= 0 || eff.PheromoneOwner != owner) continue;
+                targets.Add(npc);
+            }
+            return targets;
         }
 
         public override bool PreAI(NPC npc) {
@@ -65,7 +151,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             else {
                 DataErosionTickDmg = 0;
             }
+
+            if (ObsidianCrackTime > 0) {
+                ObsidianCrackTime--;
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(5)) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
+                    PRTLoader.AddParticle(new PRT_CyberSquare(
+                        pos, Main.rand.NextVector2Circular(1.2f, 1.2f),
+                        new Color(70, 45, 110), new Color(255, 90, 40),
+                        Main.rand.NextFloat(0.35f, 0.9f), Main.rand.Next(8, 18)));
+                }
+            }
+            else {
+                ObsidianCrackStacks = 0;
+                ObsidianCrackDamage = 0;
+            }
+
+            if (LifebloomTime > 0) {
+                LifebloomTime--;
+                if ((int)Main.GameUpdateCount % 45 == 0 && LifebloomTickDmg > 0) {
+                    npc.SimpleStrikeNPC(LifebloomTickDmg, 0, false, 0f, null, false, 0f, true);
+                    TryHealLifebloomOwner(npc, Math.Max(1, LifebloomTickDmg / 4));
+                }
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(4)) {
+                    PRTLoader.AddParticle(new PRT_CyberSquare(
+                        npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f),
+                        new Vector2(0f, Main.rand.NextFloat(-1.8f, -0.4f)),
+                        new Color(90, 255, 130), new Color(30, 140, 55),
+                        Main.rand.NextFloat(0.4f, 0.9f), Main.rand.Next(12, 24)));
+                }
+            }
+            else {
+                LifebloomTickDmg = 0;
+            }
+
+            if (MossTime > 0) {
+                MossTime--;
+                if (!npc.boss) {
+                    npc.velocity *= MossStacks >= 4 ? 0.82f : 0.94f;
+                }
+            }
+            else {
+                MossStacks = 0;
+            }
+
+            if (PheromoneTime > 0) {
+                PheromoneTime--;
+            }
             return true;
+        }
+
+        public override void OnKill(NPC npc) {
+            if (LifebloomTime <= 0 || LifebloomOwner < 0 || LifebloomOwner >= Main.maxPlayers) return;
+            NPC target = npc.Center.FindClosestNPC(520f, false, true, new List<NPC> { npc });
+            if (target == null || !target.TryGetGlobalNPC(out SHPCNPCEffects eff)) return;
+            eff.ApplyLifebloom(Math.Max(LifebloomTime / 2, 90), Math.Max(LifebloomTickDmg, 1), LifebloomOwner);
+        }
+
+        private void TryHealLifebloomOwner(NPC npc, int amount) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
+            if (LifebloomOwner < 0 || LifebloomOwner >= Main.maxPlayers) return;
+            Player player = Main.player[LifebloomOwner];
+            if (player == null || !player.active || player.dead) return;
+            if (Vector2.DistanceSquared(player.Center, npc.Center) > 900f * 900f) return;
+            if (player.statLife >= player.statLifeMax2) return;
+            player.statLife = Math.Min(player.statLife + amount, player.statLifeMax2);
+            if (Main.netMode == NetmodeID.SinglePlayer) {
+                player.HealEffect(amount);
+            }
         }
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

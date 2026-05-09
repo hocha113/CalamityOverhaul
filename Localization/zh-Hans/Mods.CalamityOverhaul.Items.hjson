@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -2143,6 +2143,96 @@ ConcussionBarrelModule: {
 		'''
 		过载缓冲腔在每累计 5 次命中后于命中点引爆一次微型震荡环
 		单发威力上扬、散布收紧，但攻速代价显著
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: 黑曜石枪管
+	Tooltip:
+		'''
+		命中会在目标体内刻下黑曜石裂纹，满层后碎裂成追猎火山玻璃
+		右键能量球爆炸会提前引爆周围裂纹，适合收割被持续照射的敌群
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: 生命叶枪管
+	Tooltip:
+		'''
+		光束播下寄生生命芽，延迟抽取目标生命并将少量生命力回流给使用者
+		寄主死亡时，生命芽会转移到附近敌人身上继续生长
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: 岩浆枪管
+	Tooltip:
+		'''
+		命中与光束消亡处会留下短寿命熔岩喷口，周期性喷发竖直热柱
+		在地狱或液体高热环境中喷发节奏更快，偏向区域封锁
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: 积云枪管
+	Tooltip:
+		'''
+		光束路径上凝结可充能云核，后续 SHPC 光束与能量球经过会为其蓄电
+		充满后云核降下三道短程雷雨光束，适合阵地式火力铺设
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: 苔藓枪管
+	Tooltip:
+		'''
+		光束沿途铺设湿苔区域，进入其中的敌人会被缓速并逐渐缠根
+		右键能量球飞过会吸收苔痕，扩大最终爆炸半径
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: 霜蕨枪管
+	Tooltip:
+		'''
+		首次命中会在目标身后抽出冰晶脉络，穿线敌人同步承受寒霜
+		它不是单纯冻结，而是把敌群串联成一条会蔓延的霜蕨枝
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: 砂暴枪管
+	Tooltip:
+		'''
+		连续射击会在前方卷起移动砂幕，磨蚀敌人并削弱穿过的敌对弹幕
+		光束获得额外穿透，但蓝耗随砂幕维持而上升
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: 珊瑚枪管
+	Tooltip:
+		'''
+		命中点长出珊瑚锚，多个锚点之间会连成能割伤敌人的礁线
+		右键能量球爆炸会让附近珊瑚锚同步释放环形浪涌
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: 蜂巢枪管
+	Tooltip:
+		'''
+		左键为敌人打上信息素标记，右键爆炸会派出赛博蜂群分头俯冲标记目标
+		标记越分散，蜂群覆盖越稳定，形成左键铺场与右键收束的节奏
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: 月露枪管
+	Tooltip:
+		'''
+		光束沿途凝结露珠棱镜，后续光束触碰后被折射为短程派生束
+		夜晚与满月附近会提升露珠的折射上限与持续价值
 		'''
 }
 
