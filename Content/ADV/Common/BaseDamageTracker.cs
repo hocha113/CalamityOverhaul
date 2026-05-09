@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Localization;
@@ -195,7 +196,9 @@ namespace CalamityOverhaul.Content.ADV.Common
 
             //检测是否造成足够的伤害贡献
             float contribution = TotalBossDamage > 0 ? TargetWeaponDamageDealt / TotalBossDamage : 0f;
-            if (contribution < RequiredContribution) {
+            int contributionPct = (int)Math.Round(contribution * 100);
+            int requiredPct = (int)Math.Round(RequiredContribution * 100);
+            if (contributionPct < requiredPct) {
                 ShowFailureMessage(player, $"{FailureReasonInsufficientDamage.Value} ({contribution:P0}/{RequiredContribution:P0})");
                 return;
             }
