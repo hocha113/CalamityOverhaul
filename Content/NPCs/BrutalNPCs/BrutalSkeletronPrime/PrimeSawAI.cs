@@ -125,14 +125,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (death) chargeThreshold = 60;
 
             if (npc.ai[3] >= chargeThreshold) {
-                //随机选择攻击模式
-                int attackType = Main.rand.Next(3);
+                //去除 Main.rand.Next(3) 随机选择，改为以 npc.ai[1] 槽（自增的"已选轮次"）做确定性轮换。
+                //npc.ai[0..3] 是原版自动同步字段，两端读到的值完全一致；
+                //ai[1] 已被 PrimeArm 用作 head.whoAmI 索引，因此这里转用 localAI[3]（仅本地，但因为
+                //每个客户端读到相同的 ai[3] 计数后做相同 mod 运算，本地结果天然一致）。
+                int rotationIndex = (int)npc.localAI[3];
+                npc.localAI[3] = (rotationIndex + 1) % 3;
 
-                if (attackType == 0 || death) {
+                if (rotationIndex == 0 || death) {
                     TransitionToState(AttackState.SpinUp);
                     dashCount = 0;
                 }
-                else if (attackType == 1) {
+                else if (rotationIndex == 1) {
                     TransitionToState(AttackState.Orbit);
                     orbitAngle = npc.Center.AngleTo(player.Center);
                 }
@@ -141,7 +145,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 npc.ai[3] = 0f;
-                npc.TargetClosest();
+                if (!VaultUtils.isClient) {
+                    npc.TargetClosest();
+                }
             }
         }
 

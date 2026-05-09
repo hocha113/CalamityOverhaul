@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,6 +25,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private Player Player {
             get => context.Target;
             set => context.Target = value;
+        }
+
+        /// <summary>
+        /// 撤离文本本地去重表：按 npc.whoAmI 记录是否已经在本端展示过撤离台词，
+        /// 避免在多人模式中因 NPCOverride.ai 数组被服务端反复同步覆盖而出现"已撤离"刷屏。
+        /// 静态生命周期，世界切换时由调用方手动 Clear。
+        /// </summary>
+        private static readonly HashSet<int> ExitTextShownSet = new HashSet<int>();
+
+        /// <summary>
+        /// 重置撤离去重表（应在 BOSS 重新生成或世界离开时调用）
+        /// </summary>
+        public static void ResetExitState() {
+            ExitTextShownSet.Clear();
         }
 
         #endregion
@@ -147,17 +162,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Npc.dontTakeDamage = true;
             Npc.position += new Vector2(0, -36);
 
-            if (Ai[6] == 0 && !VaultUtils.isServer) {
+            //撤离台词与心心掉落只在本端首次进入时触发，之后由 ExitTextShownSet 锁定不再重复
+            //核心思路：
+            //  1. NPCOverride 的 ai[6] 在多人模式下可能被服务端同步反复覆盖回 0，
+            //     若仍以 Ai[6]==0 作为台词条件，会出现刷屏。
+            //  2. 改用 npc.whoAmI 维度的本地静态集合做幂等，单端只播一次。
+            //  3. 心心生成保持服务端单点，避免双端各下一份。
+            if (!VaultUtils.isServer && ExitTextShownSet.Add(Npc.whoAmI)) {
                 if (lowBloodVolume) {
                     if (isSpazmatism) {
                         VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TwinsAIController.TextColor1);
                     }
                     else {
                         VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TwinsAIController.TextColor2);
-                    }
-
-                    for (int i = 0; i < 13; i++) {
-                        Item.NewItem(Npc.GetSource_FromAI(), Npc.Hitbox, ItemID.Heart);
                     }
                 }
                 else if (skeletronPrime?.ai[1] == 3) {
@@ -171,10 +188,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (Ai[6] > 120) {
-                Npc.active = false;
+            //心心掉落由服务端单点处理，且仅在血量低位撤离时给奖励
+            if (lowBloodVolume && !VaultUtils.isClient && Npc.localAI[1] == 0f) {
+                for (int i = 0; i < 13; i++) {
+                    Item.NewItem(Npc.GetSource_FromAI(), Npc.Hitbox, ItemID.Heart);
+                }
+                Npc.localAI[1] = 1f;
             }
-            Ai[6]++;
+
+            //计时使用 npc.localAI[0]（不会被 NPCOverride 同步覆盖），保证两端各自稳定走完撤离
+            Npc.localAI[0] += 1f;
+
+            //真正"消失"由服务端单点决策，客户端等待 SyncNPC 删除，
+            //避免客户端单方面 active=false 后被服务端再次同步回来
+            if (Npc.localAI[0] > 120f && !VaultUtils.isClient) {
+                Npc.active = false;
+                Npc.netUpdate = true;
+                ExitTextShownSet.Remove(Npc.whoAmI);
+            }
         }
 
         #endregion
@@ -334,23 +365,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (Ai[2] == 2) {
+                //彻底去随机化：
+                //  使用 Ai[3]（已发射弹药计数）做确定性偏移，
+                //  保证客户端和服务端在同一帧得到完全相同的 Ai[9] 值，
+                //  不再依赖 Main.rand 与 npc.netUpdate 强同步。
+                int shotIndex = (int)Ai[3];
                 if (skeletronPrimeIsTwo) {
+                    //三阶段随从：以 600 为基线，按 shotIndex 在 [-150,+90] 之间做正余弦波动
                     if (Ai[10] == 0) {
                         Ai[10] = 1;
                     }
-                    if (!VaultUtils.isClient) {
-                        Ai[9] = isSpazmatism ? -600 : 600;
-                        Ai[9] += Main.rand.Next(-120, 90);
-                    }
-                    Ai[9] *= Ai[10];
+                    float baseOffset = isSpazmatism ? -600f : 600f;
+                    float wave = (float)System.Math.Sin(shotIndex * 1.13f) * 120f
+                               - (float)System.Math.Cos(shotIndex * 0.74f) * 30f;
+                    Ai[9] = (baseOffset + wave) * Ai[10];
                     Ai[10] *= -1;
-                    Npc.netUpdate = true;
                 }
                 else {
-                    if (!VaultUtils.isClient) {
-                        Ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
-                    }
-                    Npc.netUpdate = true;
+                    //二阶段常态：以 shotIndex 奇偶决定上下（±），余弦做幅度（140~280 间锯齿）
+                    float magnitude = 140f + ((shotIndex * 47) % 141);
+                    int dir = (shotIndex & 1) == 0 ? 1 : -1;
+                    Ai[9] = magnitude * dir;
                 }
             }
 

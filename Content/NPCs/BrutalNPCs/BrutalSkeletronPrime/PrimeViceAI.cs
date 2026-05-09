@@ -123,8 +123,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (death) chargeThreshold = 60;
 
             if (npc.ai[3] >= chargeThreshold) {
-                //选择攻击类型
-                if (Main.rand.NextBool(3) && !death) {
+                //去随机化：用 localAI[3] 做轮换计数器，每 3 次选 1 次 Combo（替代原 1/3 概率）
+                //死亡模式下永不进 Combo（保持原版强度），其余按 (cycle % 3 == 0) 决定
+                int cycle = (int)npc.localAI[3];
+                npc.localAI[3] = (cycle + 1) % 3;
+
+                if (cycle == 0 && !death) {
                     TransitionToState(AttackState.Combo);
                     comboCount = 0;
                 }

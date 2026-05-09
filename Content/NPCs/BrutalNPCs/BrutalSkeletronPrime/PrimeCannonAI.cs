@@ -59,8 +59,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.ai[2] = 1f;
                         fireSlower = false;
                         npc.ai[3] = 0f;
-                        npc.TargetClosest();
-                        npc.netUpdate = true;
+                        if (!VaultUtils.isClient) {
+                            //目标切换走服务端权威，客户端等下一次 SyncNPC 同步
+                            npc.TargetClosest();
+                            npc.netUpdate = true;
+                        }
                     }
                 }
                 else {
@@ -73,8 +76,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.ai[2] = 0f;
                         fireSlower = true;
                         npc.ai[3] = 0f;
-                        npc.TargetClosest();
-                        npc.netUpdate = true;
+                        if (!VaultUtils.isClient) {
+                            npc.TargetClosest();
+                            npc.netUpdate = true;
+                        }
                     }
                 }
             }
@@ -118,6 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     FireSingleRocket();
                     npc.localAI[0] = 0f;
                     npc.TargetClosest();
+                    npc.netUpdate = true;
                 }
             }
         }
@@ -133,6 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     FireSpreadRockets();
                     npc.localAI[0] = 0f;
                     npc.TargetClosest();
+                    npc.netUpdate = true;
                 }
             }
         }
@@ -269,9 +276,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             float targetRotation = aimDirection.ToRotation() - MathHelper.PiOver2;
 
-            //添加后坐力抖动
+            //后坐力抖动改为基于 GameUpdateCount 的确定性正弦波——
+            //保持视觉效果的同时彻底移除 Main.rand，确保两端 npc.rotation 一致
             if (recoilIntensity > 1f) {
-                targetRotation += Main.rand.NextFloat(-0.1f, 0.1f) * (recoilIntensity / 10f);
+                float deterministicJitter = (float)System.Math.Sin(Main.GameUpdateCount * 0.83f + npc.whoAmI) * 0.1f;
+                targetRotation += deterministicJitter * (recoilIntensity / 10f);
             }
 
             npc.rotation = MathHelper.Lerp(npc.rotation, targetRotation, smoothness);

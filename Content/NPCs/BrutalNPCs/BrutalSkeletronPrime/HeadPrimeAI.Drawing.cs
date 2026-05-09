@@ -121,7 +121,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 arm.Center = Vector2.Lerp(arm.Center, toPoint2, 0.2f);
                 arm.rotation = head.Center.To(arm.Center).ToRotation() - MathHelper.PiOver2;
                 arm.velocity = Vector2.Zero;
-                arm.position += head.velocity;
+                //不再用 arm.position += head.velocity 跟随头部，
+                //目标点已包含 head.Center 的实时偏移，再叠加速度只会带来漂移
                 arm.dontTakeDamage = true;
                 arm.damage = 0;
                 return true;
@@ -135,7 +136,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.5f);
             arm.rotation = origeRot - MathHelper.PiOver2;
             arm.velocity = Vector2.Zero;
-            arm.position += head.velocity;
             arm.dontTakeDamage = true;
             arm.damage = 0;
             if (!VaultUtils.isClient && NPC.IsMechQueenUp && pCOverride.ai[9] % 6 == 0 && setPosingStarmCount <= 0 && pCOverride.ai[10] <= 0) {

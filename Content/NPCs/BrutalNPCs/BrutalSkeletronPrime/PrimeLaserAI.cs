@@ -93,11 +93,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int chargeThreshold = masterMode ? 120 : 300;
 
             if (npc.ai[3] >= chargeThreshold) {
-                //选择攻击模式
-                if (Main.rand.NextBool(3) || death) {
+                //去随机化：localAI[3] 充当轮换计数器，按"ChargedShot → LaserBarrage → RapidFire"
+                //周期循环；死亡模式下保留"必出 ChargedShot"的原始倾向（每 3 个轮次中 2 次为 ChargedShot）
+                int cycle = (int)npc.localAI[3];
+                npc.localAI[3] = (cycle + 1) % 3;
+
+                if (cycle == 0 || death) {
                     TransitionToState(AttackState.ChargedShot);
                 }
-                else if (Main.rand.NextBool()) {
+                else if (cycle == 1) {
                     TransitionToState(AttackState.LaserBarrage);
                 }
                 else {
@@ -105,7 +109,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 npc.ai[3] = 0f;
-                npc.TargetClosest();
+                if (!VaultUtils.isClient) {
+                    npc.TargetClosest();
+                }
             }
         }
 

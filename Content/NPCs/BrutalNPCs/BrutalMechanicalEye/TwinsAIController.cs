@@ -165,6 +165,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //重置同步数据(只在魔焰眼生成时重置，因为它通常先生成)
             if (npc.type == NPCID.Spazmatism) {
                 TwinsStateContext.ResetSyncData();
+                //清理上一场战斗残留的撤离去重表，确保新一场战斗的撤离台词可以再次触发
+                TwinsAccompanyHandler.ResetExitState();
             }
 
             //检测随从模式

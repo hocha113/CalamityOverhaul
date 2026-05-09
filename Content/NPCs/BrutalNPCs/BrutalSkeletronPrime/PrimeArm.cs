@@ -60,10 +60,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (head.ai[0] == 3 || head.ai[1] == 2f) {
-                npc.life = 0;
-                npc.HitEffect();
-                npc.active = false;
-                npc.netUpdate = true;
+                //手臂的"被头部消灭"必须服务端单点决策，否则客户端单方面 active=false
+                //会让该手臂在客户端凭空消失，但服务端继续保留并不停同步回来，造成抖动
+                if (!VaultUtils.isClient) {
+                    npc.life = 0;
+                    npc.HitEffect();
+                    npc.active = false;
+                    npc.netUpdate = true;
+                }
                 return false;
             }
 

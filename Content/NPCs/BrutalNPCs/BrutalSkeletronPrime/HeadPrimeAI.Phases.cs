@@ -14,10 +14,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal partial class HeadPrimeAI
     {
         private void Debut() {
+            //登场阶段需要严格的两端一致性：所有位置写入都不再分服务端/客户端，
+            //也不再依赖 player.velocity 这种"服务端独占副作用"，
+            //避免服务端漂移后 netUpdate 强同步造成客户端瞬移
             if (ai0 == 0) {
-                SpawnEye();
+                if (!VaultUtils.isClient) {
+                    SpawnEye();
+                }
                 npc.life = 1;
                 npc.Center = player.Center + new Vector2(0, 1200);
+                //仅在服务端首次定位时同步一次精确坐标
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }
@@ -29,12 +35,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 toTarget = npc.Center.To(player.Center);
             npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
             npc.velocity = Vector2.Zero;
-            if (!VaultUtils.isClient) {
-                npc.position += player.velocity;
-                if (ai0 % 15 == 0) {
-                    npc.netUpdate = true;
-                }
-            }
             Vector2 toPoint = player.Center;
 
             if (ai0 < 60) {
@@ -402,12 +402,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     Vector2 toTarget = npc.Center.To(player.Center);
                     npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
                     npc.velocity = Vector2.Zero;
-                    if (!VaultUtils.isClient) {
-                        npc.position += player.velocity;
-                        if (ai4 % 20 == 0) {
-                            npc.netUpdate = true;
-                        }
-                    }
+                    //同 Debut，移除 npc.position += player.velocity 与周期性 netUpdate，
+                    //确保 case 3 转阶段动画在两端各自走一致的 Lerp，无需强同步
                     Vector2 toPoint = player.Center;
 
                     toPoint = player.Center + new Vector2(0, death ? -400 : -500);

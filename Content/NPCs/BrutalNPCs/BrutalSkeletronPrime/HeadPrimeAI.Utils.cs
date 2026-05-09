@@ -140,13 +140,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
+            //清场+生成 在客户端单跑会导致双子在客户端"被关掉"而服务端继续存在，
+            //从而引发客户端不可见、状态错位等问题。整体改为服务端单点决策。
+            if (VaultUtils.isClient) {
+                return;
+            }
+
             foreach (var findN in Main.ActiveNPCs) {//在召唤前先清除所有已经有了的眼睛
                 if (findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
                     findN.active = false;
+                    findN.netUpdate = true;
                 }
             }
 
-            if (!VaultUtils.isClient && npc.Center.TryFindClosestPlayer(out var findPlayer)) {
+            if (npc.Center.TryFindClosestPlayer(out var findPlayer)) {
                 VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Retinazer, false);
                 VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Spazmatism, false);
             }
