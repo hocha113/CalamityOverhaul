@@ -382,13 +382,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 if (!storage.CanAcceptItem(toDeposit)) {
                     continue;
                 }
+                int beforeStack = toDeposit.stack;
                 if (storage.DepositItem(toDeposit)) {
-                    if (toDeposit.IsAir || toDeposit.stack <= 0) {
+                    int remaining = ResolveRemainingStack(beforeStack, toDeposit);
+                    if (remaining <= 0) {
                         CurrentItem = null;
                     }
                     else {
                         //部分存入: 剩余的继续等待或在卡死自愈阶段被重定向
-                        item.Stack = toDeposit.stack;
+                        item.Stack = remaining;
                         CurrentItem = item;
                     }
                     return;
@@ -397,6 +399,27 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             //没存进去, 记录拒收时间, 让其他输出端在短期内不要再选自己
             lastDepositRejectFrame = (int)Main.GameUpdateCount;
+        }
+
+        /// <summary>
+        /// 在调用 DepositItem 之后稳健地推断剩余的物品数量
+        /// <para>许多 IStorageProvider(包括 MagicStorage / ChestStorageProvider)
+        /// 在成功存入后并不会回写 item.stack, 仅返回 true; 这种情况下原版的处理是
+        /// "全部已存入". 这里保留旧版的安全语义, 避免重新调度引发的物品复制,
+        /// 同时支持那些会更新 stack 的提供者(如 Incinerator/Thermal/Tram)正确处理部分存入.</para>
+        /// </summary>
+        private static int ResolveRemainingStack(int beforeStack, Item toDeposit) {
+            //提供者明确清空了物品 -> 全部已存入
+            if (toDeposit == null || toDeposit.IsAir || toDeposit.stack <= 0) {
+                return 0;
+            }
+            //提供者修改了 stack 但未清空 -> 部分存入, 取真实剩余量
+            if (toDeposit.stack < beforeStack) {
+                return toDeposit.stack;
+            }
+            //提供者未修改 stack(常见: 内部用 item.Clone() 后入库, 或反射调用) ->
+            //保守视为已全部存入, 与原版行为一致, 杜绝重复存入造成的复制
+            return 0;
         }
 
         /// <summary>
@@ -636,8 +659,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 if (!storage.CanAcceptItem(toDeposit)) {
                     continue;
                 }
+                int beforeStack = toDeposit.stack;
                 if (storage.DepositItem(toDeposit)) {
-                    item.Stack = toDeposit.IsAir ? 0 : toDeposit.stack;
+                    item.Stack = ResolveRemainingStack(beforeStack, toDeposit);
                     return true;
                 }
             }
