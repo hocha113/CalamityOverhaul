@@ -26,14 +26,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.4f;
         }
 
+        //同主同时存在的砂幕上限（curtain 寿命 90，所以这个上限会让画面上至多同时悬浮 3 个）
+        private const int MaxConcurrentCurtains = 3;
+        //同点 160px 内已有砂幕则跳过本次生成（避免聚簇）
+        private const float MinSpacing = 160f;
+        //单条光束的生成节奏（间隔帧数）
+        private const int SpawnInterval = 42;
+
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % 24 != 0) return;
+            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % SpawnInterval != 0) return;
+            int curtainType = ModContent.ProjectileType<SHPCSandCurtainProj>();
+            if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, curtainType) >= MaxConcurrentCurtains) return;
             Vector2 pos = beam.Projectile.Center + beam.Projectile.velocity.SafeNormalize(Vector2.UnitX) * 42f;
+            if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, curtainType, pos, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 pos, beam.Projectile.velocity.SafeNormalize(Vector2.Zero) * 1.5f,
-                ModContent.ProjectileType<SHPCSandCurtainProj>(),
-                Math.Max(beam.Projectile.damage / 2, 1), 0f, beam.Projectile.owner);
+                curtainType, Math.Max(beam.Projectile.damage / 2, 1), 0f, beam.Projectile.owner);
         }
     }
 
@@ -56,45 +65,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.DamageType = DamageClass.Magic;
         }
 
+        //命中扫描节流：NPC/敌方弹幕扫描每 3 帧一次（错峰避免同帧多砂幕一起扫）
+        private const int ScanInterval = 3;
+
         public override void AI() {
             Projectile.velocity *= 0.92f;
-            float radiusSq = radius * radius;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly || npc.dontTakeDamage || npc.boss) continue;
-                if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > radiusSq) continue;
-                npc.velocity *= 0.92f;
-                if (Main.GameUpdateCount % 20 == 0) {
-                    npc.SimpleStrikeNPC(Math.Max(Projectile.damage / 8, 1), 0, false, 0f, DamageClass.Magic, false, 0f, true);
+            int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
+            if (frame % ScanInterval == 0) {
+                float radiusSq = radius * radius;
+                bool damageTick = Main.GameUpdateCount % 20 == 0;
+                int dmg = Math.Max(Projectile.damage / 8, 1);
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    NPC npc = Main.npc[i];
+                    if (!npc.active || npc.friendly || npc.dontTakeDamage || npc.boss) continue;
+                    if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > radiusSq) continue;
+                    npc.velocity *= 0.92f;
+                    if (damageTick) {
+                        npc.SimpleStrikeNPC(dmg, 0, false, 0f, DamageClass.Magic, false, 0f, true);
+                    }
+                }
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile hostile = Main.projectile[i];
+                    if (!hostile.active || !hostile.hostile || hostile.friendly) continue;
+                    if (Vector2.DistanceSquared(hostile.Center, Projectile.Center) > radiusSq) continue;
+                    hostile.velocity *= 0.96f;
+                    if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 18 == 0 && Main.rand.NextBool(3)) {
+                        PRTLoader.AddParticle(new PRT_GammaIonize(
+                            hostile.Center, Vector2.Zero,
+                            new Color(255, 200, 110), 0.6f, 16, Main.rand.NextFloat()));
+                    }
                 }
             }
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile hostile = Main.projectile[i];
-                if (!hostile.active || !hostile.hostile || hostile.friendly) continue;
-                if (Vector2.DistanceSquared(hostile.Center, Projectile.Center) > radiusSq) continue;
-                hostile.velocity *= 0.96f;
-                //偶发标记：让玩家看到敌方弹幕被削弱
-                if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 12 == 0 && Main.rand.NextBool(2)) {
-                    PRTLoader.AddParticle(new PRT_GammaIonize(
-                        hostile.Center, Vector2.Zero,
-                        new Color(255, 200, 110), 0.6f, 16, Main.rand.NextFloat()));
+            //玩家身处砂幕：每 3 帧才施加一次低强度震动，避免画面持续抖
+            if (frame % 3 == 0) {
+                Player local = Main.LocalPlayer;
+                if (local != null && local.active && Vector2.DistanceSquared(local.Center, Projectile.Center) < radius * radius) {
+                    SHPCNaturalFx.Shake(0.4f);
                 }
             }
-            //玩家身处砂幕：每帧低强度震动
-            Player local = Main.LocalPlayer;
-            if (local != null && local.active && Vector2.DistanceSquared(local.Center, Projectile.Center) < radiusSq) {
-                SHPCNaturalFx.Shake(0.4f);
-            }
-            //粒子发射：砂色 PRT_Smoke + 偶发火星
+            //粒子发射：砂色 PRT_Smoke + 偶发火星（节流到 6 / 12 帧）
             if (Main.netMode == NetmodeID.Server) return;
-            if (Main.GameUpdateCount % 3 == 0) {
+            if (Main.GameUpdateCount % 6 == 0) {
                 PRTLoader.AddParticle(new PRT_Smoke(
                     Projectile.Center + Main.rand.NextVector2Circular(radius * 0.8f, radius * 0.6f),
                     Main.rand.NextVector2Circular(2.5f, 1.2f),
                     new Color(225, 190, 110), Main.rand.Next(28, 50),
                     Main.rand.NextFloat(0.5f, 0.95f), 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), false));
             }
-            if (Main.GameUpdateCount % 6 == 0) {
+            if (Main.GameUpdateCount % 12 == 0) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);
                 PRTLoader.AddParticle(new PRT_Spark(
                     Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, radius * 0.5f), vel, false,
@@ -119,24 +137,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Main.spriteBatch.Draw(cyclone, baseScreen, null, c, t * 1.4f, origin, radius / cyclone.Width * 2.4f, SpriteEffects.None, 0f);
                 Main.spriteBatch.Draw(cyclone, baseScreen, null, c * 0.6f, -t * 0.7f, origin, radius / cyclone.Width * 1.7f, SpriteEffects.None, 0f);
             }
-            //6 张 Airflow 旋转飘移
+            //4 张 Airflow 旋转飘移（原 6 张，视觉差异极小）
             Texture2D airflow = CWRAsset.Airflow?.Value;
             if (airflow != null) {
                 Vector2 origin = airflow.Size() * 0.5f;
-                for (int i = 0; i < 6; i++) {
-                    float a = i * (MathHelper.TwoPi / 6f) + t * (i % 2 == 0 ? 1f : -0.6f);
+                const int airflowCount = 4;
+                for (int i = 0; i < airflowCount; i++) {
+                    float a = i * (MathHelper.TwoPi / airflowCount) + t * (i % 2 == 0 ? 1f : -0.6f);
                     Vector2 offset = a.ToRotationVector2() * radius * 0.5f;
                     Color c = new Color(225, 190, 110, 0) * alpha * 0.4f;
                     Main.spriteBatch.Draw(airflow, baseScreen + offset, null, c,
                         a + t * 0.6f, origin, radius / airflow.Width * 1.5f, SpriteEffects.None, 0f);
                 }
             }
-            //12 张 Fog 体积，多帧不同种子
+            //6 张 Fog 体积（原 12 张）；同一种子保证帧间稳定
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog != null) {
                 Vector2 origin = fog.Size() * 0.5f;
                 int seed = Projectile.whoAmI * 7919;
-                for (int i = 0; i < 12; i++) {
+                const int fogCount = 6;
+                for (int i = 0; i < fogCount; i++) {
                     float fa = (seed + i * 173) % 360 * MathHelper.Pi / 180f + t * 0.4f;
                     float fr = ((seed + i * 211) % 100) / 100f;
                     Vector2 offset = fa.ToRotationVector2() * radius * (0.3f + fr * 0.7f);

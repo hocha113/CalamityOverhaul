@@ -28,12 +28,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.3f;
         }
 
+        //同主同时存在的珊瑚锚点上限：超出后命中不再生成新锚点
+        private const int MaxConcurrentAnchors = 8;
+        //同点 90px 内已有锚点则跳过本次生成（避免在同一目标身上堆叠）
+        private const float MinSpacing = 90f;
+
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
+            int anchorType = ModContent.ProjectileType<SHPCCoralAnchorProj>();
+            if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, anchorType) >= MaxConcurrentAnchors) return;
+            if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, anchorType, target.Center, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, Vector2.Zero,
-                ModContent.ProjectileType<SHPCCoralAnchorProj>(),
-                Math.Max(damageDone / 10, 1), 0f, beam.Projectile.owner);
+                anchorType, Math.Max(damageDone / 10, 1), 0f, beam.Projectile.owner);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
@@ -93,11 +100,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
+        //链接计算节流：每 4 帧才扫一次全弹幕表，错峰避免同帧多锚点同时全表扫
+        private const int LinkScanInterval = 4;
+
         public override void AI() {
             if (seedAngle == 0f) seedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-            CollectLinks();
-            //偶发珊瑚孢子粒子
-            if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 14 == 0) {
+            int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
+            if (frame % LinkScanInterval == 0) {
+                CollectLinks();
+            }
+            //偶发珊瑚孢子粒子（节流到 24 帧）
+            if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 24 == 0) {
                 PRTLoader.AddParticle(new PRT_Sparkle(
                     Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
                     new Vector2(0f, Main.rand.NextFloat(-0.6f, 0.2f)),

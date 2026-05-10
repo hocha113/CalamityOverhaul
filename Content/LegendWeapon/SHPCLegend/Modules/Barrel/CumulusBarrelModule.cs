@@ -26,15 +26,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.25f;
         }
 
+        //同主同时存在的云核数量上限，避免连续光束铺满屏幕导致 GC / 渲染雪崩
+        private const int MaxConcurrentClouds = 6;
+        //同点 200px 内已有云核时跳过本次生成，避免聚簇
+        private const float MinSpacing = 200f;
+        //单条光束的生成节奏（间隔帧数）
+        private const int SpawnInterval = 60;
+
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % 42 != 0) return;
+            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % SpawnInterval != 0) return;
+            int cloudType = ModContent.ProjectileType<SHPCCumulusNodeProj>();
+            //节流：上限 + 聚簇过滤
+            if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, cloudType) >= MaxConcurrentClouds) return;
+            Vector2 spawnPos = beam.Projectile.Center + Main.rand.NextVector2Circular(30f, 18f);
+            if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, cloudType, spawnPos, MinSpacing)) return;
             int damage = Math.Max(beam.Projectile.damage / 3, 1);
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
-                beam.Projectile.Center + Main.rand.NextVector2Circular(30f, 18f),
-                Main.rand.NextVector2Circular(0.8f, 0.5f),
-                ModContent.ProjectileType<SHPCCumulusNodeProj>(),
-                damage, 0f, beam.Projectile.owner);
+                spawnPos, Main.rand.NextVector2Circular(0.8f, 0.5f),
+                cloudType, damage, 0f, beam.Projectile.owner);
             if (Main.netMode != NetmodeID.Server) {
                 SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.25f, Pitch = 0.4f }, beam.Projectile.Center);
             }
@@ -48,11 +58,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        //9 个云块的固定相对位置/旋转/缩放（首帧 seed 后稳定，避免每帧抖动）
+        //云块数量降到 5（原 9）— 视觉差异极小但绘制成本接近减半
+        private const int BlobCount = 5;
+        //PassiveCharge 扫描节流：每 8 帧才扫一次全弹幕表
+        private const int ChargeScanInterval = 8;
+
+        //云块的固定相对位置/旋转/缩放（首帧 seed 后稳定，避免每帧抖动）
         private Vector2[] blobOffsets;
         private float[] blobRotations;
         private float[] blobScales;
         private float seedAngle;
+        //缓存的 PassiveCharge 增量；每 ChargeScanInterval 帧重算一次
+        private float cachedChargeRate;
 
         public override void SetDefaults() {
             Projectile.width = 72;
@@ -70,11 +87,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //首帧种子化云块布局
             if (blobOffsets == null) {
                 seedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-                blobOffsets = new Vector2[9];
-                blobRotations = new float[9];
-                blobScales = new float[9];
-                for (int i = 0; i < 9; i++) {
-                    float a = seedAngle + i * (MathHelper.TwoPi / 9f) + Main.rand.NextFloat(-0.3f, 0.3f);
+                blobOffsets = new Vector2[BlobCount];
+                blobRotations = new float[BlobCount];
+                blobScales = new float[BlobCount];
+                for (int i = 0; i < BlobCount; i++) {
+                    float a = seedAngle + i * (MathHelper.TwoPi / BlobCount) + Main.rand.NextFloat(-0.3f, 0.3f);
                     float r = Main.rand.NextFloat(0.55f, 1f);
                     blobOffsets[i] = new Vector2(MathF.Cos(a) * 40f * r, MathF.Sin(a) * 24f * r);
                     blobRotations[i] = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -82,23 +99,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
             Projectile.velocity *= 0.94f;
-            Projectile.localAI[0] = MathF.Min(Projectile.localAI[0] + PassiveCharge(), 100f);
-            //充能 ≥ 80 时进入预放电期，飞溅微闪粒子
-            if (Main.netMode != NetmodeID.Server && Projectile.localAI[0] > 80f && Main.GameUpdateCount % 4 == 0) {
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    Projectile.Center + Main.rand.NextVector2Circular(36f, 18f),
-                    Main.rand.NextVector2Circular(0.6f, 0.6f),
-                    new Color(220, 240, 255), new Color(120, 130, 200),
-                    Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20),
-                    Main.rand.NextFloat(-0.2f, 0.2f), 0.7f));
+            //每 ChargeScanInterval 帧才重算一次 PassiveCharge，避免 N×1000 全弹幕扫描
+            int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
+            if (frame % ChargeScanInterval == 0) {
+                cachedChargeRate = PassiveCharge();
             }
-            else if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 6 == 0) {
-                Color color = Projectile.localAI[0] > 70f ? new Color(210, 240, 255) : new Color(150, 190, 220);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center + Main.rand.NextVector2Circular(44f, 20f),
-                    Main.rand.NextVector2Circular(0.5f, 0.5f),
-                    color, new Color(90, 130, 170),
-                    Main.rand.NextFloat(0.5f, 1.1f), Main.rand.Next(18, 34)));
+            Projectile.localAI[0] = MathF.Min(Projectile.localAI[0] + cachedChargeRate, 100f);
+            //粒子节流：充能 ≥ 80 时每 8 帧一次预放电；其余每 12 帧一次方块粒子
+            if (Main.netMode != NetmodeID.Server) {
+                if (Projectile.localAI[0] > 80f && Main.GameUpdateCount % 8 == 0) {
+                    PRTLoader.AddParticle(new PRT_Sparkle(
+                        Projectile.Center + Main.rand.NextVector2Circular(36f, 18f),
+                        Main.rand.NextVector2Circular(0.6f, 0.6f),
+                        new Color(220, 240, 255), new Color(120, 130, 200),
+                        Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20),
+                        Main.rand.NextFloat(-0.2f, 0.2f), 0.7f));
+                }
+                else if (Main.GameUpdateCount % 12 == 0) {
+                    Color color = Projectile.localAI[0] > 70f ? new Color(210, 240, 255) : new Color(150, 190, 220);
+                    PRTLoader.AddParticle(new PRT_CyberSquare(
+                        Projectile.Center + Main.rand.NextVector2Circular(44f, 20f),
+                        Main.rand.NextVector2Circular(0.5f, 0.5f),
+                        color, new Color(90, 130, 170),
+                        Main.rand.NextFloat(0.5f, 1.1f), Main.rand.Next(18, 34)));
+                }
             }
             if (Projectile.localAI[0] < 100f) return;
             if (Projectile.owner == Main.myPlayer) {
@@ -108,16 +132,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private float PassiveCharge() {
+            //每 ChargeScanInterval 帧才会调用一次，回报值需放大同等倍数以维持总充能速率
             float charge = 0.08f;
+            int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
+            int orbType = ModContent.ProjectileType<CyberChargeOrbProj>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile other = Main.projectile[i];
                 if (!other.active || other.owner != Projectile.owner || other.whoAmI == Projectile.whoAmI) continue;
-                if (other.type != ModContent.ProjectileType<CyberTraceBeamProj>()
-                    && other.type != ModContent.ProjectileType<CyberChargeOrbProj>()) continue;
+                if (other.type != beamType && other.type != orbType) continue;
                 if (Vector2.DistanceSquared(other.Center, Projectile.Center) > 130f * 130f) continue;
                 charge += 3.2f;
             }
-            return charge;
+            return charge * ChargeScanInterval;
         }
 
         private void ReleaseRain() {
@@ -168,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float drift = (float)Main.timeForVisualEffects * 0.02f;
             for (int i = 0; i < blobOffsets.Length; i++) {
                 Vector2 offset = blobOffsets[i] + new Vector2(MathF.Sin(drift + i) * 1.6f, MathF.Cos(drift + i * 0.7f) * 1.2f);
-                Color c = Color.Lerp(cloudCore, cloudEdge, i / 9f);
+                Color c = Color.Lerp(cloudCore, cloudEdge, i / (float)BlobCount);
                 Main.spriteBatch.Draw(fog, baseScreen + offset, null, c * 0.95f,
                     blobRotations[i] + drift * 0.3f, fogOrigin, blobScales[i], SpriteEffects.None, 0f);
             }

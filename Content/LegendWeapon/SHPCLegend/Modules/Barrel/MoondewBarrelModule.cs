@@ -28,14 +28,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.3f;
         }
 
+        //同主同时存在的月露棱镜上限
+        private const int MaxConcurrentPrisms = 4;
+        //同点 130px 内已有棱镜则跳过本次生成
+        private const float MinSpacing = 130f;
+
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            int interval = !Main.dayTime && Main.moonPhase <= 2 ? 24 : 38;
+            //夜晚 + 上半月相加快节奏，普通时段更稀疏
+            int interval = !Main.dayTime && Main.moonPhase <= 2 ? 36 : 60;
             if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % (uint)interval != 0) return;
+            int prismType = ModContent.ProjectileType<SHPCMoondewPrismProj>();
+            if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, prismType) >= MaxConcurrentPrisms) return;
+            if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, prismType, beam.Projectile.Center, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,
-                ModContent.ProjectileType<SHPCMoondewPrismProj>(),
-                Math.Max(beam.Projectile.damage / 2, 1), 0f, beam.Projectile.owner);
+                prismType, Math.Max(beam.Projectile.damage / 2, 1), 0f, beam.Projectile.owner);
         }
     }
 
@@ -58,13 +66,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
+        //折射扫描节流：每 4 帧才扫一次全弹幕表
+        private const int RefractScanInterval = 4;
+
         public override void AI() {
             Projectile.rotation += 0.03f;
-            if (Projectile.owner == Main.myPlayer && Projectile.localAI[0] < MaxRefractions()) {
+            int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
+            if (frame % RefractScanInterval == 0
+                && Projectile.owner == Main.myPlayer
+                && Projectile.localAI[0] < MaxRefractions()) {
                 TryRefractBeam();
             }
-            //偶发月华火星
-            if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 6 != 0) return;
+            //偶发月华火星（节流到 12 帧）
+            if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 12 != 0) return;
             PRTLoader.AddParticle(new PRT_Sparkle(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
                 Main.rand.NextVector2Circular(0.5f, 0.5f),

@@ -43,6 +43,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (p == null) return;
             if (p.TryGetModPlayer(out CWRPlayer cp)) cp.GetScreenShake(amount);
         }
+
+        /// <summary>
+        /// 统计指定主人当前活跃的某类型弹幕数量；自然枪管节流用
+        /// </summary>
+        public static int CountOwned(int owner, int type) {
+            int n = 0;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.owner == owner && p.type == type) n++;
+            }
+            return n;
+        }
+
+        /// <summary>
+        /// 在指定半径内是否已有同主同类型弹幕；用于"聚簇节流"避免同点重复生成
+        /// </summary>
+        public static bool HasOwnedNear(int owner, int type, Vector2 center, float radius) {
+            float r2 = radius * radius;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (!p.active || p.owner != owner || p.type != type) continue;
+                if (Vector2.DistanceSquared(p.Center, center) <= r2) return true;
+            }
+            return false;
+        }
     }
 
     /// <summary>

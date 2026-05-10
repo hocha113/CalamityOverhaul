@@ -27,13 +27,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.4f;
         }
 
+        //同主同时存在的湿苔斑块上限
+        private const int MaxConcurrentPatches = 4;
+        //同点 130px 内已有斑块时跳过本次生成（避免聚簇）
+        private const float MinSpacing = 130f;
+        //单条光束的生成节奏（间隔帧数）
+        private const int SpawnInterval = 36;
+        //每颗能量球能吸收的湿苔斑块上限
+        private const int MaxAbsorbPerOrb = 5;
+
+        //每颗能量球独立计数已吸收的斑块数；OnOrbKill 中清理
+        private static readonly Dictionary<int, int> _absorbedByOrb = new();
+
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % 18 != 0) return;
+            if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % SpawnInterval != 0) return;
+            int patchType = ModContent.ProjectileType<SHPCMossPatchProj>();
+            //节流：上限 + 聚簇过滤
+            if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, patchType) >= MaxConcurrentPatches) return;
+            if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, patchType, beam.Projectile.Center, MinSpacing)) return;
             int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,
-                ModContent.ProjectileType<SHPCMossPatchProj>(),
-                Math.Max(beam.Projectile.damage / 8, 1), 0f, beam.Projectile.owner);
+                patchType, Math.Max(beam.Projectile.damage / 8, 1), 0f, beam.Projectile.owner);
             if (idx >= 0 && idx < Main.maxProjectiles) {
                 Main.projectile[idx].localAI[0] = 0f;
             }
@@ -41,18 +56,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnOrbFlyingAI(CyberChargeOrbProj orb) {
             if (orb.Projectile.owner != Main.myPlayer) return;
+            //跨帧累积已吸收数：到达 MaxAbsorbPerOrb 后该球永不再吸收
+            if (!_absorbedByOrb.TryGetValue(orb.Projectile.whoAmI, out int already)) already = 0;
+            int budget = MaxAbsorbPerOrb - already;
+            if (budget <= 0) return;
             int absorbed = 0;
-            for (int i = 0; i < Main.maxProjectiles && absorbed < 5; i++) {
+            int patchType = ModContent.ProjectileType<SHPCMossPatchProj>();
+            for (int i = 0; i < Main.maxProjectiles && absorbed < budget; i++) {
                 Projectile proj = Main.projectile[i];
                 if (!proj.active || proj.owner != orb.Projectile.owner) continue;
-                if (proj.type != ModContent.ProjectileType<SHPCMossPatchProj>()) continue;
+                if (proj.type != patchType) continue;
                 if (Vector2.DistanceSquared(proj.Center, orb.Projectile.Center) > 180f * 180f) continue;
                 proj.Kill();
                 absorbed++;
             }
             if (absorbed > 0) {
+                _absorbedByOrb[orb.Projectile.whoAmI] = already + absorbed;
                 orb.ExplosionRadiusMul += 0.06f * absorbed;
             }
+        }
+
+        public override void OnOrbKill(CyberChargeOrbProj orb, int timeLeft) {
+            _absorbedByOrb.Remove(orb.Projectile.whoAmI);
         }
     }
 
@@ -70,7 +95,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private struct Vine { public Vector2[] Pts; public int Age; public int MaxAge; public Trail TrailRef; }
         private readonly List<Vine> vines = new();
         private float age;
-        private float burstShakeQueued;
 
         public override void SetDefaults() {
             Projectile.width = 96;
@@ -84,30 +108,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
+        //斑块状态扫描节流：每 6 帧才完整扫一次 NPC 列表
+        private const int ScanInterval = 6;
+        //缠根触发后冷却帧数（≈1 秒）
+        private const int BurstCooldown = 60;
+        //缓存的本帧最高苔藓堆叠数（用于触发缠根判定）
+        private int cachedPeakStacks;
+
         public override void AI() {
             age++;
             float radius = 70f + Projectile.localAI[0] * 20f;
-            int peakStacks = 0;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
-                if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > radius * radius) continue;
-                if (npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                    eff.ApplyMoss(90, 1);
-                    peakStacks = Math.Max(peakStacks, eff.MossStacks);
+            //每 6 帧执行一次全 NPC 扫描，刷新苔藓与堆叠峰值
+            int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
+            if (frame % ScanInterval == 0) {
+                cachedPeakStacks = 0;
+                float r2 = radius * radius;
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    NPC npc = Main.npc[i];
+                    if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
+                    if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > r2) continue;
+                    if (npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
+                        //ApplyMoss 内部用 Math.Max 刷新时长，6 帧间隔内仍能维持 90 帧寿命
+                        eff.ApplyMoss(90, 1);
+                        cachedPeakStacks = Math.Max(cachedPeakStacks, eff.MossStacks);
+                    }
                 }
             }
-            //每 12 帧伸出一条藤蔓到最近敌人，视觉化"缠绕"
-            if (age % 12f == 0f) {
+            //每 18 帧伸出一条藤蔓到最近敌人，视觉化"缠绕"
+            if (age % 18f == 0f) {
                 NPC near = Projectile.Center.FindClosestNPC(radius * 1.4f, false, true);
                 if (near != null) {
                     SpawnVine(Projectile.Center, near.Center);
                 }
             }
-            //缠根触发：MossStacks ≥ 4 且当前未冷却时，发射腐蚀环 + 屏幕震动
-            if (peakStacks >= 4 && Projectile.localAI[1] <= 0f) {
-                Projectile.localAI[1] = 60f; //冷却 1 秒
-                BurstRoots();
+            //缠根触发：MossStacks ≥ 4 且当前未冷却时，AOE 伤害 + 视觉
+            if (cachedPeakStacks >= 4 && Projectile.localAI[1] <= 0f) {
+                Projectile.localAI[1] = BurstCooldown;
+                BurstRoots(radius);
             }
             if (Projectile.localAI[1] > 0f) Projectile.localAI[1]--;
 
@@ -118,8 +155,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 vines[i] = v;
                 if (v.Age >= v.MaxAge) vines.RemoveAt(i);
             }
-            //常规苔藓孢子粒子
-            if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 8 != 0) return;
+            //常规苔藓孢子粒子（节流到 12 帧一次）
+            if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 12 != 0) return;
             PRTLoader.AddParticle(new PRT_Sparkle(
                 Projectile.Center + Main.rand.NextVector2Circular(radius, radius * 0.35f),
                 new Vector2(0f, Main.rand.NextFloat(-0.5f, 0.2f)),
@@ -143,7 +180,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             vines.Add(new Vine { Pts = pts, Age = 0, MaxAge = 18, TrailRef = null });
         }
 
-        private void BurstRoots() {
+        private void BurstRoots(float radius) {
+            //AOE 伤害：被苔藓缠绕到 4 层的目标在缠根爆发时受到斑块伤害的 6 倍一次性打击
+            //SimpleStrikeNPC 在 server / 单机均有效，且不需要 NetMessage 同步
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                int dmg = Math.Max(Projectile.damage * 6, 1);
+                float r2 = radius * radius;
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    NPC npc = Main.npc[i];
+                    if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
+                    if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > r2) continue;
+                    if (!npc.TryGetGlobalNPC(out SHPCNPCEffects eff) || eff.MossStacks < 4) continue;
+                    int hitDir = npc.Center.X >= Projectile.Center.X ? 1 : -1;
+                    npc.SimpleStrikeNPC(dmg, hitDir, false, 1.2f, DamageClass.Magic, false, 0f, true);
+                }
+            }
             if (Main.netMode == NetmodeID.Server) return;
             for (int i = 0; i < 6; i++) {
                 float angle = MathHelper.TwoPi * i / 6f + Main.rand.NextFloat(-0.1f, 0.1f);
@@ -155,11 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Projectile.Center, Vector2.Zero,
                 new Color(120, 220, 90, 0), new Vector2(1.4f, 0.55f), 0f, 0.05f, 0.55f, 24));
             SoundEngine.PlaySound(SoundID.Item154 with { Volume = 0.45f, Pitch = -0.2f }, Projectile.Center);
-            burstShakeQueued = 1.5f;
-            if (burstShakeQueued > 0f) {
-                SHPCNaturalFx.Shake(burstShakeQueued);
-                burstShakeQueued = 0f;
-            }
+            SHPCNaturalFx.Shake(1.5f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
