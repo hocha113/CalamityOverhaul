@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, anchorType, target.Center, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, Vector2.Zero,
-                anchorType, Math.Max(damageDone / 10, 1), 0f, beam.Projectile.owner);
+                anchorType, Math.Max(damageDone / 3, 1), 0f, beam.Projectile.owner);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
