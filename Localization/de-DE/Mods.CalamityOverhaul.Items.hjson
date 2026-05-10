@@ -1688,6 +1688,42 @@ PlowSteelClampArm: {
 	// SkillHint: Press {0} to fire a monomolecular wire (must aim at a tile)
 }
 
+SelfHealingSkelent: {
+	// DisplayName: Self-Healing Endoskeleton
+	/* Tooltip:
+		'''
+		A high-tier biocyber implant that replaces the native skeleton with a nanocrystal lattice.
+		Continuously grants +2 HP/s life regeneration and +40 max life.
+		Out of combat for 4 seconds, enters Nanorepair state with greatly boosted regeneration.
+		The metallic endoskeleton fully negates fall damage.
+		''' */
+}
+
+SelfHackCrystal: {
+	// DisplayName: Self-Hack Crystal
+	/* Tooltip:
+		'''
+		A high-tier network cybernetic in the operating system slot.
+		Redirects the hacking interface back at the host.
+		Continuously grants additional RAM recovery speed.
+		Cyberware skill: spend RAM to instantly clear all debuffs
+		and gain brief invincibility — a window to break out of lethal situations.
+		''' */
+	// SkillHint: Press {0} to run a self-hack, spending RAM to purge debuffs
+}
+
+SCCA32CRP: {
+	// DisplayName: SCCA-32 CRP
+	/* Tooltip:
+		'''
+		An advanced neural-muscular co-processor.
+		Routes threat prediction and muscle-fiber reflexes around the brain entirely.
+		Continuously grants +8% critical strike chance and +8% movement speed.
+		18% chance to trigger a Reflex Dodge when struck, fully negating that hit.
+		On a successful dodge, enters a 3-second Reflex Surge with bonus crit and move speed.
+		''' */
+}
+
 RamCapacityUpgradeChip: {
 	// DisplayName: RAM Capacity Upgrade Chip
 	// Tooltip: Permanently increases base maximum RAM by 1

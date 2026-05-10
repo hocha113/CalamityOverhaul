@@ -55,22 +55,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
             var font = FontAssets.MouseText.Value;
             const float TextScale = 0.85f;
+            const float HeaderTextScale = TextScale * 1.2f;
             const int Padding = 8;
             const int IconSize = 16;
             const int IconTextGap = 4;
             const int LineH = 20;
             const int PanelGap = 6;
 
-            float maxW = font.MeasureString(InstalledHeader.Value).X * TextScale;
+            float maxW = font.MeasureString(InstalledHeader.Value).X * HeaderTextScale;
             if (bonusLines.Count > 0)
-                maxW = MathF.Max(maxW, font.MeasureString(BonusHeader.Value).X * TextScale);
+                maxW = MathF.Max(maxW, font.MeasureString(BonusHeader.Value).X * HeaderTextScale);
             foreach (var (m, _) in modules)
                 maxW = MathF.Max(maxW, (IconSize + IconTextGap + font.MeasureString(m.Name).X) * TextScale);
             foreach (var (s, _) in bonusLines)
                 maxW = MathF.Max(maxW, font.MeasureString(s).X * TextScale);
 
             int lineCount = 1 + modules.Count + (bonusLines.Count > 0 ? 1 + bonusLines.Count : 0);
-            int panelW = (int)(maxW * 1.2f) + Padding * 2;
+            int panelW = (int)(maxW) + Padding * 2;
             int panelH = Padding * 2 + lineCount * LineH + 10;
 
             int panelX = tipRight + PanelGap + 10;
@@ -87,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             float tx = panelX + Padding;
             float ty = panelY + Padding;
 
-            Utils.DrawBorderString(sb, InstalledHeader.Value, new Vector2(tx, ty), new Color(0, 220, 255), TextScale * 1.2f);
+            Utils.DrawBorderString(sb, InstalledHeader.Value, new Vector2(tx, ty), new Color(0, 220, 255), HeaderTextScale);
             ty += LineH * 1.2f;
 
             foreach (var (m, mod) in modules) {
@@ -99,7 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
             ty += 10;
             if (bonusLines.Count > 0) {
-                Utils.DrawBorderString(sb, BonusHeader.Value, new Vector2(tx, ty), new Color(0, 220, 255), TextScale * 1.2f);
+                Utils.DrawBorderString(sb, BonusHeader.Value, new Vector2(tx, ty), new Color(0, 220, 255), HeaderTextScale);
                 ty += LineH * 1.2f;
                 foreach (var (s, isNeg) in bonusLines) {
                     Color c = isNeg ? new Color(255, 120, 110) : new Color(120, 255, 170);

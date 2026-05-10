@@ -1690,6 +1690,42 @@ PlowSteelClampArm: {
 	SkillHint: 按下 {0} 释放单分子线，需瞄准物块
 }
 
+SelfHealingSkelent: {
+	DisplayName: 自愈骨骼
+	Tooltip:
+		'''
+		以纳米晶格替换原生骨架的高阶生体义体
+		持续提供 +2HP/秒 的生命回复，并附加 40 点最大生命
+		脱离战斗 4 秒后进入纳米修复状态，回复速率大幅提升
+		金属义骨结构完全免疫坠落伤害
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: 自骇水晶
+	Tooltip:
+		'''
+		操作系统槽位的高阶网络义体
+		将骇客接口反向指向植入者本人
+		持续提供额外的 RAM 恢复速度
+		义体技能：消耗 RAM 立即清除全部负面状态
+		并获得短暂的无敌时间，可用于跳脱致命情况
+		'''
+	SkillHint: 按下 {0} 释放自骇协议，消耗 RAM 清除负面状态
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		肌肉协处理器
+		将攻击预测与肌纤维反射绕过大脑直接下达
+		持续提供 +8% 暴击率与 +8% 移动速度
+		遭受攻击时有 18% 概率触发反射闪避，完全免疫该次伤害
+		反射触发后进入 3 秒亢奋状态，额外提供暴击率与移速加成
+		'''
+}
+
 RamCapacityUpgradeChip: {
 	DisplayName: RAM容量提升芯片
 	Tooltip: 使用后永久增加1点基础RAM上限
