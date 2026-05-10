@@ -1637,8 +1637,13 @@ MimicPerchedAuxBrain: {
 }
 
 CstmVisualEye: {
-	// DisplayName: Cstm Visual Eye
-	// Tooltip: ""
+	// DisplayName: CSTM Opti-Visual Cybereye
+	/* Tooltip:
+		'''
+		A cybernetic optical implant that syncs Hack-Time directly into your cranial neural network.
+		Increases max RAM by 4
+		Displays an independent RAM arc bar in the bottom-left corner of the screen
+		''' */
 }
 
 RamCapacityUpgradeChip: {
