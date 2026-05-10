@@ -2362,3 +2362,8 @@ ArchiveFrameModule: {
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
 }
+
+CstmVisualEye: {
+	// DisplayName: Cstm Visual Eye
+	// Tooltip: ""
+}
