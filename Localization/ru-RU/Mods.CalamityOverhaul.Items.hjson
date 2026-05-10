@@ -1661,6 +1661,41 @@ CstmVisualEye: {
 		''' */
 }
 
+PrimePlasama: {
+	// DisplayName: Prime Plasma Subdermal Armor
+	/* Tooltip:
+		'''
+		A layer of electroactive gel woven beneath the entire body's skin.
+		Permanently grants 25 defense and 6% damage reduction.
+		Massively boosts knockback resistance — common impacts can hardly stagger you.
+		''' */
+}
+
+OmniElectricFoot: {
+	// DisplayName: OmniElectric Foot
+	/* Tooltip:
+		'''
+		A high-output locomotor cybernetic combining electromagnetic recoil with dense propulsion gel.
+		Grants a mid-air double jump, letting you launch off again after leaving the ground.
+		Hold the cyberware skill key on the ground to charge a powerful charge jump.
+		A fully charged jump can reach more than twice the height of a normal jump.
+		''' */
+	// SkillHint: Hold {0} to charge a leap
+}
+
+PlowSteelClampArm: {
+	// DisplayName: PlowSteel Clamp Arm
+	/* Tooltip:
+		'''
+		An industrial cybernetic featuring magnetic pickup and high-rigidity clamps.
+		Greatly extends mining and block-placement range.
+		Permanently enables magnetic pickup of items and coins.
+		Cyberware skill: release a high-heat monomolecular wire from your palm to a target block,
+		continuously scorching every enemy along its path.
+		''' */
+	// SkillHint: Press {0} to fire a monomolecular wire (must aim at a tile)
+}
+
 RamCapacityUpgradeChip: {
 	DisplayName: Чип расширения памяти ОЗУ
 	Tooltip: Использование навсегда увеличивает базовый предел ОЗУ на 1 единицу
