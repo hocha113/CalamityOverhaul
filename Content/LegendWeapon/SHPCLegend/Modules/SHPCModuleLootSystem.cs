@@ -1,10 +1,5 @@
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -39,76 +34,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             InjectModules();
         }
 
-        private static void InjectModules() {
-            //收集所有改件类型，方便后续按索引随机抽取
-            int[] moduleTypes = [
-                ModContent.ItemType<RapidBarrelModule>(),
-                ModContent.ItemType<FocusBarrelModule>(),
-                ModContent.ItemType<ScattershotBarrelModule>(),
-                ModContent.ItemType<HypersonicBarrelModule>(),
-                ModContent.ItemType<HeavyBarrelModule>(),
-                ModContent.ItemType<OscillatorBarrelModule>(),
-                ModContent.ItemType<ScorchBarrelModule>(),
-                ModContent.ItemType<ReflectionBarrelModule>(),
-                ModContent.ItemType<GraviticBarrelModule>(),
-                ModContent.ItemType<PrismaticBarrelModule>(),
-                ModContent.ItemType<ConcussionBarrelModule>(),
-                ModContent.ItemType<ObsidianBarrelModule>(),
-                ModContent.ItemType<LifebloomBarrelModule>(),
-                ModContent.ItemType<MagmaVentBarrelModule>(),
-                ModContent.ItemType<CumulusBarrelModule>(),
-                ModContent.ItemType<MossboundBarrelModule>(),
-                ModContent.ItemType<FrostfernBarrelModule>(),
-                ModContent.ItemType<SandstormBarrelModule>(),
-                ModContent.ItemType<CoralReefBarrelModule>(),
-                ModContent.ItemType<HiveBarrelModule>(),
-                ModContent.ItemType<MoondewBarrelModule>(),
-                ModContent.ItemType<PrecisionOpticModule>(),
-                ModContent.ItemType<AdaptiveOpticModule>(),
-                ModContent.ItemType<ThermalOpticModule>(),
-                ModContent.ItemType<HoloOpticModule>(),
-                ModContent.ItemType<EchoOpticModule>(),
-                ModContent.ItemType<FrostOpticModule>(),
-                ModContent.ItemType<CrosslinkOpticModule>(),
-                ModContent.ItemType<ZoomOpticModule>(),
-                ModContent.ItemType<PingOpticModule>(),
-                ModContent.ItemType<OverloadCoreModule>(),
-                ModContent.ItemType<HighVoltageCoreModule>(),
-                ModContent.ItemType<CapacitorBankModule>(),
-                ModContent.ItemType<PlasmaInjectorModule>(),
-                ModContent.ItemType<SingularityCoreModule>(),
-                ModContent.ItemType<ScrambleFieldModule>(),
-                ModContent.ItemType<CapacitorPulseModule>(),
-                ModContent.ItemType<EntropyCoreModule>(),
-                ModContent.ItemType<ResonanceReactorModule>(),
-                ModContent.ItemType<SteadyStockModule>(),
-                ModContent.ItemType<KineticDamperModule>(),
-                ModContent.ItemType<LightStockModule>(),
-                ModContent.ItemType<AssaultStockModule>(),
-                ModContent.ItemType<BraceStockModule>(),
-                ModContent.ItemType<LaunchStockModule>(),
-                ModContent.ItemType<OverwatchStockModule>(),
-                ModContent.ItemType<MomentumStockModule>(),
-                ModContent.ItemType<BulwarkStockModule>(),
-                ModContent.ItemType<HarmonyGripModule>(),
-                ModContent.ItemType<EfficientGripModule>(),
-                ModContent.ItemType<CrystalGripModule>(),
-                ModContent.ItemType<BalancedGripModule>(),
-                ModContent.ItemType<SentinelGripModule>(),
-                ModContent.ItemType<ConductorGripModule>(),
-                ModContent.ItemType<CombatGripModule>(),
-                ModContent.ItemType<TempestGripModule>(),
-                ModContent.ItemType<AbsorberGripModule>(),
-                ModContent.ItemType<ResonanceFrameModule>(),
-                ModContent.ItemType<MultiCellFrameModule>(),
-                ModContent.ItemType<QuantumFrameModule>(),
-                ModContent.ItemType<VolatileFrameModule>(),
-                ModContent.ItemType<PhantomFrameModule>(),
-                ModContent.ItemType<RecursiveFrameModule>(),
-                ModContent.ItemType<HarmonicFrameModule>(),
-                ModContent.ItemType<ReplicatorFrameModule>(),
-                ModContent.ItemType<ArchiveFrameModule>(),
-            ];
+        private void InjectModules() {
+            int[] moduleTypes = [.. Mod.GetContent<SHPCModuleItem>()
+                .Where(module => module.CanGenerateInLabChest)
+                .Select(module => module.Type)
+                .OrderBy(type => type)];
+
+            if (moduleTypes.Length == 0) {
+                injected = true;
+                return;
+            }
 
             List<Chest> laboratoryChests = [];
             for (int i = 0; i < Main.maxChests; i++) {

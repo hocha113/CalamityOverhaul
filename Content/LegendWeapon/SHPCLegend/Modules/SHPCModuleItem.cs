@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 {
     /// <summary>
-    /// SHPC 改件物品基类，提供槽位类别声明与对 <see cref="ShootContext"/> 的修改入口
+    /// SHPC 改件物品基类，提供槽位类别声明、战利品生成声明与对 <see cref="ShootContext"/> 的修改入口
     /// 子类只需覆写 <see cref="SlotCategory"/> 与 <see cref="Apply"/>
     /// </summary>
     internal abstract class SHPCModuleItem : ModItem
@@ -21,6 +21,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         /// 该改件能装入的槽位类别
         /// </summary>
         public abstract SHPCSlotCategory SlotCategory { get; }
+
+        /// <summary>
+        /// 是否自动加入实验室安全箱的改件随机池；特殊或隐藏改件可覆写为 false。
+        /// </summary>
+        public virtual bool CanGenerateInLabChest => true;
 
         /// <summary>
         /// 改件作用：修改传入的 <see cref="ShootContext"/>，对浮点倍率字段使用加算叠加（增量 += delta）
