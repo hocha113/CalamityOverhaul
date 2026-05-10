@@ -1638,14 +1638,8 @@ MimicPerchedAuxBrain: {
 }
 
 CstmVisualEye: {
-	// DisplayName: CSTM Visual Eye
-	// Tooltip:
-	// 	'''
-	// 	High-grade network-class ocular cyberware wiring Hack Time directly into the cortex
-	// 	+4 maximum RAM while equipped
-	// 	Shows a dedicated RAM arc at the lower-left while equipped; the SHPC HUD takes over when SHPC is held
-	// 	"What the pupil reflects isn't the world — it's the protocol stack"
-	// 	'''
+	// DisplayName: Cstm Visual Eye
+	// Tooltip: ""
 }
 
 RamCapacityUpgradeChip: {
@@ -2372,9 +2366,4 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
-}
-
-CstmVisualEye: {
-	// DisplayName: Cstm Visual Eye
-	// Tooltip: ""
 }

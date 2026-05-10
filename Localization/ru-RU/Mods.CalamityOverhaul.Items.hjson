@@ -1652,14 +1652,8 @@ MimicPerchedAuxBrain: {
 }
 
 CstmVisualEye: {
-	DisplayName: Кибернетический глаз CSTM
-	Tooltip:
-		'''
-		Сетевая оптическая киберимплантация высокого класса, подключающая «Время взлома» напрямую к нейросети
-		+4 к пределу ОЗУ, пока экипирован
-		В нижнем левом углу экрана отображается отдельная дуга ОЗУ; при удержании SHPC управление переходит к его HUD
-		«В глубине зрачка отражается не мир — а стек протоколов»
-		'''
+	// DisplayName: Cstm Visual Eye
+	// Tooltip: ""
 }
 
 RamCapacityUpgradeChip: {
@@ -2386,9 +2380,4 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
-}
-
-CstmVisualEye: {
-	// DisplayName: Cstm Visual Eye
-	// Tooltip: ""
 }
