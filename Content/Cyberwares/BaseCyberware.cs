@@ -53,6 +53,12 @@ namespace CalamityOverhaul.Content.Cyberwares
         /// </summary>
         public virtual void UpdateEquipped(Player player) { }
 
+        /// <summary>
+        /// 与原版 PostUpdateEquips 同期触发的统计加成入口
+        /// <br/>所有需要在装备阶段写入的属性（防御、击退抗性、移速等）请在此覆写
+        /// </summary>
+        public virtual void PostUpdateEquipped(Player player) { }
+
         public override void SetDefaults() {
             Item.maxStack = 1;
             Item.width = 32;

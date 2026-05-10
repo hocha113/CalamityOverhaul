@@ -1,0 +1,159 @@
+using CalamityOverhaul.Common;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
+{
+    /// <summary>
+    /// 犁钢钳臂的玩家组件
+    /// <br/>承担两件事：
+    /// <list type="bullet">
+    ///   <item>响应义体技能键，根据光标处的物块情况决定能否成功抛出单分子线</item>
+    ///   <item>维护本机玩家的技能冷却倒计时，供工具提示与音效反馈引用</item>
+    /// </list>
+    /// 真正的伤害判定与渲染交由 <see cref="MonomolecularWire"/> 弹幕承担，本组件只是触发器
+    /// </summary>
+    internal class PlowSteelClampArmPlayer : ModPlayer
+    {
+        /// <summary>
+        /// 单分子线技能剩余冷却帧数，0 时可再次释放
+        /// </summary>
+        public int SkillCooldownTimer { get; private set; }
+
+        /// <summary>
+        /// 公开冷却比例（0 = 已冷却完毕，1 = 刚释放），主要用于 HUD 或工具提示
+        /// </summary>
+        public float CooldownRatio => PlowSteelClampArm.SkillCooldown <= 0
+            ? 0f : MathHelper.Clamp((float)SkillCooldownTimer / PlowSteelClampArm.SkillCooldown, 0f, 1f);
+
+        public override void ResetEffects() {
+            if (SkillCooldownTimer > 0) {
+                SkillCooldownTimer--;
+            }
+        }
+
+        public override void PostUpdate() {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (PlowSteelClampArm.GetEquipped(Player) == null) {
+                //卸下义体后即时清理冷却，避免再次穿戴时仍处于冷却中带来的误解
+                SkillCooldownTimer = 0;
+                return;
+            }
+            if (CWRKeySystem.CyberwareSkill_Key?.JustPressed != true) {
+                return;
+            }
+            if (SkillCooldownTimer > 0) {
+                //冷却中按键直接给出失败反馈，避免玩家误以为按键失效
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.5f }, Player.Center);
+                return;
+            }
+
+            TryFireWire();
+        }
+
+        /// <summary>
+        /// 实际尝试发射单分子线：寻找光标附近的有效锚点，符合条件则生成弹幕
+        /// </summary>
+        private void TryFireWire() {
+            if (!FindAnchorTile(out Vector2 anchor)) {
+                //没有可用的物块作为锚点，给出短促的"目标无效"反馈
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.55f }, Player.Center);
+                return;
+            }
+
+            //生成弹幕：起点为玩家中心，终点编码进 ai[0]/ai[1] 以便多人同步
+            int type = ModContent.ProjectileType<MonomolecularWire>();
+            //依据玩家通用伤害对基础数值进行实时缩放，让长线性技能与玩家进度同步
+            int damage = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(PlowSteelClampArm.WireBaseDamage);
+
+            Projectile proj = Projectile.NewProjectileDirect(new EntitySource_ItemUse(Player, new Item()),
+                Player.Center, Vector2.Zero,
+                type, damage, 0f, Player.whoAmI,
+                ai0: anchor.X, ai1: anchor.Y);
+            if (proj != null && proj.ModProjectile is MonomolecularWire wire) {
+                wire.AnchorWorld = anchor;
+                proj.netUpdate = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);
+            //装填火花
+            for (int i = 0; i < 12; i++) {
+                Vector2 vel = (anchor - Player.Center).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(2f, 4.5f)
+                    + Main.rand.NextVector2Circular(1.5f, 1.5f);
+                Dust dust = Dust.NewDustPerfect(Player.Center, DustID.MartianSaucerSpark, vel, 100, default, 1.2f);
+                dust.noGravity = true;
+            }
+
+            SkillCooldownTimer = PlowSteelClampArm.SkillCooldown;
+        }
+
+        /// <summary>
+        /// 在光标附近寻找一块可作为锚点的实心物块，找到后返回锚点世界坐标
+        /// <br/>策略：先取光标命中的格子；若该格子非实心，则从光标向四方各 4 格内寻找最近的实心格子
+        /// </summary>
+        private bool FindAnchorTile(out Vector2 anchorWorld) {
+            anchorWorld = default;
+
+            //tileTargetX/Y 是原版静态字段，仅对本机玩家有意义；本方法只会在 Player.whoAmI == Main.myPlayer 时调用
+            int targetX = Terraria.Player.tileTargetX;
+            int targetY = Terraria.Player.tileTargetY;
+            //超出最大触发距离直接判定无效
+            Vector2 cursor = new(targetX * 16f + 8f, targetY * 16f + 8f);
+            if (Vector2.DistanceSquared(cursor, Player.Center)
+                > PlowSteelClampArm.MaxAnchorDistance * PlowSteelClampArm.MaxAnchorDistance) {
+                return false;
+            }
+
+            if (IsAnchorTile(targetX, targetY)) {
+                anchorWorld = new Vector2(targetX * 16f + 8f, targetY * 16f + 8f);
+                return true;
+            }
+
+            //周围 4 格半径搜索最近的实心物块
+            const int searchRadius = 4;
+            int bestX = -1, bestY = -1;
+            int bestDistSq = int.MaxValue;
+            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
+                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
+                    int tx = targetX + dx;
+                    int ty = targetY + dy;
+                    if (!IsAnchorTile(tx, ty)) {
+                        continue;
+                    }
+                    int distSq = dx * dx + dy * dy;
+                    if (distSq < bestDistSq) {
+                        bestDistSq = distSq;
+                        bestX = tx;
+                        bestY = ty;
+                    }
+                }
+            }
+
+            if (bestX < 0) {
+                return false;
+            }
+            anchorWorld = new Vector2(bestX * 16f + 8f, bestY * 16f + 8f);
+            return true;
+        }
+
+        /// <summary>
+        /// 判定指定格子是否可作为单分子线的锚点：必须存在、是激活的、是有实体的实心格
+        /// </summary>
+        private static bool IsAnchorTile(int x, int y) {
+            if (x < 0 || y < 0 || x >= Main.maxTilesX || y >= Main.maxTilesY) {
+                return false;
+            }
+            Tile tile = Main.tile[x, y];
+            if (!tile.HasUnactuatedTile) {
+                return false;
+            }
+            return Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
+        }
+    }
+}

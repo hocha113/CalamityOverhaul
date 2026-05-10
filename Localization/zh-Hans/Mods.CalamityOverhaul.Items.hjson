@@ -1655,6 +1655,41 @@ CstmVisualEye: {
 		'''
 }
 
+PrimePlasama: {
+	DisplayName: 原型等离子皮下护甲
+	Tooltip:
+		'''
+		铺展于全身皮下的电活性凝胶层
+		永久提升25点防御与6%的伤害减免
+		大幅提高击退抗性，普通的冲击难以撼动你的步伐
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: 全向电动义足
+	Tooltip:
+		'''
+		电磁反冲与高密度推进凝胶组成的高强度运动义体
+		装备后获得空中二段跳，可在腾空时再次蹬出一脚
+		按住义体技能键在地面蓄力，松开释放出强力的蓄力跳
+		蓄满后跳跃高度可达普通跳跃的两倍以上
+		'''
+	SkillHint: 按住 {0} 进行蓄力跳
+}
+
+PlowSteelClampArm: {
+	DisplayName: 犁钢钳臂
+	Tooltip:
+		'''
+		工业级义体，附带磁感拾取与高刚性钳臂
+		大幅扩展挖掘与方块放置范围
+		永久启用物品与金币的磁吸拾取
+		义体技能：从掌心释放一根高热的单分子线连接到目标物块
+		持续灼烧路径上的所有敌人
+		'''
+	SkillHint: 按下 {0} 释放单分子线，需瞄准物块
+}
+
 RamCapacityUpgradeChip: {
 	DisplayName: RAM容量提升芯片
 	Tooltip: 使用后永久增加1点基础RAM上限

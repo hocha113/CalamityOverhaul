@@ -133,6 +133,15 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
         }
 
+        public override void PostUpdateEquips() {
+            //义体的统计类加成必须在原版装备结算后立即写入，否则会被同帧的 ResetEffects 抹掉
+            for (int i = 0; i < SlotCount; i++) {
+                if (EquippedCyberwares[i]?.ModItem is BaseCyberware cyber) {
+                    cyber.PostUpdateEquipped(Player);
+                }
+            }
+        }
+
         public override void SaveData(TagCompound tag) {
             try {
                 tag["CyberMaxCapacity"] = MaxCapacity;
