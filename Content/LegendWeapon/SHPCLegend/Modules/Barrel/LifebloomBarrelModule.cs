@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
@@ -13,9 +13,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.DamageMul += -0.16f;
-            ctx.HomingMul += 0.18f;
-            ctx.ChargeTimeMul += -0.08f;
-            ctx.ManaCostMul += 0.12f;
+            ctx.HomingMul += 0.28f;
+            ctx.ChargeTimeMul += -0.1f;
+            ctx.ManaCostMul += 0.2f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

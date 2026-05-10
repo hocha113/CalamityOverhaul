@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += 0.08f;
-            ctx.DamageMul += -0.14f;
+            ctx.DamageMul += -0.04f;
             ctx.HomingMul += 0.12f;
             ctx.ManaCostMul += 0.20f;
         }

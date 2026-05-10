@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(255, 115, 150);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.06f;
+            ctx.DamageMul += -0.12f;
             ctx.BeamLifeMul += 0.12f;
-            ctx.OrbExplosionRadiusMul += 0.12f;
-            ctx.ManaCostMul += 0.18f;
+            ctx.OrbExplosionRadiusMul += 0.1f;
+            ctx.ManaCostMul += 0.3f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, Vector2.Zero,
                 ModContent.ProjectileType<SHPCCoralAnchorProj>(),
-                Math.Max(damageDone / 3, 1), 0f, beam.Projectile.owner);
+                Math.Max(damageDone / 10, 1), 0f, beam.Projectile.owner);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {

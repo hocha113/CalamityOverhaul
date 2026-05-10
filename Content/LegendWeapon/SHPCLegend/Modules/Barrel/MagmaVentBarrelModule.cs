@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -20,19 +20,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(255, 105, 30);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += 0.10f;
-            ctx.HomingMul += -0.25f;
+            ctx.DamageMul += -0.05f;
+            ctx.HomingMul += -0.28f;
             ctx.BeamSpeedMul += -0.08f;
-            ctx.ManaCostMul += 0.22f;
+            ctx.ManaCostMul += 0.3f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            SpawnVent(beam, target.Bottom, Math.Max(damageDone / 2, 1));
+            SpawnVent(beam, target.Bottom, Math.Max(damageDone / 4, 1));
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             if (beam.IsDerived) return;
-            SpawnVent(beam, beam.Projectile.Center, Math.Max(beam.Projectile.damage / 3, 1));
+            SpawnVent(beam, beam.Projectile.Center, Math.Max(beam.Projectile.damage / 4, 1));
         }
 
         private static void SpawnVent(CyberTraceBeamProj beam, Vector2 center, int damage) {
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 18;
+            Projectile.localNPCHitCooldown = 24;
             Projectile.DamageType = DamageClass.Magic;
         }
 

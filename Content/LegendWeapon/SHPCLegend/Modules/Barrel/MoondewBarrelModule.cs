@@ -22,9 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -0.12f;
+            ctx.DamageMul += -0.06f;
             ctx.BeamLifeMul += 0.10f;
             ctx.CritAdd += 5;
-            ctx.ManaCostMul += 0.18f;
+            ctx.ManaCostMul += 0.3f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
