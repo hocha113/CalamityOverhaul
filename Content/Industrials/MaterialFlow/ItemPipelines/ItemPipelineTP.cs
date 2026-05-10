@@ -16,7 +16,14 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
     /// <summary>
-    /// 物流管道TileProcessor
+    /// 物流管道 TileProcessor (重写版)
+    /// <para>核心机制：</para>
+    /// <list type="bullet">
+    /// <item><b>无固定目标</b>：物品在每个分叉处由 <see cref="ItemPipelineNetwork"/> 的预计算路由表动态选路，目标失效不会卡死。</item>
+    /// <item><b>反压感知抽取</b>：输出端只有在网络中至少存在一个能接收对应物品的输入端时才抽取，且节流到 <see cref="ExtractInterval"/> 帧一次。</item>
+    /// <item><b>渐进式卡死自愈</b>：严格路由 → 宽松路由 → 任意前向 → 反向回流 → 沿途投回任意存储 → 实在无解才掉落 (60 秒)。</item>
+    /// <item><b>低开销侧位扫描</b>：连接信息 8 帧做一次完整扫描，其余帧仅做缓存校验。</item>
+    /// </list>
     /// </summary>
     [VaultLoaden(CWRConstant.Asset + "MaterialFlow")]
     internal class ItemPipelineTP : TileProcessor, ICWRLoader
@@ -46,12 +53,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             NotEndpointHintText = Language.GetOrRegister($"Mods.CalamityOverhaul.UI.ItemPipeline.NotEndpointHint", () => "只能在管道末端设置输入输出");
         }
 
-        void ICWRLoader.UnLoadData() { }
+        void ICWRLoader.UnLoadData() {
+            ItemPipelineNetwork.Clear();
+        }
         #endregion
 
-        #region 形状查找表(复用电力管道逻辑)
+        #region 形状查找表
         private const int UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8;
-
         private static readonly (ItemPipelineShape shape, int rotation)[] ShapeLookup = new (ItemPipelineShape, int)[16];
 
         static ItemPipelineTP() {
@@ -90,29 +98,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         #endregion
 
         #region 字段
-        /// <summary>
-        /// 管道基础颜色(棕黄色调，区别于电力管道)
-        /// </summary>
         public Color BaseColor => new Color(180, 140, 90);
 
-        /// <summary>
-        /// 当前管道模式
-        /// </summary>
         public ItemPipelineMode Mode { get; private set; } = ItemPipelineMode.Normal;
-
-        /// <summary>
-        /// 当前管道形状
-        /// </summary>
         public ItemPipelineShape Shape { get; private set; } = ItemPipelineShape.Endpoint;
-
-        /// <summary>
-        /// 是否是管道端点(只连接0或1个其他管道)
-        /// </summary>
         public bool IsEndpoint => GetPipelineConnectionCount() <= 1;
 
-        /// <summary>
-        /// 获取连接的存储方向索引(用于箭头指示)，无存储返回-1
-        /// </summary>
         public int StorageDirectionIndex {
             get {
                 for (int i = 0; i < 4; i++) {
@@ -124,72 +115,57 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 形状旋转ID
-        /// </summary>
         public int ShapeRotationID { get; private set; } = 0;
-
-        /// <summary>
-        /// 四个方向的连接状态(0上1下2左3右)
-        /// </summary>
         internal List<ItemPipelineSideState> SideStates { get; private set; }
 
         /// <summary>
-        /// 管道内正在传输的物品
+        /// 当前管道内正在传输的物品(可空)
         /// </summary>
         internal TransportingItem? CurrentItem { get; set; } = null;
 
-        /// <summary>
-        /// 输出模式的抽取冷却
-        /// </summary>
-        private int extractCooldown = 0;
-
-        /// <summary>
-        /// 抽取间隔(帧)
-        /// </summary>
-        private const int ExtractInterval = 1;
-
-        /// <summary>
-        /// 每次抽取的最大物品数量
-        /// </summary>
+        /// <summary>抽取节流计时器(输出模式专用)</summary>
+        private int extractCooldown;
+        /// <summary>抽取节流间隔(帧)：输出端每隔此间隔尝试一次抽取，避免每帧扫存储</summary>
+        private const int ExtractInterval = 8;
+        /// <summary>每次抽取尝试的最大物品堆叠</summary>
         private const int ExtractBatchSize = 64;
 
-        /// <summary>
-        /// 物品卡住计数器(当物品连续多帧无法传递时递增)
-        /// </summary>
-        private int stuckCounter = 0;
+        /// <summary>物品在本节卡死帧数(进度=1 但传不出去)</summary>
+        private int stuckFrames;
+        /// <summary>卡死阶段一阈值：开始放宽路由(允许走任意输入)</summary>
+        private const int LooseRoutingThreshold = 60;
+        /// <summary>卡死阶段二阈值：允许任意非来源方向的空管道</summary>
+        private const int AnyForwardThreshold = 180;
+        /// <summary>卡死阶段三阈值：允许通过来源方向反向回流</summary>
+        private const int ReverseFlowThreshold = 360;
+        /// <summary>卡死阶段四阈值：尝试投回任意直连存储或掉落到世界(60 秒)</summary>
+        private const int RescueDropThreshold = 3600;
+        /// <summary>已发生反向回流的物品最多再被反弹的次数(避免无限振荡)</summary>
+        private const int MaxReverseHopsPerItem = 8;
 
-        /// <summary>
-        /// 物品卡住后强制掉落的阈值(帧)
-        /// </summary>
-        private const int StuckDropThreshold = 300;
+        /// <summary>输入端最近一次拒收物品的帧数戳, 短暂期内对外汇报"不可接收"</summary>
+        private int lastDepositRejectFrame = -1000;
+        /// <summary>输入端拒收冷却帧数</summary>
+        private const int DepositRejectCooldown = 30;
 
-        /// <summary>
-        /// 流动动画器(只有输出端点才会使用)
-        /// </summary>
+        /// <summary>流动动画器(只有输出端才会使用)</summary>
         private PipelineFlowAnimator flowAnimator;
 
-        /// <summary>
-        /// 路径更新计时器
-        /// </summary>
-        private int pathUpdateTimer = 0;
-
-        /// <summary>
-        /// 路径更新间隔(帧)
-        /// </summary>
-        private const int PathUpdateInterval = 120;
-
-        //缓存连接掩码
+        /// <summary>缓存连接掩码, 仅变化时重计算形状</summary>
         private int lastConnectionMask = -1;
+        /// <summary>是否已经初始化过侧位的引用(只做一次)</summary>
+        private bool sideStatesInitialized;
 
-        /// <summary>
-        /// 物品筛选器(用于过滤输出/输入的物品类型)
-        /// </summary>
+        /// <summary>物品筛选器(用于过滤输出/输入的物品类型)</summary>
         internal Item ItemFilter;
+        /// <summary>缓存的筛选器版本号, 避免每次都做 GetGlobalItem 调用比对</summary>
+        private int cachedFilterVersion = -1;
+        /// <summary>缓存的筛选物品ID集合 (HashSet 比 List 查询更快, 命中量大时收益明显)</summary>
+        private readonly HashSet<int> cachedFilterItemIds = [];
+        /// <summary>是否使用了空筛选器(允许全部)</summary>
+        private bool cachedFilterAllowAll = true;
 
-        /// <summary>
-        /// 悬停动画进度
-        /// </summary>
+        /// <summary>悬停动画进度</summary>
         internal float hoverSengs;
         #endregion
 
@@ -202,20 +178,34 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 new ItemPipelineSideState(new Point16(1, 0), 3)  //右
             ];
             ItemFilter = new Item();
+            sideStatesInitialized = false;
+
+            //新管道加入网络, 强制下次重建路由
+            ItemPipelineNetwork.MarkDirty();
         }
 
         public override void Update() {
-            //更新连接状态
+            if (!sideStatesInitialized) {
+                foreach (var side in SideStates) {
+                    side.CoreTP = this;
+                    side.Position = Position;
+                }
+                sideStatesInitialized = true;
+            }
+
+            //更新四个方向的连接状态(快路径优先, 节流完整扫描)
             foreach (var side in SideStates) {
-                side.CoreTP = this;
-                side.Position = Position;
+                //Position 在 TileProcessor 生命周期内不会变, 只读, 不需要每帧再赋
                 side.UpdateConnectionState();
             }
 
-            //计算形状
+            //计算形状, 形状变化也算拓扑变化
             UpdateShape();
 
-            //根据模式执行不同逻辑
+            //每帧统一驱动一次网络路由的"按需重建"判断
+            ItemPipelineNetwork.EnsureBuilt();
+
+            //模式驱动逻辑
             switch (Mode) {
                 case ItemPipelineMode.Output:
                     UpdateOutputMode();
@@ -223,15 +213,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 case ItemPipelineMode.Input:
                     UpdateInputMode();
                     break;
-                case ItemPipelineMode.Normal:
-                    UpdateNormalMode();
-                    break;
+                //Normal: 仅作为通道, 不主动抽取/存入
             }
 
-            //更新传输中的物品
+            //推进当前物品(同时处理卡死自愈)
             UpdateTransportingItem();
 
-            //更新流动动画(只有输出端点才需要)
+            //流动动画(只对输出端有效)
             if (Mode == ItemPipelineMode.Output) {
                 UpdateFlowAnimation();
             }
@@ -240,26 +228,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 flowAnimator = null;
             }
 
-            //更新悬停动画
+            //悬停动画进度
             hoverSengs = HoverTP
                 ? Math.Min(hoverSengs + 0.1f, 1f)
                 : Math.Max(hoverSengs - 0.1f, 0f);
-        }
-
-        /// <summary>
-        /// 更新流动动画
-        /// </summary>
-        private void UpdateFlowAnimation() {
-            flowAnimator ??= new PipelineFlowAnimator();
-
-            //定期更新路径
-            pathUpdateTimer++;
-            if (pathUpdateTimer >= PathUpdateInterval) {
-                pathUpdateTimer = 0;
-                flowAnimator.UpdatePath(this);
-            }
-
-            flowAnimator.Update();
         }
 
         private void UpdateShape() {
@@ -269,23 +241,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             if (SideStates[2].LinkType == ItemPipelineLinkType.Pipeline) connectionMask |= LEFT;
             if (SideStates[3].LinkType == ItemPipelineLinkType.Pipeline) connectionMask |= RIGHT;
 
-            if (connectionMask != lastConnectionMask) {
-                var (shape, rotation) = ShapeLookup[connectionMask];
-                Shape = shape;
-                ShapeRotationID = rotation;
-                lastConnectionMask = connectionMask;
-
-                //如果从端点变为中继点，自动重置为普通模式
-                if (Mode != ItemPipelineMode.Normal && !IsEndpoint) {
-                    Mode = ItemPipelineMode.Normal;
-                    SendData();
-                }
+            if (connectionMask == lastConnectionMask) {
+                return;
             }
+            var (shape, rotation) = ShapeLookup[connectionMask];
+            Shape = shape;
+            ShapeRotationID = rotation;
+            lastConnectionMask = connectionMask;
+
+            //从端点变中继: 自动取消模式, 避免歧义
+            if (Mode != ItemPipelineMode.Normal && !IsEndpoint) {
+                Mode = ItemPipelineMode.Normal;
+                SendData();
+            }
+            //形状变化也是拓扑变化的一种(可能让某些路由更短/更长)
+            ItemPipelineNetwork.MarkDirty();
         }
 
-        /// <summary>
-        /// 获取连接的管道数量
-        /// </summary>
         private int GetPipelineConnectionCount() {
             int count = 0;
             foreach (var side in SideStates) {
@@ -295,386 +267,458 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
             return count;
         }
+
+        private void UpdateFlowAnimation() {
+            flowAnimator ??= new PipelineFlowAnimator();
+            flowAnimator.Tick(this);
+        }
         #endregion
 
-        #region 模式逻辑
+        #region 输出模式
         /// <summary>
-        /// 输出模式:从连接的存储中抽取物品
+        /// 输出模式：从连接的存储中抽取物品, 仅在网络存在可接收的输入时执行
         /// </summary>
         private void UpdateOutputMode() {
-            //已有物品在传输中，等待传输完成
+            //已有物品在传输, 等待传输完成
             if (CurrentItem.HasValue) {
                 return;
             }
 
-            //冷却中
+            //节流: 没到下一次抽取时间就退出
             if (extractCooldown > 0) {
                 extractCooldown--;
                 return;
             }
+            extractCooldown = ExtractInterval;
 
-            //查找连接的存储
-            foreach (var side in SideStates) {
+            //先做廉价的"是否存在任意可达输入端"快检, 不存在就直接退出
+            var reachableInputs = ItemPipelineNetwork.GetReachableInputs(Position);
+            if (reachableInputs == null || reachableInputs.Count == 0) {
+                return;
+            }
+
+            //从直连的存储侧依次尝试抽取
+            for (int sideIdx = 0; sideIdx < SideStates.Count; sideIdx++) {
+                var side = SideStates[sideIdx];
                 if (side.LinkType != ItemPipelineLinkType.Storage) {
                     continue;
                 }
-
                 var storage = side.GetStorageProvider();
                 if (storage == null || !storage.IsValid) {
                     continue;
                 }
 
-                //从存储中取出第一个可用物品
+                //在存储里依次找首个允许的物品类型
                 foreach (var storedItem in storage.GetStoredItems()) {
                     if (storedItem == null || storedItem.IsAir) {
                         continue;
                     }
-
-                    //检查物品是否被筛选器允许
                     if (!IsItemAllowedByFilter(storedItem.type)) {
                         continue;
                     }
-
-                    //查找可达的输入点
-                    Point16 targetInput = FindNearestInputPoint();
-                    if (targetInput == Point16.NegativeOne) {
-                        continue;//没有输入点，不抽取
+                    //至少有一个输入端能接收此物品才抽取(避免凭空塞满管道)
+                    if (!HasAvailableInputForItem(storedItem.type, reachableInputs)) {
+                        continue;
                     }
 
-                    //批量抽取物品(取min(库存, 批次上限))
                     int extractAmount = Math.Min(storedItem.stack, ExtractBatchSize);
                     Item withdrawn = storage.WithdrawItem(storedItem.type, extractAmount);
                     if (withdrawn != null && !withdrawn.IsAir) {
-                        //SourceDirection设为存储方向索引，表示物品从存储侧进入管道
-                        //TryPassToNextPipeline会跳过此方向，但该方向连接的是存储(非Pipeline)，
-                        //所以不会影响管道方向的选择
                         CurrentItem = new TransportingItem(withdrawn.type, withdrawn.stack, withdrawn.prefix) {
-                            TargetPosition = targetInput,
-                            SourceDirection = side.DirectionIndex
+                            SourceDirection = (sbyte)side.DirectionIndex
                         };
-                        extractCooldown = ExtractInterval;
-                        break;
+                        return;
                     }
-                }
-
-                if (CurrentItem.HasValue) {
-                    break;
                 }
             }
         }
 
         /// <summary>
-        /// 输入模式:接收物品并存入连接的存储
+        /// 网络中是否存在能接收指定物品类型的输入端
+        /// </summary>
+        private bool HasAvailableInputForItem(int itemType, List<Point16> reachableInputs) {
+            for (int i = 0; i < reachableInputs.Count; i++) {
+                var inputPos = reachableInputs[i];
+                if (inputPos == Position) {
+                    continue;
+                }
+                if (!TileProcessorLoader.AutoPositionGetTP(inputPos, out ItemPipelineTP inputTP)) {
+                    continue;
+                }
+                if (inputTP.CanReceiveItem(itemType)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+
+        #region 输入模式
+        /// <summary>
+        /// 输入模式：将到达的物品存入连接的存储；
+        /// 失败则通过 <see cref="UpdateTransportingItem"/> 的卡死自愈策略尝试重定向到其他输入
         /// </summary>
         private void UpdateInputMode() {
             if (!CurrentItem.HasValue) {
                 return;
             }
-
             var item = CurrentItem.Value;
             if (item.Progress < 1f) {
                 return;//物品还没到达中心
             }
 
-            //查找连接的存储并存入
-            foreach (var side in SideStates) {
+            //尝试存入直连存储
+            for (int i = 0; i < SideStates.Count; i++) {
+                var side = SideStates[i];
                 if (side.LinkType != ItemPipelineLinkType.Storage) {
                     continue;
                 }
-
                 var storage = side.GetStorageProvider();
-                if (storage == null || !storage.IsValid || !storage.HasSpace) {
+                if (storage == null || !storage.IsValid) {
                     continue;
                 }
 
-                Item toDeposit = new Item(item.ItemType, item.Stack);
-                toDeposit.prefix = (byte)item.Prefix;
-
-                if (storage.CanAcceptItem(toDeposit) && storage.DepositItem(toDeposit)) {
-                    CurrentItem = null;
-                    break;
+                Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
+                if (!storage.CanAcceptItem(toDeposit)) {
+                    continue;
+                }
+                if (storage.DepositItem(toDeposit)) {
+                    if (toDeposit.IsAir || toDeposit.stack <= 0) {
+                        CurrentItem = null;
+                    }
+                    else {
+                        //部分存入: 剩余的继续等待或在卡死自愈阶段被重定向
+                        item.Stack = toDeposit.stack;
+                        CurrentItem = item;
+                    }
+                    return;
                 }
             }
 
-            //如果没有存储空间，物品会卡在这里
+            //没存进去, 记录拒收时间, 让其他输出端在短期内不要再选自己
+            lastDepositRejectFrame = (int)Main.GameUpdateCount;
         }
 
         /// <summary>
-        /// 普通模式:传递物品到下一个管道
+        /// 此输入端当前是否可接收指定类型的物品(综合考虑筛选器、存储空间、近期拒收)
         /// </summary>
-        private void UpdateNormalMode() {
-            //普通管道只负责传递，不主动抽取或存入
+        public bool CanReceiveItem(int itemType) {
+            if (Mode != ItemPipelineMode.Input) {
+                return false;
+            }
+            //已有物品占位 -> 暂不接收
+            if (CurrentItem.HasValue) {
+                return false;
+            }
+            //短期内拒收过 -> 视为不可接收, 给上游重定向时间
+            if ((int)Main.GameUpdateCount - lastDepositRejectFrame < DepositRejectCooldown) {
+                return false;
+            }
+            if (!IsItemAllowedByFilter(itemType)) {
+                return false;
+            }
+
+            //至少一个直连存储能接收此物品
+            Item testItem = new Item(itemType, 1);
+            for (int i = 0; i < SideStates.Count; i++) {
+                var side = SideStates[i];
+                if (side.LinkType != ItemPipelineLinkType.Storage) {
+                    continue;
+                }
+                var storage = side.GetStorageProvider();
+                if (storage == null || !storage.IsValid) {
+                    continue;
+                }
+                if (storage.CanAcceptItem(testItem)) {
+                    return true;
+                }
+            }
+            return false;
         }
         #endregion
 
-        #region 物品传输
-        /// <summary>
-        /// 更新正在传输的物品
-        /// </summary>
+        #region 物品传输与卡死自愈
         private void UpdateTransportingItem() {
             if (!CurrentItem.HasValue) {
-                stuckCounter = 0;
+                stuckFrames = 0;
                 return;
             }
 
             var item = CurrentItem.Value;
-
-            //安全检查:确保Speed有效
             if (item.Speed <= 0f) {
-                item.Speed = 0.2f;
+                item.Speed = TransportingItem.DefaultSpeed;
             }
 
-            item.Progress += item.Speed;
+            //没到中心: 推进进度即可
+            if (item.Progress < 1f) {
+                item.Progress = Math.Min(item.Progress + item.Speed, 1f);
+                CurrentItem = item;
+                stuckFrames = 0;
+                return;
+            }
 
-            //物品到达管道中心(50%)或末端(100%)
-            if (item.Progress >= 1f) {
-                item.Progress = 1f;
+            //已到中心, 输入端模式下应当由 UpdateInputMode 已经处理过(成功就消失);
+            //仍残留则视为卡死, 走通用自愈
+            bool passed = TryPassToNextPipeline(ref item);
+            if (passed) {
+                CurrentItem = null;
+                stuckFrames = 0;
+                return;
+            }
 
-                //如果是输入点，由UpdateInputMode处理存入
-                if (Mode == ItemPipelineMode.Input) {
-                    CurrentItem = item;
-                    return;
-                }
+            stuckFrames++;
+            CurrentItem = item;
 
-                //传递到下一个管道
-                if (TryPassToNextPipeline(ref item)) {
-                    CurrentItem = null;
-                    stuckCounter = 0;
+            //最后兜底: 把物品塞回直连的任意存储, 实在不行才掉到世界
+            if (stuckFrames >= RescueDropThreshold && !VaultUtils.isClient) {
+                if (TryRescueDeposit(ref item)) {
+                    if (item.Stack <= 0) {
+                        CurrentItem = null;
+                    }
+                    else {
+                        CurrentItem = item;
+                    }
+                    stuckFrames = 0;
                 }
                 else {
-                    //无法传递(下游管道都被占用)，等待重试
-                    stuckCounter++;
-                    CurrentItem = item;
-
-                    //长时间卡住则掉落物品，避免永久阻塞
-                    if (stuckCounter >= StuckDropThreshold && !VaultUtils.isClient) {
-                        DropCurrentItem();
-                        stuckCounter = 0;
-                    }
+                    DropCurrentItem();
+                    stuckFrames = 0;
                 }
-            }
-            else {
-                stuckCounter = 0;
-                CurrentItem = item;
             }
         }
 
         /// <summary>
-        /// 尝试将物品传递到下一个管道，优先选择朝向目标输入点的方向
+        /// 渐进式选路：严格 → 宽松 → 任意前向 → 反向回流
         /// </summary>
         private bool TryPassToNextPipeline(ref TransportingItem item) {
-            //收集所有可用的下一个管道(排除来源方向)
-            List<int> availableDirections = [];
-            for (int i = 0; i < 4; i++) {
-                if (i == item.SourceDirection) {
-                    continue;
-                }
+            int sourceDir = item.SourceDirection;
+            bool allowReverse = stuckFrames >= ReverseFlowThreshold && item.ReverseHops < MaxReverseHopsPerItem;
+            bool allowAnyForward = stuckFrames >= AnyForwardThreshold;
+            bool allowLooseRouting = stuckFrames >= LooseRoutingThreshold;
 
-                var side = SideStates[i];
-                if (side.LinkType != ItemPipelineLinkType.Pipeline) {
-                    continue;
-                }
+            int chosenDir;
 
-                if (side.LinkedPipeline != null && !side.LinkedPipeline.CurrentItem.HasValue) {
-                    availableDirections.Add(i);
+            //策略1: 沿"距离最近且当前可接收物品"的输入端推进
+            chosenDir = SelectRoutedDirection(sourceDir, item.ItemType, requireReceiveAvailable: true);
+            if (chosenDir < 0 && allowLooseRouting) {
+                //策略2: 任意可达的输入端(放弃接收性检查), 用于网络中目前所有输入都满的情形
+                chosenDir = SelectRoutedDirection(sourceDir, item.ItemType, requireReceiveAvailable: false);
+            }
+            if (chosenDir < 0 && allowAnyForward) {
+                //策略3: 任意非来源方向的空邻居管道
+                chosenDir = SelectAnyForwardDirection(sourceDir);
+            }
+            if (chosenDir < 0 && allowReverse) {
+                //策略4: 反向回流(同时增加反弹计数, 避免无限振荡)
+                chosenDir = SelectReverseDirection(sourceDir);
+                if (chosenDir >= 0) {
+                    item.ReverseHops++;
                 }
             }
 
-            if (availableDirections.Count == 0) {
+            if (chosenDir < 0) {
                 return false;
             }
 
-            //只有一个方向时直接选择
-            int selectedDir;
-            if (availableDirections.Count == 1) {
-                selectedDir = availableDirections[0];
-            }
-            else {
-                //多个方向时，优先选择能到达目标输入点的方向
-                selectedDir = SelectBestDirection(availableDirections, item.TargetPosition);
+            var selectedSide = SideStates[chosenDir];
+            var nbr = selectedSide.LinkedPipeline;
+            if (nbr == null || !nbr.Active || nbr.CurrentItem.HasValue) {
+                //最后一刻校验：如果选定方向其实已被占用, 放弃本次选路
+                return false;
             }
 
-            var selectedSide = SideStates[selectedDir];
-
-            //传递物品
+            //完成传递
             item.Progress = 0f;
-            item.SourceDirection = GetOppositeDirection(selectedDir);
-            selectedSide.LinkedPipeline.CurrentItem = item;
+            item.SourceDirection = (sbyte)OppositeDirection(chosenDir);
+            nbr.CurrentItem = item;
             return true;
         }
 
         /// <summary>
-        /// 在多个可选方向中选择最优方向(能到达目标的优先，否则随机)
+        /// 按路由表选择朝向某输入端的下一跳方向
         /// </summary>
-        private int SelectBestDirection(List<int> directions, Point16 target) {
-            if (target == Point16.NegativeOne) {
-                return directions[Main.rand.Next(directions.Count)];
+        private int SelectRoutedDirection(int excludeDir, int itemType, bool requireReceiveAvailable) {
+            var inputs = ItemPipelineNetwork.GetReachableInputs(Position);
+            if (inputs == null || inputs.Count == 0) {
+                return -1;
             }
 
-            //检查每个方向是否能到达目标
-            List<int> reachable = [];
-            foreach (int dir in directions) {
-                var pipeline = SideStates[dir].LinkedPipeline;
-                if (pipeline != null && CanReachTarget(pipeline, GetOppositeDirection(dir), target)) {
-                    reachable.Add(dir);
+            //inputs 已按距离升序, 优先尝试最近的
+            for (int i = 0; i < inputs.Count; i++) {
+                var inputPos = inputs[i];
+                if (inputPos == Position) {
+                    continue;
                 }
-            }
+                if (!ItemPipelineNetwork.TryGetRouting(Position, inputPos, out var entry)) {
+                    continue;
+                }
+                int dir = entry.NextDir;
+                if (dir > 3 || dir == excludeDir) {
+                    continue;
+                }
 
-            //有可达方向时从中选择，否则从全部方向中选择
-            var candidates = reachable.Count > 0 ? reachable : directions;
-            return candidates[Main.rand.Next(candidates.Count)];
+                var side = SideStates[dir];
+                if (side.LinkType != ItemPipelineLinkType.Pipeline) {
+                    continue;
+                }
+                var nbr = side.LinkedPipeline;
+                if (nbr == null || nbr.CurrentItem.HasValue) {
+                    continue;
+                }
+                if (requireReceiveAvailable) {
+                    if (!TileProcessorLoader.AutoPositionGetTP(inputPos, out ItemPipelineTP inputTP)) {
+                        continue;
+                    }
+                    if (!inputTP.CanReceiveItem(itemType)) {
+                        continue;
+                    }
+                }
+                return dir;
+            }
+            return -1;
         }
 
         /// <summary>
-        /// 检查从指定管道出发(排除来源方向)是否能到达目标位置
+        /// 任意非来源方向的空邻居管道(在多个候选时随机)
         /// </summary>
-        private static bool CanReachTarget(ItemPipelineTP start, int sourceDir, Point16 target) {
-            HashSet<Point16> visited = [];
-            Queue<(ItemPipelineTP tp, int fromDir)> queue = new();
-            queue.Enqueue((start, sourceDir));
-            visited.Add(start.Position);
+        private int SelectAnyForwardDirection(int excludeDir) {
+            Span<int> candidates = stackalloc int[4];
+            int count = 0;
+            for (int i = 0; i < 4; i++) {
+                if (i == excludeDir) {
+                    continue;
+                }
+                var side = SideStates[i];
+                if (side.LinkType != ItemPipelineLinkType.Pipeline) {
+                    continue;
+                }
+                var nbr = side.LinkedPipeline;
+                if (nbr == null || !nbr.Active || nbr.CurrentItem.HasValue) {
+                    continue;
+                }
+                candidates[count++] = i;
+            }
+            return count == 0 ? -1 : candidates[Main.rand.Next(count)];
+        }
 
-            while (queue.Count > 0) {
-                var (current, currentFromDir) = queue.Dequeue();
+        /// <summary>
+        /// 反向回流（仅当来源方向的邻居为空时）
+        /// </summary>
+        private int SelectReverseDirection(int sourceDir) {
+            if ((uint)sourceDir > 3u) {
+                return -1;
+            }
+            var side = SideStates[sourceDir];
+            if (side.LinkType != ItemPipelineLinkType.Pipeline) {
+                return -1;
+            }
+            var nbr = side.LinkedPipeline;
+            if (nbr == null || !nbr.Active || nbr.CurrentItem.HasValue) {
+                return -1;
+            }
+            return sourceDir;
+        }
 
-                if (current.Position == target) {
+        /// <summary>
+        /// 兜底救援: 把物品塞回直连的任意存储 (输出端的"原存储", 输入端的"目标存储", 都可用)
+        /// </summary>
+        private bool TryRescueDeposit(ref TransportingItem item) {
+            for (int i = 0; i < SideStates.Count; i++) {
+                var side = SideStates[i];
+                if (side.LinkType != ItemPipelineLinkType.Storage) {
+                    continue;
+                }
+                var storage = side.GetStorageProvider();
+                if (storage == null || !storage.IsValid) {
+                    continue;
+                }
+                Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
+                if (!storage.CanAcceptItem(toDeposit)) {
+                    continue;
+                }
+                if (storage.DepositItem(toDeposit)) {
+                    item.Stack = toDeposit.IsAir ? 0 : toDeposit.stack;
                     return true;
                 }
-
-                foreach (var side in current.SideStates) {
-                    if (side.DirectionIndex == currentFromDir) {
-                        continue;
-                    }
-
-                    if (side.LinkType == ItemPipelineLinkType.Pipeline && side.LinkedPipeline != null) {
-                        if (!visited.Contains(side.LinkedPipeline.Position)) {
-                            visited.Add(side.LinkedPipeline.Position);
-                            queue.Enqueue((side.LinkedPipeline, GetOppositeDirection(side.DirectionIndex)));
-                        }
-                    }
-                }
             }
-
             return false;
         }
 
-        /// <summary>
-        /// 获取相反方向
-        /// </summary>
-        private static int GetOppositeDirection(int dir) {
-            return dir switch {
-                0 => 1,//上->下
-                1 => 0,//下->上
-                2 => 3,//左->右
-                3 => 2,//右->左
-                _ => -1
-            };
-        }
+        private static int OppositeDirection(int dir) => dir switch {
+            0 => 1, 1 => 0, 2 => 3, 3 => 2, _ => -1
+        };
 
         /// <summary>
-        /// 掉落当前管道内的物品
+        /// 卡死且无法救援时, 把当前物品丢到世界, 避免永久阻塞
         /// </summary>
         private void DropCurrentItem() {
-            if (!CurrentItem.HasValue) return;
+            if (!CurrentItem.HasValue) {
+                return;
+            }
             var item = CurrentItem.Value;
-            Item drop = new Item(item.ItemType, item.Stack);
-            drop.prefix = (byte)item.Prefix;
+            Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
             int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, drop);
             if (VaultUtils.isServer) {
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
             }
             CurrentItem = null;
         }
-
-        /// <summary>
-        /// 查找最近的输入点
-        /// </summary>
-        private Point16 FindNearestInputPoint() {
-            //简单实现:广度优先搜索连接的管道网络
-            HashSet<Point16> visited = [];
-            Queue<ItemPipelineTP> queue = new();
-            queue.Enqueue(this);
-            visited.Add(Position);
-
-            while (queue.Count > 0) {
-                var current = queue.Dequeue();
-
-                if (current.Mode == ItemPipelineMode.Input && current != this) {
-                    return current.Position;
-                }
-
-                foreach (var side in current.SideStates) {
-                    if (side.LinkType == ItemPipelineLinkType.Pipeline && side.LinkedPipeline != null) {
-                        if (!visited.Contains(side.LinkedPipeline.Position)) {
-                            visited.Add(side.LinkedPipeline.Position);
-                            queue.Enqueue(side.LinkedPipeline);
-                        }
-                    }
-                }
-            }
-
-            return Point16.NegativeOne;
-        }
         #endregion
 
-        #region 模式切换
-        /// <summary>
-        /// 右键点击处理:设置物品筛选器
-        /// </summary>
+        #region 模式切换与右键交互
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             if (Mode == ItemPipelineMode.Normal) {
                 return null;
             }
 
             Item item = player.GetItem();
-
-            //如果手持物品筛选器
             if (item.type == ModContent.ItemType<ItemFilter>()) {
                 ItemFilter = item.Clone();
-                //深拷贝过滤数据
                 var sourceData = item.GetGlobalItem<ItemFilterData>();
                 var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
                 targetData.SetItems(sourceData.Items);
+                cachedFilterVersion = -1;//强制下次重新缓存
 
                 SoundEngine.PlaySound(SoundID.Grab, CenterInWorld);
                 SendData();
                 return true;
             }
-
             return null;
         }
 
         /// <summary>
-        /// 检查物品是否被筛选器允许
+        /// 检查物品是否被筛选器允许 (使用 HashSet 缓存大幅减少每帧成本)
         /// </summary>
         private bool IsItemAllowedByFilter(int itemType) {
-            //没有筛选器或筛选器为空，允许所有物品
+            //没设置筛选器
             if (ItemFilter == null || ItemFilter.IsAir) {
                 return true;
             }
-
             if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) {
                 return true;
             }
 
             var filterData = ItemFilter.GetGlobalItem<ItemFilterData>();
-            //如果筛选器列表为空，允许所有物品
-            if (filterData.Items.Count == 0) {
+            //版本变化或首次缓存, 重建集合
+            if (filterData.DataVersion != cachedFilterVersion) {
+                cachedFilterItemIds.Clear();
+                if (filterData.Items != null) {
+                    for (int i = 0; i < filterData.Items.Count; i++) {
+                        cachedFilterItemIds.Add(filterData.Items[i]);
+                    }
+                }
+                cachedFilterAllowAll = cachedFilterItemIds.Count == 0;
+                cachedFilterVersion = filterData.DataVersion;
+            }
+            if (cachedFilterAllowAll) {
                 return true;
             }
-
-            //检查物品是否在筛选器列表中
-            return filterData.Items.Contains(itemType);
+            return cachedFilterItemIds.Contains(itemType);
         }
 
-        /// <summary>
-        /// 循环切换管道模式(只有端点可以切换)
-        /// </summary>
         public void CycleMode() {
-            //只有端点才能切换模式
             if (!IsEndpoint) {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f }, CenterInWorld);
-                //显示提示文本
                 string hintText = NotEndpointHintText?.Value ?? "只能在管道末端设置输入输出";
                 CombatText.NewText(HitBox, new Color(255, 100, 100), hintText);
                 return;
@@ -687,34 +731,31 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 _ => ItemPipelineMode.Normal
             };
 
-            //播放切换音效
+            //模式切换属于强拓扑变化(影响 Output/Input 集合)
+            ItemPipelineNetwork.MarkDirty();
+
             SoundEngine.PlaySound(SoundID.MenuTick, CenterInWorld);
 
-            //显示模式文本
             string modeText = Mode switch {
                 ItemPipelineMode.Normal => ModeNormalText?.Value ?? "普通",
                 ItemPipelineMode.Output => ModeOutputText?.Value ?? "输出",
                 ItemPipelineMode.Input => ModeInputText?.Value ?? "输入",
                 _ => ""
             };
-
             CombatText.NewText(HitBox, GetModeColor(), modeText);
             SendData();
         }
 
-        /// <summary>
-        /// 获取模式对应的颜色
-        /// </summary>
         public Color GetModeColor() {
             return Mode switch {
-                ItemPipelineMode.Output => new Color(255, 180, 80),//橙色
-                ItemPipelineMode.Input => new Color(80, 180, 255),//蓝色
+                ItemPipelineMode.Output => new Color(255, 180, 80),
+                ItemPipelineMode.Input => new Color(80, 180, 255),
                 _ => BaseColor
             };
         }
         #endregion
 
-        #region 网络同步和存储
+        #region 网络同步与存储
         public override void SendData(ModPacket data) {
             data.Write((byte)Mode);
             data.Write(CurrentItem.HasValue);
@@ -724,12 +765,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 data.Write(item.Stack);
                 data.Write(item.Prefix);
                 data.Write(item.Progress);
+                data.Write(item.SourceDirection);
+                data.Write(item.ReverseHops);
             }
             ItemIO.Send(ItemFilter ?? new Item(), data);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            Mode = (ItemPipelineMode)reader.ReadByte();
+            ItemPipelineMode newMode = (ItemPipelineMode)reader.ReadByte();
+            if (newMode != Mode) {
+                Mode = newMode;
+                ItemPipelineNetwork.MarkDirty();
+            }
+
             bool hasItem = reader.ReadBoolean();
             if (hasItem) {
                 var item = new TransportingItem {
@@ -737,7 +785,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     Stack = reader.ReadInt32(),
                     Prefix = reader.ReadInt32(),
                     Progress = reader.ReadSingle(),
-                    Speed = 0.2f
+                    SourceDirection = reader.ReadSByte(),
+                    ReverseHops = reader.ReadByte(),
+                    Speed = TransportingItem.DefaultSpeed
                 };
                 CurrentItem = item;
             }
@@ -745,6 +795,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 CurrentItem = null;
             }
             ItemFilter = ItemIO.Receive(reader);
+            cachedFilterVersion = -1;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -754,6 +805,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 tag["ItemPipeline_ItemType"] = item.ItemType;
                 tag["ItemPipeline_Stack"] = item.Stack;
                 tag["ItemPipeline_Prefix"] = item.Prefix;
+                tag["ItemPipeline_Progress"] = item.Progress;
+                tag["ItemPipeline_SourceDirection"] = (int)item.SourceDirection;
             }
             ItemFilter ??= new Item();
             tag["ItemPipeline_ItemFilter"] = ItemIO.Save(ItemFilter);
@@ -766,7 +819,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > 0) {
                 int stack = tag.GetInt("ItemPipeline_Stack");
                 int prefix = tag.GetInt("ItemPipeline_Prefix");
-                CurrentItem = new TransportingItem(itemType, stack, prefix);
+                float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
+                int sourceDir = tag.TryGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
+                CurrentItem = new TransportingItem(itemType, stack, prefix) {
+                    Progress = progress,
+                    SourceDirection = (sbyte)sourceDir,
+                    Speed = TransportingItem.DefaultSpeed
+                };
             }
             if (tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag)) {
                 ItemFilter = ItemIO.Load(filterTag);
@@ -774,26 +833,31 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             else {
                 ItemFilter = new Item();
             }
+            cachedFilterVersion = -1;
+            //加载完毕后强制刷新一次路由
+            ItemPipelineNetwork.MarkDirty();
         }
 
         public override void OnKill() {
             //掉落正在传输的物品
             if (CurrentItem.HasValue && !VaultUtils.isClient) {
                 var item = CurrentItem.Value;
-                Item drop = new Item(item.ItemType, item.Stack);
-                drop.prefix = (byte)item.Prefix;
+                Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
                 int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, drop);
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
                 }
             }
+            //从网络中移除自身, 触发路由表重建
+            ItemPipelineNetwork.MarkDirty();
         }
         #endregion
 
         #region 绘制
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            if (Shape == ItemPipelineShape.Cross) return;
-
+            if (Shape == ItemPipelineShape.Cross) {
+                return;
+            }
             foreach (var side in SideStates) {
                 if (side.CanDraw && side.LinkType != ItemPipelineLinkType.Pipeline) {
                     side.Draw(spriteBatch);
@@ -802,7 +866,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            //绘制连接臂
             if (Shape != ItemPipelineShape.Cross) {
                 foreach (var side in SideStates) {
                     if (side.CanDraw && side.LinkType == ItemPipelineLinkType.Pipeline) {
@@ -815,7 +878,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             Color modeColor = GetModeColor();
             Color lightingColor = VaultUtils.MultiStepColorLerp(0.5f, modeColor, Lighting.GetColor(Position.ToPoint()));
 
-            //绘制管道本体(中空，不填充内部)
             switch (Shape) {
                 case ItemPipelineShape.Cross:
                     DrawCross(spriteBatch, drawPos, modeColor, lightingColor);
@@ -836,24 +898,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         private static Asset<Texture2D> InputArrow = null!;
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
-            //绘制流动动画(只有输出端点才绘制)
             if (Mode == ItemPipelineMode.Output && flowAnimator != null && flowAnimator.HasValidPath) {
                 flowAnimator.Draw(spriteBatch, GetModeColor());
             }
-
-            //绘制传输中的物品
             DrawTransportingItem(spriteBatch);
-
-            //绘制模式指示器
             DrawModeIndicator(spriteBatch);
-
-            //绘制筛选器物品显示
             DrawFilterDisplay(spriteBatch);
         }
 
-        /// <summary>
-        /// 绘制筛选器物品环形显示
-        /// </summary>
         private void DrawFilterDisplay(SpriteBatch spriteBatch) {
             if (ItemFilter == null || ItemFilter.IsAir) return;
             if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) return;
@@ -887,7 +939,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         private void DrawCross(SpriteBatch spriteBatch, Vector2 drawPos, Color modeColor, Color lightingColor) {
             Vector2 center = CenterInWorld - Main.screenPosition;
             Vector2 origin = PipelineCross.Size() / 2;
-            //只绘制外壳，不填充
             spriteBatch.Draw(PipelineCrossSide.Value, center, null, lightingColor, 0, origin, 1, SpriteEffects.None, 0);
         }
 
@@ -918,27 +969,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 绘制传输中的物品
-        /// </summary>
         private void DrawTransportingItem(SpriteBatch spriteBatch) {
-            if (!CurrentItem.HasValue) return;
-
+            if (!CurrentItem.HasValue) {
+                return;
+            }
             var item = CurrentItem.Value;
-            if (item.ItemType <= 0) return;
-
+            if (item.ItemType <= 0) {
+                return;
+            }
             Main.instance.LoadItem(item.ItemType);
 
-            //计算物品位置(根据进度和来源方向)
             Vector2 center = CenterInWorld - Main.screenPosition;
             Vector2 offset = Vector2.Zero;
 
             if (item.SourceDirection >= 0) {
                 Vector2 dirOffset = item.SourceDirection switch {
-                    0 => new Vector2(0, -8),//从上来
-                    1 => new Vector2(0, 8), //从下来
-                    2 => new Vector2(-8, 0),//从左来
-                    3 => new Vector2(8, 0), //从右来
+                    0 => new Vector2(0, -8),
+                    1 => new Vector2(0, 8),
+                    2 => new Vector2(-8, 0),
+                    3 => new Vector2(8, 0),
                     _ => Vector2.Zero
                 };
                 offset = Vector2.Lerp(dirOffset, Vector2.Zero, item.Progress);
@@ -947,58 +996,41 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             VaultUtils.SimpleDrawItem(spriteBatch, item.ItemType, center + offset, 20, 0.6f, 0, Color.White);
         }
 
-        /// <summary>
-        /// 绘制模式指示器(使用箭头纹理)
-        /// </summary>
         private void DrawModeIndicator(SpriteBatch spriteBatch) {
             if (Mode == ItemPipelineMode.Normal) return;
             if (InputArrow == null) return;
 
             Vector2 center = CenterInWorld - Main.screenPosition;
             Color indicatorColor = GetModeColor();
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.3f + 0.7f;
 
-            //呼吸闪烁效果
-            float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.3f + 0.7f;
-
-            //获取存储方向，绘制箭头
             int storageDir = StorageDirectionIndex;
             if (storageDir >= 0) {
-                //根据方向计算箭头旋转角度
-                //原始纹理朝向右边(0度)
-                //输入模式:箭头指向存储(物品进入存储)
-                //输出模式:箭头背离存储(物品从存储出来)
                 float baseRotation = storageDir switch {
-                    0 => -MathHelper.PiOver2,//上
-                    1 => MathHelper.PiOver2, //下
-                    2 => MathHelper.Pi,      //左
-                    3 => 0,                  //右
+                    0 => -MathHelper.PiOver2,
+                    1 => MathHelper.PiOver2,
+                    2 => MathHelper.Pi,
+                    3 => 0,
                     _ => 0
                 };
-
-                //输出模式箭头方向相反
                 if (Mode == ItemPipelineMode.Output) {
                     baseRotation += MathHelper.Pi;
                 }
-
                 DrawArrowTexture(spriteBatch, center, baseRotation, indicatorColor * pulse, 1f);
             }
             else {
-                //没有存储连接时显示小方块
                 Texture2D px = VaultAsset.placeholder2.Value;
                 Rectangle indicatorRect = new Rectangle((int)(center.X - 2), (int)(center.Y - 2), 4, 4);
                 spriteBatch.Draw(px, indicatorRect, indicatorColor * pulse);
             }
         }
 
-        /// <summary>
-        /// 使用纹理绘制箭头
-        /// </summary>
         internal static void DrawArrowTexture(SpriteBatch spriteBatch, Vector2 position, float rotation, Color color, float scale) {
-            if (InputArrow == null) return;
-
+            if (InputArrow == null) {
+                return;
+            }
             Texture2D arrowTex = InputArrow.Value;
             Vector2 origin = arrowTex.Size() / 2f;
-
             spriteBatch.Draw(arrowTex, position, null, color, rotation, origin, scale, SpriteEffects.None, 0);
         }
         #endregion

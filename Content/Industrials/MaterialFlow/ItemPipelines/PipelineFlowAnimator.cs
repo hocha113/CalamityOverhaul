@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -8,169 +7,150 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
     /// <summary>
     /// 管道路径流动动画管理器
-    /// 负责绘制从输出端点到所有输入端点的箭头洪流动画
-    /// 支持分叉路径
+    /// <para>从输出端到所有可达输入端的箭头粒子洪流。</para>
+    /// <para>路径不再独立做 BFS：直接复用 <see cref="ItemPipelineNetwork"/> 的下一跳路由表，
+    /// 仅当全局拓扑版本变化时重建路径，开销极低。</para>
     /// </summary>
     internal class PipelineFlowAnimator
     {
-        /// <summary>
-        /// 流动粒子数据
-        /// </summary>
+        /// <summary>流动粒子(沿整段路径推进)</summary>
         private struct FlowParticle
         {
-            public float Progress;//0到1，沿整个路径的总进度
-            public int BranchId;//所属分支ID
-            public float Alpha;//透明度
+            public float Progress;//0~1, 沿整段路径的总进度
+            public int BranchId;
+            public float Alpha;
         }
 
-        /// <summary>
-        /// 分支路径数据
-        /// </summary>
+        /// <summary>分支路径</summary>
         private struct BranchPath
         {
-            public List<Point16> Path;//路径点列表
-            public float Speed;//该分支的粒子速度(动态计算)
+            public List<Point16> Path;//从输出端到某输入端的路径(包含两端)
+            public float Speed;//每帧进度增量
         }
 
-        /// <summary>
-        /// 所有分支路径(从输出到各个输入的路径)
-        /// </summary>
-        private List<BranchPath> branchPaths = [];
-
-        /// <summary>
-        /// 流动粒子列表
-        /// </summary>
+        private readonly List<BranchPath> branchPaths = [];
         private readonly List<FlowParticle> particles = [];
 
-        /// <summary>
-        /// 粒子生成计时器
-        /// </summary>
-        private int spawnTimer = 0;
+        private int spawnTimer;
+        private int nextBranchIndex;
 
-        /// <summary>
-        /// 下一个生成的分支索引(轮流生成)
-        /// </summary>
-        private int nextBranchIndex = 0;
+        /// <summary>缓存的拓扑版本(变化即重建)</summary>
+        private int cachedTopologyVersion = -1;
+        /// <summary>上次重建的输出端位置(用于检测同一动画器复用错位)</summary>
+        private Point16 cachedOutputPos = Point16.NegativeOne;
 
-        /// <summary>
-        /// 路径是否有效
-        /// </summary>
         public bool HasValidPath => branchPaths.Count > 0;
 
-        /// <summary>
-        /// 路径刷新间隔(帧)，与ItemPipelineTP.PathUpdateInterval保持一致
-        /// </summary>
-        private const int PathUpdateInterval = 120;
-
-        /// <summary>
-        /// 粒子完成动画的目标时间(帧)，留出一些缓冲时间
-        /// </summary>
+        /// <summary>路径周期(帧)：粒子从起点到终点完成的目标帧数</summary>
         private const int AnimationCycleFrames = 100;
-
-        /// <summary>
-        /// 基础粒子生成间隔(帧)
-        /// </summary>
+        /// <summary>粒子生成间隔(帧)</summary>
         private const int BaseSpawnInterval = 8;
-
-        /// <summary>
-        /// 每个分支最大粒子数
-        /// </summary>
+        /// <summary>每个分支的最大粒子数</summary>
         private const int MaxParticlesPerBranch = 10;
+        /// <summary>路径最大跳数(防御保护, 抵挡环网或异常拓扑)</summary>
+        private const int MaxPathLength = 1024;
 
         /// <summary>
-        /// 更新路径缓存
+        /// 由所有者(输出端 TP)每帧调用一次：自动按需重建路径并推进粒子
         /// </summary>
-        public void UpdatePath(ItemPipelineTP outputEndpoint) {
-            branchPaths.Clear();
-            particles.Clear();
-
+        public void Tick(ItemPipelineTP outputEndpoint) {
             if (outputEndpoint == null || outputEndpoint.Mode != ItemPipelineMode.Output) {
+                Clear();
                 return;
             }
 
-            //BFS构建从输出到所有输入端点的路径
-            BuildAllPaths(outputEndpoint);
+            int currentTopology = ItemPipelineNetwork.CurrentTopologyVersion;
+            if (currentTopology != cachedTopologyVersion || cachedOutputPos != outputEndpoint.Position) {
+                RebuildPaths(outputEndpoint);
+                cachedTopologyVersion = currentTopology;
+                cachedOutputPos = outputEndpoint.Position;
+            }
+
+            UpdateParticles();
         }
 
         /// <summary>
-        /// 构建从输出端点到所有输入端点的路径
+        /// 利用网络路由表"反推"路径：从输出端开始沿"指向输入端"的下一跳走，直到到达输入端。
+        /// 复杂度 O(I × L)，I=输入端数, L=路径长度，远小于原本的全网 BFS。
         /// </summary>
-        private void BuildAllPaths(ItemPipelineTP start) {
-            //使用BFS找到所有输入端点并记录路径
-            Dictionary<Point16, Point16> cameFrom = [];
-            Queue<ItemPipelineTP> queue = new();
-            List<ItemPipelineTP> inputEndpoints = [];
+        private void RebuildPaths(ItemPipelineTP output) {
+            branchPaths.Clear();
+            particles.Clear();
 
-            queue.Enqueue(start);
-            cameFrom[start.Position] = Point16.NegativeOne;
-
-            while (queue.Count > 0) {
-                var current = queue.Dequeue();
-
-                //找到输入端点
-                if (current.Mode == ItemPipelineMode.Input && current != start) {
-                    inputEndpoints.Add(current);
-                    //继续搜索其他输入端点
-                }
-
-                foreach (var side in current.SideStates) {
-                    if (side.LinkType == ItemPipelineLinkType.Pipeline && side.LinkedPipeline != null) {
-                        if (!cameFrom.ContainsKey(side.LinkedPipeline.Position)) {
-                            cameFrom[side.LinkedPipeline.Position] = current.Position;
-                            queue.Enqueue(side.LinkedPipeline);
-                        }
-                    }
-                }
+            var inputs = ItemPipelineNetwork.GetReachableInputs(output.Position);
+            if (inputs == null || inputs.Count == 0) {
+                return;
             }
 
-            //为每个输入端点回溯构建路径
-            foreach (var inputEndpoint in inputEndpoints) {
-                List<Point16> reversePath = [];
-                Point16 pos = inputEndpoint.Position;
-                while (pos != Point16.NegativeOne) {
-                    reversePath.Add(pos);
-                    if (!cameFrom.TryGetValue(pos, out Point16 nextPos)) {
-                        break;
-                    }
-                    pos = nextPos;
+            for (int i = 0; i < inputs.Count; i++) {
+                var inputPos = inputs[i];
+                if (inputPos == output.Position) {
+                    continue;
                 }
-
-                if (reversePath.Count >= 2) {
-                    reversePath.Reverse();
-                    //动态计算速度：确保粒子能在刷新间隔内完成整个路径
-                    //路径段数 = Path.Count - 1
-                    int segmentCount = reversePath.Count - 1;
-                    //速度 = 总进度(1.0) / 可用帧数
-                    float speed = 1f / AnimationCycleFrames;
-                    //但速度不能太慢，设置最小速度
-                    speed = Math.Max(speed, 0.01f);
-                    branchPaths.Add(new BranchPath { Path = reversePath, Speed = speed });
+                List<Point16> path = TraceRoute(output, inputPos);
+                if (path == null || path.Count < 2) {
+                    continue;
                 }
+                float speed = System.Math.Max(1f / AnimationCycleFrames, 0.01f);
+                branchPaths.Add(new BranchPath { Path = path, Speed = speed });
             }
         }
 
         /// <summary>
-        /// 更新动画
+        /// 从输出端按下一跳路由走到目标输入端，返回路径点序列（含两端）
         /// </summary>
-        public void Update() {
+        private static List<Point16> TraceRoute(ItemPipelineTP start, Point16 inputPos) {
+            List<Point16> path = [start.Position];
+            ItemPipelineTP current = start;
+            for (int hop = 0; hop < MaxPathLength; hop++) {
+                if (current.Position == inputPos) {
+                    return path;
+                }
+                if (!ItemPipelineNetwork.TryGetRouting(current.Position, inputPos, out var entry)) {
+                    return null;
+                }
+                int dir = entry.NextDir;
+                if (dir > 3) {
+                    //哨兵: 自身就是输入端 - 已经处理
+                    break;
+                }
+                var sides = current.SideStates;
+                if (sides == null) {
+                    return null;
+                }
+                var side = sides[dir];
+                if (side.LinkType != ItemPipelineLinkType.Pipeline) {
+                    return null;
+                }
+                var nbr = side.LinkedPipeline;
+                if (nbr == null || !nbr.Active) {
+                    return null;
+                }
+                path.Add(nbr.Position);
+                current = nbr;
+            }
+            return current.Position == inputPos ? path : null;
+        }
+
+        /// <summary>
+        /// 推进粒子(生成与移动)
+        /// </summary>
+        private void UpdateParticles() {
             if (!HasValidPath) {
                 particles.Clear();
                 return;
             }
 
-            //生成新粒子(轮流在各分支生成)
             spawnTimer++;
             if (spawnTimer >= BaseSpawnInterval) {
                 spawnTimer = 0;
 
-                //计算当前分支的粒子数
                 int branchParticleCount = 0;
-                foreach (var p in particles) {
-                    if (p.BranchId == nextBranchIndex) {
+                for (int i = 0; i < particles.Count; i++) {
+                    if (particles[i].BranchId == nextBranchIndex) {
                         branchParticleCount++;
                     }
                 }
-
                 if (branchParticleCount < MaxParticlesPerBranch) {
                     particles.Add(new FlowParticle {
                         Progress = 0f,
@@ -178,31 +158,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         Alpha = 1f
                     });
                 }
-
-                //切换到下一个分支
                 nextBranchIndex = (nextBranchIndex + 1) % branchPaths.Count;
             }
 
-            //更新粒子
             for (int i = particles.Count - 1; i >= 0; i--) {
                 var p = particles[i];
-
-                //检查分支是否仍然有效
                 if (p.BranchId >= branchPaths.Count) {
                     particles.RemoveAt(i);
                     continue;
                 }
-
                 var branch = branchPaths[p.BranchId];
-                //使用该分支的动态速度
                 p.Progress += branch.Speed;
-
-                //到达终点，移除粒子
                 if (p.Progress >= 1f) {
                     particles.RemoveAt(i);
                     continue;
                 }
-
                 particles[i] = p;
             }
         }
@@ -215,59 +185,51 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 return;
             }
 
-            foreach (var particle in particles) {
+            for (int idx = 0; idx < particles.Count; idx++) {
+                var particle = particles[idx];
                 if (particle.BranchId >= branchPaths.Count) {
                     continue;
                 }
-
                 var branch = branchPaths[particle.BranchId];
                 int segmentCount = branch.Path.Count - 1;
                 if (segmentCount <= 0) {
                     continue;
                 }
 
-                //将总进度(0-1)映射到具体的路径段
                 float totalProgress = particle.Progress * segmentCount;
                 int pathIndex = (int)totalProgress;
                 float segmentProgress = totalProgress - pathIndex;
-
-                //边界检查
                 if (pathIndex >= segmentCount) {
                     pathIndex = segmentCount - 1;
                     segmentProgress = 1f;
                 }
 
-                //获取当前和下一个管道位置
                 Point16 currentPos = branch.Path[pathIndex];
                 Point16 nextPos = branch.Path[pathIndex + 1];
 
-                //计算世界坐标
                 Vector2 currentWorld = currentPos.ToVector2() * 16 + new Vector2(8, 8);
                 Vector2 nextWorld = nextPos.ToVector2() * 16 + new Vector2(8, 8);
 
-                //插值计算粒子位置
                 Vector2 particlePos = Vector2.Lerp(currentWorld, nextWorld, segmentProgress);
                 Vector2 screenPos = particlePos - Main.screenPosition;
 
-                //计算方向用于绘制小箭头
                 Vector2 direction = nextWorld - currentWorld;
-                float rotation = 0f;
-                if (direction != Vector2.Zero) {
-                    rotation = direction.ToRotation();
-                }
+                float rotation = direction != Vector2.Zero ? direction.ToRotation() : 0f;
 
-                //使用纹理绘制流动箭头粒子
                 ItemPipelineTP.DrawArrowTexture(spriteBatch, screenPos, rotation, flowColor * particle.Alpha * 0.4f, 0.6f);
             }
         }
 
         /// <summary>
-        /// 清除缓存
+        /// 清空缓存(动画停止 / 输出端被破坏)
         /// </summary>
         public void Clear() {
             branchPaths.Clear();
             particles.Clear();
             nextBranchIndex = 0;
+            spawnTimer = 0;
+            cachedTopologyVersion = -1;
+            cachedOutputPos = Point16.NegativeOne;
         }
     }
 }

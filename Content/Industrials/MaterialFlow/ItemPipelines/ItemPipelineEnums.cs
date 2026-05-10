@@ -66,47 +66,39 @@
     }
 
     /// <summary>
-    /// 管道内传输的物品数据
+    /// 管道内传输中的物品数据
+    /// 使用值类型 + 紧凑布局，按值在管道之间传递；
+    /// 不再持有固定的目标位置，目标在每次到达分叉时由路由表动态决定，
+    /// 这样能彻底避免目标失效后物品被困死的旧问题
     /// </summary>
     public struct TransportingItem
     {
-        /// <summary>
-        /// 物品类型ID
-        /// </summary>
+        /// <summary>每段管道的默认推进速度(进度/帧)</summary>
+        public const float DefaultSpeed = 0.2f;
+
+        /// <summary>物品类型ID</summary>
         public int ItemType;
-        /// <summary>
-        /// 物品数量
-        /// </summary>
+        /// <summary>物品数量</summary>
         public int Stack;
-        /// <summary>
-        /// 物品前缀
-        /// </summary>
+        /// <summary>物品前缀</summary>
         public int Prefix;
-        /// <summary>
-        /// 传输进度(0到1，表示在当前管道段中的位置)
-        /// </summary>
+        /// <summary>当前段进度(0~1)</summary>
         public float Progress;
-        /// <summary>
-        /// 传输速度(每帧移动的进度)
-        /// </summary>
+        /// <summary>每帧推进量</summary>
         public float Speed;
-        /// <summary>
-        /// 目标输入点位置(用于寻路)
-        /// </summary>
-        public Terraria.DataStructures.Point16 TargetPosition;
-        /// <summary>
-        /// 来源方向索引(0上1下2左3右，用于避免物品回头)
-        /// </summary>
-        public int SourceDirection;
+        /// <summary>来源方向(0上1下2左3右), -1 表示无来源(刚被抽取)</summary>
+        public sbyte SourceDirection;
+        /// <summary>本物品在网络中已经发生过反向回流的次数, 用于抑制反复振荡</summary>
+        public byte ReverseHops;
 
         public TransportingItem(int itemType, int stack, int prefix = 0) {
             ItemType = itemType;
             Stack = stack;
             Prefix = prefix;
             Progress = 0f;
-            Speed = 0.2f;
-            TargetPosition = Terraria.DataStructures.Point16.NegativeOne;
+            Speed = DefaultSpeed;
             SourceDirection = -1;
+            ReverseHops = 0;
         }
 
         public readonly bool IsValid => ItemType > 0 && Stack > 0;
