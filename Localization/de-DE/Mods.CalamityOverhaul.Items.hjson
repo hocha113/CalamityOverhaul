@@ -1636,6 +1636,17 @@ MimicPerchedAuxBrain: {
 	// Tooltip: ""
 }
 
+CstmVisualEye: {
+	// DisplayName: CSTM Visual Eye
+	// Tooltip:
+	// 	'''
+	// 	High-grade network-class ocular cyberware wiring Hack Time directly into the cortex
+	// 	+4 maximum RAM while equipped
+	// 	Shows a dedicated RAM arc at the lower-left while equipped; the SHPC HUD takes over when SHPC is held
+	// 	"What the pupil reflects isn't the world — it's the protocol stack"
+	// 	'''
+}
+
 RamCapacityUpgradeChip: {
 	// DisplayName: RAM Capacity Upgrade Chip
 	// Tooltip: Permanently increases base maximum RAM by 1

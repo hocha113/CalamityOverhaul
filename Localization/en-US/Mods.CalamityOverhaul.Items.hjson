@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -1658,6 +1658,16 @@ SandevistansItem: {
 MimicPerchedAuxBrain: {
 	DisplayName: Mimic Perched Aux Brain
 	Tooltip: ""
+}
+
+CstmVisualEye: {
+	DisplayName: CSTM Visual Eye
+	Tooltip:
+		'''
+		High-grade network-class ocular cyberware wiring Hack Time directly into the cortex
+		+4 maximum RAM while equipped
+		Shows a dedicated RAM arc at the lower-left while equipped
+		'''
 }
 
 RamCapacityUpgradeChip: {

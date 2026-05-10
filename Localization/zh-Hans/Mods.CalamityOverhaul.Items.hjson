@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -1643,6 +1643,16 @@ MimicPerchedAuxBrain: {
 		被击中时隐藏在幻象中的真身将引发混乱并免疫此次攻击不受伤
 		同时幻象将冲向袭击者引爆，伤害取决于敌怪原始攻击力
 		"混沌，狰狞，狞目......但就在你的后脑勺"
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: CSTM视像义眼
+	Tooltip:
+		'''
+		网络型光学义体，将骇客时间接入颅内神经网络
+		装备时增加4点RAM上限
+		装备时屏幕左下角显示独立RAM弧形条
 		'''
 }
 
