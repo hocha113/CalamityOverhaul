@@ -1651,8 +1651,8 @@ CstmVisualEye: {
 	Tooltip:
 		'''
 		网络型光学义体，将骇客时间接入颅内神经网络
-		装备时增加4点RAM上限
-		装备时屏幕左下角显示独立RAM弧形条
+		增加4点RAM上限
+		屏幕左下角显示独立RAM弧形条
 		'''
 }
 
@@ -2375,9 +2375,4 @@ ArchiveFrameModule: {
 		持续累积 SHPC 命中所造成的伤害，每达到阈值在玩家位置释放一次"数据归档"爆破
 		单发伤害提升，蓝量消耗轻微上扬
 		'''
-}
-
-CstmVisualEye: {
-	// DisplayName: Cstm Visual Eye
-	// Tooltip: ""
 }

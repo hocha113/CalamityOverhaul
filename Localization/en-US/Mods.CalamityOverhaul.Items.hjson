@@ -1661,12 +1661,12 @@ MimicPerchedAuxBrain: {
 }
 
 CstmVisualEye: {
-	DisplayName: CSTM Visual Eye
+	DisplayName: CSTM Opti-Visual Cybereye
 	Tooltip:
 		'''
-		High-grade network-class ocular cyberware wiring Hack Time directly into the cortex
-		+4 maximum RAM while equipped
-		Shows a dedicated RAM arc at the lower-left while equipped
+		A cybernetic optical implant that syncs Hack-Time directly into your cranial neural network.
+		Increases max RAM by 4
+		Displays an independent RAM arc bar in the bottom-left corner of the screen
 		'''
 }
 
@@ -2394,9 +2394,4 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		'''
-}
-
-CstmVisualEye: {
-	DisplayName: Cstm Visual Eye
-	Tooltip: ""
 }
