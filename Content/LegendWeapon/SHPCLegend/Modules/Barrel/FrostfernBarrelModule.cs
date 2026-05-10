@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(150, 240, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.08f;
-            ctx.SpreadMul += -0.18f;
+            ctx.DamageMul += -0.12f;
+            ctx.SpreadMul += -0.24f;
             ctx.BeamSpeedMul += 0.10f;
             ctx.CritAdd += 4;
         }
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, dir,
                 ModContent.ProjectileType<SHPCFrostfernLineProj>(),
-                Math.Max(damageDone / 2, 1), 0f, beam.Projectile.owner);
+                Math.Max(damageDone / 3, 1), 0f, beam.Projectile.owner);
         }
     }
 

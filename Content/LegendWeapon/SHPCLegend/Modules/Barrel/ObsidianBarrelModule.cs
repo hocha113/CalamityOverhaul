@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
@@ -55,14 +55,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += -0.12f;
-            ctx.DamageMul += 0.08f;
-            ctx.ManaCostMul += 0.18f;
+            ctx.DamageMul += -0.08f;
+            ctx.ManaCostMul += 0.28f;
             ctx.BeamExtraPierce += 1;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyObsidianCrack(target, 300, beam.Projectile.owner, Math.Max(damageDone / 3, 1));
+                eff.ApplyObsidianCrack(target, 300, beam.Projectile.owner, Math.Max(damageDone / 5, 1));
             }
         }
 
@@ -139,15 +139,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.45f, Pitch = 0.4f }, target.Center);
             SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.35f, Pitch = -0.2f }, target.Center);
-            //小型碎片爆：复用 CyberDetonationProj 90px 半径
+            //小型碎片爆：复用 CyberDetonationProj 50px 半径
             if (Projectile.owner == Main.myPlayer) {
-                int dmg = Math.Max(Projectile.damage / 2, 1);
+                int dmg = Math.Max(Projectile.damage / 8, 1);
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                     target.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberDetonationProj>(),
                     dmg, 0f, Projectile.owner, ai0: 0.3f);
                 if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].localAI[2] = 90f;
+                    Main.projectile[idx].localAI[2] = 50f;
+                    Main.projectile[idx].usesLocalNPCImmunity = true;
+                    Main.projectile[idx].localNPCHitCooldown = 30;
                 }
             }
             for (int i = 0; i < 8; i++) {

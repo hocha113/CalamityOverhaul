@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(165, 215, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += 0.06f;
-            ctx.DamageMul += -0.12f;
-            ctx.BeamLifeMul += 0.14f;
-            ctx.ManaCostMul += 0.15f;
+            ctx.AttackSpeedMul += 0.10f;
+            ctx.DamageMul += -0.6f;
+            ctx.BeamLifeMul += 0.16f;
+            ctx.ManaCostMul += 0.25f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

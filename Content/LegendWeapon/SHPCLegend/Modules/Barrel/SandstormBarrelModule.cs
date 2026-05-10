@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(220, 180, 90);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += 0.10f;
-            ctx.DamageMul += -0.10f;
+            ctx.AttackSpeedMul += 0.08f;
+            ctx.DamageMul += -0.06f;
             ctx.BeamExtraPierce += 1;
-            ctx.ManaCostMul += 0.22f;
+            ctx.ManaCostMul += 0.4f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
