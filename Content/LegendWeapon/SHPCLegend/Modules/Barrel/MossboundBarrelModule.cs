@@ -25,12 +25,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.BeamSpeedMul += -0.12f;
             ctx.BeamLifeMul += 0.8f;
             ctx.ManaCostMul += 0.4f;
+            ctx.OrbExplosionRadiusMul += 0.1f;
         }
 
         //同主同时存在的湿苔斑块上限
-        private const int MaxConcurrentPatches = 4;
+        private const int MaxConcurrentPatches = 8;
         //同点 130px 内已有斑块时跳过本次生成（避免聚簇）
-        private const float MinSpacing = 130f;
+        private const float MinSpacing = 80f;
         //单条光束的生成节奏（间隔帧数）
         private const int SpawnInterval = 36;
         //每颗能量球能吸收的湿苔斑块上限
