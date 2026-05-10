@@ -1632,8 +1632,15 @@ SandevistansItem: {
 }
 
 MimicPerchedAuxBrain: {
-	// DisplayName: Mimic Perched Aux Brain
-	// Tooltip: ""
+	// DisplayName: Mimic Perched Auxiliary Brain
+	/* Tooltip:
+		'''
+		Splits the host into four illusions that drift around the main body.
+		When struck, the real self hidden among the illusions will cause chaos and gain immunity, 
+		taking no damage from the attack.
+		Meanwhile, the illusions will charge at the attacker and detonate, 
+		dealing damage scaled with the enemy's raw attack power.
+		''' */
 }
 
 CstmVisualEye: {
