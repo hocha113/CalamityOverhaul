@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += 0.10f;
-            ctx.DamageMul += -0.6f;
+            ctx.DamageMul += -0.06f;
             ctx.BeamLifeMul += 0.16f;
             ctx.ManaCostMul += 0.25f;
         }

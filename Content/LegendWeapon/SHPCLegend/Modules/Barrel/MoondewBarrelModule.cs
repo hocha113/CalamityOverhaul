@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         //同主同时存在的月露棱镜上限
         private const int MaxConcurrentPrisms = 4;
-        //同点 130px 内已有棱镜则跳过本次生成
-        private const float MinSpacing = 130f;
+        //同点 80px 内已有棱镜则跳过本次生成
+        private const float MinSpacing = 80f;
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
