@@ -16,6 +16,15 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         public const float SlotSize = 46f;
         public const float SlotPadding = 5f;
 
+        //字号缩放系数，与 SHPCModPanel.FontScale 对齐，统一系列 UI 字号节奏
+        public const float FontScale = 1.2f;
+
+        //shader 内框边距，与 ScissorTest 的 margin 对齐，便于 CPU 装饰与着色器内边线对齐
+        public const float ShaderEdgePad = 4f;
+
+        //主面板中央人体能量光场半径（像素），随关闭动画 alpha 衰减归零
+        public const float BodyHaloRadius = 120f;
+
         #endregion
 
         #region 配色方案

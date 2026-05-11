@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 labelColor *= alpha;
                 float textX = rect.X + CyberwareTheme.SlotPadding + (def.IsLeft ? 4 : 0);
                 string label = i < slotLabels.Length ? slotLabels[i] : "";
-                Utils.DrawBorderString(sb, label, new Vector2(textX, rect.Y + 4), labelColor, 0.58f);
+                Utils.DrawBorderString(sb, label, new Vector2(textX, rect.Y + 4), labelColor, 0.58f * CyberwareTheme.FontScale);
 
                 //检查是否有装备的义体
                 Item equippedItem = cyberPlayer?.EquippedCyberwares[i];
@@ -263,14 +263,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     string itemName = equippedItem.Name ?? "???";
                     if (itemName.Length > 14) itemName = itemName[..13] + "…";
                     Color nameColor = CyberwareTheme.AccentGold * (alpha * 0.7f);
-                    Utils.DrawBorderString(sb, itemName, new Vector2(textX, rect.Y + 26), nameColor, 0.50f);
+                    Utils.DrawBorderString(sb, itemName, new Vector2(textX, rect.Y + 26), nameColor, 0.50f * CyberwareTheme.FontScale);
                 }
                 else {
                     //状态文字
                     string statusStr = isSelected ? selectedText : emptyText;
                     Color statusColor = isSelected ? CyberwareTheme.AccentGold : CyberwareTheme.TextDim;
                     statusColor *= alpha * 0.6f;
-                    Utils.DrawBorderString(sb, statusStr, new Vector2(textX, rect.Y + 26), statusColor, 0.52f);
+                    Utils.DrawBorderString(sb, statusStr, new Vector2(textX, rect.Y + 26), statusColor, 0.52f * CyberwareTheme.FontScale);
                 }
             }
         }

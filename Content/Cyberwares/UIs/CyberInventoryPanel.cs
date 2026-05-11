@@ -17,8 +17,9 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private const float PanelWidth = 240f;
         private const float PanelPadding = 10f;
         private const float ItemRowHeight = 50f;
-        private const float HeaderHeight = 40f;
-        private const float CapacityBarHeight = 22f;
+        //放大字号后给头部和容量条预留更多纵向空间
+        private const float HeaderHeight = 44f;
+        private const float CapacityBarHeight = 26f;
         private const float ScrollBarWidth = 5f;
 
         #endregion
@@ -182,8 +183,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             float alpha = parentAlpha * Math.Clamp(openProgress, 0, 1);
 
-            // 面板背景
-            sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.BgPanel * (alpha * 0.92f));
+            //背板：复用 CyberwarePanel.fx 的 uMode=1 轻量模式，与主面板视觉同源但去掉中央光场与扫描带
+            CyberPanelRenderer.DrawShaderBackground(sb, alpha * 0.95f, panelRect, Vector2.Zero, 0f, mode: 1);
 
             // 边框
             Color borderColor = CyberwareTheme.Accent * (alpha * 0.6f);
@@ -364,13 +365,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
             Utils.DrawBorderString(sb, title,
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + 6),
-                CyberwareTheme.Accent * alpha, 0.58f);
+                CyberwareTheme.Accent * alpha, 0.58f * CyberwareTheme.FontScale);
 
             // 可选物品数量
             string countText = $"{compatibleItems.Count} AVAILABLE";
             Utils.DrawBorderString(sb, countText,
-                new Vector2(panelRect.X + PanelPadding, panelRect.Y + 26),
-                CyberwareTheme.TextDim * alpha, 0.42f);
+                new Vector2(panelRect.X + PanelPadding, panelRect.Y + 28),
+                CyberwareTheme.TextDim * alpha, 0.42f * CyberwareTheme.FontScale);
         }
 
         private void DrawCapacityBar(SpriteBatch sb, Texture2D px, float alpha, CyberwarePlayer cyberPlayer) {
@@ -390,13 +391,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             int max = cyberPlayer.MaxCapacity;
             string capText = $"CAPACITY {used}/{max}";
             Utils.DrawBorderString(sb, capText,
-                new Vector2(barBgRect.X + 4, barBgRect.Y + 1),
-                CyberwareTheme.TextNormal * alpha, 0.42f);
+                new Vector2(barBgRect.X + 4, barBgRect.Y + 2),
+                CyberwareTheme.TextNormal * alpha, 0.42f * CyberwareTheme.FontScale);
 
             // 进度条
             float ratio = max > 0 ? (float)used / max : 0;
             int barInner = barBgRect.Width - 4;
-            Rectangle fillRect = new(barBgRect.X + 2, barBgRect.Y + 12, (int)(barInner * ratio), 4);
+            Rectangle fillRect = new(barBgRect.X + 2, barBgRect.Y + 16, (int)(barInner * ratio), 4);
 
             Color barColor = ratio > 0.85f ? CyberwareTheme.Accent :
                 ratio > 0.6f ? CyberwareTheme.AccentGold : CyberwareTheme.AccentCyan;
@@ -415,7 +416,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             // "INSTALLED" 标签
             Utils.DrawBorderString(sb, "[ INSTALLED ]",
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset - 2),
-                CyberwareTheme.AccentGold * (alpha * 0.7f), 0.40f);
+                CyberwareTheme.AccentGold * (alpha * 0.7f), 0.40f * CyberwareTheme.FontScale);
 
             yOffset += 12;
 
@@ -446,14 +447,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (name.Length > 18) name = name[..17] + "…";
             Utils.DrawBorderString(sb, name,
                 new Vector2(eqRect.X + 44, eqRect.Y + 4),
-                CyberwareTheme.TextBright * alpha, 0.48f);
+                CyberwareTheme.TextBright * alpha, 0.48f * CyberwareTheme.FontScale);
 
             // 卸载提示
             string hint = isHoveredUnequip ? "> UNINSTALL <" : "CLICK TO UNINSTALL";
             Color hintColor = isHoveredUnequip ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
             Utils.DrawBorderString(sb, hint,
                 new Vector2(eqRect.X + 44, eqRect.Y + 28),
-                hintColor * (alpha * 0.65f), 0.38f);
+                hintColor * (alpha * 0.65f), 0.38f * CyberwareTheme.FontScale);
 
             return yOffset + ItemRowHeight + 4;
         }
@@ -462,18 +463,18 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (compatibleItems.Count == 0) {
                 Utils.DrawBorderString(sb, "NO COMPATIBLE",
                     new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset + 8),
-                    CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f);
+                    CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f * CyberwareTheme.FontScale);
                 Utils.DrawBorderString(sb, "CYBERWARE FOUND",
                     new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset + 28),
-                    CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f);
+                    CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f * CyberwareTheme.FontScale);
                 return;
             }
 
             // 列表标签
             Utils.DrawBorderString(sb, "AVAILABLE",
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset - 2),
-                CyberwareTheme.AccentCyan * (alpha * 0.6f), 0.40f);
-            yOffset += 16;
+                CyberwareTheme.AccentCyan * (alpha * 0.6f), 0.40f * CyberwareTheme.FontScale);
+            yOffset += 18;
 
             float listTop = panelRect.Y + yOffset;
             float listBottom = panelRect.Bottom - PanelPadding;
@@ -519,7 +520,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 Color nameColor = canEquip ? CyberwareTheme.TextBright : CyberwareTheme.TextDim;
                 Utils.DrawBorderString(sb, name,
                     new Vector2(itemRect.X + 44, itemRect.Y + 2),
-                    nameColor * alpha, 0.44f);
+                    nameColor * alpha, 0.44f * CyberwareTheme.FontScale);
 
                 // 容量消耗提示
                 if (item.ModItem is BaseCyberware cyber) {
@@ -527,12 +528,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     Color costColor = canEquip ? CyberwareTheme.AccentCyan : CyberwareTheme.Accent;
                     Utils.DrawBorderString(sb, costText,
                         new Vector2(itemRect.X + 44, itemRect.Y + 26),
-                        costColor * (alpha * 0.55f), 0.38f);
+                        costColor * (alpha * 0.55f), 0.38f * CyberwareTheme.FontScale);
 
                     if (!canEquip) {
                         Utils.DrawBorderString(sb, "OVER CAP",
                             new Vector2(itemRect.X + 130, itemRect.Y + 26),
-                            CyberwareTheme.Accent * (alpha * 0.5f), 0.36f);
+                            CyberwareTheme.Accent * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);
                     }
                 }
             }

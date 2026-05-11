@@ -303,10 +303,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             //刷新本地化缓存
             RefreshSlotLabelCache();
 
-            //面板底层（背景、网格、扫描线）
-            panelRenderer.DrawBackground(spriteBatch, currentAlpha, panelRect, panelCenter, globalTimer);
-            panelRenderer.DrawGrid(spriteBatch, currentAlpha, panelRect);
-            panelRenderer.DrawScanLines(spriteBatch, currentAlpha, panelRect);
+            //主面板底层：shader 输出底色+网格+扫描带+CRT 行+中央人体光场+暗角+内边柔光
+            //bodyRadius 随关闭动画的 currentContentAlpha 衰减，让光场跟随内容一起淡出
+            Vector2 bodyLocalCenter = bodyOrigin - new Vector2(panelRect.X, panelRect.Y);
+            float bodyR = CyberwareTheme.BodyHaloRadius * MathHelper.Clamp(currentContentAlpha, 0f, 1f);
+            CyberPanelRenderer.DrawShaderBackground(spriteBatch, currentAlpha, panelRect, bodyLocalCenter, bodyR, mode: 0);
+            //CPU 端的几何感装饰：四角括号、顶部脉冲条、边脉冲移动亮点
+            CyberPanelRenderer.DrawFrameDecor(spriteBatch, currentAlpha, panelRect, globalTimer);
 
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
             spriteBatch.End();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -7,7 +8,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
     /// <summary>
     ///赛博义体界面的面板渲染器
-    ///负责面板背景、网格、扫描线、故障特效和标题装饰等视觉层
+    ///负责面板背景（着色器）、四角/边脉冲装饰、标题、故障特效、关闭按钮
     /// </summary>
     internal class CyberPanelRenderer
     {
@@ -46,38 +47,52 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         }
 
         /// <summary>
-        ///绘制面板背景、边框和四角装饰
+        ///通过 CyberwarePanel.fx 绘制面板底层（底色/网格/扫描带/中央光场/暗角/内边柔光全部由 shader 完成）
+        ///shader 未加载时降级为纯色 BgPanel 填充，与原始体验对齐
         /// </summary>
-        public void DrawBackground(SpriteBatch sb, float alpha, Rectangle panelRect, Vector2 panelCenter, float globalTimer) {
+        /// <param name="bodyLocalCenter">人体中心相对面板的局部像素坐标</param>
+        /// <param name="bodyRadius">人体能量光场半径，&lt;=1 时退化为无中央光场（适用于侧栏或关闭动画末段）</param>
+        /// <param name="mode">0=主面板（完整层）, 1=侧栏（轻量层）</param>
+        public static void DrawShaderBackground(SpriteBatch sb, float alpha, Rectangle panelRect,
+            Vector2 bodyLocalCenter, float bodyRadius, int mode) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
 
-            //面板主背景
-            sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.BgPanel * (alpha * 0.95f));
-
-            //内侧暗角渐变——营造凹陷深度感
-            Color vignetteColor = CyberwareTheme.InnerShadow * (alpha * 0.8f);
-            int vigSize = 8;
-            for (int i = 0; i < vigSize; i++) {
-                float fade = 1f - (float)i / vigSize;
-                sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y + i, panelRect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), vignetteColor * fade);
-                sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1 - i, panelRect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), vignetteColor * fade);
-                sb.Draw(px, new Rectangle(panelRect.X + i, panelRect.Y, 1, panelRect.Height),
-                    new Rectangle(0, 0, 1, 1), vignetteColor * (fade * 0.6f));
-                sb.Draw(px, new Rectangle(panelRect.Right - 1 - i, panelRect.Y, 1, panelRect.Height),
-                    new Rectangle(0, 0, 1, 1), vignetteColor * (fade * 0.6f));
+            //着色器未加载时降级为纯色背景，避免出现透明缺失
+            if (EffectLoader.CyberwarePanel?.Value == null) {
+                sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.BgPanel * (alpha * 0.95f));
+                return;
             }
 
-            //面板外发光
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null) {
-                Color panelGlow = CyberwareTheme.Accent * (alpha * 0.06f);
-                panelGlow.A = 0;
-                sb.Draw(glow, panelCenter, null, panelGlow, 0, glow.Size() / 2,
-                    new Vector2(panelRect.Width / 50f, panelRect.Height / 50f), SpriteEffects.None, 0);
-            }
+            Effect effect = EffectLoader.CyberwarePanel.Value;
+            float time = (float)Main.GameUpdateCount / 60f;
+
+            effect.Parameters["uTime"]?.SetValue(time);
+            effect.Parameters["uAlpha"]?.SetValue(alpha * 0.97f);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(panelRect.Width, panelRect.Height));
+            effect.Parameters["uEdgePad"]?.SetValue(CyberwareTheme.ShaderEdgePad);
+            effect.Parameters["uBodyCenter"]?.SetValue(bodyLocalCenter);
+            effect.Parameters["uBodyRadius"]?.SetValue(bodyRadius);
+            effect.Parameters["uMode"]?.SetValue(mode);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+
+            sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), Color.White);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
+
+        /// <summary>
+        ///绘制几何感强的边框装饰：四角双层括号、顶部脉冲条与移动亮点、四边细线
+        ///这部分仍保留 CPU 绘制以维持清晰锐利的"装置外壳"质感
+        /// </summary>
+        public static void DrawFrameDecor(SpriteBatch sb, float alpha, Rectangle panelRect, float globalTimer) {
+            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            if (px == null) return;
 
             //顶部边框带脉冲
             float borderPulse = MathF.Sin(globalTimer * 2f) * 0.15f + 0.85f;
@@ -129,6 +144,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Rectangle(panelRect.Right - cInset - 1, panelRect.Bottom - cInset - cL2, 1, cL2), new Rectangle(0, 0, 1, 1), cornerInner * 0.7f);
 
             //边缘脉冲光——沿顶部边框移动的亮点
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
             float pulsePos = globalTimer * 0.35f % 1f;
             int pulseX = panelRect.X + (int)(pulsePos * panelRect.Width);
             sb.Draw(px, new Rectangle(pulseX - 20, panelRect.Y, 40, 2),
@@ -138,64 +154,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 pulseGlow.A = 0;
                 sb.Draw(glow, new Vector2(pulseX, panelRect.Y), null, pulseGlow, 0,
                     glow.Size() / 2, new Vector2(0.5f, 0.08f), SpriteEffects.None, 0);
-            }
-        }
-
-        /// <summary>
-        ///绘制面板内的网格背景线
-        /// </summary>
-        public void DrawGrid(SpriteBatch sb, float alpha, Rectangle panelRect) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
-            if (px == null) return;
-
-            float spacing = 24f;
-
-            //极暗全线——隐约的结构感
-            Color faintLine = CyberwareTheme.GridLine * (alpha * 0.15f);
-            for (float x = panelRect.X + spacing; x < panelRect.Right; x += spacing) {
-                sb.Draw(px, new Rectangle((int)x, panelRect.Y, 1, panelRect.Height),
-                    new Rectangle(0, 0, 1, 1), faintLine);
-            }
-            for (float y = panelRect.Y + spacing; y < panelRect.Bottom; y += spacing) {
-                sb.Draw(px, new Rectangle(panelRect.X, (int)y, panelRect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), faintLine);
-            }
-
-            //交叉点高亮——电路板十字标记
-            Color crossColor = CyberwareTheme.GridLine * (alpha * 0.6f);
-            for (float x = panelRect.X + spacing; x < panelRect.Right; x += spacing) {
-                for (float y = panelRect.Y + spacing; y < panelRect.Bottom; y += spacing) {
-                    int ix = (int)x, iy = (int)y;
-                    sb.Draw(px, new Rectangle(ix - 2, iy, 5, 1), new Rectangle(0, 0, 1, 1), crossColor);
-                    sb.Draw(px, new Rectangle(ix, iy - 2, 1, 5), new Rectangle(0, 0, 1, 1), crossColor);
-                }
-            }
-        }
-
-        /// <summary>
-        ///绘制扫描线和CRT纹理效果
-        /// </summary>
-        public void DrawScanLines(SpriteBatch sb, float alpha, Rectangle panelRect) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
-            if (px == null) return;
-
-            //主扫描线
-            float scanY = panelRect.Y + (MathF.Sin(scanLinePhase) * 0.5f + 0.5f) * panelRect.Height;
-            Color scanColor = CyberwareTheme.Accent * (alpha * 0.08f);
-            sb.Draw(px, new Rectangle(panelRect.X, (int)scanY, panelRect.Width, 2),
-                new Rectangle(0, 0, 1, 1), scanColor);
-
-            //扫描线上方渐变尾迹
-            for (int i = 1; i <= 8; i++) {
-                float fade = 1f - i / 8f;
-                sb.Draw(px, new Rectangle(panelRect.X, (int)scanY - i * 3, panelRect.Width, 2),
-                    new Rectangle(0, 0, 1, 1), scanColor * (fade * 0.4f));
-            }
-
-            //CRT扫描线纹理
-            for (int y = panelRect.Y; y < panelRect.Bottom; y += 3) {
-                sb.Draw(px, new Rectangle(panelRect.X, y, panelRect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.06f));
             }
         }
 
@@ -232,10 +190,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 new Vector2(panelCenter.X + notchW, divY), 1f, divBright * 0.5f);
 
             //标题文字
-            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.72f;
+            float titleScale = 0.72f * CyberwareTheme.FontScale;
+            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * titleScale;
             Vector2 titlePos = new(panelCenter.X - titleSize.X / 2f, panelRect.Y + 7);
             Color titleColor = CyberwareTheme.Accent * (alpha * 0.95f);
-            Utils.DrawBorderString(sb, title, titlePos, titleColor, 0.72f);
+            Utils.DrawBorderString(sb, title, titlePos, titleColor, titleScale);
 
             //标题两侧对称装饰线+尖括号
             float sideY = titlePos.Y + titleSize.Y * 0.45f;
@@ -261,7 +220,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             //版本号
             Color verColor = CyberwareTheme.TextDim * (alpha * 0.5f);
-            Utils.DrawBorderString(sb, "v2.077", new Vector2(panelRect.Right - 100, panelRect.Y + 10), verColor, 0.42f);
+            Utils.DrawBorderString(sb, "v2.077",
+                new Vector2(panelRect.Right - 100, panelRect.Y + 10), verColor, 0.42f * CyberwareTheme.FontScale);
 
             //底部状态栏独立背景区
             int footerH = 22;
@@ -282,12 +242,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Vector2(panelRect.X + 10, bottomTextY + 2), new Rectangle(0, 0, 1, 1),
                 statusDot, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
             Utils.DrawBorderString(sb, statusText, new Vector2(panelRect.X + 22, bottomTextY - 2),
-                CyberwareTheme.TextDim * alpha, 0.42f);
+                CyberwareTheme.TextDim * alpha, 0.42f * CyberwareTheme.FontScale);
 
             //右下角滚动数据标签
             string dataTag = $"NET::0x{(int)(globalTimer * 100) % 0xFFFF:X4}";
             Utils.DrawBorderString(sb, dataTag, new Vector2(panelRect.Right - 130, bottomTextY - 2),
-                CyberwareTheme.AccentCyan * (alpha * 0.35f), 0.40f);
+                CyberwareTheme.AccentCyan * (alpha * 0.35f), 0.40f * CyberwareTheme.FontScale);
         }
 
         /// <summary>
