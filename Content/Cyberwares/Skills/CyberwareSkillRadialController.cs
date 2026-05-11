@@ -63,8 +63,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
         /// <summary>
         /// 当前雷达的屏幕锚点（固定为屏幕坐标系下的中央偏下）
+        /// <br/>同时由 PostUpdate（命中检测路径）和 Draw（绘制路径）写入，
+        /// 二者读取的都是最近一次写入的值，避免跨阶段不一致
         /// </summary>
         public Vector2 ScreenAnchor { get; private set; }
+
+        /// <summary>
+        /// 让 UI Draw 阶段同步写回锚点，避免 ModPlayer.PostUpdate 与 Main.Draw 之间
+        /// 因任何潜在尺寸变化（窗口拖拽 / 全屏切换帧）而错位
+        /// </summary>
+        public void SetScreenAnchor(Vector2 anchor) => ScreenAnchor = anchor;
 
         /// <summary>
         /// 当前装载的扇区列表，仅在 <see cref="IsOpen"/> 期间稳定
@@ -102,8 +110,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
         /// <summary>
         /// 锚点 Y 相对屏幕高度的位置比例：0 = 顶部，1 = 底部
+        /// <br/>对外暴露，让 <see cref="CyberwareSkillRadialUI"/> 在 Draw 阶段用同一比例
+        /// 重算锚点，确保命中检测（PostUpdate）与绘制（Draw）始终用一致的中心
         /// </summary>
-        private const float ScreenAnchorYRatio = 0.72f;
+        public const float ScreenAnchorYRatio = 0.72f;
 
         //WorldFreezeSystem 的 reason 标签：同名重复调用幂等
         private const string FreezeReason = "CyberwareRadial";

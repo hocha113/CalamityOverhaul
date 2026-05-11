@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -81,8 +82,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            Vector2 center = ctrl.ScreenAnchor;
+            //每帧根据当前屏幕尺寸重算一次锚点：避开"PostUpdate / Draw 跨阶段窗口尺寸变化"
+            //的潜在边界情况，且让 ScreenAnchor 永远与 sb 实际绘制坐标系对齐
+            Vector2 center = new(
+                Main.screenWidth * 0.5f,
+                Main.screenHeight * CyberwareSkillRadialController.ScreenAnchorYRatio);
+            ctrl.SetScreenAnchor(center);
+
             float time = ctrl.Time;
+
+            //子弹时间的全屏滤镜：在雷达绘制之前先铺一层背景，让"世界凝固"的感官立刻成立
+            //同时给雷达提供高对比的暗色底，避免雷达图形与花草背景颜色冲突而看不清
+            DrawBulletTimeOverlay(sb, px, a);
+
+            //雷达底盘：一个明显的圆形大底板，绝对不会与世界背景混色而被忽略
+            //它的尺寸覆盖整个雷达活动范围（外缘 + 装饰环 + 安全边距）
+            DrawRadialBackdrop(sb, px, center, a, time);
 
             //先尝试用专属着色器铺底（外圈刻度 / 中心虹膜 / 接口背板）
             //失败（未编译/未加载）时直接走纯 CPU 路径，雷达功能不受影响
@@ -129,6 +144,74 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             //雷达边缘的视觉框架装饰
             DrawOuterRing(sb, px, center, count, a, time);
+        }
+
+        /// <summary>
+        /// 子弹时间的全屏滤镜
+        /// <list type="bullet">
+        ///   <item>只在 <see cref="WorldFreezeSystem.IsActive"/> 时绘制（单人；多人无冻结故无滤镜）</item>
+        ///   <item>整体压暗 + 顶/底两侧的暗角，让玩家视线被引导到中央偏下的雷达</item>
+        ///   <item>叠一道极薄的水平扫描带，传递"系统介入"的赛博质感</item>
+        ///   <item>淡入淡出严格跟随雷达 <paramref name="globalAlpha"/>，避免开/关瞬间硬切</item>
+        /// </list>
+        /// </summary>
+        private static void DrawBulletTimeOverlay(SpriteBatch sb, Texture2D px, float globalAlpha) {
+            if (!WorldFreezeSystem.IsActive) {
+                return;
+            }
+
+            int w = Main.screenWidth;
+            int h = Main.screenHeight;
+
+            //主体压暗层：均匀的深青色 + alpha，平摊整个屏幕
+            //alpha 上限 0.42 既明显又不至于压死世界信息
+            Color tint = new(8, 14, 22);
+            sb.Draw(px, new Rectangle(0, 0, w, h), tint * (0.42f * globalAlpha));
+
+            //顶/底各一道更深的暗角条带，按高度的 1/4 分布
+            int bandH = h / 4;
+            Color band = new(2, 6, 10);
+            sb.Draw(px, new Rectangle(0, 0, w, bandH), band * (0.55f * globalAlpha));
+            sb.Draw(px, new Rectangle(0, h - bandH, w, bandH), band * (0.55f * globalAlpha));
+
+            //水平扫描带：极薄、低 alpha，随着 Main.GameUpdateCount 缓慢下移
+            //冻结期间 GameUpdateCount 不会推进，因此这里改用本地控制器的 Time 推进
+            CyberwareSkillRadialController ctrl = CyberwareSkillRadialController.LocalInstance;
+            float t = ctrl != null ? ctrl.Time : 0f;
+            float scanY = (t * 28f) % h;
+            sb.Draw(px, new Rectangle(0, (int)scanY - 1, w, 2),
+                SHPCTheme.CyanHi * (0.10f * globalAlpha));
+            sb.Draw(px, new Rectangle(0, (int)scanY + 90, w, 1),
+                SHPCTheme.Cyan * (0.06f * globalAlpha));
+        }
+
+        /// <summary>
+        /// 雷达底盘：在雷达本体下方铺一块明显的圆形深色底板
+        /// <br/>不依赖任何着色器，仅用 <see cref="SHPCRenderer.DrawArc"/> 系列原语，
+        /// 即便着色器未加载也能让玩家一眼锁定雷达位置
+        /// </summary>
+        private static void DrawRadialBackdrop(SpriteBatch sb, Texture2D px,
+            Vector2 center, float globalAlpha, float time) {
+            //外边缘半径：覆盖雷达外缘 + 装饰环 + 一圈安全间距
+            const float backdropR = SHPCTheme.ButtonOuterR + 28f;
+            //中心半透明圆盘
+            SHPCRenderer.DrawArc(sb, px, center, 0f, backdropR,
+                0f, MathHelper.TwoPi, new Color(4, 12, 18) * (0.62f * globalAlpha));
+            //稍小一圈的渐变中心，提高与世界的对比
+            SHPCRenderer.DrawArc(sb, px, center, 0f, backdropR - 6f,
+                0f, MathHelper.TwoPi, new Color(10, 26, 36) * (0.32f * globalAlpha));
+
+            //边缘描边：双层渐变让底盘"立起来"，再叠一圈呼吸光晕
+            float pulse = 0.65f + 0.35f * (MathF.Sin(time * 2.0f) + 1f) * 0.5f;
+            SHPCRenderer.DrawArcStroke(sb, px, center, backdropR, 0f, MathHelper.TwoPi,
+                2.0f, SHPCTheme.Border * (0.85f * globalAlpha));
+            SHPCRenderer.DrawArcStroke(sb, px, center, backdropR + 4f, 0f, MathHelper.TwoPi,
+                1.0f, SHPCTheme.CyanHi * (0.45f * pulse * globalAlpha));
+
+            //底部"基座"投影：让底盘像悬浮在 HUD 上
+            SHPCRenderer.DrawArc(sb, px, center + new Vector2(0f, 4f),
+                backdropR - 2f, backdropR + 6f, 0.10f, MathHelper.Pi - 0.10f,
+                new Color(0, 4, 8) * (0.55f * globalAlpha));
         }
 
         /// <summary>
