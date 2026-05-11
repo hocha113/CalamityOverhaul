@@ -306,9 +306,9 @@ namespace CalamityOverhaul.Content.HackTimes
                     case HackQueueState.Uploading:
                         hasUploading = true;
                         //仅在世界真正冻结时暂停上传进度
-                        //单人模式下进入骇客时间会触发 HackTimeFreeze，对应进度暂停由 IsActive 决定
+                        //单人模式下进入骇客时间会触发 WorldFreezeSystem，对应进度暂停由 IsActive 决定
                         //多人模式下不再冻结世界，上传与世界一同实时推进
-                        if (!HackTimeFreeze.IsActive) {
+                        if (!TimeFreezes.WorldFreezeSystem.IsActive) {
                             if (entry.Hack.UploadTime > 0)
                                 entry.UploadProgress += 1f / entry.Hack.UploadTime;
                             if (entry.UploadProgress >= 1f) {

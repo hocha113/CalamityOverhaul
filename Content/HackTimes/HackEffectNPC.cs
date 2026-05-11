@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public bool? PreAIByOverNPC(NPC npc) {
             //时停期间不执行任何骇入效果的AI干预
-            if (HackTimeFreeze.IsActive) return null;
+            if (TimeFreezes.WorldFreezeSystem.IsActive) return null;
             HackEffectTracker.GetEffects(npc.whoAmI, effectsCache);
             if (effectsCache.Count == 0) return null;
 

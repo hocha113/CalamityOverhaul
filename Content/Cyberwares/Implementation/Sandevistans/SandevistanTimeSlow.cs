@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.ModLoader;

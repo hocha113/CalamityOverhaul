@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -483,8 +484,12 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>
         /// 多人模式下不允许像单机那样冻结世界
         /// <br/>开启骇客时间后世界正常运行，仅保留扫描、运镜、协议上传等本地视觉与流程
+        /// <br/>实际语义已统一到 <see cref="WorldFreezeSystem.AllowFreeze"/>，本属性保留作语义入口
         /// </summary>
-        public static bool AllowFreeze => Main.netMode == NetmodeID.SinglePlayer;
+        public static bool AllowFreeze => WorldFreezeSystem.AllowFreeze;
+
+        //WorldFreezeSystem 的 reason 标签，统一通过它叠加/释放冻结
+        private const string FreezeReason = "HackTime";
 
         /// <summary>
         /// 切换骇客时间的开关状态
@@ -497,9 +502,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 //正在淡出中，直接反转回来，无需重置状态
                 Active = true;
                 targetIntensity = 1f;
-                if (AllowFreeze) {
-                    HackTimeFreeze.Activate();
-                }
+                WorldFreezeSystem.Activate(FreezeReason);
             }
             else {
                 Activate();
@@ -519,14 +522,14 @@ namespace CalamityOverhaul.Content.HackTimes
             ReticleTimer = 0f;
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
-            //仅单人模式下冻结世界；多人模式保留扫描功能但战斗与时间持续推进
-            if (AllowFreeze) {
-                HackTimeFreeze.Activate();
-                //记录飞行时间快照
-                if (Main.LocalPlayer.Alives()) {
-                    Main.LocalPlayer.GetModPlayer<HackTimeFreezePlayer>().frozenWingTime = Main.LocalPlayer.wingTime;
-                    Main.LocalPlayer.GetModPlayer<HackTimeFreezePlayer>().frozenRocketTime = Main.LocalPlayer.rocketTime;
-                }
+            //仅单人模式下冻结世界（由 WorldFreezeSystem.AllowFreeze 决定）；
+            //多人模式保留扫描功能但战斗与时间持续推进
+            WorldFreezeSystem.Activate(FreezeReason);
+            if (WorldFreezeSystem.IsActive && Main.LocalPlayer.Alives()) {
+                //预填飞行时间，避免首次进入 PreUpdate 快照被零值覆盖
+                WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
+                freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
+                freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
@@ -540,7 +543,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Active = false;
             targetIntensity = 0f;
             CurrentScanTarget = null;
-            HackTimeFreeze.Deactivate();
+            WorldFreezeSystem.Deactivate(FreezeReason);
             HackTimeUI.Instance?.Panel.Hide();
         }
 
@@ -613,6 +616,13 @@ namespace CalamityOverhaul.Content.HackTimes
             if (Main.gameMenu) {
                 Reset();
                 return;
+            }
+
+            //玩家死亡 / 幽灵态 → 自动关闭，避免本系统的 UI / 镜头残留
+            //通用的冻结安全网由 WorldFreezePlayer.UpdateDead 兜底，这里只负责 HackTime 自身的状态
+            if (Active && Main.LocalPlayer != null
+                && (Main.LocalPlayer.dead || Main.LocalPlayer.ghost)) {
+                Deactivate();
             }
 
             //效果强度插值
@@ -702,7 +712,9 @@ namespace CalamityOverhaul.Content.HackTimes
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
             InfiniteHack = false;
-            HackTimeFreeze.Deactivate();
+            //Reset 是异常路径（卸载、世界切换），只释放本系统持有的 reason；
+            //其他 reason 若仍持有冻结应由各自系统在自己的 Reset/Unload 中处理
+            WorldFreezeSystem.Deactivate(FreezeReason);
             HackTimeUI.Instance?.Queue?.Clear();
             HackEffectTracker.Reset();
             RamSystem.Reset();

@@ -55,8 +55,8 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             colors[2] = projectile.damage > 0 ? HackTheme.Uploading : HackTheme.TextDim;
 
             labels[3] = HackTime.ProjectileScanSpeed.Value;
-            Vector2 displayVel = HackTimeFreeze.IsActive && HackTimeFreeze.ProjSnapshotCaptured[ProjectileIndex]
-                ? HackTimeFreeze.ProjFrozenVelocities[ProjectileIndex]
+            Vector2 displayVel = TimeFreezes.WorldFreezeSystem.IsActive && TimeFreezes.WorldFreezeSystem.ProjSnapshotCaptured[ProjectileIndex]
+                ? TimeFreezes.WorldFreezeSystem.ProjFrozenVelocities[ProjectileIndex]
                 : projectile.velocity;
             values[3] = $"{displayVel.Length():F1} px/f";
             colors[3] = HackTheme.Accent;

@@ -96,8 +96,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
                 return;
             }
 
-            //骇客时间冻结：与NPC同步被暂停，保留可见度与乱码视觉循环
-            if (HackTimeFreeze.IsActive) {
+            //世界冻结：与NPC同步被暂停，保留可见度与乱码视觉循环
+            if (TimeFreezes.WorldFreezeSystem.IsActive) {
                 Velocity = Vector2.Zero;
                 bool inPastHack = false;
                 float targetVisHack = inPastHack ? 1f : 0f;

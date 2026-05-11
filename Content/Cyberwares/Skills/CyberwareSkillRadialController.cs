@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.ADV.EntrustManager;
 using System;
@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using CalamityOverhaul.Content.TimeFreezes;
 
 namespace CalamityOverhaul.Content.Cyberwares.Skills
 {

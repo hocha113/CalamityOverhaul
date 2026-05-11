@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content
             if (Main.gameMenu) {
                 return false;
             }
-            if (HackTimeFreeze.IsActive) {
+            if (TimeFreezes.WorldFreezeSystem.IsActive) {
                 return true;
             }
             if (Main.LocalPlayer != null && Main.LocalPlayer.active

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CalamityOverhaul.Common
+namespace CalamityOverhaul.Content.TimeFreezes
 {
     /// <summary>
     /// 变速齿轮 —— 全局时间速度管理器

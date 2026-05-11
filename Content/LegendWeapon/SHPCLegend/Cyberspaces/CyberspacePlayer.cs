@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.IO;
 using Terraria;
