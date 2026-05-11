@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -73,6 +73,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HackRamArc { get; set; }
         public static Asset<Effect> SHPCCoreOrb { get; set; }
         public static Asset<Effect> CyberwareRadialPanel { get; set; }
+        public static Asset<Effect> CyberwareBulletTime { get; set; }
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalHeatHaze { get; set; }

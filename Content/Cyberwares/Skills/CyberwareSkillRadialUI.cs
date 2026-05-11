@@ -149,12 +149,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 子弹时间的全屏滤镜
+        /// 子弹时间的全屏滤镜（着色器版本，替代旧的 CPU 像素堆叠）
         /// <list type="bullet">
-        ///   <item>只在 <see cref="WorldFreezeSystem.IsActive"/> 时绘制（单人；多人无冻结故无滤镜）</item>
-        ///   <item>整体压暗 + 顶/底两侧的暗角，让玩家视线被引导到中央偏下的雷达</item>
-        ///   <item>叠一道极薄的水平扫描带，传递"系统介入"的赛博质感</item>
-        ///   <item>淡入淡出严格跟随雷达 <paramref name="globalAlpha"/>，避免开/关瞬间硬切</item>
+        ///   <item>只在 <see cref="WorldFreezeSystem.IsActive"/> 时绘制（多人下 freeze 失败 → 自然不显示）</item>
+        ///   <item>由 <see cref="EffectLoader.CyberwareBulletTime"/> 全屏 quad 驱动：
+        ///         径向暗角 + 时间波 + 流光 + letterbox 软幅 + 四角 HUD 括号 + 胶片颗粒</item>
+        ///   <item>着色器未加载时降级为简易纯色压暗，保证功能不丢</item>
+        ///   <item>所有 alpha 跟随 <paramref name="globalAlpha"/> 与控制器的 OpenProgress，避免开/关硬切</item>
         /// </list>
         /// </summary>
         private static void DrawBulletTimeOverlay(SpriteBatch sb, Texture2D px, float globalAlpha) {
@@ -164,56 +165,65 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             int w = Main.screenWidth;
             int h = Main.screenHeight;
-
-            //主体压暗层：均匀的深青色 + alpha，平摊整个屏幕
-            //alpha 上限 0.42 既明显又不至于压死世界信息
-            Color tint = new(8, 14, 22);
-            sb.Draw(px, new Rectangle(0, 0, w, h), tint * (0.42f * globalAlpha));
-
-            //顶/底各一道更深的暗角条带，按高度的 1/4 分布
-            int bandH = h / 4;
-            Color band = new(2, 6, 10);
-            sb.Draw(px, new Rectangle(0, 0, w, bandH), band * (0.55f * globalAlpha));
-            sb.Draw(px, new Rectangle(0, h - bandH, w, bandH), band * (0.55f * globalAlpha));
-
-            //水平扫描带：极薄、低 alpha，随着 Main.GameUpdateCount 缓慢下移
-            //冻结期间 GameUpdateCount 不会推进，因此这里改用本地控制器的 Time 推进
             CyberwareSkillRadialController ctrl = CyberwareSkillRadialController.LocalInstance;
-            float t = ctrl != null ? ctrl.Time : 0f;
-            float scanY = (t * 28f) % h;
-            sb.Draw(px, new Rectangle(0, (int)scanY - 1, w, 2),
-                SHPCTheme.CyanHi * (0.10f * globalAlpha));
-            sb.Draw(px, new Rectangle(0, (int)scanY + 90, w, 1),
-                SHPCTheme.Cyan * (0.06f * globalAlpha));
+            //冻结期间 GameUpdateCount 不前进，必须用本机控制器自己推的实时时钟
+            float time = ctrl != null ? ctrl.Time : 0f;
+            //锚点 = 雷达圆心；着色器据此画时间波 / 视线引导
+            Vector2 anchor = ctrl != null ? ctrl.ScreenAnchor
+                : new Vector2(w * 0.5f, h * CyberwareSkillRadialController.ScreenAnchorYRatio);
+
+            Effect effect = EffectLoader.CyberwareBulletTime?.Value;
+            if (effect == null) {
+                //降级路径：着色器尚未加载（编辑/调试场景）—— 简易纯色压暗，保证视觉上仍有 "世界凝固" 的提示
+                sb.Draw(px, new Rectangle(0, 0, w, h),
+                    new Color(8, 14, 22) * (0.42f * globalAlpha));
+                return;
+            }
+
+            effect.Parameters["uTime"]?.SetValue(time);
+            effect.Parameters["uAlpha"]?.SetValue(globalAlpha);
+            effect.Parameters["uOpenProgress"]?.SetValue(globalAlpha);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(w, h));
+            effect.Parameters["uCenter"]?.SetValue(anchor);
+            //HUD 主色：与雷达背板取同一青蓝色系，避免子弹时间和雷达"分裂"成两种颜色
+            effect.Parameters["uHudColor"]?.SetValue(new Vector3(0.20f, 0.65f, 0.82f));
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+
+            sb.Draw(px, new Rectangle(0, 0, w, h), Color.White);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
         /// <summary>
-        /// 雷达底盘：在雷达本体下方铺一块明显的圆形深色底板
-        /// <br/>不依赖任何着色器，仅用 <see cref="SHPCRenderer.DrawArc"/> 系列原语，
-        /// 即便着色器未加载也能让玩家一眼锁定雷达位置
+        /// 雷达外框：仅保留"细描边 + 底部基座投影 + 呼吸光晕"，本体由着色器铺底
+        /// <list type="bullet">
+        ///   <item>v2 不再画整块大圆盘——着色器 <see cref="EffectLoader.CyberwareRadialPanel"/> 的 FBM 大气
+        ///         已经承担了"接口板内部光晕"的视觉职责，再叠一个 CPU 黑盘只会和着色器互相抹掉细节</item>
+        ///   <item>这里只剩两件事：a) 在装饰半径上画一道双层细描边，b) 底部画一段半圆形阴影模拟"悬浮基座"，
+        ///         保证即便着色器未加载，玩家依然能感知到雷达的物理边界</item>
+        ///   <item>所有 alpha 都跟随 <paramref name="globalAlpha"/>；颜色取自 SHPCTheme，与全局 HUD 系一致</item>
+        /// </list>
         /// </summary>
         private static void DrawRadialBackdrop(SpriteBatch sb, Texture2D px,
             Vector2 center, float globalAlpha, float time) {
-            //外边缘半径：覆盖雷达外缘 + 装饰环 + 一圈安全间距
-            const float backdropR = SHPCTheme.ButtonOuterR + 28f;
-            //中心半透明圆盘
-            SHPCRenderer.DrawArc(sb, px, center, 0f, backdropR,
-                0f, MathHelper.TwoPi, new Color(4, 12, 18) * (0.62f * globalAlpha));
-            //稍小一圈的渐变中心，提高与世界的对比
-            SHPCRenderer.DrawArc(sb, px, center, 0f, backdropR - 6f,
-                0f, MathHelper.TwoPi, new Color(10, 26, 36) * (0.32f * globalAlpha));
+            const float frameR = SHPCTheme.ButtonOuterR + 18f;
+            //双层细描边
+            SHPCRenderer.DrawArcStroke(sb, px, center, frameR, 0f, MathHelper.TwoPi,
+                1.6f, SHPCTheme.Border * (0.65f * globalAlpha));
+            //外侧呼吸光晕：与着色器外圈大气融合的过渡线
+            float pulse = 0.55f + 0.45f * (MathF.Sin(time * 1.8f) + 1f) * 0.5f;
+            SHPCRenderer.DrawArcStroke(sb, px, center, frameR + 4f, 0f, MathHelper.TwoPi,
+                1.0f, SHPCTheme.CyanHi * (0.32f * pulse * globalAlpha));
 
-            //边缘描边：双层渐变让底盘"立起来"，再叠一圈呼吸光晕
-            float pulse = 0.65f + 0.35f * (MathF.Sin(time * 2.0f) + 1f) * 0.5f;
-            SHPCRenderer.DrawArcStroke(sb, px, center, backdropR, 0f, MathHelper.TwoPi,
-                2.0f, SHPCTheme.Border * (0.85f * globalAlpha));
-            SHPCRenderer.DrawArcStroke(sb, px, center, backdropR + 4f, 0f, MathHelper.TwoPi,
-                1.0f, SHPCTheme.CyanHi * (0.45f * pulse * globalAlpha));
-
-            //底部"基座"投影：让底盘像悬浮在 HUD 上
-            SHPCRenderer.DrawArc(sb, px, center + new Vector2(0f, 4f),
-                backdropR - 2f, backdropR + 6f, 0.10f, MathHelper.Pi - 0.10f,
-                new Color(0, 4, 8) * (0.55f * globalAlpha));
+            //底部"基座"投影：让整个 HUD 像悬浮在屏幕中，强化与世界的层次分离
+            SHPCRenderer.DrawArc(sb, px, center + new Vector2(0f, 6f),
+                frameR - 1f, frameR + 7f, 0.10f, MathHelper.Pi - 0.10f,
+                new Color(0, 4, 8) * (0.45f * globalAlpha));
         }
 
         /// <summary>
@@ -273,25 +283,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 中心小核心：单纯的视觉地标，告诉玩家"这是技能盘的圆心"
+        /// 中心地标：v2 让着色器承担 iris 主体，本方法只补一个"瞄星"小点
+        /// <br/>避免与着色器的呼吸高光重叠成糊作一团；点的呼吸节奏与着色器内部
+        /// 的 sin(uTime*2.8) 节奏接近，肉眼上会自然融合
         /// </summary>
         private static void DrawCenterCore(SpriteBatch sb, Texture2D px, Vector2 center, float a, float time) {
-            //柔和外晕
-            SHPCRenderer.DrawDisc(sb, px, center,
-                CyberwareSkillRadialController.DeadZoneRadius * 0.42f, 6f,
-                SHPCTheme.Cyan * (0.18f * a));
-            //核心圆点
-            float breath = 0.85f + MathF.Sin(time * 4.2f) * 0.12f;
-            SHPCRenderer.DrawDisc(sb, px, center,
-                4.5f * breath, 2.5f,
-                SHPCTheme.CyanHi * (0.85f * a));
-            //十字微元素
-            SHPCRenderer.DrawLine(sb, px,
-                center - new Vector2(3.5f, 0f), center + new Vector2(3.5f, 0f),
-                1.0f, SHPCTheme.SlotBg * (0.9f * a));
-            SHPCRenderer.DrawLine(sb, px,
-                center - new Vector2(0f, 3.5f), center + new Vector2(0f, 3.5f),
-                1.0f, SHPCTheme.SlotBg * (0.9f * a));
+            float breath = 0.85f + MathF.Sin(time * 2.8f) * 0.15f;
+            //瞄星：一个极小的高对比亮点，落在着色器 iris 最亮处的中央
+            SHPCRenderer.DrawDisc(sb, px, center, 1.8f * breath, 1.0f,
+                SHPCTheme.CyanHi * (0.95f * a));
         }
 
         /// <summary>
@@ -480,29 +480,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 雷达外圈的整体描边装饰，仅在多扇区时绘制
+        /// 雷达外圈的整体描边（v2 极简版）
+        /// <br/>v1 的"旋转拨码刻度"已迁入着色器的外圈大气光晕，且改为平滑波浪，
+        /// 避免与 RAM HUD 的旋转刻度视觉撞色。这里只保留一道贴近外缘的细线，
+        /// 把扇区外沿和着色器大气在视觉上"轻轻封住"
         /// </summary>
         private static void DrawOuterRing(SpriteBatch sb, Texture2D px,
             Vector2 center, int sectorCount, float globalAlpha, float time) {
             if (sectorCount <= 1) {
                 return;
             }
-            //最外圈细线，配旋转刻度
-            float ringR = SHPCTheme.ButtonOuterR + 5f;
+            float ringR = SHPCTheme.ButtonOuterR + 4f;
             SHPCRenderer.DrawArcStroke(sb, px, center, ringR,
-                0f, MathHelper.TwoPi, 1.2f,
-                SHPCTheme.Border * (0.6f * globalAlpha));
-            //旋转刻度
-            const int markCount = 8;
-            float markSpan = 0.18f;
-            float markGap = MathHelper.TwoPi / markCount;
-            float markRot = time * 0.25f;
-            for (int i = 0; i < markCount; i++) {
-                float a0 = markRot + i * markGap - markSpan * 0.5f;
-                SHPCRenderer.DrawArcStroke(sb, px, center, ringR + 4f,
-                    a0, a0 + markSpan, 1.0f,
-                    SHPCTheme.BorderHi * (0.5f * globalAlpha));
-            }
+                0f, MathHelper.TwoPi, 1.0f,
+                SHPCTheme.Border * (0.45f * globalAlpha));
         }
     }
 }
