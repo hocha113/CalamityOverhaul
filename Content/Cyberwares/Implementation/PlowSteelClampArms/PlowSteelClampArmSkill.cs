@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override CyberwareSkillKind Kind => CyberwareSkillKind.Instant;
 
+        //单分子线必须确定一个世界目标点，让雷达在按下技能键时快照鼠标坐标
+        //避免开盘期间鼠标被劫持去选扇区导致瞄点丢失
+        public override bool RequiresAim => true;
+
         //冷却进度：1 表示完全就绪，0 表示刚释放
         public override float StatusFillRatio {
             get {
@@ -62,7 +66,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void OnInstantTrigger(Player player) {
-            player.GetModPlayer<PlowSteelClampArmPlayer>().TryFireWireFromRadial();
+            //单技能直触路径会进到这里：使用玩家当前真实鼠标
+            player.GetModPlayer<PlowSteelClampArmPlayer>().TryFireWireFromRadial(Main.MouseWorld);
+        }
+
+        public override void OnInstantTrigger(Player player, Vector2 aimWorld) {
+            //雷达路径会进到这里：aimWorld 是按下技能键瞬间快照的鼠标位置
+            player.GetModPlayer<PlowSteelClampArmPlayer>().TryFireWireFromRadial(aimWorld);
         }
     }
 }

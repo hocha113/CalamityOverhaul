@@ -48,9 +48,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         /// <summary>
         /// 由 <see cref="PlowSteelClampArmSkill.OnInstantTrigger"/> 调用，尝试发射单分子线
-        /// <br/>所有失败路径都通过短促音效给出反馈，与原版直接按键的失败体验一致
+        /// <list type="bullet">
+        ///   <item><paramref name="aimWorld"/> 是要瞄准的世界坐标。雷达路径下传入的是
+        ///     按键瞬间的鼠标快照，单技能直触路径下传入的是当前真实鼠标</item>
+        ///   <item>所有失败路径都通过短促音效给出反馈，与原版直接按键的失败体验一致</item>
+        /// </list>
         /// </summary>
-        public void TryFireWireFromRadial() {
+        public void TryFireWireFromRadial(Vector2 aimWorld) {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -61,14 +65,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.5f }, Player.Center);
                 return;
             }
-            TryFireWire();
+            TryFireWire(aimWorld);
         }
 
         /// <summary>
-        /// 实际尝试发射单分子线：寻找光标附近的有效锚点，符合条件则生成弹幕
+        /// 实际尝试发射单分子线：以 <paramref name="aimWorld"/> 为光标，寻找附近的有效锚点
         /// </summary>
-        private void TryFireWire() {
-            if (!FindAnchorTile(out Vector2 anchor)) {
+        private void TryFireWire(Vector2 aimWorld) {
+            if (!FindAnchorTile(aimWorld, out Vector2 anchor)) {
                 //没有可用的物块作为锚点，给出短促的"目标无效"反馈
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.55f }, Player.Center);
                 return;
@@ -101,18 +105,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         /// <summary>
-        /// 在光标附近寻找一块可作为锚点的实心物块，找到后返回锚点世界坐标
+        /// 在指定的光标世界坐标附近寻找一块可作为锚点的实心物块，找到后返回锚点世界坐标
         /// <br/>策略：先取光标命中的格子；若该格子非实心，则从光标向四方各 4 格内寻找最近的实心格子
+        /// <br/>使用显式 <paramref name="cursorWorld"/> 而非 <c>Player.tileTargetX/Y</c>，
+        /// 让雷达可以传入"按键瞬间的鼠标快照"，避免开盘期间鼠标方向被劫持
         /// </summary>
-        private bool FindAnchorTile(out Vector2 anchorWorld) {
+        private bool FindAnchorTile(Vector2 cursorWorld, out Vector2 anchorWorld) {
             anchorWorld = default;
 
-            //tileTargetX/Y 是原版静态字段，仅对本机玩家有意义；本方法只会在 Player.whoAmI == Main.myPlayer 时调用
-            int targetX = Terraria.Player.tileTargetX;
-            int targetY = Terraria.Player.tileTargetY;
-            //超出最大触发距离直接判定无效
-            Vector2 cursor = new(targetX * 16f + 8f, targetY * 16f + 8f);
-            if (Vector2.DistanceSquared(cursor, Player.Center)
+            int targetX = (int)MathF.Floor(cursorWorld.X / 16f);
+            int targetY = (int)MathF.Floor(cursorWorld.Y / 16f);
+            //超出最大触发距离直接判定无效（注意距离用真正的鼠标坐标，而非格子中心）
+            if (Vector2.DistanceSquared(cursorWorld, Player.Center)
                 > PlowSteelClampArm.MaxAnchorDistance * PlowSteelClampArm.MaxAnchorDistance) {
                 return false;
             }

@@ -1726,13 +1726,14 @@ PlowSteelClampArm: {
 		Cyberware skill: release a high-heat monomolecular wire from your palm to a target block,
 		continuously scorching every enemy along its path.
 		'''
-	SkillHint: Fire a monomolecular wire from the {0} radial (must aim at a tile)
+	SkillHint: Fire a monomolecular wire from the {0} radial; aim the tile BEFORE opening the radial
 	SkillName: Monomolecular Wire
 	SkillDesc:
 		'''
 		Hurls a high-heat monomolecular wire from your palm to a solid tile near your cursor.
 		The wire persists for ~5 seconds, scorching every enemy that crosses it.
 		8s cooldown; damage scales with the player's generic damage multipliers.
+		[c/8AC4E8:Hint] The mouse position at the instant you open the radial is locked as the target.
 		'''
 }
 

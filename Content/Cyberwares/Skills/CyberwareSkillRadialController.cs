@@ -1,13 +1,14 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.QuestLogs;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.TimeFreezes;
 
 namespace CalamityOverhaul.Content.Cyberwares.Skills
 {
@@ -30,10 +31,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
     /// 仅负责把当前状态可视化
     /// <list type="bullet">
     ///   <item>按下 <see cref="CWRKeySystem.CyberwareSkill_Key"/> 打开雷达；按住期间显示扇区</item>
-    ///   <item>鼠标方向决定悬停扇区，无需把鼠标移到目标位置</item>
+    ///   <item>开盘瞬间向 <see cref="WorldFreezeSystem"/> 注册 reason
+    ///     <see cref="FreezeReason"/>，单人下完整冻结世界以构成"子弹时间"；
+    ///     多人下自动 no-op，仅保留可视化交互</item>
+    ///   <item>雷达锚点固定在屏幕中央偏下（HUD 风格），鼠标方向决定悬停扇区</item>
+    ///   <item>按下技能键的同一帧快照 <c>Main.MouseWorld</c>；方向类技能（<see cref="CyberwareSkillBase.RequiresAim"/>）
+    ///     释放时使用此快照，避开"鼠标已被雷达劫持"导致的瞄点丢失</item>
     ///   <item>松开按键时按悬停扇区的类型决定触发方式：Instant 立即释放、Toggle 切换、Charge 按蓄力比例释放</item>
     ///   <item>Charge 类技能在悬停期间持续累积蓄力，切换扇区即清零；外部强制取消亦会清零</item>
-    ///   <item>雷达打开期间向 <see cref="TimeGear"/> 注册 0.35 缓速档位，关闭即注销</item>
+    ///   <item>骇客时间已激活时拒绝开盘，避免两个子弹时间互相释放对方</item>
     ///   <item>仅装备 1 个主动义体时不弹出雷达，按键直接对该唯一技能进行触发</item>
     /// </list>
     /// </summary>
@@ -56,7 +62,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public float OpenProgress { get; private set; }
 
         /// <summary>
-        /// 当前雷达的屏幕锚点（每帧重新计算为玩家中心稍上方）
+        /// 当前雷达的屏幕锚点（固定为屏幕坐标系下的中央偏下）
         /// </summary>
         public Vector2 ScreenAnchor { get; private set; }
 
@@ -81,6 +87,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public float Time { get; private set; }
 
         /// <summary>
+        /// 玩家按下技能键瞬间快照的鼠标世界坐标；供方向类技能释放时回放
+        /// <br/>仅在 <see cref="IsOpen"/> 期间或刚刚被消费的一帧内有效
+        /// </summary>
+        public Vector2 AimSnapshot { get; private set; }
+
+        /// <summary>
         /// 雷达半径几何常量，UI 绘制与命中检测共享
         /// </summary>
         public const float InnerRadius = 60f;
@@ -88,15 +100,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public const float DeadZoneRadius = 36f;
         public const float IconRadius = (InnerRadius + OuterRadius) * 0.5f;
 
-        //时缓档位标识，避免硬编码字符串散落
-        private const string TimeGearKey = "CyberwareRadial";
-        //雷达全开后的时缓系数：0.35 让世界明显减速但仍保留战斗紧张感
-        private const float TimeScaleAtFullOpen = 0.35f;
+        /// <summary>
+        /// 锚点 Y 相对屏幕高度的位置比例：0 = 顶部，1 = 底部
+        /// </summary>
+        private const float ScreenAnchorYRatio = 0.72f;
+
+        //WorldFreezeSystem 的 reason 标签：同名重复调用幂等
+        private const string FreezeReason = "CyberwareRadial";
         //每帧展开/收起的 lerp 强度
         private const float OpenLerpRate = 0.22f;
         private const float CloseLerpRate = 0.28f;
 
         private readonly List<CyberwareSkillRadialSector> sectors = [];
+
+        //本帧是否由本控制器持有 WorldFreezeSystem 的 reason
+        //仅作内部状态管理：开盘成功 -> true，关盘解冻 -> false
+        private bool freezeOwned;
 
         public override void PostUpdate() {
             //本控制器只负责本机玩家的雷达状态，远程玩家不参与
@@ -105,8 +124,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
             Time += 1f / 60f;
 
-            //每帧将雷达锚点重新对齐到玩家身上，让雷达"贴身"
-            ScreenAnchor = Player.Center - Main.screenPosition;
+            //雷达锚点固定在屏幕中央偏下，子弹时间下让玩家视线自然下移
+            ScreenAnchor = new Vector2(
+                Main.screenWidth * 0.5f,
+                Main.screenHeight * ScreenAnchorYRatio);
 
             //玩家死亡 / 失去所有可释放义体 / 全屏 UI 介入时强制收起
             if (!CanRadialBeShown()) {
@@ -134,7 +155,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
 
             UpdateOpenProgress();
-            UpdateTimeSlow();
+        }
+
+        public override void UpdateDead() {
+            //玩家死亡兜底：哪怕 PostUpdate 不再运行，也要确保子弹时间被释放
+            //（WorldFreezePlayer.UpdateDead 已有通用兜底，这里做本控制器的强制清理）
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (IsOpen || OpenProgress > 0.01f) {
+                ForceClose();
+            }
+            ReleaseFreezeIfOwned();
+            UpdateOpenProgress();
         }
 
         /// <summary>
@@ -170,8 +203,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         /// 玩家刚按下按键：根据可用技能数量决定开盘还是直接触发
         /// </summary>
         private void TryOpenOrTriggerSingle() {
+            //先把鼠标快照拍下来，后续无论走直触还是开盘都用这个值
+            AimSnapshot = Main.MouseWorld;
+
             List<CyberwareSkillRadialSector> built = BuildSectors();
             if (built.Count == 0) {
+                return;
+            }
+
+            //已存在更高优先级的子弹时间（骇客时间等）时拒绝开盘，让两个系统不互相吃帧
+            if (HackTime.Active) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
                 return;
             }
 
@@ -183,7 +225,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 if (only.IsReady) {
                     switch (only.Kind) {
                         case CyberwareSkillKind.Instant:
-                            only.OnInstantTrigger(p);
+                            //单技能直触保持原语义：用玩家当前真实鼠标，不用快照
+                            //（因为没有开盘鼠标也就没被劫持，玩家本来就在瞄）
+                            if (only.RequiresAim) {
+                                only.OnInstantTrigger(p, Main.MouseWorld);
+                            }
+                            else {
+                                only.OnInstantTrigger(p);
+                            }
                             break;
                         case CyberwareSkillKind.Toggle:
                             only.OnToggleTrigger(p);
@@ -204,6 +253,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             //Charge 单技能开盘时，自动把该扇区视为已悬停，避免玩家"看到 UI 时还在转圈"
             HoveredIndex = sectors.Count == 1 ? 0 : -1;
             HoverFrames = 0;
+            //请求世界冻结：单人下进入子弹时间；多人下 WorldFreezeSystem 内部直接拒绝，仅余 UI
+            AcquireFreezeIfNeeded();
             //开盘音效
             SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = 0.2f, Volume = 0.5f });
         }
@@ -257,14 +308,24 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
         /// <summary>
         /// 玩家松开按键瞬间：把当前悬停扇区按其类型触发后立刻收起雷达
+        /// <br/>方向类技能使用按下时的鼠标快照作为瞄点，避免雷达期间鼠标方向被劫持
         /// </summary>
         private void ResolveAndClose() {
+            //先解冻再触发：技能里可能有立即生效的物理 / 投射体生成，
+            //如果还在冻结状态会被 WorldFreezeSystem 当成"冻结期间新生投射物"杀掉
+            ReleaseFreezeIfOwned();
+
             if (HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
                 CyberwareSkillBase skill = sectors[HoveredIndex].Skill;
                 if (skill.IsReady) {
                     switch (skill.Kind) {
                         case CyberwareSkillKind.Instant:
-                            skill.OnInstantTrigger(Player);
+                            if (skill.RequiresAim) {
+                                skill.OnInstantTrigger(Player, AimSnapshot);
+                            }
+                            else {
+                                skill.OnInstantTrigger(Player);
+                            }
                             break;
                         case CyberwareSkillKind.Toggle:
                             skill.OnToggleTrigger(Player);
@@ -295,6 +356,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             IsOpen = false;
             HoveredIndex = -1;
             HoverFrames = 0;
+            ReleaseFreezeIfOwned();
         }
 
         private void CancelHoveredCharge() {
@@ -324,14 +386,29 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
         }
 
-        private void UpdateTimeSlow() {
-            //展开进度 < 0.05 时取消时缓档位；否则线性插值缓速强度
-            if (OpenProgress < 0.05f) {
-                TimeGear.Unregister(TimeGearKey);
+        /// <summary>
+        /// 申请世界冻结：仅在尚未持有 reason 时调用 <see cref="WorldFreezeSystem.Activate(string)"/>
+        /// <br/>多人下 <see cref="WorldFreezeSystem.AllowFreeze"/> 为 false，调用会被忽略，
+        /// 此时 <see cref="freezeOwned"/> 仍标记为 true 以维持"我请求过"的语义，
+        /// 释放路径走 <see cref="WorldFreezeSystem.Deactivate(string)"/> 即可幂等
+        /// </summary>
+        private void AcquireFreezeIfNeeded() {
+            if (freezeOwned) {
                 return;
             }
-            float scale = MathHelper.Lerp(1f, TimeScaleAtFullOpen, OpenProgress);
-            TimeGear.Register(TimeGearKey, scale);
+            WorldFreezeSystem.Activate(FreezeReason);
+            freezeOwned = true;
+        }
+
+        /// <summary>
+        /// 释放本控制器持有的世界冻结 reason；幂等，可重复调用
+        /// </summary>
+        private void ReleaseFreezeIfOwned() {
+            if (!freezeOwned) {
+                return;
+            }
+            WorldFreezeSystem.Deactivate(FreezeReason);
+            freezeOwned = false;
         }
 
         /// <summary>
