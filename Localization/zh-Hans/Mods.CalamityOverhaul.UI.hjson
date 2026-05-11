@@ -786,6 +786,15 @@ EntrustManagerLead: {
 	TextSuspendIntroDesc2: "     可在  已挂起  选项卡中找到它们并恢复关注"
 }
 
+CyberwareSkillRadialUI: {
+	StatusOn: 开启中
+	HintHoldToCharge: 悬停期间持续蓄力，松开按键释放
+	HintReleaseToFire: 松开按键立即触发
+	HintToggle: 松开按键切换开关
+	HintInstant: 松开按键立即触发
+	HintNotReady: 当前条件不满足
+}
+
 AbandonedPortalStrings: {
 	Title: 废墟传送门控制台
 	BrokenSubtitle: 结构断裂 · 核心离线

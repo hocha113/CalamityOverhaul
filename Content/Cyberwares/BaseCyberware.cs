@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.Cyberwares.Skills;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -58,6 +59,14 @@ namespace CalamityOverhaul.Content.Cyberwares
         /// <br/>所有需要在装备阶段写入的属性（防御、击退抗性、移速等）请在此覆写
         /// </summary>
         public virtual void PostUpdateEquipped(Player player) { }
+
+        /// <summary>
+        /// 该义体注册的主动技能描述符，null 表示不参与雷达技能选盘
+        /// <br/>建议返回一个 <c>static</c> 单例实例，雷达每帧都会查询此属性
+        /// <br/>技能的真实运行时状态请继续保留在各自的 ModPlayer / ModSystem 中，
+        /// 描述符仅负责为雷达提供元数据并接收触发回调
+        /// </summary>
+        public virtual CyberwareSkillBase ActiveSkill => null;
 
         public override void SetDefaults() {
             Item.maxStack = 1;

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.Cyberwares.Skills;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
@@ -11,6 +12,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public override CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.NervousSystem;
 
         public override int CapacityCost => 3;
+
+        public override CyberwareSkillBase ActiveSkill => SandevistanSkill.Instance;
 
         /// <summary>
         /// 最大冷却容量（帧数），决定可持续激活的总时长

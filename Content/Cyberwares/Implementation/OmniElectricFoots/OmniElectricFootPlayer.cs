@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -9,13 +8,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
     /// 全向电动义足的玩家组件
-    /// <br/>负责处理：
+    /// <br/>承担两件事：
     /// <list type="bullet">
-    ///   <item>蓄力跳的输入采集、能量积累、释放与冷却管理</item>
-    ///   <item>空中二段跳的解锁条件、按键消耗与速度施加</item>
-    ///   <item>所有视觉粒子与音效反馈，全部本地化在本机玩家上不影响多人同步</item>
+    ///   <item>空中二段跳：监听原版跳跃键，无需经过雷达，独立运作</item>
+    ///   <item>蓄力跳：完全由 <see cref="CyberwareSkillRadialUI"/> 通过 <see cref="OmniElectricFootSkill"/>
+    ///         驱动，本类只暴露 <see cref="RadialDriveCharge"/> / <see cref="RadialReleaseCharge"/> /
+    ///         <see cref="RadialCancelCharge"/> 三个入口，把蓄力比例与释放命令转换为实际游戏效果</item>
     /// </list>
-    /// 仅在本机玩家上完成蓄力进度的累积，远程玩家不会执行任何输入相关逻辑
+    /// 头顶 HUD 通过本类暴露的 <see cref="ChargeRatio"/> / <see cref="IsCharging"/> 实时显示蓄力进度
     /// </summary>
     internal class OmniElectricFootPlayer : ModPlayer
     {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         public float ChargeRatio { get; private set; }
 
         /// <summary>
-        /// 是否正在蓄力（受按键持续按下与"在地面"双重条件约束）
+        /// 是否正在通过雷达蓄力中（HUD 据此决定显隐）
         /// </summary>
         public bool IsCharging { get; private set; }
 
@@ -40,63 +40,62 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         public bool CanDoubleJump { get; private set; } = true;
 
         /// <summary>
-        /// 是否处于"未绑定脚踏地面"的状态，便于 HUD 在空中淡出蓄力 UI
+        /// 是否处于"脚踏地面"的状态，便于雷达据此决定蓄力技能是否可选
         /// </summary>
         public bool IsOnGround { get; private set; }
 
-        /// <summary>
-        /// 上一帧的 Y 速度，用于检测起跳瞬间
-        /// </summary>
+        //上一帧的 Y 速度，用于检测起跳瞬间
         private float lastVelocityY;
-
-        /// <summary>
-        /// 上一帧是否绑定地面，用于检测离地、落地状态切换
-        /// </summary>
+        //上一帧是否绑定地面
         private bool wasGroundedLastFrame;
-
-        /// <summary>
-        /// 上一帧蓄力按键是否处于按下状态，用于在地面/空中状态切换时正确清理蓄力
-        /// </summary>
-        private bool wasKeyHeldLastFrame;
+        //上一帧蓄力状态，用于在按键被外部切断时清理蓄力姿态
+        private bool wasChargingLastFrame;
+        //蓄力姿态的最近一次喷射粒子时间，避免帧率叠加导致粒子爆量
+        private int chargeParticleTick;
 
         public override void ResetEffects() {
-            //冷却统一在 ResetEffects 阶段递减，确保多人同步与本地表现一致
+            //冷却递减
             if (ReleaseCooldown > 0) {
                 ReleaseCooldown--;
+            }
+            //帧首先快照上一帧的蓄力状态，再把 IsCharging 复位为 false
+            //本帧后续如果雷达再次调用 RadialDriveCharge，IsCharging 才会被重新置 true
+            //如此保证 HUD 读到的 IsCharging 严格等于"本帧雷达是否仍在驱动"
+            wasChargingLastFrame = IsCharging;
+            IsCharging = false;
+            //没有驱动时，ChargeRatio 也按节奏衰减，让 HUD 的进度环有自然收回的过渡
+            if (!wasChargingLastFrame && ChargeRatio > 0f) {
+                ChargeRatio = MathF.Max(0f, ChargeRatio - 0.04f);
             }
         }
 
         public override void PostUpdate() {
             OmniElectricFoot equipped = OmniElectricFoot.GetEquipped(Player);
             if (equipped == null) {
-                //卸下义足后立即清空所有状态，防止 HUD 残留
+                //卸下义足后立即清空所有状态
                 ChargeRatio = 0f;
                 IsCharging = false;
                 CanDoubleJump = false;
-                wasKeyHeldLastFrame = false;
                 wasGroundedLastFrame = false;
+                wasChargingLastFrame = false;
                 lastVelocityY = Player.velocity.Y;
                 return;
             }
 
-            //仅本机玩家执行输入相关逻辑，避免远程玩家被本地按键状态污染
-            bool isLocal = Player.whoAmI == Main.myPlayer;
-
             IsOnGround = DetectOnGround(Player);
 
-            //落地瞬间重置二段跳额度，并复位蓄力进度
+            //落地瞬间重置二段跳额度
             if (IsOnGround && !wasGroundedLastFrame) {
                 CanDoubleJump = true;
             }
 
-            //检测原版起跳动作：上一帧速度为 0 / 正向（站立或下落），本帧变为明显向上速度
+            //首次起跳的容错：保证起跳后二段跳额度仍然保留到玩家真正消耗
             if (lastVelocityY >= 0f && Player.velocity.Y * Player.gravDir < -0.1f && wasGroundedLastFrame) {
-                //首次起跳后，二段跳额度仍保留，直到玩家在空中消耗它
                 CanDoubleJump = true;
             }
 
-            if (isLocal) {
-                UpdateChargeJump(equipped);
+            //仅本机玩家执行输入相关逻辑
+            if (Player.whoAmI == Main.myPlayer) {
                 UpdateDoubleJump(equipped);
             }
 
@@ -105,81 +104,84 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         }
 
         /// <summary>
-        /// 蓄力跳逻辑：地面 + 长按蓄力，松开释放或在按住的同时离地强制取消
+        /// 由 <see cref="OmniElectricFootSkill.OnChargeTick"/> 在雷达悬停期间每帧调用
+        /// <br/>把雷达累积的比例直接写入本组件，并按需播放第一次蓄力的音效与粒子
         /// </summary>
-        private void UpdateChargeJump(OmniElectricFoot equipped) {
-            if (CWRKeySystem.CyberwareSkill_Key == null) {
-                return;
-            }
-            bool keyHeld = CWRKeySystem.CyberwareSkill_Key.Current;
-            bool justReleased = !keyHeld && wasKeyHeldLastFrame;
-
-            //冷却中禁止开始新的蓄力，避免快速点按造成的视觉跳变
+        public void RadialDriveCharge(float ratio) {
             if (ReleaseCooldown > 0) {
-                IsCharging = false;
-                ChargeRatio = MathF.Max(0f, ChargeRatio - 0.05f);
-                wasKeyHeldLastFrame = keyHeld;
+                //冷却中拒绝任何蓄力输入，防止快速点按造成视觉抖动
+                return;
+            }
+            if (!IsOnGround) {
                 return;
             }
 
-            //蓄力前置条件：脚踏地面、未在使用其他通用动作（飞行/挂钩等不影响起跳的简化判定）
-            bool canBeginCharge = IsOnGround && !Player.mount.Active && Player.grappling[0] < 0;
-
-            if (keyHeld && canBeginCharge) {
-                if (!IsCharging) {
-                    IsCharging = true;
-                    SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.4f, Volume = 0.45f }, Player.Center);
-                }
-
-                //每帧累积蓄力，越接近满档前 80% 越快，最后 20% 略慢以保留"全力一蹬"的反馈
-                float step = 1f / OmniElectricFoot.FullChargeTicks;
-                if (ChargeRatio > 0.8f) {
-                    step *= 0.6f;
-                }
-                ChargeRatio = MathF.Min(1f, ChargeRatio + step);
-
-                //蓄力期间限制水平移动，模拟蓄力姿态
-                Player.velocity.X *= 0.78f;
-                if (MathF.Abs(Player.velocity.X) < 0.1f) {
-                    Player.velocity.X = 0f;
-                }
-
-                SpawnChargeParticles(ChargeRatio);
+            ratio = MathHelper.Clamp(ratio, 0f, 1f);
+            //首帧蓄力时播一次音效
+            if (!wasChargingLastFrame) {
+                SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.4f, Volume = 0.45f }, Player.Center);
+                chargeParticleTick = 0;
             }
-            else {
-                //松开按键 / 离开地面 / 其他外部条件中断
-                if (IsCharging) {
-                    if (justReleased && ChargeRatio > 0.05f && IsOnGround) {
-                        ReleaseChargeJump(equipped, ChargeRatio);
-                    }
-                    IsCharging = false;
-                }
-                //蓄力进度自然回落，提供视觉过渡
-                if (ChargeRatio > 0f) {
-                    ChargeRatio = MathF.Max(0f, ChargeRatio - 0.04f);
-                }
+            ChargeRatio = ratio;
+            IsCharging = true;
+
+            //蓄力姿态：限制水平速度，强化"屈膝蹬地"的视觉
+            Player.velocity.X *= 0.78f;
+            if (MathF.Abs(Player.velocity.X) < 0.1f) {
+                Player.velocity.X = 0f;
             }
 
-            wasKeyHeldLastFrame = keyHeld;
+            //粒子节奏：高蓄力时每帧都喷，低蓄力时每 3 帧一次，避免低进度阶段过载
+            chargeParticleTick++;
+            int interval = ratio > 0.6f ? 1 : (ratio > 0.3f ? 2 : 3);
+            if (chargeParticleTick >= interval) {
+                chargeParticleTick = 0;
+                SpawnChargeParticles(ratio);
+            }
+        }
+
+        /// <summary>
+        /// 由 <see cref="OmniElectricFootSkill.OnChargeRelease"/> 在玩家松开方向键瞬间调用
+        /// <br/>蓄力比例过低或处于空中时视为无效释放，仅播一次清空粒子
+        /// </summary>
+        public void RadialReleaseCharge(float ratio) {
+            OmniElectricFoot equipped = OmniElectricFoot.GetEquipped(Player);
+            if (equipped == null) {
+                ChargeRatio = 0f;
+                IsCharging = false;
+                return;
+            }
+            ratio = MathHelper.Clamp(ratio, 0f, 1f);
+            if (ratio < 0.05f || !IsOnGround) {
+                ChargeRatio = 0f;
+                IsCharging = false;
+                return;
+            }
+            ReleaseChargeJump(ratio);
+        }
+
+        /// <summary>
+        /// 由 <see cref="OmniElectricFootSkill.OnChargeCancel"/> 在玩家把光标移出扇区时调用
+        /// <br/>仅清理视觉状态，不触发跳跃
+        /// </summary>
+        public void RadialCancelCharge() {
+            ChargeRatio = 0f;
+            IsCharging = false;
         }
 
         /// <summary>
         /// 释放蓄力跳：根据蓄力比例插值跳跃倍率，并附加可观的水平推力
         /// </summary>
-        private void ReleaseChargeJump(OmniElectricFoot equipped, float ratio) {
+        private void ReleaseChargeJump(float ratio) {
             float baseJumpSpeed = Player.jumpSpeed;
-            //jumpSpeed 在原版里偶尔为 0（如挂钩状态），保底一个"普通跳"参考值，避免蓄满 = 0
             if (baseJumpSpeed < 4f) {
                 baseJumpSpeed = 5.01f;
             }
             float mul = MathHelper.Lerp(OmniElectricFoot.MinChargeJumpMul, OmniElectricFoot.MaxChargeJumpMul, ratio);
 
-            //垂直分量：朝重力反向施加跳跃速度
             Player.velocity.Y = -baseJumpSpeed * mul * Player.gravDir;
 
-            //水平推力：保留玩家朝向，提供"贴墙起跳"般的弹射感
             float horizontalBoost = MathHelper.Lerp(0f, 4.5f, ratio) * Player.direction;
-            //方向键提供合速度的明确目标，避免玩家在原地起跳被强行推离
             if (Player.controlLeft) {
                 horizontalBoost = -MathF.Abs(horizontalBoost);
             }
@@ -188,21 +190,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
             Player.velocity.X += horizontalBoost;
 
-            //跳起后立即"离地"，原版 Player.justJumped 会在下一帧自然刷新
             Player.fallStart = (int)(Player.position.Y / 16f);
 
-            //音效与粒子作为强烈的释放反馈
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.2f - ratio * 0.2f, Volume = 0.7f + ratio * 0.3f }, Player.Center);
             SpawnReleaseParticles(ratio);
 
             ChargeRatio = 0f;
+            IsCharging = false;
             ReleaseCooldown = 12;
             CanDoubleJump = true;
         }
 
         /// <summary>
-        /// 二段跳逻辑：玩家处于空中且二段额度未消耗时，按下"跳"键即触发
-        /// <br/>这里使用原版 controlJump 的"刚按下"事件而不是新增独立按键，符合 Terraria 的玩家肌肉记忆
+        /// 二段跳：与雷达完全解耦，只依赖原版 controlJump，保留 Terraria 玩家的肌肉记忆
         /// </summary>
         private void UpdateDoubleJump(OmniElectricFoot equipped) {
             if (IsOnGround) {
@@ -215,20 +215,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 return;
             }
 
-            //"刚按下跳跃键"的检测：通过 controlJump + releaseJump 完成
-            //releaseJump 在原版中代表"上一帧未按下"，组合即为"本帧首次按下"
+            //"刚按下跳跃键"：controlJump + releaseJump 的组合
             if (!Player.controlJump || !Player.releaseJump) {
                 return;
             }
 
-            //避免与原版"在挂钩或床上"的特殊跳跃冲突
             if (Player.pulley || Player.sleeping.isSleeping) {
                 return;
             }
 
             CanDoubleJump = false;
 
-            //空中二段跳：固定速度 + 朝向方向轻推
             Player.velocity.Y = -OmniElectricFoot.DoubleJumpSpeed * Player.gravDir;
 
             float horizontalKick = 0f;
@@ -238,10 +235,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             else if (Player.controlRight) {
                 horizontalKick = 2.4f;
             }
-            //保留玩家原有的水平动量，水平踢出量只是叠加而非覆盖
             Player.velocity.X += horizontalKick;
 
-            //避免本帧的 controlJump 仍被原版 Player.JumpMovement 二次响应
             Player.releaseJump = false;
             Player.jump = 0;
             Player.fallStart = (int)(Player.position.Y / 16f);
@@ -251,19 +246,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         }
 
         /// <summary>
-        /// 简化版地面判定：原版 player.OnGround 在某些边缘情况下不可靠（如轻微速度抖动）
-        /// 这里同时考虑速度与原版 controlJump 的可用性，覆盖 99% 的常规场景
+        /// 简化版地面判定：原版 player.OnGround 在某些边缘情况下不可靠
         /// </summary>
         private static bool DetectOnGround(Player player) {
-            //gravDir = -1 时玩家倒立行走，速度方向同样反转
             float verticalSpeed = player.velocity.Y * player.gravDir;
-            //速度近似为 0 + 玩家可执行普通跳跃即视为在地面
             return verticalSpeed >= -0.05f && verticalSpeed <= 0.05f && (player.jump <= 0);
         }
 
-        /// <summary>
-        /// 蓄力期间在足部生成淡蓝色电弧粒子，强度随蓄力进度线性增长
-        /// </summary>
         private void SpawnChargeParticles(float ratio) {
             int count = ratio > 0.85f ? 3 : (ratio > 0.5f ? 2 : 1);
             for (int i = 0; i < count; i++) {
@@ -277,9 +266,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>
-        /// 释放蓄力跳时的爆点粒子，伴随地面冲击的弧形电流
-        /// </summary>
         private void SpawnReleaseParticles(float ratio) {
             int particleCount = (int)MathHelper.Lerp(12, 30, ratio);
             for (int i = 0; i < particleCount; i++) {
@@ -289,7 +275,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                     100, default, 1.2f + ratio * 0.6f);
                 dust.noGravity = true;
             }
-            //侧向蹬地烟尘
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-1.5f, -0.2f) * Player.gravDir);
                 Dust dust = Dust.NewDustPerfect(Player.Bottom, DustID.Smoke, vel, 130, default, 1.4f);
@@ -297,9 +282,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>
-        /// 空中二段跳的环形电弧粒子，模拟"踩在空气里"的视觉效果
-        /// </summary>
         private void SpawnDoubleJumpParticles() {
             for (int i = 0; i < 18; i++) {
                 float angle = MathHelper.TwoPi * i / 18f;
@@ -308,7 +290,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                     100, default, 1.2f);
                 dust.noGravity = true;
             }
-            //中心闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.5f, 1.5f);
                 Dust dust = Dust.NewDustPerfect(Player.Bottom, DustID.Electric, vel, 100, default, 1.4f);

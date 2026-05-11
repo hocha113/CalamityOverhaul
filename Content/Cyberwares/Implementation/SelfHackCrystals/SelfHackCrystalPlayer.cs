@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RAMSystems;
 using System;
 using Terraria;
@@ -56,19 +55,26 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             if (SelfHackCrystal.GetEquipped(Player) == null) {
                 //未装备时清空冷却，使重新装备后立刻可用
                 SkillCooldownTimer = 0;
+            }
+        }
+
+        /// <summary>
+        /// 由 <see cref="SelfHackCrystalSkill.OnInstantTrigger"/> 调用，尝试触发一次自骇
+        /// <br/>所有失败路径（冷却中、RAM 不足）都通过短促音效与 RAM 闪烁给出反馈
+        /// </summary>
+        public void TryFireSelfHackFromRadial() {
+            if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
-            if (CWRKeySystem.CyberwareSkill_Key?.JustPressed != true) {
+            if (SelfHackCrystal.GetEquipped(Player) == null) {
                 return;
             }
 
-            //冷却中给出短促失败反馈，避免误以为按键失效
             if (SkillCooldownTimer > 0) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.5f }, Player.Center);
                 return;
             }
 
-            //RAM 不足同样视为失败：通知 RAM 系统进入不足闪烁，与其他需要 RAM 的功能保持一致
             if (!RamSystem.CanAfford(SelfHackCrystal.SkillRamCost)) {
                 RamSystem.NotifyInsufficient();
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f }, Player.Center);

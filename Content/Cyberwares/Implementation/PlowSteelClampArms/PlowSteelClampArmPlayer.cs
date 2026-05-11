@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -12,8 +11,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
     /// 犁钢钳臂的玩家组件
     /// <br/>承担两件事：
     /// <list type="bullet">
-    ///   <item>响应义体技能键，根据光标处的物块情况决定能否成功抛出单分子线</item>
-    ///   <item>维护本机玩家的技能冷却倒计时，供工具提示与音效反馈引用</item>
+    ///   <item>由 <see cref="PlowSteelClampArmSkill"/> 通过 <see cref="TryFireWireFromRadial"/>
+    ///         驱动单分子线的释放，本身不直接监听任何快捷键</item>
+    ///   <item>维护本机玩家的技能冷却倒计时，供雷达扇区填充与失败反馈引用</item>
     /// </list>
     /// 真正的伤害判定与渲染交由 <see cref="MonomolecularWire"/> 弹幕承担，本组件只是触发器
     /// </summary>
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         public int SkillCooldownTimer { get; private set; }
 
         /// <summary>
-        /// 公开冷却比例（0 = 已冷却完毕，1 = 刚释放），主要用于 HUD 或工具提示
+        /// 公开冷却比例（0 = 已冷却完毕，1 = 刚释放），主要用于雷达或工具提示
         /// </summary>
         public float CooldownRatio => PlowSteelClampArm.SkillCooldown <= 0
             ? 0f : MathHelper.Clamp((float)SkillCooldownTimer / PlowSteelClampArm.SkillCooldown, 0f, 1f);
@@ -41,19 +41,26 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return;
             }
             if (PlowSteelClampArm.GetEquipped(Player) == null) {
-                //卸下义体后即时清理冷却，避免再次穿戴时仍处于冷却中带来的误解
+                //卸下义体后即时清理冷却
                 SkillCooldownTimer = 0;
+            }
+        }
+
+        /// <summary>
+        /// 由 <see cref="PlowSteelClampArmSkill.OnInstantTrigger"/> 调用，尝试发射单分子线
+        /// <br/>所有失败路径都通过短促音效给出反馈，与原版直接按键的失败体验一致
+        /// </summary>
+        public void TryFireWireFromRadial() {
+            if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
-            if (CWRKeySystem.CyberwareSkill_Key?.JustPressed != true) {
+            if (PlowSteelClampArm.GetEquipped(Player) == null) {
                 return;
             }
             if (SkillCooldownTimer > 0) {
-                //冷却中按键直接给出失败反馈，避免玩家误以为按键失效
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.5f }, Player.Center);
                 return;
             }
-
             TryFireWire();
         }
 

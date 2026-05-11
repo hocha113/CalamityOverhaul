@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -43,6 +44,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         public override CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.OperatingSystem;
 
         public override int CapacityCost => 4;
+
+        public override CyberwareSkillBase ActiveSkill => SelfHackCrystalSkill.Instance;
 
         public override void SetDefaults() {
             base.SetDefaults();

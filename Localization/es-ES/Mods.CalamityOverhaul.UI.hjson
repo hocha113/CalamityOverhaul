@@ -786,6 +786,15 @@ EntrustManagerLead: {
 	// TextSuspendIntroDesc2: "     You can find them in the Suspended tab to restore tracking"
 }
 
+CyberwareSkillRadialUI: {
+	// StatusOn: ON
+	// HintHoldToCharge: Hover to charge, release to fire
+	// HintReleaseToFire: Release the key to fire
+	// HintToggle: Release the key to toggle
+	// HintInstant: Release the key to trigger
+	// HintNotReady: Conditions not met
+}
+
 AbandonedPortalStrings: {
 	// Title: Abandoned Portal Console
 	// BrokenSubtitle: Structure Fractured · Core Offline

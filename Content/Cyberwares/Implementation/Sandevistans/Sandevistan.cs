@@ -127,15 +127,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 }
             }
 
-            //义体技能键切换激活状态
-            if (CWRKeySystem.CyberwareSkill_Key?.JustPressed == true) {
-                if (IsActive) {
-                    IsActive = false;
-                }
-                else if (CurrentCooldown > 0) {
-                    IsActive = true;
-                }
-            }
+            //技能输入由 CyberwareSkillRadialUI 通过 SandevistanSkill 桥接，
+            //本系统不再直接监听 CyberwareSkill_Key，避免与其他义体技能产生按键冲突
 
             //冷却值消耗与恢复
             if (IsActive) {

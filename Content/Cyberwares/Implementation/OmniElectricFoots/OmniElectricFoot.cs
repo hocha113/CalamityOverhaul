@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -43,6 +44,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         public override CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.Feet;
 
         public override int CapacityCost => 3;
+
+        public override CyberwareSkillBase ActiveSkill => OmniElectricFootSkill.Instance;
 
         public override void SetDefaults() {
             base.SetDefaults();

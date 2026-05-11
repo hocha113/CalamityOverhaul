@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -58,6 +59,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         public override CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.Hands;
 
         public override int CapacityCost => 3;
+
+        public override CyberwareSkillBase ActiveSkill => PlowSteelClampArmSkill.Instance;
 
         public override void SetDefaults() {
             base.SetDefaults();

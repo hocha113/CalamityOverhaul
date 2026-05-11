@@ -1655,6 +1655,16 @@ SandevistansItem: {
 	Tooltip: Militech Sandevistan Mk.5 — Slows perceived time by 70% for 3.5 seconds. Cooldown 15s.
 }
 
+Sandevistan: {
+	SkillName: Sandevistan
+	SkillDesc:
+		'''
+		Drastically slows perceived time, letting you move and act in apparent slow motion.
+		The reserve drains during use and auto-disables when empty, then refills naturally.
+		Select again in the radial to toggle it back off manually.
+		'''
+}
+
 MimicPerchedAuxBrain: {
 	DisplayName: Mimic Perched Auxiliary Brain
 	Tooltip:
@@ -1693,10 +1703,17 @@ OmniElectricFoot: {
 		'''
 		A high-output locomotor cybernetic combining electromagnetic recoil with dense propulsion gel.
 		Grants a mid-air double jump, letting you launch off again after leaving the ground.
-		Hold the cyberware skill key on the ground to charge a powerful charge jump.
+		Hover the Charge Jump slice in the cyberware radial to charge up, then release to launch.
 		A fully charged jump can reach more than twice the height of a normal jump.
 		'''
-	SkillHint: Hold {0} to charge a leap
+	SkillHint: Hover Charge Jump on the {0} radial to charge
+	SkillName: Charge Jump
+	SkillDesc:
+		'''
+		Electromagnetic-propulsion burst leap.
+		Requires standing on the ground; hover time on the slice IS the charge time.
+		Release the key to launch at up to 2.5x normal jump height when fully charged.
+		'''
 }
 
 PlowSteelClampArm: {
@@ -1709,7 +1726,14 @@ PlowSteelClampArm: {
 		Cyberware skill: release a high-heat monomolecular wire from your palm to a target block,
 		continuously scorching every enemy along its path.
 		'''
-	SkillHint: Press {0} to fire a monomolecular wire (must aim at a tile)
+	SkillHint: Fire a monomolecular wire from the {0} radial (must aim at a tile)
+	SkillName: Monomolecular Wire
+	SkillDesc:
+		'''
+		Hurls a high-heat monomolecular wire from your palm to a solid tile near your cursor.
+		The wire persists for ~5 seconds, scorching every enemy that crosses it.
+		8s cooldown; damage scales with the player's generic damage multipliers.
+		'''
 }
 
 SelfHealingSkelent: {
@@ -1733,7 +1757,14 @@ SelfHackCrystal: {
 		Cyberware skill: spend RAM to instantly clear all debuffs
 		and gain brief invincibility — a window to break out of lethal situations.
 		'''
-	SkillHint: Press {0} to run a self-hack, spending RAM to purge debuffs
+	SkillHint: Trigger Self-Hack from the {0} radial to purge debuffs with RAM
+	SkillName: Self-Hack
+	SkillDesc:
+		'''
+		Redirects the hacking interface back at yourself for an emergency cleanse.
+		Spends 3 RAM to instantly remove all debuffs and grants ~1.5s of invincibility.
+		12s cooldown; auto-greys out when RAM is insufficient or still cooling down.
+		'''
 }
 
 SCCA32CRP: {

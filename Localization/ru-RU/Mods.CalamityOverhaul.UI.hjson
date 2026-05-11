@@ -786,6 +786,15 @@ EntrustManagerLead: {
 	TextSuspendIntroDesc2: "     Их можно найти во вкладке 'Приостановленные' и возобновить в любой момент"
 }
 
+CyberwareSkillRadialUI: {
+	// StatusOn: ON
+	// HintHoldToCharge: Hover to charge, release to fire
+	// HintReleaseToFire: Release the key to fire
+	// HintToggle: Release the key to toggle
+	// HintInstant: Release the key to trigger
+	// HintNotReady: Conditions not met
+}
+
 AbandonedPortalStrings: {
 	Title: Консоль заброшенного портала
 	BrokenSubtitle: Структура разрушена · Ядро не в сети
