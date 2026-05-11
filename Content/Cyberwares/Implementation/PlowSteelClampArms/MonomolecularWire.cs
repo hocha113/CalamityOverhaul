@@ -17,7 +17,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
     ///   <item>线段上不断产生火花/发光粒子，模拟"灼热钨丝"质感</item>
     ///   <item>没有击退，纯粹的持续性伤害判定，便于配合走位拉扯敌怪</item>
     /// </list>
-    /// 多人模式下锚点位置通过 ai[0]/ai[1] 同步，伤害判定仅在弹幕拥有者本机执行以避免重复计算
+    /// 两种形态：
+    /// <list type="bullet">
+    ///   <item><b>动态/长线模式</b>（<see cref="IsStatic"/> 为 false）：from 端始终跟随玩家，
+    ///         to 端钉在 <see cref="AnchorWorld"/>，是经典的"高刚性钳臂连接"形态</item>
+    ///   <item><b>静态/短线模式</b>（<see cref="IsStatic"/> 为 true）：from 与 to 均冻结于发射瞬间，
+    ///         形成空中绊线，玩家移动不影响线段位置；用于无锚点的随手布线</item>
+    /// </list>
+    /// 多人模式下锚点位置通过 ai[0]/ai[1] 同步，静态 from 端通过 SendExtraAI 同步
     /// </summary>
     [Autoload(true)]
     internal class MonomolecularWire : ModProjectile
@@ -27,7 +34,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         public override string Texture => CWRConstant.Placeholder;
 
         /// <summary>
-        /// 锚点世界坐标，由生成时写入 ai[0] / ai[1]
+        /// 锚点世界坐标（线段的 to 端），由生成时写入 ai[0] / ai[1]
         /// </summary>
         public Vector2 AnchorWorld {
             get => new(Projectile.ai[0], Projectile.ai[1]);
@@ -38,7 +45,25 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         /// <summary>
-        /// 拥有者中心坐标缓存，避免每次绘制都跨对象访问
+        /// 静态模式开关：
+        /// <list type="bullet">
+        ///   <item>true：from / to 都冻结，玩家移动不影响线段（"短线/绊线"）</item>
+        ///   <item>false：from 跟随玩家中心，to 固定在 <see cref="AnchorWorld"/>（"长线/钳臂"）</item>
+        /// </list>
+        /// </summary>
+        public bool IsStatic {
+            get => Projectile.ai[2] > 0.5f;
+            set => Projectile.ai[2] = value ? 1f : 0f;
+        }
+
+        /// <summary>
+        /// 静态模式下的 from 端世界坐标快照
+        /// <br/>动态模式下此字段不参与计算，直接使用 <see cref="Player.Center"/>
+        /// </summary>
+        public Vector2 StaticFromWorld { get; set; }
+
+        /// <summary>
+        /// 拥有者中心坐标缓存：动态模式下 = 玩家中心，静态模式下 = <see cref="StaticFromWorld"/>
         /// </summary>
         public Vector2 OwnerCenter { get; private set; }
 
@@ -85,14 +110,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return;
             }
 
-            //若锚点距离玩家过远，断线（玩家逃跑或被击退）
-            if (Vector2.DistanceSquared(owner.Center, AnchorWorld)
-                > (PlowSteelClampArm.MaxAnchorDistance * 1.4f) * (PlowSteelClampArm.MaxAnchorDistance * 1.4f)) {
-                Projectile.Kill();
-                return;
+            if (IsStatic) {
+                //静态模式：from 端固定在 StaticFromWorld，无需做距离/跟随处理
+                //首帧（接收端可能 StaticFromWorld 尚未到达）兜底：先用玩家中心，等 ExtraAI 到来后再覆盖
+                if (StaticFromWorld == Vector2.Zero) {
+                    StaticFromWorld = owner.Center;
+                }
+                OwnerCenter = StaticFromWorld;
             }
-
-            OwnerCenter = owner.Center;
+            else {
+                //动态模式：from 端跟随玩家；锚点过远立即断线（玩家逃跑或被击退）
+                if (Vector2.DistanceSquared(owner.Center, AnchorWorld)
+                    > (PlowSteelClampArm.MaxAnchorDistance * 1.4f) * (PlowSteelClampArm.MaxAnchorDistance * 1.4f)) {
+                    Projectile.Kill();
+                    return;
+                }
+                OwnerCenter = owner.Center;
+            }
             //把弹幕中心固定在线段中点，便于原版的若干位置依赖逻辑（声音定位等）
             Projectile.Center = (OwnerCenter + AnchorWorld) * 0.5f;
 
@@ -297,10 +331,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(pulseTimer);
+            //仅在静态模式下同步 from 端，避免对动态模式做无谓的带宽消耗
+            if (IsStatic) {
+                writer.Write(StaticFromWorld.X);
+                writer.Write(StaticFromWorld.Y);
+            }
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             pulseTimer = reader.ReadInt32();
+            if (IsStatic) {
+                float x = reader.ReadSingle();
+                float y = reader.ReadSingle();
+                StaticFromWorld = new Vector2(x, y);
+            }
         }
     }
 }

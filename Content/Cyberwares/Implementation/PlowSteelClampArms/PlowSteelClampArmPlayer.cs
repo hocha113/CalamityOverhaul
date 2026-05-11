@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
     /// 犁钢钳臂的玩家组件
     /// <br/>承担两件事：
     /// <list type="bullet">
-    ///   <item>由 <see cref="PlowSteelClampArmSkill"/> 通过 <see cref="TryFireWireFromRadial"/>
+    ///   <item>由 <see cref="PlowSteelClampArmSkill"/> 通过 <see cref="TryFireWire"/>
     ///         驱动单分子线的释放，本身不直接监听任何快捷键</item>
     ///   <item>维护本机玩家的技能冷却倒计时，供雷达扇区填充与失败反馈引用</item>
     /// </list>
@@ -47,14 +47,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         /// <summary>
-        /// 由 <see cref="PlowSteelClampArmSkill.OnInstantTrigger"/> 调用，尝试发射单分子线
+        /// 单分子线统一发射入口：按 <paramref name="longMode"/> 选择短线或长线
         /// <list type="bullet">
-        ///   <item><paramref name="aimWorld"/> 是要瞄准的世界坐标。雷达路径下传入的是
-        ///     按键瞬间的鼠标快照，单技能直触路径下传入的是当前真实鼠标</item>
+        ///   <item><paramref name="aimWorld"/>：当前鼠标世界坐标，作为短线方向 / 长线锚点搜索的起点</item>
+        ///   <item><paramref name="longMode"/>：true 表示尝试钉锚点的长线，找不到时自动降级为短线</item>
         ///   <item>所有失败路径都通过短促音效给出反馈，与原版直接按键的失败体验一致</item>
         /// </list>
         /// </summary>
-        public void TryFireWireFromRadial(Vector2 aimWorld) {
+        public void TryFireWire(Vector2 aimWorld, bool longMode) {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -65,35 +65,35 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.5f }, Player.Center);
                 return;
             }
-            TryFireWire(aimWorld);
+
+            //长线优先尝试找锚点；找不到 → 静默 fallback 到短线
+            //该 fallback 是核心设计：玩家永远能打出线，避免"指不到物块就哑火"
+            if (longMode && FindAnchorTile(aimWorld, out Vector2 anchor)) {
+                FireLongWire(anchor);
+                return;
+            }
+            FireShortWire(aimWorld);
         }
 
         /// <summary>
-        /// 实际尝试发射单分子线：以 <paramref name="aimWorld"/> 为光标，寻找附近的有效锚点
+        /// 长线模式实际发射：锚点钉在指定 tile，跟随玩家位置形成 owner→anchor 的高热线段
         /// </summary>
-        private void TryFireWire(Vector2 aimWorld) {
-            if (!FindAnchorTile(aimWorld, out Vector2 anchor)) {
-                //没有可用的物块作为锚点，给出短促的"目标无效"反馈
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.55f }, Player.Center);
-                return;
-            }
-
-            //生成弹幕：起点为玩家中心，终点编码进 ai[0]/ai[1] 以便多人同步
+        private void FireLongWire(Vector2 anchor) {
             int type = ModContent.ProjectileType<MonomolecularWire>();
-            //依据玩家通用伤害对基础数值进行实时缩放，让长线性技能与玩家进度同步
             int damage = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(PlowSteelClampArm.WireBaseDamage);
 
             Projectile proj = Projectile.NewProjectileDirect(new EntitySource_ItemUse(Player, new Item()),
                 Player.Center, Vector2.Zero,
                 type, damage, 0f, Player.whoAmI,
-                ai0: anchor.X, ai1: anchor.Y);
+                ai0: anchor.X, ai1: anchor.Y, ai2: 0f);//ai2 = 0 → 长线/动态模式
             if (proj != null && proj.ModProjectile is MonomolecularWire wire) {
                 wire.AnchorWorld = anchor;
+                wire.IsStatic = false;
                 proj.netUpdate = true;
             }
 
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);
-            //装填火花
+            //装填火花：朝锚点方向喷射
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = (anchor - Player.Center).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(2f, 4.5f)
                     + Main.rand.NextVector2Circular(1.5f, 1.5f);
@@ -105,17 +105,61 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         /// <summary>
+        /// 短线模式实际发射：以 <paramref name="aimWorld"/> 方向为基线在玩家身前铺一条静态高热线
+        /// <list type="bullet">
+        ///   <item>无需锚点，永远成功</item>
+        ///   <item>线段两端都被冻结在生成瞬间的位置（不会跟随玩家），形成"空中绊线"质感</item>
+        ///   <item>持续时间显著短于长线，作为"无门槛"模式的平衡</item>
+        /// </list>
+        /// </summary>
+        private void FireShortWire(Vector2 aimWorld) {
+            Vector2 dir = (aimWorld - Player.Center).SafeNormalize(Vector2.UnitX);
+            //"from" 取生成瞬间的玩家中心，"to" 取沿方向走固定长度的点。
+            //后续 MonomolecularWire 在 IsStatic 状态下不再跟随玩家移动
+            Vector2 from = Player.Center;
+            Vector2 to = from + dir * PlowSteelClampArm.ShortWireLengthPixels;
+
+            int type = ModContent.ProjectileType<MonomolecularWire>();
+            int damage = (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(PlowSteelClampArm.WireBaseDamage);
+
+            Projectile proj = Projectile.NewProjectileDirect(new EntitySource_ItemUse(Player, new Item()),
+                Player.Center, Vector2.Zero,
+                type, damage, 0f, Player.whoAmI,
+                ai0: to.X, ai1: to.Y, ai2: 1f);//ai2 = 1 → 短线/静态模式
+            if (proj != null && proj.ModProjectile is MonomolecularWire wire) {
+                wire.AnchorWorld = to;
+                wire.StaticFromWorld = from;
+                wire.IsStatic = true;
+                wire.Projectile.timeLeft = PlowSteelClampArm.ShortWireLifetime;
+                proj.netUpdate = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.55f, Volume = 0.55f }, Player.Center);
+            //冷射粒子：沿线段路径分布，强化"瞬间铺线"质感
+            int steps = 8;
+            for (int i = 0; i < steps; i++) {
+                float t = (float)i / steps;
+                Vector2 pos = Vector2.Lerp(from, to, t);
+                Vector2 normal = new(-dir.Y, dir.X);
+                Vector2 vel = normal * Main.rand.NextFloat(-2f, 2f);
+                Dust dust = Dust.NewDustPerfect(pos, DustID.MartianSaucerSpark, vel, 100, default, 1.0f);
+                dust.noGravity = true;
+            }
+
+            //短线冷却更短，鼓励玩家频繁使用作为常规手段
+            SkillCooldownTimer = PlowSteelClampArm.SkillCooldown / 2;
+        }
+
+        /// <summary>
         /// 在指定的光标世界坐标附近寻找一块可作为锚点的实心物块，找到后返回锚点世界坐标
         /// <br/>策略：先取光标命中的格子；若该格子非实心，则从光标向四方各 4 格内寻找最近的实心格子
-        /// <br/>使用显式 <paramref name="cursorWorld"/> 而非 <c>Player.tileTargetX/Y</c>，
-        /// 让雷达可以传入"按键瞬间的鼠标快照"，避免开盘期间鼠标方向被劫持
+        /// <br/>使用显式 <paramref name="cursorWorld"/>，让上层（蓄力释放时）可以传入当前鼠标坐标
         /// </summary>
         private bool FindAnchorTile(Vector2 cursorWorld, out Vector2 anchorWorld) {
             anchorWorld = default;
 
             int targetX = (int)MathF.Floor(cursorWorld.X / 16f);
             int targetY = (int)MathF.Floor(cursorWorld.Y / 16f);
-            //超出最大触发距离直接判定无效（注意距离用真正的鼠标坐标，而非格子中心）
             if (Vector2.DistanceSquared(cursorWorld, Player.Center)
                 > PlowSteelClampArm.MaxAnchorDistance * PlowSteelClampArm.MaxAnchorDistance) {
                 return false;

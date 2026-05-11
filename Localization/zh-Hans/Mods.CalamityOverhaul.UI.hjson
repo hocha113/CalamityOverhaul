@@ -788,10 +788,11 @@ EntrustManagerLead: {
 
 CyberwareSkillRadialUI: {
 	StatusOn: 开启中
-	HintHoldToCharge: 悬停期间持续蓄力，松开按键释放
-	HintReleaseToFire: 松开按键立即触发
-	HintToggle: 松开按键切换开关
-	HintInstant: 松开按键立即触发
+	HintClickToSelect: 「单击」选定为当前技能
+	HintAlreadySelected: 「当前选定」
+	HintKindCharge: 蓄力型 · 按住触发键蓄力，松开释放
+	HintKindToggle: 开关型 · 按一下触发键切换开/关
+	HintKindInstant: 瞬发型 · 按一下触发键立即释放
 	HintNotReady: 当前条件不满足
 }
 

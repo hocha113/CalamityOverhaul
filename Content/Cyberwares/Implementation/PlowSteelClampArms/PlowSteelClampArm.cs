@@ -37,12 +37,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         public const int SkillCooldown = 60 * 8;
 
         /// <summary>
-        /// 单分子线持续帧数（伤害判定窗口）
+        /// 单分子线"长线模式"持续帧数 —— 钉在锚点上的伤害判定窗口
         /// </summary>
         public const int WireLifetime = 60 * 5;
 
         /// <summary>
-        /// 单分子线允许的最大触发距离（像素），超出范围视为无效目标
+        /// 单分子线"短线模式"持续帧数 —— 不需要锚点的快速线性铺设
+        /// <br/>更短的时长是对"无门槛释放"的平衡，让长线模式仍然有战略意义
+        /// </summary>
+        public const int ShortWireLifetime = 60 * 2;
+
+        /// <summary>
+        /// 短线模式的线段长度（像素，约 12 个 tile）
+        /// </summary>
+        public const float ShortWireLengthPixels = 16f * 12f;
+
+        /// <summary>
+        /// 长线模式允许的最大锚点距离（像素），超出范围视为无效锚点 → 自动降级到短线
         /// </summary>
         public const float MaxAnchorDistance = 16f * 32f;
 
@@ -99,11 +110,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            string keyHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } keys
-                ? $"[{keys[0]}]"
+            string skillHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } skillKeys
+                ? $"[{skillKeys[0]}]"
                 : CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
+            string radialHint = CWRKeySystem.CyberwareRadial_Key?.GetAssignedKeys() is { Count: > 0 } radialKeys
+                ? $"[{radialKeys[0]}]"
+                : CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.CyberwareRadial_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
-                Language.GetTextValue("Mods.CalamityOverhaul.Items.PlowSteelClampArm.SkillHint", keyHint)));
+                Language.GetTextValue("Mods.CalamityOverhaul.Items.PlowSteelClampArm.SkillHint",
+                    skillHint, radialHint)));
         }
     }
 }

@@ -7,7 +7,8 @@ Legend_Restart.DisplayName: Self-Restart
 HackTime_Toggle.DisplayName: Hack Time
 CyberBanish_Key.DisplayName: Cyberspace: Banish
 CyberFreeze_Key.DisplayName: Cyberspace: Freeze
-CyberwareSkill_Key.DisplayName: Cyberware Skill
+CyberwareSkill_Key.DisplayName: Cyberware: Trigger current skill
+CyberwareRadial_Key.DisplayName: Cyberware: Open radial menu
 VoidTimeShift_Key.DisplayName: Void Time Shift
 Halibut_Clone.DisplayName: Halibut: Past Self Invasion
 Halibut_Superposition.DisplayName: Halibut: Superposition

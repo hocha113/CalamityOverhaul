@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind CyberBanish_Key { get; private set; }
         public static ModKeybind CyberFreeze_Key { get; private set; }
         public static ModKeybind CyberwareSkill_Key { get; private set; }
+        public static ModKeybind CyberwareRadial_Key { get; private set; }
         public static ModKeybind VoidTimeShift_Key { get; private set; }
         public static ModKeybind Halibut_Clone { get; private set; }
         public static ModKeybind Halibut_Superposition { get; private set; }
@@ -37,6 +38,7 @@ namespace CalamityOverhaul.Common
             CyberBanish_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberBanish_Key), "Y");
             CyberFreeze_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberFreeze_Key), "U");
             CyberwareSkill_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberwareSkill_Key), "V");
+            CyberwareRadial_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberwareRadial_Key), "B");
             VoidTimeShift_Key = KeybindLoader.RegisterKeybind(mod, nameof(VoidTimeShift_Key), "K");
             Halibut_Clone = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Clone), "J");
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
@@ -69,6 +71,7 @@ namespace CalamityOverhaul.Common
             CyberBanish_Key = null;
             CyberFreeze_Key = null;
             CyberwareSkill_Key = null;
+            CyberwareRadial_Key = null;
             VoidTimeShift_Key = null;
         }
     }

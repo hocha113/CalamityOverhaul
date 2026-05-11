@@ -1700,17 +1700,17 @@ PlowSteelClampArm: {
 		An industrial cybernetic featuring magnetic pickup and high-rigidity clamps.
 		Greatly extends mining and block-placement range.
 		Permanently enables magnetic pickup of items and coins.
-		Cyberware skill: release a high-heat monomolecular wire from your palm to a target block,
-		continuously scorching every enemy along its path.
+		Cyberware skill: release a high-heat monomolecular wire from your palm.
+		Tap for a short wire, hold for a long wire; enemies along the path are continuously scorched.
 		''' */
-	// SkillHint: Fire a monomolecular wire from the {0} radial; aim the tile BEFORE opening the radial
+	// SkillHint: "[c/8AC4E8:{1}] Open the cyberware radial to switch · [c/F5C56A:{0}] Fire the wire (tap = short / hold = long)"
 	// SkillName: Monomolecular Wire
 	/* SkillDesc:
 		'''
-		Hurls a high-heat monomolecular wire from your palm to a solid tile near your cursor.
-		The wire persists for ~5 seconds, scorching every enemy that crosses it.
-		8s cooldown; damage scales with the player's generic damage multipliers.
-		[c/8AC4E8:Hint] The mouse position at the instant you open the radial is locked as the target.
+		Hurls a high-heat monomolecular wire from your palm. Enemies along the path are continuously scorched.
+		[c/8AC4E8:Tap] —— Lays a ~12-tile short wire toward the cursor, lasts 2 seconds, no anchor required.
+		[c/F5C56A:Hold] —— Once fully charged, pins to a solid tile near the cursor for 5 seconds; if no anchor is found, falls back to a short wire.
+		Damage scales with the player's generic damage multipliers.
 		''' */
 }
 

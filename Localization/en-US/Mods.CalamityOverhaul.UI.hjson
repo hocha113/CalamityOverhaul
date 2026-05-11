@@ -791,10 +791,11 @@ EntrustManagerLead: {
 
 CyberwareSkillRadialUI: {
 	StatusOn: ON
-	HintHoldToCharge: Hover to charge, release to fire
-	HintReleaseToFire: Release the key to fire
-	HintToggle: Release the key to toggle
-	HintInstant: Release the key to trigger
+	HintClickToSelect: "[Click] to set as current skill"
+	HintAlreadySelected: "[Currently selected]"
+	HintKindCharge: Charge type · Hold trigger to charge, release to fire
+	HintKindToggle: Toggle type · Press trigger to switch on/off
+	HintKindInstant: Instant type · Press trigger to release
 	HintNotReady: Conditions not met
 }
 

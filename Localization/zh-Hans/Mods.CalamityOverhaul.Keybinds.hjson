@@ -7,7 +7,8 @@ Legend_Restart.DisplayName: 重启自身
 HackTime_Toggle.DisplayName: 骇客时间
 CyberBanish_Key.DisplayName: 赛博空间:放逐
 CyberFreeze_Key.DisplayName: 赛博空间:冻结
-CyberwareSkill_Key.DisplayName: 赛博义体技能
+CyberwareSkill_Key.DisplayName: 赛博义体:触发当前技能
+CyberwareRadial_Key.DisplayName: 赛博义体:打开雷达选盘
 VoidTimeShift_Key.DisplayName: 虚空时间入侵
 Halibut_Clone.DisplayName: 大比目鱼:过去身入侵
 Halibut_Superposition.DisplayName: 大比目鱼:叠加

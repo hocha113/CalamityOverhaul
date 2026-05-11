@@ -28,19 +28,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public static CyberwareSkillRadialUI Instance => UIHandleLoader.GetUIHandleOfType<CyberwareSkillRadialUI>();
 
         public static LocalizedText StatusOn { get; private set; }
-        public static LocalizedText HintHoldToCharge { get; private set; }
-        public static LocalizedText HintReleaseToFire { get; private set; }
-        public static LocalizedText HintToggle { get; private set; }
-        public static LocalizedText HintInstant { get; private set; }
+        public static LocalizedText HintClickToSelect { get; private set; }
+        public static LocalizedText HintAlreadySelected { get; private set; }
+        public static LocalizedText HintKindCharge { get; private set; }
+        public static LocalizedText HintKindToggle { get; private set; }
+        public static LocalizedText HintKindInstant { get; private set; }
         public static LocalizedText HintNotReady { get; private set; }
 
         public override void SetStaticDefaults() {
             //本地化全部集中在这里，避免与具体义体的本地化文件混淆
             StatusOn = this.GetLocalization(nameof(StatusOn), () => "ON");
-            HintHoldToCharge = this.GetLocalization(nameof(HintHoldToCharge), () => "悬停蓄力，松开释放");
-            HintReleaseToFire = this.GetLocalization(nameof(HintReleaseToFire), () => "松开按键释放");
-            HintToggle = this.GetLocalization(nameof(HintToggle), () => "松开按键切换开关");
-            HintInstant = this.GetLocalization(nameof(HintInstant), () => "松开按键立即触发");
+            HintClickToSelect = this.GetLocalization(nameof(HintClickToSelect), () => "[点击] 选定为当前技能");
+            HintAlreadySelected = this.GetLocalization(nameof(HintAlreadySelected), () => "[当前选定]");
+            HintKindCharge = this.GetLocalization(nameof(HintKindCharge), () => "蓄力型 · 按住触发键释放");
+            HintKindToggle = this.GetLocalization(nameof(HintKindToggle), () => "开关型 · 按触发键切换");
+            HintKindInstant = this.GetLocalization(nameof(HintKindInstant), () => "瞬发型 · 按触发键释放");
             HintNotReady = this.GetLocalization(nameof(HintNotReady), () => "条件不满足");
         }
 
@@ -122,14 +124,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                     sec.HoverAmount, 0f, enabled, fill,
                     glyph: string.Empty, time, a);
 
-                //蓄力技能的额外亮带：在外缘叠加一道暖色高光以突出蓄力进度
-                if (sec.Skill.Kind == CyberwareSkillKind.Charge && sec.Skill.RadialChargeRatio > 0.01f) {
-                    DrawChargeOverlay(sb, px, center, aStart, aEnd, sec.Skill.RadialChargeRatio, a);
-                }
-
                 //Toggle 类已激活时叠一道金色环带，提示"开启中"
                 if (sec.Skill.Kind == CyberwareSkillKind.Toggle && sec.Skill.IsActivated) {
                     DrawToggleActiveOverlay(sb, px, center, aStart, aEnd, time, a);
+                }
+
+                //当前选中的扇区：内缘金色双线 + 角落 V 标记，与悬停/激活在视觉层级上区分开
+                if (sec.SelectedAmount > 0.01f) {
+                    DrawSelectedOverlay(sb, px, center, aStart, aEnd, time, sec.SelectedAmount, a);
                 }
 
                 //物品图标，绘制在扇区中线上
@@ -293,29 +295,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 蓄力进度高光带：沿扇区外缘按比例覆盖一道暖色弧线，模拟"蓄能上膛"
-        /// </summary>
-        private static void DrawChargeOverlay(SpriteBatch sb, Texture2D px,
-            Vector2 center, float aStart, float aEnd, float ratio, float globalAlpha) {
-            float fillEnd = MathHelper.Lerp(aStart, aEnd, MathHelper.Clamp(ratio, 0f, 1f));
-            //外缘的金色高亮
-            SHPCRenderer.DrawArcStroke(sb, px, center,
-                SHPCTheme.ButtonOuterR - 1.5f, aStart, fillEnd,
-                2.2f, SHPCTheme.Accent * (0.85f * globalAlpha));
-            //内部柔光，强化蓄力的能量感
-            SHPCRenderer.DrawArcStroke(sb, px, center,
-                SHPCTheme.ButtonOuterR - 4f, aStart, fillEnd,
-                3.5f, SHPCTheme.Accent * (0.32f * globalAlpha));
-            //蓄满后增加一圈呼吸闪烁
-            if (ratio >= 0.999f) {
-                float pulse = (MathF.Sin(Main.GameUpdateCount * 0.32f) + 1f) * 0.5f;
-                SHPCRenderer.DrawArcStroke(sb, px, center,
-                    SHPCTheme.ButtonOuterR + 1.2f, aStart, aEnd,
-                    1.4f, SHPCTheme.Accent * (0.5f * pulse * globalAlpha));
-            }
-        }
-
-        /// <summary>
         /// Toggle 类已激活的金色环带，强化"开启中"语义
         /// </summary>
         private static void DrawToggleActiveOverlay(SpriteBatch sb, Texture2D px,
@@ -324,6 +303,44 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             SHPCRenderer.DrawArcStroke(sb, px, center,
                 SHPCTheme.ButtonOuterR - 2.4f, aStart, aEnd,
                 2.6f, SHPCTheme.Accent * (pulse * 0.7f * globalAlpha));
+        }
+
+        /// <summary>
+        /// 当前选中扇区的视觉标识：内/外缘双层强调线 + 中线小三角箭头
+        /// <list type="bullet">
+        ///   <item>颜色用 <see cref="SHPCTheme.CyanHi"/>，与 Toggle 激活的金色保持不撞色</item>
+        ///   <item>强度由 <paramref name="selectedAmt"/> 控制，淡入淡出，防止选中切换时硬切</item>
+        ///   <item>呼吸光让玩家一眼分辨"被选中的是哪个"，与悬停的高光不会混淆</item>
+        /// </list>
+        /// </summary>
+        private static void DrawSelectedOverlay(SpriteBatch sb, Texture2D px,
+            Vector2 center, float aStart, float aEnd, float time, float selectedAmt, float globalAlpha) {
+            float a = MathHelper.Clamp(selectedAmt, 0f, 1f) * globalAlpha;
+            float pulse = 0.75f + 0.25f * (MathF.Sin(time * 3.6f) + 1f) * 0.5f;
+
+            //内缘双线：靠近中心的一对青色描边，让"选中"在视觉层级上高于悬停
+            SHPCRenderer.DrawArcStroke(sb, px, center,
+                SHPCTheme.ButtonInnerR + 1.8f, aStart, aEnd,
+                1.6f, SHPCTheme.CyanHi * (0.85f * pulse * a));
+            SHPCRenderer.DrawArcStroke(sb, px, center,
+                SHPCTheme.ButtonInnerR + 4.0f, aStart, aEnd,
+                1.0f, SHPCTheme.Cyan * (0.45f * a));
+
+            //外缘亮带：再叠一道更浅的弧，把选中扇区作为"主框"圈起来
+            SHPCRenderer.DrawArcStroke(sb, px, center,
+                SHPCTheme.ButtonOuterR - 0.5f, aStart, aEnd,
+                1.4f, SHPCTheme.CyanHi * (0.55f * pulse * a));
+
+            //中线箭头：内侧靠近核心一点画一个朝外的小三角，强化"指针"语义
+            float midA = (aStart + aEnd) * 0.5f;
+            Vector2 dir = new(MathF.Cos(midA), MathF.Sin(midA));
+            Vector2 tangent = new(-dir.Y, dir.X);
+            Vector2 tip = center + dir * (SHPCTheme.ButtonInnerR + 8f);
+            Vector2 baseL = tip - dir * 6f + tangent * 4f;
+            Vector2 baseR = tip - dir * 6f - tangent * 4f;
+            SHPCRenderer.DrawLine(sb, px, tip, baseL, 1.5f, SHPCTheme.CyanHi * (0.9f * a));
+            SHPCRenderer.DrawLine(sb, px, tip, baseR, 1.5f, SHPCTheme.CyanHi * (0.9f * a));
+            SHPCRenderer.DrawLine(sb, px, baseL, baseR, 1.0f, SHPCTheme.CyanHi * (0.55f * a));
         }
 
         /// <summary>
@@ -411,27 +428,55 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             anchor.X = MathHelper.Clamp(anchor.X, 4f, Main.screenWidth - 4f);
             anchor.Y = MathHelper.Clamp(anchor.Y, 4f, Main.screenHeight - 4f);
 
-            string subtitle = BuildSubtitle(sec.Skill);
+            //"已选定"以实际生效的技能做参照，避免存档 id 为空时 hint 错误地写"点击选定"
+            string effectiveId = ctrl.ResolvedCurrentSkill?.Identifier ?? ctrl.CurrentSkillId;
+            bool isSelected = string.Equals(sec.Skill.Identifier, effectiveId,
+                StringComparison.Ordinal);
+            string subtitle = BuildSubtitle(sec.Skill, isSelected);
+            //技能类型信息单独并入描述末尾，让玩家看一眼就知道触发键怎么用
+            string fullDesc = AppendKindHint(sec.Skill);
             SHPCRenderer.DrawInfoPanel(sb, px, anchor, globalAlpha, globalAlpha,
                 title: sec.Skill.DisplayName,
                 subtitle: subtitle,
-                description: sec.Skill.Description,
+                description: fullDesc,
                 statusText: sec.Skill.StatusText);
         }
 
         /// <summary>
-        /// 根据技能类型构造副标题，例如"按住蓄力" / "切换开关" / "立即触发" / "条件不满足"
+        /// 副标题：永远反映"接下来玩家能做什么"
+        /// <list type="bullet">
+        ///   <item>当前扇区已被选定 → "[当前选定]"，玩家无需再点</item>
+        ///   <item>未选定但可用 → "[点击] 选定为当前技能"</item>
+        ///   <item>未选定且不可用 → "条件不满足"（玩家仍可点选预备，但触发会失败）</item>
+        /// </list>
         /// </summary>
-        private static string BuildSubtitle(CyberwareSkillBase skill) {
+        private static string BuildSubtitle(CyberwareSkillBase skill, bool isSelected) {
+            if (isSelected) {
+                return HintAlreadySelected.Value;
+            }
             if (!skill.IsReady) {
                 return HintNotReady.Value;
             }
-            return skill.Kind switch {
-                CyberwareSkillKind.Charge => HintHoldToCharge.Value,
-                CyberwareSkillKind.Toggle => HintToggle.Value,
-                CyberwareSkillKind.Instant => HintInstant.Value,
+            return HintClickToSelect.Value;
+        }
+
+        /// <summary>
+        /// 把"触发键怎么用"的类型提示附在描述末尾，让玩家无需翻物品说明就知道操作方式
+        /// </summary>
+        private static string AppendKindHint(CyberwareSkillBase skill) {
+            string kindHint = skill.Kind switch {
+                CyberwareSkillKind.Charge => HintKindCharge.Value,
+                CyberwareSkillKind.Toggle => HintKindToggle.Value,
+                CyberwareSkillKind.Instant => HintKindInstant.Value,
                 _ => string.Empty,
             };
+            if (string.IsNullOrEmpty(kindHint)) {
+                return skill.Description ?? string.Empty;
+            }
+            if (string.IsNullOrEmpty(skill.Description)) {
+                return kindHint;
+            }
+            return skill.Description + "\n" + kindHint;
         }
 
         /// <summary>

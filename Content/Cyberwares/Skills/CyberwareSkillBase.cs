@@ -13,6 +13,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
     internal abstract class CyberwareSkillBase
     {
         /// <summary>
+        /// 技能的稳定标识符，用于 <see cref="CyberwareSkillRadialController.CurrentSkillId"/> 的持久化
+        /// <br/>默认采用类名 —— 单例模式下一类技能只有一个实例，类名是天然唯一的；
+        /// 跨 Mod 重名风险可忽略（Cyberware 是本 Mod 私有概念）
+        /// <br/>若要保证向后兼容（重命名了类后存档仍能定位），可在子类显式覆写并返回固定字符串
+        /// </summary>
+        public virtual string Identifier => GetType().Name;
+
+        /// <summary>
         /// 雷达扇区主标题文字（应使用本地化文本）
         /// </summary>
         public abstract string DisplayName { get; }
@@ -67,30 +75,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public virtual int FullChargeTicks => 60;
 
         /// <summary>
-        /// 本技能在触发时是否需要一个世界坐标系下的瞄点
-        /// <list type="bullet">
-        ///   <item>仅对 <see cref="CyberwareSkillKind.Instant"/> 有意义</item>
-        ///   <item><see langword="true"/> 时雷达会在玩家按下技能键的同一帧快照 <c>Main.MouseWorld</c>，
-        ///     松开时把快照位置作为 <paramref name="aimWorld"/> 传入 <see cref="OnInstantTrigger(Player, Vector2)"/>，
-        ///     避免雷达期间鼠标被劫持去选扇区导致瞄点丢失</item>
-        ///   <item>单技能直触路径（雷达不开盘）下，瞄点仍取自玩家当前鼠标，
-        ///     由技能自行通过 <c>Main.MouseWorld</c> / <c>Player.tileTargetX/Y</c> 获取，
-        ///     本属性此时不参与判断</item>
-        /// </list>
-        /// </summary>
-        public virtual bool RequiresAim => false;
-
-        /// <summary>
-        /// Instant 类技能的触发入口；雷达在释放鼠标方向键且未蓄力时调用一次
+        /// Instant 类技能的触发入口
+        /// <br/>由触发键按下瞬间调用一次，技能内部按需直接读取 <c>Main.MouseWorld</c> 取瞒点
+        /// <br/>（新双键模型下，雷达与触发是独立动作，瞄点等价于真实当前鼠标，无需快照）
         /// </summary>
         public virtual void OnInstantTrigger(Player player) { }
-
-        /// <summary>
-        /// 带瞄点的瞬时触发入口
-        /// <br/>当 <see cref="RequiresAim"/> 为 <see langword="true"/> 时，雷达会调用本重载并传入按 V 那一帧的鼠标世界坐标快照
-        /// <br/>默认实现转发到无参版本，便于增量迁移；方向类技能应覆写本重载使用 <paramref name="aimWorld"/>
-        /// </summary>
-        public virtual void OnInstantTrigger(Player player, Vector2 aimWorld) => OnInstantTrigger(player);
 
         /// <summary>
         /// Toggle 类技能的状态切换入口
