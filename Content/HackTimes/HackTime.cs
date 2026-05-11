@@ -532,7 +532,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
             }
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
+                SoundEngine.PlaySound(CWRSound.Scanning);
             }
         }
 

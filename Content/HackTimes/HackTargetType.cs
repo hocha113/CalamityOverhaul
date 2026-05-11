@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.HackTimes
         /// </summary>
         public virtual void OnSelectFeedback(IHackTarget target) {
             if (!VaultUtils.isServer) {
-                Terraria.Audio.SoundEngine.PlaySound(Common.CWRSound.Hacker, Terraria.Main.LocalPlayer.Center);
+                Terraria.Audio.SoundEngine.PlaySound(Common.CWRSound.Hacker);
             }
         }
 
