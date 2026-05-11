@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;
@@ -83,6 +84,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             Vector2 center = ctrl.ScreenAnchor;
             float time = ctrl.Time;
 
+            //先尝试用专属着色器铺底（外圈刻度 / 中心虹膜 / 接口背板）
+            //失败（未编译/未加载）时直接走纯 CPU 路径，雷达功能不受影响
+            TryDrawShaderBackplate(sb, px, center, time, a);
+
             DrawCenterCore(sb, px, center, a, time);
 
             //每个扇区分别绘制
@@ -124,6 +129,62 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             //雷达边缘的视觉框架装饰
             DrawOuterRing(sb, px, center, count, a, time);
+        }
+
+        /// <summary>
+        /// 用义体专属着色器 <see cref="EffectLoader.CyberwareRadialPanel"/> 铺底
+        /// <list type="bullet">
+        ///   <item>渲染内容：中心虹膜 + 内/外弧描边 + 外圈拨码刻度 + 入场扩散动画</item>
+        ///   <item>底纹 alpha 故意压低，让 CPU 扇区清晰叠加在上方</item>
+        ///   <item>未加载（用户尚未编译 .fx 或资源加载失败）时直接 return，
+        ///     雷达回退到纯 CPU 绘制；该方法应当在 CPU 扇区/图标绘制之前调用</item>
+        ///   <item>SpriteBatch 状态恢复严格对齐 SHPCDialogueBox/HackRamRenderer 的范式</item>
+        /// </list>
+        /// </summary>
+        private static bool TryDrawShaderBackplate(SpriteBatch sb, Texture2D px,
+            Vector2 center, float time, float openProgress) {
+            Effect effect = EffectLoader.CyberwareRadialPanel?.Value;
+            if (effect == null) {
+                return false;
+            }
+
+            //quad 范围：覆盖外圈刻度环（OuterR + 12）再加 20px 安全边距，
+            //保证旋转刻度、外缘辉光、虹膜旋转辐条都不会被裁剪
+            const float decoExtend = 12f;
+            const float padding = 20f;
+            float halfSize = SHPCTheme.ButtonOuterR + decoExtend + padding;
+
+            float qLeft = center.X - halfSize;
+            float qTop = center.Y - halfSize;
+            int qSize = (int)MathF.Ceiling(halfSize * 2f);
+            if (qSize <= 0) {
+                return true;
+            }
+
+            Rectangle dest = new((int)qLeft, (int)qTop, qSize, qSize);
+            Vector2 relCenter = new(center.X - qLeft, center.Y - qTop);
+
+            effect.Parameters["uTime"]?.SetValue(time);
+            effect.Parameters["uAlpha"]?.SetValue(openProgress);
+            effect.Parameters["uOpenProgress"]?.SetValue(openProgress);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(qSize, qSize));
+            effect.Parameters["uCenter"]?.SetValue(relCenter);
+            effect.Parameters["uInnerR"]?.SetValue(SHPCTheme.ButtonInnerR);
+            effect.Parameters["uOuterR"]?.SetValue(SHPCTheme.ButtonOuterR);
+            effect.Parameters["uDeadZoneR"]?.SetValue(CyberwareSkillRadialController.DeadZoneRadius);
+            effect.Parameters["uDecoOuterR"]?.SetValue(SHPCTheme.ButtonOuterR + decoExtend);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+
+            sb.Draw(px, dest, Color.White);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+
+            return true;
         }
 
         /// <summary>
@@ -228,7 +289,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 悬停扇区的信息面板：复用 SHPCRenderer.DrawInfoPanel，锚点设为扇区外侧而非鼠标
+        /// 悬停扇区的信息面板：始终把面板布置在雷达外侧，与扇区不重叠
+        /// <br/>策略：根据玩家所在屏幕的左右半，把面板放到剩余空间更多的一侧；
+        /// 垂直方向居中对齐雷达圆心。面板坐标通过反推 <see cref="SHPCRenderer.DrawInfoPanel"/>
+        /// 内部的 "cursor + (18, 14)" 默认偏移得到
         /// </summary>
         private static void DrawInfoPanelForHovered(SpriteBatch sb, Texture2D px,
             CyberwareSkillRadialController ctrl, Vector2 center, float globalAlpha) {
@@ -237,11 +301,32 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
             CyberwareSkillRadialSector sec = ctrl.Sectors[idx];
-            ctrl.GetSectorAngles(idx, out float aStart, out float aEnd);
-            float midA = (aStart + aEnd) * 0.5f;
-            Vector2 dir = new(MathF.Cos(midA), MathF.Sin(midA));
-            //锚点放在扇区外侧约 24 像素处，让面板"贴着扇区"展开
-            Vector2 anchor = center + dir * (SHPCTheme.ButtonOuterR + 24f);
+
+            //SHPCRenderer.DrawInfoPanel 内部估算的极限尺寸（保守值，避免边缘溢出导致 auto-flip 误判）
+            const float estPanelW = 230f;
+            const float estPanelH = 130f;
+            //雷达外缘与面板之间的最小安全间隙
+            const float clearance = 14f;
+            float radialEdge = SHPCTheme.ButtonOuterR + 6f;
+
+            //哪一侧空间更多就放在哪一侧
+            float spaceRight = Main.screenWidth - (center.X + radialEdge + clearance) - estPanelW;
+            float spaceLeft = (center.X - radialEdge - clearance) - estPanelW;
+            bool placeLeft = spaceLeft > spaceRight && spaceLeft > 0f;
+
+            //目标面板左上角的屏幕坐标
+            float panelX = placeLeft
+                ? center.X - radialEdge - clearance - estPanelW
+                : center.X + radialEdge + clearance;
+            float panelY = center.Y - estPanelH * 0.5f;
+            //如果展开还没到 100%，slide 偏移会让默认右下放置多偏移 (1-alpha)*8 像素，提前减掉
+            float slide = (1f - globalAlpha) * 8f;
+
+            //从目标 panelPos 反推应当传入的 cursor，让 DrawInfoPanel 内部的默认 (18+slide, 14) 自然命中
+            Vector2 anchor = new(panelX - 18f - slide, panelY - 14f);
+            //再做一次屏幕边界保护，避免 anchor 让面板被 clamp 后跨过雷达
+            anchor.X = MathHelper.Clamp(anchor.X, 4f, Main.screenWidth - 4f);
+            anchor.Y = MathHelper.Clamp(anchor.Y, 4f, Main.screenHeight - 4f);
 
             string subtitle = BuildSubtitle(sec.Skill);
             SHPCRenderer.DrawInfoPanel(sb, px, anchor, globalAlpha, globalAlpha,
