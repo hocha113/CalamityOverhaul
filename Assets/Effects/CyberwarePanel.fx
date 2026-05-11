@@ -1,6 +1,8 @@
 // ============================================================================
 // CyberwarePanel.fx —— 赛博义体管理面板专属背景着色器
-// 主题：深红黑底 + 红色数据网格 + 中央人体能量光场 + CRT 行 + 内边柔光
+// 主题：深红黑底 + 静态红色数据网格 + 中央人体能量光场 + 内边柔光
+// 设计原则：刻意不使用横向扫描带、闪烁数据单元、CRT 行扫描等被用烂的 HUD 套路，
+//          靠静态点阵/方格细线 + 中央光场 + 边缘柔光建立科技感
 // 输入参数：
 //   uTime        累计时间
 //   uAlpha       全局不透明度
@@ -79,30 +81,20 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col *= 0.85 + n * (isMain ? 0.30 : 0.18);
     col += float3(0.030, 0.008, 0.008) * (n - 0.5) * (isMain ? 1.0 : 0.5);
 
-    // ═══ 2. 数据网格背景（细密点阵 + 中等方格） ═══
+    // ═══ 2. 数据网格背景（静态细密点阵 + 中等方格细线，无任何闪烁/扫描） ═══
     if (isMain)
     {
-        //细密点阵
+        //细密点阵 —— 均匀分布的静态参考点，提供"芯片刻印"的科技纹理
         float2 dotUV = uv * float2(60.0, 36.0);
         float2 dotF = frac(dotUV);
         float dotMask = step(0.85, dotF.x) * step(0.85, dotF.y);
         col += float3(0.42, 0.10, 0.10) * dotMask * 0.20;
 
-        //方格细线
+        //方格细线 —— 同样静态，提供网格结构感
         float2 grid = uv * float2(12.0, 7.0);
         float2 g = abs(frac(grid) - 0.5);
         float gridLine = step(0.46, max(g.x, g.y)) - step(0.49, max(g.x, g.y));
         col += float3(0.50, 0.12, 0.12) * gridLine * 0.22;
-
-        //随机数据单元高亮（终端字符闪动感）
-        float2 cellUV = uv * float2(36.0, 22.0);
-        float2 cellId = floor(cellUV);
-        float h = hash21(cellId + floor(uTime * 4.0));
-        float cellLit = step(0.985, h);
-        float2 cellF = frac(cellUV);
-        float cellShape = step(0.18, cellF.x) * step(cellF.x, 0.82)
-            * step(0.18, cellF.y) * step(cellF.y, 0.82);
-        col += float3(1.00, 0.30, 0.30) * cellLit * cellShape * 0.55;
     }
     else
     {
@@ -112,19 +104,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += float3(0.30, 0.06, 0.06) * ln * 0.20;
     }
 
-    // ═══ 3. 横向扫描带（缓慢自下向上扫过，仅主面板） ═══
-    if (isMain)
-    {
-        float sweep = frac(uTime * 0.20 - uv.y * 1.1);
-        float swG = exp(-abs(sweep - 0.5) * 16.0);
-        col += float3(0.70, 0.18, 0.18) * swG * 0.55;
-    }
-
-    //细横扫描线（CRT风格，偶数行轻微变暗）
-    float scan = frac(px.y * 0.5);
-    col *= 0.92 + 0.08 * smoothstep(0.0, 0.30, scan) * smoothstep(1.0, 0.70, scan);
-
-    // ═══ 4. 中央人体能量光场 ═══
+    // ═══ 3. 中央人体能量光场 ═══
     if (uBodyRadius > 1.0)
     {
         float2 bodyDelta = px - uBodyCenter;
@@ -156,14 +136,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += float3(0.55, 0.12, 0.12) * pow(rays, 12.0) * halo * 0.35;
     }
 
-    // ═══ 5. 顶部色带高光 ═══
+    // ═══ 4. 顶部色带高光 ═══
     col += float3(0.60, 0.15, 0.15) * (1.0 - smoothstep(0.0, 0.06, uv.y)) * (isMain ? 0.65 : 0.40);
 
-    // ═══ 6. 边缘暗角 ═══
+    // ═══ 5. 边缘暗角 ═══
     float vig = saturate(sdf / (uEdgePad + 28.0));
     col *= 0.62 + 0.38 * vig;
 
-    // ═══ 7. 内边线柔光 ═══
+    // ═══ 6. 内边线柔光 ═══
     float frameInner = smoothstep(uEdgePad + 6.0, uEdgePad + 4.0, sdf)
                      * smoothstep(uEdgePad + 2.0, uEdgePad + 4.0, sdf);
     col += float3(1.00, 0.28, 0.28) * frameInner * 0.55;
