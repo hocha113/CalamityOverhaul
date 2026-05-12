@@ -61,8 +61,6 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> ElectricPowerFull = null;
         [VaultLoaden(CWRConstant.UI + "Generator/ElectricPowerGlow")]
         public static Asset<Texture2D> ElectricPowerGlow = null;
-        [VaultLoaden(CWRConstant.UI + "Generator/GeneratorPanel")]
-        internal static Asset<Texture2D> Panel { get; private set; }
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder")]
         internal static Asset<Texture2D> BarTop { get; private set; }
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeter")]
