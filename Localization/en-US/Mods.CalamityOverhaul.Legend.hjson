@@ -486,3 +486,26 @@ SHPCSlotName: {
 	Grip: Grip Slot
 	Frame: Frame Slot
 }
+
+MoldProcessingUI: {
+	Title: MOLD PROCESSING
+	Subtitle: DECOMPOSE · REFORGE
+	TabWorkbench: WORKBENCH
+	TabCodex: CODEX
+	Decompose: DECOMPOSE
+	Reforge: REFORGE
+	ClearPin: CLEAR PIN
+	RandomMode: RANDOM · UNDISCOVERED FIRST
+	PinnedMode: PINNED FROM CODEX
+	CostLine: "COST: {0}"
+	HaveLine: "HAVE: {0}"
+	UnknownName: ??????
+	ProgressFormat: "{0}/{1}"
+	ShardSuffix: SHARDS
+	EmptyCandidates: "// no compatible modules in inventory"
+	CloseHint: ESC TO CLOSE
+	DecomposeHint: Click a module to decompose it
+	CodexHint: Click a discovered mold to pin it as reforge target
+	Discovered: DISCOVERED
+	PinnedTag: PINNED
+}

@@ -4,6 +4,16 @@
 	BonusHeader: 当前模块总加成
 }
 
+MoldProcessingTable: {
+	DisplayName: 模具加工台
+	Tooltip:
+		'''
+		右键打开 SHPC 模具加工台
+		- 分解：将多余的同类改件熔解为碎片
+		- 重铸：消耗碎片产出新模具，可锁定图鉴中的指定目标
+		'''
+}
+
 ElementWhip: {
 	DisplayName: 元素长鞭
 	Tooltip:

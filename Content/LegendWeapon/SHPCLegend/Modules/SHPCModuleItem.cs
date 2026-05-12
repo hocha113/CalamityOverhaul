@@ -165,7 +165,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             return Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{value}");
         }
 
-        private static Color SlotCategoryColor(SHPCSlotCategory cat) => cat switch {
+        /// <summary>
+        /// 槽位类别的对外颜色（与改件 Tag/侧栏色条共享），由 <see cref="MoldProcessingTables"/> 与改件物品自身共用
+        /// </summary>
+        public static Color SlotCategoryColor(SHPCSlotCategory cat) => cat switch {
             SHPCSlotCategory.Barrel => new Color(255, 160, 60),
             SHPCSlotCategory.Optic => new Color(0, 200, 255),
             SHPCSlotCategory.Power => new Color(255, 220, 0),
@@ -174,6 +177,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             SHPCSlotCategory.Frame => new Color(255, 140, 200),
             _ => Color.White,
         };
+
+        public override bool OnPickup(Player player) {
+            //首次拾取自动登记进模具图鉴，所有 90+ 子类自动受益
+            if (player != null && player.whoAmI == Main.myPlayer) {
+                SHPCPlayer.Get(player)?.RegisterDiscovered(Item.type);
+            }
+            return base.OnPickup(player);
+        }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             string slotName = Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCSlotName." + SlotCategory.ToString());

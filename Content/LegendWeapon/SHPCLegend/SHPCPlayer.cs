@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -22,12 +25,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         //层数衰减计时器（每120帧 -1 层）
         public int OverkillTimer;
 
+        //模具加工台：六类碎片数量（按 SHPCSlotCategory 索引）
+        public int[] MoldShards;
+        //模具加工台：已发现模块的 ItemType 集合（图鉴主数据）
+        public HashSet<int> DiscoveredModules;
+        //模具加工台：六类钉选的"固定重铸目标" ItemType，-1 表示该类别仍为随机模式
+        public int[] PinnedReforgeTarget;
+
         public static SHPCPlayer Get(Player player) => player.GetModPlayer<SHPCPlayer>();
 
         public override void Initialize() {
             Modules = CreateEmptyModules();
             Presets = CreateEmptyPresets();
             ActivePreset = 0;
+
+            MoldShards = new int[SHPCData.SlotCount];
+            DiscoveredModules = new HashSet<int>();
+            PinnedReforgeTarget = new int[SHPCData.SlotCount];
+            for (int i = 0; i < SHPCData.SlotCount; i++) {
+                PinnedReforgeTarget[i] = -1;
+            }
+        }
+
+        /// <summary>
+        /// 注册一次"发现"事件，返回是否为首次（true 表示之前未发现）
+        /// </summary>
+        public bool RegisterDiscovered(int moduleType) {
+            if (moduleType <= 0) {
+                return false;
+            }
+            DiscoveredModules ??= new HashSet<int>();
+            return DiscoveredModules.Add(moduleType);
+        }
+
+        /// <summary>
+        /// 钉选/取消钉选指定类别的固定重铸目标
+        /// moduleType = -1 时取消钉选；否则要求该 type 是合法的 SHPCModuleItem 且槽位匹配且在图鉴中
+        /// </summary>
+        public bool TryPinReforge(SHPCSlotCategory cat, int moduleType) {
+            PinnedReforgeTarget ??= new int[SHPCData.SlotCount];
+            int idx = (int)cat;
+            if (idx < 0 || idx >= SHPCData.SlotCount) {
+                return false;
+            }
+            if (moduleType == -1) {
+                PinnedReforgeTarget[idx] = -1;
+                return true;
+            }
+            if (DiscoveredModules == null || !DiscoveredModules.Contains(moduleType)) {
+                return false;
+            }
+            if (!ContentSamples.ItemsByType.TryGetValue(moduleType, out Item sample)) {
+                return false;
+            }
+            if (sample.ModItem is SHPCModuleItem mod && mod.SlotCategory == cat) {
+                PinnedReforgeTarget[idx] = moduleType;
+                return true;
+            }
+            return false;
         }
 
         private static Item[] CreateEmptyModules() {
@@ -130,6 +185,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         }
                     }
                 }
+
+                //模具加工台持久化：碎片数 / 图鉴 / 钉选
+                MoldShards ??= new int[SHPCData.SlotCount];
+                PinnedReforgeTarget ??= new int[SHPCData.SlotCount];
+                DiscoveredModules ??= new HashSet<int>();
+
+                tag["SHPC_MoldShards"] = MoldShards.ToList();
+                tag["SHPC_DiscoveredModules"] = DiscoveredModules.ToList();
+                tag["SHPC_PinnedReforgeTarget"] = PinnedReforgeTarget.ToList();
             } catch (System.Exception ex) {
                 CWRMod.Instance.Logger.Error($"SHPCPlayer.SaveData Error: {ex.Message}");
             }
@@ -176,8 +240,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
                 //将活跃预设的内容加载到 Modules 作为当前使用状态
                 Modules = CloneModules(Presets[ActivePreset]);
+
+                //模具加工台持久化读取，旧存档兜底
+                MoldShards = new int[SHPCData.SlotCount];
+                PinnedReforgeTarget = new int[SHPCData.SlotCount];
+                for (int i = 0; i < SHPCData.SlotCount; i++) {
+                    PinnedReforgeTarget[i] = -1;
+                }
+                DiscoveredModules = new HashSet<int>();
+
+                if (tag.TryGet("SHPC_MoldShards", out List<int> shardList)) {
+                    for (int i = 0; i < SHPCData.SlotCount && i < shardList.Count; i++) {
+                        MoldShards[i] = System.Math.Max(0, shardList[i]);
+                    }
+                }
+                if (tag.TryGet("SHPC_DiscoveredModules", out List<int> discList)) {
+                    foreach (int t in discList) {
+                        if (t > 0) {
+                            DiscoveredModules.Add(t);
+                        }
+                    }
+                }
+                if (tag.TryGet("SHPC_PinnedReforgeTarget", out List<int> pinList)) {
+                    for (int i = 0; i < SHPCData.SlotCount && i < pinList.Count; i++) {
+                        PinnedReforgeTarget[i] = pinList[i];
+                    }
+                }
+
+                //老存档兜底：扫描背包 + 所有预设里已有的 SHPC 改件，确保图鉴不丢
+                BackfillDiscoveredFromInventoryAndPresets();
             } catch (System.Exception ex) {
                 CWRMod.Instance.Logger.Error($"SHPCPlayer.LoadData Error: {ex.Message}");
+            }
+        }
+
+        private void BackfillDiscoveredFromInventoryAndPresets() {
+            if (Player?.inventory != null) {
+                for (int i = 0; i < Player.inventory.Length; i++) {
+                    Item it = Player.inventory[i];
+                    if (it != null && !it.IsAir && it.ModItem is SHPCModuleItem) {
+                        DiscoveredModules.Add(it.type);
+                    }
+                }
+            }
+            if (Presets != null) {
+                for (int p = 0; p < PresetCount; p++) {
+                    if (Presets[p] == null) {
+                        continue;
+                    }
+                    for (int s = 0; s < SHPCData.SlotCount; s++) {
+                        Item m = Presets[p][s];
+                        if (m != null && !m.IsAir && m.ModItem is SHPCModuleItem) {
+                            DiscoveredModules.Add(m.type);
+                        }
+                    }
+                }
             }
         }
     }

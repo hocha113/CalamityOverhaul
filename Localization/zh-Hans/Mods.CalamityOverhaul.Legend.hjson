@@ -486,3 +486,26 @@ SHPCSlotName: {
 	Grip: 握把插槽
 	Frame: 机匣插槽
 }
+
+MoldProcessingUI: {
+	Title: 模具加工台
+	Subtitle: 分解 · 重铸
+	TabWorkbench: 工作台
+	TabCodex: 模具图鉴
+	Decompose: 分解
+	Reforge: 重铸
+	ClearPin: 取消固定
+	RandomMode: 随机 · 优先未发现
+	PinnedMode: 已锁定图鉴目标
+	CostLine: "消耗：{0}"
+	HaveLine: "持有：{0}"
+	UnknownName: ??????
+	ProgressFormat: "{0}/{1}"
+	ShardSuffix: 碎片
+	EmptyCandidates: "// 背包内没有可分解的同类模块"
+	CloseHint: ESC 关闭
+	DecomposeHint: 点击列表中的模块以分解
+	CodexHint: 点击已发现的模具以固定为重铸目标
+	Discovered: 已发现
+	PinnedTag: 已固定
+}
