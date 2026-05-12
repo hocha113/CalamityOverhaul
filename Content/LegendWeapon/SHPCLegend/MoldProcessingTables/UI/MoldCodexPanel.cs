@@ -120,14 +120,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 ? currentTypes.Count(t => sp.DiscoveredModules.Contains(t)) : 0;
             string progress = string.Format(MoldProcessingUI.ProgressFormat.Value, discCount, currentTypes.Count);
             string header = $"{MoldProcessingUI.Discovered.Value}  ·  {progress}";
-            Utils.DrawBorderString(sb, header,
-                new Vector2(layout.Content.X + 8f, layout.Content.Y + 6f), SHPCTheme.Text * a, 0.6f);
+            float headerScale = MoldFont.ColumnTitleBase * MoldFont.FontScale;
 
+            //先按比例分配左右空间：标题最多占 60%，剩余给右侧提示
+            float headerMaxW = layout.Content.Width * 0.6f - 8f;
+            string headerDraw = MoldFont.TruncateForWidth(font, header, headerMaxW, headerScale);
+            Utils.DrawBorderString(sb, headerDraw,
+                new Vector2(layout.Content.X + 8f, layout.Content.Y + 6f), SHPCTheme.Text * a, headerScale);
+
+            float hintScale = MoldFont.HintBase * MoldFont.FontScale;
             string hint = MoldProcessingUI.CodexHint.Value;
-            Vector2 hintSz = font.MeasureString(hint) * 0.45f;
-            Utils.DrawBorderString(sb, hint,
+            //提示文字可用宽度：从内容右边缘往左到 header 实际占用宽度之外
+            float headerActualW = font.MeasureString(headerDraw).X * headerScale;
+            float hintMaxW = layout.Content.Width - 16f - headerActualW - 12f;
+            if (hintMaxW < 60f) {
+                hintMaxW = 60f;
+            }
+            string hintDraw = MoldFont.TruncateForWidth(font, hint, hintMaxW, hintScale);
+            Vector2 hintSz = font.MeasureString(hintDraw) * hintScale;
+            Utils.DrawBorderString(sb, hintDraw,
                 new Vector2(layout.Content.Right - 8f - hintSz.X, layout.Content.Y + 8f),
-                SHPCTheme.TextDim * (0.9f * a), 0.45f);
+                SHPCTheme.TextDim * (0.9f * a), hintScale);
 
             //网格区
             Rectangle gridArea = GetGridArea(layout);
@@ -268,20 +281,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                     //未发现：纯黑剪影 + 中央 ? 字符叠加
                     sb.Draw(iconTex, center, frame, new Color(0, 6, 10) * (0.9f * a), 0f,
                         new Vector2(frame.Width * 0.5f, frame.Height * 0.5f), iconScale, SpriteEffects.None, 0f);
-                    Vector2 qSz = font.MeasureString("?") * 0.9f;
+                    float qScale = MoldFont.CodexQmarkBase * MoldFont.FontScale;
+                    Vector2 qSz = font.MeasureString("?") * qScale;
                     Utils.DrawBorderString(sb, "?",
                         new Vector2(center.X - qSz.X * 0.5f, center.Y - qSz.Y * 0.5f),
-                        SHPCTheme.Border * (0.95f * a), 0.9f);
+                        SHPCTheme.Border * (0.95f * a), qScale);
                 }
             }
 
-            //PINNED 标签
+            //PINNED 标签（必要时截断防溢出格子）
             if (isPinned) {
                 string tag = MoldProcessingUI.PinnedTag.Value;
-                Vector2 ts = font.MeasureString(tag) * 0.42f;
-                Utils.DrawBorderString(sb, tag,
+                float tagScale = MoldFont.PinnedTagBase * MoldFont.FontScale;
+                string tagDraw = MoldFont.TruncateForWidth(font, tag, cell.Width - 4f, tagScale);
+                Vector2 ts = font.MeasureString(tagDraw) * tagScale;
+                Utils.DrawBorderString(sb, tagDraw,
                     new Vector2(cell.X + (cell.Width - ts.X) * 0.5f, cell.Bottom - ts.Y - 2f),
-                    SHPCTheme.Accent * a, 0.42f);
+                    SHPCTheme.Accent * a, tagScale);
             }
         }
 
@@ -328,8 +344,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 }
             }
 
-            float scale = 0.6f;
+            float scale = MoldFont.TooltipBase * MoldFont.FontScale;
             float lineH = font.LineSpacing * scale;
+            //单行最大像素宽度，超过则按字符截断（防超长 stat 描述把卡片撑到屏幕外）
+            float lineMaxW = MathF.Min(420f, Main.screenWidth - 32f);
+            for (int i = 0; i < lines.Count; i++) {
+                lines[i] = MoldFont.TruncateForWidth(font, lines[i], lineMaxW, scale);
+            }
             float maxW = 0f;
             for (int i = 0; i < lines.Count; i++) {
                 float w = font.MeasureString(lines[i]).X * scale;
@@ -342,6 +363,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 (int)(maxW + padX * 2), (int)(lineH * lines.Count + padY * 2));
             if (box.Right > Main.screenWidth) box.X = Main.screenWidth - box.Width - 4;
             if (box.Bottom > Main.screenHeight) box.Y = Main.screenHeight - box.Height - 4;
+            if (box.X < 4) box.X = 4;
+            if (box.Y < 4) box.Y = 4;
 
             SHPCRenderer.DrawFilledRect(sb, px,
                 new Rectangle(box.X + 3, box.Y + 4, box.Width, box.Height),

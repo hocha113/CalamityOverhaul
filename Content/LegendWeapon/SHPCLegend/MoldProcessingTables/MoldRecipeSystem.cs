@@ -148,7 +148,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
         /// 统一的"产出物品"：把模块塞进玩家背包，同步图鉴
         /// </summary>
         private static void GrantModule(Player player, int type) {
-            if (type <= 0) {
+            if (player == null || type <= 0) {
+                return;
+            }
+            //再校验一次类型合法，防止 race / mod 卸载场景
+            if (!ContentSamples.ItemsByType.ContainsKey(type)) {
                 return;
             }
             SHPCPlayer.Get(player)?.RegisterDiscovered(type);

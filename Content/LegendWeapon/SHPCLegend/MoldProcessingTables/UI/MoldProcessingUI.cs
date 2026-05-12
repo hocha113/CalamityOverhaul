@@ -264,19 +264,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //标题 / 副标题
-            Utils.DrawBorderString(sb, Title.Value,
-                new Vector2(rect.X + 14f, rect.Y + 8f), SHPCTheme.Text * a, 0.85f);
-            Utils.DrawBorderString(sb, Subtitle.Value,
-                new Vector2(rect.X + 14f, rect.Y + 28f), SHPCTheme.TextDim * a, 0.6f);
+            //标题 / 副标题（标题最多占据 close 按钮左侧到 SYS 码之间的空间）
+            float headerLeft = rect.X + 14f;
+            float headerRight = cachedLayout.CloseBtn.X - 90f;   //预留右上 SYS#xxxx 与间距
+            float titleScale = MoldFont.TitleBase * MoldFont.FontScale;
+            float subtitleScale = MoldFont.SubtitleBase * MoldFont.FontScale;
+            string titleStr = MoldFont.TruncateForWidth(font, Title.Value, headerRight - headerLeft, titleScale);
+            string subtitleStr = MoldFont.TruncateForWidth(font, Subtitle.Value, headerRight - headerLeft, subtitleScale);
+            Utils.DrawBorderString(sb, titleStr,
+                new Vector2(headerLeft, rect.Y + 7f), SHPCTheme.Text * a, titleScale);
+            Utils.DrawBorderString(sb, subtitleStr,
+                new Vector2(headerLeft, rect.Y + 26f), SHPCTheme.TextDim * a, subtitleScale);
 
             //右上 SYS ID + 关闭按钮
             float time = (float)Main.GameUpdateCount / 60f;
             string idCode = $"SYS#{(int)(time * 13f) % 9999:D4}";
-            Vector2 idSz = font.MeasureString(idCode) * 0.5f;
+            float idScale = MoldFont.SysIdBase * MoldFont.FontScale;
+            Vector2 idSz = font.MeasureString(idCode) * idScale;
             Utils.DrawBorderString(sb, idCode,
                 new Vector2(cachedLayout.CloseBtn.X - 8f - idSz.X, rect.Y + 12f),
-                SHPCTheme.Cyan * (0.7f * a), 0.5f);
+                SHPCTheme.Cyan * (0.7f * a), idScale);
 
             DrawCloseButton(sb, px, font, cachedLayout.CloseBtn, topHover == TopHit.Close, a);
 
@@ -329,11 +336,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 SHPCRenderer.DrawCornerBrackets(sb, px, r, 3f, 1.1f, SHPCTheme.CyanHi * a);
             }
 
-            float scale = 0.62f;
-            Vector2 sz = font.MeasureString(label) * scale;
+            //Tab 文本：当中文/英文较长时按宽度截断，并随之缩小一档
+            float maxLabelW = r.Width - 12f;
+            float scale = MoldFont.TabLabelBase * MoldFont.FontScale;
+            string drawLabel = MoldFont.TruncateForWidth(font, label, maxLabelW, scale);
+            Vector2 sz = font.MeasureString(drawLabel) * scale;
             Color textCol = isActive ? SHPCTheme.CyanHi * a
                 : SHPCTheme.TextDim * (0.9f * a);
-            Utils.DrawBorderString(sb, label,
+            Utils.DrawBorderString(sb, drawLabel,
                 new Vector2(r.X + (r.Width - sz.X) * 0.5f, r.Y + (r.Height - sz.Y) * 0.5f),
                 textCol, scale);
         }
@@ -345,7 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             Color border = isHover ? new Color(255, 120, 110) * (0.95f * a) : SHPCTheme.Border * (0.7f * a);
             SHPCRenderer.DrawRectStroke(sb, px, r, 1.1f, border);
 
-            float scale = 0.78f;
+            float scale = MoldFont.CloseBtnBase * MoldFont.FontScale;
             Vector2 sz = font.MeasureString("X") * scale;
             Color textCol = isHover ? new Color(255, 200, 200) * a : SHPCTheme.TextDim * a;
             Utils.DrawBorderString(sb, "X",

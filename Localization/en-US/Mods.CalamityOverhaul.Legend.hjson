@@ -1,4 +1,4 @@
-﻿HalibutText: {
+HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -497,8 +497,8 @@ MoldProcessingUI: {
 	ClearPin: CLEAR PIN
 	RandomMode: RANDOM · UNDISCOVERED FIRST
 	PinnedMode: PINNED FROM CODEX
-	CostLine: "COST: {0}"
-	HaveLine: "HAVE: {0}"
+	CostLine: COST: {0}
+	HaveLine: HAVE: {0}
 	UnknownName: ??????
 	ProgressFormat: "{0}/{1}"
 	ShardSuffix: SHARDS

@@ -191,11 +191,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 PinnedReforgeTarget ??= new int[SHPCData.SlotCount];
                 DiscoveredModules ??= new HashSet<int>();
 
-                tag["SHPC_MoldShards"] = MoldShards.ToList();
-                tag["SHPC_DiscoveredModules"] = DiscoveredModules.ToList();
-                tag["SHPC_PinnedReforgeTarget"] = PinnedReforgeTarget.ToList();
+                //写入前重新校验长度 = SlotCount（升版若 SlotCount 改了能自动适配）
+                int[] shardsSafe = new int[SHPCData.SlotCount];
+                int[] pinnedSafe = new int[SHPCData.SlotCount];
+                for (int i = 0; i < SHPCData.SlotCount; i++) {
+                    shardsSafe[i] = i < MoldShards.Length ? System.Math.Max(0, MoldShards[i]) : 0;
+                    pinnedSafe[i] = i < PinnedReforgeTarget.Length ? PinnedReforgeTarget[i] : -1;
+                }
+
+                //DiscoveredModules 排序后写出，避免每次保存产生无意义的 diff
+                List<int> discoveredSorted = DiscoveredModules.Where(t => t > 0).Distinct().OrderBy(t => t).ToList();
+
+                tag["SHPC_MoldShards"] = shardsSafe.ToList();
+                tag["SHPC_DiscoveredModules"] = discoveredSorted;
+                tag["SHPC_PinnedReforgeTarget"] = pinnedSafe.ToList();
             } catch (System.Exception ex) {
-                CWRMod.Instance.Logger.Error($"SHPCPlayer.SaveData Error: {ex.Message}");
+                CWRMod.Instance.Logger.Error($"SHPCPlayer.SaveData Error: {ex}");
             }
         }
 
@@ -249,32 +260,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 }
                 DiscoveredModules = new HashSet<int>();
 
-                if (tag.TryGet("SHPC_MoldShards", out List<int> shardList)) {
-                    for (int i = 0; i < SHPCData.SlotCount && i < shardList.Count; i++) {
-                        MoldShards[i] = System.Math.Max(0, shardList[i]);
+                //碎片：仅复制可用范围；负值与异常大值都做约束（防存档损坏 / 篡改）
+                const int ShardHardCap = 9_999_999;
+                if (tag.TryGet("SHPC_MoldShards", out List<int> shardList) && shardList != null) {
+                    int copy = System.Math.Min(SHPCData.SlotCount, shardList.Count);
+                    for (int i = 0; i < copy; i++) {
+                        MoldShards[i] = System.Math.Clamp(shardList[i], 0, ShardHardCap);
                     }
                 }
-                if (tag.TryGet("SHPC_DiscoveredModules", out List<int> discList)) {
+                //图鉴：去重 + 过滤已不存在的 type（mod 卸载 / type 重排时不残留 ghost ID）
+                if (tag.TryGet("SHPC_DiscoveredModules", out List<int> discList) && discList != null) {
                     foreach (int t in discList) {
-                        if (t > 0) {
+                        if (t > 0 && IsValidShpcModuleType(t)) {
                             DiscoveredModules.Add(t);
                         }
                     }
                 }
-                if (tag.TryGet("SHPC_PinnedReforgeTarget", out List<int> pinList)) {
-                    for (int i = 0; i < SHPCData.SlotCount && i < pinList.Count; i++) {
-                        PinnedReforgeTarget[i] = pinList[i];
+                //钉选：校验目标类型有效且与索引类别匹配；否则降级为 -1
+                if (tag.TryGet("SHPC_PinnedReforgeTarget", out List<int> pinList) && pinList != null) {
+                    int copy = System.Math.Min(SHPCData.SlotCount, pinList.Count);
+                    for (int i = 0; i < copy; i++) {
+                        int target = pinList[i];
+                        if (target <= 0) {
+                            PinnedReforgeTarget[i] = -1;
+                            continue;
+                        }
+                        if (!ContentSamples.ItemsByType.TryGetValue(target, out Item sample)
+                            || sample.ModItem is not SHPCModuleItem mod
+                            || (int)mod.SlotCategory != i) {
+                            //目标无效或类别不匹配，回退到随机模式而不是抛弃整段存档
+                            PinnedReforgeTarget[i] = -1;
+                            continue;
+                        }
+                        PinnedReforgeTarget[i] = target;
                     }
                 }
 
                 //老存档兜底：扫描背包 + 所有预设里已有的 SHPC 改件，确保图鉴不丢
                 BackfillDiscoveredFromInventoryAndPresets();
             } catch (System.Exception ex) {
-                CWRMod.Instance.Logger.Error($"SHPCPlayer.LoadData Error: {ex.Message}");
+                CWRMod.Instance.Logger.Error($"SHPCPlayer.LoadData Error: {ex}");
             }
         }
 
+        /// <summary>校验某 ItemType 是否仍为合法的 SHPC 改件（mod 卸载、type 重排时返回 false）</summary>
+        private static bool IsValidShpcModuleType(int type) {
+            return ContentSamples.ItemsByType.TryGetValue(type, out Item sample)
+                && sample.ModItem is SHPCModuleItem;
+        }
+
         private void BackfillDiscoveredFromInventoryAndPresets() {
+            DiscoveredModules ??= new HashSet<int>();
             if (Player?.inventory != null) {
                 for (int i = 0; i < Player.inventory.Length; i++) {
                     Item it = Player.inventory[i];

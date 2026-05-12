@@ -197,8 +197,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             SHPCRenderer.DrawRectStroke(sb, px, col, 1.1f, SHPCTheme.Border * (0.7f * a));
 
             //标题
+            float titleScale = MoldFont.ColumnTitleBase * MoldFont.FontScale;
             Utils.DrawBorderString(sb, MoldProcessingUI.Decompose.Value,
-                new Vector2(col.X + 8f, col.Y + 6f), SHPCTheme.Text * a, 0.65f);
+                new Vector2(col.X + 8f, col.Y + 6f), SHPCTheme.Text * a, titleScale);
 
             Rectangle listArea = GetListArea(col);
             SHPCRenderer.DrawFilledRect(sb, px, listArea, new Color(2, 8, 14) * (0.7f * a));
@@ -209,11 +210,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
             if (count == 0) {
                 string empty = MoldProcessingUI.EmptyCandidates.Value;
-                Vector2 sz = font.MeasureString(empty) * 0.55f;
-                Utils.DrawBorderString(sb, empty,
+                float emptyScale = MoldFont.EmptyHintBase * MoldFont.FontScale;
+                //空提示在列表区域内居中，超宽时截断
+                string emptyDraw = MoldFont.TruncateForWidth(font, empty, listArea.Width - 8f, emptyScale);
+                Vector2 sz = font.MeasureString(emptyDraw) * emptyScale;
+                Utils.DrawBorderString(sb, emptyDraw,
                     new Vector2(listArea.X + (listArea.Width - sz.X) * 0.5f,
                         listArea.Y + (listArea.Height - sz.Y) * 0.5f),
-                    SHPCTheme.TextDim * a, 0.55f);
+                    SHPCTheme.TextDim * a, emptyScale);
             }
             else {
                 bool needScrollbar = count > maxVisible;
@@ -247,17 +251,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                         new Vector2(row.X + RowPadX + IconSize * 0.5f, row.Y + row.Height * 0.5f),
                         IconSize, a);
 
+                    //右侧 +N 提示（先算出来好倒推 name 的最大可用宽度）
+                    string gainTag = $"+{MoldRecipeSystem.DecomposeGain}";
+                    float gainScale = MoldFont.RowGainBase * MoldFont.FontScale;
+                    Vector2 ts = font.MeasureString(gainTag) * gainScale;
+
                     Vector2 textPos = new(row.X + RowPadX + IconSize + 6f,
                         row.Y + (row.Height - font.LineSpacing * 0.5f) * 0.5f);
+                    float nameScale = MoldFont.RowNameBase * MoldFont.FontScale;
+                    float nameMaxW = row.Right - 6f - ts.X - 6f - textPos.X;
+                    string nameDraw = MoldFont.TruncateForWidth(font, candidates[i].Name, nameMaxW, nameScale);
                     Color nameCol = (isHover ? SHPCTheme.Text : SHPCTheme.TextDim) * a;
-                    Utils.DrawBorderString(sb, candidates[i].Name, textPos, nameCol, 0.6f);
+                    Utils.DrawBorderString(sb, nameDraw, textPos, nameCol, nameScale);
 
-                    //右侧 +N 提示
-                    string gainTag = $"+{MoldRecipeSystem.DecomposeGain}";
-                    Vector2 ts = font.MeasureString(gainTag) * 0.55f;
                     Utils.DrawBorderString(sb, gainTag,
                         new Vector2(row.Right - 6f - ts.X, textPos.Y),
-                        new Color(120, 255, 170) * a, 0.55f);
+                        new Color(120, 255, 170) * a, gainScale);
                 }
 
                 if (needScrollbar) {
@@ -265,10 +274,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 }
             }
 
-            //底部小提示
-            Utils.DrawBorderString(sb, MoldProcessingUI.DecomposeHint.Value,
+            //底部小提示（按列宽截断，超宽以 "..." 收尾）
+            float hintScale = MoldFont.HintBase * MoldFont.FontScale;
+            string hintDraw = MoldFont.TruncateForWidth(font,
+                MoldProcessingUI.DecomposeHint.Value, col.Width - 16f, hintScale);
+            Utils.DrawBorderString(sb, hintDraw,
                 new Vector2(col.X + 8f, col.Bottom - 16f),
-                SHPCTheme.TextDim * (0.85f * a), 0.45f);
+                SHPCTheme.TextDim * (0.85f * a), hintScale);
         }
 
         private static void DrawReforgeColumn(SpriteBatch sb, Texture2D px, DynamicSpriteFont font,
@@ -281,8 +293,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             SHPCRenderer.DrawRectStroke(sb, px, col, 1.1f, SHPCTheme.Border * (0.7f * a));
 
             //标题
+            float titleScale = MoldFont.ColumnTitleBase * MoldFont.FontScale;
             Utils.DrawBorderString(sb, MoldProcessingUI.Reforge.Value,
-                new Vector2(col.X + 8f, col.Y + 6f), SHPCTheme.Text * a, 0.65f);
+                new Vector2(col.X + 8f, col.Y + 6f), SHPCTheme.Text * a, titleScale);
 
             //预览框
             int previewSize = 100;
@@ -311,15 +324,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 targetName = MoldProcessingUI.UnknownName.Value;
             }
 
-            Vector2 modeSz = font.MeasureString(modeText) * 0.5f;
-            Utils.DrawBorderString(sb, modeText,
+            //预留 8px 左右安全边距
+            float modeMaxW = col.Width - 16f;
+            float modeScale = MoldFont.ModeTagBase * MoldFont.FontScale;
+            string modeDraw = MoldFont.TruncateForWidth(font, modeText, modeMaxW, modeScale);
+            Vector2 modeSz = font.MeasureString(modeDraw) * modeScale;
+            Utils.DrawBorderString(sb, modeDraw,
                 new Vector2(col.X + (col.Width - modeSz.X) * 0.5f, preview.Bottom + 8f),
-                (pinned ? SHPCTheme.Accent : SHPCTheme.Cyan) * a, 0.5f);
+                (pinned ? SHPCTheme.Accent : SHPCTheme.Cyan) * a, modeScale);
 
-            Vector2 nameSz = font.MeasureString(targetName) * 0.6f;
-            Utils.DrawBorderString(sb, targetName,
+            float nameScale = MoldFont.TargetNameBase * MoldFont.FontScale;
+            string nameDraw = MoldFont.TruncateForWidth(font, targetName, modeMaxW, nameScale);
+            Vector2 nameSz = font.MeasureString(nameDraw) * nameScale;
+            Utils.DrawBorderString(sb, nameDraw,
                 new Vector2(col.X + (col.Width - nameSz.X) * 0.5f, preview.Bottom + 26f),
-                SHPCTheme.Text * a, 0.6f);
+                SHPCTheme.Text * a, nameScale);
 
             //成本 / 持有
             int cost = pinned ? MoldRecipeSystem.PinnedCost : MoldRecipeSystem.RandomCost;
@@ -328,16 +347,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
             string costLine = string.Format(MoldProcessingUI.CostLine.Value, cost);
             string haveLine = string.Format(MoldProcessingUI.HaveLine.Value, have);
-            Vector2 costSz = font.MeasureString(costLine) * 0.52f;
-            Vector2 haveSz = font.MeasureString(haveLine) * 0.52f;
+            float chScale = MoldFont.CostHaveBase * MoldFont.FontScale;
+            Vector2 haveSz = font.MeasureString(haveLine) * chScale;
 
             float costY = preview.Bottom + 50f;
             Utils.DrawBorderString(sb, costLine,
                 new Vector2(col.X + 18f, costY),
-                (canAfford ? new Color(120, 255, 170) : new Color(255, 120, 110)) * a, 0.52f);
+                (canAfford ? new Color(120, 255, 170) : new Color(255, 120, 110)) * a, chScale);
             Utils.DrawBorderString(sb, haveLine,
                 new Vector2(col.Right - 18f - haveSz.X, costY),
-                SHPCTheme.Text * a, 0.52f);
+                SHPCTheme.Text * a, chScale);
 
             //按钮
             (Rectangle reforge, Rectangle clearPin) = GetReforgeButtons(col);
@@ -419,11 +438,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                     SHPCRenderer.DrawDisc(sb, px, dotPos, 2.2f, 2f, SHPCTheme.Cyan * (bright * a));
                 }
                 //中心闪烁问号
-                Vector2 qSz = font.MeasureString("?") * 1.2f;
+                float qScale = MoldFont.PreviewQmarkBase * MoldFont.FontScale;
+                Vector2 qSz = font.MeasureString("?") * qScale;
                 float qPulse = 0.85f + MathF.Sin(time * 2.6f) * 0.15f;
                 Utils.DrawBorderString(sb, "?",
                     new Vector2(center.X - qSz.X * 0.5f, center.Y - qSz.Y * 0.5f),
-                    SHPCTheme.CyanHi * (qPulse * a), 1.2f);
+                    SHPCTheme.CyanHi * (qPulse * a), qScale);
             }
 
             //外框
@@ -453,11 +473,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 SHPCRenderer.DrawCornerBrackets(sb, px, r, 5f, 1.2f, accent * a);
             }
 
-            float scale = smaller ? 0.6f : 0.78f;
-            Vector2 sz = font.MeasureString(label) * scale;
+            float scale = smaller
+                ? MoldFont.SmallButtonBase * MoldFont.FontScale
+                : MoldFont.BigButtonBase * MoldFont.FontScale;
+            string labelDraw = MoldFont.TruncateForWidth(font, label, r.Width - 12f, scale);
+            Vector2 sz = font.MeasureString(labelDraw) * scale;
             Color textCol = !enabled ? SHPCTheme.Disabled * a
                 : isHover ? SHPCTheme.Text * a : SHPCTheme.TextDim * a;
-            Utils.DrawBorderString(sb, label,
+            Utils.DrawBorderString(sb, labelDraw,
                 new Vector2(r.X + (r.Width - sz.X) * 0.5f, r.Y + (r.Height - sz.Y) * 0.5f),
                 textCol, scale);
         }

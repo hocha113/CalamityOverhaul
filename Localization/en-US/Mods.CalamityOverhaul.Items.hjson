@@ -9,8 +9,8 @@ MoldProcessingTable: {
 	Tooltip:
 		'''
 		Right-click the placed tile to open the SHPC mold processing UI
-		- Decompose: shred surplus modules of the same slot into shards
-		- Reforge: spend shards to produce new molds, with optional codex-pinning
+		Decompose: shred surplus modules of the same slot into shards
+		Reforge: spend shards to produce new molds, with optional codex-pinning
 		'''
 }
 

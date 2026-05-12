@@ -95,16 +95,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
                 //类别字母 glyph
                 string glyph = GetGlyph(cat);
-                Vector2 glyphSz = font.MeasureString(glyph) * 0.8f;
+                float glyphScale = MoldFont.SidebarGlyphBase * MoldFont.FontScale;
+                Vector2 glyphSz = font.MeasureString(glyph) * glyphScale;
                 Utils.DrawBorderString(sb, glyph,
                     new Vector2(r.X + 12f, r.Y + (r.Height - glyphSz.Y) * 0.5f),
-                    band * a, 0.8f);
+                    band * a, glyphScale);
 
-                //类别名
+                //类别名（剩余可用宽度 = 行宽 - 文字起点 - 右侧 4px 安全区）
                 string name = Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCSlotName." + cat);
-                Utils.DrawBorderString(sb, name,
+                float nameScale = MoldFont.SidebarNameBase * MoldFont.FontScale;
+                float nameMaxW = r.Right - (r.X + 34f) - 4f;
+                string nameDraw = MoldFont.TruncateForWidth(font, name, nameMaxW, nameScale);
+                Utils.DrawBorderString(sb, nameDraw,
                     new Vector2(r.X + 34f, r.Y + 6f),
-                    (isActive ? SHPCTheme.Text : SHPCTheme.TextDim) * a, 0.55f);
+                    (isActive ? SHPCTheme.Text : SHPCTheme.TextDim) * a, nameScale);
 
                 //碎片数 + 图鉴进度
                 int shards = sp?.MoldShards != null && i < sp.MoldShards.Length ? sp.MoldShards[i] : 0;
@@ -114,9 +118,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 int total = MoldRecipeSystem.EnumerateCategoryAll(cat).Count();
 
                 string status = $"{shards} {MoldProcessingUI.ShardSuffix.Value}  ·  {discovered}/{total}";
+                float statusScale = MoldFont.SidebarStatusBase * MoldFont.FontScale;
+                string statusDraw = MoldFont.TruncateForWidth(font, status, nameMaxW, statusScale);
                 Color statusCol = (isActive ? SHPCTheme.Cyan : SHPCTheme.TextDim) * a;
-                Utils.DrawBorderString(sb, status,
-                    new Vector2(r.X + 34f, r.Y + 24f), statusCol, 0.48f);
+                Utils.DrawBorderString(sb, statusDraw,
+                    new Vector2(r.X + 34f, r.Y + 26f), statusCol, statusScale);
             }
         }
 

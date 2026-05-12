@@ -1,4 +1,4 @@
-﻿HalibutText: {
+HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -497,8 +497,8 @@ MoldProcessingUI: {
 	ClearPin: 取消固定
 	RandomMode: 随机 · 优先未发现
 	PinnedMode: 已锁定图鉴目标
-	CostLine: "消耗：{0}"
-	HaveLine: "持有：{0}"
+	CostLine: 消耗：{0}
+	HaveLine: 持有：{0}
 	UnknownName: ??????
 	ProgressFormat: "{0}/{1}"
 	ShardSuffix: 碎片
