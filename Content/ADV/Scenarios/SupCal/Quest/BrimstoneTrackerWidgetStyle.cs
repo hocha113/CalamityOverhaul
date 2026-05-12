@@ -7,240 +7,207 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 {
     /// <summary>
-    /// 硫火女巫委托在屏幕左侧追踪窗口中的自定义样式——
-    /// 深红渐变背景、硫火脉冲边框、余烬粒子、
-    /// 火焰色进度条
+    /// 硫火女巫委托追踪窗口样式——极简地狱火HUD：<br/>
+    /// 完全无背景与外框，标题左侧是"上升火焰三角 + 顶端余烬"记号，
+    /// 标题下方是实线 + 三粒错相闪烁的余烬点，
+    /// 进度仅以贴近文字的 2px 火色细线呈现，保留炽热感而不堆叠面板。
     /// </summary>
     internal class BrimstoneTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
 
-        private static readonly Color BgDeep = new(28, 14, 14);
-        private static readonly Color BgMid = new(55, 25, 20);
-        private static readonly Color BorderBase = new(140, 50, 30);
-        private static readonly Color BorderGlow = new(255, 120, 50);
+        private static readonly Color FireRed = new(220, 80, 30);
+        private static readonly Color FireRedBright = new(255, 150, 70);
+        private static readonly Color FireRedDim = new(120, 35, 15);
+        private static readonly Color EmberGold = new(255, 195, 110);
         private static readonly Color TitleWarm = new(255, 220, 180);
-        private static readonly Color TextBody = new(220, 180, 160);
-        private static readonly Color AccentFire = new(220, 80, 30);
-        private static readonly Color AccentEmber = new(255, 140, 60);
-        private static readonly Color BarStart = new(180, 50, 50);
-        private static readonly Color BarEnd = new(255, 140, 60);
-        private static readonly Color CompletedGreen = new(60, 220, 140);
+        private static readonly Color TextBody = new(225, 190, 165);
+        private static readonly Color ShadowInk = new(14, 4, 2);
 
         #endregion
 
-        private float pulseTimer;
-        private float shimmerPhase;
+        private float pulse;
+        private float flicker;
 
         public void Update(Rectangle widgetRect, float slideProgress) {
-            pulseTimer += 0.03f;
-            if (pulseTimer > MathHelper.TwoPi) pulseTimer -= MathHelper.TwoPi;
-            shimmerPhase += 0.025f;
-            if (shimmerPhase > MathHelper.TwoPi) shimmerPhase -= MathHelper.TwoPi;
+            pulse += 0.034f;
+            flicker += 0.07f;
+            if (pulse > MathHelper.TwoPi) pulse -= MathHelper.TwoPi;
+            if (flicker > MathHelper.TwoPi) flicker -= MathHelper.TwoPi;
         }
 
-        public void Reset() {
-            pulseTimer = 0f;
-            shimmerPhase = 0f;
-        }
+        public void Reset() { pulse = 0f; flicker = 0f; }
 
-        #region 面板绘制
-
-        public void DrawWidgetBackground(SpriteBatch sb, Rectangle rect, float alpha) {
-            var px = VaultAsset.placeholder2.Value;
-
-            //阴影
-            Rectangle shadow = rect;
-            shadow.Offset(3, 3);
-            sb.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.45f));
-
-            //纵向渐变背景
-            int segs = 10;
-            for (int i = 0; i < segs; i++) {
-                float t = i / (float)segs;
-                float t2 = (i + 1) / (float)segs;
-                int y1 = rect.Y + (int)(t * rect.Height);
-                int y2 = rect.Y + (int)(t2 * rect.Height);
-
-                float wave = MathF.Sin(pulseTimer * 1.2f + t * 2f) * 0.5f + 0.5f;
-                Color c = Color.Lerp(BgDeep, BgMid, t * 0.4f + wave * 0.15f) * (alpha * 0.92f);
-                sb.Draw(px, new Rectangle(rect.X, y1, rect.Width, Math.Max(1, y2 - y1)),
-                    new Rectangle(0, 0, 1, 1), c);
-            }
-
-            //脉冲叠加
-            float pulse = MathF.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
-            Color pulseC = AccentFire * (alpha * 0.08f * pulse);
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), pulseC);
-        }
-
-        public void DrawWidgetFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            var px = VaultAsset.placeholder2.Value;
-
-            float glow = MathF.Sin(shimmerPhase) * 0.3f + 0.7f;
-            Color edgeC = Color.Lerp(BorderBase, BorderGlow, glow) * (alpha * 0.8f);
-
-            //顶部双线
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edgeC);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y + 2, rect.Width, 1),
-                new Rectangle(0, 0, 1, 1), edgeC * 0.4f);
-
-            //底部
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
-                new Rectangle(0, 0, 1, 1), edgeC * 0.5f);
-
-            //左侧强调线
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height),
-                new Rectangle(0, 0, 1, 1), edgeC * 0.9f);
-
-            //右侧淡线
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height),
-                new Rectangle(0, 0, 1, 1), edgeC * 0.3f);
-
-            //角落装饰
-            float ornAlpha = alpha * (0.5f + MathF.Sin(pulseTimer * 1.5f) * 0.3f);
-            Color ornC = AccentEmber * ornAlpha;
-            sb.Draw(px, new Vector2(rect.X + 5, rect.Y + 5), null, ornC,
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3f), SpriteEffects.None, 0f);
-            sb.Draw(px, new Vector2(rect.Right - 5, rect.Y + 5), null, ornC,
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3f), SpriteEffects.None, 0f);
-        }
+        public void DrawWidgetBackground(SpriteBatch sb, Rectangle rect, float alpha) { }
+        public void DrawWidgetFrame(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public void DrawWidgetHeader(SpriteBatch sb, Rectangle headerRect, string title, float alpha) {
             var px = VaultAsset.placeholder2.Value;
-
-            //标题栏背景（稍暗于主体）
-            Color hdrBg = new Color(20, 10, 10) * (alpha * 0.6f);
-            BaseManagerStyle.FillRect(sb, headerRect, hdrBg);
-
-            //硫火菱形图标
-            float iconX = headerRect.X + 10f;
-            float iconY = headerRect.Y + headerRect.Height / 2f;
-            float iconPulse = MathF.Sin(pulseTimer + 1f) * 0.3f + 0.7f;
-            sb.Draw(px, new Vector2(iconX, iconY), null, AccentFire * (alpha * iconPulse),
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4f), SpriteEffects.None, 0f);
-
-            //标题文字——超出宽度时截断加省略号
+            var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
-            float maxTitleW = headerRect.Width - 30f;
-            if (font.MeasureString(title).X * 0.72f > maxTitleW) {
-                while (title.Length > 3 && font.MeasureString(title + "...").X * 0.72f > maxTitleW)
-                    title = title[..^1];
-                title += "...";
-            }
-            Color titleC = TitleWarm * alpha;
-            Utils.DrawBorderString(sb, title,
-                new Vector2(headerRect.X + 22f, headerRect.Y + (headerRect.Height - 16f) / 2f),
-                titleC, 0.72f);
 
-            //底部分隔线（渐变）
-            int divW = headerRect.Width - 8;
-            int segs = 16;
-            for (int i = 0; i < segs; i++) {
-                float t = i / (float)segs;
-                int x1 = headerRect.X + 4 + (int)(t * divW);
-                int x2 = headerRect.X + 4 + (int)((i + 1f) / segs * divW);
-                Color c = Color.Lerp(AccentFire * (alpha * 0.6f), AccentFire * (alpha * 0.1f), t);
-                sb.Draw(px, new Rectangle(x1, headerRect.Bottom - 1, Math.Max(1, x2 - x1), 1),
-                    new Rectangle(0, 0, 1, 1), c);
+            //头部记号——上升火焰三角 ∧ + 顶端余烬粒
+            int markX = headerRect.X + 8;
+            int markY = headerRect.Y + headerRect.Height / 2;
+            DrawFlameMark(sb, px, uv, markX, markY, alpha);
+
+            //标题文字——红色拖尾投影 + 主体暖白（字号略大于默认正文）
+            const float titleScale = 0.95f;
+            int textX = headerRect.X + 20;
+            //大字号下需略微下移基线，让顶部不贴顶
+            float textY = headerRect.Y + (headerRect.Height - 16f) / 2f;
+            Vector2 titlePos = new(textX, textY);
+
+            //侧偏火色虚影 + 深色投影 + 主体（模拟热浪烘焙感）
+            Utils.DrawBorderString(sb, title, titlePos + new Vector2(1, 1),
+                FireRedDim * (alpha * 0.45f), titleScale);
+            Utils.DrawBorderString(sb, title, titlePos + new Vector2(0, 1),
+                ShadowInk * (alpha * 0.55f), titleScale);
+            Utils.DrawBorderString(sb, title, titlePos, TitleWarm * alpha, titleScale);
+
+            //下划线——实线 + 三粒错相闪烁的余烬点（下移避开放大后的标题底部）
+            int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
+            int underY = headerRect.Bottom + 1;
+            int solidLen = Math.Clamp(titlePixelW + 4, 20, headerRect.Width - 38);
+            float p = MathF.Sin(pulse * 2f) * 0.2f + 0.8f;
+
+            sb.Draw(px, new Rectangle(textX, underY, solidLen, 1), uv, FireRed * (alpha * 0.88f * p));
+
+            //三粒余烬——各自相位错开闪烁，y方向微抖
+            int emberStart = textX + solidLen + 5;
+            for (int k = 0; k < 3; k++) {
+                int ex = emberStart + k * 6;
+                if (ex > headerRect.Right - 6) break;
+                float phase = flicker * 1.3f + k * 1.7f;
+                float fade = MathF.Sin(phase) * 0.45f + 0.5f;
+                int ey = underY + (int)(MathF.Sin(phase * 1.6f + 0.3f) * 1.2f);
+                int w = (k == 1) ? 2 : 1; //中间那粒稍大
+                sb.Draw(px, new Rectangle(ex, ey, w, 1), uv,
+                    EmberGold * (alpha * (0.25f + fade * 0.6f)));
             }
+        }
+
+        //火焰三角 ∧：两条45°斜线交于上方，外加顶端1px余烬粒
+        private void DrawFlameMark(SpriteBatch sb, Texture2D px, Rectangle uv, int cx, int cy, float alpha) {
+            float p = MathF.Sin(pulse * 2.4f) * 0.22f + 0.78f;
+            Color body = FireRedBright * (alpha * p);
+            Color shadow = ShadowInk * (alpha * 0.4f);
+
+            //投影（偏移1px向下）
+            sb.Draw(px, new Vector2(cx - 4, cy + 3), uv, shadow,
+                -MathHelper.PiOver4, new Vector2(0f, 0.5f),
+                new Vector2(6f, 1f), SpriteEffects.None, 0f);
+            sb.Draw(px, new Vector2(cx + 4, cy + 3), uv, shadow,
+                MathHelper.PiOver4 - MathHelper.Pi, new Vector2(0f, 0.5f),
+                new Vector2(6f, 1f), SpriteEffects.None, 0f);
+
+            //左斜（从左下向右上→指向顶点）
+            sb.Draw(px, new Vector2(cx - 4, cy + 2), uv, body,
+                -MathHelper.PiOver4, new Vector2(0f, 0.5f),
+                new Vector2(6f, 1f), SpriteEffects.None, 0f);
+            //右斜（从右下向左上→指向顶点）
+            sb.Draw(px, new Vector2(cx + 4, cy + 2), uv, body,
+                MathHelper.PiOver4 - MathHelper.Pi, new Vector2(0f, 0.5f),
+                new Vector2(6f, 1f), SpriteEffects.None, 0f);
+
+            //顶端余烬粒——竖向漂浮，亮度随flicker明灭
+            float embPhase = flicker * 1.1f;
+            float ember = MathF.Sin(embPhase) * 0.5f + 0.5f;
+            float embY = cy - 5f - ember * 1.6f;
+            sb.Draw(px, new Rectangle(cx, (int)embY, 1, 1), uv,
+                EmberGold * (alpha * (0.55f + ember * 0.45f)));
         }
 
         public void DrawWidgetProgress(SpriteBatch sb, Rectangle barRect, float progress,
             string progressText, float alpha) {
             var px = VaultAsset.placeholder2.Value;
-            var font = FontAssets.MouseText.Value;
+            var uv = new Rectangle(0, 0, 1, 1);
 
-            //背景
-            BaseManagerStyle.FillRect(sb, barRect, Color.Black * (alpha * 0.6f));
+            //2px火色细线
+            const int barH = 2;
+            int y = barRect.Y + (barRect.Height - barH) / 2;
+            int trackW = barRect.Width;
 
-            //渐变填充
-            int fillW = (int)(barRect.Width * MathHelper.Clamp(progress, 0f, 1f));
-            if (fillW > 2) {
-                Rectangle fill = new(barRect.X + 1, barRect.Y + 1, fillW - 2, barRect.Height - 2);
-                int segs = 12;
+            //轨道——暗红底线
+            sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, FireRedDim * (alpha * 0.45f));
+
+            //填充——深红→余烬金的渐变
+            int fillW = (int)(trackW * MathHelper.Clamp(progress, 0f, 1f));
+            if (fillW > 0) {
+                int segs = Math.Max(6, fillW / 4);
                 for (int i = 0; i < segs; i++) {
                     float t = i / (float)segs;
                     float t2 = (i + 1) / (float)segs;
-                    int sx1 = fill.X + (int)(t * fill.Width);
-                    int sx2 = fill.X + (int)(t2 * fill.Width);
-                    Color c = Color.Lerp(BarStart, BarEnd, t);
-                    float pulse = MathF.Sin(pulseTimer * 2f + t * MathHelper.Pi) * 0.25f + 0.75f;
-                    sb.Draw(px, new Rectangle(sx1, fill.Y, Math.Max(1, sx2 - sx1), fill.Height),
-                        new Rectangle(0, 0, 1, 1), c * (alpha * pulse));
+                    int x1 = barRect.X + (int)(t * fillW);
+                    int x2 = barRect.X + (int)(t2 * fillW);
+                    int w = Math.Max(1, x2 - x1);
+                    Color c = Color.Lerp(FireRed, EmberGold, t * 0.75f) * (alpha * 0.95f);
+                    sb.Draw(px, new Rectangle(x1, y, w, barH), uv, c);
                 }
-
-                //顶部发光
-                Color glowC = AccentEmber * (alpha * 0.4f);
-                sb.Draw(px, new Rectangle(fill.X, fill.Y - 1, fill.Width, 1),
-                    new Rectangle(0, 0, 1, 1), glowC);
+                //尖端炽亮余烬
+                if (fillW > 1) {
+                    sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 1, 1, barH + 2), uv,
+                        FireRedBright * (alpha * 0.85f));
+                }
+                //尖端上方"余烬火花"——1px小点，向上偏移2px，随flicker相位明灭
+                float sparkFade = MathF.Sin(flicker * 1.5f) * 0.5f + 0.5f;
+                if (sparkFade > 0.05f) {
+                    sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 3, 1, 1), uv,
+                        EmberGold * (alpha * 0.7f * sparkFade));
+                }
             }
 
-            //边框
-            Color borderC = AccentFire * (alpha * 0.5f);
-            sb.Draw(px, new Rectangle(barRect.X, barRect.Y, barRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderC);
-            sb.Draw(px, new Rectangle(barRect.X, barRect.Bottom - 1, barRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderC);
-            sb.Draw(px, new Rectangle(barRect.X, barRect.Y, 1, barRect.Height),
-                new Rectangle(0, 0, 1, 1), borderC);
-            sb.Draw(px, new Rectangle(barRect.Right - 1, barRect.Y, 1, barRect.Height),
-                new Rectangle(0, 0, 1, 1), borderC);
+            //满级——条带整体微微脉动出余烬光
+            if (progress >= 0.999f) {
+                float fp = MathF.Sin(pulse * 4f) * 0.5f + 0.5f;
+                sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv,
+                    EmberGold * (alpha * 0.18f * fp));
+            }
 
-            //进度文本
+            //进度文字——靠右上方，0.5倍小字
             if (!string.IsNullOrEmpty(progressText)) {
-                float textW = font.MeasureString(progressText).X * 0.5f;
+                var font = FontAssets.MouseText.Value;
+                Vector2 sz = font.MeasureString(progressText) * 0.5f;
                 Utils.DrawBorderString(sb, progressText,
-                    new Vector2(barRect.Right - textW - 2f, barRect.Bottom + 2f),
-                    AccentEmber * (alpha * 0.7f), 0.5f);
+                    new Vector2(barRect.Right - sz.X - 1f, y - sz.Y - 1f),
+                    EmberGold * alpha, 0.5f);
             }
         }
 
         public void DrawWidgetDivider(SpriteBatch sb, Vector2 start, Vector2 end, float alpha) {
             var px = VaultAsset.placeholder2.Value;
-            float w = end.X - start.X;
-            int segs = 16;
-            for (int i = 0; i < segs; i++) {
-                float t = i / (float)segs;
-                float x = start.X + t * w;
-                float nexX = start.X + (i + 1f) / segs * w;
-                Color c = Color.Lerp(AccentFire * (alpha * 0.6f), AccentFire * (alpha * 0.05f), t);
-                sb.Draw(px, new Rectangle((int)x, (int)start.Y, Math.Max(1, (int)(nexX - x)), 1),
-                    new Rectangle(0, 0, 1, 1), c);
+            float len = (end - start).Length();
+            if (len < 1f) return;
+            Vector2 dir = (end - start) / len;
+            float rot = MathF.Atan2(dir.Y, dir.X);
+
+            //不规则火焰节律：1~3px变长度，亮度随相位起伏
+            int k = 0;
+            for (float c = 0; c < len; c += 5f) {
+                float t = c / len;
+                float jitter = MathF.Sin(flicker * 0.9f + k * 1.4f) * 0.5f + 0.5f;
+                float segLen = Math.Min(1f + jitter * 2f, len - c);
+                float fade = (MathF.Sin(flicker + k * 0.7f) * 0.35f + 0.45f) * (1f - t * 0.5f);
+                sb.Draw(px, start + dir * c, new Rectangle(0, 0, 1, 1),
+                    FireRedDim * (alpha * fade), rot, new Vector2(0, 0.5f),
+                    new Vector2(segLen, 1f), SpriteEffects.None, 0f);
+                k++;
             }
         }
 
-        public void DrawWidgetOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            //底部微弱的硫火辉光
-            var px = VaultAsset.placeholder2.Value;
-            float glowStr = MathF.Sin(pulseTimer) * 0.15f + 0.15f;
-            for (int i = 0; i < 4; i++) {
-                int y = rect.Bottom - 4 + i;
-                float fade = (4 - i) / 4f;
-                Color c = AccentFire * (alpha * glowStr * fade * 0.3f);
-                sb.Draw(px, new Rectangle(rect.X + 2, y, rect.Width - 4, 1),
-                    new Rectangle(0, 0, 1, 1), c);
-            }
-        }
-
-        #endregion
-
-        #region 颜色
+        public void DrawWidgetOverlay(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public Color GetWidgetTitleColor(float alpha) => TitleWarm * alpha;
+        public Color GetWidgetTextColor(float alpha) => TextBody * (alpha * 0.95f);
+        public Color GetWidgetAccentColor(float alpha) => EmberGold * alpha;
 
-        public Color GetWidgetTextColor(float alpha) => TextBody * (alpha * 0.85f);
-
-        public Color GetWidgetAccentColor(float alpha) => AccentEmber * alpha;
-
-        #endregion
-
-        #region 度量
-
-        public int? GetPreferredWidth() => null; //使用默认宽度
-
-        public int? GetMinHeight() => 90;
-
-        #endregion
+        public int? GetPreferredWidth() => 240;
+        public int? GetMinHeight() => 62;
+        public int? GetIdleCompactHeight(EntrustEntryData entry) {
+            //待机时折叠成"标题 + 下划线 + 描述 + 等待提示"的双行紧凑布局
+            if (entry.Progress <= 0f && entry.Status != QuestEntryStatus.Completed)
+                return 70;
+            return null;
+        }
     }
 }
