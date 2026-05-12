@@ -40,6 +40,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public DeploySignaltowerQuestEntry(string key, LocalizedText title, LocalizedText summary, LocalizedText category)
             : base(key, title, summary, category) { }
 
+        //追踪窗口使用极简HUD样式时，需要在内容区顶部预留5px，
+        //让标题下划线与首行描述之间留出可见的呼吸空间
+        public override float GetTrackerContentTopPadding() => 5f;
+
         public override void OnUpdate() {
             if (Status == QuestEntryStatus.Completed || Status == QuestEntryStatus.Failed) return;
 
