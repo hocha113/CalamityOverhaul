@@ -1,4 +1,4 @@
-﻿CybCourseIntroDialogue: {
+CybCourseIntroDialogue: {
 	SpeakerName: SHPC
 	Line1: Master, welcome to the neural training node.
 	Line2: This is an immersive tutorial space prepared for you.
@@ -187,8 +187,7 @@ CybCourseOutroDialogue: {
 	Line3: You may reset the training at any time, or exit the Braindance.
 }
 
-CybCourseCompletePanel: 
-{
+CybCourseCompletePanel: {
 	Title: TRAINING COMPLETE
 	Subtitle: SUPERDREAM PROTOCOL
 	Stat1: "[#] SHPC HUD 校准完毕"
