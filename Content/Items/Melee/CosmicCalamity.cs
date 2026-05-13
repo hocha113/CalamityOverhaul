@@ -90,6 +90,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             comboResetTimer = 75;
             return false;
         }
+
+        public override void AddRecipes() {
+            if (CWRRef.Has)
+            CreateRecipe().AddIngredient(CWRID.Item_CosmiliteBar, 12).AddTile(CWRID.Tile_CosmicAnvil).Register();
+        }
     }
 
     /// <summary>
