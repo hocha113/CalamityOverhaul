@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>
         /// 触发领域冻结的RAM消耗量
         /// </summary>
-        public const int RamCost = 3;
+        public const int RamCost = 4;
 
         /// <summary>
         /// 当前正在被冻结的NPC列表

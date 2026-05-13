@@ -30,9 +30,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         public const float RamCostPerCast = 6f;
 
         /// <summary>
-        /// 重启生效后，RAM 锁定为 0 的帧数（约 12 秒）。锁定期间 RAM 不恢复，也不能使用任何消耗 RAM 的技能，以此代替传统冷却
+        /// 重启生效后，RAM 锁定为 0 的帧数（约 22 秒）。锁定期间 RAM 不恢复，也不能使用任何消耗 RAM 的技能，以此代替传统冷却
         /// </summary>
-        public const int RamLockFrames = 60 * 12;
+        public const int RamLockFrames = 60 * 22;
 
         //——四阶段帧时点，TotalFrames 为整体演出长度——
         /// <summary>撕裂阶段终点：黑墙裂缝在领域中蔓延</summary>
