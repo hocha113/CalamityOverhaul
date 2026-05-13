@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
+namespace CalamityOverhaul.Content.Items.AmmoBoxs
 {
     internal abstract class BaseHeldBox : BaseHeldProj
     {

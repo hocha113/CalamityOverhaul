@@ -2,7 +2,7 @@
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
+namespace CalamityOverhaul.Content.Items.AmmoBoxs
 {
     internal class SuccessfullyDeployedEffct : ModProjectile
     {
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float textAlp = Projectile.alpha / 255f;
                 Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.65f)
-                    - (FontAssets.ItemStack.Value.MeasureString(text) / 2 * Projectile.scale);
+                    - FontAssets.ItemStack.Value.MeasureString(text) / 2 * Projectile.scale;
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text
                     , pos.X, pos.Y, textColor * textAlp, fontColor * textAlp, Vector2.Zero, Projectile.scale);
             }

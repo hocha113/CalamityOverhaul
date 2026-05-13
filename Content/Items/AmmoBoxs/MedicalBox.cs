@@ -1,10 +1,9 @@
-﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Placeable
+namespace CalamityOverhaul.Content.Items.AmmoBoxs
 {
     internal class MedicalBox : ModItem
     {

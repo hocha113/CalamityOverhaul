@@ -1,6 +1,6 @@
 ﻿using Terraria;
 
-namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
+namespace CalamityOverhaul.Content.Items.AmmoBoxs
 {
     internal class NapalmBombBox : BaseAmmoBox
     {

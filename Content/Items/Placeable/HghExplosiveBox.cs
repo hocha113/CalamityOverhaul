@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
+﻿using CalamityOverhaul.Content.Items.AmmoBoxs;
 using Terraria.ID;
 using Terraria.ModLoader;
 

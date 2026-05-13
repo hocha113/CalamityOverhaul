@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
+namespace CalamityOverhaul.Content.Items.AmmoBoxs
 {
     internal class HghExplosiveHeld : BaseHeldBox
     {
