@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.penetrate = -1;
             Projectile.timeLeft = 10;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 6;
+            Projectile.localNPCHitCooldown = 5;
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -113,9 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.velocity = Vector2.Zero;
 
             //光束终点：鼠标位置，最大射程限制
-            float rawDist = Vector2.Distance(Projectile.Center, Main.MouseWorld);
-            float clampedDist = MathHelper.Clamp(rawDist, 20f, MaxRange);
-            beamEnd = Projectile.Center + aimDir * clampedDist;
+            beamEnd = Projectile.Center + aimDir * MaxRange;
 
             //均匀填充顶点数组（Trail 沿直线渲染光柱）
             laserPoints ??= new Vector2[PointCount];
