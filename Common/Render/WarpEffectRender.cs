@@ -1,4 +1,4 @@
-using InnoVault.RenderHandles;
+﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Common.Render
     internal sealed class WarpEffectRender : RenderHandle
     {
         //预分配缓冲，每帧 Clear 后复用以避免 GC 压力
-        private static readonly List<IPrimitiveDrawable> _primitiveBuffer = new(64);
         private static readonly List<IWarpDrawable> _warpBuffer = new(16);
         private static readonly List<IWarpDrawable> _warpNoBlueshiftBuffer = new(16);
 
@@ -29,8 +28,6 @@ namespace CalamityOverhaul.Common.Render
 
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             CollectDrawables();
-
-            DrawPrimitives();
 
             //仅在确实有扭曲源时才进入昂贵的全屏后处理路径
             if (_warpBuffer.Count == 0 && _warpNoBlueshiftBuffer.Count == 0) {
@@ -56,7 +53,6 @@ namespace CalamityOverhaul.Common.Render
         /// 避免原实现中对弹幕数组的多次重复遍历
         /// </summary>
         private static void CollectDrawables() {
-            _primitiveBuffer.Clear();
             _warpBuffer.Clear();
             _warpNoBlueshiftBuffer.Clear();
 
@@ -72,9 +68,6 @@ namespace CalamityOverhaul.Common.Render
                     continue;
                 }
 
-                if (mp is IPrimitiveDrawable primitive) {
-                    _primitiveBuffer.Add(primitive);
-                }
                 if (mp is IWarpDrawable warp) {
                     if (warp.DontUseBlueshiftEffect()) {
                         _warpNoBlueshiftBuffer.Add(warp);
@@ -83,13 +76,6 @@ namespace CalamityOverhaul.Common.Render
                         _warpBuffer.Add(warp);
                     }
                 }
-            }
-        }
-
-        private static void DrawPrimitives() {
-            int count = _primitiveBuffer.Count;
-            for (int i = 0; i < count; i++) {
-                _primitiveBuffer[i].DrawPrimitives();
             }
         }
 
