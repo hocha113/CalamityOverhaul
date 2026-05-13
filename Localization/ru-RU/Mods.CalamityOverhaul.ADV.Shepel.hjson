@@ -1,4 +1,4 @@
-﻿CybCourseIntroDialogue: {
+CybCourseIntroDialogue: {
 	SpeakerName: SHPC
 	Line1: Хозяин, добро пожаловать в узел нейронной тренировки.
 	Line2: Это иммерсивное обучающее пространство, подготовленное специально для вас.
@@ -187,8 +187,7 @@ CybCourseOutroDialogue: {
 	Line3: Вы можете перезапустить тренировку в любой момент или выйти из брейнданса.
 }
 
-CybCourseCompletePanel: 
-{
+CybCourseCompletePanel: {
 	Title: ТРЕНИРОВКА ЗАВЕРШЕНА
 	Subtitle: ПРОТОКОЛ БРЕЙНДАНСА
 	Stat1: "[#] HUD SHPC откалиброван"
