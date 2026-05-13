@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	// InstalledHeader: INSTALLED MODULES
 	// NoModules: NONE
 	// BonusHeader: TOTAL MODULE BONUSES
@@ -263,11 +263,7 @@ DragonsScaleGreatsword: {
 
 CosmicCalamity: {
 	DisplayName: Calamité Cosmique
-	Tooltip:
-		'''
-		Lance des vers cosmiques traqueurs
-		Les attaques furtives infligent une explosion croisée thermique
-		'''
+	Tooltip: Attaque génère une vague de choc de type croissant
 }
 
 SpearOfLonginus: {

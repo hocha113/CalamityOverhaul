@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	// InstalledHeader: INSTALLED MODULES
 	// NoModules: NONE
 	// BonusHeader: TOTAL MODULE BONUSES
@@ -264,11 +264,7 @@ DragonsScaleGreatsword: {
 
 CosmicCalamity: {
 	DisplayName: Kosmische Katastrophe
-	Tooltip:
-		'''
-		Wirft eine verfolgte kosmische Katastrophenlarve ab
-		Verborgener Angriff verursacht eine hitzige Kreuzexplosion
-		'''
+	Tooltip: Angriff startete eine sichelförmige schockwelle
 }
 
 SpearOfLonginus: {

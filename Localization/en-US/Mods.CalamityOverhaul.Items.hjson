@@ -257,7 +257,7 @@ DragonsScaleGreatsword: {
 
 CosmicCalamity: {
 	DisplayName: Galactic Disaster
-	Tooltip: Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy.
+	Tooltip: Attack generates crescent-shaped shock waves.
 }
 
 SpearOfLonginus: {

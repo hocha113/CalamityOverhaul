@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	// InstalledHeader: INSTALLED MODULES
 	// NoModules: NONE
 	// BonusHeader: TOTAL MODULE BONUSES
@@ -253,11 +253,7 @@ StormGoddessSpear: {
 
 DragonsScaleGreatsword: {
 	DisplayName: Гигантское лезвие драконьих водорослей
-	Tooltip:
-		'''
-		При попадании в цель взрывается несколько сгустков ядовитых водорослей
-		Настоящая ближняя атака порождает ядовитый туман водорослей
-		'''
+	Tooltip: Атака создает ударную волну типа лунного зуба
 }
 
 CosmicCalamity: {

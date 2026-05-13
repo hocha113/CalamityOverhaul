@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	// InstalledHeader: INSTALLED MODULES
 	// NoModules: NONE
 	// BonusHeader: TOTAL MODULE BONUSES
@@ -268,11 +268,7 @@ DragonsScaleGreatsword: {
 
 CosmicCalamity: {
 	DisplayName: Calamidad Cósmica
-	Tooltip:
-		'''
-		Lanza un insecto de calamidad galáctica que sigue al enemigo.
-		Un ataque por sorpresa causa una explosión de rayos térmicos en forma de cruz.
-		'''
+	Tooltip: Ataque genera onda de choque tipo luna creciente
 }
 
 SpearOfLonginus: {
