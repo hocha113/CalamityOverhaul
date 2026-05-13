@@ -716,7 +716,9 @@ SHPCUI: {
 	Cyber_SkillLocked: "[X] Requires Layer {0}"
 	Cyber_KeyUnbound: ?
 	Cyber_Skill_Teleport_Name: RIFT TELEPORT
-	Cyber_Skill_Teleport_Desc: Tear a dimensional rift to the cursor and reform inside the domain.
+	Cyber_Skill_Teleport_Desc: Deconstructs the chassis into a data stream to transmit to the target location, recomposing its physical form under the cover of the Blackwall protocol.
+	Cyber_Skill_Restart_Name: SYSTEM REBOOT
+	Cyber_Skill_Restart_Desc: Rips open the domain, forcibly terminates current processes, and reboots the core, instantly repairing chassis damage and restoring all functions to an optimal state.
 	Cyber_Skill_Banish_Name: CYBER BANISH
 	Cyber_Skill_Banish_Desc: Send the foe under the cursor into deep cyberspace.
 	Cyber_Skill_Freeze_Name: DOMAIN FREEZE
@@ -747,8 +749,6 @@ SHPCUI: {
 	Talk_Description: Open a direct channel to SHPC
 	Talk_Status_Busy: BUSY
 	Talk_Status_Ready: READY
-	Cyber_Skill_Restart_Name: SYSTEM REBOOT
-	Cyber_Skill_Restart_Desc: Collapse the domain into a singularity and burst back fully restored.
 	Modify_Preset_A: PRESET-A
 	Modify_Preset_B: PRESET-B
 	Modify_Preset_C: PRESET-C

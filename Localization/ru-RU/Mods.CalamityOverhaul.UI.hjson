@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: ЛКМ, чтобы добавить предмет
 	HintText2: ЛКМ, чтобы убрать предмет
 	CloseHint: Нажмите [ESC] или [ПКМ], чтобы закрыть
@@ -8,15 +8,15 @@ LegendUpgradeConfirmUI: {
 	TitleText: Подтверждение улучшения легендарного оружия
 	DescText:
 		'''
-		Уровень мира выше уровня оружия.
+		Текущий уровень мира выше уровня оружия.
 		Улучшить {0} до уровня {1}?
 		'''
 	ConfirmText: Подтвердить улучшение
 	CancelText: Отмена
-	Success: Оружие [ITEM] улучшено до уровня [LEVEL]
-	// QueueIndicator: There are still {0} legendary weapons to be confirmed.
-	// TrustText: Trust this world
-	// TrustSuccess: "[ITEM] has trusted this world and will automatically sync from now on"
+	Success: "[ITEM] успешно улучшено до [LEVEL] уровня"
+	QueueIndicator: Легендарного оружия в очереди на подтверждение: {0}
+	TrustText: Доверять этому миру
+	TrustSuccess: "[ITEM] теперь доверяет этому миру и будет улучшаться автоматически"
 }
 
 QuestTracker: {
@@ -713,7 +713,9 @@ SHPCUI: {
 	Cyber_SkillLocked: "[X] Требуется домен {0} уровня"
 	Cyber_KeyUnbound: Не привязано
 	Cyber_Skill_Teleport_Name: Пространственный скачок
-	Cyber_Skill_Teleport_Desc: Превратиться в разлом пространственных данных к курсору и воссоздаться в скоплении блоков данных заслона.
+	Cyber_Skill_Teleport_Desc: Разлагает тело на поток данных для перемещения в целевую точку и восстанавливает физическую форму под прикрытием протокола Черного заслона.
+	Cyber_Skill_Restart_Name: Самоперезагрузка
+	Cyber_Skill_Restart_Desc: Разрывает область, принудительно прерывает текущие процессы и перезапускает ядро, мгновенно устраняя повреждения корпуса и возвращая все функции в идеальное состояние.
 	Cyber_Skill_Banish_Name: Киберизгнание
 	Cyber_Skill_Banish_Desc: Отправить врага под курсором в глубины киберпространства.
 	Cyber_Skill_Freeze_Name: Заморозка домена
@@ -744,11 +746,9 @@ SHPCUI: {
 	Talk_Description: Открыть канал прямой связи с SHPC
 	Talk_Status_Busy: Занято
 	Talk_Status_Ready: Готово
-	Cyber_Skill_Restart_Name: Самоперезагрузка
-	Cyber_Skill_Restart_Desc: Разорвать домен, сжаться в разлом пространственного ядра, а затем взорваться, полностью восстановив свое состояние.
-	// Modify_Preset_A: PRESET-A
-	// Modify_Preset_B: PRESET-B
-	// Modify_Preset_C: PRESET-C
+	Modify_Preset_A: Пресет А
+	Modify_Preset_B: Пресет B
+	Modify_Preset_C: Пресет C
 }
 
 EntrustManagerLead: {
@@ -787,13 +787,13 @@ EntrustManagerLead: {
 }
 
 CyberwareSkillRadialUI: {
-	// StatusOn: ON
-	// HintClickToSelect: "[Click] to set as current skill"
-	// HintAlreadySelected: "[Currently selected]"
-	// HintKindCharge: Charge type · Hold trigger to charge, release to fire
-	// HintKindToggle: Toggle type · Press trigger to switch on/off
-	// HintKindInstant: Instant type · Press trigger to release
-	// HintNotReady: Conditions not met
+	StatusOn: Активно
+	HintClickToSelect: «ЛКМ», чтобы выбрать как текущий навык
+	HintAlreadySelected: «Текущий выбор»
+	HintKindCharge: Заряжаемый · Удерживайте клавишу активации для зарядки, отпустите для применения
+	HintKindToggle: Переключаемый · Нажмите клавишу активации для включения/выключения
+	HintKindInstant: Мгновенный · Нажмите клавишу активации для мгновенного применения
+	HintNotReady: Условия не выполнены
 }
 
 AbandonedPortalStrings: {

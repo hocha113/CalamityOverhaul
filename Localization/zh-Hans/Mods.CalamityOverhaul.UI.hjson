@@ -714,6 +714,8 @@ SHPCUI: {
 	Cyber_KeyUnbound: 未绑定
 	Cyber_Skill_Teleport_Name: 维度瞬移
 	Cyber_Skill_Teleport_Desc: 将躯体解算为数据流传送到目标位置，并在黑墙协议的掩护下完成重组
+	Cyber_Skill_Restart_Name: 重启自身
+	Cyber_Skill_Restart_Desc: 撕开领域，强制中断当前进程并重启核心，瞬间修复机体损伤，将各项机能恢复至完美状态
 	Cyber_Skill_Banish_Name: 赛博放逐
 	Cyber_Skill_Banish_Desc: 将光标下的敌人送入深层赛博空间
 	Cyber_Skill_Freeze_Name: 领域冻结
@@ -744,8 +746,6 @@ SHPCUI: {
 	Talk_Description: 开启与 SHPC 的直接通讯频道
 	Talk_Status_Busy: 占线
 	Talk_Status_Ready: 就绪
-	Cyber_Skill_Restart_Name: 重启自身
-	Cyber_Skill_Restart_Desc: 撕开领域，强制中断当前进程并重启核心，瞬间修复机体损伤，将各项机能恢复至完美状态
 	Modify_Preset_A: 预设A
 	Modify_Preset_B: 预设B
 	Modify_Preset_C: 预设C

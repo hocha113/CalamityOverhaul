@@ -1,17 +1,17 @@
 ﻿SHPCModTooltipDraw: {
-	// InstalledHeader: INSTALLED MODULES
-	// NoModules: NONE
-	// BonusHeader: TOTAL MODULE BONUSES
+	InstalledHeader: Установленные модули
+	NoModules: Нет
+	BonusHeader: Общие бонусы модулей
 }
 
 MoldProcessingTable: {
-	// DisplayName: Mold Processing Table
-	/* Tooltip:
+	DisplayName: Стол обработки форм
+	Tooltip:
 		'''
-		Right-click the placed tile to open the SHPC mold processing UI
-		Decompose: shred surplus modules of the same slot into shards
-		Reforge: spend shards to produce new molds, with optional codex-pinning
-		''' */
+		Щелкните правой кнопкой мыши, чтобы открыть Стол обработки форм
+		Разборка: Расплавляет лишние детали модификации во фрагменты
+		Перековка: Расходует фрагменты для создания новых форм; позволяет зафиксировать определенную цель в каталоге
+		'''
 }
 
 ElementWhip: {
@@ -2084,414 +2084,409 @@ RecursiveFrameModule: {
 }
 
 ForkBarrelModule: {
-	// DisplayName: Fork Barrel
-	/* Tooltip:
+	DisplayName: Раздвоенный ствол
+	Tooltip:
 		'''
-		An internal splitting prism forks each beam into two angled sub-beams every 50 frames
-		Slight damage and mana cost penalty
-		''' */
+		Внутрикамерная призма каждые 50 кадров расщепляет луч, создавая по одному дополнительному лучу с каждой стороны.
+		Урон за выстрел немного снижен, затраты маны слегка увеличены.
+		'''
 }
 
 NullBarrelModule: {
-	// DisplayName: Null Barrel
-	/* Tooltip:
+	DisplayName: Обнуляющий ствол
+	Tooltip:
 		'''
-		A data-erasure chamber drops damage to near-zero but grants virtually unlimited pierce
-		Hits inject a virulent toxin that corrodes the target over time
-		''' */
+		Стиратель данных снижает урон за выстрел до минимума, но пробивание теоретически бесконечно.
+		При попадании внедряет ядовитый поток данных, непрерывно разрушающий цель.
+		'''
 }
 
 HelixBarrelModule: {
-	// DisplayName: Helix Barrel
-	/* Tooltip:
+	DisplayName: Спиральный ствол
+	Tooltip:
 		'''
-		Dual-channel optics force two beams to spiral around a shared axis
-		Spread is zeroed; slight damage and speed penalty; great synergy with high-pierce setups
-		''' */
+		Двухканальная камера заставляет два луча спирально закручиваться вокруг общей оси.
+		Идеальное сведение, урон за выстрел слегка снижен, отлично сочетается с многократным пробиванием.
+		'''
 }
 
 TargetPainterOpticModule: {
-	// DisplayName: Target Painter
-	/* Tooltip:
+	DisplayName: Прицел с целеуказателем
+	Tooltip:
 		'''
-		A laser designation system marks struck targets with corrosive ichor, reducing their defense
-		Also boosts homing strength and critical strike chance
-		''' */
+		Лазерная система наведения при попадании накладывает на цель заражение Искажением, значительно снижая ее защиту.
+		Эффективность самонаведения и шанс критического удара синхронно возрастают.
+		'''
 }
 
 StrobeOpticModule: {
-	// DisplayName: Strobe Optic
-	/* Tooltip:
+	DisplayName: Стробоскопический прицел
+	Tooltip:
 		'''
-		A phase-shift modulator rapidly cycles the beam between wall-piercing and solid states
-		Has a 30% chance to confuse struck enemies; minor pierce and speed bonus
-		''' */
+		Высокочастотный фазовый модулятор заставляет луч постоянно переключаться между сквозным и обычным состояниями.
+		При попадании может вызвать замешательство у цели; немного увеличивает пробивание и скорость атаки.
+		'''
 }
 
 SniperOpticModule: {
-	// DisplayName: Sniper Optic
-	/* Tooltip:
+	DisplayName: Снайперский прицел
+	Tooltip:
 		'''
-		Magnetic collimators dramatically increase projectile speed, range, and single-hit damage
-		At the cost of greatly reduced fire rate and near-zero homing
-		Best paired with the Focus Barrel for extreme long-range strikes
-		''' */
+		Магнитный коллиматор значительно увеличивает скорость и дальность полета снаряда, а также повышает базовый урон.
+		Ценой этого являются снижение скорости атаки и почти полное отсутствие самонаведения.
+		В сочетании со сверхзвуковым стволом позволяет наносить удары на экстремальных дистанциях.
+		'''
 }
 
 StormCellModule: {
-	// DisplayName: Storm Cell
-	/* Tooltip:
+	DisplayName: Штормовая ячейка
+	Tooltip:
 		'''
-		During charge, releases a homing electric bolt toward the nearest enemy every 25 frames
-		Faster charge and larger blast radius, but higher mana cost
-		''' */
+		Во время зарядки каждые 25 кадров выпускает самонаводящийся луч в ближайшего врага.
+		Затраты маны резко возрастают, но зарядка происходит быстрее, а радиус взрыва увеличивается.
+		'''
 }
 
 CryoCoreModule: {
-	// DisplayName: Cryo Core
-	/* Tooltip:
+	DisplayName: Криогенное ядро
+	Tooltip:
 		'''
-		A supercooled energy cell freezes all enemies caught in the orb's blast radius
-		Slightly larger explosion, slightly slower charge
-		''' */
+		Сверхнизкотемпературная камера накопления при взрыве энергетической сферы замораживает всех врагов в радиусе поражения.
+		Радиус взрыва увеличен, темп зарядки немного замедлен.
+		'''
 }
 
 DarkMatterCoreModule: {
-	// DisplayName: Dark Matter Core
-	/* Tooltip:
+	DisplayName: Ядро темной материи
+	Tooltip:
 		'''
-		A dark-matter field pulls nearby enemies toward the orb during its flight phase
-		The orb simultaneously tracks targets; explosion radius significantly increased
-		High mana cost
-		''' */
+		Поле темной материи в фазе полета энергетической сферы непрерывно притягивает ближайших врагов к ее центру.
+		Сфера также преследует цель, радиус взрыва значительно увеличен, затраты маны сильно возрастают.
+		'''
 }
 
 ErgonomicStockModule: {
-	// DisplayName: Ergonomic Stock
-	// Tooltip: Precision ergonomic design substantially lowers mana cost with minor gains to fire rate and accuracy
+	DisplayName: Эргономичный приклад
+	Tooltip: Точный эргономичный дизайн значительно снижает затраты маны и обеспечивает небольшое увеличение скорости атаки и точности.
 }
 
 ExtenderStockModule: {
-	// DisplayName: Extender Stock
-	/* Tooltip:
+	DisplayName: Удлиненный приклад
+	Tooltip:
 		'''
-		An extended rail grants beams greater range and flight speed at minimal damage cost
-		Stack with the Sniper Optic for extreme long-range coverage
-		''' */
+		Удлиненная направляющая увеличивает дальность и скорость полета луча ценой крайне незначительного снижения урона за выстрел.
+		В сочетании со снайперским прицелом обеспечивает максимальную дальность поражения.
+		'''
 }
 
 StormStockModule: {
-	// DisplayName: Storm Stock
-	/* Tooltip:
+	DisplayName: Штормовой приклад
+	Tooltip:
 		'''
-		High-density recoil springs push fire rate and beam count to the limit at the cost of per-hit damage
-		Pair with the Scattershot Barrel for carpet-coverage saturation
-		''' */
+		Возвратная пружина высокой плотности значительно увеличивает скорострельность и количество снарядов, однако базовый урон из-за этого снижается.
+		В сочетании с дробовым стволом позволяет создать плотный ковер из снарядов.
+		'''
 }
 
 VampireGripModule: {
-	// DisplayName: Vampire Grip
-	/* Tooltip:
+	DisplayName: Вампирская рукоять
+	Tooltip:
 		'''
-		A bio-electric grip converts a portion of beam damage into health recovery
-		Laser hits are more frequent but restore less per tick; effective for sustained fights
-		''' */
+		Биоэлектропроводящая рукоять преобразует часть урона луча в восстановление здоровья.
+		Частота попаданий лазера выше, но объем восстановления за раз меньше; обеспечивает эффективную выживаемость в затяжных боях.
+		'''
 }
 
 ChronalGripModule: {
-	// DisplayName: Chronal Grip
-	/* Tooltip:
+	DisplayName: Хрональная рукоять
+	Tooltip:
 		'''
-		A phase-delay coil slows enemies on each hit
-		Combined with improved homing, dense fire can maintain persistent crowd control
-		''' */
+		Катушка фазовой задержки накладывает эффект замедления на пораженную цель.
+		В сочетании с улучшенным самонаведением плотный шквал снарядов может обеспечить непрерывный контроль.
+		'''
 }
 
 CascadeGripModule: {
-	// DisplayName: Cascade Grip
-	/* Tooltip:
+	DisplayName: Каскадная рукоять
+	Tooltip:
 		'''
-		Every 5 hits, spawns a hovering cascade node at the point of impact
-		The node lingers ~2 seconds and fires 5 homing beams that hunt nearby enemies
-		Slightly reduces base damage
-		''' */
+		После 5 попаданий создает парящий каскадный узел в точке попадания.
+		Узел существует около 2 секунд, автоматически выслеживая ближайших врагов и выпуская самонаводящиеся лучи.
+		Урон за выстрел слегка снижен.
+		'''
 }
 
 MirrorFrameModule: {
-	// DisplayName: Mirror Frame
-	/* Tooltip:
+	DisplayName: Зеркальная ствольная коробка
+	Tooltip:
 		'''
-		A symmetric reflection cavity spawns a 180-degree mirror beam for every beam fired
-		Mirror beams deal reduced damage; dual-directional coverage dramatically increases hit density
-		''' */
+		Симметричная отражающая камера в момент создания луча выпускает его симметричную копию под углом 180°.
+		Урон копии снижен, двунаправленный охват значительно увеличивает плотность огня.
+		'''
 }
 
 NullspaceFrameModule: {
-	// DisplayName: Nullspace Frame
-	/* Tooltip:
+	DisplayName: Ствольная коробка пустоты
+	Tooltip:
 		'''
-		A void-rift generator leaves a micro-explosion echo along the beam's path every 20 frames
-		Slightly extended range; minimal damage penalty
-		''' */
+		Генератор разломов пустоты оставляет миниатюрный взрывающийся фантом каждые 20 кадров на траектории полета луча.
+		Дальность стрельбы слегка увеличена, потеря урона минимальна.
+		'''
 }
 
 OverkillFrameModule: {
-	// DisplayName: Overkill Frame
-	/* Tooltip:
+	DisplayName: Ствольная коробка избытка
+	Tooltip:
 		'''
-		An overkill-sensing circuit stacks one Overkill charge per kill, up to 10; each stack adds 3% damage
-		Stacks decay over time — the faster you slay, the stronger you become
-		''' */
+		Сенсорный контур избыточного урона дает заряд "Волны убийств" за каждое убийство существа (максимум 15 зарядов), каждый заряд дает +2% к урону.
+		Заряды исчезают со временем: чем выше темп, тем больше сила.
+		'''
 }
 
 GraviticBarrelModule: {
-	// DisplayName: Gravitic Barrel
-	/* Tooltip:
+	DisplayName: Гравитационный ствол
+	Tooltip:
 		'''
-		An embedded micro-singularity tugs nearby enemies toward each beam in flight
-		Spread and homing tighten while range extends; muzzle velocity drops slightly
-		''' */
+		Ствол со встроенной микросингулярностью заставляет луч непрерывно притягивать ближайших врагов в полете.
+		Разброс и самонаведение слегка снижены, дальность полета луча увеличена, скорость снаряда немного уменьшена.
+		'''
 }
 
 PrismaticBarrelModule: {
-	// DisplayName: Prismatic Barrel
-	/* Tooltip:
+	DisplayName: Призматический ствол
+	Tooltip:
 		'''
-		Dispersion prisms shed RGB tracers from every beam, scattering color shards on hit
-		Adds one extra beam and a crit edge at the cost of a little damage and spread
-		''' */
+		Дисперсионная призма заставляет каждый луч оставлять цветной след в полете и разбрасывать цветные искры при попадании.
+		Выпускает дополнительный луч и компенсирует критический урон; базовый урон слегка снижен, разброс немного увеличен.
+		'''
 }
 
 ConcussionBarrelModule: {
-	// DisplayName: Concussion Muzzle
-	/* Tooltip:
+	DisplayName: Ударный ствол
+	Tooltip:
 		'''
-		An overload buffer detonates a small concussion ring at the impact point every 5 stacked hits
-		Per-shot damage and spread tighten, but attack speed pays the toll
-		''' */
+		Перегруженная буферная камера провоцирует микро-ударную волну в точке попадания после каждых 5 успешных попаданий.
+		Урон за выстрел возрастает, разброс сужается, но скорость атаки значительно падает.
+		'''
 }
 
 ObsidianBarrelModule: {
-	// DisplayName: Obsidian Barrel
-	/* Tooltip:
+	DisplayName: Обсидиановый ствол
+	Tooltip:
 		'''
-		Hits carve obsidian cracks into targets; at full stacks they shatter into hunting volcanic glass
-		Orb detonations rupture nearby cracks early, rewarding sustained pressure on clustered enemies
-		''' */
+		Попадания оставляют в теле цели обсидиановые трещины; при накоплении максимума они разлетаются на преследующие осколки вулканического стекла.
+		Взрыв энергетической сферы от ПКМ досрочно подрывает трещины вокруг, идеально для добивания облученных толп.
+		'''
 }
 
 LifebloomBarrelModule: {
-	// DisplayName: Lifebloom Barrel
-	/* Tooltip:
+	DisplayName: Ствол жизненноцвета
+	Tooltip:
 		'''
-		Beams seed parasitic lifebuds that drain delayed damage and return a little life to the wielder
-		When a host dies, the bud transfers to a nearby enemy and keeps growing
-		''' */
+		Лучи высеивают паразитические ростки жизни, которые с задержкой высасывают здоровье цели и возвращают часть жизненной силы пользователю.
+		При смерти носителя ростки перекидываются на ближайших врагов.
+		'''
 }
 
 MagmaVentBarrelModule: {
-	// DisplayName: Magma Vent Barrel
-	/* Tooltip:
+	DisplayName: Ствол магматического жерла
+	Tooltip:
 		'''
-		Hits and expired beams leave short-lived magma vents that periodically erupt into vertical heat columns
-		Underworld and high-heat liquid conditions make the vents cycle faster for area denial
-		''' */
+		В местах попаданий и затухания лучей остаются недолговечные лавовые жерла, периодически извергающие вертикальные столбы жара.
+		В Преисподней или в высокотемпературных жидких средах извержения происходят чаще; отлично подходит для контроля территории.
+		'''
 }
 
 CumulusBarrelModule: {
-	// DisplayName: Cumulus Barrel
-	/* Tooltip:
+	DisplayName: Кучевой ствол
+	Tooltip:
 		'''
-		Beam paths condense chargeable cloud nodes that feed on nearby SHPC beams and charge orbs
-		Once full, each cloud drops three short rain-lightning beams for positional firepower
-		''' */
+		Конденсирует на траектории луча заряжаемые облачные ядра; последующие лучи и энергетические сферы SHPC, проходя сквозь них, заряжают их.
+		Полностью заряженное ядро обрушивает три коротких грозовых луча; подходит для позиционной огневой поддержки.
+		'''
 }
 
 MossboundBarrelModule: {
-	// DisplayName: Mossbound Barrel
-	/* Tooltip:
+	DisplayName: Мшистый ствол
+	Tooltip:
 		'''
-		Beams sow wet moss patches that slow enemies and build toward a brief root snare
-		Flying charge orbs absorb nearby moss to enlarge their final blast
-		''' */
+		Луч прокладывает влажные мшистые участки; враги, вошедшие в них, замедляются и постепенно опутываются корнями.
+		Энергетическая сфера от ПКМ поглощает мох на своем пути, увеличивая радиус итогового взрыва.
+		'''
 }
 
 FrostfernBarrelModule: {
-	// DisplayName: Frostfern Barrel
-	/* Tooltip:
+	DisplayName: Ствол морозного папоротника
+	Tooltip:
 		'''
-		The first strike draws an ice-vein behind the target, sharing frost with enemies caught along the line
-		It links crowds through branching fern geometry instead of simply freezing one victim
-		''' */
+		Первое попадание выращивает ледяные прожилки за спиной цели, заставляя врагов синхронно получать урон от обморожения.
+		Связывает толпы врагов в одну разрастающуюся ветвь морозного папоротника.
+		'''
 }
 
 SandstormBarrelModule: {
-	// DisplayName: Sandstorm Barrel
-	/* Tooltip:
+	DisplayName: Ствол песчаной бури
+	Tooltip:
 		'''
-		Sustained fire rolls a moving sand curtain forward, abrading enemies and softening hostile projectiles
-		Beams gain extra pierce while mana draw rises to keep the storm moving
-		''' */
+		Непрерывная стрельба поднимает перед вами движущуюся песчаную завесу, которая стирает врагов и ослабляет проходящие сквозь нее вражеские снаряды.
+		Лучи получают дополнительное пробивание, но затраты маны возрастают по мере поддержания завесы.
+		'''
 }
 
 CoralReefBarrelModule: {
-	// DisplayName: Coral Reef Barrel
-	/* Tooltip:
+	DisplayName: Коралловый ствол
+	Tooltip:
 		'''
-		Impact points grow coral anchors that connect into damaging reef lines
-		Orb detonations make nearby anchors release synchronized circular surges
-		''' */
+		В местах попадания вырастают коралловые якоря; между несколькими якорями образуется рифовая линия, режущая врагов.
+		Взрыв энергетической сферы от ПКМ заставляет ближайшие коралловые якоря синхронно выпускать кольцевые волны.
+		'''
 }
 
 HiveBarrelModule: {
-	// DisplayName: Hive Barrel
-	/* Tooltip:
+	DisplayName: Ульевой ствол
+	Tooltip:
 		'''
-		Left-click hits tag foes with pheromones, then orb detonations launch cyber bees at marked targets
-		Spread markers across the fight to make the swarm split and cover the field
-		''' */
+		ЛКМ помечает врагов феромонами, а взрыв от ПКМ выпускает рой кибер-пчел, пикирующих на помеченные цели.
+		Чем сильнее рассредоточены метки, тем стабильнее охват роя; формирует ритм из разметки через ЛКМ и зачистки через ПКМ.
+		'''
 }
 
 MoondewBarrelModule: {
-	// DisplayName: Moondew Barrel
-	/* Tooltip:
+	DisplayName: Ствол лунной росы
+	Tooltip:
 		'''
-		Beam trails condense dew prisms that refract later beams into short derived shots
-		Night and near-full moons raise each prism's refraction ceiling and payoff
-		''' */
+		Вдоль траектории луча конденсируются призмы из капель росы; последующие лучи, касаясь их, преломляются в короткие вторичные лучи.
+		Ночью и в полнолуние максимальное количество преломлений и время жизни капель увеличиваются.
+		'''
 }
 
 CrosslinkOpticModule: {
-	// DisplayName: Crosslink Optic
-	/* Tooltip:
+	DisplayName: Прицел нейросвязи
+	Tooltip:
 		'''
-		On hit, a neural-link unit arcs a data tether from the struck target to the nearest other foe
-		Chain count and chain range both extend, with a slight bump to mana cost
-		''' */
+		Модуль нейронной связи при попадании создает дуговые разряды данных между целью и другим ближайшим врагом.
+		Количество скачков и радиус цепи увеличиваются; затраты маны слегка возрастают.
+		'''
 }
 
 ZoomOpticModule: {
-	// DisplayName: Zoom Optic
-	/* Tooltip:
+	DisplayName: Прицел с переменным фокусом
+	Tooltip:
 		'''
-		A long-focus magnetic lens pushes beams faster and farther at the cost of homing and attack speed
-		Hits beyond 600 px trigger a bonus white-hot strike that scales with distance
-		''' */
+		Длиннофокусная магнитная линза позволяет лучу лететь дальше и быстрее, но жертвует скоростью атаки и самонаведением.
+		При попадании на дистанции ≥ 600 пикселей наносит дополнительный раскаленный удар; чем больше расстояние, тем выше бонус.
+		'''
 }
 
 PingOpticModule: {
-	// DisplayName: Ping Optic
-	/* Tooltip:
-		'''
-		Signal-painter system stamps Marked-for-Death on every target struck, amplifying all incoming damage
-		Bonus homing, crit, and tighter spread complete the targeting kit
-		''' */
+	DisplayName: Маркирующий прицел
+	Tooltip: Система калибровки сигналов накладывает на цель Метку смерти при попадании, а также обеспечивает определенный шанс критического удара.
 }
 
 CapacitorPulseModule: {
-	// DisplayName: Capacitor Pulse
-	/* Tooltip:
+	DisplayName: Импульсный конденсатор
+	Tooltip:
 		'''
-		Dense capacitor stacks vent a micro-pulse detonation roughly twice a second while charging
-		Explosion radius and charge time both rise, mana cost climbs
-		''' */
+		Плотный блок конденсаторов во время зарядки каждые полсекунды выпускает из сферы небольшой импульсный взрыв.
+		Радиус взрыва увеличивается синхронно со временем зарядки, затраты маны сильно возрастают.
+		'''
 }
 
 EntropyCoreModule: {
-	// DisplayName: Entropy Core
-	/* Tooltip:
+	DisplayName: Энтропийное ядро
+	Tooltip:
 		'''
-		The orb siphons "entropy" from nearby enemies during flight
-		On detonation it releases a secondary aftershock scaled by accumulated entropy
-		''' */
+		Во время полета энергетическая сфера непрерывно высасывает "энтропийный заряд" из ближайших врагов.
+		При детонации высвобождает дополнительную взрывную волну, зависящую от накопленного заряда: чем плотнее толпа врагов, тем мощнее волна.
+		'''
 }
 
 ResonanceReactorModule: {
-	// DisplayName: Resonance Reactor
-	/* Tooltip:
+	DisplayName: Резонансный реактор
+	Tooltip:
 		'''
-		Emits a resonance ring every ~0.75 s while charging
-		Detonation triggers an extra resonance shock at the player's feet, covering melee gaps
-		''' */
+		Во время зарядки непрерывно выпускает кольца резонансных частиц.
+		При детонации дополнительно генерирует резонансную ударную волну под ногами игрока, компенсируя недостаток покрытия в ближнем бою.
+		'''
 }
 
 OverwatchStockModule: {
-	// DisplayName: Overwatch Stock
-	/* Tooltip:
+	DisplayName: Приклад дозорного
+	Tooltip:
 		'''
-		Standing still ramps up "Overwatch" stacks (max 5) that decay rapidly once you move
-		Each stack grants +2.5% damage and +2% crit; a stoic posture trims attack speed and spread
-		''' */
+		В неподвижном состоянии постепенно накапливает заряды "Дозора" (максимум 5); при движении они быстро исчезают.
+		Каждый заряд дает +3% к урону и +2% к шансу крита; разброс и скорость атаки слегка снижены из-за устойчивой стойки.
+		'''
 }
 
 MomentumStockModule: {
-	// DisplayName: Momentum Stock
-	/* Tooltip:
+	DisplayName: Импульсный приклад
+	Tooltip:
 		'''
-		Moving fast ramps up "Momentum" stacks (max 6) that decay rapidly once you stop
-		Each stack grants +5% attack speed and +8% beam speed — a mirror to Overwatch
-		''' */
+		При движении на высокой скорости постепенно накапливает заряды "Кинетики" (максимум 6); при остановке они быстро исчезают.
+		Каждый заряд дает +4% к скорости атаки и +6% к скорости снаряда; является зеркальной противоположностью приклада дозорного.
+		'''
 }
 
 BulwarkStockModule: {
-	// DisplayName: Bulwark Stock
-	/* Tooltip:
+	DisplayName: Приклад-бастион
+	Tooltip:
 		'''
-		Holding the SHPC grants modest damage reduction
-		The reinforced posture slightly slows charge time and bumps mana cost
-		''' */
+		Дает небольшое снижение получаемого урона, пока SHPC находится в руках.
+		Устойчивая стойка немного замедляет зарядку и снижает затраты маны.
+		'''
 }
 
 CombatGripModule: {
-	// DisplayName: Combat Grip
-	/* Tooltip:
+	DisplayName: Боевая рукоять
+	Tooltip:
 		'''
-		Killing blows with beams or laser stack "Combat" charges (max 5)
-		Each stack grants +6% attack speed and +2% damage; charges decay between fights
-		''' */
+		При попадании и убийстве цели накапливается "Боевой дух" (максимум 5 зарядов).
+		Каждый заряд дает +4% к скорости атаки и +2% к урону; заряды со временем исчезают, если убийства не совершаются.
+		'''
 }
 
 TempestGripModule: {
-	// DisplayName: Tempest Grip
-	/* Tooltip:
+	DisplayName: Штормовая рукоять
+	Tooltip:
 		'''
-		After every few stacked hits, fires a Tempest Burst — multiple data arcs around the latest impact
-		Per-shot damage trims and mana cost climbs in exchange for rhythmic clearing
-		''' */
+		Каждые несколько попаданий вызывают "Штормовой выброс", разряжая несколько электрических дуг вокруг точки последнего попадания.
+		Базовый урон слегка снижен, затраты маны сильно возрастают, но обеспечивает ритмичную зачистку поля боя.
+		'''
 }
 
 AbsorberGripModule: {
-	// DisplayName: Absorber Grip
-	/* Tooltip:
+	DisplayName: Поглощающая рукоять
+	Tooltip:
 		'''
-		Beam and laser hits return a slice of the damage dealt as mana
-		Per-shot damage drops slightly and base mana cost rises in exchange
-		''' */
+		При попадании луча или лазера восстанавливает небольшое количество маны пропорционально нанесенному урону, обеспечивая самовосполняющийся цикл.
+		В качестве платы базовый урон слегка снижен, а изначальные затраты маны увеличены.
+		'''
 }
 
 HarmonicFrameModule: {
-	// DisplayName: Harmonic Frame
-	/* Tooltip:
+	DisplayName: Гармоническая ствольная коробка
+	Tooltip:
 		'''
-		Multiple coexisting beams arc resonance tethers between each other for bonus damage
-		Adds one extra beam at the cost of per-shot damage and a touch of spread
-		''' */
+		Когда одновременно существует несколько лучей, они образуют между собой резонирующие электрические дуги, наносящие дополнительный урон.
+		Выпускает один дополнительный луч, базовый урон слегка снижен, разброс немного увеличен.
+		'''
 }
 
 ReplicatorFrameModule: {
-	// DisplayName: Replicator Frame
-	/* Tooltip:
+	DisplayName: Ствольная коробка репликации
+	Tooltip:
 		'''
-		On expiration, a beam spawns a brief echo in place that flies on along its original heading
-		Primary damage rises while range shortens; mana cost climbs
-		''' */
+		При исчезновении самонаводящегося луча на его месте возникает крайне недолговечный эхо-копийный снаряд, продолжающий полет в том же направлении.
+		Урон основного луча увеличен, но время его жизни сокращено; затраты маны сильно возрастают.
+		'''
 }
 
 ArchiveFrameModule: {
-	// DisplayName: Archive Frame
-	/* Tooltip:
+	DisplayName: Архивная ствольная коробка
+	Tooltip:
 		'''
-		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
-		Per-shot damage rises slightly with a small mana surcharge
-		''' */
+		Непрерывно накапливает урон, нанесенный попаданиями SHPC. При достижении порога высвобождает взрыв "Архивации данных" в местоположении игрока.
+		Базовый урон увеличен, затраты маны слегка повышены.
+		'''
 }
