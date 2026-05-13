@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using InnoVault.UIHandles;
@@ -251,7 +251,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             //着色器背景（焦点放在工作台中央偏右，让重铸预览区获得更多发光）
             Vector2 focus = new(cachedLayout.Content.X + cachedLayout.Content.Width * 0.72f,
                 cachedLayout.Content.Y + cachedLayout.Content.Height * 0.5f);
-            DrawShaderBackground(sb, px, rect, focus, openProgress);
+            int side = 24;
+            DrawShaderBackground(sb, px, new Rectangle(rect.X - side, rect.Y - side, rect.Width + side * 2, rect.Height + side * 2), focus, openProgress);
 
             //外框 + 四角
             SHPCRenderer.DrawRectStroke(sb, px, rect, 1.2f, SHPCTheme.Border * (0.9f * a));
