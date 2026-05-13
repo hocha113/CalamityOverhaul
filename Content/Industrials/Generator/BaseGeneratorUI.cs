@@ -6,30 +6,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator
     {
         internal bool IsActive;
         public override bool Active => IsActive;
-        private bool onDrag;
-        private Vector2 dragOffset;
         internal BaseGeneratorTP GeneratorTP;
-        public sealed override void Update() {
-            //UIHitBox = DrawPosition.GetRectangle(Texture.Size());
-            //hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
-
-            UpdateElement();
-
-            //if (hoverInMainPage) {
-            //    if (keyRightPressState == KeyPressState.Pressed) {
-            //        if (!onDrag) {
-            //            dragOffset = MousePosition.To(DrawPosition);
-            //        }
-            //        onDrag = true;
-            //    }
-            //}
-            //if (onDrag) {
-            //    DrawPosition = MousePosition + dragOffset;
-            //    if (keyRightPressState == KeyPressState.Released) {
-            //        onDrag = false;
-            //    }
-            //}
-        }
+        public sealed override void Update() => UpdateElement();
 
         public virtual void RightClickByTile(bool newTP) {
 

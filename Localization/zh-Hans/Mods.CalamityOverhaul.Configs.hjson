@@ -1,4 +1,4 @@
-﻿CWRServerConfig: {
+CWRServerConfig: {
 	DisplayName: 内容设置
 
 	WeaponOverhaul: {
@@ -114,11 +114,6 @@
 			预设2:左下
 			预设3:居高
 			'''
-	}
-
-	ShowReloadingProgressUI: {
-		Label: 显示装弹进度
-		Tooltip: 开启后会让弹药装填的进度被显示出来
 	}
 
 	QuestLog: {

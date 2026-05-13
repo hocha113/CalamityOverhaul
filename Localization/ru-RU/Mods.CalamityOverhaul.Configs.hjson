@@ -125,11 +125,6 @@ CWRServerConfig: {
 			'''
 	}
 
-	ShowReloadingProgressUI: {
-		Label: Показать ход перезарядки
-		Tooltip: При открытии отображается прогресс загрузки боеприпасов
-	}
-
 	QuestLog: {
 		Label: Руководство по заданиям
 		Tooltip:
