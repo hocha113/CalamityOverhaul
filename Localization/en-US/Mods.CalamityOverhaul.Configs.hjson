@@ -116,11 +116,6 @@
 			'''
 	}
 
-	ShowReloadingProgressUI: {
-		Label: Show Reloading Progress
-		Tooltip: When opened, the ammo loading progress will be displayed
-	}
-
 	QuestLog: {
 		Label: Quest Log Guidance
 		Tooltip:

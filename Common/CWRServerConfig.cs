@@ -105,10 +105,6 @@ namespace CalamityOverhaul.Common
         [Header("CWRUI")]
 
         [BackgroundColor(45, 175, 225, 255)]
-        [DefaultValue(false)]
-        public bool ShowReloadingProgressUI { get; set; }
-
-        [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
         [Range(Data.MuraUIStyleMinType, Data.MuraUIStyleMaxType)]
         [DefaultValue(1)]

@@ -21,8 +21,6 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Placeholder_ERROR = null;
         [VaultLoaden(CWRConstant.UI + "JAR")]
         public static Asset<Texture2D> UI_JAR = null;
-        [VaultLoaden(CWRConstant.UI + "JMF")]
-        public static Asset<Texture2D> UI_JMF = null;
         [VaultLoaden(CWRConstant.Other + "AimTarget")]
         public static Asset<Texture2D> AimTarget = null;
         [VaultLoaden(CWRConstant.Masking)]

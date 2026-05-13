@@ -47,9 +47,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
             AddToggle(nameof(config.LensEasing), () => config.LensEasing, v => config.LensEasing = v, false);
 
-            //CWRUI组
-            AddToggle(nameof(config.ShowReloadingProgressUI), () => config.ShowReloadingProgressUI, v => config.ShowReloadingProgressUI = v, false);
-
             ActionButtons.Add(new ActionButton {
                 Label = () => OverhaulSettingsUI.ResetDefaultText?.Value ?? "重置为默认",
                 OnClick = ResetAllToDefault
@@ -74,9 +71,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             config.MurasamaSpaceFragmentationBool = true;
             config.DomainConciseDisplay = false;
             config.LensEasing = true;
-
-            //CWRUI组
-            config.ShowReloadingProgressUI = false;
 
             SaveConfig();
 
