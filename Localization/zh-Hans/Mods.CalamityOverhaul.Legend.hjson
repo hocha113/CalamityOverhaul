@@ -1,4 +1,4 @@
-HalibutText: {
+﻿HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -222,7 +222,7 @@ MurasamaTrialQuestLine: {
 	TrackerFighting: "{0}: {1:0%}"
 	Trial_0: 黏淤初斩
 	Trial_1: 沙地幽影
-	Trial_2: 入侵之者
+	Trial_2: 入侵之人
 	Trial_3: 腐化清除
 	Trial_4: 寄生威胁
 	Trial_5: 地牢侵破
