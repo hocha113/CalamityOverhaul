@@ -1,4 +1,4 @@
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -92,7 +92,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         private static int OppositeDir(int dir) => dir switch {
-            0 => 1, 1 => 0, 2 => 3, 3 => 2, _ => -1
+            0 => 1,
+            1 => 0,
+            2 => 3,
+            3 => 2,
+            _ => -1
         };
 
         /// <summary>

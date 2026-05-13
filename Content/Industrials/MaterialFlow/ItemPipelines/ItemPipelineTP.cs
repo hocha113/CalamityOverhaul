@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 case ItemPipelineMode.Input:
                     UpdateInputMode();
                     break;
-                //Normal: 仅作为通道, 不主动抽取/存入
+                    //Normal: 仅作为通道, 不主动抽取/存入
             }
 
             //推进当前物品(同时处理卡死自愈)
@@ -669,7 +669,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         private static int OppositeDirection(int dir) => dir switch {
-            0 => 1, 1 => 0, 2 => 3, 3 => 2, _ => -1
+            0 => 1,
+            1 => 0,
+            2 => 3,
+            3 => 2,
+            _ => -1
         };
 
         /// <summary>

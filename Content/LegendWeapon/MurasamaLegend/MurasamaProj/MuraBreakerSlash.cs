@@ -11,7 +11,6 @@ using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.HackTimes;
-using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

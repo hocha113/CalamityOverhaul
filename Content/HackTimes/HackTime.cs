@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

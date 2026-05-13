@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;

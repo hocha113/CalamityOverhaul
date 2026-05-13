@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using ReLogic.Graphics;
+﻿using ReLogic.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.UI
 {
