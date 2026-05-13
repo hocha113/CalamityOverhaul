@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 寰宇灾厄长矛 —— 每次刺出都会生成月牙型能量冲击波的宇宙长矛
+    /// 寰宇灾厄长矛
     /// </summary>
     internal class CosmicCalamity : ModItem
     {
@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     /// <summary>
     /// 寰宇灾厄长矛的持握弹幕
-    /// <br/>三段连击：轻刺 → 重刺 → 终结贯穿。每次刺出生成月牙能量冲击波
     /// </summary>
     internal class CosmicCalamityHeld : BaseKnife
     {
@@ -332,7 +331,6 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     /// <summary>
     /// 寰宇灾厄长矛的月牙能量冲击波
-    /// <br/>使用顶点 + <see cref="EffectLoader.CosmicCrescent"/> 着色器在四边形面片上渲染 SDF 月牙
     /// </summary>
     internal class CosmicCrescentWave : ModProjectile, IPrimitiveDrawable
     {
