@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 RecoilOffsetRecoverValue = 0.85f;
 
                 SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.5f, Volume = 0.5f });
-                SoundEngine.PlaySound(CosmicCalamityProjectile.BelCanto with { PitchRange = (-0.1f, 0.1f), Volume = 0.9f });
+                SoundEngine.PlaySound(CWRSound.BelCanto with { PitchRange = (-0.1f, 0.1f), Volume = 0.9f });
 
                 bool intile = false;
                 int overdmg = 1500;

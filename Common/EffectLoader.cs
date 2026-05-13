@@ -62,6 +62,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KingSlimeShockwave { get; set; }
         public static Asset<Effect> KingSlimeRoyalBeam { get; set; }
         public static Asset<Effect> KingSlimeBloodWing { get; set; }
+        public static Asset<Effect> CosmicCrescent { get; set; }
         public static Asset<Effect> WitchBrimstoneDomain { get; set; }
         public static Asset<Effect> CelestialDomain { get; set; }
         public static Asset<Effect> ProverbsGhostDomain { get; set; }

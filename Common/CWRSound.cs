@@ -106,5 +106,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle InvasionPast;
         public static SoundStyle InvasionPastPosten;
         public static SoundStyle ChipSet;
+        public static SoundStyle BelCanto;
     }
 }

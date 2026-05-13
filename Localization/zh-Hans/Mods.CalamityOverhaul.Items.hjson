@@ -262,11 +262,7 @@ DragonsScaleGreatsword: {
 
 CosmicCalamity: {
 	DisplayName: 银河之灾
-	Tooltip:
-		'''
-		掷出追踪的银河灾虫
-		潜伏攻击造成一次热射十字爆
-		'''
+	Tooltip: 攻击生成月牙型冲击波
 }
 
 SpearOfLonginus: {
