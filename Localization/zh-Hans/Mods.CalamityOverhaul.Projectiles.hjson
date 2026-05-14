@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: 分子斩切
+﻿MurasamaHeld.DisplayName: 分子斩切
 MuraTriggerDash.DisplayName: 分子斩切
 MuraBreakerSlash.DisplayName: 升龙半月
 MuraExecutionCut.DisplayName: 次元斩·终
@@ -535,14 +535,14 @@ KingSlimeRoyalGelDropletProj.DisplayName: 史莱姆王皇家凝胶液滴
 KingSlimeShockwaveProj.DisplayName: 史莱姆王冲击波
 CryoCoreParclose.DisplayName: 冰核屏障
 CyberCascadeNodeProj.DisplayName: 联级节点
-// SHPCCoralAnchorProj.DisplayName: S H P C Coral Anchor Proj
-// SHPCCumulusNodeProj.DisplayName: S H P C Cumulus Node Proj
-// SHPCFrostfernLineProj.DisplayName: S H P C Frostfern Line Proj
-// SHPCHiveDroneProj.DisplayName: S H P C Hive Drone Proj
-// SHPCMagmaVentProj.DisplayName: S H P C Magma Vent Proj
-// SHPCMoondewPrismProj.DisplayName: S H P C Moondew Prism Proj
-// SHPCMossPatchProj.DisplayName: S H P C Moss Patch Proj
-// SHPCObsidianShardProj.DisplayName: S H P C Obsidian Shard Proj
-// SHPCSandCurtainProj.DisplayName: S H P C Sand Curtain Proj
-// SHPCMoondewRefractFlashProj.DisplayName: S H P C Moondew Refract Flash Proj
-// MonomolecularWire.DisplayName: Monomolecular Wire
+SHPCCoralAnchorProj.DisplayName: 珊瑚重锚
+SHPCCumulusNodeProj.DisplayName: 积云节点
+SHPCFrostfernLineProj.DisplayName: 霜蕨射线
+SHPCHiveDroneProj.DisplayName: 巢群无人机
+SHPCMagmaVentProj.DisplayName: 熔岩喷口
+SHPCMoondewPrismProj.DisplayName: 月露棱镜
+SHPCMossPatchProj.DisplayName: 蔓生苔藓
+SHPCObsidianShardProj.DisplayName: 黑曜石碎晶
+SHPCSandCurtainProj.DisplayName: 沙尘帷幕
+SHPCMoondewRefractFlashProj.DisplayName: 月露折射闪光
+MonomolecularWire.DisplayName: 单分子线
