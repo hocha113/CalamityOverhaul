@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             HashSet<int> processedGroups = new HashSet<int>();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly || npc.townNPC) continue;
+                if (!npc.active) continue;
                 if (IsNPCFrozen(i)) continue;
                 if (CyberBanish.IsBanishing(i)) continue;
 
