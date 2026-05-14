@@ -290,6 +290,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     continue;
                 }
 
+                if (entry.Timer > 0) {
+                    npc.CWR().TimeFrozenTick = 2;
+                }
+
                 // 如果整个群组都已离开"冻结发起者"的领域，快速推进到解冻演出阶段
                 int thawStart = Math.Max(0, entry.Duration - 90);
                 if (entry.Timer < thawStart
@@ -325,6 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 if (entry.Timer >= entry.Duration) {
                     // 恢复原始速度
                     npc.velocity = entry.FreezeVelocity * 0.5f;
+                    npc.CWR().TimeFrozenTick = 0;
                     if (!Main.dedServ) {
                         CyberDomainFreezeParticles.SpawnThawBurst(npc.Center);
                     }
@@ -356,9 +361,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     continue;
                 }
 
+                if (entry.Timer > 0) {
+                    proj.CWR().TimeFrozenTick = 2;
+                }
+
                 // 冻结时间结束 → 解冻
                 if (entry.Timer >= entry.Duration) {
                     proj.velocity = entry.FreezeVelocity;
+                    proj.CWR().TimeFrozenTick = 0;
                     FrozenProjectiles.RemoveAt(i);
                 }
             }

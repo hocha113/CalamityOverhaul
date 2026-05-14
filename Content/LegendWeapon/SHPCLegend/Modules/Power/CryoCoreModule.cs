@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             npc.Center = Projectile.Center;
             npc.rotation = Projectile.ai[2];
             npc.CWR().IceParclose = true;
-            npc.CWR().FrozenActivity = true;
+            npc.CWR().TimeFrozenTick = 2;
         }
 
         public override void OnKill(int timeLeft) {

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             }
 
             Projectile.Center = Target.Center;
-            Target.CWR().FrozenActivity = true;
+            Target.CWR().TimeFrozenTick = 2;
 
             if (Time % 30 == 0) {
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };

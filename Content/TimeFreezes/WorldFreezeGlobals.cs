@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
 using InnoVault.GameSystem;
 using Terraria;
@@ -32,6 +32,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 return false;
             }
             if (npc.Alives()) {
+                if (npc.CWR().TimeFrozenTick > 0) {
+                    npc.CWR().TimeFrozenTick--;
+                    CWRNpc.DoTimeFrozen(npc);
+                    return false;
+                }
+
                 bool? result = npc.GetGlobalNPC<HackEffectNPC>().PreAIByOverNPC(npc);
                 if (result.HasValue) {
                     return result.Value;
@@ -88,6 +94,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 proj.position = proj.oldPosition;
                 proj.timeLeft++;
                 return false;
+            }
+            if (proj.Alives()) {
+                if (proj.CWR().TimeFrozenTick > 0) {
+                    proj.CWR().TimeFrozenTick--;
+                    proj.position = proj.oldPosition;
+                    proj.timeLeft++;
+                    return false;
+                }
             }
             return true;
         }

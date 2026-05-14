@@ -43,9 +43,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public byte WhipHitType = 0;
         /// <summary>
-        /// 如果为<see langword="true"/>，将停止该NPC的大部分活动以模拟冻结效果
+        /// 如果大于0，将停止该实体的大部分活动以模拟冻结效果
         /// </summary>
-        public bool FrozenActivity;
+        public int TimeFrozenTick;
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
@@ -124,7 +124,6 @@ namespace CalamityOverhaul.Content
             VoidErosionBool = false;
             HellfireExplosion = false;
             SoulfireExplosion = false;
-            FrozenActivity = false;
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
@@ -152,10 +151,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(NPC npc) {
-            if (FrozenActivity) {
-                DoTimeFrozen(npc);
-                return false;
-            }
             if (IsWeakTime > 0) {
                 IsWeakTime--;
             }

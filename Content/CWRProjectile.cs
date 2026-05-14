@@ -56,6 +56,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public byte SpanTypes;
         /// <summary>
+        /// 如果大于0，将停止该实体的大部分活动以模拟冻结效果
+        /// </summary>
+        public int TimeFrozenTick;
+        /// <summary>
         /// 弹幕的命中属性
         /// </summary>
         public HitAttributeStruct HitAttribute;
