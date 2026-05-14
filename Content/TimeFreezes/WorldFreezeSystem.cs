@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.TimeFreezes
     ///     供骇客时间、义体雷达等上层系统按需调用</item>
     ///   <item>通过 <see cref="Activate(string)"/> / <see cref="Deactivate(string)"/> 以 reason 计数，
     ///     任一活跃 reason 都保持冻结状态；全部释放后才真正解冻</item>
-    ///   <item>多人模式下不做强冻结（仅由调用方借助 <see cref="AllowFreeze"/> 提前判定），
-    ///     避免改变其他玩家的世界状态</item>
     ///   <item>独立于 <c>CWRWorld.TimeFrozenTick</c>，二者可叠加</item>
     /// </list>
     /// </summary>
@@ -49,11 +47,6 @@ namespace CalamityOverhaul.Content.TimeFreezes
         /// 当前是否至少有一个 reason 持有冻结
         /// </summary>
         public static bool IsActive { get; private set; }
-
-        /// <summary>
-        /// 多人模式下不允许强冻结世界，由调用方在 <see cref="Activate(string)"/> 之前自检
-        /// </summary>
-        public static bool AllowFreeze => Main.netMode == NetmodeID.SinglePlayer;
 
         /// <summary>
         /// 当前所有持有冻结的 reason 集合（只读视图供调试/UI 引用）
@@ -126,13 +119,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         /// <summary>
         /// 请求一个 reason 的冻结。同一 reason 重复调用幂等
-        /// <br/>未在单机模式时直接 no-op（由 <see cref="AllowFreeze"/> 控制）
         /// </summary>
         public static void Activate(string reason) {
             if (string.IsNullOrEmpty(reason)) {
-                return;
-            }
-            if (!AllowFreeze) {
                 return;
             }
             bool wasInactive = !IsActive;

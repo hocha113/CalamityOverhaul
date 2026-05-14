@@ -480,13 +480,6 @@ namespace CalamityOverhaul.Content.HackTimes
         //效果淡出速度
         private const float FadeOutSpeed = 0.07f;
 
-        /// <summary>
-        /// 多人模式下不允许像单机那样冻结世界
-        /// <br/>开启骇客时间后世界正常运行，仅保留扫描、运镜、协议上传等本地视觉与流程
-        /// <br/>实际语义已统一到 <see cref="WorldFreezeSystem.AllowFreeze"/>，本属性保留作语义入口
-        /// </summary>
-        public static bool AllowFreeze => WorldFreezeSystem.AllowFreeze;
-
         //WorldFreezeSystem 的 reason 标签，统一通过它叠加/释放冻结
         private const string FreezeReason = "HackTime";
 
@@ -501,7 +494,8 @@ namespace CalamityOverhaul.Content.HackTimes
                 //正在淡出中，直接反转回来，无需重置状态
                 Active = true;
                 targetIntensity = 1f;
-                WorldFreezeSystem.Activate(FreezeReason);
+                if (VaultUtils.isSinglePlayer)//只在单人模式生效时停
+                    WorldFreezeSystem.Activate(FreezeReason);
             }
             else {
                 Activate();
@@ -521,9 +515,8 @@ namespace CalamityOverhaul.Content.HackTimes
             ReticleTimer = 0f;
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
-            //仅单人模式下冻结世界（由 WorldFreezeSystem.AllowFreeze 决定）；
-            //多人模式保留扫描功能但战斗与时间持续推进
-            WorldFreezeSystem.Activate(FreezeReason);
+            if (VaultUtils.isSinglePlayer)//只在单人模式生效时停
+                WorldFreezeSystem.Activate(FreezeReason);
             if (WorldFreezeSystem.IsActive && Main.LocalPlayer.Alives()) {
                 //预填飞行时间，避免首次进入 PreUpdate 快照被零值覆盖
                 WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();

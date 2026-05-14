@@ -485,7 +485,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             if (freezeOwned) {
                 return;
             }
-            WorldFreezeSystem.Activate(FreezeReason);
+            if (VaultUtils.isSinglePlayer)//只在单人模式生效时停
+                WorldFreezeSystem.Activate(FreezeReason);
             freezeOwned = true;
         }
 
