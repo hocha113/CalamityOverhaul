@@ -294,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     npc.CWR().TimeFrozenTick = 2;
                 }
 
-                // 如果整个群组都已离开"冻结发起者"的领域，快速推进到解冻演出阶段
+                //如果整个群组都已离开"冻结发起者"的领域，快速推进到解冻演出阶段
                 int thawStart = Math.Max(0, entry.Duration - 90);
                 if (entry.Timer < thawStart
                     && !Cyberspace.IsInsideDomainOf(entry.OwnerWho, npc.Center)
@@ -302,32 +302,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     entry.Timer = thawStart;
                 }
 
-                // 生成冻结粒子（仅客户端）
+                //生成冻结粒子（仅客户端）
                 if (!Main.dedServ) {
                     CyberDomainFreezeParticles.SpawnFreezeParticles(npc, entry.Progress, entry.Seed);
                 }
 
-                // 解冻动画（最后15%时间）
+                //解冻动画（最后15%时间）
                 float progress = entry.Progress;
                 if (progress > 0.85f) {
                     float thawPhase = (progress - 0.85f) / 0.15f;
-                    // 逐渐恢复一点速度抖动表示即将解冻
+                    //逐渐恢复一点速度抖动表示即将解冻
                     float jitter = thawPhase * 2f;
                     npc.position += new Vector2(
                         Main.rand.NextFloat(-jitter, jitter),
                         Main.rand.NextFloat(-jitter, jitter));
                 }
 
-                // 音效只由锚点节段（头部或单体）播放，避免蠕虫群组同帧触发N次
+                //音效只由锚点节段（头部或单体）播放，避免蠕虫群组同帧触发N次
                 if (entry.Timer == thawStart && NpcGroupHelper.GetAnchorIndex(npc) == npc.whoAmI) {
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(CWRSound.FaultTransition, npc.Center);
                     }
                 }
 
-                // 冻结时间结束 → 解冻
+                //冻结时间结束 → 解冻
                 if (entry.Timer >= entry.Duration) {
-                    // 恢复原始速度
+                    //恢复原始速度
                     npc.velocity = entry.FreezeVelocity * 0.5f;
                     npc.CWR().TimeFrozenTick = 0;
                     if (!Main.dedServ) {
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     proj.CWR().TimeFrozenTick = 2;
                 }
 
-                // 冻结时间结束 → 解冻
+                //冻结时间结束 → 解冻
                 if (entry.Timer >= entry.Duration) {
                     proj.velocity = entry.FreezeVelocity;
                     proj.CWR().TimeFrozenTick = 0;
