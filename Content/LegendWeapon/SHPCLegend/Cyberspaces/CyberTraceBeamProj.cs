@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         private static readonly ColorTheme[] Themes = {
-            // 蓝色主题
+            //蓝色主题
             new() {
                 Core = new Color(100, 180, 255),
                 Glow = new Color(30, 100, 230),
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ParticleMain = new Color(80, 160, 255),
                 ParticleEdge = new Color(30, 80, 200),
             },
-            // 黄色主题
+            //黄色主题
             new() {
                 Core = new Color(255, 220, 80),
                 Glow = new Color(230, 170, 30),
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ParticleMain = new Color(255, 200, 60),
                 ParticleEdge = new Color(200, 150, 20),
             },
-            // 青色主题
+            //青色主题
             new() {
                 Core = new Color(80, 255, 230),
                 Glow = new Color(20, 200, 180),
@@ -226,19 +226,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             //自管理拖尾位置：以最小间距记录，避免时缓下拖尾坍缩
             UpdateTrailHistory();
 
-            // ---- 超驱检测与过渡
+            //---- 超驱检测与过渡
             bool insideDomain = Cyberspace.IsInsideDomainOf(Projectile.owner, Projectile.Center);
             float targetOD = insideDomain ? 1f : 0f;
             float prevOD = overdriveAmount;
-            overdriveAmount = MathHelper.Lerp(overdriveAmount, targetOD, 0.055f); // ~0.4s过渡
+            overdriveAmount = MathHelper.Lerp(overdriveAmount, targetOD, 0.055f); //~0.4s过渡
             if (overdriveAmount < 0.005f) overdriveAmount = 0f;
 
-            // 首次进入超驱阈值时，给 burstTimer 一个随机初始值，避免立即触发
+            //首次进入超驱阈值时，给 burstTimer 一个随机初始值，避免立即触发
             if (prevOD <= 0.3f && overdriveAmount > 0.3f) {
                 glitchBurstTimer = Main.rand.Next(10, 25);
             }
+            //设置更新频率
+            Projectile.extraUpdates = insideDomain ? (ExtraUpdates + 1) : ExtraUpdates;
 
-            // 间歇性故障爆发（高频黑墙撕裂）
+            //间歇性故障爆发（高频黑墙撕裂）
             if (overdriveAmount > 0.3f) {
                 glitchBurstTimer--;
                 if (glitchBurstTimer <= 0) {
@@ -249,7 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             glitchBurstIntensity *= 0.85f;
             if (glitchBurstIntensity < 0.01f) glitchBurstIntensity = 0f;
 
-            // 飞行发光（超驱时高温红炽光）
+            //飞行发光（超驱时高温红炽光）
             Color lightCol = overdriveAmount > 0.1f
                 ? Color.Lerp(theme.Core, OverdriveTheme.Core, overdriveAmount)
                 : theme.Core;
@@ -290,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             bool isod = od > 0.3f;
             int count = isod ? 3 : 2;
 
-            // 超驱时混合配色（高温红白）
+            //超驱时混合配色（高温红白）
             Color mainCol = Color.Lerp(theme.ParticleMain, OverdriveTheme.ParticleMain, od);
             Color edgeCol = Color.Lerp(theme.ParticleEdge, OverdriveTheme.ParticleEdge, od);
 
@@ -310,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ));
             }
 
-            // 超驱时大量横向散射粒子（高温红炽强调）
+            //超驱时大量横向散射粒子（高温红炽强调）
             if (od > 0.3f && glitchBurstIntensity > 0.1f) {
                 int burstCount = 3 + (int)(glitchBurstIntensity * 4f);
                 for (int i = 0; i < burstCount; i++) {
@@ -328,8 +330,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         #region Trail绘制
 
         private float WidthFunction(float progress) {
-            // 将 tailTaper 的衰减范围压缩至有效顶点区间，
-            // 使拖尾在实际末端处自然收为 0，避免刚发射时的断尾切口
+            //将 tailTaper 的衰减范围压缩至有效顶点区间，
+            //使拖尾在实际末端处自然收为 0，避免刚发射时的断尾切口
             float validRatio = MathF.Max((float)currentValidCount / TrailCacheLen, 0.05f);
             float tailProgress = MathHelper.Clamp(progress / validRatio, 0f, 1f);
 
@@ -337,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             noseRise = MathF.Sin(noseRise * MathHelper.PiOver2);
             float tailTaper = 1f - MathF.Pow(tailProgress, 2.0f);
             float width = noseRise * tailTaper;
-            // 超驱时光束更粗壮（30→50像素宽）
+            //超驱时光束更粗壮（30→50像素宽）
             return MathF.Max(width, 0f) * (30f + overdriveAmount * 20f);
         }
 
@@ -368,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             trail ??= new Trail(trailPositions, WidthFunction, ColorFunction);
             trail.TrailPositions = trailPositions;
 
-            // 确保主题已初始化
+            //确保主题已初始化
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
@@ -384,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["glowColor"]?.SetValue(theme.GlowVec);
             shader.Parameters["auraColor"]?.SetValue(theme.AuraVec);
             shader.Parameters["uNoiseTex"]?.SetValue(noise);
-            // 超驱参数
+            //超驱参数
             shader.Parameters["overdriveAmount"]?.SetValue(overdriveAmount);
             shader.Parameters["glitchBurst"]?.SetValue(glitchBurstIntensity);
             shader.Parameters["odCoreColor"]?.SetValue(OverdriveTheme.CoreVec);
@@ -407,29 +409,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
 
-            // 确保主题已初始化
+            //确保主题已初始化
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
-            // 超驱混合色
+            //超驱混合色
             float od = overdriveAmount;
             Color drawAura = Color.Lerp(theme.Aura, OverdriveTheme.Aura, od);
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float pulse = 0.9f + 0.1f * MathF.Sin((float)Main.timeForVisualEffects * 0.15f);
-            // 超驱时脉冲剧烈震荡
+            //超驱时脉冲剧烈震荡
             pulse += od * 0.3f * MathF.Sin((float)Main.timeForVisualEffects * 0.5f);
             pulse += od * glitchBurstIntensity * 0.2f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
             float alpha = fadeAlpha * pulse;
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
-            // 外层柔和bloom光晕（超驱时巨大炽热光晕）
+            //外层柔和bloom光晕（超驱时巨大炽热光晕）
             float outerScale = (2.0f + od * 2.5f) * Projectile.scale;
             Color outerColor = drawAura * alpha * (0.25f + od * 0.5f);
             spriteBatch.Draw(glow, drawPos, null, outerColor, 0f,
                 glowOrigin, outerScale, SpriteEffects.None, 0f);
 
-            // 结束当前批次，切换到Immediate模式应用能量球着色器
+            //结束当前批次，切换到Immediate模式应用能量球着色器
             spriteBatch.End();
 
             Effect orbShader = EffectLoader.CyberEnergyOrb?.Value;
@@ -442,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
                 orbShader.Parameters["uTime"]?.SetValue(timeVal);
                 orbShader.Parameters["fadeAlpha"]?.SetValue(alpha);
-                // 传入超驱预混合色（与CyberChargeOrbProj保持一致）
+                //传入超驱预混合色（与CyberChargeOrbProj保持一致）
                 Color orbCore = Color.Lerp(theme.Core, OverdriveTheme.Core, od);
                 Color orbGlow = Color.Lerp(theme.Glow, OverdriveTheme.Glow, od);
                 Color orbAura = Color.Lerp(theme.Aura, OverdriveTheme.Aura, od);
@@ -451,7 +453,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 orbShader.Parameters["auraColor"]?.SetValue(orbAura.ToVector3());
                 orbShader.Parameters["orbScale"]?.SetValue(pulse);
                 orbShader.Parameters["uNoiseTex"]?.SetValue(noise);
-                // 超驱参数
+                //超驱参数
                 orbShader.Parameters["overdriveAmount"]?.SetValue(od);
                 orbShader.Parameters["glitchBurst"]?.SetValue(glitchBurstIntensity);
                 orbShader.Parameters["odCoreColor"]?.SetValue(OverdriveTheme.CoreVec);
@@ -470,7 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 spriteBatch.End();
             }
 
-            // 恢复调用者期望的批次状态（Additive + Deferred）
+            //恢复调用者期望的批次状态（Additive + Deferred）
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
