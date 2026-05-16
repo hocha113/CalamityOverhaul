@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -12,7 +11,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class LonginusHeld : BaseHeldProj
     {
@@ -22,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.height = 46;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.DamageType = CWRRef.GetRogueDamageClass();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.hide = true;
         }
@@ -31,9 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => false;
 
-        private bool isProj() => (Main.projectile.Count((Projectile p)
+        private bool isProj() => Main.projectile.Count((p)
                 => p.type == ModContent.ProjectileType<LonginusThrow>()
-                && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0);
+                && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0;
 
         public override void AI() {
             if (Item.type != SpearOfLonginus.ID || !isProj()) {
@@ -44,6 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             if (Projectile.IsOwnedByLocalPlayer()) {
                 StickToOwner();
                 Charge();
+                SpawnHolyCross();
             }
             NPC npc = Projectile.Center.FindClosestNPC(1900);
             float slp = Projectile.ai[0];
@@ -52,10 +52,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             if (npc != null) {
                 if (Projectile.ai[0] % 30 == 0) {
                     Vector2 vr = new Vector2(0, 13);
-                    PRT_LonginusWave pulse = new PRT_LonginusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
+                    PRT_LonginusWave pulse = new PRT_LonginusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + slp * 0.001f, 180, npc);
                     PRTLoader.AddParticle(pulse);
                     Vector2 vr2 = new Vector2(0, -13);
-                    PRT_LonginusWave pulse2 = new PRT_LonginusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
+                    PRT_LonginusWave pulse2 = new PRT_LonginusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.32f, 0.82f + slp * 0.001f, 180, npc);
                     PRTLoader.AddParticle(pulse2);
                 }
                 npc.CWR().LonginusSign = true;
@@ -68,31 +68,59 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.ai[0]++;
         }
 
+        /// <summary>
+        /// 持续注入圣神能量。能量条充满后自动转化为一次立场充能（最高 <see cref="SpearOfLonginus.MaxChargeGrade"/> 层）。
+        /// 与盗贼潜伏完全解耦，仅依赖玩家持枪时间。
+        /// </summary>
         public void Charge() {
             SpearOfLonginus longinus = (SpearOfLonginus)Owner.HeldItem.ModItem;
-            if (Owner.GetPlayerRogueStealth() > 0) {
+
+            //已经达到最大立场层数时停止累积，避免不必要的能量浪费
+            if (longinus.ChargeGrade >= SpearOfLonginus.MaxChargeGrade) {
+                longinus.HolyEnergy = SpearOfLonginus.HolyEnergyMax;
+                return;
+            }
+
+            //每帧累积一次能量；玩家持枪不动时也会涨
+            longinus.HolyEnergy++;
+
+            //充能粒子效果（仅在视觉开关开启时绘制）
+            if (CWRServerConfig.Instance.WeaponHandheldDisplay && Main.rand.NextBool(2)) {
                 Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(33) + Projectile.velocity * 55;
                 Vector2 vr = spanStarPos.To(Projectile.velocity * 198 + Projectile.Center).UnitVector() * 3;
+                PRT_LonginusStar spark = new PRT_LonginusStar(spanStarPos, vr, false, Main.rand.Next(17, 25), Main.rand.NextFloat(0.9f, 1.1f), Color.Gold, Projectile);
+                PRTLoader.AddParticle(spark);
+            }
 
-                if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                    PRT_LonginusStar spark = new PRT_LonginusStar(spanStarPos, vr, false, Main.rand.Next(17, 25), Main.rand.NextFloat(0.9f, 1.1f), Color.Red, Projectile);
-                    PRTLoader.AddParticle(spark);
+            //能量满了：升一层立场
+            if (longinus.HolyEnergy >= SpearOfLonginus.HolyEnergyMax) {
+                longinus.HolyEnergy = 0;
+                longinus.ChargeGrade++;
+                if (longinus.ChargeGrade > SpearOfLonginus.MaxChargeGrade) {
+                    longinus.ChargeGrade = SpearOfLonginus.MaxChargeGrade;
                 }
 
-                if (Owner.GetPlayerRogueStealth() >= Owner.GetPlayerRogueStealthMax() && longinus.ChargeGrade < 6) {
-                    longinus.ChargeGrade += 1;
-                    SoundStyle lightningStrikeSound = "CalamityMod/Sounds/Custom/HeavenlyGaleLightningStrike".GetSound();
-                    lightningStrikeSound.Volume = 0.25f;
-                    SoundEngine.PlaySound(lightningStrikeSound, Projectile.Center);
-                    SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound(), Projectile.Center);
-                    for (int i = 0; i < longinus.ChargeGrade; i++) {
-                        PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + Projectile.velocity * (-0.52f + i * 23), Projectile.velocity / 1.5f, Color.Red, new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60, Projectile);
-                        PRTLoader.AddParticle(pulse);
-                    }
-                    if (longinus.ChargeGrade > 6)
-                        longinus.ChargeGrade = 6;
-                    Owner.SetPlayerRogueStealth(0);
+                SoundStyle lightningStrikeSound = "CalamityMod/Sounds/Custom/HeavenlyGaleLightningStrike".GetSound();
+                lightningStrikeSound.Volume = 0.25f;
+                SoundEngine.PlaySound(lightningStrikeSound, Projectile.Center);
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound(), Projectile.Center);
+
+                for (int i = 0; i < longinus.ChargeGrade; i++) {
+                    PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + Projectile.velocity * (-0.52f + i * 23)
+                        , Projectile.velocity / 1.5f, Color.Red, new Vector2(1.5f, 3f) * (0.8f - i * 0.1f)
+                        , Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60, Projectile);
+                    PRTLoader.AddParticle(pulse);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 确保玩家身下始终有一个圣神十字架弹幕负责绘制能量条与立场指示
+        /// </summary>
+        private void SpawnHolyCross() {
+            if (Owner.CountProjectilesOfID<HolyCross>() == 0) {
+                Projectile.NewProjectile(Owner.GetSource_FromThis(), Owner.Center, Vector2.Zero
+                    , ModContent.ProjectileType<HolyCross>(), 0, 0, Owner.whoAmI);
             }
         }
 

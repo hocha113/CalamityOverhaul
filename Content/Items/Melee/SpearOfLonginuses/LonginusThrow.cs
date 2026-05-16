@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class LonginusThrow : ModProjectile
     {
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.height = 46;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.DamageType = CWRRef.GetRogueDamageClass();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Projectile.penetrate = 1;

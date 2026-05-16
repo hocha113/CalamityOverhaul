@@ -4,7 +4,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class SoulSeeker : ModProjectile
     {
@@ -71,10 +71,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 6)
-                , Color.White, Projectile.rotation, VaultUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+                , Color.White, Projectile.rotation, value.GetOrig(6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 Main.EntitySpriteDraw(value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, value.GetRectangle(Projectile.frame, 6)
-                , Color.White * ((6 - i) / 16f), Projectile.rotation, VaultUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+                , Color.White * ((6 - i) / 16f), Projectile.rotation, value.GetOrig(6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
             }
             return false;
         }

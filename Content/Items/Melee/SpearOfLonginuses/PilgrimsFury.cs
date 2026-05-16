@@ -1,11 +1,10 @@
-﻿using CalamityOverhaul.Content.Items.Rogue;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class PilgrimsFury : ModProjectile
     {
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.height = 46;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.DamageType = CWRRef.GetRogueDamageClass();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
             Projectile.penetrate = -1;
@@ -40,10 +39,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };
                 SoundEngine.PlaySound(belCanto, Projectile.Center);
                 Vector2 vr = new Vector2(0, 13);
-                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + (Time * 0.002f), 180, Projectile);
+                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + Time * 0.002f, 180, Projectile);
                 PRTLoader.AddParticle(pulse);
                 Vector2 vr2 = new Vector2(0, -13);
-                PRT_LonginusWave pulse2 = new PRT_LonginusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + (Time * 0.0015f), 180, Projectile);
+                PRT_LonginusWave pulse2 = new PRT_LonginusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + Time * 0.0015f, 180, Projectile);
                 PRTLoader.AddParticle(pulse2);
             }
 

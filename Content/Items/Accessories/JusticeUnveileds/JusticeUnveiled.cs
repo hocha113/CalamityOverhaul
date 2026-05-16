@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;

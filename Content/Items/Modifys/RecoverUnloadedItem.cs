@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;

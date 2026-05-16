@@ -9,7 +9,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class Godslight : ModProjectile, IPrimitiveDrawable
     {

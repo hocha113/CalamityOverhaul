@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
+﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ID.ContentSamples.CreativeHelper;
 
-namespace CalamityOverhaul.Content.Items.Rogue
+namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class SpearOfLonginus : ModItem, ICWRLoader
     {
@@ -23,7 +22,22 @@ namespace CalamityOverhaul.Content.Items.Rogue
         [VaultLoaden(CWRConstant.Item + "Rogue/Longinus_Eva")]
         public static Asset<Texture2D> EvaAsset = null;
         public static int ID;
+        /// <summary>
+        /// 当前累积的圣神能量计数（满后转化为一次充能立场）
+        /// </summary>
         public int ChargeGrade;
+        /// <summary>
+        /// 当前圣神能量条进度，达到 <see cref="HolyEnergyMax"/> 后清零并 <see cref="ChargeGrade"/>+1
+        /// </summary>
+        public int HolyEnergy;
+        /// <summary>
+        /// 圣神能量条的上限
+        /// </summary>
+        public const int HolyEnergyMax = 240;
+        /// <summary>
+        /// 最大可叠加的立场层数
+        /// </summary>
+        public const int MaxChargeGrade = 6;
         public override string Texture => CWRConstant.Item + "Rogue/Longinus";
         public static void ZenithWorldAsset() {
             if (Main.dedServ) {
@@ -47,14 +61,14 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
-            Item.DamageType = CWRRef.GetRogueDamageClass();
+            Item.DamageType = DamageClass.Melee;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_SpearOfLonginus;
             Item.CWR().isHeldItem = true;
             ItemOverride.ItemMeleePrefixDic[Type] = true;
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = ItemGroup.Spear;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= ChargeGrade + 1;
@@ -73,6 +87,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Main.projectile[proj].ai[0] = 1;
                 Main.projectile[proj].ai[1] = ChargeGrade;
                 ChargeGrade = 0;
+                HolyEnergy = 0;
                 return false;
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);

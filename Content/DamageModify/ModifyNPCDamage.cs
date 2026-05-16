@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+﻿using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
