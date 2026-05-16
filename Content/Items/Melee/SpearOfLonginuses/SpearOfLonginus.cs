@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
-        [VaultLoaden(CWRConstant.Item + "Rogue/Longinus")]
+        [VaultLoaden(CWRConstant.Item + "Melee/Longinus")]
         public static Asset<Texture2D> LonginusAsset = null;
-        [VaultLoaden(CWRConstant.Item + "Rogue/Longinus_Eva")]
+        [VaultLoaden(CWRConstant.Item + "Melee/Longinus_Eva")]
         public static Asset<Texture2D> EvaAsset = null;
         public static int ID;
         /// <summary>
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         /// 最大可叠加的立场层数
         /// </summary>
         public const int MaxChargeGrade = 6;
-        public override string Texture => CWRConstant.Item + "Rogue/Longinus";
+        public override string Texture => CWRConstant.Item + "Melee/Longinus";
         public static void ZenithWorldAsset() {
             if (Main.dedServ) {
                 return;

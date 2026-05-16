@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class LonginusHeld : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Item + "Rogue/Longinus";
+        public override string Texture => CWRConstant.Item + "Melee/Longinus";
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 46;

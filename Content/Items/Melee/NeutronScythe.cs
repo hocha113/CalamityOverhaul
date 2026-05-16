@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class NeutronScythe : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Rogue/NeutronScythe";
+        public override string Texture => CWRConstant.Item + "Melee/NeutronScythe";
 
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class NeutronScytheHeld : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Item + "Rogue/NeutronScythe";
+        public override string Texture => CWRConstant.Item + "Melee/NeutronScythe";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<NeutronScythe>()).DisplayName;
 
         //ai[2] 由 Item.Shoot 写入：0 = 普通飞镰，1 = 黑洞爆发飞镰

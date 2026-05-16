@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SeasonalKunai : ModItem
     {
-        public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
+        public override string Texture => CWRConstant.Item_Melee + "SeasonalKunai";
 
         public override void SetDefaults() {
             Item.width = 38;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SeasonalKunaiProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
+        public override string Texture => CWRConstant.Item_Melee + "SeasonalKunai";
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;

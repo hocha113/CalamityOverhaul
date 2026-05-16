@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SporeburstPouch : ModItem
     {
-        public override string Texture => CWRConstant.Item_Rogue + "SporeburstPouch";
+        public override string Texture => CWRConstant.Item_Melee + "SporeburstPouch";
 
         public override void SetDefaults() {
             Item.width = Item.height = 22;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SporeburstPouchThrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Item_Rogue + "SporeburstPouch";
+        public override string Texture => CWRConstant.Item_Melee + "SporeburstPouch";
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;

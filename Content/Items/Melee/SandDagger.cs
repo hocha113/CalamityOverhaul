@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SandDagger : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Rogue/SandDagger";
+        public override string Texture => CWRConstant.Item + "Melee/SandDagger";
 
         public override void SetDefaults() {
             Item.width = 48;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SandDaggerThrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Item + "Rogue/SandDaggerProj";
+        public override string Texture => CWRConstant.Item + "Melee/SandDaggerProj";
 
         private static readonly int[] SandTileIDs = new int[] {
             TileID.Sand, TileID.Ebonsand, TileID.Pearlsand, TileID.Crimsand,

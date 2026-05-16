@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class CommandersClaw : ModItem
     {
-        public override string Texture => CWRConstant.Item_Rogue + "CommandersClaw";
+        public override string Texture => CWRConstant.Item_Melee + "CommandersClaw";
 
         public override void SetDefaults() {
             Item.width = Item.height = 52;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class CommandersClawThrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Item_Rogue + "CommandersClawThrow";
+        public override string Texture => CWRConstant.Item_Melee + "CommandersClawThrow";
 
         //阶段标记: 0 = 飞行, 1 = 嵌入静止
         private ref float Phase => ref Projectile.ai[0];

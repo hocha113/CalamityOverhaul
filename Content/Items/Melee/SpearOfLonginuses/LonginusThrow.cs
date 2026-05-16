@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class LonginusThrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Item + "Rogue/Longinus";
+        public override string Texture => CWRConstant.Item + "Melee/Longinus";
         public Player Owner => Main.player[Projectile.owner];
         private bool SpanPrmst = true;
         private bool StealthStrike => Projectile.ai[0] > 0;

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class GeminisTribute : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Rogue/GeminisTribute";
+        public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
 
         /// <summary>
         /// 下一次投掷使用哪只眼睛: 0=激光眼(Retinazer) 1=魔焰眼(Spazmatism)
@@ -122,10 +122,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class GeminisTributeProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Item + "Rogue/GeminisTribute";
+        public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<GeminisTribute>()).DisplayName;
 
-        [VaultLoaden(CWRConstant.Item + "Rogue/GeminisTributeAlt")]
+        [VaultLoaden(CWRConstant.Item + "Melee/GeminisTributeAlt")]
         private static Asset<Texture2D> AltScythe = null;
 
         //AI 入参

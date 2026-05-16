@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class WraithKunai : ModItem
     {
-        public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
+        public override string Texture => CWRConstant.Item_Melee + "WraithKunai";
 
         public override void SetDefaults() {
             Item.width = 38;
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class WraithKunaiProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
+        public override string Texture => CWRConstant.Item_Melee + "WraithKunai";
 
         private const int Inder1 = 45;
         private const int Inder2 = 80;
