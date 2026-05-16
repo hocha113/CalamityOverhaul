@@ -863,12 +863,20 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int age;
         //火焰摇曳相位
         private float swayPhase;
-        //火焰最高高度（像素），随生命变化
-        private float currentHeight;
+        //视觉火焰宽高与地面锚点，和 Projectile.width/height 的伤害判定完全解耦
+        private float visualHeight;
+        private float visualWidth;
+        private float visualGroundY;
+
+        //仅用于碰撞判定。以后调整这两个值不会影响火焰粒子的外观
+        private static int HitboxWidth => 40;
+        private static int HitboxHeight => 124;
+        private static float BaseVisualHeight => 28f;
+        private static float BaseVisualWidth => 40f;
 
         public override void SetDefaults() {
-            Projectile.width = 40;
-            Projectile.height = 24;
+            Projectile.width = HitboxWidth;
+            Projectile.height = HitboxHeight;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
@@ -888,6 +896,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 VisualScale = 1f;
             }
             swayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            visualGroundY = Projectile.Center.Y;
+            visualWidth = BaseVisualWidth * VisualScale;
         }
 
         public override bool? CanDamage() => age > 4 && age < Projectile.timeLeft - 6;
@@ -898,33 +908,24 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //火焰高度的呼吸：先快速点燃 → 长时间稳定燃烧 → 末段快速衰减
             float lifeRatio = Projectile.timeLeft / Math.Max(LifeMax, 1f);
-            float baseHeight = 28f * VisualScale;
+            float baseHeight = BaseVisualHeight * VisualScale;
+            visualWidth = BaseVisualWidth * VisualScale;
             if (age < 10) {
                 //点燃阶段：从 0 快速涨到 baseHeight
-                currentHeight = MathHelper.Lerp(0f, baseHeight, age / 10f);
+                visualHeight = MathHelper.Lerp(0f, baseHeight, age / 10f);
             } else if (lifeRatio < 0.3f) {
                 //衰减阶段
-                currentHeight = baseHeight * (lifeRatio / 0.3f);
+                visualHeight = baseHeight * (lifeRatio / 0.3f);
             } else {
                 //稳定燃烧：用 sin 波让高度自然起伏
-                currentHeight = baseHeight * (0.9f + (float)Math.Sin(swayPhase) * 0.1f);
-            }
-
-            //更新 hitbox 高度，让 hitbox 跟着实际火焰大小
-            int wantHeight = Math.Max(16, (int)(currentHeight + 8));
-            int wantWidth = Math.Max(28, (int)(40 * VisualScale));
-            if (Projectile.height != wantHeight || Projectile.width != wantWidth) {
-                Vector2 c = Projectile.Center;
-                Projectile.height = wantHeight;
-                Projectile.width = wantWidth;
-                Projectile.Center = c;
+                visualHeight = baseHeight * (0.9f + (float)Math.Sin(swayPhase) * 0.1f);
             }
 
             SpawnFlameDust();
 
             //发光（强度跟随火焰高度）
-            float lightFactor = currentHeight / Math.Max(baseHeight, 1f);
-            Lighting.AddLight(Projectile.Center + new Vector2(0, -currentHeight * 0.5f)
+            float lightFactor = visualHeight / Math.Max(baseHeight, 1f);
+            Lighting.AddLight(new Vector2(Projectile.Center.X, visualGroundY - visualHeight * 0.5f)
                 , 1.0f * lightFactor, 0.45f * lightFactor, 0.15f * lightFactor);
         }
 
@@ -933,12 +934,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个火坑同屏数量可能多达数十个，所以这里的粒子数量做了严格限制以保证性能
         /// </summary>
         private void SpawnFlameDust() {
-            if (currentHeight < 4f) {
+            if (visualHeight < 4f) {
                 return;
             }
 
-            float baseY = Projectile.Bottom.Y - 2f;
-            float spreadX = Projectile.width * 0.45f;
+            float baseY = visualGroundY;
+            float spreadX = visualWidth * 0.45f;
 
             //底层余烬（红）：每 3 帧才生成一颗
             if (age % 3 == 0) {
@@ -952,7 +953,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //中层主体（橙黄）：每 2 帧 1 颗
             if (age % 2 == 0) {
-                float hOffset = Main.rand.NextFloat(-2f, currentHeight * 0.4f);
+                float hOffset = Main.rand.NextFloat(-2f, visualHeight * 0.4f);
                 Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX * 0.7f, spreadX * 0.7f)
                     , baseY - hOffset);
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -Main.rand.NextFloat(1.4f, 3.2f));
@@ -964,7 +965,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //顶端的 PRT 火焰：每 6 帧 1 颗，营造跳动感
             if (age % 6 == 0) {
-                float h = Main.rand.NextFloat(currentHeight * 0.3f, currentHeight * 0.8f);
+                float h = Main.rand.NextFloat(visualHeight * 0.3f, visualHeight * 0.8f);
                 Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX * 0.5f, spreadX * 0.5f)
                     , baseY - h);
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.6f, 1.6f));
