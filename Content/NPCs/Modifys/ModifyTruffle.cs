@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;

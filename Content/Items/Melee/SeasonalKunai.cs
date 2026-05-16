@@ -1,17 +1,22 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using InnoVault.GameSystem;
+﻿using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ID.ContentSamples.CreativeHelper;
 
-namespace CalamityOverhaul.Content.Items.Rogue
+namespace CalamityOverhaul.Content.Items.Melee
 {
+    /// <summary>
+    /// 时令飞刃 —— 战士的日月消耗投掷品
+    /// 每次掷出 4 把扇形苦无，命中后日间触发破晓灼烧、夜间触发夜衰
+    /// 飞刃命中或寿命终结时会迸裂出 3 把次级飞刃做扇形扫荡
+    /// </summary>
     internal class SeasonalKunai : ModItem
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
+
         public override void SetDefaults() {
             Item.width = 38;
             Item.height = 38;
@@ -23,25 +28,23 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 10;
-            Item.knockBack = 2f;
-            Item.UseSound = null;
+            Item.knockBack = 3.5f;
+            Item.UseSound = SoundID.Item39 with { Pitch = 0.05f, Volume = 0.7f };
             Item.autoReuse = true;
             Item.value = Item.sellPrice(copper: 24);
             Item.rare = ItemRarityID.Purple;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.DamageType = CWRRef.GetRogueDamageClass();
-            Item.shoot = ModContent.ProjectileType<SeasonalKunaiThrowable>();
-            ItemOverride.ItemMeleePrefixDic[Type] = true;
-            ItemOverride.ItemRangedPrefixDic[Type] = false;
+            Item.DamageType = DamageClass.Melee;
+            Item.shoot = ModContent.ProjectileType<SeasonalKunaiProj>();
+            Item.shootSpeed = 18f;
         }
-
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
-
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CWRID.ItemGroup_RogueWeapon;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            //战士齐射 4 把扇形飞刃，每把都启用次级分裂效果 (ai0 = 1)
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = velocity.RotatedBy(MathHelper.ToRadians(-15 + 10 * i));
+                Projectile.NewProjectile(source, position, vel, type, damage, knockback, player.whoAmI, 1f);
+            }
             return false;
         }
 
@@ -62,9 +65,15 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
     }
 
+    /// <summary>
+    /// 时令飞刃实体
+    /// 主弹幕 (ai0 = 1): 高伤强穿透，命中或寿命终结时分裂为 3 把次级飞刃
+    /// 次级弹幕 (ai0 = 0): 单次穿透 + 短距追踪
+    /// </summary>
     internal class SeasonalKunaiProj : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
@@ -77,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.ignoreWater = true;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
-            Projectile.DamageType = CWRRef.GetRogueDamageClass();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10 * Projectile.extraUpdates;
@@ -85,6 +94,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void AI() {
+            //闪烁动画
             if (Projectile.localAI[0] == 0f) {
                 Projectile.scale -= 0.02f;
                 Projectile.alpha += 30;
@@ -103,6 +113,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             }
 
             if (Projectile.ai[0] > 0) {
+                //主弹幕: 强穿透 + 渐变扩大
                 Projectile.penetrate = -1;
                 if (Projectile.scale < 2) {
                     Projectile.scale += 0.01f;
@@ -112,6 +123,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 }
             }
             else {
+                //次级弹幕: 短距追踪 + 重力
                 CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 6f, 20f);
                 Projectile.velocity.Y += 0.01f;
                 if (Projectile.timeLeft < 240) {
@@ -125,6 +137,13 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             int buff = Main.dayTime ? BuffID.Daybreak : CWRID.Buff_Nightwither;
             target.AddBuff(buff, 180);
+
+            //主弹幕命中时屏震 + 火星
+            if (Projectile.ai[0] > 0 && Projectile.numHits <= 1 && CWRServerConfig.Instance.ScreenVibration) {
+                Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                    target.Center, hitDir, 2f, 3.5f, 5, 350f, FullName));
+            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -137,22 +156,24 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Vector2 offset = Projectile.oldVelocity * factor;
                 Vector2 position = Projectile.oldPosition - offset;
 
-                //创建两种不同缩放和速度的尘埃效果
-                CreateDust(position, dustType, 1.8f, 0.5f);  //较大缩放，较低速度
-                CreateDust(position, dustType, 1.4f, 0.05f); //较小缩放，非常低速度
+                CreateDust(position, dustType, 1.8f, 0.5f);
+                CreateDust(position, dustType, 1.4f, 0.05f);
             }
 
-            if (Projectile.ai[0] > 0) {
+            //主弹幕分裂为 3 把次级飞刃做扇形扫荡
+            if (Projectile.ai[0] > 0 && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
                         , (Projectile.rotation + MathHelper.TwoPi / 3 * i).ToRotationVector2() * 2
-                        , ModContent.ProjectileType<SeasonalKunaiProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                        , ModContent.ProjectileType<SeasonalKunaiProj>(), Projectile.damage,
+                        Projectile.knockBack, Projectile.owner);
                 }
             }
         }
 
         private void CreateDust(Vector2 position, int dustType, float scale, float velocityMultiplier) {
-            int dustIndex = Dust.NewDust(position, 8, 8, dustType, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, scale);
+            int dustIndex = Dust.NewDust(position, 8, 8, dustType,
+                Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default, scale);
             Dust dust = Main.dust[dustIndex];
             dust.noGravity = true;
             dust.velocity *= velocityMultiplier;
@@ -161,37 +182,6 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override bool PreDraw(ref Color lightColor) {
             CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
-        }
-    }
-
-    internal class SeasonalKunaiThrowable : BaseThrowable
-    {
-        public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
-        public override void SetThrowable() {
-            Projectile.DamageType = CWRRef.GetRogueDamageClass();
-            HandOnTwringMode = -40;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
-            OffsetRoting = MathHelper.PiOver4;
-        }
-
-        public override void ThrowOut() {
-            if (stealthStrike) {
-                for (int i = 0; i < 6; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV.RotatedByRandom(0.3f) * 8
-                        , ModContent.ProjectileType<SeasonalKunaiProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1);
-                }
-            }
-            else {
-                for (int i = 0; i < 4; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV.RotatedByRandom(0.2f) * 8
-                        , ModContent.ProjectileType<SeasonalKunaiProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-                }
-            }
-
-            SoundEngine.PlaySound(SoundID.Item39, Owner.Center);
-            Projectile.soundDelay = 10;
-            Projectile.Kill();
         }
     }
 }

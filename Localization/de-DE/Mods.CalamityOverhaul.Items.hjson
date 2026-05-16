@@ -627,12 +627,12 @@ Starship: {
 }
 
 SandDagger: {
-	// DisplayName: Sand Dagger
-	/* Tooltip:
+	DisplayName: Sandklinge
+	Tooltip:
 		'''
-		Throws onto sand, then jumps into the air and explodes after a while
-		Stealth attacks throw an enhanced dagger
-		''' */
+		Wird in gerader Linie geschleudert und durch Schwerkraft leicht abgelenkt
+		Bohrt sich beim Aufprall ein; trifft sie auf Sand, lädt sie sich auf und schießt dann nach oben, um eine Erdbebenwelle und Sandstacheln freizusetzen
+		'''
 }
 
 UnderTheSand: {
@@ -669,22 +669,24 @@ SandVortexOfTheDecayedSea: {
 }
 
 SeasonalKunai: {
-	// DisplayName: Seasonal Kunai
-	/* Tooltip:
+	DisplayName: Jahreszeiten-Kunai
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks throw a large kunai that splits at the end of its trajectory
-		"Reflecting the Four Seasons"
-		''' */
+		Wirft vier Hauptkunai in einem Fächer; jede durchbohrt mehrere Gegner und wächst während des Fluges
+		Bei Treffer oder Ablauf der Lebenszeit zerbricht jede Klinge in drei sekundäre Kunai, die auseinanderfegen
+		Tagsüber Tagesanbruch, nachts Nachtwelken
+		"Spiegel der vier Jahreszeiten"
+		'''
 }
 
 WraithKunai: {
-	// DisplayName: Wraith Kunai
-	/* Tooltip:
+	DisplayName: Geisterkunai
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks summon a group of ghostly daggers hovering around the player
-		''' */
+		Schleudert drei karmesinrote Klingen in einem Fächer; jede schwebt kurz, bevor sie mit hoher Geschwindigkeit auf den nächsten Gegner zustürmt
+		Sturmtreffer entfesseln karmesinrote Funken und Bildschirmbeben, am Ende ihres Fluges detonieren die Klingen in seelenbrennenden Schockwellen
+		Tagsüber Brand, nachts Seelenbrand
+		'''
 }
 
 CalSelfPortrait: {
@@ -1212,12 +1214,12 @@ Spectrometer: {
 }
 
 SporeburstPouch: {
-	// DisplayName: Sporeburst Pouch
-	/* Tooltip:
+	DisplayName: Sporenbeutel
+	Tooltip:
 		'''
-		Throws a volatile pouch of fungal spores that explodes on impact
-		Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
-		''' */
+		Wirft eine taumelnde Sporengranate, die beim Aufprall oder am Ende ihrer Lebenszeit detoniert
+		Setzt eine giftige Schockwelle und einen Schwarm zielsuchender Sporensplitter frei; getroffene Gegner werden Vergiftet
+		'''
 }
 
 Pallbearer: {

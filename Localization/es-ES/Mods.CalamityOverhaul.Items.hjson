@@ -642,12 +642,12 @@ Starship: {
 }
 
 SandDagger: {
-	// DisplayName: Sand Dagger
-	/* Tooltip:
+	DisplayName: Daga de arena
+	Tooltip:
 		'''
-		Throws onto sand, then jumps into the air and explodes after a while
-		Stealth attacks throw an enhanced dagger
-		''' */
+		Se lanza en línea recta, atraída ligeramente hacia abajo por la gravedad
+		Se incrusta al impactar; si se clava en arena, se carga antes de salir disparada hacia arriba, liberando una onda de choque telúrica y una andanada de púas de arena
+		'''
 }
 
 UnderTheSand: {
@@ -684,22 +684,24 @@ SandVortexOfTheDecayedSea: {
 }
 
 SeasonalKunai: {
-	// DisplayName: Seasonal Kunai
-	/* Tooltip:
+	DisplayName: Kunai de las estaciones
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks throw a large kunai that splits at the end of its trajectory
-		"Reflecting the Four Seasons"
-		''' */
+		Lanza cuatro kunai principales en abanico; cada una perfora profundamente y crece durante su vuelo
+		Al impactar o expirar, cada hoja se divide en tres kunai secundarios que se abren en abanico
+		Alborada de día, Marchitez nocturna de noche
+		"Reflejo de las cuatro estaciones"
+		'''
 }
 
 WraithKunai: {
-	// DisplayName: Wraith Kunai
-	/* Tooltip:
+	DisplayName: Kunai espectral
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks summon a group of ghostly daggers hovering around the player
-		''' */
+		Lanza tres hojas carmesí en abanico; cada una flota brevemente antes de embestir a alta velocidad al enemigo más cercano
+		Las embestidas liberan chispas carmesí y temblores de pantalla; al final de su vuelo, las hojas detonan en ondas de choque que queman el alma
+		Incendia de día, quema el alma de noche
+		'''
 }
 
 CalSelfPortrait: {
@@ -1227,12 +1229,12 @@ Spectrometer: {
 }
 
 SporeburstPouch: {
-	// DisplayName: Sporeburst Pouch
-	/* Tooltip:
+	DisplayName: Bolsa de esporas
+	Tooltip:
 		'''
-		Throws a volatile pouch of fungal spores that explodes on impact
-		Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
-		''' */
+		Lanza una granada de esporas que detona al impactar o al agotarse su tiempo de vida
+		Libera una onda de choque tóxica y un enjambre de esquirlas de esporas con seguimiento; los enemigos golpeados quedan Envenenados
+		'''
 }
 
 Pallbearer: {

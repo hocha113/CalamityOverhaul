@@ -628,12 +628,12 @@ Starship: {
 }
 
 SandDagger: {
-	// DisplayName: Sand Dagger
-	/* Tooltip:
+	DisplayName: Dague de sable
+	Tooltip:
 		'''
-		Throws onto sand, then jumps into the air and explodes after a while
-		Stealth attacks throw an enhanced dagger
-		''' */
+		Lancée en ligne droite, légèrement attirée vers le bas par la gravité
+		Se plante à l'impact ; si elle touche du sable, elle se charge avant de jaillir vers le haut, libérant une onde de choc tellurique et une volée de pointes de sable
+		'''
 }
 
 UnderTheSand: {
@@ -670,22 +670,24 @@ SandVortexOfTheDecayedSea: {
 }
 
 SeasonalKunai: {
-	// DisplayName: Seasonal Kunai
-	/* Tooltip:
+	DisplayName: Kunai des saisons
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks throw a large kunai that splits at the end of its trajectory
-		"Reflecting the Four Seasons"
-		''' */
+		Lance quatre kunai principaux en éventail ; chacun perfore profondément et grandit pendant son vol
+		À l'impact ou en fin de vie, chaque lame se divise en trois kunai secondaires balayant en éventail
+		Aube le jour, Flétrissure nocturne la nuit
+		"Reflet des quatre saisons"
+		'''
 }
 
 WraithKunai: {
-	// DisplayName: Wraith Kunai
-	/* Tooltip:
+	DisplayName: Kunai spectral
+	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks summon a group of ghostly daggers hovering around the player
-		''' */
+		Lance trois lames cramoisies en éventail ; chacune flotte brièvement avant de foncer à grande vitesse sur l'ennemi le plus proche
+		Les charges libèrent étincelles cramoisies et tremblement d'écran ; en fin de vol, les lames explosent en ondes de choc brûle-âme
+		Embrase le jour, brûle l'âme la nuit
+		'''
 }
 
 CalSelfPortrait: {
@@ -1213,12 +1215,12 @@ Spectrometer: {
 }
 
 SporeburstPouch: {
-	// DisplayName: Sporeburst Pouch
-	/* Tooltip:
+	DisplayName: Bourse à spores
+	Tooltip:
 		'''
-		Throws a volatile pouch of fungal spores that explodes on impact
-		Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
-		''' */
+		Lance une grenade à spores qui détone à l'impact ou à la fin de sa durée
+		Libère une onde de choc toxique et un essaim d'éclats de spores à tête chercheuse ; les ennemis touchés sont Empoisonnés
+		'''
 }
 
 Pallbearer: {

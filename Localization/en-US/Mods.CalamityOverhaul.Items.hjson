@@ -658,8 +658,8 @@ SandDagger: {
 	DisplayName: Sand Dagger
 	Tooltip:
 		'''
-		Throws onto sand, then jumps into the air and explodes after a while
-		Stealth attacks throw an enhanced dagger
+		Hurled in a straight line and lightly pulled down by gravity
+		Embeds on impact; if struck into sand, it builds up before bursting upward to unleash a ground shockwave and a volley of sand spikes
 		'''
 }
 
@@ -700,8 +700,9 @@ SeasonalKunai: {
 	DisplayName: Seasonal Kunai
 	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks throw a large kunai that splits at the end of its trajectory
+		Throws four primary kunai in a fan; each pierces deeply and grows larger as it flies
+		On hit or expiration, every blade splits into three secondary kunai sweeping outward
+		Daybreak by day, Nightwither by night
 		"Reflecting the Four Seasons"
 		'''
 }
@@ -710,8 +711,9 @@ WraithKunai: {
 	DisplayName: Wraith Kunai
 	Tooltip:
 		'''
-		Throws three homing kunai at enemies
-		Stealth attacks summon a group of ghostly daggers hovering around the player
+		Hurls three crimson blades in a fan; each hovers briefly before charging the nearest foe at high speed
+		Charging strikes erupt with crimson sparks and screen shake, and the blades detonate into soulburning shockwaves at the end of their flight
+		Sets enemies On Fire by day, Soul-burns them by night
 		'''
 }
 
@@ -1243,8 +1245,8 @@ SporeburstPouch: {
 	DisplayName: Sporeburst Pouch
 	Tooltip:
 		'''
-		Throws a volatile pouch of fungal spores that explodes on impact
-		Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
+		Lobs a tumbling spore grenade that detonates on impact or when its lifetime ends
+		Releases a toxic shockwave and a swarm of homing spore shrapnel; struck enemies are Poisoned
 		'''
 }
 

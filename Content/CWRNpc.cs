@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Painting;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework.Graphics;
 using System;
