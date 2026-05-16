@@ -168,6 +168,8 @@ namespace CalamityOverhaul
         public static int NPC_Yharon => Get();
         public static int NPC_SlimeGodCore => Get();
         public static int NPC_Providence => Get();
+        public static int NPC_ProfanedGuardianCommander => Get();
+        public static int NPC_Dragonfolly => Get();
         public static int NPC_PlaguebringerGoliath => Get();
         public static int NPC_PerforatorHive => Get();
         public static int NPC_Anahita => Get();
@@ -201,6 +203,8 @@ namespace CalamityOverhaul
         public static int NPC_AquaticScourgeHead => Get();
         public static int NPC_OldDuke => Get();
         public static int NPC_ScornEater => Get();
+        public static int NPC_CeaselessVoid => Get();
+        public static int NPC_Signus => Get();
         public static int NPC_StormWeaverHead => Get();
         public static int NPC_StormWeaverBody => Get();
         public static int NPC_StormWeaverTail => Get();

@@ -5,6 +5,43 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
+    internal static class BossQuestAvailability
+    {
+        private static bool HasNPC(int npcType) => npcType > 0;
+        private static bool HasAnyNPC(params int[] npcTypes) {
+            for (int i = 0; i < npcTypes.Length; i++) {
+                if (HasNPC(npcTypes[i])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool DesertScourge => HasNPC(CWRID.NPC_DesertScourgeHead);
+        public static bool Crabulon => HasNPC(CWRID.NPC_Crabulon);
+        public static bool HiveMind => HasAnyNPC(CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive);
+        public static bool SlimeGod => HasNPC(CWRID.NPC_SlimeGodCore);
+        public static bool AquaticScourge => HasNPC(CWRID.NPC_AquaticScourgeHead);
+        public static bool Cryogen => HasNPC(CWRID.NPC_Cryogen);
+        public static bool BrimstoneElemental => HasNPC(CWRID.NPC_BrimstoneElemental);
+        public static bool CalamitasClone => HasNPC(CWRID.NPC_CalamitasClone);
+        public static bool PlaguebringerGoliath => HasNPC(CWRID.NPC_PlaguebringerGoliath);
+        public static bool ProfanedGuardians => HasNPC(CWRID.NPC_ProfanedGuardianCommander);
+        public static bool Dragonfolly => HasNPC(CWRID.NPC_Dragonfolly);
+        public static bool Providence => HasNPC(CWRID.NPC_Providence);
+        public static bool StormWeaver => HasNPC(CWRID.NPC_StormWeaverHead);
+        public static bool CeaselessVoid => HasNPC(CWRID.NPC_CeaselessVoid);
+        public static bool Signus => HasNPC(CWRID.NPC_Signus);
+        public static bool Polterghast => HasNPC(CWRID.NPC_Polterghast);
+        public static bool OldDuke => HasNPC(CWRID.NPC_OldDuke);
+        public static bool DevourerofGods => HasNPC(CWRID.NPC_DevourerofGodsHead);
+        public static bool Yharon => HasNPC(CWRID.NPC_Yharon);
+        public static bool ExoMechs => HasNPC(CWRID.NPC_ThanatosHead);
+        public static bool SupremeCalamitas => HasNPC(CWRID.NPC_SupremeCalamitas);
+        public static bool PrimordialWyrm => HasNPC(CWRID.NPC_PrimordialWyrmHead);
+    }
+
     public class KingSlimeQuest : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -40,6 +77,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class DesertScourgeQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.DesertScourge;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "荒漠灾虫");
             Description = this.GetLocalization(nameof(Description), () => "击败荒漠灾虫");
@@ -80,7 +119,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.EyeofCthulhu;
             Position = new Vector2(150, 0);
-            AddParent<DesertScourgeQuest>();
+            if (BossQuestAvailability.DesertScourge) {
+                AddParent<DesertScourgeQuest>();
+            }
+            else {
+                AddParent<KingSlimeQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
@@ -106,6 +150,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class CrabulonQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Crabulon;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "菌生蟹");
             Description = this.GetLocalization(nameof(Description), () => "击败菌生蟹");
@@ -146,7 +192,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.EaterofWorldsHead;
             Position = new Vector2(150, 0);
-            AddParent<CrabulonQuest>();
+            if (BossQuestAvailability.Crabulon) {
+                AddParent<CrabulonQuest>();
+            }
+            else {
+                AddParent<EyeofCthulhuQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
@@ -201,6 +252,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class HiveMindQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.HiveMind;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "腐巢意志/血肉宿主");
             Description = this.GetLocalization(nameof(Description), () => "击败腐巢意志或血肉宿主");
@@ -241,7 +294,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.SkeletronHead;
             Position = new Vector2(150, 0);
-            AddParent<HiveMindQuest>();
+            if (BossQuestAvailability.HiveMind) {
+                AddParent<HiveMindQuest>();
+            }
+            else {
+                AddParent<EaterofWorldsQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
@@ -267,6 +325,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class SlimeGodQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.SlimeGod;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "史莱姆之神");
             Description = this.GetLocalization(nameof(Description), () => "击败史莱姆之神");
@@ -307,7 +367,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = NPCID.WallofFlesh;
             Position = new Vector2(150, 0);
-            AddParent<SlimeGodQuest>();
+            if (BossQuestAvailability.SlimeGod) {
+                AddParent<SlimeGodQuest>();
+            }
+            else {
+                AddParent<SkeletronQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
@@ -361,6 +426,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class AquaticScourgeQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.AquaticScourge;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "渊海灾虫");
             Description = this.GetLocalization(nameof(Description), () => "击败渊海灾虫");
@@ -394,6 +461,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class CryogenQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Cryogen;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "极地冰灵");
             Description = this.GetLocalization(nameof(Description), () => "击败极地冰灵");
@@ -460,6 +529,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class BrimstoneElementalQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.BrimstoneElemental;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "硫磺火元素");
             Description = this.GetLocalization(nameof(Description), () => "击败硫磺火元素");
@@ -526,6 +597,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class CalamitasCloneQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.CalamitasClone;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "灾厄之影");
             Description = this.GetLocalization(nameof(Description), () => "击败灾厄之影");
@@ -592,6 +665,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class PlaguebringerGoliathQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.PlaguebringerGoliath;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "瘟疫使者歌莉娅");
             Description = this.GetLocalization(nameof(Description), () => "击败瘟疫使者歌莉娅");

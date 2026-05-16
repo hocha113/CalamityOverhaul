@@ -5,15 +5,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     public class ProfanedGuardiansQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.ProfanedGuardians;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "亵渎使徒");
             Description = this.GetLocalization(nameof(Description), () => "击败亵渎使徒");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "ProfanedGuardianCommander", out ModNPC profanedGuardianCommanderNPC)) {
-                IconNPCType = profanedGuardianCommanderNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_ProfanedGuardianCommander;
             Position = new Vector2(150, 0);
             AddParent<MoonLordQuest>();
 
@@ -40,15 +39,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class DragonfollyQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Dragonfolly;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "痴愚金龙");
             Description = this.GetLocalization(nameof(Description), () => "击败痴愚金龙");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "Dragonfolly", out ModNPC bumblefuckNPC)) {
-                IconNPCType = bumblefuckNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_Dragonfolly;
             Position = new Vector2(0, 150);
             AddParent<MoonLordQuest>();
 
@@ -79,6 +77,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class ProvidenceQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Providence;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "亵渎天神");
             Description = this.GetLocalization(nameof(Description), () => "击败亵渎天神");
@@ -86,7 +86,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_Providence;
             Position = new Vector2(150, 0);
-            AddParent<ProfanedGuardiansQuest>();
+            if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -113,17 +118,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class StormWeaverQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.StormWeaver;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "风暴编织者");
             Description = this.GetLocalization(nameof(Description), () => "击败风暴编织者");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "StormWeaverHead", out ModNPC stormWeaverHeadNPC)) {
-                IconNPCType = stormWeaverHeadNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_StormWeaverHead;
             Position = new Vector2(0, -150);
-            AddParent<ProvidenceQuest>();
+            if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
@@ -152,17 +164,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class CeaselessVoidQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.CeaselessVoid;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "无尽虚空");
             Description = this.GetLocalization(nameof(Description), () => "击败无尽虚空");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "CeaselessVoid", out ModNPC ceaselessVoidNPC)) {
-                IconNPCType = ceaselessVoidNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_CeaselessVoid;
             Position = new Vector2(0, 150);
-            AddParent<ProvidenceQuest>();
+            if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
@@ -191,17 +210,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class SignusQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Signus;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "西格纳斯");
             Description = this.GetLocalization(nameof(Description), () => "击败西格纳斯");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "Signus", out ModNPC signusNPC)) {
-                IconNPCType = signusNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_Signus;
             Position = new Vector2(75, 150);
-            AddParent<ProvidenceQuest>();
+            if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
@@ -230,17 +256,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class PolterghastQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Polterghast;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "噬魂幽花");
             Description = this.GetLocalization(nameof(Description), () => "击败噬魂幽花");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "Polterghast", out ModNPC polterghastNPC)) {
-                IconNPCType = polterghastNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_Polterghast;
             Position = new Vector2(150, 0);
-            AddParent<ProvidenceQuest>();
+            if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -269,6 +302,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class OldDukeQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.OldDuke;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "硫海遗爵");
             Description = this.GetLocalization(nameof(Description), () => "击败硫海遗爵");
@@ -276,7 +311,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_OldDuke;
             Position = new Vector2(0, 150);
-            AddParent<PolterghastQuest>();
+            if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
@@ -305,6 +351,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class DevourerofGodsQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.DevourerofGods;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "神明吞噬者");
             Description = this.GetLocalization(nameof(Description), () => "击败神明吞噬者");
@@ -312,7 +360,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_DevourerofGodsHead;
             Position = new Vector2(150, 0);
-            AddParent<PolterghastQuest>();
+            if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -339,6 +398,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class YharonQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.Yharon;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "丛林龙,犽戎");
             Description = this.GetLocalization(nameof(Description), () => "击败丛林龙,犽戎");
@@ -346,7 +407,21 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_Yharon;
             Position = new Vector2(150, 0);
-            AddParent<DevourerofGodsQuest>();
+            if (BossQuestAvailability.DevourerofGods) {
+                AddParent<DevourerofGodsQuest>();
+            }
+            else if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -373,6 +448,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class ExoMechsQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.ExoMechs;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "星流巨械");
             Description = this.GetLocalization(nameof(Description), () => "击败星流巨械");
@@ -380,7 +457,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_ThanatosHead;
             Position = new Vector2(150, -100);
-            AddParent<YharonQuest>();
+            if (BossQuestAvailability.Yharon) {
+                AddParent<YharonQuest>();
+            }
+            else if (BossQuestAvailability.DevourerofGods) {
+                AddParent<DevourerofGodsQuest>();
+            }
+            else if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -407,6 +501,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class SupremeCalamitasQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.SupremeCalamitas;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "至尊灾厄");
             Description = this.GetLocalization(nameof(Description), () => "击败至尊灾厄");
@@ -414,7 +510,24 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.NPC;
             IconNPCType = CWRID.NPC_SupremeCalamitas;
             Position = new Vector2(150, 100);
-            AddParent<YharonQuest>();
+            if (BossQuestAvailability.Yharon) {
+                AddParent<YharonQuest>();
+            }
+            else if (BossQuestAvailability.DevourerofGods) {
+                AddParent<DevourerofGodsQuest>();
+            }
+            else if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
@@ -441,17 +554,33 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     public class PrimordialWyrmQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && BossQuestAvailability.PrimordialWyrm;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "始源妖龙");
             Description = this.GetLocalization(nameof(Description), () => "击败始源妖龙");
 
             IconType = QuestIconType.NPC;
-            //使用ModContent查找NPCID
-            if (ModContent.TryFind("CalamityMod", "PrimordialWyrmHead", out ModNPC primordialWyrmHeadNPC)) {
-                IconNPCType = primordialWyrmHeadNPC.Type;
-            }
+            IconNPCType = CWRID.NPC_PrimordialWyrmHead;
             Position = new Vector2(0, 200);
-            AddParent<YharonQuest>();
+            if (BossQuestAvailability.Yharon) {
+                AddParent<YharonQuest>();
+            }
+            else if (BossQuestAvailability.DevourerofGods) {
+                AddParent<DevourerofGodsQuest>();
+            }
+            else if (BossQuestAvailability.Polterghast) {
+                AddParent<PolterghastQuest>();
+            }
+            else if (BossQuestAvailability.Providence) {
+                AddParent<ProvidenceQuest>();
+            }
+            else if (BossQuestAvailability.ProfanedGuardians) {
+                AddParent<ProfanedGuardiansQuest>();
+            }
+            else {
+                AddParent<MoonLordQuest>();
+            }
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
