@@ -264,10 +264,10 @@ SpearOfLonginus: {
 	DisplayName: Spear of Longinus
 	Tooltip:
 		'''
-		Each time the stealth bar fills, the Spear charges up and depletes stealth back to 0.
-		The maximum amount of charge is 6 full stealth bars.
-		When charged, circles will show the Area of effect. Upon thrown, It will unleash a world shattering strike.
-		If the spear has charge, the attack will be followed by a laser from the sun, sealing anything's fate.
+		While held, a holy cross forms beneath you and steadily fills with divine energy.
+		Each time the bar is filled, the Spear gains one charge, up to a maximum of six fields of holy power.
+		Marks the nearest enemy with the cross of fate while held.
+		Striking a marked enemy with a charged throw unleashes the Pilgrim's Fury.
 		[legend]
 		'''
 	Legend:

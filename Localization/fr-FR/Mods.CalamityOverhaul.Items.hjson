@@ -270,9 +270,10 @@ SpearOfLonginus: {
 	DisplayName: Lance de Gangarus
 	Tooltip:
 		'''
-		À chaque barre cachée, effectuez une amplification une fois qu'elle a atteint la limite, empilez-la jusqu'à six champs
-		Marquez les ennemis les plus proches en tenant l'arme
-		Les attaques marquent les ennemis touchés, déclenchant la colère du pèlerin
+		Tant que la lance est en main, une croix sacrée apparaît sous vos pieds et se remplit d'énergie divine
+		Chaque fois que la barre est pleine, la lance gagne une charge, jusqu'à six champs sacrés au maximum
+		Marque l'ennemi le plus proche d'une croix du destin pendant que vous la portez
+		Frapper un ennemi marqué avec un jet chargé déclenche la Fureur du Pèlerin
 		[legend]
 		'''
 	Legend:

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;

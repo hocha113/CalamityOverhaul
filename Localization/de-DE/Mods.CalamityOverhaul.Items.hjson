@@ -271,9 +271,10 @@ SpearOfLonginus: {
 	DisplayName: Lanze von Longinus
 	Tooltip:
 		'''
-		Jedes Mal, wenn die Versteckt-Anzeige voll ist, erhältst du einen Buff, bis zu sechs Mal stapelbar
-		Beim Halten markierst du den nächsten Feind
-		Ein Treffer auf den markierten Feind löst die Wut des Pilgers aus
+		Solange du die Lanze hältst, erscheint unter dir ein heiliges Kreuz, das sich stetig mit göttlicher Energie füllt
+		Sobald die Leiste voll ist, erhält die Lanze eine Aufladung, bis zu sechs Mal stapelbar
+		Beim Halten markierst du den nächsten Feind mit dem Kreuz des Schicksals
+		Ein geladener Wurf auf einen markierten Feind entfesselt die Wut des Pilgers
 		[legend]
 		'''
 	Legend:

@@ -275,9 +275,10 @@ SpearOfLonginus: {
 	DisplayName: Lanza de Longinos
 	Tooltip:
 		'''
-		Cada vez que la barra de emboscada alcanza su límite, se produce un aumento, acumulándose hasta un máximo de seis veces.
-		Al llevarlo, se marca el destino del enemigo más cercano.
-		Al golpear al enemigo marcado, desencadena la ira del peregrino.
+		Mientras la empuñes, una cruz sagrada aparece bajo tus pies y se llena gradualmente de energía divina.
+		Cada vez que la barra se llena, la lanza obtiene una carga, hasta un máximo de seis campos sagrados.
+		Marca con la cruz del destino al enemigo más cercano mientras la sostienes.
+		Golpear a un enemigo marcado con un lanzamiento cargado desata la ira del peregrino.
 		[legend]
 		'''
 	Legend:

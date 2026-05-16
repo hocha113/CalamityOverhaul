@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
-        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = ItemGroup.Spear;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = ItemGroup.MeleeWeapon;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= ChargeGrade + 1;
