@@ -794,11 +794,11 @@ CommandersChainsaw: {
 }
 
 GeminisTribute: {
-	// DisplayName: Twins' Tribute
+	// DisplayName: Twins' Yonder
 	/* Tooltip:
 		'''
-		Throws a fast-revolving scythe that slashes back and forth
-		Stealth attacks unleash a swarm of Destroyer cruise missiles
+		Alternately hurls a Retinazer scythe and a Spazmatism scythe, slashing back and forth along a sine-wave path
+		Right-click launches both scythes in a crossing arc; on impact a fused Twins eye condenses and rains dual-colored pulses across the area
 		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
 		''' */
 }
@@ -856,8 +856,9 @@ CommandersClaw: {
 	// DisplayName: Commander's Claw
 	/* Tooltip:
 		'''
-		Throw them at the enemies and restrain them.
-		The stealth attack will generate several Destroyer Grenades.
+		Hurl the heavy iron claw on its chain, spinning forward to deliver crushing melee strikes.
+		Each hit erupts with metallic sparks, shockwaves, and a violent screen shake.
+		The chain will inexorably yank the claw back to your hand; striking terrain snaps it home at once.
 		''' */
 }
 

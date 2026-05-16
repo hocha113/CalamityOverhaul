@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> NeutronWarp { get; set; }
         public static Asset<Effect> PrimeHalo { get; set; }
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
+        public static Asset<Effect> TwinsEyeOverlay { get; set; }
         public static Asset<Effect> KnifeRendering { get; set; }
         public static Asset<Effect> KnifeDistortion { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }

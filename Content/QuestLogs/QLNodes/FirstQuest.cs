@@ -34,6 +34,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                     }
                 }
             }
+            else {
+                AddVanillaStarterRewards();
+            }
 
             if (ModLoader.TryGetMod("CalamityModMusic", out var musicMod) && musicMod.TryFind<ModItem>("CalamityMusicbox", out var musicbox)) {
                 AddReward(musicbox.Type, 1);
@@ -50,6 +53,15 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                     AddReward(crafting.Type, 1);
                 }
             }
+        }
+
+        private void AddVanillaStarterRewards() {
+            AddReward(ItemID.IronPickaxe, 1);
+            AddReward(ItemID.IronAxe, 1);
+            AddReward(ItemID.LesserHealingPotion, 10);
+            AddReward(ItemID.RecallPotion, 3);
+            AddReward(ItemID.Torch, 50);
+            AddReward(ItemID.Rope, 100);
         }
 
         public override void UpdateByPlayer() {
