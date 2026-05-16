@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: Murasama
+﻿MurasamaHeld.DisplayName: Murasama
 MuraTriggerDash.DisplayName: Murasama
 MuraBreakerSlash.DisplayName: Crescent Moon Slash
 MuraExecutionCut.DisplayName: Dimensional Severance - Finale
@@ -547,3 +547,7 @@ SHPCSandCurtainProj.DisplayName: Sand Curtain
 SHPCMoondewRefractFlashProj.DisplayName: Moondew Refraction Flash
 MonomolecularWire.DisplayName: Monomolecular Wire
 HolyCross.DisplayName: Holy Cross
+ArbiterFireSnake.DisplayName: Fire Snake
+ArbiterGroundFire.DisplayName: Ground Fire
+ArbiterHeld.DisplayName: Arbiter
+ArbiterShockwave.DisplayName: Shockwave
