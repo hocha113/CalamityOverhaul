@@ -369,10 +369,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static DamageClass GetTrueMeleeNoSpeedDamageClassInner() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
 
-        public static DamageClass GetMeleeRangedHybridDamageClass() => Has ? GetMeleeRangedHybridDamageClassInner() : DamageClass.Default;
-        [CWRJITEnabled]
-        private static DamageClass GetMeleeRangedHybridDamageClassInner() => ModContent.GetInstance<MeleeRangedHybridDamageClass>();
-
         public static float ChargeRatio(Item item) => Has ? ChargeRatioInner(item) : 0f;
         [CWRJITEnabled]
         private static float ChargeRatioInner(Item item) => item.Calamity().ChargeRatio;
@@ -709,21 +705,6 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static void SetPlayerInfiniteFlightInner(Player player, bool value) => player.Calamity().infiniteFlight = value;
 
-        public static bool GetPlayerStealthStrikeAvailable(this Player player) => Has && GetPlayerStealthStrikeAvailableInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerStealthStrikeAvailableInner(Player player) => player.Calamity().StealthStrikeAvailable();
-
-        public static void SetProjStealthStrike(this Projectile projectile, bool value) {
-            if (!Has) return;
-            SetProjStealthStrikeInner(projectile, value);
-        }
-        [CWRJITEnabled]
-        private static void SetProjStealthStrikeInner(Projectile projectile, bool value) => projectile.Calamity().stealthStrike = value;
-
-        public static bool GetProjStealthStrike(this Projectile projectile) => Has && GetProjStealthStrikeInner(projectile);
-        [CWRJITEnabled]
-        private static bool GetProjStealthStrikeInner(Projectile projectile) => projectile.Calamity().stealthStrike;
-
         public static void OldDukeOnKill(NPC npc) {
             if (!Has) return;
             OldDukeOnKillInner(npc);
@@ -745,42 +726,6 @@ namespace CalamityOverhaul
         private static void StopAcidRainInner() {
             AcidRainEvent.AccumulatedKillPoints = 0;
             AcidRainEvent.UpdateInvasion(win: true);
-        }
-
-        public static void StarRT(Projectile projectile, Entity target) {
-            if (!Has) return;
-            StarRTInner(projectile, target);
-        }
-        [CWRJITEnabled]
-        private static void StarRTInner(Projectile projectile, Entity target) {
-            if (!VaultUtils.isServer) {
-                Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                GeneralParticleHandler.SpawnParticle(new ImpactParticle(Vector2.Lerp(projectile.Center, target.Center, 0.65f), 0.1f, 20, Main.rand.NextFloat(0.4f, 0.5f), color));
-                for (int i = 0; i < 20; i++) {
-                    Vector2 spawnPosition = target.Center + Main.rand.NextVector2Circular(30f, 30f);
-                    StreamGougeMetaball.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 60f);
-
-                    float scale = MathHelper.Lerp(24f, 64f, CalamityUtils.Convert01To010(i / 19f));
-                    spawnPosition = target.Center + projectile.velocity.SafeNormalize(Vector2.UnitY) * MathHelper.Lerp(-40f, 90f, i / 19f);
-                    Vector2 particleVelocity = projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(0.23f) * Main.rand.NextFloat(2.5f, 9f);
-                    StreamGougeMetaball.SpawnParticle(spawnPosition, particleVelocity, scale);
-                }
-            }
-        }
-
-        public static void SpanFire(Entity entity) {
-            if (!Has) return;
-            SpanFireInner(entity);
-        }
-        [CWRJITEnabled]
-        private static void SpanFireInner(Entity entity) {
-            bool LowVel = Main.rand.NextBool() ? false : true;
-            FlameParticle ballFire = new FlameParticle(entity.Center + VaultUtils.RandVr(entity.width / 2)
-                , Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed) {
-                Velocity = new Vector2(entity.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
-                * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
-            };
-            GeneralParticleHandler.SpawnParticle(ballFire);
         }
 
         public static ref float RefItemCharge(this Item item) {
@@ -812,27 +757,6 @@ namespace CalamityOverhaul
         public static bool SetItemUsesCharge(this Item item, bool value) => Has && SetItemUsesChargeInner(item, value);
         [CWRJITEnabled]
         private static bool SetItemUsesChargeInner(Item item, bool value) => item.Calamity().UsesCharge = value;
-
-        public static DamageClass GetRogueDamageClass() {
-            if (!Has) {
-                return DamageClass.Default;
-            }
-            return GetRogueDamageClassInner();
-        }
-        [CWRJITEnabled]
-        private static DamageClass GetRogueDamageClassInner() => ModContent.GetInstance<RogueDamageClass>();
-
-        public static float GetPlayerRogueStealth(this Player player) => Has ? GetPlayerRogueStealthInner(player) : 0f;
-        [CWRJITEnabled]
-        private static float GetPlayerRogueStealthInner(Player player) => player.Calamity().rogueStealth;
-
-        public static float SetPlayerRogueStealth(this Player player, float value) => Has ? SetPlayerRogueStealthInner(player, value) : 0f;
-        [CWRJITEnabled]
-        private static float SetPlayerRogueStealthInner(Player player, float value) => player.Calamity().rogueStealth = value;
-
-        public static float GetPlayerRogueStealthMax(this Player player) => Has ? GetPlayerRogueStealthMaxInner(player) : 0f;
-        [CWRJITEnabled]
-        private static float GetPlayerRogueStealthMaxInner(Player player) => player.Calamity().rogueStealthMax;
 
         public static ref float RefPlayerRogueStealthMax(this Player player) {
             if (!Has) {

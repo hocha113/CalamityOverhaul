@@ -12,7 +12,7 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Rogue
+namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
     /// 菌泡囊 —— 战士的菌孢破片手雷

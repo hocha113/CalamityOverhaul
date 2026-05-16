@@ -58,7 +58,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                CWRRef.StarRT(Projectile, target);
                 if (Main.rand.NextBool(3)) {
                     int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + Projectile.Center.To(target.Center) / 2, Vector2.Zero
                     , ModContent.ProjectileType<CelestialDevourer>(), Projectile.damage / 2, 0, Projectile.owner);

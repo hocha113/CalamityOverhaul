@@ -16,12 +16,10 @@ namespace CalamityOverhaul.Content.Buffs
 
         public override void Update(Player player, ref int buffIndex) {
             player.CWR().HellfireExplosion = true;
-            CWRRef.SpanFire(player);
         }
 
         public override void Update(NPC npc, ref int buffIndex) {
             npc.CWR().HellfireExplosion = true;
-            CWRRef.SpanFire(npc);
         }
     }
 }

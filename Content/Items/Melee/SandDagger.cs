@@ -9,7 +9,7 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Rogue
+namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
     /// 沙之飞匕 —— 战士的沙岩投掷匕首
