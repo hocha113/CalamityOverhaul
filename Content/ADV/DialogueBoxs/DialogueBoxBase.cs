@@ -1235,8 +1235,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
 
         /// <summary>
-        /// 判断字符是否属于需要按"任意位置可换行"处理的CJK表意范围。
-        /// 覆盖CJK统一表意、扩展A、平假名、片假名、谚文音节以及全/半角形和CJK符号标点。
+        /// 判断字符是否属于需要按"任意位置可换行"处理的CJK表意范围
+        /// 覆盖CJK统一表意、扩展A、平假名、片假名、谚文音节以及全/半角形和CJK符号标点
         /// </summary>
         protected static bool IsCJKChar(char c) {
             return c is >= '\u4E00' and <= '\u9FFF'   //CJK Unified Ideographs
