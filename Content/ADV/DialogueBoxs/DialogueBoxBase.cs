@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -1106,7 +1107,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     allLines.Add(string.Empty);
                     continue;
                 }
-                string[] lines = Utils.WordwrapString(block, font, wrapWidth, 9999, out int _);
+                //使用CJK感知的折行函数，避免 Utils.WordwrapString 在纯中文(无空格)文本上
+                //因 DynamicSpriteFont.MeasureString 对CJK字形测量不稳定而返回单行的问题
+                List<string> lines = WrapTextCJKAware(block, font, wrapWidth);
                 foreach (var l in lines) {
                     if (l == null) {
                         continue;
@@ -1126,6 +1129,125 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float contentHeight = textLines * lineHeight + ScaledPadding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, ScaledMinHeight, ScaledMaxHeight);
         }
+
+        /// <summary>
+        /// CJK感知的折行函数。对中日韩等表意文字按"任意字符"作为可换行点，
+        /// 对拉丁文字仍按单词级别折行，并使用稳健的字符宽度估算来规避
+        /// <see cref="DynamicSpriteFont.MeasureString(string)"/> 对CJK字形测量偶尔偏小、
+        /// 导致整段中文被误判为单行的问题。
+        /// </summary>
+        protected static List<string> WrapTextCJKAware(string text, DynamicSpriteFont font, float maxWidth) {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(text)) {
+                result.Add(string.Empty);
+                return result;
+            }
+            if (maxWidth < 1f) {
+                result.Add(text);
+                return result;
+            }
+
+            //计算一个稳定的CJK字符参考宽度：优先使用"汉"字测量值，
+            //但若测量值异常偏小（说明字体缺失CJK字形或fallback错位），用字体高度近似
+            float fontHeight = font.MeasureString("A").Y;
+            if (fontHeight < 1f) {
+                fontHeight = 18f;
+            }
+            float cjkRefWidth = font.MeasureString("汉").X;
+            float expectedCJKWidth = fontHeight * 0.95f;
+            if (cjkRefWidth < expectedCJKWidth * 0.6f) {
+                //"汉"测量偏小，使用字体高度估算（CJK字形通常是方块形）
+                cjkRefWidth = expectedCJKWidth;
+            }
+
+            var currentLine = new StringBuilder();
+            float currentWidth = 0f;
+            //当前正在累计的拉丁文单词在 currentLine 中的起始下标（-1 表示无拉丁文单词在累积）
+            int latinWordStart = -1;
+            float latinWordWidth = 0f;
+
+            for (int i = 0; i < text.Length; i++) {
+                char ch = text[i];
+                bool isCJK = IsCJKChar(ch);
+                bool isWhite = char.IsWhiteSpace(ch);
+
+                //计算字符宽度
+                float charWidth;
+                if (isCJK) {
+                    //优先用真实测量，但不低于参考宽度（防止偶发偏小）
+                    float measured = font.MeasureString(ch.ToString()).X;
+                    charWidth = Math.Max(measured, cjkRefWidth);
+                }
+                else {
+                    charWidth = font.MeasureString(ch.ToString()).X;
+                }
+
+                bool needWrap = currentWidth + charWidth > maxWidth && currentLine.Length > 0;
+
+                if (needWrap) {
+                    if (isCJK || isWhite || latinWordStart < 0) {
+                        //在当前字符之前换行
+                        result.Add(currentLine.ToString().TrimEnd(' '));
+                        currentLine.Clear();
+                        currentWidth = 0f;
+                        latinWordStart = -1;
+                        latinWordWidth = 0f;
+                        if (isWhite) {
+                            //跳过行首多余空白
+                            continue;
+                        }
+                    }
+                    else {
+                        //当前字符位于拉丁文单词内部，把整个单词移到下一行
+                        string head = currentLine.ToString(0, latinWordStart).TrimEnd(' ');
+                        string tail = currentLine.ToString(latinWordStart, currentLine.Length - latinWordStart);
+                        result.Add(head);
+                        currentLine.Clear();
+                        currentLine.Append(tail);
+                        currentWidth = latinWordWidth;
+                        latinWordStart = 0;
+                    }
+                }
+
+                currentLine.Append(ch);
+                currentWidth += charWidth;
+
+                if (isCJK || isWhite) {
+                    latinWordStart = -1;
+                    latinWordWidth = 0f;
+                }
+                else {
+                    if (latinWordStart < 0) {
+                        latinWordStart = currentLine.Length - 1;
+                        latinWordWidth = charWidth;
+                    }
+                    else {
+                        latinWordWidth += charWidth;
+                    }
+                }
+            }
+
+            if (currentLine.Length > 0) {
+                result.Add(currentLine.ToString());
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 判断字符是否属于需要按"任意位置可换行"处理的CJK表意范围。
+        /// 覆盖CJK统一表意、扩展A、平假名、片假名、谚文音节以及全/半角形和CJK符号标点。
+        /// </summary>
+        protected static bool IsCJKChar(char c) {
+            return c is >= '\u4E00' and <= '\u9FFF'   //CJK Unified Ideographs
+                or >= '\u3400' and <= '\u4DBF'        //CJK Extension A
+                or >= '\u3040' and <= '\u309F'        //Hiragana
+                or >= '\u30A0' and <= '\u30FF'        //Katakana
+                or >= '\uAC00' and <= '\uD7AF'        //Hangul Syllables
+                or >= '\uFF00' and <= '\uFFEF'        //全/半角形（含全角标点）
+                or >= '\u3000' and <= '\u303F';       //CJK Symbols and Punctuation
+        }
+
         public override void Update() { HandleInput(); }
         public new void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
