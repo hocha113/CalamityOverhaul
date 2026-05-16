@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
-using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;

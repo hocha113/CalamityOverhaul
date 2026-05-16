@@ -1,0 +1,200 @@
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Utilities;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
+{
+    internal class CosmicEddies : BaseHeldProj, ICWRLoader
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        private float Rots => Projectile.width * Projectile.ai[1] / 40;
+        private int Time { get; set; }
+        private SlotId SoundSlot { get; set; }
+        public override void SetDefaults() {
+            Projectile.height = 24;
+            Projectile.width = 24;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.friendly = true;
+            Projectile.penetrate = 6;
+            Projectile.timeLeft = 560;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 15;
+        }
+
+        public override void AI() {
+            if (!Owner.Alives() || !((int)Projectile.ai[0]).TryGetProjectile(out Projectile homeProj)) {
+                Projectile.Kill();
+                return;
+            }
+
+            if (DownRight && homeProj.Alives() && Projectile.ai[2] == 0) {
+                if (Projectile.ai[1] == 0) {
+                    Projectile.rotation = homeProj.rotation;
+                }
+
+                Time++;
+                Projectile.ai[1]++;
+                if (Projectile.ai[1] > 600) {
+                    Projectile.ai[1] = 600;
+                }
+                Projectile.timeLeft = (int)Projectile.ai[1] + 60;
+                Vector2 targetPos = Owner.Center + Projectile.rotation.ToRotationVector2() * 156;
+                Projectile.velocity = Projectile.Center.To(targetPos);
+                Projectile.EntityToRot(homeProj.rotation, 0.1f);
+
+                if (Time % 100 == 0 && Time > 0) {
+                    SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.4f });
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        float pwer = Time / 20;
+                        if (pwer > 40) {
+                            pwer = 40;
+                        }
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, UnitToMouseV * 23
+                        , ModContent.ProjectileType<DivineDevourerIllusionHead>(), Projectile.damage / 2, 3, Projectile.owner, pwer);
+                    }
+                }
+            }
+            else {
+                Projectile.ai[2]++;
+                Projectile.damage = Projectile.originalDamage + (int)Projectile.ai[1] * 5;
+
+                if (Projectile.timeLeft <= Projectile.ai[1] + 30) {
+                    NPC target = Projectile.Center.FindClosestNPC(1900);
+                    if (target != null) {
+                        Projectile.SmoothHomingBehavior(target.Center, 1, 0.3f);
+                        if (Projectile.Distance(target.Center) < 120) {
+                            Projectile.Kill();
+                        }
+                    }
+                }
+                else {
+                    Projectile.velocity = Projectile.rotation.ToRotationVector2() * 22;
+                }
+
+            }
+
+            if (!VaultUtils.isServer) {
+                int maxdustnum = (int)(Projectile.ai[1] / 40f);
+                for (int i = 0; i < maxdustnum; i++) {
+
+                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next((int)Rots);
+                    Vector2 particleSpeed = pos.To(Projectile.Center + Projectile.velocity).UnitVector() * Main.rand.NextFloat(5.5f, 7.7f);
+                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                        , Main.rand.NextFloat(0.3f, 0.3f + Projectile.ai[1] / 1000f), Color.Blue, 30, 1, 1.5f, hueShift: 0.0f, _entity: Projectile);
+                    PRTLoader.AddParticle(energyLeak);
+                }
+
+                if (!SoundEngine.TryGetActiveSound(SoundSlot, out var activeSoundTwister)) {
+                    SoundSlot = SoundEngine.PlaySound(CWRSound.BlackHole with { MaxInstances = 5 }, Projectile.Center);
+                }
+                else {
+                    //如果声音正在播放，则更新声音的位置以匹配弹丸的当前位置。
+                    activeSoundTwister.Position = Projectile.position;
+                }
+            }
+
+            if (Projectile.timeLeft < 60) {
+                Projectile.scale = Projectile.timeLeft / 60f;
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+            => VaultUtils.CircleIntersectsRectangle(Projectile.Center, Rots, targetHitbox);
+
+        public override void OnKill(int timeLeft) {
+            Projectile.Explode(800);
+            if (!VaultUtils.isServer) {//生成这种粒子不是好主意
+                for (int i = 0; i < Rots; i++) {
+                    Vector2 particleSpeed = VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(16, 49));
+                    Vector2 pos = Projectile.Center;
+                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                        , Main.rand.NextFloat(0.4f, 1.2f), Color.Blue, 60, 1, 1.5f, hueShift: 0.0f);
+                    energyLeak.ShouldKillWhenOffScreen = false;
+                    PRTLoader.AddParticle(energyLeak);
+                }
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            if (VaultUtils.isServer) {
+                return false;
+            }
+
+            Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Masking + "TransverseTwill");
+            if (texture == null) {
+                return false;
+            }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            Effect shader = EffectLoader.AccretionDisk.Value;
+
+            float time = Main.GameUpdateCount * 0.02f;
+            float slp = Projectile.ai[1] / 300f + MathF.Sin(Main.GameUpdateCount * CWRUtils.atoR * 2) * 0.1f;
+            float scale = slp * 1.5f;
+
+            Color innerColor = new Color(100, 255, 255);
+            Color midColor = new Color(0, 100, 255);
+            Color outerColor = new Color(50, 0, 150);
+
+            Matrix world = Matrix.Identity;
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(
+                0, Main.screenWidth,
+                Main.screenHeight, 0,
+                -1, 1);
+            Matrix finalMatrix = world * view * projection;
+
+            shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
+            shader.Parameters["uTime"]?.SetValue(time);
+            shader.Parameters["rotationSpeed"]?.SetValue(2f);
+            shader.Parameters["innerRadius"]?.SetValue(0.1f);
+            shader.Parameters["outerRadius"]?.SetValue(0.9f);
+            shader.Parameters["brightness"]?.SetValue(1.5f);
+            shader.Parameters["distortionStrength"]?.SetValue(0.2f);
+            shader.Parameters["noiseTexture"]?.SetValue(texture);
+            shader.Parameters["centerPos"]?.SetValue(Projectile.Center - Main.screenPosition);
+            shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
+            shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
+            shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
+
+            Main.graphics.GraphicsDevice.Textures[1] = texture;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+
+            shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
+
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            Vector2 origin = texture.Size() * 0.5f;
+
+            for (int i = 0; i < 14; i++) {
+                Main.spriteBatch.Draw(
+                    texture,
+                    drawPosition,
+                    null,
+                    Color.BlueViolet,
+                    Projectile.rotation + i * 0.15f + time,
+                    origin,
+                    scale * (0.8f + i * 0.2f),
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+            return false;
+        }
+    }
+}

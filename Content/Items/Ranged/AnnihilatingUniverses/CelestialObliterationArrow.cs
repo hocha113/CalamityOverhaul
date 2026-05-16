@@ -1,0 +1,124 @@
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using InnoVault.Trails;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
+{
+    internal class CelestialObliterationArrow : ModProjectile, IPrimitiveDrawable
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        private Trail Trail;
+        private const int MaxPos = 40;
+        public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.height = 54;
+            Projectile.width = 54;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.friendly = true;
+            Projectile.penetrate = 13;
+            Projectile.timeLeft = 100;
+            Projectile.MaxUpdates = 3;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI() {
+            Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
+            Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
+            Lighting.AddLight(Projectile.Center, color.ToVector3());
+            Projectile.velocity += (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 0.1f;
+            if (Projectile.localAI[0] < 1f) {
+                Projectile.localAI[0] += 0.1f;
+            }
+
+            Projectile.ai[0]++;
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Lighting.AddLight(Projectile.Center, Color.AliceBlue.ToVector3() * 0.2f);
+            Player Owner = Main.player[Projectile.owner];
+            float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
+
+            if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
+                PRT_SparkAlpha spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
+                PRTLoader.AddParticle(spark);
+            }
+
+            if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
+                PRT_Line spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.7f, Color.BlueViolet);
+                PRTLoader.AddParticle(spark2);
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.numHits == 0) {
+                CWRRef.StarRT(Projectile, target);
+                if (Main.rand.NextBool(3)) {
+                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + Projectile.Center.To(target.Center) / 2, Vector2.Zero
+                    , ModContent.ProjectileType<CelestialDevourer>(), Projectile.damage / 2, 0, Projectile.owner);
+                    Main.projectile[proj].scale = 0.3f;
+                }
+            }
+            if (target.type == CWRID.NPC_SepulcherHead
+                || target.type == CWRID.NPC_SepulcherBody
+                || target.type == CWRID.NPC_SepulcherTail) {
+                foreach (NPC targetHead in Main.ActiveNPCs) {
+                    if (targetHead.type == CWRID.NPC_SepulcherHead) {
+                        ModNPC modNPC = targetHead.ModNPC;
+                        modNPC.NPC.life = 0;
+                        modNPC.NPC.checkDead();
+                        modNPC.OnKill();
+                        modNPC.HitEffect(hit);
+                        modNPC.NPC.active = false;
+                    }
+                }
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
+                Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
+                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                    , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
+                PRTLoader.AddParticle(energyLeak);
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Vector2[] newPoss = new Vector2[MaxPos];
+            Trail ??= new Trail(newPoss, (sengs) => Projectile.scale * 10f * (1 - sengs), (_) => Color.AliceBlue * Projectile.Opacity);
+            Vector2 norlVer = Projectile.velocity.UnitVector();
+            for (int i = 0; i < MaxPos; i++) {
+                newPoss[i] = Projectile.Center - norlVer * i * 6 * Projectile.localAI[0];
+            }
+            Trail.TrailPositions = newPoss;
+
+            Effect effect = EffectLoader.GradientTrail.Value;
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "SlashFlatBlurHVMirror"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DarklightGreatsword_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+        }
+    }
+}

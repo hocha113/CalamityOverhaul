@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
+using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
+using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;

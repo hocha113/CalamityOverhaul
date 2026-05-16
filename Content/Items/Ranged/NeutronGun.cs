@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
