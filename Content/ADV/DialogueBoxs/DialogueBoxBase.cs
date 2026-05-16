@@ -43,22 +43,22 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <summary>
         /// 对话框正在打开时触发
         /// </summary>
-        public event EventHandler<DialogueBoxLifecycleEventArgs> OnOpening;
+        public new event EventHandler<DialogueBoxLifecycleEventArgs> OnOpening;
 
         /// <summary>
         /// 对话框完全打开后触发
         /// </summary>
-        public event EventHandler<DialogueBoxLifecycleEventArgs> OnOpened;
+        public new event EventHandler<DialogueBoxLifecycleEventArgs> OnOpened;
 
         /// <summary>
         /// 对话框开始关闭时触发
         /// </summary>
-        public event EventHandler<DialogueBoxLifecycleEventArgs> OnClosing;
+        public new event EventHandler<DialogueBoxLifecycleEventArgs> OnClosing;
 
         /// <summary>
         /// 对话框完全关闭后触发
         /// </summary>
-        public event EventHandler<DialogueBoxLifecycleEventArgs> OnClosed;
+        public new event EventHandler<DialogueBoxLifecycleEventArgs> OnClosed;
 
         /// <summary>
         /// 对话框状态改变时触发
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// 优雅地关闭对话框（播放关闭动画）
         /// </summary>
         /// <returns>是否成功开始关闭</returns>
-        public virtual bool Close() {
+        public new virtual bool Close() {
             if (_state == DialogueBoxState.Closing || _state == DialogueBoxState.Closed || _state == DialogueBoxState.Idle) {
                 return false;
             }
