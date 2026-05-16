@@ -6,6 +6,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
     internal class TerminusQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_Terminus > 0;
+
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = CWRID.Item_Terminus;
@@ -19,11 +21,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            Rewards.Add(new QuestReward {
-                ItemType = CWRID.Item_BloodOrb,
-                Amount = 999,
-                Description = this.GetLocalization("QuestReward.Description", () => "大量血珠")
-            });
+            AddReward(CWRID.Item_BloodOrb, 999, this.GetLocalization("QuestReward.Description", () => "大量血珠"));
         }
 
         public override void UpdateByPlayer() {
@@ -42,11 +40,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class RockQuest : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_Rock > 0;
+
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = CWRID.Item_Rock;
             Position = new Vector2(0, -150);
-            AddParent<TerminusQuest>();
+            if (CWRID.Item_Terminus > 0) {
+                AddParent<TerminusQuest>();
+            }
+            else {
+                AddParent<FirstQuest>();
+            }
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 

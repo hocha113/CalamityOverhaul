@@ -87,16 +87,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class IceLabSchematic : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_EncryptedSchematicIce > 0;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "极地密码");
             Description = this.GetLocalization(nameof(Description), () => "在雪原嘉登实验室寻找加密图纸");
 
             IconType = QuestIconType.Item;
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
-                if (calamity.TryFind("EncryptedSchematicIce", out ModItem item)) {
-                    IconItemType = item.Type;
-                }
-            }
+            IconItemType = CWRID.Item_EncryptedSchematicIce;
 
             Position = new Vector2(0, -150);
             AddParent<ExploreSnow>();
@@ -201,16 +199,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class SunkenSeaLabSchematic : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_EncryptedSchematicSunkenSea > 0;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "沉沦之海");
             Description = this.GetLocalization(nameof(Description), () => "在沉沦之海嘉登实验室寻找加密图纸");
 
             IconType = QuestIconType.Item;
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
-                if (calamity.TryFind("EncryptedSchematicSunkenSea", out ModItem item)) {
-                    IconItemType = item.Type;
-                }
-            }
+            IconItemType = CWRID.Item_EncryptedSchematicSunkenSea;
 
             Position = new Vector2(0, -150);
             AddParent<ExploreDesert>();
@@ -284,16 +280,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class JungleLabSchematic : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_EncryptedSchematicJungle > 0;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "丛林原案");
             Description = this.GetLocalization(nameof(Description), () => "在丛林嘉登实验室寻找加密图纸");
 
             IconType = QuestIconType.Item;
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
-                if (calamity.TryFind("EncryptedSchematicJungle", out ModItem item)) {
-                    IconItemType = item.Type;
-                }
-            }
+            IconItemType = CWRID.Item_EncryptedSchematicJungle;
 
             Position = new Vector2(150, 0);
             AddParent<ExploreJungle>();
@@ -721,16 +715,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class HellLabSchematic : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_EncryptedSchematicHell > 0;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "地狱蓝图");
             Description = this.GetLocalization(nameof(Description), () => "在地狱嘉登实验室寻找加密图纸");
 
             IconType = QuestIconType.Item;
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
-                if (calamity.TryFind("EncryptedSchematicHell", out ModItem item)) {
-                    IconItemType = item.Type;
-                }
-            }
+            IconItemType = CWRID.Item_EncryptedSchematicHell;
 
             Position = new Vector2(150, 0);
             AddParent<ExploreHell>();
@@ -915,16 +907,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class PlanetoidLabSchematic : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_EncryptedSchematicPlanetoid > 0;
+
         public override void SetStaticDefaults() {
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "星流之谜");
             Description = this.GetLocalization(nameof(Description), () => "在小行星嘉登实验室寻找加密图纸");
 
             IconType = QuestIconType.Item;
-            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity)) {
-                if (calamity.TryFind("EncryptedSchematicPlanetoid", out ModItem item)) {
-                    IconItemType = item.Type;
-                }
-            }
+            IconItemType = CWRID.Item_EncryptedSchematicPlanetoid;
 
             Position = new Vector2(-150, 100);
             AddParent<ExploreSpace>();

@@ -111,7 +111,11 @@ namespace CalamityOverhaul
         public static int Item_DragoonDrizzlefish => Get();
         public static int Item_PlasmaDriveCore => Get();
         public static int Item_MysteriousCircuitry => Get();
+        public static int Item_EncryptedSchematicIce => Get();
+        public static int Item_EncryptedSchematicSunkenSea => Get();
+        public static int Item_EncryptedSchematicJungle => Get();
         public static int Item_EncryptedSchematicHell => Get();
+        public static int Item_EncryptedSchematicPlanetoid => Get();
         public static int Item_LuxorsGift => Get();
         public static int Item_EternalBlizzard => Get();
         public static int Item_Arbalest => Get();

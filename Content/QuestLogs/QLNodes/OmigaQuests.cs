@@ -16,13 +16,37 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 {
+    internal static class OmigaQuestParents
+    {
+        public static void AddRockGateParent(QuestNode quest) {
+            if (CWRID.Item_Rock > 0) {
+                quest.ParentIDs.Add(nameof(RockQuest));
+            }
+            else if (CWRID.Item_Terminus > 0) {
+                quest.ParentIDs.Add(nameof(TerminusQuest));
+            }
+            else {
+                quest.ParentIDs.Add(nameof(FirstQuest));
+            }
+        }
+
+        public static void AddPostTransmutationParent(QuestNode quest) {
+            if (CWRID.Item_Rock > 0) {
+                quest.ParentIDs.Add(nameof(RockQuestII));
+            }
+            else {
+                quest.ParentIDs.Add(nameof(TransmutationOfMatterQuest));
+            }
+        }
+    }
+
     internal class DarkMatterCompressorQuest : QuestNode
     {
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<DarkMatterCompressorItem>();
             Position = new Vector2(0, -150);
-            AddParent<RockQuest>();
+            OmigaQuestParents.AddRockGateParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -246,7 +270,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AnnihilatingUniverse>();
             Position = new Vector2(150, -200);
-            AddParent<RockQuestII>();
+            OmigaQuestParents.AddPostTransmutationParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -278,7 +302,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AriaofTheCosmos>();
             Position = new Vector2(150, -100);
-            AddParent<RockQuestII>();
+            OmigaQuestParents.AddPostTransmutationParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -310,7 +334,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Pandemonium>();
             Position = new Vector2(150, 0);
-            AddParent<RockQuestII>();
+            OmigaQuestParents.AddPostTransmutationParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -342,7 +366,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<SpearOfLonginus>();
             Position = new Vector2(150, 100);
-            AddParent<RockQuestII>();
+            OmigaQuestParents.AddPostTransmutationParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -374,7 +398,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<DragonsWord>();
             Position = new Vector2(150, 200);
-            AddParent<RockQuestII>();
+            OmigaQuestParents.AddPostTransmutationParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -402,6 +426,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
     internal class RockQuestII : QuestNode
     {
+        public override bool IsLoadingEnabled(Mod mod) => base.IsLoadingEnabled(mod) && CWRID.Item_Rock > 0;
+
         public override void SetStaticDefaults() {
             IconTexturePath = "CalamityMod/UI/MiscTextures/BossRushIcon";
             Position = new Vector2(200, 0);
