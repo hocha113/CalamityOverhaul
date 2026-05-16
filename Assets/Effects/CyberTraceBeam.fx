@@ -101,14 +101,15 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float n3 = tex2D(noiseSamp, frac(float2(rAlong * 2.5 + uTime * 0.8, rCross * 3.0 + 0.7))).b;
 
     // ============================================================
-    // A. 白热能量核心 —— 光束中心最亮的通道
+    // A. 白热能量核心 —— 光束中心最亮的通道（已优化：缩窄过曝区域）
     // ============================================================
-    float coreWidth = 0.08 + n1 * 0.04;
+    float coreWidth = 0.06 + n1 * 0.03;
     // 超驱时核心更宽更炽热
     coreWidth += od * 0.12;
     coreWidth *= lerp(1.0, 0.3, distFromHead);
     float core = 1.0 - smoothstep(0.0, coreWidth, rCrossDist);
-    core = pow(saturate(core), 1.2);
+    //幂次提高一点，让核心边缘更柔和，避免硬白色块
+    core = pow(saturate(core), 1.35);
     float corePulse = 0.85 + 0.15 * sin(uTime * 18.0 + rAlong * 40.0);
     // 超驱时脉冲暴走
     corePulse += od * 0.5 * sin(uTime * 50.0 + rAlong * 80.0);
@@ -179,24 +180,31 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float tailFade = 1.0 - smoothstep(0.7, 1.0, rAlong);
 
     // ============================================================
-    // 颜色合成
+    // 颜色合成 —— 优化亮度：减少纯白叠加，让主题色辨识度更高
+    // 在 Additive Blend 下，过多白色层叠加会让 RGB 三通道同时饱和
+    // 导致中心区域过曝成纯白色，丢失主题色身份。
+    // 这里将"白热"层替换为带主题色调的混色，更养眼且保留科幻光束质感。
     // ============================================================
     float3 cWhite = float3(1.0, 0.97, 0.92);
+    //核心高光：以主题色为主体、混入少量白热，避免纯白爆炸
+    float3 cCoreHot = lerp(effCore, cWhite, 0.45);
+    //头部光球：偏向主题色，让光球带有清晰的颜色身份
+    float3 cHeadHot = lerp(effCore, cWhite, 0.35);
 
     float3 color = float3(0, 0, 0);
-    color += cWhite     * core;
-    color += effCore    * inner;
+    color += cCoreHot   * core * 0.55;          //核心白热幅度降低（1.0→0.55），改用混色
+    color += effCore    * inner;                 //主题色辉光保持原强度，维持色彩饱和度
     color += effGlow    * outerFade;
     color += effGlow    * streams;
     color += effCore    * gridLine;
-    color += cWhite     * headOrb * 0.8;
-    color += effCore    * headGlow;
+    color += cHeadHot   * headOrb * 0.45;       //头部白光降低（0.8→0.45）并改用混色
+    color += effCore    * headGlow * 0.7;       //头部辉光适度降低，避免与光球叠加过曝
     color += effAura    * headGlow * 0.3;
 
     float alpha = saturate(
         edgeMask
-        + core * 0.6
-        + headOrb * 0.5
+        + core * 0.4               //核心 alpha 叠加降低（0.6→0.4），减少 Additive 放大
+        + headOrb * 0.3            //头部 alpha 叠加降低（0.5→0.3）
         + streams * 0.2
         + gridLine * 0.1
     );
