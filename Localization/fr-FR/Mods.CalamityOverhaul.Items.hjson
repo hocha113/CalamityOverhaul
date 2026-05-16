@@ -79,6 +79,17 @@ FoodStallChair: {
 	Tooltip: ""
 }
 
+Arbiter: {
+	DisplayName: Arbitre
+	Tooltip:
+		'''
+		Maintenir le clic gauche pour charger et lever la hache du jugement
+		Relâcher pour frapper vers le bas, libérant une onde de flammes qui épouse le sol et se propage des deux côtés
+		Plus la charge est longue, plus les flammes gagnent en portée et en puissance
+		"Le jugement descend dans les flammes"
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Univers Anéantissant
 	Tooltip:

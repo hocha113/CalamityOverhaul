@@ -79,6 +79,17 @@ FoodStallChair: {
 	Tooltip: ""
 }
 
+Arbiter: {
+	DisplayName: Árbitro
+	Tooltip:
+		'''
+		Mantén clic izquierdo para cargar y alzar el hacha del juicio
+		Suelta para descargar un tajo hacia abajo, liberando una onda de fuego que se extiende por el suelo hacia ambos lados
+		Cuanto más cargues, mayor será el alcance y el poder de las llamas
+		"El juicio desciende entre llamas"
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Flecha de Aniquilación del Universo
 	Tooltip:

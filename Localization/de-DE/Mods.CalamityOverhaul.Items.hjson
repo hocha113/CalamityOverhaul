@@ -79,6 +79,17 @@ FoodStallChair: {
 	Tooltip: ""
 }
 
+Arbiter: {
+	DisplayName: Schlichter
+	Tooltip:
+		'''
+		Linksklick gedrückt halten, um die Axt des Urteils aufzuladen und zu heben
+		Loslassen, um nach unten zu schlagen und eine bodennahe Feuerwelle zu beiden Seiten auszubreiten
+		Längeres Aufladen erhöht Reichweite und Stärke der Flammen
+		"Das Urteil steigt aus den Flammen herab"
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Universum-Vernichter
 	Tooltip:

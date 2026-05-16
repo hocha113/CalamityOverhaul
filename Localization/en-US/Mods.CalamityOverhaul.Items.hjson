@@ -71,6 +71,17 @@ FoodStallChair: {
 	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 }
 
+Arbiter: {
+	DisplayName: Arbiter
+	Tooltip:
+		'''
+		Hold left click to charge and raise the axe of judgment
+		Release to cleave downward, sending a ground-hugging flame shockwave bursting out to both sides
+		Longer charges increase the flames' reach and power
+		"Judgment descends through fire"
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Annihilating Universe
 	Tooltip:

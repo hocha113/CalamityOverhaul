@@ -85,6 +85,17 @@ FoodStallChair: {
 	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 }
 
+Arbiter: {
+	DisplayName: 断罪师
+	Tooltip:
+		'''
+		长按左键蓄力，高举断罪之斧
+		松开后向下劈砍，在地面释放向两侧蔓延的火焰冲击波
+		蓄力越久，火焰蔓延越远，威力越强
+		"审判从烈火中降临"
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: 湮宇星矢
 	Tooltip:
