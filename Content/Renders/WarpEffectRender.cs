@@ -1,10 +1,11 @@
-﻿using InnoVault.RenderHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Common.Render
+namespace CalamityOverhaul.Content.Renders
 {
     /// <summary>
     /// 屏幕扭曲后处理渲染句柄

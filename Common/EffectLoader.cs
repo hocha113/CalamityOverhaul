@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Common
     /// <summary>
     /// 全局着色器资源装载点
     /// <br/>仅负责通过 <see cref="VaultLoadenAttribute"/> 自动加载 <c>Assets/Effects</c> 下的着色器
-    /// <br/>所有运行时渲染逻辑请放在专门的 <c>RenderHandle</c> 子类中（例如 <see cref="Render.WarpEffectRender"/>）
+    /// <br/>所有运行时渲染逻辑请放在专门的 <c>RenderHandle</c> 子类中（例如 <see cref="Content.Renders.WarpEffectRender"/>）
     /// </summary>
     [VaultLoaden(CWRConstant.Effects)]
     public static class EffectLoader
@@ -20,8 +20,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KnifeRendering { get; set; }
         public static Asset<Effect> KnifeDistortion { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
-        public static Asset<Effect> HeavenfallPrismTrail { get; set; }
-        public static Asset<Effect> HeavenfallStarbeam { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
         public static Asset<Effect> AccretionDisk { get; set; }

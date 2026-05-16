@@ -1,10 +1,11 @@
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Common.Render
+namespace CalamityOverhaul.Content.Renders
 {
     /// <summary>
     /// 弹幕扩展绘制层渲染句柄
