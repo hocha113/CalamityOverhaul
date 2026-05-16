@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 断罪师 —— 一柄沉重的大斧
+    /// 断罪师 一柄沉重的大斧
     /// 左键长按蓄力高举，松开后猛地劈下，撞击地面时向左右两侧释放沿地形蔓延的火焰冲击波
     /// 火焰会严格贴合地面形状绵延，并在地面上持续燃烧一段时间
     /// </summary>
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 60;
             Item.height = 60;
-            Item.damage = 620;
+            Item.damage = 320;
             Item.DamageType = DamageClass.Melee;
             //蓄力斧本体的"使用动画"实际由手持弹幕全权处理，这里把节奏调得很短只是为了允许玩家触发
             Item.useAnimation = 12;
@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.shootSpeed = 1f;
-            Item.value = Item.buyPrice(3, 75, 0, 0);
-            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 75, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
             Item.shoot = ModContent.ProjectileType<ArbiterHeld>();
             Item.crit = 6;
         }
@@ -860,7 +860,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>视觉规模</summary>
         private ref float VisualScale => ref Projectile.ai[1];
 
-        private int age;
+        private ref float Timer => ref Projectile.ai[2];
+
         //火焰摇曳相位
         private float swayPhase;
         //视觉火焰宽高与地面锚点，和 Projectile.width/height 的伤害判定完全解耦
@@ -869,10 +870,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float visualGroundY;
 
         //仅用于碰撞判定。以后调整这两个值不会影响火焰粒子的外观
-        private static int HitboxWidth => 40;
-        private static int HitboxHeight => 124;
-        private static float BaseVisualHeight => 28f;
-        private static float BaseVisualWidth => 40f;
+        internal static int HitboxWidth => 40;
+        internal static int HitboxHeight => 124;
+        internal static float BaseVisualHeight => 28f;
+        internal static float BaseVisualWidth => 40f;
 
         public override void SetDefaults() {
             Projectile.width = HitboxWidth;
@@ -888,31 +889,32 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.timeLeft = 600;
         }
 
-        public override void OnSpawn(IEntitySource source) {
-            if (LifeMax > 0) {
-                Projectile.timeLeft = (int)LifeMax;
-            }
-            if (VisualScale <= 0.01f) {
-                VisualScale = 1f;
-            }
-            swayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
-            visualGroundY = Projectile.Center.Y;
-            visualWidth = BaseVisualWidth * VisualScale;
-        }
-
-        public override bool? CanDamage() => age > 4 && age < Projectile.timeLeft - 6;
+        public override bool? CanDamage() => Timer > 4 && Timer < Projectile.timeLeft - 6;
 
         public override void AI() {
-            age++;
+            if (Timer == 0) {
+                if (LifeMax > 0) {
+                    Projectile.timeLeft = (int)LifeMax;
+                }
+                if (VisualScale <= 0.01f) {
+                    VisualScale = 1f;
+                }
+                Projectile.position.Y -= HitboxHeight / 2;
+                swayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+                visualGroundY = Projectile.Bottom.Y;
+                visualWidth = BaseVisualWidth * VisualScale;
+            }
+
+            Timer++;
             swayPhase += 0.18f;
 
             //火焰高度的呼吸：先快速点燃 → 长时间稳定燃烧 → 末段快速衰减
             float lifeRatio = Projectile.timeLeft / Math.Max(LifeMax, 1f);
             float baseHeight = BaseVisualHeight * VisualScale;
             visualWidth = BaseVisualWidth * VisualScale;
-            if (age < 10) {
+            if (Timer < 10) {
                 //点燃阶段：从 0 快速涨到 baseHeight
-                visualHeight = MathHelper.Lerp(0f, baseHeight, age / 10f);
+                visualHeight = MathHelper.Lerp(0f, baseHeight, Timer / 10f);
             } else if (lifeRatio < 0.3f) {
                 //衰减阶段
                 visualHeight = baseHeight * (lifeRatio / 0.3f);
@@ -942,7 +944,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float spreadX = visualWidth * 0.45f;
 
             //底层余烬（红）：每 3 帧才生成一颗
-            if (age % 3 == 0) {
+            if (Timer % 3 == 0) {
                 Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX, spreadX), baseY);
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.6f, 1.4f));
                 Dust d = Dust.NewDustPerfect(pos, DustID.RedTorch, vel, 100, default
@@ -952,7 +954,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             //中层主体（橙黄）：每 2 帧 1 颗
-            if (age % 2 == 0) {
+            if (Timer % 2 == 0) {
                 float hOffset = Main.rand.NextFloat(-2f, visualHeight * 0.4f);
                 Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX * 0.7f, spreadX * 0.7f)
                     , baseY - hOffset);
@@ -964,7 +966,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             //顶端的 PRT 火焰：每 6 帧 1 颗，营造跳动感
-            if (age % 6 == 0) {
+            if (Timer % 6 == 0) {
                 float h = Main.rand.NextFloat(visualHeight * 0.3f, visualHeight * 0.8f);
                 Vector2 pos = new Vector2(Projectile.Center.X + Main.rand.NextFloat(-spreadX * 0.5f, spreadX * 0.5f)
                     , baseY - h);

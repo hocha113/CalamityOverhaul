@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content
                 npcLoot.SimpleAdd(3380, 1, 2, 6);
             }
             else if (npc.type == CWRID.NPC_SupremeCalamitas) {
-                npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
+                npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 10);//10%概率掉落自画像
             }
             else if (npc.type == CWRID.NPC_DesertScourgeHead) {
                 dontExpertRule.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);
@@ -264,6 +264,9 @@ namespace CalamityOverhaul.Content
             else if (npc.type == CWRID.NPC_OldDuke) {
                 dontExpertRule.SimpleAdd(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
+            }
+            else if (npc.type == NPCID.WallofFlesh) {
+                npcLoot.SimpleAdd(ModContent.ItemType<Arbiter>(), 1);//血肉墙必定掉落断罪师
             }
         }
 
