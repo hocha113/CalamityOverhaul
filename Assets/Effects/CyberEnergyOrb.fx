@@ -221,22 +221,19 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         finalColor += effGlow * odRing * od * (0.5 + burst * 0.6);
         alpha += odRing * od * 0.18;
 
-        // F-6. 水平撕裂带（强化为"黑墙"：更频繁、更深、连 alpha 一起挖空）
-        //  - 阈值 0.90→0.80（更频繁）
-        //  - 暗化系数 0.6→0.92（接近全黑）
-        //  - alpha 同步下降，制造真正的"光球缺口"
+        // F-6. 水平撕裂带（轻度干扰，保留故障感但不强切割）
         float tearY = floor(uv.y * 15.0);
         float tearHash = hash21(float2(tearY, floor(uTime * 18.0)));
-        float tearOn = step(0.80 - burst * 0.20, tearHash) * od * orbEdgeMask;
-        finalColor *= 1.0 - tearOn * 0.92;
-        alpha *= 1.0 - tearOn * 0.50;
+        float tearOn = step(0.88 - burst * 0.12, tearHash) * od * orbEdgeMask;
+        finalColor *= 1.0 - tearOn * 0.50;
+        alpha *= 1.0 - tearOn * 0.18;
 
-        // F-7. 数据丢失黑块（NEW —— 像马赛克一样掏空光球局部）
+        // F-7. 数据丢失黑块（轻度马赛克扰色，不大幅挖空）
         float2 corBlockUV = floor(uv * (12.0 + burst * 8.0)) / (12.0 + burst * 8.0);
         float corHash = hash21(corBlockUV + float2(floor(uTime * 9.0), 4.7));
-        float corOn = step(0.88 - burst * 0.18, corHash) * od * orbMask;
-        finalColor *= 1.0 - corOn * 0.85;
-        alpha *= 1.0 - corOn * 0.40;
+        float corOn = step(0.91 - burst * 0.12, corHash) * od * orbMask;
+        finalColor *= 1.0 - corOn * 0.45;
+        alpha *= 1.0 - corOn * 0.15;
 
         // F-8. alpha 加成大幅降低（0.4→0.1）
         alpha *= 1.0 + od * 0.1;
