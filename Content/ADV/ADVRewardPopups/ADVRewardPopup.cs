@@ -29,7 +29,8 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             Brimstone,  //硫磺火风格
             Draedon,    //嘉登科技风格
             Sulfsea,    //硫磺海风格
-            StarStream  //星流风格
+            StarStream, //星流风格
+            SHPC        //SHPC赛博朋克风格
         }
 
         public class RewardEntry
@@ -99,6 +100,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             inst.styleInstances[RewardStyle.Draedon] = new DraedonRewardStyle();
             inst.styleInstances[RewardStyle.Sulfsea] = new SulfseaRewardStyle();
             inst.styleInstances[RewardStyle.StarStream] = new StarStreamRewardStyle();
+            inst.styleInstances[RewardStyle.SHPC] = new SHPCRewardStyle();
             inst.currentStyle = inst.styleInstances[RewardStyle.Ocean];
         }
 
