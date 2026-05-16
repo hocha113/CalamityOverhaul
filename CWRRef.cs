@@ -867,26 +867,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 获取清除附魔的包装器
-        /// </summary>
-        public static EnchantmentWrapper GetClearEnchantment() {
-            if (!Has)
-                return default;
-            return GetClearEnchantmentInner();
-        }
-        [CWRJITEnabled]
-        private static EnchantmentWrapper GetClearEnchantmentInner() {
-            var clearEnchant = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment;
-            return new EnchantmentWrapper {
-                Name = clearEnchant.Name,
-                Description = clearEnchant.Description,
-                IconTexturePath = clearEnchant.IconTexturePath,
-                InternalId = -1,
-                IsClearEnchantment = true
-            };
-        }
-
-        /// <summary>
         /// 应用附魔到物品
         /// </summary>
         public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
@@ -927,50 +907,6 @@ namespace CalamityOverhaul
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// 获取物品当前的附魔
-        /// </summary>
-        public static EnchantmentWrapper? GetItemEnchantment(Item item) {
-            if (!Has || item == null || item.IsAir)
-                return null;
-            return GetItemEnchantmentInner(item);
-        }
-        [CWRJITEnabled]
-        private static EnchantmentWrapper? GetItemEnchantmentInner(Item item) {
-            var appliedEnchant = item.Calamity().AppliedEnchantment;
-            if (!appliedEnchant.HasValue)
-                return null;
-
-            var ench = appliedEnchant.Value;
-            return new EnchantmentWrapper {
-                Name = ench.Name,
-                Description = ench.Description,
-                IconTexturePath = ench.IconTexturePath,
-                InternalId = 0,
-                IsClearEnchantment = ench.Equals(CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment)
-            };
-        }
-
-        /// <summary>
-        /// 检查附魔是否可用于物品
-        /// </summary>
-        public static bool IsEnchantmentValidForItem(Item item, EnchantmentWrapper wrapper) {
-            if (!Has || item == null || item.IsAir)
-                return false;
-            return IsEnchantmentValidForItemInner(item, wrapper);
-        }
-        [CWRJITEnabled]
-        private static bool IsEnchantmentValidForItemInner(Item item, EnchantmentWrapper wrapper) {
-            var validEnchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
-
-            foreach (var ench in validEnchantments) {
-                if (ench.Name.Value == wrapper.Name.Value && ench.Description.Value == wrapper.Description.Value)
-                    return true;
-            }
-
-            return false;
         }
         #endregion
 
