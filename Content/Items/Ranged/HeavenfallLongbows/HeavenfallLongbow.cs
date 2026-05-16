@@ -150,18 +150,35 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             }
 
             _ = SoundEngine.PlaySound("CalamityMod/Sounds/Item/PlasmaBolt".GetSound() with { Volume = 0.8f }, player.Center);
-            float rot = 0;
-            for (int j = 0; j < 500; j++) {
-                rot += MathHelper.TwoPi / 500f;
-                float scale = 2f / (3f - (float)Math.Cos(2 * rot)) * 25;
+
+            //棱镜星河爆发: 沿伯努利双纽线分布的稀疏棱镜碎片 + 环形极光丝带
+            if (!VaultUtils.isServer) {
+                const int prismCount = 180;
+                float rot = 0;
                 float outwardMultiplier = MathHelper.Lerp(4f, 220f, Utils.GetLerpValue(0f, 120f, 13, true));
-                Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(rot), (float)Math.Sin(2f * rot) / 2f);
-                Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
-                Vector2 particleSpeed = Vector2.Zero;
-                Color color = VaultUtils.MultiStepColorLerp(j / 500f, rainbowColors);
-                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                    , 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
-                PRTLoader.AddParticle(energyLeak);
+                for (int j = 0; j < prismCount; j++) {
+                    rot += MathHelper.TwoPi / prismCount;
+                    float scale = 2f / (3f - (float)Math.Cos(2 * rot)) * 25f;
+                    Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(rot), (float)Math.Sin(2f * rot) / 2f);
+                    Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
+                    Color color = VaultUtils.MultiStepColorLerp(j / (float)prismCount, rainbowColors);
+                    PRTLoader.AddParticle(new PRT_HeavenfallPrism(
+                        pos, Vector2.Zero, color,
+                        Main.rand.NextFloat(1.0f, 1.7f), Main.rand.Next(90, 130),
+                        Main.rand.NextFloat(3.5f, 6f), shortStretch: true));
+                }
+
+                //外环极光丝带 (16 段)
+                const int auroraCount = 16;
+                for (int i = 0; i < auroraCount; i++) {
+                    float ang = MathHelper.TwoPi * i / auroraCount + Main.rand.NextFloat(-0.08f, 0.08f);
+                    Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(4f, 7f);
+                    PRTLoader.AddParticle(new PRT_HeavenfallAurora(
+                        player.Center, vel,
+                        Main.rand.NextFloat(140f, 200f), Main.rand.NextFloat(24f, 34f),
+                        Main.rand.Next(45, 65),
+                        huePhase: i / (float)auroraCount, hueSpeed: 0.025f, driftScale: 1.3f));
+                }
             }
 
             if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0) {

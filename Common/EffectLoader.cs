@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KnifeRendering { get; set; }
         public static Asset<Effect> KnifeDistortion { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
+        public static Asset<Effect> HeavenfallPrismTrail { get; set; }
+        public static Asset<Effect> HeavenfallStarbeam { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
         public static Asset<Effect> AccretionDisk { get; set; }
