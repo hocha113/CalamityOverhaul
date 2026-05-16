@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
                             return new Vector2(rect.Center.X, rect.Y - 70f);
                         },
                         offset: Vector2.Zero,
-                        styleProvider: () => ADVRewardPopup.RewardStyle.Draedon
+                        styleProvider: () => ADVRewardPopup.RewardStyle.SHPC
                     );
                 });
             }
