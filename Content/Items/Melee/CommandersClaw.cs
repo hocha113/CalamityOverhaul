@@ -1,11 +1,11 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -14,9 +14,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 统帅之钳 —— 战士的重型链锤式投掷武器
-    /// 将沉重的铁爪挥出，借助铁链的牵引高速旋转飞行，命中时产生冲击波与屏幕震动
-    /// 撞墙后强力反弹，最终被铁链拽回玩家手中
+    /// 统帅之钳 —— 战士的重型投掷长矛
+    /// 将装饰华丽的指挥官长矛掷向敌人，标枪保持枪尖朝向飞行方向
+    /// 命中时迸发金属火星与冲击波，并轻微震屏，撞墙后插入地面
     /// </summary>
     internal class CommandersClaw : ModItem
     {
@@ -24,322 +24,301 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetDefaults() {
             Item.width = Item.height = 52;
-            Item.damage = 105;
+            Item.damage = 205;
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.useAnimation = Item.useTime = 32;
+            Item.useAnimation = Item.useTime = 26;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 9.5f;
-            Item.UseSound = SoundID.Item71 with { Pitch = -0.3f, Volume = 0.9f };
+            Item.UseSound = SoundID.Item1 with { Pitch = -0.2f, Volume = 0.85f };
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<CommandersClawThrow>();
-            Item.shootSpeed = 19f;
+            Item.shootSpeed = 21f;
             Item.DamageType = DamageClass.Melee;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 65, 0);
             Item.CWR().DeathModeItem = true;
         }
 
-        public override bool CanUseItem(Player player) {
-            //同时只允许场上存在一只铁爪，防止铁链视觉混乱
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
-        }
-
-        public override Vector2? HoldoutOffset() => new Vector2(-4f, 0f);
+        public override bool CanUseItem(Player player) => true;
     }
 
     /// <summary>
-    /// 统帅之钳投出的链锤实体
-    /// 阶段0(飞出): 直线高速旋转飞行，逐步减速
-    /// 阶段1(回收): 铁链将爪子拽回，自动追踪玩家，速度持续提高
+    /// 统帅长矛实体
+    /// 阶段0: 飞行 —— 枪尖朝向速度方向，受轻微重力影响
+    /// 阶段1: 嵌入 —— 撞墙后插入地形或附着到 NPC 上，短暂保留视觉
     /// </summary>
     internal class CommandersClawThrow : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Rogue + "CommandersClawThrow";
 
-        //阶段标记: 0 = 飞出, 1 = 回收
+        //阶段标记: 0 = 飞行, 1 = 嵌入静止
         private ref float Phase => ref Projectile.ai[0];
-        //阶段计时
+        //嵌入或飞行计时
         private ref float PhaseTimer => ref Projectile.ai[1];
-        //旋转速率，逐步衰减以体现金属重量感
-        private ref float SpinSpeed => ref Projectile.localAI[0];
+        //贴附到的 NPC 索引（嵌入阶段使用，-1 = 无）
+        private ref float StuckNPC => ref Projectile.ai[2];
+        //贴附时的相对偏移
+        private ref float StuckOffsetX => ref Projectile.localAI[0];
+        private ref float StuckOffsetY => ref Projectile.localAI[1];
 
         private Player Owner => Main.player[Projectile.owner];
 
-        private const int FlyMaxTime = 32;          //飞出阶段最大持续帧数
-        private const int MaxLifetime = 600;        //总寿命兜底
-        private const float ReturnMinSpeed = 12f;   //回收阶段最低速度
-        private const float ReturnAcceleration = 1.18f; //回收加速倍率
+        private const int FlightLifetime = 240;     //飞行阶段最大寿命
+        private const int StuckLifetime = 90;       //嵌入后保留时间
+        private const float Gravity = 0.18f;        //重力下坠
+        private const float MaxFallSpeed = 18f;     //最大下落速度
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
 
         public override void SetDefaults() {
-            Projectile.width = 32;
-            Projectile.height = 32;
+            Projectile.width = 24;
+            Projectile.height = 24;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = MaxLifetime;
+            Projectile.penetrate = 3;
+            Projectile.timeLeft = FlightLifetime;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 18;
+            Projectile.localNPCHitCooldown = 14;
             Projectile.tileCollide = true;
             Projectile.netImportant = true;
+            Projectile.arrow = false;
+            StuckNPC = -1;
         }
 
         public override void AI() {
-            //初始化朝向与旋转速率
-            if (Projectile.localAI[1] == 0f) {
-                Projectile.spriteDirection = Projectile.velocity.X >= 0 ? 1 : -1;
-                SpinSpeed = 0.65f * Projectile.spriteDirection;
-                Projectile.localAI[1] = 1f;
-
-                //出手时的金属火星迸溅
+            //初始化朝向（枪尖始终朝向速度方向）
+            if (Projectile.localAI[0] == 0f && Phase == 0f) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.4f, Volume = 0.8f }, Projectile.Center);
                 SpawnLaunchSparks();
+                Projectile.localAI[0] = 1f;
             }
-
-            //自身始终保持高速旋转，体现链锤甩动的力量感
-            Projectile.rotation += SpinSpeed;
-            //旋转速度随时间柔和衰减，再受到回收加速影响
-            SpinSpeed = MathHelper.Lerp(SpinSpeed, 0.35f * Math.Sign(SpinSpeed), 0.01f);
 
             if (Phase == 0f) {
-                FlyOutPhase();
+                FlightPhase();
             }
             else {
-                ReturnPhase();
+                StuckPhase();
             }
 
-            //飞行轨迹上的拖尾粒子
             EmitTrailParticles();
-
-            Lighting.AddLight(Projectile.Center, 0.55f, 0.45f, 0.25f);
+            Lighting.AddLight(Projectile.Center, 0.45f, 0.4f, 0.25f);
 
             PhaseTimer++;
         }
 
-        private void FlyOutPhase() {
-            //轻微减速，营造重物投掷的惯性感
-            if (Projectile.velocity.Length() > 6f) {
-                Projectile.velocity *= 0.985f;
-            }
+        private void FlightPhase() {
+            //标枪经典: 枪尖始终朝向速度方向，纹理本身竖向 (枪尖朝上)，因此 +PiOver2
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            //超过飞出时长或者速度过低，铁链开始回收
-            if (PhaseTimer >= FlyMaxTime || Projectile.velocity.Length() < 4f) {
-                EnterReturnPhase(playSound: true);
+            //轻微重力下坠，起手 12 帧内不下坠保证投掷感
+            if (PhaseTimer > 12 && Projectile.velocity.Y < MaxFallSpeed) {
+                Projectile.velocity.Y += Gravity;
             }
         }
 
-        private void ReturnPhase() {
-            Projectile.tileCollide = false;
-
-            if (!Owner.active || Owner.dead) {
-                Projectile.Kill();
-                return;
+        private void StuckPhase() {
+            //嵌入阶段不再移动，处理"贴在 NPC 身上"的情况
+            int idx = (int)StuckNPC;
+            if (idx >= 0 && idx < Main.maxNPCs) {
+                NPC stuck = Main.npc[idx];
+                if (stuck.active && !stuck.dontTakeDamage) {
+                    Projectile.Center = stuck.Center + new Vector2(StuckOffsetX, StuckOffsetY);
+                }
+                else {
+                    //目标已死或失活，长矛掉落继续受重力下坠
+                    StuckNPC = -1;
+                }
+            }
+            else if (StuckNPC == -1f && Phase == 1f) {
+                //自由下坠的尾段
+                Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 12f);
+                Projectile.Center += Projectile.velocity;
             }
 
-            Vector2 toPlayer = Owner.MountedCenter - Projectile.Center;
-            float speed = Math.Max(Projectile.velocity.Length(), ReturnMinSpeed);
-            //铁链强力拽回，速度逐步提升
-            speed = Math.Min(speed * ReturnAcceleration, 28f);
-            Projectile.velocity = toPlayer.SafeNormalize(Vector2.UnitX) * speed;
-
-            //回到玩家附近时回收
-            if (toPlayer.Length() < 36f) {
+            if (PhaseTimer >= StuckLifetime) {
                 Projectile.Kill();
             }
         }
 
-        private void EnterReturnPhase(bool playSound) {
-            if (Phase == 1f) {
-                return;
-            }
+        public override bool ShouldUpdatePosition() {
+            //嵌入阶段手动控制位置
+            return Phase == 0f;
+        }
 
+        public override bool? CanDamage() {
+            //嵌入阶段不再造成伤害
+            return Phase == 0f ? null : false;
+        }
+
+        private void EnterStuckPhase(NPC target) {
             Phase = 1f;
             PhaseTimer = 0f;
             Projectile.tileCollide = false;
+            Projectile.velocity = Vector2.Zero;
+            Projectile.timeLeft = StuckLifetime + 2;
             Projectile.netUpdate = true;
 
-            if (playSound) {
-                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.4f, Volume = 0.55f }, Projectile.Center);
+            if (target != null) {
+                StuckNPC = target.whoAmI;
+                Vector2 offset = Projectile.Center - target.Center;
+                StuckOffsetX = offset.X;
+                StuckOffsetY = offset.Y;
+            }
+            else {
+                StuckNPC = -1;
             }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            //撞击地形时迸发火星与冲击力，并立即进入回收阶段
-            SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.2f, Volume = 0.85f }, Projectile.Center);
+            //撞击地形时插入墙壁
+            SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
             SpawnImpactSparks(oldVelocity);
 
             if (CWRServerConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                    Projectile.Center, oldVelocity.SafeNormalize(Vector2.UnitX), 4.5f, 5f, 8, 600f, FullName));
+                    Projectile.Center, oldVelocity.SafeNormalize(Vector2.UnitX), 3.5f, 5f, 8, 600f, FullName));
             }
 
-            EnterReturnPhase(playSound: false);
+            //保持插入时枪尖朝向飞行方向
+            Projectile.rotation = oldVelocity.ToRotation() + MathHelper.PiOver4;
+            //向墙内推进一点点，呈现真正"扎进"地形的视觉
+            Projectile.Center += oldVelocity.SafeNormalize(Vector2.Zero) * 6f;
+
+            EnterStuckPhase(null);
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //命中时的强力冲击反馈：屏幕震动 + 火星爆裂 + 冲击波
-            SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = 0.1f, Volume = 0.9f }, target.Center);
-
+            //命中时的强力冲击反馈
+            SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = 0.05f, Volume = 0.85f }, target.Center);
             SpawnHitImpact(target);
 
             if (CWRServerConfig.Instance.ScreenVibration) {
-                Vector2 hitDir = (target.Center - Owner.Center).SafeNormalize(Vector2.UnitX);
+                Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                    target.Center, hitDir, 3.5f, 4.5f, 6, 500f, FullName));
+                    target.Center, hitDir, 3.2f, 4.5f, 6, 500f, FullName));
             }
 
-            //仅在飞出阶段命中三次以上后强制回收，避免长时间滞留
-            if (Phase == 0f && Projectile.numHits >= 3) {
-                EnterReturnPhase(playSound: true);
+            //最后一次穿透命中后嵌入到敌人身上
+            if (Projectile.penetrate <= 1) {
+                EnterStuckPhase(target);
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //飞出阶段挥击伤害更高，回收阶段为顺势拉回伤害稍低
-            if (Phase == 0f) {
-                modifiers.SourceDamage *= 1.15f;
-                modifiers.Knockback *= 1.25f;
-            }
-            else {
-                modifiers.SourceDamage *= 0.85f;
-            }
+            //战士标枪的"重击"特性: 高伤害与击退加成
+            modifiers.SourceDamage *= 1.1f;
+            modifiers.Knockback *= 1.2f;
         }
 
         private void SpawnLaunchSparks() {
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 12; i++) {
-                Vector2 vel = dir.RotatedByRandom(0.6f) * Main.rand.NextFloat(2f, 6f);
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 5f);
                 Dust spark = Dust.NewDustPerfect(Projectile.Center, DustID.Iron, vel,
-                    100, default, Main.rand.NextFloat(1.1f, 1.6f));
+                    100, default, Main.rand.NextFloat(1.0f, 1.4f));
                 spark.noGravity = true;
             }
 
-            for (int i = 0; i < 4; i++) {
-                Vector2 vel = dir.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f, 7f);
-                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 14, 1.4f, Color.Goldenrod);
+            for (int i = 0; i < 3; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f, 6f);
+                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 12, 1.2f, Color.Goldenrod);
                 PRTLoader.AddParticle(prt);
             }
         }
 
         private void SpawnImpactSparks(Vector2 oldVelocity) {
             Vector2 dir = (-oldVelocity).SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 18; i++) {
-                Vector2 vel = dir.RotatedByRandom(1.1f) * Main.rand.NextFloat(3f, 9f);
+            for (int i = 0; i < 14; i++) {
+                Vector2 vel = dir.RotatedByRandom(1.0f) * Main.rand.NextFloat(3f, 8f);
                 Dust spark = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel,
-                    100, default, Main.rand.NextFloat(1.2f, 1.9f));
+                    100, default, Main.rand.NextFloat(1.1f, 1.7f));
                 spark.noGravity = true;
-                spark.fadeIn = 1.1f;
+                spark.fadeIn = 1.05f;
             }
 
-            for (int i = 0; i < 8; i++) {
-                Vector2 vel = dir.RotatedByRandom(0.9f) * Main.rand.NextFloat(4f, 10f);
-                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 18,
-                    Main.rand.NextFloat(1.3f, 2.1f), Color.Orange);
+            for (int i = 0; i < 6; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.8f) * Main.rand.NextFloat(4f, 9f);
+                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 16,
+                    Main.rand.NextFloat(1.3f, 2.0f), Color.Orange);
                 PRTLoader.AddParticle(prt);
             }
         }
 
         private void SpawnHitImpact(NPC target) {
-            //定向锥形碎片
-            Vector2 hitDir = (target.Center - Owner.Center).SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 16; i++) {
-                Vector2 vel = hitDir.RotatedByRandom(0.9f) * Main.rand.NextFloat(3f, 9f);
+            //定向锥形碎片（沿飞行方向喷出）
+            Vector2 hitDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 14; i++) {
+                Vector2 vel = hitDir.RotatedByRandom(0.85f) * Main.rand.NextFloat(3f, 8f);
                 Dust spark = Dust.NewDustPerfect(target.Center, DustID.Iron, vel,
-                    100, default, Main.rand.NextFloat(1.3f, 1.9f));
+                    100, default, Main.rand.NextFloat(1.2f, 1.8f));
                 spark.noGravity = true;
                 spark.fadeIn = 1.05f;
             }
 
             //环形冲击波 Spark
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-                PRT_Spark prt = new PRT_Spark(target.Center, vel, false, 16,
-                    Main.rand.NextFloat(1.4f, 2.2f),
+            for (int i = 0; i < 10; i++) {
+                float angle = MathHelper.TwoPi * i / 10f;
+                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3.5f, 7f);
+                PRT_Spark prt = new PRT_Spark(target.Center, vel, false, 14,
+                    Main.rand.NextFloat(1.3f, 2.0f),
                     Color.Lerp(Color.Goldenrod, Color.OrangeRed, Main.rand.NextFloat()));
                 PRTLoader.AddParticle(prt);
             }
         }
 
         private void EmitTrailParticles() {
-            //每隔几帧抛出一些火星，强化飞行的金属感
-            if (Main.rand.NextBool(3)) {
-                Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f);
-                Vector2 vel = -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(1.5f, 1.5f);
+            //仅飞行阶段抛洒火星，强化飞行金属感
+            if (Phase != 0f) {
+                return;
+            }
+
+            if (Main.rand.NextBool(4)) {
+                Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(6f, 6f);
+                Vector2 vel = -Projectile.velocity * 0.04f + Main.rand.NextVector2Circular(1f, 1f);
                 Dust trail = Dust.NewDustPerfect(spawnPos, DustID.Iron, vel,
-                    150, default, Main.rand.NextFloat(0.9f, 1.3f));
+                    150, default, Main.rand.NextFloat(0.8f, 1.2f));
                 trail.noGravity = true;
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            DrawChain();
-            DrawClaw(lightColor);
-            return false;
-        }
-
-        private void DrawChain() {
-            if (!Owner.active) {
-                return;
-            }
-
-            Texture2D chainTexture = TextureAssets.Chain12.Value;
-            Vector2 playerCenter = Owner.MountedCenter;
-            Vector2 toClaw = Projectile.Center - playerCenter;
-            float chainRotation = toClaw.ToRotation() - MathHelper.PiOver2;
-            float distance = toClaw.Length();
-            int segmentHeight = Math.Max(chainTexture.Height - 2, 8);
-            Vector2 step = toClaw.SafeNormalize(Vector2.UnitY) * segmentHeight;
-
-            Vector2 currentPos = playerCenter;
-            int safety = 0;
-            while (distance > segmentHeight && safety++ < 64) {
-                Color chainColor = Lighting.GetColor(currentPos.ToTileCoordinates());
-                Main.EntitySpriteDraw(chainTexture, currentPos - Main.screenPosition, null, chainColor,
-                    chainRotation, chainTexture.Size() / 2f, 1f, SpriteEffects.None, 0);
-                currentPos += step;
-                distance -= segmentHeight;
-            }
-        }
-
-        private void DrawClaw(Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 origin = texture.Size() / 2f;
-            SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-            float drawRot = Projectile.rotation + (Projectile.spriteDirection > 0 ? 0f : -MathHelper.PiOver2);
+            float drawRot = Projectile.rotation;
 
-            //残影拖尾，营造重型旋转的速度感
-            for (int k = Projectile.oldPos.Length - 1; k >= 0; k--) {
-                if (Projectile.oldPos[k] == Vector2.Zero) {
-                    continue;
+            //飞行阶段绘制残影拖尾，强化高速飞行的速度感
+            if (Phase == 0f) {
+                for (int k = Projectile.oldPos.Length - 1; k >= 0; k--) {
+                    if (Projectile.oldPos[k] == Vector2.Zero) {
+                        continue;
+                    }
+
+                    float fade = (Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length;
+                    Color trailColor = lightColor * fade * 0.4f;
+                    Vector2 trailPos = Projectile.oldPos[k] + Projectile.Size / 2f - Main.screenPosition;
+
+                    Main.EntitySpriteDraw(texture, trailPos, null, trailColor, drawRot,
+                        origin, Projectile.scale, SpriteEffects.None, 0);
                 }
-
-                float fade = (Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length;
-                Color trailColor = lightColor * fade * 0.45f;
-                Vector2 trailPos = Projectile.oldPos[k] + Projectile.Size / 2f - Main.screenPosition;
-                float trailRot = (Projectile.oldRot.Length > k ? Projectile.oldRot[k] : drawRot)
-                    + (Projectile.spriteDirection > 0 ? 0f : -MathHelper.PiOver2);
-
-                Main.EntitySpriteDraw(texture, trailPos, null, trailColor, trailRot,
-                    origin, Projectile.scale * (0.85f + fade * 0.15f), effects, 0);
             }
 
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, lightColor,
-                drawRot, origin, Projectile.scale, effects, 0);
+                drawRot, origin, Projectile.scale, SpriteEffects.None, 0);
+            return false;
         }
 
         public override void OnKill(int timeLeft) {
-            //返回时的微弱火星，整体收束
-            for (int i = 0; i < 6; i++) {
+            //收束时的微弱火星
+            for (int i = 0; i < 4; i++) {
                 Dust spark = Dust.NewDustPerfect(Projectile.Center,
-                    DustID.Iron, Main.rand.NextVector2Circular(2.5f, 2.5f),
-                    150, default, Main.rand.NextFloat(0.8f, 1.2f));
+                    DustID.Iron, Main.rand.NextVector2Circular(2f, 2f),
+                    150, default, Main.rand.NextFloat(0.7f, 1.1f));
                 spark.noGravity = true;
             }
         }

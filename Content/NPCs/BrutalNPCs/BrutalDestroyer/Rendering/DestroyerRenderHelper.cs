@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
         private static void DrawAimLine(Vector2 drawPos, Vector2 direction, Color baseColor, float progress,
             Texture2D lineTex, Texture2D glowTex) {
             float aimProgress = (progress - 0.3f) / 0.7f;
-            float lineLength = 600f * aimProgress;
+            float lineLength = 1600f * aimProgress;
             int segments = (int)(lineLength / 10f);
             float lineRotation = direction.ToRotation();
 
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
                 Main.EntitySpriteDraw(lineTex, segPos, null, baseColor * segAlpha * pulse,
                     lineRotation, new Vector2(0, lineTex.Height / 2f),
-                    new Vector2(0.5f, 0.3f * (1f - t * 0.3f)), SpriteEffects.None, 0);
+                    new Vector2(1, 0.3f * (1f - t * 0.3f)), SpriteEffects.None, 0);
             }
 
             //末端光点

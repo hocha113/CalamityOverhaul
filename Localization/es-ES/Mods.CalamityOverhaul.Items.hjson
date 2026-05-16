@@ -870,9 +870,9 @@ CommandersClaw: {
 	// DisplayName: Commander's Claw
 	/* Tooltip:
 		'''
-		Hurl the heavy iron claw on its chain, spinning forward to deliver crushing melee strikes.
-		Each hit erupts with metallic sparks, shockwaves, and a violent screen shake.
-		The chain will inexorably yank the claw back to your hand; striking terrain snaps it home at once.
+		Hurl an ornate commander's spear that always keeps its tip pointing forward.
+		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
+		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
 		''' */
 }
 
