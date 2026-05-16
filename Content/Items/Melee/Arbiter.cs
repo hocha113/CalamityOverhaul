@@ -77,6 +77,13 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const int MaxChargeTime = 90;
         /// <summary>劈砍持续帧数</summary>
         private const int SlamTime = 14;
+
+        /// <summary>蓄力时的"玩家相对"举斧角度（0=正前方、-π/2=正上方），始终以"朝右"为基准方向计算，再由 <see cref="MirrorAngle"/> 处理镜像</summary>
+        private const float LiftAnglePlayerRel = -MathHelper.Pi * 0.62f;
+        /// <summary>劈砍终点的玩家相对角度（>0 表示斜向下方）</summary>
+        private const float SwingEndPlayerRel = MathHelper.Pi * 0.42f;
+        /// <summary>断罪师纹理中斧刃的"自然指向"（无旋转时斧刃从中心指向 -π/4，即屏幕右上方）</summary>
+        private const float TextureBladeAngle = -MathHelper.PiOver4;
         /// <summary>收手持续帧数</summary>
         private const int RecoverTime = 14;
         /// <summary>蓄力阶段斧头与玩家中心的距离</summary>
@@ -195,7 +202,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             bool released = !DownLeft && chargeFrames >= 1;
 
             //蓄力位置：斧头举至玩家上方稍偏后的位置，斧刃朝后
-            float liftAngle = MathHelper.Pi * -0.62f * lockedDirection;
+            //朝左和朝右是绕 Y 轴的镜像（π - θ），不是简单变号
+            float liftAngle = MirrorAngle(LiftAnglePlayerRel);
             //蓄力时随机轻微抖动，营造肌肉发力的感觉
             shakePhase += 0.35f + ChargeRatio * 0.5f;
             float tremor = (float)Math.Sin(shakePhase) * ChargeRatio * 0.05f;
@@ -239,8 +247,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             PhaseTimer = 0;
             impactTriggered = false;
             //蓄力越满，挥砍幅度越大、终点越靠下方
-            swingStartAngle = MathHelper.Pi * -0.62f * lockedDirection;
-            swingEndAngle = MathHelper.Pi * 0.42f * lockedDirection;
+            //朝左 / 朝右的角度通过 π - θ 镜像，而不是变号
+            swingStartAngle = MirrorAngle(LiftAnglePlayerRel);
+            swingEndAngle = MirrorAngle(SwingEndPlayerRel);
             currentRotation = swingStartAngle;
             lastRotation = swingStartAngle;
 
@@ -283,8 +292,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         private void UpdateRecovering() {
             //从劈砍终点缓慢回归一个稍微抬起的"收力"姿势
+            //"抬起" = 在玩家相对坐标下让角度更负（更朝上），所以朝左时需要"加" 0.35（因为左方向的世界角度是镜像的）
             float t = MathHelper.Clamp(PhaseTimer / RecoverTime, 0f, 1f);
-            float restAngle = MathHelper.Lerp(swingEndAngle, swingEndAngle - 0.35f * lockedDirection, t);
+            float pullBack = 0.35f * lockedDirection;
+            float restAngle = MathHelper.Lerp(swingEndAngle, swingEndAngle - pullBack, t);
             currentRotation = restAngle;
             axePivot = GetHandPos() + currentRotation.ToRotationVector2() * SwingDistance;
 
@@ -449,6 +460,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             return pivot;
         }
 
+        /// <summary>
+        /// 把一个"以朝右为基准"的世界角度，按玩家朝向镜像到正确的世界角度上
+        /// 朝右时直接返回 <paramref name="rightFacingAngle"/>；
+        /// 朝左时返回绕 Y 轴对称的 π - <paramref name="rightFacingAngle"/>，
+        /// 这样 "上方偏后" / "下方偏前" 这类不对称姿势在两个方向上都能正确呈现
+        /// （直接乘以 -1 只对正上 / 正下这类纵向对称姿势有效，对斜向角度是错误的）
+        /// </summary>
+        private float MirrorAngle(float rightFacingAngle) {
+            return lockedDirection > 0 ? rightFacingAngle : MathHelper.Pi - rightFacingAngle;
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
                 return false;
@@ -456,11 +478,14 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Texture2D tex = TextureAssets.Item[ModContent.ItemType<Arbiter>()].Value;
             Vector2 origin = tex.Size() / 2f;
-            //斧头纹理的"自然朝向"为右下，需要补偿到 45° 让 currentRotation 表示斧刃所指的方向
-            float textureOffset = MathHelper.PiOver4 + MathHelper.Pi;
-            //朝右时镜像左右翻转，让斧刃跟随玩家朝向看起来一致
-            SpriteEffects effect = lockedDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            float drawRot = currentRotation + (lockedDirection > 0 ? textureOffset : -MathHelper.PiOver4);
+            //纹理无旋转时斧刃指向 -π/4，所以补偿 +π/4 让 currentRotation 表示斧刃在世界中的实际指向
+            //不做左右翻转：只靠旋转就能让斧刃在两个方向上都正确指向斧头的"前进方向"
+            float drawRot = currentRotation - TextureBladeAngle;
+            SpriteEffects effect = SpriteEffects.None;
+            if (Owner.direction == -1) {
+                effect = SpriteEffects.FlipVertically;
+                drawRot -= MathHelper.PiOver2;
+            }
 
             Vector2 drawPos = axePivot - Main.screenPosition;
             float scale = 1.05f + ChargeRatio * 0.18f;
@@ -484,7 +509,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                     float rot = MathHelper.Lerp(lastRotation, currentRotation, t);
                     Vector2 pos = GetHandPos() + rot.ToRotationVector2() * MathHelper.Lerp(HoldDistance, SwingDistance
                         , MathHelper.Clamp(PhaseTimer / SlamTime, 0f, 1f)) - Main.screenPosition;
-                    float trailRot = rot + (lockedDirection > 0 ? textureOffset : -MathHelper.PiOver4);
+                    float trailRot = rot - TextureBladeAngle;
+                    if (Owner.direction == -1) {
+                        trailRot -= MathHelper.PiOver2;
+                    }
                     Color trailColor = Color.Lerp(Color.OrangeRed, Color.Yellow, t) * (0.45f * (1f - i / (float)trail));
                     trailColor.A = 0;
                     Main.spriteBatch.Draw(tex, pos, null, trailColor, trailRot, origin, scale * 0.96f, effect, 0);

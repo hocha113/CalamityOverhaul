@@ -547,7 +547,7 @@ RevelationSealJudgment: {
 // SHPCMoondewRefractFlashProj.DisplayName: Moondew Refraction Flash
 // MonomolecularWire.DisplayName: Monomolecular Wire
 // HolyCross.DisplayName: Holy Cross
-// ArbiterFireSnake.DisplayName: Arbiter Fire Snake
-// ArbiterGroundFire.DisplayName: Arbiter Ground Fire
-// ArbiterHeld.DisplayName: Arbiter Held
-// ArbiterShockwave.DisplayName: Arbiter Shockwave
+// ArbiterFireSnake.DisplayName: Fire Snake
+// ArbiterGroundFire.DisplayName: Ground Fire
+// ArbiterHeld.DisplayName: Arbiter
+// ArbiterShockwave.DisplayName: Shockwave
