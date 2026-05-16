@@ -520,8 +520,8 @@ NeutronScythe: {
 	DisplayName: Planetenbote
 	Tooltip:
 		'''
-		Die Sense feuert Gammastrahlen auf Feinde ab und hinterlässt auf ihrem Flug mehrere Verzerrungspunkte
-		Verdeckter Angriff wirft einen Ring von Sensen
+		Eine mit hoher Geschwindigkeit rotierende Neutronensense, die Gammastrahlen auf nahe Feinde abfeuert und entlang ihrer Flugbahn Verzerrungs-Detonationspunkte hinterlässt
+		Rechtsklick: Entfesselt einen Schwarzlochausbruch, der dreizehn Sensen in einem vollen Kreis ausschleudert
 		'''
 }
 
@@ -793,13 +793,13 @@ CommandersChainsaw: {
 }
 
 GeminisTribute: {
-	// DisplayName: Twins' Yonder
-	/* Tooltip:
+	DisplayName: Jenseits der Zwillinge
+	Tooltip:
 		'''
-		Alternately hurls a Retinazer scythe and a Spazmatism scythe, slashing back and forth along a sine-wave path
-		Right-click launches both scythes in a crossing arc; on impact a fused Twins eye condenses and rains dual-colored pulses across the area
-		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
-		''' */
+		Wirft abwechselnd eine Retinazer-Sense und eine Spazmatism-Sense, die auf einer Sinusbahn vor und zurück schneiden
+		Rechtsklick schleudert beide Sensen in einem gekreuzten Bogen; beim Einschlag verdichtet sich ein verschmolzenes Zwillingsauge und lässt zweifarbige Impulse in der Umgebung niedergehen
+		"Es kann nur eine dominante Persönlichkeit geben, und eindeutig hat das Magmaflammenauge gewonnen."
+		'''
 }
 
 Dicoria: {
@@ -852,13 +852,13 @@ ForgedLash: {
 }
 
 CommandersClaw: {
-	// DisplayName: Commander's Claw
-	/* Tooltip:
+	DisplayName: Kommandantenklaue
+	Tooltip:
 		'''
-		Hurl an ornate commander's spear that always keeps its tip pointing forward.
-		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
-		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
-		''' */
+		Schleudert einen verzierten Kommandantenspeer, dessen Spitze stets in Flugrichtung zeigt
+		Jeder Treffer entfesselt metallische Funken, Schockwellen und ein kurzes Bildschirmbeben
+		Mehrere Speere können gleichzeitig fliegen, sich in Gelände bohren oder getroffene Gegner kurzzeitig durchbohrt festhalten
+		'''
 }
 
 DraedonsRemote: {

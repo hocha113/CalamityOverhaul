@@ -521,8 +521,8 @@ NeutronScythe: {
 	DisplayName: Messager de Planète
 	Tooltip:
 		'''
-		La faux tire des rayons gamma sur les ennemis, laissant plusieurs points tordus en vol
-		Une attaque furtive lancera un cercle de faux
+		Une faux à neutrons en rotation à grande vitesse qui tire des rayons gamma sur les ennemis proches et laisse des points de détonation par distorsion le long de sa trajectoire
+		Clic droit : déclenche une Explosion de Trou Noir, projetant treize faux en cercle complet
 		'''
 }
 
@@ -794,13 +794,13 @@ CommandersChainsaw: {
 }
 
 GeminisTribute: {
-	// DisplayName: Twins' Yonder
-	/* Tooltip:
+	DisplayName: Au-delà des Jumeaux
+	Tooltip:
 		'''
-		Alternately hurls a Retinazer scythe and a Spazmatism scythe, slashing back and forth along a sine-wave path
-		Right-click launches both scythes in a crossing arc; on impact a fused Twins eye condenses and rains dual-colored pulses across the area
-		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
-		''' */
+		Lance tour à tour une faux de Retinazer et une faux de Spazmatism, lacérant d'avant en arrière le long d'une trajectoire sinusoïdale
+		Clic droit : lance les deux faux en arc croisé ; à l'impact, un œil fusionné des Jumeaux se condense et déchaîne des impulsions bicolores dans la zone
+		"Une seule personnalité dominante peut exister, et il est clair que l'Œil de magmaflamme a gagné."
+		'''
 }
 
 Dicoria: {
@@ -853,13 +853,13 @@ ForgedLash: {
 }
 
 CommandersClaw: {
-	// DisplayName: Commander's Claw
-	/* Tooltip:
+	DisplayName: Griffe du commandant
+	Tooltip:
 		'''
-		Hurl an ornate commander's spear that always keeps its tip pointing forward.
-		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
-		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
-		''' */
+		Lance une lance de commandant ouvragée dont la pointe reste toujours orientée vers l'avant
+		Chaque impact libère des étincelles métalliques, des ondes de choc et une brève secousse de l'écran
+		Plusieurs lances peuvent voler à la fois, se planter dans le terrain ou rester brièvement fichées dans les ennemis touchés
+		'''
 }
 
 DraedonsRemote: {

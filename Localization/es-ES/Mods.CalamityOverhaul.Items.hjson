@@ -533,8 +533,8 @@ NeutronScythe: {
 	DisplayName: Mensajero Planetario
 	Tooltip:
 		'''
-		La guadaña lanza rayos gamma hacia los enemigos y deja varios puntos de curvatura en su camino
-		Un ataque sigiloso lanza un círculo de guadañas
+		Una guadaña de neutrones que gira a gran velocidad, lanza rayos gamma a los enemigos cercanos y deja puntos de detonación por distorsión a lo largo de su trayectoria
+		Clic derecho: desata una Explosión de Agujero Negro, arrojando trece guadañas en un círculo completo
 		'''
 }
 
@@ -808,13 +808,13 @@ CommandersChainsaw: {
 }
 
 GeminisTribute: {
-	// DisplayName: Twins' Yonder
-	/* Tooltip:
+	DisplayName: Más allá de los Gemelos
+	Tooltip:
 		'''
-		Alternately hurls a Retinazer scythe and a Spazmatism scythe, slashing back and forth along a sine-wave path
-		Right-click launches both scythes in a crossing arc; on impact a fused Twins eye condenses and rains dual-colored pulses across the area
-		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
-		''' */
+		Lanza alternativamente una guadaña de Retinazer y otra de Spazmatism, cortando de ida y vuelta por una trayectoria sinusoidal
+		Clic derecho: lanza ambas guadañas en un arco cruzado; al impactar, un ojo fusionado de los Gemelos se condensa y desata pulsos bicolores por la zona
+		"Solo puede existir una personalidad dominante, y está claro que el Ojo de magmaflama ha ganado."
+		'''
 }
 
 Dicoria: {
@@ -867,13 +867,13 @@ ForgedLash: {
 }
 
 CommandersClaw: {
-	// DisplayName: Commander's Claw
-	/* Tooltip:
+	DisplayName: Garra del comandante
+	Tooltip:
 		'''
-		Hurl an ornate commander's spear that always keeps its tip pointing forward.
-		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
-		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
-		''' */
+		Lanza una ornamentada lanza de comandante cuya punta siempre mira hacia delante
+		Cada impacto libera chispas metálicas, ondas de choque y una breve sacudida de pantalla
+		Pueden volar varias lanzas a la vez, clavándose en el terreno o quedando brevemente incrustadas en los enemigos golpeados
+		'''
 }
 
 DraedonsRemote: {
