@@ -115,16 +115,20 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     }
     else
     {
+        //超驱时减少向纯白的过渡：保留主题核心色身份（橙/黄），
+        //避免在 Additive 下与外层叠加变成纯白光球
         float t = (cmapInput - 0.7) / 0.3;
-        color = lerp(effCore, float3(1.0, 0.97, 0.93), t * t);
+        float whiteBlend = t * t * (1.0 - od * 0.55);
+        color = lerp(effCore, float3(1.0, 0.97, 0.93), whiteBlend);
     }
     
     // ============================================================
-    // C. 菲涅尔边缘辉光 —— 边缘高亮环
+    // C. 菲涅尔边缘辉光 —— 边缘高亮环（超驱加成大幅降低）
     // ============================================================
     float fresnelInner = 1.0 - smoothstep(0.15, 0.30, dist);
     float fresnelRing = smoothstep(0.20, 0.28, dist) * (1.0 - smoothstep(0.28, 0.35, dist));
-    float3 fresnelColor = effGlow * fresnelRing * (1.5 + od * 3.0);
+    //3.0→1.0：菲涅尔环不再翻三倍，避免边缘也跟着过曝
+    float3 fresnelColor = effGlow * fresnelRing * (1.5 + od * 1.0);
     
     // ============================================================
     // D. 数字脉冲纹 —— 赛博科幻质感
@@ -153,8 +157,12 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     finalColor += effCore * ringPulse;
     finalColor += effGlow * rays;
     
+    //球体中心白热高光 —— 超驱下混入 effCore 主题色，避免叠加成纯白
+    //  - 白色基底在 OD 下逐渐被主题色取代（OD=1 时 60% 主题色）
+    //  - 整体强度 0.8+od*1.0 → 0.6+od*0.25，超驱时不再翻倍
     float coreHot = pow(saturate(1.0 - dist / 0.16), 2.5);
-    finalColor += float3(1.0, 0.98, 0.95) * coreHot * (0.8 + od * 1.0);
+    float3 coreHotColor = lerp(float3(1.0, 0.98, 0.95), effCore, od * 0.6);
+    finalColor += coreHotColor * coreHot * (0.6 + od * 0.25);
     
     // alpha
     float alpha = saturate(radialGrad * 1.5);
@@ -163,19 +171,19 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     alpha = saturate(alpha) * fadeAlpha;
 
     // ============================================================
-    // F. 超驱故障叠加 —— 极端黑墙撕裂
+    // F. 超驱故障层 —— "黑墙撕裂"美学
+    // 同 CyberTraceBeam.fx 的设计哲学：减少亮度叠加，强化深色撕裂、
+    // 数据丢失、RGB 通道分离等"破坏式"故障，避免光球变成手电筒。
     // ============================================================
     if (od > 0.01)
     {
         float burst = glitchBurst;
 
         //球体遮罩，防止故障特效泄露到圆形轮廓外形成方形边际
-        //中心保持完整强度，到边缘平滑衰减为零
         float orbMask = 1.0 - smoothstep(0.18, 0.32, dist);
-        //更柔和的边缘遮罩，给环状特效用
         float orbEdgeMask = 1.0 - smoothstep(0.22, 0.34, dist);
 
-        // F-1. RGB通道分离（剧烈重采样）
+        // F-1. RGB 通道分离（保留作为故障感关键 —— 色相扰动而非亮度扰动）
         float splitDist = od * (0.015 + burst * 0.05);
         float splitAngle = uTime * 3.5 + burst * 8.0;
         float2 splitDir = float2(cos(splitAngle), sin(splitAngle)) * splitDist;
@@ -187,37 +195,51 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         rgbSplit.b = finalColor.b * (0.6 + bChan * 0.7);
         finalColor = lerp(finalColor, rgbSplit, od * 0.8);
 
-        // F-2. 方块腐蚀（大面积高亮闪烁，受球体遮罩约束）
+        // F-2. 方块腐蚀（去掉纯白叠加，改用主题色 + 大幅降低强度）
+        //  - 颜色从 (1.0, 0.94, 0.82) 改为 effGlow→effCore 渐变
+        //  - 强度 (0.45 + burst*1.0) → (0.22 + burst*0.4)
         float2 blockUV = floor(uv * (10.0 + burst * 15.0)) / (10.0 + burst * 15.0);
         float blockID2 = hash21(blockUV + float2(floor(uTime * 12.0), 0.0));
         float blockThresh = 0.82 - burst * 0.35;
         float blockOn = step(blockThresh, blockID2) * orbMask;
-        finalColor += float3(1.0, 0.94, 0.82) * blockOn * od * (0.45 + burst * 1.0);
-        alpha += blockOn * od * 0.15;
+        float3 blockCol = lerp(effGlow, effCore, burst * 0.6);
+        finalColor += blockCol * blockOn * od * (0.22 + burst * 0.4);
+        alpha += blockOn * od * 0.10;
 
-        // F-3. 扫描线干扰（密集明亮，受球体遮罩约束）
+        // F-3. 扫描线干扰（强度大幅降低，改用辉光色而非核心色）
         float scanlineOD = frac(uv.y * 80.0 + uTime * 2.5);
         scanlineOD = step(0.92, scanlineOD) * orbMask;
-        finalColor += effCore * scanlineOD * od * 0.8;
+        finalColor += effGlow * scanlineOD * od * 0.4;
 
-        // F-4. 全局闪烁（暴走式亮度抖动）
+        // F-4. 全局闪烁（幅度大幅降低 3.5→1.2，避免整屏闪烁）
         float flickOD = hash21(float2(floor(uTime * 25.0), 9.3));
-        float flickMag = burst * (flickOD - 0.3) * 3.5;
+        float flickMag = burst * (flickOD - 0.3) * 1.2;
         finalColor *= 1.0 + flickMag;
 
-        // F-5. 超驱菲涅尔增强（红炽外环）
+        // F-5. 超驱菲涅尔增强（红炽外环 —— 加成大幅降低）
         float odRing = smoothstep(0.18, 0.28, dist) * (1.0 - smoothstep(0.28, 0.40, dist));
-        finalColor += effGlow * odRing * od * (1.0 + burst * 1.5);
-        alpha += odRing * od * 0.25;
+        finalColor += effGlow * odRing * od * (0.5 + burst * 0.6);
+        alpha += odRing * od * 0.18;
 
-        // F-6. 水平撕裂带（随机黑带瞬闪，受球体遮罩约束）
+        // F-6. 水平撕裂带（强化为"黑墙"：更频繁、更深、连 alpha 一起挖空）
+        //  - 阈值 0.90→0.80（更频繁）
+        //  - 暗化系数 0.6→0.92（接近全黑）
+        //  - alpha 同步下降，制造真正的"光球缺口"
         float tearY = floor(uv.y * 15.0);
         float tearHash = hash21(float2(tearY, floor(uTime * 18.0)));
-        float tearOn = step(0.90 - burst * 0.15, tearHash) * od * orbEdgeMask;
-        finalColor *= 1.0 - tearOn * 0.6;
+        float tearOn = step(0.80 - burst * 0.20, tearHash) * od * orbEdgeMask;
+        finalColor *= 1.0 - tearOn * 0.92;
+        alpha *= 1.0 - tearOn * 0.50;
 
-        // F-7. alpha大幅增强
-        alpha *= 1.0 + od * 0.4;
+        // F-7. 数据丢失黑块（NEW —— 像马赛克一样掏空光球局部）
+        float2 corBlockUV = floor(uv * (12.0 + burst * 8.0)) / (12.0 + burst * 8.0);
+        float corHash = hash21(corBlockUV + float2(floor(uTime * 9.0), 4.7));
+        float corOn = step(0.88 - burst * 0.18, corHash) * od * orbMask;
+        finalColor *= 1.0 - corOn * 0.85;
+        alpha *= 1.0 - corOn * 0.40;
+
+        // F-8. alpha 加成大幅降低（0.4→0.1）
+        alpha *= 1.0 + od * 0.1;
     }
     
     return float4(finalColor * alpha, alpha) * input.Color;

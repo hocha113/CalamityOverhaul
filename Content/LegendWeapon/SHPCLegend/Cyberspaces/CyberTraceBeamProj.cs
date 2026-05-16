@@ -79,12 +79,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         #endregion
 
-        #region 超驱配色（高温红炽+白热）
+        #region 超驱配色（高温红炽：熔岩橙核心 + 深红故障）
 
+        //核心从近白色改为熔岩橙：保留炽热感但不再纯白
+        //在 Additive Blend 下，纯白核心叠加多层会导致中心区域 RGB 三通道全饱和
+        //熔岩橙让"热"感由色相承载（橙红色调），而不是由"亮度"承载
         private static readonly ColorTheme OverdriveTheme = new() {
-            Core = new Color(255, 255, 220),
-            Glow = new Color(255, 40, 15),
-            Aura = new Color(200, 10, 0),
+            Core = new Color(255, 150, 35),      //熔岩橙：高温红炽的视觉核心
+            Glow = new Color(255, 55, 20),       //深红辉光：略提亮以保持与橙核心的层次
+            Aura = new Color(160, 8, 0),         //暗红光晕：更暗的边缘形成黑墙对比
             ParticleMain = new Color(255, 200, 50),
             ParticleEdge = new Color(255, 30, 5),
         };
@@ -251,11 +254,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             glitchBurstIntensity *= 0.85f;
             if (glitchBurstIntensity < 0.01f) glitchBurstIntensity = 0f;
 
-            //飞行发光（超驱时高温红炽光）
+            //飞行发光（超驱时高温红炽光）—— 超驱加成降低，避免环境光也跟着过曝
             Color lightCol = overdriveAmount > 0.1f
                 ? Color.Lerp(theme.Core, OverdriveTheme.Core, overdriveAmount)
                 : theme.Core;
-            Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * (0.6f + overdriveAmount * 0.8f) * fadeAlpha);
+            Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * (0.6f + overdriveAmount * 0.35f) * fadeAlpha);
 
             //方形科幻粒子（冻结时不生成）
             if (timeScale > 0.01f) {
@@ -289,8 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Vector2 perpDir = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
             float od = overdriveAmount;
             float spread = 8f + od * 16f;
-            bool isod = od > 0.3f;
-            int count = isod ? 3 : 2;
+            int count = 2;
 
             //超驱时混合配色（高温红白）
             Color mainCol = Color.Lerp(theme.ParticleMain, OverdriveTheme.ParticleMain, od);
@@ -314,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             //超驱时大量横向散射粒子（高温红炽强调）
             if (od > 0.3f && glitchBurstIntensity > 0.1f) {
-                int burstCount = 3 + (int)(glitchBurstIntensity * 4f);
+                int burstCount = 1 + (int)(glitchBurstIntensity * 2f);
                 for (int i = 0; i < burstCount; i++) {
                     Vector2 burstVel = perpDir * Main.rand.NextFloat(-8f, 8f)
                         + Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(-2f, 2f);
@@ -419,15 +421,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float pulse = 0.9f + 0.1f * MathF.Sin((float)Main.timeForVisualEffects * 0.15f);
-            //超驱时脉冲剧烈震荡
-            pulse += od * 0.3f * MathF.Sin((float)Main.timeForVisualEffects * 0.5f);
-            pulse += od * glitchBurstIntensity * 0.2f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
+            //超驱时脉冲震荡（幅度降低，避免视觉抖动太剧烈让玩家眩晕）
+            pulse += od * 0.18f * MathF.Sin((float)Main.timeForVisualEffects * 0.5f);
+            pulse += od * glitchBurstIntensity * 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
             float alpha = fadeAlpha * pulse;
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
-            //外层柔和bloom光晕（超驱时巨大炽热光晕）
-            float outerScale = (2.0f + od * 2.5f) * Projectile.scale;
-            Color outerColor = drawAura * alpha * (0.25f + od * 0.5f);
+            //外层柔和bloom光晕：超驱时尺寸增量减半（2.5→1.0），
+            //配合深红 Aura 形成"灼烧外圈"而非"巨型炽热光团"
+            float outerScale = (2.0f + od * 1.0f) * Projectile.scale;
+            Color outerColor = drawAura * alpha * (0.30f + od * 0.30f);
             spriteBatch.Draw(glow, drawPos, null, outerColor, 0f,
                 glowOrigin, outerScale, SpriteEffects.None, 0f);
 
@@ -465,7 +468,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
                 orbShader.CurrentTechnique.Passes[0].Apply();
 
-                float orbDrawScale = (1.1f + od * 0.8f) * Projectile.scale;
+                //超驱光球尺寸增量减半（0.8→0.35），核心更紧凑
+                float orbDrawScale = (1.1f + od * 0.35f) * Projectile.scale;
                 spriteBatch.Draw(glow, drawPos, null, Color.White, 0f,
                     glowOrigin, orbDrawScale, SpriteEffects.None, 0f);
 
