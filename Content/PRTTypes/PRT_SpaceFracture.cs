@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float angularVelocity;
         public int inOwner = -1;
 
+        public PRT_SpaceFracture() { }
         public PRT_SpaceFracture(
             Vector2 position,
             Vector2 velocity,

@@ -25,6 +25,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float SpinSpeed;
         private bool ShortStretch;
 
+        public PRT_HeavenfallPrism() {
+            Dispersion = 4f;
+        }
         public PRT_HeavenfallPrism(Vector2 position, Vector2 velocity, Color rainbowColor
             , float scale, int lifetime, float dispersion = 4f, bool shortStretch = false) {
             Position = position;

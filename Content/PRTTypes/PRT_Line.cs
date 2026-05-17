@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override string Texture => CWRConstant.Masking + "Line";
 
+        public PRT_Line() { }
         public PRT_Line(Vector2 relativePosition, Vector2 velocity, bool hasGravityEffect, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;

@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         private const int TotalFrames = 8;
         private float animationSpeed;
 
+        public PRT_GammaImpact() {
+            animationSpeed = 0.15f;
+        }
         public PRT_GammaImpact(
             Vector2 position,
             Vector2 velocity,

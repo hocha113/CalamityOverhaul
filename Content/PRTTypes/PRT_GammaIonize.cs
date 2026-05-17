@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float flickerPhase;
         private float deceleration;
 
+        public PRT_GammaIonize() { }
         public PRT_GammaIonize(
             Vector2 position,
             Vector2 velocity,

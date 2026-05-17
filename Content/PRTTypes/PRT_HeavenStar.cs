@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Vector2 FinalScale;
         private int SpawnDelay;
         private float RotationalSpeed;
+        public PRT_HeavenStar() {
+            Scale = 1f;
+            BloomScale = 1f;
+        }
         public PRT_HeavenStar(Vector2 position, Vector2 velocity, Color color, Color bloom, float angle
             , Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f
             , float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0) {

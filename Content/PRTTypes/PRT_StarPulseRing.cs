@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         internal static Asset<Texture2D> ThinSparkle = null;
         [VaultLoaden("@CalamityMod/Particles/BloomCircle")]
         internal static Asset<Texture2D> BloomCircle = null;
+        public PRT_StarPulseRing() { }
         public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color
             , float originalScale, float finalScale, int lifeTime) {
             Position = position;

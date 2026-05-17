@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public bool AffectedByGravity;
         public Entity entity = null!;
         public override string Texture => CWRConstant.Masking + "Extra_98";
+        public PRT_SparkAlpha() { }
         public PRT_SparkAlpha(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;

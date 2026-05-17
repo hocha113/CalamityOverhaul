@@ -13,6 +13,12 @@ namespace CalamityOverhaul.Content.PRTTypes
         public float HueShift;
         public float followingRateRatio;
 
+        public PRT_HolyColliderLight() {
+            SquishStrenght = 1f;
+            MaxSquish = 3f;
+            Opacity = 1f;
+            followingRateRatio = 0.9f;
+        }
         public PRT_HolyColliderLight(Vector2 position, Vector2 velocity, float scale, Color color
             , int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, float _followingRateRatio = 0.9f) {
             Position = position;

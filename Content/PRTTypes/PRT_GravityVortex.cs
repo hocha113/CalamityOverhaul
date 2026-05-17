@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float orbitAngle;
         private float orbitRadius;
 
+        public PRT_GravityVortex() { }
         public PRT_GravityVortex(
             Vector2 center,
             float startAngle,

@@ -19,6 +19,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color rimColor; //气泡边缘颜色
         private bool isPopping; //是否正在破裂
 
+        public PRT_ToxicBubble() {
+            coreColor = new Color(120, 220, 140, 120);
+            rimColor = new Color(180, 240, 160, 200);
+        }
         public PRT_ToxicBubble(Vector2 position, Vector2 velocity, float scale, int lifetime) {
             Position = position;
             Velocity = velocity;

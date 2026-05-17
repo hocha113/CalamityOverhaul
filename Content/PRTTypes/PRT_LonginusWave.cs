@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Vector2 EntityPos;
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
+        public PRT_LonginusWave() { }
         public PRT_LonginusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
             Position = position;
             Velocity = velocity;

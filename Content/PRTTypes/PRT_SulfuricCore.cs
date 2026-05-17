@@ -18,6 +18,11 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color haloColor;
         private int burstPhase; //0: 膨胀, 1: 闪光, 2: 收缩
 
+        public PRT_SulfuricCore() {
+            pulseSpeed = 0.2f;
+            coreColor = new Color(130, 220, 140);
+            haloColor = new Color(180, 255, 190);
+        }
         public PRT_SulfuricCore(Vector2 position, float scale, int lifetime) {
             Position = position;
             Velocity = Vector2.Zero;

@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         private const int TotalFrames = 4;
         private float animationSpeed;
 
+        public PRT_AccretionDiskImpact() {
+            animationSpeed = 0.15f;
+        }
         public PRT_AccretionDiskImpact(
             Vector2 position,
             Vector2 velocity,

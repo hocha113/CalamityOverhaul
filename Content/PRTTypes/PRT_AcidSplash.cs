@@ -16,6 +16,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         private bool affectedByGravity;
         private float stretchFactor; //拉伸因子
 
+        public PRT_AcidSplash() {
+            affectedByGravity = true;
+            acidColor = new Color(110, 200, 120);
+        }
         public PRT_AcidSplash(Vector2 position, Vector2 velocity, float scale, int lifetime, bool gravity = true) {
             Position = position;
             Velocity = velocity;

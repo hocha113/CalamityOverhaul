@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_Bloomlight : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Photosphere";
+        public PRT_Bloomlight() { }
         public PRT_Bloomlight(Vector2 position, Vector2 velocity, Color color, float scale, int lifeTime, bool produceLight = true, bool AddativeBlend = true) {
             Position = position;
             Velocity = velocity;

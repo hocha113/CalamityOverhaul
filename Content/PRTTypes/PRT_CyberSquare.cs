@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color edgeColor;
         private float flickerPhase;
 
+        public PRT_CyberSquare() {
+            aspectRatio = 1f;
+        }
         public PRT_CyberSquare(Vector2 position, Vector2 velocity, Color color, Color edge, float scale, int lifeTime) {
             Position = position;
             Velocity = velocity;

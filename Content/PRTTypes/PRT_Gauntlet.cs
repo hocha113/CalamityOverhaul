@@ -10,6 +10,11 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public float SquishStrenght;
         public float MaxSquish;
+        public PRT_Gauntlet() {
+            SquishStrenght = 1f;
+            MaxSquish = 3f;
+            Opacity = 1f;
+        }
         public PRT_Gauntlet(Vector2 position, Vector2 velocity, float scale, int lifetime
             , float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f) {
             Position = position;

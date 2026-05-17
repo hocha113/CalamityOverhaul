@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.PRTTypes
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         }
 
+        public PRT_Sparkle() {
+            BloomScale = 1f;
+        }
         public PRT_Sparkle(Vector2 position, Vector2 velocity, Color color, Color bloom, float scale, int lifeTime
             , float rotationSpeed = 0f, float bloomScale = 1f, bool AddativeBlend = true, bool needed = false) {
             Position = position;

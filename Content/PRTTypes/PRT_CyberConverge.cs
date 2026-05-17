@@ -22,6 +22,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color edgeColor;
         private float chargeRatio; // 0~1，用于控制颜色过渡
 
+        public PRT_CyberConverge() {
+            aspectRatio = 1f;
+        }
         /// <param name="position">粒子初始位置（外围）</param>
         /// <param name="targetPos">汇聚目标位置</param>
         /// <param name="mainColor">主颜色</param>

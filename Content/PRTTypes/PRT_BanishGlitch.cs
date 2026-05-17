@@ -22,6 +22,11 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float flickerPhase;
         private float driftAngle;
 
+        public PRT_BanishGlitch() {
+            Color = new Color(0.9f, 0.12f, 0.08f);
+            edgeColor = new Color(1f, 0.3f, 0.2f);
+            aspectRatio = 1f;
+        }
         public PRT_BanishGlitch(Vector2 position, Vector2 velocity, float scale, int lifeTime) {
             Position = position;
             Velocity = velocity;

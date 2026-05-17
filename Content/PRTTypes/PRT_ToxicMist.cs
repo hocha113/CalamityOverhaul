@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color mistColor;
         private int frameIndex;
 
+        public PRT_ToxicMist() {
+            depthLayer = 0.5f;
+            mistColor = new Color(160, 230, 170, 180);
+        }
         public PRT_ToxicMist(Vector2 position, Vector2 velocity, float scale, int lifetime, float depth = 0.5f) {
             Position = position;
             Velocity = velocity;

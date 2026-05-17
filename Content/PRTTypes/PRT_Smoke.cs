@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float Spin;
         private bool Glowing;
         private float HueShift;
+        public PRT_Smoke() { }
         public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
             , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f) {
             Position = position;

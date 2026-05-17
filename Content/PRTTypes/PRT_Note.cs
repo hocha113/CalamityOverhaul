@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float floatOffset;
         private float pulseTimer;
 
+        public PRT_Note() { }
         public PRT_Note(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, int noteType = -1) {
             Position = position;
             Velocity = velocity;

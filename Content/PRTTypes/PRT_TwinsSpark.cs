@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         /// <param name="lifetime">寿命(帧)</param>
         /// <param name="scale">基础缩放</param>
         /// <param name="eyeMode">0=激光眼 1=魔焰眼</param>
+        public PRT_TwinsSpark() { }
         public PRT_TwinsSpark(Vector2 position, Vector2 velocity, int lifetime, float scale, int eyeMode) {
             Position = position;
             Velocity = velocity;

@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float SpinSpeed;          //轻微旋转
         private float DriftScale;         //寿命结束前再次拉长的强度
 
+        public PRT_HeavenfallAurora() {
+            HueSpeed = 0.012f;
+            DriftScale = 0.7f;
+        }
         /// <param name="position">起始位置</param>
         /// <param name="velocity">速度向量 (会决定旋转/拉伸方向)</param>
         /// <param name="stretchScale">丝带拉伸的像素长度参考 (推荐 60~180)</param>

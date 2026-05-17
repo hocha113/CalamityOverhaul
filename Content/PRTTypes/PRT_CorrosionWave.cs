@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color glowColor;
         private float pulsePhase;
 
+        public PRT_CorrosionWave() { }
         public PRT_CorrosionWave(Vector2 position, float startScale, float endScale, int lifetime, float rotation = 0f) {
             Position = position;
             Velocity = Vector2.Zero;
