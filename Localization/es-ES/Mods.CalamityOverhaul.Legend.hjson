@@ -466,7 +466,7 @@ SHPCModuleStat: {
 	// BeamExplodeOnHit: +BEAMS DETONATE A MICRO-PULSE ON HIT
 	// OrbDrainAura: +ORB SIPHONS NEARBY FOES WHILE CHARGING
 	// OrbExplosionPropels: +ORB DETONATION ROCKETS THE WIELDER AWAY
-	// LaserMode: +PRISM LASER MODE: LMB fires a cursor-tracking laser column
+	// LaserMode: +LMB fires a cursor-tracking laser column
 	// LaserScorchOnHit: +LASER IGNITES ENEMIES ON HIT
 	// LaserPulse: +LASER DETONATES A PULSE AT BEAM END
 	// OrbFlyingAttract: +ORB STEERS TOWARD NEAREST FOE IN FLIGHT
