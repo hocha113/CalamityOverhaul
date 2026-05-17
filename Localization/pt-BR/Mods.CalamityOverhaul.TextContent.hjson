@@ -1,0 +1,221 @@
+﻿CWRLocText: {
+	TemperatureText: Temperatura de Combustao
+	EnergyShortage: Falta de Energia
+	ChargingStation_Text1: Coloque itens para carregar
+	ChargingStation_Text2: Coloque bateria
+	ChargingStation_Text3: Precisa colocar algo que possa receber energia
+	ChargingStation_Text4: Precisa colocar baterias
+	WindGriven_Text1: Voce acha estas maquinas de vento fascinantes e comeca a pensar em fazer algumas voce mesmo...
+	WindGriven_Text2: Voce esta surpreso com o tamanho enorme destas maquinas e sente que deveria tentar construir uma voce mesmo...
+	Turret_Text1: Bateria Acabou
+	Turret_Text2: Intruso Detectado!
+	IndustrializationGenMessage: Industrializando o Mundo
+	InternalStoredEnergy: Energia Interna Armazenada
+	KreloadTimeAddText: "Tempo de recarga de municao aumentado "
+	KreloadTimeLessenText: "Tempo de recarga de municao reduzido "
+	DeathModeItem: Item do Modo Morte
+	DontUseMagicConch: Voce esta sendo observado por uma criatura poderosa...
+	OnlyZenith: Apenas no Mundo Zenith
+	Event_TungstenRiot_Name: Tumulto de Tungstenio
+	Event_TungstenRiot_Text_1: Um grande numero de criaturas de tungstenio esta invadindo!
+	Event_TungstenRiot_Text_2: O Exercito de Tungstenio foi repelido!
+	Item_LegendOnMouseLang: Pressione 'Shift' para ouvir a historia...
+	BloodAltar_Text1: O olhar carmesim esta chegando...
+	BloodAltar_Text2: Voce nao tem orbes de sangue suficientes para prestar homenagem ao Rei Carmesim...
+	BloodAltar_Text3: "{0} Preso em um frenesi interminavel de sangue e carne"
+	VoidDamageNameText: Dano do Vazio
+	Drop_Hell_RuleText: Cai apos ser derrotado no Inferno
+	Drop_GlodDragonDrop_RuleText: Cai quando o dragao da selva e derrotado duas vezes
+	Murasama_Text_Lang_0: Provação:
+	Murasama_Text_Lang_End: Ja passou
+	Murasama_No_legend_Content_1: A bainha sera destravada apos a queda do dragao
+	Murasama_No_legend_Content_2: Recruta, eu aprovo suas habilidades. Agora, vamos picar os alienigenas
+	Murasama_No_legend_Content_3: "[c/fff08c:Mais forte com a distancia da jornada]"
+	Murasama_No_legend_Content_4: "[c/00707d:A gloria da lenda diminuiu...]"
+	SHPC_No_legend_Content_1: Desbloqueie apos a queda do dragao
+	SHPC_No_legend_Content_2: Retorno da arma lendaria! :)
+	SHPC_No_legend_Content_3: "[c/fff08c:Fica mais forte com a distancia da jornada]"
+	SHPC_No_legend_Content_4: "[c/00707d:A gloria da lenda diminuiu...]"
+	SHPC_TextDictionary_Content_16: Protocolo HMOI-0001 Desbloqueado
+	Halibut_No_legend_Content_1: Desbloqueado apos a queda do grande dragao
+	Halibut_No_legend_Content_2: Ei, eu estive aqui todo esse tempo
+	Halibut_No_legend_Content_3: "[c/fff08c:Ficando mais forte a cada passo da jornada]"
+	Halibut_No_legend_Content_4: "[c/00707d:O brilho lendario desapareceu...]"
+	Legend_QuestManager_Hint: Pressione [{KEY}] para abrir a lista de missoes
+	Halibut_TextDictionary_Content_0: Amigo, vamos desafiar aquela enorme e viscosa criatura terrestre.
+	Halibut_TextDictionary_Content_1: Ha um grande olho nos encarando. Isso e muito rude; deveriamos dar uma licao nele.
+	Halibut_TextDictionary_Content_2: A vida nao prospera apenas no Abismo, mas tambem na Selva. Deveriamos fazer uma visita a abelha rainha de la.
+	Halibut_TextDictionary_Content_3:
+		'''
+		Um esqueleto amaldicoado que nunca se decompõe—precisamos coloca-lo para descansar.
+		Os pedidos de socorro do Inferno estao se tornando mais frequentes. Devemos partir em breve. Tenho certeza de que o Guia nao se importara.
+		'''
+	Halibut_TextDictionary_Content_4:
+		'''
+		Voce sabe como objetos inanimados ganham vida? Uma vez construi uma enorme maquina submarina que podia lancar ogivas nucleares feitas de bolhas
+		e inumeros torpedos termonucleares. Usei-a para cacar criaturas gigantes que viviam a 10.000 metros abaixo do mar—ate que encontrei...
+		Oh, divago. Acho que em breve teremos quatro amigos mecanicos nos visitando, entao devemos estar preparados.
+		Ale disso, ha um verme marinho gigante mutante nas aguas poluídas acima do Abismo. Costumava ser um porteiro na Universidade do Mar Sulfuroso.
+		Ainda deve ser bem amigavel; podemos tomar cha da tarde com ele.
+		'''
+	Halibut_TextDictionary_Content_5:
+		'''
+		A proxima amostra de pesquisa e a clone.
+		Uma replica grosseira, sim, mas esta saturada com aquela presenca de enxofre... material excelente para analise.
+		...Oh, certo. Mais uma coisa.
+		Eu gosto da selva. E praticamente minha segunda casa, repleta de energia vital
+		comparável ao abismo profundo. No entanto, precisamos encontrar uma maneira de libera-la primeiro.
+		Lembra daqueles bulbos gigantes subterraneos? Va 'colhe-los'. Isso vai... ajudar no meu diploma de botânica.
+		'''
+	Halibut_TextDictionary_Content_6:
+		'''
+		Eu gosto de escavacoes arqueologicas. Da ultima vez que estava vagando pela Selva, vi uma ruína massiva.
+		Agora devemos ter a chave para abrir a porta daquela ruína. Vamos dar uma olhada.
+		Dentro, ha uma maquina antiga esperando para ser energizada, como um controle remoto de ar condicionado.
+		Alem disso, ha uma peste alienigena se espalhando na superficie, infectando a terra e a maioria dos objetos inorganicos.
+		Toda noite, uma maquina de mineracao atormentada vagueia, infectada ha muito tempo. Vamos acabar com seu sofrimento.
+		'''
+	Halibut_TextDictionary_Content_7:
+		'''
+		Voce sabe o segredo no lado mais distante da Lua? Ha um polvo gigante, uma esponja e uma estrela do mar...
+		Oh, quero dizer, a crise lunar esta chegando.
+		'''
+	Halibut_TextDictionary_Content_8:
+		'''
+		Agora e a hora da crise solar. Um ser energetico poderoso escapou do lado mais distante do Sol e enterrou-se no nucleo do planeta.
+		Precisamos ir la embaixo e dar um banho frio nele.
+		'''
+	Halibut_TextDictionary_Content_9:
+		'''
+		Inumeras almas indomaveis de campos de batalha antigos se reuniram agora, escondidas nas profundezas da masmorra, e estao ficando inquietas.
+		Podemos ir la e matar alguns dos espiritos errantes. Isso pode trazer uma pequena tempestade no Subespaco, mas tambem os atraira para fora.
+		'''
+	Halibut_TextDictionary_Content_10:
+		'''
+		Ha uma especie que nasce e cresce no espaco, capaz de suportar radiacao cosmica intensa e energia de nivel celestial.
+		Nos encontramos com um ha muito tempo, mas agora enfrentamos o campeao entre eles—um ser que afirma ter devorado deuses.
+		'''
+	Halibut_TextDictionary_Content_11: A temperatura da Selva aumentou ultimamente; acho que aquele dragao poderoso voltou.
+	Halibut_TextDictionary_Content_12:
+		'''
+		Estamos prestes a enfrentar o apice das criacoes inorganicas, com poder de fogo e defesa incomparaveis.
+		Ale disso, o Altar de Fogo Sulfurico parece capaz de invocar algo.
+		'''
+	Halibut_TextDictionary_Content_13:
+		'''
+		No Abismo jaz uma pedra especial—use-a para enfrentar a batalha final.
+		Ha tambem uma poderosa criatura marinha que destruiu minha maquina; vamos nos vingar.
+		'''
+	Halibut_TextDictionary_Content_14: Honestamente, eu sinto vontade de voltar para o mar.
+	CWRRecipes_ApostolicRelics: Reliquias Apostolicas
+	CWRRecipes_GodEaterWeapon: Arma Devoradora de Deuses
+	CWRRecipes_FishGroup: peixe
+	LoadItemRecipe_Condition_Text1: Precisa ter um Livro Overhaul The Bible na mochila
+	Murasama_Text0: Desbloqueado
+	Murasama_Text1: Ainda nao desbloqueado. Precisa passar no teste 2
+	Murasama_Text2: Ainda nao desbloqueado. Precisa passar no teste 5
+	Murasama_Text3: Ainda nao desbloqueado. Precisa passar no teste 9
+	MouseTextContactPanel_TextContent: Pressione [KEY] para alternar a Previsao da Receita de Sintese Final.
+	CWRItem_IsRemakeItem_TextContent: -reformulacoes-
+	OnEnterWorld_TextContent: " o reset da arma foi carregado"
+	OnEnterWorld_TextContent2:
+		'''
+		Foi detectado que voce instalou o [Quality of Terraria Mod],
+		mas sua versao do [Quality of Terraria Mod] esta desatualizada.
+		Para garantir que o jogo funcione corretamente, certifique-se de que sua
+		versao do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
+		'''
+	CaseEjection_TextContent: Sem Balas
+	CaseEjection_TextContent_Coin: Sem Dinheiro
+	CaseEjection_TextContent_Arrow: Sem Flechas
+	SupertableUI_Text1: fechar
+	SupertableUI_Text2: Ver receita
+	SupertableUI_Text3: nada
+	OverhaulTheBibleUI_Text:
+		'''
+		Deslize a roda do mouse ou arraste a barra de progresso esquerda para navegar para cima e para baixo nos itens de reset
+		Estes sao apenas para referencia, pois muitas mudancas parciais nao aparecem nesta lista
+		'''
+	OverhaulTheBibleUI_Text1: Monitorar o Corpo a Corpo
+	OverhaulTheBibleUI_Text2: Monitorar o Atirador
+	OverhaulTheBibleUI_Text3: Monitorar o Mago
+	OverhaulTheBibleUI_Text4: Monitorar o Invocador
+	OverhaulTheBibleUI_Text5: Monitorar o Ladino
+	ArrowHolderUI_Text0: Clique Esquerdo Na Flecha Marcada
+	ArrowHolderUI_Text1: Clique Direito Desmarcar
+	SupertableUI_Text4: Fechar monitor de exibicao
+	SupertableUI_Text5: Abrir monitor de exibicao
+	AmmoBox_Text: O limite de implantacao foi alcancado
+	AmmoBox_Text2: Sendo implantado
+	AmmoBox_Text3: " Implantado"
+	HellfireExplosion_DeadLang_Text: "{0} Para Queimar Nas Chamas do Inferno"
+	SoulfireExplosion_DeadLang_Text: "{0} A Alma Se Eleva em Fogo"
+	SupMUI_OneClick_Text1: Material de colocacao rapida
+	SupMUI_OneClick_Text2: Acesso rapido ao material
+	TemporaryVersion_Text:
+		'''
+		[CalamityOverhaul-[V1]]:
+		Esta e uma versao temporaria projetada para se adaptar a nova atualizacao,
+		fornecendo apenas a experiencia de jogo mais basica ate que a versao [V2] chegue.
+		Devido a atualizacao apressada, ainda pode haver alguns bugs perceptíveis.
+		Se encontrar qualquer problema durante o jogo, por favor, envie um problema no Github,
+		ou relate o problema no topico de Feedback sobre Problemas na pagina da Workshop do mod.
+		Os desenvolvedores responderao e corrigirao prontamente.
+		'''
+	MS_Config_Text:
+		'''
+		Detectamos que voce instalou o [Magic Storage Mod].
+		Para resolver problemas de conflito, e recomendado definir a [Profundidade de Fabricacao Recursiva] na configuracao do mod para 0.
+		Esta configuracao para fabricacao recursiva, ao interagir com este mod,
+		acionaria incorretamente todos os eventos de fabricacao, afetando severamente a experiencia de jogo.
+		'''
+	IconUI_Text0: Ir para o repositorio de codigo aberto do mod :)
+	IconUI_Text1: Feedback de Problemas
+	IconUI_Text2: Agradecimentos
+	IconUI_Text3: Artista
+	IconUI_Text4: Assistencia de Codigo
+	IconUI_Text5: Doador
+	IconUI_Text6: Testador de Balanceamento
+	IconUI_Text7: Ver log
+	IconUI_Text8: Wiki do Mod
+	IconUI_Text9: Musico
+	IconUI_ExtraText: Extra
+	SPU_Text0: Em
+	SPU_Text1: Realizar sintese final
+	SPU_Text2: Aquisicao sintetica：
+	Spazmatism_Text1: EUX_001 implantado com sucesso, comportamento registrado: Colaborar com PCZ_001 para neutralizar o alvo.
+	Spazmatism_Text2: EUX_002 implantado com sucesso, comportamento registrado: Colaborar com PCZ_001 para neutralizar o alvo.
+	Spazmatism_Text3: Estrutura principal do EUX_001 danificada, tentando recuar do campo de batalha...
+	Spazmatism_Text4: Estrutura principal do EUX_002 danificada, tentando recuar do campo de batalha...
+	Spazmatism_Text5: O alvo foi terminado.
+	Spazmatism_Text6: Iniciando extracao...
+	Spazmatism_Text7: Missao falhou, tentando recuar do campo de batalha...
+	Spazmatism_Text8: Ja foi implantado
+	Error_1:
+		'''
+		hook falhou, para normalizar o jogo, por favor feche o jogo e reentre,
+		se isso ainda nao retornar ao normal, por favor traga o log exportado para encontrar o desenvolvedor do modulo
+		'''
+	Error_2:
+		'''
+		Uma excecao foi detectada e o servidor esta tentando carregar o sistema de blocos em tempo real,
+		o que pode causar uma pequena travada e alguns segundos de atraso na rede
+		'''
+	Config_1: Usuario
+	Config_2: A configuracao do servidor foi modificada
+	SkeletronPrime_Text: Nao tente me matar com essa coisa estupida! Morra, organismo!
+	Notbound: "[Teclas nao vinculadas]"
+	DisableMotionInterpolationMessage:
+		'''
+		Detectamos que voce ativou o recurso HighFPSSupport: [Suavizacao de Movimento].
+		Para garantir a estabilidade de certos efeitos visuais no mod,
+		este recurso foi automaticamente desativado para voce.
+		Para garantir que a mudanca entre em vigor,
+		e fortemente recomendado que voce alterne manualmente e mantenha este recurso desativado.
+		'''
+	LegendItemUpgradeDisable:
+		'''
+		Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.
+		Para remover esta restricao, por favor, reentre no mundo.
+		'''
+}

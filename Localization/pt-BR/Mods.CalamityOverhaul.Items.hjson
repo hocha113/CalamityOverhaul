@@ -1,0 +1,2517 @@
+﻿SHPCModTooltipDraw: {
+	InstalledHeader: MODULOS INSTALADOS
+	NoModules: NENHUM
+	BonusHeader: BONUS TOTAIS DOS MODULOS
+}
+
+MoldProcessingTable: {
+	DisplayName: Mesa de Processamento de Moldes
+	Tooltip:
+		'''
+		Clique direito para abrir a Mesa de Processamento de Moldes
+		Desconstruir: Derrete partes de modificacao excedentes em fragmentos
+		Refundir: Consome fragmentos para produzir novos moldes; pode travar alvos especificos no indice
+		'''
+}
+
+ElementWhip: {
+	DisplayName: Chicote Elemental
+	Tooltip: Um Chicote infundido com a energia da Lua e dos Elementos.
+}
+
+TheRelicLuxor: {
+	DisplayName: A Reliquia Luxor
+	Tooltip:
+		'''
+		Poder psiquico abrasador acompanhara cada um de seus ataques, e o Deus da Gloria esta com voce
+		[dicas]
+		'''
+}
+
+TheLuxirSoulArtifact: {
+	DisplayName: O Artefato da Alma Luxir
+	Tooltip:
+		'''
+		Ambos Deus e a imortalidade reconhecem sua gloria
+		[dicas]
+		'''
+}
+
+AzureDragonRage: {
+	DisplayName: Furia do Dragao Azure
+	Tooltip: Cheira a grama fresca cortada, embora levemente mofada.
+}
+
+BleedingScourge: {
+	DisplayName: Flagelo Sangrento
+	Tooltip: Acertar um inimigo com este chicote faz chover sangue do ceu antes de explodir no inimigo abaixo, marcando-o para os lacaios.
+}
+
+GhostFireWhip: {
+	DisplayName: Chicote de Fogo Fantasma
+	Tooltip:
+		'''
+		Um chicote extremamente longo, formado pela furia dos espiritos inquietos da masmorra.
+		[c/d4bc75:Pura Ciumeira emana da base, encorajando voce a procurar quem te prejudicou.]
+		'''
+}
+
+AllhallowsGoldWhip: {
+	DisplayName: Chicote de Ouro do Dia de Todos os Santos
+	Tooltip: Na verdade ainda nao esta terminado
+}
+
+DivineSourceBlade: {
+	DisplayName: Lamina da Fonte Divina
+	Tooltip: Balancar libera uma lamina de alta velocidade que corta em fitas o primeiro inimigo que perfura.
+}
+
+FoodStallChair: {
+	DisplayName: Cadeira de Barraca de Comida
+	Tooltip: EU SOU A CADEIRA QUE SE APROXIMA!
+}
+
+AnnihilatingUniverse: {
+	DisplayName: Universo Aniquilador
+	Tooltip:
+		'''
+		Flechas de Madeira se transformam em uma dispersao de Raios Cosmicos.
+		Acertar um inimigo faz com que Fendas da Galaxia ataquem outros inimigos e deixa para tras uma estrela perto da morte, eventualmente implodindo.
+		Clique direito para invocar Projecoes do Devorador que ficam mais fortes e maiores com o tempo.
+		Soltar o clique direito dispara o portal usado para rastrear inimigos antes de eventualmente se extinguir.
+		[c/9C27B0:O Fim esta Proximo.]
+		'''
+}
+
+HeavenfallLongbow: {
+	DisplayName: Arco Longo da Queda Celestial
+	Tooltip:
+		'''
+		Dispara Luz Pura Primordial do Arco-Iris para aniquilar completamente seus inimigos em brilho.
+		Clique direito fara com que a luz primordial chova sobre seus inimigos, explodindo em pura magnificencia.
+		Pressione [TECLA] para iniciar o Julgamento de Vientiane quando estiver no poder maximo.
+		[lenda]
+		'''
+	Legend:
+		'''
+
+		As chamas da guerra de um bilhao de anos atras nunca foram verdadeiramente extintas.
+		Como brasas fumegantes, elas atravessam os corredores infinitos do tempo, queimando intensamente ainda hoje.
+		Elas sao os restos do Crepusculo dos Deuses, o resplendor da antiga cisao do universo, os ecos incessantes da existencia e aniquilacao.
+
+		O Deus Radiante, personificacao da ordem galatica, caiu na maior rebeliao que o cosmos ja testemunhou.
+		O corpo divino se estilhaçou como uma estrela em colapso, espalhando inumeros fragmentos brilhantes por cada canto da galaxia.
+		Aqueles fragmentos se tornaram as sementes da vida, a centelha do conhecimento, o berco dos milagres—e ainda,
+		eles tambem carregaram a mancha da ganancia, destruicao e profanacao.
+		Mortais reverenciam estes restos, chamando-os de reliquias sagradas;
+		ainda assim, os chamados milagres forjados a partir deles sao meras imitacoes cruas do divino, a arrogancia imprudente daqueles que nao conhecem a reverencia.
+
+		Mas entre as ruinas esquecidas e os ecos da lenda, existe um artefato que transcende todas as reliquias.
+		Ele nao e mera testemunha da queda do Deus Supremo; foi a propria arma que o lancou no esquecimento eterno—um arco de lenda.
+		Outrora envolto na furia do fogo celestial,
+		ele disparou a flecha fatal que rompeu a autoridade divina e extinguiu a arrogancia dos deuses, arruinando suas ambicoes.
+		Quando a guerra terminou, o arco tambem foi reivindicado pelas mares do tempo, enterrado no sudario sem fim do misterio e do mito.
+
+		E ainda assim, a roda do destino gira mais uma vez.
+		Os fogos do ceu reacendem, e aquele arco matador de deuses emergira novamente em meio a sinfonia das estrelas.
+		Mais uma vez, ele esculpira os anais da historia em sangue e poeira estelar.
+
+		'''
+}
+
+TestItem: {
+	DisplayName: Item de Teste
+	Tooltip: Hum... Voce nao deveria ter isso
+}
+
+BaseSingularity: {
+	DisplayName: Singularidade Base
+	Tooltip: Hum... Voce nao deveria ter isso
+}
+
+InfiniteIngot: {
+	DisplayName: Lingote Infinito
+	Tooltip: O poder de muitos mundos, universos e galaxias, todos se coalescem neste unico lingote.
+}
+
+TransmutationOfMatterItem: {
+	DisplayName: Polimerizador de Materia Omega
+	Tooltip:
+		'''
+		Um Dispositivo Experimental da Criacao de Draedon. Coloca-lo no chao e clicar com o botao direito abre uma interface de fabricacao estendida para ir alem dos limites mortais.
+		"Sua Jornada para a Loucura Gananciosa esta agora em andamento."
+		'''
+}
+
+DarkMatterCompressorItem: {
+	DisplayName: Compressor de Materia Escura
+	Tooltip: Uma Culminacao de varias estacoes de trabalho, agora capaz de comprimir materia pura como um buraco negro.
+}
+
+InfinitePick: {
+	DisplayName: Picareta da Ganancia Universal
+	Tooltip:
+		'''
+		Clique direito e destrua tudo o que tocar
+		Pressione [TECLA] para mudar o modo
+		'Voce pode sentir que as proprias terras de Terraria tremem de medo sempre que voce a segura.'
+		'''
+}
+
+DarkMatterBall: {
+	DisplayName: Bola de Materia Escura
+	Tooltip:
+		'''
+		Foi comprimida em um buraco negro, mas milagrosamente permanece estavel.
+		Clique direito enquanto segura o item para armazenar itens dentro.
+		Clique direito com a mao vazia para recuperar itens armazenados.
+		'''
+	Contents: Conteudo:
+}
+
+NeutronStarIngot: {
+	DisplayName: Lingote de Estrela de Neutrons
+	Tooltip: O peso de todas as coisas, reunido em suas pontas dos dedos
+}
+
+InfinityCatalyst: {
+	DisplayName: Catalisador do Infinito
+	Tooltip: ""
+}
+
+DawnshatterAzure: {
+	DisplayName: Azure Estilhaçador do Amanhecer
+	Tooltip:
+		'''
+		Dispara uma sombra da coroa, invocando chamas de dragao explosivas ao atingir inimigos.
+		Segure o botao direito do mouse para investir enquanto levanta sua arma.
+		"Deixe as chamas purificarem sua alma e saquearem completamente seus inimigos."
+		'''
+}
+
+DecayParticles: {
+	DisplayName: Particulas de Decaimento
+	Tooltip:
+		'''
+		Um vislumbre da fonte da materia
+		A existencia em si e um milagre
+		'''
+}
+
+DecaySubstance: {
+	DisplayName: Substancia de Decaimento
+	Tooltip:
+		'''
+		Esta em eterno declinio
+		Um ciclo de destruicao e renovacao
+		'''
+}
+
+DissipationSubstance: {
+	DisplayName: Substancia de Dissipacao
+	Tooltip:
+		'''
+		A realidade tem dificuldade em capturar sua essencia
+		Esta desaparecendo, mas e enorme
+		'''
+}
+
+SpectralMatter: {
+	DisplayName: Materia Espectral
+	Tooltip: Cerca de 3,7 trilhoes de bilhoes de toneladas
+}
+
+InfiniteToiletItem: {
+	DisplayName: Banheiro Infinito
+	Tooltip: O poder do universo, das galaxias acima e do espaco entre elas.. Agora reduzido a um banheiro.
+}
+
+StormGoddessSpear: {
+	DisplayName: Lanca da Deusa da Tempestade
+	Tooltip:
+		'''
+		Uma Lanca capaz de enviar Beijos de Relampago Ferozes que ricocheteiam nos inimigos.
+		Quando segurada, invoca o espirito remanescente da Deusa da Tempestade para auxiliar no combate.
+		[lenda]
+		'''
+	Legend:
+		'''
+		Alina foi um dia a guerreira mais afiada de Terra, empunhando uma lamina de trovao para cortar a escuridao,
+		sua fe inabalavel e absoluta. Mas a fe nao pôde protege-la da indiferenca dos deuses.
+		Quando o Deus Supremo passou o julgamento, seus companheiros, parentes, juramentos e gloria foram reduzidos a cinzas.
+		Ela testemunhou em primeira mao como a chamada justica pisoteava tudo em po, como a ordem era meramente um veu para a mais cruel das destruicoes.
+		Ela nao buscava mais a luz, mas se reforgejou no abismo. Um poder antigo e proibido consumiu sua alma,
+		concedendo-lhe forca alem da compreensao mortal.
+		Sua armadura se tornou os destrocos forjados nas profundezas, seus olhos ardiam com os restos de trovao e escuridao entrelacados.
+		Ela nao era mais a guardia de Terra, mas a propria tempestade—uma vinganca que nao podia ser impedida.
+		Sua furia varreu o campo de batalha como uma tempestade uivante, sua trovao destruiu tronos e templos.
+		Ela lutou nao por justica, nao por Terra, nao pelos deuses.
+		Ela lutou por vinganca, por aniquilacao—para fazer aqueles que se consideravam justos entenderem o verdadeiro significado do medo.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Grande Espada de Alga de Dragao
+	Tooltip: Balanca uma espada poderosa que invoca nuvens venenosas que rastreiam fracamente os inimigos.
+}
+
+CosmicCalamity: {
+	DisplayName: Desastre Galactico
+	Tooltip: O ataque gera ondas de choque em forma de crescente.
+}
+
+SpearOfLonginus: {
+	DisplayName: Lanca de Longinus
+	Tooltip:
+		'''
+		Cada vez que a barra de furtividade enche, a Lanca carrega e esgota a furtividade de volta para 0.
+		A quantidade maxima de carga e 6 barras de furtividade cheias.
+		Quando carregada, circulos mostrarao a Area de efeito. Ao ser lancada, desencadeara um golpe que estilhaça o mundo.
+		Se a lanca tiver carga, o ataque sera seguido por um laser do sol, selando o destino de qualquer coisa.
+		[lenda]
+		'''
+	Legend:
+		'''
+
+		O deus estilhaçado, permita-me expiar meus pecados.
+		A guerra se espalhou por seculos, e eu, um fugitivo fugindo da grande civilizacao,
+		ganho uma existencia modesta neste planeta desolado na borda do universo.
+		A milhares de anos-luz de distancia, as maquinas de guerra colossais do conflito moem estrelas ate virarem po.
+		Ataques selvagens e terriveis apagam anos-luz de extensao estelar num piscar de olhos, transformando-a em um dominio de silencio.
+		Por incontaveis seculos, esta guerra tem assolado. Agora, a poderosa civilizacao a qual pertenco esta a beira do colapso,
+		e eu me tornarei um pecador cosmico, a mais desrespeitosa blasfemia.
+		Minha carne apodreceu, meus ossos espelhando as rugas das eras passadas.
+		Estou prestes a me tornar uma das maquinas fracas que criei.
+		Antes que esse destino me atinja, que os deuses me concedam perdao e perdoem meu desrespeito a este ser supremo.
+		Deixe-me descer ao abismo do purgatorio, suportando tormento sem fim enquanto minha alma cai.
+		Ainda assim, pelo bem da minha civilizacao, pela vitoria nesta guerra que dura seculos, devo aproveitar o poder fragmentado desta entidade divina.
+		Para guiar sua forca misteriosa, nao tenho escolha senao infundir sua forma divina estilhaçada com o abraco frio da maquinaria.
+		Esta e uma profanacao inevitavel. Pela continuidade da civilizacao, pelo triunfo da guerra,
+		devo me tornar o seguidor mais devoto desta entidade suprema, o mais desrespeitoso blasfemo da historia.
+		'''
+}
+
+BloodAltar: {
+	DisplayName: Altar de Sangue
+	Tooltip:
+		'''
+		Clique direito no Altar para invocar a Lua de Sangue
+		Coleta automaticamente orbes de sangue dropados ao redor do mundo e os armazena no deposito mais proximo.
+		"Deixe o mundo ser envolto pelo Carmesim."
+		'''
+}
+
+StarMyriadChanges: {
+	DisplayName: Miríade de Mudancas Estelares
+	Tooltip: Louve o Deus da mudanca!
+}
+
+TerminusOver: {
+	DisplayName: O toque final
+	Tooltip: A batalha final aguarda, no entanto ha um preco a pagar.
+}
+
+PestilenceIngot: {
+	DisplayName: Lingote da Peste
+	Tooltip: Cheira a doce de bala azeda picante.
+}
+
+ReminiscenceBreastplate: {
+	DisplayName: Peitoral da Reminiscencia
+	Tooltip: Rememore a Jornada que voce teve e o quao longe voce chegou.
+}
+
+MurasamaMould: {
+	DisplayName: Molde de ouro sanguineo
+	Tooltip: Um Material de aparentemente outro plano de existencia. E quente e eletrizante ao toque e parece buscar derramamento de sangue.
+}
+
+OverhaulTheBibleBook: {
+	DisplayName: Reformulacao A Biblia
+	Tooltip: Use para ver tutoriais relacionados ao Mod Calamity Overhaul.... Pode haver mais coisas aqui depois
+}
+
+BarrenBow: {
+	DisplayName: Arco Barren
+	Tooltip: As flechas disparadas explodirao uma corrente estéril quando atingirem o inimigo
+}
+
+ElementMuzzleBrake: {
+	DisplayName: Freio de Boca Elemental
+	Tooltip:
+		'''
+		Reduz o recuo e a pressao da camara em 65%
+		Reduz o dano de longo alcance em 5%
+		Aumenta a taxa de acerto critico de longo alcance em 15%
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Olho da Singularidade
+	Tooltip:
+		'''
+		Aumenta o dano de longo alcance em 100%
+		Aumenta a chance de acerto critico de longo alcance em 100%
+		Aumenta a velocidade de tiro de longo alcance em 100% e evita o consumo de municao
+		Define o multiplicador de dano critico para todas as armas de longo alcance para 500%
+		Seus projeteis de longo alcance rasgam o espaco, criando buracos negros em miniatura no impacto que arrastam e esmagam os inimigos
+		Enquanto parado, voce entra no estado 'Horizonte de Eventos':
+		  - Concede invisibilidade e imunidade a todo dano de contato
+		  - Ataques liberam Rajadas adicionais de Raio Gama que rastreiam inimigos
+		Concede a habilidade de Salto Quantico; pressione [TECLA] para teleportar para o cursor, apagando projeteis inimigos ao longo do caminho
+		Clique direito para ativar o 'Protocolo de Colapso':
+		  - Consome todo o mana para fazer todos os ataques de longo alcance ignorarem quadros de invencibilidade e forcarem acertos criticos por 10 segundos
+		  - 60 segundos de recarga
+		Se voce receber dano fatal, voce se torna uma Supernova, causando dano extremo em area, e se reforma em um local seguro apos 3 segundos
+		Este efeito tem 60 segundos de recarga
+		[c/33ff33:"O Dragao Deus adormecido se conecta aos seus nervos, desconstruindo a logica basal do Espirito da Maquina"]
+		[c/ffaa00:"Uma constelacao voraz devora seu clarão do cano, drenando o calor final de estrelas moribundas"]
+		[c/00ffff:"O Ceifador sem forma se torna sua sombra, colhendo o destino igual e inevitavel de toda a vida senciente"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Freio de Boca de Precisao
+	Tooltip:
+		'''
+		Reduz o recuo e a pressao da camara em 55%
+		Reduz o dano de longo alcance em 10%
+		Aumenta a taxa de acerto critico de longo alcance em 10%
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Freio de Boca Simples
+	Tooltip:
+		'''
+		Reduz o recuo e a pressao da camara em 40%
+		Reduz o dano de longo alcance em 15%
+		Aumenta a taxa de acerto critico de longo alcance em 5%
+		'''
+}
+
+AmmoBoxFire: {
+	DisplayName: Caixa de Municao Incendiaria
+	Tooltip:
+		'''
+		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
+		deixe a municao especial encher o carregador
+		A municao especial pode ser sobreposta ao efeito da bala original
+		Torna a ogiva altamente inflamavel e explode quando atinge o alvo
+		"Isso nao e cod."
+		'''
+}
+
+ArmourPiercerBox: {
+	DisplayName: Caixa Perfuradora de Armaduras
+	Tooltip:
+		'''
+		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
+		deixe a municao especial encher o carregador
+		A municao especial pode ser sobreposta ao efeito da bala original
+		Reveste a municao com ouro de tungstenio para aumentar a capacidade de perfuracao de armadura da bala, ignorando 75% da armadura do alvo
+		"Mesmo assim, nao tente derrubar um tanque com uma pistola."
+		'''
+}
+
+HighExplosiveBox: {
+	DisplayName: Caixa de Alta Explosividade
+	Tooltip:
+		'''
+		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
+		deixe a municao especial encher o carregador
+		A municao especial pode ser sobreposta ao efeito da bala original
+		Transforma a ogiva em um projetil de alta explosividade, disparando uma explosao violenta quando a bala atinge o alvo
+		"Exploda todos eles!"
+		'''
+}
+
+DragonBreathBox: {
+	DisplayName: Caixa de Sopro do Dragao
+	Tooltip:
+		'''
+		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
+		deixe a municao especial encher o carregador
+		A municao especial pode ser sobreposta ao efeito da bala original
+		Uma combinacao de magia e tecnologia, balas atingem seus alvos e explodem em um jato de metal, causando dano a uma ampla gama de inimigos
+		"Isso e a saliva do dragao. Voce quer acreditar?"
+		'''
+}
+
+HalibutItem: {
+	DisplayName: Halibut
+	Tooltip: ""
+}
+
+AvalancheM60: {
+	DisplayName: Avalanche M60
+	Tooltip:
+		'''
+		Usa bolas de neve como municao.
+		Dispara uma saraivada de bolas de neve,
+		Poder de fogo aumentando a medida que a municao diminui.
+		Cada 20 tiros aciona uma sobrecarga,
+		Criando uma pequena avalanche.
+		"Denji, vamos ter uma guerra de bolas de neve."
+		'''
+}
+
+CrystalDimming: {
+	DisplayName: Escurecimento de Cristal
+	Tooltip:
+		'''
+		Usa bolas de neve como municao.
+		Lanca granizo glacial e bolas de neve,
+		Cristais de gelo ricocheteiam rapidamente ao bater nas paredes,
+		Entao rastreiam os inimigos.
+		Cada 20 tiros aciona uma sobrecarga,
+		Invocando um pilar de gelo massivo no cursor do mouse.
+		'''
+}
+
+DarkFrostSolstice: {
+	DisplayName: Solsticio de Gelo Escuro
+	Tooltip:
+		'''
+		Usa bolas de neve como municao.
+		Dispara granizo e chamas polares,
+		Cada 20 tiros aciona uma sobrecarga,
+		Invocando divindade invernal no cursor do mouse.
+		'''
+}
+
+SnowQuay: {
+	DisplayName: Neve Viper M16
+	Tooltip:
+		'''
+		Usa bolas de neve como municao
+		Um canhao de neve de grande calibre, dispara projeteis mistos de gelo e neve
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Ceifador da Zona Negra
+	Tooltip:
+		'''
+		Balancar libera poderosas ondas de choque de espada gravitacionais, causando uma explosao de estrela de neutrons ao atingir um alvo.
+		Clique direito para carregar a lamina; soltar quando totalmente carregada desencadeia uma grande explosao de estrela de neutrons no cursor.
+		Soltar antes de totalmente carregada fara com que a energia se espalhe.
+		'''
+}
+
+NeutronBow: {
+	DisplayName: Corda de Roche
+	Tooltip:
+		'''
+		Dispara flechas gravitacionais que geram raios gama ao atingir um alvo.
+		Clique direito para realizar uma carga de tres niveis, liberando tres poderosas flechas gravitacionais quando totalmente carregado.
+		'''
+	Lang1: Prendendo a gravidade
+	Lang2: Esta fazendo a gravidade ceder
+	Lang3: Terminado!!
+}
+
+NeutronGun: {
+	DisplayName: Cacador Estelar
+	Tooltip:
+		'''
+		Dispara projeteis gravitacionais que criam pontos de dobra ao atingir um alvo.
+		Clique direito para alternar para o modo atirador, disparando balas gravitacionais mais poderosas que invocam raios gama no impacto.
+		Cada tiro carrega a arma, e quando totalmente carregada, o proximo tiro desencadeia uma explosao de estrela de neutrons no cursor.
+		"Atire o sol para baixo!"
+		'''
+}
+
+NeutronWand: {
+	DisplayName: Luz da Tumba Estelar
+	Tooltip:
+		'''
+		Dispara quatro poderosas estrelas gravitacionais.
+		Clique direito para lancar magia gravitacional no cursor.
+		"A lenda diz que nos tempos antigos, um poderoso psiquico usou esta varinha para comprimir estrelas em buracos negros,
+		mas este conto se perdeu no tempo, agora apenas um fragmento de cancao cantada por nomades interestelares."
+		'''
+}
+
+FadingGlory: {
+	DisplayName: Gloria Desvanecente
+	Tooltip:
+		'''
+		Ataques corpo a corpo verdadeiros acertam um alvo que cura o jogador se o alvo for um organismo,
+		e libera muitas faiscas se o alvo nao for organismo
+		Batalhas nao corpo a corpo verdadeiras dispararao ativamente a lamina,
+		que gerara um corte fantasma perseguidor de sino extra apos
+		atingir o alvo e liberara um tentaculo de sangue ao explodir
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Mensageiro do Buraco Negro
+	Tooltip:
+		'''
+		A foice dispara raios gama nos inimigos, deixando varios pontos de dobra ao longo de seu caminho.
+		Ataque furtivo lanca um circulo de foices.
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Lamina Rebelde
+	Tooltip:
+		'''
+		Corpo a corpo verdadeiro gera um grande numero de bolas de luz demoniaca ao redor do alvo
+		Clique direito para controlar o voo da lamina e cortar em direcao ao cursor
+		'''
+}
+
+MG42: {
+	DisplayName: MG42
+	Tooltip:
+		'''
+		Disparo continuo faz com que o cano superaqueça
+		Transforma balas de mosquete em balas perfurantes de armadura
+		'''
+}
+
+DragonsWord: {
+	DisplayName: Palavra do Dragao
+	Tooltip:
+		'''
+		Dispara lagrimas de dragao que giram por um tempo antes de rastrear os inimigos.
+		Clique direito para lancar Magia de Comando do Dragao no cursor, emitindo um comando de morte para inimigos dentro da area.
+		"Um dragao so pode derramar lagrimas uma vez em sua vida."
+		'''
+}
+
+SnowQuayMK2: {
+	DisplayName: Snow Quay MK2
+	Tooltip:
+		'''
+		Usa bolas de neve como municao
+		Um canhao de neve de grande calibre que dispara projeteis mistos de gelo e neve
+		Nenhum pre-aquecimento e necessario para disparar
+		'''
+}
+
+HghExplosiveBox: {
+	DisplayName: Caixa Explosiva Hgh
+	Tooltip:
+		'''
+		Segure para implantar. Uma vez implantado, clique com o botao direito na caixa de municao com uma arma de fogo para carregar municao especial no carregador.
+		A municao especial pode acumular efeitos com balas comuns.
+		"Exploda todos eles para os ceus!"
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Justica Revelada
+	Tooltip:
+		'''
+		Ataques de longo alcance acumulam cargas de "Golpe do Julgamento", ate um maximo de 5
+		Pressione [CIMA] para gastar 1 carga e invocar um impacto sagrado devastador
+		"Se a justica for convocada, atenderei ao chamado—onde quer que ele leve."
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Queixas do Tecedor
+	Tooltip:
+		'''
+		Libera um grande numero de garras de espiritos malignos e tem efeitos especiais em ambientes infernais e de masmorra
+		Clique direito e role na direcao do cursor. Acertar um inimigo durante o rolamento dara ao jogador um quadro invencivel
+		Um rolamento proximo seria considerado uma esquiva perfeita
+		[lenda]
+		'''
+	Legend:
+		'''
+		A masmorra eterna se estende pela terra, suas paredes gravadas com as inscricoes e gritos de guerreiros antigos.
+		Cada pedra esta saturada de malicia remanescente, como correntes dos condenados, ligando-a a escuridao sem fim no fim do tempo.
+		Estes guerreiros foram outrora as laminas de seu rei, travando guerra atraves dos reinos.
+		Suas espadas tinham iluminado inumeros campos de batalha, seu sangue forjou o imperio imponente.
+		Sua lealdade era tao duradoura quanto as estrelas, sua conviccao tao inabalavel quanto o ferro.
+		Ainda assim, quando as guerras cessaram, e as bandeiras do Senhor Demonio foram rasgadas aos pes do rei,
+		no momento em que a paz desceu, o rei decretou sua consignacao ao abismo.
+		"Nos nao traimos, mas o rei nos traiu!" Os gemidos angustiados dos condenados rasgaram o vazio, perfurando o silencio da eternidade.
+		Seus espiritos nobres nao retornaram ao po, mas foram aprisionados no abismo do vazio, condenados como testemunhas da noite eterna.
+		As lamentacoes incessantes se transformaram em uma acusacao silenciosa, uma que alcancou os confins mais distantes das estrelas.
+		Reza a lenda que o rei, temendo sua lealdade inabalavel e o inferno de sua ira,
+		atendeu aos sussurros dos feiticeiros do Senhor Demonio, escolhendo consignar estes guerreiros as sombras da historia.
+		Mas a malicia, como uma mare, distorceu a realidade da masmorra. Seu sofrimento abalou as barreiras do tempo e espaco, tecendo uma profecia de vinganca:
+		"O Senhor Demonio retornara; o vazio sera rasgado, e nossa ira consumira tudo!"
+		Quando Terra mais uma vez enfrentar a beira da aniquilacao, estes mortos inquietos se levantarao da escuridao.
+		Suas laminas nao lutarao mais pela gloria de um imperio, mas pelo julgamento do traidor.
+		Gloria e lealdade estao ha muito obliteradas—apenas as chamas da vinganca permanecem, destinadas a engolir tudo.
+		'''
+}
+
+Starship: {
+	DisplayName: Nave Estelar
+	Tooltip:
+		'''
+		Disparar continuamente acumula calor, aumentando a taxa de tiro ao longo do tempo
+		Clique direito para consumir municao e carregar um projetil cometa; o proximo tiro o dispara para dano massivo e inflige Hiper-Desintegracao
+		No pico de calor, dois pilotos de escolta voam ao lado disparando raios estelares homing; planetas sao periodicamente arremessados de tras de voce
+		Soltar o gatilho libera o final: 14 meteoros homing que ignoram defesa e uma micro-galaxia chovem no cursor
+		'''
+}
+
+SandDagger: {
+	DisplayName: Adaga de Areia
+	Tooltip:
+		'''
+		Lanca na areia, entao salta no ar e explode depois de um tempo
+		Ataques furtivos lancam uma adaga melhorada
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: Sob a Areia
+	Tooltip: Cria varios orbes de areia
+}
+
+WastelandFang: {
+	DisplayName: Presa do Esteril
+	Tooltip:
+		'''
+		Ricocheteia em blocos e acelera ao recuar
+		Abre a boca e cospe varios orbes de areia
+		'''
+}
+
+Flawless: {
+	DisplayName: Impecavel
+	Tooltip: ""
+}
+
+MelodyTheSand: {
+	DisplayName: Cancao da Areia
+	Tooltip: Lanca uma dispersao de espinhos de areia que sao afetados pela gravidade e perfuram inimigos
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: Vortice de Areia do Mar Decaido
+	Tooltip:
+		'''
+		Vomita varios orbes de vapor sulfurico
+		"Mestre do Vomito"
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Kunai Sazonal
+	Tooltip:
+		'''
+		Lanca tres kunai homing nos inimigos
+		Ataques furtivos lancam um kunai grande que se divide no final de sua trajetoria
+		"Refletindo as Quatro Estacoes"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Kunai Espectral
+	Tooltip:
+		'''
+		Lanca tres kunai homing nos inimigos
+		Ataques furtivos invocam um grupo de adagas fantasmagoricas pairando ao redor do jogador
+		'''
+}
+
+CalSelfPortrait: {
+	DisplayName: Fotografia Esquecida
+	Tooltip:
+		'''
+		Uma fotografia esquecida
+		[lenda]
+		'''
+	Legend: O que mais voce quer ver? :)
+}
+
+WUTIVSelfPortrait: {
+	DisplayName: Obrigado, Wuti
+	Tooltip: ""
+}
+
+HandmadeDoll: {
+	DisplayName: Boneca de Pano Feita a Mao
+	Tooltip:
+		'''
+		Usada no Submundo para invocar a Parede de Carne
+		Se o Guia estiver vivo, ele sera sacrificado ao usar
+		"Feita a mao, e o Guia nao sabe"
+		'''
+}
+
+Snowblindness: {
+	DisplayName: Cegueira da Neve
+	Tooltip:
+		'''
+		Dispara bolas de neve e raios de gelo em alta frequencia
+		Ao atingir, gera varios raios de gelo EX ao redor do alvo
+		"Perdido na nevasca, uma espera eterna, um mapa doloroso, uma curva fechada,
+		lentes rachadas, manchas de sangue secas, gelo vermelho, um castor chorando, uma sombra no gelo"
+		'''
+}
+
+WhiplashGalactica: {
+	DisplayName: Chicote Galactico
+	Tooltip:
+		'''
+		Marca inimigos ao atingir e dispara bolas de fogo cosmicas
+		"A espinha da serpente cosmica, repleta de energia celestial, guiando a furia do universo"
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: Grimorio de Foco
+	Tooltip:
+		'''
+		Clique esquerdo para disparar aneis termicos homing
+		Clique direito para disparar raios da morte rapidamente
+		"Melhor do que seis livros combinados"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: Cajado do Comandante
+	Tooltip:
+		'''
+		Dispara um raio de desintegracao termica que perfura inimigos
+		"Peguei daquele braço da maquina, que tal usar energia psiquica em vez de diesel?"
+		'''
+}
+
+RaiderGun: {
+	DisplayName: Saqueador
+	Tooltip:
+		'''
+		Converte balas de mosquete em balas de alta velocidade
+		Clique direito para rolar e investir e recarregar o carregador
+		A primeira bala disparada apos rolar e convertida em uma Granada do Destruidor
+		"Perfeito para resgates de refens em ambientes fechados"
+		'''
+}
+
+HyperionBarrage: {
+	DisplayName: Hiperion Auto-Torreta
+	Tooltip:
+		'''
+		Dispara misseis de cruzeiro termicos
+		"Use tudo ao maximo"
+		'''
+}
+
+RaiderGunEX: {
+	DisplayName: Saqueador EX
+	Tooltip:
+		'''
+		Converte balas de mosquete em balas de alta velocidade
+		Adicionalmente dispara uma saraivada de Misseis Homing do Destruidor
+		Clique direito para rolar e investir e recarregar o carregador
+		A primeira bala disparada apos rolar e convertida em uma Granada do Destruidor
+		"Bombardeio em tapete"
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Moto Serra do Comandante
+	Tooltip:
+		'''
+		Gera faiscas ao atingir um alvo
+		"Adicione mais diesel"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Tributo dos Gemeos
+	Tooltip:
+		'''
+		Lanca uma foice que gira rapidamente e corta para frente e para tras
+		Ataques furtivos liberam um enxame de misseis de cruzeiro do Destruidor
+		"Apenas uma personalidade dominante pode existir, e claramente, Olho de Chama Magma venceu."
+		'''
+}
+
+Dicoria: {
+	DisplayName: Dicoria
+	Tooltip:
+		'''
+		Dispara balas duais, pode ser carregada
+		Tiros totalmente carregados liberam um raio termico
+		"A proposito, isso nao vai nos deixar vesgos?"
+		'''
+}
+
+GeminisTributeEX: {
+	DisplayName: Tributo dos Gemeos EX
+	Tooltip:
+		'''
+		Lanca uma foice que gira rapidamente e corta para frente e para tras
+		Acertar um inimigo gera duas foices companheiras adicionais
+		"Apenas uma personalidade dominante pode existir, e claramente, Olho de Chama Magma venceu."
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Lamina do Destruidor
+	Tooltip:
+		'''
+		Dispara saraivadas termicas
+		"Contem o nucleo de energia imenso do Destruidor."
+		'''
+}
+
+Observer: {
+	DisplayName: Observador
+	Tooltip: '''"Ainda esta assistindo voce"'''
+}
+
+StaffoftheDestroyer: {
+	DisplayName: Cajado do Destruidor
+	Tooltip:
+		'''
+		Invoca um Mini Destruidor para lutar por voce
+		Quanto maior o limite de invocacao, mais forte o Destruidor
+		Pelo menos quatro slots de invocacao sao necessarios
+		'''
+}
+
+ForgedLash: {
+	DisplayName: Chicote Forjado
+	Tooltip: '''"Nao e adequado para ser comprado como ferro-velho."'''
+}
+
+CommandersClaw: {
+	DisplayName: Garra do Comandante
+	Tooltip:
+		'''
+		Lance-os nos inimigos e restrinja-os.
+		O ataque furtivo gerara varias Granadas do Destruidor.
+		'''
+}
+
+DraedonsRemote: {
+	DisplayName: Controle Remoto de Draedon
+	Tooltip:
+		'''
+		Invoca o Trio Mecanico EX
+		So pode ser usado a noite
+		'''
+	DontUseByDeath: A dificuldade atual do jogo nao permite enviar sinais!
+}
+
+CommandersStaffEX: {
+	DisplayName: Cajado do Comandante EX
+	Tooltip:
+		'''
+		Dispara multiplos raios termicos de dispersao
+		"Adequado para cortar metal"
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Moto Serra do Comandante EX
+	Tooltip: '''"Despedaca tudo em seu caminho"'''
+}
+
+ForgedLashEX: {
+	DisplayName: Chicote Forjado EX
+	Tooltip: ""
+}
+
+SoulofFrightEX: {
+	DisplayName: Alma do Medo EX
+	Tooltip:
+		'''
+		Energia de medo concentrada pulsa dentro
+		Obtenha derrotando maquinas rebeldes durante a Revolta Mecanica
+		'''
+}
+
+SoulofMightEX: {
+	DisplayName: Alma da Forca EX
+	Tooltip:
+		'''
+		Energia destrutiva concentrada pulsa dentro
+		Obtenha derrotando maquinas rebeldes durante a Revolta Mecanica
+		'''
+}
+
+SoulofSightEX: {
+	DisplayName: Alma da Visao EX
+	Tooltip:
+		'''
+		Energia de sabedoria concentrada pulsa dentro
+		Obtenha derrotando maquinas rebeldes durante a Revolta Mecanica
+		'''
+}
+
+DestroyersBladeEX: {
+	DisplayName: Lamina do Destruidor EX
+	Tooltip:
+		'''
+		Lanca uma saraivada termica
+		"E sempre mais facil destruir do que construir"
+		'''
+}
+
+ThermalGenerator: {
+	DisplayName: Gerador Termico
+	Tooltip:
+		'''
+		Coloque combustivel para gerar energia.
+		Clicar com o botao direito no bloco pode inserir combustivel rapidamente, e Shift+botao direito pode remove-lo.
+		'''
+}
+
+ThermalBattery: {
+	DisplayName: Bateria Termica
+	Tooltip: Armazena uma certa quantidade de energia eletrica
+}
+
+WindGrivenGenerator: {
+	DisplayName: Gerador Eolico
+	Tooltip: Mova-se com o vento e gere eletricidade
+	UnderstandWindGriven: E necessario um entendimento inicial de como a energia eolica funciona
+	UnderstandWindGriven2: Precisa escavar maquinas de vento antigas em asteroides para entender como sao feitas
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Gerador Eolico MK2
+	Tooltip: Mova-se com o vento e gere eletricidade
+	UnderstandWindGrivenMK2: E necessario um entendimento profundo da energia eolica
+	UnderstandWindGrivenMK2Remind: Precisa minerar as turbinas eolicas gigantes em asteroides para entender seus principios de fabricacao
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Gerador Termico MK2
+	Tooltip:
+		'''
+		Coloque combustivel para gerar energia.
+		Clicar com o botao direito no bloco pode inserir combustivel rapidamente, e Shift+botao direito pode remove-lo.
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Turbinas Eolicas Gigantes no Ermo
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Turbinas Eolicas no Ermo
+	Tooltip: ""
+}
+
+MedicalBox: {
+	DisplayName: Caixa Medica
+	Tooltip:
+		'''
+		Mantenha pressionado para implantar no chao
+		Clique com o botao direito na caixa medica apos a implantacao para se curar
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: Torre Eletromagnetica Tesla
+	Tooltip:
+		'''
+		Requer energia eletrica para operar
+		Clique direito apos colocar no chao para alternar entre modo de ataque e modo de guarda
+		No modo de ataque, emite arcos eletricos para inimigos proximos
+		No modo de guarda, inflige uma desvantagem de eletrificacao a todos os inimigos dentro do alcance; se um jogador estiver dentro do alcance
+		e estiver segurando um item carregavel, a torre eletromagnetica emitira arcos eletricos para carregar o jogador remotamente
+		"Engenheiros, mantenham distancia"
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Emblema do Terror
+	Tooltip:
+		'''
+		Aumenta o dano corpo a corpo em 100%
+		Aumenta a chance de acerto critico corpo a corpo em 100%
+		Aumenta a velocidade corpo a corpo em 100%
+		Aumenta a defesa em 100, ignorando todo dano e reducao de defesa
+		Reduz o dano recebido em 75% e reflete 100x o dano de volta ao atacante
+		Todos os ataques corpo a corpo infligem a desvantagem 'Erosao do Vazio'
+		Ataques corpo a corpo verdadeiros tem uma chance de apagar instantaneamente inimigos com menos de 250.000 HP
+		Mover-se em altas velocidades deixa pontos de dobra em seu caminho, causando dano extremo aos inimigos
+		Concede a habilidade de usar Investida Gravitacional; pressione [TECLA] para investir uma longa distancia e liberar raios gravitacionais massivos
+		Se voce receber dano fatal, voce imediatamente recupera toda a vida e ganha um Escudo Gravitacional (60 segundos de recarga)
+		Inimigos tem mais probabilidade de alvejar voce
+		[c/d94fff:"Um anjo santificado velha seu olhar, sussurrando mentiras eternas e sacarinas"]
+		[c/ff4d4d:"Um açougueiro ensanguentado levanta suas laminas gemeas, declarando que so a matanca traz gloria"]
+		[c/4da6ff:"Uma pomba azul bicando sua testa, zombando de sua luta insignificante"]
+		'''
+}
+
+ElectricMinRocket: {
+	DisplayName: Mini Foguete Eletrico
+	Tooltip:
+		'''
+		Clique direito para usar o foguete, ou coloque-o no chao e clique direito para comecar a voar.
+		Pressione as teclas de seta esquerda ou direita no ar para ajustar a direcao.
+		Segure a tecla de seta para baixo para descer lentamente; voar consumira gradualmente energia.
+		Pressione a barra de espaco para interromper o voo.
+		"Feito na Uniao Sovietica, robusto e confiavel, quase chegou a lua."
+		'''
+}
+
+UEPipeline: {
+	DisplayName: Duto de Energia
+	Tooltip:
+		'''
+		Usado para transmitir energia eletrica
+		Clique direito para desmontar rapidamente e recuperar o duto na posicao do cursor
+		Conecta-se a geradores e outras fontes de energia para transferir energia para baterias ou dispositivos eletricos
+		'''
+}
+
+EnergySword: {
+	DisplayName: Espada de Energia
+	Tooltip:
+		'''
+		Gasta energia para disparar lasers e penetrar multiplos inimigos
+		"A utilizacao nao e alta."
+		'''
+}
+
+LaserPistol: {
+	DisplayName: Pistola Laser
+	Tooltip:
+		'''
+		Gasta energia para disparar lasers e penetrar multiplos inimigos
+		"A utilizacao nao e alta."
+		'''
+}
+
+HyperionBarrageEX: {
+	DisplayName: Hiperion Barrage EX
+	Tooltip:
+		'''
+		Apos atingir o alvo, o míssil de cruzeiro termobuscador se dividira em varias partes para causar dano secundario.
+		"Alem do uso pretendido"
+		'''
+}
+
+MiningMachine: {
+	DisplayName: Maquina de Mineracao
+	Tooltip:
+		'''
+		Perfura minerais consumindo energia eletrica
+		Precisa ser colocada em um local apropriado para funcionar corretamente
+		Minerais especiais podem ser extraidos em ambientes especiais
+		'''
+	DontWork: Precisa ser colocada em uma superficie dura para realizar operacoes de mineracao.
+}
+
+HoChaMeditatorItem: {
+	DisplayName: Meditador HoCha
+	Tooltip: ""
+}
+
+Collector: {
+	DisplayName: Coletor
+	Tooltip:
+		'''
+		Coleta automaticamente os objetos caidos ao redor e os coloca na caixa mais proxima
+		Nao funcionara se nao houver caixas por perto
+		'''
+	Text1: Quantidade Excessiva!
+	Text2: Nao ha caixas por perto!
+	Text3: Falta de Eletricidade!
+}
+
+WGGCollector: {
+	DisplayName: Sucateiro
+	Tooltip:
+		'''
+		E apaixonado por reciclagem — incluindo voce.
+		Para ele, nao ha diferenca real entre uma garrafa plastica e sua medula espinhal.
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Transmissor de Energia Laser
+	Tooltip:
+		'''
+		Transmissao remota de energia.
+		Apos a colocacao, clique com o botao direito para ativar a navegacao a laser,
+		e entao clique com o botao direito em outros edificios de energia para conecta-los.
+		Quanto maior a distancia de transmissao, maior a perda de energia.
+		A perda maxima e de 100%.
+		'''
+}
+
+MetalMusicBox: {
+	DisplayName: Caixa de Musica (Rebelião de Maquinas)
+	Tooltip: Toca 'Fall of the Bit' por Ryusa
+}
+
+Hydroelectric: {
+	DisplayName: Hidreletrica
+	Tooltip:
+		'''
+		Gera eletricidade ao ser colocada na agua
+		"Uma aplicacao da mecanica dos fluidos"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Hidreletrica MK2
+	Tooltip:
+		'''
+		Gera eletricidade ao ser colocada na agua
+		"Uma aplicacao da mecanica dos fluidos"
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Duto de Energia Criativo
+	Tooltip: ""
+}
+
+ItemFilter: {
+	DisplayName: Painel de Filtro de Itens
+	Tooltip:
+		'''
+		Use para abrir o painel de filtro
+		Clique direito em uma maquina compativel para aplicar
+		Clique esquerdo em um bau para copiar seu conteudo como regras de filtro
+		'''
+}
+
+SporeBubbleBlaster: {
+	DisplayName: Lançador de Bolhas de Esporos
+	Tooltip:
+		'''
+		Pulveriza um fluxo de particulas de esporos
+		Causa apenas 50% de dano durante o dia
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: Tomo da Decomposicao Fungica
+	Tooltip: ""
+}
+
+FungalRevolver: {
+	DisplayName: Revólver Fungico
+	Tooltip: ""
+}
+
+FungalFeed: {
+	DisplayName: Alimento Fungico
+	Tooltip:
+		'''
+		Jogue em um Sporecrab para domestica-lo
+		Um Sporecrab domesticado seguira voce e lutara ao seu lado
+		Pode ser equipado com uma [i:CalamityOverhaul/MushroomSaddle] Sela de Cogumelo para se tornar uma montaria
+		"Eles simplesmente amam cogumelos"
+		'''
+}
+
+MushroomSaddle: {
+	DisplayName: Sela de Cogumelo
+	Tooltip:
+		'''
+		Pode ser equipada em um Sporecrab domesticado com [i:CalamityOverhaul/FungalFeed] Alimento Fungico
+		Clique esquerdo no Sporecrab enquanto segura a sela para equipa-la
+		Clique direito em um Sporecrab equipado para montar
+		'''
+	UseCombat: So pode ser aplicado ao crabulon
+}
+
+SporeboundRoller: {
+	DisplayName: Rolo Esporo- Vinculado
+	Tooltip:
+		'''
+		Gera um pequeno cogumelo flutuante apos acertar um inimigo
+		"Eles adoram continuar rolando"
+		'''
+}
+
+Spectrometer: {
+	DisplayName: Espectrometro
+	Tooltip:
+		'''
+		Permite tingir itens com cor
+		Requer energia para operar
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Bolsa de Explosao de Esporos
+	Tooltip:
+		'''
+		Lanca uma bolsa volatil de esporos fungicos que explode no impacto
+		Golpes furtivos desencadeiam uma detonacao fungica muito maior e um enxame de espiritos de esporos homing
+		'''
+}
+
+Pallbearer: {
+	DisplayName: Portador do Caixao
+	Tooltip:
+		'''
+		Segure o botao esquerdo para carregar, solte para disparar uma Flecha do Portador do Caixao
+		Quanto maior a carga, mais poderosa a flecha
+		Clique direito para arremessar a besta
+		Acertar um inimigo fortalece significativamente a proxima flecha e acelera a velocidade de carga
+		"Tambem conhecido como Transportador de Caixoes"
+		'''
+}
+
+EncyclopediaofOceanicKnowledge: {
+	DisplayName: Enciclopedia do Conhecimento Oceanico
+	Tooltip:
+		'''
+		Ganha instantaneamente conhecimento de todas as especies de peixes
+		Desbloqueia todas as habilidades relacionadas a peixes
+		[c/FFD700: A sabedoria do oceano convergira sobre voce]
+		'''
+	Text1: Voce dominou todo o conhecimento
+	Text2: Voce adquiriu [NUM] tipos de conhecimento de peixes!
+}
+
+TheForgottenTome: {
+	DisplayName: O Tomo Esquecido
+	Tooltip:
+		'''
+		Quando usado, apaga cada traco de suas memorias mundanas.
+		Uma vida transformada em espectro, condenada a descida eterna
+		todos os seres estao sobrecarregados de pecado, e nenhuma alma retornara a proxima vida.
+		Meu nome e [NOME]. Quando voce ler isto, eu ja estarei morto.
+		'''
+	CompletionText: Voce esqueceu tudo
+	ConditionsText: Alcance qualquer final de historia
+}
+
+Fishoil: {
+	DisplayName: Oleo de Peixe Engarrafado
+	Tooltip:
+		'''
+		Aumenta o poder de pesca em 10%
+		Permite respirar debaixo d'agua
+		Concede resistencia adicional contra certas entidades estranhas
+		'''
+}
+
+SirenMusicalBox: {
+	DisplayName: Caixa de Musica Sereia
+	Tooltip:
+		'''
+		Clique direito para tocar musica misteriosa de uma caixa de musica.
+		Todos que a ouvirem serao amaldicoados, incapazes de morrer enquanto a musica tocar.
+		Quando a musica terminar, eles sofrerao um ataque fatal.
+		'''
+	DeathText: "{0} Desintegrou-se em carne podre sob o ataque do desconhecido"
+}
+
+Heartcarver: {
+	DisplayName: Esculpidor de Coracoes
+	Tooltip:
+		'''
+		Gera tres adagas rituais adicionais para girar ao redor do jogador.
+		Apos o carregamento ser concluido, voam em direcao ao alvo.
+		Clique direito para realizar uma estocada de curto alcance.
+		'''
+}
+
+OniMachete: {
+	DisplayName: Machete Oni
+	Tooltip:
+		'''
+		Quando segurada, seis maos oni serao geradas para auxiliar no combate.
+		Ataques corpo a corpo verdadeiros liberarao chamas fantasmas.
+		'''
+}
+
+Pandemonium: {
+	DisplayName: Pandemonio
+	Tooltip:
+		'''
+		Clique esquerdo para carregar e liberar Magia Transcendente
+		Clique direito para lancar uma Runa de Enxofre no cursor
+		Pressione [PandemoniumQSkill] para desencadear Julgamento de Enxofre
+		Pressione [PandemoniumRSkill] para executar O Fim de Todos os Demonios
+		'''
+}
+
+Proverbs: {
+	DisplayName: Proverbio
+	Tooltip:
+		'''
+		Gera uma pequena runa de enxofre atras de voce
+		Concede imunidade a maioria das desvantagens baseadas em fogo
+		A maioria de seus ataques infligem a desvantagem do Curse do Definhamento
+		[Conteudo]
+		'''
+	L1:
+		'''
+		Inflige dano duplicado a Bruxa de Enxofre;
+		seus ataques tem chance de acertar voce criticamente
+		'''
+	L2:
+		'''
+		Se voce esta lendo isto, entao eu provavelmente ja me fui.
+		Ao longo dos meus longos anos, este anel foi a unica coisa que realmente sentia frio.
+		Mas em algum lugar ao longo do caminho, absorveu o calor de um mortal... e se tornou... quente demais para largar.
+		Retornei ao Enxofre, reduzido as cinzas de uma era.
+		Deveria ter partido sem nada,
+		ainda assim me vi ganancioso por este calor singular, desejando preserva-lo.
+		Use-o.
+		E quando voce finalmente levantar sua lamina contra os deuses...
+		Saiba que mesmo se o mundo congelar, eu ainda estarei queimando em suas pontas dos dedos.
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Lanca Antiga da Deusa da Tempestade
+	Tooltip:
+		'''
+		Uma Lanca capaz de enviar Beijos de Relampago Ferozes que ricocheteiam nos inimigos.
+		"Ja e uma coisa do passado, mas ainda funciona."
+		[lenda]
+		'''
+	Legend:
+		'''
+		Alina foi um dia a guerreira mais afiada de Terra, empunhando uma lamina de trovao para cortar a escuridao,
+		sua fe inabalavel e absoluta. Mas a fe nao pôde protege-la da indiferenca dos deuses.
+		Quando o Deus Supremo passou o julgamento, seus companheiros, parentes, juramentos e gloria foram reduzidos a cinzas.
+		Ela testemunhou em primeira mao como a chamada justica pisoteava tudo em po, como a ordem era meramente um veu para a mais cruel das destruicoes.
+		Ela nao buscava mais a luz, mas se reforgejou no abismo. Um poder antigo e proibido consumiu sua alma,
+		concedendo-lhe forca alem da compreensao mortal.
+		Sua armadura se tornou os destrocos forjados nas profundezas, seus olhos ardiam com os restos de trovao e escuridao entrelacados.
+		Ela nao era mais a guardia de Terra, mas a propria tempestade—uma vinganca que nao podia ser impedida.
+		Sua furia varreu o campo de batalha como uma tempestade uivante, sua trovao destruiu tronos e templos.
+		Ela lutou nao por justica, nao por Terra, nao pelos deuses.
+		Ela lutou por vinganca, por aniquilacao—para fazer aqueles que se consideravam justos entenderem o verdadeiro significado do medo.
+		'''
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: Planta de Construcao (Torre de Entrelacamento Quantico)
+	Tooltip:
+		'''
+		Use para aprender a fabricar o [i:CalamityOverhaul/CQETConstructor] Auto-Construtor
+		"Suas maos forjarão a pedra angular e a torre que conectam dois mundos"
+		'''
+	L1: Aprendeu a fabricar o Auto-Construtor (Torre de Entrelacamento Quantico)!
+	L2: Voce ja aprendeu esta planta!
+}
+
+CQETConstructor: {
+	DisplayName: Auto-Construtor (Torre de Entrelacamento Quantico)
+	Tooltip:
+		'''
+		Coloque para construir uma Torre de Entrelacamento Quantico
+		Requer uma grande quantidade de [i:CalamityOverhaul/StarflowPlatedBlock] Blocos Revestidos de Fluxo Estelar
+		'''
+	UseConstructionBlueprint: Aprenda a Planta de Construcao (Torre de Entrelacamento Quantico)
+}
+
+DeploySignaltower: {
+	DisplayName: Torre de Entrelacamento Quantico
+	Tooltip:
+		'''
+		Um importante dispositivo de comunicacao que atua como um farol no sub-espaco
+		"Uma crianca selvagem ergue uma tocha na floresta, gritando Estou aqui"
+		'''
+}
+
+StarflowPlatedBlock: {
+	DisplayName: Bloco Revestido de Fluxo Estelar
+	Tooltip:
+		'''
+		Material basico para construir a [i:CalamityOverhaul/DeploySignaltower] Torre de Entrelacamento Quantico
+		"Forjando luz estelar fluente em uma fundacao imortal"
+		'''
+}
+
+PQCD: {
+	DisplayName: Comunicador Quantico Portatil
+	Tooltip:
+		'''
+		Use para contatar Draedon e abrir a interface de compras holografica do Arsenal de Draedon
+		"Teoricamente capaz de emitir uma Ordem de Exterminio, mas a autorizacao parece insuficiente"
+		'''
+	NeedSignalTowersText: Link de entrelacamento quantico incompleto! Requer todas as {0} Torres de Sinal implantadas.
+	SignalTowerProgressText: Progresso da Implantacao da Torre de Sinal: {0}/{1}
+}
+
+Unsunghero: {
+	DisplayName: Heroi Nao Cantado
+	Tooltip:
+		'''
+		Aumenta a furtividade maxima em 10
+		A velocidade de regeneracao de furtividade nao reduz mais o dano de furtividade
+		"E se voce nunca voltar?"
+		"Entao eu nunca voltarei."
+		'''
+}
+
+AriaofTheCosmos: {
+	DisplayName: Aria do Cosmos
+	Tooltip:
+		'''
+		Segure o botao esquerdo para carregar um poderoso quasar, causando dano devastador ao soltar
+		Clique direito para liberar um buraco negro em miniatura que dispara uma saraivada de raios gama uma vez formado
+		Pressione [AriaofTheCosmosQSkill] para invocar um Guardiao do Anel Estelar
+		Pressione [AriaofTheCosmosRSkill] para gerar uma Explosao de Raio Gama
+		'''
+}
+
+Oceanfragments: {
+	DisplayName: Fragmentos do Oceano
+	Tooltip: Um adereco misterioso. O Velho Duque pode estar interessado nele.
+}
+
+OceanRaiders: {
+	WorkingText: Trabalhando...
+	NoWaterText: Deve ser colocado acima da agua para operar!
+	NoEnergyText: Energia Insuficiente!
+	DisplayName: Devorador do Oceano
+	Tooltip:
+		'''
+		Consome energia para extrair recursos de corpos d'agua
+		Clique direito para abrir o armazenamento interno
+		'''
+}
+
+OldDuchest: {
+	StorageText: Bau de Armazenamento Grande
+	DisplayName: Velho Duque Bau
+	Tooltip:
+		'''
+		Um bau de armazenamento com imensa capacidade
+		"O antigo bau do Velho Duque. Se ele estiver por perto, pode jogar algumas coisas dentro."
+		'''
+}
+
+QuestLogBook: {
+	DisplayName: Livro de Missoes
+	Tooltip: Use para abrir ou fechar a interface de missoes
+}
+
+MermanRod: {
+	Text1: Um Poleiro do Sereiano ja foi colocado no mundo!
+	DisplayName: Poleiro do Sereiano
+	Tooltip:
+		'''
+		Aumenta o poder de pesca em 20 ao pescar nas proximidades
+		O Velho Duque moverah seu acampamento para ca
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: Precisa ser colocada em uma superficie dura para realizar operacoes de escavacao.
+	DisplayName: Maquina de Mineracao Mk2
+	Tooltip:
+		'''
+		Perfura minerais consumindo energia eletrica
+		Precisa ser colocada em um local apropriado para funcionar corretamente
+		Minerais especiais podem ser extraidos em ambientes especiais
+		'''
+}
+
+UniversalFrost: {
+	DisplayName: Geada Universal
+	Tooltip:
+		'''
+		Usa Bolas de Neve como municao
+		Dispara granizo e orbes de nova glacial
+		Os orbes quicam, rastreiam inimigos e liberam raios de gelo ao explodir
+		Disparo continuo acumula energia de gelo
+		Quando totalmente carregado, o proximo ataque libera a Era Glacial
+		A Era Glacial invoca uma matriz massiva de estalactites e um campo de nevasca na posicao do cursor
+		"Quando toda a criacao cair em silencio, apenas a geada eterna cobrira o mundo"
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Bainha do Matador de Deuses
+	Tooltip:
+		'''
+		Acumula carga enquanto segura uma arma corpo a corpo sem atacar
+		Atacar com carga total concede 2 segundos de invencibilidade
+		"Embora a lamina permaneca na bainha, sua intencao de matar e palpavel.
+		Quando o momento for certo, matar um deus leva apenas um instante."
+		'''
+}
+
+Lumberjack: {
+	Text1: Quantidade Excessiva!
+	Text2: Falta de Eletricidade!
+	CycleModeText: Modo Ciclo
+	ClearModeText: Modo Limpeza
+	DisplayName: Lenhador
+	Tooltip:
+		'''
+		Consome energia para colher madeira
+		Automaticamente derruba arvores ao redor
+		Clique direito para alternar entre Modo Ciclo e Modo Limpeza
+		Modo Ciclo continuamente colhe arvores e replanta mudas
+		Modo Limpeza apenas colhe arvores sem replantar
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: Nenhum local de plantio valido proximo!
+	NoEnergyText: Energia insuficiente!
+	DisplayName: Tecedor da Vida
+	Tooltip: Consome energia para plantar arvores nas proximidades
+}
+
+WGGLumberjack: {
+	DisplayName: Lenhador do Ermo
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	DisplayName: Tecedor da Vida do Ermo
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: Incinerador Eletrico
+	Tooltip:
+		'''
+		Consome energia para fundir itens
+		Clique direito para abrir o painel de controle
+		Shift + Clique direito para depositar rapidamente ingredientes ou retirar produtos
+		Fundir itens produz o dobro da saida
+		'''
+}
+
+ItemPipeline: {
+	DisplayName: Duto de Itens
+	Tooltip:
+		'''
+		Usado para transportar itens
+		Clique direito para desmontar rapidamente e recuperar o duto alvo (apenas quando segurando um duto)
+		Clique direito em um ponto final do duto para alternar entre os modos Saida e Entrada (apenas quando NAO estiver segurando um duto)
+		Dutos no modo Saida extraem itens de containers conectados e os transferem para containers conectados a dutos no modo Entrada
+		'''
+}
+
+Thrower: {
+	NoEnergyText: Energia insuficiente!
+	NoItemText: Nenhum item para arremessar!
+	WorkingText: Arremessando...
+	IdleText: Inativo
+	DisplayName: Arremessador
+	Tooltip:
+		'''
+		Consome energia para arremessar itens
+		Clique direito para abrir o painel de controle
+		'''
+}
+
+Elysium: {
+	DisplayName: Elisio
+	Tooltip:
+		'''
+		Segure o botao esquerdo para canalizar uma serpente sagrada
+		Clique direito para converter moradores da cidade proximos em um dos Doze Discipulos (ate 12)
+		Quando discipulos sao martirizados, eles acumulam energia de Martirio; com 11 pilhas, pressione [ElysiumQKey] para martirizar Joao e invocar a Revelacao
+		Usar [ElysiumQKey] antes de atingir 11 pilhas invoca um raio divino
+		[c/AADDFF:Mais discipulos concedem aumento global de dano, chance de acerto critico e defesa; 11 discipulos restauram vida, 12 concedem bonus de velocidade de movimento]
+		[c/FF6666:Com todos os 12 reunidos: se sua vida cair abaixo de 30%, Judas o traira e matara instantaneamente (10s de recarga)]
+		[c/FFD700:━━ Fase da Revelacao ━━]
+		[c/FFD700:[ElysiumQKey] Soltar um Meteoro Celestial (180% de dano)]
+		[c/FFD700:[ElysiumRKey] Desencadear o Julgamento dos Tres Ultimos Selos (420% de dano)]
+		[c/FFD700:Clique direito para invocar os Quatro Cavaleiros em ordem: Peste, Guerra, Fome, Morte]
+		[c/FFAA55:Guerra aumenta dano e crits; Fome concede enorme penetracao de armadura; Morte amplifica todos os efeitos de Meteoro e Cavaleiro da Guerra]
+		'''
+	DiscipleName_0: Simao Pedro
+	DiscipleName_1: Santo Andre
+	DiscipleName_2: Tiago
+	DiscipleName_3: Sao Joao
+	DiscipleName_4: Filipe
+	DiscipleName_5: Bartolomeu
+	DiscipleName_6: Tomas
+	DiscipleName_7: Sao Mateus
+	DiscipleName_8: Tiago Menor
+	DiscipleName_9: Tadeu
+	DiscipleName_10: Simao, o Zelote
+	DiscipleName_11: Judas Iscariotes
+	HorsemanName_0: Peste
+	HorsemanName_1: Guerra
+	HorsemanName_2: Fome
+	HorsemanName_3: Morte
+	DiscipleFullText: Slots de discipulos cheios
+	NoConvertTargetText: Nenhum morador conversivel proximo
+	DiscipleFallbackText: Discipulo
+	RevelationText: Revelacao
+	RevelationEndText: Revelacao terminada
+	CelestialMeteorText: Meteoro Celestial
+	SealStarsText: Quinta Estrela Sexta Estrela Setima Estrela
+	HorsemenFullText: Todos os Quatro Cavaleiros invocados
+	HorsemanArrivalText: Cavaleiro de {0} desce
+	DiscipleJoinedText: "{0} se juntou"
+	JudasBetrayalText: Traicao de Judas!
+	JudasDeathReasonText: "{0} foi traido por Judas"
+	DiscipleMartyrText: "{0} foi martirizado"
+	MartyrdomPowerText: Martirio {0}/11
+	Tooltip_DiscipleCountText: Discipulos Atuais: {0}/12
+	Tooltip_NoDisciplesText: Nenhum discipulo seguindo
+	Tooltip_MartyrdomPowerText: Martirio: {0} {1}/11
+	Tooltip_RevelationReadyText: Pressione Q — Joao sera martirizado, Revelacao comeca
+	Tooltip_JudgmentActiveText: Julgamento dos Tres Ultimos Selos em andamento
+	Tooltip_RevelationActiveText: Revelacao ativa Q:Meteoro R:Julgamento dos Selos RMB:Cavaleiros {0}/4
+	Tooltip_JudasWarningText: Aviso: A traicao de Judas esta ao seu lado
+}
+
+SandevistansItem: {
+	DisplayName: Item Sandevistan
+	Tooltip: Militech Sandevistan Mk.5 — Retarda o tempo percebido em 70% por 3,5 segundos. Recarga 15s.
+}
+
+Sandevistan: {
+	SkillName: Sandevistan
+	SkillDesc:
+		'''
+		Retarda drasticamente o tempo percebido, permitindo que voce se mova e aja em aparente camara lenta.
+		A reserva drena durante o uso e desativa automaticamente quando vazia, entao recarrega naturalmente.
+		Selecione novamente no radial para desativa-lo manualmente.
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Cerebro Auxiliar Empoleirado Mimico
+	Tooltip:
+		'''
+		Divide o hospedeiro em quatro ilusoes que flutuam ao redor do corpo principal.
+		Quando atingido, o verdadeiro eu escondido entre as ilusoes causara caos e ganhara imunidade,
+		nao sofrendo dano do ataque.
+		Enquanto isso, as ilusoes atacarao o agressor e detonarao,
+		causando dano dimensionado pelo poder de ataque bruto do inimigo.
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: Olho Cibernetico Otico-Visual CSTM
+	Tooltip:
+		'''
+		Um implante otico cibernetico que sincroniza o Tempo de Hackear diretamente em sua rede neural craniana.
+		Aumenta a RAM maxima em 4
+		Exibe uma barra de arco de RAM independente no canto inferior esquerdo da tela
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Armadura Subdermica de Plasma Prime
+	Tooltip:
+		'''
+		Uma camada de gel eletroativo tecido sob a pele de todo o corpo.
+		Concede permanentemente 25 de defesa e 6% de reducao de dano.
+		Aumenta massivamente a resistencia a repulsao — impactos comuns dificilmente podem desequilibra-lo.
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: Pe OmniEletrico
+	Tooltip:
+		'''
+		Um cibernetico locomotor de alta saida combinando recuo eletromagnetico com gel de propulsao denso.
+		Concede um pulo duplo no ar, permitindo que voce se lance novamente apos sair do chao.
+		Passe o mouse sobre a fatia Salto Carregado no radial cibernetico para carregar e solte para lancar.
+		Um salto totalmente carregado pode alcancar mais do que o dobro da altura de um salto normal.
+		'''
+	SkillHint: Passe o mouse sobre Salto Carregado no radial {0} para carregar
+	SkillName: Salto Carregado
+	SkillDesc:
+		'''
+		Salto de propulsao eletromagnetica.
+		Requer estar no chao; o tempo de pairar sobre a fatia E o tempo de carga.
+		Solte a tecla para lancar ate 2,5x a altura normal do salto quando totalmente carregado.
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: Braço de Presilha de Aço Lavrado
+	Tooltip:
+		'''
+		Um cibernetico industrial com captura magnetica e presilhas de alta rigidez.
+		Estende muito o alcance de mineracao e colocacao de blocos.
+		Permite permanentemente a captura magnetica de itens e moedas.
+		Habilidade cibernetica: libera um fio monomolecular de alta calor da sua palma.
+		Toque para um fio curto, segure para um fio longo; inimigos ao longo do caminho sao continuamente chamuscados.
+		'''
+	SkillHint: "[c/8AC4E8:{1}] Abra o radial cibernetico para alternar · [c/F5C56A:{0}] Dispare o fio (toque = curto / segure = longo)"
+	SkillName: Fio Monomolecular
+	SkillDesc:
+		'''
+		Lanca um fio monomolecular de alta calor da sua palma. Inimigos ao longo do caminho sao continuamente chamuscados.
+		[c/8AC4E8:Toque] —— Coloca um fio curto de ~12 blocos em direcao ao cursor, dura 2 segundos, sem necessidade de ancora.
+		[c/F5C56A:Segurar] —— Quando totalmente carregado, prende-se a um bloco solido perto do cursor por 5 segundos; se nenhuma ancora for encontrada, cai de volta para um fio curto.
+		O dano escala com os multiplicadores de dano genericos do jogador.
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Endoesqueleto Autocurativo
+	Tooltip:
+		'''
+		Um implante bio-ciber de alto nivel que substitui o esqueleto nativo por uma rede de nanocristais.
+		Concede continuamente +2 HP/s de regeneracao de vida e +40 de vida maxima.
+		Fora de combate por 4 segundos, entra em estado de Nanor reparo com regeneracao muito aumentada.
+		O endoesqueleto metalico nega completamente o dano de queda.
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Cristal de Auto-Hack
+	Tooltip:
+		'''
+		Um cibernetico de rede de alto nivel no slot do sistema operacional.
+		Redireciona a interface de invasao de volta para o hospedeiro.
+		Concede continuamente velocidade de recuperacao de RAM adicional.
+		Habilidade cibernetica: gaste RAM para limpar instantaneamente todas as desvantagens
+		e ganhar breve invencibilidade — uma janela para sair de situacoes letais.
+		'''
+	SkillHint: Acione Auto-Hack do radial {0} para purgar desvantagens com RAM
+	SkillName: Auto-Hack
+	SkillDesc:
+		'''
+		Redireciona a interface de invasao de volta para voce mesmo para uma limpeza de emergencia.
+		Gasta 3 RAM para remover instantaneamente todas as desvantagens e concede ~1,5s de invencibilidade.
+		12s de recarga; fica cinza automaticamente quando a RAM e insuficiente ou ainda em recarga.
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		Um co-processador neuro-muscular avancado.
+		Roteia a predicao de ameacas e os reflexos de fibra muscular completamente ao redor do cerebro.
+		Concede continuamente +8% de chance de acerto critico e +8% de velocidade de movimento.
+		18% de chance de desencadear uma Esquiva Reflexiva ao ser atingido, negando completamente aquele golpe.
+		Em uma esquiva bem-sucedida, entra em um Surto Reflexivo de 3 segundos com bonus de crit e velocidade de movimento.
+		'''
+}
+
+RamCapacityUpgradeChip: {
+	DisplayName: Chip de Upgrade de Capacidade de RAM
+	Tooltip: Aumenta permanentemente a RAM maxima base em 1
+}
+
+RamRecoveryUpgradeChip: {
+	DisplayName: Chip de Upgrade de Recuperacao de RAM
+	Tooltip: Aumenta permanentemente a velocidade de recuperacao de RAM base em 0,05 por segundo
+}
+
+Mewtwo: {
+	DisplayName: Mewtwo
+	Tooltip: ""
+}
+
+RapidBarrelModule: {
+	DisplayName: Cano Rapido
+	Tooltip: A mola de recuo hiper-extendida libera pulsos ardentes ao custo da estabilidade e do poder por tiro
+}
+
+FocusBarrelModule: {
+	DisplayName: Cano de Foco
+	Tooltip: Forca os tres feixes de rastreamento a convergirem em um unico golpe concentrado catastrofico
+}
+
+PrecisionOpticModule: {
+	DisplayName: Otica de Precisao
+	Tooltip: Mira assistida por laser elimina toda a dispersao e concede chance de crit adicional
+}
+
+OverloadCoreModule: {
+	DisplayName: Nucleo de Sobrecarga
+	Tooltip: Substitui o buffer por uma logica de ciclo mais rapido, carregando o orbe mais rapidamente e lancando-o com mais forca
+}
+
+SteadyStockModule: {
+	DisplayName: Coronha Estavel
+	Tooltip: Coronha pesada composta absorve o recuo, trocando alguma cadencia de tiro por dano extra por tiro
+}
+
+HarmonyGripModule: {
+	DisplayName: Empunhadura Harmonia
+	Tooltip: Empunhadura biocondutora canaliza mana atraves do corpo, reduzindo drasticamente o custo de mana
+}
+
+ResonanceFrameModule: {
+	DisplayName: Quadro de Ressonancia
+	Tooltip: Quadro empilhado harmonicamente libera um feixe extra, intensificando a saraivada
+}
+
+AdaptiveOpticModule: {
+	DisplayName: Otica Adaptativa
+	Tooltip: Algoritmos de link neural corrigem continuamente a trajetoria, travando cada feixe mais firmemente em seu alvo
+}
+
+AssaultStockModule: {
+	DisplayName: Coronha de Assalto
+	Tooltip: Suporte assistido por adrenalina cicla a arma mais agressivamente, aumentando o poder de fogo a um custo de mana mais alto
+}
+
+BalancedGripModule: {
+	DisplayName: Empunhadura Balanceada
+	Tooltip: Distribuicao de peso reajustada da um pequeno impulso geral a cadencia de tiro, dano e estabilidade
+}
+
+CapacitorBankModule: {
+	DisplayName: Banco de Capacitores
+	Tooltip: Pilha de capacitores densa completa o orbe em um ciclo muito mais curto, mas amortece sua energia de lancamento
+}
+
+CrystalGripModule: {
+	DisplayName: Empunhadura de Cristal
+	Tooltip: Dieletrico de cristal sintetico ressoa com o usuario, reduzindo o custo de mana e aumentando o crit, mas atrasando a carga
+}
+
+EfficientGripModule: {
+	DisplayName: Empunhadura Eficiente
+	Tooltip: Empunhadura ergonomica de grau de engenharia refina tanto o consumo de energia quanto a cadencia do gatilho
+}
+
+HeavyBarrelModule: {
+	DisplayName: Cano Pesado
+	Tooltip: Rifleira reforcada esmaga a dispersao e a cadencia, transformando cada tiro em um golpe pesado
+}
+
+HighVoltageCoreModule: {
+	DisplayName: Nucleo de Alta Voltagem
+	Tooltip: A voltagem de saida e aumentada na escala, amplificando tanto o dano bruto quanto o do feixe mesclado a um custo de mana extra
+}
+
+HoloOpticModule: {
+	DisplayName: Otica Holografica
+	Tooltip: Mira holografica trava o ponto de impacto, reduzindo drasticamente a dispersao e acelerando o gatilho com uma pequena sobrecarga de mana
+}
+
+HypersonicBarrelModule: {
+	DisplayName: Cano Hipersonico
+	Tooltip: Camara de choque sonico empurra os feixes a velocidade extrema, mas o homing fino nao consegue mais acompanhar
+}
+
+KineticDamperModule: {
+	DisplayName: Coronha Amortecedora Cinetica
+	Tooltip: Amortecedor liquido engole o recuo, quase eliminando a dispersao e concedendo uma pequena vantagem de crit
+}
+
+LightStockModule: {
+	DisplayName: Coronha Leve
+	Tooltip: Quadro de composto de carbono aumenta muito a cadencia de tiro a um custo moderado de estabilidade e poder por tiro
+}
+
+MultiCellFrameModule: {
+	DisplayName: Quadro Multicelula
+	Tooltip: Celulas de resfriamento paralelas descarregam dois feixes ao mesmo tempo, ampliando a cobertura ao custo do dano por feixe
+}
+
+PlasmaInjectorModule: {
+	DisplayName: Injetor de Plasma
+	Tooltip: Injecao de plasma de alta entalpia amplifica muito a velocidade do orbe e o dano do feixe mesclado, carregando ligeiramente mais devagar
+}
+
+QuantumFrameModule: {
+	DisplayName: Quadro Quantico
+	Tooltip: Circuitos de direcao quantica fazem os feixes virarem de forma mais inteligente e os orbes voarem mais rapido a um custo de mana ligeiramente elevado
+}
+
+ScattershotBarrelModule: {
+	DisplayName: Cano Dispersor
+	Tooltip: Boca fraturada divide cada tiro em uma borrifada de feixes, expandindo drasticamente a cobertura, mas prejudicando o dano por feixe
+}
+
+ThermalOpticModule: {
+	DisplayName: Otica Termica
+	Tooltip: Trava infravermelha faz os feixes se agarrarem ao seu alvo, dobrando a aposta com ganhos de precisao e crit
+}
+
+VolatileFrameModule: {
+	DisplayName: Quadro Volatil
+	Tooltip: Rede de resfriamento overclockada espreme um feixe extra e chance de crit, enquanto o consumo de mana e a dispersao aumentam
+}
+
+NovaBarrelModule: {
+	DisplayName: Cano Nova
+	Tooltip:
+		'''
+		Um bocal de plasma sobrecarregado detona um micropulso onde cada feixe atinge
+		O preco e maior dispersao, impacto mais fraco por tiro e maior consumo de mana
+		'''
+}
+
+PrismOpticModule: {
+	DisplayName: Otica Prisma
+	Tooltip:
+		'''
+		Um prisma de fase no final do caminho otico bifurca cada feixe em dois estilhaços na expiracao
+		Feixes primarios viajam um pouco mais curto em troca de uma janela de crit mais acentuada
+		'''
+}
+
+TeslaCoreModule: {
+	DisplayName: Nucleo Tesla
+	Tooltip:
+		'''
+		Arco de alta tensao permite que feixes atingidos saltem para o inimigo mais proximo
+		Cada no encadeado herda os comportamentos de ao atingir, a um custo de mana mais acentuado
+		'''
+}
+
+RecoilStockModule: {
+	DisplayName: Coronha de Recuo
+	Tooltip:
+		'''
+		Um buffer de sobrecarga converte detonacoes de orbe em propulsor cinetico para o portador
+		O alcance do feixe e estendido em conjunto; o gatilho parece um pouco lento
+		'''
+}
+
+SwarmGripModule: {
+	DisplayName: Empunhadura Enxame
+	Tooltip:
+		'''
+		Uma empunhadura de malha neural libera um enxame de micro-orbes fortemente homing no momento em que o orbe detona
+		A velocidade do orbe cai e o consumo de mana aumenta como compensacao
+		'''
+}
+
+GravityFrameModule: {
+	DisplayName: Quadro Gravitacional
+	Tooltip:
+		'''
+		Um anel de singularidade em miniatura transforma o orbe de energia em um poco gravitico
+		Ele puxa os inimigos proximos em direcao ao seu nucleo durante o carregamento e o raio de detonacao e muito ampliado
+		A camara de precisao faz o carregamento parecer um pouco mais pesado
+		'''
+}
+
+LaserBarrelModule: {
+	DisplayName: Cano Laser Prisma
+	Tooltip: Substitui o clique esquerdo por uma coluna de laser prisma continua que rastreia o cursor
+}
+
+OscillatorBarrelModule: {
+	DisplayName: Cano Laser Oscilador
+	Tooltip:
+		'''
+		Um capacitor de pulso embutido detona uma micro-explosao na ponta do feixe a cada 45 quadros
+		O dano direto e ligeiramente reduzido e o custo de mana aumenta, mas as explosões de area cobrem a lacuna de fogo continuo
+		'''
+}
+
+ScorchBarrelModule: {
+	DisplayName: Cano Laser Chama
+	Tooltip:
+		'''
+		Um bocal de plasma de alta entalpia incendeia os inimigos atingidos no contato do laser
+		O dano direto do feixe e ligeiramente menor, mas a queimadura sustentada compensa a perda de saida direta
+		'''
+}
+
+ReflectionBarrelModule: {
+	DisplayName: Cano Laser Reflexao
+	Tooltip:
+		'''
+		Um prisma de diamante no ponto de impacto desvia parte da energia para dois feixes de flanqueamento
+		O dano do feixe principal aumenta, mas o consumo extremo de mana torna o fogo sustentado caro
+		'''
+}
+
+EchoOpticModule: {
+	DisplayName: Otica Eco
+	Tooltip:
+		'''
+		Um elemento de ressonancia no final do caminho captura o eco de energia quando um feixe expira
+		Cada morte de feixe gera tres sub-feixes homing em leque, compensando o alcance encurtado
+		'''
+}
+
+FrostOpticModule: {
+	DisplayName: Otica de Gelo
+	Tooltip:
+		'''
+		Uma lente de foco criogenico inflige Queimadura de Gelo em alvos atingidos
+		A velocidade do feixe e reduzida, mas o homing e mais estavel, com bonus de perfuracao e crit
+		'''
+}
+
+SingularityCoreModule: {
+	DisplayName: Nucleo Singularidade
+	Tooltip:
+		'''
+		Um gerador de micro-gravidade direciona continuamente o orbe em direcao ao inimigo mais proximo em voo
+		O raio de explosao e muito expandido, mas o campo denso aumenta o custo de mana
+		'''
+}
+
+ScrambleFieldModule: {
+	DisplayName: Modulo de Campo Embaralhado
+	Tooltip:
+		'''
+		Uma bobina de alta frequencia dispara uma micro-onda de choque ao redor do orbe a cada 40 quadros durante o carregamento
+		A escala da explosao e amplificada ao custo de tempo de carga mais lento e maior uso de mana
+		'''
+}
+
+BraceStockModule: {
+	DisplayName: Coronha Suporte
+	Tooltip: Um suporte estabilizador pesado elimina toda a dispersao e estende o alcance do feixe, trocando um pouco de cadencia de tiro por precisao cirurgica
+}
+
+LaunchStockModule: {
+	DisplayName: Coronha Lancamento
+	Tooltip:
+		'''
+		Um mecanismo de mola sobrecarregado dispara tres feixes homing em leque no instante em que o orbe e lancado
+		A velocidade do orbe aumenta enquanto o custo de mana aumenta em conjunto
+		'''
+}
+
+SentinelGripModule: {
+	DisplayName: Empunhadura Sentinela
+	Tooltip:
+		'''
+		Uma empunhadura de sensor inteligente dispara automaticamente um feixe homing no inimigo mais proximo a cada 20 quadros enquanto o orbe esta no ar
+		A velocidade do orbe e ligeiramente reduzida e o custo de mana aumenta, mas o fogo lateral continuo compensa
+		'''
+}
+
+ConductorGripModule: {
+	DisplayName: Empunhadura Condutora
+	Tooltip:
+		'''
+		Material supercondutor aumenta os saltos de arco em cadeia para maior alcance e mais saltos
+		Cada acerto e acompanhado por uma explosao de particulas de arco; ligeiro aumento de dano e custo de mana
+		'''
+}
+
+PhantomFrameModule: {
+	DisplayName: Quadro Fantasma
+	Tooltip:
+		'''
+		Uma cavidade de fase quantica teleporta o feixe para 80px do inimigo mais proximo a cada 30 quadros
+		Contorna obstaculos completamente; ligeiro aumento de alcance e dano do feixe a um custo de mana aumentado
+		'''
+}
+
+RecursiveFrameModule: {
+	DisplayName: Quadro Recursivo
+	Tooltip:
+		'''
+		Um chassis de loop topologico recria cada feixe da posicao do jogador em sua direcao original na morte
+		O dano do feixe principal aumenta, mas o alcance e encurtado; o eco tem dano reduzido e nao recursa
+		'''
+}
+
+ForkBarrelModule: {
+	DisplayName: Cano Bifurcado
+	Tooltip:
+		'''
+		Um prisma de divisao interno bifurca cada feixe em dois sub-feixes angulados a cada 50 quadros
+		Leve penalidade de dano e custo de mana
+		'''
+}
+
+NullBarrelModule: {
+	DisplayName: Cano Nulo
+	Tooltip:
+		'''
+		Uma camara de apagamento de dados reduz o dano a quase zero, mas concede perfuracao virtualmente ilimitada
+		Acertos injetam uma toxina virulenta que corroe o alvo ao longo do tempo
+		'''
+}
+
+HelixBarrelModule: {
+	DisplayName: Cano Helice
+	Tooltip:
+		'''
+		Oticas de dois canais forcam dois feixes a espiralar em torno de um eixo compartilhado
+		A dispersao e zerada; leve penalidade de dano e velocidade; grande sinergia com configuracao de alta perfuracao
+		'''
+}
+
+TargetPainterOpticModule: {
+	DisplayName: Pintor de Alvos
+	Tooltip:
+		'''
+		Um sistema de designacao a laser marca os alvos atingidos com icor corrosivo, reduzindo sua defesa
+		Tambem aumenta a forca do homing e a chance de acerto critico
+		'''
+}
+
+StrobeOpticModule: {
+	DisplayName: Otica Estroboscopica
+	Tooltip:
+		'''
+		Um modulador de mudanca de fase cicla rapidamente o feixe entre estados de perfuracao de parede e solido
+		Tem 30% de chance de confundir os inimigos atingidos; bonus menor de perfuracao e velocidade
+		'''
+}
+
+SniperOpticModule: {
+	DisplayName: Otica de Sniper
+	Tooltip:
+		'''
+		Colimadores magneticos aumentam dramaticamente a velocidade do projetil, alcance e dano de acerto unico
+		Ao custo de cadencia de tiro muito reduzida e homing quase nulo
+		Melhor combinado com o Cano de Foco para ataques de alcance extremo
+		'''
+}
+
+StormCellModule: {
+	DisplayName: Celula de Tempestade
+	Tooltip:
+		'''
+		Durante a carga, libera um raio eletrico homing em direcao ao inimigo mais proximo a cada 25 quadros
+		Carga mais rapida e maior raio de explosao, mas maior custo de mana
+		'''
+}
+
+CryoCoreModule: {
+	DisplayName: Nucleo Criogenico
+	Tooltip:
+		'''
+		Uma celula de energia super-resfriada congela todos os inimigos pegos no raio da explosao do orbe
+		Explosao ligeiramente maior, carga ligeiramente mais lenta
+		'''
+}
+
+DarkMatterCoreModule: {
+	DisplayName: Nucleo de Materia Escura
+	Tooltip:
+		'''
+		Um campo de materia escura puxa os inimigos proximos em direcao ao orbe durante sua fase de voo
+		O orbe simultaneamente rastreia alvos; o raio de explosao aumentado significativamente
+		Alto custo de mana
+		'''
+}
+
+ErgonomicStockModule: {
+	DisplayName: Coronha Ergonomica
+	Tooltip: Design ergonomico de precisao reduz substancialmente o custo de mana com ganhos menores em cadencia de tiro e precisao
+}
+
+ExtenderStockModule: {
+	DisplayName: Coronha Extensora
+	Tooltip:
+		'''
+		Um trilho estendido concede aos feixes maior alcance e velocidade de voo com custo minimo de dano
+		Empilhe com a Otica de Sniper para cobertura de alcance extremo
+		'''
+}
+
+StormStockModule: {
+	DisplayName: Coronha Tempestade
+	Tooltip:
+		'''
+		Molas de recuo de alta densidade empurram a cadencia de tiro e a contagem de feixes ao limite ao custo de dano por golpe
+		Combine com o Cano Dispersor para saturacao de cobertura em tapete
+		'''
+}
+
+VampireGripModule: {
+	DisplayName: Empunhadura Vampiro
+	Tooltip:
+		'''
+		Uma empunhadura bioeletrica converte uma porcao do dano do feixe em recuperacao de vida
+		Acertos de laser sao mais frequentes, mas restauram menos por tick; eficaz para lutas sustentadas
+		'''
+}
+
+ChronalGripModule: {
+	DisplayName: Empunhadura Cronal
+	Tooltip:
+		'''
+		Uma bobina de atraso de fase retarda os inimigos a cada acerto
+		Combinado com homing melhorado, fogo denso pode manter controle de multidão persistente
+		'''
+}
+
+CascadeGripModule: {
+	DisplayName: Empunhadura Cascata
+	Tooltip:
+		'''
+		A cada 5 acertos, gera um no de cascata pairando no ponto de impacto
+		O no persiste ~2 segundos e dispara 5 feixes homing que cacam inimigos proximos
+		Reduz ligeiramente o dano base
+		'''
+}
+
+MirrorFrameModule: {
+	DisplayName: Quadro Espelho
+	Tooltip:
+		'''
+		Uma cavidade de reflexao simetrica gera um feixe espelho de 180 graus para cada feixe disparado
+		Feixes espelho causam dano reduzido; cobertura de direcao dupla aumenta dramaticamente a densidade de acertos
+		'''
+}
+
+NullspaceFrameModule: {
+	DisplayName: Quadro Espaco Nulo
+	Tooltip:
+		'''
+		Um gerador de fenda do vazio deixa um eco de micro-explosao ao longo do caminho do feixe a cada 20 quadros
+		Alcance ligeiramente estendido; penalidade de dano minima
+		'''
+}
+
+OverkillFrameModule: {
+	DisplayName: Quadro Overkill
+	Tooltip:
+		'''
+		Um circuito de deteccao de overkill acumula uma carga de Overkill por morte, ate 10; cada pilha adiciona 3% de dano
+		As pilhas decaem ao longo do tempo — quanto mais rapido voce matar, mais forte voce se torna
+		'''
+}
+
+GraviticBarrelModule: {
+	DisplayName: Cano Gravitic
+	Tooltip:
+		'''
+		Uma micro-singularidade embutida puxa os inimigos proximos em direcao a cada feixe em voo
+		A dispersao e o homing se apertam enquanto o alcance se estende; a velocidade do projetil cai ligeiramente
+		'''
+}
+
+PrismaticBarrelModule: {
+	DisplayName: Cano Prismatico
+	Tooltip:
+		'''
+		Prismas de dispersao liberam rastreadores RGB de cada feixe, espalhando estilhaços coloridos ao atingir
+		Adiciona um feixe extra e uma vantagem de crit ao custo de um pouco de dano e dispersao
+		'''
+}
+
+ConcussionBarrelModule: {
+	DisplayName: Bocal de Concussao
+	Tooltip:
+		'''
+		Um buffer de sobrecarga detona um pequeno anel de concussao no ponto de impacto a cada 5 acertos empilhados
+		O dano por tiro e a dispersao se apertam, mas a velocidade de ataque paga o preco
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: Cano de Obsidiana
+	Tooltip:
+		'''
+		Acertos esculpem rachaduras de obsidiana nos alvos; com pilhas completas, elas se estilhaçam em vidro vulcanico de caca
+		Detonacoes de orbe rompem as rachaduras proximas mais cedo, recompensando a pressao sustentada em inimigos agrupados
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: Cano Flor da Vida
+	Tooltip:
+		'''
+		Feixes semeiam brotos de vida parasitas que drenam dano atrasado e retornam um pouco de vida ao portador
+		Quando um hospedeiro morre, o broto se transfere para um inimigo proximo e continua crescendo
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: Cano Respiradero de Magma
+	Tooltip:
+		'''
+		Acertos e feixes expirados deixam respiradouros de magma de curta duracao que periodicamente entram em erupcao em colunas de calor verticais
+		Condicoes de Submundo e liquidos de alta temperatura fazem os respiradouros ciclarem mais rapido para negacao de area
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: Cano Cumulus
+	Tooltip:
+		'''
+		Caminhos de feixe condensam nos de nuvem carregaveis que se alimentam de feixes SHPC proximos e orbes de carga
+		Uma vez cheios, cada nuvem solta tres feixes de chuva-relampago curtos para poder de fogo posicional
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: Cano Musgo
+	Tooltip:
+		'''
+		Feixes semeiam manchas de musgo molhado que retardam os inimigos e acumulam para uma raiz enredadora breve
+		Orbes de carga voadoras absorvem musgo proximo para ampliar sua explosao final
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: Cano Samambaia de Gelo
+	Tooltip:
+		'''
+		O primeiro golpe desenha uma veia de gelo atras do alvo, compartilhando gelo com inimigos pegos ao longo da linha
+		Ele conecta multidões atraves de geometria de samambaia ramificada em vez de simplesmente congelar uma vitima
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: Cano Tempestade de Areia
+	Tooltip:
+		'''
+		Fogo sustentado rola uma cortina de areia movedica para frente, desgastando os inimigos e amolecendo projeteis hostis
+		Feixes ganham perfuracao extra enquanto o consumo de mana aumenta para manter a tempestade em movimento
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: Cano Recife de Coral
+	Tooltip:
+		'''
+		Pontos de impacto cultivam ancoras de coral que se conectam em linhas de recife danificantes
+		Detonacoes de orbe fazem ancoras proximas liberarem surtos circulares sincronizados
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: Cano Colmeia
+	Tooltip:
+		'''
+		Acertos de clique esquerdo marcam os alvos com feromonios, entao detonacoes de orbe lancam abelhas ciberneticas em alvos marcados
+		Espalhe marcadores pela luta para fazer o enxame se dividir e cobrir o campo
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: Cano Orvalho da Lua
+	Tooltip:
+		'''
+		Rastros de feixe condensam prismas de orvalho que refratam feixes posteriores em tiros derivados curtos
+		Noite e luas cheias proximas aumentam o teto de refracao de cada prisma e a recompensa
+		'''
+}
+
+CrosslinkOpticModule: {
+	DisplayName: Otica Crosslink
+	Tooltip:
+		'''
+		Ao atingir, uma unidade de link neural arca uma amarra de dados do alvo atingido para o outro inimigo mais proximo
+		A contagem de cadeia e o alcance da cadeia se estendem, com um ligeiro aumento no custo de mana
+		'''
+}
+
+ZoomOpticModule: {
+	DisplayName: Otica de Zoom
+	Tooltip:
+		'''
+		Uma lente magnetica de foco longo empurra os feixes mais rapidos e mais longe ao custo de homing e velocidade de ataque
+		Acertos alem de 600 px desencadeiam um golpe incandescente de bonus que escala com a distancia
+		'''
+}
+
+PingOpticModule: {
+	DisplayName: Otica Ping
+	Tooltip:
+		'''
+		Sistema de pintor de sinal carimba Marcao de Morte em cada alvo atingido, amplificando todo o dano recebido
+		Bonus de homing, crit e dispersao mais apertada completam o kit de mira
+		'''
+}
+
+CapacitorPulseModule: {
+	DisplayName: Pulso de Capacitor
+	Tooltip:
+		'''
+		Pilhas de capacitores densos liberam uma micro-explosao de pulso aproximadamente duas vezes por segundo durante o carregamento
+		O raio da explosao e o tempo de carga aumentam, o custo de mana aumenta
+		'''
+}
+
+EntropyCoreModule: {
+	DisplayName: Nucleo de Entropia
+	Tooltip:
+		'''
+		O orbe suga "entropia" dos inimigos proximos durante o voo
+		Na detonacao, libera uma replicacao secundaria dimensionada pela entropia acumulada
+		'''
+}
+
+ResonanceReactorModule: {
+	DisplayName: Reator de Ressonancia
+	Tooltip:
+		'''
+		Emite um anel de ressonancia a cada ~0,75 s durante o carregamento
+		A detonacao desencadeia um choque de ressonancia extra nos pes do jogador, cobrindo lacunas corpo a corpo
+		'''
+}
+
+OverwatchStockModule: {
+	DisplayName: Coronha Vigilancia
+	Tooltip:
+		'''
+		Ficar parado aumenta pilhas de "Vigilancia" (max 5) que decaem rapidamente quando voce se move
+		Cada pilha concede +2,5% de dano e +2% de crit; uma postura estoica corta a velocidade de ataque e a dispersao
+		'''
+}
+
+MomentumStockModule: {
+	DisplayName: Coronha Momentum
+	Tooltip:
+		'''
+		Mover-se rapidamente aumenta pilhas de "Momentum" (max 6) que decaem rapidamente quando voce para
+		Cada pilha concede +5% de velocidade de ataque e +8% de velocidade do feixe — um espelho da Vigilancia
+		'''
+}
+
+BulwarkStockModule: {
+	DisplayName: Coronha Baluarte
+	Tooltip:
+		'''
+		Segurar a SHPC concede modesta reducao de dano
+		A postura reforçada atrasa ligeiramente o tempo de carga e aumenta o custo de mana
+		'''
+}
+
+CombatGripModule: {
+	DisplayName: Empunhadura de Combate
+	Tooltip:
+		'''
+		Golpes de misericordia com feixes ou laser acumulam cargas de "Combate" (max 5)
+		Cada pilha concede +6% de velocidade de ataque e +2% de dano; as cargas decaem entre lutas
+		'''
+}
+
+TempestGripModule: {
+	DisplayName: Empunhadura Tempestade
+	Tooltip:
+		'''
+		Apos cada poucos acertos empilhados, dispara uma Explosao Tempestade — varios arcos de dados ao redor do impacto mais recente
+		O dano por tiro diminui e o custo de mana aumenta em troca de uma limpeza ritmica
+		'''
+}
+
+AbsorberGripModule: {
+	DisplayName: Empunhadura Absorvedora
+	Tooltip:
+		'''
+		Acertos de feixe e laser retornam uma fatia do dano causado como mana
+		O dano por tiro cai ligeiramente e o custo de mana base aumenta em troca
+		'''
+}
+
+HarmonicFrameModule: {
+	DisplayName: Quadro Harmonico
+	Tooltip:
+		'''
+		Multiplos feixes coexistentes arcam amarras de ressonancia entre si para dano bonus
+		Adiciona um feixe extra ao custo de dano por tiro e um toque de dispersao
+		'''
+}
+
+ReplicatorFrameModule: {
+	DisplayName: Quadro Replicador
+	Tooltip:
+		'''
+		Na expiracao, um feixe gera um eco breve em seu lugar que voa ao longo de sua direcao original
+		O dano primario aumenta enquanto o alcance diminui; o custo de mana aumenta
+		'''
+}
+
+ArchiveFrameModule: {
+	DisplayName: Quadro Arquivo
+	Tooltip:
+		'''
+		Acumula dano da SHPC; cada vez que o limiar e ultrapassado, uma explosao de Arquivo detona nos pes do jogador
+		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
+		'''
+}

@@ -1,0 +1,95 @@
+ModifyCrabulon: {
+	CrouchText: Aguardar
+	CrouchAltText: Seguir
+	MountHoverText: Clique Esquerdo Para Montar na Sela
+	RideHoverText: Clique Direito Para Montar
+	ChangeSaddleText: Clique Esquerdo Para Trocar Sela
+	DismountText: Clique Direito Para Desmontar
+	DontDismountText: O recurso de montaria esta temporariamente indisponivel no modo multiplayer!
+	RecallText: Recolher
+	SaddleText: Sela
+	ReleaseText: Soltar
+	ReleasedText: "{0} foi solto"
+	StatusRestText: "[DESCANSAR]"
+	StatusMountText: "[MONTAR]"
+	StatusFollowText: "[SEGUIR]"
+}
+
+ModifyTruffle: {
+	SleepName: ???
+	ButtonText: Despertar
+	Chat0:
+		'''
+		A barriga daquele caranguejo era tao aconchegante, eu estive vivendo la todo esse tempo.
+		Mas voce a abriu bem no meio—agora estou sem-teto.
+		'''
+	Chat1:
+		'''
+		Eu uma vez gerenciei uma fazenda de cogumelos, com meus filhos me ajudando.
+		Um dia descobri que metade deles estava crescendo dentro do estomago de outra pessoa.
+		'''
+	Chat2: "Chapeu vermelho, caule branco… coma e fique deitado para sempre.  "
+	Chat3: "Voce pode vender cogumelos para mim, mas nao recebera absolutamente nada em troca.  "
+	Chat4: "Todos aqui querem me comer.  "
+	Chat5:
+		'''
+		Uma vez vi uma arvore de cogumelo, com pelo menos 2000 metros de altura.
+		Dizem que se voce subir ate o topo e pular, voce caira no Mundo dos Cogumelos.
+		'''
+	Chat6:
+		'''
+		Se precisar de sopa, compre meus cogumelos.
+		Pelo menos eles nao vao gritar na panela.
+		'''
+	Chat7: "Todos os cogumelos aqui sao meus.  "
+	Chat8:
+		'''
+		Dez anos atras, voce poderia me contratar para guia-lo ao Reino Fungico subterraneo.
+		Ouvi dizer que esta em liquidação agora.
+		'''
+	Chat9:
+		'''
+		Acho que voce tem algum fungo crescendo em seus pulmoes.
+		Venha ver minha loja—eu tenho a cura perfeita.
+		'''
+	Chat10: "Oh, eu odeio aquele cara vermelho.  "
+	Chat11:
+		'''
+		Eu odeio este tipo de lua de sangue.
+		Isso me faz desvanecer… como um cogumelo murcho que ninguem quer.
+		'''
+}
+
+ModifyWITCH: {
+	Homeless0: Desculpas, nao tenho nada a oferecer a voce. Talvez voce pudesse tentar refundir alguns itens, entao retornar a mim...
+	Homeless1: Voce tem um lugar para eu ficar? Quero dizer... Estou preparada para montar acampamento nas proximidades, caso contrario.
+	Homeless2: Voce sabe como as pessoas viviam na era passada? Elas nao tinham casas, habitando apenas em arvores escavadas. Voce poderia pelo menos me encontrar um oco de arvore?
+	Homeless3: Nenhuma habitacao vaga? O que... voce espera que eu pague aluguel?
+	L0: Eu nao posso pagar o aluguel. Talvez eu pudesse realizar um exorcismo para sua cidade para compensar parte do custo?
+	L1: Eu nunca acreditei no conceito de almas. Qualquer tentativa de ressuscitar os mortos so convida uma catastrofe maior.
+	L2:
+		'''
+		No seculo passado, uma vez entrei em uma pequena cidade.
+		As ruas estavam lotadas de 'familiares e amigos' que deveriam estar mortos. Eles sorriam, acenavam e ate choravam por ajuda...
+		Tentei trazer minha 'mae' de la.
+		Ela parecia exatamente como em vida, seu tom impecavel... ate eu perceber que ela nao tinha batimento cardiaco, e ela achava graça nisso.
+		'''
+	L3:
+		'''
+		Sinto que voce e as vezes excessivamente confiante; voce nao alcançara nada neste ritmo.
+		Eu vi muitos como voce perecerem em sua busca pelo poder.
+		'''
+	L4:
+		'''
+		Sei que voce esta interessado na minha magia, mas ela nao e... magia.
+		Espero que voce fique longe dela. Aqueles que tocam esses poderes nao encontram um bom fim.
+		'''
+	BloodMoon0: Este ceu vermelho-sangue antinatural... empalidece em comparacao com a cor das minhas chamas de enxofre.
+	BloodMoon1: Eu nao posso trabalhar em uma noite como esta. Até as estrelas parecem encolher de medo.
+	Night0: A noite e quando os espiritos assombram. Nao tenho desejo de estar fora em tal momento.
+	Night1: Ha muito tempo, eu fazia uma divinacao toda noite antes de dormir. Até que uma vez, por sete noites consecutivas, previ que morreria na oitava.
+	SeaKing: O Rei do Mar sempre me olha com olhos tao tristes. Ele parece desejar que eu nao morresse. Nao consigo entender por que ele tem tamanha simpatia por mim.
+	Party: Eu recuso qualquer convite para dancar, pois meus parceiros tendem a acabar como cadaveres carbonizados.
+}
+
+ModifyOldDuke.LeavingDiveText: O Velho Duque mergulhou na agua...
