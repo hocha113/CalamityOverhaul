@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override Color TintColor => new(200, 160, 40);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamLifeMul += -0.25f;
-            ctx.DamageMul += 0.1f;
-            ctx.ManaCostMul += 0.6f;
+            ctx.BeamLifeMul += -0.3f;
+            ctx.DamageMul += 0.08f;
+            ctx.ManaCostMul += 0.72f;
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {

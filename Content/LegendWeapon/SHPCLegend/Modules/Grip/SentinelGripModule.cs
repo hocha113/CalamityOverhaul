@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         private int _sentinelTimer;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.OrbSpeedMul += -0.3f;
-            ctx.ManaCostMul += 0.25f;
+            ctx.OrbSpeedMul += -0.36f;
+            ctx.ManaCostMul += 0.3f;
         }
 
         public override void OnOrbFlyingAI(CyberChargeOrbProj orb) {

@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override Color TintColor => new(80, 170, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.OrbExplosionRadiusMul += 0.3f;
-            ctx.ChargeTimeMul += 0.15f;
+            ctx.OrbExplosionRadiusMul += 0.24f;
+            ctx.ChargeTimeMul += 0.18f;
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {

@@ -9,7 +9,7 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamChainCount += 2;
-            ctx.BeamChainRange = 280f;
+            ctx.BeamChainRange = 240f;
             ctx.BeamExtraPierce += 1;
             ctx.ManaCostMul += 1f;
         }

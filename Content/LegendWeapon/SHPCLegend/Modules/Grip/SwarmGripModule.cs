@@ -9,8 +9,8 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.OrbDetonationMinions += 3;
-            ctx.ManaCostMul += 0.40f;
-            ctx.OrbSpeedMul += -0.25f;
+            ctx.ManaCostMul += 0.48f;
+            ctx.OrbSpeedMul += -0.3f;
         }
     }
 }

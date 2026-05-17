@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private const float LongRangeThreshold = 600f;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamSpeedMul += 0.75f;
-            ctx.BeamLifeMul += 0.5f;
-            ctx.AttackSpeedMul += -0.15f;
-            ctx.HomingMul += -0.2f;
+            ctx.BeamSpeedMul += 0.6f;
+            ctx.BeamLifeMul += 0.4f;
+            ctx.AttackSpeedMul += -0.18f;
+            ctx.HomingMul += -0.24f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

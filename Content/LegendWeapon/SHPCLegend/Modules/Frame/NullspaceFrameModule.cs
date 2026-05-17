@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private readonly Dictionary<int, int> _tearTimers = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamLifeMul += 0.25f;
-            ctx.DamageMul += -0.08f;
+            ctx.BeamLifeMul += 0.3f;
+            ctx.DamageMul += -0.1f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

@@ -10,7 +10,7 @@
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSplitOnDeath += 2;
             //分光透镜会让原始光束略微短命，但暴击爬升
-            ctx.BeamLifeMul += -0.2f;
+            ctx.BeamLifeMul += -0.24f;
             ctx.CritAdd += 4;
         }
     }

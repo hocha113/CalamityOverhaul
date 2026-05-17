@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override void Apply(ref ShootContext ctx) {
             ctx.OrbFlyingAttract = true;
-            ctx.OrbExplosionRadiusMul += 0.4f;
-            ctx.ManaCostMul += 0.6f;
+            ctx.OrbExplosionRadiusMul += 0.32f;
+            ctx.ManaCostMul += 0.72f;
         }
 
         public override void OnOrbFlyingAI(CyberChargeOrbProj orb) {

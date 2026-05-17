@@ -7,7 +7,7 @@
         public override Color TintColor => new(120, 255, 180);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.ManaCostMul += -0.35f;
+            ctx.ManaCostMul += -0.3f;
         }
     }
 }

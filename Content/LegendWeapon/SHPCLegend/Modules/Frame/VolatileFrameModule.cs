@@ -8,9 +8,9 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamCountAdd += 1;
-            ctx.CritAdd += 10;
-            ctx.ManaCostMul += 0.40f;
-            ctx.SpreadMul += 0.15f;
+            ctx.CritAdd += 8;
+            ctx.ManaCostMul += 0.5f;
+            ctx.SpreadMul += 0.2f;
         }
     }
 }

@@ -12,10 +12,10 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSpeedMul += 1f;
-            ctx.BeamLifeMul += 0.8f;
-            ctx.DamageMul += 0.3f;
-            ctx.AttackSpeedMul += -0.45f;
-            ctx.HomingMul += -0.9f;
+            ctx.BeamLifeMul += 0.64f;
+            ctx.DamageMul += 0.24f;
+            ctx.AttackSpeedMul += -0.54f;
+            ctx.HomingMul += -1f;
             ctx.SpreadMul += -1f;
         }
     }

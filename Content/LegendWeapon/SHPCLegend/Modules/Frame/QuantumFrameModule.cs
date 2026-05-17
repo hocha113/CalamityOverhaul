@@ -7,9 +7,9 @@
         public override Color TintColor => new(140, 80, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.HomingMul += 0.4f;
-            ctx.OrbSpeedMul += 0.4f;
-            ctx.ManaCostMul += 0.15f;
+            ctx.HomingMul += 0.32f;
+            ctx.OrbSpeedMul += 0.32f;
+            ctx.ManaCostMul += 0.2f;
         }
     }
 }

@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         public override void Apply(ref ShootContext ctx) {
             //抬高蓝量消耗：本身回蓝是补偿
-            ctx.ManaCostMul += 0.4f;
-            ctx.DamageMul += -0.1f;
+            ctx.ManaCostMul += 0.48f;
+            ctx.DamageMul += -0.12f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

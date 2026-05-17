@@ -8,7 +8,7 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -1.0f;
-            ctx.CritAdd += 8;
+            ctx.CritAdd += 6;
         }
     }
 }

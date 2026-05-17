@@ -9,8 +9,8 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.OrbDrainAura = true;
-            ctx.OrbExplosionRadiusMul += 0.50f;
-            ctx.ChargeTimeMul += 0.2f;
+            ctx.OrbExplosionRadiusMul += 0.4f;
+            ctx.ChargeTimeMul += 0.24f;
         }
     }
 }

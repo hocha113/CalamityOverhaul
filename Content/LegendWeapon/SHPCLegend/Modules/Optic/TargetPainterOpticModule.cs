@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override Color TintColor => new(255, 130, 30);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.HomingMul += 0.5f;
+            ctx.HomingMul += 0.4f;
             ctx.CritAdd += 3;
         }
 

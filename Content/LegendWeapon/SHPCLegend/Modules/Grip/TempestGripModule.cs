@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         private int _hitCount;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.1f;
-            ctx.ManaCostMul += 0.20f;
+            ctx.DamageMul += -0.12f;
+            ctx.ManaCostMul += 0.24f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

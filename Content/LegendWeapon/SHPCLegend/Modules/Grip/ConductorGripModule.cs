@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamChainCount += 1;
             ctx.BeamChainRange = System.MathF.Max(ctx.BeamChainRange, 240f) + 60f;
-            ctx.DamageMul += 0.05f;
-            ctx.ManaCostMul += 0.4f;
+            ctx.DamageMul += 0.04f;
+            ctx.ManaCostMul += 0.48f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

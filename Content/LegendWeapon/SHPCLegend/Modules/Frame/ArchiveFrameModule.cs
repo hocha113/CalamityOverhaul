@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private int _cooldown;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += 0.08f;
-            ctx.ManaCostMul += 0.15f;
+            ctx.DamageMul += 0.06f;
+            ctx.ManaCostMul += 0.18f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

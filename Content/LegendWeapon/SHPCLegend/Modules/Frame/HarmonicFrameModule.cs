@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamCountAdd += 1;
-            ctx.DamageMul += -0.05f;
-            ctx.SpreadMul += 0.15f;
+            ctx.DamageMul += -0.06f;
+            ctx.SpreadMul += 0.18f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

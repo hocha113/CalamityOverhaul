@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamExtraPierce += 1;
-            ctx.AttackSpeedMul += 0.08f;
+            ctx.AttackSpeedMul += 0.06f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

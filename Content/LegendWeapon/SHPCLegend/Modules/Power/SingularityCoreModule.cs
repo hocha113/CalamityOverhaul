@@ -12,9 +12,9 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.OrbFlyingAttract = true;
-            ctx.OrbSpeedMul += 0.2f;
-            ctx.OrbExplosionRadiusMul += 0.3f;
-            ctx.ManaCostMul += 0.5f;
+            ctx.OrbSpeedMul += 0.16f;
+            ctx.OrbExplosionRadiusMul += 0.24f;
+            ctx.ManaCostMul += 0.6f;
         }
     }
 }

@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override Color TintColor => new(100, 80, 220);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.HomingMul += 0.3f;
-            ctx.DamageMul += -0.04f;
+            ctx.HomingMul += 0.24f;
+            ctx.DamageMul += -0.05f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

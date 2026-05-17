@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private readonly HashSet<int> _mirrored = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.2f;
-            ctx.ManaCostMul += 0.5f;
+            ctx.DamageMul += -0.24f;
+            ctx.ManaCostMul += 0.6f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

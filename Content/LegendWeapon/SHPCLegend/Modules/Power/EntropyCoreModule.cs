@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private readonly Dictionary<int, float> _entropy = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.OrbSpeedMul += -0.2f;
-            ctx.ManaCostMul += 0.5f;
+            ctx.OrbSpeedMul += -0.24f;
+            ctx.ManaCostMul += 0.6f;
         }
 
         public override void OnOrbFlyingAI(CyberChargeOrbProj orb) {

@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override Color TintColor => new(100, 220, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamSpeedMul += -0.25f;
+            ctx.BeamSpeedMul += -0.3f;
             ctx.BeamExtraPierce += 1;
             ctx.CritAdd += 4;
-            ctx.HomingMul += 0.25f;
+            ctx.HomingMul += 0.2f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

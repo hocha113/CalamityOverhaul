@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         private int _decayTimer;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.SpreadMul += -0.10f;
-            ctx.ManaCostMul += 0.15f;
+            ctx.SpreadMul += -0.08f;
+            ctx.ManaCostMul += 0.2f;
             //层数动态注入
             ctx.AttackSpeedMul += _stacks * AttackSpeedPerStack;
             ctx.DamageMul += _stacks * DamagePerStack;

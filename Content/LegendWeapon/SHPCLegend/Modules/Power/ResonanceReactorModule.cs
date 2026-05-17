@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private int _ringTimer;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.ChargeTimeMul += 0.15f;
-            ctx.OrbExplosionRadiusMul += 0.25f;
-            ctx.ManaCostMul += 0.20f;
+            ctx.ChargeTimeMul += 0.18f;
+            ctx.OrbExplosionRadiusMul += 0.2f;
+            ctx.ManaCostMul += 0.24f;
         }
 
         public override void OnOrbCharging(CyberChargeOrbProj orb, Player owner) {

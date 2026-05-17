@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private int _phantomTimer;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamLifeMul += 0.30f;
-            ctx.DamageMul += 0.10f;
-            ctx.ManaCostMul += 0.30f;
+            ctx.BeamLifeMul += 0.24f;
+            ctx.DamageMul += 0.08f;
+            ctx.ManaCostMul += 0.36f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
