@@ -90,6 +90,16 @@ Arbiter: {
 		'''
 }
 
+Cloudwalking: {
+	DisplayName: Marcheur des Nuages
+	Tooltip:
+		'''
+		Maintenir le clic gauche pour charger et lever la grande hache
+		Relâcher pour lancer la hache vers l'avant, laissant des nuages dans son sillage
+		La hache revient automatiquement vers vous
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Univers Anéantissant
 	Tooltip:

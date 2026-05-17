@@ -90,6 +90,16 @@ Arbiter: {
 		'''
 }
 
+Cloudwalking: {
+	DisplayName: Wolkenwanderer
+	Tooltip:
+		'''
+		Linksklick gedrückt halten, um die Axt aufzuladen und zu heben
+		Loslassen, um die Axt nach vorne zu werfen und dabei Wolken zu hinterlassen
+		Die Axt kehrt automatisch zum Spieler zurück
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Universum-Vernichter
 	Tooltip:

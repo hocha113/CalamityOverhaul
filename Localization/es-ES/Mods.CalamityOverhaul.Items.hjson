@@ -90,6 +90,16 @@ Arbiter: {
 		'''
 }
 
+Cloudwalking: {
+	DisplayName: Paseo en las Nubes
+	Tooltip:
+		'''
+		Mantén clic izquierdo para cargar y alzar el gran hacha
+		Suelta para lanzar el hacha hacia adelante, dejando nubes a su paso
+		El hacha vuelve automáticamente hacia ti
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Flecha de Aniquilación del Universo
 	Tooltip:

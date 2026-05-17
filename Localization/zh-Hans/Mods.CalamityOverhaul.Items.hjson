@@ -96,6 +96,16 @@ Arbiter: {
 		'''
 }
 
+Cloudwalking: {
+	DisplayName: 云端漫步
+	Tooltip:
+		'''
+		长按左键蓄力高举大斧
+		松开后斧头向前飞出，途中喷洒云雾
+		自动飞回玩家手中
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: 湮宇星矢
 	Tooltip:

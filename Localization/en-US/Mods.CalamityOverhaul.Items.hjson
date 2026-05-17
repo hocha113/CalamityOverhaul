@@ -82,6 +82,16 @@ Arbiter: {
 		'''
 }
 
+Cloudwalking: {
+	DisplayName: Cloudwalking
+	Tooltip:
+		'''
+		Hold left click to charge and raise the great axe
+		Release to send the axe flying forward, trailing clouds in its wake
+		The axe automatically returns to you
+		'''
+}
+
 AnnihilatingUniverse: {
 	DisplayName: Annihilating Universe
 	Tooltip:
