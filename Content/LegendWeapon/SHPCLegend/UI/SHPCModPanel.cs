@@ -397,10 +397,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
 
             if (item.ModItem is SHPCModuleItem mod) {
-                foreach (string ln in mod.GetStatLines()) {
+                foreach (var (ln, isNeg) in mod.GetStatLines()) {
                     if (string.IsNullOrEmpty(ln)) continue;
                     lines.Add(ln);
-                    colors.Add(ln.StartsWith("-") ? new Color(255, 120, 110) : new Color(120, 255, 170));
+                    colors.Add(isNeg ? new Color(255, 120, 110) : new Color(120, 255, 170));
                 }
             }
 

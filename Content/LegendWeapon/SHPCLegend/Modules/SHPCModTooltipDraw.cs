@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             var bonusLines = new List<(string text, bool isNeg)>();
-            foreach (string s in SHPCModuleItem.BuildStatLines(ctx)) {
+            foreach (var (s, isNeg) in SHPCModuleItem.BuildStatLines(ctx)) {
                 if (!string.IsNullOrEmpty(s))
-                    bonusLines.Add((s, s.StartsWith("-")));
+                    bonusLines.Add((s, isNeg));
             }
 
             if (modules.Count == 0 && bonusLines.Count == 0) return;

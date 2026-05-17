@@ -109,28 +109,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         /// 数值来自代码，本地化只提供字段名模板（含 {0} 占位符）
         /// 子类无需覆写此方法
         /// </summary>
-        public virtual IEnumerable<string> GetStatLines() {
+        public virtual IEnumerable<(string text, bool isNeg)> GetStatLines() {
             ShootContext ctx = ShootContext.Default;
             Apply(ref ctx);
             return BuildStatLines(ctx);
         }
 
-        internal static IEnumerable<string> BuildStatLines(ShootContext ctx) {
+        internal static IEnumerable<(string text, bool isNeg)> BuildStatLines(ShootContext ctx) {
             if (ctx.LaserMode)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserMode");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserMode"), false);
             if (ctx.MergeBeams)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.MergeBeams");
-            foreach (string s in FloatStat("AttackSpeed", ctx.AttackSpeedMul)) yield return s;
-            foreach (string s in FloatStat("Damage", ctx.DamageMul)) yield return s;
-            foreach (string s in FloatStat("Spread", ctx.SpreadMul)) yield return s;
-            foreach (string s in FloatStat("BeamSpeed", ctx.BeamSpeedMul)) yield return s;
-            foreach (string s in FloatStat("Homing", ctx.HomingMul)) yield return s;
-            foreach (string s in FloatStat("MergedDamage", ctx.MergedDamageBonus)) yield return s;
-            foreach (string s in FloatStat("ManaCost", ctx.ManaCostMul)) yield return s;
-            foreach (string s in FloatStat("ChargeTime", ctx.ChargeTimeMul)) yield return s;
-            foreach (string s in FloatStat("OrbSpeed", ctx.OrbSpeedMul)) yield return s;
-            foreach (string s in FloatStat("BeamLife", ctx.BeamLifeMul)) yield return s;
-            foreach (string s in FloatStat("ExplosionRadius", ctx.OrbExplosionRadiusMul)) yield return s;
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.MergeBeams"), false);
+            foreach (var t in FloatStat("AttackSpeed", ctx.AttackSpeedMul)) yield return t;
+            foreach (var t in FloatStat("Damage", ctx.DamageMul)) yield return t;
+            foreach (var t in FloatStat("Spread", ctx.SpreadMul, inverse: true)) yield return t;
+            foreach (var t in FloatStat("BeamSpeed", ctx.BeamSpeedMul)) yield return t;
+            foreach (var t in FloatStat("Homing", ctx.HomingMul)) yield return t;
+            foreach (var t in FloatStat("MergedDamage", ctx.MergedDamageBonus)) yield return t;
+            foreach (var t in FloatStat("ManaCost", ctx.ManaCostMul, inverse: true)) yield return t;
+            foreach (var t in FloatStat("ChargeTime", ctx.ChargeTimeMul, inverse: true)) yield return t;
+            foreach (var t in FloatStat("OrbSpeed", ctx.OrbSpeedMul)) yield return t;
+            foreach (var t in FloatStat("BeamLife", ctx.BeamLifeMul)) yield return t;
+            foreach (var t in FloatStat("ExplosionRadius", ctx.OrbExplosionRadiusMul)) yield return t;
             if (ctx.BeamCountAdd != 0) yield return IntStat("BeamCount", ctx.BeamCountAdd);
             if (ctx.CritAdd != 0) yield return IntStat("Crit", ctx.CritAdd);
             if (ctx.BeamExtraPierce != 0) yield return IntStat("Pierce", ctx.BeamExtraPierce);
@@ -138,31 +138,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             if (ctx.BeamSplitOnDeath != 0) yield return IntStat("Split", ctx.BeamSplitOnDeath);
             if (ctx.OrbDetonationMinions != 0) yield return IntStat("Minions", ctx.OrbDetonationMinions);
             if (ctx.BeamExplodeOnHit)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.BeamExplodeOnHit");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.BeamExplodeOnHit"), false);
             if (ctx.OrbDrainAura)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbDrainAura");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbDrainAura"), false);
             if (ctx.OrbExplosionPropels)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbExplosionPropels");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbExplosionPropels"), false);
             if (ctx.LaserScorchOnHit)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserScorchOnHit");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserScorchOnHit"), false);
             if (ctx.LaserPulseInterval > 0)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserPulse");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.LaserPulse"), false);
             if (ctx.OrbFlyingAttract)
-                yield return Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbFlyingAttract");
+                yield return (Language.GetTextValue("Mods.CalamityOverhaul.Legend.SHPCModuleStat.OrbFlyingAttract"), false);
         }
 
-        private static IEnumerable<string> FloatStat(string key, float mulValue) {
+        //inverse=true 表示该字段越低越好（如法力消耗、蓄力时间），减少为正面，增加为负面
+        private static IEnumerable<(string, bool isNeg)> FloatStat(string key, float mulValue, bool inverse = false) {
             float delta = mulValue - 1f;
             if (MathF.Abs(delta) < 0.001f) yield break;
             int pct = (int)MathF.Round(delta * 100f);
-            //正数补 + 号，负数 pct 自带 - 号，sign 对负数为空串
             string sign = pct > 0 ? "+" : "";
-            yield return Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{pct}");
+            string text = Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{pct}");
+            yield return (text, inverse ? delta > 0 : delta < 0);
         }
 
-        private static string IntStat(string key, int value) {
+        private static (string, bool isNeg) IntStat(string key, int value) {
             string sign = value > 0 ? "+" : "";
-            return Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{value}");
+            return (Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{value}"), value < 0);
         }
 
         /// <summary>
@@ -196,9 +197,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 });
             }
             int idx = 0;
-            foreach (string line in GetStatLines()) {
+            foreach (var (line, isNeg) in GetStatLines()) {
                 if (string.IsNullOrEmpty(line)) continue;
-                bool isNeg = line.StartsWith("-");
                 tooltips.Add(new TooltipLine(Mod, $"SHPCStat{idx++}", line) {
                     OverrideColor = isNeg ? new Color(255, 120, 110) : new Color(120, 255, 170)
                 });

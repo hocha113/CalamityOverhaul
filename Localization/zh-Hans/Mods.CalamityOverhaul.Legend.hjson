@@ -470,7 +470,7 @@ SHPCModuleStat: {
 	BeamExplodeOnHit: +命中时引爆微型脉冲爆炸
 	OrbDrainAura: +蓄力时持续吸引附近敌人
 	OrbExplosionPropels: +能量球爆炸反推玩家弹射
-	LaserMode: +棱镜激光枪管：左键变为跟随光标的持续激光光柱
+	LaserMode: +左键变为跟随光标的持续激光光柱
 	LaserScorchOnHit: +激光命中时施加灼烧减益
 	LaserPulse: +激光终点定时引爆脉冲爆炸
 	OrbFlyingAttract: +能量球飞行时追踪最近敌人

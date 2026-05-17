@@ -91,7 +91,7 @@
 
         //═════ 攻击模式覆写 ═════
 
-        /// <summary>激光枪管模式，左键变为发射持续跟随光标的棱镜光柱</summary>
+        /// <summary>左键变为发射持续跟随光标的棱镜光柱</summary>
         public bool LaserMode;
 
         //═════ 激光行为钩子（CyberPrismLaserProj 消费） ═════
