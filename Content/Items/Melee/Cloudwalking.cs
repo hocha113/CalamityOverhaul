@@ -203,10 +203,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Phase = PhaseFlyingOut;
             PhaseTimer = 0;
             flyOrigin = axePivot;
-            //投出方向：玩家朝向的水平方向，稍微上扬让轨迹更自然
-            Vector2 throwDir = new Vector2(lockedDirection, -0.12f).SafeNormalize(Vector2.UnitX);
             Projectile.Center = axePivot;
-            Projectile.velocity = throwDir * (BaseThrowSpeed + ChargeRatio * ExtraThrowSpeed);
+            Projectile.velocity = UnitToMouseV * (BaseThrowSpeed + ChargeRatio * ExtraThrowSpeed);
             Projectile.netUpdate = true;
 
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.9f, Pitch = 0.25f - ChargeRatio * 0.15f }, Owner.Center);
