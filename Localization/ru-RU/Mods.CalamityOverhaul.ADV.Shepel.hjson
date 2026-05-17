@@ -1,4 +1,4 @@
-﻿CybCourseIntroDialogue: {
+CybCourseIntroDialogue: {
 	SpeakerName: SHPC
 	Line1: Хозяин, добро пожаловать в узел нейросетевой подготовки.
 	Line2: Это симуляционное пространство с эффектом полного погружения, созданное специально для вас.
@@ -187,8 +187,7 @@ CybCourseOutroDialogue: {
 	Line3: Вы можете в любой момент сбросить прогресс или покинуть Суперсон.
 }
 
-CybCourseCompletePanel: 
-{
+CybCourseCompletePanel: {
 	Title: ПОДГОТОВКА ЗАВЕРШЕНА
 	Subtitle: ПРОТОКОЛ СУПЕРСНА
 	Stat1: "[#] HUD SHPC откалиброван"
