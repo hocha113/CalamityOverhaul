@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void PreProcessSegment(DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<ReflectionBarrelModule>(), 1, null,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<ScorchBarrelModule>(), 1, null,
                     appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
