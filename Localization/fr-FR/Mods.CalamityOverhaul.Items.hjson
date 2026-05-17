@@ -322,36 +322,6 @@ BloodAltar: {
 		'''
 }
 
-StarMyriadChanges: {
-	DisplayName: Étoile des Myriades de Changements
-	Tooltip: Loué soit le dieu du changement !
-}
-
-TerminusOver: {
-	DisplayName: La Fin Ultime
-	Tooltip: Permet de déclencher ou d'arrêter la bataille finale à volonté, mais à un coût
-}
-
-PestilenceIngot: {
-	DisplayName: Lingot de Peste
-	Tooltip: Odeur de gâteau aux herbes aigres
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: Plaque de Poitrine de Reminiscence
-	Tooltip: ""
-}
-
-MurasamaMould: {
-	DisplayName: Moule de Murasama
-	Tooltip: Utilisé pour fabriquer des objets de haute précision, ne se consomme pas directement lors de la synthèse mais perd de la durabilité
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: La Bible de la Révision
-	Tooltip: Utilisé pour consulter des tutoriels pertinents... Plus de contenu pourrait être inclus ici à l'avenir
-}
-
 BarrenBow: {
 	DisplayName: Arc Aride
 	Tooltip: Les flèches tirées explosent en courants arides au contact des ennemis

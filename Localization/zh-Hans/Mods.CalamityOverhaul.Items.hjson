@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -319,36 +319,6 @@ BloodAltar: {
 		自动收集世界上掉落的血珠存放到最近的箱子中
 		"让世界被深红所注视"
 		'''
-}
-
-StarMyriadChanges: {
-	DisplayName: 万变之星
-	Tooltip: 赞美变化之神！
-}
-
-TerminusOver: {
-	DisplayName: 终焉之触
-	Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
-}
-
-PestilenceIngot: {
-	DisplayName: 瘟疫锭
-	Tooltip: 闻起来像发酸的香草方糕
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: 塑神胸甲
-	Tooltip: ""
-}
-
-MurasamaMould: {
-	DisplayName: 血金模具
-	Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: 大修宝典
-	Tooltip: 使用以查看相关教程....这里以后可能会包含更多内容
 }
 
 BarrenBow: {

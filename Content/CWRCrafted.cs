@@ -61,97 +61,6 @@ namespace CalamityOverhaul.Content
         }
 
         private static void ModifyResultContent(Recipe recipe) {
-            //修改雪境暴徒的合成
-            {
-                if (recipe.HasResult(CWRID.Item_SnowRuffianMask)) {//面具
-                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
-                    recipe.AddIngredient(ItemID.Leather, 2);//添加皮革
-                }
-                if (recipe.HasResult(CWRID.Item_SnowRuffianChestplate)) {//胸甲
-                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
-                    recipe.AddIngredient(ItemID.Leather, 4);//添加皮革
-                }
-                if (recipe.HasResult(CWRID.Item_SnowRuffianGreaves)) {//护腿
-                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
-                    recipe.AddIngredient(ItemID.Leather, 2);//添加皮革
-                }
-            }
-            //修改凤凰爆破枪的合成
-            {
-                if (recipe.HasResult(ItemID.PhoenixBlaster)) {
-                    recipe.AddIngredient(CWRID.Item_PurifiedGel, 10);//添加纯净凝胶
-                }
-            }
-            //修改火山系列
-            {
-                //火山长矛
-                if (recipe.HasResult(CWRID.Item_VulcaniteLance)) {
-                    recipe.AddIngredient(CWRID.Item_Brimlance);//添加硫磺火矛
-                }
-                //欧陆巨弓
-                if (recipe.HasResult(CWRID.Item_ContinentalGreatbow)) {
-                    recipe.AddIngredient(CWRID.Item_BrimstoneFury);//添加硫火之怒
-                }
-                //地狱风暴
-                if (recipe.HasResult(CWRID.Item_Helstorm)) {
-                    recipe.AddIngredient(CWRID.Item_Hellborn);//添加地狱降临
-                }
-            }
-            //修改肉后矿弩的合成：添加前置弓以及同级转化
-            {
-                //秘银弓合成需要钴蓝弓
-                if (recipe.HasResult(ItemID.MythrilRepeater)) {
-                    recipe.AddIngredient(ItemID.CobaltRepeater, 1);
-                }
-                //山铜弓合成需要钯金弓
-                if (recipe.HasResult(ItemID.OrichalcumRepeater)) {
-                    recipe.AddIngredient(ItemID.PalladiumRepeater, 1);
-                }
-                //精金弓合成需要秘银弓
-                if (recipe.HasResult(ItemID.AdamantiteRepeater)) {
-                    recipe.AddIngredient(ItemID.MythrilRepeater, 1);
-                }
-                //钛金弓合成需要山铜弓
-                if (recipe.HasResult(ItemID.TitaniumRepeater)) {
-                    recipe.AddIngredient(ItemID.OrichalcumRepeater, 1);
-                }
-                //神圣连弩合成需要精金弩和钛金弩
-                if (recipe.HasResult(ItemID.HallowedRepeater)) {
-                    recipe.AddIngredient(ItemID.AdamantiteRepeater, 1);
-                    recipe.AddIngredient(ItemID.TitaniumRepeater, 1);
-                    recipe.AddIngredient(ItemID.Ichor, 5);//添加灵液
-                    recipe.AddIngredient(ItemID.CursedFlame, 5);//添加诅咒焰
-                    recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
-                }
-            }
-            /// /修改天底的合成
-            //{
-            //  if (recipe.HasResult(ItemType<Nadir>())) {
-            //      recipe.RemoveIngredient(CWRID.Item_AuricBar);//移除圣金源锭的配方
-            //      recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
-            //  }
-            //}
-            //修改天顶剑的合成
-            {
-                if (recipe.HasResult(ItemID.Zenith)) {
-                    recipe.RemoveIngredient(CWRID.Item_AuricBar);//移除圣金源锭的配方
-                    recipe.RemoveTile(134);
-                    recipe.AddTile(TileID.LunarCraftingStation);
-                }
-            }
-            //修改大守卫者的合成
-            {
-                if (recipe.HasResult(CWRID.Item_GrandGuardian)) {
-                    recipe.RemoveIngredient(ItemID.FragmentNebula);//移除星云碎片
-                    recipe.AddIngredient(ItemID.LunarBar, 5);//添加夜明锭
-                }
-            }
-            //修改月神P的合成
-            {
-                if (recipe.HasResult(CWRID.Item_SomaPrime)) {
-                    recipe.AddIngredient(CWRID.Item_Infinity);//添加无穷
-                }
-            }
             //添加无尽催化剂的额外联动合成
             {
                 if (CWRLoad.EternitySoul > ItemID.None) {
@@ -170,42 +79,9 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //瘟疫系列修改
-            {
-                //瘟疫
-                if (recipe.HasResult(CWRID.Item_Contagion)) {
-                    recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
-                    recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
-                }
-                //瘟疫胸甲
-                if (recipe.HasResult(CWRID.Item_PlaguebringerCarapace)) {
-                    recipe.RemoveIngredient(CWRID.Item_InfectedArmorPlating);//移除瘟疫装甲镀层的配方
-                    recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
-                    recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
-                }
-                //瘟疫头盔
-                if (recipe.HasResult(CWRID.Item_PlaguebringerVisor)) {
-                    recipe.RemoveIngredient(CWRID.Item_InfectedArmorPlating);//移除瘟疫装甲镀层的配方
-                    recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
-                    recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                }
-                //瘟疫护腿
-                if (recipe.HasResult(CWRID.Item_PlaguebringerPistons)) {
-                    recipe.RemoveIngredient(CWRID.Item_InfectedArmorPlating);//移除瘟疫装甲镀层的配方
-                    recipe.RemoveIngredient(CWRID.Item_PlagueCellCanister);//移除瘟疫细胞罐的配方
-                    recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                }
-            }
         }
 
         private static void AddResultContent() {
-            //添加煤炭的合成
-            //{//添加这个不是个好主意，因为这个"煤"应该不是木炭
-            //  Recipe.Create(ItemID.Coal)
-            //      .AddRecipeGroup(RecipeGroupID.Wood, 2)
-            //      .AddTile(TileID.Furnaces)
-            //      .Register();
-            //}
             //添加染缸的合成
             {
                 Recipe.Create(ItemID.DyeVat)
@@ -230,41 +106,6 @@ namespace CalamityOverhaul.Content
                 LoadenGemstoneRecipe(ItemID.Amethyst, ItemID.PurpleDye);
                 LoadenGemstoneRecipe(ItemID.Diamond, ItemID.SkyBlueDye);
             }
-            //添加热线枪的合成
-            {
-                Recipe.Create(ItemID.HeatRay)
-                .AddIngredient(ItemID.SpaceGun)
-                    .AddIngredient(CWRID.Item_ScoriaBar, 5)
-                    .AddTile(TileID.MythrilAnvil)
-                    .Register();
-            }
-
-            //添加血泪的额外合成
-            {
-                Recipe.Create(ItemID.BloodMoonStarter)
-                    .AddIngredient(CWRID.Item_BlightedGel, 75)
-                    .AddTile(TileID.DemonAltar)
-                    .DisableDecraft()
-                    .Register();
-            }
-
-            //添加迈达斯统帅的合成
-            {
-                Recipe.Create(CWRID.Item_MidasPrime)
-                .AddIngredient(CWRID.Item_CrackshotColt)
-                .AddIngredient(ItemID.GoldRing)
-                .AddTile(TileID.Anvils)
-                .Register();
-            }
-            //添加钱币枪的合成
-            {
-                Recipe.Create(ItemID.CoinGun)
-                .AddIngredient(CWRID.Item_MidasPrime)
-                .AddRecipeGroup(AdamantiteBarGroup, 5)
-                .AddIngredient(ItemID.PlatinumCoin, 5)
-                .AddTile(TileID.MythrilAnvil)
-                .Register();
-            }
             //添加风暴长矛的合成
             {
                 Recipe.Create(ItemID.ThunderSpear)
@@ -277,52 +118,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(CWRID.Item_StormlionMandible, 5)
                     .AddTile(TileID.Anvils)
                     .Register();
-            }
-            //添加瘟疫系列的合成
-            {
-                //添加瘟疫悠悠球的合成
-                Recipe.Create(CWRID.Item_Pandemic)
-                    .AddIngredient(CWRID.Item_SulphurousGrabber)//添加硫磺掠夺者
-                    .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加毒针的合成
-                Recipe.Create(CWRID.Item_TheSyringe)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加疫病污染者的合成
-                Recipe.Create(CWRID.Item_PestilentDefiler)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加蜂巢发射器的合成
-                Recipe.Create(CWRID.Item_TheHive)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加枯萎散播者的合成
-                Recipe.Create(CWRID.Item_BlightSpewer)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加蜂毒弓的合成
-                Recipe.Create(CWRID.Item_Malevolence)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
-                //添加瘟疫法杖的合成
-                Recipe.Create(CWRID.Item_PlagueStaff)
-                    .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
-                    .AddTile(CWRID.Tile_PlagueInfuser)
-                    .Register();
-
             }
             //添加闪光皇后鱼的配方
             {
@@ -357,15 +152,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemID.SnowBlock, 30)
                     .AddIngredient(ItemID.IceBlock, 50)
                     .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            //添加恒吹雪的合成
-            {
-                Recipe.Create(CWRID.Item_EternalBlizzard)
-                    .AddIngredient(CWRID.Item_Arbalest)
-                    .AddIngredient(CWRID.Item_EssenceofEleum, 6)
-                    .AddIngredient(ItemID.IceBlock, 500)
-                    .AddTile(TileID.IceMachine)
                     .Register();
             }
             //添加魔影系列的合成

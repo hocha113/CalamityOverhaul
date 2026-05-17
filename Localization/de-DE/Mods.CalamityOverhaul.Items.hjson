@@ -323,36 +323,6 @@ BloodAltar: {
 		'''
 }
 
-StarMyriadChanges: {
-	DisplayName: Stern der Myriaden Veränderungen
-	Tooltip: Preist den Gott der Veränderung!
-}
-
-TerminusOver: {
-	DisplayName: Berührung des Endes
-	Tooltip: Erlaubt es dir, den Endkampf beliebig ein- und auszuschalten, aber zu einem Preis
-}
-
-PestilenceIngot: {
-	DisplayName: Pestbarren
-	Tooltip: Riecht wie saure Vanillepudding
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: Gottheit-Brustplatte
-	Tooltip: ""
-}
-
-MurasamaMould: {
-	DisplayName: Blutgold-Form
-	Tooltip: Wird zur Herstellung präziser Gegenstände verwendet. Die Form wird bei der Herstellung nicht verbraucht, sondern nur abgenutzt.
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: Bibel des großen Umbaus
-	Tooltip: Verwende dieses Buch, um relevante Anleitungen zu sehen.... Es könnten in Zukunft mehr Inhalte hinzugefügt werden
-}
-
 BarrenBow: {
 	DisplayName: Brachbogen
 	Tooltip: Die abgefeuerten Pfeile lösen bei Treffern elektrische Entladungen aus

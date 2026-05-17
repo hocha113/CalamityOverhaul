@@ -327,36 +327,6 @@ BloodAltar: {
 		'''
 }
 
-StarMyriadChanges: {
-	DisplayName: Estrella de Mil Cambios
-	Tooltip: ¡Alaben al dios del cambio!
-}
-
-TerminusOver: {
-	DisplayName: Toque del Fin
-	Tooltip: Te permite encender y apagar la guerra del fin, pero a un precio.
-}
-
-PestilenceIngot: {
-	DisplayName: Lingote de Peste
-	Tooltip: Huele a pastel de hierbas agrio.
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: Pechera de Reminiscencia
-	Tooltip: ""
-}
-
-MurasamaMould: {
-	DisplayName: Molde de Sangre Dorada
-	Tooltip: Utilizado para crear objetos de alta precisión, no se consume al combinar, sino que se desgasta.
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: Libro de la Gran Reparación
-	Tooltip: Utiliza para ver tutoriales relacionados... aquí puede haber más contenido en el futuro.
-}
-
 BarrenBow: {
 	DisplayName: Arco Estéril
 	Tooltip: Las flechas disparadas explotan en corrientes estériles al golpear al enemigo.

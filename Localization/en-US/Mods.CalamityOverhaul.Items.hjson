@@ -322,36 +322,6 @@ BloodAltar: {
 		'''
 }
 
-StarMyriadChanges: {
-	DisplayName: Star Myriad Changes
-	Tooltip: Praise the God of change!
-}
-
-TerminusOver: {
-	DisplayName: The final touch
-	Tooltip: The final battle awaits, however there is a price to pay.
-}
-
-PestilenceIngot: {
-	DisplayName: Pestilence Ingot
-	Tooltip: Smells like pungent sour apple candy.
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: Reminiscence Breastplate
-	Tooltip: Reminisence on the Journey you've had and how far you have come.
-}
-
-MurasamaMould: {
-	DisplayName: Blood gold mold
-	Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: Overhaul The Bible
-	Tooltip: Use to see Calamity Overhaul Mod related tutorials.... There may be more to come here later
-}
-
 BarrenBow: {
 	DisplayName: Barren Bow
 	Tooltip: The arrows fired will burst out a barren current when they hit the enemy
