@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
             protected override void Build() {
                 Add(RolenameSHPC.Value, CybCourseDeclineResponse.Value, onStart: () => {
                     if (SHPCDialogueBox.Instance?.GetActiveFullBodyPortrait() is ShepelFullBodyPortrait portrait) {
-                        portrait.currentFace = ShepelFullBodyPortrait.Face.Blank;
+                        portrait.currentFace = ShepelFullBodyPortrait.Face.None;
                     }
                     ADVRewardPopup.ShowReward(
                         ModContent.ItemType<Mewtwo>(),
