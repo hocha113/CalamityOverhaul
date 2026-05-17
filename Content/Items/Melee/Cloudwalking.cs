@@ -4,12 +4,14 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -23,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 60;
             Item.height = 60;
-            Item.damage = 290;
+            Item.damage = 29;
             Item.DamageType = DamageClass.Melee;
             //使用动画由手持弹幕全权处理，这里只是触发入口
             Item.useAnimation = 12;
@@ -428,6 +430,88 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             return false;
+        }
+    }
+
+    internal class CloudwalkingSkyLootSystem : ModSystem
+    {
+        private const string SaveKey = "CloudwalkingInjected";
+        private static bool injected;
+
+        public override void OnWorldLoad() => injected = false;
+
+        public override void LoadWorldData(TagCompound tag) {
+            injected = tag != null && tag.TryGet(SaveKey, out bool v) && v;
+        }
+
+        public override void SaveWorldData(TagCompound tag) {
+            tag[SaveKey] = injected;
+        }
+
+        public override void PostWorldGen() => Inject();
+
+        public override void PostUpdateWorld() {
+            if (injected || Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+            Inject();
+        }
+
+        private static void Inject() {
+            List<Chest> skyChests = new List<Chest>();
+            for (int i = 0; i < Main.maxChests; i++) {
+                Chest chest = Main.chest[i];
+                if (chest != null && IsSkywareChest(chest)) {
+                    skyChests.Add(chest);
+                }
+            }
+
+            if (skyChests.Count == 0) {
+                injected = true;
+                return;
+            }
+
+            //按距世界水平中心的距离升序排序，靠前的更居中
+            int centerX = Main.maxTilesX / 2;
+            skyChests.Sort((a, b) =>
+                Math.Abs(a.x - centerX).CompareTo(Math.Abs(b.x - centerX)));
+
+            //从靠中间的一半里随机挑一个，保证倾向居中的同时保留随机性
+            int pickRange = Math.Max(1, (skyChests.Count + 1) / 2);
+            Chest target = skyChests[WorldGen.genRand.Next(pickRange)];
+
+            PlaceInChest(target, ModContent.ItemType<Cloudwalking>());
+            injected = true;
+        }
+
+        private static bool IsSkywareChest(Chest chest) {
+            if (chest.x < 0 || chest.x >= Main.maxTilesX || chest.y < 0 || chest.y >= Main.maxTilesY) {
+                return false;
+            }
+            Tile tile = Framing.GetTileSafely(chest.x, chest.y);
+            //TileID.Containers 下 TileFrameX / 36 为箱子样式编号，13 = 空岛天蓝箱
+            return tile.HasTile && tile.TileType == TileID.Containers && tile.TileFrameX / 36 == 13;
+        }
+
+        private static void PlaceInChest(Chest chest, int itemType) {
+            //优先替换星怒
+            for (int i = 0; i < chest.item.Length; i++) {
+                if (chest.item[i] == null || chest.item[i].type == ItemID.Starfury) {
+                    if (chest.item[i] == null) chest.item[i] = new Item();
+                    chest.item[i].SetDefaults(itemType);
+                    chest.item[i].stack = 1;
+                    return;
+                }
+            }
+            //次选第一个空格
+            for (int i = 0; i < chest.item.Length; i++) {
+                if (chest.item[i] == null || chest.item[i].type == ItemID.None) {
+                    if (chest.item[i] == null) chest.item[i] = new Item();
+                    chest.item[i].SetDefaults(itemType);
+                    chest.item[i].stack = 1;
+                    return;
+                }
+            }
         }
     }
 }
