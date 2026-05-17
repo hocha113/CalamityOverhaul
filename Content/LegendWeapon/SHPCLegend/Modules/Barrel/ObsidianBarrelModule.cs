@@ -78,9 +78,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(95, 55, 135);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += -0.12f;
-            ctx.DamageMul += -0.08f;
-            ctx.ManaCostMul += 0.28f;
+            ctx.AttackSpeedMul += -0.15f;
+            ctx.DamageMul += -0.1f;
+            ctx.ManaCostMul += 0.35f;
             ctx.BeamExtraPierce += 1;
         }
 

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(220, 180, 90);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += 0.08f;
-            ctx.DamageMul += -0.06f;
+            ctx.AttackSpeedMul += 0.06f;
+            ctx.DamageMul += -0.08f;
             ctx.BeamExtraPierce += 1;
-            ctx.ManaCostMul += 0.4f;
+            ctx.ManaCostMul += 0.48f;
         }
 
         //同主同时存在的砂幕上限（curtain 寿命 90，所以这个上限会让画面上至多同时悬浮 3 个）

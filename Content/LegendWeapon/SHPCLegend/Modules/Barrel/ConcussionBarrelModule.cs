@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private int _hitCount;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += 0.15f;
-            ctx.AttackSpeedMul += -0.35f;
-            ctx.SpreadMul += -0.15f;
+            ctx.DamageMul += 0.12f;
+            ctx.AttackSpeedMul += -0.4f;
+            ctx.SpreadMul += -0.2f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

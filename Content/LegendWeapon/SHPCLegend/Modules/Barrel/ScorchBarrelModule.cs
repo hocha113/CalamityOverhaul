@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.LaserMode = true;
             ctx.LaserScorchOnHit = true;
             ctx.LaserScorchDuration = 40;
-            ctx.DamageMul += -0.3f;
-            ctx.ManaCostMul += 0.65f;
+            ctx.DamageMul += -0.36f;
+            ctx.ManaCostMul += 0.78f;
         }
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {

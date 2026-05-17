@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(255, 205, 70);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += 0.08f;
-            ctx.DamageMul += -0.04f;
-            ctx.HomingMul += 0.12f;
-            ctx.ManaCostMul += 0.20f;
+            ctx.AttackSpeedMul += 0.06f;
+            ctx.DamageMul += -0.06f;
+            ctx.HomingMul += 0.1f;
+            ctx.ManaCostMul += 0.24f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {

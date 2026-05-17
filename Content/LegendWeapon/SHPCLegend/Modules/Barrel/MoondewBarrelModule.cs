@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(185, 220, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.SpreadMul += -0.12f;
-            ctx.DamageMul += -0.06f;
-            ctx.BeamLifeMul += 0.10f;
-            ctx.CritAdd += 5;
-            ctx.ManaCostMul += 0.3f;
+            ctx.SpreadMul += -0.15f;
+            ctx.DamageMul += -0.08f;
+            ctx.BeamLifeMul += 0.08f;
+            ctx.CritAdd += 4;
+            ctx.ManaCostMul += 0.36f;
         }
 
         //同主同时存在的月露棱镜上限

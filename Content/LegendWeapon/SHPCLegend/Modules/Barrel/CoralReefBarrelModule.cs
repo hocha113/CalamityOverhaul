@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(255, 115, 150);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.12f;
-            ctx.BeamLifeMul += 0.12f;
-            ctx.OrbExplosionRadiusMul += 0.1f;
-            ctx.ManaCostMul += 0.3f;
+            ctx.DamageMul += -0.15f;
+            ctx.BeamLifeMul += 0.1f;
+            ctx.OrbExplosionRadiusMul += 0.08f;
+            ctx.ManaCostMul += 0.36f;
         }
 
         //同主同时存在的珊瑚锚点上限：超出后命中不再生成新锚点

@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(70, 175, 75);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamSpeedMul += -0.12f;
-            ctx.BeamLifeMul += 0.8f;
-            ctx.ManaCostMul += 0.4f;
-            ctx.OrbExplosionRadiusMul += 0.1f;
+            ctx.BeamSpeedMul += -0.15f;
+            ctx.BeamLifeMul += 0.08f;
+            ctx.ManaCostMul += 0.48f;
+            ctx.OrbExplosionRadiusMul += 0.08f;
         }
 
         //同主同时存在的湿苔斑块上限

@@ -7,10 +7,10 @@
         public override Color TintColor => new(255, 235, 60);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamSpeedMul += 1f;
-            ctx.AttackSpeedMul += 0.2f;
-            ctx.DamageMul += -0.1f;
-            ctx.HomingMul += -0.7f;
+            ctx.BeamSpeedMul += 0.88f;
+            ctx.AttackSpeedMul += 0.16f;
+            ctx.DamageMul += -0.12f;
+            ctx.HomingMul += -0.84f;
         }
     }
 }

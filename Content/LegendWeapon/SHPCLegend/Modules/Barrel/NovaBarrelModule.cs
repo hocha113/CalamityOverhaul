@@ -9,13 +9,13 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamExplodeOnHit = true;
-            ctx.BeamExplodeRadius = 90f;
+            ctx.BeamExplodeRadius = 60f;
             //爆裂枪管自带较高的散布与法力开销
-            ctx.SpreadMul += 0.5f;
-            ctx.DamageMul += -0.3f;
-            ctx.ManaCostMul += 0.5f;
+            ctx.SpreadMul += 0.6f;
+            ctx.DamageMul += -0.36f;
+            ctx.ManaCostMul += 0.75f;
             //弹幕越多爆炸伤害越低：每多一发弹幕额外衰减25%
-            ctx.BeamExplodeDecayPerBeam = 0.15f;
+            ctx.BeamExplodeDecayPerBeam = 0.25f;
         }
     }
 }

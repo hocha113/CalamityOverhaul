@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamCountAdd += 1;
-            ctx.SpreadMul += 0.15f;
-            ctx.DamageMul += -0.15f;
-            ctx.CritAdd += 6;
+            ctx.SpreadMul += 0.18f;
+            ctx.DamageMul += -0.18f;
+            ctx.CritAdd += 5;
         }
 
         private static readonly Color RChannel = new(255, 60, 80);

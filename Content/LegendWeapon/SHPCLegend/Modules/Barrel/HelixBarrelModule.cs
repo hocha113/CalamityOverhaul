@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private readonly Dictionary<int, float> _angles = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.SpreadMul += -1f;
-            ctx.DamageMul += -0.1f;
-            ctx.BeamSpeedMul += -0.1f;
+            ctx.SpreadMul += -0.88f;
+            ctx.DamageMul += -0.12f;
+            ctx.BeamSpeedMul += -0.12f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

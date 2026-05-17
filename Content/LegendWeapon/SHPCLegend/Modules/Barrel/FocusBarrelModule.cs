@@ -8,10 +8,10 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.MergeBeams = true;
-            ctx.BeamSpeedMul += 0.6f;
-            ctx.HomingMul += -0.5f;
+            ctx.BeamSpeedMul += 0.48f;
+            ctx.HomingMul += -0.6f;
             ctx.MergedDamageBonus += 2f;
-            ctx.ManaCostMul += 0.20f;
+            ctx.ManaCostMul += 0.25f;
         }
     }
 }

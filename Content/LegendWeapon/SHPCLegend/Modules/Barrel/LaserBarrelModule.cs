@@ -12,8 +12,8 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.LaserMode = true;
-            ctx.DamageMul += -0.2f;
-            ctx.ManaCostMul += 0.75f;
+            ctx.DamageMul += -0.24f;
+            ctx.ManaCostMul += 0.9f;
         }
     }
 }

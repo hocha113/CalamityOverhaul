@@ -110,9 +110,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.IsWormBody()) {
-                modifiers.FinalDamage *= 0.6f;
-            }
+            //if (target.IsWormBody()) {
+            //    modifiers.FinalDamage *= 0.6f;
+            //}
         }
 
         //飞行阶段由 velocity 驱动，蓄力/收手阶段手动固定位置

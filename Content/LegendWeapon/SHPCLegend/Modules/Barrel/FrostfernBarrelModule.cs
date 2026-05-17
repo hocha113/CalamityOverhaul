@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(150, 240, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.12f;
-            ctx.SpreadMul += -0.24f;
-            ctx.BeamSpeedMul += 0.10f;
+            ctx.DamageMul += -0.15f;
+            ctx.SpreadMul += -0.3f;
+            ctx.BeamSpeedMul += 0.08f;
             ctx.CritAdd += 4;
         }
 

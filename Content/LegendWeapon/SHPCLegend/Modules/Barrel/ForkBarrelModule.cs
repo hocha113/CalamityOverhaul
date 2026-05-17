@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private readonly Dictionary<int, int> _timers = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.15f;
-            ctx.ManaCostMul += 0.25f;
+            ctx.DamageMul += -0.18f;
+            ctx.ManaCostMul += 0.3f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

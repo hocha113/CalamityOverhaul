@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void Apply(ref ShootContext ctx) {
             ctx.LaserMode = true;
-            ctx.DamageMul += -0.1f;
+            ctx.DamageMul += -0.12f;
             ctx.ManaCostMul += 1f;
         }
 

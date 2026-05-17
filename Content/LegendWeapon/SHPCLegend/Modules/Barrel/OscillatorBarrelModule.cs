@@ -1,7 +1,7 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
     /// <summary>
-    /// 震荡激光枪管：每45帧在光束终点引爆一次脉冲爆炸
+    /// 震荡激光枪管：每30帧在光束终点引爆一次脉冲爆炸
     /// 通过 ShootContext.LaserPulseInterval 字段传递给 CyberPrismLaserProj 消费
     /// </summary>
     internal sealed class OscillatorBarrelModule : SHPCModuleItem
@@ -14,8 +14,8 @@
             ctx.LaserMode = true;
             ctx.LaserPulseInterval = 30;
             ctx.LaserPulseRadius = 85f;
-            ctx.DamageMul += -0.3f;
-            ctx.ManaCostMul += 0.6f;
+            ctx.DamageMul += -0.36f;
+            ctx.ManaCostMul += 0.72f;
         }
     }
 }

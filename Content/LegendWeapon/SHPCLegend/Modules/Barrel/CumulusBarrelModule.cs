@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(165, 215, 255);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.AttackSpeedMul += 0.10f;
-            ctx.DamageMul += -0.06f;
-            ctx.BeamLifeMul += 0.16f;
-            ctx.ManaCostMul += 0.25f;
+            ctx.AttackSpeedMul += 0.08f;
+            ctx.DamageMul += -0.08f;
+            ctx.BeamLifeMul += 0.12f;
+            ctx.ManaCostMul += 0.30f;
         }
 
         //同主同时存在的云核数量上限，避免连续光束铺满屏幕导致 GC / 渲染雪崩
