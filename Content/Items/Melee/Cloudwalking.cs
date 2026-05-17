@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 60;
             Item.height = 60;
-            Item.damage = 29;
+            Item.damage = 40;
             Item.DamageType = DamageClass.Melee;
             //使用动画由手持弹幕全权处理，这里只是触发入口
             Item.useAnimation = 12;
@@ -107,6 +107,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 18;
             Projectile.hide = true;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.6f;
+            }
         }
 
         //飞行阶段由 velocity 驱动，蓄力/收手阶段手动固定位置
