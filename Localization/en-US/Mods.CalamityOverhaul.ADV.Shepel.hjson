@@ -1,9 +1,9 @@
 ﻿CybCourseIntroDialogue: {
 	SpeakerName: SHPC
 	Line1: Master, welcome to the neural training node.
-	Line2: This is an immersive tutorial space prepared for you.
-	Line3: SHPC is a powerful intelligent weapon. You will learn how to operate its HUD interface.
-	Line4: Ready to link your consciousness with mine? Hold my hand tight, let's begin.
+	Line2: This is an immersive simulation space prepared exclusively for you.
+	Line3: The SHPC is a powerful intelligent weapon. Here, you will learn how to operate its HUD.
+	Line4: Are you ready to link your consciousness with mine? Please hold my hand tightly, and let us begin.
 }
 
 CybTutorialLead: {
