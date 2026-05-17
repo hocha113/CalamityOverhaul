@@ -147,15 +147,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D ring = CWRAsset.DiffusionCircle?.Value;
+            Texture2D ring = CWRAsset.SoftGlow?.Value;
             if (ring == null) return false;
             float pulse = MathHelper.Clamp(Projectile.localAI[0] / 9f, 0f, 1f);
             //地面口部脉冲圆环
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            float ringScale = 0.32f + pulse * 0.45f;
+            float ringScale = 1.32f + pulse * 0.45f;
             Color ringInner = new Color(255, 150, 60, 0) * (0.55f + pulse * 0.45f);
             Color ringOuter = new Color(120, 30, 10, 0) * (0.4f + pulse * 0.4f);
-            SHPCNaturalFx.GlowLayered(Main.spriteBatch, ring, baseScreen, ringInner, ringOuter, ringScale, 0f, 3);
+            for (int i = 0; i < 6; i++) {
+                SHPCNaturalFx.GlowLayered(Main.spriteBatch, ring, baseScreen - new Vector2(0, i * 10), ringInner, ringOuter, ringScale, 0f, 3);
+            }
             return false;
         }
 
