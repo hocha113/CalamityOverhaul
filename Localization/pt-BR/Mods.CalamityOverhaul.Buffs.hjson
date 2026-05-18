@@ -30,5 +30,5 @@ FishoilBuff: {
 
 HyperDisintegration: {
 	DisplayName: Hiper Desintegracao
-	Description: Mods.CalamityOverhaul.Buffs.HyperDisintegration.Description
+	Description: Faz o alvo se desintegrar de dentro para fora
 }

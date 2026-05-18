@@ -1,4 +1,4 @@
-SoulBurning: {
+﻿SoulBurning: {
 	DisplayName: Soul Burning
 	Description: Fire from hell
 }
@@ -30,5 +30,5 @@ FishoilBuff: {
 
 HyperDisintegration: {
 	DisplayName: Hyper Disintegration
-	Description: Mods.CalamityOverhaul.Buffs.HyperDisintegration.Description
+	Description: Let the goal disintegrate from within
 }
