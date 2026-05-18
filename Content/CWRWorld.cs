@@ -116,6 +116,10 @@ namespace CalamityOverhaul.Content
                         HasBoss = true;
                         break;
                     }
+                    if (n.type == NPCID.EaterofWorldsHead) {//世界吞噬者没有boss标签，需要手动判定
+                        HasBoss = true;
+                        break;
+                    }
                 }
             }
         }
