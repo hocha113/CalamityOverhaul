@@ -30,9 +30,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         private static int nextEyeMode = 0;
 
-        public override void SetStaticDefaults() {
-            ItemID.Sets.AnimatesAsSoul[Type] = true;
-        }
+        public override void SetStaticDefaults() { }
 
         public override void SetDefaults() {
             Item.width = 64;
