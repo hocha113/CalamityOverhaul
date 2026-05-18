@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_LavaFire : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
+        public override bool CanPool => true;
         public Color[] colors;
         public int timer;
         public float speedX;
@@ -79,6 +80,19 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             timer--;
             timeLife--;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            colors = null;
+            timer = 0;
+            speedX = 0f;
+            mult = 0f;
+            timeLeftMax = 0;
+            size = 0f;
+            minLifeTime = 0;
+            maxLifeTime = 0;
+            timeLife = 0f;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {

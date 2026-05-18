@@ -923,7 +923,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 visualHeight = baseHeight * (0.9f + (float)Math.Sin(swayPhase) * 0.1f);
             }
 
-            SpawnFlameDust();
+            if (lifeRatio > 0.2f) {
+                SpawnFlameDust();
+            }
 
             //发光（强度跟随火焰高度）
             float lightFactor = visualHeight / Math.Max(baseHeight, 1f);
