@@ -23,11 +23,11 @@ Biomes: {
 	}
 }
 
-# Para Criadores de Pacotes de Idioma:
-# As chaves aqui estavam anteriormente em Items. Como EcTypeItem foi removido, todas as chaves de localizacao semelhantes a "ItemNameEcType" foram movidas para ca.
-# O formato correspondente e "ItemNameEcType" → "RItemName" ou "ItemNameOverride".
-# Alem da mudanca no nome da classe, o DisplayName e Tooltip permanecem os mesmos da versao anterior.
-# Entao, se voce precisar migrar seu pacote de idioma para a nova versao, basta copiar e colar as entradas aqui e atualizar os nomes das classes de acordo.
+# For Language Pack Creators:
+# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
+# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
+# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
+# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 Arcanes: {
 	Items: {

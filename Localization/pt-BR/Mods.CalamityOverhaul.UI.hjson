@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: Clique esquerdo para adicionar um item
 	HintText2: Clique esquerdo para remover um item
 	CloseHint: Pressione [ESC] ou [Clique Direito] para fechar
@@ -714,7 +714,7 @@ SHPCUI: {
 	Cyber_LayerBaseFooter: Camada base — estabelece o campo de dominio.
 	Cyber_SkillUnlocked: "[#] DESBLOQUEADO"
 	Cyber_SkillLocked: "[X] Requer Camada {0}"
-	Cyber_KeyUnbound: "?"
+	Cyber_KeyUnbound: ?
 	Cyber_Skill_Teleport_Name: TELEPORTE DE FENDA
 	Cyber_Skill_Teleport_Desc: Desconstroi o chassis em um fluxo de dados para transmitir para o local alvo, recompondo sua forma fisica sob a cobertura do protocolo Blackwall.
 	Cyber_Skill_Restart_Name: REINICIALIZACAO DO SISTEMA

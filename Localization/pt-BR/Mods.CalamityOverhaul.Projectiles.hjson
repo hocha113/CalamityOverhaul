@@ -302,7 +302,7 @@ XenopopperProj.DisplayName: Xenopopper
 CosmicCalamityProjectile.DisplayName: Desastre Cosmico
 CosmicCalamityRay.DisplayName: Raio do Desastre Cosmico
 FrostcrushValariHeld.DisplayName: Valari Esmagador de Gelo
-NeutronExplosionRogue.DisplayName: Explosao de Neutrons (Ladino)
+// NeutronScytheExplosion.DisplayName: Neutron Explosion
 NeutronScytheHeld.DisplayName: Foice de Neutrons
 EnchantedBoomerangHeld.DisplayName: Bumerangue Encantado
 FlamarangHeld.DisplayName: Chama-rangue
@@ -546,3 +546,9 @@ SHPCObsidianShardProj.DisplayName: Fragmento de Obsidiana SHPC
 SHPCSandCurtainProj.DisplayName: Cortina de Areia SHPC
 SHPCMoondewRefractFlashProj.DisplayName: Flash de Refracao de Orvalho Lunar SHPC
 MonomolecularWire.DisplayName: Fio Monomolecular
+// HolyCross.DisplayName: Holy Cross
+// ArbiterFireSnake.DisplayName: Fire Snake
+// ArbiterGroundFire.DisplayName: Ground Fire
+// ArbiterHeld.DisplayName: Arbiter
+// ArbiterShockwave.DisplayName: Shockwave
+// CloudwalkingHeld.DisplayName: Cloudwalking

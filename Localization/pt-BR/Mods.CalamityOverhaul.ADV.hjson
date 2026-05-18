@@ -1,4 +1,4 @@
-﻿FirstMet: {
+FirstMet: {
 	Rolename1: ???
 	Rolename2: Halibut
 	Line0: Senhor... sua tecnica de pesca... deixa a desejar.
@@ -1032,7 +1032,7 @@ FishoilSubmitScenario: {
 	QuestSummary: Colete 300 peixes comuns e entregue-os a Halibut em troca de uma garrafa de oleo de peixe.
 	QuestCategory: Halibut
 	ProgressFormat: "{0}/{1}"
-	TrackerCollecting: "mais {0} peixes necessarios"
+	TrackerCollecting: mais {0} peixes necessarios
 	TrackerReady: Peixes coletados. Por favor, foque na missao para entregar.
 	StatusSuspended: Suspenso
 	StatusCompleted: Completo

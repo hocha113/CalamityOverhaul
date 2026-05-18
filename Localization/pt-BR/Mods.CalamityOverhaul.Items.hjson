@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: MODULOS INSTALADOS
 	NoModules: NENHUM
 	BonusHeader: BONUS TOTAIS DOS MODULOS
@@ -69,6 +69,27 @@ DivineSourceBlade: {
 FoodStallChair: {
 	DisplayName: Cadeira de Barraca de Comida
 	Tooltip: EU SOU A CADEIRA QUE SE APROXIMA!
+}
+
+Arbiter: {
+	// DisplayName: Arbiter
+	/* Tooltip:
+		'''
+		Hold left click to charge and raise the axe of judgment
+		Release to cleave downward, sending a ground-hugging flame shockwave bursting out to both sides
+		Longer charges increase the flames' reach and power
+		"Judgment descends through fire"
+		''' */
+}
+
+Cloudwalking: {
+	// DisplayName: Cloudwalking
+	/* Tooltip:
+		'''
+		Hold left click to charge and raise the great axe
+		Release to send the axe flying forward, trailing clouds in its wake
+		The axe automatically returns to you
+		''' */
 }
 
 AnnihilatingUniverse: {
@@ -299,36 +320,6 @@ BloodAltar: {
 		Coleta automaticamente orbes de sangue dropados ao redor do mundo e os armazena no deposito mais proximo.
 		"Deixe o mundo ser envolto pelo Carmesim."
 		'''
-}
-
-StarMyriadChanges: {
-	DisplayName: Miríade de Mudancas Estelares
-	Tooltip: Louve o Deus da mudanca!
-}
-
-TerminusOver: {
-	DisplayName: O toque final
-	Tooltip: A batalha final aguarda, no entanto ha um preco a pagar.
-}
-
-PestilenceIngot: {
-	DisplayName: Lingote da Peste
-	Tooltip: Cheira a doce de bala azeda picante.
-}
-
-ReminiscenceBreastplate: {
-	DisplayName: Peitoral da Reminiscencia
-	Tooltip: Rememore a Jornada que voce teve e o quao longe voce chegou.
-}
-
-MurasamaMould: {
-	DisplayName: Molde de ouro sanguineo
-	Tooltip: Um Material de aparentemente outro plano de existencia. E quente e eletrizante ao toque e parece buscar derramamento de sangue.
-}
-
-OverhaulTheBibleBook: {
-	DisplayName: Reformulacao A Biblia
-	Tooltip: Use para ver tutoriais relacionados ao Mod Calamity Overhaul.... Pode haver mais coisas aqui depois
 }
 
 BarrenBow: {
