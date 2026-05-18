@@ -40,15 +40,23 @@ namespace CalamityOverhaul.Content.PRTTypes
                 maxLifeTime = 121;
             }
 
-            timeLife = timer = Lifetime = Main.rand.Next(minLifeTime, maxLifeTime);
-            timer = (int)(timer * Main.rand.NextFloat(0.6f, 1.1f));
             speedX = Main.rand.NextFloat(4f, 9f);
             mult = Main.rand.NextFloat(10f, 31f) / 200f;
             size = Main.rand.NextFloat(5f, 11f) / 10f;
+            SetLifetime(minLifeTime, maxLifeTime);
+        }
+
+        //在 NewParticle 返回后调用，覆盖 SetProperty 中已计算的默认寿命
+        public PRT_LavaFire SetLifetime(int minLife, int maxLife) {
+            minLifeTime = minLife;
+            maxLifeTime = maxLife;
+            timeLife = timer = Lifetime = Main.rand.Next(minLifeTime, maxLifeTime);
+            timer = (int)(timer * Main.rand.NextFloat(0.6f, 1.1f));
             if (ai[1] == 1) {
                 Lifetime /= 7;
             }
             timeLeftMax = Lifetime;
+            return this;
         }
 
         public override void AI() {
