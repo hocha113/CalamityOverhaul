@@ -40,14 +40,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
             if (Math.Abs(Projectile.position.X - Main.LocalPlayer.position.X) <= Main.screenWidth / 2
                 || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
-                PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = Projectile.velocity * 0.2f,
-                    Position = Projectile.Center + VaultUtils.RandVr(6),
-                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    maxLifeTime = 20,
-                    minLifeTime = 8
-                };
-                PRTLoader.AddParticle(lavaFire);
+                PRTLoader.NewParticle<PRT_LavaFire>(
+                    Projectile.Center + VaultUtils.RandVr(6),
+                    Projectile.velocity * 0.2f,
+                    Color.White, Main.rand.NextFloat(0.8f, 1.2f))?.SetLifetime(8, 20);
             }
 
             Projectile.ai[0]++;

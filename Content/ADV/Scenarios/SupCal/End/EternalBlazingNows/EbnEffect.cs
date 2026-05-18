@@ -438,25 +438,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-80, 50)
                 );
 
-                PRT_LavaFire flamePRT = new PRT_LavaFire {
-                    Position = spawnPos,
-                    Velocity = new Vector2(
-                        Main.rand.NextFloat(-2.5f, 2.5f),
-                        Main.rand.NextFloat(-5f, -2.5f)
-                    ),
-                    Scale = Main.rand.NextFloat(1.2f, 2f),
-                    ai = [0, 0],
-                    colors = [
-                        new Color(255, 180, 100),//极亮的橙黄
-                        new Color(255, 100, 50), //明亮的橙红
-                        new Color(200, 50, 30),  //深红
-                        new Color(100, 20, 10)   //暗红
-                    ],
-                    minLifeTime = 100,
-                    maxLifeTime = 180
-                };
-
-                PRTLoader.AddParticle(flamePRT);
+                var flamePRT = PRTLoader.NewParticle<PRT_LavaFire>(spawnPos, new Vector2(
+                    Main.rand.NextFloat(-2.5f, 2.5f),
+                    Main.rand.NextFloat(-5f, -2.5f)), Color.White, Main.rand.NextFloat(1.2f, 2f));
+                if (flamePRT != null) {
+                    flamePRT.colors = [new Color(255, 180, 100), new Color(255, 100, 50), new Color(200, 50, 30)];
+                    flamePRT.SetLifetime(100, 180);
+                }
             }
         }
 
@@ -471,24 +459,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-50, 30)
                 );
 
-                PRT_LavaFire ashPRT = new PRT_LavaFire {
-                    Position = spawnPos,
-                    Velocity = new Vector2(
-                        Main.rand.NextFloat(-3f, 3f),
-                        Main.rand.NextFloat(-3.5f, -1.2f)
-                    ),
-                    Scale = Main.rand.NextFloat(0.7f, 1.3f),
-                    ai = new float[] { 0, 0 },
-                    colors = new Color[] {
-                        new Color(90, 80, 70),
-                        new Color(60, 50, 45),
-                        new Color(30, 25, 20)
-                    },
-                    minLifeTime = 120,
-                    maxLifeTime = 200
-                };
-
-                PRTLoader.AddParticle(ashPRT);
+                var ashPRT = PRTLoader.NewParticle<PRT_LavaFire>(spawnPos, new Vector2(
+                    Main.rand.NextFloat(-3f, 3f),
+                    Main.rand.NextFloat(-3.5f, -1.2f)), Color.White, Main.rand.NextFloat(0.7f, 1.3f));
+                if (ashPRT != null) {
+                    ashPRT.colors = [new Color(90, 80, 70), new Color(60, 50, 45), new Color(30, 25, 20)];
+                    ashPRT.SetLifetime(120, 200);
+                }
             }
 
             //生成火星
@@ -532,25 +509,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 float angle = MathHelper.TwoPi * i / flameCount + Main.rand.NextFloat(-0.4f, 0.4f);
                 Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(30f, 60f);
 
-                PRT_LavaFire burstFlame = new PRT_LavaFire {
-                    Position = burstCenter + offset,
-                    Velocity = new Vector2(
-                        offset.X * 0.08f,
-                        Main.rand.NextFloat(-5f, -3f)
-                    ),
-                    Scale = Main.rand.NextFloat(1.5f, 2.5f),
-                    ai = new float[] { 0, 0 },
-                    colors = new Color[] {
-                        new Color(255, 200, 110),
-                        new Color(255, 140, 70),
-                        new Color(200, 80, 50),
-                        new Color(120, 40, 30)
-                    },
-                    minLifeTime = 90,
-                    maxLifeTime = 150
-                };
-
-                PRTLoader.AddParticle(burstFlame);
+                var burstFlame = PRTLoader.NewParticle<PRT_LavaFire>(burstCenter + offset, new Vector2(
+                    offset.X * 0.08f,
+                    Main.rand.NextFloat(-5f, -3f)), Color.White, Main.rand.NextFloat(1.5f, 2.5f));
+                if (burstFlame != null) {
+                    burstFlame.colors = [new Color(255, 200, 110), new Color(255, 140, 70), new Color(200, 80, 50)];
+                    burstFlame.SetLifetime(90, 150);
+                }
             }
 
             //额外的火星爆发

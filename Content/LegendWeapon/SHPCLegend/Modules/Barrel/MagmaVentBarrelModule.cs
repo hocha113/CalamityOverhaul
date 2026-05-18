@@ -82,14 +82,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             //岩浆环境下持续吐烟与火星，强化"喷口活着"的视觉
             if (nearLava && Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 6 == 0) {
-                PRT_LavaFire ember = new PRT_LavaFire {
-                    Position = Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), Main.rand.NextFloat(-4f, 6f)),
-                    Velocity = new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-3.2f, -1.2f)),
-                    Scale = Main.rand.NextFloat(0.6f, 1.0f),
-                    minLifeTime = 28,
-                    maxLifeTime = 50,
-                };
-                PRTLoader.AddParticle(ember);
+                PRTLoader.NewParticle<PRT_LavaFire>(
+                    Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), Main.rand.NextFloat(-4f, 6f)),
+                    new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-3.2f, -1.2f)),
+                    Color.White, Main.rand.NextFloat(0.6f, 1.0f))?.SetLifetime(28, 50);
             }
             float pulse = Projectile.localAI[0] / 9f;
             Lighting.AddLight(Projectile.Center, new Vector3(1.5f, 0.5f, 0.1f) * MathHelper.Clamp(0.4f + pulse * 0.6f, 0f, 1.5f));
@@ -101,14 +97,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) return;
             //熔岩 / 地狱火粒子混合
             for (int i = 0; i < 6; i++) {
-                PRT_LavaFire lf = new PRT_LavaFire {
-                    Position = Projectile.Center + new Vector2(Main.rand.NextFloat(-26f, 26f), Main.rand.NextFloat(-2f, 8f)),
-                    Velocity = new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), Main.rand.NextFloat(-9f, -4f)),
-                    Scale = Main.rand.NextFloat(0.9f, 1.6f),
-                    minLifeTime = 40,
-                    maxLifeTime = 90,
-                };
-                PRTLoader.AddParticle(lf);
+                PRTLoader.NewParticle<PRT_LavaFire>(
+                    Projectile.Center + new Vector2(Main.rand.NextFloat(-26f, 26f), Main.rand.NextFloat(-2f, 8f)),
+                    new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), Main.rand.NextFloat(-9f, -4f)),
+                    Color.White, Main.rand.NextFloat(0.9f, 1.6f))?.SetLifetime(40, 90);
             }
             for (int i = 0; i < 6; i++) {
                 PRT_HellFlame hf = new PRT_HellFlame {

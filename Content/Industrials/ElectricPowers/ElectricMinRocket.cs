@@ -139,15 +139,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             if (!VaultUtils.isServer) {
                 Vector2 spanPos = Owner.Center - new Vector2(Owner.direction * 20, 0).RotatedBy(Owner.fullRotation);
-                PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = new Vector2(Projectile.velocity.X * -6, MathHelper.Max(6f, Projectile.velocity.Y * -6)),
-                    Position = spanPos,
-                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    maxLifeTime = 18,
-                    minLifeTime = 12,
-                    Color = Color.Gold
-                };
-                PRTLoader.AddParticle(lavaFire);
+                PRTLoader.NewParticle<PRT_LavaFire>(
+                    spanPos,
+                    new Vector2(Projectile.velocity.X * -6, MathHelper.Max(6f, Projectile.velocity.Y * -6)),
+                    Color.Gold, Main.rand.NextFloat(0.8f, 1.2f))?.SetLifetime(12, 18);
             }
 
             UEValue -= 0.02f;

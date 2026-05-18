@@ -23,14 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         private void SpanDragonsFireEffect(float maxNum) {
             for (int i = 0; i < maxNum; i++) {
                 Vector2 spanPos = (MathHelper.TwoPi / maxNum * i + Projectile.ai[0] * 0.1f).ToRotationVector2() * Projectile.ai[1] + Projectile.Center;
-                PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = new Vector2(0, -3),
-                    Position = spanPos,
-                    Scale = Main.rand.NextFloat(0.2f, 0.3f) * (1 + Projectile.ai[1] * 0.006f),
-                    maxLifeTime = 15,
-                    minLifeTime = 10
-                };
-                PRTLoader.AddParticle(lavaFire);
+                PRTLoader.NewParticle<PRT_LavaFire>(
+                    spanPos, new Vector2(0, -3),
+                    Color.White, Main.rand.NextFloat(0.2f, 0.3f) * (1 + Projectile.ai[1] * 0.006f))?.SetLifetime(10, 15);
             }
         }
 

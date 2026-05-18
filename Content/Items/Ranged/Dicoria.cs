@@ -159,15 +159,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
 
                 if (isSolid) {
-                    PRT_LavaFire lavaFire = new PRT_LavaFire {
-                        Velocity = new Vector2(unitVer.X, -Main.rand.NextFloat(2, 6)),
-                        Position = targetPos + VaultUtils.RandVr(36),
-                        Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                        maxLifeTime = 20,
-                        minLifeTime = 8,
-                        Color = color
-                    };
-                    PRTLoader.AddParticle(lavaFire);
+                    PRTLoader.NewParticle<PRT_LavaFire>(
+                        targetPos + VaultUtils.RandVr(36),
+                        new Vector2(unitVer.X, -Main.rand.NextFloat(2, 6)),
+                        color, Main.rand.NextFloat(0.8f, 1.2f))?.SetLifetime(8, 20);
                 }
                 else if (toTileLeng > 90) {
                     if (Main.rand.NextBool(16)) {
