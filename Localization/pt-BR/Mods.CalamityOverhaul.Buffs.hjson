@@ -1,0 +1,34 @@
+SoulBurning: {
+	DisplayName: Alma Ardente
+	Description: Fogo do inferno
+}
+
+HellburnBuff: {
+	DisplayName: Explosao de Fogo Infernal
+	Description: Fogo do inferno
+}
+
+VoidErosion: {
+	DisplayName: Erosao do Vazio
+	Description: O nada esta te consumindo
+}
+
+DestroyerSummonBuff: {
+	DisplayName: Buff de Invocacao do Destruidor
+	Description: O Mini Destruidor seguira voce na batalha
+}
+
+FrenziedMachineSoul: {
+	DisplayName: Alma de Maquina Enfurecida
+	Description: O Espirito da Maquina esta radiante!
+}
+
+FishoilBuff: {
+	DisplayName: Oleo de Peixe
+	Description: Voce sente que sua pele esta ficando oleosa
+}
+
+HyperDisintegration: {
+	DisplayName: Hiper Desintegracao
+	Description: Mods.CalamityOverhaul.Buffs.HyperDisintegration.Description
+}

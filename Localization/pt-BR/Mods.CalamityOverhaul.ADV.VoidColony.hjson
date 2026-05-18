@@ -1,0 +1,44 @@
+VoidTimeShiftLead: {
+	TextTitle: Invasao Temporal do Vazio
+	TextBound: Pressione [{0}] para alternar entre o presente e o passado
+	TextUnboundWarn: ⚠  Tecla de Invasao Temporal nao vinculada!
+	TextUnboundDefault: Atualmente pressione [{0}] (tecla padrao) para realizar uma invasao temporal
+	TextBindHint: Considere vincular uma tecla personalizada em Configuracoes → Controles
+	TextConfirm: Entendi
+}
+
+MessageStrings: {
+	MsgHeader: ── Fragmento Interceptado ▸ Origem 0x{0} / {1} ──
+	MsgSrcSystem: SIST
+	MsgSrcSignal: SINAL
+	MsgSrcArchive: ARQ
+	MsgFragment: FRAGMENTO
+	MsgSignature: ASSIN   ▸ {0}
+	MsgBody0: Terminal acessado. Correspondencia da chave de verificacao em 98,4%.
+	MsgBody1: ...Sinais de pulso nao rotulados permanecem na estatica.
+	MsgBody2: Deslocamentos de coordenadas apontam para ecos profundos do nucleo em colapso.
+	MsgBody3: Este no esta marcado como ██CLASSIFICADO██, fragmentos relacionados foram selados.
+	MsgBody4: A proxima janela de protocolo sera acionada por suas acoes.
+	MsgSkipHint: "[Espaco/Clique Esquerdo] Pular animacao de texto"
+	MsgCloseHint: "[Espaco/ESC] Desconectar"
+	MsgAccess: Acesso: Draedon
+	MsgStatus: Status: Parcialmente Decifrado
+	MsgRec01Title: "[Reg-01]"
+	MsgRec01_0: O Grande Grito. Comprimentos de onda irresoluveis, como se o universo inteiro estivesse gritando.
+	MsgRec01_1: Curvatura espacial permanentemente travada. Motores de dobra completamente descartados. Saltos forcados resultam apenas na desintegracao de estruturas materiais.
+	MsgRec01_2: O fim da viagem interestelar convencional. Colapso do antigo modelo de fisica unificada.
+	MsgRec02Title: "[Reg-02]"
+	MsgRec02_0: Apos 73.000 sondas destruidas, as coordenadas atuais do Vazio foram travadas.
+	MsgRec02_1: Base Zero estabelecida. Conglomerados industriais de apoio implantados.
+	MsgRec02_2: A barreira da realidade aqui foi esticada ao seu limite, permitindo observacao visual direta daquela tempestade caotica do sub-espaco.
+	MsgRec02_3: Um ponto de observacao perfeito.
+	MsgRec03Title: "[Reg-03]"
+	MsgRec03_0: A tempestade esta vazando.
+	MsgRec03_1: A fisica abdica. Regras metafisicas absolutas comecaram a assumir este setor industrial.
+	MsgRec03_2: Linhas do tempo estao se sobrepondo. Cadaveres, ecos do passado e energia do sub-espaco estao comecando a se fundir.
+	MsgRec03_3: Anomalias bizarras sao agora frequentemente observadas dentro do setor industrial.
+	MsgRec04Title: "[Reg-04]"
+	MsgRec04_0: Purga estas entidades paranormais e inutil; elas nao podem ser mortas. Serao deixadas como uma barreira externa para a base.
+	MsgRec04_1: Se este registro for acionado, significa que abandonei este lugar, e todos os canais para o mundo externo foram fechados.
+	MsgRec04_2: Chegante tardio, encontre suas proprias oportunidades nos padroes daquelas coisas imundas.
+}

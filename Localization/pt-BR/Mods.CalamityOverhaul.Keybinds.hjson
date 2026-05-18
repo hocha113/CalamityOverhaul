@@ -1,0 +1,21 @@
+QuestLog_Key.DisplayName: Registro de Missoes: Alternar Interface Principal
+QuestManager_Key.DisplayName: Gerenciador de Missoes: Alternar Painel de Gerenciamento
+Legend_UIControl.DisplayName: Alternar HUD da Arma Lendaria
+Legend_Domain.DisplayName: Expansao de Dominio
+Legend_Teleport.DisplayName: Teletransporte de Dominio
+Legend_Restart.DisplayName: Auto-Reinicio
+HackTime_Toggle.DisplayName: Tempo de Hackear
+CyberBanish_Key.DisplayName: Ciberespaco: Banir
+CyberFreeze_Key.DisplayName: Ciberespaco: Congelar
+CyberwareSkill_Key.DisplayName: Cibernetico: Acionar habilidade atual
+CyberwareRadial_Key.DisplayName: Cibernetico: Abrir menu radial
+VoidTimeShift_Key.DisplayName: Mudanca Temporal do Vazio
+Halibut_Clone.DisplayName: Halibut: Invasao do Eu do Passado
+Halibut_Superposition.DisplayName: Halibut: Superposicao
+Halibut_Skill_L.DisplayName: Halibut: Alternar Habilidade Esquerda
+Halibut_Skill_R.DisplayName: Halibut: Alternar Habilidade Direita
+Murasama_TriggerKey.DisplayName: Murasama: Tecla de Gatilho
+Murasama_DownKey.DisplayName: Murasama: Golpe Descendente
+WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
+WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
+Accessory_Skills.DisplayName: Habilidade de Acessorio

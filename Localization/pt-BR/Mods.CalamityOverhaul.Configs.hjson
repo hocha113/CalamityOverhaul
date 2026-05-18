@@ -1,0 +1,163 @@
+﻿CWRServerConfig: {
+	DisplayName: Configuracao de Conteudo
+
+	WeaponOverhaul: {
+		Label: Reformulacao de Armas
+		Tooltip:
+			'''
+			Ativar isso modificara a maioria das armas.
+			[c/FF0000: Se voce quer otimizar a experiencia do conteudo da reformulacao de desastres, por favor ative!]
+			'''
+	}
+
+	ScreenVibration: {
+		Label: Vibracao de Tela da Arma
+		Tooltip: Se ativado, a tela vibrara durante alguns ataques, o que pode tornar o impacto mais intenso
+	}
+
+	MurasamaSpaceFragmentationBool: {
+		Label: Fragmentacao Espacial da Murasama
+		Tooltip:
+			'''
+			Ativado por padrao, o fio de corte polimero criara um efeito de esmagamento de tela para aumentar o impacto
+			Se desativado, esses efeitos sao desabilitados e podem ser configurados ao seu gosto
+			'''
+	}
+
+	DomainConciseDisplay: {
+		Label: Exibicao Minimalista do Dominio
+		Tooltip: Desativado por padrao. Quando ativado, a maioria dos efeitos visuais dentro do dominio serao ocultados.
+	}
+
+	Headers: {
+		CWRSystem: Configuracoes do Sistema
+		CWRWeapon: Configuracoes de Armas
+		CWRUI: Configuracoes da UI
+		CWRWorldGen: Configuracoes de Geracao de Mundo
+	}
+
+	LensEasing: {
+		Label: Suavizacao da Camera
+		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
+	}
+
+	WeaponHandheldDisplay: {
+		Label: Exibicao de Arma na Mao
+		Tooltip:
+			'''
+			Quando ativado, a maioria das armas tem animacoes de empunhadura e acoes de uso especiais
+			Este efeito tem uma prioridade muito alta e sobrescrevera a maioria das animacoes de empunhadura de mods de terceiros
+			Esta ativado por padrao, e por razoes visuais, os autores nao recomendam desativa-lo
+			Se voce alterar esta configuracao durante o jogo, alguns efeitos precisarao recarregar os arquivos do mod antes de serem alterados
+			'''
+	}
+
+	BowArrowDraw: {
+		Label: Desenhar flecha da corda do arco
+		Tooltip:
+			'''
+			Quando o jogador usa a classe de arco para atacar, a animacao da flecha correspondente sera desenhada em tempo real
+			Esta ativado por padrao e pode ser configurado de acordo com preferencias pessoais
+			'''
+	}
+
+	EnableCasingsEntity: {
+		Label: Ativar Entidade de Carcacas
+		Tooltip: Se voce acha as carcacas rolando um incomodo, e uma boa ideia desativar esta opcao
+	}
+
+	WeaponLazyRotationAngle: {
+		Label: Atualizacao do Angulo de Rotacao Inercial da Arma
+		Tooltip:
+			'''
+			Se ativado, torna a animacao de uso de armas de mao mais proxima do jogo original,
+			onde a direcao de enfrentamento muda apenas uma vez ao atirar.
+			'''
+	}
+
+	BiologyOverhaul: {
+		Label: Reformulacao de Biologia [c/06e33f:(Experimental)]
+		Tooltip:
+			'''
+			[c/c20909:Incompleto]
+			Ativado por padrao, isso modificara o comportamento de IA de certas criaturas, como chefes no modo morte.
+			Isso pode aumentar significativamente a dificuldade do jogo, entao voce pode optar por desativar com base na sua preferencia pessoal.
+			'''
+	}
+
+	EnableSwordLight: {
+		Label: Ativar Luz da Espada
+		Tooltip:
+			'''
+			Ativado por padrao, muitas armas de espada terao uma luz ofuscante
+			Na grande maioria dos casos, isso torna o jogo mais legal
+			'''
+	}
+
+	MuraUIStyleType: {
+		Label: Selecao de Estilo da UI Mura
+		Tooltip:
+			'''
+			Estilo 1: Refinado - Flutuante Acima da Cabeca
+			Estilo 2: Refinado - Compacto
+			Estilo 3: Classico - Flutuante Acima da Cabeca
+			Estilo 4: Classico - Compacto
+			Estilo 5: Ocultar
+			'''
+	}
+
+	MuraPosStyleType: {
+		Label: Selecao de Posicao da UI Mura
+		Tooltip:
+			'''
+			Predefinicao 1: Inferior Direito
+			Predefinicao 2: Inferior Esquerdo
+			Predefinicao 3: Superior Centralizado
+			'''
+	}
+
+	QuestLog: {
+		Label: Orientacao do Registro de Missoes
+		Tooltip:
+			'''
+			Quando ativado, o registro de missoes guiara voce atraves do progresso do jogo
+			Voce pode acessar a interface de missoes atraves do item Livro de Missoes, UI do inventario ou uma tecla de atalho para ver as missoes atuais
+			Ativado por padrao. Desativar isso remove toda a orientacao de missoes
+			'''
+	}
+
+	DialogueBox_Scale_Value: {
+		Label: Escala da Caixa de Dialogo
+		Tooltip: Ajusta o tamanho geral da caixa de dialogo
+	}
+
+	GenWindGrivenGenerator: {
+		Label: Gerar Gerador Eolico
+		Tooltip: Coloca estruturas de geradores eolicos por todo o mundo.
+	}
+
+	GenWGGCollector: {
+		Label: Gerar Postos Avancados de Sucateiros
+		Tooltip: Gera aleatoriamente estruturas hostis de sucateiros por todo o mundo. Esta configuracao so tem efeito em mundos Lendarios.
+	}
+
+	GenJunkmanBase: {
+		Label: Gerar Base do Sucateiro
+		Tooltip: Gera uma base fortificada de sucateiros em terras devastadas ou subterraneas.
+	}
+
+	GenRocketHut: {
+		Label: Gerar Cabana de Foguete
+		Tooltip: Gera uma cabana misteriosa contendo componentes de foguete ou reliquias tecnologicas.
+	}
+
+	GenSylvanOutpost: {
+		Label: Gerar Posto Avancado Silvano
+		Tooltip: Gera postos avancados de madeira de elfos ou guardioes da floresta nas profundezas da floresta.
+	}
+
+	SignalTowerDecryptionAutoPlay: {
+		Label: Reproducao Automatica de Decifracao da Torre de Sinal
+		Tooltip: ""
+	}
+}
