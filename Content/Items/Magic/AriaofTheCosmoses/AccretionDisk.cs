@@ -158,25 +158,11 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             float distRatio = distance / (Projectile.width * 0.5f * Projectile.scale);
             Color particleColor = Color.Lerp(innerColor, new Color(140, 100, 200), distRatio);
 
-            PRTLoader.AddParticle(new PRT_SpaceFracture(
-                particlePos,
-                inwardVel,
-                particleColor,
-                Main.rand.NextFloat(0.3f, 0.7f),
-                Main.rand.Next(18, 30),
-                Main.rand.NextFloat(-0.5f, 0.5f)
-            ));
+            PRTLoader.NewParticle<PRT_SpaceFracture>(particlePos, inwardVel, particleColor, Main.rand.NextFloat(0.3f, 0.7f)).Configure(Main.rand.Next(18, 30), Main.rand.NextFloat(-0.5f, 0.5f));
 
             //螺旋吸入光点（每3次生成一个）
             if (Projectile.timeLeft % 9 == 0) {
-                PRTLoader.AddParticle(new PRT_GravityVortex(
-                    Projectile.Center,
-                    Main.rand.NextFloat(MathHelper.TwoPi),
-                    Main.rand.NextFloat(50f, 120f) * Projectile.scale,
-                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                    Main.rand.NextFloat(0.4f, 0.8f),
-                    Main.rand.Next(40, 65)
-                ));
+                PRTLoader.NewParticle<PRT_GravityVortex>(Projectile.Center, Vector2.Zero, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(50f, 120f) * Projectile.scale, Main.rand.Next(40, 65));
             }
         }
 
@@ -194,14 +180,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
                 Color particleColor = Color.Lerp(new Color(100, 70, 180), innerColor, Main.rand.NextFloat()) * 0.8f;
 
-                PRTLoader.AddParticle(new PRT_SpaceFracture(
-                    particlePos,
-                    particleVel,
-                    particleColor,
-                    Main.rand.NextFloat(0.3f, 0.6f),
-                    Main.rand.Next(12, 20),
-                    Main.rand.NextFloat(-0.3f, 0.3f)
-                ));
+                PRTLoader.NewParticle<PRT_SpaceFracture>(particlePos, particleVel, particleColor, Main.rand.NextFloat(0.3f, 0.6f)).Configure(Main.rand.Next(12, 20), Main.rand.NextFloat(-0.3f, 0.3f));
             }
         }
 
@@ -229,14 +208,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                     Color particleColor = Color.Lerp(innerColor, new Color(120, 80, 200), Main.rand.NextFloat());
 
-                    PRTLoader.AddParticle(new PRT_SpaceFracture(
-                        target.Center + Main.rand.NextVector2Circular(15f, 15f),
-                        velocity,
-                        particleColor,
-                        Main.rand.NextFloat(0.4f, 0.9f),
-                        Main.rand.Next(15, 28),
-                        Main.rand.NextFloat(-0.6f, 0.6f)
-                    ));
+                    PRTLoader.NewParticle<PRT_SpaceFracture>(target.Center + Main.rand.NextVector2Circular(15f, 15f), velocity, particleColor, Main.rand.NextFloat(0.4f, 0.9f)).Configure(Main.rand.Next(15, 28), Main.rand.NextFloat(-0.6f, 0.6f));
                 }
 
                 //内爆收缩火花
@@ -264,28 +236,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 14f);
                     Color particleColor = Color.Lerp(innerColor, new Color(100, 60, 180), Main.rand.NextFloat());
 
-                    PRTLoader.AddParticle(new PRT_SpaceFracture(
-                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        velocity,
-                        particleColor,
-                        Main.rand.NextFloat(0.5f, 1.1f),
-                        Main.rand.Next(20, 40),
-                        Main.rand.NextFloat(-0.5f, 0.5f)
-                    ));
+                    PRTLoader.NewParticle<PRT_SpaceFracture>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), velocity, particleColor, Main.rand.NextFloat(0.5f, 1.1f)).Configure(Main.rand.Next(20, 40), Main.rand.NextFloat(-0.5f, 0.5f));
                 }
 
                 //残余引力漩涡
                 for (int i = 0; i < (int)(10 * Projectile.scale); i++) {
                     float startAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float startRadius = Main.rand.NextFloat(30f, 60f);
-                    PRTLoader.AddParticle(new PRT_GravityVortex(
-                        Projectile.Center,
-                        startAngle,
-                        startRadius,
-                        Color.Lerp(Color.White, innerColor, Main.rand.NextFloat(0.2f, 0.6f)),
-                        Main.rand.NextFloat(0.5f, 0.9f),
-                        Main.rand.Next(25, 45)
-                    ));
+                    PRTLoader.NewParticle<PRT_GravityVortex>(Projectile.Center, Vector2.Zero, Color.Lerp(Color.White, innerColor, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.5f, 0.9f)).Configure(startAngle, startRadius, Main.rand.Next(25, 45));
                 }
             }
         }

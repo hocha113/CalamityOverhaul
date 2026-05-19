@@ -48,6 +48,29 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity = (targetPos - position).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(3f, 7f);
         }
 
+        public override bool CanPool => true;
+        public void Configure(Vector2 targetPos, Color edge, int lifeTime, float charge = 0f) {
+            target = targetPos;
+            edgeColor = edge;
+            Lifetime = lifeTime;
+            chargeRatio = charge;
+            initialScale = Scale;
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            rotationSpeed = Main.rand.NextFloat(0.05f, 0.12f) * (Main.rand.NextBool() ? 1f : -1f);
+            aspectRatio = Main.rand.NextFloat(0.4f, 1.2f);
+            Velocity = (target - Position).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(3f, 7f);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            target = default;
+            initialScale = 0f;
+            rotationSpeed = 0f;
+            aspectRatio = 1f;
+            edgeColor = default;
+            chargeRatio = 0f;
+        }
+
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
 
         public override void AI() {

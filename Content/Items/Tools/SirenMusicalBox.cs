@@ -270,12 +270,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     _ => new Color(255, 0, 255)
                 };
 
-                PRTLoader.AddParticle(new PRT_Note(
-                    spawnPos, velocity, particleColor,
-                    Main.rand.Next(45, 75),
-                    Main.rand.NextFloat(0.3f, 0.6f),
-                    Main.rand.Next(3)
-                ));
+                PRTLoader.NewParticle<PRT_Note>(spawnPos, velocity, particleColor, Main.rand.NextFloat(0.3f, 0.6f)).Configure(Main.rand.Next(45, 75), Main.rand.Next(3));
             }
 
             //追踪玩家的幽灵音符
@@ -284,13 +279,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 ghostPos = Player.Center + offsetAngle.ToRotationVector2() * Main.rand.Next(100, 200);
                 Vector2 ghostVel = (Player.Center - ghostPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
 
-                PRTLoader.AddParticle(new PRT_Note(
-                    ghostPos, ghostVel,
-                    Color.DarkViolet * 0.8f,
-                    Main.rand.Next(30, 50),
-                    Main.rand.NextFloat(0.5f, 0.75f),
-                    Main.rand.Next(3)
-                ));
+                PRTLoader.NewParticle<PRT_Note>(ghostPos, ghostVel, Color.DarkViolet * 0.8f, Main.rand.NextFloat(0.5f, 0.75f)).Configure(Main.rand.Next(30, 50), Main.rand.Next(3));
             }
 
             //暗影尘埃
@@ -322,14 +311,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     float panicAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 panicPos = Player.Center + panicAngle.ToRotationVector2() * Main.rand.NextFloat(40f, 80f);
 
-                    PRTLoader.AddParticle(new PRT_Note(
-                        panicPos,
-                        Main.rand.NextVector2Circular(2f, 2f),
-                        Color.Lerp(Color.Red, Color.DarkMagenta, Main.rand.NextFloat()),
-                        Main.rand.Next(20, 40),
-                        Main.rand.NextFloat(0.4f, 0.7f),
-                        Main.rand.Next(3)
-                    ));
+                    PRTLoader.NewParticle<PRT_Note>(panicPos, Main.rand.NextVector2Circular(2f, 2f), Color.Lerp(Color.Red, Color.DarkMagenta, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.7f)).Configure(Main.rand.Next(20, 40), Main.rand.Next(3));
                 }
             }
 
@@ -341,14 +323,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     1 => Color.Violet,
                     _ => Color.Magenta
                 };
-                PRTLoader.AddParticle(new PRT_Note(
-                    fallPos,
-                    new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f)),
-                    fallColor * 0.8f,
-                    Main.rand.Next(60, 90),
-                    Main.rand.NextFloat(0.4f, 0.8f),
-                    Main.rand.Next(3)
-                ));
+                PRTLoader.NewParticle<PRT_Note>(fallPos, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f)), fallColor * 0.8f, Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.Next(60, 90), Main.rand.Next(3));
             }
         }
 
@@ -888,14 +863,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     2 => new Color(147, 112, 219),
                     _ => new Color(255, 0, 255)
                 };
-                PRTLoader.AddParticle(new PRT_Note(
-                    Center + Main.rand.NextVector2Circular(20f, 20f),
-                    Main.rand.NextVector2Circular(1f, 1f),
-                    noteColor,
-                    Main.rand.Next(30, 60),
-                    Main.rand.NextFloat(0.3f, 0.5f),
-                    Main.rand.Next(3)
-                ));
+                PRTLoader.NewParticle<PRT_Note>(Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(1f, 1f), noteColor, Main.rand.NextFloat(0.3f, 0.5f)).Configure(Main.rand.Next(30, 60), Main.rand.Next(3));
             }
 
             //幽灵尾迹尘埃
@@ -918,14 +886,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     float waveAngle = MathHelper.TwoPi / waveCount * i;
                     Vector2 wavePos = BoxCenter + waveAngle.ToRotationVector2() * waveRadius;
                     Color waveColor = Color.Lerp(Color.Purple, Color.Cyan, Main.rand.NextFloat());
-                    PRTLoader.AddParticle(new PRT_Note(
-                        wavePos,
-                        waveAngle.ToRotationVector2() * Main.rand.NextFloat(1f, 2.5f),
-                        waveColor * 0.6f,
-                        Main.rand.Next(20, 40),
-                        Main.rand.NextFloat(0.3f, 0.5f),
-                        Main.rand.Next(3)
-                    ));
+                    PRTLoader.NewParticle<PRT_Note>(wavePos, waveAngle.ToRotationVector2() * Main.rand.NextFloat(1f, 2.5f), waveColor * 0.6f, Main.rand.NextFloat(0.3f, 0.5f)).Configure(Main.rand.Next(20, 40), Main.rand.Next(3));
                 }
             }
 

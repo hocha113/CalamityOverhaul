@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public float HueShift;
         public float followingRateRatio;
         public Projectile flowerProj;
+        public override bool CanPool => true;
         public PRT_SoulLight() {
             SquishStrenght = 1f;
             MaxSquish = 3f;
@@ -33,6 +34,15 @@ namespace CalamityOverhaul.Content.PRTTypes
             HueShift = hueShift;
             flowerProj = _flowerProj;
             followingRateRatio = _followingRateRatio;
+        }
+        public override void Reset() {
+            base.Reset();
+            SquishStrenght = 1f;
+            MaxSquish = 3f;
+            HueShift = 0f;
+            followingRateRatio = 0.9f;
+            flowerProj = null;
+            Opacity = 1f;
         }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {

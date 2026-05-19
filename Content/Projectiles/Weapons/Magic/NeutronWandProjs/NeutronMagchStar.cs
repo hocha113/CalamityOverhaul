@@ -35,10 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
             Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3());
             Projectile.rotation += Projectile.velocity.X * 0.1f;
-            BasePRT spark2 = new PRT_HeavenfallStar(Projectile.Center + VaultUtils.RandVr(8)
-                        , Projectile.velocity.UnitVector() * Main.rand.Next(6, 16), false
-                        , 7, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
-            PRTLoader.AddParticle(spark2);
+            PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + VaultUtils.RandVr(8), Projectile.velocity.UnitVector() * Main.rand.Next(6, 16), Color.BlueViolet, Main.rand.NextFloat(0.2f, 0.3f)).Configure(false, 7);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

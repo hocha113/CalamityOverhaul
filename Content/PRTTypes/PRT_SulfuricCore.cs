@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color haloColor;
         private int burstPhase; //0: 膨胀, 1: 闪光, 2: 收缩
 
+        public override bool CanPool => true;
         public PRT_SulfuricCore() {
             pulseSpeed = 0.2f;
             coreColor = new Color(130, 220, 140);
@@ -31,6 +32,23 @@ namespace CalamityOverhaul.Content.PRTTypes
             pulseSpeed = Main.rand.NextFloat(0.15f, 0.25f);
             maxPulseScale = scale * Main.rand.NextFloat(2f, 3f);
 
+            coreColor = new Color(130, 220, 140);
+            haloColor = new Color(180, 255, 190);
+            burstPhase = 0;
+        }
+        public PRT_SulfuricCore Configure(int lt) {
+            Lifetime = lt;
+            pulseSpeed = Main.rand.NextFloat(0.15f, 0.25f);
+            maxPulseScale = Scale * Main.rand.NextFloat(2f, 3f);
+            coreColor = new Color(130, 220, 140);
+            haloColor = new Color(180, 255, 190);
+            burstPhase = 0;
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            pulseSpeed = 0.2f;
+            maxPulseScale = 0f;
             coreColor = new Color(130, 220, 140);
             haloColor = new Color(180, 255, 190);
             burstPhase = 0;

@@ -37,14 +37,10 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.timeLeft % 10 == 0) {
-                BasePRT pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Red, new Vector2(1f, 2f) * 0.8f, Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
-                PRTLoader.AddParticle(pulse);
-                BasePRT pulse2 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
-                PRTLoader.AddParticle(pulse2);
-                BasePRT pulse3 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.22f, 40);
-                PRTLoader.AddParticle(pulse3);
-                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_DWave>(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Red, 0.82f).Configure(new Vector2(1f, 2f) * 0.8f, Projectile.velocity.ToRotation(), 0.32f, 60);
+                PRTLoader.NewParticle<PRT_DWave>(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, 0.58f).Configure(new Vector2(0.8f, 1.5f) * 0.8f, Projectile.velocity.ToRotation(), 0.28f, 50);
+                PRTLoader.NewParticle<PRT_DWave>(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, 0.58f).Configure(new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.22f, 40);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, Projectile.velocity, Color.Gold, 3).Configure(false, 27);
             }
         }
 
@@ -60,10 +56,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                                 float slp = j / 16f;
                                 float slp2 = 16f / j;
                                 Vector2 spanPos = Projectile.Center + rot.ToRotationVector2() * 64 * j;
-                                BasePRT pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Red, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f * slp2, 60);
-                                PRTLoader.AddParticle(pulse);
-                                BasePRT pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f * slp2, 50);
-                                PRTLoader.AddParticle(pulse2);
+                                PRTLoader.NewParticle<PRT_DWave>(spanPos - vr * 0.52f, vr / 1.5f, Color.Red, 0.82f * slp).Configure(new Vector2(1f, 2f), vr.ToRotation(), 0.32f * slp2, 60);
+                                PRTLoader.NewParticle<PRT_DWave>(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Gold, 0.58f * slp).Configure(new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.28f * slp2, 50);
                             }
                             SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeathImpact".GetSound(), Projectile.Center);
                             SoundEngine.PlaySound(SpearOfLonginus.BelCanto, Projectile.Center);
@@ -99,13 +93,11 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
-                            PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
-                            PRTLoader.AddParticle(spark);
+                            PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vector, outerSparkColor, outerSparkScale).Configure(false, 27);
 
                             Color innerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
-                            PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
-                            PRTLoader.AddParticle(spark2);
+                            PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vector, innerSparkColor, innerSparkScale).Configure(false, 37);
                         }
                         SoundEngine.PlaySound("CalamityMod/Sounds/NPCKilled/DevourerDeathImpact".GetSound(), Projectile.Center);
                         SpanPrmst = false;

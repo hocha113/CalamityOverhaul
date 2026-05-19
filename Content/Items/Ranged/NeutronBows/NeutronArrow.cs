@@ -33,14 +33,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                 Vector2 norl = Projectile.velocity.GetNormalVector();
                 float sengs = Projectile.timeLeft * 0.01f;
                 for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                        , norl * (0.1f + j * 0.34f) * sengs, false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, norl * (0.1f + j * 0.34f) * sengs, Color.BlueViolet, Main.rand.NextFloat(0.6f, 1.3f)).Configure(false, 20);
                 }
                 for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                        , norl * -(0.1f + j * 0.34f) * sengs, false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, norl * -(0.1f + j * 0.34f) * sengs, Color.BlueViolet, Main.rand.NextFloat(0.6f, 1.3f)).Configure(false, 20);
                 }
                 Projectile.ai[0] = 0;
                 Projectile.ai[1] = -1000;

@@ -29,6 +29,30 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = rotation;
             Entity = entity;
         }
+
+        public override bool CanPool => true;
+        public void Configure(Vector2 squish, float rotation, float finalScale, int lifeTime, Entity entity = null) {
+            BaseColor = Color;
+            OriginalScale = Scale;
+            Squish = squish;
+            Rotation = rotation;
+            FinalScale = finalScale;
+            Lifetime = lifeTime;
+            Entity = entity;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            OriginalScale = 0f;
+            FinalScale = 0f;
+            Squish = default;
+            BaseColor = default;
+            Entity = null;
+            EntityPos = default;
+            OldEntityPos = default;
+            EntityVariation = default;
+        }
+
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             float pulseProgress = LifetimeCompletion;

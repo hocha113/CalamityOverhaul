@@ -68,12 +68,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 4; i++) {
                         Vector2 vel = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
-                        PRTLoader.AddParticle(new PRT_CyberSquare(start, vel,
-                            new Color(GlowColor), new Color(CoreColor),
-                            Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(8, 18)));
-                        PRTLoader.AddParticle(new PRT_CyberSquare(end, vel,
-                            new Color(GlowColor), new Color(CoreColor),
-                            Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(8, 18)));
+                        PRTLoader.NewParticle<PRT_CyberSquare>(start, vel, new Color(GlowColor), Main.rand.NextFloat(0.5f, 1.2f)).Configure(new Color(CoreColor), Main.rand.Next(8, 18));
+                        PRTLoader.NewParticle<PRT_CyberSquare>(end, vel, new Color(GlowColor), Main.rand.NextFloat(0.5f, 1.2f)).Configure(new Color(CoreColor), Main.rand.Next(8, 18));
                     }
                 }
             }

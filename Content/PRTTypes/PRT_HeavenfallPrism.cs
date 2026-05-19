@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float SpinSpeed;
         private bool ShortStretch;
 
+        public override bool CanPool => true;
         public PRT_HeavenfallPrism() {
             Dispersion = 4f;
         }
@@ -39,6 +40,14 @@ namespace CalamityOverhaul.Content.PRTTypes
             SpinSpeed = Main.rand.NextFloat(-0.06f, 0.06f);
             ShortStretch = shortStretch;
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+        }
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            InitialScale = 0f;
+            Dispersion = 4f;
+            SpinSpeed = 0f;
+            ShortStretch = false;
         }
 
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;

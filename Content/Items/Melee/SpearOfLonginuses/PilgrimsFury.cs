@@ -39,11 +39,9 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };
                 SoundEngine.PlaySound(belCanto, Projectile.Center);
                 Vector2 vr = new Vector2(0, 13);
-                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + Time * 0.002f, 180, Projectile);
-                PRTLoader.AddParticle(pulse);
+                PRTLoader.NewParticle<PRT_LonginusWave>(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, 0.42f).Configure(new Vector2(1.2f, 3f), vr.ToRotation(), 0.82f + Time * 0.002f, 180, Projectile);
                 Vector2 vr2 = new Vector2(0, -13);
-                PRT_LonginusWave pulse2 = new PRT_LonginusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + Time * 0.0015f, 180, Projectile);
-                PRTLoader.AddParticle(pulse2);
+                PRTLoader.NewParticle<PRT_LonginusWave>(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, 0.42f).Configure(new Vector2(1.2f, 3f), vr2.ToRotation(), 0.82f + Time * 0.0015f, 180, Projectile);
             }
 
             Time++;
@@ -61,8 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 float rot = MathHelper.PiOver2 * i;
                 Vector2 vr = rot.ToRotationVector2() * 10;
                 for (int j = 0; j < 116; j++) {
-                    PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vr * (0.3f + j * 0.1f), false, 37, Main.rand.Next(2, 7), Color.Gold);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * (0.3f + j * 0.1f), Color.Gold, Main.rand.Next(2, 7)).Configure(false, 37);
                 }
             }
         }

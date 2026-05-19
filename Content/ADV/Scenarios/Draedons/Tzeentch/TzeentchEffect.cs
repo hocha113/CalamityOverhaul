@@ -557,18 +557,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
             Vector2 velocity = Main.rand.NextVector2Circular(1f, 1f);
             Color smokeColor = TzeentchColors[Main.rand.Next(TzeentchColors.Length)];
 
-            PRT_Smoke mysticSmoke = new PRT_Smoke(
-                spawnPos,
-                velocity,
-                smokeColor,
-                Main.rand.Next(120, 200),
-                Main.rand.NextFloat(0.8f, 1.5f),
-                0.6f,
-                Main.rand.NextFloat(-0.02f, 0.02f),
-                glowing: true,
-                hueshift: 0.01f
-            );
-            PRTLoader.AddParticle(mysticSmoke);
+            PRTLoader.NewParticle<PRT_Smoke>(spawnPos, velocity, smokeColor, Main.rand.NextFloat(0.8f, 1.5f)).Configure(Main.rand.Next(120, 200), 0.6f, Main.rand.NextFloat(-0.02f, 0.02f), true, 0.01f);
         }
 
         public override void Unload() {

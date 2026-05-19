@@ -31,10 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
             if (!VaultUtils.isServer) {
                 float OrbSize = Main.rand.NextFloat(0.5f, 0.8f);
-                var orb = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8);
-                PRTLoader.AddParticle(orb);
-                var orb2 = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8);
-                PRTLoader.AddParticle(orb2);
+                PRTLoader.NewParticle<PRT_Bloomlight>(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f).Configure(8);
+                PRTLoader.NewParticle<PRT_Bloomlight>(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f).Configure(8);
                 if (Time % 5 == 0 && Time > 35f && targetDist < 1400f) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f), -Projectile.velocity * 0.5f, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.7f)).Configure(false, 15);
                 }
@@ -64,10 +62,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 16; i++) {
                 float OrbSize = Main.rand.NextFloat(1.5f, 1.8f);
-                var orb = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8);
-                PRTLoader.AddParticle(orb);
-                var orb2 = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8);
-                PRTLoader.AddParticle(orb2);
+                PRTLoader.NewParticle<PRT_Bloomlight>(Projectile.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f).Configure(8);
+                PRTLoader.NewParticle<PRT_Bloomlight>(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f).Configure(8);
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(11 + Time * 0.1f, 11 + Time * 0.1f), -Projectile.velocity * 0.5f, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.7f)).Configure(false, 15);
             }
 

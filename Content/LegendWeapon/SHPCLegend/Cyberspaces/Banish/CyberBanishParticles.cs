@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 float scale = Main.rand.NextFloat(0.6f, 1.8f) * MathHelper.Lerp(1.2f, 0.5f, progress);
                 int lifeTime = Main.rand.Next(20, 45);
 
-                PRTLoader.AddParticle(new PRT_BanishGlitch(spawnPos, vel, scale, lifeTime));
+                PRTLoader.NewParticle<PRT_BanishGlitch>(spawnPos, vel, Color.White, scale).Configure(lifeTime);
             }
         }
 
@@ -68,23 +68,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 float speed = Main.rand.NextFloat(4f, 12f);
                 Vector2 vel = angle.ToRotationVector2() * speed;
 
-                PRTLoader.AddParticle(new PRT_BanishGlitch(
-                    center + vel * 2f,
-                    vel,
-                    Main.rand.NextFloat(1f, 2.5f),
-                    Main.rand.Next(25, 55)
-                ));
+                PRTLoader.NewParticle<PRT_BanishGlitch>(center + vel * 2f, vel, Color.White, Main.rand.NextFloat(1f, 2.5f)).Configure(Main.rand.Next(25, 55));
             }
 
             // 中心密集小碎片
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_BanishGlitch(
-                    center,
-                    vel,
-                    Main.rand.NextFloat(0.3f, 0.7f),
-                    Main.rand.Next(15, 30)
-                ));
+                PRTLoader.NewParticle<PRT_BanishGlitch>(center, vel, Color.White, Main.rand.NextFloat(0.3f, 0.7f)).Configure(Main.rand.Next(15, 30));
             }
         }
     }

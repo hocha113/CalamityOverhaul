@@ -34,9 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
                 float rot1 = MathHelper.PiOver2 * i;
                 Vector2 vr = rot1.ToRotationVector2();
                 for (int j = 0; j < 13; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center + offset
-                        , vr * (0.1f + j * 0.1f), false, 20, 0.8f, Color.CadetBlue);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + offset, vr * (0.1f + j * 0.1f), Color.CadetBlue, 0.8f).Configure(false, 20);
                 }
             }
         }
@@ -44,9 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         public override void AI() {
             if (Projectile.ai[2] == 0) {
                 for (int j = 0; j < 122; j++) {
-                    BasePRT spark2 = new PRT_HeavenfallStar(Projectile.Center + new Vector2(Main.rand.Next(-16, 16), -700)
-                        , Projectile.velocity.UnitVector() * Main.rand.Next(66, 166), false, 17, Main.rand.NextFloat(1.2f, 1.3f), Color.BlueViolet);
-                    PRTLoader.AddParticle(spark2);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + new Vector2(Main.rand.Next(-16, 16), -700), Projectile.velocity.UnitVector() * Main.rand.Next(66, 166), Color.BlueViolet, Main.rand.NextFloat(1.2f, 1.3f)).Configure(false, 17);
                 }
             }
             if (Projectile.ai[2] % 5 == 0) {

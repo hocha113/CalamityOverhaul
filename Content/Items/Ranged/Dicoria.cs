@@ -166,9 +166,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
                 else if (toTileLeng > 90) {
                     if (Main.rand.NextBool(16)) {
-                        PRT_LonginusWave wave = new PRT_LonginusWave(targetPos, unitVer
-                            , color, new Vector2(0.1f, 0.2f), Projectile.rotation, 1, 3, 2, null);
-                        PRTLoader.AddParticle(wave);
+                        PRTLoader.NewParticle<PRT_LonginusWave>(targetPos, unitVer, color, 1f).Configure(new Vector2(0.1f, 0.2f), Projectile.rotation, 3f, 2);
                     }
                     PRTLoader.NewParticle<PRT_SparkAlpha>(targetPos, unitVer, color, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.6f).Configure(false, 2);
                 }

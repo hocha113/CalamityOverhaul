@@ -31,6 +31,18 @@ namespace CalamityOverhaul.Content.PRTTypes
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> Extra_193 = null;
 
+        public override bool CanPool => true;
+        public override void Reset() {
+            base.Reset();
+            hellColors = null;
+            timer = 0;
+            rotationSpeed = 0f;
+            timeLeftMax = 0;
+            size = 0f;
+            timeLife = 0f;
+            flickerIntensity = 0f;
+            distortionPhase = 0f;
+        }
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             float[] origAI = [.. ai];

@@ -46,10 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(40f, 90f);
                 Vector2 spawnPos = beam.Projectile.Center + offset;
                 Vector2 vel = (beam.Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * 4f;
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    spawnPos, vel,
-                    new Color(150, 110, 255), new Color(80, 40, 200),
-                    Main.rand.NextFloat(0.5f, 1.0f), Main.rand.Next(10, 22)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(spawnPos, vel, new Color(150, 110, 255), Main.rand.NextFloat(0.5f, 1.0f)).Configure(new Color(80, 40, 200), Main.rand.Next(10, 22));
             }
         }
     }

@@ -21,6 +21,24 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color edgeColor;
         private float flickerPhase;
 
+        public override bool CanPool => true;
+        public void Configure(Color edgeColor, int lifeTime) {
+            this.edgeColor = edgeColor;
+            Lifetime = lifeTime;
+            initialScale = Scale;
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            rotationSpeed = Main.rand.NextFloat(0.02f, 0.08f) * (Main.rand.NextBool() ? 1f : -1f);
+            aspectRatio = Main.rand.NextFloat(0.5f, 1.5f);
+            flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+        public override void Reset() {
+            base.Reset();
+            initialScale = 0f;
+            rotationSpeed = 0f;
+            aspectRatio = 1f;
+            edgeColor = default;
+            flickerPhase = 0f;
+        }
         public PRT_CyberSquare() {
             aspectRatio = 1f;
         }

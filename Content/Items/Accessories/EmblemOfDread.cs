@@ -100,9 +100,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 33; j++) {
-                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                            , vr * (0.14f), false, 30, 1.2f * Projectile.localAI[2], Color.CadetBlue);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * (0.14f), Color.CadetBlue, 1.2f * Projectile.localAI[2]).Configure(false, 30);
                     }
                 }
             }
@@ -313,16 +311,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             if (!VaultUtils.isServer) {
                 for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Owner.Center
-                        , Owner.velocity.UnitVector() * (0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    var spark = PRTLoader.NewParticle<PRT_HeavenfallStar>(Owner.Center, Owner.velocity.UnitVector() * (0.1f + j * 0.34f), Color.BlueViolet, Main.rand.NextFloat(0.6f, 1.3f));
+                    spark.Configure(false, 20);
                     spark.ShouldKillWhenOffScreen = false;
-                    PRTLoader.AddParticle(spark);
                 }
                 for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Owner.Center
-                        , Owner.velocity.UnitVector() * -(0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    var spark = PRTLoader.NewParticle<PRT_HeavenfallStar>(Owner.Center, Owner.velocity.UnitVector() * -(0.1f + j * 0.34f), Color.BlueViolet, Main.rand.NextFloat(0.6f, 1.3f));
+                    spark.Configure(false, 20);
                     spark.ShouldKillWhenOffScreen = false;
-                    PRTLoader.AddParticle(spark);
                 }
             }
         }

@@ -51,6 +51,32 @@ namespace CalamityOverhaul.Content.PRTTypes
             Color = InitialColor;
         }
 
+        public override bool CanPool => true;
+        public void Configure(int lifetime, int eyeMode) {
+            Lifetime = lifetime;
+            baseScale = Scale;
+            EyeMode = eyeMode;
+            wobble = Main.rand.NextFloat(MathHelper.TwoPi);
+            if (eyeMode == 1) {
+                InitialColor = new Color(255, 110, 35);
+                GlowColor = new Color(255, 220, 120);
+            }
+            else {
+                InitialColor = new Color(120, 200, 255);
+                GlowColor = new Color(180, 130, 255);
+            }
+            Color = InitialColor;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            EyeMode = 0;
+            InitialColor = default;
+            GlowColor = default;
+            baseScale = 0f;
+            wobble = 0f;
+        }
+
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         }

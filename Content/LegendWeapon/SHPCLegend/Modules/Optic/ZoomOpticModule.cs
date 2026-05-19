@@ -56,10 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    center, vel,
-                    new Color(220, 240, 255), new Color(120, 200, 255),
-                    Main.rand.NextFloat(1.0f, 2.2f), Main.rand.Next(20, 35)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(center, vel, new Color(220, 240, 255), Main.rand.NextFloat(1.0f, 2.2f)).Configure(new Color(120, 200, 255), Main.rand.Next(20, 35));
             }
         }
     }

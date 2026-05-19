@@ -79,9 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         }
 
         private static void SpawnSpark(Vector2 position, Vector2 velocity) {
-            PRT_HeavenfallStar spark = new PRT_HeavenfallStar(position, velocity, false, 13, 1
-                , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
-            PRTLoader.AddParticle(spark);
+            PRTLoader.NewParticle<PRT_HeavenfallStar>(position, velocity, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 1).Configure(false, 13);
         }
 
         private void ProcessTilesInArea(Vector2 startPos, int width, int height) {
@@ -131,13 +129,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 
                 float scaleBoost = MathHelper.Clamp(i * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
-                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vector, outerSparkColor, outerSparkScale).Configure(false, 7);
 
                 Color innerSparkColor = VaultUtils.MultiStepColorLerp(i % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
-                PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
-                PRTLoader.AddParticle(spark2);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vector, innerSparkColor, innerSparkScale).Configure(false, 7);
             }
         }
 

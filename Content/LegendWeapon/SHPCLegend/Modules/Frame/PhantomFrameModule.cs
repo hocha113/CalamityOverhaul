@@ -40,10 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 10; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        beam.Projectile.Center, vel,
-                        new Color(200, 100, 255), new Color(100, 40, 200),
-                        Main.rand.NextFloat(0.8f, 1.8f), Main.rand.Next(15, 30)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center, vel, new Color(200, 100, 255), Main.rand.NextFloat(0.8f, 1.8f)).Configure(new Color(100, 40, 200), Main.rand.Next(15, 30));
                 }
             }
         }

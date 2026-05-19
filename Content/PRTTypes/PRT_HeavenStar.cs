@@ -39,6 +39,34 @@ namespace CalamityOverhaul.Content.PRTTypes
             SpawnDelay = spawnDelay;
             RotationalSpeed = rotationalSpeed;
         }
+
+        public override bool CanPool => true;
+        public void Configure(Color bloom, float angle, Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f, float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0f) {
+            Bloom = bloom;
+            Rotation = angle % MathHelper.Pi;
+            OriginalScale = scale;
+            FinalScale = finalScale;
+            Lifetime = lifeTime;
+            Spin = rotationSpeed;
+            BloomScale = bloomScale;
+            HueShift = hueShift;
+            SpawnDelay = spawnDelay;
+            RotationalSpeed = rotationalSpeed;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            Scale = 1f;
+            BloomScale = 1f;
+            Spin = 0f;
+            Bloom = default;
+            HueShift = 0f;
+            OriginalScale = default;
+            FinalScale = default;
+            SpawnDelay = 0;
+            RotationalSpeed = 0f;
+        }
+
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             if (SpawnDelay > 0) {

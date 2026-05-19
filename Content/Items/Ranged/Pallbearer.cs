@@ -804,15 +804,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             //能量波纹
             if (ChargeLevel > 0.5f) {
                 for (int i = 0; i < 3; i++) {
-                    PRT_Line line = new PRT_Line(
-                        target.Center,
-                        Main.rand.NextVector2Circular(8f, 8f),
-                        false,
-                        (int)(15 + ChargeLevel * 10),
-                        1.2f + ChargeLevel * 0.8f,
-                        Color.OrangeRed
-                    );
-                    PRTLoader.AddParticle(line);
+                    PRTLoader.NewParticle<PRT_Line>(target.Center, Main.rand.NextVector2Circular(8f, 8f), Color.OrangeRed, 1.2f + ChargeLevel * 0.8f).Configure(false, (int)(15 + ChargeLevel * 10));
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public float SquishStrenght;
         public float MaxSquish;
+        public override bool CanPool => true;
         public PRT_Gauntlet() {
             SquishStrenght = 1f;
             MaxSquish = 3f;
@@ -25,6 +26,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             Lifetime = lifetime;
             SquishStrenght = squishStrenght;
             MaxSquish = maxSquish;
+        }
+        public override void Reset() {
+            base.Reset();
+            SquishStrenght = 1f;
+            MaxSquish = 3f;
+            Opacity = 1f;
         }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {

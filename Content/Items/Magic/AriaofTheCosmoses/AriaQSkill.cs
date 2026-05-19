@@ -155,17 +155,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
                 //在吸积盘轨迹上生成粒子
                 if (Main.rand.NextBool(2)) {
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        disk.Center + Main.rand.NextVector2Circular(20, 20),
-                        Main.rand.NextVector2Circular(1.5f, 1.5f),
-                        Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.25f, 0.45f),
-                        Main.rand.Next(12, 22),
-                        Main.rand.NextFloat(-0.15f, 0.15f),
-                        false,
-                        Main.rand.NextFloat(0.12f, 0.18f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(disk.Center + Main.rand.NextVector2Circular(20, 20), Main.rand.NextVector2Circular(1.5f, 1.5f), Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.45f)).Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(-0.15f, 0.15f), false, Main.rand.NextFloat(0.12f, 0.18f));
                 }
             }
         }
@@ -191,17 +181,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float progress = j / (float)particleCount;
                     Vector2 particlePos = player.Center + direction * progress;
 
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        particlePos,
-                        Vector2.Zero,
-                        Color.Lerp(Color.Gold, Color.Orange, progress) * 0.6f,
-                        Main.rand.NextFloat(0.15f, 0.25f),
-                        Main.rand.Next(8, 15),
-                        0f,
-                        false,
-                        Main.rand.NextFloat(0.08f, 0.12f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, Vector2.Zero, Color.Lerp(Color.Gold, Color.Orange, progress) * 0.6f, Main.rand.NextFloat(0.15f, 0.25f)).Configure(Main.rand.Next(8, 15), 0f, false, Main.rand.NextFloat(0.08f, 0.12f));
                 }
             }
         }
@@ -222,34 +202,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 particlePos = Projectile.Center + offset;
                     Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 4f;
 
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        particlePos,
-                        particleVel,
-                        Color.Lerp(Color.Gold, Color.Orange, ring / 3f),
-                        Main.rand.NextFloat(0.6f, 1.1f),
-                        Main.rand.Next(35, 50),
-                        Main.rand.NextFloat(-0.3f, 0.3f),
-                        false,
-                        Main.rand.NextFloat(0.25f, 0.35f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, Color.Lerp(Color.Gold, Color.Orange, ring / 3f), Main.rand.NextFloat(0.6f, 1.1f)).Configure(Main.rand.Next(35, 50), Main.rand.NextFloat(-0.3f, 0.3f), false, Main.rand.NextFloat(0.25f, 0.35f));
                 }
             }
 
             //爆发粒子
             for (int i = 0; i < 50; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                BasePRT particle = new PRT_GammaImpact(
-                    Projectile.Center,
-                    velocity,
-                    Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()),
-                    Main.rand.NextFloat(0.7f, 1.2f),
-                    Main.rand.Next(30, 45),
-                    Main.rand.NextFloat(-0.4f, 0.4f),
-                    true,
-                    0.3f
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.7f, 1.2f)).Configure(Main.rand.Next(30, 45), Main.rand.NextFloat(-0.4f, 0.4f), true, 0.3f);
             }
         }
 
@@ -273,17 +233,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(150f, 150f);
                     Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
 
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        spawnPos,
-                        velocity,
-                        Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.5f, 0.9f),
-                        Main.rand.Next(25, 40),
-                        Main.rand.NextFloat(-0.4f, 0.4f),
-                        true,
-                        Main.rand.NextFloat(0.2f, 0.3f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(spawnPos, velocity, Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.4f, 0.4f), true, Main.rand.NextFloat(0.2f, 0.3f));
                 }
             }
         }
@@ -407,17 +357,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
                     Vector2 particleVel = velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.4f, 0.7f);
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        Projectile.Center,
-                        particleVel,
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.35f, 0.65f),
-                        Main.rand.Next(18, 28),
-                        Main.rand.NextFloat(-0.25f, 0.25f),
-                        false,
-                        Main.rand.NextFloat(0.18f, 0.28f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center, particleVel, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.35f, 0.65f)).Configure(Main.rand.Next(18, 28), Main.rand.NextFloat(-0.25f, 0.25f), false, Main.rand.NextFloat(0.18f, 0.28f));
                 }
             }
         }
@@ -432,17 +372,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 offset = angle.ToRotationVector2() * distance;
             Vector2 particleVel = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * 0.8f;
 
-            BasePRT particle = new PRT_AccretionDiskImpact(
-                Projectile.Center + offset,
-                particleVel,
-                Color.Lerp(innerColor, outerColor, distance / (Projectile.width * 0.5f * Projectile.scale)),
-                Main.rand.NextFloat(0.2f, 0.35f),
-                Main.rand.Next(12, 20),
-                Main.rand.NextFloat(-0.12f, 0.12f),
-                false,
-                Main.rand.NextFloat(0.1f, 0.15f)
-            );
-            PRTLoader.AddParticle(particle);
+            PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center + offset, particleVel, Color.Lerp(innerColor, outerColor, distance / (Projectile.width * 0.5f * Projectile.scale)), Main.rand.NextFloat(0.2f, 0.35f)).Configure(Main.rand.Next(12, 20), Main.rand.NextFloat(-0.12f, 0.12f), false, Main.rand.NextFloat(0.1f, 0.15f));
         }
 
         public void DrawPrimitives() {
@@ -665,17 +595,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            BasePRT particle = new PRT_AccretionDiskImpact(
-                Projectile.Center,
-                -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f),
-                Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                Main.rand.NextFloat(0.25f, 0.45f),
-                Main.rand.Next(10, 18),
-                Main.rand.NextFloat(-0.2f, 0.2f),
-                false,
-                Main.rand.NextFloat(0.12f, 0.18f)
-            );
-            PRTLoader.AddParticle(particle);
+            PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center, -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f), Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.45f)).Configure(Main.rand.Next(10, 18), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.12f, 0.18f));
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -683,17 +603,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 12; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        target.Center,
-                        velocity,
-                        Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.4f, 0.7f),
-                        Main.rand.Next(18, 28),
-                        Main.rand.NextFloat(-0.35f, 0.35f),
-                        true,
-                        Main.rand.NextFloat(0.2f, 0.3f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(target.Center, velocity, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.7f)).Configure(Main.rand.Next(18, 28), Main.rand.NextFloat(-0.35f, 0.35f), true, Main.rand.NextFloat(0.2f, 0.3f));
                 }
             }
 

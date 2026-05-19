@@ -115,8 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 PRTLoader.NewParticle<PRT_SparkAlpha>(particlePosition, Projectile.velocity, sparkColor, Main.rand.NextFloat(1.3f)).Configure(false, 13);
             }
             else {
-                PRT_Line spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Line>(particlePosition, Projectile.velocity, sparkColor, Main.rand.NextFloat(1.3f) * 0.6f).Configure(false, 13);
             }
         }
 
@@ -194,8 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 PRTLoader.NewParticle<PRT_Spark>(particlePosition, toBreakV.UnitVector() * 23, sparkColor, Main.rand.NextFloat(1.3f)).Configure(false, 13);
             }
             else {
-                PRT_Line spark2 = new(particlePosition, toBreakV.UnitVector() * 23, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
-                PRTLoader.AddParticle(spark2);
+                PRTLoader.NewParticle<PRT_Line>(particlePosition, toBreakV.UnitVector() * 23, sparkColor, Main.rand.NextFloat(1.3f) * 0.6f).Configure(false, 13);
             }
         }
 

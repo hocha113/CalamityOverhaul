@@ -148,10 +148,10 @@ namespace CalamityOverhaul.Content.Items.Magic
                     }
 
                     if (isSolid) {
-                        PRTLoader.AddParticle(new PRT_HeavenfallStar(targetPos, VaultUtils.RandVr(6), false, 2, Main.rand.NextFloat(0.6f, 1.6f), color));
+                        PRTLoader.NewParticle<PRT_HeavenfallStar>(targetPos, VaultUtils.RandVr(6), color, Main.rand.NextFloat(0.6f, 1.6f)).Configure(false, 2);
                     }
                     else if (toTileLeng > 90) {
-                        PRTLoader.AddParticle(new PRT_HeavenfallStarAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f, color));
+                        PRTLoader.NewParticle<PRT_HeavenfallStarAlpha>(targetPos, unitVer, color, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f).Configure(false, 2);
                     }
                 }
 

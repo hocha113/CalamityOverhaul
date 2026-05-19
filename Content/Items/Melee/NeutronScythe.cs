@@ -318,9 +318,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 13; j++) {
-                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                            , vr * 0.24f, false, 30, 1.2f, Color.CornflowerBlue);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * 0.24f, Color.CornflowerBlue, 1.2f).Configure(false, 30);
                     }
                 }
                 Projectile.ai[2]++;

@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float flickerPhase;
         private float deceleration;
 
+        public override bool CanPool => true;
         public PRT_GammaIonize() { }
         public PRT_GammaIonize(
             Vector2 position,
@@ -36,6 +37,22 @@ namespace CalamityOverhaul.Content.PRTTypes
             flickerPhase = flickerOffset;
             deceleration = 0.88f;
             Rotation = velocity.ToRotation();
+        }
+        public PRT_GammaIonize Configure(int lt, float flickerOffset = 0f) {
+            Lifetime = lt;
+            initialColor = Color;
+            initialScale = Scale;
+            flickerPhase = flickerOffset;
+            deceleration = 0.88f;
+            Rotation = Velocity.ToRotation();
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            initialScale = 0f;
+            flickerPhase = 0f;
+            deceleration = 0.88f;
         }
 
         public override void SetProperty() {

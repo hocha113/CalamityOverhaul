@@ -315,9 +315,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 jitter = Main.rand.NextVector2Circular(22f, 22f);
                 Vector2 vel = new Vector2(0, -Main.rand.NextFloat(0.4f, 1.8f)) + jitter * -0.03f;
                 Color smokeColor = Color.Lerp(new Color(180, 225, 255), Color.White, Main.rand.NextFloat());
-                PRTLoader.AddParticle(new PRT_Smoke(bladePos + jitter, vel, smokeColor
-                    , Main.rand.Next(28, 52), Main.rand.NextFloat(0.38f, 0.75f), 0.7f
-                    , Main.rand.NextFloat(-0.03f, 0.03f)));
+                PRTLoader.NewParticle<PRT_Smoke>(bladePos + jitter, vel, smokeColor, Main.rand.NextFloat(0.38f, 0.75f)).Configure(Main.rand.Next(28, 52), 0.7f, Main.rand.NextFloat(-0.03f, 0.03f));
             }
 
             //汇聚光尘：从四周向斧刃飞来
@@ -335,8 +333,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (ChargeRatio > 0.65f && chargeParticleClock % 4 == 0) {
                 float angle = chargeParticleClock * 0.28f;
                 Vector2 orbitPos = bladePos + angle.ToRotationVector2() * (26f + ChargeRatio * 18f);
-                PRTLoader.AddParticle(new PRT_Smoke(orbitPos, Main.rand.NextVector2Circular(0.8f, 0.8f)
-                    , new Color(140, 210, 255), Main.rand.Next(18, 32), Main.rand.NextFloat(0.28f, 0.52f), 0.8f, 0f));
+                PRTLoader.NewParticle<PRT_Smoke>(orbitPos, Main.rand.NextVector2Circular(0.8f, 0.8f), new Color(140, 210, 255), Main.rand.NextFloat(0.28f, 0.52f)).Configure(Main.rand.Next(18, 32), 0.8f);
             }
         }
 
@@ -356,9 +353,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 vel = Projectile.velocity * Main.rand.NextFloat(-0.08f, -0.03f)
                     + Main.rand.NextVector2Circular(1.2f, 1.2f);
                 Color smokeColor = Color.Lerp(Color.White, new Color(155, 215, 255), Main.rand.NextFloat());
-                PRTLoader.AddParticle(new PRT_Smoke(pos, vel, smokeColor
-                    , Main.rand.Next(38, 68), Main.rand.NextFloat(0.6f, 1.05f), 0.72f
-                    , Main.rand.NextFloat(-0.02f, 0.02f)));
+                PRTLoader.NewParticle<PRT_Smoke>(pos, vel, smokeColor, Main.rand.NextFloat(0.6f, 1.05f)).Configure(Main.rand.Next(38, 68), 0.72f, Main.rand.NextFloat(-0.02f, 0.02f));
             }
 
             //偶发白色星光

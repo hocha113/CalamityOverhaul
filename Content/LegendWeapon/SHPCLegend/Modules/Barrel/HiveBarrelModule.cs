@@ -56,14 +56,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 for (int i = 0; i < 12; i++) {
                     float ang = MathHelper.TwoPi * i / 12f;
                     Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(2.5f, 4f);
-                    PRTLoader.AddParticle(new PRT_GammaIonize(
-                        orb.Projectile.Center, vel,
-                        new Color(255, 215, 90), Main.rand.NextFloat(0.6f, 1f),
-                        Main.rand.Next(20, 36), Main.rand.NextFloat()));
+                    PRTLoader.NewParticle<PRT_GammaIonize>(orb.Projectile.Center, vel, new Color(255, 215, 90), Main.rand.NextFloat(0.6f, 1f)).Configure(Main.rand.Next(20, 36), Main.rand.NextFloat());
                 }
-                PRTLoader.AddParticle(new PRT_StarPulseRing(
-                    orb.Projectile.Center, Vector2.Zero,
-                    new Color(255, 215, 90, 0), 0.05f, 0.7f, 22));
+                PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero, new Color(255, 215, 90, 0), 0.05f).Configure(0.05f, 0.7f, 22);
             }
         }
     }
@@ -126,15 +121,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //蜂窝六边形效果：HeavenStar
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
-                PRTLoader.AddParticle(new PRT_HeavenStar(
-                    target.Center, Vector2.Zero,
-                    new Color(255, 220, 100), new Color(120, 80, 25), angle,
-                    new Vector2(0.2f, 0.05f), new Vector2(0.45f, 0.12f), 26,
-                    Main.rand.NextFloat(-0.05f, 0.05f), 0.85f));
+                PRTLoader.NewParticle<PRT_HeavenStar>(target.Center, Vector2.Zero, new Color(255, 220, 100), 1f).Configure(new Color(120, 80, 25), angle, new Vector2(0.2f, 0.05f), new Vector2(0.45f, 0.12f), 26, Main.rand.NextFloat(-0.05f, 0.05f), 0.85f);
             }
-            PRTLoader.AddParticle(new PRT_StarPulseRing(
-                target.Center, Vector2.Zero,
-                new Color(255, 215, 90, 0), 0.05f, 0.35f, 18));
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(255, 215, 90, 0), 0.05f).Configure(0.05f, 0.35f, 18);
         }
 
         private float WidthFunction(float progress) {

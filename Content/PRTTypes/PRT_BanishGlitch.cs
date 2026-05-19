@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float flickerPhase;
         private float driftAngle;
 
+        public override bool CanPool => true;
         public PRT_BanishGlitch() {
             Color = new Color(0.9f, 0.12f, 0.08f);
             edgeColor = new Color(1f, 0.3f, 0.2f);
@@ -39,6 +40,28 @@ namespace CalamityOverhaul.Content.PRTTypes
             aspectRatio = Main.rand.NextFloat(0.3f, 2.0f);
             flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
             driftAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+        public PRT_BanishGlitch Configure(int lt) {
+            Lifetime = lt;
+            initialScale = Scale;
+            Color = new Color(0.9f, 0.12f, 0.08f);
+            edgeColor = new Color(1f, 0.3f, 0.2f);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            rotationSpeed = Main.rand.NextFloat(0.06f, 0.18f) * (Main.rand.NextBool() ? 1f : -1f);
+            aspectRatio = Main.rand.NextFloat(0.3f, 2.0f);
+            flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            driftAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            initialScale = 0f;
+            rotationSpeed = 0f;
+            aspectRatio = 1f;
+            Color = new Color(0.9f, 0.12f, 0.08f);
+            edgeColor = new Color(1f, 0.3f, 0.2f);
+            flickerPhase = 0f;
+            driftAngle = 0f;
         }
 
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;

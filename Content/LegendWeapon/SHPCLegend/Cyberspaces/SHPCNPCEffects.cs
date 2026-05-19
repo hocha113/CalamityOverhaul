@@ -112,18 +112,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 12; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        npc.Center, vel,
-                        new Color(60, 35, 95), new Color(255, 80, 35),
-                        Main.rand.NextFloat(0.7f, 1.5f), Main.rand.Next(16, 30)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(npc.Center, vel, new Color(60, 35, 95), Main.rand.NextFloat(0.7f, 1.5f)).Configure(new Color(255, 80, 35), Main.rand.Next(16, 30));
                 }
                 //玻璃环：紫色快速 + 橙色慢速双层
-                PRTLoader.AddParticle(new PRT_StarPulseRing(
-                    npc.Center, Vector2.Zero,
-                    new Color(150, 80, 220, 0), 0.05f, 0.55f, 22));
-                PRTLoader.AddParticle(new PRT_StarPulseRing(
-                    npc.Center, Vector2.Zero,
-                    new Color(255, 110, 50, 0), 0.05f, 0.4f, 28));
+                PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero, new Color(150, 80, 220, 0), 0.05f).Configure(0.05f, 0.55f, 22);
+                PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero, new Color(255, 110, 50, 0), 0.05f).Configure(0.05f, 0.4f, 28);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.55f, Pitch = 0.2f }, npc.Center);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.5f, Pitch = -0.3f }, npc.Center);
             }
@@ -153,10 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(2)) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
                     Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        pos, vel,
-                        new Color(120, 80, 255), new Color(60, 30, 180),
-                        Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(10, 20)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, new Color(120, 80, 255), Main.rand.NextFloat(0.5f, 1.2f)).Configure(new Color(60, 30, 180), Main.rand.Next(10, 20));
                 }
             }
 
@@ -175,10 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ObsidianCrackTime--;
                 if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(5)) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        pos, Main.rand.NextVector2Circular(1.2f, 1.2f),
-                        new Color(70, 45, 110), new Color(255, 90, 40),
-                        Main.rand.NextFloat(0.35f, 0.9f), Main.rand.Next(8, 18)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, Main.rand.NextVector2Circular(1.2f, 1.2f), new Color(70, 45, 110), Main.rand.NextFloat(0.35f, 0.9f)).Configure(new Color(255, 90, 40), Main.rand.Next(8, 18));
                 }
             }
             else {
@@ -193,11 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     TryHealLifebloomOwner(npc, Math.Max(1, LifebloomTickDmg / 4));
                 }
                 if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(4)) {
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f),
-                        new Vector2(0f, Main.rand.NextFloat(-1.8f, -0.4f)),
-                        new Color(90, 255, 130), new Color(30, 140, 55),
-                        Main.rand.NextFloat(0.4f, 0.9f), Main.rand.Next(12, 24)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f), new Vector2(0f, Main.rand.NextFloat(-1.8f, -0.4f)), new Color(90, 255, 130), Main.rand.NextFloat(0.4f, 0.9f)).Configure(new Color(30, 140, 55), Main.rand.Next(12, 24));
                 }
             }
             else {

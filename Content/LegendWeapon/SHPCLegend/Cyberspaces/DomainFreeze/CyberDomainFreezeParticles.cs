@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 // 使用暗红晶系的赛博方块粒子
                 Color core = new Color(0.85f, 0.06f, 0.2f);
                 Color edge = new Color(1.0f, 0.35f, 0.4f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(spawnPos, vel, core, edge, scale, lifeTime));
+                PRTLoader.NewParticle<PRT_CyberSquare>(spawnPos, vel, core, scale).Configure(edge, lifeTime);
             }
         }
 
@@ -66,14 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 Color core = new Color(0.9f, 0.08f, 0.2f);
                 Color edge = new Color(1.0f, 0.4f, 0.45f);
 
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    center + vel * 1.5f,
-                    vel,
-                    core,
-                    edge,
-                    Main.rand.NextFloat(0.6f, 1.8f),
-                    Main.rand.Next(20, 40)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(center + vel * 1.5f, vel, core, Main.rand.NextFloat(0.6f, 1.8f)).Configure(edge, Main.rand.Next(20, 40));
             }
 
             // 中心小碎片
@@ -82,14 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 Color core = new Color(1.0f, 0.25f, 0.35f);
                 Color edge = new Color(1.0f, 0.55f, 0.55f);
 
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    center,
-                    vel,
-                    core,
-                    edge,
-                    Main.rand.NextFloat(0.2f, 0.5f),
-                    Main.rand.Next(15, 25)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(center, vel, core, Main.rand.NextFloat(0.2f, 0.5f)).Configure(edge, Main.rand.Next(15, 25));
             }
         }
     }

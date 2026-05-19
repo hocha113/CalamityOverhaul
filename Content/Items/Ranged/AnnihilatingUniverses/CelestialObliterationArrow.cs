@@ -50,8 +50,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
             }
 
             if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
-                PRT_Line spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.7f, Color.BlueViolet);
-                PRTLoader.AddParticle(spark2);
+                PRTLoader.NewParticle<PRT_Line>(Projectile.Center, -Projectile.velocity * 0.05f, Color.BlueViolet, 0.7f).Configure(false, 6);
             }
         }
 

@@ -411,14 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 float speed = Main.rand.NextFloat(3f, 10f);
                 Vector2 vel = Main.rand.NextVector2CircularEdge(speed, speed);
                 float scale = Main.rand.NextFloat(0.7f, 1.6f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    impactPos + Main.rand.NextVector2Circular(12f, 12f),
-                    vel,
-                    new Color(80, 200, 255),
-                    Color.White,
-                    scale,
-                    Main.rand.Next(20, 40)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(impactPos + Main.rand.NextVector2Circular(12f, 12f), vel, new Color(80, 200, 255), scale).Configure(Color.White, Main.rand.Next(20, 40));
             }
 
             //中心瞬间光爆

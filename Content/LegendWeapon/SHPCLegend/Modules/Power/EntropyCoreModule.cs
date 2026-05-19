@@ -51,10 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
             for (int i = 0; i < 2; i++) {
                 Vector2 angle = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    orb.Projectile.Center, angle,
-                    new Color(180, 80, 255), new Color(80, 20, 160),
-                    Main.rand.NextFloat(0.7f, 1.4f), Main.rand.Next(15, 25)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center, angle, new Color(180, 80, 255), Main.rand.NextFloat(0.7f, 1.4f)).Configure(new Color(80, 20, 160), Main.rand.Next(15, 25));
             }
         }
 

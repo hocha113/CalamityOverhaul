@@ -154,9 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item120 with { Volume = 0.35f, Pitch = 0.5f }, target.Center);
             //霜星脉冲环 + 火花
-            PRTLoader.AddParticle(new PRT_StarPulseRing(
-                target.Center, Vector2.Zero,
-                new Color(180, 230, 255, 0), 0.05f, 0.4f, 18));
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(180, 230, 255, 0), 0.05f).Configure(0.05f, 0.4f, 18);
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
                 PRTLoader.NewParticle<PRT_Sparkle>(target.Center, vel, new Color(220, 245, 255), Main.rand.NextFloat(0.45f, 0.95f)).Configure(new Color(120, 200, 230), Main.rand.Next(12, 22), Main.rand.NextFloat(-0.3f, 0.3f), 0.9f);

@@ -449,17 +449,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particleVel = (ShootPos - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
 
                 //使用高级粒子系统 - 蓝色系
-                BasePRT particle = new PRT_AccretionDiskImpact(
-                    particlePos,
-                    particleVel,
-                    currentGlowColorR * 0.9f,
-                    Main.rand.NextFloat(0.4f, 0.8f),
-                    Main.rand.Next(15, 25),
-                    Main.rand.NextFloat(-0.15f, 0.15f),
-                    false,
-                    Main.rand.NextFloat(0.15f, 0.25f)
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.9f, Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.Next(15, 25), Main.rand.NextFloat(-0.15f, 0.15f), false, Main.rand.NextFloat(0.15f, 0.25f));
             }
 
             if (chargeTimeR >= Stage2 && chargeTimeR % 10 == 0) {
@@ -478,17 +468,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2f;
 
                 //使用高级粒子创建能量环 - 蓝色系
-                BasePRT particle = new PRT_AccretionDiskImpact(
-                    particlePos,
-                    particleVel,
-                    currentGlowColorR * 0.7f,
-                    Main.rand.NextFloat(0.5f, 0.9f),
-                    Main.rand.Next(20, 30),
-                    Main.rand.NextFloat(-0.2f, 0.2f),
-                    false,
-                    Main.rand.NextFloat(0.18f, 0.28f)
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.7f, Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(20, 30), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.18f, 0.28f));
             }
         }
 
@@ -592,17 +572,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 velocity.Y *= 0.6f; //保持压扁效果
 
                 //使用高级粒子创建释放爆发效果
-                BasePRT particle = new PRT_AccretionDiskImpact(
-                    ShootPos,
-                    velocity,
-                    currentGlowColorR,
-                    Main.rand.NextFloat(0.6f, 1.2f),
-                    Main.rand.Next(25, 40),
-                    Main.rand.NextFloat(-0.3f, 0.3f),
-                    true,
-                    Main.rand.NextFloat(0.2f, 0.35f)
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(ShootPos, velocity, currentGlowColorR, Main.rand.NextFloat(0.6f, 1.2f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.3f, 0.3f), true, Main.rand.NextFloat(0.2f, 0.35f));
             }
 
             //生成扁平冲击波
@@ -618,17 +588,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2.5f;
 
                     //扁平冲击波粒子
-                    BasePRT particle = new PRT_AccretionDiskImpact(
-                        particlePos,
-                        particleVel,
-                        currentGlowColorR * 0.6f,
-                        Main.rand.NextFloat(0.7f, 1.3f),
-                        Main.rand.Next(30, 45),
-                        Main.rand.NextFloat(-0.25f, 0.25f),
-                        false,
-                        Main.rand.NextFloat(0.22f, 0.32f)
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.6f, Main.rand.NextFloat(0.7f, 1.3f)).Configure(Main.rand.Next(30, 45), Main.rand.NextFloat(-0.25f, 0.25f), false, Main.rand.NextFloat(0.22f, 0.32f));
                 }
             }
         }

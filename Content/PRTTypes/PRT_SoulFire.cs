@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_SoulFire : BasePRT
     {
         public override string Texture => CWRConstant.Other + "SoulFire";
+        public override bool CanPool => true;
+        public override void Reset() { base.Reset(); }
         public override void SetProperty() {
             Opacity = 255;
             ai[1] = Main.rand.Next(5);

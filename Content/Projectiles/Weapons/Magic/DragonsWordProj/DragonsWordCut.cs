@@ -27,9 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         }
 
         public override void OnKill(int timeLeft) {
-            PRT_DragonsWordCut spark2 = new PRT_DragonsWordCut(Projectile.Center, new Vector2(0.1f, 0.1f)
-                .RotatedByRandom(100), false, 19, Main.rand.NextFloat(0.65f, 0.85f), Main.rand.NextBool() ? Color.DarkRed : Color.IndianRed);
-            PRTLoader.AddParticle(spark2);
+            PRTLoader.NewParticle<PRT_DragonsWordCut>(Projectile.Center, new Vector2(0.1f, 0.1f)
+                .RotatedByRandom(100), Main.rand.NextBool() ? Color.DarkRed : Color.IndianRed, Main.rand.NextFloat(0.65f, 0.85f)).Configure(false, 19);
             SoundStyle sound = "CalamityMod/Sounds/Item/MurasamaHitOrganic".GetSound();
             SoundEngine.PlaySound(sound with { Volume = 0.8f, PitchRange = (0.6f, 0.7f) }, Projectile.Center);
         }

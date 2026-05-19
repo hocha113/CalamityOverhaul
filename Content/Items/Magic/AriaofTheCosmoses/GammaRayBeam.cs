@@ -133,14 +133,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.2f, beamWidth * 0.2f);
                 Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
 
-                PRTLoader.AddParticle(new PRT_Line(
-                    lineStart,
-                    lineVel,
-                    false,
-                    Main.rand.Next(10, 18),
-                    Main.rand.NextFloat(0.4f, 0.9f),
-                    Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat())
-                ));
+                PRTLoader.NewParticle<PRT_Line>(lineStart, lineVel, Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.9f)).Configure(false, Main.rand.Next(10, 18));
             }
         }
 
@@ -161,14 +154,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float angle = MathHelper.TwoPi * i / 16f + Main.rand.NextFloat(-0.15f, 0.15f);
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
 
-                    PRTLoader.AddParticle(new PRT_GammaIonize(
-                        target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        velocity,
-                        Color.Lerp(new Color(160, 120, 255), Color.White, Main.rand.NextFloat(0.2f, 0.6f)),
-                        Main.rand.NextFloat(0.4f, 1.0f),
-                        Main.rand.Next(12, 22),
-                        Main.rand.NextFloat(MathHelper.TwoPi)
-                    ));
+                    PRTLoader.NewParticle<PRT_GammaIonize>(target.Center + Main.rand.NextVector2Circular(8f, 8f), velocity, Color.Lerp(new Color(160, 120, 255), Color.White, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.4f, 1.0f)).Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(MathHelper.TwoPi));
                 }
 
                 //伽马冲击残影 - 较大的Flashimpact动画
@@ -176,16 +162,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float angle = MathHelper.TwoPi * i / 6f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
 
-                    PRTLoader.AddParticle(new PRT_GammaImpact(
-                        target.Center,
-                        velocity,
-                        Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.3f, 0.8f),
-                        Main.rand.Next(15, 28),
-                        Main.rand.NextFloat(-0.2f, 0.2f),
-                        false,
-                        0.3f
-                    ));
+                    PRTLoader.NewParticle<PRT_GammaImpact>(target.Center, velocity, Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.3f, 0.8f)).Configure(Main.rand.Next(15, 28), Main.rand.NextFloat(-0.2f, 0.2f), false, 0.3f);
                 }
 
                 //辐射光线 - 从命中点向外的高速光束
@@ -220,14 +197,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float angle = MathHelper.TwoPi * i / 18f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 11f);
 
-                    PRTLoader.AddParticle(new PRT_GammaIonize(
-                        Projectile.Center,
-                        velocity,
-                        Color.Lerp(new Color(140, 100, 255), new Color(80, 160, 255), Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.5f, 0.9f),
-                        Main.rand.Next(15, 30),
-                        Main.rand.NextFloat(MathHelper.TwoPi)
-                    ));
+                    PRTLoader.NewParticle<PRT_GammaIonize>(Projectile.Center, velocity, Color.Lerp(new Color(140, 100, 255), new Color(80, 160, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(15, 30), Main.rand.NextFloat(MathHelper.TwoPi));
                 }
 
                 //伽马冲击残影
@@ -235,18 +205,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float angle = MathHelper.TwoPi * i / 10f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
 
-                    PRT_GammaImpact burst = new PRT_GammaImpact(
-                        Projectile.Center,
-                        velocity,
-                        Color.Lerp(new Color(160, 130, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)),
-                        Main.rand.NextFloat(0.4f, 0.7f),
-                        Main.rand.Next(20, 35),
-                        Main.rand.NextFloat(-0.3f, 0.3f),
-                        false,
-                        0.25f
-                    );
+                    var burst = PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Lerp(new Color(160, 130, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.4f, 0.7f));
+                    burst.Configure(Main.rand.Next(20, 35), Main.rand.NextFloat(-0.3f, 0.3f), false, 0.25f);
                     burst.inOwner = Owner.whoAmI;
-                    PRTLoader.AddParticle(burst);
                 }
             }
         }

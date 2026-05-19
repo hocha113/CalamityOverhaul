@@ -39,6 +39,27 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity = Vector2.Zero;
         }
 
+        public override bool CanPool => true;
+        public void Configure(float startAngle, float startRadius, int lifetime) {
+            center = Position;
+            orbitAngle = startAngle;
+            orbitRadius = startRadius;
+            initialColor = Color;
+            initialScale = Scale;
+            Lifetime = lifetime;
+            Position = center + orbitAngle.ToRotationVector2() * orbitRadius;
+            Velocity = Vector2.Zero;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            initialScale = 0f;
+            center = default;
+            orbitAngle = 0f;
+            orbitRadius = 0f;
+        }
+
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         }

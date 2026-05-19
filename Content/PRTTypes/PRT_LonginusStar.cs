@@ -27,6 +27,24 @@ namespace CalamityOverhaul.Content.PRTTypes
             Entity = entity;
         }
 
+        public override bool CanPool => true;
+        public void Configure(bool affectedByGravity, int lifetime, Entity entity = null) {
+            AffectedByGravity = affectedByGravity;
+            Lifetime = lifetime;
+            Entity = entity;
+            InitialColor = Color;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            AffectedByGravity = false;
+            Entity = null;
+            EntityPos = default;
+            OldEntityPos = default;
+            EntityVariation = default;
+        }
+
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

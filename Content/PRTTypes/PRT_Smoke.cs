@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float Spin;
         private bool Glowing;
         private float HueShift;
+        public override bool CanPool => true;
         public PRT_Smoke() { }
         public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
             , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f) {
@@ -23,6 +24,20 @@ namespace CalamityOverhaul.Content.PRTTypes
             Glowing = glowing;
             HueShift = hueshift;
 
+        }
+        public PRT_Smoke Configure(int lt, float opacity, float rotSpeed = 0f, bool glowing = false, float hueshift = 0f) {
+            Lifetime = lt;
+            Opacity = opacity;
+            Spin = rotSpeed;
+            Glowing = glowing;
+            HueShift = hueshift;
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            Spin = 0f;
+            Glowing = false;
+            HueShift = 0f;
         }
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;

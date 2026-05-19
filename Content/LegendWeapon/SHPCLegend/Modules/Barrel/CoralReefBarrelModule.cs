@@ -146,11 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.NPCHit36 with { Volume = 0.4f, Pitch = 0.2f }, target.Center);
             for (int i = 0; i < 3; i++) {
-                PRTLoader.AddParticle(new PRT_Bloomlight(
-                    target.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    Color.Lerp(new Color(255, 110, 140), new Color(80, 220, 190), Main.rand.NextFloat()),
-                    Main.rand.NextFloat(0.3f, 0.6f), 22));
+                PRTLoader.NewParticle<PRT_Bloomlight>(target.Center + Main.rand.NextVector2Circular(10f, 10f), Main.rand.NextVector2Circular(2f, 2f), Color.Lerp(new Color(255, 110, 140), new Color(80, 220, 190), Main.rand.NextFloat()), Main.rand.NextFloat(0.3f, 0.6f)).Configure(22);
             }
         }
 

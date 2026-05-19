@@ -22,6 +22,19 @@ namespace CalamityOverhaul.Content.PRTTypes
             Color = InitialColor = color;
         }
 
+        public override bool CanPool => true;
+        public void Configure(bool hasGravityEffect, int lifetime) {
+            HasGravityEffect = hasGravityEffect;
+            Lifetime = lifetime;
+            InitialColor = Color;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            HasGravityEffect = false;
+        }
+
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         }

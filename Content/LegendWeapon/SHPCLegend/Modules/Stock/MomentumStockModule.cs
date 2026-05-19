@@ -56,10 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Vector2 dirOpp = -player.velocity.SafeNormalize(Vector2.Zero);
             for (int i = 0; i < 4; i++) {
                 Vector2 vel = dirOpp * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    player.Center, vel,
-                    new Color(255, 180, 80), new Color(220, 90, 30),
-                    Main.rand.NextFloat(0.7f, 1.2f), 16));
+                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center, vel, new Color(255, 180, 80), Main.rand.NextFloat(0.7f, 1.2f)).Configure(new Color(220, 90, 30), 16);
             }
         }
     }

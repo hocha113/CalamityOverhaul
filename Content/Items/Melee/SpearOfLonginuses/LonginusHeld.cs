@@ -52,11 +52,9 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             if (npc != null) {
                 if (Projectile.ai[0] % 30 == 0) {
                     Vector2 vr = new Vector2(0, 13);
-                    PRT_LonginusWave pulse = new PRT_LonginusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + slp * 0.001f, 180, npc);
-                    PRTLoader.AddParticle(pulse);
+                    PRTLoader.NewParticle<PRT_LonginusWave>(npc.Center + new Vector2(0, -360), vr, Color.Red, 0.32f).Configure(new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.82f + slp * 0.001f, 180, npc);
                     Vector2 vr2 = new Vector2(0, -13);
-                    PRT_LonginusWave pulse2 = new PRT_LonginusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.32f, 0.82f + slp * 0.001f, 180, npc);
-                    PRTLoader.AddParticle(pulse2);
+                    PRTLoader.NewParticle<PRT_LonginusWave>(npc.Center + new Vector2(0, 360), vr2, Color.Red, 0.32f).Configure(new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.82f + slp * 0.001f, 180, npc);
                 }
                 npc.CWR().LonginusSign = true;
                 foreach (NPC overNPC in Main.npc) {
@@ -88,8 +86,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             if (CWRServerConfig.Instance.WeaponHandheldDisplay && Main.rand.NextBool(2)) {
                 Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(33) + Projectile.velocity * 55;
                 Vector2 vr = spanStarPos.To(Projectile.velocity * 198 + Projectile.Center).UnitVector() * 3;
-                PRT_LonginusStar spark = new PRT_LonginusStar(spanStarPos, vr, false, Main.rand.Next(17, 25), Main.rand.NextFloat(0.9f, 1.1f), Color.Gold, Projectile);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_LonginusStar>(spanStarPos, vr, Color.Gold, Main.rand.NextFloat(0.9f, 1.1f)).Configure(false, Main.rand.Next(17, 25), Projectile);
             }
 
             //能量满了：升一层立场
@@ -106,10 +103,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound(), Projectile.Center);
 
                 for (int i = 0; i < longinus.ChargeGrade; i++) {
-                    PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + Projectile.velocity * (-0.52f + i * 23)
-                        , Projectile.velocity / 1.5f, Color.Red, new Vector2(1.5f, 3f) * (0.8f - i * 0.1f)
-                        , Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60, Projectile);
-                    PRTLoader.AddParticle(pulse);
+                    PRTLoader.NewParticle<PRT_LonginusWave>(Projectile.Center + Projectile.velocity * (-0.52f + i * 23), Projectile.velocity / 1.5f, Color.Red, 0.82f).Configure(new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), Projectile.velocity.ToRotation(), 0.32f, 60, Projectile);
                 }
             }
         }

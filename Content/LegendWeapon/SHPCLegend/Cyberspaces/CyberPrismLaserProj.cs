@@ -192,17 +192,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 pos += perp * Main.rand.NextFloat(-10f, 10f);
                 Vector2 vel = perp * Main.rand.NextFloat(-2.5f, 2.5f)
                     + aimDir * Main.rand.NextFloat(-0.5f, 0.5f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(pos, vel, mainCol, edgeCol,
-                    Main.rand.NextFloat(0.4f, 1.1f), Main.rand.Next(8, 22)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, mainCol, Main.rand.NextFloat(0.4f, 1.1f)).Configure(edgeCol, Main.rand.Next(8, 22));
             }
 
             //终点冲击光晕粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 endVel = Main.rand.NextVector2Circular(3.5f, 3.5f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    beamEnd + Main.rand.NextVector2Circular(6f, 6f),
-                    endVel, mainCol, edgeCol,
-                    Main.rand.NextFloat(0.7f, 1.6f), Main.rand.Next(6, 16)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(beamEnd + Main.rand.NextVector2Circular(6f, 6f), endVel, mainCol, Main.rand.NextFloat(0.7f, 1.6f)).Configure(edgeCol, Main.rand.Next(6, 16));
             }
         }
 
@@ -289,9 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.3f, Pitch = 0.5f }, target.Center);
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f + od * 4f, 4f + od * 4f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    target.Center + vel, vel, mainCol, edgeCol,
-                    Main.rand.NextFloat(0.6f, 1.6f), Main.rand.Next(12, 28)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + vel, vel, mainCol, Main.rand.NextFloat(0.6f, 1.6f)).Configure(edgeCol, Main.rand.Next(12, 28));
             }
             if (ScorchOnHit && ScorchDuration > 0 && Projectile.owner == Main.myPlayer) {
                 target.AddBuff(ModContent.BuffType<HellburnBuff>(), ScorchDuration);
@@ -307,10 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Color edgeCol = Color.Lerp(ThemeParticleEdge, OdParticleEdge, od);
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f + od * 4f, 4f + od * 4f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    beamEnd + Main.rand.NextVector2Circular(16f, 16f), vel,
-                    mainCol, edgeCol,
-                    Main.rand.NextFloat(0.5f, 1.5f), Main.rand.Next(12, 30)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(beamEnd + Main.rand.NextVector2Circular(16f, 16f), vel, mainCol, Main.rand.NextFloat(0.5f, 1.5f)).Configure(edgeCol, Main.rand.Next(12, 30));
             }
         }
 

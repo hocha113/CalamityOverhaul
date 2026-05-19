@@ -85,9 +85,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 5; j++) {
-                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                            , vr * (0.1f + j * 0.18f), false, 25, 0.8f * Projectile.localAI[2], Color.MediumPurple);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * (0.1f + j * 0.18f), Color.MediumPurple, 0.8f * Projectile.localAI[2]).Configure(false, 25);
                     }
                 }
             }
@@ -199,10 +197,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (!VaultUtils.isServer && Projectile.ai[0] % 2 == 0) {
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, Projectile.velocity * 0.1f, Color.Cyan, Main.rand.NextFloat(0.8f, 1.5f)).Configure(false, 12);
                 if (Main.rand.NextBool(5)) {
-                    BasePRT star = new PRT_HeavenfallStar(Projectile.Center
-                        , Projectile.velocity.RotatedByRandom(0.5f) * -0.3f, false, 15
-                        , Main.rand.NextFloat(0.3f, 0.6f), Color.DeepSkyBlue);
-                    PRTLoader.AddParticle(star);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, Projectile.velocity.RotatedByRandom(0.5f) * -0.3f, Color.DeepSkyBlue, Main.rand.NextFloat(0.3f, 0.6f)).Configure(false, 15);
                 }
             }
 
@@ -269,9 +264,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     Vector2 vr = rot.ToRotationVector2();
                     for (int j = 0; j < 6; j++) {
                         Color color = Main.rand.NextBool() ? Color.OrangeRed : Color.Cyan;
-                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                            , vr * (0.5f + j * 0.6f), false, 30, Main.rand.NextFloat(0.8f, 1.6f), color);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * (0.5f + j * 0.6f), color, Main.rand.NextFloat(0.8f, 1.6f)).Configure(false, 30);
                     }
                 }
             }
@@ -377,19 +370,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 for (int i = 0; i < 30; i++) {
                     float rot = MathHelper.TwoPi / 30f * i;
                     Vector2 vr = rot.ToRotationVector2();
-                    BasePRT spark = new PRT_HeavenfallStar(startPos
-                        , vr * Main.rand.NextFloat(1f, 3f), false, 25
-                        , Main.rand.NextFloat(0.5f, 1f), Color.DeepSkyBlue);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(startPos, vr * Main.rand.NextFloat(1f, 3f), Color.DeepSkyBlue, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 25);
                 }
                 //终点特效
                 for (int i = 0; i < 30; i++) {
                     float rot = MathHelper.TwoPi / 30f * i;
                     Vector2 vr = rot.ToRotationVector2();
-                    BasePRT spark = new PRT_HeavenfallStar(targetPos
-                        , vr * Main.rand.NextFloat(1f, 3f), false, 25
-                        , Main.rand.NextFloat(0.5f, 1f), Color.MediumPurple);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(targetPos, vr * Main.rand.NextFloat(1f, 3f), Color.MediumPurple, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 25);
                 }
                 //沿途粒子连线
                 int steps = (int)(distance / 16f);

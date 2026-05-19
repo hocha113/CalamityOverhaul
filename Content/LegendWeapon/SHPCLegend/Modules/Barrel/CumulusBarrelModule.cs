@@ -112,11 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
                 else if (Main.GameUpdateCount % 12 == 0) {
                     Color color = Projectile.localAI[0] > 70f ? new Color(210, 240, 255) : new Color(150, 190, 220);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        Projectile.Center + Main.rand.NextVector2Circular(44f, 20f),
-                        Main.rand.NextVector2Circular(0.5f, 0.5f),
-                        color, new Color(90, 130, 170),
-                        Main.rand.NextFloat(0.5f, 1.1f), Main.rand.Next(18, 34)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center + Main.rand.NextVector2Circular(44f, 20f), Main.rand.NextVector2Circular(0.5f, 0.5f), color, Main.rand.NextFloat(0.5f, 1.1f)).Configure(new Color(90, 130, 170), Main.rand.Next(18, 34));
                 }
             }
             if (Projectile.localAI[0] < 100f) return;
@@ -164,12 +160,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             //云核处与地面落点环
             if (Main.netMode != NetmodeID.Server) {
-                PRTLoader.AddParticle(new PRT_StarPulseRing(
-                    Projectile.Center, Vector2.Zero,
-                    new Color(220, 240, 255, 0), 0.05f, 0.7f, 24));
-                PRTLoader.AddParticle(new PRT_StarPulseRing(
-                    Projectile.Center + Vector2.UnitY * 220f, Vector2.Zero,
-                    new Color(180, 210, 255, 0), 0.05f, 0.55f, 22));
+                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(220, 240, 255, 0), 0.05f).Configure(0.05f, 0.7f, 24);
+                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 220f, Vector2.Zero, new Color(180, 210, 255, 0), 0.05f).Configure(0.05f, 0.55f, 22);
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = -0.1f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.4f, Pitch = 0.2f }, Projectile.Center);
             }

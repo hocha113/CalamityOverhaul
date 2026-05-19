@@ -90,9 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     if (Vector2.DistanceSquared(hostile.Center, Projectile.Center) > radiusSq) continue;
                     hostile.velocity *= 0.96f;
                     if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 18 == 0 && Main.rand.NextBool(3)) {
-                        PRTLoader.AddParticle(new PRT_GammaIonize(
-                            hostile.Center, Vector2.Zero,
-                            new Color(255, 200, 110), 0.6f, 16, Main.rand.NextFloat()));
+                        PRTLoader.NewParticle<PRT_GammaIonize>(hostile.Center, Vector2.Zero, new Color(255, 200, 110), 0.6f).Configure(16, Main.rand.NextFloat());
                     }
                 }
             }
@@ -106,11 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //粒子发射：砂色 PRT_Smoke + 偶发火星（节流到 6 / 12 帧）
             if (Main.netMode == NetmodeID.Server) return;
             if (Main.GameUpdateCount % 6 == 0) {
-                PRTLoader.AddParticle(new PRT_Smoke(
-                    Projectile.Center + Main.rand.NextVector2Circular(radius * 0.8f, radius * 0.6f),
-                    Main.rand.NextVector2Circular(2.5f, 1.2f),
-                    new Color(225, 190, 110), Main.rand.Next(28, 50),
-                    Main.rand.NextFloat(0.5f, 0.95f), 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), false));
+                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + Main.rand.NextVector2Circular(radius * 0.8f, radius * 0.6f), Main.rand.NextVector2Circular(2.5f, 1.2f), new Color(225, 190, 110), Main.rand.NextFloat(0.5f, 0.95f)).Configure(Main.rand.Next(28, 50), 0.7f, Main.rand.NextFloat(-0.05f, 0.05f));
             }
             if (Main.GameUpdateCount % 12 == 0) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);

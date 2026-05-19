@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color rimColor; //气泡边缘颜色
         private bool isPopping; //是否正在破裂
 
+        public override bool CanPool => true;
         public PRT_ToxicBubble() {
             coreColor = new Color(120, 220, 140, 120);
             rimColor = new Color(180, 240, 160, 200);
@@ -37,6 +38,23 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             floatWobble = Main.rand.NextFloat(MathHelper.TwoPi);
             shimmerTimer = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+        public PRT_ToxicBubble Configure(int lt) {
+            Lifetime = lt;
+            coreColor = Main.rand.NextBool() ? new Color(120, 220, 140, 120) : new Color(150, 200, 100, 140);
+            rimColor = new Color(180, 240, 160, 200);
+            floatWobble = Main.rand.NextFloat(MathHelper.TwoPi);
+            shimmerTimer = Main.rand.NextFloat(MathHelper.TwoPi);
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            popProgress = 0f;
+            shimmerTimer = 0f;
+            floatWobble = 0f;
+            coreColor = new Color(120, 220, 140, 120);
+            rimColor = new Color(180, 240, 160, 200);
+            isPopping = false;
         }
 
         public override void SetProperty() {
@@ -82,13 +100,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                     Vector2 splashVel = Main.rand.NextVector2Circular(2f, 2f);
                     splashVel.Y -= 1f;
 
-                    PRT_AcidSplash splash = new PRT_AcidSplash(
-                        Position,
-                        splashVel,
-                        Main.rand.NextFloat(0.3f, 0.6f),
-                        Main.rand.Next(20, 40)
-                    );
-                    PRTLoader.AddParticle(splash);
+                    PRTLoader.NewParticle<PRT_AcidSplash>(Position, splashVel, Color.White, Main.rand.NextFloat(0.3f, 0.6f)).Configure(Main.rand.Next(20, 40));
                 }
             }
             else {

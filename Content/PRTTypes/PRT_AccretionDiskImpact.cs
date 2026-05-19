@@ -24,6 +24,25 @@ namespace CalamityOverhaul.Content.PRTTypes
         private const int TotalFrames = 4;
         private float animationSpeed;
 
+        public override bool CanPool => true;
+        public void Configure(int lifetime, float rotationSpeed = 0f, bool affectedByGravity = false, float animSpeed = 0.15f) {
+            initialColor = Color;
+            initialScale = Scale;
+            Lifetime = lifetime;
+            this.rotationSpeed = rotationSpeed;
+            this.affectedByGravity = affectedByGravity;
+            animationSpeed = animSpeed;
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            initialScale = 0f;
+            rotationSpeed = 0f;
+            affectedByGravity = false;
+            animationSpeed = 0.15f;
+            inOwner = -1;
+        }
         public PRT_AccretionDiskImpact() {
             animationSpeed = 0.15f;
         }

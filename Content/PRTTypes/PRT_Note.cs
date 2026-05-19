@@ -26,6 +26,20 @@ namespace CalamityOverhaul.Content.PRTTypes
             floatOffset = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
+        public override bool CanPool => true;
+        public void Configure(int lifetime, int noteType = -1) {
+            Lifetime = lifetime;
+            this.noteType = noteType >= 0 ? noteType : Main.rand.Next(3);
+            floatOffset = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            noteType = 0;
+            floatOffset = 0f;
+            pulseTimer = 0f;
+        }
+
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             Opacity = 0f;

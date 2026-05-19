@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color glowColor;
         private float pulsePhase;
 
+        public override bool CanPool => true;
         public PRT_CorrosionWave() { }
         public PRT_CorrosionWave(Vector2 position, float startScale, float endScale, int lifetime, float rotation = 0f) {
             Position = position;
@@ -44,6 +45,26 @@ namespace CalamityOverhaul.Content.PRTTypes
                 ? new Color(90, 180, 100)
                 : new Color(110, 200, 115);
             glowColor = new Color(150, 230, 160);
+        }
+        public PRT_CorrosionWave Configure(float endScale, int lt, float rotation = 0f) {
+            originalScale = Scale;
+            maxScale = endScale;
+            Lifetime = lt;
+            Rotation = rotation;
+            pulsePhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            squish = new Vector2(Main.rand.NextFloat(0.8f, 1.2f), Main.rand.NextFloat(0.8f, 1.2f));
+            waveColor = Main.rand.NextBool() ? new Color(90, 180, 100) : new Color(110, 200, 115);
+            glowColor = new Color(150, 230, 160);
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            originalScale = 0f;
+            maxScale = 0f;
+            squish = default;
+            waveColor = default;
+            glowColor = default;
+            pulsePhase = 0f;
         }
 
         public override void SetProperty() {

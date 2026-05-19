@@ -307,11 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float scale = Main.rand.NextFloat(0.6f, 1.4f + od * 1.2f);
                 int lifeTime = Main.rand.Next(15, 35);
 
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    spawnPos, particleVel,
-                    mainCol, edgeCol,
-                    scale, lifeTime
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(spawnPos, particleVel, mainCol, scale).Configure(edgeCol, lifeTime);
             }
 
             //超驱时大量横向散射粒子（高温红炽强调）
@@ -320,11 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 for (int i = 0; i < burstCount; i++) {
                     Vector2 burstVel = perpDir * Main.rand.NextFloat(-8f, 8f)
                         + Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(-2f, 2f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        Projectile.Center, burstVel,
-                        OverdriveTheme.ParticleEdge, OverdriveTheme.ParticleMain,
-                        Main.rand.NextFloat(1.0f, 2.4f), Main.rand.Next(4, 6)//时间别太长
-                    ));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, burstVel, OverdriveTheme.ParticleEdge, Main.rand.NextFloat(1.0f, 2.4f)).Configure(OverdriveTheme.ParticleMain, Main.rand.Next(4, 6));
                 }
             }
         }
@@ -495,11 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(5f + od * 6f, 5f + od * 6f);
                 float scale = Main.rand.NextFloat(0.8f, 2.0f + od * 1.2f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    target.Center + vel * 2f, vel,
-                    mainCol, edgeCol,
-                    scale, Main.rand.Next(20, 40)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + vel * 2f, vel, mainCol, scale).Configure(edgeCol, Main.rand.Next(20, 40));
             }
 
             //改件钩子：仅本地玩家发射方处理派生弹幕，避免重复生成
@@ -580,11 +568,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f + od * 6f, 4f + od * 6f) + Projectile.velocity * 0.3f;
                 float scale = Main.rand.NextFloat(0.5f, 1.5f + od * 1.2f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center, vel,
-                    mainCol, edgeCol,
-                    scale, Main.rand.Next(25, 50)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, mainCol, scale).Configure(edgeCol, Main.rand.Next(25, 50));
             }
 
             //改件钩子：消亡时分裂出更小的副光束，向四周散射

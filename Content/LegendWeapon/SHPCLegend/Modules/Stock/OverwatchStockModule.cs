@@ -58,10 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             for (int i = 0; i < 6; i++) {
                 Vector2 angle = MathHelper.TwoPi * i / 6f * Vector2.One;
                 Vector2 vel = (MathHelper.TwoPi * i / 6f).ToRotationVector2() * 2.5f;
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    player.Center + new Vector2(0, -player.height * 0.5f), vel,
-                    new Color(180, 230, 255), new Color(100, 170, 230),
-                    Main.rand.NextFloat(0.6f, 1.0f), 14));
+                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center + new Vector2(0, -player.height * 0.5f), vel, new Color(180, 230, 255), Main.rand.NextFloat(0.6f, 1.0f)).Configure(new Color(100, 170, 230), 14);
             }
         }
     }

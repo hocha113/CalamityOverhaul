@@ -27,10 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             if (Main.netMode == NetmodeID.Server) return;
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    target.Center, vel,
-                    new Color(180, 240, 255), new Color(80, 180, 255),
-                    Main.rand.NextFloat(1.0f, 2.2f), Main.rand.Next(8, 18)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, vel, new Color(180, 240, 255), Main.rand.NextFloat(1.0f, 2.2f)).Configure(new Color(80, 180, 255), Main.rand.Next(8, 18));
             }
         }
     }

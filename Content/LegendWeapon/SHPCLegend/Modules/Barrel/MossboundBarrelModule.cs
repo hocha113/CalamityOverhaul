@@ -195,12 +195,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             for (int i = 0; i < 6; i++) {
                 float angle = MathHelper.TwoPi * i / 6f + Main.rand.NextFloat(-0.1f, 0.1f);
                 Vector2 spawn = Projectile.Center + angle.ToRotationVector2() * 24f;
-                PRTLoader.AddParticle(new PRT_CorrosionWave(spawn, 0.05f, 0.6f, 28, angle));
+                PRTLoader.NewParticle<PRT_CorrosionWave>(spawn, Vector2.Zero, Color.White, 0.05f).Configure(0.6f, 28, angle);
             }
             //大圆波再补一次脉冲环，形成"地下根脉爆发"
-            PRTLoader.AddParticle(new PRT_DWave(
-                Projectile.Center, Vector2.Zero,
-                new Color(120, 220, 90, 0), new Vector2(1.4f, 0.55f), 0f, 0.05f, 0.55f, 24));
+            PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(120, 220, 90, 0), 0.05f).Configure(new Vector2(1.4f, 0.55f), 0f, 0.55f, 24);
             SoundEngine.PlaySound(SoundID.Item154 with { Volume = 0.45f, Pitch = -0.2f }, Projectile.Center);
             SHPCNaturalFx.Shake(1.5f);
         }

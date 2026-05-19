@@ -108,33 +108,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.1f, 0.1f);
                 float speed = Main.rand.NextFloat(4f, 10f + od * 6f) * (0.6f + chargeRatio * 0.4f);
                 Vector2 vel = angle.ToRotationVector2() * speed;
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center + vel * 2f, vel,
-                    mainCol, edgeCol,
-                    Main.rand.NextFloat(1.0f, 2.5f + od * 1.5f), Main.rand.Next(25, 55)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center + vel * 2f, vel, mainCol, Main.rand.NextFloat(1.0f, 2.5f + od * 1.5f)).Configure(edgeCol, Main.rand.Next(25, 55));
             }
 
             // 内环密集小粒子（超驱时更多）
             int innerCount = 12 + (int)(od * 12f);
             for (int i = 0; i < innerCount; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f + od * 3f, 3f + od * 3f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center, vel,
-                    Color.White, mainCol,
-                    Main.rand.NextFloat(0.4f, 1.0f + od * 0.6f), Main.rand.Next(15, 35)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(0.4f, 1.0f + od * 0.6f)).Configure(mainCol, Main.rand.Next(15, 35));
             }
 
             // 超驱时额外红炽碎片爆发
             if (od > 0.3f) {
                 for (int i = 0; i < 20; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(8f, 8f) * Main.rand.NextFloat(0.5f, 1.2f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        Projectile.Center, vel,
-                        new Color(255, 30, 5), new Color(255, 200, 50),
-                        Main.rand.NextFloat(1.2f, 2.8f), Main.rand.Next(20, 45)
-                    ));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, new Color(255, 30, 5), Main.rand.NextFloat(1.2f, 2.8f)).Configure(new Color(255, 200, 50), Main.rand.Next(20, 45));
                 }
             }
         }

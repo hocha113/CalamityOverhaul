@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private bool affectedByGravity;
         private float stretchFactor; //拉伸因子
 
+        public override bool CanPool => true;
         public PRT_AcidSplash() {
             affectedByGravity = true;
             acidColor = new Color(110, 200, 120);
@@ -34,6 +35,23 @@ namespace CalamityOverhaul.Content.PRTTypes
                 2 => new Color(130, 220, 140),
                 _ => new Color(100, 190, 110)
             };
+        }
+        public PRT_AcidSplash Configure(int lt, bool gravity = true) {
+            Lifetime = lt;
+            affectedByGravity = gravity;
+            acidColor = Main.rand.Next(4) switch {
+                0 => new Color(110, 200, 120),
+                1 => new Color(90, 180, 100),
+                2 => new Color(130, 220, 140),
+                _ => new Color(100, 190, 110)
+            };
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            acidColor = new Color(110, 200, 120);
+            affectedByGravity = true;
+            stretchFactor = 0f;
         }
 
         public override void SetProperty() {

@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float SpinSpeed;          //轻微旋转
         private float DriftScale;         //寿命结束前再次拉长的强度
 
+        public override bool CanPool => true;
         public PRT_HeavenfallAurora() {
             HueSpeed = 0.012f;
             DriftScale = 0.7f;
@@ -57,6 +58,15 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = velocity.LengthSquared() > 0.01f
                 ? velocity.ToRotation()
                 : Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+        public override void Reset() {
+            base.Reset();
+            StretchScale = 0f;
+            ThicknessScale = 0f;
+            HuePhase = 0f;
+            HueSpeed = 0.012f;
+            SpinSpeed = 0f;
+            DriftScale = 0.7f;
         }
 
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;

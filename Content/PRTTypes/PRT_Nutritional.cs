@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.PRTTypes
     {
         //定义粒子使用的纹理路径
         public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override bool CanPool => true;
+        public override void Reset() { base.Reset(); }
 
         //设置粒子的额外属性
         public override void SetProperty() {

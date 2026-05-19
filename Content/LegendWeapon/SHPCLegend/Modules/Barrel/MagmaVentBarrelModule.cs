@@ -111,9 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 PRTLoader.AddParticle(hf);
             }
             //地面冲击环：用 PRT_StarPulseRing 横向压扁形成热浪环
-            PRTLoader.AddParticle(new PRT_StarPulseRing(
-                Projectile.Center + Vector2.UnitY * 4f, Vector2.Zero,
-                new Color(255, 140, 50, 0), 0.05f, 0.55f, 22));
+            PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 4f, Vector2.Zero, new Color(255, 140, 50, 0), 0.05f).Configure(0.05f, 0.55f, 22);
             //方块碎屑火星
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-9f, -2f));

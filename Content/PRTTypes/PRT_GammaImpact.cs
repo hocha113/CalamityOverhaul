@@ -49,6 +49,27 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
+        public override bool CanPool => true;
+        public void Configure(int lt, float rotationSpeed = 0f, bool affectedByGravity = false, float animSpeed = 0.15f) {
+            Lifetime = lt;
+            initialColor = Color;
+            initialScale = Scale;
+            this.rotationSpeed = rotationSpeed;
+            this.affectedByGravity = affectedByGravity;
+            animationSpeed = animSpeed;
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            initialScale = 0f;
+            rotationSpeed = 0f;
+            affectedByGravity = false;
+            animationSpeed = 0.15f;
+            inOwner = -1;
+        }
+
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ai[0] = Main.rand.Next(TotalFrames); //随机起始帧

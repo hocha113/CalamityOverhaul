@@ -109,9 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Projectile.timeLeft -= 30;
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.55f, Pitch = 0.4f }, Projectile.Center);
-                    PRTLoader.AddParticle(new PRT_StarPulseRing(
-                        Projectile.Center, Vector2.Zero,
-                        new Color(220, 240, 255, 0), 0.05f, 0.3f, 14));
+                    PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(220, 240, 255, 0), 0.05f).Configure(0.05f, 0.3f, 14);
                 }
                 return;
             }

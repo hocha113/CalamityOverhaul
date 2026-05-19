@@ -39,13 +39,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             Color outerSparkColor = ChromaColor;
             float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
             float outerSparkScale = 1.3f + scaleBoost;
-            PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, outerSparkScale, outerSparkColor);
-            PRTLoader.AddParticle(spark);
+            PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, Projectile.velocity, outerSparkColor, outerSparkScale).Configure(false, 27);
 
             Color innerSparkColor = VaultUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
             float innerSparkScale = 0.6f + scaleBoost;
-            PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, innerSparkScale, innerSparkColor);
-            PRTLoader.AddParticle(spark2);
+            PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, Projectile.velocity, innerSparkColor, innerSparkScale).Configure(false, 27);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

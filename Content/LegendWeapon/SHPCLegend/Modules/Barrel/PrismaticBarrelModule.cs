@@ -40,10 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 float side = i - 1f; //-1, 0, 1
                 Vector2 offset = perp * side * 6f;
                 Vector2 vel = -forward * 1.5f + perp * side * 0.6f;
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    beam.Projectile.Center + offset, vel,
-                    channels[i], Color.White,
-                    Main.rand.NextFloat(0.5f, 0.9f), Main.rand.Next(10, 18)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center + offset, vel, channels[i], Main.rand.NextFloat(0.5f, 0.9f)).Configure(Color.White, Main.rand.Next(10, 18));
             }
         }
 
@@ -52,10 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             for (int i = 0; i < 9; i++) {
                 Color c = (i % 3) switch { 0 => RChannel, 1 => GChannel, _ => BChannel };
                 Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    target.Center, vel,
-                    c, Color.White,
-                    Main.rand.NextFloat(0.7f, 1.5f), Main.rand.Next(15, 28)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, vel, c, Main.rand.NextFloat(0.7f, 1.5f)).Configure(Color.White, Main.rand.Next(15, 28));
             }
         }
     }

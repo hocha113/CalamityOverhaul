@@ -305,11 +305,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     int pulseCount = overdriveAmount > 0.3f ? 14 : 4;
                     for (int i = 0; i < pulseCount; i++) {
                         Vector2 vel = Main.rand.NextVector2CircularEdge(4f + overdriveAmount * 5f, 4f + overdriveAmount * 5f);
-                        PRTLoader.AddParticle(new PRT_CyberSquare(
-                            Projectile.Center, vel,
-                            pulseMain, pulseEdge,
-                            Main.rand.NextFloat(0.6f, 1.0f + overdriveAmount * 0.5f), Main.rand.Next(15, 25)
-                        ));
+                        PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, pulseMain, Main.rand.NextFloat(0.6f, 1.0f + overdriveAmount * 0.5f)).Configure(pulseEdge, Main.rand.Next(15, 25));
                     }
                 }
             }
@@ -368,13 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(spawnRadius * 0.6f, spawnRadius);
                 Vector2 spawnPos = Projectile.Center + offset;
 
-                PRTLoader.AddParticle(new PRT_CyberConverge(
-                    spawnPos, Projectile.Center,
-                    mainCol, edgeCol,
-                    Main.rand.NextFloat(0.5f, 1.0f),
-                    Main.rand.Next(18, 35),
-                    chargeRatio
-                ));
+                PRTLoader.NewParticle<PRT_CyberConverge>(spawnPos, Vector2.Zero, mainCol, Main.rand.NextFloat(0.5f, 1.0f)).Configure(Projectile.Center, edgeCol, Main.rand.Next(18, 35), chargeRatio);
             }
         }
 
@@ -397,11 +387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 int burstCount = od > 0.3f ? 30 : 12;
                 for (int i = 0; i < burstCount; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(6f + od * 6f, 6f + od * 6f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        Projectile.Center, vel + Projectile.velocity * 0.3f,
-                        launchMain, launchEdge,
-                        Main.rand.NextFloat(0.8f, 1.5f + od * 0.5f), Main.rand.Next(20, 35)
-                    ));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel + Projectile.velocity * 0.3f, launchMain, Main.rand.NextFloat(0.8f, 1.5f + od * 0.5f)).Configure(launchEdge, Main.rand.Next(20, 35));
                 }
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/NorfleetFire".GetSound() with { Pitch = -0.62f, Volume = 0.85f }, Projectile.Center);
             }
@@ -469,11 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Vector2 offset = perpDir * Main.rand.NextFloat(-12f - od * 10f, 12f + od * 10f);
                 Vector2 vel = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 6f + od * 5f)
                     + perpDir * Main.rand.NextFloat(-3f - od * 2f, 3f + od * 2f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center + offset, vel,
-                    mainCol, edgeCol,
-                    Main.rand.NextFloat(0.6f, 1.2f + od * 0.6f), Main.rand.Next(15, 30)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center + offset, vel, mainCol, Main.rand.NextFloat(0.6f, 1.2f + od * 0.6f)).Configure(edgeCol, Main.rand.Next(15, 30));
             }
         }
 
@@ -505,11 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             int count = od > 0.3f ? 35 : 16;
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(7f + od * 8f, 7f + od * 8f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center, vel,
-                    mainCol, edgeCol,
-                    Main.rand.NextFloat(0.8f, 2.2f + od * 1.2f), Main.rand.Next(25, 55)
-                ));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, mainCol, Main.rand.NextFloat(0.8f, 2.2f + od * 1.2f)).Configure(edgeCol, Main.rand.Next(25, 55));
             }
         }
 

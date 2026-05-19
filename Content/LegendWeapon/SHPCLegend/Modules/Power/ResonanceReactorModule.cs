@@ -38,10 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count;
                 Vector2 vel = angle.ToRotationVector2() * 6f;
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    orb.Projectile.Center, vel,
-                    new Color(140, 255, 220), new Color(40, 200, 170),
-                    Main.rand.NextFloat(0.8f, 1.6f), Main.rand.Next(18, 30)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center, vel, new Color(140, 255, 220), Main.rand.NextFloat(0.8f, 1.6f)).Configure(new Color(40, 200, 170), Main.rand.Next(18, 30));
             }
         }
 

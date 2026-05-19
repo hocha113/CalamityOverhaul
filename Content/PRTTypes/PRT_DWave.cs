@@ -28,6 +28,24 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = rotation;
         }
 
+        public override bool CanPool => true;
+        public void Configure(Vector2 squish, float rotation, float finalScale, int lifeTime) {
+            BaseColor = Color;
+            OriginalScale = Scale;
+            Squish = squish;
+            Rotation = rotation;
+            FinalScale = finalScale;
+            Lifetime = lifeTime;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            OriginalScale = 0f;
+            FinalScale = 0f;
+            Squish = default;
+            BaseColor = default;
+        }
+
         public override void AI() {
             float pulseProgress = LifetimeCompletion;
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);

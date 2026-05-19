@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color mistColor;
         private int frameIndex;
 
+        public override bool CanPool => true;
         public PRT_ToxicMist() {
             depthLayer = 0.5f;
             mistColor = new Color(160, 230, 170, 180);
@@ -41,6 +42,23 @@ namespace CalamityOverhaul.Content.PRTTypes
                 : new Color(70, 130, 70); //背景 - 暗绿
 
             frameIndex = Main.rand.Next(16);
+        }
+        public PRT_ToxicMist Configure(int lt, float depth = 0.5f) {
+            Lifetime = lt;
+            depthLayer = MathHelper.Clamp(depth, 0f, 1f);
+            rotationSpeed = Main.rand.NextFloat(-0.01f, 0.01f);
+            hueShift = Main.rand.NextFloat(-0.02f, 0.02f);
+            mistColor = depth > 0.6f ? new Color(100, 160, 80) : new Color(70, 130, 70);
+            frameIndex = Main.rand.Next(16);
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            rotationSpeed = 0f;
+            hueShift = 0f;
+            depthLayer = 0.5f;
+            mistColor = new Color(160, 230, 170, 180);
+            frameIndex = 0;
         }
 
         public override void SetProperty() {

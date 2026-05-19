@@ -120,9 +120,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             if (ShootCoolingValue > 19) {
                 if (!canAltFire) {
                     for (int i = 0; i < 3; i++) {
-                        PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center, ShootVelocity, Color.BlueViolet
-                            , new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), ShootVelocity.ToRotation(), 0.62f, 0.12f, 60, Projectile);
-                        PRTLoader.AddParticle(pulse);
+                        PRTLoader.NewParticle<PRT_LonginusWave>(Projectile.Center, ShootVelocity, Color.BlueViolet, 0.62f).Configure(new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), ShootVelocity.ToRotation(), 0.12f, 60, Projectile);
                     }
                     canAltFire = true;
                 }

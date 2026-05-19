@@ -119,10 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 //射击方向闪光粒子
                 for (int i = 0; i < 5; i++) {
                     Vector2 vel = dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(4f, 9f);
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        Projectile.Center, vel,
-                        new Color(255, 200, 60), new Color(255, 120, 10),
-                        Main.rand.NextFloat(0.8f, 1.8f), Main.rand.Next(10, 20)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, new Color(255, 200, 60), Main.rand.NextFloat(0.8f, 1.8f)).Configure(new Color(255, 120, 10), Main.rand.Next(10, 20));
                 }
             }
         }
@@ -140,12 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Vector2 vel = ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 1.5f
                     + Main.rand.NextVector2Circular(0.5f, 0.5f);
                 if (Main.rand.NextBool(3)) {
-                    PRTLoader.AddParticle(new PRT_CyberSquare(
-                        pos, vel,
-                        Color.Lerp(new Color(255, 200, 60), new Color(255, 120, 10), Main.rand.NextFloat()),
-                        new Color(255, 80, 0),
-                        Main.rand.NextFloat(0.5f, 1.1f) * fade,
-                        Main.rand.Next(6, 14)));
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, Color.Lerp(new Color(255, 200, 60), new Color(255, 120, 10), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1.1f) * fade).Configure(new Color(255, 80, 0), Main.rand.Next(6, 14));
                 }
             }
         }
@@ -154,21 +146,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             for (int i = 0; i < 14; i++) {
                 float ang = MathHelper.TwoPi * i / 14f;
                 Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center, vel,
-                    new Color(255, 210, 80), new Color(255, 140, 20),
-                    Main.rand.NextFloat(0.8f, 2.0f), Main.rand.Next(12, 24)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, new Color(255, 210, 80), Main.rand.NextFloat(0.8f, 2.0f)).Configure(new Color(255, 140, 20), Main.rand.Next(12, 24));
             }
         }
 
         private void SpawnDeathBurst() {
             for (int i = 0; i < 20; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f + Main.rand.NextFloat(4f), 3f + Main.rand.NextFloat(4f));
-                PRTLoader.AddParticle(new PRT_CyberSquare(
-                    Projectile.Center, vel,
-                    Color.Lerp(new Color(255, 200, 60), new Color(255, 80, 0), Main.rand.NextFloat()),
-                    new Color(200, 60, 0),
-                    Main.rand.NextFloat(0.6f, 1.6f), Main.rand.Next(15, 30)));
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, Color.Lerp(new Color(255, 200, 60), new Color(255, 80, 0), Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1.6f)).Configure(new Color(200, 60, 0), Main.rand.Next(15, 30));
             }
         }
 

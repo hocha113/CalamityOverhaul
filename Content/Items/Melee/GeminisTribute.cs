@@ -329,13 +329,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 vel = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3.5f);
             vel += perp * Main.rand.NextFloat(-1.5f, 1.5f);
 
-            PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                spawnPos, vel,
-                Main.rand.Next(14, 22),
-                Main.rand.NextFloat(1.4f, 2.2f),
-                mode
-            );
-            PRTLoader.AddParticle(spark);
+            PRTLoader.NewParticle<PRT_TwinsSpark>(spawnPos, vel, Color.White, Main.rand.NextFloat(1.4f, 2.2f)).Configure(Main.rand.Next(14, 22), mode);
         }
 
         private void SpawnLaunchBurst() {
@@ -348,13 +342,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 14; i++) {
                 float spread = Main.rand.NextFloat(-0.55f, 0.55f);
                 Vector2 vel = forward.RotatedBy(spread) * Main.rand.NextFloat(4f, 11f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    Projectile.Center, vel,
-                    Main.rand.Next(18, 28),
-                    Main.rand.NextFloat(1.6f, 2.6f),
-                    mode
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(1.6f, 2.6f)).Configure(Main.rand.Next(18, 28), mode);
             }
         }
 
@@ -381,13 +369,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 9; i++) {
                 float spread = Main.rand.NextFloat(-1f, 1f);
                 Vector2 vel = hitDir.RotatedBy(spread) * Main.rand.NextFloat(4f, 9f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    target.Center, vel,
-                    Main.rand.Next(14, 22),
-                    Main.rand.NextFloat(1.5f, 2.3f),
-                    mode
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(target.Center, vel, Color.White, Main.rand.NextFloat(1.5f, 2.3f)).Configure(Main.rand.Next(14, 22), mode);
             }
 
             //融合连击在命中时生成融合魔眼
@@ -407,13 +389,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(2.5f, 5f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    Projectile.Center, vel,
-                    Main.rand.Next(12, 18),
-                    Main.rand.NextFloat(1.2f, 1.8f),
-                    mode
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(1.2f, 1.8f)).Configure(Main.rand.Next(12, 18), mode);
             }
         }
 
@@ -591,13 +567,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 for (int i = 0; i < 24; i++) {
                     float angle = MathHelper.TwoPi * i / 24f;
                     Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 11f);
-                    PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                        lockPos, vel,
-                        Main.rand.Next(20, 32),
-                        Main.rand.NextFloat(1.8f, 2.8f),
-                        i % 2
-                    );
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(lockPos, vel, Color.White, Main.rand.NextFloat(1.8f, 2.8f)).Configure(Main.rand.Next(20, 32), i % 2);
                 }
             }
 
@@ -617,14 +587,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (eyeTimer % 3 == 0) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    Projectile.Center + Main.rand.NextVector2Circular(18f, 18f),
-                    vel,
-                    Main.rand.Next(16, 24),
-                    Main.rand.NextFloat(1.2f, 1.8f),
-                    pulseCounter % 2
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center + Main.rand.NextVector2Circular(18f, 18f), vel, Color.White, Main.rand.NextFloat(1.2f, 1.8f)).Configure(Main.rand.Next(16, 24), pulseCounter % 2);
             }
 
             Lighting.AddLight(Projectile.Center, 1.0f, 0.7f, 1.0f);
@@ -653,13 +616,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 5; i++) {
                 float spread = Main.rand.NextFloat(-0.18f, 0.18f);
                 Vector2 vel = dir.RotatedBy(spread) * Main.rand.NextFloat(14f, 22f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    Projectile.Center, vel,
-                    Main.rand.Next(22, 32),
-                    Main.rand.NextFloat(1.8f, 2.6f),
-                    eyeMode
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(1.8f, 2.6f)).Configure(Main.rand.Next(22, 32), eyeMode);
             }
         }
 
@@ -704,13 +661,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 36; i++) {
                 float angle = MathHelper.TwoPi * i / 36f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 14f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    Projectile.Center, vel,
-                    Main.rand.Next(22, 35),
-                    Main.rand.NextFloat(1.8f, 3f),
-                    i % 2
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(1.8f, 3f)).Configure(Main.rand.Next(22, 35), i % 2);
             }
         }
 
