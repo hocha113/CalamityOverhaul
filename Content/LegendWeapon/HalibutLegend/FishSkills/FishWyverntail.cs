@@ -52,9 +52,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);
-                var cloudParticle = new PRT_CloudParticle(position + Main.rand.NextVector2Circular(20f, 20f),
-                    vel, Main.rand.NextFloat(0.8f, 1.5f), new Color(240, 250, 255), 45);
-                PRTLoader.AddParticle(cloudParticle);
+                PRTLoader.NewParticle<PRT_CloudParticle>(position + Main.rand.NextVector2Circular(20f, 20f), Vector2.Zero, Color.White, 1f)
+                    .Configure(vel, Main.rand.NextFloat(0.8f, 1.5f), new Color(240, 250, 255), 45);
             }
 
             //白色火花
@@ -138,9 +137,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SoundEngine.PlaySound(SoundID.DD2_OgreRoar with { Volume = 0.6f, Pitch = -0.2f }, firePos);
                 for (int k = 0; k < 25; k++) {
                     Vector2 v = Main.rand.NextVector2Circular(6f, 6f);
-                    var cloudParticle = new PRT_CloudParticle(firePos + Main.rand.NextVector2Circular(15f, 15f),
-                        v, Main.rand.NextFloat(0.6f, 1.2f), new Color(230, 245, 255), 35);
-                    PRTLoader.AddParticle(cloudParticle);
+                    PRTLoader.NewParticle<PRT_CloudParticle>(firePos + Main.rand.NextVector2Circular(15f, 15f), Vector2.Zero, Color.White, 1f)
+                        .Configure(v, Main.rand.NextFloat(0.6f, 1.2f), new Color(230, 245, 255), 35);
                 }
 
                 for (int k = 0; k < 18; k++) {
@@ -254,12 +252,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (cloudSpawnTimer % 3 == 0 && !VaultUtils.isServer) {
                 Vector2 trailPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f;
                 trailPos += Main.rand.NextVector2Circular(8f, 8f);
-                var cloudParticle = new PRT_CloudParticle(trailPos,
-                    -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f),
-                    Main.rand.NextFloat(0.7f, 1.3f),
-                    new Color(235, 245, 255, 180),
-                    Main.rand.Next(25, 40));
-                PRTLoader.AddParticle(cloudParticle);
+                PRTLoader.NewParticle<PRT_CloudParticle>(trailPos, Vector2.Zero, Color.White, 1f)
+                    .Configure(-Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f),
+                        Main.rand.NextFloat(0.7f, 1.3f), new Color(235, 245, 255, 180), Main.rand.Next(25, 40));
             }
 
             //白色火花粒子
@@ -343,28 +338,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 7f) +
                         impactVelocity * 0.2f;
 
-                    var cloudParticle = new PRT_CloudParticle(
-                        center + offset * 0.3f,
-                        velocity,
-                        Main.rand.NextFloat(1f, 2f) + ring * 0.3f,
-                        new Color(240, 250, 255, 200 - ring * 40),
-                        Main.rand.Next(30, 50)
-                    );
-                    PRTLoader.AddParticle(cloudParticle);
+                    PRTLoader.NewParticle<PRT_CloudParticle>(center + offset * 0.3f, Vector2.Zero, Color.White, 1f)
+                        .Configure(velocity, Main.rand.NextFloat(1f, 2f) + ring * 0.3f,
+                            new Color(240, 250, 255, 200 - ring * 40), Main.rand.Next(30, 50));
                 }
             }
 
             //中心浓云
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
-                var cloudParticle = new PRT_CloudParticle(
-                    center + Main.rand.NextVector2Circular(10f, 10f),
-                    vel + impactVelocity * 0.1f,
-                    Main.rand.NextFloat(1.5f, 2.5f),
-                    new Color(250, 255, 255, 220),
-                    Main.rand.Next(40, 60)
-                );
-                PRTLoader.AddParticle(cloudParticle);
+                PRTLoader.NewParticle<PRT_CloudParticle>(center + Main.rand.NextVector2Circular(10f, 10f), Vector2.Zero, Color.White, 1f)
+                    .Configure(vel + impactVelocity * 0.1f, Main.rand.NextFloat(1.5f, 2.5f),
+                        new Color(250, 255, 255, 220), Main.rand.Next(40, 60));
             }
         }
 
@@ -416,14 +401,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float rotationSpeed;
         private float currentRotation;
 
-        public PRT_CloudParticle(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime) {
-            Position = position;
-            this.velocity = velocity;
-            this.scale = scale;
-            this.color = color;
+        public override bool CanPool => true;
+        public void Configure(Vector2 vel, float scl, Color clr, int lifetime) {
+            velocity = vel;
+            scale = scl;
+            color = clr;
             Lifetime = lifetime;
             rotationSpeed = Main.rand.NextFloat(-0.08f, 0.08f);
             currentRotation = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public override void Reset() {
+            base.Reset();
+            velocity = Vector2.Zero;
+            scale = 0f;
+            color = default;
+            rotationSpeed = 0f;
+            currentRotation = 0f;
         }
 
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
