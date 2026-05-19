@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         public override void SetDefaults() {
-            Item.damage = 1285;
+            Item.damage = 285;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 20;
             Item.width = 52;
