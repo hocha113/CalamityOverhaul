@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public Entity entity = null!;
         public override bool CanPool => true;
         public override string Texture => CWRConstant.Masking + "Extra_98";
-        public PRT_SparkAlpha() { }
         public PRT_SparkAlpha Configure(bool affectedByGravity, int lifetime) {
             InitialColor = Color;
             AffectedByGravity = affectedByGravity;

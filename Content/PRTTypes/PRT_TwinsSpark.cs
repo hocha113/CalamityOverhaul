@@ -20,37 +20,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float baseScale;
         private float wobble;
 
-        /// <summary>
-        /// 创建一颗双子魔眼粒子。
-        /// </summary>
-        /// <param name="position">起始位置</param>
-        /// <param name="velocity">初始速度</param>
-        /// <param name="lifetime">寿命(帧)</param>
-        /// <param name="scale">基础缩放</param>
-        /// <param name="eyeMode">0=激光眼 1=魔焰眼</param>
-        public PRT_TwinsSpark() { }
-        public PRT_TwinsSpark(Vector2 position, Vector2 velocity, int lifetime, float scale, int eyeMode) {
-            Position = position;
-            Velocity = velocity;
-            Lifetime = lifetime;
-            Scale = scale;
-            baseScale = scale;
-            EyeMode = eyeMode;
-            wobble = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            if (eyeMode == 1) {
-                //魔焰眼:橙红渐变核心带金色辉光
-                InitialColor = new Color(255, 110, 35);
-                GlowColor = new Color(255, 220, 120);
-            }
-            else {
-                //激光眼:青蓝渐变核心带紫色辉光
-                InitialColor = new Color(120, 200, 255);
-                GlowColor = new Color(180, 130, 255);
-            }
-            Color = InitialColor;
-        }
-
         public override bool CanPool => true;
         public void Configure(int lifetime, int eyeMode) {
             Lifetime = lifetime;

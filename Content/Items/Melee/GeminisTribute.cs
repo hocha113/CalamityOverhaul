@@ -642,13 +642,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
-                PRT_TwinsSpark spark = new PRT_TwinsSpark(
-                    target.Center, vel,
-                    Main.rand.Next(12, 20),
-                    Main.rand.NextFloat(1.4f, 2.2f),
-                    Main.rand.Next(2)
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_TwinsSpark>(target.Center, vel, Color.White, Main.rand.NextFloat(1.4f, 2.2f)).Configure(Main.rand.Next(12, 20), Main.rand.Next(2));
             }
         }
 

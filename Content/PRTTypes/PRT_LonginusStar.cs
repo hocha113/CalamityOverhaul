@@ -16,17 +16,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
 
-        public PRT_LonginusStar() { }
-        public PRT_LonginusStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity) {
-            Position = relativePosition;
-            Velocity = velocity;
-            AffectedByGravity = affectedByGravity;
-            Scale = scale;
-            Lifetime = lifetime;
-            Color = InitialColor = color;
-            Entity = entity;
-        }
-
         public override bool CanPool => true;
         public void Configure(bool affectedByGravity, int lifetime, Entity entity = null) {
             AffectedByGravity = affectedByGravity;

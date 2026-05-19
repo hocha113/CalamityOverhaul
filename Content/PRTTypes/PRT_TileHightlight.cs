@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.PRTTypes
     {
         public override string Texture => CWRConstant.Masking + "TileHightlight";
         public override bool CanPool => true;
-        public override void Reset() { base.Reset(); }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             Opacity++;

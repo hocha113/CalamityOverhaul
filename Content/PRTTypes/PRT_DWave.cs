@@ -14,21 +14,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Vector2 Squish;
         private Color BaseColor;
 
-        public PRT_DWave() { }
-        public PRT_DWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish
-            , float rotation, float originalScale, float finalScale, int lifeTime) {
-            Position = position;
-            Velocity = velocity;
-            BaseColor = color;
-            OriginalScale = originalScale;
-            FinalScale = finalScale;
-            Scale = originalScale;
-            Lifetime = lifeTime;
-            Squish = squish;
-            Rotation = rotation;
-        }
-
-        public override bool CanPool => true;
         public void Configure(Vector2 squish, float rotation, float finalScale, int lifeTime) {
             BaseColor = Color;
             OriginalScale = Scale;

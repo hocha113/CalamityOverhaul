@@ -22,17 +22,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             InitialColor = default;
             AffectedByGravity = false;
         }
-        public PRT_HeavenfallStar() { }
-        public PRT_HeavenfallStar(Vector2 relativePosition, Vector2 velocity
-            , bool affectedByGravity, int lifetime, float scale, Color color) {
-            Position = relativePosition;
-            Velocity = velocity;
-            AffectedByGravity = affectedByGravity;
-            Scale = scale;
-            Lifetime = lifetime;
-            Color = InitialColor = color;
-        }
-
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

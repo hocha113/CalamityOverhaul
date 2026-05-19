@@ -4,10 +4,6 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_HeavenfallStarAlpha : PRT_HeavenfallStar
     {
         public override bool CanPool => true;
-        public PRT_HeavenfallStarAlpha() { }
-        public PRT_HeavenfallStarAlpha(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color)
-            : base(relativePosition, velocity, affectedByGravity, lifetime, scale, color) {
-        }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
     }
 }

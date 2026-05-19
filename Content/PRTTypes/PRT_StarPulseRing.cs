@@ -31,18 +31,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             FinalScale = 0f;
             BaseColor = default;
         }
-        public PRT_StarPulseRing() { }
-        public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color
-            , float originalScale, float finalScale, int lifeTime) {
-            Position = position;
-            Velocity = velocity;
-            BaseColor = color;
-            OriginalScale = originalScale;
-            FinalScale = finalScale;
-            Scale = originalScale;
-            Lifetime = lifeTime;
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             float pulseProgress = LifetimeCompletion;

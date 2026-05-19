@@ -12,16 +12,6 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override string Texture => CWRConstant.Masking + "Line";
 
-        public PRT_Line() { }
-        public PRT_Line(Vector2 relativePosition, Vector2 velocity, bool hasGravityEffect, int lifetime, float scale, Color color) {
-            Position = relativePosition;
-            Velocity = velocity;
-            HasGravityEffect = hasGravityEffect;
-            Scale = scale;
-            Lifetime = lifetime;
-            Color = InitialColor = color;
-        }
-
         public override bool CanPool => true;
         public void Configure(bool hasGravityEffect, int lifetime) {
             HasGravityEffect = hasGravityEffect;

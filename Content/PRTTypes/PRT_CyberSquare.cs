@@ -42,19 +42,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public PRT_CyberSquare() {
             aspectRatio = 1f;
         }
-        public PRT_CyberSquare(Vector2 position, Vector2 velocity, Color color, Color edge, float scale, int lifeTime) {
-            Position = position;
-            Velocity = velocity;
-            Color = color;
-            edgeColor = edge;
-            Scale = initialScale = scale;
-            Lifetime = lifeTime;
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            rotationSpeed = Main.rand.NextFloat(0.02f, 0.08f) * (Main.rand.NextBool() ? 1f : -1f);
-            aspectRatio = Main.rand.NextFloat(0.5f, 1.5f);
-            flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
 
         public override void AI() {

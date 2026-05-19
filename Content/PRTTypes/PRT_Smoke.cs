@@ -11,20 +11,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private bool Glowing;
         private float HueShift;
         public override bool CanPool => true;
-        public PRT_Smoke() { }
-        public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
-            , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f) {
-            Position = position;
-            Velocity = velocity;
-            Color = color;
-            Scale = scale;
-            Lifetime = lifetime;
-            Opacity = opacity;
-            Spin = rotationSpeed;
-            Glowing = glowing;
-            HueShift = hueshift;
-
-        }
         public PRT_Smoke Configure(int lt, float opacity, float rotSpeed = 0f, bool glowing = false, float hueshift = 0f) {
             Lifetime = lt;
             Opacity = opacity;

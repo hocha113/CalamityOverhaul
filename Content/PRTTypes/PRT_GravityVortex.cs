@@ -19,26 +19,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float orbitAngle;
         private float orbitRadius;
 
-        public PRT_GravityVortex() { }
-        public PRT_GravityVortex(
-            Vector2 center,
-            float startAngle,
-            float startRadius,
-            Color color,
-            float scale,
-            int lifetime) {
-            this.center = center;
-            orbitAngle = startAngle;
-            orbitRadius = startRadius;
-            initialColor = color;
-            Color = color;
-            initialScale = scale;
-            Scale = scale;
-            Lifetime = lifetime;
-            Position = center + orbitAngle.ToRotationVector2() * orbitRadius;
-            Velocity = Vector2.Zero;
-        }
-
         public override bool CanPool => true;
         public void Configure(float startAngle, float startRadius, int lifetime) {
             center = Position;

@@ -46,27 +46,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public PRT_AccretionDiskImpact() {
             animationSpeed = 0.15f;
         }
-        public PRT_AccretionDiskImpact(
-            Vector2 position,
-            Vector2 velocity,
-            Color color,
-            float scale,
-            int lifetime,
-            float rotationSpeed = 0f,
-            bool affectedByGravity = false,
-            float animSpeed = 0.15f) {
-            Position = position;
-            Velocity = velocity;
-            initialColor = color;
-            Color = color;
-            initialScale = scale;
-            Scale = scale;
-            Lifetime = lifetime;
-            this.rotationSpeed = rotationSpeed;
-            this.affectedByGravity = affectedByGravity;
-            animationSpeed = animSpeed;
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;

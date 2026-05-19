@@ -16,20 +16,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Vector2 EntityPos;
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
-        public PRT_LonginusWave() { }
-        public PRT_LonginusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
-            Position = position;
-            Velocity = velocity;
-            BaseColor = color;
-            OriginalScale = originalScale;
-            FinalScale = finalScale;
-            Scale = originalScale;
-            Lifetime = lifeTime;
-            Squish = squish;
-            Rotation = rotation;
-            Entity = entity;
-        }
-
         public override bool CanPool => true;
         public void Configure(Vector2 squish, float rotation, float finalScale, int lifeTime, Entity entity = null) {
             BaseColor = Color;

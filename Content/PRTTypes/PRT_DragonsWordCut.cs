@@ -13,16 +13,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public float Xlength = 0.6f;
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public override bool CanPool => true;
-        public PRT_DragonsWordCut() { }
-        public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity
-            , bool affectedByGravity, int lifetime, float scale, Color color) {
-            Position = relativePosition;
-            Velocity = velocity;
-            AffectedByGravity = affectedByGravity;
-            Scale = scale;
-            Lifetime = lifetime;
-            Color = InitialColor = color;
-        }
         public PRT_DragonsWordCut Configure(bool affectedByGravity, int lifetime) {
             AffectedByGravity = affectedByGravity;
             Lifetime = lifetime;

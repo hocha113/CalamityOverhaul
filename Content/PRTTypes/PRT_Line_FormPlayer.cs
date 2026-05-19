@@ -12,16 +12,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public Player Owner = null!;
         public override string Texture => CWRConstant.Masking + "Line";
         public override bool CanPool => true;
-        public PRT_Line_FormPlayer() { }
-        public PRT_Line_FormPlayer(Vector2 relativePosition, Vector2 velocity
-            , bool affectedByGravity, int lifetime, float scale, Color color) {
-            Position = relativePosition;
-            Velocity = velocity;
-            AffectedByGravity = affectedByGravity;
-            Scale = scale;
-            Lifetime = lifetime;
-            Color = InitialColor = color;
-        }
+
         public override void Reset() {
             base.Reset();
             InitialColor = default;

@@ -24,28 +24,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float pulsePhase;
 
         public override bool CanPool => true;
-        public PRT_CorrosionWave() { }
-        public PRT_CorrosionWave(Vector2 position, float startScale, float endScale, int lifetime, float rotation = 0f) {
-            Position = position;
-            Velocity = Vector2.Zero;
-            originalScale = startScale;
-            maxScale = endScale;
-            Scale = startScale;
-            Lifetime = lifetime;
-            Rotation = rotation;
-            pulsePhase = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            squish = new Vector2(
-                Main.rand.NextFloat(0.8f, 1.2f),
-                Main.rand.NextFloat(0.8f, 1.2f)
-            );
-
-            //随机腐蚀颜色
-            waveColor = Main.rand.NextBool()
-                ? new Color(90, 180, 100)
-                : new Color(110, 200, 115);
-            glowColor = new Color(150, 230, 160);
-        }
         public PRT_CorrosionWave Configure(float endScale, int lt, float rotation = 0f) {
             originalScale = Scale;
             maxScale = endScale;

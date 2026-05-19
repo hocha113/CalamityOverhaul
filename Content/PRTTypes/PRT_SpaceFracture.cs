@@ -19,24 +19,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public int inOwner = -1;
 
         public override bool CanPool => true;
-        public PRT_SpaceFracture() { }
-        public PRT_SpaceFracture(
-            Vector2 position,
-            Vector2 velocity,
-            Color color,
-            float scale,
-            int lifetime,
-            float angularVelocity = 0f) {
-            Position = position;
-            Velocity = velocity;
-            initialColor = color;
-            Color = color;
-            initialScale = scale;
-            Scale = scale;
-            Lifetime = lifetime;
-            this.angularVelocity = angularVelocity;
-            Rotation = velocity.ToRotation();
-        }
         public PRT_SpaceFracture Configure(int lt, float angularVelocity = 0f) {
             Lifetime = lt;
             initialColor = Color;
