@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         internal void SpawnHouengEffect() {
             for (int i = 0; i < 133; i++) {
-                PRT_Light particle = PRTLoader.NewParticle<PRT_Light>(npc.Center + VaultUtils.RandVr(0, npc.width), VaultUtils.RandVr(3, 13), Color.Red, Main.rand.Next(1, 3)).Configure(32);
+                PRTLoader.NewParticle<PRT_Light>(npc.Center + VaultUtils.RandVr(0, npc.width), VaultUtils.RandVr(3, 13), Color.Red, Main.rand.Next(1, 3)).Configure(32);
             }
             for (int i = 0; i < 60; i++) {
                 Vector2 dustV = VaultUtils.RandVr(3, 33);

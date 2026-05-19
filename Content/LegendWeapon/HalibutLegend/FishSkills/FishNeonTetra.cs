@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnNeonParticle() {
             Color neonColor = new Color(50, 200, 255);
 
-            BasePRT neon = PRTLoader.NewParticle<PRT_Light>(
+            PRTLoader.NewParticle<PRT_Light>(
                 Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
                 Main.rand.NextVector2Circular(2f, 2f),
                 neonColor,
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
                 Color neonColor = new Color(50, 200, 255);
 
-                BasePRT neon = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     neonColor,
@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
                 Color neonColor = new Color(50, 200, 255);
 
-                BasePRT fade = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     neonColor,

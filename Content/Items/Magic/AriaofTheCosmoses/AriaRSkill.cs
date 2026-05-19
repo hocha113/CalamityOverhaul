@@ -510,7 +510,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 for (int i = 0; i < 12; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(25f, 25f);
 
-                    BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                    PRTLoader.NewParticle<PRT_Light>(
                         target.Center,
                         velocity,
                         Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),

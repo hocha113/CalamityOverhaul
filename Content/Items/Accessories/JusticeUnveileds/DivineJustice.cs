@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
                                Main.rand.NextFloat(3f, 6f) * (1f + chargeIntensity);
 
-            BasePRT particle = PRTLoader.NewParticle<PRT_Light>(spawnPos, velocity,
+            PRTLoader.NewParticle<PRT_Light>(spawnPos, velocity,
                 Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),
                 Main.rand.NextFloat(0.5f, 1f)).Configure(20, 1, 1.2f, hueShift: 0.0f);
         }

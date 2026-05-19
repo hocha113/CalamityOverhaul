@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     particleColor,
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //在飞行过程中生成轨迹粒子
             if (State == (float)LightningState.Striking && Timer % 4 == 0 && !VaultUtils.isServer) {
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(8, 8),
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
                     lightColor * 0.5f,

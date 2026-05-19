@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
 
-                BasePRT crimson = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     position,
                     velocity,
                     Color.Crimson,

@@ -661,7 +661,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 ringPos = Projectile.Center + angle.ToRotationVector2() * 80f;
                 Vector2 velocity = (currentTarget.Center - ringPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
 
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     ringPos,
                     velocity,
                     lightningColor,
@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(32, 32);
             Vector2 particleVel = Main.rand.NextVector2Circular(3f, 3f);
 
-            BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+            PRTLoader.NewParticle<PRT_Light>(
                 particlePos,
                 particleVel,
                 new Color(180, 220, 255),
@@ -734,7 +734,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + angle.ToRotationVector2() * Main.rand.NextFloat(60, 100);
                 Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(5f, 10f);
 
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
                     new Color(150, 200, 255),
@@ -751,7 +751,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(50, 50);
                 Vector2 particleVel = Main.rand.NextVector2Circular(10f, 10f);
 
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
                     new Color(200, 230, 255),
@@ -948,7 +948,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             //消失特效
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     new Color(180, 220, 255),

@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 float angle = MathHelper.TwoPi * i / segments + phaseTimer * 0.1f;
                 Vector2 ringPos = Projectile.Center + angle.ToRotationVector2() * ringRadius;
 
-                BasePRT ring = PRTLoader.NewParticle<PRT_Light>(ringPos, Vector2.Zero
+                PRTLoader.NewParticle<PRT_Light>(ringPos, Vector2.Zero
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Gold, Color.Orange, Color.Red)
                     , Main.rand.NextFloat(0.8f, 1.2f)).Configure(15, opacity: 0.4f, squishStrenght: 1f, _entity: Owner, _followingRateRatio: 1f);
             }
@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(200f * (1f - chargeProgress), 200f * (1f - chargeProgress));
             Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * 8f * chargeProgress;
 
-            BasePRT energy = PRTLoader.NewParticle<PRT_Light>(spawnPos, velocity
+            PRTLoader.NewParticle<PRT_Light>(spawnPos, velocity
                 , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Yellow, Color.Orange, Color.Red)
                 , Main.rand.NextFloat(1f, 1.8f)).Configure(25, opacity: 0.5f, squishStrenght: 1.3f);
 
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 80; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
 
-                BasePRT complete = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow, Color.White)
                     , Main.rand.NextFloat(1.5f, 2.5f)).Configure(30, opacity: 0.7f, squishStrenght: 1.8f);
             }
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 120; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(25f, 25f);
 
-                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(Owner.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Owner.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.OrangeRed, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(2f, 3.5f)).Configure(40, opacity: 0.8f, squishStrenght: 2f);
             }
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 Vector2 trailPos = Projectile.Center + Main.rand.NextVector2Circular(40f, 40f) - dashDirection * i * 30f;
                 Vector2 trailVel = -dashDirection * Main.rand.NextFloat(5f, 15f);
 
-                BasePRT trail = PRTLoader.NewParticle<PRT_Light>(trailPos, trailVel
+                PRTLoader.NewParticle<PRT_Light>(trailPos, trailVel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(2f, 3.5f)).Configure(20, opacity: 0.6f, squishStrenght: 1.8f);
             }
@@ -342,7 +342,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 25; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(12f, 12f);
 
-                BasePRT mini = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(1.2f, 2f)).Configure(15, opacity: 0.5f, squishStrenght: 1.5f);
             }
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 300; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(35f, 35f);
 
-                BasePRT ultimate = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.OrangeRed, Color.Orange, Color.Yellow, Color.White)
                     , Main.rand.NextFloat(2.5f, 4.5f)).Configure(60, opacity: 0.9f, squishStrenght: 2.5f);
             }
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(20f, 20f) * (1f - progress);
 
-                BasePRT continuous = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(1.8f, 3f)).Configure(25, opacity: 0.6f, squishStrenght: 1.8f);
             }
@@ -437,7 +437,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 30; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(12f, 12f);
 
-                BasePRT hit2 = PRTLoader.NewParticle<PRT_Light>(target.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(target.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(1.5f, 2.5f)).Configure(20, opacity: 0.6f, squishStrenght: 1.5f);
             }
@@ -450,7 +450,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 80; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(18f, 18f);
 
-                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(position, vel
+                PRTLoader.NewParticle<PRT_Light>(position, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.OrangeRed, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(1.8f, 3f)).Configure(35, opacity: 0.7f, squishStrenght: 2f);
             }

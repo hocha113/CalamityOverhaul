@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float hue = Main.rand.NextFloat(1f);
                 Color tropicalColor = Main.hslToRgb(hue, 1f, 0.6f);
 
-                BasePRT tropical = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     position,
                     Main.rand.NextVector2Circular(4f, 4f),
                     tropicalColor,
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 5f;
                 Color hitColor = Main.hslToRgb((hue + i * 0.1f) % 1f, 1f, 0.6f);
 
-                BasePRT hit_effect = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     hitColor,
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Color burstColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
 
-                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     burstColor,

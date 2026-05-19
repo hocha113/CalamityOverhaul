@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         private void SpawnTrailEffect() {
             Vector2 trailPos = Projectile.Center - Projectile.velocity * 0.5f + Main.rand.NextVector2Circular(5f, 5f);
 
-            BasePRT trail = PRTLoader.NewParticle<PRT_Light>(trailPos, -Projectile.velocity * 0.3f
+            PRTLoader.NewParticle<PRT_Light>(trailPos, -Projectile.velocity * 0.3f
                 , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
                 , Main.rand.NextFloat(0.8f, 1.5f)).Configure(15, 0.4f, 1.2f);
 
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
 
-                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(position, vel
+                PRTLoader.NewParticle<PRT_Light>(position, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Orange, Color.Yellow)
                     , Main.rand.NextFloat(1f, 1.8f)).Configure(20, 0.5f, 1.3f);
             }
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 35; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(12f, 12f);
 
-                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow, Color.White)
                     , Main.rand.NextFloat(1.5f, 2.5f)).Configure(30, 0.6f, 1.8f);
             }

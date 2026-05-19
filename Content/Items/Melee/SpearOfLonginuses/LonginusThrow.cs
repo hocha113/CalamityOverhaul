@@ -84,14 +84,14 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                             for (int j = 0; j < 134; j++) {
                                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid), Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid));
                                 Vector2 particleSpeed = pos.To(Projectile.Center + vr * 130).UnitVector() * Main.rand.NextFloat(11.3f, 54f);
-                                BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                                PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                                     , Main.rand.NextBool(2) ? Color.Red : Color.DarkRed, Main.rand.NextFloat(0.3f, 2.5f)).Configure(60, 1, 1.5f, hueShift: 0.0f);
                             }
                         }
                         for (int j = 0; j < 64; j++) {
                             Vector2 pos = Projectile.Center;
                             Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5.3f, 24f);
-                            BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                            PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                                 , Main.rand.NextBool(2) ? Color.Red : Color.Gold, Main.rand.NextFloat(0.3f, 2.5f)).Configure(90, 1, 1.5f, hueShift: 0.0f);
                         }
                         for (int i = 0; i < 136; i++) {

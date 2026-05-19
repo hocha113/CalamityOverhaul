@@ -499,7 +499,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)
             );
 
-            PRT_Light circuitNode = PRTLoader.NewParticle<PRT_Light>(
+            PRTLoader.NewParticle<PRT_Light>(
                 spawnPos,
                 Vector2.Zero,
                 new Color(100, 220, 255),
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
 
             //中心光点
-            PRT_Light centralLight = PRTLoader.NewParticle<PRT_Light>(
+            PRTLoader.NewParticle<PRT_Light>(
                 burstCenter,
                 Vector2.Zero,
                 new Color(100, 220, 255),

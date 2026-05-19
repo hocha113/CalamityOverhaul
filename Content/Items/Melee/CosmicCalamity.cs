@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //中圈光环 + 暗紫扩散
             for (int i = 0; i < 4; i++) {
-                BasePRT halo = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     target.Center, Main.rand.NextVector2Circular(3f, 3f),
                     Color.Lerp(BaseMid, BaseCore, Main.rand.NextFloat()),
                     Main.rand.NextFloat(0.7f, 1.2f)).Configure(20, opacity: 0.4f, squishStrenght: 1.2f);
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 tip = Projectile.Center + safeInSwingUnit * Length * 0.95f;
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) + safeInSwingUnit * Main.rand.NextFloat(0.5f, 1.8f);
                 Color c = Color.Lerp(BaseCore, BaseMid, Main.rand.NextFloat());
-                BasePRT dot = PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f), vel,
+                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f), vel,
                     c, Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(10, 18), opacity: 0.4f, squishStrenght: 1.3f, _entity: Owner, _followingRateRatio: 0.6f);
             }
 
@@ -294,12 +294,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(2)) {
                 Vector2 vel = -safeInSwingUnit * Main.rand.NextFloat(1.2f, 3.4f)
                               + Main.rand.NextVector2Circular(1.6f, 1.6f);
-                BasePRT dust = PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(6f, 6f), vel,
+                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(6f, 6f), vel,
                     Color.Lerp(BaseMid, BaseEdge, Main.rand.NextFloat()) * 0.95f,
                     Main.rand.NextFloat(0.6f, 1.2f)).Configure(Main.rand.Next(15, 25), opacity: 0.35f, squishStrenght: 1.4f);
             }
             if (Main.rand.NextBool(3)) {
-                BasePRT halo = PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(3f, 3f),
+                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(3f, 3f),
                     -safeInSwingUnit * 1.2f + Main.rand.NextVector2Circular(0.8f, 0.8f),
                     Color.Lerp(BaseCore, BaseAccent, Main.rand.NextFloat()) * 0.85f,
                     Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(10, 18), opacity: 0.35f, squishStrenght: 1.2f);
@@ -482,7 +482,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 vel = perp * Math.Sign(hornY) * Main.rand.NextFloat(0.6f, 2.2f);
             Color c = Color.Lerp(new Color(180, 140, 255), new Color(255, 110, 210), Main.rand.NextFloat());
 
-            BasePRT dot = PRTLoader.NewParticle<PRT_Light>(hornPos, vel,
+            PRTLoader.NewParticle<PRT_Light>(hornPos, vel,
                 c * (0.8f + energyPulse * 0.2f),
                 Main.rand.NextFloat(0.55f, 1.1f)).Configure(Main.rand.Next(14, 24), opacity: 0.35f, squishStrenght: 1.4f);
         }

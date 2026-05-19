@@ -28,7 +28,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public PRT_Light Configure(int lifetime, float opacity = 1f
             , float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
             Opacity = opacity;
-            Rotation = 0;
             Lifetime = lifetime;
             SquishStrenght = squishStrenght;
             MaxSquish = maxSquish;
@@ -45,7 +44,8 @@ namespace CalamityOverhaul.Content.PRTTypes
             Opacity = LifetimeCompletion > 0.5f ? ((float)Math.Sin(LifetimeCompletion * MathHelper.Pi) * 0.2f) + 0.8f : (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);
             Scale *= 0.95f;
 
-            Color = Main.hslToRgb(Main.rgbToHsl(Color).X + HueShift, Main.rgbToHsl(Color).Y, Main.rgbToHsl(Color).Z);
+            Vector3 hsl = Main.rgbToHsl(Color);
+            Color = Main.hslToRgb(hsl.X + HueShift, hsl.Y, hsl.Z);
 
             if (entity != null && entity.active) {
                 Position += entity.velocity * followingRateRatio;
@@ -73,6 +73,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override void Reset() {
             base.Reset();
+            Rotation = 0;
             Lifetime = 30;
             Opacity = 1f;
             SquishStrenght = 1f;

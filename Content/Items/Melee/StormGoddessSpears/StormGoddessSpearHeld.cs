@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     ShootSpanPos,
                     velocity,
                     particleColor * 0.8f,
@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             for (int i = 0; i < Main.rand.Next(4, 8); i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 14f);
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
                     velocity,
                     particleColor * 0.9f,

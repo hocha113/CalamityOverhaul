@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float angle = MathHelper.TwoPi * i / 20f;
                 Vector2 velocity = angle.ToRotationVector2() * 6f;
 
-                BasePRT sparkle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     position,
                     velocity,
                     Main.hslToRgb((i / 20f) % 1f, 1f, 0.7f),
@@ -453,7 +453,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnSpawnParticle() {
             Color spawnColor = Main.hslToRgb(Main.rand.NextFloat(1f), 1f, 0.7f);
 
-            BasePRT sparkle = PRTLoader.NewParticle<PRT_Light>(
+            PRTLoader.NewParticle<PRT_Light>(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
                 Main.rand.NextVector2Circular(3f, 3f),
                 spawnColor,
@@ -468,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
                 Color attackColor = Main.hslToRgb((i / 25f + rainbowHue) % 1f, 1f, 0.6f);
 
-                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     attackColor,
@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 6f;
                 Color hitColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
 
-                BasePRT hit_effect = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     hitColor,
@@ -742,7 +742,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Color burstColor = Main.hslToRgb((hue + i * 0.03f) % 1f, 1f, 0.6f);
 
-                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     burstColor,

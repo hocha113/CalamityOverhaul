@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 120;
                     Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 3;
                     Color color = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), VientianeColors);
-                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                    PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                         , color, 0.5f).Configure(60, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: Owner, _followingRateRatio: 1);
                 }
             }
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                     Vector2 pos = orig + lemniscateOffset * outwardMultiplier;
                     Vector2 particleSpeed = Vector2.Zero;
                     Color color = VaultUtils.MultiStepColorLerp(j / maxNum, colors);
-                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                    PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                         , color, prtslp).Configure(120, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _followingRateRatio: 1);
                 }
             }
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             if (!VaultUtils.isServer) {
                 Texture2D value = GetBowTexture((int)Projectile.ai[0]).Value;
                 for (int i = 0; i < 16; i++) {
-                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
+                    PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
                     , vientianeColor, Main.rand.NextFloat(0.3f, 0.7f)).Configure(60, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _followingRateRatio: 1);
                 }
             }

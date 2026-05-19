@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //内层光芒
             for (int i = 0; i < 16; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
-                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     velocity,
                     godslayerBlue,
@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 32; i++) {
                 float angle = MathHelper.TwoPi * i / 32f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 14f);
-                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     velocity,
                     Color.Lerp(godslayerBlue, godslayerPurple, Main.rand.NextFloat()),
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //爆发光芒
             for (int i = 0; i < 24; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 12f);
-                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     vel,
                     godslayerCyan,
@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //随机护盾粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 offset = Main.rand.NextVector2Circular(radius, radius);
-                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Player.Center + offset,
                     -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 2f),
                     godslayerBlue * intensity,
@@ -471,7 +471,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 //高充能时添加额外效果
                 if (chargeRatio > 0.7f && Main.GameUpdateCount % 8 == 0 && !VaultUtils.isServer) {
                     Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f);
-                    BasePRT light = PRTLoader.NewParticle<PRT_Light>(
+                    PRTLoader.NewParticle<PRT_Light>(
                         Player.Center + Main.rand.NextVector2Circular(30f, 30f),
                         vel,
                         new Color(80, 180, 255) * chargeRatio,

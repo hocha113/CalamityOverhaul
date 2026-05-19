@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //蓝色水雾
             for (int i = 0; i < 8; i++) {
-                BasePRT water = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     position,
                     Main.rand.NextVector2Circular(4f, 4f),
                     new Color(120, 200, 255),
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 5f;
                 Color waterColor = new Color(100, 180, 255);
 
-                BasePRT hit_effect = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     waterColor,
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Color waterColor = new Color(100, 180, 255);
 
-                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
                     waterColor,

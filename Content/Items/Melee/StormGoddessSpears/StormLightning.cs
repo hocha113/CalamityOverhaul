@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             //生成爆炸性粒子（白蓝色）
             for (int i = 0; i < Main.rand.Next(baseCount, baseCount + 10); i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 25f) * sizeMultiplier;
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(20, 20),
                     velocity,
                     particleColor,
@@ -329,7 +329,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15, 15);
                 Vector2 particleVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
 
-                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
                     lightColor * 0.6f,
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Color particleColor = GetLightningColor(0.5f);
                 for (int i = 0; i < Main.rand.Next(5, 10); i++) {
                     Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f, 20f);
-                    BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
+                    PRTLoader.NewParticle<PRT_Light>(
                         target.Center,
                         velocity,
                         particleColor,

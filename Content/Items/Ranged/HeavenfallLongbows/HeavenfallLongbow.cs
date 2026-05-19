@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                 Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
                 Vector2 particleSpeed = Vector2.Zero;
                 Color color = VaultUtils.MultiStepColorLerp(j / 500f, rainbowColors);
-                BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                     , color, 1.5f).Configure(120, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
             }
 

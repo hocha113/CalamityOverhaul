@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                     , Scale: Main.rand.NextFloat(0.7f, 1.3f));
             }
-            PRT_Light particle = PRTLoader.NewParticle<PRT_Light>(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
+            PRTLoader.NewParticle<PRT_Light>(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
                 , new Vector2(0, -1), Color.DarkGreen, 0.3f).Configure(165);
         }
 

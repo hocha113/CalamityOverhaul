@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 30f);
 
                 //金色火花
-                BasePRT spark = PRTLoader.NewParticle<PRT_Light>(
+                PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
                     velocity,
                     Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),

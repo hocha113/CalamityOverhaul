@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         public void SpanDeadLightPenms() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 foreach (Vector2 pos in RayPoint) {
-                    PRT_Light light = PRTLoader.NewParticle<PRT_Light>(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
+                    PRTLoader.NewParticle<PRT_Light>(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
                         , new Vector2(0, Main.rand.Next(7, 51)), VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 0.3f).Configure(30);
                 }
             }

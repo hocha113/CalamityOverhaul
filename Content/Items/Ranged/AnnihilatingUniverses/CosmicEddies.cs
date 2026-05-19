@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next((int)Rots);
                     Vector2 particleSpeed = pos.To(Projectile.Center + Projectile.velocity).UnitVector() * Main.rand.NextFloat(5.5f, 7.7f);
-                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                    PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
                         , Color.Blue, Main.rand.NextFloat(0.3f, 0.3f + Projectile.ai[1] / 1000f)).Configure(30, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: Projectile);
                 }
 
