@@ -33,14 +33,13 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 for (int i = 0; i < 22; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
                     Color c = Color.Lerp(new Color(120, 200, 255), new Color(220, 240, 255), Main.rand.NextFloat());
-                    PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 22, 1.0f, c));
+                    PRTLoader.NewParticle<PRT_Spark>(center, vel, c, 1.0f).Configure(false, 22);
                 }
                 //沿外圈再撒一圈冷色粒子
                 for (int i = 0; i < 10; i++) {
                     float angle = MathHelper.TwoPi * i / 10f;
                     Vector2 dir = angle.ToRotationVector2();
-                    PRTLoader.AddParticle(new PRT_Spark(center + dir * 24f, dir * 3.5f,
-                        false, 22, 0.55f, new Color(90, 180, 255, 120)));
+                    PRTLoader.NewParticle<PRT_Spark>(center + dir * 24f, dir * 3.5f, new Color(90, 180, 255, 120), 0.55f).Configure(false, 22);
                 }
             }
             return true;

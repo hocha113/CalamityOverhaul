@@ -62,9 +62,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             }
 
             //金色光芒粒子
-            PRT_Spark spark = new PRT_Spark(Projectile.Center, new Vector2(0, 2), false, 22, 1.2f,
-                Color.Lerp(Color.Gold, Color.Yellow, chargeIntensity));
-            PRTLoader.AddParticle(spark);
+            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, new Vector2(0, 2), Color.Lerp(Color.Gold, Color.Yellow, chargeIntensity), 1.2f).Configure(false, 22);
 
             //更新闪电
             for (int i = lightningBolts.Count - 1; i >= 0; i--) {

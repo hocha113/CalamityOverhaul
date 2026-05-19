@@ -148,11 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Projectile.localAI[0] = 1f;
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 4; i++) {
-                        PRTLoader.AddParticle(new PRT_Sparkle(
-                            Projectile.Center, Main.rand.NextVector2Circular(2.5f, 2.5f),
-                            CoreColor, EdgeColor,
-                            Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(8, 16),
-                            Main.rand.NextFloat(-0.2f, 0.2f), 0.7f));
+                        PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center, Main.rand.NextVector2Circular(2.5f, 2.5f), CoreColor, Main.rand.NextFloat(0.3f, 0.6f)).Configure(EdgeColor, Main.rand.Next(8, 16), Main.rand.NextFloat(-0.2f, 0.2f), 0.7f);
                     }
                 }
             }
@@ -178,10 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4.2f, 4.2f);
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    target.Center, vel, CoreColor, EdgeColor,
-                    Main.rand.NextFloat(0.5f, 1.0f), Main.rand.Next(14, 26),
-                    Main.rand.NextFloat(-0.3f, 0.3f), 0.9f));
+                PRTLoader.NewParticle<PRT_Sparkle>(target.Center, vel, CoreColor, Main.rand.NextFloat(0.5f, 1.0f)).Configure(EdgeColor, Main.rand.Next(14, 26), Main.rand.NextFloat(-0.3f, 0.3f), 0.9f);
             }
             SHPCNaturalFx.Shake(2.5f);
         }

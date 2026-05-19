@@ -25,8 +25,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //初始神经脉冲爆发
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel, false, 25, 1.2f,
-                    new Color(255, 120, 20)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(255, 120, 20), 1.2f).Configure(false, 25);
             }
             return true;
         }
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     npc.width * 0.3f, npc.height * 0.3f);
                 Vector2 vel = new(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-2f, -0.5f));
                 Color c = Color.Lerp(new Color(255, 80, 0), new Color(255, 200, 50), Main.rand.NextFloat());
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel, false, 20, 0.8f, c));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, c, 0.8f).Configure(false, 20);
             }
             return true;
         }

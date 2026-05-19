@@ -84,11 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode != NetmodeID.Server && branches != null && Main.GameUpdateCount % 2 == 0) {
                 var branch = branches[Main.rand.Next(branches.Count)];
                 Vector2 pt = branch[Main.rand.Next(branch.Length)];
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    pt + Main.rand.NextVector2Circular(4f, 4f), Main.rand.NextVector2Circular(0.6f, 0.6f),
-                    new Color(220, 245, 255), new Color(120, 180, 220),
-                    Main.rand.NextFloat(0.3f, 0.65f), Main.rand.Next(8, 16),
-                    Main.rand.NextFloat(-0.2f, 0.2f), 0.7f));
+                PRTLoader.NewParticle<PRT_Sparkle>(pt + Main.rand.NextVector2Circular(4f, 4f), Main.rand.NextVector2Circular(0.6f, 0.6f), new Color(220, 245, 255), Main.rand.NextFloat(0.3f, 0.65f)).Configure(new Color(120, 180, 220), Main.rand.Next(8, 16), Main.rand.NextFloat(-0.2f, 0.2f), 0.7f);
             }
             Lighting.AddLight(Projectile.Center, new Vector3(0.35f, 0.55f, 0.7f) * fadeAlpha);
         }
@@ -163,11 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 new Color(180, 230, 255, 0), 0.05f, 0.4f, 18));
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    target.Center, vel,
-                    new Color(220, 245, 255), new Color(120, 200, 230),
-                    Main.rand.NextFloat(0.45f, 0.95f), Main.rand.Next(12, 22),
-                    Main.rand.NextFloat(-0.3f, 0.3f), 0.9f));
+                PRTLoader.NewParticle<PRT_Sparkle>(target.Center, vel, new Color(220, 245, 255), Main.rand.NextFloat(0.45f, 0.95f)).Configure(new Color(120, 200, 230), Main.rand.Next(12, 22), Main.rand.NextFloat(-0.3f, 0.3f), 0.9f);
             }
         }
 

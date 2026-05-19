@@ -29,8 +29,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = -1f }, wraith.Center);
             for (int i = 0; i < 40; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
-                PRTLoader.AddParticle(new PRT_Spark(wraith.Center, vel,
-                    false, 60, 1.2f, new Color(255, 40, 80)));
+                PRTLoader.NewParticle<PRT_Spark>(wraith.Center, vel, new Color(255, 40, 80), 1.2f).Configure(false, 60);
             }
             return true;
         }

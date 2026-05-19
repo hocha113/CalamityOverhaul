@@ -31,14 +31,12 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //电弧爆发粒子
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 15, 1.5f, new Color(100, 180, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(100, 180, 255), 1.5f).Configure(false, 15);
             }
             //内层白色核心闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2f, 2f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 8, 2.0f, Color.White));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, Color.White, 2.0f).Configure(false, 8);
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(CWRSound.ShortCircuit, npc.Center);

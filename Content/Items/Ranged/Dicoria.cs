@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                             , color, new Vector2(0.1f, 0.2f), Projectile.rotation, 1, 3, 2, null);
                         PRTLoader.AddParticle(wave);
                     }
-                    PRTLoader.AddParticle(new PRT_SparkAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.6f, color));
+                    PRTLoader.NewParticle<PRT_SparkAlpha>(targetPos, unitVer, color, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.6f).Configure(false, 2);
                 }
             }
 

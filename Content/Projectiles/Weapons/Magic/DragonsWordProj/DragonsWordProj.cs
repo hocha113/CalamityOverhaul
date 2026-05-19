@@ -36,9 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
                 var orb2 = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8);
                 PRTLoader.AddParticle(orb2);
                 if (Time % 5 == 0 && Time > 35f && targetDist < 1400f) {
-                    PRT_Spark spark = new PRT_Spark(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f)
-                        , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f), -Projectile.velocity * 0.5f, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.7f)).Configure(false, 15);
                 }
             }
             if (Time > 160 * Projectile.extraUpdates) {
@@ -70,9 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
                 PRTLoader.AddParticle(orb);
                 var orb2 = new PRT_Bloomlight(Projectile.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8);
                 PRTLoader.AddParticle(orb2);
-                PRT_Spark spark = new PRT_Spark(Projectile.Center + Main.rand.NextVector2Circular(11 + Time * 0.1f, 11 + Time * 0.1f)
-                        , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(11 + Time * 0.1f, 11 + Time * 0.1f), -Projectile.velocity * 0.5f, Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.7f)).Configure(false, 15);
             }
 
             Projectile.Explode();

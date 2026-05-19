@@ -38,8 +38,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.3f, npc.height * 0.3f);
                 Vector2 vel = new(0, Main.rand.NextFloat(-1.5f, -0.3f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 30, 0.7f, new Color(50, 255, 180)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(50, 255, 180), 0.7f).Configure(false, 30);
             }
         }
 
@@ -51,8 +50,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.4f, npc.height * 0.4f);
                 Vector2 vel = new(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1f, -0.2f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 20, 0.4f, new Color(0, 220, 150)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(0, 220, 150), 0.4f).Configure(false, 20);
             }
             return true;
         }
@@ -63,8 +61,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //记忆恢复粒子
             for (int i = 0; i < 4; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 15, 0.5f, new Color(0, 180, 120)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(0, 180, 120), 0.5f).Configure(false, 15);
             }
         }
     }

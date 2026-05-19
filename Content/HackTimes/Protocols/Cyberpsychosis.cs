@@ -42,8 +42,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.4f, npc.height * 0.4f);
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f);
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 15, 0.6f, new Color(255, 50, 50)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(255, 50, 50), 0.6f).Configure(false, 15);
             }
             return true;
         }
@@ -54,8 +53,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //精神恢复闪光
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2f, 2f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 15, 0.5f, new Color(180, 80, 80)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(180, 80, 80), 0.5f).Configure(false, 15);
             }
         }
 
@@ -63,8 +61,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         private static void EmitBurstParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3.5f, 3.5f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 30, 1.0f, new Color(255, 30, 30)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(255, 30, 30), 1.0f).Configure(false, 30);
             }
         }
     }

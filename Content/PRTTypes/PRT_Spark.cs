@@ -11,16 +11,21 @@ namespace CalamityOverhaul.Content.PRTTypes
         public bool AffectedByGravity;
         public Entity entity;
         public override int InGame_World_MaxCount => 8000;//需求量不少，多一些
+        public override bool CanPool => true;
         public override string Texture => CWRConstant.Masking + "Extra_98";
         public PRT_Spark() { }
-        public PRT_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
-            Position = relativePosition;
-            Velocity = velocity;
+        public PRT_Spark Configure(bool affectedByGravity, int lifetime, Entity entity = null) {
+            InitialColor = Color;
             AffectedByGravity = affectedByGravity;
-            Scale = scale;
             Lifetime = lifetime;
-            Color = InitialColor = color;
             this.entity = entity;
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            AffectedByGravity = false;
+            entity = null;
         }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {

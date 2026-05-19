@@ -214,16 +214,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
-                BasePRT spark = new PRT_Spark(
-                    Player.Center,
-                    velocity,
-                    true, //受重力影响，表现出失败的沉重感
-                    Main.rand.Next(15, 25),
-                    Main.rand.NextFloat(0.8f, 1.2f),
-                    Color.Lerp(missColor, darkBlue, Main.rand.NextFloat()),
-                    Player
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Player.Center, velocity, Color.Lerp(missColor, darkBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.2f)).Configure(true, Main.rand.Next(15, 25), Player);
             }
 
             //碎裂效果
@@ -260,16 +251,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 24; i++) {
                 float angle = MathHelper.TwoPi * i / 24f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 8f);
-                BasePRT spark = new PRT_Spark(
-                    Player.Center,
-                    velocity,
-                    false,
-                    Main.rand.Next(20, 35),
-                    Main.rand.NextFloat(1.2f, 1.8f),
-                    Color.Lerp(godslayerBlue, godslayerPurple, Main.rand.NextFloat()),
-                    Player
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Player.Center, velocity, Color.Lerp(godslayerBlue, godslayerPurple, Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 1.8f)).Configure(false, Main.rand.Next(20, 35), Player);
             }
 
             //内层光芒
@@ -336,16 +318,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 20; i++) {
                 Vector2 offset = direction.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(20f, 80f);
                 Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 8f);
-                BasePRT spark = new PRT_Spark(
-                    Player.Center + offset,
-                    vel,
-                    false,
-                    Main.rand.Next(15, 30),
-                    Main.rand.NextFloat(1.5f, 2.5f),
-                    Color.Lerp(godslayerCyan, godslayerBlue, Main.rand.NextFloat()),
-                    Player
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Player.Center + offset, vel, Color.Lerp(godslayerCyan, godslayerBlue, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(15, 30), Player);
             }
 
             //环状冲击波
@@ -365,16 +338,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 float t = i / 12f;
                 Vector2 pos = Vector2.Lerp(Player.Center, targetPos, t);
                 Vector2 vel = direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(2f, 5f);
-                BasePRT spark = new PRT_Spark(
-                    pos + Main.rand.NextVector2Circular(10f, 10f),
-                    vel,
-                    false,
-                    Main.rand.Next(10, 20),
-                    Main.rand.NextFloat(1f, 1.8f),
-                    godslayerCyan,
-                    Player
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(pos + Main.rand.NextVector2Circular(10f, 10f), vel, godslayerCyan, Main.rand.NextFloat(1f, 1.8f)).Configure(false, Main.rand.Next(10, 20), Player);
             }
 
             //爆发光芒
@@ -399,16 +363,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Player.Center + Main.rand.NextVector2Circular(20f, 20f);
                 Vector2 vel = -Player.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f);
-                BasePRT spark = new PRT_Spark(
-                    pos,
-                    vel,
-                    false,
-                    Main.rand.Next(8, 15),
-                    Main.rand.NextFloat(0.8f, 1.2f),
-                    trailColor * (1f - progress),
-                    Player
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, trailColor * (1f - progress), Main.rand.NextFloat(0.8f, 1.2f)).Configure(false, Main.rand.Next(8, 15), Player);
             }
         }
 

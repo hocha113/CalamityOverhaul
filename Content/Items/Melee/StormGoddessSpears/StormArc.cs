@@ -279,16 +279,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 float progress = i / (float)particleCount;
                 Vector2 pos = Vector2.Lerp(from, to, progress);
 
-                BasePRT particle = new PRT_Spark(
-                    pos,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    false,
-                    Main.rand.Next(5, 10),
-                    0.9f,
-                    chainColor * 0.8f,
-                    Main.player[Projectile.owner]
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_Spark>(pos, Main.rand.NextVector2Circular(3f, 3f), chainColor * 0.8f, 0.9f).Configure(false, Main.rand.Next(5, 10), Main.player[Projectile.owner]);
             }
 
             //播放连锁音效
@@ -381,16 +372,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Color particleColor = GetLightningColor(0.5f);
                 for (int i = 0; i < Main.rand.Next(3, 6); i++) {
                     Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 15f);
-                    BasePRT particle = new PRT_Spark(
-                        target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
-                        velocity,
-                        false,
-                        Main.rand.Next(5, 10),
-                        1.1f,
-                        particleColor,
-                        Main.player[Projectile.owner]
-                    );
-                    PRTLoader.AddParticle(particle);
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f), velocity, particleColor, 1.1f).Configure(false, Main.rand.Next(5, 10), Main.player[Projectile.owner]);
                 }
             }
 

@@ -197,9 +197,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             if (!VaultUtils.isServer && Projectile.ai[0] % 2 == 0) {
-                BasePRT spark = new PRT_Spark(Projectile.Center
-                    , Projectile.velocity * 0.1f, false, 12, Main.rand.NextFloat(0.8f, 1.5f), Color.Cyan);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, Projectile.velocity * 0.1f, Color.Cyan, Main.rand.NextFloat(0.8f, 1.5f)).Configure(false, 12);
                 if (Main.rand.NextBool(5)) {
                     BasePRT star = new PRT_HeavenfallStar(Projectile.Center
                         , Projectile.velocity.RotatedByRandom(0.5f) * -0.3f, false, 15
@@ -397,10 +395,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 int steps = (int)(distance / 16f);
                 for (int i = 0; i < steps; i++) {
                     Vector2 pos = Vector2.Lerp(startPos, targetPos, i / (float)steps);
-                    BasePRT spark = new PRT_Spark(pos
-                        , Main.rand.NextVector2Circular(1, 1), false, 15
-                        , Main.rand.NextFloat(0.3f, 0.6f), Color.Cyan);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(pos, Main.rand.NextVector2Circular(1, 1), Color.Cyan, Main.rand.NextFloat(0.3f, 0.6f)).Configure(false, 15);
                 }
             }
         }
@@ -657,10 +652,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     for (int i = 0; i < 50; i++) {
                         float rot = MathHelper.TwoPi / 50f * i;
                         Vector2 vr = rot.ToRotationVector2();
-                        BasePRT spark = new PRT_Spark(Player.Center
-                            , vr * Main.rand.NextFloat(2f, 5f), false, 30
-                            , Main.rand.NextFloat(1f, 2f), Color.BlueViolet);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_Spark>(Player.Center, vr * Main.rand.NextFloat(2f, 5f), Color.BlueViolet, Main.rand.NextFloat(1f, 2f)).Configure(false, 30);
                     }
                 }
             }

@@ -116,11 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //偶发蜜糖火星
             if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 3 == 0) {
                 Vector2 vel = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.6f, 1.4f);
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), vel,
-                    new Color(255, 210, 80), new Color(140, 90, 25),
-                    Main.rand.NextFloat(0.3f, 0.55f), Main.rand.Next(8, 14),
-                    Main.rand.NextFloat(-0.3f, 0.3f), 0.7f));
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), vel, new Color(255, 210, 80), Main.rand.NextFloat(0.3f, 0.55f)).Configure(new Color(140, 90, 25), Main.rand.Next(8, 14), Main.rand.NextFloat(-0.3f, 0.3f), 0.7f);
             }
         }
 

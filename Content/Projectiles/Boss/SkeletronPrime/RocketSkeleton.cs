@@ -34,10 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.scale += 0.012f;
 
             if (PRTLoader.NumberUsablePRT() > 10) {
-                BasePRT spark2 = new PRT_SparkAlpha(Projectile.Center, Projectile.velocity * 0.7f, false, 6, 1.4f, Color.DarkRed);
-                PRTLoader.AddParticle(spark2);
-                BasePRT spark = new PRT_Spark(Projectile.Center, Projectile.velocity * 0.7f, false, 10, 1f, Color.LightGoldenrodYellow);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Projectile.velocity * 0.7f, Color.DarkRed, 1.4f).Configure(false, 6);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, Projectile.velocity * 0.7f, Color.LightGoldenrodYellow, 1f).Configure(false, 10);
             }
             else {
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworkFountain_Red, Projectile.velocity);

@@ -74,16 +74,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 //在突刺过程中生成电火花（更细致）
                 if (Time < 8 * UpdateRate && !VaultUtils.isServer && Main.rand.NextBool(2)) {
                     Vector2 sparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length * 0.7f;
-                    BasePRT spark = new PRT_Spark(
-                        sparkPos,
-                        Projectile.velocity * 0.3f,
-                        false,
-                        4,
-                        0.8f, //更小的粒子
-                        GetLightningColorForStyle(lightningColorStyle),
-                        Owner
-                    );
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(sparkPos, Projectile.velocity * 0.3f, GetLightningColorForStyle(lightningColorStyle), 0.8f).Configure(false, 4, Owner);
                 }
 
                 return false;
@@ -242,16 +233,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < 8; i++) {
                 float angle = Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4) - MathHelper.PiOver2;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 28f);
-                BasePRT particle = new PRT_Spark(
-                    ShootSpanPos,
-                    velocity,
-                    false,
-                    Main.rand.Next(12, 20),
-                    1.4f,
-                    particleColor * 0.9f,
-                    Owner
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_Spark>(ShootSpanPos, velocity, particleColor * 0.9f, 1.4f).Configure(false, Main.rand.Next(12, 20), Owner);
             }
         }
 
@@ -341,16 +323,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 tipPos = Projectile.Center + safeInSwingUnit * Length;
                 Color particleColor = GetLightningColorForStyle(lightningColorStyle);
 
-                BasePRT spark = new PRT_Spark(
-                    tipPos + Main.rand.NextVector2Circular(3, 3),
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                    false,
-                    Main.rand.Next(3, 5),
-                    0.8f, //更小的粒子
-                    particleColor * 0.7f,
-                    Owner
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(tipPos + Main.rand.NextVector2Circular(3, 3), Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f), particleColor * 0.7f, 0.8f).Configure(false, Main.rand.Next(3, 5), Owner);
             }
         }
     }

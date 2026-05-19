@@ -272,15 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnSwimParticle(float hue) {
             Color particleColor = Main.hslToRgb(hue, 1f, 0.6f);
 
-            BasePRT trail = new PRT_Spark(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f),
-                false,
-                12,
-                Main.rand.NextFloat(0.6f, 1f),
-                particleColor
-            );
-            PRTLoader.AddParticle(trail);
+            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f), -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f), particleColor, Main.rand.NextFloat(0.6f, 1f)).Configure(false, 12);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

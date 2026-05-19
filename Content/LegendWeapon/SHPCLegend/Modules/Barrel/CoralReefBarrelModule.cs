@@ -111,12 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             //偶发珊瑚孢子粒子（节流到 24 帧）
             if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 24 == 0) {
-                PRTLoader.AddParticle(new PRT_Sparkle(
-                    Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
-                    new Vector2(0f, Main.rand.NextFloat(-0.6f, 0.2f)),
-                    new Color(255, 130, 170), new Color(120, 220, 200),
-                    Main.rand.NextFloat(0.35f, 0.7f), Main.rand.Next(20, 40),
-                    Main.rand.NextFloat(-0.15f, 0.15f), 0.7f));
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f), new Vector2(0f, Main.rand.NextFloat(-0.6f, 0.2f)), new Color(255, 130, 170), Main.rand.NextFloat(0.35f, 0.7f)).Configure(new Color(120, 220, 200), Main.rand.Next(20, 40), Main.rand.NextFloat(-0.15f, 0.15f), 0.7f);
             }
             Lighting.AddLight(Projectile.Center, new Vector3(0.55f, 0.35f, 0.45f) * 0.6f);
         }

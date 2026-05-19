@@ -443,8 +443,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 spawnPos = Projectile.Center;
                 Vector2 ver = -direction * Main.rand.NextFloat(0.6f, 0.9f);
                 float slp = Main.rand.NextFloat(1f, 1.2f);
-                PRT_Spark prt = new PRT_Spark(spawnPos, ver, false, 8, slp, sloudColor1);
-                PRTLoader.AddParticle(prt);
+                PRTLoader.NewParticle<PRT_Spark>(spawnPos, ver, sloudColor1, slp).Configure(false, 8);
             }
         }
 

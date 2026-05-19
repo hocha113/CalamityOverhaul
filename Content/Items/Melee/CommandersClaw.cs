@@ -226,8 +226,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             for (int i = 0; i < 3; i++) {
                 Vector2 vel = dir.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f, 6f);
-                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 12, 1.2f, Color.Goldenrod);
-                PRTLoader.AddParticle(prt);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel, Color.Goldenrod, 1.2f).Configure(false, 12);
             }
         }
 
@@ -243,9 +242,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = dir.RotatedByRandom(0.8f) * Main.rand.NextFloat(4f, 9f);
-                PRT_Spark prt = new PRT_Spark(Projectile.Center, vel, false, 16,
-                    Main.rand.NextFloat(1.3f, 2.0f), Color.Orange);
-                PRTLoader.AddParticle(prt);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel, Color.Orange, Main.rand.NextFloat(1.3f, 2.0f)).Configure(false, 16);
             }
         }
 
@@ -264,10 +261,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 10; i++) {
                 float angle = MathHelper.TwoPi * i / 10f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3.5f, 7f);
-                PRT_Spark prt = new PRT_Spark(target.Center, vel, false, 14,
-                    Main.rand.NextFloat(1.3f, 2.0f),
-                    Color.Lerp(Color.Goldenrod, Color.OrangeRed, Main.rand.NextFloat()));
-                PRTLoader.AddParticle(prt);
+                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, Color.Lerp(Color.Goldenrod, Color.OrangeRed, Main.rand.NextFloat()), Main.rand.NextFloat(1.3f, 2.0f)).Configure(false, 14);
             }
         }
 

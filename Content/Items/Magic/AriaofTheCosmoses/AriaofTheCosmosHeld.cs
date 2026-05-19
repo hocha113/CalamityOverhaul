@@ -395,16 +395,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(90f, 90f);
                 Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f);
 
-                BasePRT implosion = new PRT_Spark(
-                    spawnPos,
-                    velocity,
-                    false,
-                    Main.rand.Next(20, 30),
-                    Main.rand.NextFloat(1f, 1.8f),
-                    Color.White,
-                    Owner
-                );
-                PRTLoader.AddParticle(implosion);
+                PRTLoader.NewParticle<PRT_Spark>(spawnPos, velocity, Color.White, Main.rand.NextFloat(1f, 1.8f)).Configure(false, Main.rand.Next(20, 30), Owner);
             }
         }
 

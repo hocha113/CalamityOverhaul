@@ -30,8 +30,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 pos = wraith.Center + Main.rand.NextVector2Circular(
                     wraith.Width * 0.35f, wraith.Height * 0.35f);
                 Vector2 vel = new(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(-2.2f, -0.4f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 45, 0.65f, new Color(80, 255, 200)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(80, 255, 200), 0.65f).Configure(false, 45);
             }
             return true;
         }

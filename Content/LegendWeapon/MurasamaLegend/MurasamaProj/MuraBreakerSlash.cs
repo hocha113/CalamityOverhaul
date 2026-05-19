@@ -134,8 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             for (int i = 0; i < 13; i++) {
                 Vector2 particlePosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f);
                 float impactParticleScale = Main.rand.NextFloat(0.4f, 0.82f);
-                PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, Color.LightCoral, Color.Red, impactParticleScale, 8, 0, 2.5f);
-                PRTLoader.AddParticle(impactParticle);
+                PRTLoader.NewParticle<PRT_Sparkle>(particlePosition, Vector2.Zero, Color.LightCoral, impactParticleScale).Configure(Color.Red, 8, 0, 2.5f);
             }
         }
 
@@ -150,8 +149,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
 
                 if (Main.rand.NextBool()) {
-                    PRT_SparkAlpha spark = new(sparkPosition, sparkVelocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_SparkAlpha>(sparkPosition, sparkVelocity, sparkColor, Main.rand.NextFloat(1.3f)).Configure(false, 13);
                 }
                 else {
                     PRT_Line spark = new(sparkPosition, sparkVelocity, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);

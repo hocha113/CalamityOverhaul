@@ -112,8 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
 
             if (Main.rand.NextBool()) {
-                PRT_SparkAlpha spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(particlePosition, Projectile.velocity, sparkColor, Main.rand.NextFloat(1.3f)).Configure(false, 13);
             }
             else {
                 PRT_Line spark = new(particlePosition, Projectile.velocity, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);
@@ -185,16 +184,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             for (int i = 0; i < 3; i++) {
-                PRT_Spark spark = new(Owner.Center, toBreakV.UnitVector() * -0.1f, false, 9, 3.3f, Color.IndianRed * 0.1f);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Owner.Center, toBreakV.UnitVector() * -0.1f, Color.IndianRed * 0.1f, 3.3f).Configure(false, 9);
             }
 
             Vector2 particlePosition = Owner.Center + Main.rand.NextVector2Circular(13, 23) + toBreakV.UnitVector() * 1.2f;
             Color sparkColor = Main.rand.NextBool(3) ? Color.Red : Color.IndianRed;
 
             if (Main.rand.NextBool()) {
-                PRT_Spark spark2 = new(particlePosition, toBreakV.UnitVector() * 23, false, 13, Main.rand.NextFloat(1.3f), sparkColor);
-                PRTLoader.AddParticle(spark2);
+                PRTLoader.NewParticle<PRT_Spark>(particlePosition, toBreakV.UnitVector() * 23, sparkColor, Main.rand.NextFloat(1.3f)).Configure(false, 13);
             }
             else {
                 PRT_Line spark2 = new(particlePosition, toBreakV.UnitVector() * 23, false, 13, Main.rand.NextFloat(1.3f) * 0.6f, sparkColor);

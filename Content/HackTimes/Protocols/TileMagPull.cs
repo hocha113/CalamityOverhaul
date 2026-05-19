@@ -37,8 +37,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //启动粒子
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
-                PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 25, 1.0f,
-                    new Color(120, 80, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(120, 80, 255), 1.0f).Configure(false, 25);
             }
 
             if (!VaultUtils.isServer) {
@@ -78,9 +77,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (elapsed % 15 == 0) {
                 float angle = elapsed * 0.1f;
                 Vector2 offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 20f;
-                PRTLoader.AddParticle(new PRT_Spark(tileCenter + offset,
-                    (pullTarget - tileCenter).SafeNormalize(Vector2.Zero) * 2f,
-                    false, 20, 0.5f, new Color(120, 80, 255, 100)));
+                PRTLoader.NewParticle<PRT_Spark>(tileCenter + offset, (pullTarget - tileCenter).SafeNormalize(Vector2.Zero) * 2f, new Color(120, 80, 255, 100), 0.5f).Configure(false, 20);
             }
 
             return true;

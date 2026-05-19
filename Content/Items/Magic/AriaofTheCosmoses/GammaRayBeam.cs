@@ -125,15 +125,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     + beamDir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-beamWidth * 0.3f, beamWidth * 0.3f);
                 Vector2 sparkVel = beamDir.RotatedBy(Main.rand.NextFloat(-0.8f, 0.8f)) * Main.rand.NextFloat(1f, 3f);
 
-                PRTLoader.AddParticle(new PRT_Spark(
-                    sparkPos,
-                    sparkVel,
-                    false,
-                    Main.rand.Next(8, 15),
-                    Main.rand.NextFloat(0.6f, 1.1f),
-                    Color.Lerp(new Color(180, 140, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)),
-                    Owner
-                ));
+                PRTLoader.NewParticle<PRT_Spark>(sparkPos, sparkVel, Color.Lerp(new Color(180, 140, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, Main.rand.Next(8, 15), Owner);
             }
 
             //高能射线流线 - 紫蓝色调

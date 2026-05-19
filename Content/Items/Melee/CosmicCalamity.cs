@@ -232,12 +232,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(7f, 7f);
                 Color sparkColor = Color.Lerp(BaseCore, BaseAccent, Main.rand.NextFloat());
-                BasePRT spark = new PRT_Spark(
-                    target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
-                    vel, false, Main.rand.Next(10, 18),
-                    Main.rand.NextFloat(1.0f, 1.8f),
-                    sparkColor * 0.9f, Owner);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f), vel, sparkColor * 0.9f, Main.rand.NextFloat(1.0f, 1.8f)).Configure(false, Main.rand.Next(10, 18), Owner);
             }
 
             //中圈光环 + 暗紫扩散
@@ -282,9 +277,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 inVel = (origin - startPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.5f, 4.5f);
 
                 Color c = Color.Lerp(BaseCore, BaseMid, Main.rand.NextFloat());
-                BasePRT spark = new PRT_Spark(startPos, inVel, false, Main.rand.Next(10, 16),
-                    Main.rand.NextFloat(0.9f, 1.4f), c, Owner);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(startPos, inVel, c, Main.rand.NextFloat(0.9f, 1.4f)).Configure(false, Main.rand.Next(10, 16), Owner);
             }
         }
 
@@ -462,12 +455,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     ? Color.Lerp(new Color(200, 230, 255), new Color(150, 100, 255), Main.rand.NextFloat())
                     : Color.Lerp(new Color(255, 100, 220), new Color(180, 80, 255), Main.rand.NextFloat());
 
-                BasePRT spark = new PRT_Spark(
-                    Projectile.Center + dir * 12f, vel, false,
-                    Main.rand.Next(14, 22),
-                    Main.rand.NextFloat(0.9f, 1.6f),
-                    c * 0.95f);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + dir * 12f, vel, c * 0.95f, Main.rand.NextFloat(0.9f, 1.6f)).Configure(false, Main.rand.Next(14, 22));
             }
         }
 
@@ -504,9 +492,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 vel = back.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * Main.rand.NextFloat(3f, 8f);
                 Color c = Color.Lerp(new Color(220, 230, 255), new Color(255, 110, 210), Main.rand.NextFloat());
 
-                BasePRT spark = new PRT_Spark(target.Center, vel, false,
-                    Main.rand.Next(12, 22), Main.rand.NextFloat(0.9f, 1.5f), c);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, c, Main.rand.NextFloat(0.9f, 1.5f)).Configure(false, Main.rand.Next(12, 22));
             }
         }
 

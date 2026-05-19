@@ -449,12 +449,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Vector2 particlePosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.75f, target.height * 0.75f);
 
                 if (Slash3) {
-                    PRT_Sparkle impactParticle2 = new(particlePosition, Vector2.Zero, Color.White, Color.Red, impactParticleScale * 1.2f, 8, 0, 2.5f);
-                    PRTLoader.AddParticle(impactParticle2);
+                    PRTLoader.NewParticle<PRT_Sparkle>(particlePosition, Vector2.Zero, Color.White, impactParticleScale * 1.2f).Configure(Color.Red, 8, 0, 2.5f);
                 }
 
-                PRT_Sparkle impactParticle = new(particlePosition, Vector2.Zero, impactColor, Color.Red, impactParticleScale, 8, 0, 1.5f);
-                PRTLoader.AddParticle(impactParticle);
+                PRTLoader.NewParticle<PRT_Sparkle>(particlePosition, Vector2.Zero, impactColor, impactParticleScale).Configure(Color.Red, 8, 0, 1.5f);
             }
         }
 
@@ -470,8 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Vector2 sparkPosition = target.Center + Main.rand.NextVector2Circular(target.width * 0.5f, target.height * 0.5f) + Projectile.velocity * 1.2f;
 
                 if (Main.rand.NextBool()) {
-                    PRT_SparkAlpha spark = new(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)), sparkScale * (Slash3 ? 1.4f : 1f), sparkColor);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_SparkAlpha>(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), sparkColor, sparkScale * (Slash3 ? 1.4f : 1f)).Configure(false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)));
                 }
                 else {
                     PRT_Line spark = new(sparkPosition, sparkVelocity * (Slash3 ? 1f : 0.65f), false, (int)(sparkLifetime * (Slash3 ? 1.2f : 1f)), sparkScale * (Slash3 ? 0.86f : 0.6f), Main.rand.NextBool() ? Color.Red : Color.Firebrick);

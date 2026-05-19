@@ -62,8 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 23; j++) {
-                        BasePRT spark = new PRT_SparkAlpha(pos, vr * (0.1f + j * 0.34f), false, 13, 0.1f + j * 0.34f, Color.Red);
-                        PRTLoader.AddParticle(spark);
+                        PRTLoader.NewParticle<PRT_SparkAlpha>(pos, vr * (0.1f + j * 0.34f), Color.Red, 0.1f + j * 0.34f).Configure(false, 13);
                     }
                 }
             }

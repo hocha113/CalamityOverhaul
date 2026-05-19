@@ -36,14 +36,11 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //明亮白色闪光爆发
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 15, 1.5f, Color.White));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, Color.White, 1.5f).Configure(false, 15);
             }
             //核心强光
             for (int i = 0; i < 4; i++) {
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center,
-                    Main.rand.NextVector2Circular(1f, 1f),
-                    false, 10, 2.5f, new Color(255, 255, 220)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, Main.rand.NextVector2Circular(1f, 1f), new Color(255, 255, 220), 2.5f).Configure(false, 10);
             }
         }
 
@@ -53,8 +50,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //周期性闪烁表示仍在致盲
             if (elapsed % 20 == 0) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 10, 1.0f, new Color(255, 255, 220)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(255, 255, 220), 1.0f).Configure(false, 10);
             }
             return true;
         }
@@ -65,8 +61,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //视觉恢复衰减光
             for (int i = 0; i < 4; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 12, 0.6f, new Color(200, 200, 160)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(200, 200, 160), 0.6f).Configure(false, 12);
             }
         }
     }

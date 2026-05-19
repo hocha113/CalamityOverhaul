@@ -52,9 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             for (int i = 0; i < 13; i++) {
-                BasePRT spark = new PRT_Spark(Projectile.Center
-                    , VaultUtils.RandVr(13, 23), false, 26, Main.rand.NextFloat(2.6f, 2.8f), Color.Gold);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, VaultUtils.RandVr(13, 23), Color.Gold, Main.rand.NextFloat(2.6f, 2.8f)).Configure(false, 26);
             }
             Projectile.timeLeft = 30;
             Projectile.netUpdate = true;

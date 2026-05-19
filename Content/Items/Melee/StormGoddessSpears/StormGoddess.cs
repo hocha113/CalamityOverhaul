@@ -674,16 +674,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(60, 30);
                 Vector2 velocity = (currentTarget.Center - startPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(15f, 25f);
 
-                BasePRT particle = new PRT_Spark(
-                    startPos,
-                    velocity,
-                    false,
-                    Main.rand.Next(15, 25),
-                    2f,
-                    lightningColor * 0.9f,
-                    Owner
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_Spark>(startPos, velocity, lightningColor * 0.9f, 2f).Configure(false, Main.rand.Next(15, 25), Owner);
             }
         }
 
@@ -712,16 +703,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private void SpawnIdleParticles() {
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
 
-            BasePRT particle = new PRT_Spark(
-                particlePos,
-                Main.rand.NextVector2Circular(2f, 2f),
-                false,
-                Main.rand.Next(10, 20),
-                0.8f,
-                new Color(200, 230, 255),
-                Owner
-            );
-            PRTLoader.AddParticle(particle);
+            PRTLoader.NewParticle<PRT_Spark>(particlePos, Main.rand.NextVector2Circular(2f, 2f), new Color(200, 230, 255), 0.8f).Configure(false, Main.rand.Next(10, 20), Owner);
         }
 
         /// <summary>

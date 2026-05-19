@@ -138,15 +138,14 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             for (int i = 0; i < 16; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
                 Color c = Color.Lerp(new Color(255, 150, 50), new Color(255, 80, 30), Main.rand.NextFloat());
-                PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 30, 1.5f, c));
+                PRTLoader.NewParticle<PRT_Spark>(center, vel, c, 1.5f).Configure(false, 30);
             }
 
             //碎片粒子向外飞散
             for (int i = 0; i < 24; i++) {
                 Vector2 pos = center + Main.rand.NextVector2Circular(BlastRadius * 10f, BlastRadius * 10f);
                 Vector2 vel = (pos - center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel, false, 20, 0.6f,
-                    new Color(80, 200, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(80, 200, 255), 0.6f).Configure(false, 20);
             }
 
             if (!VaultUtils.isServer) {

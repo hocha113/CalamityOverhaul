@@ -10,15 +10,20 @@ namespace CalamityOverhaul.Content.PRTTypes
         public Color InitialColor;
         public bool AffectedByGravity;
         public Entity entity = null!;
+        public override bool CanPool => true;
         public override string Texture => CWRConstant.Masking + "Extra_98";
         public PRT_SparkAlpha() { }
-        public PRT_SparkAlpha(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
-            Position = relativePosition;
-            Velocity = velocity;
+        public PRT_SparkAlpha Configure(bool affectedByGravity, int lifetime) {
+            InitialColor = Color;
             AffectedByGravity = affectedByGravity;
-            Scale = scale;
             Lifetime = lifetime;
-            Color = InitialColor = color;
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            InitialColor = default;
+            AffectedByGravity = false;
+            entity = null;
         }
         public override void AI() {
             Scale *= 0.95f;

@@ -331,15 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 float angle = MathHelper.TwoPi * i / particleCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 25f);
 
-                PRT_SparkAlpha spark = new PRT_SparkAlpha(
-                    impactPosition,
-                    velocity,
-                    false,
-                    Main.rand.Next(20, 35),
-                    Main.rand.NextFloat(2f, 4.5f),
-                    Main.rand.NextBool(2) ? Color.Red : Color.DarkRed
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(impactPosition, velocity, Main.rand.NextBool(2) ? Color.Red : Color.DarkRed, Main.rand.NextFloat(2f, 4.5f)).Configure(false, Main.rand.Next(20, 35));
             }
 
             //冲击波环
@@ -426,15 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
                                   Main.rand.NextFloat(3f, 7f);
 
-                PRT_SparkAlpha spark = new PRT_SparkAlpha(
-                    spawnPos,
-                    velocity,
-                    false,
-                    Main.rand.Next(15, 25),
-                    Main.rand.NextFloat(1.5f, 2.5f),
-                    Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat())
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(spawnPos, velocity, Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(15, 25));
             }
         }
 
@@ -444,15 +428,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             //下落轨迹粒子
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = Main.rand.NextVector2Circular(22f, 22f);
-                PRT_SparkAlpha spark = new PRT_SparkAlpha(
-                    Projectile.Center + offset,
-                    -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f),
-                    false,
-                    Main.rand.Next(10, 20),
-                    Main.rand.NextFloat(2f, 3.5f),
-                    Main.rand.NextBool() ? Color.Red : Color.Crimson
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center + offset, -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f), Main.rand.NextBool() ? Color.Red : Color.Crimson, Main.rand.NextFloat(2f, 3.5f)).Configure(false, Main.rand.Next(10, 20));
             }
 
             //空气扭曲效果
@@ -496,15 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 //击中敌人时的特效
                 for (int i = 0; i < 15; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                    PRT_Spark spark = new PRT_Spark(
-                        target.Center,
-                        velocity,
-                        false,
-                        Main.rand.Next(10, 18),
-                        Main.rand.NextFloat(1.5f, 2.5f),
-                        Main.rand.NextBool() ? Color.Red : Color.DarkRed
-                    );
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center, velocity, Main.rand.NextBool() ? Color.Red : Color.DarkRed, Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(10, 18));
                 }
             }
 

@@ -44,9 +44,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                     return;
                 }
             }
-            BasePRT spark = new PRT_Spark(Projectile.Center
-                        , Projectile.velocity, false, 10, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
-            PRTLoader.AddParticle(spark);
+            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, Projectile.velocity, Color.BlueViolet, Main.rand.NextFloat(1.2f, 2.3f)).Configure(false, 10);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.immune[Projectile.owner] = 0;

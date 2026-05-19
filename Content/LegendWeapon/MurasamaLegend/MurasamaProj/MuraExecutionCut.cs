@@ -43,10 +43,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     for (int i = 0; i < maxNum; i++) {
                         Vector2 ver = origVer.UnitVector() * (i + 10.2f);
                         Color color = VaultUtils.MultiStepColorLerp(i / maxNum, Color.DarkRed, Color.IndianRed);
-                        BasePRT spark = new PRT_Spark(Projectile.Center, ver, false, 119, 2.3f, color);
+                        var spark = PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, ver, color, 2.3f).Configure(false, 119);
                         //不要在屏幕外面就消除了，否则玩家什么都看不到
                         spark.ShouldKillWhenOffScreen = false;
-                        PRTLoader.AddParticle(spark);
                     }
                 }
                 set = true;

@@ -108,12 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //粒子节流：充能 ≥ 80 时每 8 帧一次预放电；其余每 12 帧一次方块粒子
             if (Main.netMode != NetmodeID.Server) {
                 if (Projectile.localAI[0] > 80f && Main.GameUpdateCount % 8 == 0) {
-                    PRTLoader.AddParticle(new PRT_Sparkle(
-                        Projectile.Center + Main.rand.NextVector2Circular(36f, 18f),
-                        Main.rand.NextVector2Circular(0.6f, 0.6f),
-                        new Color(220, 240, 255), new Color(120, 130, 200),
-                        Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20),
-                        Main.rand.NextFloat(-0.2f, 0.2f), 0.7f));
+                    PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(36f, 18f), Main.rand.NextVector2Circular(0.6f, 0.6f), new Color(220, 240, 255), Main.rand.NextFloat(0.3f, 0.6f)).Configure(new Color(120, 130, 200), Main.rand.Next(10, 20), Main.rand.NextFloat(-0.2f, 0.2f), 0.7f);
                 }
                 else if (Main.GameUpdateCount % 12 == 0) {
                     Color color = Projectile.localAI[0] > 70f ? new Color(210, 240, 255) : new Color(150, 190, 220);

@@ -114,10 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             if (Main.GameUpdateCount % 12 == 0) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);
-                PRTLoader.AddParticle(new PRT_Spark(
-                    Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, radius * 0.5f), vel, false,
-                    Main.rand.Next(12, 22), Main.rand.NextFloat(0.4f, 0.8f),
-                    Color.Lerp(new Color(255, 220, 130), new Color(160, 90, 30), Main.rand.NextFloat())));
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, radius * 0.5f), vel, Color.Lerp(new Color(255, 220, 130), new Color(160, 90, 30), Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.8f)).Configure(false, Main.rand.Next(12, 22));
             }
         }
 

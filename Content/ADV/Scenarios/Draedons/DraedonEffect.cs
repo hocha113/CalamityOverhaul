@@ -477,19 +477,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 Main.rand.NextFloat(-0.5f, 0.5f)
             );
 
-            PRT_Spark dataSpark = new PRT_Spark(
-                spawnPos,
-                velocity,
-                false,
-                Main.rand.Next(80, 150),
-                Main.rand.NextFloat(0.5f, 1f),
-                Color.Lerp(
-                    new Color(80, 200, 255),
-                    new Color(100, 220, 255),
-                    Main.rand.NextFloat()
-                )
-            );
-            PRTLoader.AddParticle(dataSpark);
+            PRTLoader.NewParticle<PRT_Spark>(spawnPos, velocity, Color.Lerp(new Color(80, 200, 255), new Color(100, 220, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1f)).Configure(false, Main.rand.Next(80, 150));
         }
 
         private static void SpawnCircuitNodes() {
@@ -545,19 +533,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 
             Vector2 velocity = (targetPos - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3f);
 
-            PRT_Spark streamSpark = new PRT_Spark(
-                spawnPos,
-                velocity,
-                false,
-                Main.rand.Next(100, 160),
-                Main.rand.NextFloat(0.6f, 1.2f),
-                Color.Lerp(
-                    new Color(60, 180, 255),
-                    new Color(100, 220, 255),
-                    Main.rand.NextFloat()
-                )
-            );
-            PRTLoader.AddParticle(streamSpark);
+            PRTLoader.NewParticle<PRT_Spark>(spawnPos, velocity, Color.Lerp(new Color(60, 180, 255), new Color(100, 220, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1.2f)).Configure(false, Main.rand.Next(100, 160));
         }
 
         private static void SpawnTechBurst() {
@@ -573,19 +549,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 float angle = MathHelper.TwoPi * i / burstCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
 
-                PRT_Spark burstSpark = new PRT_Spark(
-                    burstCenter,
-                    velocity,
-                    false,
-                    Main.rand.Next(60, 100),
-                    Main.rand.NextFloat(0.8f, 1.5f),
-                    Color.Lerp(
-                        new Color(80, 200, 255),
-                        new Color(120, 240, 255),
-                        Main.rand.NextFloat()
-                    )
-                );
-                PRTLoader.AddParticle(burstSpark);
+                PRTLoader.NewParticle<PRT_Spark>(burstCenter, velocity, Color.Lerp(new Color(80, 200, 255), new Color(120, 240, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f)).Configure(false, Main.rand.Next(60, 100));
             }
 
             //中心光点
@@ -600,15 +564,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             for (int i = 0; i < 12; i++) {
                 Vector2 fragmentVelocity = Main.rand.NextVector2Circular(3f, 3f);
 
-                PRT_Spark fragment = new PRT_Spark(
-                    burstCenter + Main.rand.NextVector2Circular(15f, 15f),
-                    fragmentVelocity,
-                    false,
-                    Main.rand.Next(50, 90),
-                    Main.rand.NextFloat(0.5f, 1f),
-                    new Color(60, 180, 240)
-                );
-                PRTLoader.AddParticle(fragment);
+                PRTLoader.NewParticle<PRT_Spark>(burstCenter + Main.rand.NextVector2Circular(15f, 15f), fragmentVelocity, new Color(60, 180, 240), Main.rand.NextFloat(0.5f, 1f)).Configure(false, Main.rand.Next(50, 90));
             }
         }
 

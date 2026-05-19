@@ -99,8 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                     int sparkLifetime = Main.rand.Next(22, 36);
                     Color sparkColor = Color.Lerp(Color.Silver, Color.Gold, Main.rand.NextFloat(0.7f));
                     Vector2 sparkVelocity = splatterDirection.RotatedByRandom(0.9f) * Main.rand.NextFloat(19f, 34.5f);
-                    PRT_Spark spark = new PRT_Spark(Projectile.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, sparkVelocity, sparkColor, sparkScale).Configure(true, sparkLifetime);
                 }
             }
         }

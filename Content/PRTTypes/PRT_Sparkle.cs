@@ -24,19 +24,23 @@ namespace CalamityOverhaul.Content.PRTTypes
         public PRT_Sparkle() {
             BloomScale = 1f;
         }
-        public PRT_Sparkle(Vector2 position, Vector2 velocity, Color color, Color bloom, float scale, int lifeTime
-            , float rotationSpeed = 0f, float bloomScale = 1f, bool AddativeBlend = true, bool needed = false) {
-            Position = position;
-            Velocity = velocity;
-            Color = color;
+        public override bool CanPool => true;
+        public PRT_Sparkle Configure(Color bloom, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f, bool needed = false) {
             Bloom = bloom;
-            Scale = scale;
             Lifetime = lifeTime;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Spin = rotationSpeed;
             BloomScale = bloomScale;
-            UseAltVisual = AddativeBlend;
             imporant = needed;
+            return this;
+        }
+        public override void Reset() {
+            base.Reset();
+            Bloom = default;
+            Spin = 0f;
+            BloomScale = 1f;
+            imporant = false;
+            UseAltVisual = true;
         }
 
         public override void AI() {

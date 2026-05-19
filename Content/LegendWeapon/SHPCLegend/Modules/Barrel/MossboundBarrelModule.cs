@@ -158,12 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             //常规苔藓孢子粒子（节流到 12 帧一次）
             if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 12 != 0) return;
-            PRTLoader.AddParticle(new PRT_Sparkle(
-                Projectile.Center + Main.rand.NextVector2Circular(radius, radius * 0.35f),
-                new Vector2(0f, Main.rand.NextFloat(-0.5f, 0.2f)),
-                new Color(120, 220, 110), new Color(40, 110, 50),
-                Main.rand.NextFloat(0.25f, 0.55f), Main.rand.Next(20, 45),
-                Main.rand.NextFloat(-0.1f, 0.1f), 0.7f));
+            PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(radius, radius * 0.35f), new Vector2(0f, Main.rand.NextFloat(-0.5f, 0.2f)), new Color(120, 220, 110), Main.rand.NextFloat(0.25f, 0.55f)).Configure(new Color(40, 110, 50), Main.rand.Next(20, 45), Main.rand.NextFloat(-0.1f, 0.1f), 0.7f);
         }
 
         private void SpawnVine(Vector2 from, Vector2 to) {

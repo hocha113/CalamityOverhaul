@@ -133,14 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 float speed = Main.rand.NextFloat(3f, 9f);
                 Vector2 vel = angle.ToRotationVector2() * speed;
                 Color col = Color.Lerp(new Color(120, 230, 255), Color.White, Main.rand.NextFloat());
-                PRTLoader.AddParticle(new PRT_Spark(
-                    endPos + Main.rand.NextVector2Circular(8f, 8f),
-                    vel,
-                    affectedByGravity: false,
-                    lifetime: Main.rand.Next(10, 22),
-                    scale: Main.rand.NextFloat(0.6f, 1.4f),
-                    color: col
-                ));
+                PRTLoader.NewParticle<PRT_Spark>(endPos + Main.rand.NextVector2Circular(8f, 8f), vel, col, Main.rand.NextFloat(0.6f, 1.4f)).Configure(false, Main.rand.Next(10, 22));
             }
         }
 
@@ -409,14 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 float speed = Main.rand.NextFloat(5f, 18f);
                 Vector2 vel = angle.ToRotationVector2() * speed;
                 Color col = Color.Lerp(new Color(100, 210, 255), Color.White, Main.rand.NextFloat(0.3f, 1f));
-                PRTLoader.AddParticle(new PRT_Spark(
-                    impactPos + Main.rand.NextVector2Circular(10f, 10f),
-                    vel,
-                    affectedByGravity: true,
-                    lifetime: Main.rand.Next(18, 38),
-                    scale: Main.rand.NextFloat(0.8f, 2.0f),
-                    color: col
-                ));
+                PRTLoader.NewParticle<PRT_Spark>(impactPos + Main.rand.NextVector2Circular(10f, 10f), vel, col, Main.rand.NextFloat(0.8f, 2.0f)).Configure(true, Main.rand.Next(18, 38));
             }
 
             //故障碎块四散

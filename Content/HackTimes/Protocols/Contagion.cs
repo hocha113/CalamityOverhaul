@@ -29,8 +29,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //病毒附着粒子
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 25, 1.0f, new Color(30, 220, 60)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(30, 220, 60), 1.0f).Configure(false, 25);
             }
             return true;
         }
@@ -47,8 +46,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.3f, npc.height * 0.3f);
                 Vector2 vel = new(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1.5f, 0f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 20, 0.6f, new Color(50, 255, 80)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(50, 255, 80), 0.6f).Configure(false, 20);
             }
             return true;
         }
@@ -84,17 +82,14 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 for (int j = 0; j < 6; j++) {
                     float t = j / 6f;
                     Vector2 pos = Vector2.Lerp(npc.Center, other.Center, t);
-                    PRTLoader.AddParticle(new PRT_Spark(pos,
-                        Main.rand.NextVector2Circular(1f, 1f), false, 20, 0.5f,
-                        new Color(60, 255, 90)));
+                    PRTLoader.NewParticle<PRT_Spark>(pos, Main.rand.NextVector2Circular(1f, 1f), new Color(60, 255, 90), 0.5f).Configure(false, 20);
                 }
             }
 
             //源体最终扩散爆发粒子
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 20, 0.8f, new Color(80, 255, 120)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(80, 255, 120), 0.8f).Configure(false, 20);
             }
         }
     }

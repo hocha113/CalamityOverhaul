@@ -421,15 +421,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //猩红能量爆发
-            BasePRT crimson = new PRT_Spark(
-                target.Center,
-                Main.rand.NextVector2Circular(4f, 4f),
-                false,
-                15,
-                Main.rand.NextFloat(1f, 1.5f),
-                Color.Crimson
-            );
-            PRTLoader.AddParticle(crimson);
+            PRTLoader.NewParticle<PRT_Spark>(target.Center, Main.rand.NextVector2Circular(4f, 4f), Color.Crimson, Main.rand.NextFloat(1f, 1.5f)).Configure(false, 15);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

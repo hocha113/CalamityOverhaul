@@ -226,19 +226,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     Main.rand.NextFloat(-5f, -3f)
                 );
 
-                PRT_Spark spark = new PRT_Spark(
-                    burstCenter + Main.rand.NextVector2Circular(1130f, 130f),
-                    sparkVelocity,
-                    false,
-                    Main.rand.Next(40, 80),
-                    Main.rand.NextFloat(1f, 1.8f),
-                    Color.Lerp(
-                        new Color(255, 200, 100),
-                        new Color(255, 140, 70),
-                        Main.rand.NextFloat()
-                    )
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(burstCenter + Main.rand.NextVector2Circular(1130f, 130f), sparkVelocity, Color.Lerp(new Color(255, 200, 100), new Color(255, 140, 70), Main.rand.NextFloat()), Main.rand.NextFloat(1f, 1.8f)).Configure(false, Main.rand.Next(40, 80));
             }
         }
 

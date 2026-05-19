@@ -285,16 +285,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particlePos = player.Center + Main.rand.NextVector2Circular(40, 40);
                 Vector2 particleVel = Main.rand.NextVector2Circular(3f, 3f);
 
-                BasePRT particle = new PRT_Spark(
-                    particlePos,
-                    particleVel,
-                    false,
-                    Main.rand.Next(10, 18),
-                    Main.rand.NextFloat(0.8f, 1.2f),
-                    Color.Cyan,
-                    player
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_Spark>(particlePos, particleVel, Color.Cyan, Main.rand.NextFloat(0.8f, 1.2f)).Configure(false, Main.rand.Next(10, 18), player);
             }
         }
 
@@ -447,16 +438,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.5f, beamWidth * 0.5f);
                 Vector2 sparkVel = Main.rand.NextVector2Circular(1.5f, 1.5f);
 
-                BasePRT spark = new PRT_Spark(
-                    sparkPos + sparkVel * 10,
-                    sparkVel,
-                    false,
-                    Main.rand.Next(6, 10),
-                    Main.rand.NextFloat(1f, 1.5f),
-                    Color.White,
-                    Main.player[Projectile.owner]
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(sparkPos + sparkVel * 10, sparkVel, Color.White, Main.rand.NextFloat(1f, 1.5f)).Configure(false, Main.rand.Next(6, 10), Main.player[Projectile.owner]);
             }
 
             //能量流线
@@ -555,16 +537,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(120f, 120f);
                     Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(12f, 22f);
 
-                    BasePRT implosion = new PRT_Spark(
-                        spawnPos,
-                        velocity,
-                        false,
-                        Main.rand.Next(25, 35),
-                        Main.rand.NextFloat(1.2f, 2f),
-                        Color.White,
-                        Main.player[Projectile.owner]
-                    );
-                    PRTLoader.AddParticle(implosion);
+                    PRTLoader.NewParticle<PRT_Spark>(spawnPos, velocity, Color.White, Main.rand.NextFloat(1.2f, 2f)).Configure(false, Main.rand.Next(25, 35), Main.player[Projectile.owner]);
                 }
             }
         }

@@ -84,8 +84,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             for (int i = 0; i < 12; i++) {
                 Vector2 pos = center + Main.rand.NextVector2Circular(w * 8f, h * 8f);
                 Vector2 vel = new(Main.rand.NextFloat(-1.5f, 1.5f), Main.rand.NextFloat(-2f, 0f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel, false, 30, 0.8f,
-                    new Color(100, 180, 255, 120)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(100, 180, 255, 120), 0.8f).Configure(false, 30);
             }
 
             if (!VaultUtils.isServer) {
@@ -103,8 +102,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (elapsed % 30 == 0) {
                 Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
                 Vector2 vel = new(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1f, 0f));
-                PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 20, 0.5f,
-                    new Color(100, 180, 255, 80)));
+                PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(100, 180, 255, 80), 0.5f).Configure(false, 20);
             }
             return true;
         }
@@ -146,8 +144,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 25, 1.0f,
-                    new Color(80, 200, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(80, 200, 255), 1.0f).Configure(false, 25);
             }
 
             //网络同步

@@ -223,16 +223,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < ringCount; i++) {
                 float angle = MathHelper.TwoPi * i / ringCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f) * sizeMultiplier;
-                BasePRT particle = new PRT_Spark(
-                    Projectile.Center,
-                    velocity,
-                    false,
-                    Main.rand.Next(8, 15),
-                    1.5f * sizeMultiplier,
-                    particleColor * 0.8f,
-                    Main.player[Projectile.owner]
-                );
-                PRTLoader.AddParticle(particle);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, velocity, particleColor * 0.8f, 1.5f * sizeMultiplier).Configure(false, Main.rand.Next(8, 15), Main.player[Projectile.owner]);
             }
         }
 

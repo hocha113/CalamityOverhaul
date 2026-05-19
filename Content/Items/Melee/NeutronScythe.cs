@@ -148,10 +148,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 for (int i = 0; i < 8; i++) {
                     float spread = Main.rand.NextFloat(-0.55f, 0.55f);
                     Vector2 vel = forward.RotatedBy(spread) * Main.rand.NextFloat(2.5f, 7f);
-                    PRT_Spark spark = new PRT_Spark(Projectile.Center, vel
-                        , false, Main.rand.Next(10, 18)
-                        , Main.rand.NextFloat(1f, 1.8f), Color.CornflowerBlue);
-                    PRTLoader.AddParticle(spark);
+                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel, Color.CornflowerBlue, Main.rand.NextFloat(1f, 1.8f)).Configure(false, Main.rand.Next(10, 18));
                 }
             }
         }
@@ -219,10 +216,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //航迹粒子
             if (Main.rand.NextBool(2)) {
                 Vector2 dustVel = Projectile.velocity.RotatedByRandom(0.4f) * -0.2f;
-                PRT_Spark spark = new PRT_Spark(Projectile.Center + Main.rand.NextVector2Circular(8, 8)
-                    , dustVel, false, 12, Main.rand.NextFloat(0.9f, 1.4f)
-                    , IsBurst ? Color.BlueViolet : Color.CadetBlue);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(8, 8), dustVel, IsBurst ? Color.BlueViolet : Color.CadetBlue, Main.rand.NextFloat(0.9f, 1.4f)).Configure(false, 12);
             }
         }
 
@@ -265,9 +259,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
-                PRT_Spark spark = new PRT_Spark(target.Center, vel, false
-                    , Main.rand.Next(10, 18), Main.rand.NextFloat(1.2f, 2f), Color.CornflowerBlue);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, Color.CornflowerBlue, Main.rand.NextFloat(1.2f, 2f)).Configure(false, Main.rand.Next(10, 18));
             }
         }
 

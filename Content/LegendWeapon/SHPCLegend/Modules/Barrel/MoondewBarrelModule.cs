@@ -79,12 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             //偶发月华火星（节流到 12 帧）
             if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 12 != 0) return;
-            PRTLoader.AddParticle(new PRT_Sparkle(
-                Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                Main.rand.NextVector2Circular(0.5f, 0.5f),
-                new Color(220, 240, 255), new Color(120, 170, 230),
-                Main.rand.NextFloat(0.3f, 0.65f), Main.rand.Next(16, 28),
-                Main.rand.NextFloat(-0.15f, 0.15f), 0.7f));
+            PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(0.5f, 0.5f), new Color(220, 240, 255), Main.rand.NextFloat(0.3f, 0.65f)).Configure(new Color(120, 170, 230), Main.rand.Next(16, 28), Main.rand.NextFloat(-0.15f, 0.15f), 0.7f);
         }
 
         private int MaxRefractions() {

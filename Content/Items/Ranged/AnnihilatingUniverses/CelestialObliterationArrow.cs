@@ -46,8 +46,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {
-                PRT_SparkAlpha spark = new(Projectile.Center, Projectile.velocity * 0.05f, false, 8, 2.3f, Color.DarkBlue);
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_SparkAlpha>(Projectile.Center, Projectile.velocity * 0.05f, Color.DarkBlue, 2.3f).Configure(false, 8);
             }
 
             if (Projectile.timeLeft % 2 == 0 && Projectile.ai[0] > 5f && targetDist < 1400f) {

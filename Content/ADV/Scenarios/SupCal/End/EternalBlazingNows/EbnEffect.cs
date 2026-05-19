@@ -475,22 +475,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-40, 20)
                 );
 
-                PRT_Spark spark = new PRT_Spark(
-                    sparkPos,
-                    new Vector2(
-                        Main.rand.NextFloat(-3f, 3f),
-                        Main.rand.NextFloat(-6f, -3f)
-                    ),
-                    false,
-                    Main.rand.Next(30, 70),
-                    Main.rand.NextFloat(1.2f, 2f),
-                    Color.Lerp(
-                        new Color(255, 220, 120),
-                        new Color(255, 120, 60),
-                        Main.rand.NextFloat()
-                    )
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(sparkPos, new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-6f, -3f)), Color.Lerp(new Color(255, 220, 120), new Color(255, 120, 60), Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 2f)).Configure(false, Main.rand.Next(30, 70));
             }
         }
 
@@ -525,19 +510,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     Main.rand.NextFloat(-7f, -4f)
                 );
 
-                PRT_Spark spark = new PRT_Spark(
-                    burstCenter + Main.rand.NextVector2Circular(150f, 150f),
-                    sparkVelocity,
-                    false,
-                    Main.rand.Next(35, 75),
-                    Main.rand.NextFloat(1.5f, 2.5f),
-                    Color.Lerp(
-                        new Color(255, 220, 100),
-                        new Color(255, 100, 50),
-                        Main.rand.NextFloat()
-                    )
-                );
-                PRTLoader.AddParticle(spark);
+                PRTLoader.NewParticle<PRT_Spark>(burstCenter + Main.rand.NextVector2Circular(150f, 150f), sparkVelocity, Color.Lerp(new Color(255, 220, 100), new Color(255, 100, 50), Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(35, 75));
             }
         }
 

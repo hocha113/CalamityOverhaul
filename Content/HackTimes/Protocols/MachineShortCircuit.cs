@@ -72,14 +72,13 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 for (int i = 0; i < 20; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f);
                     Color c = Color.Lerp(new Color(100, 180, 255), new Color(200, 220, 255), Main.rand.NextFloat());
-                    PRTLoader.AddParticle(new PRT_Spark(center, vel, false, 25, 1.2f, c));
+                    PRTLoader.NewParticle<PRT_Spark>(center, vel, c, 1.2f).Configure(false, 25);
                 }
                 //外圈扩散粒子
                 for (int i = 0; i < 12; i++) {
                     float angle = MathHelper.TwoPi * i / 12f;
                     Vector2 dir = angle.ToRotationVector2();
-                    PRTLoader.AddParticle(new PRT_Spark(center + dir * 20f, dir * 4f, false, 20, 0.6f,
-                        new Color(80, 200, 255, 120)));
+                    PRTLoader.NewParticle<PRT_Spark>(center + dir * 20f, dir * 4f, new Color(80, 200, 255, 120), 0.6f).Configure(false, 20);
                 }
 
                 SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.7f, Pitch = -0.3f }, center);

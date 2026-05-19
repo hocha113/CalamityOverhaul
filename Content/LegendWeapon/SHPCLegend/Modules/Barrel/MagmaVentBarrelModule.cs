@@ -117,10 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //方块碎屑火星
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-9f, -2f));
-                PRTLoader.AddParticle(new PRT_Spark(
-                    Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f), vel, true,
-                    Main.rand.Next(20, 38), Main.rand.NextFloat(0.5f, 1.2f),
-                    Color.Lerp(new Color(255, 220, 130), new Color(255, 90, 25), Main.rand.NextFloat())));
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f), vel, Color.Lerp(new Color(255, 220, 130), new Color(255, 90, 25), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1.2f)).Configure(true, Main.rand.Next(20, 38));
             }
             SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.55f, Pitch = -0.2f }, Projectile.Center);
             if (nearLava) {

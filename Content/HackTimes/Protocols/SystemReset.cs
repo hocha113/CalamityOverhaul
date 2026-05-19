@@ -36,8 +36,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         private static void EmitApplyParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 25, 1.0f, new Color(40, 120, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(40, 120, 255), 1.0f).Configure(false, 25);
             }
         }
 
@@ -50,14 +49,11 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     npc.Center.X + Main.rand.NextFloat(-npc.width * 0.4f, npc.width * 0.4f),
                     npc.position.Y + npc.height);
                 Vector2 vel = new(0, Main.rand.NextFloat(-2f, -0.5f));
-                PRTLoader.AddParticle(new PRT_Spark(pos, vel,
-                    false, 30, 0.5f, new Color(40, 100, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(40, 100, 255), 0.5f).Configure(false, 30);
             }
             //偶尔闪烁蓝色光点
             if (elapsed % 30 == 0) {
-                PRTLoader.AddParticle(new PRT_Spark(
-                    npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f),
-                    Vector2.Zero, false, 10, 1.2f, new Color(80, 160, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f), Vector2.Zero, new Color(80, 160, 255), 1.2f).Configure(false, 10);
             }
             return true;
         }
@@ -68,8 +64,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //重启完成闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
-                PRTLoader.AddParticle(new PRT_Spark(npc.Center, vel,
-                    false, 12, 0.8f, new Color(100, 200, 255)));
+                PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(100, 200, 255), 0.8f).Configure(false, 12);
             }
             CombatText.NewText(npc.Hitbox, new Color(100, 200, 255), HackTime.SystemOnline.Value, false);
         }

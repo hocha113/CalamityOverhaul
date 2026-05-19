@@ -216,9 +216,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 for (int i = 0; i < 6; i++) {
                     Vector2 vel = Main.rand.NextVector2Circular(7f, 7f);
-                    PRT_Spark prt = new PRT_Spark(target.Center, vel, false, 14,
-                        Main.rand.NextFloat(1.1f, 1.7f), Color.Crimson);
-                    PRTLoader.AddParticle(prt);
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, Color.Crimson, Main.rand.NextFloat(1.1f, 1.7f)).Configure(false, 14);
                 }
             }
         }
