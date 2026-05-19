@@ -187,15 +187,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 30f);
 
                 //金色火花
-                BasePRT spark = new PRT_Light(
+                BasePRT spark = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
                     velocity,
-                    Main.rand.NextFloat(0.6f, 1.2f),
                     Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),
-                    Main.rand.Next(15, 30),
-                    1, 1.3f, hueShift: 0.0f
-                );
-                PRTLoader.AddParticle(spark);
+                    Main.rand.NextFloat(0.6f, 1.2f)
+                ).Configure(Main.rand.Next(15, 30), 1, 1.3f, hueShift: 0.0f);
             }
         }
 

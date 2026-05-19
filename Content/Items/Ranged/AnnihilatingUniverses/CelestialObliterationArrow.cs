@@ -88,9 +88,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
             for (int i = 0; i < 16; i++) {
                 Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
                 Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                    , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
-                PRTLoader.AddParticle(energyLeak);
+                BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                    , Color.Purple, Main.rand.NextFloat(0.3f, 0.7f)).Configure(30, 1, 1.5f, hueShift: 0.0f);
             }
         }
 

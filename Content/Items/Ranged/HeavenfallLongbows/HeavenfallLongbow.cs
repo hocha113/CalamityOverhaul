@@ -159,9 +159,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                 Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
                 Vector2 particleSpeed = Vector2.Zero;
                 Color color = VaultUtils.MultiStepColorLerp(j / 500f, rainbowColors);
-                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                    , 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
-                PRTLoader.AddParticle(energyLeak);
+                BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                    , color, 1.5f).Configure(120, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
             }
 
             if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0) {

@@ -510,17 +510,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 for (int i = 0; i < 12; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(25f, 25f);
 
-                    BasePRT light = new PRT_Light(
+                    BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                         target.Center,
                         velocity,
-                        Main.rand.NextFloat(1f, 1.8f),
                         Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
-                        Main.rand.Next(30, 45),
-                        1.8f,
-                        2.5f,
-                        hueShift: 0.03f
-                    );
-                    PRTLoader.AddParticle(light);
+                        Main.rand.NextFloat(1f, 1.8f)
+                    ).Configure(Main.rand.Next(30, 45), opacity: 1.8f, squishStrenght: 2.5f, hueShift: 0.03f);
                 }
             }
 

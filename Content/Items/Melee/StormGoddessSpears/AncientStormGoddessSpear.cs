@@ -111,9 +111,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                     for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                         Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13);
                         Vector2 particleSpeed = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)).UnitVector() * Main.rand.NextFloat(15.5f, 37.7f);
-                        BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                            , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                        PRTLoader.AddParticle(energyLeak);
+                        BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                            , Light, 0.3f).Configure(6 + Main.rand.Next(5), opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                     }
                 }
             }
@@ -215,9 +214,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                     Vector2 pos = Projectile.Center;
                     Vector2 particleSpeed = oldVelocity.RotatedByRandom(1.9f).UnitVector() * -Main.rand.NextFloat(12, 64);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
+                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                        , Light, 0.3f).Configure(6 + Main.rand.Next(5), opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                 }
             }
             Projectile.velocity = new Vector2(0, Math.Sign(Projectile.velocity.Y));
@@ -235,9 +233,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                     for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                         Vector2 pos = Projectile.Center;
                         Vector2 particleSpeed = Projectile.velocity.RotatedByRandom(1.9f).UnitVector() * -Main.rand.NextFloat(12, 64);
-                        BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                            , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                        PRTLoader.AddParticle(energyLeak);
+                        BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                            , Light, 0.3f).Configure(6 + Main.rand.Next(5), opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                     }
                 }
 
@@ -266,9 +263,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                     Vector2 pos = Projectile.Center;
                     Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(15.5f, 37.7f);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
+                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                        , Light, 0.3f).Configure(6 + Main.rand.Next(5), opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                 }
                 SoundStyle sound = SoundID.Item94;
                 sound.MaxInstances = 6;
@@ -435,9 +431,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 for (int i = 0; i < Main.rand.Next(3, 16); i++) {
                     Vector2 pos = target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(target.width);
                     Vector2 particleSpeed = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(15.5f, 37.7f);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , 0.3f, light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
+                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                        , light, 0.3f).Configure(6 + Main.rand.Next(5), opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                 }
                 if (Projectile.numHits == 0) {
                     SoundStyle sound = SoundID.Item94;

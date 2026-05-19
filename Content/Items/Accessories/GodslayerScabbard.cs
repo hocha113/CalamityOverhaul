@@ -275,17 +275,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //内层光芒
             for (int i = 0; i < 16; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
-                BasePRT light = new PRT_Light(
+                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     velocity,
-                    0.6f,
                     godslayerBlue,
-                    Main.rand.Next(25, 40),
-                    1.5f,
-                    2.5f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(light);
+                    0.6f
+                ).Configure(Main.rand.Next(25, 40), opacity: 1.5f, squishStrenght: 2.5f, hueShift: 0.02f);
             }
 
             //扩散圆环效果
@@ -357,17 +352,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             for (int i = 0; i < 32; i++) {
                 float angle = MathHelper.TwoPi * i / 32f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 14f);
-                BasePRT light = new PRT_Light(
+                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     velocity,
-                    0.5f,
                     Color.Lerp(godslayerBlue, godslayerPurple, Main.rand.NextFloat()),
-                    Main.rand.Next(20, 35),
-                    1.2f,
-                    2f,
-                    hueShift: 0.01f
-                );
-                PRTLoader.AddParticle(light);
+                    0.5f
+                ).Configure(Main.rand.Next(20, 35), opacity: 1.2f, squishStrenght: 2f, hueShift: 0.01f);
             }
 
             //向目标方向的剑气效果
@@ -390,17 +380,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //爆发光芒
             for (int i = 0; i < 24; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 12f);
-                BasePRT light = new PRT_Light(
+                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                     Player.Center,
                     vel,
-                    0.4f,
                     godslayerCyan,
-                    Main.rand.Next(15, 25),
-                    1f,
-                    1.8f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(light);
+                    0.4f
+                ).Configure(Main.rand.Next(15, 25), opacity: 1f, squishStrenght: 1.8f, hueShift: 0f);
             }
         }
 
@@ -453,17 +438,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //随机护盾粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 offset = Main.rand.NextVector2Circular(radius, radius);
-                BasePRT light = new PRT_Light(
+                BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                     Player.Center + offset,
                     -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 2f),
-                    0.2f,
                     godslayerBlue * intensity,
-                    Main.rand.Next(10, 20),
-                    0.8f,
-                    1.2f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(light);
+                    0.2f
+                ).Configure(Main.rand.Next(10, 20), opacity: 0.8f, squishStrenght: 1.2f, hueShift: 0f);
             }
         }
 
@@ -491,17 +471,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 //高充能时添加额外效果
                 if (chargeRatio > 0.7f && Main.GameUpdateCount % 8 == 0 && !VaultUtils.isServer) {
                     Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f);
-                    BasePRT light = new PRT_Light(
+                    BasePRT light = PRTLoader.NewParticle<PRT_Light>(
                         Player.Center + Main.rand.NextVector2Circular(30f, 30f),
                         vel,
-                        0.15f,
                         new Color(80, 180, 255) * chargeRatio,
-                        Main.rand.Next(10, 20),
-                        0.6f,
-                        1f,
-                        hueShift: 0f
-                    );
-                    PRTLoader.AddParticle(light);
+                        0.15f
+                    ).Configure(Main.rand.Next(10, 20), opacity: 0.6f, squishStrenght: 1f, hueShift: 0f);
                 }
             }
         }

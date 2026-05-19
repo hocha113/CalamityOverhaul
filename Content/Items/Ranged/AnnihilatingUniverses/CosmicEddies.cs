@@ -88,9 +88,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next((int)Rots);
                     Vector2 particleSpeed = pos.To(Projectile.Center + Projectile.velocity).UnitVector() * Main.rand.NextFloat(5.5f, 7.7f);
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.3f, 0.3f + Projectile.ai[1] / 1000f), Color.Blue, 30, 1, 1.5f, hueShift: 0.0f, _entity: Projectile);
-                    PRTLoader.AddParticle(energyLeak);
+                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                        , Color.Blue, Main.rand.NextFloat(0.3f, 0.3f + Projectile.ai[1] / 1000f)).Configure(30, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: Projectile);
                 }
 
                 if (!SoundEngine.TryGetActiveSound(SoundSlot, out var activeSoundTwister)) {
@@ -116,10 +115,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
                 for (int i = 0; i < Rots; i++) {
                     Vector2 particleSpeed = VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(16, 49));
                     Vector2 pos = Projectile.Center;
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.4f, 1.2f), Color.Blue, 60, 1, 1.5f, hueShift: 0.0f);
+                    BasePRT energyLeak = PRTLoader.NewParticle<PRT_Light>(pos, particleSpeed
+                        , Color.Blue, Main.rand.NextFloat(0.4f, 1.2f)).Configure(60, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f);
                     energyLeak.ShouldKillWhenOffScreen = false;
-                    PRTLoader.AddParticle(energyLeak);
                 }
             }
         }

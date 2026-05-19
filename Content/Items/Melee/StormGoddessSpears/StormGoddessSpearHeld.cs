@@ -230,17 +230,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     ShootSpanPos,
                     velocity,
-                    0.35f,
                     particleColor * 0.8f,
-                    Main.rand.Next(15, 25),
-                    1.2f,
-                    1.6f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.35f
+                ).Configure(Main.rand.Next(15, 25), opacity: 1.2f, squishStrenght: 1.6f, hueShift: 0f);
             }
 
             //向上爆发的粒子（减少数量）
@@ -323,17 +318,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             for (int i = 0; i < Main.rand.Next(4, 8); i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 14f);
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
                     velocity,
-                    0.25f,
                     particleColor * 0.9f,
-                    Main.rand.Next(8, 15),
-                    1f,
-                    1.5f,
-                    hueShift: Main.rand.NextFloat(-0.05f, 0.05f)
-                );
-                PRTLoader.AddParticle(particle);
+                    0.25f
+                ).Configure(Main.rand.Next(8, 15), opacity: 1f, squishStrenght: 1.5f, hueShift: Main.rand.NextFloat(-0.05f, 0.05f));
             }
 
             //音效概率播放

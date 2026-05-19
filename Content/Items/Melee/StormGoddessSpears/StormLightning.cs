@@ -210,17 +210,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             //生成爆炸性粒子（白蓝色）
             for (int i = 0; i < Main.rand.Next(baseCount, baseCount + 10); i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 25f) * sizeMultiplier;
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(20, 20),
                     velocity,
-                    0.4f * sizeMultiplier,
                     particleColor,
-                    Main.rand.Next(15, 25),
-                    1.2f * sizeMultiplier,
-                    2f * sizeMultiplier,
-                    hueShift: Main.rand.NextFloat(-0.05f, 0.05f)
-                );
-                PRTLoader.AddParticle(particle);
+                    0.4f * sizeMultiplier
+                ).Configure(Main.rand.Next(15, 25), opacity: 1.2f * sizeMultiplier, squishStrenght: 2f * sizeMultiplier, hueShift: Main.rand.NextFloat(-0.05f, 0.05f));
             }
 
             //生成环形冲击波粒子
@@ -334,17 +329,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15, 15);
                 Vector2 particleVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
 
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
-                    0.1f,
                     lightColor * 0.6f,
-                    Main.rand.Next(5, 12),
-                    0.8f,
-                    1.2f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.1f
+                ).Configure(Main.rand.Next(5, 12), opacity: 0.8f, squishStrenght: 1.2f, hueShift: 0f);
             }
         }
         #endregion
@@ -361,17 +351,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Color particleColor = GetLightningColor(0.5f);
                 for (int i = 0; i < Main.rand.Next(5, 10); i++) {
                     Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f, 20f);
-                    BasePRT particle = new PRT_Light(
+                    BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                         target.Center,
                         velocity,
-                        0.3f,
                         particleColor,
-                        Main.rand.Next(8, 15),
-                        1f,
-                        1.5f,
-                        hueShift: 0f
-                    );
-                    PRTLoader.AddParticle(particle);
+                        0.3f
+                    ).Configure(Main.rand.Next(8, 15), opacity: 1f, squishStrenght: 1.5f, hueShift: 0f);
                 }
             }
         }

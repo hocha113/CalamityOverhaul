@@ -54,11 +54,10 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                     foreach (Vector2 pos in RayPoint) {
                         Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
                         Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
-                        PRT_Light light = new PRT_Light(spanPos
-                            , vr, 0.3f, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
+                        PRT_Light light = PRTLoader.NewParticle<PRT_Light>(spanPos
+                            , vr, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 0.3f).Configure(30);
                         //不要在屏幕外面就消除了，否则玩家什么都看不到
                         light.ShouldKillWhenOffScreen = false;
-                        PRTLoader.AddParticle(light);
                     }
                 }
 
@@ -88,9 +87,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         public void SpanDeadLightPenms() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 foreach (Vector2 pos in RayPoint) {
-                    PRT_Light light = new PRT_Light(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
-                        , new Vector2(0, Main.rand.Next(7, 51)), 0.3f, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
-                    PRTLoader.AddParticle(light);
+                    PRT_Light light = PRTLoader.NewParticle<PRT_Light>(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
+                        , new Vector2(0, Main.rand.Next(7, 51)), VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 0.3f).Configure(30);
                 }
             }
         }

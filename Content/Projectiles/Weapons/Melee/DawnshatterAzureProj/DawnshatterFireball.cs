@@ -83,10 +83,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         private void SpawnTrailEffect() {
             Vector2 trailPos = Projectile.Center - Projectile.velocity * 0.5f + Main.rand.NextVector2Circular(5f, 5f);
 
-            BasePRT trail = new PRT_Light(trailPos, -Projectile.velocity * 0.3f, Main.rand.NextFloat(0.8f, 1.5f)
+            BasePRT trail = PRTLoader.NewParticle<PRT_Light>(trailPos, -Projectile.velocity * 0.3f
                 , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
-                , 15, 0.4f, 1.2f);
-            PRTLoader.AddParticle(trail);
+                , Main.rand.NextFloat(0.8f, 1.5f)).Configure(15, 0.4f, 1.2f);
 
             int dustType = Main.rand.NextBool() ? DustID.Torch : DustID.FireworkFountain_Yellow;
             int dust = Dust.NewDust(trailPos, 1, 1, dustType, -Projectile.velocity.X * 0.3f, -Projectile.velocity.Y * 0.3f, 100, default, 1.5f);
@@ -141,10 +140,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
 
-                BasePRT burst = new PRT_Light(position, vel, Main.rand.NextFloat(1f, 1.8f)
+                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(position, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Orange, Color.Yellow)
-                    , 20, 0.5f, 1.3f);
-                PRTLoader.AddParticle(burst);
+                    , Main.rand.NextFloat(1f, 1.8f)).Configure(20, 0.5f, 1.3f);
             }
 
             for (int i = 0; i < 10; i++) {
@@ -184,10 +182,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 35; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(12f, 12f);
 
-                BasePRT explosion = new PRT_Light(Projectile.Center, vel, Main.rand.NextFloat(1.5f, 2.5f)
+                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow, Color.White)
-                    , 30, 0.6f, 1.8f);
-                PRTLoader.AddParticle(explosion);
+                    , Main.rand.NextFloat(1.5f, 2.5f)).Configure(30, 0.6f, 1.8f);
             }
 
             //火焰尘埃

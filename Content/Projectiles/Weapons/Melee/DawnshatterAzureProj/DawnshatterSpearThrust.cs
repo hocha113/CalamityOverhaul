@@ -103,10 +103,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 Vector2 particlePos = Projectile.Center + Projectile.velocity * Main.rand.NextFloat(20f, 80f);
                 Vector2 particleVel = -Projectile.velocity * Main.rand.NextFloat(2f, 6f);
 
-                BasePRT flame = new PRT_Light(particlePos, particleVel, Main.rand.NextFloat(0.8f, 1.5f)
+                BasePRT flame = PRTLoader.NewParticle<PRT_Light>(particlePos, particleVel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Gold, Color.White)
-                    , 15, 0.5f, 1.2f);
-                PRTLoader.AddParticle(flame);
+                    , Main.rand.NextFloat(0.8f, 1.5f)).Configure(15, opacity: 0.5f, squishStrenght: 1.2f);
             }
 
             //能量光点环绕
@@ -115,9 +114,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(30f, 60f);
                 Vector2 particlePos = Projectile.Center + offset;
 
-                BasePRT spark = new PRT_Light(particlePos, Vector2.Zero, Main.rand.NextFloat(0.5f, 1f)
-                    , Color.Gold, 12, 0.3f, 1f, _entity: Owner, _followingRateRatio: 0.8f);
-                PRTLoader.AddParticle(spark);
+                BasePRT spark = PRTLoader.NewParticle<PRT_Light>(particlePos, Vector2.Zero
+                    , Color.Gold, Main.rand.NextFloat(0.5f, 1f)).Configure(12, opacity: 0.3f, squishStrenght: 1f, _entity: Owner, _followingRateRatio: 0.8f);
             }
 
             //烈焰螺旋
@@ -153,10 +151,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 float angle = MathHelper.TwoPi * i / particleCount;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 14f);
 
-                BasePRT explosion = new PRT_Light(tipPos, vel, Main.rand.NextFloat(1.2f, 2f)
+                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(tipPos, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
-                    , 25, 0.6f, 1.5f);
-                PRTLoader.AddParticle(explosion);
+                    , Main.rand.NextFloat(1.2f, 2f)).Configure(25, opacity: 0.6f, squishStrenght: 1.5f);
             }
 
             //金色冲击波
@@ -206,10 +203,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 100; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(20f, 20f);
 
-                BasePRT finale = new PRT_Light(position, vel, Main.rand.NextFloat(1.5f, 2.8f)
+                BasePRT finale = PRTLoader.NewParticle<PRT_Light>(position, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.OrangeRed, Color.Gold, Color.White)
-                    , 35, 0.8f, 1.8f);
-                PRTLoader.AddParticle(finale);
+                    , Main.rand.NextFloat(1.5f, 2.8f)).Configure(35, opacity: 0.8f, squishStrenght: 1.8f);
             }
 
             //环形冲击波扩散
@@ -230,9 +226,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         private void SpawnEnergyWave() {
             Vector2 wavePos = Projectile.Center + Projectile.velocity * Main.rand.NextFloat(30f, 70f);
 
-            BasePRT wave = new PRT_Light(wavePos, Projectile.velocity * 5f, Main.rand.NextFloat(1f, 1.5f)
-                , Color.Cyan, 20, 0.5f, 1.3f);
-            PRTLoader.AddParticle(wave);
+            BasePRT wave = PRTLoader.NewParticle<PRT_Light>(wavePos, Projectile.velocity * 5f
+                , Color.Cyan, Main.rand.NextFloat(1f, 1.5f)).Configure(20, opacity: 0.5f, squishStrenght: 1.3f);
 
             int dust = Dust.NewDust(wavePos, 1, 1, DustID.Electric, 0, 0, 100, default, 2f);
             Main.dust[dust].noGravity = true;
@@ -255,10 +250,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 20 + comboStage * 10; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
 
-                BasePRT hitEffect = new PRT_Light(target.Center, vel, Main.rand.NextFloat(0.8f, 1.5f)
+                BasePRT hitEffect = PRTLoader.NewParticle<PRT_Light>(target.Center, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.OrangeRed, Color.Gold)
-                    , 18, 0.5f, 1.2f);
-                PRTLoader.AddParticle(hitEffect);
+                    , Main.rand.NextFloat(0.8f, 1.5f)).Configure(18, opacity: 0.5f, squishStrenght: 1.2f);
             }
 
             //连击第三段时造成范围爆炸
@@ -272,10 +266,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 50; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
 
-                BasePRT explosion = new PRT_Light(position, vel, Main.rand.NextFloat(1.2f, 2f)
+                BasePRT explosion = PRTLoader.NewParticle<PRT_Light>(position, vel
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Orange, Color.Yellow)
-                    , 30, 0.6f, 1.5f);
-                PRTLoader.AddParticle(explosion);
+                    , Main.rand.NextFloat(1.2f, 2f)).Configure(30, opacity: 0.6f, squishStrenght: 1.5f);
             }
 
             //生成额外伤害弹幕

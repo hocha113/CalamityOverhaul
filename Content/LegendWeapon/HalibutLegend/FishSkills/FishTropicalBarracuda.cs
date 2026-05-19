@@ -148,16 +148,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float hue = Main.rand.NextFloat(1f);
                 Color tropicalColor = Main.hslToRgb(hue, 1f, 0.6f);
 
-                BasePRT tropical = new PRT_Light(
+                BasePRT tropical = PRTLoader.NewParticle<PRT_Light>(
                     position,
                     Main.rand.NextVector2Circular(4f, 4f),
-                    0.6f,
                     tropicalColor,
-                    25,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(tropical);
+                    0.6f
+                ).Configure(25, hueShift: 0.02f);
             }
         }
     }
@@ -310,16 +306,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 5f;
                 Color hitColor = Main.hslToRgb((hue + i * 0.1f) % 1f, 1f, 0.6f);
 
-                BasePRT hit_effect = new PRT_Light(
+                BasePRT hit_effect = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.7f,
                     hitColor,
-                    20,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(hit_effect);
+                    0.7f
+                ).Configure(20, hueShift: 0.02f);
             }
 
             SoundEngine.PlaySound(SoundID.NPCHit25 with {
@@ -356,16 +348,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Color burstColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
 
-                BasePRT burst = new PRT_Light(
+                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    Main.rand.NextFloat(0.6f, 1f),
                     burstColor,
-                    25,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(burst);
+                    Main.rand.NextFloat(0.6f, 1f)
+                ).Configure(25, hueShift: 0.02f);
             }
 
             SoundEngine.PlaySound(SoundID.Splash with {

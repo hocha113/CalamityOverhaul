@@ -661,17 +661,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 ringPos = Projectile.Center + angle.ToRotationVector2() * 80f;
                 Vector2 velocity = (currentTarget.Center - ringPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
 
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     ringPos,
                     velocity,
-                    0.5f,
                     lightningColor,
-                    Main.rand.Next(20, 30),
-                    1.8f,
-                    3f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.5f
+                ).Configure(Main.rand.Next(20, 30), opacity: 1.8f, squishStrenght: 3f, hueShift: 0f);
             }
 
             //向下汇聚的能量束
@@ -703,17 +698,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(32, 32);
             Vector2 particleVel = Main.rand.NextVector2Circular(3f, 3f);
 
-            BasePRT particle = new PRT_Light(
+            BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                 particlePos,
                 particleVel,
-                0.3f,
                 new Color(180, 220, 255),
-                Main.rand.Next(15, 25),
-                1.2f,
-                1.8f,
-                hueShift: 0f
-            );
-            PRTLoader.AddParticle(particle);
+                0.3f
+            ).Configure(Main.rand.Next(15, 25), opacity: 1.2f, squishStrenght: 1.8f, hueShift: 0f);
         }
 
         /// <summary>
@@ -744,17 +734,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + angle.ToRotationVector2() * Main.rand.NextFloat(60, 100);
                 Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(5f, 10f);
 
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
-                    0.4f,
                     new Color(150, 200, 255),
-                    Main.rand.Next(20, 30),
-                    1.5f,
-                    2.5f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.4f
+                ).Configure(Main.rand.Next(20, 30), opacity: 1.5f, squishStrenght: 2.5f, hueShift: 0f);
             }
         }
 
@@ -766,17 +751,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(50, 50);
                 Vector2 particleVel = Main.rand.NextVector2Circular(10f, 10f);
 
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     particlePos,
                     particleVel,
-                    0.5f,
                     new Color(200, 230, 255),
-                    Main.rand.Next(15, 25),
-                    1.8f,
-                    3f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.5f
+                ).Configure(Main.rand.Next(15, 25), opacity: 1.8f, squishStrenght: 3f, hueShift: 0f);
             }
         }
 
@@ -968,17 +948,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             //消失特效
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.4f,
                     new Color(180, 220, 255),
-                    Main.rand.Next(20, 35),
-                    1.5f,
-                    2.5f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.4f
+                ).Configure(Main.rand.Next(20, 35), opacity: 1.5f, squishStrenght: 2.5f, hueShift: 0f);
             }
 
             SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);

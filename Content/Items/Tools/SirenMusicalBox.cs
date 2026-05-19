@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 float radius = Main.rand.NextFloat(20f, 60f);
                 Vector2 pos = Player.Center + angle.ToRotationVector2() * radius;
                 Vector2 vel = new Vector2(0, -Main.rand.NextFloat(3f, 6f)).RotatedBy(angle * 0.3f);
-                PRTLoader.AddParticle(new PRT_Light(pos, vel, Main.rand.NextFloat(0.5f, 0.75f), Color.Cyan * 0.8f, Main.rand.Next(40, 70)));
+                PRTLoader.NewParticle<PRT_Light>(pos, vel, Color.Cyan * 0.8f, Main.rand.NextFloat(0.5f, 0.75f)).Configure(Main.rand.Next(40, 70));
             }
 
             //多层光环
@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     Vector2 pos = Player.Center + angle.ToRotationVector2() * ringRadius;
                     Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
                     Color ringColor = Color.Lerp(Color.Purple, Color.DarkRed, layer / 5f);
-                    PRTLoader.AddParticle(new PRT_Light(pos, vel, Main.rand.NextFloat(0.5f, 0.75f), ringColor, Main.rand.Next(30, 60)));
+                    PRTLoader.NewParticle<PRT_Light>(pos, vel, ringColor, Main.rand.NextFloat(0.5f, 0.75f)).Configure(Main.rand.Next(30, 60));
                 }
             }
 
@@ -458,8 +458,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                     tentacle.velocity = Main.rand.NextVector2Circular(1f, 1f);
 
                     if (j % 3 == 0) {
-                        PRTLoader.AddParticle(new PRT_Light(pos, Main.rand.NextVector2Circular(2f, 2f),
-                            Main.rand.NextFloat(0.31f, 0.5f), Color.Cyan * 0.6f, Main.rand.Next(20, 40)));
+                        PRTLoader.NewParticle<PRT_Light>(pos, Main.rand.NextVector2Circular(2f, 2f),
+                            Color.Cyan * 0.6f, Main.rand.NextFloat(0.31f, 0.5f)).Configure(Main.rand.Next(20, 40));
                     }
                 }
 
@@ -502,8 +502,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 gazeDirection = (Player.Center - eyePos).SafeNormalize(Vector2.Zero);
                 for (int j = 0; j < 30; j++) {
                     Vector2 gazePos = eyePos + gazeDirection * (j * 8f);
-                    PRTLoader.AddParticle(new PRT_Light(gazePos, gazeDirection * 0.5f,
-                        Main.rand.NextFloat(0.6f, 0.83f), Color.Red * 0.6f, Main.rand.Next(15, 30)));
+                    PRTLoader.NewParticle<PRT_Light>(gazePos, gazeDirection * 0.5f,
+                        Color.Red * 0.6f, Main.rand.NextFloat(0.6f, 0.83f)).Configure(Main.rand.Next(15, 30));
                 }
             }
 
@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     1 => Color.Cyan,
                     _ => Color.Purple
                 };
-                PRTLoader.AddParticle(new PRT_Light(pos, vel, Main.rand.NextFloat(0.35f, 0.55f), soulColor * 0.7f, Main.rand.Next(60, 100)));
+                PRTLoader.NewParticle<PRT_Light>(pos, vel, soulColor * 0.7f, Main.rand.NextFloat(0.35f, 0.55f)).Configure(Main.rand.Next(60, 100));
             }
 
             //空间裂纹

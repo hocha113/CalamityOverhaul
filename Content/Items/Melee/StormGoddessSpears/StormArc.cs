@@ -209,17 +209,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.25f,
                     particleColor,
-                    Main.rand.Next(6, 12),
-                    0.9f,
-                    1.3f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.25f
+                ).Configure(Main.rand.Next(6, 12), opacity: 0.9f, squishStrenght: 1.3f, hueShift: 0f);
             }
         }
 
@@ -361,17 +356,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //在飞行过程中生成轨迹粒子
             if (State == (float)LightningState.Striking && Timer % 4 == 0 && !VaultUtils.isServer) {
-                BasePRT particle = new PRT_Light(
+                BasePRT particle = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(8, 8),
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                    0.15f,
                     lightColor * 0.5f,
-                    Main.rand.Next(4, 8),
-                    0.7f,
-                    1f,
-                    hueShift: 0f
-                );
-                PRTLoader.AddParticle(particle);
+                    0.15f
+                ).Configure(Main.rand.Next(4, 8), opacity: 0.7f, squishStrenght: 1f, hueShift: 0f);
             }
         }
         #endregion

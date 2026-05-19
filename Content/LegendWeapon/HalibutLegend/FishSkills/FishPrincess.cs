@@ -119,16 +119,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float angle = MathHelper.TwoPi * i / 20f;
                 Vector2 velocity = angle.ToRotationVector2() * 6f;
 
-                BasePRT sparkle = new PRT_Light(
+                BasePRT sparkle = PRTLoader.NewParticle<PRT_Light>(
                     position,
                     velocity,
-                    0.8f,
                     Main.hslToRgb((i / 20f) % 1f, 1f, 0.7f),
-                    30,
-                    1f,
-                    hueShift: 0.01f
-                );
-                PRTLoader.AddParticle(sparkle);
+                    0.8f
+                ).Configure(30, hueShift: 0.01f);
             }
         }
     }
@@ -457,16 +453,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnSpawnParticle() {
             Color spawnColor = Main.hslToRgb(Main.rand.NextFloat(1f), 1f, 0.7f);
 
-            BasePRT sparkle = new PRT_Light(
+            BasePRT sparkle = PRTLoader.NewParticle<PRT_Light>(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
                 Main.rand.NextVector2Circular(3f, 3f),
-                Main.rand.NextFloat(0.6f, 1f),
                 spawnColor,
-                25,
-                1f,
-                hueShift: 0.02f
-            );
-            PRTLoader.AddParticle(sparkle);
+                Main.rand.NextFloat(0.6f, 1f)
+            ).Configure(25, hueShift: 0.02f);
         }
 
         private void SpawnAttackEffect() {
@@ -476,16 +468,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
                 Color attackColor = Main.hslToRgb((i / 25f + rainbowHue) % 1f, 1f, 0.6f);
 
-                BasePRT burst = new PRT_Light(
+                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.9f,
                     attackColor,
-                    35,
-                    1f,
-                    hueShift: 0.015f
-                );
-                PRTLoader.AddParticle(burst);
+                    0.9f
+                ).Configure(35, hueShift: 0.015f);
             }
 
             //星星爆发
@@ -710,16 +698,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = angle.ToRotationVector2() * 6f;
                 Color hitColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
 
-                BasePRT hit_effect = new PRT_Light(
+                BasePRT hit_effect = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.7f,
                     hitColor,
-                    25,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(hit_effect);
+                    0.7f
+                ).Configure(25, hueShift: 0.02f);
             }
 
             SoundEngine.PlaySound(SoundID.Item10 with {
@@ -758,16 +742,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Color burstColor = Main.hslToRgb((hue + i * 0.03f) % 1f, 1f, 0.6f);
 
-                BasePRT burst = new PRT_Light(
+                BasePRT burst = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    Main.rand.NextFloat(0.6f, 1f),
                     burstColor,
-                    30,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(burst);
+                    Main.rand.NextFloat(0.6f, 1f)
+                ).Configure(30, hueShift: 0.02f);
             }
 
             //星星粒子

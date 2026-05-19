@@ -180,16 +180,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnNeonParticle() {
             Color neonColor = new Color(50, 200, 255);
 
-            BasePRT neon = new PRT_Light(
+            BasePRT neon = PRTLoader.NewParticle<PRT_Light>(
                 Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
                 Main.rand.NextVector2Circular(2f, 2f),
-                0.6f,
                 neonColor,
-                20,
-                1f,
-                hueShift: 0.01f
-            );
-            PRTLoader.AddParticle(neon);
+                0.6f
+            ).Configure(20, hueShift: 0.01f);
         }
 
         private void ApplyLightingEffect() {
@@ -233,16 +229,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
                 Color neonColor = new Color(50, 200, 255);
 
-                BasePRT neon = new PRT_Light(
+                BasePRT neon = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    0.7f,
                     neonColor,
-                    25,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(neon);
+                    0.7f
+                ).Configure(25, hueShift: 0.02f);
             }
 
             //青色水花
@@ -265,16 +257,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
                 Color neonColor = new Color(50, 200, 255);
 
-                BasePRT fade = new PRT_Light(
+                BasePRT fade = PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center,
                     velocity,
-                    Main.rand.NextFloat(0.5f, 0.8f),
                     neonColor,
-                    30,
-                    1f,
-                    hueShift: 0.02f
-                );
-                PRTLoader.AddParticle(fade);
+                    Main.rand.NextFloat(0.5f, 0.8f)
+                ).Configure(30, hueShift: 0.02f);
             }
 
             //青色水花

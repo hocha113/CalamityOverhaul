@@ -436,12 +436,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
 
             //中心瞬间光爆
-            PRTLoader.AddParticle(new PRT_Light(
-                impactPos, Vector2.Zero,
-                scale: Main.rand.NextFloat(1.2f, 1.8f),
-                color: new Color(160, 230, 255),
-                lifetime: 12
-            ));
+            PRTLoader.NewParticle<PRT_Light>(impactPos, Vector2.Zero,
+                new Color(160, 230, 255), Main.rand.NextFloat(1.2f, 1.8f)).Configure(12);
         }
     }
 }

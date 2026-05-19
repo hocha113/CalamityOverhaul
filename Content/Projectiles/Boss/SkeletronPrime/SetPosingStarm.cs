@@ -133,9 +133,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
                 if (!VaultUtils.isServer) {
                     for (int i = 0; i < 333; i++) {
-                        PRT_Light particle = new PRT_Light(Projectile.Center + VaultUtils.RandVr(0, boss.width)
-                            , new Vector2(0, -3), Main.rand.Next(1, 3), Color.Red, 62);
-                        PRTLoader.AddParticle(particle);
+                        PRT_Light particle = PRTLoader.NewParticle<PRT_Light>(Projectile.Center + VaultUtils.RandVr(0, boss.width)
+                            , new Vector2(0, -3), Color.Red, Main.rand.Next(1, 3)).Configure(62);
                     }
                 }
 

@@ -202,16 +202,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     float angle = MathHelper.TwoPi * i / 10f + rand;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 35f);
 
-                    PRTLoader.AddParticle(new PRT_Light(
+                    PRTLoader.NewParticle<PRT_Light>(
                         target.Center,
                         velocity,
-                        Main.rand.NextFloat(0.6f, 1.2f),
                         Color.Lerp(new Color(160, 130, 255), new Color(200, 200, 255), Main.rand.NextFloat()),
-                        Main.rand.Next(18, 32),
-                        1.5f,
-                        2f,
-                        hueShift: 0.015f
-                    ));
+                        Main.rand.NextFloat(0.6f, 1.2f)
+                    ).Configure(Main.rand.Next(18, 32), opacity: 1.5f, squishStrenght: 2f, hueShift: 0.015f);
                 }
             }
 

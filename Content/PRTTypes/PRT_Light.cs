@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_Light : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Photosphere";
+        public override bool CanPool => true;
         public float SquishStrenght;
         public float MaxSquish;
         public float HueShift;
@@ -17,16 +18,15 @@ namespace CalamityOverhaul.Content.PRTTypes
         [VaultLoaden(CWRConstant.Masking + "DiffusionCircle6")]
         internal static Asset<Texture2D> BloomTex = null;
         public PRT_Light() {
+            Lifetime = 30;
+            Opacity = 1f;
             SquishStrenght = 1f;
             MaxSquish = 3f;
             followingRateRatio = 0.9f;
         }
-        public PRT_Light(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f
+
+        public PRT_Light Configure(int lifetime, float opacity = 1f
             , float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
-            Position = position;
-            Velocity = velocity;
-            Scale = scale;
-            Color = color;
             Opacity = opacity;
             Rotation = 0;
             Lifetime = lifetime;
@@ -35,7 +35,9 @@ namespace CalamityOverhaul.Content.PRTTypes
             HueShift = hueShift;
             entity = _entity;
             followingRateRatio = _followingRateRatio;
+            return this;
         }
+
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
@@ -67,6 +69,17 @@ namespace CalamityOverhaul.Content.PRTTypes
             Main.spriteBatch.Draw(tex, drawPosition, null, Color * Opacity * 0.8f, rot, origin, scale * 1.1f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPosition, null, Color.White * Opacity * 0.9f, rot, origin, scale, SpriteEffects.None, 0f);
             return false;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            Lifetime = 30;
+            Opacity = 1f;
+            SquishStrenght = 1f;
+            MaxSquish = 3f;
+            HueShift = 0f;
+            followingRateRatio = 0.9f;
+            entity = null;
         }
     }
 }

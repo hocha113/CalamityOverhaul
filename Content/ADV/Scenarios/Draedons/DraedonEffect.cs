@@ -499,16 +499,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
                 Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)
             );
 
-            PRT_Light circuitNode = new PRT_Light(
+            PRT_Light circuitNode = PRTLoader.NewParticle<PRT_Light>(
                 spawnPos,
                 Vector2.Zero,
-                Main.rand.NextFloat(0.7f, 1.2f),
                 new Color(100, 220, 255),
-                Main.rand.Next(100, 180),
-                1f,
-                1f
-            );
-            PRTLoader.AddParticle(circuitNode);
+                Main.rand.NextFloat(0.7f, 1.2f)
+            ).Configure(Main.rand.Next(100, 180), 1f, 1f);
         }
 
         private static void SpawnDataStream() {
@@ -593,17 +589,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
             }
 
             //中心光点
-            PRT_Light centralLight = new PRT_Light(
+            PRT_Light centralLight = PRTLoader.NewParticle<PRT_Light>(
                 burstCenter,
                 Vector2.Zero,
-                Main.rand.NextFloat(1.5f, 2.5f),
                 new Color(100, 220, 255),
-                80,
-                1f,
-                2f,
-                hueShift: 0.02f
-            );
-            PRTLoader.AddParticle(centralLight);
+                Main.rand.NextFloat(1.5f, 2.5f)
+            ).Configure(80, 1f, 2f, hueShift: 0.02f);
 
             //生成次级数据碎片（减少数量）
             for (int i = 0; i < 12; i++) {
