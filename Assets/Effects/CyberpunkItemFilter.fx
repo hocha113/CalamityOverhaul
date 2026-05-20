@@ -1,7 +1,5 @@
 //============================================================================
 //CyberpunkItemFilter.fx 赛博朋克2077风格的物品图标附魔滤镜
-//通过对原贴图进行色相重映射、色彩偏移、扫描线、霓虹边缘描边、辉光闪烁
-//为SHPC改件物品提供按色调区分的特殊外观
 //输入参数：
 //  uTime       累计时间，用于动画
 //  uTint       识别色，用作高光区域调色与边缘霓虹描边主色
@@ -27,57 +25,71 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 px = coords * uTexSize;
     float2 texel = 1.0 / max(uTexSize, float2(1.0, 1.0));
 
-    //横向毛刺扫描线偏移：以每两像素为一带，按时间随机抽取少量带触发偏移
+    //完全透明的像素直接返回，阻止透明区域被任何颜色污染
+    float aCtr = tex2D(uImage0, coords).a;
+    if (aCtr < 0.004) return float4(0, 0, 0, 0);
+
+    //横向毛刺扫描线偏移：偏移幅度从0.30降至0.05，防止大偏移采到透明边界外的白色区域
     float band = floor(px.y * 0.5);
     float bandSeed = hash21(float2(band, floor(uTime * 6.0)));
-    float glitchActive = step(0.93, bandSeed);
-    float glitchOff = (bandSeed - 0.5) * 0.30 * glitchActive * uIntensity;
+    float glitchActive = step(0.95, bandSeed);
+    float glitchOff = (bandSeed - 0.5) * 0.05 * glitchActive * uIntensity;
     float2 uv = coords + float2(glitchOff, 0.0);
 
-    //RGB色散偏移：分别采样R/B分量制造色彩裂痕
-    float ca = 1.6 * texel.x * uIntensity;
+    //RGB色散偏移
+    float ca = 1.4 * texel.x * uIntensity;
     float4 cR = tex2D(uImage0, uv + float2(ca, 0.0));
     float4 cG = tex2D(uImage0, uv);
     float4 cB = tex2D(uImage0, uv - float2(ca, 0.0));
     float a = cG.a;
+
+    //色散通道按邻近像素alpha回退到中心采样，防止透明边界外的白色RGB值渗入
+    float3 rSafe = lerp(cG.rgb, cR.rgb, saturate(cR.a * 8.0));
+    float3 bSafe = lerp(cG.rgb, cB.rgb, saturate(cB.a * 8.0));
 
     //提取亮度作为重映射输入
     float lum = dot(cG.rgb, float3(0.299, 0.587, 0.114));
 
     //双调色映射：阴影压向深蓝黑，高光导向识别色
     float3 shadow = float3(0.02, 0.04, 0.08);
-    float3 highlight = uTint;
-    float3 base = lerp(shadow, highlight, smoothstep(0.05, 0.85, lum));
+    float3 base = lerp(shadow, uTint, smoothstep(0.05, 0.85, lum));
 
     //叠加色散两端的颜色作为辉光感
-    float3 split = float3(cR.r, cG.g, cB.b);
-    float3 col = lerp(base, base + split * 0.40, uIntensity * 0.65);
+    float3 split = float3(rSafe.r, cG.g, bSafe.b);
+    float3 col = lerp(base, base + split * 0.38, uIntensity * 0.62);
 
-    //CRT扫描线：每像素一行的明暗交替
-    float scan = 0.86 + 0.14 * sin(px.y * 3.1416);
+    //CRT扫描线
+    float scan = 0.88 + 0.12 * sin(px.y * 3.1416);
     col *= lerp(1.0, scan, uIntensity);
 
-    //贴图描边检测：以alpha梯度找出图标边缘
+    //采样四邻域alpha，计算当前像素距透明边界的接近程度
     float aL = tex2D(uImage0, coords - float2(texel.x, 0.0)).a;
     float aR = tex2D(uImage0, coords + float2(texel.x, 0.0)).a;
     float aU = tex2D(uImage0, coords - float2(0.0, texel.y)).a;
     float aD = tex2D(uImage0, coords + float2(0.0, texel.y)).a;
-    float edge = saturate(4.0 * a - aL - aR - aU - aD);
+    //minNeighborA越小说明越靠近透明边界，rimProximity越大
+    float minNeighborA = min(min(aL, aR), min(aU, aD));
+    float rimProximity = 1.0 - minNeighborA;
+    //仅对充分不透明的像素激活，避免抗锯齿半透明边缘被影响
+    float rimStrength = rimProximity * smoothstep(0.6, 1.0, a) * uIntensity;
 
-    //霓虹描边：识别色与暖黄高光呼吸切换，线条做垂直流光
-    float shimmer = sin(px.y * 0.45 - uTime * 4.5) * 0.5 + 0.5;
-    float3 edgeCol = lerp(uTint * 1.55, float3(1.0, 0.92, 0.28), shimmer);
-    col += edgeCol * edge * (1.0 + uIntensity * 0.6);
+    //内侧边缘光：把边缘像素颜色向识别色偏移，用lerp而非叠加，杜绝外来颜色凭空出现
+    //缓慢呼吸脉冲只作用于整体亮度，不产生横向扫描波纹
+    float rimPulse = sin(uTime * 2.2) * 0.1 + 0.9;
+    float3 rimTarget = saturate(uTint * rimPulse * 1.05);
+    col = lerp(col, rimTarget, rimStrength * 0.45);
 
     //像素级闪烁噪点
     float flicker = hash21(float2(floor(px.x * 0.5), floor(uTime * 14.0))) - 0.5;
-    col += uTint * flicker * 0.10 * uIntensity;
+    col += uTint * flicker * 0.08 * uIntensity;
 
-    //每隔较长周期的全图脉冲增亮，模拟广告牌HUD刷新
-    float pulse = exp(-frac(uTime * 0.6) * 4.0) * 0.25 * uIntensity;
+    //全图脉冲增亮
+    float pulse = exp(-frac(uTime * 0.6) * 4.0) * 0.18 * uIntensity;
     col += uTint * pulse;
 
-    //恢复原图无效像素的透明
+    //钳制防止颜色叠加超过1.0，避免乘以alpha后出现白色斑块
+    col = saturate(col);
+
     return float4(col * a, a) * vertexColor;
 }
 
