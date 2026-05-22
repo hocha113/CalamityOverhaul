@@ -1294,12 +1294,20 @@ namespace CalamityOverhaul
                     }
                 }
 
-                Type calPlayerType = calPlayerTemplate?.GetType() ?? mod.Code.GetType("CalamityMod.CalPlayer.CalamityPlayer");
-                MethodInfo provideStealthMethod = calPlayerType?.GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (provideStealthMethod != null) {
-                    VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
-                }
+                //OnProvideStealthStatBonusesHook 的签名携带 CalamityPlayer 类型，
+                //一旦在此处通过 method group 转换得到 Delegate，JIT 必须解析 CalamityPlayer，
+                //所以把这一段挪到独立的 [CWRJITEnabled] 方法里，确保 Calamity 未安装时整个 LoadComders 仍可被 JIT
+                HookProvideStealthStatBonuses(mod);
             } catch { }
+        }
+
+        [CWRJITEnabled]
+        private static void HookProvideStealthStatBonuses(Mod mod) {
+            Type calPlayerType = calPlayerTemplate?.GetType() ?? mod.Code.GetType("CalamityMod.CalPlayer.CalamityPlayer");
+            MethodInfo provideStealthMethod = calPlayerType?.GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (provideStealthMethod != null) {
+                VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
+            }
         }
 
         [CWRJITEnabled]
