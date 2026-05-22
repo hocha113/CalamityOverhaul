@@ -2,12 +2,7 @@
 using CalamityMod.Balancing;
 using CalamityMod.CalPlayer;
 using CalamityMod.CustomRecipes;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
 using CalamityMod.NPCs.ExoMechs;
-using CalamityMod.NPCs.ExoMechs.Ares;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.UI;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
@@ -53,49 +48,315 @@ namespace CalamityOverhaul
         private static float dummyFloat;
         private static Type DownedBossSystemType;
 
-        internal static void Load() {
-            if (ModLoader.TryGetMod("CalamityMod", out Mod mod)) {
-                DownedBossSystemType = mod.Code.GetType("CalamityMod.DownedBossSystem");
-            }
+        #region 反射缓存：Calamity 静态状态
+        // CalamityWorld
+        private static FieldInfo calWorld_death_Field;
+        private static FieldInfo calWorld_revenge_Field;
+        // BossRushEvent
+        private static PropertyInfo bossRush_Active_Prop;
+        // AcidRainEvent
+        private static PropertyInfo acidRain_Ongoing_Prop;
+        private static FieldInfo acidRain_KillPoints_Field;
+        private static MethodInfo acidRain_UpdateInvasion_Method;
+        private static PropertyInfo acidRain_OldDukeEncountered_Prop;
+        // CalamityServerConfig
+        private static object calamityServerConfigInstance;
+        private static PropertyInfo calConfig_EarlyHardmodeRework_Prop;
+        // CalamityGlobalNPC 静态方法
+        private static MethodInfo calNPC_SetNewBossJustDowned_Method;
+        // DamageClasses
+        private static DamageClass trueMeleeDamageClass;
+        private static DamageClass trueMeleeNoSpeedDamageClass;
+        #endregion
 
-            if (DownedBossSystemType is not null) {
-                const BindingFlags bf = BindingFlags.Public | BindingFlags.Static;
-                downedDesertScourgeProp = DownedBossSystemType.GetProperty("downedDesertScourge", bf);
-                downedCLAMProp = DownedBossSystemType.GetProperty("downedCLAM", bf);
-                downedCrabulonProp = DownedBossSystemType.GetProperty("downedCrabulon", bf);
-                downedHiveMindProp = DownedBossSystemType.GetProperty("downedHiveMind", bf);
-                downedPerforatorProp = DownedBossSystemType.GetProperty("downedPerforator", bf);
-                downedSlimeGodProp = DownedBossSystemType.GetProperty("downedSlimeGod", bf);
-                downedCryogenProp = DownedBossSystemType.GetProperty("downedCryogen", bf);
-                downedBrimstoneElementalProp = DownedBossSystemType.GetProperty("downedBrimstoneElemental", bf);
-                downedAquaticScourgeProp = DownedBossSystemType.GetProperty("downedAquaticScourge", bf);
-                downedCragmawMireProp = DownedBossSystemType.GetProperty("downedCragmawMire", bf);
-                downedCalamitasCloneProp = DownedBossSystemType.GetProperty("downedCalamitasClone", bf);
-                downedGSSProp = DownedBossSystemType.GetProperty("downedGSS", bf);
-                downedLeviathanProp = DownedBossSystemType.GetProperty("downedLeviathan", bf);
-                downedAstrumAureusProp = DownedBossSystemType.GetProperty("downedAstrumAureus", bf);
-                downedPlaguebringerProp = DownedBossSystemType.GetProperty("downedPlaguebringer", bf);
-                downedRavagerProp = DownedBossSystemType.GetProperty("downedRavager", bf);
-                downedAstrumDeusProp = DownedBossSystemType.GetProperty("downedAstrumDeus", bf);
-                downedGuardiansProp = DownedBossSystemType.GetProperty("downedGuardians", bf);
-                downedDragonfollyProp = DownedBossSystemType.GetProperty("downedDragonfolly", bf);
-                downedProvidenceProp = DownedBossSystemType.GetProperty("downedProvidence", bf);
-                downedCeaselessVoidProp = DownedBossSystemType.GetProperty("downedCeaselessVoid", bf);
-                downedStormWeaverProp = DownedBossSystemType.GetProperty("downedStormWeaver", bf);
-                downedSignusProp = DownedBossSystemType.GetProperty("downedSignus", bf);
-                downedPolterghastProp = DownedBossSystemType.GetProperty("downedPolterghast", bf);
-                downedMaulerProp = DownedBossSystemType.GetProperty("downedMauler", bf);
-                downedNuclearTerrorProp = DownedBossSystemType.GetProperty("downedNuclearTerror", bf);
-                downedBoomerDukeProp = DownedBossSystemType.GetProperty("downedBoomerDuke", bf);
-                downedDoGProp = DownedBossSystemType.GetProperty("downedDoG", bf);
-                downedYharonProp = DownedBossSystemType.GetProperty("downedYharon", bf);
-                downedExoMechsProp = DownedBossSystemType.GetProperty("downedExoMechs", bf);
-                downedCalamitasProp = DownedBossSystemType.GetProperty("downedCalamitas", bf);
-                downedPrimordialWyrmProp = DownedBossSystemType.GetProperty("downedPrimordialWyrm", bf);
-                downedBossRushProp = DownedBossSystemType.GetProperty("downedBossRush", bf);
-                downedThanatosProp = DownedBossSystemType.GetProperty("downedThanatos", bf);
+        #region 反射缓存：Calamity ModNPC 类型与字段
+        private static Type supCalType;
+        private static FieldInfo supCal_giveUpCounter_Field;
+        private static Type draedonType;
+        private static MemberInfo draedon_DefeatTimer_M;
+        #endregion
+
+        #region 反射缓存：CalamityUtils 静态委托
+        private static Action<Projectile, int, Color, int, Texture2D, bool> calUtils_DrawAfterimagesCenteredDel;
+        private static Action<Projectile, bool, float, float, float> calUtils_HomeInOnNPCDel;
+        private static Action<Projectile> calUtils_LargeFieryExplosionDel;
+        #endregion
+
+        #region 反射缓存：Calamity 全局内容模板
+        private static ModPlayer calPlayerTemplate;
+        private static GlobalItem calGlobalItemTemplate;
+        private static GlobalNPC calGlobalNPCTemplate;
+        private static GlobalProjectile calGlobalProjectileTemplate;
+        #endregion
+
+        #region 反射缓存：CalamityPlayer / CalamityGlobalItem / CalamityGlobalNPC / CalamityGlobalProjectile 成员
+        private static MemberInfo calPlayer_bladeArmEnchant_M;
+        private static MemberInfo calPlayer_adrenalineModeActive_M;
+        private static MemberInfo calPlayer_infiniteFlight_M;
+        private static MemberInfo calPlayer_ZoneSulphur_M;
+        private static MemberInfo calPlayer_ZoneAbyss_M;
+        private static MemberInfo calPlayer_profanedCrystalBuffs_M;
+        private static MemberInfo calPlayer_DashID_M;
+        private static MemberInfo calPlayer_AbleToSelectExoMech_M;
+        private static MemberInfo calPlayer_rage_M;
+        private static MemberInfo calPlayer_adrenaline_M;
+        private static MemberInfo calPlayer_rageGainCooldown_M;
+        private static MemberInfo calPlayer_rageCombatFrames_M;
+        private static MemberInfo calPlayer_adrenalinePauseTimer_M;
+
+        private static MemberInfo calItem_ChargeRatio_M;
+        private static MemberInfo calItem_MaxCharge_M;
+        private static MemberInfo calItem_UsesCharge_M;
+
+        private static MemberInfo calNPC_DR_M;
+
+        private static MemberInfo calProj_timesPierced_M;
+        private static MemberInfo calProj_conditionalHomingRange_M;
+        #endregion
+
+        #region 反射通用助手
+        private static MemberInfo FindMember(Type type, string name) {
+            if (type == null) {
+                return null;
+            }
+            const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            MemberInfo m = type.GetField(name, bf);
+            if (m != null) {
+                return m;
+            }
+            return type.GetProperty(name, bf);
+        }
+
+        private static MemberInfo FindStaticMember(Type type, string name) {
+            if (type == null) {
+                return null;
+            }
+            const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+            MemberInfo m = type.GetField(name, bf);
+            if (m != null) {
+                return m;
+            }
+            return type.GetProperty(name, bf);
+        }
+
+        private static object GetMember(MemberInfo m, object obj) {
+            return m switch {
+                FieldInfo f => f.GetValue(obj),
+                PropertyInfo p => p.GetValue(obj),
+                _ => null,
+            };
+        }
+
+        private static void SetMember(MemberInfo m, object obj, object value) {
+            switch (m) {
+                case FieldInfo f: f.SetValue(obj, value); break;
+                case PropertyInfo p: p.SetValue(obj, value); break;
             }
         }
+
+        private static T TryCreateStaticDelegate<T>(Type type, string methodName) where T : Delegate {
+            if (type == null) {
+                return null;
+            }
+            MethodInfo method = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
+            if (method == null) {
+                return null;
+            }
+            try {
+                return (T)method.CreateDelegate(typeof(T));
+            } catch {
+                return null;
+            }
+        }
+
+        private static object GetModContentInstance(Type t) {
+            if (t == null) {
+                return null;
+            }
+            try {
+                MethodInfo open = null;
+                foreach (MethodInfo mi in typeof(ModContent).GetMethods(BindingFlags.Public | BindingFlags.Static)) {
+                    if (mi.Name == "GetInstance" && mi.IsGenericMethodDefinition && mi.GetParameters().Length == 0) {
+                        open = mi;
+                        break;
+                    }
+                }
+                return open?.MakeGenericMethod(t).Invoke(null, null);
+            } catch {
+                return null;
+            }
+        }
+
+        private static ModPlayer GetCalPlayer(Player player) {
+            if (calPlayerTemplate == null || player == null) {
+                return null;
+            }
+            return player.GetModPlayer(calPlayerTemplate);
+        }
+
+        private static GlobalItem GetCalItem(Item item) {
+            if (calGlobalItemTemplate == null || item == null || item.IsAir) {
+                return null;
+            }
+            return item.TryGetGlobalItem(calGlobalItemTemplate, out GlobalItem g) ? g : null;
+        }
+
+        private static GlobalNPC GetCalNPC(NPC npc) {
+            if (calGlobalNPCTemplate == null || npc == null) {
+                return null;
+            }
+            return npc.TryGetGlobalNPC(calGlobalNPCTemplate, out GlobalNPC g) ? g : null;
+        }
+
+        private static GlobalProjectile GetCalProj(Projectile projectile) {
+            if (calGlobalProjectileTemplate == null || projectile == null) {
+                return null;
+            }
+            return projectile.TryGetGlobalProjectile(calGlobalProjectileTemplate, out GlobalProjectile g) ? g : null;
+        }
+        #endregion
+
+        internal static void Load() {
+            if (!ModLoader.TryGetMod("CalamityMod", out Mod mod)) {
+                return;
+            }
+
+            LoadBossFlags(mod);
+            LoadCalamityStaticState(mod);
+            LoadCalamityUtilsDelegates(mod);
+            LoadCalamityModNPCs(mod);
+            LoadCalamityGlobalTemplates();
+        }
+
+        private static void LoadBossFlags(Mod mod) {
+            DownedBossSystemType = mod.Code.GetType("CalamityMod.DownedBossSystem");
+            if (DownedBossSystemType == null) {
+                return;
+            }
+            const BindingFlags bf = BindingFlags.Public | BindingFlags.Static;
+            downedDesertScourgeProp = DownedBossSystemType.GetProperty("downedDesertScourge", bf);
+            downedCLAMProp = DownedBossSystemType.GetProperty("downedCLAM", bf);
+            downedCrabulonProp = DownedBossSystemType.GetProperty("downedCrabulon", bf);
+            downedHiveMindProp = DownedBossSystemType.GetProperty("downedHiveMind", bf);
+            downedPerforatorProp = DownedBossSystemType.GetProperty("downedPerforator", bf);
+            downedSlimeGodProp = DownedBossSystemType.GetProperty("downedSlimeGod", bf);
+            downedCryogenProp = DownedBossSystemType.GetProperty("downedCryogen", bf);
+            downedBrimstoneElementalProp = DownedBossSystemType.GetProperty("downedBrimstoneElemental", bf);
+            downedAquaticScourgeProp = DownedBossSystemType.GetProperty("downedAquaticScourge", bf);
+            downedCragmawMireProp = DownedBossSystemType.GetProperty("downedCragmawMire", bf);
+            downedCalamitasCloneProp = DownedBossSystemType.GetProperty("downedCalamitasClone", bf);
+            downedGSSProp = DownedBossSystemType.GetProperty("downedGSS", bf);
+            downedLeviathanProp = DownedBossSystemType.GetProperty("downedLeviathan", bf);
+            downedAstrumAureusProp = DownedBossSystemType.GetProperty("downedAstrumAureus", bf);
+            downedPlaguebringerProp = DownedBossSystemType.GetProperty("downedPlaguebringer", bf);
+            downedRavagerProp = DownedBossSystemType.GetProperty("downedRavager", bf);
+            downedAstrumDeusProp = DownedBossSystemType.GetProperty("downedAstrumDeus", bf);
+            downedGuardiansProp = DownedBossSystemType.GetProperty("downedGuardians", bf);
+            downedDragonfollyProp = DownedBossSystemType.GetProperty("downedDragonfolly", bf);
+            downedProvidenceProp = DownedBossSystemType.GetProperty("downedProvidence", bf);
+            downedCeaselessVoidProp = DownedBossSystemType.GetProperty("downedCeaselessVoid", bf);
+            downedStormWeaverProp = DownedBossSystemType.GetProperty("downedStormWeaver", bf);
+            downedSignusProp = DownedBossSystemType.GetProperty("downedSignus", bf);
+            downedPolterghastProp = DownedBossSystemType.GetProperty("downedPolterghast", bf);
+            downedMaulerProp = DownedBossSystemType.GetProperty("downedMauler", bf);
+            downedNuclearTerrorProp = DownedBossSystemType.GetProperty("downedNuclearTerror", bf);
+            downedBoomerDukeProp = DownedBossSystemType.GetProperty("downedBoomerDuke", bf);
+            downedDoGProp = DownedBossSystemType.GetProperty("downedDoG", bf);
+            downedYharonProp = DownedBossSystemType.GetProperty("downedYharon", bf);
+            downedExoMechsProp = DownedBossSystemType.GetProperty("downedExoMechs", bf);
+            downedCalamitasProp = DownedBossSystemType.GetProperty("downedCalamitas", bf);
+            downedPrimordialWyrmProp = DownedBossSystemType.GetProperty("downedPrimordialWyrm", bf);
+            downedBossRushProp = DownedBossSystemType.GetProperty("downedBossRush", bf);
+            downedThanatosProp = DownedBossSystemType.GetProperty("downedThanatos", bf);
+        }
+
+        private static void LoadCalamityStaticState(Mod mod) {
+            Type calWorld = mod.Code.GetType("CalamityMod.World.CalamityWorld");
+            if (calWorld != null) {
+                const BindingFlags bf = BindingFlags.Public | BindingFlags.Static;
+                calWorld_death_Field = calWorld.GetField("death", bf);
+                calWorld_revenge_Field = calWorld.GetField("revenge", bf);
+            }
+
+            Type bossRush = mod.Code.GetType("CalamityMod.Events.BossRushEvent");
+            bossRush_Active_Prop = bossRush?.GetProperty("BossRushActive", BindingFlags.Public | BindingFlags.Static);
+
+            Type acidRain = mod.Code.GetType("CalamityMod.Events.AcidRainEvent");
+            if (acidRain != null) {
+                const BindingFlags bf = BindingFlags.Public | BindingFlags.Static;
+                acidRain_Ongoing_Prop = acidRain.GetProperty("AcidRainEventIsOngoing", bf);
+                acidRain_KillPoints_Field = acidRain.GetField("AccumulatedKillPoints", bf);
+                acidRain_UpdateInvasion_Method = acidRain.GetMethod("UpdateInvasion", bf);
+                acidRain_OldDukeEncountered_Prop = acidRain.GetProperty("OldDukeHasBeenEncountered", bf);
+            }
+
+            Type calConfig = mod.Code.GetType("CalamityMod.CalamityServerConfig");
+            if (calConfig != null) {
+                calamityServerConfigInstance = GetModContentInstance(calConfig);
+                calConfig_EarlyHardmodeRework_Prop = calConfig.GetProperty("EarlyHardmodeProgressionRework", BindingFlags.Public | BindingFlags.Instance);
+            }
+
+            Type calGlobalNPCType = mod.Code.GetType("CalamityMod.NPCs.CalamityGlobalNPC");
+            calNPC_SetNewBossJustDowned_Method = calGlobalNPCType?.GetMethod("SetNewBossJustDowned", BindingFlags.Public | BindingFlags.Static);
+
+            ModContent.TryFind("CalamityMod", "TrueMeleeDamageClass", out trueMeleeDamageClass);
+            ModContent.TryFind("CalamityMod", "TrueMeleeNoSpeedDamageClass", out trueMeleeNoSpeedDamageClass);
+        }
+
+        private static void LoadCalamityUtilsDelegates(Mod mod) {
+            Type calUtils = mod.Code.GetType("CalamityMod.CalamityUtils");
+            if (calUtils == null) {
+                return;
+            }
+            calUtils_DrawAfterimagesCenteredDel = TryCreateStaticDelegate<Action<Projectile, int, Color, int, Texture2D, bool>>(calUtils, "DrawAfterimagesCentered");
+            calUtils_HomeInOnNPCDel = TryCreateStaticDelegate<Action<Projectile, bool, float, float, float>>(calUtils, "HomeInOnNPC");
+            calUtils_LargeFieryExplosionDel = TryCreateStaticDelegate<Action<Projectile>>(calUtils, "LargeFieryExplosion");
+        }
+
+        private static void LoadCalamityModNPCs(Mod mod) {
+            supCalType = mod.Code.GetType("CalamityMod.NPCs.SupremeCalamitas.SupremeCalamitas");
+            supCal_giveUpCounter_Field = supCalType?.GetField("giveUpCounter",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            draedonType = mod.Code.GetType("CalamityMod.NPCs.ExoMechs.Draedon");
+            draedon_DefeatTimer_M = FindMember(draedonType, "DefeatTimer");
+        }
+
+        private static void LoadCalamityGlobalTemplates() {
+            ModContent.TryFind("CalamityMod", "CalamityPlayer", out calPlayerTemplate);
+            ModContent.TryFind("CalamityMod", "CalamityGlobalItem", out calGlobalItemTemplate);
+            ModContent.TryFind("CalamityMod", "CalamityGlobalNPC", out calGlobalNPCTemplate);
+            ModContent.TryFind("CalamityMod", "CalamityGlobalProjectile", out calGlobalProjectileTemplate);
+
+            Type calPlayerType = calPlayerTemplate?.GetType();
+            Type calItemType = calGlobalItemTemplate?.GetType();
+            Type calNPCType = calGlobalNPCTemplate?.GetType();
+            Type calProjType = calGlobalProjectileTemplate?.GetType();
+
+            calPlayer_bladeArmEnchant_M = FindMember(calPlayerType, "bladeArmEnchant");
+            calPlayer_adrenalineModeActive_M = FindMember(calPlayerType, "adrenalineModeActive");
+            calPlayer_infiniteFlight_M = FindMember(calPlayerType, "infiniteFlight");
+            calPlayer_ZoneSulphur_M = FindMember(calPlayerType, "ZoneSulphur");
+            calPlayer_ZoneAbyss_M = FindMember(calPlayerType, "ZoneAbyss");
+            calPlayer_profanedCrystalBuffs_M = FindMember(calPlayerType, "profanedCrystalBuffs");
+            calPlayer_DashID_M = FindMember(calPlayerType, "DashID");
+            calPlayer_AbleToSelectExoMech_M = FindMember(calPlayerType, "AbleToSelectExoMech");
+            calPlayer_rage_M = FindMember(calPlayerType, "rage");
+            calPlayer_adrenaline_M = FindMember(calPlayerType, "adrenaline");
+            calPlayer_rageGainCooldown_M = FindMember(calPlayerType, "rageGainCooldown");
+            calPlayer_rageCombatFrames_M = FindMember(calPlayerType, "rageCombatFrames");
+            calPlayer_adrenalinePauseTimer_M = FindMember(calPlayerType, "adrenalinePauseTimer");
+
+            calItem_ChargeRatio_M = FindMember(calItemType, "ChargeRatio");
+            calItem_MaxCharge_M = FindMember(calItemType, "MaxCharge");
+            calItem_UsesCharge_M = FindMember(calItemType, "UsesCharge");
+
+            calNPC_DR_M = FindMember(calNPCType, "DR");
+
+            calProj_timesPierced_M = FindMember(calProjType, "timesPierced");
+            calProj_conditionalHomingRange_M = FindMember(calProjType, "conditionalHomingRange");
+        }
+
         internal static void UnLoad() {
             _has = null;
             DownedBossSystemType = null;
@@ -133,6 +394,59 @@ namespace CalamityOverhaul
             downedPrimordialWyrmProp = null;
             downedBossRushProp = null;
             downedThanatosProp = null;
+
+            calWorld_death_Field = null;
+            calWorld_revenge_Field = null;
+            bossRush_Active_Prop = null;
+            acidRain_Ongoing_Prop = null;
+            acidRain_KillPoints_Field = null;
+            acidRain_UpdateInvasion_Method = null;
+            acidRain_OldDukeEncountered_Prop = null;
+            calamityServerConfigInstance = null;
+            calConfig_EarlyHardmodeRework_Prop = null;
+            calNPC_SetNewBossJustDowned_Method = null;
+            trueMeleeDamageClass = null;
+            trueMeleeNoSpeedDamageClass = null;
+
+            supCalType = null;
+            supCal_giveUpCounter_Field = null;
+            draedonType = null;
+            draedon_DefeatTimer_M = null;
+
+            calUtils_DrawAfterimagesCenteredDel = null;
+            calUtils_HomeInOnNPCDel = null;
+            calUtils_LargeFieryExplosionDel = null;
+
+            calPlayerTemplate = null;
+            calGlobalItemTemplate = null;
+            calGlobalNPCTemplate = null;
+            calGlobalProjectileTemplate = null;
+
+            calPlayer_bladeArmEnchant_M = null;
+            calPlayer_adrenalineModeActive_M = null;
+            calPlayer_infiniteFlight_M = null;
+            calPlayer_ZoneSulphur_M = null;
+            calPlayer_ZoneAbyss_M = null;
+            calPlayer_profanedCrystalBuffs_M = null;
+            calPlayer_DashID_M = null;
+            calPlayer_AbleToSelectExoMech_M = null;
+            calPlayer_rage_M = null;
+            calPlayer_adrenaline_M = null;
+            calPlayer_rageGainCooldown_M = null;
+            calPlayer_rageCombatFrames_M = null;
+            calPlayer_adrenalinePauseTimer_M = null;
+
+            calItem_ChargeRatio_M = null;
+            calItem_MaxCharge_M = null;
+            calItem_UsesCharge_M = null;
+
+            calNPC_DR_M = null;
+
+            calProj_timesPierced_M = null;
+            calProj_conditionalHomingRange_M = null;
+
+            BossHealthBarManager_Draw_Method = null;
+            calamityUtils_GetReworkedReforge_Method = null;
         }
 
         private static bool GetDownedProp(PropertyInfo prop) => prop != null && (bool)prop.GetValue(null);
@@ -339,67 +653,68 @@ namespace CalamityOverhaul
 
         public static void SetDownedPrimordialWyrm(bool value) => SetDownedProp(downedPrimordialWyrmProp, value);
 
-        public static bool GetDeathMode() => Has && GetDeathModeInner();
-        [CWRJITEnabled]
-        private static bool GetDeathModeInner() => CalamityWorld.death;
+        public static bool GetDeathMode() {
+            return calWorld_death_Field != null && (bool)calWorld_death_Field.GetValue(null);
+        }
 
-        public static bool GetRevengeMode() => Has && GetRevengeModeInner();
-        [CWRJITEnabled]
-        private static bool GetRevengeModeInner() => CalamityWorld.revenge;
+        public static bool GetRevengeMode() {
+            return calWorld_revenge_Field != null && (bool)calWorld_revenge_Field.GetValue(null);
+        }
 
-        public static bool GetBossRushActive() => Has && GetBossRushActiveInner();
-        [CWRJITEnabled]
-        private static bool GetBossRushActiveInner() => BossRushEvent.BossRushActive;
+        public static bool GetBossRushActive() {
+            return bossRush_Active_Prop != null && (bool)bossRush_Active_Prop.GetValue(null);
+        }
 
         public static void SetBossRushActive(bool value) {
-            if (!Has) return;
-            SetBossRushActiveInner(value);
+            bossRush_Active_Prop?.SetValue(null, value);
         }
-        [CWRJITEnabled]
-        private static void SetBossRushActiveInner(bool value) => BossRushEvent.BossRushActive = value;
 
-        public static bool GetAcidRainEventIsOngoing() => Has && GetAcidRainEventIsOngoingInner();
-        [CWRJITEnabled]
-        private static bool GetAcidRainEventIsOngoingInner() => AcidRainEvent.AcidRainEventIsOngoing;
+        public static bool GetAcidRainEventIsOngoing() {
+            return acidRain_Ongoing_Prop != null && (bool)acidRain_Ongoing_Prop.GetValue(null);
+        }
 
-        public static DamageClass GetTrueMeleeDamageClass() => Has ? GetTrueMeleeDamageClassInner() : DamageClass.Default;
-        [CWRJITEnabled]
-        private static DamageClass GetTrueMeleeDamageClassInner() => ModContent.GetInstance<TrueMeleeDamageClass>();
+        public static DamageClass GetTrueMeleeDamageClass() => trueMeleeDamageClass ?? DamageClass.Default;
 
-        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => Has ? GetTrueMeleeNoSpeedDamageClassInner() : DamageClass.Default;
-        [CWRJITEnabled]
-        private static DamageClass GetTrueMeleeNoSpeedDamageClassInner() => ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+        public static DamageClass GetTrueMeleeNoSpeedDamageClass() => trueMeleeNoSpeedDamageClass ?? DamageClass.Default;
 
-        public static float ChargeRatio(Item item) => Has ? ChargeRatioInner(item) : 0f;
-        [CWRJITEnabled]
-        private static float ChargeRatioInner(Item item) => item.Calamity().ChargeRatio;
+        public static float ChargeRatio(Item item) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_ChargeRatio_M == null) {
+                return 0f;
+            }
+            return (float)GetMember(calItem_ChargeRatio_M, cgi);
+        }
 
-        public static bool GetPlayerBladeArmEnchant(this Player player) => Has && GetPlayerBladeArmEnchantInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerBladeArmEnchantInner(Player player) => player.Calamity().bladeArmEnchant;
+        public static bool GetPlayerBladeArmEnchant(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_bladeArmEnchant_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_bladeArmEnchant_M, cp);
+        }
 
-        public static bool GetPlayerAdrenalineMode(this Player player) => Has && GetPlayerAdrenalineModeInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerAdrenalineModeInner(Player player) => player.Calamity().adrenalineModeActive;
+        public static bool GetPlayerAdrenalineMode(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_adrenalineModeActive_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_adrenalineModeActive_M, cp);
+        }
 
         /// <summary>
         /// 抓取玩家的怒气与肾上腺素相关字段快照，仅在Calamity安装时生效
         /// </summary>
         public static void SnapshotRippers(Player player, ref float rage, ref float adrenaline
             , ref int rageGainCooldown, ref int rageCombatFrames, ref int adrenalinePauseTimer) {
-            if (!Has) return;
-            SnapshotRippersInner(player, ref rage, ref adrenaline
-                , ref rageGainCooldown, ref rageCombatFrames, ref adrenalinePauseTimer);
-        }
-        [CWRJITEnabled]
-        private static void SnapshotRippersInner(Player player, ref float rage, ref float adrenaline
-            , ref int rageGainCooldown, ref int rageCombatFrames, ref int adrenalinePauseTimer) {
-            CalamityPlayer cp = player.Calamity();
-            rage = cp.rage;
-            adrenaline = cp.adrenaline;
-            rageGainCooldown = cp.rageGainCooldown;
-            rageCombatFrames = cp.rageCombatFrames;
-            adrenalinePauseTimer = cp.adrenalinePauseTimer;
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null) {
+                return;
+            }
+            if (calPlayer_rage_M != null) rage = (float)GetMember(calPlayer_rage_M, cp);
+            if (calPlayer_adrenaline_M != null) adrenaline = (float)GetMember(calPlayer_adrenaline_M, cp);
+            if (calPlayer_rageGainCooldown_M != null) rageGainCooldown = (int)GetMember(calPlayer_rageGainCooldown_M, cp);
+            if (calPlayer_rageCombatFrames_M != null) rageCombatFrames = (int)GetMember(calPlayer_rageCombatFrames_M, cp);
+            if (calPlayer_adrenalinePauseTimer_M != null) adrenalinePauseTimer = (int)GetMember(calPlayer_adrenalinePauseTimer_M, cp);
         }
 
         /// <summary>
@@ -407,26 +722,20 @@ namespace CalamityOverhaul
         /// </summary>
         public static void RestoreRippers(Player player, float rage, float adrenaline
             , int rageGainCooldown, int rageCombatFrames, int adrenalinePauseTimer) {
-            if (!Has) return;
-            RestoreRippersInner(player, rage, adrenaline, rageGainCooldown, rageCombatFrames, adrenalinePauseTimer);
-        }
-        [CWRJITEnabled]
-        private static void RestoreRippersInner(Player player, float rage, float adrenaline
-            , int rageGainCooldown, int rageCombatFrames, int adrenalinePauseTimer) {
-            CalamityPlayer cp = player.Calamity();
-            cp.rage = rage;
-            cp.adrenaline = adrenaline;
-            cp.rageGainCooldown = rageGainCooldown;
-            cp.rageCombatFrames = rageCombatFrames;
-            cp.adrenalinePauseTimer = adrenalinePauseTimer;
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null) {
+                return;
+            }
+            if (calPlayer_rage_M != null) SetMember(calPlayer_rage_M, cp, rage);
+            if (calPlayer_adrenaline_M != null) SetMember(calPlayer_adrenaline_M, cp, adrenaline);
+            if (calPlayer_rageGainCooldown_M != null) SetMember(calPlayer_rageGainCooldown_M, cp, rageGainCooldown);
+            if (calPlayer_rageCombatFrames_M != null) SetMember(calPlayer_rageCombatFrames_M, cp, rageCombatFrames);
+            if (calPlayer_adrenalinePauseTimer_M != null) SetMember(calPlayer_adrenalinePauseTimer_M, cp, adrenalinePauseTimer);
         }
 
         public static void LargeFieryExplosion(Projectile projectile) {
-            if (!Has) return;
-            LargeFieryExplosionInner(projectile);
+            calUtils_LargeFieryExplosionDel?.Invoke(projectile);
         }
-        [CWRJITEnabled]
-        private static void LargeFieryExplosionInner(Projectile projectile) => projectile.LargeFieryExplosion();
 
         public static void UpdateRogueStealth(Player player) {
             if (!Has) return;
@@ -496,41 +805,38 @@ namespace CalamityOverhaul
         }
 
         public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) {
-            if (!Has) {
+            if (calUtils_DrawAfterimagesCenteredDel == null) {
                 Main.spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, proj.Center - Main.screenPosition
                     , null, lightColor, proj.rotation, TextureAssets.Projectile[proj.type].Value.Size() / 2, proj.scale, SpriteEffects.None, 0);
                 return;
             }
-            DrawAfterimagesCenteredInner(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
+            calUtils_DrawAfterimagesCenteredDel(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
         }
-        [CWRJITEnabled]
-        private static void DrawAfterimagesCenteredInner(Projectile proj, int mode, Color lightColor, int typeOneIncrement, Texture2D texture, bool drawCentered) => CalamityUtils.DrawAfterimagesCentered(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
 
         public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) {
-            if (!Has) return;
-            HomeInOnNPCInner(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
+            calUtils_HomeInOnNPCDel?.Invoke(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
         }
-        [CWRJITEnabled]
-        private static void HomeInOnNPCInner(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) => CalamityUtils.HomeInOnNPC(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
 
         public static void SetDraedonDefeatTimer(NPC npc, float value) {
-            if (!Has) return;
-            SetDraedonDefeatTimerInner(npc, value);
-        }
-        [CWRJITEnabled]
-        private static void SetDraedonDefeatTimerInner(NPC npc, float value) {
-            if (npc.ModNPC is Draedon draedon) {
-                draedon.DefeatTimer = value;
+            if (draedon_DefeatTimer_M == null || draedonType == null) {
+                return;
             }
+            ModNPC modNPC = npc?.ModNPC;
+            if (modNPC == null || modNPC.GetType() != draedonType) {
+                return;
+            }
+            SetMember(draedon_DefeatTimer_M, modNPC, value);
         }
 
-        public static float GetDraedonDefeatTimer(NPC npc) => Has ? GetDraedonDefeatTimerInner(npc) : 0f;
-        [CWRJITEnabled]
-        private static float GetDraedonDefeatTimerInner(NPC npc) {
-            if (npc.ModNPC is Draedon draedon) {
-                return draedon.DefeatTimer;
+        public static float GetDraedonDefeatTimer(NPC npc) {
+            if (draedon_DefeatTimer_M == null || draedonType == null) {
+                return 0f;
             }
-            return 0f;
+            ModNPC modNPC = npc?.ModNPC;
+            if (modNPC == null || modNPC.GetType() != draedonType) {
+                return 0f;
+            }
+            return (float)GetMember(draedon_DefeatTimer_M, modNPC);
         }
 
         public static bool HasExo() {
@@ -546,27 +852,28 @@ namespace CalamityOverhaul
         }
 
         public static void SetAbleToSelectExoMech(Player player, bool value) {
-            if (!Has) return;
-            SetAbleToSelectExoMechInner(player, value);
-        }
-        [CWRJITEnabled]
-        private static void SetAbleToSelectExoMechInner(Player player, bool value) {
-            player.Calamity().AbleToSelectExoMech = value;
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_AbleToSelectExoMech_M == null) {
+                return;
+            }
+            SetMember(calPlayer_AbleToSelectExoMech_M, cp, value);
         }
 
         public static void SetProjtimesPierced(this Projectile projectile, int value) {
-            if (!Has) return;
-            SetProjtimesPiercedInner(projectile, value);
+            GlobalProjectile cgp = GetCalProj(projectile);
+            if (cgp == null || calProj_timesPierced_M == null) {
+                return;
+            }
+            SetMember(calProj_timesPierced_M, cgp, value);
         }
-        [CWRJITEnabled]
-        private static void SetProjtimesPiercedInner(Projectile projectile, int value) => projectile.Calamity().timesPierced = value;
 
         public static void SetAllProjectilesHome(this Projectile projectile, bool value) {
-            if (!Has) return;
-            SetAllProjectilesHomeInner(projectile, value);
+            GlobalProjectile cgp = GetCalProj(projectile);
+            if (cgp == null || calProj_conditionalHomingRange_M == null) {
+                return;
+            }
+            SetMember(calProj_conditionalHomingRange_M, cgp, value ? 450 : 0);
         }
-        [CWRJITEnabled]
-        private static void SetAllProjectilesHomeInner(Projectile projectile, bool value) => projectile.Calamity().conditionalHomingRange = (value ? 450 : 0);
 
         public static void SetDownedCalamitas(bool value) => SetDownedProp(downedCalamitasProp, value);
 
@@ -657,24 +964,26 @@ namespace CalamityOverhaul
             if (read("than")) SetDownedProp(downedThanatosProp, true);
         }
 
-        public static int GetSupCalGiveUpCounter(NPC npc) => Has ? GetSupCalGiveUpCounterInner(npc) : 0;
-        [CWRJITEnabled]
-        private static int GetSupCalGiveUpCounterInner(NPC npc) {
-            if (npc.ModNPC is SupremeCalamitas supCal) {
-                return supCal.giveUpCounter;
+        public static int GetSupCalGiveUpCounter(NPC npc) {
+            if (supCal_giveUpCounter_Field == null || supCalType == null) {
+                return 0;
             }
-            return 0;
+            ModNPC modNPC = npc?.ModNPC;
+            if (modNPC == null || modNPC.GetType() != supCalType) {
+                return 0;
+            }
+            return (int)supCal_giveUpCounter_Field.GetValue(modNPC);
         }
 
         public static void SetSupCalGiveUpCounter(NPC npc, int value) {
-            if (!Has) return;
-            SetSupCalGiveUpCounterInner(npc, value);
-        }
-        [CWRJITEnabled]
-        private static void SetSupCalGiveUpCounterInner(NPC npc, int value) {
-            if (npc.ModNPC is SupremeCalamitas supCal) {
-                supCal.giveUpCounter = value;
+            if (supCal_giveUpCounter_Field == null || supCalType == null) {
+                return;
             }
+            ModNPC modNPC = npc?.ModNPC;
+            if (modNPC == null || modNPC.GetType() != supCalType) {
+                return;
+            }
+            supCal_giveUpCounter_Field.SetValue(modNPC, value);
         }
 
         public static Type FindCalamityType(string key) {
@@ -688,13 +997,20 @@ namespace CalamityOverhaul
         public static Type GetNPC_WITCH_Type() => FindCalamityType("CalamityMod.NPCs.TownNPCs.BrimstoneWitch");
         public static Type GetNPC_SupCal_Type() => FindCalamityType("CalamityMod.NPCs.SupremeCalamitas.SupremeCalamitas");
 
-        public static bool GetEarlyHardmodeProgressionReworkBool() => Has && GetEarlyHardmodeProgressionReworkBoolInner();
-        [CWRJITEnabled]
-        private static bool GetEarlyHardmodeProgressionReworkBoolInner() => CalamityServerConfig.Instance.EarlyHardmodeProgressionRework;
+        public static bool GetEarlyHardmodeProgressionReworkBool() {
+            if (calConfig_EarlyHardmodeRework_Prop == null || calamityServerConfigInstance == null) {
+                return false;
+            }
+            return (bool)calConfig_EarlyHardmodeRework_Prop.GetValue(calamityServerConfigInstance);
+        }
 
-        public static float GetNPCDR(NPC npc) => Has ? GetNPCDRInner(npc) : 0f;
-        [CWRJITEnabled]
-        private static float GetNPCDRInner(NPC npc) => npc.Calamity().DR;
+        public static float GetNPCDR(NPC npc) {
+            GlobalNPC cgn = GetCalNPC(npc);
+            if (cgn == null || calNPC_DR_M == null) {
+                return 0f;
+            }
+            return (float)GetMember(calNPC_DR_M, cgn);
+        }
 
         public static int GetProjectileDamage(NPC npc, int projType) {
             int num = npc.defDamage / 2;//暂时使用这个，原来的方法在某些情况下会返回1或者0
@@ -708,33 +1024,31 @@ namespace CalamityOverhaul
         }
 
         public static void SetPlayerInfiniteFlight(this Player player, bool value) {
-            if (!Has) return;
-            SetPlayerInfiniteFlightInner(player, value);
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_infiniteFlight_M == null) {
+                return;
+            }
+            SetMember(calPlayer_infiniteFlight_M, cp, value);
         }
-        [CWRJITEnabled]
-        private static void SetPlayerInfiniteFlightInner(Player player, bool value) => player.Calamity().infiniteFlight = value;
 
         public static void OldDukeOnKill(NPC npc) {
-            if (!Has) return;
-            OldDukeOnKillInner(npc);
-        }
-        [CWRJITEnabled]
-        private static void OldDukeOnKillInner(NPC npc) {
-            StopAcidRainInner();
-            CalamityGlobalNPC.SetNewBossJustDowned(npc);
+            StopAcidRain();
+            calNPC_SetNewBossJustDowned_Method?.Invoke(null, new object[] { npc });
             SetDownedProp(downedBoomerDukeProp, true);
-            AcidRainEvent.OldDukeHasBeenEncountered = true;
+            acidRain_OldDukeEncountered_Prop?.SetValue(null, true);
             NPCLoader.OnKill(npc);
         }
 
         public static void StopAcidRain() {
-            if (!Has) return;
-            StopAcidRainInner();
-        }
-        [CWRJITEnabled]
-        private static void StopAcidRainInner() {
-            AcidRainEvent.AccumulatedKillPoints = 0;
-            AcidRainEvent.UpdateInvasion(win: true);
+            if (acidRain_KillPoints_Field == null || acidRain_UpdateInvasion_Method == null) {
+                return;
+            }
+            acidRain_KillPoints_Field.SetValue(null, 0);
+            try {
+                acidRain_UpdateInvasion_Method.Invoke(null, new object[] { true });
+            } catch (TargetParameterCountException) {
+                acidRain_UpdateInvasion_Method.Invoke(null, null);
+            }
         }
 
         public static ref float RefItemCharge(this Item item) {
@@ -746,9 +1060,13 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static ref float RefItemChargeInner(Item item) => ref item.Calamity().Charge;
 
-        public static float GetItemMaxCharge(this Item item) => Has ? GetItemMaxChargeInner(item) : 0f;
-        [CWRJITEnabled]
-        private static float GetItemMaxChargeInner(Item item) => item.Calamity().MaxCharge;
+        public static float GetItemMaxCharge(this Item item) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_MaxCharge_M == null) {
+                return 0f;
+            }
+            return (float)GetMember(calItem_MaxCharge_M, cgi);
+        }
 
         public static ref float RefItemMaxCharge(this Item item) {
             if (!Has) {
@@ -759,13 +1077,22 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static ref float RefItemMaxChargeInner(Item item) => ref item.Calamity().MaxCharge;
 
-        public static bool GetItemUsesCharge(this Item item) => Has && GetItemUsesChargeInner(item);
-        [CWRJITEnabled]
-        private static bool GetItemUsesChargeInner(Item item) => item.Calamity().UsesCharge;
+        public static bool GetItemUsesCharge(this Item item) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_UsesCharge_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calItem_UsesCharge_M, cgi);
+        }
 
-        public static bool SetItemUsesCharge(this Item item, bool value) => Has && SetItemUsesChargeInner(item, value);
-        [CWRJITEnabled]
-        private static bool SetItemUsesChargeInner(Item item, bool value) => item.Calamity().UsesCharge = value;
+        public static bool SetItemUsesCharge(this Item item, bool value) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_UsesCharge_M == null) {
+                return false;
+            }
+            SetMember(calItem_UsesCharge_M, cgi, value);
+            return value;
+        }
 
         public static ref float RefPlayerRogueStealthMax(this Player player) {
             if (!Has) {
@@ -776,24 +1103,37 @@ namespace CalamityOverhaul
         [CWRJITEnabled]
         private static ref float RefPlayerRogueStealthMaxInner(Player player) => ref player.Calamity().rogueStealthMax;
 
-        public static bool GetPlayerZoneSulphur(this Player player) => Has && GetPlayerZoneSulphurInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerZoneSulphurInner(Player player) => player.Calamity().ZoneSulphur;
+        public static bool GetPlayerZoneSulphur(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_ZoneSulphur_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_ZoneSulphur_M, cp);
+        }
 
-        public static bool GetPlayerZoneAbyss(this Player player) => Has && GetPlayerZoneAbyssInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerZoneAbyssInner(Player player) => player.Calamity().ZoneAbyss;
+        public static bool GetPlayerZoneAbyss(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_ZoneAbyss_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_ZoneAbyss_M, cp);
+        }
 
-        public static bool GetPlayerProfanedCrystalBuffs(this Player player) => Has && GetPlayerProfanedCrystalBuffsInner(player);
-        [CWRJITEnabled]
-        private static bool GetPlayerProfanedCrystalBuffsInner(Player player) => player.Calamity().profanedCrystalBuffs;
+        public static bool GetPlayerProfanedCrystalBuffs(this Player player) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_profanedCrystalBuffs_M == null) {
+                return false;
+            }
+            return (bool)GetMember(calPlayer_profanedCrystalBuffs_M, cp);
+        }
 
         public static void SetPlayerDashID(this Player player, string value) {
-            if (!Has) return;
-            SetPlayerDashIDInner(player, value);
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_DashID_M == null) {
+                return;
+            }
+            SetMember(calPlayer_DashID_M, cp, value);
         }
-        [CWRJITEnabled]
-        private static void SetPlayerDashIDInner(Player player, string value) => player.Calamity().DashID = value;
 
         public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) {
             condition = null;
@@ -925,41 +1265,42 @@ namespace CalamityOverhaul
         internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
 
         internal static void LoadComders() {
-            if (!Has) {
+            Mod mod = CWRMod.Instance?.calamity;
+            if (mod == null) {
                 return;
             }
             try {
-                LoadComdersInner();
-            } catch { }
-        }
-        [CWRJITEnabled]
-        internal static void LoadComdersInner() {
-            //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
-            BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager)
-                .GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
-            if (BossHealthBarManager_Draw_Method != null) {
-                VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
-            }
-            else {
-                CWRUtils.LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
-            }
+                //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
+                Type bossHealthBarManagerType = mod.Code.GetType("CalamityMod.UI.BossHealthBarManager");
+                BossHealthBarManager_Draw_Method = bossHealthBarManagerType?.GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
+                if (BossHealthBarManager_Draw_Method != null) {
+                    VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+                }
+                else {
+                    CWRUtils.LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.UI.BossHealthBarManager");
+                }
 
-            MethodInfo methodInfo = typeof(CalamityUtils).GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
-            if (methodInfo != null) {
-                VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
-            }
-
-            //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
-            if (CWRMod.Instance.luminance != null) {
-                var utType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.luminance), "Utilities");
-                methodInfo = utType.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
+                Type calUtilsType = mod.Code.GetType("CalamityMod.CalamityUtils");
+                MethodInfo methodInfo = calUtilsType?.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
                 if (methodInfo != null) {
                     VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
                 }
-            }
 
-            var math = typeof(CalamityPlayer).GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
-            VaultHook.Add(math, OnProvideStealthStatBonusesHook);
+                //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
+                if (CWRMod.Instance.luminance != null) {
+                    Type utType = CWRUtils.GetTargetTypeInStringKey(CWRUtils.GetModTypes(CWRMod.Instance.luminance), "Utilities");
+                    methodInfo = utType?.GetMethod("BroadcastLocalizedText", BindingFlags.Static | BindingFlags.Public);
+                    if (methodInfo != null) {
+                        VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
+                    }
+                }
+
+                Type calPlayerType = calPlayerTemplate?.GetType() ?? mod.Code.GetType("CalamityMod.CalPlayer.CalamityPlayer");
+                MethodInfo provideStealthMethod = calPlayerType?.GetMethod("ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (provideStealthMethod != null) {
+                    VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
+                }
+            } catch { }
         }
 
         [CWRJITEnabled]
@@ -980,7 +1321,6 @@ namespace CalamityOverhaul
             }
         }
 
-        [CWRJITEnabled]
         internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
             Color color = textColor ?? Color.White;
             if (VaultLoad.LoadenContent) {
