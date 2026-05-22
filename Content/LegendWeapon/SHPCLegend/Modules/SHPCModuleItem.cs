@@ -16,12 +16,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
     internal abstract class SHPCModuleItem : ModItem
     {
         public override string Texture => SlotCategory switch {
-            SHPCSlotCategory.Barrel => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Barrel",
-            SHPCSlotCategory.Optic => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Optic",
-            SHPCSlotCategory.Power => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Power",
-            SHPCSlotCategory.Stock => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Stock",
-            SHPCSlotCategory.Grip => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Grip",
-            SHPCSlotCategory.Frame => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Frame",
+            //SHPCSlotCategory.Barrel => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Barrel",
+            //SHPCSlotCategory.Optic => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Optic",
+            //SHPCSlotCategory.Power => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Power",
+            //SHPCSlotCategory.Stock => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Stock",
+            //SHPCSlotCategory.Grip => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Grip",
+            //SHPCSlotCategory.Frame => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Frame",
             _ => CWRConstant.Item_Tools + "Mewtwo",
         };
 
