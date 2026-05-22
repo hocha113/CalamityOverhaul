@@ -183,18 +183,17 @@ namespace CalamityOverhaul.Content.HackTimes
             int globalIdx = GetGlobalIndex(hoveredSlot);
             var hack = QuickHackDef.GetByIndex(globalIdx);
             if (hack == null) return;
-            //RAM不足时拒绝入队
-            if (!RamSystem.CanAfford(hack.RamCost)) return;
 
-            //当前选中的目标统一通过 IHackTarget 暴露给队列，无需按种类分支
             IHackTarget target = HackTime.CurrentScanTarget;
             if (target == null) return;
-            //协议必须支持当前目标种类
             if ((hack.SupportedTargets & target.TargetType.Kind) == 0) return;
 
-            bool enqueued = Queue.Enqueue(hack, globalIdx, target);
+            int actualCost = HackCostEvaluator.GetActualCost(hack, target);
+            if (!RamSystem.CanAfford(actualCost)) return;
+
+            bool enqueued = Queue.Enqueue(hack, globalIdx, target, actualCost);
             if (enqueued) {
-                RamSystem.TryConsume(hack.RamCost);
+                RamSystem.TryConsume(actualCost);
             }
         }
 
@@ -639,7 +638,8 @@ namespace CalamityOverhaul.Content.HackTimes
                 Utils.DrawBorderString(sb, lockStr, lockPos,
                     HackTheme.Danger * (alpha * 0.7f * lockPulse), 0.50f);
                 //RAM消耗（LOCKED下方）
-                string ramStr2 = $"{hack.RamCost} RAM";
+                int lockedActualCost = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
+                string ramStr2 = BuildRamLabel(hack, lockedActualCost);
                 Vector2 ramSize2 = FontAssets.MouseText.Value.MeasureString(ramStr2) * FontTime;
                 Vector2 ramPos2 = new(rect.Right - ramSize2.X - 14, lockPos.Y + lockSize.Y + 2);
                 Utils.DrawBorderString(sb, ramStr2, ramPos2,
@@ -671,10 +671,10 @@ namespace CalamityOverhaul.Content.HackTimes
                 Utils.DrawBorderString(sb, timeStr, tp, HackTheme.TextNormal * (alpha * 0.55f), FontTime);
 
                 //RAM消耗（右侧，上传耗时左边）
-                bool canAfford = RamSystem.CanAfford(hack.RamCost);
-                string ramStr = $"{hack.RamCost} RAM";
+                int displayActualCost = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
+                bool canAfford = RamSystem.CanAfford(displayActualCost);
+                string ramStr = BuildRamLabel(hack, displayActualCost);
                 Color ramColor = canAfford ? HackTheme.Accent : HackTheme.Danger;
-                //RAM不足时红色闪烁
                 if (!canAfford) {
                     float ramPulse = MathF.Sin(timer * 6f) * 0.3f + 0.7f;
                     ramColor *= ramPulse;
@@ -707,6 +707,13 @@ namespace CalamityOverhaul.Content.HackTimes
         #endregion
 
         #region 视觉效果
+
+        //构建 RAM 成本显示文字，倍率超过 1.0x 时附加倍率标签
+        private static string BuildRamLabel(QuickHackDef hack, int actualCost) {
+            if (actualCost == hack.RamCost) return $"{actualCost} RAM";
+            float mult = (float)actualCost / hack.RamCost;
+            return $"{actualCost} RAM ×{mult:F1}";
+        }
 
         //左侧斜角遮罩
         private static void DrawSlashCut(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {

@@ -46,11 +46,14 @@ namespace CalamityOverhaul.Content.HackTimes
         public float CompletedTimer;
         //故障种子
         public float GlitchSeed;
+        //实际 RAM 成本（已乘倍率），在入队时由 HackCostEvaluator 计算并固定
+        public int ComputedRamCost;
 
-        public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target) {
+        public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
             Hack = hack;
             SlotIndex = slotIndex;
             Target = target;
+            ComputedRamCost = computedRamCost;
             State = HackQueueState.Waiting;
             UploadProgress = 0f;
             FlyIn = 0f;

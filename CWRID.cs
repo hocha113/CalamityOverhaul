@@ -227,6 +227,8 @@ namespace CalamityOverhaul
         public static int NPC_Apollo => Get();
         public static int NPC_Artemis => Get();
         public static int NPC_AresBody => Get();
+        public static int NPC_ArtemisBoss => Get();
+        public static int NPC_ApolloBoss => Get();
         public static int NPC_AresLaserCannon => Get();
         public static int NPC_AresPlasmaFlamethrower => Get();
         public static int NPC_AresTeslaCannon => Get();

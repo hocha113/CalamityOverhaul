@@ -5,6 +5,8 @@ using CalamityMod.CustomRecipes;
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.ExoMechs;
+using CalamityMod.NPCs.ExoMechs.Ares;
+using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.UI;
 using CalamityMod.World;
@@ -21,6 +23,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.BigProgressBar;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Common.ModGanged;
@@ -530,9 +533,17 @@ namespace CalamityOverhaul
             return 0f;
         }
 
-        public static bool HasExo() => Has && HasExoInner();
-        [CWRJITEnabled]
-        private static bool HasExoInner() => Draedon.ExoMechIsPresent;
+        public static bool HasExo() {
+            if (CWRID.NPC_ThanatosHead > NPCID.None && NPC.AnyNPCs(CWRID.NPC_ThanatosHead))
+                return true;
+            if (CWRID.NPC_AresBody > NPCID.None && NPC.AnyNPCs(CWRID.NPC_AresBody))
+                return true;
+            if (CWRID.NPC_ArtemisBoss > NPCID.None && NPC.AnyNPCs(CWRID.NPC_ArtemisBoss))
+                return true;
+            if (CWRID.NPC_ApolloBoss > NPCID.None && NPC.AnyNPCs(CWRID.NPC_ApolloBoss))
+                return true;
+            return false;
+        }
 
         public static void SetAbleToSelectExoMech(Player player, bool value) {
             if (!Has) return;

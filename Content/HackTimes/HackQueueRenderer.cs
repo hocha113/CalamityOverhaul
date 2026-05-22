@@ -38,13 +38,13 @@ namespace CalamityOverhaul.Content.HackTimes
         /// 向队列添加一个骇入协议
         /// <br/>不允许同一目标上的同一slot重复入队，但不同目标可以并行持有同一slot的骇入状态
         /// </summary>
-        public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target) {
+        public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
             if (target == null) return false;
             for (int i = 0; i < queue.Count; i++) {
                 if (queue[i].SlotIndex != slotIndex) continue;
                 if (queue[i].Target != null && queue[i].Target.TargetEquals(target)) return false;
             }
-            queue.Add(new HackQueueEntry(hack, slotIndex, target));
+            queue.Add(new HackQueueEntry(hack, slotIndex, target, computedRamCost));
             return true;
         }
 
