@@ -2,7 +2,6 @@
 using CalamityMod.Balancing;
 using CalamityMod.CalPlayer;
 using CalamityMod.CustomRecipes;
-using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.UI;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
