@@ -126,18 +126,6 @@ namespace CalamityOverhaul
             return type.GetProperty(name, bf);
         }
 
-        private static MemberInfo FindStaticMember(Type type, string name) {
-            if (type == null) {
-                return null;
-            }
-            const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-            MemberInfo m = type.GetField(name, bf);
-            if (m != null) {
-                return m;
-            }
-            return type.GetProperty(name, bf);
-        }
-
         private static object GetMember(MemberInfo m, object obj) {
             return m switch {
                 FieldInfo f => f.GetValue(obj),
