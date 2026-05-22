@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float FontPct = 0.38f;
         private const float FontStatus = 0.30f;
         //完成后闪烁持续时间（秒）
-        private const float CompletedDuration = 1.2f;
+        private static float CompletedDuration => 0.2f;
 
         #endregion
 

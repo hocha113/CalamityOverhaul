@@ -33,9 +33,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //每15帧造成一次伤害，保底5点加0.1%最大血量（5秒共20次）
+            //每15帧造成一次伤害（5秒共20次）
             if (elapsed % 15 == 0) {
-                int dmg = Math.Max(5, (int)(npc.lifeMax * 0.001f));
+                int dmg = Math.Max(10, (int)(npc.lifeMax * 0.002f));
                 npc.SimpleStrikeNPC(dmg, 0, false, 0f, null, false, 0f, true);
             }
             //持续焚烧粒子
