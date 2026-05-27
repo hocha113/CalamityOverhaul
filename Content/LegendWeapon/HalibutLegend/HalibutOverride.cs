@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
@@ -95,7 +97,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             CWRUtils.ModifyLegendWeaponDamageFunc(item, GetOnDamage(item), GetStartDamage, ref damage);
             return false;
         }
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => HalibutText.SetTooltip(item, ref tooltips);
+
+        public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            CWRItem.OverModifyTooltip(item, tooltips);
+            HalibutText.SetTooltip(item, ref tooltips);
+            WikithisRef.TryAppendWikiTooltip(item, tooltips);
+            return false;
+        }
 
         public override void SetStaticDefaults() => LoadWeaponData();
 

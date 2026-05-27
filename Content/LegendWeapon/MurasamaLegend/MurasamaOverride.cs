@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
+using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -282,6 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRItem.OverModifyTooltip(item, tooltips);
             TooltipHandler.SetTooltip(item, ref tooltips);
+            WikithisRef.TryAppendWikiTooltip(item, tooltips);
             return false;
         }
 

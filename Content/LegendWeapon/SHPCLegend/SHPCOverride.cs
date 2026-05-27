@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -197,6 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRItem.OverModifyTooltip(item, tooltips);
             SetTooltip(item, ref tooltips);
+            WikithisRef.TryAppendWikiTooltip(item, tooltips);
             return false;
         }
 
