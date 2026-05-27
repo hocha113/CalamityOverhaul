@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using Terraria;
 using Terraria.Localization;
@@ -36,9 +37,11 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                     continue;
                 }
 
-                string pathSegment = modItem is SHPCModuleItem
-                    ? $"legend/shpc/modules/{ToSHPCModuleSlug(modItem.GetType().Name)}"
-                    : $"items/{modItem.Name.ToLowerInvariant()}";
+                string pathSegment = modItem switch {
+                    SHPCModuleItem => $"legend/shpc/modules/{ToSHPCModuleSlug(modItem.GetType().Name)}",
+                    HalibutItem => "legend/halibut",
+                    _ => $"items/{modItem.Name.ToLowerInvariant()}",
+                };
 
                 englishIds.Add(modItem.Type);
                 englishUrls.Add($"{WikiBaseUrl}/en/{pathSegment}/");
