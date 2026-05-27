@@ -279,7 +279,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => TooltipHandler.SetTooltip(item, ref tooltips);
+        public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            CWRItem.OverModifyTooltip(item, tooltips);
+            TooltipHandler.SetTooltip(item, ref tooltips);
+            return false;
+        }
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
