@@ -28,6 +28,10 @@ namespace CalamityOverhaul.OtherMods.Wikithis
             var chineseUrls = new List<string>();
 
             foreach (ModItem modItem in ModContent.GetContent<ModItem>()) {
+                if (modItem is null || modItem.Mod is null) {
+                    continue;
+                }
+
                 if (modItem.Mod != CWRMod.Instance || modItem.GetType().IsAbstract) {
                     continue;
                 }

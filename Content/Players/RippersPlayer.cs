@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.Players
         void ICWRLoader.SetupData() {
             Instance = this;
             noRippersProj = [
-                CWRID.Proj_CosmicDischargeFlail,
-                CWRID.Proj_CosmicIceBurst,
                 ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearHeld>(),
                 ModContent.ProjectileType<StormArc>(),
