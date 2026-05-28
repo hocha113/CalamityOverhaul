@@ -630,7 +630,11 @@ SandDagger: {
 
 UnderTheSand: {
 	// DisplayName: Beneath the Sand
-	// Tooltip: Creates several sand orbs
+	/* Tooltip:
+		'''
+		Hurls a pair of sand surges that arc downward under gravity
+		On impact with the ground, a vertical sand spike erupts from beneath, launching enemies skyward
+		''' */
 }
 
 WastelandFang: {
@@ -649,15 +653,23 @@ Flawless: {
 
 MelodyTheSand: {
 	// DisplayName: Song of the Sand
-	// Tooltip: Throws a spread of sand spikes that are affected by gravity and pierce enemies
+	/* Tooltip:
+		'''
+		Fires a small sand tornado that falls to the ground under gravity
+		Once grounded, it patrols back and forth along the surface, reversing at walls and ledges
+		Repeatedly hurls struck enemies into the sky
+		''' */
 }
 
 SandVortexOfTheDecayedSea: {
 	// DisplayName: Decayed Sea Sand Vortex
 	/* Tooltip:
 		'''
-		Vomits several sulfuric steam orbs
-		"Master of Vomiting"
+		Summons a colossal decayed sea vortex at the cursor
+		The vortex relentlessly draws nearby enemies in and rends them, even unraveling hostile projectiles
+		Periodically hurls outward homing decayed sea orbs
+		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
+		"The roar of the rotting depths churned into sand"
 		''' */
 }
 
@@ -2482,4 +2494,9 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
+}
+
+DuneStalker: {
+	// DisplayName: Dune Stalker
+	// Tooltip: ""
 }

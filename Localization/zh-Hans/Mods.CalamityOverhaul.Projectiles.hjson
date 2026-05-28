@@ -25,8 +25,9 @@ WarpingPoint.DisplayName: 跃迁奇点
 CommandersRay.DisplayName: 指挥官射线
 DecayedSeaOrb.DisplayName: 腐化深海珠
 PowerCoil.DisplayName: 能量线圈
-SaltationSend.DisplayName: 跃迁信标
-SandThorn.DisplayName: 沙之棘
+SandSmallTornado.DisplayName: 小型沙龙卷
+DecayedSeaVortex.DisplayName: 腐化深海漩涡
+UnderTheSandSurge.DisplayName: 沙之涌动
 SporeBoboMagic.DisplayName: 孢子波波
 SporeBobo.DisplayName: 孢子波波
 DestroyersBeam.DisplayName: 毁灭者光束
@@ -552,3 +553,4 @@ ArbiterGroundFire.DisplayName: 焚地烈焰
 ArbiterHeld.DisplayName: 断罪师
 ArbiterShockwave.DisplayName: 震荡波
 CloudwalkingHeld.DisplayName: 云端漫步
+DuneStalkerHeadProj.DisplayName: 荒漠钩头

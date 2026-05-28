@@ -25,8 +25,9 @@ RebelBladeSlash.DisplayName: Rebellenklinge
 // CommandersRay.DisplayName: Commander's Ray
 // DecayedSeaOrb.DisplayName: Decayed Sea Orb
 // PowerCoil.DisplayName: Power Coil
-// SaltationSend.DisplayName: Saltation Beacon
-// SandThorn.DisplayName: Sand Thorn
+// SandSmallTornado.DisplayName: Small Sand Tornado
+// DecayedSeaVortex.DisplayName: Decayed Sea Vortex
+// UnderTheSandSurge.DisplayName: Sand Surge
 // SporeBoboMagic.DisplayName: Spore Bobo
 // SporeBobo.DisplayName: Spore Bobo
 // DestroyersBeam.DisplayName: Destroyer's Beam
@@ -552,3 +553,4 @@ RevelationSealJudgment: {
 // ArbiterHeld.DisplayName: Arbiter
 // ArbiterShockwave.DisplayName: Shockwave
 // CloudwalkingHeld.DisplayName: Cloudwalking
+// DuneStalkerHeadProj.DisplayName: Dune Stalker Head Proj

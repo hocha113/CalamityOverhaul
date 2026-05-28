@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -639,7 +639,11 @@ SandDagger: {
 
 UnderTheSand: {
 	DisplayName: 沙之下
-	Tooltip: 生成几个沙球
+	Tooltip:
+		'''
+		抛出一对沙之涌动，飞行段会受重力影响向下坠落
+		触地瞬间从地表轰然耸起一道沙刺，向上掀飞接触的敌人
+		'''
 }
 
 WastelandFang: {
@@ -651,22 +655,34 @@ WastelandFang: {
 		'''
 }
 
-Flawless: {
-	DisplayName: 化境
-	Tooltip: ""
-}
-
 MelodyTheSand: {
 	DisplayName: 沙中曲
-	Tooltip: 抛射一片沙刺，受重力影响并穿透敌人
+	Tooltip:
+		'''
+		发射一道小型沙龙卷，沙龙卷在重力作用下落到地面
+		落地后沿地面来回巡游，撞墙或脚下断崖时即刻转向
+		持续将命中的敌人卷向高空
+		'''
 }
 
 SandVortexOfTheDecayedSea: {
 	DisplayName: 腐海沙涡
 	Tooltip:
 		'''
-		呕出数颗蒸硫球
-		"呕吐大师"
+		在光标位置降下一座腐化深海漩涡
+		漩涡持续吸纳并撕咬范围内的敌人，扰动敌方弹幕
+		周期性向外抛出追踪型腐化深海珠
+		再次点击可刷新已有漩涡，自然消散时绽放一圈深海珠
+		"卷入深海腐朽的咆哮"
+		'''
+}
+
+DuneStalker: {
+	DisplayName: 荒漠猎行者
+	Tooltip:
+		'''
+		发射一枚由锁链牵引的钩状枪头取代弹药本体
+		枪头沿途持续撕扯敌人，命中或飞抵射程极限后自动回收
 		'''
 }
 

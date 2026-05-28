@@ -654,7 +654,11 @@ SandDagger: {
 
 UnderTheSand: {
 	DisplayName: Скрытое под песком
-	Tooltip: Создаёт несколько песчаных сфер
+	/* Tooltip:
+		'''
+		Hurls a pair of sand surges that arc downward under gravity
+		On impact with the ground, a vertical sand spike erupts from beneath, launching enemies skyward
+		''' */
 }
 
 WastelandFang: {
@@ -673,16 +677,24 @@ Flawless: {
 
 MelodyTheSand: {
 	DisplayName: Песнь песка
-	Tooltip: Бросает ряд песчаных шипов, которые подвержены гравитации и пронзают врагов.
+	/* Tooltip:
+		'''
+		Fires a small sand tornado that falls to the ground under gravity
+		Once grounded, it patrols back and forth along the surface, reversing at walls and ledges
+		Repeatedly hurls struck enemies into the sky
+		''' */
 }
 
 SandVortexOfTheDecayedSea: {
 	DisplayName: Разложившийся морской песчаный вихрь
-	Tooltip:
+	/* Tooltip:
 		'''
-		Извергает несколько сернистых шаров пара
-		"Мастер рвоты"
-		'''
+		Summons a colossal decayed sea vortex at the cursor
+		The vortex relentlessly draws nearby enemies in and rends them, even unraveling hostile projectiles
+		Periodically hurls outward homing decayed sea orbs
+		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
+		"The roar of the rotting depths churned into sand"
+		''' */
 }
 
 SeasonalKunai: {
@@ -2480,4 +2492,9 @@ ArchiveFrameModule: {
 		Непрерывно накапливает урон, нанесенный попаданиями SHPC. При достижении порога высвобождает взрыв "Архивации данных" в местоположении игрока.
 		Базовый урон увеличен, затраты маны слегка повышены.
 		'''
+}
+
+DuneStalker: {
+	// DisplayName: Dune Stalker
+	// Tooltip: ""
 }

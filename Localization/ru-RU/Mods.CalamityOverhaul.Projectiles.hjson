@@ -25,8 +25,9 @@ WarpingPoint.DisplayName: Точка искривления
 CommandersRay.DisplayName: Луч командира
 DecayedSeaOrb.DisplayName: Сфера разложившегося моря
 PowerCoil.DisplayName: Энергетическая катушка
-SaltationSend.DisplayName: Маяк перехода
-SandThorn.DisplayName: Песчаный шип
+// SandSmallTornado.DisplayName: Small Sand Tornado
+// DecayedSeaVortex.DisplayName: Decayed Sea Vortex
+// UnderTheSandSurge.DisplayName: Sand Surge
 SporeBoboMagic.DisplayName: Споровый Бобо
 SporeBobo.DisplayName: Споровый Бобо
 DestroyersBeam.DisplayName: Луч Уничтожителя
@@ -552,3 +553,4 @@ RevelationSealJudgment: {
 // ArbiterHeld.DisplayName: Arbiter
 // ArbiterShockwave.DisplayName: Shockwave
 // CloudwalkingHeld.DisplayName: Cloudwalking
+// DuneStalkerHeadProj.DisplayName: Dune Stalker Head Proj

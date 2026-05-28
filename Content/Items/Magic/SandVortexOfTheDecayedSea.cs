@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -10,6 +10,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
+    /// <summary>
+    /// 腐化深海漩涡：在光标位置召唤一个吸纳敌人的大型漩涡，漩涡持续期间不断吸入并撕咬目标，
+    /// 周期性向外抛射追踪型的腐化深海珠，结束时还会爆裂一圈深海珠
+    /// </summary>
     internal class SandVortexOfTheDecayedSea : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
@@ -19,12 +23,13 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.width = 32;
             Item.height = 32;
             Item.damage = 308;
-            Item.useTime = 30;
-            Item.useAnimation = 30;
-            Item.mana = 6;
-            Item.shoot = ModContent.ProjectileType<DecayedSeaOrb>();
-            Item.shootSpeed = 6;
-            Item.UseSound = SoundID.Item20;
+            Item.useTime = 36;
+            Item.useAnimation = 36;
+            Item.mana = 18;
+            Item.knockBack = 4.5f;
+            Item.shoot = ModContent.ProjectileType<DecayedSeaVortex>();
+            Item.shootSpeed = 1;
+            Item.UseSound = SoundID.NPCDeath13;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(1, 62, 0, 5);
             Item.SetHeldProj<SandVortexOfTheDecayedSeaHeld>();
@@ -46,16 +51,53 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void FiringShoot() {
-            SoundStyle sound = SoundID.NPCDeath13;
-            SoundEngine.PlaySound(sound with { Pitch = -0.2f, Volume = 0.6f }, Projectile.Center);
-            for (int i = 0; i < 4; i++) {
-                Vector2 ver = new Vector2(ShootVelocity.X * (0.6f + i * 0.12f), ShootVelocity.Y * Main.rand.NextFloat(0.6f, 1.2f));
-                Projectile.NewProjectile(Source, ShootPos, ver, ModContent.ProjectileType<DecayedSeaOrb>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
+            SoundEngine.PlaySound(SoundID.NPCDeath13 with { Pitch = -0.35f, Volume = 0.85f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item84 with { Pitch = -0.4f, Volume = 0.7f }, InMousePos);
+
+            int vortexType = ModContent.ProjectileType<DecayedSeaVortex>();
+            //Projectile existing = null;
+            //for (int i = 0; i < Main.maxProjectiles; i++) {
+            //    Projectile p = Main.projectile[i];
+            //    if (p.active && p.owner == Owner.whoAmI && p.type == vortexType) {
+            //        existing = p;
+            //        break;
+            //    }
+            //}
+
+            //if (existing != null) {
+            //    //已有漩涡，刷新持续时间并更新当前伤害参数，避免触发结束爆裂
+            //    if (existing.ModProjectile is DecayedSeaVortex dsv) {
+            //        dsv.SuppressDeathBurst = false;
+            //    }
+            //    existing.timeLeft = Math.Max(existing.timeLeft, DecayedSeaVortex.RefreshDuration);
+            //    existing.damage = WeaponDamage;
+            //    existing.knockBack = WeaponKnockback;
+            //    existing.position = InMousePos - existing.Size / 2f;
+            //    existing.netUpdate = true;
+
+            //    //刷新时也来一波视觉
+            //    for (int i = 0; i < 14; i++) {
+            //        Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
+            //        int dustType = Main.rand.NextBool(2) ? CWRID.Dust_SulphurousSeaAcid : DustID.Gold;
+            //        int d = Dust.NewDust(InMousePos, 1, 1, dustType, vel.X, vel.Y, 100, default, 1.2f);
+            //        Main.dust[d].noGravity = true;
+            //    }
+            //    return;
+            //}
+
+            //生成新漩涡
+            Projectile.NewProjectile(Source, InMousePos, Vector2.Zero, vortexType
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+
+            for (int i = 0; i < 24; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f);
+                int dustType = Main.rand.NextBool(3) ? CWRID.Dust_SulphurousSeaAcid : DustID.Sand;
+                int d = Dust.NewDust(ShootPos, 1, 1, dustType, vel.X, vel.Y, 100, default, 1.2f);
+                Main.dust[d].noGravity = true;
             }
         }
 
-        public override void SetShootAttribute() => fireIndex = 30;
+        public override void SetShootAttribute() => fireIndex = 36;
 
         public override bool PreGunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
@@ -69,6 +111,261 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
+    /// <summary>
+    /// 大型腐化深海漩涡：停驻在光标处，对敌方造成牵引与持续伤害，定期向外抛出追踪深海珠，
+    /// 自然消散时还会绽放一圈深海珠
+    /// </summary>
+    internal class DecayedSeaVortex : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+
+        public const int Lifetime = 360;
+        public const int RefreshDuration = 240;
+        private const float SuctionRadius = 480f;
+        private const float DamageRadius = 220f;
+        private const int DamageTickInterval = 14;
+        private const int OrbSpawnInterval = 32;
+
+        //true 表示这次结束不应触发结束爆裂（保留作为未来扩展，目前没强制使用）
+        public bool SuppressDeathBurst { get; set; }
+
+        private ref float OrbTimer => ref Projectile.ai[0];
+        private ref float DamageTimer => ref Projectile.ai[1];
+        private ref float SwirlTime => ref Projectile.localAI[0];
+
+        public override void SetDefaults() {
+            Projectile.width = (int)(DamageRadius * 2);
+            Projectile.height = (int)(DamageRadius * 2);
+            Projectile.DamageType = DamageClass.Magic;
+            //漩涡自身不通过 Terraria 的命中循环造成伤害，全部通过 SimpleStrikeNPC 直接处理
+            Projectile.friendly = false;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = Lifetime;
+        }
+
+        public override bool ShouldUpdatePosition() => false;
+
+        public override void AI() {
+            SwirlTime += 0.07f;
+            Projectile.velocity = Vector2.Zero;
+
+            ApplySuction();
+
+            if (++DamageTimer >= DamageTickInterval) {
+                DamageTimer = 0;
+                ApplyDamageTick();
+            }
+
+            if (++OrbTimer >= OrbSpawnInterval) {
+                OrbTimer = 0;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    SpawnOrbs();
+                }
+            }
+
+            if (!Main.dedServ) {
+                SpawnAmbientDust();
+                Lighting.AddLight(Projectile.Center, new Color(130, 210, 110).ToVector3() * 1.3f * Main.essScale);
+            }
+        }
+
+        private void ApplySuction() {
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.dontTakeDamage) {
+                    continue;
+                }
+                if (npc.knockBackResist <= 0f) {
+                    continue;
+                }
+                Vector2 toCenter = Projectile.Center - npc.Center;
+                float dist = toCenter.Length();
+                if (dist > SuctionRadius || dist < 1f) {
+                    continue;
+                }
+                float pullT = (SuctionRadius - dist) / SuctionRadius;
+                Vector2 pull = toCenter.SafeNormalize(Vector2.Zero) * pullT * 5f * npc.knockBackResist;
+                Vector2 tangent = toCenter.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
+                Vector2 swirl = tangent * pullT * 2.5f * npc.knockBackResist;
+                //平滑混合，避免直接覆盖速度造成跳变
+                npc.velocity = Vector2.Lerp(npc.velocity, npc.velocity + pull + swirl, 0.35f);
+            }
+
+            //对敌方弹幕也施加一点扰动，让漩涡有一点弹幕清场的味道
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile hostile = Main.projectile[i];
+                if (!hostile.active || !hostile.hostile || hostile.friendly) {
+                    continue;
+                }
+                if (Vector2.DistanceSquared(hostile.Center, Projectile.Center) > SuctionRadius * SuctionRadius) {
+                    continue;
+                }
+                hostile.velocity *= 0.94f;
+            }
+        }
+
+        private void ApplyDamageTick() {
+            int baseDmg = Math.Max(Projectile.damage / 5, 1);
+            float damageRadiusSq = DamageRadius * DamageRadius;
+            Player owner = Main.player[Projectile.owner];
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.dontTakeDamage) {
+                    continue;
+                }
+                if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > damageRadiusSq) {
+                    continue;
+                }
+                int finalDmg = baseDmg;
+                if (CWRUtils.IsWormBody(npc)) {
+                    finalDmg = (int)(finalDmg * 0.55f);
+                }
+                if (CWRLoad.ExoMechAresSegments.Contains(npc.type)) {
+                    finalDmg = (int)(finalDmg * 0.7f);
+                }
+                npc.SimpleStrikeNPC(Math.Max(finalDmg, 1)
+                    , Math.Sign(npc.Center.X - Projectile.Center.X), false, 0f
+                    , DamageClass.Magic, false, owner.luck, true);
+                if (Main.rand.NextBool(10)) {
+                    npc.AddBuff(BuffID.Confused, 90);
+                }
+            }
+        }
+
+        private void SpawnOrbs() {
+            int orbType = ModContent.ProjectileType<DecayedSeaOrb>();
+            int orbDmg = Math.Max(Projectile.damage / 2, 1);
+            float baseRot = Main.rand.NextFloat(MathHelper.TwoPi);
+            const int orbCount = 2;
+            for (int i = 0; i < orbCount; i++) {
+                float ang = baseRot + i * (MathHelper.TwoPi / orbCount);
+                Vector2 dir = ang.ToRotationVector2();
+                Vector2 spawnPos = Projectile.Center + dir * 64f;
+                //略带切向速度，让orb一开始绕漩涡外抛
+                Vector2 vel = dir.RotatedBy(MathHelper.PiOver4 * 0.5f) * 9.5f;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos, vel
+                    , orbType, orbDmg, Projectile.knockBack, Projectile.owner);
+            }
+        }
+
+        private void SpawnAmbientDust() {
+            //贴近漩涡外沿的螺旋粒子，体现出向心吸入感
+            int count = Main.rand.NextBool(2) ? 3 : 2;
+            for (int i = 0; i < count; i++) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                float r = DamageRadius * Main.rand.NextFloat(0.55f, 1.0f);
+                Vector2 dir = ang.ToRotationVector2();
+                Vector2 pos = Projectile.Center + dir * r;
+                Vector2 tangent = dir.RotatedBy(MathHelper.PiOver2);
+                Vector2 vel = -dir * 3.5f + tangent * 3f;
+                int dustType = Main.rand.NextBool(3) ? CWRID.Dust_SulphurousSeaAcid : DustID.Sand;
+                int d = Dust.NewDust(pos, 1, 1, dustType, vel.X, vel.Y, 100, default, 1.15f);
+                Main.dust[d].noGravity = true;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Vector2 baseScreen = Projectile.Center - Main.screenPosition;
+            float lifePct = MathHelper.Clamp(Projectile.timeLeft / (float)Lifetime, 0f, 1f);
+            float fadeIn = MathHelper.Clamp((Lifetime - Projectile.timeLeft) / 20f, 0f, 1f);
+            float fadeOut = MathHelper.Clamp(Projectile.timeLeft / 40f, 0f, 1f);
+            float alpha = fadeIn * fadeOut;
+            float endPulse = 1f + (1f - lifePct) * 0.35f;
+            float t = SwirlTime;
+
+            Color acidGreen = new Color(115, 200, 95);
+            Color acidYellow = new Color(200, 220, 100);
+            Color sand = new Color(220, 185, 110);
+
+            //主旋涡：两层 cyclone 反向旋转
+            Texture2D cyclone = CWRAsset.Cyclone?.Value;
+            if (cyclone != null) {
+                Vector2 origin = cyclone.Size() * 0.5f;
+                Color c1 = acidGreen * alpha * 0.55f;
+                c1.A = 0;
+                Main.spriteBatch.Draw(cyclone, baseScreen, null, c1
+                    , t * 1.6f, origin, DamageRadius / cyclone.Width * 2.7f * endPulse, SpriteEffects.None, 0f);
+                Color c2 = sand * alpha * 0.45f;
+                c2.A = 0;
+                Main.spriteBatch.Draw(cyclone, baseScreen, null, c2
+                    , -t * 0.8f, origin, DamageRadius / cyclone.Width * 1.8f * endPulse, SpriteEffects.None, 0f);
+            }
+
+            //气流条带，5 张围绕漩涡螺旋打转
+            Texture2D airflow = CWRAsset.Fog?.Value;
+            if (airflow != null) {
+                Vector2 origin = airflow.Size() * 0.5f;
+                const int airflowCount = 5;
+                for (int i = 0; i < airflowCount; i++) {
+                    float a = i * (MathHelper.TwoPi / airflowCount) + t * (i % 2 == 0 ? 1.1f : -0.85f);
+                    Vector2 offset = a.ToRotationVector2() * DamageRadius * 0.55f;
+                    Color c = Color.Lerp(acidYellow, sand, i / (float)airflowCount) * alpha * 0.32f;
+                    c.A = 0;
+                    Main.spriteBatch.Draw(airflow, baseScreen + offset, null, c
+                        , a + t * 0.7f, origin, DamageRadius / airflow.Width * 1.5f, SpriteEffects.None, 0f);
+                }
+            }
+
+            //浓雾团：增加体积感
+            Texture2D fog = CWRAsset.Fog?.Value;
+            if (fog != null) {
+                Vector2 origin = fog.Size() * 0.5f;
+                int seed = Projectile.whoAmI * 7919;
+                const int fogCount = 6;
+                for (int i = 0; i < fogCount; i++) {
+                    float fa = ((seed + i * 173) % 360) * MathHelper.Pi / 180f + t * 0.4f;
+                    float fr = ((seed + i * 211) % 100) / 100f;
+                    Vector2 offset = fa.ToRotationVector2() * DamageRadius * (0.3f + fr * 0.6f);
+                    Color c = Color.Lerp(acidGreen, sand, fr) * alpha * 0.32f;
+                    c.A = 0;
+                    Main.spriteBatch.Draw(fog, baseScreen + offset, null, c
+                        , fa + t * 0.3f * (i % 3 - 1), origin, 0.5f + fr * 0.65f, SpriteEffects.None, 0f);
+                }
+            }
+
+            //核心高光
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Vector2 origin = glow.Size() / 2f;
+                Color inner = new Color(180, 240, 140, 0) * alpha * 0.55f;
+                Main.spriteBatch.Draw(glow, baseScreen, null, inner, 0f, origin, DamageRadius / 32f * 0.9f, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(glow, baseScreen, null, inner * 0.5f, 0f, origin, DamageRadius / 32f * 1.55f, SpriteEffects.None, 0f);
+            }
+
+            return false;
+        }
+
+        public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.9f, Pitch = -0.5f }, Projectile.Center);
+
+            //结束时向 8 个方向爆出一圈深海珠
+            if (!SuppressDeathBurst && Projectile.IsOwnedByLocalPlayer()) {
+                int orbType = ModContent.ProjectileType<DecayedSeaOrb>();
+                int orbDmg = Math.Max((int)(Projectile.damage * 0.65f), 1);
+                const int finalOrbs = 8;
+                for (int i = 0; i < finalOrbs; i++) {
+                    Vector2 vel = (MathHelper.TwoPi * i / finalOrbs).ToRotationVector2() * 11f;
+                    Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel
+                        , orbType, orbDmg, Projectile.knockBack, Projectile.owner);
+                }
+            }
+
+            //大量尾流粒子
+            for (int i = 0; i < 80; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(9f, 9f);
+                int dustType = Main.rand.NextBool(3) ? CWRID.Dust_SulphurousSeaAcid : DustID.Sand;
+                int d = Dust.NewDust(Projectile.Center, 1, 1, dustType, vel.X, vel.Y, 100, default, 1.4f);
+                Main.dust[d].noGravity = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 腐化深海珠：作为漩涡的远程攻击载体，飞行一段时间后进入追踪状态
+    /// </summary>
     internal class DecayedSeaOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Magic + "DecayedSeaOrb";
@@ -106,7 +403,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 NPC target = Projectile.Center.FindClosestNPC(1600, false, false, onHitNPCs);
                 if (target != null) {
-                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.3f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.1f);
                 }
             }
         }
@@ -118,7 +415,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRLoad.WormBodys.Contains(target.type)) {
+            if (CWRUtils.IsWormBody(target)) {
                 modifiers.FinalDamage *= 0.4f;
             }
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
@@ -128,7 +425,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            CreateDustEffect(CWRID.Dust_SulphurousSeaAcid, 120);
+            CreateDustEffect(CWRID.Dust_SulphurousSeaAcid, 80);
         }
 
         private void CreateDustEffect(int dustType, int amount) {

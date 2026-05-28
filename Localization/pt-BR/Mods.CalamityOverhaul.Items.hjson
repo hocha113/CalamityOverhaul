@@ -656,7 +656,11 @@ SandDagger: {
 
 UnderTheSand: {
 	DisplayName: Sob a Areia
-	Tooltip: Cria varios orbes de areia
+	/* Tooltip:
+		'''
+		Hurls a pair of sand surges that arc downward under gravity
+		On impact with the ground, a vertical sand spike erupts from beneath, launching enemies skyward
+		''' */
 }
 
 WastelandFang: {
@@ -675,16 +679,24 @@ Flawless: {
 
 MelodyTheSand: {
 	DisplayName: Cancao da Areia
-	Tooltip: Lanca uma dispersao de espinhos de areia que sao afetados pela gravidade e perfuram inimigos
+	/* Tooltip:
+		'''
+		Fires a small sand tornado that falls to the ground under gravity
+		Once grounded, it patrols back and forth along the surface, reversing at walls and ledges
+		Repeatedly hurls struck enemies into the sky
+		''' */
 }
 
 SandVortexOfTheDecayedSea: {
 	DisplayName: Vortice de Areia do Mar Decaido
-	Tooltip:
+	/* Tooltip:
 		'''
-		Vomita varios orbes de vapor sulfurico
-		"Mestre do Vomito"
-		'''
+		Summons a colossal decayed sea vortex at the cursor
+		The vortex relentlessly draws nearby enemies in and rends them, even unraveling hostile projectiles
+		Periodically hurls outward homing decayed sea orbs
+		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
+		"The roar of the rotting depths churned into sand"
+		''' */
 }
 
 SeasonalKunai: {
@@ -2505,4 +2517,9 @@ ArchiveFrameModule: {
 		Acumula dano da SHPC; cada vez que o limiar e ultrapassado, uma explosao de Arquivo detona nos pes do jogador
 		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
 		'''
+}
+
+DuneStalker: {
+	// DisplayName: Dune Stalker
+	// Tooltip: ""
 }

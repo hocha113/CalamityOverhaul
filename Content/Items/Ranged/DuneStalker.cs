@@ -4,6 +4,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -26,10 +27,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 62;
             Item.height = 34;
-            Item.damage = 28;
+            Item.damage = 18;
             Item.useTime = 30;
             Item.useAnimation = 30;
-            Item.useAmmo = AmmoID.Bullet;
             Item.knockBack = 5.5f;
             Item.shootSpeed = 16f;
             Item.noMelee = true;
@@ -39,23 +39,19 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = SoundID.Item40 with { Pitch = -0.15f };
             Item.rare = ItemRarityID.Green;
             Item.value = Item.buyPrice(0, 1, 50, 0);
-            Item.shoot = ModContent.ProjectileType<DuneStalkerHeadProj>();
-            Item.SetHeldProj<DuneStalkerHeld>();
+            Item.shoot = ModContent.ProjectileType<DuneStalkerHeld>();
         }
 
-        public override bool AltFunctionUse(Player player) => true;
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
 
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AntlionMandible, 8)
-                .AddIngredient(ItemID.IronBar, 8)
-                .AddIngredient(ItemID.Chain, 12)
-                .AddTile(TileID.Anvils)
-                .Register();
-
-            CreateRecipe()
-                .AddIngredient(ItemID.AntlionMandible, 8)
-                .AddIngredient(ItemID.LeadBar, 8)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
                 .AddIngredient(ItemID.Chain, 12)
                 .AddTile(TileID.Anvils)
                 .Register();
@@ -77,9 +73,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private ref float RecoilOffset => ref Projectile.ai[1];
         /// <summary>当前是否有任何一个枪头存活</summary>
         private bool HeadActive => Owner.ownedProjectileCounts[ModContent.ProjectileType<DuneStalkerHeadProj>()] > 0;
-
-        /// <summary>手持时枪体到玩家中心的距离</summary>
-        private const float HoldDistance = 14f;
 
         public override void SetDefaults() {
             Projectile.width = 62;
@@ -104,6 +97,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return false;
             }
             if (!Owner.active || Owner.dead || Owner.CCed) {
+                Projectile.Kill();
+                return false;
+            }
+            if (!Owner.channel && !HeadActive) {
                 Projectile.Kill();
                 return false;
             }
@@ -140,46 +137,46 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (DownLeft && !HeadActive && FireCooldown <= 0) {
                 FireHead();
             }
-
-            //右键：强制拉回所有外飞的枪头
-            if (DownRight && HeadActive) {
-                RecallHeads();
-            }
         }
 
         /// <summary>
         /// 更新枪体位置和旋转，使其紧贴玩家中心、指向鼠标
         /// </summary>
         private void UpdateHoldPose() {
-            Vector2 aimDir = UnitToMouseV;
+            if (!HeadActive)
+                Projectile.rotation = ToMouseA;
+            Vector2 aimDir = Projectile.rotation.ToRotationVector2();
             if (aimDir == Vector2.Zero) {
                 aimDir = new Vector2(Owner.direction, 0);
             }
 
+            //先确定玩家朝向，避免后续的角度计算使用过期方向
             Owner.ChangeDir(aimDir.X >= 0 ? 1 : -1);
-
-            Projectile.rotation = aimDir.ToRotation();
 
             //开火时增加一点反冲的位移
             float recoil = RecoilOffset;
             Vector2 holdCenter = Owner.GetPlayerStabilityCenter()
-                + aimDir * (HoldDistance - recoil)
+                + aimDir * (20 - recoil)
                 + new Vector2(0, 2 * Owner.gravDir);
 
             Projectile.Center = holdCenter;
 
-            Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation - (DirSign < 0 ? MathHelper.Pi : 0f));
+            //itemRotation 期望的是"相对玩家朝向"的角度，所以需要乘上 direction 进行镜像
+            Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation * Owner.direction);
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
         }
 
         /// <summary>
         /// 设置玩家持枪的双手姿势
+        /// <para>注意：<see cref="Player.SetCompositeArmFront"/> 接收的旋转角是世界空间下的，
+        /// 0 表示手臂垂直向下，-PI/2 指向右，+PI/2 指向左；因此公式与玩家朝向无关，
+        /// 只需要按重力方向翻转 PI/2 的偏移</para>
         /// </summary>
         private void UpdateOwnerArms() {
-            float armRot = Projectile.rotation * DirSign - MathHelper.PiOver2 * SafeGravDir;
+            float armRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot * 0.6f);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot);
         }
 
         /// <summary>
@@ -291,6 +288,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         [VaultLoaden(CWRConstant.Item_Ranged + "DuneStalkerHead")]
         internal static Asset<Texture2D> HeadTex = null;
+        [VaultLoaden(CWRConstant.Item_Ranged + "DuneStalkerChain")]
+        internal static Asset<Texture2D> ChainTex = null;
 
         /// <summary>当前阶段：0 = 飞出，1 = 回收</summary>
         private ref float State => ref Projectile.ai[0];
@@ -353,8 +352,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //旋转始终对齐速度方向（飞出指向前方，回收指向玩家）
+            if (Projectile.rotation == 0)
             Projectile.rotation = Projectile.velocity.ToRotation();
+
+            Projectile.position += Owner.velocity / 2;
 
             Vector2 anchor = GetAnchorPosition();
 
@@ -464,10 +465,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
+        public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {
+            width = height = 20;
+            return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //命中之后并不立即收回，允许飞行途中持续切割；但接触到玩家手会被收回
             if (!Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.Item151 with { Pitch = 0.1f, Volume = 0.45f }, Projectile.Center);
                 for (int i = 0; i < 8; i++) {
                     Dust d = Dust.NewDustPerfect(target.Center,
                         DustID.Sand, Main.rand.NextVector2Circular(4f, 4f), 80, default, 1.3f);
@@ -490,7 +495,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// 绘制玩家枪口到枪头之间的锁链
         /// </summary>
         private void DrawChain() {
-            Texture2D chainTex = TextureAssets.Chain.Value;
+            Texture2D chainTex = ChainTex.Value;
             Vector2 start = GetAnchorPosition();
             Vector2 end = Projectile.Center;
 
@@ -500,7 +505,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            float rotation = diff.ToRotation() - MathHelper.PiOver2;
+            float rotation = diff.ToRotation();
             int segLength = chainTex.Height - 2;
             if (segLength <= 0) {
                 return;
@@ -508,7 +513,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             int segCount = (int)Math.Ceiling(distance / segLength);
             Vector2 unit = diff / distance;
-            Vector2 origin = new Vector2(chainTex.Width / 2f, 0f);
+            Vector2 origin = chainTex.Size() / 2;
 
             for (int i = 0; i < segCount; i++) {
                 Vector2 segWorld = start + unit * segLength * i;

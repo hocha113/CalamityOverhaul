@@ -24,27 +24,6 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup GoldBarGroup;
         public static RecipeGroup AdamantiteBarGroup;
         public static RecipeGroup MythrilBarGroup;
-        public static int[] Gemstones => [
-                ItemID.Sapphire,//蓝玉
-                ItemID.Ruby,//红宝石
-                ItemID.Emerald,//翡翠
-                ItemID.Topaz,//黄宝石
-                ItemID.Amethyst,//紫水晶
-                ItemID.Diamond,//钻石
-        ];
-        public static void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
-            foreach (var gemstone in Gemstones) {
-                if (gemstone == gemstonesID) {
-                    continue;
-                }
-                Recipe.Create(gemstonesID)
-                    .AddIngredient(gemstone)
-                    .AddIngredient(dyeID)
-                    .AddTile(TileID.DyeVat)
-                    .DisableDecraft()//不要被微光转化
-                    .Register();
-            }
-        }
 
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             item.TurnToAir();
@@ -69,9 +48,6 @@ namespace CalamityOverhaul.Content
                         recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
                         recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                     }
-                    //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                    //  recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
-                    //}
                 }
                 if (CWRLoad.MetanovaBar > ItemID.None) {
                     if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
@@ -96,15 +72,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemID.Hellstone, 10)
                     .AddTile(TileID.Anvils)
                     .Register();
-            }
-            //添加宝石的合成
-            {
-                LoadenGemstoneRecipe(ItemID.Sapphire, ItemID.BlueDye);
-                LoadenGemstoneRecipe(ItemID.Ruby, ItemID.RedDye);
-                LoadenGemstoneRecipe(ItemID.Emerald, ItemID.GreenDye);
-                LoadenGemstoneRecipe(ItemID.Topaz, ItemID.YellowDye);
-                LoadenGemstoneRecipe(ItemID.Amethyst, ItemID.PurpleDye);
-                LoadenGemstoneRecipe(ItemID.Diamond, ItemID.SkyBlueDye);
             }
             //添加风暴长矛的合成
             {
