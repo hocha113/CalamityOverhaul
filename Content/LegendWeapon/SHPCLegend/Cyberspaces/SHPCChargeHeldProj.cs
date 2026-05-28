@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// </summary>
     internal class SHPCChargeHeldProj : BaseHeldProj
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/SHPCCharge";
-
         /// <summary>
         /// 武器贴图偏移量
         /// </summary>
