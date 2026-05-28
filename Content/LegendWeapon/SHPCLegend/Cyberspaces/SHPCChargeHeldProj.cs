@@ -13,14 +13,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     internal class SHPCChargeHeldProj : BaseHeldProj
     {
         /// <summary>
-        /// 武器贴图偏移量
+        /// 握把锚点在单帧（152×70，朝右未翻转）内的像素坐标。
+        /// <br/>该像素会被钉在玩家前手的世界坐标上，武器绕此点旋转，可按需微调
         /// </summary>
-        private static Vector2 GunOffset => new(26f, -10f);
-
+        private static readonly Vector2 GripPixel = new Vector2(50f, 46f);
         /// <summary>
-        /// 枪口距离武器中心的前方距离（像素）
+        /// 枪口发射点在单帧内的像素坐标，弹体由此处生成，可按需微调
         /// </summary>
-        private const float TipDistance = 90f;
+        private static readonly Vector2 MuzzlePixel = new Vector2(146f, 32f);
 
         /// <summary>后坐力最大后退距离（像素）</summary>
         private const float RecoilMaxOffset = 18f;
@@ -53,18 +53,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private int loopAnimTimer;
         /// <summary>当前绘制帧索引</summary>
         private int currentFrame;
+        /// <summary>本帧计算出的玩家前手世界坐标（握把锚点）</summary>
+        private Vector2 handWorld;
+
+        /// <summary>
+        /// 把单帧内的像素坐标变换到世界坐标，绘制与逻辑共用同一套变换，
+        /// 保证枪口、握把与实际绘制完全一致（含旋转、竖直翻转、后坐力回退）
+        /// </summary>
+        private Vector2 FramePointToWorld(Vector2 framePixel) {
+            Vector2 rel = framePixel - GripPixel;
+            if (Owner.direction < 0) {
+                rel.Y = -rel.Y; //竖直翻转镜像 Y
+            }
+            return handWorld
+                - Vector2.UnitX.RotatedBy(Projectile.rotation) * recoilOffset
+                + rel.RotatedBy(Projectile.rotation);
+        }
 
         /// <summary>
         /// 枪口世界坐标，供 CyberChargeOrbProj 查询
         /// </summary>
-        public Vector2 TipPosition {
-            get {
-                float perpY = GunOffset.Y * Owner.direction;
-                return Projectile.Center
-                    + Vector2.UnitX.RotatedBy(Projectile.rotation) * (TipDistance - recoilOffset)
-                    + Vector2.UnitX.RotatedBy(Projectile.rotation + MathHelper.PiOver2) * perpY;
-            }
-        }
+        public Vector2 TipPosition => FramePointToWorld(MuzzlePixel);
 
         public override void SetDefaults() {
             Projectile.width = 70;
@@ -166,18 +175,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         private void UpdateGunState(Vector2 aimDir, float backOffset) {
-            float rotation = aimDir.ToRotation();
-
-            Projectile.rotation = rotation;
+            Projectile.rotation = aimDir.ToRotation();
             Projectile.velocity = Vector2.Zero;
             Projectile.Center = Owner.GetPlayerStabilityCenter();
 
-            // 玩家手臂与朝向
+            // 玩家朝向
             Owner.ChangeDir(Math.Sign(aimDir.X));
-            // 手臂方向需要考虑后坐力偏移：手臂跟随枪身后退
-            Vector2 armTarget = Owner.GetPlayerStabilityCenter() + aimDir * (40f - backOffset);
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full,
-                (Owner.GetPlayerStabilityCenter() - armTarget).ToRotation() * Owner.gravDir + MathHelper.PiOver2);
+
+            // 手臂指向瞄准方向，并取得对应的前手世界坐标作为握把锚点，
+            // 这样武器握把会始终跟随实际手部位置，避免旋转时脱手
+            float armRotation = (-aimDir).ToRotation() * Owner.gravDir + MathHelper.PiOver2;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+            handWorld = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, armRotation);
+
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
@@ -191,17 +201,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Rectangle sourceRect = new Rectangle(0, currentFrame * frameHeight, chargeTex.Width, frameHeight);
 
             float rotation = Projectile.rotation;
-            float perpY = GunOffset.Y * Owner.direction;
-            // 绘制位置沿瞄准方向后退 recoilOffset
-            Vector2 position = Owner.Center - Main.screenPosition
-                + Vector2.UnitX.RotatedBy(rotation) * (GunOffset.X - recoilOffset)
-                + Vector2.UnitX.RotatedBy(rotation + MathHelper.PiOver2) * perpY;
-
             SpriteEffects sp = Owner.direction < 0
                 ? SpriteEffects.FlipVertically
                 : SpriteEffects.None;
 
-            Vector2 origin = new Vector2(chargeTex.Width, frameHeight) / 2f;
+            // 以握把像素为原点，钉在前手世界坐标上绕其旋转；后坐力沿枪管反向回退
+            Vector2 origin = GripPixel;
+            Vector2 position = handWorld
+                - Vector2.UnitX.RotatedBy(rotation) * recoilOffset
+                - Main.screenPosition;
 
             Main.EntitySpriteDraw(chargeTex, position, sourceRect, lightColor, rotation,
                 origin, 1f, sp);
