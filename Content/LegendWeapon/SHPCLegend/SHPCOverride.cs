@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item.useAnimation = Item.useTime = LeftClickUseTime;
             Item.autoReuse = true;
             Item.mana = 8;
-            Item.scale = 0.9f;
+            Item.scale = ItemScale;
             Item.CWR().LegendData = new SHPCData();
         }
 
