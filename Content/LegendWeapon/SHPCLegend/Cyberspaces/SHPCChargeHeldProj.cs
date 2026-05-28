@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// </summary>
     internal class SHPCChargeHeldProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/SHPCCharge";
 
         /// <summary>
         /// 武器贴图偏移量
@@ -30,8 +31,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>后退阶段占比（快速后退）</summary>
         private const float RecoilKickRatio = 0.25f;
 
-        /// <summary>SHPCCharge 序列图路径</summary>
-        private const string ChargeTexturePath = "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/SHPCCharge";
         /// <summary>SHPCCharge 序列图总帧数</summary>
         private const int ChargeFrameCount = 24;
         /// <summary>前段表示蓄力进度递进的帧数（0~20）</summary>
@@ -187,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D chargeTex = CWRUtils.GetT2DValue(ChargeTexturePath);
+            Texture2D chargeTex = TextureAssets.Projectile[Type].Value;
             if (chargeTex == null) return false;
 
             int frameHeight = chargeTex.Height / ChargeFrameCount;
