@@ -827,40 +827,87 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         public override void SaveData(TagCompound tag) {
-            tag["ItemPipeline_Mode"] = (int)Mode;
-            if (CurrentItem.HasValue) {
-                var item = CurrentItem.Value;
-                tag["ItemPipeline_ItemType"] = item.ItemType;
-                tag["ItemPipeline_Stack"] = item.Stack;
-                tag["ItemPipeline_Prefix"] = item.Prefix;
-                tag["ItemPipeline_Progress"] = item.Progress;
-                tag["ItemPipeline_SourceDirection"] = (int)item.SourceDirection;
+            if (tag == null) {
+                return;
             }
-            ItemFilter ??= new Item();
-            tag["ItemPipeline_ItemFilter"] = ItemIO.Save(ItemFilter);
+
+            try {
+                tag["ItemPipeline_Mode"] = (int)Mode;
+                if (CurrentItem.HasValue) {
+                    var item = CurrentItem.Value;
+                    tag["ItemPipeline_ItemType"] = item.ItemType;
+                    tag["ItemPipeline_Stack"] = item.Stack;
+                    tag["ItemPipeline_Prefix"] = item.Prefix;
+                    tag["ItemPipeline_Progress"] = item.Progress;
+                    tag["ItemPipeline_SourceDirection"] = (int)item.SourceDirection;
+                }
+
+                try {
+                    ItemFilter ??= new Item();
+                    tag["ItemPipeline_ItemFilter"] = ItemIO.Save(ItemFilter);
+                } catch (Exception ex) {
+                    //单独的筛选器序列化失败不应影响主数据保存
+                    CWRMod.Instance.Logger.Error($"[ItemPipelineTP:SaveData] save filter failed:{ex.Message}");
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[ItemPipelineTP:SaveData] an error has occurred:{ex.Message}");
+            }
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.TryGet("ItemPipeline_Mode", out int mode)) {
-                Mode = (ItemPipelineMode)mode;
+            //先把可变状态归位, 异常退出时不会留下残缺数据
+            Mode = ItemPipelineMode.Normal;
+            CurrentItem = null;
+            ItemFilter = new Item();
+            cachedFilterVersion = -1;
+
+            if (tag == null) {
+                ItemPipelineNetwork.MarkDirty();
+                return;
             }
-            if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > 0) {
-                int stack = tag.GetInt("ItemPipeline_Stack");
-                int prefix = tag.GetInt("ItemPipeline_Prefix");
-                float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
-                int sourceDir = tag.TryGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
-                CurrentItem = new TransportingItem(itemType, stack, prefix) {
-                    Progress = progress,
-                    SourceDirection = (sbyte)sourceDir,
-                    Speed = TransportingItem.DefaultSpeed
-                };
-            }
-            if (tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag)) {
-                ItemFilter = ItemIO.Load(filterTag);
-            }
-            else {
+
+            try {
+                if (tag.TryGet("ItemPipeline_Mode", out int mode) && Enum.IsDefined(typeof(ItemPipelineMode), mode)) {
+                    Mode = (ItemPipelineMode)mode;
+                }
+
+                //所有数值都走 TryGet, 缺键或类型不匹配时使用默认值, 避免 GetInt 抛异常
+                if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None) {
+                    int stack = tag.TryGet("ItemPipeline_Stack", out int s) ? s : 0;
+                    int prefix = tag.TryGet("ItemPipeline_Prefix", out int p) ? p : 0;
+                    float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
+                    int sourceDir = tag.TryGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
+
+                    //合理性矫正, 避免脏数据进入运行时
+                    if (stack > 0) {
+                        progress = MathHelper.Clamp(progress, 0f, 1f);
+                        if (sourceDir < -1 || sourceDir > 3) {
+                            sourceDir = -1;
+                        }
+
+                        CurrentItem = new TransportingItem(itemType, stack, prefix) {
+                            Progress = progress,
+                            SourceDirection = (sbyte)sourceDir,
+                            Speed = TransportingItem.DefaultSpeed
+                        };
+                    }
+                }
+
+                try {
+                    if (tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null) {
+                        ItemFilter = ItemIO.Load(filterTag) ?? new Item();
+                    }
+                } catch (Exception ex) {
+                    CWRMod.Instance.Logger.Error($"[ItemPipelineTP:LoadData] load filter failed:{ex.Message}");
+                    ItemFilter = new Item();
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[ItemPipelineTP:LoadData] an error has occurred:{ex.Message}");
+                Mode = ItemPipelineMode.Normal;
+                CurrentItem = null;
                 ItemFilter = new Item();
             }
+
             cachedFilterVersion = -1;
             //加载完毕后强制刷新一次路由
             ItemPipelineNetwork.MarkDirty();
