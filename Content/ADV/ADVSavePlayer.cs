@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.MainMenuOvers;
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -27,16 +28,23 @@ namespace CalamityOverhaul.Content.ADV
 
         public override void SaveData(TagCompound tag) {
             try {
-                tag["ADVSave"] = ADVSave.SaveData();
+                TagCompound temp = [];
+                temp["ADVSave"] = ADVSave.SaveData();
 
                 if (ADVSave.Get<SupCalADVData>().EternalBlazingNow) {
                     MenuSave.UnlockEternalBlazingNowPortrait(Player);
                 }
 
                 foreach (var scenario in ADVScenarioBase.Instances) {
-                    scenario.SaveData(tag);
+                    scenario.SaveData(temp);
                 }
-            } catch { }
+
+                foreach (var entry in temp) {
+                    tag[entry.Key] = entry.Value;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("ADVSavePlayer.SaveData Error", ex);
+            }
         }
 
         public override void LoadData(TagCompound tag) {
@@ -52,7 +60,10 @@ namespace CalamityOverhaul.Content.ADV
                 foreach (var scenario in ADVScenarioBase.Instances) {
                     scenario.LoadData(tag);
                 }
-            } catch { }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("ADVSavePlayer.LoadData Error", ex);
+                ADVSave = new ADVSave();
+            }
         }
 
         /// <summary>

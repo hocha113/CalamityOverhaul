@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const string SaveKey = "CloudwalkingInjected";
         private static bool injected;
 
-        public override void OnWorldLoad() => injected = false;
+        public override void OnWorldUnload() => injected = false;
 
         public override void LoadWorldData(TagCompound tag) {
             injected = tag != null && tag.TryGet(SaveKey, out bool v) && v;

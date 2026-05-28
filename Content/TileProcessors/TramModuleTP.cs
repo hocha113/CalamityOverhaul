@@ -124,12 +124,16 @@ namespace CalamityOverhaul.Content.TileProcessors
                     return;
                 }
 
-                List<Item> loadedItems = new List<Item>();
-                for (int i = 0; i < itemTags.Count; i++) {
-                    loadedItems.Add(ItemIO.Load(itemTags[i]));
+                Item[] fixedItems = new Item[ITEM_COUNT];
+                int loadCount = Math.Min(itemTags.Count, ITEM_COUNT);
+                for (int i = 0; i < loadCount; i++) {
+                    fixedItems[i] = ItemIO.Load(itemTags[i]);
+                }
+                for (int i = loadCount; i < ITEM_COUNT; i++) {
+                    fixedItems[i] = new Item();
                 }
 
-                items = loadedItems.ToArray();
+                items = fixedItems;
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"TramModuleTP.LoadData Error: {ex.Message}");
             }
@@ -138,12 +142,15 @@ namespace CalamityOverhaul.Content.TileProcessors
         private void LoadLegacyData(TagCompound tag) {
             try {
                 if (tag.TryGet("SupertableUI_ItemDate", out Item[] loadSupUIItems)) {
-                    for (int i = 0; i < loadSupUIItems.Length; i++) {
-                        if (loadSupUIItems[i] == null) {
-                            loadSupUIItems[i] = new Item(0);
-                        }
+                    Item[] fixedItems = new Item[ITEM_COUNT];
+                    int loadCount = Math.Min(loadSupUIItems.Length, ITEM_COUNT);
+                    for (int i = 0; i < loadCount; i++) {
+                        fixedItems[i] = loadSupUIItems[i] ?? new Item(0);
                     }
-                    items = loadSupUIItems;
+                    for (int i = loadCount; i < ITEM_COUNT; i++) {
+                        fixedItems[i] = new Item();
+                    }
+                    items = fixedItems;
                 }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"TramModuleTP.LoadLegacyData Error: {ex.Message}");

@@ -159,11 +159,15 @@ namespace CalamityOverhaul.Content.Cyberwares
         public override void LoadData(TagCompound tag) {
             try {
                 if (tag.TryGet("CyberMaxCapacity", out int cap)) {
-                    MaxCapacity = cap;
+                    MaxCapacity = Math.Clamp(cap, 0, 1000);
                 }
                 for (int i = 0; i < SlotCount; i++) {
                     if (tag.TryGet($"Cyber_{i}", out TagCompound itemTag)) {
-                        EquippedCyberwares[i] = ItemIO.Load(itemTag);
+                        try {
+                            EquippedCyberwares[i] = ItemIO.Load(itemTag);
+                        } catch {
+                            EquippedCyberwares[i] = new Item();
+                        }
                     }
                     else {
                         EquippedCyberwares[i] = new Item();

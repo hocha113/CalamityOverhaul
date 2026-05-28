@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
@@ -63,7 +64,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
 
-        /*
         public override void SaveWorldData(TagCompound tag) {
             tag[nameof(IsGenerated)] = IsGenerated;
             tag[nameof(CampsitePosition)] = CampsitePosition;
@@ -71,15 +71,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         public override void LoadWorldData(TagCompound tag) {
             IsGenerated = false;
-            if (tag.TryGet(nameof(IsGenerated), out bool value)) {
-                IsGenerated = value;
-            }
             CampsitePosition = Vector2.Zero;
-            if (tag.TryGet(nameof(CampsitePosition), out Vector2 pos)) {
-                CampsitePosition = pos;
+            try {
+                if (tag != null && tag.TryGet(nameof(IsGenerated), out bool value)) {
+                    IsGenerated = value;
+                }
+                if (tag != null && tag.TryGet(nameof(CampsitePosition), out Vector2 pos)) {
+                    CampsitePosition = pos;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[OldDukeCampsite:LoadWorldData] Failed to load campsite data: {ex.Message}");
+                IsGenerated = false;
+                CampsitePosition = Vector2.Zero;
             }
         }
-        */
 
         public override void NetSend(BinaryWriter writer) {
             writer.Write(IsGenerated);
@@ -106,7 +111,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         public override void OnWorldLoad() {
-            ClearCampsite();
+            MermanRodMoveback = false;
+            animationFrame = 0;
+            animationTimer = 0;
+            isPlayerNearby = false;
+            interactPromptAlpha = 0f;
+            WannaToFight = false;
+            OldDukeCampsiteDecoration.ResetDecoration();
         }
 
         public override void OnWorldUnload() {

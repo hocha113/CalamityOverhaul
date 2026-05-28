@@ -170,11 +170,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             DrawPosition.Y = tag.TryGet("SupertableUI_DrawPos_Y", out float y) ? y : 300;
 
             if (tag.TryGet("GlobalItems", out List<TagCompound> itemTags)) {
-                List<Item> loadedItems = new List<Item>();
-                for (int i = 0; i < itemTags.Count; i++) {
-                    loadedItems.Add(ItemIO.Load(itemTags[i]));
+                Item[] fixedItems = new Item[SupertableConstants.TOTAL_SLOTS];
+                int loadCount = Math.Min(itemTags.Count, SupertableConstants.TOTAL_SLOTS);
+                for (int i = 0; i < loadCount; i++) {
+                    fixedItems[i] = ItemIO.Load(itemTags[i]);
                 }
-                GlobalItems = loadedItems.ToArray();
+                for (int i = loadCount; i < SupertableConstants.TOTAL_SLOTS; i++) {
+                    fixedItems[i] = new Item();
+                }
+                GlobalItems = fixedItems;
             }
         }
 

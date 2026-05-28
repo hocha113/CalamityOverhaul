@@ -32,16 +32,20 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 _ => 1
             };
 
-            RegionSaveData region = tag.GetRegionSaveData();
-            for (int i = 0; i < spawnCount; i++) {
-                int offsetX = WorldGen.genRand.Next(-16, 16) * WorldGen.GetWorldSize() * 16
-                    + (i > 0 ? WorldGen.genRand.Next(-400, 400) * (i + 1) : 0);
-                int offsetY = 420 + (WorldGen.GetWorldSize() * 100) + 20 + (WorldGen.GetWorldSize() * 2)
-                    + WorldGen.genRand.Next(116) + (i > 0 ? WorldGen.genRand.Next(50, 150) * i : 0);
-                Point16 startPos = new Point16(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
-                startPos = FindSafePlacement(region.Size, startPos, 300 + i * 100, 300, 100,
-                    (Tile tile) => tile.TileType < TileID.Count && tile.LiquidAmount == 0);
-                LoadChest(LoadRegion(region, startPos), startPos);
+            try {
+                RegionSaveData region = tag.GetRegionSaveData();
+                for (int i = 0; i < spawnCount; i++) {
+                    int offsetX = WorldGen.genRand.Next(-16, 16) * WorldGen.GetWorldSize() * 16
+                        + (i > 0 ? WorldGen.genRand.Next(-400, 400) * (i + 1) : 0);
+                    int offsetY = 420 + (WorldGen.GetWorldSize() * 100) + 20 + (WorldGen.GetWorldSize() * 2)
+                        + WorldGen.genRand.Next(116) + (i > 0 ? WorldGen.genRand.Next(50, 150) * i : 0);
+                    Point16 startPos = new Point16(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
+                    startPos = FindSafePlacement(region.Size, startPos, 300 + i * 100, 300, 100,
+                        (Tile tile) => tile.TileType < TileID.Count && tile.LiquidAmount == 0);
+                    LoadChest(LoadRegion(region, startPos), startPos);
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[JunkmanBase:LoadData] Failed to load/place structure: {ex.Message}");
             }
             TagCache.Invalidate(SavePath);
         }

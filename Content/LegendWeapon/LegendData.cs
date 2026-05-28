@@ -127,7 +127,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             UpgradeWorldFullName = reader.ReadString();
             SkipUpgradeWorldFullName = reader.ReadString();
             int trustedCount = reader.ReadInt32();
-            TrustedWorldFullNames = new List<string>(Math.Max(0, trustedCount));
+            if (trustedCount < 0 || trustedCount > 256) {
+                CWRMod.Instance.Logger.Warn($"[LegendData:NetReceive] trustedCount out of range ({trustedCount}), skipping");
+                TrustedWorldFullNames = new List<string>();
+                ReceiveLegend(item, reader);
+                return;
+            }
+            TrustedWorldFullNames = new List<string>(trustedCount);
             for (int i = 0; i < trustedCount; i++) {
                 TrustedWorldFullNames.Add(reader.ReadString());
             }

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         private const string SaveKeyInjected = "SHPCModulesInjected";
         private static bool injected;
 
-        public override void OnWorldLoad() => injected = false;
+        public override void OnWorldUnload() => injected = false;
 
         public override void LoadWorldData(TagCompound tag) {
             injected = tag != null && tag.TryGet(SaveKeyInjected, out bool value) && value;

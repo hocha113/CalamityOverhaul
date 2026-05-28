@@ -185,8 +185,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         //数据保存与加载
         public override void SaveData(TagCompound tag) {
-            tag["a"] = npc.position;
-            tag["b"] = npc.life;
             tag["c"] = npc.lifeMax;
             tag["d"] = FeedValue;
             tag["e"] = Crouch;
@@ -194,17 +192,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             tag["g"] = MountACrabulon;
             tag["h"] = DontMount;
             tag["i"] = DyeItemID;
+            //name-based owner matching has limitations with duplicate player names
             tag["j"] = Owner.Alives() ? Owner.name : string.Empty;
             tag["k"] = ItemIO.Save(SaddleItem);
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.ContainsKey("a")) {
-                npc.position = tag.Get<Vector2>("a");
-            }
-            if (tag.ContainsKey("b")) {
-                npc.life = tag.GetInt("b");
-            }
             if (tag.ContainsKey("c")) {
                 npc.lifeMax = tag.GetInt("c");
             }

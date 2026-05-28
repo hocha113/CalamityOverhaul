@@ -32,16 +32,20 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 _ => 1
             };
 
-            RegionSaveData region = tag.GetRegionSaveData();
-            for (int i = 0; i < spawnCount; i++) {
-                Point16 startPos = FindForestSurfacePosition(region.Size, i);
-                if (startPos == Point16.Zero) {
-                    continue;
+            try {
+                RegionSaveData region = tag.GetRegionSaveData();
+                for (int i = 0; i < spawnCount; i++) {
+                    Point16 startPos = FindForestSurfacePosition(region.Size, i);
+                    if (startPos == Point16.Zero) {
+                        continue;
+                    }
+                    PrepareTerrainForOutpost(startPos, region.Size);
+                    var placed = LoadRegion(region, startPos);
+                    RepairFoundation(startPos, region.Size);
+                    SetChestItem(placed, startPos);
                 }
-                PrepareTerrainForOutpost(startPos, region.Size);
-                var placed = LoadRegion(region, startPos);
-                RepairFoundation(startPos, region.Size);
-                SetChestItem(placed, startPos);
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[SylvanOutpost:LoadData] Failed to load/place structure: {ex.Message}");
             }
             TagCache.Invalidate(SavePath);
         }

@@ -88,14 +88,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            try {
-                if (!tag.TryGet("Item", out Item)) {
-                    Item = new Item();
-                }
-                if (!tag.TryGet("Empty", out Empty)) {
-                    Empty = new Item();
-                }
-            } catch { }
 
             if (tag.TryGet<TagCompound>("_Item", out var itemTag)) {
                 Item = ItemIO.Load(itemTag);

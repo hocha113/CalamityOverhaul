@@ -872,7 +872,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 //所有数值都走 TryGet, 缺键或类型不匹配时使用默认值, 避免 GetInt 抛异常
-                if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None) {
+                if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
                     int stack = tag.TryGet("ItemPipeline_Stack", out int s) ? s : 0;
                     int prefix = tag.TryGet("ItemPipeline_Prefix", out int p) ? p : 0;
                     float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;

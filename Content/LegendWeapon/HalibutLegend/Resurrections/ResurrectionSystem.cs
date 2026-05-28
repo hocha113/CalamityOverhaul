@@ -404,14 +404,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 从TagCompound加载数据
         /// </summary>
         public void LoadData(TagCompound tag) {
-            if (tag.ContainsKey("CurrentValue")) {
-                currentValue = tag.GetFloat("CurrentValue");
-            }
             if (tag.ContainsKey("MaxValue")) {
-                maxValue = tag.GetFloat("MaxValue");
+                float mv = tag.GetFloat("MaxValue");
+                maxValue = float.IsFinite(mv) ? Math.Clamp(mv, 1f, 10000f) : 100f;
+            }
+            if (tag.ContainsKey("CurrentValue")) {
+                float cv = tag.GetFloat("CurrentValue");
+                currentValue = float.IsFinite(cv) ? Math.Clamp(cv, 0f, maxValue) : 0f;
             }
             if (tag.ContainsKey("ResurrectionRate")) {
-                resurrectionRate = tag.GetFloat("ResurrectionRate");
+                float rr = tag.GetFloat("ResurrectionRate");
+                resurrectionRate = float.IsFinite(rr) ? Math.Clamp(rr, -100f, 100f) : 0f;
             }
             if (tag.ContainsKey("IsEnabled")) {
                 isEnabled = tag.GetBool("IsEnabled");

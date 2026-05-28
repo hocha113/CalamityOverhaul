@@ -430,12 +430,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         /// 加载新版(V2)存档格式，每个点位为独立 TagCompound
         /// </summary>
         private static bool TryLoadFromV2(TagCompound tag) {
-            if (!tag.ContainsKey("TargetPointsV2")) {
-                return false;
-            }
-
-            IList<TagCompound> pointTags = tag.GetList<TagCompound>("TargetPointsV2");
-            if (pointTags == null || pointTags.Count == 0) {
+            if (!tag.TryGet("TargetPointsV2", out List<TagCompound> pointTags)
+                || pointTags == null || pointTags.Count == 0) {
                 return false;
             }
 
@@ -474,12 +470,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         /// 兼容旧版双列表格式的加载逻辑
         /// </summary>
         private static bool TryLoadFromLegacy(TagCompound tag) {
-            if (!tag.ContainsKey("TargetPositions") || !tag.ContainsKey("TargetCompletions")) {
+            if (!tag.TryGet("TargetPositions", out List<Point> positions)
+                || !tag.TryGet("TargetCompletions", out List<bool> completions)) {
                 return false;
             }
-
-            IList<Point> positions = tag.GetList<Point>("TargetPositions");
-            IList<bool> completions = tag.GetList<bool>("TargetCompletions");
 
             if (positions == null || completions == null) {
                 return false;

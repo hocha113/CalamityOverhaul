@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -50,6 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         //首先需要明确的一点是，玩家是单实例的，UI也是单实例的，所以在保存加载中不要使用静态数据，因为需要每个玩家之间的数据独立
         public override void SaveData(TagCompound tag) {
             try {
+                TagCompound temp = [];
                 IList<TagCompound> list = [];
                 foreach (var slot in halibutUISkillSlots) {
                     if (slot.FishSkill == null) {
@@ -60,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     slot.FishSkill.SaveData(skillTag);
                     list.Add(skillTag);
                 }
-                tag["FishSkills"] = list;
+                temp["FishSkills"] = list;
 
                 //保存技能库数据
                 IList<TagCompound> libraryList = [];
@@ -72,12 +74,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     skillTag["Name"] = slot.FishSkill.FullName;
                     libraryList.Add(skillTag);
                 }
-                tag["SkillLibrary"] = libraryList;
+                temp["SkillLibrary"] = libraryList;
 
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
                     var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
                     if (skill != null) {
-                        tag["HalibutTargetSkillName"] = skill.FullName;
+                        temp["HalibutTargetSkillName"] = skill.FullName;
                     }
                 }
 
@@ -88,14 +90,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                         activeEyeIndices.Add(eye.Index);
                     }
                 }
-                tag["ActiveEyeIndices"] = activeEyeIndices;
+                temp["ActiveEyeIndices"] = activeEyeIndices;
 
                 if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
                     //保存深渊复苏系统数据
-                    tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
-                    tag["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
+                    temp["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
+                    temp["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
                 }
-            } catch { }
+
+                foreach (var entry in temp) {
+                    tag[entry.Key] = entry.Value;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("HalibutSave.SaveData Error", ex);
+            }
         }
 
         public override void LoadData(TagCompound tag) {
@@ -153,7 +161,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                         halibutPlayer.IsInteractionLockedTime = isInteractionLockedTime;
                     }
                 }
-            } catch { }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("HalibutSave.LoadData Error", ex);
+                halibutUISkillSlots.Clear();
+                skillLibrarySlots.Clear();
+                unlockSkills.Clear();
+                activationSequence.Clear();
+                FishSkill = null;
+            }
         }
 
         /// <summary>

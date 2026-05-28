@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Encha
 using CalamityOverhaul.Content.QuestLogs;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -36,17 +37,24 @@ namespace CalamityOverhaul.Content
     {
         public override void SaveData(TagCompound tag) {
             try {
+                TagCompound temp = [];
                 if (CWRRef.Has) {
-                    EnchantUI.Instance.SaveUIData(tag);
+                    EnchantUI.Instance.SaveUIData(temp);
                 }
-                QuestLog.Instance.SaveUIData(tag);
-                EntrustTrackerWidget.Instance?.SaveUIData(tag);
+                QuestLog.Instance.SaveUIData(temp);
+                EntrustTrackerWidget.Instance?.SaveUIData(temp);
                 foreach (var ui in UIHandleLoader.UIHandles) {
                     if (ui is BaseQuestTrackerUI trackerUI) {
-                        trackerUI.SaveUIData(tag);
+                        trackerUI.SaveUIData(temp);
                     }
                 }
-            } catch { }
+
+                foreach (var entry in temp) {
+                    tag[entry.Key] = entry.Value;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("UIDataSave.SaveData Error", ex);
+            }
         }
         public override void LoadData(TagCompound tag) {
             try {
@@ -60,7 +68,9 @@ namespace CalamityOverhaul.Content
                         trackerUI.LoadUIData(tag);
                     }
                 }
-            } catch { }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("UIDataSave.LoadData Error", ex);
+            }
         }
     }
 }

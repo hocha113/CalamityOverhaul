@@ -280,8 +280,6 @@ namespace CalamityOverhaul.Content
             }
 
             try {
-                //存储操作使用StorageOperation上下文，静默升级不弹窗
-                LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
                 LegendData?.SaveData(item, tag);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:SaveData] an error has occurred:{ex.Message}");

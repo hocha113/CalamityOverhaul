@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.GameSystem;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -29,15 +30,19 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 _ => 1
             };
 
-            RegionSaveData region = tag.GetRegionSaveData();
-            for (int i = 0; i < spawnCount; i++) {
-                int offsetX = WorldGen.genRand.Next(-16, 16)
-                    + (i > 0 ? WorldGen.genRand.Next(-200, 200) * (i + 1) : 0);
-                int offsetY = 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(6)
-                    + (i > 0 ? WorldGen.genRand.Next(20, 60) * i : 0);
-                Point16 startPos = new(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
-                startPos = FindSafePlacement(region.Size, startPos, 300 + i * 80, 60, 10);
-                SetChestItem(LoadRegion(region, startPos), startPos);
+            try {
+                RegionSaveData region = tag.GetRegionSaveData();
+                for (int i = 0; i < spawnCount; i++) {
+                    int offsetX = WorldGen.genRand.Next(-16, 16)
+                        + (i > 0 ? WorldGen.genRand.Next(-200, 200) * (i + 1) : 0);
+                    int offsetY = 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(6)
+                        + (i > 0 ? WorldGen.genRand.Next(20, 60) * i : 0);
+                    Point16 startPos = new(Main.spawnTileX + offsetX, Main.spawnTileY + offsetY);
+                    startPos = FindSafePlacement(region.Size, startPos, 300 + i * 80, 60, 10);
+                    SetChestItem(LoadRegion(region, startPos), startPos);
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[RocketHut:LoadData] Failed to load/place structure: {ex.Message}");
             }
             TagCache.Invalidate(SavePath);
         }
