@@ -312,13 +312,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             player.ChangeDir(Math.Sign((mouseWorld - player.Center).X));
 
             float itemRotation = player.compositeFrontArm.rotation + MathHelper.PiOver2 * player.gravDir;
-            Vector2 itemPosition = player.MountedCenter + itemRotation.ToRotationVector2() * HoldDistance;
+            Vector2 itemPosition = player.GetPlayerStabilityCenter() + itemRotation.ToRotationVector2() * HoldDistance;
 
-            //开火后坐力：动画前段沿瞄准方向快速回退，随后归位
-            float progress = GetAnimationProgress(player);
-            if (progress < RecoilPhase) {
-                float kick = (RecoilPhase - progress) / RecoilPhase * RecoilMaxOffset;
-                itemPosition -= (mouseWorld - player.Center).SafeNormalize(Vector2.UnitX) * kick;
+            if (!SHPCModificationSystem.Resolve(player).LaserMode) {
+                //开火后坐力：动画前段沿瞄准方向快速回退，随后归位
+                float progress = GetAnimationProgress(player);
+                if (progress < RecoilPhase) {
+                    float kick = (RecoilPhase - progress) / RecoilPhase * RecoilMaxOffset;
+                    itemPosition -= (mouseWorld - player.Center).SafeNormalize(Vector2.UnitX) * kick;
+                }
             }
 
             ApplyHoldingStyle(player, itemRotation, itemPosition,

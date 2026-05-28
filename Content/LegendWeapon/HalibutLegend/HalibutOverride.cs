@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //计算武器的旋转角度和位置
             float weaponRotation = CalculateWeaponRotation(player);
             Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
-            Vector2 weaponDrawPosition = player.MountedCenter + positionOffset;
+            Vector2 weaponDrawPosition = player.GetPlayerStabilityCenter() + positionOffset;
 
             //设置武器尺寸和原点
             Vector2 weaponDimensions = new Vector2(item.width, item.height);

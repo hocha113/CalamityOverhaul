@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             new(0f, 76f * Scale),                //FRAME   机匣  正下
         };
 
-        //枪体纹理显示缩放，SHPC原始贴图约82×26px，1.4x时绘制尺寸约115×36
-        private static float GunScale => 1.4f;
+        //枪体纹理显示缩放
+        private static float GunScale => 1f;
 
         //数据线在枪体纹理上的接出点，坐标单位为屏幕像素（相对枪体绘制中心）
         //以枪口朝右为基准，对应SHPC贴图各功能区域的边缘位置，按 GunScale 同步缩放

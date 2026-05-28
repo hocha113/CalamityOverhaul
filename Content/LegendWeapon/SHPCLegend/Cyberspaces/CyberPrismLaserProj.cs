@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             //跟随枪口，沿瞄准方向偏移到枪口前端
             Vector2 aimDir = UnitToMouseV.SafeNormalize(Vector2.UnitX);
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + aimDir * 80f + aimDir.GetNormalVector() * 12 * Math.Sign(aimDir.X);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + aimDir * 50f + aimDir.GetNormalVector() * 12 * Math.Sign(aimDir.X);
             Projectile.rotation = aimDir.ToRotation();
             Projectile.velocity = Vector2.Zero;
 
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private float WidthFunction(float progress) {
             //两端微收（progress=0 为枪口，progress=1 为光束终端），中段保持均匀宽度形成光柱感
             float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
-            taper = 0.6f + 0.4f * taper;
+            taper = 0.5f + 0.4f * taper;
             float pulse = 1f + 0.07f * MathF.Sin((float)Main.timeForVisualEffects * 0.22f + progress * 5f);
             return taper * pulse * (26f + overdriveAmount * 18f);
         }
