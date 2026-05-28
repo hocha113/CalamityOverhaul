@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -297,6 +298,7 @@ namespace CalamityOverhaul.Content
 
             try {
                 HalibutData.IsLegacyItem(item, tag);
+                SHPCData.IsLegacyItem(item, tag);
                 //加载数据
                 LegendData?.LoadData(item, tag);
                 //加载操作使用StorageOperation上下文，静默升级不弹窗
