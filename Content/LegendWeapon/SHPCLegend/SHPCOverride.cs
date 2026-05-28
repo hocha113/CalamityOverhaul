@@ -4,26 +4,23 @@ using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.InWorldBossPhase;
-using static InnoVault.GameSystem.ItemRebuildLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
-    internal class SHPCOverride : ItemOverride, ICWRLoader
+    internal class SHPCOverride : ItemOverride
     {
         /// <summary>
-        /// 目标ID
+        /// 目标ID，指向本模组独立物品 <see cref="SHPCItem"/>
         /// </summary>
-        public static int ID => CWRID.Item_SHPC;
+        public static int ID => ModContent.ItemType<SHPCItem>();
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -32,10 +29,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
-        /// <summary>
-        /// 当前选中的魂魄类型，UI选择后会更新这个值
-        /// </summary>
-        public static int SelectedSoulType = ItemID.SoulofLight;
         /// <summary>
         /// 左键连发间隔帧数
         /// </summary>
@@ -48,84 +41,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 左键散射角度（弧度）
         /// </summary>
         private const float BeamSpreadAngle = 0.08f;
+        /// <summary>持握时武器中心距玩家的距离</summary>
+        private const float HoldDistance = 35f;
+        /// <summary>左键开火后坐力最大回退距离（像素）</summary>
+        private const float RecoilMaxOffset = 8f;
+        /// <summary>后坐力发生的动画前段占比</summary>
+        private const float RecoilPhase = 1f / 3f;
+        /// <summary>持握精灵的原点偏移</summary>
+        private static readonly Vector2 HoldOrigin = new Vector2(-35, 0);
 
         public override int TargetID => ID;
-
-        #region 原版方法屏蔽
-
-        private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
-
-        private static bool OnSHPCCanUseItemFunc(Func<object, Player, bool> orig, object self, Player player) => true;
-
-        private static bool? OnSHPCUseItemFunc(Func<object, Player, bool?> orig, object self, Player player) => null;
-
-        private static bool OnSHPCShootFunc(
-            Func<object, Player, EntitySource_ItemUse_WithAmmo, Vector2, Vector2, int, int, float, bool> orig,
-            object self, Player player, EntitySource_ItemUse_WithAmmo source,
-            Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
-
-        private static float OnSHPCUseSpeedMultiplierFunc(Func<object, Player, float> orig, object self, Player player) => 1f;
-
-        private delegate void OnSHPC_ModifyManaCost_Delegate(object self, Player player, ref float reduce, ref float mult);
-        private static void OnSHPCModifyManaCostFunc(
-            OnSHPC_ModifyManaCost_Delegate orig,
-            object self, Player player, ref float reduce, ref float mult) { }
-
-        private delegate void OnSHPC_PostDrawInInventory_Delegate(object self, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale);
-
-        private static void OnPostDrawInInventoryFunc(OnSHPC_PostDrawInInventory_Delegate orig, object self, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) { }
-
-        #endregion
-
-        void ICWRLoader.LoadData() {
-            var type = CWRRef.GetItem_SHPC_Type();
-            if (type != null) {
-                //屏蔽原版 ModifyTooltips
-                MethodInfo methodInfo = type.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCToolFunc);
-                }
-                //屏蔽原版 FindSoulForAmmo
-                methodInfo = type.GetMethod("FindSoulForAmmo", BindingFlags.Public | BindingFlags.Static);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnFindSoulForAmmoFunc);
-                }
-                //屏蔽原版 Shoot —— 阻止原始弹幕生成
-                methodInfo = type.GetMethod("Shoot", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCShootFunc);
-                }
-                //屏蔽原版 CanUseItem —— 移除灵魂弹药检测
-                methodInfo = type.GetMethod("CanUseItem", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCCanUseItemFunc);
-                }
-                //屏蔽原版 UseItem —— 移除灵魂消耗逻辑
-                methodInfo = type.GetMethod("UseItem", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCUseItemFunc);
-                }
-                //屏蔽原版 UseSpeedMultiplier
-                methodInfo = type.GetMethod("UseSpeedMultiplier", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCUseSpeedMultiplierFunc);
-                }
-                //屏蔽原版 ModifyManaCost
-                methodInfo = type.GetMethod("ModifyManaCost", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnSHPCModifyManaCostFunc);
-                }
-
-                methodInfo = type.GetMethod("PostDrawInInventory", BindingFlags.Public | BindingFlags.Instance);
-                if (methodInfo != null) {
-                    VaultHook.Add(methodInfo, OnPostDrawInInventoryFunc);
-                }
-            }
-        }
-
-        private static int OnFindSoulForAmmoFunc(Func<Player, int> orig, Player player) {
-            return SelectedSoulType;
-        }
 
         /// <summary>
         /// 获得成长等级
@@ -180,6 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void SetStaticDefaults() {
             ItemID.Sets.ShimmerTransformToItem[TargetID] = CWRID.Item_PlasmaDriveCore;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
             HackTimeAccess.Register(player => player.GetItem().type == SHPCOverride.ID, "SmartWeapon:SHPC");
         }
 
@@ -363,6 +289,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
             return false; //阻止原版射击行为
         }
+
+        #region 持握动画
+        /// <summary>
+        /// 与 Terraria Overhaul 的持握样式冲突时，不接管动画
+        /// </summary>
+        private static bool DontModifyHeldStyle() => CWRMod.Instance.terrariaOverhaul != null;
+
+        /// <summary>
+        /// 左键使用时的持握样式：武器朝鼠标瞄准，并在开火瞬间产生后坐力回退。
+        /// <br/>右键蓄力由 <see cref="SHPCChargeHeldProj"/> 接管手臂与绘制，这里直接跳过
+        /// </summary>
+        public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
+            if (player.altFunctionUse == 2 || DontModifyHeldStyle()) {
+                return;
+            }
+
+            Vector2 mouseWorld = Main.MouseWorld;
+            player.ChangeDir(Math.Sign((mouseWorld - player.Center).X));
+
+            float itemRotation = player.compositeFrontArm.rotation + MathHelper.PiOver2 * player.gravDir;
+            Vector2 itemPosition = player.MountedCenter + itemRotation.ToRotationVector2() * HoldDistance;
+
+            //开火后坐力：动画前段沿瞄准方向快速回退，随后归位
+            float progress = GetAnimationProgress(player);
+            if (progress < RecoilPhase) {
+                float kick = (RecoilPhase - progress) / RecoilPhase * RecoilMaxOffset;
+                itemPosition -= (mouseWorld - player.Center).SafeNormalize(Vector2.UnitX) * kick;
+            }
+
+            ApplyHoldingStyle(player, itemRotation, itemPosition,
+                new Vector2(item.width, item.height), HoldOrigin);
+        }
+
+        /// <summary>
+        /// 左键使用时的手臂动画：复合前臂跟随鼠标方向
+        /// </summary>
+        public override void UseItemFrame(Item item, Player player) {
+            if (player.altFunctionUse == 2 || DontModifyHeldStyle()) {
+                return;
+            }
+
+            Vector2 mouseWorld = Main.MouseWorld;
+            player.ChangeDir(Math.Sign((mouseWorld - player.Center).X));
+
+            float rotation = (player.Center - mouseWorld).ToRotation() * player.gravDir + MathHelper.PiOver2;
+            player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation);
+        }
+
+        /// <summary>
+        /// 计算使用动画进度（0 起始 → 1 结束）
+        /// </summary>
+        private static float GetAnimationProgress(Player player) {
+            if (player.itemTimeMax <= 0) {
+                return 1f;
+            }
+            return 1f - player.itemTime / (float)player.itemTimeMax;
+        }
+
+        /// <summary>
+        /// 应用清爽的持握样式，参照大比目鱼的实现，使武器以鼠标方向锚定绘制
+        /// </summary>
+        private static void ApplyHoldingStyle(Player player, float rotation, Vector2 position, Vector2 itemSize, Vector2 originOffset) {
+            originOffset.X *= player.direction;
+            originOffset.Y *= player.gravDir;
+
+            player.itemRotation = rotation;
+            if (player.direction < 0) {
+                player.itemRotation += MathHelper.Pi;
+            }
+
+            Vector2 centerAnchor = player.itemRotation.ToRotationVector2() * (itemSize.X / -2f - 10f) * player.direction;
+            Vector2 anchor = centerAnchor - originOffset.RotatedBy(player.itemRotation);
+            Vector2 finalPosition = position + itemSize * -0.5f + anchor;
+
+            int frame = player.bodyFrame.Y / player.bodyFrame.Height;
+            if ((frame > 6 && frame < 10) || (frame > 13 && frame < 17)) {
+                finalPosition -= Vector2.UnitY * 2f;
+            }
+
+            player.itemLocation = finalPosition + new Vector2(itemSize.X * 0.5f, 0);
+        }
+        #endregion
 
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();

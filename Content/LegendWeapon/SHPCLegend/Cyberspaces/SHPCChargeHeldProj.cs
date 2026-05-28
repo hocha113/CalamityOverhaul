@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
@@ -31,6 +30,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>后退阶段占比（快速后退）</summary>
         private const float RecoilKickRatio = 0.25f;
 
+        /// <summary>SHPCCharge 序列图路径</summary>
+        private const string ChargeTexturePath = "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/SHPCCharge";
+        /// <summary>SHPCCharge 序列图总帧数</summary>
+        private const int ChargeFrameCount = 24;
+        /// <summary>前段表示蓄力进度递进的帧数（0~20）</summary>
+        private const int ChargeProgressFrames = 21;
+        /// <summary>满蓄循环动画每帧停留的游戏帧数</summary>
+        private const int LoopFrameTicks = 5;
+
         /// <summary>是否处于后坐力阶段</summary>
         private bool recoiling;
         /// <summary>后坐力计时器</summary>
@@ -39,6 +47,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private Vector2 recoilDir;
         /// <summary>当前后坐力偏移量</summary>
         private float recoilOffset;
+
+        /// <summary>
+        /// 当前蓄力进度（0~1），由 <see cref="CyberChargeOrbProj"/> 每帧写入，驱动序列动画
+        /// </summary>
+        public float ChargeProgress;
+        /// <summary>满蓄循环动画计时器</summary>
+        private int loopAnimTimer;
+        /// <summary>当前绘制帧索引</summary>
+        private int currentFrame;
 
         /// <summary>
         /// 枪口世界坐标，供 CyberChargeOrbProj 查询
@@ -89,6 +106,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
             else {
                 AI_Charging();
+            }
+
+            UpdateAnimationFrame();
+        }
+
+        /// <summary>
+        /// 根据蓄力进度推进序列动画帧：
+        /// <br/>蓄力中 → 前 21 帧随进度递进；满蓄后 → 循环播放最后三帧
+        /// </summary>
+        private void UpdateAnimationFrame() {
+            if (ChargeProgress >= 1f) {
+                int loopFrames = ChargeFrameCount - ChargeProgressFrames;
+                loopAnimTimer++;
+                int loopIdx = loopAnimTimer / LoopFrameTicks % loopFrames;
+                currentFrame = ChargeProgressFrames + loopIdx;
+            }
+            else {
+                loopAnimTimer = 0;
+                int frame = (int)(ChargeProgress * ChargeProgressFrames);
+                currentFrame = Math.Clamp(frame, 0, ChargeProgressFrames - 1);
             }
         }
 
@@ -150,8 +187,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D weaponTex = TextureAssets.Item[SHPCOverride.ID].Value;
-            if (weaponTex == null) return false;
+            Texture2D chargeTex = CWRUtils.GetT2DValue(ChargeTexturePath);
+            if (chargeTex == null) return false;
+
+            int frameHeight = chargeTex.Height / ChargeFrameCount;
+            Rectangle sourceRect = new Rectangle(0, currentFrame * frameHeight, chargeTex.Width, frameHeight);
 
             float rotation = Projectile.rotation;
             float perpY = GunOffset.Y * Owner.direction;
@@ -164,8 +204,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ? SpriteEffects.FlipVertically
                 : SpriteEffects.None;
 
-            Main.EntitySpriteDraw(weaponTex, position, null, lightColor, rotation,
-                weaponTex.Size() / 2f, 1f, sp);
+            Vector2 origin = new Vector2(chargeTex.Width, frameHeight) / 2f;
+
+            Main.EntitySpriteDraw(chargeTex, position, sourceRect, lightColor, rotation,
+                origin, 1f, sp);
 
             return false;
         }

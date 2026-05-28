@@ -211,10 +211,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private void AI_Charging() {
             //尝试从手持弹幕获取枪口位置
             Vector2 targetPos;
+            SHPCChargeHeldProj linkedHeld = null;
             int heldIdx = HeldProjIndex;
             if (heldIdx >= 0 && heldIdx < Main.maxProjectiles
                 && Main.projectile[heldIdx].active
                 && Main.projectile[heldIdx].ModProjectile is SHPCChargeHeldProj heldProj) {
+                linkedHeld = heldProj;
                 targetPos = heldProj.TipPosition;
             }
             else {
@@ -254,6 +256,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             //蓄力进度受ChargeTimeMul和AttackSpeedMul加算影响，避免乘算叠加导致蓄力过慢
             float effectiveFrames = MaxChargeFrames * MathF.Max(chargeTimeMul - AttackSpeedMul + 1f, 0.1f);
             chargeRatio = MathHelper.Clamp((float)chargeTime / effectiveFrames, 0f, 1f);
+
+            //把蓄力进度同步给手持弹幕，驱动 SHPCCharge 序列动画
+            if (linkedHeld != null) {
+                linkedHeld.ChargeProgress = chargeRatio;
+            }
 
             //蓄力音效：从开始蓄力即播放，pitch 随蓄力比例递增，超驱时额外升调+抖动
             if (chargeTime == 1 && Main.netMode != NetmodeID.Server) {
