@@ -36,6 +36,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 17.5f;
             Item.DamageType = DamageClass.Melee;
         }
+
+        public override void AddRecipes() {
+            if (CWRRef.Has) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(ItemID.AntlionMandible, 8)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
+                .AddIngredient(ItemID.SandBlock, 10)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
 
     /// <summary>

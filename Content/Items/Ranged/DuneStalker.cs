@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Content.Items.Melee;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -49,10 +50,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
+            if (CWRRef.Has) {
+                return;
+            }
             CreateRecipe()
                 .AddIngredient(ItemID.AntlionMandible, 8)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
-                .AddIngredient(ItemID.Chain, 12)
+                .AddIngredient(ItemID.SandBlock, 12)
                 .AddTile(TileID.Anvils)
                 .Register();
         }
@@ -288,8 +292,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         [VaultLoaden(CWRConstant.Item_Ranged + "DuneStalkerHead")]
         internal static Asset<Texture2D> HeadTex = null;
-        [VaultLoaden(CWRConstant.Item_Ranged + "DuneStalkerChain")]
-        internal static Asset<Texture2D> ChainTex = null;
 
         /// <summary>当前阶段：0 = 飞出，1 = 回收</summary>
         private ref float State => ref Projectile.ai[0];
@@ -495,7 +497,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// 绘制玩家枪口到枪头之间的锁链
         /// </summary>
         private void DrawChain() {
-            Texture2D chainTex = ChainTex.Value;
+            Texture2D chainTex = WastelandFangProj.chain.Value;
             Vector2 start = GetAnchorPosition();
             Vector2 end = Projectile.Center;
 
@@ -505,7 +507,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            float rotation = diff.ToRotation();
+            float rotation = diff.ToRotation() + MathHelper.PiOver2;
             int segLength = chainTex.Height - 2;
             if (segLength <= 0) {
                 return;

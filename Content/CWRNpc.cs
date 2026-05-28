@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Painting;
 using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -254,7 +255,7 @@ namespace CalamityOverhaul.Content
                 dontExpertRule.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);
                 dontExpertRule.SimpleAdd(ModContent.ItemType<WastelandFang>(), 10);
                 dontExpertRule.SimpleAdd(ModContent.ItemType<SandDagger>(), 10);
-                dontExpertRule.SimpleAdd(CWRID.Item_BurntSienna, 10);
+                dontExpertRule.SimpleAdd(ModContent.ItemType<DuneStalker>(), 10);
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == CWRID.NPC_AquaticScourgeHead) {

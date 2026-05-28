@@ -34,6 +34,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<WastelandFangProj>();
             Item.shootSpeed = 22f;
         }
+
+        public override void AddRecipes() {
+            if (CWRRef.Has) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(ItemID.AntlionMandible, 10)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
+                .AddIngredient(ItemID.SandBlock, 12)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
 
     internal class WastelandFangProj : BaseHeldProj
@@ -41,9 +53,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Item_Melee + "WastelandFang";
         private bool isShoot;
         [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangChain")]
-        private static Asset<Texture2D> chain = null;
+        internal static Asset<Texture2D> chain = null;
         [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangChainAlt")]
-        private static Asset<Texture2D> chainAlt = null;
+        internal static Asset<Texture2D> chainAlt = null;
         [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangHead")]
         private static Asset<Texture2D> head = null;
         [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangTooth")]

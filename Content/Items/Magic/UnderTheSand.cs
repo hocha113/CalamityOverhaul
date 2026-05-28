@@ -32,6 +32,18 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.value = Item.buyPrice(0, 0, 50, 15);
             Item.SetHeldProj<UnderTheSandHeld>();
         }
+
+        public override void AddRecipes() {
+            if (CWRRef.Has) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(ItemID.AntlionMandible, 8)
+                .AddIngredient(ItemID.FallenStar, 4)
+                .AddIngredient(ItemID.SandBlock, 12)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
 
     internal class UnderTheSandHeld : BaseMagicGun

@@ -670,11 +670,6 @@ WastelandFang: {
 		'''
 }
 
-Flawless: {
-	DisplayName: Безупречный
-	Tooltip: ""
-}
-
 MelodyTheSand: {
 	DisplayName: Песнь песка
 	/* Tooltip:
@@ -694,6 +689,15 @@ SandVortexOfTheDecayedSea: {
 		Periodically hurls outward homing decayed sea orbs
 		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
 		"The roar of the rotting depths churned into sand"
+		''' */
+}
+
+DuneStalker: {
+	// DisplayName: Dune Stalker
+	/* Tooltip:
+		'''
+		Fires a chain-bound hookhead instead of consuming the ammunition outright
+		The hook tears through enemies along its path, then automatically reels back on impact or once it reaches its maximum range
 		''' */
 }
 
@@ -2492,9 +2496,4 @@ ArchiveFrameModule: {
 		Непрерывно накапливает урон, нанесенный попаданиями SHPC. При достижении порога высвобождает взрыв "Архивации данных" в местоположении игрока.
 		Базовый урон увеличен, затраты маны слегка повышены.
 		'''
-}
-
-DuneStalker: {
-	// DisplayName: Dune Stalker
-	// Tooltip: ""
 }

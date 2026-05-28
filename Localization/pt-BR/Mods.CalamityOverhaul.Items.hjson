@@ -672,11 +672,6 @@ WastelandFang: {
 		'''
 }
 
-Flawless: {
-	DisplayName: Impecavel
-	Tooltip: ""
-}
-
 MelodyTheSand: {
 	DisplayName: Cancao da Areia
 	/* Tooltip:
@@ -696,6 +691,15 @@ SandVortexOfTheDecayedSea: {
 		Periodically hurls outward homing decayed sea orbs
 		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
 		"The roar of the rotting depths churned into sand"
+		''' */
+}
+
+DuneStalker: {
+	// DisplayName: Dune Stalker
+	/* Tooltip:
+		'''
+		Fires a chain-bound hookhead instead of consuming the ammunition outright
+		The hook tears through enemies along its path, then automatically reels back on impact or once it reaches its maximum range
 		''' */
 }
 
@@ -2517,9 +2521,4 @@ ArchiveFrameModule: {
 		Acumula dano da SHPC; cada vez que o limiar e ultrapassado, uma explosao de Arquivo detona nos pes do jogador
 		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
 		'''
-}
-
-DuneStalker: {
-	// DisplayName: Dune Stalker
-	// Tooltip: ""
 }
