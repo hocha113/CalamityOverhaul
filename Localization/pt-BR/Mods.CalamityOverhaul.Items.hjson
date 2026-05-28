@@ -2522,3 +2522,8 @@ ArchiveFrameModule: {
 		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
 		'''
 }
+
+SHPCItem: {
+	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
+	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
+}

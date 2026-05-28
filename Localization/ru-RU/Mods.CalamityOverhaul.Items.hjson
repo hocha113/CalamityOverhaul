@@ -2497,3 +2497,8 @@ ArchiveFrameModule: {
 		Базовый урон увеличен, затраты маны слегка повышены.
 		'''
 }
+
+SHPCItem: {
+	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
+	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
+}

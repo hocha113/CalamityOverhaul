@@ -2499,3 +2499,8 @@ ArchiveFrameModule: {
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
 }
+
+SHPCItem: {
+	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
+	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
+}

@@ -40,15 +40,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// <summary>
         /// 左键散射角度（弧度）
         /// </summary>
-        private const float BeamSpreadAngle = 0.08f;
+        private static float BeamSpreadAngle => 0.08f;
+        /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
+        private static float ItemScale => 0.8f;
         /// <summary>持握时武器中心距玩家的距离</summary>
-        private const float HoldDistance = 35f;
+        private static float HoldDistance => 0f * ItemScale;
         /// <summary>左键开火后坐力最大回退距离（像素）</summary>
-        private const float RecoilMaxOffset = 8f;
-        /// <summary>后坐力发生的动画前段占比</summary>
-        private const float RecoilPhase = 1f / 3f;
+        private static float RecoilMaxOffset => 8f * ItemScale;
         /// <summary>持握精灵的原点偏移</summary>
-        private static readonly Vector2 HoldOrigin = new Vector2(-35, 0);
+        private static Vector2 HoldOrigin => new Vector2(-18, 24) * ItemScale;
+        /// <summary>后坐力发生的动画前段占比</summary>
+        private static float RecoilPhase => 1f / 3f;
 
         public override int TargetID => ID;
 
@@ -378,6 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item.useAnimation = Item.useTime = LeftClickUseTime;
             Item.autoReuse = true;
             Item.mana = 8;
+            Item.scale = 0.9f;
             Item.CWR().LegendData = new SHPCData();
         }
 
