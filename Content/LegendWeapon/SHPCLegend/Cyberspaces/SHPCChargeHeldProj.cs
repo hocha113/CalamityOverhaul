@@ -12,16 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// </summary>
     internal class SHPCChargeHeldProj : BaseHeldProj
     {
-        /// <summary>
-        /// 握把锚点在单帧（152×70，朝右未翻转）内的像素坐标。
-        /// <br/>该像素会被钉在玩家前手的世界坐标上，武器绕此点旋转，可按需微调
-        /// </summary>
-        private static readonly Vector2 GripPixel = new Vector2(50f, 46f);
-        /// <summary>
-        /// 枪口发射点在单帧内的像素坐标，弹体由此处生成，可按需微调
-        /// </summary>
-        private static readonly Vector2 MuzzlePixel = new Vector2(146f, 32f);
-
         /// <summary>后坐力最大后退距离（像素）</summary>
         private const float RecoilMaxOffset = 18f;
         /// <summary>后坐力动画总帧数</summary>
@@ -57,6 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private Vector2 handWorld;
 
         /// <summary>
+        /// 握把锚点在单帧（152×70，朝右未翻转）内的像素坐标。
+        /// <br/>该像素会被钉在玩家前手的世界坐标上，武器绕此点旋转，可按需微调
+        /// </summary>
+        private static Vector2 GripPixel => new Vector2(50f, 46f);
+        /// <summary>
+        /// 枪口发射点在单帧内的像素坐标，弹体由此处生成，可按需微调
+        /// </summary>
+        private static Vector2 MuzzlePixel => new Vector2(146f, 32f);
+
+        /// <summary>
         /// 把单帧内的像素坐标变换到世界坐标，绘制与逻辑共用同一套变换，
         /// 保证枪口、握把与实际绘制完全一致（含旋转、竖直翻转、后坐力回退）
         /// </summary>
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
             return handWorld
                 - Vector2.UnitX.RotatedBy(Projectile.rotation) * recoilOffset
-                + rel.RotatedBy(Projectile.rotation);
+                + rel.RotatedBy(Projectile.rotation) * SHPCOverride.ItemScale;
         }
 
         /// <summary>
@@ -210,9 +210,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Vector2 position = handWorld
                 - Vector2.UnitX.RotatedBy(rotation) * recoilOffset
                 - Main.screenPosition;
-
+            if (Owner.direction < 0) {
+                origin.Y -= 26 * SHPCOverride.ItemScale;
+            }
             Main.EntitySpriteDraw(chargeTex, position, sourceRect, lightColor, rotation,
-                origin, 1f, sp);
+                origin, SHPCOverride.ItemScale, sp);
 
             return false;
         }

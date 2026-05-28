@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.InWorldBossPhase;
@@ -40,17 +41,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// <summary>
         /// 左键散射角度（弧度）
         /// </summary>
-        private static float BeamSpreadAngle => 0.08f;
+        public static float BeamSpreadAngle => 0.08f;
         /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
-        private static float ItemScale => 0.8f;
+        public static float ItemScale => 0.8f;
         /// <summary>持握时武器中心距玩家的距离</summary>
-        private static float HoldDistance => 0f * ItemScale;
+        public static float HoldDistance => 0f * ItemScale;
         /// <summary>左键开火后坐力最大回退距离（像素）</summary>
-        private static float RecoilMaxOffset => 8f * ItemScale;
+        public static float RecoilMaxOffset => 8f * ItemScale;
         /// <summary>持握精灵的原点偏移</summary>
-        private static Vector2 HoldOrigin => new Vector2(-18, 24) * ItemScale;
+        public static Vector2 HoldOrigin => new Vector2(-56, 10) * ItemScale;
         /// <summary>后坐力发生的动画前段占比</summary>
-        private static float RecoilPhase => 1f / 3f;
+        public static float RecoilPhase => 1f / 3f;
 
         public override int TargetID => ID;
 
@@ -321,7 +322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
 
             ApplyHoldingStyle(player, itemRotation, itemPosition,
-                new Vector2(item.width, item.height), HoldOrigin);
+                item.Size, HoldOrigin);
         }
 
         /// <summary>

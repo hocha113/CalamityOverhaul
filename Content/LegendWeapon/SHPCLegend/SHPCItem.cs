@@ -8,8 +8,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     {
         //以SHPCOverride修改，这里写上属性是为了兼容性
         public override void SetDefaults() {
-            Item.width = 124;
-            Item.height = 52;
+            Item.width = 152;
+            Item.height = 70;
             Item.damage = 117;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 15;

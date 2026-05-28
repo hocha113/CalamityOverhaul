@@ -111,8 +111,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             LoadWeaponData();
             Item.damage = GetStartDamage;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 118;
-            Item.height = 56;
+            Item.width = 128;
+            Item.height = 76;
             Item.useTime = 10;
             Item.useAnimation = 10;
             Item.rare = CWRID.Rarity_HotPink > 0 ? CWRID.Rarity_HotPink : ItemRarityID.Purple;
