@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -35,6 +36,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         /// 是否已生成目标点
         /// </summary>
         public static bool IsGenerated { get; private set; }
+
+        /// <summary>
+        /// 存档格式版本号，发生不兼容变更时递增
+        /// </summary>
+        private const int SaveDataVersion = 2;
+
+        /// <summary>
+        /// 单次存档允许保存的最大点位数，作为越界保护
+        /// </summary>
+        private const int MaxSaveablePoints = 256;
 
         /// <summary>
         /// 获取离玩家最近的未完成目标点
@@ -345,42 +356,160 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            if (!IsGenerated) {
-                return;
+            try {
+                if (tag == null) {
+                    return;
+                }
+
+                if (!IsGenerated || TargetPoints == null || TargetPoints.Count == 0) {
+                    //当未生成时显式写入 false，避免旧存档残留的 true 被错误读取
+                    tag["IsGenerated"] = false;
+                    return;
+                }
+
+                //每个点用单独的 TagCompound 持久化，绑定坐标与完成状态，避免两个并行列表错位
+                List<TagCompound> pointTags = new List<TagCompound>(TargetPoints.Count);
+                foreach (SignalTowerTargetPoint point in TargetPoints) {
+                    if (point == null) {
+                        continue;
+                    }
+
+                    Point tilePos = point.TilePosition;
+                    pointTags.Add(new TagCompound {
+                        ["X"] = tilePos.X,
+                        ["Y"] = tilePos.Y,
+                        ["IsCompleted"] = point.IsCompleted,
+                        ["Index"] = point.Index,
+                    });
+
+                    if (pointTags.Count >= MaxSaveablePoints) {
+                        break;
+                    }
+                }
+
+                tag["SaveDataVersion"] = SaveDataVersion;
+                tag["TargetPointsV2"] = pointTags;
+                tag["IsGenerated"] = true;
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[SignalTowerTargetManager:SaveWorldData] an error has occurred:{ex.Message}");
             }
-
-            List<Point> positions = [];
-            List<bool> completions = [];
-
-            foreach (SignalTowerTargetPoint point in TargetPoints) {
-                positions.Add(point.TilePosition);
-                completions.Add(point.IsCompleted);
-            }
-
-            tag["TargetPositions"] = positions;
-            tag["TargetCompletions"] = completions;
-            tag["IsGenerated"] = IsGenerated;
         }
 
         public override void LoadWorldData(TagCompound tag) {
+            //先把状态彻底归零，任何加载分支异常都不会留下残缺数据
             TargetPoints.Clear();
+            IsGenerated = false;
 
-            if (!tag.TryGet("IsGenerated", out bool generated) || !generated) {
-                IsGenerated = false;
+            if (tag == null) {
                 return;
             }
 
-            List<Point> positions = [.. tag.GetList<Point>("TargetPositions")];
-            List<bool> completions = [.. tag.GetList<bool>("TargetCompletions")];
+            try {
+                if (!tag.TryGet("IsGenerated", out bool generated) || !generated) {
+                    return;
+                }
 
-            for (int i = 0; i < positions.Count && i < completions.Count; i++) {
-                SignalTowerTargetPoint point = new(positions[i], PointRange, i) {
-                    IsCompleted = completions[i]
-                };
-                TargetPoints.Add(point);
+                bool loaded = TryLoadFromV2(tag) || TryLoadFromLegacy(tag);
+
+                //只有真正读到了点位才算"已生成"，否则保持未生成状态等待重新生成
+                if (loaded && TargetPoints.Count > 0) {
+                    IsGenerated = true;
+                }
+                else {
+                    TargetPoints.Clear();
+                    IsGenerated = false;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[SignalTowerTargetManager:LoadWorldData] an error has occurred:{ex.Message}");
+                TargetPoints.Clear();
+                IsGenerated = false;
+            }
+        }
+
+        /// <summary>
+        /// 加载新版(V2)存档格式，每个点位为独立 TagCompound
+        /// </summary>
+        private static bool TryLoadFromV2(TagCompound tag) {
+            if (!tag.ContainsKey("TargetPointsV2")) {
+                return false;
             }
 
-            IsGenerated = true;
+            IList<TagCompound> pointTags = tag.GetList<TagCompound>("TargetPointsV2");
+            if (pointTags == null || pointTags.Count == 0) {
+                return false;
+            }
+
+            int fallbackIndex = 0;
+            foreach (TagCompound pt in pointTags) {
+                if (pt == null) {
+                    continue;
+                }
+
+                if (TargetPoints.Count >= MaxSaveablePoints) {
+                    break;
+                }
+
+                int x = pt.GetAsInt("X");
+                int y = pt.GetAsInt("Y");
+
+                if (!IsValidTilePosition(x, y)) {
+                    //坐标非法直接跳过该点位，避免后续越界
+                    continue;
+                }
+
+                bool isCompleted = pt.GetBool("IsCompleted");
+                int savedIndex = pt.ContainsKey("Index") ? pt.GetAsInt("Index") : fallbackIndex;
+
+                TargetPoints.Add(new SignalTowerTargetPoint(new Point(x, y), PointRange, savedIndex) {
+                    IsCompleted = isCompleted
+                });
+
+                fallbackIndex++;
+            }
+
+            return TargetPoints.Count > 0;
+        }
+
+        /// <summary>
+        /// 兼容旧版双列表格式的加载逻辑
+        /// </summary>
+        private static bool TryLoadFromLegacy(TagCompound tag) {
+            if (!tag.ContainsKey("TargetPositions") || !tag.ContainsKey("TargetCompletions")) {
+                return false;
+            }
+
+            IList<Point> positions = tag.GetList<Point>("TargetPositions");
+            IList<bool> completions = tag.GetList<bool>("TargetCompletions");
+
+            if (positions == null || completions == null) {
+                return false;
+            }
+
+            int count = Math.Min(positions.Count, completions.Count);
+            for (int i = 0; i < count && TargetPoints.Count < MaxSaveablePoints; i++) {
+                Point pos = positions[i];
+                if (!IsValidTilePosition(pos.X, pos.Y)) {
+                    continue;
+                }
+
+                TargetPoints.Add(new SignalTowerTargetPoint(pos, PointRange, i) {
+                    IsCompleted = completions[i]
+                });
+            }
+
+            return TargetPoints.Count > 0;
+        }
+
+        /// <summary>
+        /// 检查图格坐标是否落在当前世界范围内
+        /// </summary>
+        private static bool IsValidTilePosition(int x, int y) {
+            //世界尚未初始化时 maxTilesX/Y 可能为 0，此时仅放行明显合法的非负坐标
+            if (Main.maxTilesX <= 0 || Main.maxTilesY <= 0) {
+                return x >= 0 && y >= 0;
+            }
+
+            return x >= 0 && y >= 0 && x < Main.maxTilesX && y < Main.maxTilesY;
         }
 
         public override void ClearWorld() => Reset();
