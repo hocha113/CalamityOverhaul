@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -431,6 +431,11 @@ DragonBreathBox: {
 
 HalibutItem: {
 	DisplayName: Halibut
+	Tooltip: ""
+}
+
+SHPCItem: {
+	DisplayName: SHPC
 	Tooltip: ""
 }
 
@@ -2524,9 +2529,4 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		'''
-}
-
-SHPCItem: {
-	DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
-	Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
 }

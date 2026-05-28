@@ -434,6 +434,11 @@ HalibutItem: {
 	Tooltip: ""
 }
 
+SHPCItem: {
+	// DisplayName: SHPC
+	// Tooltip: ""
+}
+
 AvalancheM60: {
 	DisplayName: Avalanche M60
 	Tooltip:
@@ -2521,9 +2526,4 @@ ArchiveFrameModule: {
 		Acumula dano da SHPC; cada vez que o limiar e ultrapassado, uma explosao de Arquivo detona nos pes do jogador
 		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
 		'''
-}
-
-SHPCItem: {
-	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
-	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
 }

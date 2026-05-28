@@ -421,6 +421,11 @@ HalibutItem: {
 	// Tooltip: ""
 }
 
+SHPCItem: {
+	// DisplayName: SHPC
+	// Tooltip: ""
+}
+
 AvalancheM60: {
 	DisplayName: Avalancha M60
 	Tooltip:
@@ -2512,9 +2517,4 @@ ArchiveFrameModule: {
 		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
-}
-
-SHPCItem: {
-	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
-	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
 }

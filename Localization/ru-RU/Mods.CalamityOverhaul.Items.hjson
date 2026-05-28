@@ -435,6 +435,11 @@ HalibutItem: {
 	// Tooltip: ""
 }
 
+SHPCItem: {
+	// DisplayName: SHPC
+	// Tooltip: ""
+}
+
 AvalancheM60: {
 	DisplayName: Лавина M60
 	Tooltip:
@@ -2496,9 +2501,4 @@ ArchiveFrameModule: {
 		Непрерывно накапливает урон, нанесенный попаданиями SHPC. При достижении порога высвобождает взрыв "Архивации данных" в местоположении игрока.
 		Базовый урон увеличен, затраты маны слегка повышены.
 		'''
-}
-
-SHPCItem: {
-	// DisplayName: Mods.CalamityOverhaul.Items.SHPCItem.DisplayName
-	// Tooltip: Mods.CalamityOverhaul.Items.SHPCItem.Tooltip
 }
