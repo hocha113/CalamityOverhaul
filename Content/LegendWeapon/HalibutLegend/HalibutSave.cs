@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                     TagCompound skillTag = [];
                     skillTag["Name"] = slot.FishSkill.FullName;
-                    slot.FishSkill.SaveData(tag);
+                    slot.FishSkill.SaveData(skillTag);
                     list.Add(skillTag);
                 }
                 tag["FishSkills"] = list;
