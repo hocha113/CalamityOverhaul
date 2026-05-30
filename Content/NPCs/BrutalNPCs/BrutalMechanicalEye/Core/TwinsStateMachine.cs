@@ -136,6 +136,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
                 //公共状态
                 TwinsStateIndex.TwinsPhaseTransition => new TwinsPhaseTransitionState(),
                 TwinsStateIndex.TwinsCombinedAttack => new TwinsCombinedAttackState(),
+                //死亡演出
+                TwinsStateIndex.TwinsDeath => new TwinsDeathState(),
                 _ => null,
             };
         }

@@ -101,6 +101,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 独眼狂暴模式刚刚触发(用于状态切换)
         /// </summary>
         public bool SoloRageJustTriggered { get; set; }
+        /// <summary>
+        /// 死亡演出是否已播放完毕。<see cref="States.Common.TwinsDeathState"/> 在演出结束时置为 true，
+        /// 控制器的 CheckDead 据此放行真正的死亡（之前一律锁血拦截）。每只眼睛各自独立。
+        /// </summary>
+        public bool DeathPerformanceFinished { get; set; }
         #endregion
 
         #region 蓄力特效数据

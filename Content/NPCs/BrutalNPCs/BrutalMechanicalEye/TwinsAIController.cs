@@ -62,6 +62,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         private const int AccompanySpawnStage = 11;
 
+        /// <summary>
+        /// 进入死亡演出的血量阈值（与毁灭者一致，濒死时触发独立殉爆演出）
+        /// </summary>
+        private const int DeathPerformanceTriggerLife = 10;
+
         #endregion
 
         #region 字段与属性
@@ -361,7 +366,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             npc.spriteDirection = Math.Sign((npc.rotation + MathHelper.PiOver2).ToRotationVector2().X);
 
             FindPlayer();
-            if (player == null || !player.active || player.dead) {
+            //死亡演出期间不切换到逃跑(避免打断殉爆演出，也不重置状态机索引)
+            if ((player == null || !player.active || player.dead)
+                && stateMachine?.CurrentState is not TwinsDeathState) {
                 if (ai[0] != (int)PrimaryAIState.Flee) {
                     ai[1] = 0;
                 }
@@ -371,6 +378,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             //更新上下文
             UpdateStateContext();
+
+            //濒死检测：触发独立死亡演出(每只眼睛各自播放)
+            CheckDeathPerformanceTrigger();
 
             bool reset;
             if (accompany) {
@@ -453,9 +463,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 原生AI(独立战斗模式)
 
         /// <summary>
+        /// 濒死检测：当血量降到阈值且处于正式战斗阶段时，强制进入独立死亡演出。
+        /// 仅服务端/单人端驱动；随从模式、登场、逃跑、转阶段无敌期间均不触发。
+        /// </summary>
+        private void CheckDeathPerformanceTrigger() {
+            if (VaultUtils.isClient || accompany) {
+                return;
+            }
+            if (stateMachine == null || stateContext == null) {
+                return;
+            }
+            if (stateContext.DeathPerformanceFinished) {
+                return;
+            }
+            if (stateMachine.CurrentState is TwinsDeathState) {
+                return;
+            }
+            //仅在正式战斗阶段触发(登场/逃跑/初始化阶段不触发)
+            if (ai[0] != (int)PrimaryAIState.Battle && ai[0] != (int)PrimaryAIState.EnragedBattle) {
+                return;
+            }
+            //转阶段无敌等期间不触发
+            if (stateContext.IsInPhaseTransition || npc.dontTakeDamage) {
+                return;
+            }
+            if (npc.life <= DeathPerformanceTriggerLife) {
+                stateMachine.ForceChangeState(new TwinsDeathState());
+            }
+        }
+
+        /// <summary>
         /// 原生模式AI
         /// </summary>
         private bool ProtogenesisAI() {
+            //死亡演出接管：跳过常规战斗/转阶段/逃跑逻辑，仅驱动死亡状态机
+            if (stateMachine?.CurrentState is TwinsDeathState) {
+                stateMachine.Update();
+                return false;
+            }
+
             if (ai[0] == (int)PrimaryAIState.Flee) {
                 npc.velocity.Y -= 0.5f;
                 npc.EncourageDespawn(10);
@@ -635,8 +681,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 其他覆写
 
         public override bool? CheckDead() {
-            npc.dontTakeDamage = false;
-            return true;
+            //随从模式或上下文缺失：保持原版死亡行为
+            if (accompany || stateContext == null) {
+                npc.dontTakeDamage = false;
+                return true;
+            }
+            //死亡演出已完成：放行真正死亡(触发掉落与击杀标记)
+            if (stateContext.DeathPerformanceFinished) {
+                npc.dontTakeDamage = false;
+                return true;
+            }
+            //锁血并进入死亡演出，兜底高额伤害一击致死的情况，确保演出必定播放
+            npc.life = 1;
+            npc.dontTakeDamage = true;
+            if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not TwinsDeathState) {
+                stateMachine.ForceChangeState(new TwinsDeathState());
+            }
+            return false;
         }
 
         public override bool CheckActive() => false;//不要自动消失
@@ -683,6 +744,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// </summary>
         private void PushThermalVisualState() {
             if (stateContext == null) {
+                return;
+            }
+
+            //死亡演出——剧烈红黄过载脉冲，最高优先级
+            if (stateMachine?.CurrentState is TwinsDeathState) {
+                MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 1f,
+                    0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 18f));
                 return;
             }
 

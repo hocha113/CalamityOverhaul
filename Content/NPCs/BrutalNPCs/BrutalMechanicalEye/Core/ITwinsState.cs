@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         //公共状态
         TwinsPhaseTransition = 19,
         TwinsCombinedAttack = 20,
+        //死亡演出（每只眼睛独立播放）
+        TwinsDeath = 21,
     }
 
     /// <summary>
