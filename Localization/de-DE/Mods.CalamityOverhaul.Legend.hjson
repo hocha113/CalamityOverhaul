@@ -210,6 +210,8 @@ HalibutTrialQuestLine: {
 	// Trial_12: Pinnacle of Creation
 	// Trial_13: Back to the Sea
 	// TrackerBrief: Target：{0}
+	// BossRushTargetName: Boss Rush
+	// EventActiveFormat: "{0}: active"
 }
 
 MurasamaTrialQuestLine: {
@@ -303,6 +305,8 @@ MurasamaTrialQuestLine: {
 		Use the Terminus and engage in the final decisive battle with the xeno.
 		''' */
 	// TrackerBrief: Target：{0}
+	// BossRushTargetName: Boss Rush
+	// EventActiveFormat: "{0}: active"
 }
 
 SHPCTrialQuestLine: {
@@ -442,6 +446,8 @@ SHPCTrialQuestLine: {
 		Please be prepared. I will monitor the battlefield throughout and assist you in settling this once and for all.
 		''' */
 	// TrackerBrief: Target：{0}
+	// BossRushTargetName: Boss Rush
+	// EventActiveFormat: "{0}: active"
 }
 
 SHPCModuleStat: {

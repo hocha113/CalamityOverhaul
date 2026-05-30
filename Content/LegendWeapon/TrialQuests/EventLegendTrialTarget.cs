@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 {
     internal sealed class EventLegendTrialTarget : ILegendTrialTarget
     {
-        private readonly string displayName;
+        private readonly LocalizedText displayName;
+        private readonly LocalizedText activeFormat;
         private readonly Func<bool> activeCheck;
         private readonly Func<bool> completedCheck;
         private readonly Func<bool> availableCheck;
 
-        public EventLegendTrialTarget(string displayName, Func<bool> activeCheck, Func<bool> completedCheck, Func<bool> availableCheck = null) {
-            this.displayName = displayName ?? string.Empty;
+        public EventLegendTrialTarget(LocalizedText displayName, LocalizedText activeFormat, Func<bool> activeCheck, Func<bool> completedCheck, Func<bool> availableCheck = null) {
+            this.displayName = displayName;
+            this.activeFormat = activeFormat;
             this.activeCheck = activeCheck;
             this.completedCheck = completedCheck;
             this.availableCheck = availableCheck;
@@ -21,10 +24,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public bool IsCompleted => completedCheck?.Invoke() == true;
 
         public IEnumerable<string> GetDisplayNames() {
-            if (string.IsNullOrEmpty(displayName)) {
+            string name = GetDisplayName();
+            if (string.IsNullOrEmpty(name)) {
                 return [];
             }
-            return [displayName];
+            return [name];
         }
 
         public LegendTrialTargetSnapshot GetSnapshot() {
@@ -32,9 +36,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                 return LegendTrialTargetSnapshot.Completed;
             }
             if (activeCheck?.Invoke() == true) {
-                return new LegendTrialTargetSnapshot(true, 0f, 1f, displayName, $"{displayName}: 进行中");
+                string name = GetDisplayName();
+                string format = activeFormat?.Value;
+                string status = string.IsNullOrEmpty(format) ? name : string.Format(format, name);
+                return new LegendTrialTargetSnapshot(true, 0f, 1f, name, status);
             }
             return LegendTrialTargetSnapshot.Inactive;
         }
+
+        private string GetDisplayName() => displayName?.Value ?? string.Empty;
     }
 }

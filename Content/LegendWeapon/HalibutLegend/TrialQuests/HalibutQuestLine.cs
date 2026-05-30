@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
         public static LocalizedText TrackerWaiting { get; private set; }
         public static LocalizedText TrackerFighting { get; private set; }
         public static LocalizedText TrackerBrief { get; private set; }
+        public static LocalizedText BossRushTargetName { get; private set; }
+        public static LocalizedText EventActiveFormat { get; private set; }
 
         /// <summary>每条试炼的标题</summary>
         public static LocalizedText[] TrialTitles { get; private set; }
@@ -43,6 +45,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "目标不在场，等待召唤...");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
             TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "目标：{0}");
+            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "终焉之战");
+            EventActiveFormat = this.GetLocalization(nameof(EventActiveFormat), () => "{0}: 进行中");
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];
 
@@ -71,7 +75,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 
         public override void PostSetupContent() {
             trials = LegendTrialRouteCatalog.CreateHalibut(TrialTitles,
-                static i => CWRLocText.GetText($"Halibut_TextDictionary_Content_{i}"));
+                static i => CWRLocText.GetText($"Halibut_TextDictionary_Content_{i}"),
+                BossRushTargetName, EventActiveFormat);
         }
 
         protected override string KeyPrefix => KEY_PREFIX;

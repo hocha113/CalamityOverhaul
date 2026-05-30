@@ -24,7 +24,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public static IReadOnlyList<LegendTrialDefinition> HalibutProgression
             => halibutProgression ??= CreateHalibut();
 
-        public static LegendTrialDefinition[] CreateMurasama(LocalizedText[] titles = null, LocalizedText[] summaries = null) => [
+        public static LegendTrialDefinition[] CreateMurasama(LocalizedText[] titles = null, LocalizedText[] summaries = null,
+            LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
             Trial("murasama.000.king_slime", Npc(() => [NPCID.KingSlime], InWorldBossPhase.DownedV0), titles, summaries, 0),
             Trial("murasama.001.desert_scourge", Npc(() => [CWRID.NPC_DesertScourgeHead], InWorldBossPhase.Downed0), titles, summaries, 1),
             Trial("murasama.002.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaries, 2),
@@ -54,10 +55,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("murasama.026.supreme_calamitas", Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30), titles, summaries, 26),
             Trial("murasama.027.primordial_wyrm_or_boss_rush", Any(
                 Npc(() => [CWRID.NPC_PrimordialWyrmHead], InWorldBossPhase.Downed31),
-                BossRush()), titles, summaries, 27),
+                BossRush(bossRushName, eventActiveFormat)), titles, summaries, 27),
         ];
 
-        public static LegendTrialDefinition[] CreateSHPC(LocalizedText[] titles = null, LocalizedText[] summaries = null) => [
+        public static LegendTrialDefinition[] CreateSHPC(LocalizedText[] titles = null, LocalizedText[] summaries = null,
+            LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
             Trial("shpc.000.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaries, 0),
             Trial("shpc.001.evil_boss", Npc(() => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu], InWorldBossPhase.DownedV2), titles, summaries, 1),
             Trial("shpc.002.calamity_evil_boss", Npc(() => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive], () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke()), titles, summaries, 2),
@@ -79,10 +81,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("shpc.018.yharon", Npc(() => [CWRID.NPC_Yharon], InWorldBossPhase.Downed28), titles, summaries, 18),
             Trial("shpc.019.exo_mechs", Npc(() => [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead], InWorldBossPhase.Downed29), titles, summaries, 19),
             Trial("shpc.020.supreme_calamitas", Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30), titles, summaries, 20),
-            Trial("shpc.021.boss_rush", BossRush(), titles, summaries, 21),
+            Trial("shpc.021.boss_rush", BossRush(bossRushName, eventActiveFormat), titles, summaries, 21),
         ];
 
-        public static LegendTrialDefinition[] CreateHalibut(LocalizedText[] titles = null, Func<int, LocalizedText> summaryProvider = null) => [
+        public static LegendTrialDefinition[] CreateHalibut(LocalizedText[] titles = null, Func<int, LocalizedText> summaryProvider = null,
+            LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
             Trial("halibut.000.king_slime", Npc(() => [NPCID.KingSlime], InWorldBossPhase.DownedV0), titles, summaryProvider, 0),
             Trial("halibut.001.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaryProvider, 1),
             Trial("halibut.002.queen_bee", Npc(() => [NPCID.QueenBee], InWorldBossPhase.DownedV3), titles, summaryProvider, 2),
@@ -100,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                 Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30)), titles, summaryProvider, 12),
             Trial("halibut.013.primordial_wyrm_or_boss_rush", Any(
                 Npc(() => [CWRID.NPC_PrimordialWyrmHead], InWorldBossPhase.Downed31),
-                BossRush()), titles, summaryProvider, 13),
+                BossRush(bossRushName, eventActiveFormat)), titles, summaryProvider, 13),
         ];
 
         private static LegendTrialDefinition Trial(string key, ILegendTrialTarget target, LocalizedText[] titles, LocalizedText[] summaries, int index) {
@@ -114,8 +117,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         private static NpcLegendTrialTarget Npc(Func<int[]> npcTypeProvider, Func<bool> completedCheck)
             => new(npcTypeProvider, completedCheck);
 
-        private static EventLegendTrialTarget BossRush()
-            => new("BossRush", CWRRef.GetBossRushActive, CWRRef.GetDownedBossRush, () => CWRRef.Has);
+        private static EventLegendTrialTarget BossRush(LocalizedText displayName, LocalizedText activeFormat)
+            => new(displayName, activeFormat, CWRRef.GetBossRushActive, CWRRef.GetDownedBossRush, () => CWRRef.Has);
 
         private static CompositeLegendTrialTarget Any(params ILegendTrialTarget[] targets)
             => new(LegendTrialCompositeMode.Any, targets);

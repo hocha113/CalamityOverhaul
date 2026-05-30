@@ -214,6 +214,8 @@ HalibutTrialQuestLine: {
 	Trial_12: 造物巅峰
 	Trial_13: 回到海里
 	TrackerBrief: 目标：{0}
+	BossRushTargetName: 终焉之战
+	EventActiveFormat: "{0}: 进行中"
 }
 
 MurasamaTrialQuestLine: {
@@ -307,6 +309,8 @@ MurasamaTrialQuestLine: {
 		使用那终焉之石，与异形展开最终决战
 		'''
 	TrackerBrief: 目标：{0}
+	BossRushTargetName: 终焉之战
+	EventActiveFormat: "{0}: 进行中"
 }
 
 SHPCTrialQuestLine: {
@@ -446,6 +450,8 @@ SHPCTrialQuestLine: {
 		请做好准备。我会全程监控战场，协助您一次了结。
 		'''
 	TrackerBrief: 目标：{0}
+	BossRushTargetName: 终焉之战
+	EventActiveFormat: "{0}: 进行中"
 }
 
 SHPCModuleStat: {

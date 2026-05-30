@@ -214,6 +214,8 @@ HalibutTrialQuestLine: {
 	Trial_12: Pinaculo da Criacao
 	Trial_13: De Volta ao Mar
 	TrackerBrief: Alvo：{0}
+	BossRushTargetName: Boss Rush
+	EventActiveFormat: "{0}: ativo"
 }
 
 MurasamaTrialQuestLine: {
@@ -307,6 +309,8 @@ MurasamaTrialQuestLine: {
 		Use o Terminus e envolva-se na batalha final decisiva com o xeno.
 		'''
 	TrackerBrief: Alvo：{0}
+	BossRushTargetName: Boss Rush
+	EventActiveFormat: "{0}: ativo"
 }
 
 SHPCTrialQuestLine: {
@@ -446,6 +450,8 @@ SHPCTrialQuestLine: {
 		Por favor, esteja preparado. Monitorarei o campo de batalha durante todo o tempo e ajudarei a resolver isto de uma vez por todas.
 		'''
 	TrackerBrief: Alvo：{0}
+	BossRushTargetName: Boss Rush
+	EventActiveFormat: "{0}: ativo"
 }
 
 SHPCModuleStat: {

@@ -251,6 +251,8 @@ HalibutTrialQuestLine: {
 	Trial_12: Вершина творения
 	Trial_13: Возвращение в море
 	// TrackerBrief: Target：{0}
+	BossRushTargetName: Босс-раш
+	EventActiveFormat: "{0}: идет"
 }
 
 MurasamaTrialQuestLine: {
@@ -344,6 +346,8 @@ MurasamaTrialQuestLine: {
 		Используй Камень Завершения и вступи в финальную битву с этой тварью.
 		'''
 	// TrackerBrief: Target：{0}
+	BossRushTargetName: Босс-раш
+	EventActiveFormat: "{0}: идет"
 }
 
 SHPCTrialQuestLine: {
@@ -483,6 +487,8 @@ SHPCTrialQuestLine: {
 		Пожалуйста, подготовьтесь. Я буду непрерывно мониторить поле боя, чтобы помочь вам покончить с ними за один раз.
 		'''
 	// TrackerBrief: Target：{0}
+	BossRushTargetName: Босс-раш
+	EventActiveFormat: "{0}: идет"
 }
 
 SHPCModuleStat: {
