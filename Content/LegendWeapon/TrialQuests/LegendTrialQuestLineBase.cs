@@ -23,6 +23,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         protected abstract Func<bool> CreateTrackerVisibilityCheck();
         protected virtual LegendData GetLegendData(Player player) => null;
 
+        private static LocalizedText trackerBlockedText;
+        /// <summary>
+        /// 当下一关因相关内容(如灾厄模组)未加载而无法开始时，在委托里展示的受阻提示
+        /// </summary>
+        protected static LocalizedText TrackerBlockedText
+            => trackerBlockedText ??= Language.GetOrRegister("Mods.CalamityOverhaul.Legend.TrialBlockedHint",
+                static () => "需要启用相应内容后才能开始本试炼");
+
         public override void PostUpdateEverything() {
             if (Main.dedServ || Main.gameMenu) {
                 return;
@@ -34,27 +42,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             }
 
             bool allowCreate = CanCreateEntries(Main.LocalPlayer);
+            //完成状态以"挂在该武器上的版本化进度"为准(记住做过的试炼、跨世界不回退)，
+            //没有找到对应物品时再退回世界 Boss 状态，确保与工具提示等级同源。
+            LegendData data = GetLegendData(Main.LocalPlayer);
+            data?.SyncTrialProgressFromWorld();
+            Func<LegendTrialDefinition, bool> isCompleted = BuildCompletionCheck(data);
+
             IReadOnlyList<LegendTrialDefinition> availableTrials = LegendTrialRouteResolver.GetAvailableTrials(Trials);
-            int currentLevel = GetCurrentRouteLevel(Main.LocalPlayer);
+            int currentLevel = LegendTrialRouteResolver.GetSequentialLevel(Trials, isCompleted);
+
+            //可用路线已无"下一关"时，找出被未加载内容挡住的那一关，
+            //让工具提示里的试炼编号始终能对应到一条委托，避免"显示试炼N却没有委托"。
+            LegendTrialDefinition blockedFrontier = currentLevel >= availableTrials.Count
+                ? FindBlockedFrontier(isCompleted)
+                : null;
 
             for (int i = 0; i < LegacyTrialCount; i++) {
                 manager.UnregisterQuest(KeyPrefix + i);
             }
 
-            foreach (LegendTrialDefinition trial in Trials) {
+            for (int i = 0; i < Trials.Count; i++) {
+                LegendTrialDefinition trial = Trials[i];
+                if (blockedFrontier != null && ReferenceEquals(trial, blockedFrontier)) {
+                    SyncBlockedFrontier(manager, trial, i, Trials.Count, allowCreate);
+                    continue;
+                }
+
                 int routeIndex = IndexOfTrial(availableTrials, trial);
-                SyncTrial(manager, trial, routeIndex, currentLevel, allowCreate, availableTrials.Count);
+                SyncTrial(manager, trial, routeIndex, currentLevel, allowCreate, availableTrials.Count, isCompleted);
             }
         }
 
-        private void SyncTrial(QuestManagerUI manager, LegendTrialDefinition trial, int routeIndex, int currentLevel, bool allowCreate, int routeCount) {
+        private void SyncTrial(QuestManagerUI manager, LegendTrialDefinition trial, int routeIndex, int currentLevel
+            , bool allowCreate, int routeCount, Func<LegendTrialDefinition, bool> isCompleted) {
             string key = GetEntryKey(trial);
             if (trial == null || routeIndex < 0 || routeIndex > currentLevel) {
                 manager.UnregisterQuest(key);
                 return;
             }
 
-            bool isDone = routeIndex < currentLevel || trial.IsCompleted;
+            bool isDone = routeIndex < currentLevel || isCompleted(trial);
             if (isDone) {
                 var entry = EnsureTrialEntry(manager, trial, routeIndex, routeCount, completed: true, allowCreate: allowCreate);
                 if (entry != null && entry.Status != QuestEntryStatus.Completed) {
@@ -69,10 +96,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             }
         }
 
+        /// <summary>
+        /// 把被未加载内容挡住的"下一关"作为一条进行中(受阻)委托同步出来
+        /// </summary>
+        private void SyncBlockedFrontier(QuestManagerUI manager, LegendTrialDefinition trial, int originalIndex, int routeCount, bool allowCreate) {
+            string key = GetEntryKey(trial);
+            var entry = manager.GetEntry(key) as LegendTrialQuestEntry;
+            if (entry == null) {
+                if (!allowCreate) {
+                    return;
+                }
+                entry = CreateTrialEntry(trial, originalIndex, routeCount);
+                ApplyBlockedState(entry);
+                manager.RegisterQuest(entry);
+                return;
+            }
+
+            ApplyBlockedState(entry);
+            if (entry.Status == QuestEntryStatus.Completed) {
+                manager.SetEntryStatus(key, QuestEntryStatus.Active, 0f);
+            }
+        }
+
+        private static void ApplyBlockedState(LegendTrialQuestEntry entry) {
+            entry.Blocked = true;
+            LocalizedText hint = TrackerBlockedText;
+            entry.BlockedHint = hint;
+            if (hint != null) {
+                //主面板里直接把描述替换成受阻提示，让玩家明确卡点原因
+                entry.SummaryText = hint;
+            }
+        }
+
         private LegendTrialQuestEntry EnsureTrialEntry(QuestManagerUI manager, LegendTrialDefinition trial, int routeIndex, int routeCount, bool completed = false, bool allowCreate = true) {
             string key = GetEntryKey(trial);
             var entry = manager.GetEntry(key) as LegendTrialQuestEntry;
             if (entry != null) {
+                //此前若被标记为受阻(下一关曾不可用)，现在重新进入常规流程时复位，恢复正常试炼展示
+                if (entry.Blocked) {
+                    entry.Blocked = false;
+                    entry.BlockedHint = null;
+                    entry.SummaryText = trial.Summary;
+                }
                 return entry;
             }
             if (!allowCreate) {
@@ -103,12 +168,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
         private string GetEntryKey(LegendTrialDefinition trial) => KeyPrefix + trial.Key;
 
-        private int GetCurrentRouteLevel(Player player) {
-            LegendData data = GetLegendData(player);
+        private static Func<LegendTrialDefinition, bool> BuildCompletionCheck(LegendData data) {
             if (data != null) {
-                return data.GetVersionedTrialRouteLevel();
+                return data.IsTrialCompleted;
             }
-            return LegendTrialRouteResolver.GetSequentialLevel(Trials);
+            return static trial => trial?.IsCompleted == true;
+        }
+
+        /// <summary>
+        /// 在所有可用试炼都已完成时，定位原始路线里玩家进度之后第一关未完成且当前不可用的试炼。
+        /// </summary>
+        private LegendTrialDefinition FindBlockedFrontier(Func<LegendTrialDefinition, bool> isCompleted) {
+            int lastCompleted = -1;
+            for (int i = 0; i < Trials.Count; i++) {
+                if (Trials[i] != null && isCompleted(Trials[i])) {
+                    lastCompleted = i;
+                }
+            }
+
+            for (int i = lastCompleted + 1; i < Trials.Count; i++) {
+                LegendTrialDefinition trial = Trials[i];
+                if (trial == null || isCompleted(trial)) {
+                    continue;
+                }
+                //进度之后的第一关：若它本身可用，交给常规流程处理；不可用才作为受阻关卡展示
+                return trial.IsAvailable ? null : trial;
+            }
+            return null;
         }
 
         protected static LegendData FindLegendData(Player player, int itemType) {

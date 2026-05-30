@@ -191,6 +191,8 @@ MuraText: {
 	// Subtest_Text10: That witch who threw herself into chaos has a deformed clone sister. Kill that xeno, and offer its blood and fire to the blade.
 }
 
+// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+
 HalibutTrialQuestLine: {
 	// QuestCategory: Halibut Legend
 	// TrackerWaiting: Target is absent, awaiting summons...

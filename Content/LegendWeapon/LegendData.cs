@@ -500,15 +500,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return LegendTrialRouteResolver.GetSequentialOriginalLevel(definitions, IsTrialCompletedInVersionedState);
         }
 
-        internal int GetVersionedTrialRouteLevel() {
-            IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
-            if (definitions == null) {
-                return 0;
-            }
-
-            SyncTrialProgressFromWorld();
-            return LegendTrialRouteResolver.GetSequentialLevel(definitions, IsTrialCompletedInVersionedState);
-        }
+        /// <summary>
+        /// 某条试炼是否按版本化进度算作已完成：做过(键已记录)或当前世界已击杀。
+        /// 供委托线与工具提示同源判定，确保两边一致。
+        /// </summary>
+        internal bool IsTrialCompleted(LegendTrialDefinition trial) => IsTrialCompletedInVersionedState(trial);
 
         public void SyncTrialProgressFromWorld() {
             IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;

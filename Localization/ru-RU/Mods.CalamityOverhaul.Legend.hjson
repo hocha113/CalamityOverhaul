@@ -1,4 +1,4 @@
-﻿HalibutText: {
+HalibutText: {
 	FishByStudied:
 		'''
 		[i:CalamityMod/HalibutCannon]:
@@ -231,6 +231,8 @@ MuraText: {
 		Убей эту тварь; омой клинок её кровью и пламенем.
 		'''
 }
+
+// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
 
 HalibutTrialQuestLine: {
 	QuestCategory: Легенда о Палтусе

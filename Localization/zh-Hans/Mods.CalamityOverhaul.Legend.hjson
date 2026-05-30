@@ -195,6 +195,8 @@ MuraText: {
 	Subtest_Text10: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
 }
 
+TrialBlockedHint: 下一关需要启用相应内容后才能开始
+
 HalibutTrialQuestLine: {
 	QuestCategory: 比目鱼传说
 	TrackerWaiting: 目标不在场，等待召唤...
