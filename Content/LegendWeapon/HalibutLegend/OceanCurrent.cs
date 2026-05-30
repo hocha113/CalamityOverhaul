@@ -615,6 +615,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (StreamLife < 6) {
+                return;
+            }
+
             //绘制海洋生物
             DrawMarineLife();
 

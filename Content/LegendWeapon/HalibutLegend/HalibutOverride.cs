@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System;
@@ -22,6 +21,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 目标ID
         /// </summary>
         public override int TargetID => ID;
+        /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
+        public static float ItemScale => 0.8f;
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -115,6 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.height = 76;
             Item.useTime = 10;
             Item.useAnimation = 10;
+            Item.scale = ItemScale;
             Item.rare = CWRID.Rarity_HotPink > 0 ? CWRID.Rarity_HotPink : ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 2, 50, 0);
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -272,12 +274,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
             Vector2 weaponDrawPosition = player.GetPlayerStabilityCenter() + positionOffset;
 
-            //设置武器尺寸和原点
-            Vector2 weaponDimensions = new Vector2(item.width, item.height);
-            Vector2 spriteOrigin = GetItemSpriteOrigin();
-
             //应用持握样式
-            ApplyHoldingStyle(player, weaponRotation, weaponDrawPosition, weaponDimensions, spriteOrigin);
+            ApplyHoldingStyle(player, weaponRotation, weaponDrawPosition, item.Size, GetItemSpriteOrigin());
         }
 
         public override void UseItemFrame(Item item, Player player) {
@@ -322,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             bool isBullet = false;
             bool shouldSkipShoot = false;
 
-            position += velocity.UnitVector() * 62;
+            position += velocity.UnitVector() * 40;
 
             if (type == ProjectileID.Bullet) {
                 isBullet = true;
