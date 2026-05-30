@@ -218,7 +218,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? CheckDead() {
+            //初始化/登场阶段锁血
             if (npc.ai[0] == 1 || npc.ai[0] == 0) {
+                npc.dontTakeDamage = true;
+                npc.life = 1;
+                return false;
+            }
+            //死亡演出：演出进行中锁血，仅当演出推进到终点（由 UpdateDeathPerformance 主动放行）时才真正死亡
+            if (npc.ai[0] == DeathPerformanceMainState) {
+                if (deathTimer < PhaseFinaleEnd) {
+                    npc.dontTakeDamage = true;
+                    npc.life = 1;
+                    return false;
+                }
+                return true;
+            }
+            //只剩头部时即便被秒杀也先锁血，等待下一帧 AI 开启死亡演出，避免"只炸一下就死"
+            if (npc.ai[0] == 3f && noArm) {
                 npc.dontTakeDamage = true;
                 npc.life = 1;
                 return false;

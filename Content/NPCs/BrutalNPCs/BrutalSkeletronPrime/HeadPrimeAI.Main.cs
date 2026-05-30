@@ -61,6 +61,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             ThisFromeFindPlayer();
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
+
+            //死亡演出接管——一旦进入便完全托管本帧 AI，跳过常规寻敌/攻击/脱战/切阶段逻辑
+            if (UpdateDeathPerformance()) {
+                UpdateMechThermalVisualState();
+                ai9++;
+                return false;
+            }
+
             if (npc.ai[0] > 1) {
                 DealingFury();
             }
@@ -126,6 +134,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// </list>
         /// </summary>
         private void UpdateMechThermalVisualState() {
+            //死亡演出——满强度红色警告脉动，烘托"严重过载即将解体"的氛围
+            if (npc.ai[0] == DeathPerformanceMainState) {
+                MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 1f,
+                    0.5f + 0.5f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 18.0));
+                return;
+            }
+
             //登场或传送期间不施加滤镜，保持原始演出
             if (npc.ai[0] == 1f || ai10 > 0f) {
                 return;
