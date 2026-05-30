@@ -1,11 +1,9 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 {
