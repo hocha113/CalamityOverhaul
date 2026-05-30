@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.Shepel;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System;
@@ -112,7 +113,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
         protected override LocalizedText TrackerFightingText => TrackerFighting;
         protected override LocalizedText TrackerBriefText => TrackerBrief;
         protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
-        protected override bool CanCreateEntries(Player player) => FirstMetShepel.CanStartSHPCTrialQuests(player);
+        protected override bool CanCreateEntries(Player player) {
+            if (ScenarioManager.IsActive()) {
+                return false;
+            }
+            return player.HasItem(SHPCOverride.ID);
+        }
         protected override IEntrustEntryStyle CreateEntryStyle() => new SHPCEntryStyle();
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new SHPCTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()

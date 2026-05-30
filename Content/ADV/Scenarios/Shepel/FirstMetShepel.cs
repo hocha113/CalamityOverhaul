@@ -61,28 +61,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
             BlockedBy = ScenarioBlockers.Boss | ScenarioBlockers.BossRush | ScenarioBlockers.ActiveScenario,
         };
 
-        internal static bool CanStartSHPCTrialQuests(Player player) {
-            if (player == null || !player.active || !player.HasItem(SHPCOverride.ID)) {
-                return false;
-            }
-
-            if (!player.TryGetADVSave(out var save)) {
-                return false;
-            }
-
-            var data = save.Get<ShepelADVData>();
-            if (data.FirstSHPCIntroCompleted) {
-                return true;
-            }
-
-            if (data.FirstSHPCObtained && !ScenarioManager.IsActive()) {
-                data.FirstSHPCIntroCompleted = true;
-                return true;
-            }
-
-            return false;
-        }
-
         private static void MarkFirstSHPCIntroCompleted() {
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.Get<ShepelADVData>().FirstSHPCIntroCompleted = true;

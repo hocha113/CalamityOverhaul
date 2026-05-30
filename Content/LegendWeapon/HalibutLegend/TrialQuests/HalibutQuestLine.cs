@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
@@ -88,10 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
         protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
 
         protected override bool CanCreateEntries(Player player) {
-            if (player == null || !player.TryGetADVSave(out var save)) {
-                return false;
-            }
-            if (!save.Get<HalibutADVData>().FirstMet || !save.Get<HalibutADVData>().PostFirstMetIsComplete) {
+            if (ScenarioManager.IsActive()) {
                 return false;
             }
             return player.HasHalibut();
