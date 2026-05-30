@@ -137,26 +137,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private void UpdatePerformanceVisuals(DestroyerStateContext context) {
             if (Timer < PreludeTime) {
-                //前奏：关节漏火花 + 零星电弧，机体"卡死"质感
-                if (Timer % 4 == 0) {
-                    SpawnSparksAlongWorm(context, 2, 5f, new Color(255, 190, 70));
+                //前奏：屏幕内关节漏火花 + 零星小爆，机体"卡死"质感
+                if (Timer % 3 == 0) {
+                    SpawnSparksOnVisibleSegments(context, 0.25f, 5f, new Color(255, 190, 70));
                 }
-                if (Timer % 10 == 0) {
-                    SpawnBlast(PickWormPoint(context), Main.rand.NextFloat(0.5f, 0.9f), false);
+                if (Timer % 6 == 0) {
+                    SpawnBlastsOnVisibleSegments(context, 0.1f, 0f);
                 }
             }
             else if (Timer < FinaleStart) {
-                //连环爆炸：随进度由疏到密
+                //连环爆炸：每波间隔由疏到密，且每波点燃屏幕内大量体节，使可见区域爆炸非常密集
                 float chainProgress = (Timer - PreludeTime) / (float)ChainTime; //0→1
-                int interval = (int)MathHelper.Lerp(11f, 3f, chainProgress);
-                if (Timer % Math.Max(interval, 2) == 0) {
-                    float scale = Main.rand.NextFloat(0.9f, 1.6f) * (0.8f + chainProgress * 0.7f);
-                    SpawnBlast(PickWormPoint(context), scale, false);
-                    DoScreenShake(context.Npc.Center, 4f + chainProgress * 6f, 12);
+                int burstInterval = (int)MathHelper.Lerp(7f, 2f, chainProgress);
+                if (Timer % Math.Max(burstInterval, 2) == 0) {
+                    float perSegmentChance = MathHelper.Lerp(0.18f, 0.6f, chainProgress);
+                    int blasts = SpawnBlastsOnVisibleSegments(context, perSegmentChance, chainProgress);
+                    if (blasts > 0) {
+                        DoScreenShake(context.Npc.Center, 4f + chainProgress * 7f, 12);
+                    }
                 }
-                //持续的火花与漏烟
-                if (Timer % 3 == 0) {
-                    SpawnSparksAlongWorm(context, 3, 7f, Color.Orange);
+                //持续火花
+                if (Timer % 2 == 0) {
+                    SpawnSparksOnVisibleSegments(context, 0.3f, 7f, Color.Orange);
                 }
             }
             else if (Timer == FinaleStart) {
@@ -166,19 +168,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
 
         /// <summary>
-        /// 在整条蠕虫上随机取一个爆点（绝大多数落在躯体，少量落在头部）
+        /// 对屏幕内的头部与各体节按概率生成爆炸，屏幕外的节点直接跳过（性能优化 + 把演出集中到可见区域）。
+        /// 返回实际生成的爆炸数量。
         /// </summary>
-        private static Vector2 PickWormPoint(DestroyerStateContext context) {
-            NPC npc = context.Npc;
-            NPC chosen = npc;
-            var segs = context.BodySegments;
-            if (segs.Count > 0 && !Main.rand.NextBool(8)) {
-                NPC candidate = segs[Main.rand.Next(segs.Count)];
-                if (candidate.Alives()) {
-                    chosen = candidate;
+        private static int SpawnBlastsOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float intensity) {
+            if (VaultUtils.isServer) {
+                return 0;
+            }
+            int count = TrySpawnBlastAt(context.Npc, perSegmentChance, intensity);
+            foreach (var seg in context.BodySegments) {
+                if (seg.Alives()) {
+                    count += TrySpawnBlastAt(seg, perSegmentChance, intensity);
                 }
             }
-            return chosen.Center + Main.rand.NextVector2Circular(chosen.width * 0.5f, chosen.height * 0.5f);
+            return count;
+        }
+
+        private static int TrySpawnBlastAt(NPC seg, float chance, float intensity) {
+            if (Main.rand.NextFloat() >= chance) {
+                return 0;
+            }
+            Vector2 pos = seg.Center + Main.rand.NextVector2Circular(seg.width * 0.55f, seg.height * 0.55f);
+            if (!OnScreen(pos)) {
+                return 0;
+            }
+            float scale = Main.rand.NextFloat(0.8f, 1.4f) * (0.85f + intensity * 0.6f);
+            SpawnBlast(pos, scale, false);
+            return 1;
         }
 
         /// <summary>
@@ -195,8 +211,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             PRTLoader.NewParticle<PRT_MechExplosion>(pos, Main.rand.NextVector2Circular(1.5f, 1.5f), warm, scale)
                 .Configure(Main.rand.Next(28, 40), warm);
 
-            //火花四溅
-            int sparkCount = isFinale ? 46 : Main.rand.Next(6, 11);
+            //火花四溅（密集连环靠数量取胜，单团精简粒子量）
+            int sparkCount = isFinale ? 46 : Main.rand.Next(4, 8);
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(3f, 11f) * (isFinale ? 1.6f : scale);
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel,
@@ -205,7 +221,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             //岩浆余烬
-            int emberCount = isFinale ? 26 : 4;
+            int emberCount = isFinale ? 26 : 2;
             for (int i = 0; i < emberCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
                 PRTLoader.NewParticle<PRT_LavaFire>(pos + Main.rand.NextVector2Circular(22f, 22f) * scale, vel,
@@ -213,7 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             //滚滚浓烟
-            int smokeCount = isFinale ? 18 : 3;
+            int smokeCount = isFinale ? 18 : 2;
             for (int i = 0; i < smokeCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.8f);
                 PRTLoader.NewParticle<PRT_Smoke>(pos, vel,
@@ -224,21 +240,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Lighting.AddLight(pos, warm.ToVector3() * (isFinale ? 3.2f : 1.2f) * scale);
 
-            SoundEngine.PlaySound(SoundID.Item14 with {
-                Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
-                Volume = isFinale ? 1f : 0.55f
-            }, pos);
+            //密集连环爆炸时按概率播放，避免大量爆音同帧叠加导致破音
+            if (isFinale || Main.rand.NextBool(3)) {
+                SoundEngine.PlaySound(SoundID.Item14 with {
+                    Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
+                    Volume = isFinale ? 1f : 0.4f
+                }, pos);
+            }
         }
 
         /// <summary>
-        /// 沿蠕虫多点喷射火花，模拟各处接缝喷火 / 电路过载
+        /// 对屏幕内的各体节按概率喷射火花，模拟各处接缝喷火 / 电路过载，屏幕外跳过
         /// </summary>
-        private static void SpawnSparksAlongWorm(DestroyerStateContext context, int count, float speed, Color color) {
+        private static void SpawnSparksOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float speed, Color color) {
             if (VaultUtils.isServer) {
                 return;
             }
-            for (int i = 0; i < count; i++) {
-                Vector2 pos = PickWormPoint(context);
+            foreach (var seg in context.BodySegments) {
+                if (!seg.Alives() || Main.rand.NextFloat() >= perSegmentChance) {
+                    continue;
+                }
+                Vector2 pos = seg.Center + Main.rand.NextVector2Circular(seg.width * 0.5f, seg.height * 0.5f);
+                if (!OnScreen(pos)) {
+                    continue;
+                }
                 Vector2 vel = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(1f, speed);
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel, color, Main.rand.NextFloat(0.7f, 1.3f))
                     .Configure(true, Main.rand.Next(12, 22));
@@ -257,7 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SpawnBlast(npc.Center, 4.5f, true);
 
             foreach (var seg in context.BodySegments) {
-                if (seg.Alives() && Main.rand.NextBool(2)) {
+                if (seg.Alives() && Main.rand.NextBool(2) && OnScreen(seg.Center)) {
                     SpawnBlast(seg.Center, Main.rand.NextFloat(1.6f, 2.8f), false);
                 }
             }
@@ -301,6 +326,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             PunchCameraModifier modifier = new PunchCameraModifier(pos, Main.rand.NextVector2Unit(),
                 strength, 8f, time, 2400f, "DestroyerDeath");
             Main.instance.CameraModifiers.Add(modifier);
+        }
+
+        /// <summary>
+        /// 判断世界坐标是否落在当前屏幕可见范围内（含一定外扩边距），用于跳过屏幕外的爆炸生成
+        /// </summary>
+        private static bool OnScreen(Vector2 worldPos, float margin = 260f) {
+            return worldPos.X > Main.screenPosition.X - margin
+                && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin
+                && worldPos.Y > Main.screenPosition.Y - margin
+                && worldPos.Y < Main.screenPosition.Y + Main.screenHeight + margin;
         }
 
         #endregion
