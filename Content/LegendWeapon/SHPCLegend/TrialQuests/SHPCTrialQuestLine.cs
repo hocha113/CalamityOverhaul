@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.ADV.Scenarios;
-using CalamityOverhaul.Content.ADV.Scenarios.Shepel;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System;
 using System.Collections.Generic;

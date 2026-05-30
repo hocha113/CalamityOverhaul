@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using InnoVault.GameSystem;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -125,8 +124,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                     VaultHook.Add(preDrawMethod, OnWikithisItem_PreDrawTooltipLine);
                     _preDrawTooltipLineHooked = true;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 CWRMod.Instance.Logger.Warn($"WikithisRef hook PreDrawTooltipLine failed: {e.Message}");
             }
         }
@@ -222,8 +220,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                     dict[key] = urls[i];
                     count++;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 CWRMod.Instance.Logger.Warn($"WikithisRef ForceOverwriteUrls failed: {e.Message}");
                 return 0;
             }
@@ -246,8 +243,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                         _keyTupleType = gen[0];
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 CWRMod.Instance.Logger.Warn($"WikithisRef GetItemReplacementsDict failed: {e.Message}");
             }
 

@@ -919,10 +919,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Timer < 10) {
                 //点燃阶段：从 0 快速涨到 baseHeight
                 visualHeight = MathHelper.Lerp(0f, baseHeight, Timer / 10f);
-            } else if (lifeRatio < 0.3f) {
+            }
+            else if (lifeRatio < 0.3f) {
                 //衰减阶段
                 visualHeight = baseHeight * (lifeRatio / 0.3f);
-            } else {
+            }
+            else {
                 //稳定燃烧：用 sin 波让高度自然起伏
                 visualHeight = baseHeight * (0.9f + (float)Math.Sin(swayPhase) * 0.1f);
             }

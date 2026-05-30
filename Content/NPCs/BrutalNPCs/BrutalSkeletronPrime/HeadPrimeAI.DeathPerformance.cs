@@ -1,8 +1,6 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.PRT;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

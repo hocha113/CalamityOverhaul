@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
-using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;

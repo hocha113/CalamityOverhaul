@@ -288,7 +288,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters
                         , armAngle + 0.22f * lockedDirection);
                 }
-            } else {
+            }
+            else {
                 //蓄力/收手阶段双臂举起跟随斧头
                 Owner.itemRotation = currentRotation;
                 if (CWRServerConfig.Instance.WeaponHandheldDisplay) {

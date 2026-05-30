@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
-using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+﻿using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests

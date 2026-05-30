@@ -1,5 +1,4 @@
-using System;
-using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
@@ -9,6 +8,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

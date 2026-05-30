@@ -1,6 +1,5 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors;
-using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

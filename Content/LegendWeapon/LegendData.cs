@@ -1,12 +1,12 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

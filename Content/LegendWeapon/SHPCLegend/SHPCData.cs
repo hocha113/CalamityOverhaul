@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+﻿using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

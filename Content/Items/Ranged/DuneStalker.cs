@@ -355,7 +355,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             if (Projectile.rotation == 0)
-            Projectile.rotation = Projectile.velocity.ToRotation();
+                Projectile.rotation = Projectile.velocity.ToRotation();
 
             Projectile.position += Owner.velocity / 2;
 
