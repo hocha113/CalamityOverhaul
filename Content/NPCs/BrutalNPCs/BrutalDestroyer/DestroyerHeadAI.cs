@@ -1,3 +1,4 @@
+using System;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
 using CalamityOverhaul.Content.Items.Summon;
@@ -31,6 +32,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         internal const int StretchTime = 360;
         internal const int BodyCount = 60;
+        /// <summary>
+        /// 头部生命值低于该值时进入死亡演出阶段
+        /// </summary>
+        internal const int DeathPerformanceTriggerLife = 10;
 
         private DestroyerStateMachine stateMachine;
         private DestroyerStateContext stateContext;
@@ -91,6 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             FindTarget();
             UpdateStateContext();
+            CheckDeathPerformanceTrigger();
 
             //更新状态机
             stateMachine?.Update();
@@ -121,6 +127,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (Main.GameUpdateCount % 60 == 0) {
                 stateContext.RefreshBodySegments();
+            }
+        }
+
+        /// <summary>
+        /// 生命值低于阈值时切入死亡演出。仅服务端/单人端驱动状态转移，客户端经 npc.ai[2] 同步。
+        /// </summary>
+        private void CheckDeathPerformanceTrigger() {
+            if (VaultUtils.isClient || stateContext == null || stateMachine == null) {
+                return;
+            }
+            if (stateContext.DeathPerformanceFinished) {
+                return;
+            }
+            if (stateMachine.CurrentState is DestroyerDeathState or DestroyerDespawnState) {
+                return;
+            }
+            if (npc.life <= DeathPerformanceTriggerLife) {
+                stateMachine.ForceChangeState(new DestroyerDeathState());
             }
         }
 
@@ -184,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             targetPlayer = Main.player[npc.target];
 
             if (!targetPlayer.Alives()) {
-                if (!VaultUtils.isClient && stateMachine?.CurrentState is not DestroyerDespawnState) {
+                if (!VaultUtils.isClient && stateMachine?.CurrentState is not DestroyerDespawnState and not DestroyerDeathState) {
                     stateMachine?.ForceChangeState(new DestroyerDespawnState());
                 }
             }
@@ -271,6 +295,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 visIntensity = 0.8f;
             }
 
+            //死亡演出——整条蠕虫剧烈红黄过载脉冲，表现"严重故障"
+            if (stateMachine?.CurrentState is DestroyerDeathState) {
+                visMode = MechBossVisualMode.Warning;
+                visIntensity = 1f;
+                visProgress = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 18f);
+            }
+
             MechBossVisualState.Push(npc.whoAmI, visMode, visIntensity, visProgress);
         }
 
@@ -332,6 +363,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool CheckActive() => false;
+
+        /// <summary>
+        /// 死亡演出未结束前一律锁血拦截死亡；演出完毕后放行，触发正常掉落与击杀标记。
+        /// 同时作为高额伤害一击致死的兜底，确保必定播放死亡演出。
+        /// </summary>
+        public override bool? CheckDead() {
+            if (stateContext == null || stateContext.DeathPerformanceFinished) {
+                return true;
+            }
+
+            npc.life = 1;
+            npc.dontTakeDamage = true;
+
+            if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not DestroyerDeathState) {
+                stateMachine.ForceChangeState(new DestroyerDeathState());
+            }
+
+            return false;
+        }
         #endregion
 
         #region 地图图标

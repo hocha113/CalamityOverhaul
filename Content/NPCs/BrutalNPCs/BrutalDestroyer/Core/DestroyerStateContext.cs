@@ -30,6 +30,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         public bool IsDeathMode { get; set; }
         //固定出招顺序的当前索引
         public int AttackPhaseIndex { get; set; }
+        /// <summary>
+        /// 死亡演出是否已经播放完毕。<see cref="States.DestroyerDeathState"/> 在演出结束时置为 true，
+        /// 头部 AI 的 CheckDead 据此放行真正的死亡（之前一律锁血拦截）。
+        /// </summary>
+        public bool DeathPerformanceFinished { get; set; }
         #endregion
 
         #region 蓄力特效数据
