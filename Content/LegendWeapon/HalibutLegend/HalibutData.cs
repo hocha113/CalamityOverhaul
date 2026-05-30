@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -6,7 +8,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutData : LegendData
     {
-        public override int TargetLevel => InWorldBossPhase.Halibut_Level();
+        internal override IReadOnlyList<LegendTrialDefinition> TrialDefinitions => LegendTrialRouteCatalog.HalibutProgression;
+
+        public override int TargetLevel => GetVersionedTrialTargetLevel();
 
         /// <summary>
         /// 获得武器成长等级

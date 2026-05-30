@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             tooltips.ReplacePlaceholder("[Lang2]", UnlockSkill2(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]");
             tooltips.ReplacePlaceholder("[Lang3]", UnlockSkill3(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]");
 
-            int index = InWorldBossPhase.Mura_Level();
+            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
             string num = (index + 1).ToString();
             if (index == 28) {
                 num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");

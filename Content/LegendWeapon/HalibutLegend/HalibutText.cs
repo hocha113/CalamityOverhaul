@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //试炼文本已迁移至委托系统(HalibutQuestLine)，此处仅保留传奇状态文本
             string keyDisplay = CWRKeySystem.QuestManager_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRLocText.Instance.Notbound.Value;
             tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("Legend_QuestManager_Hint").Replace("{KEY}", keyDisplay), "");
-            int index = InWorldBossPhase.Halibut_Level();
+            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
             string num = (index + 1).ToString();
             if (index == 14) {
                 num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");

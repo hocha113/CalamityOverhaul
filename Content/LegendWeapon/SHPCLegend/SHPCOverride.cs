@@ -12,7 +12,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityOverhaul.Content.InWorldBossPhase;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
@@ -397,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             string keyDisplay = CWRKeySystem.QuestManager_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRLocText.Instance.Notbound.Value;
             tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("Legend_QuestManager_Hint").Replace("{KEY}", keyDisplay), "");
-            int index = SHPC_Level();
+            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
             string num = (index + 1).ToString();
             if (index == 22) {
                 num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");

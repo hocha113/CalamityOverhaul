@@ -1,71 +1,173 @@
 // ============================================================================
-// CyberBossBar.fx 赛博朋克2077风格敌人血条(精简版 ps_2_0)
-// 平行四边形 / 刻度 / 扫描线 / 威胁色渐变 / 受击白闪
+// CyberBossBar.fx 赛博朋克2077风格敌人血条（材质式 HUD，ps_3_0）
+// 单个 quad 内程序化生成：平行四边形分段槽、管状光泽、能量流动、
+// 扫描线、表面噪声、填充前沿高光、色散、受击白闪、残血故障、柔和漏光
+// 不采样输入贴图，纯由 uv 生成；按预乘 alpha 输出以匹配 BlendState.AlphaBlend
+// ============================================================================
+// 参数说明：
+//   uResolution  quad 像素尺寸 (宽,高)
+//   uLifeRatio   平滑后的当前血量比例 (0~1)
+//   uTrailRatio  延迟血量比例（受击后缓降，画暗红残影）
+//   uHitFlash    受击白闪强度 (0~1)
+//   uSegments    分段数量
+//   uAlpha       全局淡入淡出
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
+float uAlpha;
+float2 uResolution;
 float uLifeRatio;
+float uTrailRatio;
 float uHitFlash;
-float2 uBarSize;
+float uSegments;
 
-float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
+//================== 工具函数 ==================
+
+float hash21(float2 p) {
+    float3 p3 = frac(float3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return frac((p3.x + p3.y) * p3.z);
+}
+
+float valueNoise(float2 p) {
+    float2 i = floor(p);
+    float2 f = frac(p);
+    f = f * f * (3.0 - 2.0 * f);
+    float a = hash21(i);
+    float b = hash21(i + float2(1.0, 0.0));
+    float c = hash21(i + float2(0.0, 1.0));
+    float d = hash21(i + float2(1.0, 1.0));
+    return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
+}
+
+//================== 主像素着色 ==================
+
+float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
 {
-    //平行四边形边界：上边右移下边左移
-    float skew = 0.06;
-    float leftEdge  = skew * (1.0 - uv.y);
+    float2 ipx = 1.0 / uResolution;
+    float2 p = uv * uResolution;
+
+    //—— 平行四边形剪切：上边右移、下边左移，制造倾斜的电子读数感 ——
+    float skew = 0.08;
+    float leftEdge = skew * (1.0 - uv.y);
     float rightEdge = 1.0 - skew * uv.y;
-    float inside = step(leftEdge, uv.x) * step(uv.x, rightEdge);
+    float aaX = 1.5 * ipx.x;
+    float insideX = smoothstep(leftEdge - aaX, leftEdge + aaX, uv.x)
+                  * (1.0 - smoothstep(rightEdge - aaX, rightEdge + aaX, uv.x));
+    if (insideX <= 0.0) {
+        return float4(0.0, 0.0, 0.0, 0.0);
+    }
 
-    float t = (uv.x - leftEdge) / (rightEdge - leftEdge);
+    //沿条方向的归一化位置
+    float t = (uv.x - leftEdge) / max(rightEdge - leftEdge, 1e-4);
 
-    //威胁色渐变(红→琥珀黄)
-    float3 high = float3(1.00, 0.82, 0.08);
-    float3 low  = float3(1.00, 0.12, 0.16);
-    float3 barCol = lerp(low, high, smoothstep(0.15, 0.85, uLifeRatio));
-
-    //填充遮罩
-    float filled = step(t, uLifeRatio);
-
-    //管状渐变(中心亮)
+    //跨条厚度方向：nrm 顶=-1 底=+1，vEdge 让上下边缘柔化（不像硬矩形）
     float dy = uv.y - 0.5;
-    float vert = 1.0 - dy * dy * 2.0;
+    float nrm = clamp(dy * 2.0, -1.0, 1.0);
+    float vEdge = 1.0 - smoothstep(0.5 - 3.0 * ipx.y, 0.5, abs(dy));
 
-    //扫描线
-    float scan = 1.0 - step(0.5, frac(uv.y * uBarSize.y * 0.6)) * 0.15;
+    //—— 威胁配色：满血偏珊瑚红，残血偏猩红（始终红色系，不用黄）——
+    float threat = saturate(uLifeRatio);
+    float3 cFull = float3(1.00, 0.45, 0.34);
+    float3 cLow  = float3(1.00, 0.17, 0.19);
+    float3 fillBase = lerp(cLow, cFull, smoothstep(0.18, 0.72, threat));
+    float3 hot  = float3(1.00, 0.78, 0.62);
+    float3 deep = float3(0.30, 0.035, 0.05);
+    float3 slot = float3(0.06, 0.018, 0.022);
 
-    //刻度：每10%一条
-    float tickPos = abs(frac(t * 10.0) - 0.5);
-    float tick = step(0.46, tickPos);
+    //—— 分段：每段尾部留出间隙，形成断续信号槽 ——
+    float segN = max(uSegments, 1.0);
+    float ti = t * segN;
+    float segLocal = frac(ti);
+    float gapFrac = 0.06;
+    //在段尾 gapFrac 区间内形成断口，边界留极窄 AA 过渡
+    float inGap = smoothstep(1.0 - gapFrac, 1.0 - gapFrac + 0.012, segLocal);
 
-    //领先缘亮
-    float lead = saturate(1.0 - abs(t - uLifeRatio) * 80.0) * filled;
+    //—— 状态：已填充 / 残影(掉血缓降) ——
+    float filled = step(t, uLifeRatio);
+    float trail = step(t, uTrailRatio) * (1.0 - filled);
 
-    //沿斜边的左右亮线(平行四边形侧缘)
-    float edgeLeft  = smoothstep(0.012, 0.0, (uv.x - leftEdge));
-    float edgeRight = smoothstep(0.012, 0.0, (rightEdge - uv.x));
-    float sideEdge = (edgeLeft + edgeRight) * inside;
+    //管状光泽：中心亮、上缘补光、下缘压暗
+    float vy = saturate(1.0 - nrm * nrm);
+    float tube = 0.5 + 0.5 * vy;
+    float rimTop = smoothstep(0.55, 1.0, -nrm);
+    float shadeBot = smoothstep(0.5, 1.0, nrm);
 
-    //空区底色
-    float3 emptyCol = float3(0.08, 0.04, 0.02);
+    //沿段流动的能量脉冲
+    float flow = sin(t * 46.0 - uTime * 3.2) * 0.5 + 0.5;
 
-    //填充着色
-    float3 fillCol = barCol * vert * scan;
-    fillCol += barCol * lead * 1.8;
-    fillCol = lerp(fillCol, float3(1.0, 0.95, 0.8), uHitFlash * 0.45);
+    float3 fillCol = fillBase * tube;
+    fillCol = lerp(fillCol, hot, flow * 0.10);
+    fillCol += hot * rimTop * 0.35;
+    fillCol *= 1.0 - shadeBot * 0.35;
 
-    float3 color = lerp(emptyCol, fillCol, filled);
-    color -= tick * 0.18;
-    color += barCol * sideEdge * 0.9;
+    float3 trailCol = deep * (0.7 + 0.3 * vy);
 
-    return float4(color, inside) * vertexColor;
+    //—— 合成底色：空槽 → 残影 → 填充 ——
+    float3 col = slot;
+    float a = 0.52;
+    col = lerp(col, trailCol, trail);
+    a = lerp(a, 0.60, trail);
+    col = lerp(col, fillCol, filled);
+    a = lerp(a, 0.94, filled);
+
+    //段分隔细亮线（仅填充段）
+    float sep = smoothstep(0.018, 0.0, abs(segLocal - (1.0 - gapFrac)));
+    col += fillBase * sep * filled * 0.5;
+
+    //—— 填充前沿高光 + 色散 ——
+    float leadDist = abs(t - uLifeRatio);
+    float lead = smoothstep(0.016, 0.0, leadDist)
+               * step(0.001, uLifeRatio) * (1.0 - step(0.999, uLifeRatio));
+    col += hot * lead * 1.9;
+    a = max(a, lead * 0.95);
+    col.r += smoothstep(0.03, 0.0, abs((t - uLifeRatio) - 0.012)) * 0.45;
+    col.b += smoothstep(0.03, 0.0, abs((t - uLifeRatio) + 0.012)) * 0.28;
+
+    //残影前沿（暗红微亮）
+    float trailLead = smoothstep(0.012, 0.0, abs(t - uTrailRatio))
+                    * step(uLifeRatio, t) * step(t, uTrailRatio + 0.02);
+    col += deep * 3.0 * trailLead;
+
+    //扫描线（横向像素行）
+    float scan = 0.93 + 0.07 * step(0.5, frac(p.y * 0.7 + uTime * 0.3));
+    col *= scan;
+
+    //表面颗粒噪声
+    float grain = valueNoise(p * 0.8 + float2(0.0, uTime * 0.7));
+    col += (grain - 0.5) * 0.05 * (filled + 0.3);
+
+    //间隙：压暗并削弱 alpha，形成断口
+    col = lerp(col, slot * 0.3, inGap);
+    a *= 1.0 - inGap * 0.82;
+
+    //受击白闪
+    col = lerp(col, float3(1.0, 0.93, 0.86), uHitFlash * 0.5 * (filled + 0.15));
+    a = max(a, uHitFlash * 0.25 * filled);
+
+    //—— 残血故障：高频闪烁 + 横向错位条带 + 猩红染色 ——
+    float danger = 1.0 - smoothstep(0.0, 0.26, threat);
+    if (danger > 0.001) {
+        float flick = step(0.55, frac(uTime * 9.0));
+        col *= 1.0 + danger * flick * 0.22;
+        float band = frac(p.y * 0.09 - uTime * 1.5);
+        float bandLine = smoothstep(0.46, 0.5, band) * (1.0 - smoothstep(0.5, 0.54, band));
+        col += cLow * bandLine * danger * 0.55 * filled;
+    }
+
+    col = max(col, 0.0);
+
+    //预乘 alpha 输出（匹配 BlendState.AlphaBlend）
+    float finalA = saturate(a * vEdge * insideX * uAlpha);
+    return float4(col * finalA, finalA);
 }
 
 technique Technique1
 {
     pass CyberBossBarPass
     {
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

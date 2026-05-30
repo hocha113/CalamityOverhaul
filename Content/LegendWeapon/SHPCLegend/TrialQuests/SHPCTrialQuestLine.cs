@@ -1,14 +1,15 @@
 ﻿using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.ADV.Scenarios.Shepel;
+using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 {
-    internal class SHPCTrialQuestLine : ModSystem, ILocalizedModType
+    internal class SHPCTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
 
@@ -26,10 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 
         #endregion
 
-        private static int[][] trialTargetNpcs;
-
-        /// <summary>每条试炼独立的完成判定，与等级顺序解耦，以避免乱序击败后试炼仍不能完成的问题</summary>
-        private static Func<bool>[] trialCompletedChecks;
+        private static IReadOnlyList<LegendTrialDefinition> trials;
 
         public override void SetStaticDefaults() {
             QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "SHPC·试炼");
@@ -99,147 +97,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
         }
 
         public override void PostSetupContent() {
-            trialTargetNpcs = new int[TRIAL_COUNT][];
-            //试炼0 (等级0→1): 克苏鲁之眼
-            trialTargetNpcs[0] = [NPCID.EyeofCthulhu];
-            //试炼1 (等级1→2): 世界吞噬者 / 克苏鲁之脑
-            trialTargetNpcs[1] = [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu];
-            //试炼2 (等级2→3): 腐巢意志 / 血肉宿主
-            trialTargetNpcs[2] = [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive];
-            //试炼3 (等级3→4): 史莱姆之神
-            trialTargetNpcs[3] = [CWRID.NPC_SlimeGodCore];
-            //试炼4 (等级4→5): 血肉墙
-            trialTargetNpcs[4] = [NPCID.WallofFlesh];
-            //试炼5 (等级5→6): 渊海灾虫
-            trialTargetNpcs[5] = [CWRID.NPC_AquaticScourgeHead];
-            //试炼6 (等级6→7): 硫磺火元素
-            trialTargetNpcs[6] = [CWRID.NPC_BrimstoneElemental];
-            //试炼7 (等级7→8): 毁灭者
-            trialTargetNpcs[7] = [NPCID.TheDestroyer];
-            //试炼8 (等级8→9): 双子魔眼
-            trialTargetNpcs[8] = [NPCID.Retinazer, NPCID.Spazmatism];
-            //试炼9 (等级9→10): 机械骷髅王
-            trialTargetNpcs[9] = [NPCID.SkeletronPrime];
-            //试炼10 (等级10→11): 灾厄之影
-            trialTargetNpcs[10] = [CWRID.NPC_CalamitasClone];
-            //试炼11 (等级11→12): 世纪之花
-            trialTargetNpcs[11] = [NPCID.Plantera];
-            //试炼12 (等级12→13): 石巨人
-            trialTargetNpcs[12] = [NPCID.Golem, NPCID.GolemHead];
-            //试炼13 (等级13→14): 邪教徒
-            trialTargetNpcs[13] = [NPCID.CultistBoss];
-            //试炼14 (等级14→15): 月球领主
-            trialTargetNpcs[14] = [NPCID.MoonLordCore];
-            //试炼15 (等级15→16): 亵渎天神
-            trialTargetNpcs[15] = [CWRID.NPC_Providence];
-            //试炼16 (等级16→17): 噬魂幽花
-            trialTargetNpcs[16] = [CWRID.NPC_Polterghast];
-            //试炼17 (等级17→18): 神明吞噬者
-            trialTargetNpcs[17] = [CWRID.NPC_DevourerofGodsHead];
-            //试炼18 (等级18→19): 丛林龙犽戎
-            trialTargetNpcs[18] = [CWRID.NPC_Yharon];
-            //试炼19 (等级19→20): 星流巨械（追踪血量最低的一台）
-            trialTargetNpcs[19] = [CWRID.NPC_AresBody, CWRID.NPC_Apollo,
-                CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead];
-            //试炼20 (等级20→21): 至尊灾厄
-            trialTargetNpcs[20] = [CWRID.NPC_SupremeCalamitas];
-            //试炼21 (等级21→22): 终焉之战，无可追踪的固定NPC，完成后等级直接变22
-            trialTargetNpcs[21] = [];
-
-            //以下完成判定与 InWorldBossPhase.SHPC_Level() 中的跳级条件一一对应，仅去除“前置全部达成”的顺序锁
-            trialCompletedChecks = new Func<bool>[TRIAL_COUNT];
-            trialCompletedChecks[0] = InWorldBossPhase.DownedV1;
-            trialCompletedChecks[1] = InWorldBossPhase.DownedV2;
-            trialCompletedChecks[2] = () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke();
-            trialCompletedChecks[3] = InWorldBossPhase.Downed5;
-            trialCompletedChecks[4] = () => Main.hardMode;
-            trialCompletedChecks[5] = InWorldBossPhase.Downed8;
-            trialCompletedChecks[6] = InWorldBossPhase.Downed7;
-            trialCompletedChecks[7] = () => NPC.downedMechBoss1;
-            trialCompletedChecks[8] = () => NPC.downedMechBoss2;
-            trialCompletedChecks[9] = () => NPC.downedMechBoss3;
-            trialCompletedChecks[10] = InWorldBossPhase.Downed10;
-            trialCompletedChecks[11] = InWorldBossPhase.VDownedV7;
-            trialCompletedChecks[12] = InWorldBossPhase.DownedV7;
-            trialCompletedChecks[13] = InWorldBossPhase.DownedV8;
-            trialCompletedChecks[14] = InWorldBossPhase.VDownedV16;
-            trialCompletedChecks[15] = InWorldBossPhase.Downed19;
-            trialCompletedChecks[16] = InWorldBossPhase.Downed23;
-            trialCompletedChecks[17] = InWorldBossPhase.Downed27;
-            trialCompletedChecks[18] = InWorldBossPhase.Downed28;
-            trialCompletedChecks[19] = InWorldBossPhase.Downed29;
-            trialCompletedChecks[20] = InWorldBossPhase.Downed30;
-            trialCompletedChecks[21] = InWorldBossPhase.Downed32;
+            trials = LegendTrialRouteCatalog.CreateSHPC(TrialTitles, TrialSummaries);
         }
 
-        public override void PostUpdateEverything() {
-            if (Main.dedServ || Main.gameMenu) return;
+        protected override string KeyPrefix => KEY_PREFIX;
+        protected override int LegacyTrialCount => TRIAL_COUNT;
+        protected override LocalizedText QuestCategoryText => QuestCategory;
+        protected override LocalizedText TrackerWaitingText => TrackerWaiting;
+        protected override LocalizedText TrackerFightingText => TrackerFighting;
+        protected override LocalizedText TrackerBriefText => TrackerBrief;
+        protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
+        protected override bool CanCreateEntries(Player player) => FirstMetShepel.CanStartSHPCTrialQuests(player);
+        protected override IEntrustEntryStyle CreateEntryStyle() => new SHPCEntryStyle();
+        protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new SHPCTrackerWidgetStyle();
+        protected override Func<bool> CreateTrackerVisibilityCheck()
+            => static () => Main.LocalPlayer.GetItem().type == SHPCOverride.ID;
 
-            var manager = QuestManagerUI.Instance;
-            if (manager == null) return;
-
-            bool canStart = FirstMetShepel.CanStartSHPCTrialQuests(Main.LocalPlayer);
-            int level = InWorldBossPhase.SHPC_Level();
-
-            for (int i = 0; i < TRIAL_COUNT; i++) {
-                SyncTrial(manager, i, level, canStart);
-            }
-        }
-
-        private void SyncTrial(QuestManagerUI manager, int trialIndex, int currentLevel, bool allowCreate = true) {
-            string key = KEY_PREFIX + trialIndex;
-
-            bool isDone = (trialCompletedChecks[trialIndex]?.Invoke() == true) || (trialIndex < currentLevel);
-
-            if (trialIndex > currentLevel) {
-                manager.UnregisterQuest(key);
-            }
-            else if (isDone) {
-                var entry = EnsureTrialEntry(manager, trialIndex, completed: true, allowCreate: allowCreate);
-                if (entry != null && entry.Status != QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Completed, 1f);
-                }
-            }
-            else {
-                var entry = EnsureTrialEntry(manager, trialIndex, allowCreate: allowCreate);
-                if (entry == null) {
-                    return;
-                }
-                else if (entry.Status == QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Active, 0f);
-                }
-            }
-        }
-
-        private SHPCTrialQuestEntry EnsureTrialEntry(QuestManagerUI manager, int trialIndex, bool completed = false, bool allowCreate = true) {
-            string key = KEY_PREFIX + trialIndex;
-            var entry = manager.GetEntry(key) as SHPCTrialQuestEntry;
-            if (entry != null) return entry;
-            if (!allowCreate) return null;
-
-            entry = CreateTrialEntry(trialIndex);
-            if (completed) {
-                entry.Status = QuestEntryStatus.Completed;
-                entry.Progress = 1f;
-            }
-            manager.RegisterQuest(entry);
-            return entry;
-        }
-
-        private SHPCTrialQuestEntry CreateTrialEntry(int trialIndex) {
-            return new SHPCTrialQuestEntry(KEY_PREFIX + trialIndex,
-                TrialTitles[trialIndex], TrialSummaries[trialIndex], QuestCategory) {
-                Priority = TRIAL_COUNT - trialIndex,
-                EntryStyle = new SHPCEntryStyle(),
-                TrackerStyle = new SHPCTrackerWidgetStyle(),
-                TargetNpcTypes = trialTargetNpcs[trialIndex],
-                IsCompletedCheck = trialCompletedChecks[trialIndex],
+        protected override LegendTrialQuestEntry CreateTrialEntry(LegendTrialDefinition trial, int routeIndex, int routeCount) {
+            var entry = new SHPCTrialQuestEntry(KEY_PREFIX + trial.Key, trial.Title, trial.Summary, QuestCategory) {
+                Trial = trial,
+                Priority = routeCount - routeIndex,
+                EntryStyle = CreateEntryStyle(),
+                TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,
                 BriefFormat = TrackerBrief,
                 //左侧追踪窗口仅在玩家手持SHPC时显示，避免常驻打扰
-                TrackerVisibilityCheck = static () => Main.LocalPlayer.GetItem().type == SHPCOverride.ID,
+                TrackerVisibilityCheck = CreateTrackerVisibilityCheck(),
             };
+            return entry;
         }
     }
 }

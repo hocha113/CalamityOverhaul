@@ -1,9 +1,11 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -83,6 +85,18 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <para>会持久化到磁盘和网络同步，进入这些世界时直接跳过弹窗、静默升级</para>
         /// </summary>
         public List<string> TrustedWorldFullNames = new();
+        /// <summary>
+        /// 试炼路线数据版本。旧物品没有该字段时，会从旧的连续等级迁移为稳定试炼键。
+        /// </summary>
+        public int TrialSchemaVersion;
+        /// <summary>
+        /// 当前可用试炼路线签名，用于识别外部模组开关导致的路线重链接。
+        /// </summary>
+        public string TrialRouteSignature = string.Empty;
+        /// <summary>
+        /// 已真实完成过的稳定试炼键。它记录“做过哪些试炼”，而不是只记录数组下标。
+        /// </summary>
+        public List<string> CompletedTrialKeys = new();
 
         /// <summary>
         /// 升级世界标签是否完全为空(说明这是首次升级)
@@ -96,6 +110,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// 这个传奇应该升级到的等级，由派生类根据世界 Boss 进度等条件计算
         /// </summary>
         public virtual int TargetLevel => 0;
+        /// <summary>
+        /// 当前传奇使用的版本化试炼路线。没有试炼路线的传奇保持 null。
+        /// </summary>
+        internal virtual IReadOnlyList<LegendTrialDefinition> TrialDefinitions => null;
+        /// <summary>
+        /// 当前试炼路线 schema 版本。
+        /// </summary>
+        public virtual int CurrentTrialSchemaVersion => 1;
 
         /// <summary>
         /// 兼容旧字段名：保留对外暴露的<see cref="DontUpgradeName"/>属性
@@ -118,6 +140,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             foreach (var w in TrustedWorldFullNames) {
                 writer.Write(w ?? string.Empty);
             }
+            writer.Write(TrialSchemaVersion);
+            writer.Write(TrialRouteSignature ?? string.Empty);
+            CompletedTrialKeys ??= new List<string>();
+            writer.Write(CompletedTrialKeys.Count);
+            foreach (string key in CompletedTrialKeys) {
+                writer.Write(key ?? string.Empty);
+            }
             SendLegend(item, writer);
         }
 
@@ -136,6 +165,22 @@ namespace CalamityOverhaul.Content.LegendWeapon
             TrustedWorldFullNames = new List<string>(trustedCount);
             for (int i = 0; i < trustedCount; i++) {
                 TrustedWorldFullNames.Add(reader.ReadString());
+            }
+            TrialSchemaVersion = reader.ReadInt32();
+            TrialRouteSignature = reader.ReadString();
+            int completedCount = reader.ReadInt32();
+            if (completedCount < 0 || completedCount > 1024) {
+                CWRMod.Instance.Logger.Warn($"[LegendData:NetReceive] completedCount out of range ({completedCount}), skipping");
+                CompletedTrialKeys = new List<string>();
+                ReceiveLegend(item, reader);
+                return;
+            }
+            CompletedTrialKeys = new List<string>(completedCount);
+            for (int i = 0; i < completedCount; i++) {
+                string key = reader.ReadString();
+                if (!string.IsNullOrEmpty(key) && !CompletedTrialKeys.Contains(key)) {
+                    CompletedTrialKeys.Add(key);
+                }
             }
             ReceiveLegend(item, reader);
         }
@@ -157,6 +202,16 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //仅持久化信任世界列表(SkipUpgradeWorldFullName 是会话级标记，不入档)
             if (TrustedWorldFullNames != null && TrustedWorldFullNames.Count > 0) {
                 tag["LegendData:TrustedWorlds"] = TrustedWorldFullNames;
+            }
+            if (TrialDefinitions != null) {
+                SyncTrialProgressFromWorld();
+                tag["LegendData:TrialSchemaVersion"] = TrialSchemaVersion;
+                if (!string.IsNullOrEmpty(TrialRouteSignature)) {
+                    tag["LegendData:TrialRouteSignature"] = TrialRouteSignature;
+                }
+                if (CompletedTrialKeys != null && CompletedTrialKeys.Count > 0) {
+                    tag["LegendData:CompletedTrialKeys"] = CompletedTrialKeys;
+                }
             }
         }
 
@@ -183,12 +238,30 @@ namespace CalamityOverhaul.Content.LegendWeapon
                         }
                     }
                 }
+                if (!tag.TryGet("LegendData:TrialSchemaVersion", out TrialSchemaVersion)) {
+                    TrialSchemaVersion = 0;
+                }
+                if (!tag.TryGet("LegendData:TrialRouteSignature", out TrialRouteSignature)) {
+                    TrialRouteSignature = string.Empty;
+                }
+                CompletedTrialKeys = new List<string>();
+                if (tag.TryGet("LegendData:CompletedTrialKeys", out List<string> completed) && completed != null) {
+                    foreach (string key in completed) {
+                        if (!string.IsNullOrEmpty(key) && !CompletedTrialKeys.Contains(key)) {
+                            CompletedTrialKeys.Add(key);
+                        }
+                    }
+                }
+                MigrateTrialProgressFromLegacyLevel();
             } catch {
                 Level = 0;
                 UpgradeWorldName = "";
                 UpgradeWorldFullName = "";
                 SkipUpgradeWorldFullName = string.Empty;
                 TrustedWorldFullNames = new List<string>();
+                TrialSchemaVersion = 0;
+                TrialRouteSignature = string.Empty;
+                CompletedTrialKeys = new List<string>();
             }
         }
 
@@ -279,6 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// 是否仍然需要升级
         /// </summary>
         public bool NeedUpgrade() {
+            SyncTrialProgressFromWorld();
             //当前世界已显式跳过 -> 不需要
             if (!string.IsNullOrEmpty(SkipUpgradeWorldFullName) && SkipUpgradeWorldFullName == SaveWorld.WorldFullName) {
                 return false;
@@ -323,6 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <para>**安全网：等级只升不降**，<c>Level = Math.Max(Level, TargetLevel)</c></para>
         /// </summary>
         public void PerformUpgrade() {
+            SyncTrialProgressFromWorld();
             UpgradeWorldName = Main.worldName;
             UpgradeWorldFullName = SaveWorld.WorldFullName;
             SkipUpgradeWorldFullName = string.Empty;
@@ -411,6 +486,81 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// </summary>
         public void DoUpdate(Item item) {
             Update(item, null, LegendUpdateContext.WorldItem);
+        }
+
+        #endregion
+
+        #region 版本化试炼进度
+
+        protected int GetVersionedTrialTargetLevel() {
+            IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
+            if (definitions == null) {
+                return 0;
+            }
+            return LegendTrialRouteResolver.GetSequentialOriginalLevel(definitions, IsTrialCompletedInVersionedState);
+        }
+
+        public void SyncTrialProgressFromWorld() {
+            IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
+            if (definitions == null) {
+                return;
+            }
+
+            CompletedTrialKeys ??= new List<string>();
+            TrialSchemaVersion = CurrentTrialSchemaVersion;
+            TrialRouteSignature = LegendTrialRouteResolver.GetRouteSignature(definitions);
+
+            foreach (LegendTrialDefinition trial in LegendTrialRouteResolver.GetAvailableTrials(definitions)) {
+                if (trial.IsCompleted) {
+                    AddCompletedTrialKey(trial.Key);
+                }
+            }
+            NormalizeCompletedTrialKeys(definitions);
+        }
+
+        private bool IsTrialCompletedInVersionedState(LegendTrialDefinition trial) {
+            if (trial == null) {
+                return false;
+            }
+            return (CompletedTrialKeys?.Contains(trial.Key) == true) || trial.IsCompleted;
+        }
+
+        private void MigrateTrialProgressFromLegacyLevel() {
+            IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
+            if (definitions == null) {
+                return;
+            }
+
+            CompletedTrialKeys ??= new List<string>();
+            if (TrialSchemaVersion <= 0 && Level > 0) {
+                foreach (string key in LegendTrialRouteResolver.GetLegacyCompletedKeys(definitions, Level)) {
+                    AddCompletedTrialKey(key);
+                }
+            }
+
+            TrialSchemaVersion = CurrentTrialSchemaVersion;
+            TrialRouteSignature = LegendTrialRouteResolver.GetRouteSignature(definitions);
+            NormalizeCompletedTrialKeys(definitions);
+        }
+
+        private void AddCompletedTrialKey(string key) {
+            if (!string.IsNullOrEmpty(key) && !CompletedTrialKeys.Contains(key)) {
+                CompletedTrialKeys.Add(key);
+            }
+        }
+
+        private void NormalizeCompletedTrialKeys(IReadOnlyList<LegendTrialDefinition> definitions) {
+            if (CompletedTrialKeys == null || CompletedTrialKeys.Count == 0 || definitions == null) {
+                return;
+            }
+
+            HashSet<string> knownKeys = [.. definitions
+                .Where(static d => d != null && !string.IsNullOrEmpty(d.Key))
+                .Select(static d => d.Key)];
+
+            CompletedTrialKeys = [.. CompletedTrialKeys
+                .Where(key => !string.IsNullOrEmpty(key) && knownKeys.Contains(key))
+                .Distinct()];
         }
 
         #endregion

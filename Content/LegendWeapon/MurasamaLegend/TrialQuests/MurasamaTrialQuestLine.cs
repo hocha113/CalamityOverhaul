@@ -1,7 +1,8 @@
 ﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
     /// 并根据 <see cref="InWorldBossPhase.Mura_Level"/> 实时同步状态。<br/>
     /// 同时显示当前进行中的试炼和所有已完成的试炼
     /// </summary>
-    internal class MurasamaTrialQuestLine : ModSystem, ILocalizedModType
+    internal class MurasamaTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
 
@@ -33,11 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 
         #endregion
 
-        /// <summary>每条试炼对应需要击杀的Boss NPC type列表</summary>
-        private static int[][] trialTargetNpcs;
-
-        /// <summary>每条试炼独立的完成判定，与等级顺序解耦，以避免乱序击败后试炼仍不能完成的问题</summary>
-        private static Func<bool>[] trialCompletedChecks;
+        private static IReadOnlyList<LegendTrialDefinition> trials;
 
         public override void SetStaticDefaults() {
             QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "鬼妖村正·试炼");
@@ -121,167 +118,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
         }
 
         public override void PostSetupContent() {
-            trialTargetNpcs = new int[TRIAL_COUNT][];
-            //试炼0 (0→1): 史莱姆王
-            trialTargetNpcs[0] = [NPCID.KingSlime];
-            //试炼1 (1→2): 荒漠灾虫
-            trialTargetNpcs[1] = [CWRID.NPC_DesertScourgeHead];
-            //试炼2 (2→3): 克苏鲁之眼
-            trialTargetNpcs[2] = [NPCID.EyeofCthulhu];
-            //试炼3 (3→4): 世界吞噬者 / 克苏鲁之脑
-            trialTargetNpcs[3] = [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu];
-            //试炼4 (4→5): 腐巢意志 / 血肉宿主
-            trialTargetNpcs[4] = [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive];
-            //试炼5 (5→6): 骷髅王
-            trialTargetNpcs[5] = [NPCID.SkeletronHead];
-            //试炼6 (6→7): 史莱姆之神
-            trialTargetNpcs[6] = [CWRID.NPC_SlimeGodCore];
-            //试炼7 (7→8): 血肉墙
-            trialTargetNpcs[7] = [NPCID.WallofFlesh];
-            //试炼8 (8→9): 渊海灾虫
-            trialTargetNpcs[8] = [CWRID.NPC_AquaticScourgeHead];
-            //试炼9 (9→10): 硫磺火元素
-            trialTargetNpcs[9] = [CWRID.NPC_BrimstoneElemental];
-            //试炼10 (10→11): 极地冰灵
-            trialTargetNpcs[10] = [CWRID.NPC_Cryogen];
-            //试炼11 (11→12): 毁灭者
-            trialTargetNpcs[11] = [NPCID.TheDestroyer];
-            //试炼12 (12→13): 双子魔眼
-            trialTargetNpcs[12] = [NPCID.Retinazer, NPCID.Spazmatism];
-            //试炼13 (13→14): 机械骷髅王
-            trialTargetNpcs[13] = [NPCID.SkeletronPrime];
-            //试炼14 (14→15): 灾厄之影
-            trialTargetNpcs[14] = [CWRID.NPC_CalamitasClone];
-            //试炼15 (15→16): 世纪之花
-            trialTargetNpcs[15] = [NPCID.Plantera];
-            //试炼16 (16→17): 石巨人
-            trialTargetNpcs[16] = [NPCID.Golem, NPCID.GolemHead];
-            //试炼17 (17→18): 瘟疫使者
-            trialTargetNpcs[17] = [CWRID.NPC_PlaguebringerGoliath];
-            //试炼18 (18→19): 毁灭魔像
-            trialTargetNpcs[18] = [CWRID.NPC_RavagerBody];
-            //试炼19 (19→20): 星神游龙
-            trialTargetNpcs[19] = [CWRID.NPC_AstrumDeusHead];
-            //试炼20 (20→21): 月球领主
-            trialTargetNpcs[20] = [NPCID.MoonLordCore];
-            //试炼21 (21→22): 亵渎天神
-            trialTargetNpcs[21] = [CWRID.NPC_Providence];
-            //试炼22 (22→23): 噬魂幽花
-            trialTargetNpcs[22] = [CWRID.NPC_Polterghast];
-            //试炼23 (23→24): 神明吞噬者
-            trialTargetNpcs[23] = [CWRID.NPC_DevourerofGodsHead];
-            //试炼24 (24→25): 丛林龙犽戎
-            trialTargetNpcs[24] = [CWRID.NPC_Yharon];
-            //试炼25 (25→26): 星流巨械（追踪血量最低的一台）
-            trialTargetNpcs[25] = [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead];
-            //试炼26 (26→27): 至尊灾厄
-            trialTargetNpcs[26] = [CWRID.NPC_SupremeCalamitas];
-            //试炼27 (27→28): 始源妖龙
-            trialTargetNpcs[27] = [CWRID.NPC_PrimordialWyrmHead];
-
-            //以下完成判定与 InWorldBossPhase.Mura_Level() 中的跳级条件一一对应，仅去除“前置全部达成”的顺序锁
-            trialCompletedChecks = new Func<bool>[TRIAL_COUNT];
-            trialCompletedChecks[0] = InWorldBossPhase.DownedV0;
-            trialCompletedChecks[1] = InWorldBossPhase.Downed0;
-            trialCompletedChecks[2] = InWorldBossPhase.DownedV1;
-            trialCompletedChecks[3] = InWorldBossPhase.DownedV2;
-            trialCompletedChecks[4] = () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke();
-            trialCompletedChecks[5] = InWorldBossPhase.DownedV4;
-            trialCompletedChecks[6] = InWorldBossPhase.Downed5;
-            trialCompletedChecks[7] = () => Main.hardMode;
-            trialCompletedChecks[8] = InWorldBossPhase.Downed8;
-            trialCompletedChecks[9] = InWorldBossPhase.Downed7;
-            trialCompletedChecks[10] = InWorldBossPhase.Downed6;
-            trialCompletedChecks[11] = () => NPC.downedMechBoss1;
-            trialCompletedChecks[12] = () => NPC.downedMechBoss2;
-            trialCompletedChecks[13] = () => NPC.downedMechBoss3;
-            trialCompletedChecks[14] = InWorldBossPhase.Downed10;
-            trialCompletedChecks[15] = InWorldBossPhase.VDownedV7;
-            trialCompletedChecks[16] = InWorldBossPhase.DownedV7;
-            trialCompletedChecks[17] = InWorldBossPhase.Downed14;
-            trialCompletedChecks[18] = InWorldBossPhase.Downed15;
-            trialCompletedChecks[19] = InWorldBossPhase.Downed16;
-            trialCompletedChecks[20] = InWorldBossPhase.VDownedV16;
-            trialCompletedChecks[21] = InWorldBossPhase.Downed19;
-            trialCompletedChecks[22] = InWorldBossPhase.Downed23;
-            trialCompletedChecks[23] = InWorldBossPhase.Downed27;
-            trialCompletedChecks[24] = InWorldBossPhase.Downed28;
-            trialCompletedChecks[25] = InWorldBossPhase.Downed29;
-            trialCompletedChecks[26] = InWorldBossPhase.Downed30;
-            trialCompletedChecks[27] = () => InWorldBossPhase.Downed31.Invoke() || InWorldBossPhase.Downed32.Invoke();
+            trials = LegendTrialRouteCatalog.CreateMurasama(TrialTitles, TrialSummaries);
         }
 
-        public override void PostUpdateEverything() {
-            if (Main.dedServ || Main.gameMenu) return;
+        protected override string KeyPrefix => KEY_PREFIX;
+        protected override int LegacyTrialCount => TRIAL_COUNT;
+        protected override LocalizedText QuestCategoryText => QuestCategory;
+        protected override LocalizedText TrackerWaitingText => TrackerWaiting;
+        protected override LocalizedText TrackerFightingText => TrackerFighting;
+        protected override LocalizedText TrackerBriefText => TrackerBrief;
+        protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
+        protected override bool CanCreateEntries(Player player) => player.HasItem(CWRID.Item_Murasama);
+        protected override IEntrustEntryStyle CreateEntryStyle() => new PhantomEntryStyle();
+        protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new PhantomTrackerWidgetStyle();
+        protected override Func<bool> CreateTrackerVisibilityCheck()
+            => static () => Main.LocalPlayer.GetItem().type == CWRID.Item_Murasama;
 
-            var manager = QuestManagerUI.Instance;
-            if (manager == null) return;
-
-            bool hasWeapon = Main.LocalPlayer.HasItem(CWRID.Item_Murasama);
-            int level = InWorldBossPhase.Mura_Level();
-
-            for (int i = 0; i < TRIAL_COUNT; i++) {
-                SyncTrial(manager, i, level, hasWeapon);
-            }
-        }
-
-        private void SyncTrial(QuestManagerUI manager, int trialIndex, int currentLevel, bool allowCreate = true) {
-            string key = KEY_PREFIX + trialIndex;
-
-            bool isDone = (trialCompletedChecks[trialIndex]?.Invoke() == true) || (trialIndex < currentLevel);
-
-            if (trialIndex > currentLevel) {
-                //等级还未到达的试炼，即使提前打了Boss也不提前显示
-                manager.UnregisterQuest(key);
-            }
-            else if (isDone) {
-                //已完成的试炼（保留显示）
-                var entry = EnsureTrialEntry(manager, trialIndex, completed: true, allowCreate: allowCreate);
-                if (entry != null && entry.Status != QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Completed, 1f);
-                }
-            }
-            else {
-                //trialIndex == currentLevel 且未完成，当前进行中的试炼
-                var entry = EnsureTrialEntry(manager, trialIndex, allowCreate: allowCreate);
-                if (entry == null) {
-                    return;
-                }
-                else if (entry.Status == QuestEntryStatus.Completed) {
-                    manager.SetEntryStatus(key, QuestEntryStatus.Active, 0f);
-                }
-            }
-        }
-
-        private MurasamaTrialQuestEntry EnsureTrialEntry(QuestManagerUI manager, int trialIndex, bool completed = false, bool allowCreate = true) {
-            string key = KEY_PREFIX + trialIndex;
-            var entry = manager.GetEntry(key) as MurasamaTrialQuestEntry;
-            if (entry != null) return entry;
-            if (!allowCreate) return null;
-
-            entry = CreateTrialEntry(trialIndex);
-            if (completed) {
-                entry.Status = QuestEntryStatus.Completed;
-                entry.Progress = 1f;
-            }
-            manager.RegisterQuest(entry);
-            return entry;
-        }
-
-        private MurasamaTrialQuestEntry CreateTrialEntry(int trialIndex) {
-            return new MurasamaTrialQuestEntry(KEY_PREFIX + trialIndex,
-                TrialTitles[trialIndex], TrialSummaries[trialIndex], QuestCategory) {
-                Priority = TRIAL_COUNT - trialIndex,
-                EntryStyle = new PhantomEntryStyle(),
-                TrackerStyle = new PhantomTrackerWidgetStyle(),
-                TargetNpcTypes = trialTargetNpcs[trialIndex],
-                IsCompletedCheck = trialCompletedChecks[trialIndex],
+        protected override LegendTrialQuestEntry CreateTrialEntry(LegendTrialDefinition trial, int routeIndex, int routeCount) {
+            var entry = new MurasamaTrialQuestEntry(KEY_PREFIX + trial.Key, trial.Title, trial.Summary, QuestCategory) {
+                Trial = trial,
+                Priority = routeCount - routeIndex,
+                EntryStyle = CreateEntryStyle(),
+                TrackerStyle = CreateTrackerStyle(),
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,
                 BriefFormat = TrackerBrief,
                 //左侧追踪窗口仅在玩家手持鬼妖村正时显示，避免常驻打扰
-                TrackerVisibilityCheck = static () => Main.LocalPlayer.GetItem().type == CWRID.Item_Murasama,
+                TrackerVisibilityCheck = CreateTrackerVisibilityCheck(),
             };
+            return entry;
         }
     }
 }
