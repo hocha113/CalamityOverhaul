@@ -889,7 +889,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.timeLeft = 600;
         }
 
-        public override bool? CanDamage() => Timer > 4 && Timer < Projectile.timeLeft - 6;
+        public override bool? CanDamage() {
+            if (Timer <= 4 || Timer >= Projectile.timeLeft - 6)
+                return false;
+            return null;
+        }
 
         public override void AI() {
             if (Timer == 0) {
