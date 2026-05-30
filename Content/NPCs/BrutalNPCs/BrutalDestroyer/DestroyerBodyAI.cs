@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
@@ -53,6 +54,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private int mechdusaCurvedSpineSegments;
         private int time;
         protected int frame;
+        //死亡演出：冻结相对前一节的姿态，避免身体停摆时被通用算法迅速捋直
+        private bool deathFreezeCaptured;
+        private Vector2 deathFrozenOffset;
+        private float deathFrozenRotation;
         internal Player Target => npc.FindPlayer();
         #endregion
         void ICWRLoader.LoadData() {
@@ -104,6 +109,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return false;
             }
 
+            //头部进入死亡演出：保活 + 冻结姿态，跳过常规跟随算法
+            //（否则身体会被通用算法迅速捋直，且体节可能因前节暂时性问题被链式清理，只剩头部演出）
+            if (HeadInDeathPerformance()) {
+                HandleDeathPerformanceSegment();
+                return false;
+            }
+
             if (!SegmentNPC.Alives()) {
                 npc.life = 0;
                 npc.HitEffect();
@@ -114,6 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             npc.aiStyle = -1;
+            deathFreezeCaptured = false;
 
             SetMechQueenUp();
             UpdateFlightPhase();
@@ -194,6 +207,64 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             return -1; //找不到有效头部
+        }
+
+        /// <summary>
+        /// 头部是否正处于死亡演出阶段（读取头部经网络同步的状态索引 npc.ai[2]）
+        /// </summary>
+        private bool HeadInDeathPerformance() {
+            int headIndex = (int)npc.realLife;
+            if (headIndex < 0 || headIndex >= Main.maxNPCs || Main.npc[headIndex].type != NPCID.TheDestroyer) {
+                headIndex = FindHeadIndex((int)npc.ai[3]);
+            }
+            if (headIndex < 0 || headIndex >= Main.maxNPCs) {
+                return false;
+            }
+            NPC head = Main.npc[headIndex];
+            return head.active && head.type == NPCID.TheDestroyer
+                && (int)head.ai[2] == (int)DestroyerStateIndex.Death;
+        }
+
+        /// <summary>
+        /// 死亡演出期间的体节处理：强制保活、不可受伤、不造成接触伤害，并冻结相对前一节的姿态，
+        /// 使整条蠕虫保持进入演出那一刻的弯曲形态、随头部一起静止，而不是被通用跟随算法捋成直线。
+        /// </summary>
+        private void HandleDeathPerformanceSegment() {
+            npc.aiStyle = -1;
+
+            int headIndex = FindHeadIndex((int)npc.ai[3]);
+            if (headIndex >= 0 && headIndex < Main.maxNPCs) {
+                npc.realLife = headIndex;
+            }
+
+            //保活：锁血、无敌、不造成接触伤害，防止被链式清理或撞死玩家
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            if (npc.life < 1) {
+                npc.life = 1;
+            }
+            npc.timeLeft = 60;
+
+            VaultUtils.ClockFrame(ref frame, 5, 3);
+
+            //冻结相对前一节的偏移：逐节传导后整条蠕虫保持原弯曲形态，随头部平移/静止
+            NPC seg = SegmentNPC;
+            if (seg.Alives()) {
+                if (!deathFreezeCaptured) {
+                    deathFrozenOffset = npc.Center - seg.Center;
+                    deathFrozenRotation = npc.rotation;
+                    deathFreezeCaptured = true;
+                }
+                npc.velocity = Vector2.Zero;
+                npc.Center = seg.Center + deathFrozenOffset;
+                npc.rotation = deathFrozenRotation;
+            }
+            else {
+                //前一节暂时不可用时原地保持，避免位置突变
+                npc.velocity = Vector2.Zero;
+            }
+
+            DestroyerHeadAI.ForcedNetUpdating(npc);
         }
 
         private void SetMechQueenUp() {

@@ -286,6 +286,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     seg.dontTakeDamage = true;
                     seg.damage = 0;
                     seg.velocity *= 0.85f;
+                    if (seg.life < 1) {
+                        seg.life = 1;
+                    }
+                    seg.timeLeft = 60;
                 }
             }
         }
