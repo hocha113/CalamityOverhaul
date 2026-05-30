@@ -95,6 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             return player.HasHalibut();
         }
 
+        protected override LegendData GetLegendData(Player player) => FindLegendData(player, HalibutOverride.ID);
         protected override IEntrustEntryStyle CreateEntryStyle() => new OceanEntryStyle();
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new HalibutTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()

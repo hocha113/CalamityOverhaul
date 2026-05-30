@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -20,6 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         protected abstract IEntrustEntryStyle CreateEntryStyle();
         protected abstract IEntrustTrackerWidgetStyle CreateTrackerStyle();
         protected abstract Func<bool> CreateTrackerVisibilityCheck();
+        protected virtual LegendData GetLegendData(Player player) => null;
 
         public override void PostUpdateEverything() {
             if (Main.dedServ || Main.gameMenu) {
@@ -33,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
             bool allowCreate = CanCreateEntries(Main.LocalPlayer);
             IReadOnlyList<LegendTrialDefinition> availableTrials = LegendTrialRouteResolver.GetAvailableTrials(Trials);
-            int currentLevel = LegendTrialRouteResolver.GetSequentialLevel(Trials);
+            int currentLevel = GetCurrentRouteLevel(Main.LocalPlayer);
 
             for (int i = 0; i < LegacyTrialCount; i++) {
                 manager.UnregisterQuest(KeyPrefix + i);
@@ -100,6 +102,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         }
 
         private string GetEntryKey(LegendTrialDefinition trial) => KeyPrefix + trial.Key;
+
+        private int GetCurrentRouteLevel(Player player) {
+            LegendData data = GetLegendData(player);
+            if (data != null) {
+                return data.GetVersionedTrialRouteLevel();
+            }
+            return LegendTrialRouteResolver.GetSequentialLevel(Trials);
+        }
+
+        protected static LegendData FindLegendData(Player player, int itemType) {
+            if (player == null || itemType <= ItemID.None) {
+                return null;
+            }
+
+            foreach (Item item in player.inventory) {
+                if (item.Alives() && item.type == itemType) {
+                    return item.CWR()?.LegendData;
+                }
+            }
+            return null;
+        }
 
         private static int IndexOfTrial(IReadOnlyList<LegendTrialDefinition> trials, LegendTrialDefinition target) {
             for (int i = 0; i < trials.Count; i++) {

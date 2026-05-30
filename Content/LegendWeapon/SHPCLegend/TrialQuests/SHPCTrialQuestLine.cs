@@ -119,6 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             }
             return player.HasItem(SHPCOverride.ID);
         }
+        protected override LegendData GetLegendData(Player player) => FindLegendData(player, SHPCOverride.ID);
         protected override IEntrustEntryStyle CreateEntryStyle() => new SHPCEntryStyle();
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new SHPCTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()

@@ -134,6 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
         protected override LocalizedText TrackerBriefText => TrackerBrief;
         protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
         protected override bool CanCreateEntries(Player player) => player.HasItem(CWRID.Item_Murasama);
+        protected override LegendData GetLegendData(Player player) => FindLegendData(player, CWRID.Item_Murasama);
         protected override IEntrustEntryStyle CreateEntryStyle() => new PhantomEntryStyle();
         protected override IEntrustTrackerWidgetStyle CreateTrackerStyle() => new PhantomTrackerWidgetStyle();
         protected override Func<bool> CreateTrackerVisibilityCheck()

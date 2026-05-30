@@ -500,6 +500,16 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return LegendTrialRouteResolver.GetSequentialOriginalLevel(definitions, IsTrialCompletedInVersionedState);
         }
 
+        internal int GetVersionedTrialRouteLevel() {
+            IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
+            if (definitions == null) {
+                return 0;
+            }
+
+            SyncTrialProgressFromWorld();
+            return LegendTrialRouteResolver.GetSequentialLevel(definitions, IsTrialCompletedInVersionedState);
+        }
+
         public void SyncTrialProgressFromWorld() {
             IReadOnlyList<LegendTrialDefinition> definitions = TrialDefinitions;
             if (definitions == null) {
