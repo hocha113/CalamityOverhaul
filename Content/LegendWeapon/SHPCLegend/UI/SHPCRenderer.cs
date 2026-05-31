@@ -607,11 +607,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             effect.Parameters["uAStart"]?.SetValue(aStart);
             if (percentageMode) {
                 //百分比模式：整段弧视作单格，填充量为比例
-                float ratio = maxRam > 0 ? currentRam / maxRam : 0f;
+                float ratio = maxRam > 0 ? MathHelper.Clamp(currentRam / maxRam, 0f, 1f) : 0f;
                 effect.Parameters["uCellAngle"]?.SetValue(totalSweep);
                 effect.Parameters["uCellGap"]?.SetValue(0f);
                 effect.Parameters["uCellCount"]?.SetValue(1f);
-                effect.Parameters["uFillValue"]?.SetValue(ratio * 0.58f);//这里最好还是乘个魔法系数0.58
+                effect.Parameters["uFillValue"]?.SetValue(ratio);
             }
             else {
                 effect.Parameters["uCellAngle"]?.SetValue(cellAngle);

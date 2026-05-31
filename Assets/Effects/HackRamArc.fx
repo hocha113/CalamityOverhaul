@@ -57,11 +57,11 @@ float valueNoise(float2 p) {
     return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
 }
 
-//角度环绕到[-pi,pi]
+//角度环绕到[0,2pi)，支持 SHPC 小弧条超过半圈的跨度
 float wrapAngle(float a) {
-    a = fmod(a + 3.14159265, 6.28318530);
+    a = fmod(a, 6.28318530);
     if (a < 0) a += 6.28318530;
-    return a - 3.14159265;
+    return a;
 }
 
 //================== 主像素着色 ==================
