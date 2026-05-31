@@ -46,11 +46,11 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// <summary>
         /// RAM 上限芯片最多可使用次数
         /// </summary>
-        public const int MaxCapacityUpgradeChips = 32;
+        public const int MaxCapacityUpgradeChips = 42;
         /// <summary>
         /// RAM 恢复速度芯片最多可使用次数
         /// </summary>
-        public const int MaxRecoveryUpgradeChips = 32;
+        public const int MaxRecoveryUpgradeChips = 30;
         /// <summary>
         /// 单个 RAM 上限芯片提供的基础上限
         /// </summary>
