@@ -319,21 +319,24 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
 
         //恢复速度内环填充：越接近最快基础恢复速度，内侧小环越完整
         float recovery = saturate(uRecoveryFill);
+        float recoveryR = uInnerR - 3.5;
+        float recoveryTrack = smoothstep(3.2, 0.45, abs(r - recoveryR)) * tickInRange;
+        outCol = lerp(outCol, float3(0.03, 0.10, 0.16), recoveryTrack * 0.55);
+        outA = max(outA, recoveryTrack * 0.42);
         if (recovery > 0.001) {
             float recoveryEnd = totalSweep * recovery;
             float inRecoveryAngle = step(aRel, recoveryEnd) * tickInRange;
-            float recoveryR = uDecoInnerR - 2.6;
-            float recoveryBand = smoothstep(2.2, 0.35, abs(r - recoveryR));
+            float recoveryBand = smoothstep(3.4, 0.4, abs(r - recoveryR));
             float recoveryPulse = sin(uTime * 3.0) * 0.5 + 0.5;
-            float3 recoveryCol = lerp(float3(0.12, 0.95, 0.78), float3(0.78, 1.0, 0.42), recovery * 0.65);
-            outCol += recoveryCol * recoveryBand * inRecoveryAngle * (0.32 + recoveryPulse * 0.10);
-            outA = max(outA, recoveryBand * inRecoveryAngle * 0.62);
+            float3 recoveryCol = lerp(float3(0.0, 0.72, 0.92), float3(0.42, 0.96, 1.0), recovery * 0.65);
+            outCol += recoveryCol * recoveryBand * inRecoveryAngle * (0.62 + recoveryPulse * 0.18);
+            outA = max(outA, recoveryBand * inRecoveryAngle * 0.88);
 
             float edgeDelta = abs(aRel - recoveryEnd);
             float edgePx = edgeDelta * r;
             float edgeGlow = smoothstep(4.0, 0.3, edgePx) * recoveryBand * tickInRange * step(0.01, recovery) * step(recovery, 0.999);
-            outCol += float3(0.95, 1.0, 0.70) * edgeGlow * 0.9;
-            outA = max(outA, edgeGlow * 0.78);
+            outCol += float3(0.72, 0.98, 1.0) * edgeGlow * 1.5;
+            outA = max(outA, edgeGlow * 0.95);
         }
 
         //扫描亮带: 周期性从左到右扫过

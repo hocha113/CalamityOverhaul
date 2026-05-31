@@ -507,30 +507,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //单格基准角度：让 8 格 + 7 个间隙正好等于旧 (4.65-2.5)=2.15 rad 的视觉跨度
         //BaseCellAngle = (2.15 - 7*0.04) / 8 ≈ 0.234 rad
         private const float RamBaseCellAngle = 0.234f;
-        //跨度软上限：完整圆环。超过该跨度后切换为百分比模式，避免极端容量下弧带自交重叠
+        //格子模式的最大视觉跨度；再往上切换为连续百分比模式，避免格子过密
+        private const float RamGridModeMaxSweep = 0.85f * MathHelper.TwoPi;
+        //跨度软上限：完整圆环。达到永久 RAM 上限时闭合，超过后保持满圆避免自交重叠
         private const float RamMaxTotalSweep = MathHelper.TwoPi;
 
         /// <summary>
         /// 给定 MaxRam 计算实际使用的单格角度与弧起止角度
         /// <br/>常规情况下保持单格视觉宽度恒定(=BaseCellAngle)，让总弧长随 MaxRam 线性增长
-        /// <br/>当 maxRam 极大导致跨度超过软上限时，反向收紧每格使整体跨度饱和
+        /// <br/>当 maxRam 较高时切换为连续百分比弧，并让弧段随容量成长逐步闭合为完整圆
         /// </summary>
         private static void ComputeRamArcParams(int maxRam,
             out float aStart, out float aEnd, out float cellAngle, out float totalSweep, out bool percentageMode) {
             float targetSweep = RamBaseCellAngle * maxRam + (maxRam - 1) * RamCellGap;
-            if (targetSweep <= RamMaxTotalSweep) {
+            if (targetSweep <= RamGridModeMaxSweep) {
                 cellAngle = RamBaseCellAngle;
                 totalSweep = targetSweep;
                 percentageMode = false;
             }
             else {
-                //格子数超出弧段容纳上限，切换为纯百分比连续填充
-                totalSweep = RamMaxTotalSweep;
+                //格子过密后改用连续弧；弧长表达容量成长，填充表达当前 RAM 比例
+                int gridModeMaxRam = Math.Max(1, (int)MathF.Floor((RamGridModeMaxSweep + RamCellGap) / (RamBaseCellAngle + RamCellGap)));
+                float gridModeMaxSweep = RamBaseCellAngle * gridModeMaxRam + (gridModeMaxRam - 1) * RamCellGap;
+                float maxUpgradeableRam = RamSystem.DefaultBaseMaxRam
+                    + RamSystem.MaxCapacityUpgradeChips * RamSystem.CapacityUpgradeChipBonus;
+                float grow = MathHelper.Clamp((maxRam - gridModeMaxRam) / MathF.Max(1f, maxUpgradeableRam - gridModeMaxRam), 0f, 1f);
+                totalSweep = MathHelper.Lerp(gridModeMaxSweep, RamMaxTotalSweep, grow);
                 cellAngle = RamBaseCellAngle;
                 percentageMode = true;
             }
             //围绕固定中线对称展开，让弧条像"扇子"一样左右拉伸
-            aStart = RamMidAngle - totalSweep * 0.5f;
+            aStart = percentageMode
+                ? MathHelper.PiOver2
+                : RamMidAngle - totalSweep * 0.5f;
             aEnd = aStart + totalSweep;
         }
 
@@ -571,6 +580,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 DrawRAMBar_CPU(sb, px, center, currentRam, maxRam,
                     aStart, aEnd, cellAngle, time, globalAlpha, percentageMode, lockFill, recoveryFill);
             }
+            DrawRecoveryInnerFill(sb, px, center, aStart, aEnd, recoveryFill, globalAlpha);
 
             //数值标签，始终CPU绘制；锚定在弧条中线外缘
             Vector2 labelDir = AngleDir(RamMidAngle);
@@ -643,7 +653,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             DrawArc(sb, px, center + new Vector2(1.5f, 2f),
                 RamInnerR, RamOuterR, aStart, aEnd,
                 SHPCTheme.ShadowDark * (0.5f * a));
-            DrawRecoveryInnerFill(sb, px, center, aStart, aEnd, recoveryFill, a);
             float lockPulse = MathF.Sin(time * 8f) * 0.5f + 0.5f;
             Color lockCol = Color.Lerp(new Color(220, 45, 45), new Color(255, 95, 35), lockPulse * 0.35f);
             if (percentageMode) {
@@ -721,21 +730,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
 
             float recovery = MathHelper.Clamp(recoveryFill, 0f, 1f);
-            DrawArc(sb, px, center, RamDecoInnerR - 3f, RamDecoInnerR - 1f, aStart, aEnd,
-                SHPCTheme.Border * (0.18f * alpha));
+            DrawArc(sb, px, center, RamInnerR - 7f, RamInnerR - 2f, aStart, aEnd,
+                SHPCTheme.ShadowDark * (0.55f * alpha));
+            DrawArc(sb, px, center, RamInnerR - 6f, RamInnerR - 3f, aStart, aEnd,
+                SHPCTheme.Border * (0.42f * alpha));
             if (recovery <= 0.001f) {
                 return;
             }
 
             float fillEnd = MathHelper.Lerp(aStart, aEnd, recovery);
-            Color recoveryCol = Color.Lerp(new Color(40, 220, 170), SHPCTheme.Accent, recovery * 0.65f);
-            DrawArc(sb, px, center, RamDecoInnerR - 3f, RamDecoInnerR - 1f, aStart, fillEnd,
-                recoveryCol * (0.52f * alpha));
+            Color recoveryCol = Color.Lerp(SHPCTheme.Cyan, SHPCTheme.CyanHi, recovery * 0.65f);
+            DrawArc(sb, px, center, RamInnerR - 7f, RamInnerR - 2f, aStart, fillEnd,
+                recoveryCol * (0.26f * alpha));
+            DrawArc(sb, px, center, RamInnerR - 6f, RamInnerR - 3f, aStart, fillEnd,
+                recoveryCol * (0.88f * alpha));
             if (recovery < 0.999f) {
                 DrawLine(sb, px,
-                    center + AngleDir(fillEnd) * (RamDecoInnerR - 4f),
-                    center + AngleDir(fillEnd) * RamDecoInnerR,
-                    1.2f, Color.Lerp(SHPCTheme.Text, recoveryCol, 0.55f) * (0.62f * alpha));
+                    center + AngleDir(fillEnd) * (RamInnerR - 8f),
+                    center + AngleDir(fillEnd) * (RamInnerR - 1f),
+                    1.9f, Color.Lerp(SHPCTheme.Text, recoveryCol, 0.55f) * (0.95f * alpha));
             }
         }
 

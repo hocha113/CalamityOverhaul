@@ -372,17 +372,23 @@ namespace CalamityOverhaul.Content.HackTimes
             //细弧线
             DrawArc(sb, px, center, InnerDecoR - 1f, InnerDecoR, aStart, aEnd,
                 HackTheme.Border * (alpha * 0.20f));
+            DrawArc(sb, px, center, InnerDecoR - 6f, InnerDecoR - 2f, aStart, aEnd,
+                HackTheme.BgDarkest * (alpha * 0.50f));
+            DrawArc(sb, px, center, InnerDecoR - 5f, InnerDecoR - 3f, aStart, aEnd,
+                HackTheme.Border * (alpha * 0.32f));
 
             //恢复速度小内环：以基础最快恢复速度为满环基准
             float recovery = RamSystem.RecoveryRateRatio;
             if (recovery > 0.001f) {
                 float fillEnd = MathHelper.Lerp(aStart, aEnd, recovery);
-                Color recoveryCol = Color.Lerp(HackTheme.AccentAlt, HackTheme.Uploading, recovery * 0.65f);
-                DrawArc(sb, px, center, InnerDecoR - 4f, InnerDecoR - 2f, aStart, fillEnd,
-                    recoveryCol * (alpha * 0.45f));
+                Color recoveryCol = Color.Lerp(HackTheme.ProgressFill, HackTheme.ProgressGlow, recovery * 0.65f);
+                DrawArc(sb, px, center, InnerDecoR - 6f, InnerDecoR - 2f, aStart, fillEnd,
+                    recoveryCol * (alpha * 0.22f));
+                DrawArc(sb, px, center, InnerDecoR - 5f, InnerDecoR - 3f, aStart, fillEnd,
+                    recoveryCol * (alpha * 0.80f));
                 if (recovery < 0.999f) {
-                    DrawRadialLine(sb, px, center, InnerDecoR - 5f, InnerDecoR - 1f, fillEnd, 1.2f,
-                        Color.Lerp(HackTheme.TextBright, recoveryCol, 0.55f) * (alpha * 0.60f));
+                    DrawRadialLine(sb, px, center, InnerDecoR - 7f, InnerDecoR, fillEnd, 1.8f,
+                        Color.Lerp(HackTheme.TextBright, recoveryCol, 0.55f) * (alpha * 0.90f));
                 }
             }
 
