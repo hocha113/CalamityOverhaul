@@ -60,6 +60,11 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// </summary>
         public const float RecoveryUpgradeChipBonus = 0.05f;
         /// <summary>
+        /// 基础恢复速度可达到的最大值（不含义体/Buff 等运行时加成）
+        /// </summary>
+        public const float MaxBaseRecoveryRate = DefaultBaseRecoveryRate
+            + MaxRecoveryUpgradeChips * RecoveryUpgradeChipBonus;
+        /// <summary>
         /// 消耗 RAM 后到开始恢复的延迟（秒）
         /// </summary>
         public const float RecoveryDelay = 1.5f;
@@ -186,6 +191,9 @@ namespace CalamityOverhaul.Content.RAMSystems
 
         public static int MaxRam => Local?.MaxRam ?? DefaultBaseMaxRam;
         public static float RecoveryRate => Local?.RecoveryRate ?? DefaultBaseRecoveryRate;
+        public static float RecoveryRateRatio => MaxBaseRecoveryRate > 0f
+            ? MathHelper.Clamp(RecoveryRate / MaxBaseRecoveryRate, 0f, 1f)
+            : 0f;
 
         public static float CurrentRam {
             get => Local?.CurrentRam ?? 0f;

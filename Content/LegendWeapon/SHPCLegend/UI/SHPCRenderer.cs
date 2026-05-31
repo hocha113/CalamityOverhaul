@@ -560,15 +560,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             //系统锁定/RAM 不足故障闪烁直接拉到上限
             lowRam = MathF.Max(lowRam, RamSystem.GetWarningPulse());
             float lockFill = RamSystem.LockRemainRatio;
+            float recoveryFill = RamSystem.RecoveryRateRatio;
 
             Effect effect = EffectLoader.HackRamArc?.Value;
             if (effect != null) {
                 DrawRAMBar_Shader(sb, px, center, currentRam, maxRam,
-                    aStart, cellAngle, totalSweep, lowRam, lockFill, time, globalAlpha, percentageMode, effect);
+                    aStart, cellAngle, totalSweep, lowRam, lockFill, recoveryFill, time, globalAlpha, percentageMode, effect);
             }
             else {
                 DrawRAMBar_CPU(sb, px, center, currentRam, maxRam,
-                    aStart, aEnd, cellAngle, time, globalAlpha, percentageMode, lockFill);
+                    aStart, aEnd, cellAngle, time, globalAlpha, percentageMode, lockFill, recoveryFill);
             }
 
             //数值标签，始终CPU绘制；锚定在弧条中线外缘
@@ -582,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         private static void DrawRAMBar_Shader(SpriteBatch sb, Texture2D px, Vector2 center,
             float currentRam, int maxRam, float aStart, float cellAngle, float totalSweep,
-            float lowRam, float lockFill, float time, float globalAlpha, bool percentageMode, Effect effect) {
+            float lowRam, float lockFill, float recoveryFill, float time, float globalAlpha, bool percentageMode, Effect effect) {
             //包围盒：以核心为圆心，覆盖整个弧圈（含装饰环+余量）
             const float pad = 14f;
             float boxR = RamDecoOuterR + pad;
@@ -621,6 +622,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
             effect.Parameters["uLowRam"]?.SetValue(lowRam);
             effect.Parameters["uLockFill"]?.SetValue(lockFill);
+            effect.Parameters["uRecoveryFill"]?.SetValue(recoveryFill);
             effect.Parameters["uInfinite"]?.SetValue(HackTime.InfiniteHack ? 1f : 0f);
             effect.Parameters["uDecoOuterR"]?.SetValue(RamDecoOuterR);
             effect.Parameters["uDecoInnerR"]?.SetValue(RamDecoInnerR);
@@ -636,11 +638,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         private static void DrawRAMBar_CPU(SpriteBatch sb, Texture2D px, Vector2 center,
             float currentRam, int maxRam, float aStart, float aEnd, float cellAngle,
-            float time, float globalAlpha, bool percentageMode, float lockFill) {
+            float time, float globalAlpha, bool percentageMode, float lockFill, float recoveryFill) {
             float a = globalAlpha;
             DrawArc(sb, px, center + new Vector2(1.5f, 2f),
                 RamInnerR, RamOuterR, aStart, aEnd,
                 SHPCTheme.ShadowDark * (0.5f * a));
+            DrawRecoveryInnerFill(sb, px, center, aStart, aEnd, recoveryFill, a);
             float lockPulse = MathF.Sin(time * 8f) * 0.5f + 0.5f;
             Color lockCol = Color.Lerp(new Color(220, 45, 45), new Color(255, 95, 35), lockPulse * 0.35f);
             if (percentageMode) {
@@ -709,6 +712,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 MathF.Max(aStart, scanA - scanW * 0.5f),
                 MathF.Min(aEnd, scanA + scanW * 0.5f),
                 SHPCTheme.CyanHi * (0.1f * a));
+        }
+
+        private static void DrawRecoveryInnerFill(SpriteBatch sb, Texture2D px, Vector2 center,
+            float aStart, float aEnd, float recoveryFill, float alpha) {
+            if (alpha < 0.01f) {
+                return;
+            }
+
+            float recovery = MathHelper.Clamp(recoveryFill, 0f, 1f);
+            DrawArc(sb, px, center, RamDecoInnerR - 3f, RamDecoInnerR - 1f, aStart, aEnd,
+                SHPCTheme.Border * (0.18f * alpha));
+            if (recovery <= 0.001f) {
+                return;
+            }
+
+            float fillEnd = MathHelper.Lerp(aStart, aEnd, recovery);
+            Color recoveryCol = Color.Lerp(new Color(40, 220, 170), SHPCTheme.Accent, recovery * 0.65f);
+            DrawArc(sb, px, center, RamDecoInnerR - 3f, RamDecoInnerR - 1f, aStart, fillEnd,
+                recoveryCol * (0.52f * alpha));
+            if (recovery < 0.999f) {
+                DrawLine(sb, px,
+                    center + AngleDir(fillEnd) * (RamDecoInnerR - 4f),
+                    center + AngleDir(fillEnd) * RamDecoInnerR,
+                    1.2f, Color.Lerp(SHPCTheme.Text, recoveryCol, 0.55f) * (0.62f * alpha));
+            }
         }
 
         #endregion

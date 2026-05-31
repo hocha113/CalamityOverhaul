@@ -187,6 +187,7 @@ namespace CalamityOverhaul.Content.HackTimes
             effect.Parameters["uFillValue"]?.SetValue(displayRam);
             effect.Parameters["uLowRam"]?.SetValue(lowRam);
             effect.Parameters["uLockFill"]?.SetValue(RamSystem.LockRemainRatio);
+            effect.Parameters["uRecoveryFill"]?.SetValue(RamSystem.RecoveryRateRatio);
             effect.Parameters["uInfinite"]?.SetValue(HackTime.InfiniteHack ? 1f : 0f);
             effect.Parameters["uDecoOuterR"]?.SetValue(decoOuterR);
             effect.Parameters["uDecoInnerR"]?.SetValue(decoInnerR);
@@ -371,6 +372,19 @@ namespace CalamityOverhaul.Content.HackTimes
             //细弧线
             DrawArc(sb, px, center, InnerDecoR - 1f, InnerDecoR, aStart, aEnd,
                 HackTheme.Border * (alpha * 0.20f));
+
+            //恢复速度小内环：以基础最快恢复速度为满环基准
+            float recovery = RamSystem.RecoveryRateRatio;
+            if (recovery > 0.001f) {
+                float fillEnd = MathHelper.Lerp(aStart, aEnd, recovery);
+                Color recoveryCol = Color.Lerp(HackTheme.AccentAlt, HackTheme.Uploading, recovery * 0.65f);
+                DrawArc(sb, px, center, InnerDecoR - 4f, InnerDecoR - 2f, aStart, fillEnd,
+                    recoveryCol * (alpha * 0.45f));
+                if (recovery < 0.999f) {
+                    DrawRadialLine(sb, px, center, InnerDecoR - 5f, InnerDecoR - 1f, fillEnd, 1.2f,
+                        Color.Lerp(HackTheme.TextBright, recoveryCol, 0.55f) * (alpha * 0.60f));
+                }
+            }
 
             //扫描脉冲弧（沿内环周期扫过的亮带）
             float scanT = timer * 0.3f % 1f;

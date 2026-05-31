@@ -14,6 +14,7 @@
 //   uFillValue      当前显示的RAM值(浮点,支持分数)
 //   uLowRam         低RAM警告强度(0~1)
 //   uLockFill       系统锁定剩余比例(0~1)，用于绘制故障倒计时填充
+//   uRecoveryFill   当前恢复速度 / 基础最快恢复速度，用于内环恢复速率填充
 //   uInfinite       无限模式标志(0或1)
 //   uDecoOuterR     外侧装饰环半径
 //   uDecoInnerR     内侧装饰环半径
@@ -34,6 +35,7 @@ float uCellCount;
 float uFillValue;
 float uLowRam;
 float uLockFill;
+float uRecoveryFill;
 float uInfinite;
 float uDecoOuterR;
 float uDecoInnerR;
@@ -314,6 +316,25 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
         //基础细环
         outCol = lerp(outCol, float3(0.12, 0.30, 0.36), ringLine * tickInRange * 0.45);
         outA = max(outA, ringLine * tickInRange * 0.4);
+
+        //恢复速度内环填充：越接近最快基础恢复速度，内侧小环越完整
+        float recovery = saturate(uRecoveryFill);
+        if (recovery > 0.001) {
+            float recoveryEnd = totalSweep * recovery;
+            float inRecoveryAngle = step(aRel, recoveryEnd) * tickInRange;
+            float recoveryR = uDecoInnerR - 2.6;
+            float recoveryBand = smoothstep(2.2, 0.35, abs(r - recoveryR));
+            float recoveryPulse = sin(uTime * 3.0) * 0.5 + 0.5;
+            float3 recoveryCol = lerp(float3(0.12, 0.95, 0.78), float3(0.78, 1.0, 0.42), recovery * 0.65);
+            outCol += recoveryCol * recoveryBand * inRecoveryAngle * (0.32 + recoveryPulse * 0.10);
+            outA = max(outA, recoveryBand * inRecoveryAngle * 0.62);
+
+            float edgeDelta = abs(aRel - recoveryEnd);
+            float edgePx = edgeDelta * r;
+            float edgeGlow = smoothstep(4.0, 0.3, edgePx) * recoveryBand * tickInRange * step(0.01, recovery) * step(recovery, 0.999);
+            outCol += float3(0.95, 1.0, 0.70) * edgeGlow * 0.9;
+            outA = max(outA, edgeGlow * 0.78);
+        }
 
         //扫描亮带: 周期性从左到右扫过
         float scanT = frac(uTime * 0.28);
