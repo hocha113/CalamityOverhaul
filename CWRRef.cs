@@ -135,21 +135,6 @@ namespace CalamityOverhaul
             }
         }
 
-        private static T TryCreateStaticDelegate<T>(Type type, string methodName) where T : Delegate {
-            if (type == null) {
-                return null;
-            }
-            MethodInfo method = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
-            if (method == null) {
-                return null;
-            }
-            try {
-                return (T)method.CreateDelegate(typeof(T));
-            } catch {
-                return null;
-            }
-        }
-
         private static object GetModContentInstance(Type t) {
             if (t == null) {
                 return null;
@@ -942,7 +927,6 @@ namespace CalamityOverhaul
             return null;
         }
 
-        public static Type GetItem_SHPC_Type() => FindCalamityType("CalamityMod.Items.Weapons.Magic.SHPC");
         public static Type GetNPC_WITCH_Type() => FindCalamityType("CalamityMod.NPCs.TownNPCs.BrimstoneWitch");
         public static Type GetNPC_SupCal_Type() => FindCalamityType("CalamityMod.NPCs.SupremeCalamitas.SupremeCalamitas");
 

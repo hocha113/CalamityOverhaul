@@ -121,6 +121,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 //CPU回退路径
                 DrawOuterDecoRing(sb, px, center, aStart, totalSweep, maxRam, cellAngle, alpha);
                 DrawCells(sb, px, center, aStart, cellAngle, maxRam, alpha);
+                DrawLockCountdownFill(sb, px, center, aStart, cellAngle, maxRam, alpha);
                 DrawInnerDecoRing(sb, px, center, aStart, totalSweep, alpha);
                 DrawDataFlow(sb, center, aStart, totalSweep, alpha);
             }
@@ -185,6 +186,7 @@ namespace CalamityOverhaul.Content.HackTimes
             effect.Parameters["uCellCount"]?.SetValue((float)maxRam);
             effect.Parameters["uFillValue"]?.SetValue(displayRam);
             effect.Parameters["uLowRam"]?.SetValue(lowRam);
+            effect.Parameters["uLockFill"]?.SetValue(RamSystem.LockRemainRatio);
             effect.Parameters["uInfinite"]?.SetValue(HackTime.InfiniteHack ? 1f : 0f);
             effect.Parameters["uDecoOuterR"]?.SetValue(decoOuterR);
             effect.Parameters["uDecoInnerR"]?.SetValue(decoInnerR);
@@ -318,6 +320,41 @@ namespace CalamityOverhaul.Content.HackTimes
                     Color gc = HackTheme.ProgressGlow * (alpha * 0.08f * pulse);
                     gc.A = 0;
                     sb.Draw(glow, midPt, null, gc, 0, glow.Size() / 2, 0.07f, SpriteEffects.None, 0);
+                }
+            }
+        }
+
+        #endregion
+
+        #region 锁定倒计时填充
+
+        //系统锁定时用红色弧形填充显示剩余时长：满弧=刚锁定，清空=即将恢复
+        private void DrawLockCountdownFill(SpriteBatch sb, Texture2D px, Vector2 center,
+            float aStart, float cellAngle, int maxRam, float alpha) {
+            float lockFill = RamSystem.LockRemainRatio;
+            if (lockFill <= 0.001f) {
+                return;
+            }
+
+            float filledCells = lockFill * maxRam;
+            float pulse = MathF.Sin(timer * 8f) * 0.5f + 0.5f;
+            Color fillCol = Color.Lerp(HackTheme.Danger, new Color(255, 95, 35), pulse * 0.35f);
+            for (int i = 0; i < maxRam; i++) {
+                float fill = MathHelper.Clamp(filledCells - i, 0f, 1f);
+                if (fill <= 0.001f) {
+                    continue;
+                }
+
+                float cStart = aStart + i * (cellAngle + CellGap);
+                float fillEnd = cStart + cellAngle * fill;
+                DrawArc(sb, px, center, InnerR + 3f, OuterR - 3f, cStart, fillEnd,
+                    fillCol * (alpha * 0.62f));
+                DrawArc(sb, px, center, InnerR + 2f, InnerR + 5f, cStart, fillEnd,
+                    HackTheme.Danger * (alpha * 0.35f));
+
+                if (fill < 0.999f) {
+                    DrawRadialLine(sb, px, center, InnerR + 1f, OuterR - 1f, fillEnd, 2f,
+                        Color.Lerp(HackTheme.TextBright, HackTheme.Danger, 0.45f) * (alpha * 0.75f));
                 }
             }
         }

@@ -13,6 +13,7 @@
 //   uCellCount      总格数
 //   uFillValue      当前显示的RAM值(浮点,支持分数)
 //   uLowRam         低RAM警告强度(0~1)
+//   uLockFill       系统锁定剩余比例(0~1)，用于绘制故障倒计时填充
 //   uInfinite       无限模式标志(0或1)
 //   uDecoOuterR     外侧装饰环半径
 //   uDecoInnerR     内侧装饰环半径
@@ -32,6 +33,7 @@ float uCellGap;
 float uCellCount;
 float uFillValue;
 float uLowRam;
+float uLockFill;
 float uInfinite;
 float uDecoOuterR;
 float uDecoInnerR;
@@ -192,6 +194,28 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
         }
 
         //==========================
+        //系统锁定倒计时填充：满弧=刚锁定，逐步退空=即将恢复
+        //==========================
+        float lockActive = saturate(uLockFill) * (1.0 - uInfinite);
+        float lockFillAmt = saturate(lockActive * uCellCount - cellIdx);
+        float lockFilledHere = step(cellLocal, lockFillAmt) * inCell;
+        if (lockActive > 0.001) {
+            if (lockFilledHere > 0.5) {
+                float pulseLock = sin(uTime * 8.0) * 0.5 + 0.5;
+                float3 lockRed = lerp(float3(0.85, 0.06, 0.05), float3(1.0, 0.36, 0.12), pulseLock * 0.35);
+                float lockSheen = smoothstep(0.15, 0.85, radT) * (1.0 - smoothstep(0.86, 1.0, radT));
+                outCol = lerp(outCol, lockRed * (0.65 + lockSheen * 0.55), 0.72);
+                outA = max(outA, 0.9);
+
+                float lockPartial = 1.0 - step(0.999, lockFillAmt);
+                float lockEdgeDist = abs(cellLocal - lockFillAmt);
+                float lockEdgePx = lockEdgeDist * uCellAngle * r;
+                float lockFrontLine = smoothstep(2.4, 0.25, lockEdgePx) * lockPartial;
+                outCol += float3(1.0, 0.75, 0.45) * lockFrontLine * 1.15;
+            }
+        }
+
+        //==========================
         //cell边界: 径向封口+内外环细线
         //==========================
         {
@@ -229,7 +253,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
             float3 hotRed = float3(0.95, 0.08, 0.10);
             //空槽染色强度：随警告强度饱和
             float emptyMix = warnActive * (0.55 + pulseWarn * 0.35) * inCell;
-            outCol = lerp(outCol, emptyRed, emptyMix * (1.0 - filledHere));
+            outCol = lerp(outCol, emptyRed, emptyMix * (1.0 - max(filledHere, lockFilledHere)));
             //填充格上叠加猩红脉冲
             outCol = lerp(outCol, hotRed,
                           warnActive * (0.45 + pulseWarn * 0.4) * filledHere);

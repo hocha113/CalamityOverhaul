@@ -97,6 +97,18 @@ namespace CalamityOverhaul.Content.RAMSystems
         public static int LockTotal => lockTotalFrames;
 
         /// <summary>
+        /// 系统锁定剩余比例（1=刚进入锁定，0=锁定结束），供 HUD 绘制倒计时填充
+        /// </summary>
+        public static float LockRemainRatio {
+            get {
+                if (lockTimer <= 0 || lockTotalFrames <= 0) {
+                    return 0f;
+                }
+                return MathHelper.Clamp(lockTimer / (float)lockTotalFrames, 0f, 1f);
+            }
+        }
+
+        /// <summary>
         /// 当前是否处于 RAM 不足故障闪烁
         /// </summary>
         public static bool IsFlashing => flashTimer > 0;
