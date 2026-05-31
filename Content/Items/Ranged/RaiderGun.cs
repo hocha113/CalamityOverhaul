@@ -391,7 +391,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Lighting.AddLight(Projectile.Center, 1f, 0.79f, 0.3f);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.ai[0] != 0) {
-                CWRRef.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
+                NPC target = Projectile.Center.FindClosestNPC(350f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1.05f, 0.18f);
+                }
             }
             float xVel = Projectile.velocity.X * 0.5f;
             float yVel = Projectile.velocity.Y * 0.5f;

@@ -1,8 +1,10 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -98,7 +100,16 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Type], lightColor, 1);
+
+            Texture2D trailTex = TextureAssets.Projectile[Type].Value;
+            Vector2 trailOrigin = trailTex.Size() / 2f;
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+                Color trailColor = Color.Red * fade * 0.45f;
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(trailTex, drawPos, null, trailColor, Projectile.rotation, trailOrigin, Projectile.scale, SpriteEffects.None);
+            }
+
             value = Glow.Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
             , Projectile.rotation, value.GetOrig(), Projectile.scale, SpriteEffects.None, 0);

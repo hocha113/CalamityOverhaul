@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify.Core;
@@ -176,20 +177,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            CWRRef.LargeFieryExplosion(Projectile);
+            SpawnFriendlyRocketBurst();
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            CWRRef.LargeFieryExplosion(Projectile);
+            SpawnFriendlyRocketBurst();
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnKill(int timeLeft) {
             if (Projectile.numHits <= 0) {
-                CWRRef.LargeFieryExplosion(Projectile);
+                SpawnFriendlyRocketBurst();
             }
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[2] > 0) {
                 for (int i = 0; i < 6; i++) {
@@ -204,6 +205,27 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation
                 , mainValue.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
+        }
+
+        private void SpawnFriendlyRocketBurst() {
+            if (Main.dedServ) {
+                return;
+            }
+
+            Vector2 pos = Projectile.Center;
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.45f, Pitch = 0.15f }, pos);
+
+            for (int i = 0; i < 18; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
+                Dust dust = Dust.NewDustPerfect(pos, DustID.FireworkFountain_Red, vel, 100, default, Main.rand.NextFloat(0.9f, 1.6f));
+                dust.noGravity = true;
+            }
+
+            for (int i = 0; i < 10; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(3f, 3f);
+                Dust dust = Dust.NewDustPerfect(pos, DustID.Torch, vel, 80, Color.LightGoldenrodYellow, 1.1f);
+                dust.noGravity = true;
+            }
         }
     }
 

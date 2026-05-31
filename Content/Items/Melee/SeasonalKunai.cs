@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -124,7 +126,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             else {
                 //次级弹幕: 短距追踪 + 重力
-                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 6f, 20f);
+                NPC target = Projectile.Center.FindClosestNPC(300f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.08f);
+                }
                 Projectile.velocity.Y += 0.01f;
                 if (Projectile.timeLeft < 240) {
                     Projectile.tileCollide = true;
@@ -180,7 +185,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() / 2f;
+
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+                Color color = Color.Lerp(Color.Gold, Color.OrangeRed, fade * 0.6f) * fade * 0.75f;
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
+            }
             return false;
         }
     }

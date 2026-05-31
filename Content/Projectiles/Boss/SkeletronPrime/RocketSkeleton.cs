@@ -1,9 +1,11 @@
-﻿using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -54,14 +56,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            CWRRef.LargeFieryExplosion(Projectile);
+            SpawnBossRocketBurst();
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             Projectile.numHits++;
         }
 
         public override void OnKill(int timeLeft) {
             if (Projectile.numHits <= 0) {
-                CWRRef.LargeFieryExplosion(Projectile);
+                SpawnBossRocketBurst();
             }
         }
 
@@ -70,6 +72,33 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation
                 , mainValue.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
+        }
+
+        private void SpawnBossRocketBurst() {
+            if (Main.dedServ) {
+                return;
+            }
+
+            Vector2 pos = Projectile.Center;
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.7f, Pitch = -0.1f }, pos);
+
+            for (int i = 0; i < 28; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
+                int dustIndex = Dust.NewDust(pos - Vector2.One * 8f, 16, 16, DustID.Torch, vel.X, vel.Y, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
+                Main.dust[dustIndex].noGravity = true;
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f) + Vector2.UnitY * -1.5f;
+                int dustIndex = Dust.NewDust(pos - Vector2.One * 6f, 12, 12, DustID.Smoke, vel.X, vel.Y, 120, Color.DarkRed, 1.4f);
+                Main.dust[dustIndex].fadeIn = 0.8f + Main.rand.NextFloat(0.4f);
+            }
+
+            for (int i = 0; i < 4; i++) {
+                float scale = Main.rand.NextFloat(0.5f, 0.9f);
+                int goreIndex = Gore.NewGore(Projectile.GetSource_Death(), pos, Main.rand.NextVector2Circular(3f, 3f), Main.rand.Next(61, 64), scale);
+                Main.gore[goreIndex].velocity *= 1.2f;
+            }
         }
     }
 }

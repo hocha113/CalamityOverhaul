@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -132,7 +133,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bool isHoming = false;
             if (Projectile.timeLeft < 150) {
                 isHoming = true;
-                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 450f, 6.5f, 20f);
+                NPC target = Projectile.Center.FindClosestNPC(450f, !Projectile.tileCollide, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.08f);
+                }
             }
 
             if (!isHoming) {

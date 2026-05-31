@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -382,7 +383,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 if (Main.zenithWorld) {//在天顶世界中追踪敌人
-                    CWRRef.HomeInOnNPC(Projectile, ignoreTiles: true, 300f, 12f, 20f);
+                    NPC target = Projectile.Center.FindClosestNPC(300f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                    if (target != null) {
+                        Projectile.SmoothHomingBehavior(target.Center, 1.02f, 0.12f);
+                    }
                 }
             }
             else {

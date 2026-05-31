@@ -2,10 +2,12 @@
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -120,8 +122,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 if (Projectile.ai[0] >= Inder2) {
-                    if (Projectile.Center.FindClosestNPC(1300f) != null) {
-                        CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 1300f, 12f, 20f);
+                    NPC target = Projectile.Center.FindClosestNPC(1300f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                    if (target != null) {
+                        Projectile.SmoothHomingBehavior(target.Center, 1.02f, 0.12f);
                         Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
                     }
                 }
@@ -146,7 +149,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                CWRRef.HomeInOnNPC(Projectile, !Projectile.tileCollide, 300f, 12f, 20f);
+                NPC target = Projectile.Center.FindClosestNPC(300f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.12f);
+                }
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
 
@@ -250,7 +256,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() / 2f;
+
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+                Color color = Color.Lerp(Color.DarkRed, Color.IndianRed, fade) * fade * 0.85f;
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
+            }
             return false;
         }
     }

@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -104,9 +105,17 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
+            Vector2 origin = value.GetOrig();
+
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+                Color trailColor = Color.Cyan * fade * 0.55f;
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(value, drawPos, null, trailColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
+            }
+
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
-            , Projectile.rotation, value.GetOrig(), Projectile.scale, SpriteEffects.None, 0);
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Type], lightColor, 1);
+            , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
             value = Glow.Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
             , Projectile.rotation, value.GetOrig(), Projectile.scale, SpriteEffects.None, 0);

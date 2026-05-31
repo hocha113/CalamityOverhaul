@@ -453,7 +453,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (isFinale || Main.rand.NextBool(6)) {
                 SoundEngine.PlaySound(SoundID.Item14 with {
                     Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
-                    Volume = isFinale ? 0.8f : 0.25f
+                    Volume = isFinale ? 1f : 0.45f
                 }, pos);
             }
         }

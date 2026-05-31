@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -388,7 +389,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 homingDelay--;
             }
             else {
-                CWRRef.HomeInOnNPC(Projectile, true, 400f, 8f, 20f);
+                NPC target = Projectile.Center.FindClosestNPC(400f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.1f);
+                }
             }
 
             //轨迹粒子

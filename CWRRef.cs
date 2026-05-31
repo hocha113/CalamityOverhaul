@@ -75,12 +75,6 @@ namespace CalamityOverhaul
         private static MemberInfo draedon_DefeatTimer_M;
         #endregion
 
-        #region 反射缓存：CalamityUtils 静态委托
-        private static Action<Projectile, int, Color, int, Texture2D, bool> calUtils_DrawAfterimagesCenteredDel;
-        private static Action<Projectile, bool, float, float, float> calUtils_HomeInOnNPCDel;
-        private static Action<Projectile> calUtils_LargeFieryExplosionDel;
-        #endregion
-
         #region 反射缓存：Calamity 全局内容模板
         private static ModPlayer calPlayerTemplate;
         private static GlobalItem calGlobalItemTemplate;
@@ -210,7 +204,6 @@ namespace CalamityOverhaul
 
             LoadBossFlags(mod);
             LoadCalamityStaticState(mod);
-            LoadCalamityUtilsDelegates(mod);
             LoadCalamityModNPCs(mod);
             LoadCalamityGlobalTemplates();
         }
@@ -288,16 +281,6 @@ namespace CalamityOverhaul
 
             ModContent.TryFind("CalamityMod", "TrueMeleeDamageClass", out trueMeleeDamageClass);
             ModContent.TryFind("CalamityMod", "TrueMeleeNoSpeedDamageClass", out trueMeleeNoSpeedDamageClass);
-        }
-
-        private static void LoadCalamityUtilsDelegates(Mod mod) {
-            Type calUtils = mod.Code.GetType("CalamityMod.CalamityUtils");
-            if (calUtils == null) {
-                return;
-            }
-            calUtils_DrawAfterimagesCenteredDel = TryCreateStaticDelegate<Action<Projectile, int, Color, int, Texture2D, bool>>(calUtils, "DrawAfterimagesCentered");
-            calUtils_HomeInOnNPCDel = TryCreateStaticDelegate<Action<Projectile, bool, float, float, float>>(calUtils, "HomeInOnNPC");
-            calUtils_LargeFieryExplosionDel = TryCreateStaticDelegate<Action<Projectile>>(calUtils, "LargeFieryExplosion");
         }
 
         private static void LoadCalamityModNPCs(Mod mod) {
@@ -399,10 +382,6 @@ namespace CalamityOverhaul
             supCal_giveUpCounter_Field = null;
             draedonType = null;
             draedon_DefeatTimer_M = null;
-
-            calUtils_DrawAfterimagesCenteredDel = null;
-            calUtils_HomeInOnNPCDel = null;
-            calUtils_LargeFieryExplosionDel = null;
 
             calPlayerTemplate = null;
             calGlobalItemTemplate = null;
@@ -720,10 +699,6 @@ namespace CalamityOverhaul
             if (calPlayer_adrenalinePauseTimer_M != null) SetMember(calPlayer_adrenalinePauseTimer_M, cp, adrenalinePauseTimer);
         }
 
-        public static void LargeFieryExplosion(Projectile projectile) {
-            calUtils_LargeFieryExplosionDel?.Invoke(projectile);
-        }
-
         public static void UpdateRogueStealth(Player player) {
             if (!Has) return;
             UpdateRogueStealthInner(player);
@@ -789,19 +764,6 @@ namespace CalamityOverhaul
                     CalamityUtils.SpawnBossBetter(apolloSpawnPosition, CWRID.NPC_Apollo);
                     break;
             }
-        }
-
-        public static void DrawAfterimagesCentered(Projectile proj, int mode, Color lightColor, int typeOneIncrement = 1, Texture2D texture = null, bool drawCentered = true) {
-            if (calUtils_DrawAfterimagesCenteredDel == null) {
-                Main.spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, proj.Center - Main.screenPosition
-                    , null, lightColor, proj.rotation, TextureAssets.Projectile[proj.type].Value.Size() / 2, proj.scale, SpriteEffects.None, 0);
-                return;
-            }
-            calUtils_DrawAfterimagesCenteredDel(proj, mode, lightColor, typeOneIncrement, texture, drawCentered);
-        }
-
-        public static void HomeInOnNPC(Projectile projectile, bool ignoreTiles, float distanceRequired, float homingVelocity, float inertia) {
-            calUtils_HomeInOnNPCDel?.Invoke(projectile, ignoreTiles, distanceRequired, homingVelocity, inertia);
         }
 
         public static void SetDraedonDefeatTimer(NPC npc, float value) {

@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -51,7 +53,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRRef.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], Color.White, 1);
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
+            Vector2 origin = texture.Size() / 2f;
+
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+                float oldRotation = Projectile.oldRot[i];
+                SpriteEffects effects = Projectile.oldSpriteDirection[i] == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                Color color = Color.Lerp(Color.BlueViolet, Color.White, fade * 0.5f) * fade * 0.8f;
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Main.EntitySpriteDraw(texture, drawPos, null, color, oldRotation, origin, Projectile.scale, effects);
+            }
             return false;
         }
     }

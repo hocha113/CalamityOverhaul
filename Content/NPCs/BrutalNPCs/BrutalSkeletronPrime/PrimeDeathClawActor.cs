@@ -4,6 +4,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
@@ -146,16 +147,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            Vector2 shoulder = head.Center + new Vector2(side * 55f, 28f);
             Vector2 claw = Center;
-            //肘部下沉并向外侧撇，营造机械关节的折角
-            Vector2 elbow = (shoulder + claw) * 0.5f + new Vector2(side * 18f, 26f);
-
             Color armColor = Lighting.GetColor((int)(claw.X / 16f), (int)(claw.Y / 16f)) * alpha;
 
-            //上臂 shoulder→elbow，前臂 elbow→claw
-            DrawArmSegment(spriteBatch, HeadPrimeAI.BSPRAM.Value, HeadPrimeAI.BSPRAMGlow.Value, shoulder, elbow, armColor, alpha);
-            DrawArmSegment(spriteBatch, HeadPrimeAI.BSPRAM_Forearm.Value, HeadPrimeAI.BSPRAM_ForearmGlow.Value, elbow, claw, armColor, alpha);
+            DrawNativeStyleArm(spriteBatch, head, armColor);
 
             //钳子本体（2 帧：张开/闭合）
             Texture2D pliers = HeadPrimeAI.BSPPliers.Value;
@@ -169,19 +164,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        /// <summary>沿 start→end 拉伸绘制一段机械臂纹理（纹理默认朝上 -Y，origin 取顶部中心）</summary>
-        private static void DrawArmSegment(SpriteBatch sb, Texture2D tex, Texture2D glow, Vector2 start, Vector2 end, Color color, float alpha) {
-            Vector2 diff = end - start;
-            float len = diff.Length();
-            if (len < 1f) {
-                return;
+        /// <summary>
+        /// 复刻原生 NPC 机械臂绘制逻辑：两段固定贴图、固定缩放、按关节长度推进。
+        /// 不做任何纵向拉伸，避免演出专用钳子看起来像橡皮筋。
+        /// </summary>
+        private void DrawNativeStyleArm(SpriteBatch spriteBatch, NPC head, Color armColor) {
+            Vector2 joint = new Vector2(Position.X + Width * 0.5f - 5f * side, Position.Y + 20f);
+            Vector2 drawOrigin = new Vector2(TextureAssets.BoneArm.Width() * 0.5f, TextureAssets.BoneArm.Height() * 0.5f);
+            Rectangle drawRect = new Rectangle(0, 0, TextureAssets.BoneArm.Width(), TextureAssets.BoneArm.Height());
+
+            for (int k = 0; k < 2; k++) {
+                float toHeadX = head.Center.X - joint.X;
+                float toHeadY = head.Center.Y - joint.Y;
+                float segmentLength;
+
+                if (k == 0) {
+                    toHeadX -= 200f * side;
+                    toHeadY += 130f;
+                    segmentLength = 92f;
+                }
+                else {
+                    toHeadX -= 50f * side;
+                    toHeadY += 80f;
+                    segmentLength = 60f;
+                }
+
+                float distance = MathF.Sqrt(toHeadX * toHeadX + toHeadY * toHeadY);
+                if (distance < 1f) {
+                    continue;
+                }
+
+                float step = segmentLength / distance;
+                joint.X += toHeadX * step;
+                joint.Y += toHeadY * step;
+
+                float rotation = MathF.Atan2(toHeadY, toHeadX) - MathHelper.PiOver2;
+                Texture2D tex = k == 0 ? HeadPrimeAI.BSPRAM_Forearm.Value : HeadPrimeAI.BSPRAM.Value;
+                Texture2D glow = k == 0 ? HeadPrimeAI.BSPRAM_ForearmGlow.Value : HeadPrimeAI.BSPRAMGlow.Value;
+                SpriteEffects effects = k == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                Vector2 drawPos = joint - Main.screenPosition;
+
+                spriteBatch.Draw(tex, drawPos, drawRect, armColor, rotation, drawOrigin, 1f, effects, 0f);
+                spriteBatch.Draw(glow, drawPos, drawRect, Color.White * alpha, rotation, drawOrigin, 1f, effects, 0f);
+
+                if (k == 0) {
+                    joint.X += toHeadX * step / 2f;
+                    joint.Y += toHeadY * step / 2f;
+                }
             }
-            float rot = diff.ToRotation() - MathHelper.PiOver2;
-            Vector2 origin = new Vector2(tex.Width * 0.5f, 0f);
-            float scaleY = len / tex.Height;
-            Vector2 drawStart = start - Main.screenPosition;
-            sb.Draw(tex, drawStart, null, color, rot, origin, new Vector2(1f, scaleY), SpriteEffects.None, 0f);
-            sb.Draw(glow, drawStart, null, Color.White * alpha, rot, origin, new Vector2(1f, scaleY), SpriteEffects.None, 0f);
         }
     }
 }
