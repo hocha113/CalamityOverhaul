@@ -17,10 +17,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal class PrimeDeathPerformancePlayer : ModPlayer
     {
         private readonly CutsceneCamera camera = new();
+        private const int CameraReleaseTime = 55;
 
         //拖拽起点缓存（被抓玩家本地）
         private bool dragStarted;
         private Vector2 dragStartPos;
+        private int cameraReleaseTimer;
 
         //震动请求（本地，由 ModifyScreenPosition 消费）
         private static float pendingShakeIntensity;
@@ -45,6 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             HeadPrimeAI headAI = FindPerformanceHead(out NPC head);
             if (headAI != null && head != null) {
+                cameraReleaseTimer = 0;
                 if (!camera.Active) {
                     camera.Start(head.Center, 0.06f, 1.4f, 0.04f);
                 }
@@ -59,9 +62,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             else {
                 if (camera.Active) {
-                    camera.Stop();
+                    if (cameraReleaseTimer <= 0) {
+                        cameraReleaseTimer = CameraReleaseTime;
+                    }
+
+                    camera.LockPlayerControls = false;
+                    camera.FocusTarget = Player.Center;
+                    camera.TargetZoom = 1f;
+                    camera.PositionLerpSpeed = 0.065f;
+                    camera.ZoomLerpSpeed = 0.045f;
+                    camera.Apply();
+
+                    cameraReleaseTimer--;
+                    if (cameraReleaseTimer <= 0) {
+                        camera.Stop();
+                    }
                 }
-                camera.Apply();
+                else {
+                    camera.Apply();
+                }
             }
         }
 
@@ -122,47 +141,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void ConfigureCamera(HeadPrimeAI headAI, NPC head) {
-            Player target = headAI.DeathTargetPlayer;
-            Vector2 targetCenter = (target != null && target.active) ? target.Center : head.Center;
             Vector2 lift = headAI.DeathLiftPoint;
             camera.LockPlayerControls = true;
 
+            //聚焦点始终围绕头部及其正下方（玩家最终被举到此处），不去追远处玩家，避免镜头来回甩动；
+            //缩放单调推进至怒吼顶点，仅终爆才拉开看全景——杜绝中途回拉的"呼吸感"
             switch (headAI.CurrentDeathPhase) {
                 case PrimeDeathPhase.FakeDeath:
                     camera.FocusTarget = head.Center;
-                    camera.TargetZoom = 1.35f;
+                    camera.TargetZoom = 1.3f;
                     camera.PositionLerpSpeed = 0.045f;
                     camera.ZoomLerpSpeed = 0.03f;
                     break;
                 case PrimeDeathPhase.Summon:
-                    camera.FocusTarget = head.Center;
-                    camera.TargetZoom = 1.6f;
+                    camera.FocusTarget = head.Center + new Vector2(0f, 20f);
+                    camera.TargetZoom = 1.45f;
                     camera.PositionLerpSpeed = 0.05f;
-                    camera.ZoomLerpSpeed = 0.04f;
+                    camera.ZoomLerpSpeed = 0.045f;
                     break;
                 case PrimeDeathPhase.Lunge:
-                    camera.FocusTarget = (head.Center + targetCenter) * 0.5f;
-                    camera.TargetZoom = 1.4f;
-                    camera.PositionLerpSpeed = 0.06f;
-                    camera.ZoomLerpSpeed = 0.04f;
-                    break;
-                case PrimeDeathPhase.Drag:
-                    camera.FocusTarget = (head.Center + lift) * 0.5f;
-                    camera.TargetZoom = 1.7f;
+                    camera.FocusTarget = head.Center + new Vector2(0f, 45f);
+                    camera.TargetZoom = 1.6f;
                     camera.PositionLerpSpeed = 0.07f;
                     camera.ZoomLerpSpeed = 0.05f;
                     break;
+                case PrimeDeathPhase.Drag:
+                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.5f);
+                    camera.TargetZoom = 1.8f;
+                    camera.PositionLerpSpeed = 0.08f;
+                    camera.ZoomLerpSpeed = 0.055f;
+                    break;
                 case PrimeDeathPhase.Roar:
                     camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.45f);
-                    camera.TargetZoom = 2f;
-                    camera.PositionLerpSpeed = 0.09f;
-                    camera.ZoomLerpSpeed = 0.06f;
+                    camera.TargetZoom = 2.1f;
+                    camera.PositionLerpSpeed = 0.1f;
+                    camera.ZoomLerpSpeed = 0.07f;
                     break;
                 case PrimeDeathPhase.Finale:
-                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.3f);
-                    camera.TargetZoom = 1.45f;
-                    camera.PositionLerpSpeed = 0.12f;
-                    camera.ZoomLerpSpeed = 0.08f;
+                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.25f);
+                    camera.TargetZoom = 1.4f;
+                    camera.PositionLerpSpeed = 0.06f;
+                    camera.ZoomLerpSpeed = 0.05f;
                     break;
             }
         }

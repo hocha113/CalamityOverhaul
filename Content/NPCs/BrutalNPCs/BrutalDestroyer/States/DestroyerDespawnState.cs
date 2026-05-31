@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         //演出节奏（单位：帧，60帧/秒）
         private const int PreludeTime = 50;   //急停 + 关节漏火花
         private const int ChainTime = 185;    //沿躯体由疏到密的连环爆炸
-        private const int FinaleHold = 45;    //头部终爆后的短暂保持
+        private const int FinaleHold = 15;    //头部终爆后的短暂保持
         private const int FinaleStart = PreludeTime + ChainTime;
         private const int TotalTime = FinaleStart + FinaleHold;
 

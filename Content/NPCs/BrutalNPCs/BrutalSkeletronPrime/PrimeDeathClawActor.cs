@@ -72,10 +72,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     break;
                 }
                 case PrimeDeathPhase.Lunge: {
-                    float p = EaseIn((t - HeadPrimeAI.PhaseSummonEnd) / (float)(HeadPrimeAI.PhaseLungeEnd - HeadPrimeAI.PhaseSummonEnd));
+                    //迅猛扑出：EaseOut 让钳子瞬间窜向玩家，临近再急停咬合
+                    float p = EaseOut((t - HeadPrimeAI.PhaseSummonEnd) / (float)(HeadPrimeAI.PhaseLungeEnd - HeadPrimeAI.PhaseSummonEnd));
                     clawPos = Vector2.Lerp(standby, grabPoint, p);
                     aimTarget = targetCenter;
-                    clawFrame = p > 0.65f ? 1 : 0;
+                    clawFrame = p > 0.55f ? 1 : 0;
                     break;
                 }
                 case PrimeDeathPhase.Drag:

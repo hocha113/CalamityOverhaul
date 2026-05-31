@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         //演出节奏（单位：帧，60帧/秒）
         private const int PreludeTime = 40;   //急停 + 接缝漏火花
         private const int ChainTime = 130;    //眼球各处由疏到密的连环爆炸
-        private const int FinaleHold = 40;    //核心终爆后的短暂保持
+        private const int FinaleHold = 20;    //核心终爆后的短暂保持
         private const int FinaleStart = PreludeTime + ChainTime;
         private const int TotalTime = FinaleStart + FinaleHold;
 

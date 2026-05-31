@@ -48,17 +48,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal const float DeathLiftDistance = 210f;
 
         //演出时间线（单位：帧，60帧/秒）——各阶段累计结束帧
-        internal const int PhaseFakeDeathEnd = 150; //假死爆炸 + 沉寂
-        internal const int PhaseSummonEnd = 210;     //嗡鸣再生钳子
-        internal const int PhaseLungeEnd = 280;      //双钳扑抓
-        internal const int PhaseDragEnd = 370;       //拖拽举起
-        internal const int PhaseRoarEnd = 415;       //怒吼蓄力
-        internal const int PhaseFinaleEnd = 470;     //终爆死亡
+        //节奏遵循"慢(假死) → 快(召唤/扑抓) → 定格(拖拽/怒吼) → 爆发收尾(终爆)"
+        internal const int PhaseFakeDeathEnd = 140; //假死爆炸(0-80) + 死寂(80-140)
+        internal const int PhaseSummonEnd = 195;     //嗡鸣再生钳子(55f)
+        internal const int PhaseLungeEnd = 240;      //双钳迅猛扑抓(45f，最快)
+        internal const int PhaseDragEnd = 305;       //拖拽举起(65f)
+        internal const int PhaseRoarEnd = 380;       //怒吼高潮定格(75f，最长)
+        internal const int PhaseFinaleEnd = 450;     //终爆 + 余波 + 尘埃落定(70f)
 
         private int deathTimer;
         private bool deathInitialized;
         private bool clawsSpawned;
         private int deathTargetIndex = -1;
+        private float headWobble;      //头部故障摇摆角（叠加在基础朝向之上）
+        private float headWobbleVel;   //摇摆角速度
+        private bool fakeDeathJolted;  //假死死寂末的"惊醒"预兆是否已触发
 
         //殉爆配色（机械骷髅王：橙红 → 暗红，冷酷的金属过载质感）
         private static readonly Color DeathWarmA = new Color(255, 130, 60);
@@ -138,12 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             PrimeDeathPhase phase = GetDeathPhase(deathTimer);
 
-            //头部缓缓怒视被抓玩家
-            Player target = DeathTargetPlayer;
-            if (target != null && target.active) {
-                float desiredRot = npc.Center.To(target.Center).ToRotation() - MathHelper.PiOver2;
-                npc.rotation = npc.rotation.AngleLerp(desiredRot, phase >= PrimeDeathPhase.Roar ? 0.12f : 0.05f);
-            }
+            UpdateDeathHeadRotation(phase);
 
             switch (phase) {
                 case PrimeDeathPhase.FakeDeath:
@@ -216,6 +215,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        /// <summary>
+        /// 头部朝向：骷髅头全程保持竖立，不再追踪玩家。
+        /// 故障感只通过小幅阻尼摇摆表现，避免出现“用下巴对准玩家”的怪异观感。
+        /// </summary>
+        private void UpdateDeathHeadRotation(PrimeDeathPhase phase) {
+            //假死爆炸期：每次殉爆给一次交替方向的摇摆冲量（按计时判定，确定性，各端一致）
+            if (phase == PrimeDeathPhase.FakeDeath && deathTimer < 80 && deathTimer % 12 == 0) {
+                headWobbleVel += (deathTimer % 24 == 0) ? 0.05f : -0.05f;
+            }
+
+            //摇摆角阻尼回弹
+            headWobble += headWobbleVel;
+            headWobbleVel *= 0.9f;
+            headWobble *= 0.92f;
+
+            //在剥离摇摆后的基础角上插值回竖立，再叠加摇摆，避免摇摆被插值吃掉
+            float current = (npc.rotation - headWobble).AngleLerp(0f, 0.12f);
+            npc.rotation = current + headWobble;
+        }
+
         #region 各阶段演出
 
         /// <summary>假死：先连环爆炸再陷入沉寂，误导玩家以为战斗结束</summary>
@@ -224,9 +243,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if (deathTimer < 90) {
-                //连环爆炸
-                if (deathTimer % 12 == 0) {
+            if (deathTimer < 80) {
+                //连环爆炸（密集）
+                if (deathTimer % 11 == 0) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
                     SpawnMechBlast(pos, Main.rand.NextFloat(0.9f, 1.5f), false);
                     PrimeDeathPerformancePlayer.RequestShake(5f, 12);
@@ -238,8 +257,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * 0.8f);
             }
             else {
-                //沉寂——只剩残烟与零星电火花，营造"它已经死了"的假象
-                if (deathTimer % 9 == 0) {
+                //死寂——只剩残烟与零星电火花，营造"它已经死了"的假象
+                if (deathTimer % 10 == 0) {
                     SpawnSparks(npc.Center, 2, 3f);
                 }
                 if (deathTimer % 18 == 0) {
@@ -247,6 +266,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     PRTLoader.NewParticle<PRT_Smoke>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.5f),
                         Color.Lerp(new Color(60, 56, 54), new Color(22, 20, 20), Main.rand.NextFloat()),
                         Main.rand.NextFloat(0.7f, 1.1f)).Configure(Main.rand.Next(50, 80), 0.7f, Main.rand.NextFloat(-0.04f, 0.04f));
+                }
+
+                //死寂尾声的"惊醒"预兆——头部猛地一颤 + 低沉轰鸣，让随后的复活反转更具冲击力
+                if (deathTimer == PhaseFakeDeathEnd - 14 && !fakeDeathJolted) {
+                    fakeDeathJolted = true;
+                    headWobbleVel += 0.2f;
+                    SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -1f, Volume = 0.65f }, npc.Center);
+                    PrimeDeathPerformancePlayer.RequestShake(7f, 14);
                 }
             }
         }
@@ -315,7 +342,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void UpdateRoar() {
             if (deathTimer == PhaseDragEnd && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.5f, Volume = 1.2f }, npc.Center);
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Pitch = -0.8f, Volume = 0.9f }, npc.Center);
                 PrimeDeathPerformancePlayer.RequestShake(14f, PhaseRoarEnd - PhaseDragEnd);
             }
 
@@ -337,10 +363,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (VaultUtils.isServer) {
                 return;
             }
-            //终爆余波连环小爆
-            if (deathTimer % 5 == 0) {
-                Vector2 pos = npc.Center + Main.rand.NextVector2Circular(130f, 130f);
-                SpawnMechBlast(pos, Main.rand.NextFloat(1f, 2f), false);
+
+            int into = deathTimer - PhaseRoarEnd; //0 → 70
+            if (into < 50) {
+                //终爆余波：连环小爆由密到疏
+                int interval = into < 22 ? 4 : 7;
+                if (into % interval == 0) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(150f, 150f);
+                    SpawnMechBlast(pos, Main.rand.NextFloat(1f, 2.2f), false);
+                }
+            }
+            else {
+                //尘埃落定——爆炸止息，只余滚滚残烟缓缓散去，给真正的死亡一个喘息
+                if (into % 6 == 0) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
+                    PRTLoader.NewParticle<PRT_Smoke>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.8f, 2f),
+                        Color.Lerp(new Color(55, 50, 48), new Color(18, 16, 16), Main.rand.NextFloat()),
+                        Main.rand.NextFloat(1f, 1.6f)).Configure(Main.rand.Next(60, 90), 0.7f, Main.rand.NextFloat(-0.04f, 0.04f));
+                }
             }
         }
 
@@ -409,11 +449,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Lighting.AddLight(pos, warm.ToVector3() * (isFinale ? 3f : 1.1f) * scale);
 
-            //密集爆炸时按概率播放，避免爆音同帧堆叠破音
-            if (isFinale || Main.rand.NextBool(3)) {
+            //密集爆炸时按更低概率播放，避免连锁爆炸阶段出现杂乱爆音
+            if (isFinale || Main.rand.NextBool(6)) {
                 SoundEngine.PlaySound(SoundID.Item14 with {
                     Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
-                    Volume = isFinale ? 1f : 0.4f
+                    Volume = isFinale ? 0.8f : 0.25f
                 }, pos);
             }
         }
@@ -452,8 +492,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             PrimeDeathPerformancePlayer.RequestShake(26f, 45);
-            SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion with { Volume = 1.2f, Pitch = -0.35f }, npc.Center);
-            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1f }, npc.Center);
         }
 
         #endregion
