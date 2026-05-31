@@ -1,4 +1,4 @@
-﻿sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);
 float offsetStrength;
 
 //RGB错位分离，抄的风凌的，很简单，名字都不改
@@ -26,6 +26,6 @@ technique Technique1
 {
     pass TetradShiverShader
     {
-        PixelShader = compile ps_2_0 TetradShiverShader();
+        PixelShader = compile ps_3_0 TetradShiverShader();
     }
 }

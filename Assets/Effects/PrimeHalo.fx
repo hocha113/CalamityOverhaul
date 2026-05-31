@@ -1,4 +1,4 @@
-﻿float colorMult;
+float colorMult;
 float time;
 float radius;
 float maxOpacity;
@@ -69,6 +69,6 @@ technique Technique1
 {
     pass PrimeHaloPass
     {
-        PixelShader = compile ps_2_0 Function();
+        PixelShader = compile ps_3_0 Function();
     }
 }

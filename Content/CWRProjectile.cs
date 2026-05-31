@@ -44,10 +44,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool NotSubjectToSpecialEffects;
         /// <summary>
-        /// 是否具有粘滞效果
-        /// </summary>
-        public bool Viscosity;
-        /// <summary>
         /// 是否具有穿甲抗性
         /// </summary>
         public bool PierceResist;
@@ -60,6 +56,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int TimeFrozenTick;
         /// <summary>
+        /// 如果大于0，该弹幕会在达到这个时间时自杀
+        /// </summary>
+        public int TimeToDeath;
+        /// <summary>
+        /// 弹幕的计时器
+        /// </summary>
+        public int Timer;
+        /// <summary>
         /// 弹幕的命中属性
         /// </summary>
         public HitAttributeStruct HitAttribute;
@@ -67,28 +71,12 @@ namespace CalamityOverhaul.Content
         /// 弹幕的发射源
         /// </summary>
         public IEntitySource Source;
-        /// <summary>
-        /// 弹幕所属的CWR物品
-        /// </summary>
-        private CWRItem cwrItem;
-        private NPC hitNPC;
-        private Vector2 offsetHitPos;
-        private float offsetHitRot;
-        private float oldNPCRot;
-        private float npcRotUpdateSengs;
         internal int DyeItemID;
         internal bool SendDyeItemID;
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
 
             if (source != null) {
-                if (source.Context == "CWRGunShoot") {
-                    Item heldItem = Main.player[projectile.owner].GetItem();
-                    if (heldItem.type != ItemID.None) {
-                        cwrItem = heldItem.CWR();
-                    }
-                }
-
                 if (source is EntitySource_Parent parent) {
                     if (parent.Entity is Item item) {
                         if (item.Alives()) {
@@ -180,24 +168,14 @@ namespace CalamityOverhaul.Content
         public override bool PreAI(Projectile projectile) {
             SendProjectileDyeItemID(projectile);//在AI中发送一次染色数据，在这里identity等数据已经分配好了
 
-            if (Viscosity && projectile.numHits > 0) {
-                if (!hitNPC.Alives()) {
-                    projectile.Kill();
-                    return false;
-                }
-                npcRotUpdateSengs = oldNPCRot - hitNPC.rotation;
-                oldNPCRot = hitNPC.rotation;
-                offsetHitRot -= npcRotUpdateSengs;
-                projectile.rotation = offsetHitRot;
-                offsetHitPos = offsetHitPos.RotatedBy(npcRotUpdateSengs);
-                projectile.Center = hitNPC.Center + offsetHitPos;
-                return false;
+            if (TimeToDeath > 0 && Timer >= TimeToDeath) {
+                projectile.timeLeft = 0;//标记为自然死亡
+                projectile.Kill();
             }
 
-            return base.PreAI(projectile);
-        }
+            Timer++;
 
-        public override void PostAI(Projectile projectile) {
+            return base.PreAI(projectile);
         }
 
         public override bool PreKill(Projectile projectile, int timeLeft) {
@@ -210,9 +188,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {
-            cwrItem = null;
-            hitNPC = null;
-
             DyeEffectHandle.IsDyeDustEffectActive = false;
             DyeEffectHandle.DyeShaderData = null;
         }
@@ -297,22 +272,11 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void ViscositySD(Projectile projectile, NPC target) {
-            if (!Viscosity || projectile.numHits != 0) {
-                return;
-            }
-
-            hitNPC = target;
-            offsetHitPos = target.Center.To(projectile.Center);
-            offsetHitRot = projectile.rotation;
-            oldNPCRot = target.rotation;
-        }
-
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             if (!projectile.owner.TryGetPlayer(out var owner)) {
                 return;//不是本地玩家发出的弹幕不处理
             }
-            ViscositySD(projectile, target);
+
             SuperAttackOnHitNPC(projectile, target);
         }
 

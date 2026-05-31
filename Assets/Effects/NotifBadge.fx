@@ -1,7 +1,7 @@
 // ============================================================================
 // NotifBadge.fx — 任务书通知红点着色器
 // 高质感圆形红点：径向渐变 + 球面光照 + 菲涅尔边缘 + 呼吸脉冲
-// ps_2_0，指令数控制在64以内
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -56,6 +56,6 @@ technique Technique1
 {
     pass NotifBadgePass
     {
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

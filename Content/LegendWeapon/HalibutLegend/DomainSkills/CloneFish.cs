@@ -99,9 +99,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public Vector2 Position;
         public Vector2 Velocity;
         private float Speed;
-        private readonly float MaxSpeed;
-        private readonly float SeparationRadius;
-        private readonly float CohesionRadius;
+        private const float MaxSpeed = 6f;
+        private const float SeparationRadius = 40f;
+        private const float SeparationRadiusSq = SeparationRadius * SeparationRadius;
+        private const float CohesionRadius = 150f;
+        private const float CohesionRadiusSq = CohesionRadius * CohesionRadius;
         public float Scale;
         public float Frame;
         private float DesiredRadiusBase;
@@ -116,9 +118,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Position = startPos;
             Velocity = (rand.NextVector2Unit() * 2f);
             Speed = 2f + rand.NextFloat();
-            MaxSpeed = 6.0f;
-            SeparationRadius = 40f;
-            CohesionRadius = 150f;
             Scale = 0.6f + rand.NextFloat() * 0.5f;
             Frame = rand.NextFloat(6f);
             DesiredRadiusBase = 40f + rand.NextFloat() * 50f;
@@ -146,10 +145,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             int alignCount = 0, cohesionCount = 0;
             foreach (var other in boids) {
                 if (other == this) continue;
-                float dist = Vector2.Distance(Position, other.Position);
-                if (dist < 0.001f) continue;
-                if (dist < SeparationRadius) separation += (Position - other.Position) / dist;
-                if (dist < CohesionRadius) {
+                Vector2 toOther = Position - other.Position;
+                float distSq = toOther.LengthSquared();
+                if (distSq < 0.000001f) continue;
+                if (distSq < SeparationRadiusSq) separation += toOther / MathF.Sqrt(distSq);
+                if (distSq < CohesionRadiusSq) {
                     alignment += other.Velocity;
                     cohesion += other.Position;
                     alignCount++; cohesionCount++;
@@ -165,13 +165,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             Vector2 toOrbit = (orbitPos - Position) * 0.22f;
 
-            float centerDist = Vector2.Distance(Position, targetCenter);
-            if (centerDist > dynamicRadius * 3f) {
+            float returnRadius = dynamicRadius * 3f;
+            if ((Position - targetCenter).LengthSquared() > returnRadius * returnRadius) {
                 toOrbit += (targetCenter - Position).SafeNormalize(Vector2.Zero) * 3.2f;
             }
 
             float time = Main.GameUpdateCount * 0.07f + NoiseSeed;
-            Vector2 jitter = new Vector2((float)Math.Sin(time * 1.5f), (float)Math.Cos(time * 1.9f)) * (0.9f + speedNorm * 0.6f);
+            Vector2 jitter = new Vector2(MathF.Sin(time * 1.5f), MathF.Cos(time * 1.9f)) * (0.9f + speedNorm * 0.6f);
 
             Velocity += separation + alignment + cohesion + toOrbit + jitter * 0.5f;
             Velocity = (Velocity * 0.85f);
@@ -179,10 +179,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             float len = Velocity.Length();
             float dynMax = MathHelper.Lerp(MaxSpeed * 0.55f, MaxSpeed, speedNorm * 0.8f);
-            if (len > dynMax) Velocity = Velocity * (dynMax / len);
+            if (len > dynMax) {
+                Velocity *= dynMax / len;
+                len = dynMax;
+            }
 
             Position += Velocity;
-            Speed = MathHelper.Lerp(Speed, Velocity.Length(), 0.2f);
+            Speed = MathHelper.Lerp(Speed, len, 0.2f);
             Frame += 0.30f + Speed * 0.04f;
         }
 
@@ -199,9 +202,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private static Player cloneRenderPlayer;
-        private readonly List<PlayerSnapshot> afterImages = new();
-        private const int AfterImageCache = 12;
+        private const int BoidCount = 10;
+        private static readonly Color SpawnDustColor = new(100, 180, 255);
+        private static readonly Color DissolveDustColor = new(80, 150, 255);
+        private static readonly Color FishDrawColor = new(70, 200, 255, 255);
         private List<AbyssFishBoid> boids;
         private int particleTimer;
         private Vector2 lastCenter;
@@ -269,7 +273,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             foreach (var b in boids) {
                 Vector2 toCenter = (gatherTarget - b.Position) * 0.05f;
                 b.Velocity += toCenter;
-                if (b.Velocity.Length() > 5f) b.Velocity = b.Velocity.SafeNormalize(Vector2.Zero) * 5f;
+                float speedSq = b.Velocity.LengthSquared();
+                if (speedSq > 25f) b.Velocity *= 5f / MathF.Sqrt(speedSq);
                 b.Position += b.Velocity;
                 b.Frame += 0.3f;
             }
@@ -290,39 +295,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private void Shoot(HalibutPlayer hp, PlayerSnapshot snap) {
             //重放射击事件
             int replayFrame = hp.CloneFrameCounter - replayDelay;
-            int shootNum = 1 + HalibutData.GetLevel() / 4;
-            float randomRot = 0.15f;
-            if (hp.CloneShootEvents.Count <= 0) {
+            List<CloneShootEvent> events = hp.CloneShootEvents;
+            int eventIndex = FindFirstShootEventIndex(events, replayFrame);
+            if (eventIndex < 0) {
                 return;
             }
+
+            int shootNum = 1 + HalibutData.GetLevel() / 4;
+            float randomRot = 0.15f;
+            int oceanCurrentType = ModContent.ProjectileType<OceanCurrent>();
             ShootState shootState = Owner.GetShootState();
-            for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
-                var ev = hp.CloneShootEvents[i];
+            Vector2 shootPosition = snap.Position + Owner.Size * 0.5f;
+            for (int i = eventIndex; i < events.Count; i++) {
+                var ev = events[i];
                 if (ev.FrameIndex != replayFrame) {
-                    continue;
+                    break;
                 }
 
                 int evShootNum = shootNum;
-                float addby = ev.Type == ModContent.ProjectileType<OceanCurrent>() ? 0.25f : 0.4f;
+                float addby = ev.Type == oceanCurrentType ? 0.25f : 0.4f;
                 int evDamage = (int)(ev.Damage * (1f + evShootNum * addby));
                 int proj = Projectile.NewProjectile(shootState.Source
-                   , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
+                   , shootPosition, ev.Velocity.RotatedByRandom(randomRot)
                    , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
-                Main.projectile[proj].friendly = true;
+                if (proj.TryGetProjectile(out var projectile)) {
+                    projectile.friendly = true;
+                    projectile.CWR().TimeToDeath = 120;
+                }
             }
+        }
+
+        private static int FindFirstShootEventIndex(List<CloneShootEvent> events, int replayFrame) {
+            int low = 0;
+            int high = events.Count - 1;
+            int result = -1;
+            while (low <= high) {
+                int mid = low + ((high - low) >> 1);
+                int frame = events[mid].FrameIndex;
+                if (frame >= replayFrame) {
+                    if (frame == replayFrame) {
+                        result = mid;
+                    }
+                    high = mid - 1;
+                }
+                else {
+                    low = mid + 1;
+                }
+            }
+            return result;
         }
 
         private void UpdateActive(HalibutPlayer hp) {
             //检查是否有足够的快照
-            if (hp.CloneSnapshots.Count < replayDelay) return;
+            List<PlayerSnapshot> snapshots = hp.CloneSnapshots;
+            int snapshotCount = snapshots.Count;
+            if (snapshotCount < replayDelay) return;
 
-            int index = hp.CloneSnapshots.Count - replayDelay;
-            PlayerSnapshot snap = hp.CloneSnapshots[index];
+            int index = snapshotCount - replayDelay;
+            PlayerSnapshot snap = snapshots[index];
             Projectile.Center = snap.Position + Owner.Size * 0.5f;
             Projectile.velocity = snap.Velocity;
-
-            afterImages.Add(snap);
-            if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 //重放射击事件
@@ -370,16 +402,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         private static List<AbyssFishBoid> CreateBoids(Vector2 center) {
-            var list = new List<AbyssFishBoid>();
-            int count = 10;
-            for (int i = 0; i < count; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(40, 40)));
+            var list = new List<AbyssFishBoid>(BoidCount);
+            for (int i = 0; i < BoidCount; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(40, 40)));
             return list;
         }
 
         private static List<AbyssFishBoid> CreateBoidsForSpawn(Vector2 center) {
-            var list = new List<AbyssFishBoid>();
-            int count = 10;
-            for (int i = 0; i < count; i++) {
+            var list = new List<AbyssFishBoid>(BoidCount);
+            for (int i = 0; i < BoidCount; i++) {
                 var boid = new AbyssFishBoid(center + Main.rand.NextVector2Circular(180, 180));
                 boid.Velocity = (center - boid.Position).SafeNormalize(Vector2.Zero) * 3f;
                 list.Add(boid);
@@ -395,17 +425,104 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         private static void SpawnSpawnParticle(Vector2 pos) {
-            int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, new Color(100, 180, 255), 1.2f);
+            int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, SpawnDustColor, 1.2f);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
         }
 
         private static void SpawnDissolveParticle(Vector2 pos) {
             int dustType = Main.rand.NextBool() ? DustID.Water : DustID.WaterCandle;
-            int dust = Dust.NewDust(pos, 1, 1, dustType, 0, 0, 120, new Color(80, 150, 255), 1.0f);
+            int dust = Dust.NewDust(pos, 1, 1, dustType, 0, 0, 120, DissolveDustColor, 1.0f);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
             Main.dust[dust].fadeIn = 1.2f;
+        }
+
+        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals 以及额外 SpriteBatch 切换。
+        private void DrawClonePlayer(in PlayerSnapshot snap) {
+            if (cloneAlpha <= 0.01f) {
+                return;
+            }
+
+            Player player = Owner;
+            Vector2 origPosition = player.position;
+            Vector2 origVelocity = player.velocity;
+            int origDirection = player.direction;
+            int origSelectedItem = player.selectedItem;
+            int origItemAnimation = player.itemAnimation;
+            int origItemTime = player.itemTime;
+            float origItemRotation = player.itemRotation;
+            int origHeldProj = player.heldProj;
+            Rectangle origBodyFrame = player.bodyFrame;
+            Rectangle origLegFrame = player.legFrame;
+            Color origSkin = player.skinColor;
+            Color origShirt = player.shirtColor;
+            Color origUnderShirt = player.underShirtColor;
+            Color origPants = player.pantsColor;
+            Color origShoe = player.shoeColor;
+            Color origHair = player.hairColor;
+            Color origEye = player.eyeColor;
+
+            try {
+                player.position = snap.Position;
+                player.velocity = snap.Velocity;
+                player.direction = snap.Direction;
+                player.selectedItem = FindAirInventorySlot(player, origSelectedItem);
+                player.bodyFrame = snap.BodyFrame;
+                player.legFrame = snap.LegFrame;
+                player.itemAnimation = snap.ItemAnimation;
+                player.itemTime = snap.ItemTime;
+                player.itemRotation = snap.ItemRotation;
+                player.heldProj = -1;
+
+                Color drawColor = Color.BlueViolet * cloneAlpha;
+                player.skinColor = drawColor;
+                player.shirtColor = drawColor;
+                player.underShirtColor = drawColor;
+                player.pantsColor = drawColor;
+                player.shoeColor = drawColor;
+                player.hairColor = drawColor;
+                player.eyeColor = drawColor;
+
+                if (snap.ItemAnimation > 0) {
+                    Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
+                    Vector2 gunOrigin = new(gun.Width * 0.5f, gun.Height * 0.5f);
+                    Main.spriteBatch.Draw(gun
+                        , player.Center - Main.screenPosition + player.itemRotation.ToRotationVector2() * 42 * player.direction
+                        , null, Color.BlueViolet * 0.75f, player.itemRotation, gunOrigin, 1f
+                        , player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                }
+
+                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin);
+            }
+            finally {
+                player.position = origPosition;
+                player.velocity = origVelocity;
+                player.direction = origDirection;
+                player.selectedItem = origSelectedItem;
+                player.itemAnimation = origItemAnimation;
+                player.itemTime = origItemTime;
+                player.itemRotation = origItemRotation;
+                player.heldProj = origHeldProj;
+                player.bodyFrame = origBodyFrame;
+                player.legFrame = origLegFrame;
+                player.skinColor = origSkin;
+                player.shirtColor = origShirt;
+                player.underShirtColor = origUnderShirt;
+                player.pantsColor = origPants;
+                player.shoeColor = origShoe;
+                player.hairColor = origHair;
+                player.eyeColor = origEye;
+            }
+        }
+
+        private static int FindAirInventorySlot(Player player, int fallbackSlot) {
+            for (int i = 0; i < player.inventory.Length; i++) {
+                if (player.inventory[i].type == ItemID.None) {
+                    return i;
+                }
+            }
+            return fallbackSlot;
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -413,79 +530,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             PlayerSnapshot snap = default;
             bool drawPlayer = false;
-            if (currentState == AnimState.Active && hp != null && hp.CloneSnapshots.Count >= replayDelay) {
-                int index = hp.CloneSnapshots.Count - replayDelay;
-                snap = hp.CloneSnapshots[index];
-                drawPlayer = true;
+            if (currentState == AnimState.Active && hp != null) {
+                List<PlayerSnapshot> snapshots = hp.CloneSnapshots;
+                int snapshotCount = snapshots.Count;
+                if (snapshotCount >= replayDelay) {
+                    int index = snapshotCount - replayDelay;
+                    snap = snapshots[index];
+                    drawPlayer = true;
+                }
             }
             else if (currentState == AnimState.Spawning || currentState == AnimState.Dissolving) {
                 snap = new PlayerSnapshot {
                     Position = Projectile.position,
                     Velocity = Projectile.velocity,
                     Direction = Owner.direction,
+                    SelectedItem = Owner.selectedItem,
+                    ItemAnimation = Owner.itemAnimation,
+                    ItemTime = Owner.itemTime,
+                    ItemRotation = Owner.itemRotation,
                     BodyFrame = Owner.bodyFrame,
                     LegFrame = Owner.legFrame
                 };
                 drawPlayer = true;
             }
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
-
-            if (drawPlayer && cloneAlpha > 0.01f) {
-                cloneRenderPlayer ??= new Player();
-                var cp = cloneRenderPlayer;
-
-                cp.CopyVisuals(Owner);
-                cp.ResetEffects();
-                cp.position = snap.Position;
-                cp.velocity = snap.Velocity;
-                cp.direction = snap.Direction;
-                cp.bodyFrame = snap.BodyFrame;
-                cp.legFrame = snap.LegFrame;
-                cp.itemAnimation = snap.ItemAnimation;
-                cp.itemRotation = snap.ItemRotation;
-                cp.heldProj = -1;
-
-                Color drawColor = Color.BlueViolet * cloneAlpha;
-                cp.skinVariant = Owner.skinVariant;
-                cp.skinColor = drawColor;
-                cp.shirtColor = drawColor;
-                cp.underShirtColor = drawColor;
-                cp.pantsColor = drawColor;
-                cp.shoeColor = drawColor;
-                cp.hairColor = drawColor;
-                cp.eyeColor = drawColor;
-
-                if (cp.itemAnimation > 0) {
-                    Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
-                    Main.spriteBatch.Draw(gun, cp.Center - Main.screenPosition + cp.itemRotation.ToRotationVector2() * 42 * cp.direction, null, Color.BlueViolet * 0.75f
-                        , cp.itemRotation, gun.Size() / 2, 1f, cp.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                }
-
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin);
+            if (drawPlayer) {
+                DrawClonePlayer(snap);
             }
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+            if (boids != null && boids.Count > 0) {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
-            if (boids != null) {
-                Main.instance.LoadItem(ItemID.FrostMinnow);
+                if (!TextureAssets.Item[ItemID.FrostMinnow].IsLoaded) {
+                    Main.instance.LoadItem(ItemID.FrostMinnow);
+                }
                 Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
+                Rectangle rect = fishTex.Bounds;
+                Vector2 origin = new(fishTex.Width * 0.5f, fishTex.Height * 0.5f);
+                float fadeTime = Main.GlobalTimeWrappedHourly * 6f;
                 foreach (var b in boids) {
-                    Rectangle rect = fishTex.Bounds;
                     SpriteEffects spriteEffects = b.Velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
                     float rot = b.Velocity.ToRotation() + (b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-                    Vector2 origin = rect.Size() * 0.5f;
-                    float fade = 0.65f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + b.Frame) * 0.25f;
+                    float fade = 0.65f + MathF.Sin(fadeTime + b.Frame) * 0.25f;
                     float alphaMod = currentState == AnimState.Dissolving ? (1f - b.ScatterProgress) : cloneAlpha;
-                    Color c = new Color(70, 200, 255, 255) * fade * alphaMod;
+                    Color c = FishDrawColor * fade * alphaMod;
                     Main.spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
                 }
-            }
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+            }
             return false;
         }
     }

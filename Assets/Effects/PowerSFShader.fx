@@ -1,4 +1,4 @@
-﻿sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);
 texture2D tex0; 
 sampler2D uImage1 = sampler_state  
 {
@@ -28,6 +28,6 @@ technique Technique1
 {
     pass PowerSFShaderPass
     {
-        PixelShader = compile ps_2_0 PSFunction();
+        PixelShader = compile ps_3_0 PSFunction();
     }
 }

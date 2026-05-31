@@ -1,4 +1,4 @@
-﻿//缩放矩阵
+//缩放矩阵
 matrix transformMatrix;
 //样板图，就是刀光灰度图
 texture sampleTexture;
@@ -77,6 +77,6 @@ technique Technique1
     pass KnifeRenderingPass
     {
         VertexShader = compile vs_2_0 VertexShaderFunction();
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 };

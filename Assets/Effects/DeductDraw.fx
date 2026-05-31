@@ -1,4 +1,4 @@
-﻿sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);
 float2 topLeft;
 float width;
 float height;
@@ -26,6 +26,6 @@ technique Technique1
 {
     pass DeductDrawPass
     {
-        PixelShader = compile ps_2_0 Function();
+        PixelShader = compile ps_3_0 Function();
     }
 }

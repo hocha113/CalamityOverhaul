@@ -1,4 +1,4 @@
-﻿sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);
 float3 filterRGB;
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0

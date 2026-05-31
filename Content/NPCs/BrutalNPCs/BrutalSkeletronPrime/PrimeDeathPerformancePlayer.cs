@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool dragStarted;
         private Vector2 dragStartPos;
         private int cameraReleaseTimer;
+        private bool cameraOwned;
+        private float restoreZoomTarget = 1f;
 
         //震动请求（本地，由 ModifyScreenPosition 消费）
         private static float pendingShakeIntensity;
@@ -47,6 +49,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             HeadPrimeAI headAI = FindPerformanceHead(out NPC head);
             if (headAI != null && head != null) {
+                if (!cameraOwned) {
+                    cameraOwned = true;
+                    restoreZoomTarget = Main.GameZoomTarget;
+                    camera.Start(head.Center, 0.06f, 1.4f, 0.04f);
+                }
                 cameraReleaseTimer = 0;
                 if (!camera.Active) {
                     camera.Start(head.Center, 0.06f, 1.4f, 0.04f);
@@ -61,26 +68,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 camera.Apply();
             }
             else {
-                if (camera.Active) {
-                    if (cameraReleaseTimer <= 0) {
-                        cameraReleaseTimer = CameraReleaseTime;
-                    }
+                pendingShakeIntensity = 0f;
+                pendingShakeDuration = 0;
 
-                    camera.LockPlayerControls = false;
-                    camera.FocusTarget = Player.Center;
-                    camera.TargetZoom = 1f;
-                    camera.PositionLerpSpeed = 0.065f;
-                    camera.ZoomLerpSpeed = 0.045f;
-                    camera.Apply();
+                //没有拿到 Prime 死亡演出的相机所有权时，绝不能调用 Apply；
+                //Apply 会写 Main.GameZoomTarget，从而污染其它完全不相关的场景缩放。
+                if (!cameraOwned) {
+                    camera.Reset();
+                    return;
+                }
 
-                    cameraReleaseTimer--;
-                    if (cameraReleaseTimer <= 0) {
-                        camera.Stop();
-                    }
-                }
-                else {
-                    camera.Apply();
-                }
+                ReleaseOwnedCamera();
             }
         }
 
@@ -141,7 +139,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void ConfigureCamera(HeadPrimeAI headAI, NPC head) {
-            Vector2 lift = headAI.DeathLiftPoint;
             camera.LockPlayerControls = true;
 
             //聚焦点始终围绕头部及其正下方（玩家最终被举到此处），不去追远处玩家，避免镜头来回甩动；
@@ -186,19 +183,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        private void ReleaseOwnedCamera() {
+            if (cameraReleaseTimer <= 0) {
+                cameraReleaseTimer = CameraReleaseTime;
+            }
+
+            if (!camera.Active) {
+                camera.Start(Player.Center, 0.065f, restoreZoomTarget, 0.045f);
+            }
+
+            camera.LockPlayerControls = false;
+            camera.FocusTarget = Player.Center;
+            camera.TargetZoom = restoreZoomTarget;
+            camera.PositionLerpSpeed = 0.065f;
+            camera.ZoomLerpSpeed = 0.045f;
+            camera.Apply();
+
+            cameraReleaseTimer--;
+            if (cameraReleaseTimer <= 0 || MathHelper.Distance(Main.GameZoomTarget, restoreZoomTarget) < 0.01f) {
+                Main.GameZoomTarget = restoreZoomTarget;
+                camera.Reset();
+                cameraOwned = false;
+                cameraReleaseTimer = 0;
+            }
+        }
+
         /// <summary>查询当前正在进行死亡演出的机械骷髅王头部，无则返回 null</summary>
         private static HeadPrimeAI FindPerformanceHead(out NPC head) {
             head = null;
             int h = HeadPrimeAI.ActivePerformanceHead;
             if (h < 0 || h >= Main.maxNPCs) {
+                HeadPrimeAI.ActivePerformanceHead = -1;
                 return null;
             }
             NPC npc = Main.npc[h];
             if (!npc.active || npc.type != NPCID.SkeletronPrime) {
+                HeadPrimeAI.ActivePerformanceHead = -1;
                 return null;
             }
             HeadPrimeAI ai = npc.GetOverride<HeadPrimeAI>();
             if (ai == null || !ai.InDeathPerformance) {
+                HeadPrimeAI.ActivePerformanceHead = -1;
                 return null;
             }
             head = npc;

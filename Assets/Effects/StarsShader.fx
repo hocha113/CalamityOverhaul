@@ -1,4 +1,4 @@
-﻿sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);
 
 float m; //亮度阈值
 float n; //描边宽度
