@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Main.dust[dust].fadeIn = 1.2f;
         }
 
-        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals。
+        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals
         internal void DrawClonePlayer(in PlayerSnapshot snap) {
             if (cloneAlpha <= 0.01f) {
                 return;
@@ -452,7 +452,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             int origSelectedItem = player.selectedItem;
             int origItemAnimation = player.itemAnimation;
             int origItemTime = player.itemTime;
+            int origItemTimeMax = player.itemTimeMax;
             float origItemRotation = player.itemRotation;
+            Vector2 origItemLocation = player.itemLocation;
+            int origItemWidth = player.itemWidth;
+            int origItemHeight = player.itemHeight;
             int origHeldProj = player.heldProj;
             Rectangle origBodyFrame = player.bodyFrame;
             Rectangle origLegFrame = player.legFrame;
@@ -471,9 +475,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 player.selectedItem = FindAirInventorySlot(player, origSelectedItem);
                 player.bodyFrame = snap.BodyFrame;
                 player.legFrame = snap.LegFrame;
-                player.itemAnimation = snap.ItemAnimation;
-                player.itemTime = snap.ItemTime;
+                // 玩家本体交给 PlayerRenderer，武器另行手绘；否则原版持有物路径会把真实玩家的武器状态画进克隆体批次
+                player.itemAnimation = 0;
+                player.itemTime = 0;
+                player.itemTimeMax = 0;
                 player.itemRotation = snap.ItemRotation;
+                player.itemLocation = player.Center;
+                player.itemWidth = 0;
+                player.itemHeight = 0;
                 player.heldProj = -1;
 
                 Color drawColor = Color.BlueViolet * cloneAlpha;
@@ -485,16 +494,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 player.hairColor = drawColor;
                 player.eyeColor = drawColor;
 
+                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin);
+
                 if (snap.ItemAnimation > 0) {
                     Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
                     Vector2 gunOrigin = new(gun.Width * 0.5f, gun.Height * 0.5f);
                     Main.spriteBatch.Draw(gun
-                        , player.Center - Main.screenPosition + player.itemRotation.ToRotationVector2() * 42 * HalibutOverride.ItemScale * player.direction
-                        , null, Color.BlueViolet * 0.75f, player.itemRotation, gunOrigin, HalibutOverride.ItemScale
+                        , player.Center - Main.screenPosition + snap.ItemRotation.ToRotationVector2() * 42 * HalibutOverride.ItemScale * player.direction
+                        , null, Color.BlueViolet * 0.75f, snap.ItemRotation, gunOrigin, HalibutOverride.ItemScale
                         , player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 }
-
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin);
             }
             finally {
                 player.position = origPosition;
@@ -503,7 +512,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 player.selectedItem = origSelectedItem;
                 player.itemAnimation = origItemAnimation;
                 player.itemTime = origItemTime;
+                player.itemTimeMax = origItemTimeMax;
                 player.itemRotation = origItemRotation;
+                player.itemLocation = origItemLocation;
+                player.itemWidth = origItemWidth;
+                player.itemHeight = origItemHeight;
                 player.heldProj = origHeldProj;
                 player.bodyFrame = origBodyFrame;
                 player.legFrame = origLegFrame;
