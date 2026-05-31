@@ -507,8 +507,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //单格基准角度：让 8 格 + 7 个间隙正好等于旧 (4.65-2.5)=2.15 rad 的视觉跨度
         //BaseCellAngle = (2.15 - 7*0.04) / 8 ≈ 0.234 rad
         private const float RamBaseCellAngle = 0.234f;
-        //跨度软上限：0.85 * 2π，避免极端容量下弧带绕满整圈与自身重叠
-        private const float RamMaxTotalSweep = 0.85f * MathHelper.TwoPi;
+        //跨度软上限：完整圆环。超过该跨度后切换为百分比模式，避免极端容量下弧带自交重叠
+        private const float RamMaxTotalSweep = MathHelper.TwoPi;
 
         /// <summary>
         /// 给定 MaxRam 计算实际使用的单格角度与弧起止角度

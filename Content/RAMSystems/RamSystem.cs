@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// </summary>
         public const int DefaultBaseMaxRam = 8;
         /// <summary>
-        /// 默认基础每秒恢复量（億1格需生0秒）
+        /// 默认基础每秒恢复量
         /// </summary>
         public const float DefaultBaseRecoveryRate = 0.1f;
         /// <summary>
@@ -46,11 +46,11 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// <summary>
         /// RAM 上限芯片最多可使用次数
         /// </summary>
-        public const int MaxCapacityUpgradeChips = 24;
+        public const int MaxCapacityUpgradeChips = 32;
         /// <summary>
         /// RAM 恢复速度芯片最多可使用次数
         /// </summary>
-        public const int MaxRecoveryUpgradeChips = 30;
+        public const int MaxRecoveryUpgradeChips = 32;
         /// <summary>
         /// 单个 RAM 上限芯片提供的基础上限
         /// </summary>
