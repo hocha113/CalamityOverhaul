@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
 
             if (!finishedCurrent) {
-                visibleCharCount = current.Content.Length;
+                visibleCharCount = wrappedTotalChars;
                 finishedCurrent = true;
                 waitingForAdvance = true;
                 return true;
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             //如果当前对话还没显示完，先显示完整
             if (!finishedCurrent) {
-                visibleCharCount = current.Content.Length;
+                visibleCharCount = wrappedTotalChars;
                 finishedCurrent = true;
             }
 
@@ -347,6 +347,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (Math.Abs(_scale - scale) > 0.001f) {
                 _scale = scale;
                 _targetScale = scale;
+                RefreshCurrentLayout();
                 OnScaleChanged?.Invoke(_scale);
             }
         }
@@ -380,8 +381,18 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
 
                 if (Math.Abs(oldScale - _scale) > 0.001f) {
+                    RefreshCurrentLayout();
                     OnScaleChanged?.Invoke(_scale);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 缩放会改变折行宽度、行高和面板高度，当前对话需要立即重新布局。
+        /// </summary>
+        private void RefreshCurrentLayout() {
+            if (current != null) {
+                WrapCurrent();
             }
         }
 
@@ -1418,7 +1429,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 player.mouseInterface |= Active;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     if (!finishedCurrent) {
-                        visibleCharCount = current.Content.Length;
+                        visibleCharCount = wrappedTotalChars;
                         finishedCurrent = true;
                         waitingForAdvance = true;
                     }
