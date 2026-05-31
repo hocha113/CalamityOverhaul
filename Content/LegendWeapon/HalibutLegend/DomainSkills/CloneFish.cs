@@ -475,7 +475,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 player.selectedItem = FindAirInventorySlot(player, origSelectedItem);
                 player.bodyFrame = snap.BodyFrame;
                 player.legFrame = snap.LegFrame;
-                // 玩家本体交给 PlayerRenderer，武器另行手绘；否则原版持有物路径会把真实玩家的武器状态画进克隆体批次
+                //玩家本体交给 PlayerRenderer，武器另行手绘；否则原版持有物路径会把真实玩家的武器状态画进克隆体批次
                 player.itemAnimation = 0;
                 player.itemTime = 0;
                 player.itemTimeMax = 0;
