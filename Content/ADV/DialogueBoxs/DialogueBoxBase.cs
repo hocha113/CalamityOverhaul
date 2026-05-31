@@ -388,7 +388,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
 
         /// <summary>
-        /// 缩放会改变折行宽度、行高和面板高度，当前对话需要立即重新布局。
+        /// 当前对话的布局缓存需要在外观参数变化后保持同步。
         /// </summary>
         private void RefreshCurrentLayout() {
             if (current != null) {
@@ -683,6 +683,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual int FastModeAutoAdvanceDelay => 12;
         internal int playedCount = 0;
         protected Vector2 anchorPos;
+        //面板基础高度，不直接包含对话框缩放；绘制时统一通过 ScaledPanelHeight 放大。
         internal float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
         protected virtual float MaxHeight => 480f;
@@ -1098,16 +1099,16 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             List<string> allLines = new();
             string[] manual = raw.Split('\n');
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            //计算可用宽度(考虑立绘与文字缩放)
-            float textScale = ScaledTextScale;
-            float baseWidth = ScaledPanelWidth - ScaledPadding * 2 - ApplyScale(24f);
+            //折行在未缩放的布局空间中计算，避免 1.5x 等缩放下高度和绘制空间混用。
+            float textScale = TextScale;
+            float baseWidth = PanelWidth - Padding * 2 - 24f;
             bool hasPortrait = false;
             string wrapPortraitKey = current.PortraitKey ?? current.Speaker;
             if (!string.IsNullOrEmpty(wrapPortraitKey) && portraits.TryGetValue(wrapPortraitKey, out var pd) && pd.Texture != null) {
                 hasPortrait = true;
             }
             if (hasPortrait) {
-                baseWidth -= ScaledPortraitWidth + ApplyScale(20f);
+                baseWidth -= PortraitWidth + 20f;
             }
             if (baseWidth < 60f) {
                 baseWidth = 60f;
@@ -1133,12 +1134,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             foreach (var line in wrappedLines)
                 wrappedTotalChars += line.Length;
             int textLines = wrappedLines.Length;
-            int lineHeight = (int)(font.MeasureString("A").Y * textScale) + ScaledLineSpacing;
+            int lineHeight = (int)(font.MeasureString("A").Y * textScale) + LineSpacing;
 
-            int headerHeight = (int)ApplyScale(TextBlockOffsetBase);
+            int headerHeight = (int)TextBlockOffsetBase;
 
-            float contentHeight = textLines * lineHeight + ScaledPadding * 2 + headerHeight;
-            panelHeight = MathHelper.Clamp(contentHeight, ScaledMinHeight, ScaledMaxHeight);
+            float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight + TextBottomSafetyPadding;
+            panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
 
         /// <summary>
@@ -1389,8 +1390,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
             }
 
-            Vector2 panelPos = anchorPos - new Vector2(PanelWidth / 2f, panelHeight);
-            Vector2 panelSize = new(PanelWidth, panelHeight);
+            Vector2 panelSize = new(ScaledPanelWidth, ScaledPanelHeight);
+            Vector2 panelPos = anchorPos - new Vector2(panelSize.X / 2f, panelSize.Y);
             StyleUpdate(panelPos, panelSize);
         }
         public Rectangle GetPanelRect() {
@@ -1403,7 +1404,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
             float width = ScaledPanelWidth;
-            float height = panelHeight; //panelHeight 已在 WrapCurrent 中应用缩放
+            float height = ScaledPanelHeight;
             Vector2 panelOrigin = new(width / 2f, height);
             Vector2 drawPos = anchorPos - panelOrigin;
             drawPos.Y += (1f - eased) * ApplyScale(90f);
@@ -1611,6 +1612,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual float TextScale => 0.8f;
         protected virtual float ContinueHintScale => 0.8f;
         protected virtual float FastHintScale => 0.7f;
+        protected virtual float TextBottomSafetyPadding => 8f;
         protected virtual int NameGlowCount => 4;
         protected virtual float NameGlowRadius => 1.8f;
         protected virtual float DividerLineThickness => 1.3f;
@@ -1860,7 +1862,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Vector2 textStart = new(ctx.PanelRect.X + ctx.LeftOffset, ctx.PanelRect.Y + ctx.TextBlockOffsetY);
             int remaining = visibleCharCount;
             int lineHeight = (int)(ctx.Font.MeasureString("A").Y * ScaledTextScale) + ScaledLineSpacing;
-            int maxLines = (int)((ctx.PanelRect.Height - (textStart.Y - ctx.PanelRect.Y) - ScaledPadding) / lineHeight);
+            float bottomLimit = ctx.PanelRect.Bottom - ScaledPadding + ApplyScale(2f);
+            float availableHeight = bottomLimit - textStart.Y;
+            int maxLines = Math.Max(0, (int)MathF.Ceiling(availableHeight / lineHeight));
 
             for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
@@ -1882,7 +1886,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
 
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > ctx.PanelRect.Bottom - ScaledPadding) {
+                if (linePos.Y + lineHeight > bottomLimit) {
                     break;
                 }
 
@@ -2391,7 +2395,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
             float width = ScaledPanelWidth;
-            float height = panelHeight; //panelHeight 已在 WrapCurrent 中应用缩放
+            float height = ScaledPanelHeight;
             Vector2 panelOrigin = new(width / 2f, height);
             Vector2 drawPos = anchorPos - panelOrigin;
             drawPos.Y += (1f - eased) * ApplyScale(90f);
