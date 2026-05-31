@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class DrizzleFishHolder : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Item + "Fishing/BrimstoneCragCatches/DragoonDrizzlefish";
+        public override string Texture => CWRConstant.Placeholder;
 
         //ai[0] = FishIndex（自动同步）
         //ai[1] = TotalFishCount（自动同步）
@@ -375,7 +375,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Texture2D value;
+            if (CWRID.Item_DragoonDrizzlefish > 0) {
+                value = TextureAssets.Projectile[CWRID.Item_DragoonDrizzlefish].Value;//获取鱼的纹理
+            }
+            else {
+                Main.instance.LoadItem(ItemID.CrimsonTigerfish);
+                value = TextureAssets.Item[ItemID.CrimsonTigerfish].Value;//获取鱼的纹理
+            }
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = value.Frame();
             Vector2 origin = sourceRect.Size() / 2f;

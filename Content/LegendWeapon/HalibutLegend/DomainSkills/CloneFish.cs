@@ -1,4 +1,5 @@
 ﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -438,8 +439,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Main.dust[dust].fadeIn = 1.2f;
         }
 
-        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals 以及额外 SpriteBatch 切换。
-        private void DrawClonePlayer(in PlayerSnapshot snap) {
+        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals。
+        internal void DrawClonePlayer(in PlayerSnapshot snap) {
             if (cloneAlpha <= 0.01f) {
                 return;
             }
@@ -488,8 +489,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
                     Vector2 gunOrigin = new(gun.Width * 0.5f, gun.Height * 0.5f);
                     Main.spriteBatch.Draw(gun
-                        , player.Center - Main.screenPosition + player.itemRotation.ToRotationVector2() * 42 * player.direction
-                        , null, Color.BlueViolet * 0.75f, player.itemRotation, gunOrigin, 1f
+                        , player.Center - Main.screenPosition + player.itemRotation.ToRotationVector2() * 42 * HalibutOverride.ItemScale * player.direction
+                        , null, Color.BlueViolet * 0.75f, player.itemRotation, gunOrigin, HalibutOverride.ItemScale
                         , player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 }
 
@@ -516,27 +517,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        private static int FindAirInventorySlot(Player player, int fallbackSlot) {
-            for (int i = 0; i < player.inventory.Length; i++) {
-                if (player.inventory[i].type == ItemID.None) {
-                    return i;
-                }
-            }
-            return fallbackSlot;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
+        internal bool TryGetDrawSnapshot(out PlayerSnapshot snap) {
             var hp = Owner.GetOverride<HalibutPlayer>();
 
-            PlayerSnapshot snap = default;
-            bool drawPlayer = false;
             if (currentState == AnimState.Active && hp != null) {
                 List<PlayerSnapshot> snapshots = hp.CloneSnapshots;
                 int snapshotCount = snapshots.Count;
                 if (snapshotCount >= replayDelay) {
                     int index = snapshotCount - replayDelay;
                     snap = snapshots[index];
-                    drawPlayer = true;
+                    return true;
                 }
             }
             else if (currentState == AnimState.Spawning || currentState == AnimState.Dissolving) {
@@ -551,37 +541,105 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     BodyFrame = Owner.bodyFrame,
                     LegFrame = Owner.legFrame
                 };
-                drawPlayer = true;
+                return true;
             }
 
-            if (drawPlayer) {
-                DrawClonePlayer(snap);
-            }
-
-            if (boids != null && boids.Count > 0) {
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
-
-                if (!TextureAssets.Item[ItemID.FrostMinnow].IsLoaded) {
-                    Main.instance.LoadItem(ItemID.FrostMinnow);
-                }
-                Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
-                Rectangle rect = fishTex.Bounds;
-                Vector2 origin = new(fishTex.Width * 0.5f, fishTex.Height * 0.5f);
-                float fadeTime = Main.GlobalTimeWrappedHourly * 6f;
-                foreach (var b in boids) {
-                    SpriteEffects spriteEffects = b.Velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-                    float rot = b.Velocity.ToRotation() + (b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-                    float fade = 0.65f + MathF.Sin(fadeTime + b.Frame) * 0.25f;
-                    float alphaMod = currentState == AnimState.Dissolving ? (1f - b.ScatterProgress) : cloneAlpha;
-                    Color c = FishDrawColor * fade * alphaMod;
-                    Main.spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
-                }
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
-            }
+            snap = default;
             return false;
+        }
+
+        internal bool HasBoidsToDraw => boids != null && boids.Count > 0;
+
+        internal void DrawBoids(SpriteBatch spriteBatch) {
+            if (!HasBoidsToDraw) {
+                return;
+            }
+
+            if (!TextureAssets.Item[ItemID.FrostMinnow].IsLoaded) {
+                Main.instance.LoadItem(ItemID.FrostMinnow);
+            }
+            Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
+            Rectangle rect = fishTex.Bounds;
+            Vector2 origin = new(fishTex.Width * 0.5f, fishTex.Height * 0.5f);
+            float fadeTime = Main.GlobalTimeWrappedHourly * 6f;
+            foreach (var b in boids) {
+                SpriteEffects spriteEffects = b.Velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                float rot = b.Velocity.ToRotation() + (b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+                float fade = 0.65f + MathF.Sin(fadeTime + b.Frame) * 0.25f;
+                float alphaMod = currentState == AnimState.Dissolving ? (1f - b.ScatterProgress) : cloneAlpha;
+                Color c = FishDrawColor * fade * alphaMod;
+                spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
+            }
+        }
+
+        private static int FindAirInventorySlot(Player player, int fallbackSlot) {
+            for (int i = 0; i < player.inventory.Length; i++) {
+                if (player.inventory[i].type == ItemID.None) {
+                    return i;
+                }
+            }
+            return fallbackSlot;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            return false;
+        }
+    }
+
+    internal sealed class CloneFishRender : RenderHandle
+    {
+        private static readonly List<ClonePlayer> cloneBuffer = new(10);
+
+        public override float Weight => 1.21f;
+
+        public override void DrawBeforePlayers(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
+            CollectClones();
+            int cloneCount = cloneBuffer.Count;
+            if (cloneCount <= 0) {
+                return;
+            }
+
+            bool hasPlayerDraw = false;
+            bool hasBoidDraw = false;
+            for (int i = 0; i < cloneCount; i++) {
+                ClonePlayer clone = cloneBuffer[i];
+                hasPlayerDraw |= clone.TryGetDrawSnapshot(out _);
+                hasBoidDraw |= clone.HasBoidsToDraw;
+            }
+
+            if (hasPlayerDraw) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp
+                    , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+
+                for (int i = 0; i < cloneCount; i++) {
+                    ClonePlayer clone = cloneBuffer[i];
+                    if (clone.TryGetDrawSnapshot(out PlayerSnapshot snap)) {
+                        clone.DrawClonePlayer(snap);
+                    }
+                }
+
+                spriteBatch.End();
+            }
+
+            if (hasBoidDraw) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp
+                    , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+
+                for (int i = 0; i < cloneCount; i++) {
+                    cloneBuffer[i].DrawBoids(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
+        }
+
+        private static void CollectClones() {
+            cloneBuffer.Clear();
+            foreach (Projectile projectile in Main.ActiveProjectiles) {
+                if (projectile.ModProjectile is ClonePlayer clone) {
+                    cloneBuffer.Add(clone);
+                }
+            }
         }
     }
 }

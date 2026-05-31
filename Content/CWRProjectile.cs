@@ -171,6 +171,7 @@ namespace CalamityOverhaul.Content
             if (TimeToDeath > 0 && Timer >= TimeToDeath) {
                 projectile.timeLeft = 0;//标记为自然死亡
                 projectile.Kill();
+                projectile.netUpdate = true;
             }
 
             Timer++;

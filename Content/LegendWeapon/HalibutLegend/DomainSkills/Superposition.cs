@@ -593,6 +593,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
+        private static void BeginWorldAlphaBatch() {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             //绘制符环
             foreach (var rune in runeCircles) {
@@ -607,10 +611,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             //绘制克隆体
-            if (timeClones != null) {
+            if (timeClones != null && timeClones.Count > 0) {
+                Main.spriteBatch.End();
+                BeginWorldAlphaBatch();
                 foreach (var clone in timeClones) {
                     DrawTimeClone(clone);
                 }
+                Main.spriteBatch.End();
+                BeginWorldAlphaBatch();
             }
 
             return false;

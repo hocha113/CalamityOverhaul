@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class SparklingFishHolder : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Item + "Fishing/SunkenSeaCatches/SparklingEmpress";
+        public override string Texture => CWRConstant.Placeholder;
 
         //ai[0] = FishIndex（自动同步）
         //ai[1] = TotalFishCount（自动同步）
@@ -371,7 +371,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Projectile[Type].Value;//获取鱼的纹理
+            Texture2D value;
+            if (CWRID.Item_SparklingEmpress > 0) {
+                value = TextureAssets.Projectile[CWRID.Item_SparklingEmpress].Value;//获取鱼的纹理
+            }
+            else {
+                Main.instance.LoadItem(ItemID.Jewelfish);
+                value = TextureAssets.Item[ItemID.Jewelfish].Value;//获取鱼的纹理
+            }
 
             //计算绘制参数
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
