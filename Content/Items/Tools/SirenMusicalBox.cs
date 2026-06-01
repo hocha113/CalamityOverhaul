@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.Actors;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -131,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     }
 
     /// <summary>
-    /// 海妖八音盒唯一会话。它是玩法状态真源；Actor 只负责本地视觉。
+    /// 海妖八音盒唯一会话。它是玩法状态真源；幽灵视觉由纯客户端 ModSystem 绘制，不参与 Actor 网络同步。
     /// </summary>
     internal class SirenMusicalSystem : ModSystem
     {
@@ -173,13 +172,24 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             if (active) {
                 Main.newMusic = Main.musicBox2 = GetSirenMusicSlot();
-                SirenGhostActor.EnsureVisual(boxPosition, boxCenter);
+                SirenGhostVisual.Update(boxCenter);
             }
             else {
-                SirenGhostActor.KillVisual();
+                SirenGhostVisual.Reset();
             }
 
             UpdateAuthority();
+        }
+
+        public override void PostDrawTiles() {
+            if (!active || Main.dedServ) {
+                return;
+            }
+
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            SirenGhostVisual.Draw(Main.spriteBatch);
+            Main.spriteBatch.End();
         }
 
         internal static bool IsBoxPlaying(Point16 position) => active && boxPosition == position;
@@ -303,7 +313,6 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             if (!Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.3f }, center);
-                SirenGhostActor.EnsureVisual(position, center);
             }
 
             SyncSession();
@@ -334,7 +343,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             musicTimer = 0;
             resolveTimer = 0;
             if (killVisual) {
-                SirenGhostActor.KillVisual();
+                SirenGhostVisual.Reset();
             }
         }
 
@@ -411,11 +420,8 @@ namespace CalamityOverhaul.Content.Items.Tools
             Vector2 stopEffectCenter = new(reader.ReadSingle(), reader.ReadSingle());
             resolveTimer = resolvingDeath ? ResolveDeathWindow : 0;
 
-            if (active) {
-                SirenGhostActor.EnsureVisual(boxPosition, boxCenter);
-            }
-            else {
-                SirenGhostActor.KillVisual();
+            if (!active) {
+                SirenGhostVisual.Reset();
                 if (playStopEffects && wasActive) {
                     SpawnStopEffects(stopEffectCenter == default ? previousCenter : stopEffectCenter);
                 }
@@ -444,7 +450,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             if (Player.GetModPlayer<SirenMusicalBoxPlayer>().IsCursed) {
-                if (Player.TryGetOverride<HalibutPlayer>(out HalibutPlayer halibutPlayer)
+                if (Player.TryGetOverride(out HalibutPlayer halibutPlayer)
                     && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
                     return true;
                 }
@@ -692,129 +698,82 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    internal class SirenGhostActor : Actor
+    /// <summary>
+    /// 纯客户端幽灵视觉，由会话状态驱动，避免 Actor 网络同步导致重复生成。
+    /// </summary>
+    internal static class SirenGhostVisual
     {
-        private static SirenGhostActor visualActor;
+        private static int timer;
+        private static float orbitAngle = -1f;
+        private static float glowPulse;
+        private static Vector2 ghostCenter;
+        private static float ghostRotation;
 
-        public Point16 BoxPosition;
-        public Vector2 BoxCenter;
-
-        private int timer;
-        private float orbitAngle;
-        private float glowPulse;
-
-        internal static bool TryGetActiveSession(out SirenGhostActor actor) {
-            actor = visualActor;
-            return actor != null && actor.Active && SirenMusicalSystem.Active;
+        internal static void Reset() {
+            timer = 0;
+            orbitAngle = -1f;
+            glowPulse = 0f;
+            ghostCenter = Vector2.Zero;
+            ghostRotation = 0f;
         }
 
-        internal static bool TryFindByBoxPosition(Point16 boxPosition, out SirenGhostActor actor) {
-            if (TryGetActiveSession(out actor) && actor.BoxPosition == boxPosition) {
-                return true;
-            }
-
-            actor = null;
-            return false;
-        }
-
-        internal static void EnsureVisual(Point16 boxPosition, Vector2 boxCenter) {
-            if (Main.dedServ) {
+        internal static void Update(Vector2 boxCenter) {
+            if (!SirenMusicalSystem.Active) {
                 return;
             }
 
-            if (visualActor != null && visualActor.Active) {
-                visualActor.BindToBox(boxPosition, boxCenter);
-                return;
+            if (orbitAngle < 0f) {
+                orbitAngle = Main.rand.NextFloat(MathHelper.TwoPi);
             }
 
-            int actorIndex = ActorLoader.NewActor<SirenGhostActor>(boxCenter, Vector2.Zero);
-            if (actorIndex >= 0 && ActorLoader.Actors[actorIndex] is SirenGhostActor actor) {
-                visualActor = actor;
-                actor.BindToBox(boxPosition, boxCenter);
-            }
-        }
-
-        internal static void KillVisual() {
-            if (visualActor == null) {
-                return;
-            }
-
-            if (visualActor.Active) {
-                ActorLoader.KillActor(visualActor.WhoAmI);
-            }
-            visualActor = null;
-        }
-
-        public override void OnSpawn(params object[] args) {
-            Width = 32;
-            Height = 32;
-            DrawLayer = ActorDrawLayer.AfterTiles;
-            DrawExtendMode = 400;
-            orbitAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
-        public void BindToBox(Point16 boxPosition, Vector2 boxCenter) {
-            BoxPosition = boxPosition;
-            BoxCenter = boxCenter;
-        }
-
-        public override void AI() {
-            if (!SirenMusicalSystem.Active || !SirenMusicalSystem.IsBoxPlaying(BoxPosition)) {
-                KillVisual();
-                return;
-            }
-
-            BoxCenter = SirenMusicalSystem.BoxCenter;
             timer++;
             orbitAngle += 0.025f;
             glowPulse = MathF.Sin(timer * 0.08f) * 0.3f + 0.7f;
 
             float radius = 80f + MathF.Sin(timer * 0.03f) * 30f;
             float verticalBob = MathF.Sin(timer * 0.05f) * 15f;
-            Position = BoxCenter + new Vector2(
+            ghostCenter = boxCenter + new Vector2(
                 MathF.Cos(orbitAngle) * radius,
                 MathF.Sin(orbitAngle) * radius * 0.5f + verticalBob - 40f
             );
-            Rotation = orbitAngle + MathHelper.PiOver2;
+            ghostRotation = orbitAngle + MathHelper.PiOver2;
 
-            if (Main.dedServ) {
-                return;
-            }
-
-            Lighting.AddLight(BoxCenter, new Color(139, 0, 139).ToVector3() * glowPulse);
+            Lighting.AddLight(boxCenter, new Color(139, 0, 139).ToVector3() * glowPulse);
 
             if (!SirenMusicalSystem.ResolveDeath && timer % 8 == 0) {
-                PRTLoader.NewParticle<PRT_Note>(Center + Main.rand.NextVector2Circular(20f, 20f),
+                PRTLoader.NewParticle<PRT_Note>(ghostCenter + Main.rand.NextVector2Circular(20f, 20f),
                     Main.rand.NextVector2Circular(1f, 1f), Color.Purple, Main.rand.NextFloat(0.3f, 0.5f))
                     .Configure(Main.rand.Next(30, 60), Main.rand.Next(3));
             }
 
             if (Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustDirect(Center, 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Purple, Main.rand.NextFloat(1.5f, 2.5f));
+                Dust dust = Dust.NewDustDirect(ghostCenter, 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Purple, Main.rand.NextFloat(1.5f, 2.5f));
                 dust.noGravity = true;
                 dust.velocity = Main.rand.NextVector2Circular(0.8f, 0.8f);
             }
 
             if (!SirenMusicalSystem.ResolveDeath && Main.rand.NextBool(10)) {
-                SirenMusicalBoxEffects.SpawnMusicNoteGore(Center);
+                SirenMusicalBoxEffects.SpawnMusicNoteGore(ghostCenter);
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            Vector2 drawPos = Center - Main.screenPosition;
+        internal static void Draw(SpriteBatch spriteBatch) {
+            if (!SirenMusicalSystem.Active || timer <= 0) {
+                return;
+            }
+
+            Vector2 drawPos = ghostCenter - Main.screenPosition;
             float scale = 0.8f + glowPulse * 0.2f;
 
             Color glowColor = new Color(139, 0, 139) * glowPulse * 0.5f;
             spriteBatch.Draw(CWRAsset.SoftGlow.Value, drawPos, null,
-                glowColor with { A = 0 }, Rotation,
+                glowColor with { A = 0 }, ghostRotation,
                 CWRAsset.SoftGlow.Size() / 2, scale * 3f, SpriteEffects.None, 0f);
 
             Color innerColor = Color.Lerp(Color.Purple, Color.Cyan, MathF.Sin(timer * 0.05f) * 0.5f + 0.5f) * 0.4f;
             spriteBatch.Draw(CWRAsset.SoftGlow.Value, drawPos, null,
-                innerColor with { A = 0 }, -Rotation * 0.5f,
+                innerColor with { A = 0 }, -ghostRotation * 0.5f,
                 CWRAsset.SoftGlow.Size() / 2, scale * 1.5f, SpriteEffects.None, 0f);
-
-            return false;
         }
     }
 }
