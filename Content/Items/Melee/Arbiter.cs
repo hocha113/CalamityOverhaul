@@ -674,12 +674,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 22;
+            Projectile.localNPCHitCooldown = 24;
             Projectile.timeLeft = 240;
             Projectile.DamageType = DamageClass.Melee;
         }
 
-        public override bool? CanDamage() => !stopped;
+        public override bool? CanDamage() {
+            if (stopped) {
+                return false;
+            }
+            return null;
+        }
 
         public override void AI() {
             if (Projectile.localAI[0] == 0) {
