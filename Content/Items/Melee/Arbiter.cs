@@ -888,8 +888,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 24;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 22;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 600;
         }
