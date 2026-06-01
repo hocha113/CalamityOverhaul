@@ -104,7 +104,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             Velocity = Vector2.Zero;
             OnGround = false;
             UseJumpTexture = false;
-            Camera.Bind(this);
             Camera.Reset();
 
             if (ADVAsset.ApolliaActor != null) {

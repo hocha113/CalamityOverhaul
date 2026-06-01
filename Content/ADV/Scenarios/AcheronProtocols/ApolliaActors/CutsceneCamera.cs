@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States;
-using InnoVault.Cinematics;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 
@@ -14,6 +12,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
     /// </summary>
     internal class CutsceneCamera
     {
+        /// <summary>运镜是否处于激活状态</summary>
+        public bool Active { get; private set; }
+
         /// <summary>期望摄像机聚焦的世界坐标</summary>
         public Vector2 FocusTarget;
 
@@ -29,72 +30,47 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         /// <summary>是否在运镜期间锁定玩家操作</summary>
         public bool LockPlayerControls = true;
 
-        private ApolliaActor owner;
-        private bool manualActive;
+        //内部状态
+        private float currentZoom = 1f;
+        private Vector2 smoothedScreenPos;
+        private bool initialized;
 
-        /// <summary>运镜是否处于激活状态</summary>
-        public bool Active => manualActive || owner != null
-            && CutsceneDirector.CurrentClip is ApolliaCameraClip
-            && ReferenceEquals(CutsceneDirector.CurrentContext?.Tag, owner);
-
-        /// <summary>
-        /// 绑定所属 Actor，因为 Camera 由 Actor 字段初始化，不能直接在构造函数里传入 this
-        /// </summary>
-        public void Bind(ApolliaActor actor) {
-            owner = actor;
-        }
+        //震动状态
+        private Vector2 shakeDirection;
+        private float shakeIntensity;
+        private float shakeDecay;
+        private int shakeDuration;
+        private int shakeTimer;
 
         /// <summary>
         /// 启动运镜
         /// </summary>
         public void Start(Vector2 initialFocus, float posLerp = 0.03f, float zoom = 1f, float zoomLerp = 0.02f) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
+            Active = true;
             FocusTarget = initialFocus;
             PositionLerpSpeed = posLerp;
             TargetZoom = zoom;
             ZoomLerpSpeed = zoomLerp;
-
-            if (owner == null) {
-                CutsceneDirector.Stop();
-                manualActive = true;
-                CutsceneDirector.Camera.Begin(initialFocus);
-                CutsceneDirector.Camera.SetZoom(zoom, zoomLerp);
-                return;
-            }
-
-            if (CutsceneDirector.Play<ApolliaCameraClip>(Main.LocalPlayer, tag: owner)) {
-                CutsceneDirector.Camera.SetFocus(FocusTarget, PositionLerpSpeed);
-                CutsceneDirector.Camera.SetZoom(TargetZoom, ZoomLerpSpeed);
-            }
+            currentZoom = Main.GameZoomTarget;
+            initialized = false;
         }
 
         /// <summary>
         /// 停止运镜并开始平滑恢复
         /// </summary>
         public void Stop() {
-            if (manualActive) {
-                manualActive = false;
-                CutsceneDirector.Camera.End();
-            }
-            else if (Active) {
-                CutsceneDirector.Stop();
-            }
+            Active = false;
         }
 
         /// <summary>
         /// 强制立即重置到默认状态
         /// </summary>
         public void Reset() {
-            if (manualActive) {
-                manualActive = false;
-                CutsceneDirector.Camera.Reset();
-            }
-            else if (Active) {
-                CutsceneDirector.Reset();
-            }
+            Active = false;
+            currentZoom = 1f;
+            TargetZoom = 1f;
+            initialized = false;
+            shakeTimer = 0;
         }
 
         /// <summary>
@@ -105,100 +81,112 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         /// <param name="decay">每帧衰减系数 (0~1)，越小衰减越快</param>
         /// <param name="duration">持续帧数</param>
         public void Shake(Vector2 direction, float intensity, float decay = 0.9f, int duration = 20) {
-            if (Active || manualActive) {
-                CutsceneDirector.Camera.Shake(direction, intensity, decay, duration);
+            if (direction == Vector2.Zero) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                direction = angle.ToRotationVector2();
             }
+            else {
+                direction.Normalize();
+            }
+            shakeDirection = direction;
+            shakeIntensity = intensity;
+            shakeDecay = MathHelper.Clamp(decay, 0f, 0.99f);
+            shakeDuration = duration;
+            shakeTimer = 0;
         }
 
         /// <summary>
-        /// 根据Actor当前状态自动推导运镜参数——在 <see cref="Apply"/> 之前每帧调用
+        /// 根据Actor当前状态自动推导运镜参数——在 <see cref="Apply"/> 之前每帧调用。
         /// 运镜逻辑集中在此处，状态类完全不感知Camera
         /// </summary>
-        public void UpdateFocus(ApolliaActor actor, Player player) { }
+        public void UpdateFocus(ApolliaActor actor, Player player) {
+            if (!Active || player == null || !player.active) return;
+
+            switch (actor.CurrentState) {
+                case ApolliaDescendingState:
+                    FocusTarget = actor.Center;
+                    break;
+
+                case ApolliaWalkingState: {
+                    PositionLerpSpeed = 0.025f;
+                    Vector2 midPoint = (actor.Center + player.Center) * 0.5f;
+                    FocusTarget = midPoint;
+
+                    float distX = Math.Abs(actor.Center.X - player.Center.X);
+                    float zoomFactor = MathHelper.Clamp(1f - (distX - 60f) / 400f, 0f, 1f);
+                    float eased = zoomFactor < 0.5f
+                        ? 2f * zoomFactor * zoomFactor
+                        : 1f - MathF.Pow(-2f * zoomFactor + 2f, 2f) / 2f;
+                    TargetZoom = MathHelper.Lerp(1f, 1.5f, eased);
+                    ZoomLerpSpeed = 0.015f;
+                    break;
+                }
+
+                case ApolliaArrivedState: {
+                    TargetZoom = 2f;
+                    ZoomLerpSpeed = 0.02f;
+                    PositionLerpSpeed = 0.04f;
+                    FocusTarget = (actor.Center + player.Center) * 0.5f + new Vector2(0, -20);
+                    break;
+                }
+            }
+        }
 
         /// <summary>
         /// 在 <see cref="ApolliaPlayer.ModifyScreenPosition"/> 中调用，
         /// 平滑地将屏幕位置和缩放过渡到目标值
         /// </summary>
         public void Apply() {
-            if (!manualActive) {
+            //缩放始终平滑过渡（无论激活与否都要恢复到目标值）
+            float zoomTarget = Active ? TargetZoom : 1f;
+            float zoomSpeed = Active ? ZoomLerpSpeed : 0.02f;
+            currentZoom = MathHelper.Lerp(currentZoom, zoomTarget, zoomSpeed);
+            Main.GameZoomTarget = currentZoom;
+
+            if (!Active) {
+                //非激活时不干预屏幕位置，让引擎自然控制
+                initialized = false;
                 return;
             }
 
-            CutsceneDirector.Camera.SetFocus(FocusTarget, PositionLerpSpeed);
-            CutsceneDirector.Camera.SetZoom(TargetZoom, ZoomLerpSpeed);
+            //初始化平滑位置（首帧捕获当前屏幕位置避免跳切）
+            if (!initialized) {
+                smoothedScreenPos = Main.screenPosition;
+                initialized = true;
+            }
+
+            //计算期望屏幕位置：让FocusTarget位于屏幕中心
+            //ModifyScreenPosition在引擎缩放之前运行，所以使用原始屏幕尺寸
+            Vector2 screenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+            Vector2 desiredScreenPos = FocusTarget - screenSize * 0.5f;
+
+            //平滑插值
+            smoothedScreenPos = Vector2.Lerp(smoothedScreenPos, desiredScreenPos, PositionLerpSpeed);
+            Main.screenPosition = smoothedScreenPos;
+
+            //叠加震动偏移
+            if (shakeTimer < shakeDuration && shakeIntensity > 0.5f) {
+                float progress = shakeTimer / (float)shakeDuration;
+                float currentIntensity = shakeIntensity * MathF.Pow(shakeDecay, shakeTimer) * (1f - progress);
+                float sign = shakeTimer % 2 == 0 ? 1f : -1f;
+                float rotJitter = Main.rand.NextFloat(-0.3f, 0.3f);
+                Vector2 offset = shakeDirection.RotatedBy(rotJitter) * currentIntensity * sign;
+                Main.screenPosition += offset;
+                shakeTimer++;
+            }
+
+            //锁定玩家操作
             if (LockPlayerControls) {
-                CutsceneDirector.Camera.RequestInputLock(CutsceneInputLockFlags.All);
-                CutsceneDirector.Camera.ApplyInputLock(Main.LocalPlayer);
+                Player player = Main.LocalPlayer;
+                if (player != null && player.active) {
+                    player.controlLeft = false;
+                    player.controlRight = false;
+                    player.controlUp = false;
+                    player.controlDown = false;
+                    player.controlJump = false;
+                    player.controlUseItem = false;
+                }
             }
-            CutsceneDirector.Camera.ApplyScreenPosition();
-        }
-    }
-
-    internal sealed class ApolliaCameraClip : CutsceneClip
-    {
-        private const int TimelineDuration = int.MaxValue - 2;
-
-        public override int Priority => 10;
-
-        public override bool CanPlay(Player player, object tag) => base.CanPlay(player, tag) && tag is ApolliaActor;
-
-        protected override void BuildTimeline(CutsceneTimeline timeline) {
-            timeline.Duration = TimelineDuration;
-            timeline.Add(new ApolliaCameraTrack(0, TimelineDuration));
-        }
-    }
-
-    internal sealed class ApolliaCameraTrack : CutsceneTrack
-    {
-        public ApolliaCameraTrack(int startTick, int duration) : base(startTick, duration) { }
-
-        protected override void Update(CutsceneContext context, float progress) {
-            if (!context.TryGetTag(out ApolliaActor actor) || !actor.Active) {
-                CutsceneDirector.Stop();
-                return;
-            }
-
-            Player player = context.Player;
-            if (player == null || !player.active) {
-                CutsceneDirector.Stop();
-                return;
-            }
-
-            switch (actor.CurrentState) {
-                case ApolliaDescendingState:
-                    context.Camera.SetFocus(actor.Center, 0.03f);
-                    context.Camera.SetZoom(1f, 0.02f);
-                    break;
-
-                case ApolliaWalkingState:
-                    context.Camera.SetFocus((actor.Center + player.Center) * 0.5f, 0.025f);
-                    context.Camera.SetZoom(GetWalkingZoom(actor, player), 0.015f);
-                    break;
-
-                case ApolliaArrivedState:
-                    context.Camera.SetFocus((actor.Center + player.Center) * 0.5f + new Vector2(0, -20), 0.04f);
-                    context.Camera.SetZoom(2f, 0.02f);
-                    break;
-
-                default:
-                    context.Camera.SetFocus(actor.Center, 0.03f);
-                    context.Camera.SetZoom(1f, 0.02f);
-                    break;
-            }
-
-            if (actor.Camera.LockPlayerControls) {
-                context.Camera.RequestInputLock(CutsceneInputLockFlags.All);
-            }
-        }
-
-        private static float GetWalkingZoom(ApolliaActor actor, Player player) {
-            float distX = Math.Abs(actor.Center.X - player.Center.X);
-            float zoomFactor = MathHelper.Clamp(1f - (distX - 60f) / 400f, 0f, 1f);
-            float eased = zoomFactor < 0.5f
-                ? 2f * zoomFactor * zoomFactor
-                : 1f - MathF.Pow(-2f * zoomFactor + 2f, 2f) / 2f;
-            return MathHelper.Lerp(1f, 1.5f, eased);
         }
     }
 }
