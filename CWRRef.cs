@@ -6,6 +6,7 @@ using CalamityMod.UI;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -1228,11 +1229,31 @@ namespace CalamityOverhaul
                     }
                 }
 
+                Type playerType = mod.Code.GetType("CalamityMod.CalPlayer.CalamityPlayer");
+                if (playerType != null) {
+                    MethodInfo method = playerType.GetMethod("KillPlayer", BindingFlags.Instance | BindingFlags.Public);
+                    if (method != null) {
+                        VaultHook.Add(method, On_KillPlayer_Hook);
+                    }
+                }
+
                 //OnProvideStealthStatBonusesHook 的签名携带 CalamityPlayer 类型，
                 //一旦在此处通过 method group 转换得到 Delegate，JIT 必须解析 CalamityPlayer，
                 //所以把这一段挪到独立的 [CWRJITEnabled] 方法里，确保 Calamity 未安装时整个 LoadComders 仍可被 JIT
                 HookProvideStealthStatBonuses(mod);
             } catch { }
+        }
+
+        public static void On_KillPlayer_Hook(Action<ModPlayer> orig, ModPlayer modPlayer) {
+            if (modPlayer?.Player?.TryGetOverride<SirenMusicalBoxPlayerDeath>(out var sirenMusicalBoxPlayerDeath) == true) {
+                bool pvp = false;
+                bool playSound = false;
+                PlayerDeathReason damageSource = null;
+                if (sirenMusicalBoxPlayerDeath.On_PreKill(9999, 1, false, ref pvp, ref playSound, ref damageSource) == false) {
+                    return;
+                }
+            }
+            orig.Invoke(modPlayer);
         }
 
         [CWRJITEnabled]

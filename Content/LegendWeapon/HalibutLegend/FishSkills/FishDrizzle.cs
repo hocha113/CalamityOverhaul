@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value;
             if (CWRID.Item_DragoonDrizzlefish > 0) {
-                value = TextureAssets.Projectile[CWRID.Item_DragoonDrizzlefish].Value;//获取鱼的纹理
+                value = TextureAssets.Item[CWRID.Item_DragoonDrizzlefish].Value;//获取鱼的纹理
             }
             else {
                 Main.instance.LoadItem(ItemID.CrimsonTigerfish);

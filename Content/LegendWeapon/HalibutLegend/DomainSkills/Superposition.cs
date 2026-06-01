@@ -842,6 +842,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             drawPosition += direction * recoil;
 
             float scale = 0.8f + pulse * 0.25f;
+            scale *= HalibutOverride.ItemScale;
 
             //发光层
             Color glowColor = new Color(180, 200, 255, 0) * pulse * 0.6f;

@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value;
             if (CWRID.Item_SparklingEmpress > 0) {
-                value = TextureAssets.Projectile[CWRID.Item_SparklingEmpress].Value;//获取鱼的纹理
+                value = TextureAssets.Item[CWRID.Item_SparklingEmpress].Value;//获取鱼的纹理
             }
             else {
                 Main.instance.LoadItem(ItemID.Jewelfish);
