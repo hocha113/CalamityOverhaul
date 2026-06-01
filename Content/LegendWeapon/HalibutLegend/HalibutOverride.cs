@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 设置武器相对于精灵的原点偏移
         /// </summary>
         private static Vector2 GetItemSpriteOrigin() {
-            return new Vector2(-40, 8);
+            return new Vector2(-40, 6);
         }
 
         /// <summary>
