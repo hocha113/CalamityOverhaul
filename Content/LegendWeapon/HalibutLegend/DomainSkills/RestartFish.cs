@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             player.SetResurrectionValue(0);//复苏进度归零
 
             if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer) && sirenMusicalBoxPlayer.IsCursed) {
-                sirenMusicalBoxPlayer.IsCursed = false;
                 SirenMusicalBoxPlayer.StopAllMusicBoxes();
             }
 
