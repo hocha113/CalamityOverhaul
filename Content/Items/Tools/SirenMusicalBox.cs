@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             Player player = Main.player[whoAmI];
-            if (player is null || !player.active) {
+            if (player is null || !player.active || !IsPlayerCursed(player)) {
                 return;
             }
 
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             if (sync) {
-                SyncSession();
+                SyncSession(playStopEffects, oldCenter);
             }
         }
 
@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             return sirenMusicSlot;
         }
 
-        private static void SyncSession(int toClient = -1, int ignoreClient = -1) {
+        private static void SyncSession(bool playStopEffects = false, Vector2 stopEffectCenter = default, int toClient = -1, int ignoreClient = -1) {
             if (Main.netMode == NetmodeID.SinglePlayer) {
                 return;
             }
@@ -392,15 +392,23 @@ namespace CalamityOverhaul.Content.Items.Tools
             packet.Write(boxCenter.X);
             packet.Write(boxCenter.Y);
             packet.Write(musicTimer);
+            packet.Write(playStopEffects);
+            packet.Write(stopEffectCenter.X);
+            packet.Write(stopEffectCenter.Y);
             packet.Send(toClient, ignoreClient);
         }
 
         private static void ReceiveSessionSync(BinaryReader reader) {
+            bool wasActive = active;
+            Vector2 previousCenter = boxCenter;
+
             active = reader.ReadBoolean();
             resolvingDeath = reader.ReadBoolean();
             boxPosition = new Point16(reader.ReadInt16(), reader.ReadInt16());
             boxCenter = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             musicTimer = reader.ReadInt32();
+            bool playStopEffects = reader.ReadBoolean();
+            Vector2 stopEffectCenter = new(reader.ReadSingle(), reader.ReadSingle());
             resolveTimer = resolvingDeath ? ResolveDeathWindow : 0;
 
             if (active) {
@@ -408,6 +416,9 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             else {
                 SirenGhostActor.KillVisual();
+                if (playStopEffects && wasActive) {
+                    SpawnStopEffects(stopEffectCenter == default ? previousCenter : stopEffectCenter);
+                }
             }
         }
 
