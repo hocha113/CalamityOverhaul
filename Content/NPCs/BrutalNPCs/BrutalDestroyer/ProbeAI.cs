@@ -1,5 +1,8 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -34,6 +37,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (npc.ai[3] == -1f) {
                 npc.timeLeft = 600;
                 Lighting.AddLight(npc.Center, Color.Red.ToVector3() * npc.scale);
+                return false;
+            }
+
+            //毁灭者死亡演出：探针僵直锁血，殉爆时机由 DestroyerDeathState 统一调度
+            if (DestroyerDeathState.IsProbeInDeathPerformance(npc)) {
+                HandleDeathPerformanceProbe();
                 return false;
             }
 
@@ -170,6 +179,49 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             generalTimer++;
             return false;
+        }
+
+        /// <summary>
+        /// 死亡演出期间：急停悬停、锁血无害，仅保留过载红光与轻微故障抖动。
+        /// 实际殉爆粒子/音效由 <see cref="DestroyerDeathState"/> 统一生成。
+        /// </summary>
+        private void HandleDeathPerformanceProbe() {
+            npc.velocity *= 0.85f;
+            if (npc.velocity.Length() < 0.1f) {
+                npc.velocity = Vector2.Zero;
+            }
+            npc.damage = 0;
+            npc.dontTakeDamage = true;
+            if (npc.life < 1) {
+                npc.life = 1;
+            }
+            npc.timeLeft = 120;
+
+            //轻微故障抖动，表现僵死前的最后挣扎
+            if (Main.rand.NextBool(5)) {
+                npc.Center += Main.rand.NextVector2Circular(1.2f, 1.2f);
+
+                Color warm = Color.Lerp(new Color(255, 150, 50), new Color(255, 85, 35), Main.rand.NextFloat());
+                //核心爆炸光团（SoftGlow 叠加）
+                PRTLoader.NewParticle<PRT_MechExplosion>(npc.Center, Main.rand.NextVector2Circular(1.5f, 1.5f), warm, 0.4f)
+                    .Configure(Main.rand.Next(18, 32), warm);
+
+                //岩浆余烬
+                Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
+                PRTLoader.NewParticle<PRT_LavaFire>(npc.Center + Main.rand.NextVector2Circular(12f, 12f), vel,
+                    Color.White, Main.rand.NextFloat(0.2f, 0.4f)).SetLifetime(10, 20);
+            }
+
+            Lighting.AddLight(npc.Center, Color.Red.ToVector3() * (0.45f + 0.15f * npc.scale));
+        }
+
+        public override bool? CheckDead() {
+            if (DestroyerDeathState.IsProbeInDeathPerformance(npc)) {
+                npc.life = 1;
+                npc.dontTakeDamage = true;
+                return false;
+            }
+            return null;
         }
         private void SpawnPinkLaser() {
             int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, ModContent.ProjectileType<PrimeCannonOnSpan>()));

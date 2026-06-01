@@ -60,6 +60,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private const int FinaleStart = PreludeTime + ChainTime;
         private const int TotalTime = FinaleStart + FinaleHold;
 
+        /// <summary>探针 ai[3] 标记：死亡演出期间由 DestroyerDeathState 接管，ProbeAI 进入僵直殉爆模式</summary>
+        internal const float ProbeDeathPerformanceMarker = -2f;
+
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
@@ -74,18 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             context.RefreshBodySegments();
             FreezeWorm(context);
-
-            //服务端清场探针，避免演出期间还有探针骚扰玩家
-            if (!VaultUtils.isClient) {
-                foreach (var n in Main.ActiveNPCs) {
-                    if (n.type == NPCID.Probe) {
-                        n.life = 0;
-                        n.HitEffect();
-                        n.active = false;
-                        n.netUpdate = true;
-                    }
-                }
-            }
+            PrepareProbesForDeathPerformance();
 
             //过载警报音（服务端为 no-op，单人/客户端本地播放，自然同步）
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.8f, Volume = 0.9f }, npc.Center);
@@ -112,6 +104,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 context.RefreshBodySegments();
             }
             KeepSegmentsHarmless(context);
+            KeepProbesInDeathPerformance();
+
+            //探针殉爆：与演出计时同步，服务端/单人端负责真正击杀
+            if (Timer < FinaleStart) {
+                UpdateProbeChainExplosions();
+            }
+            else if (Timer == FinaleStart && !VaultUtils.isClient) {
+                ExplodeAllRemainingProbes(true);
+            }
 
             //演出视觉（在所有非服务端执行，确保单人与多人客户端都能看到）
             if (!VaultUtils.isServer) {
@@ -143,6 +144,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
                 if (Timer % 6 == 0) {
                     SpawnBlastsOnVisibleSegments(context, 0.1f, 0f);
+                }
+                if (Timer % 4 == 0) {
+                    SpawnSparksOnDeathPerformanceProbes(0.55f, 5f, new Color(255, 120, 120));
                 }
             }
             else if (Timer < FinaleStart) {
@@ -287,6 +291,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
+            ExplodeAllRemainingProbes(true);
+
             DoScreenShake(npc.Center, 26f, 42);
             SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion with { Volume = 1.1f, Pitch = -0.3f }, npc.Center);
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1f }, npc.Center);
@@ -317,6 +323,139 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     seg.timeLeft = 60;
                 }
             }
+        }
+
+        /// <summary>
+        /// 将所有现存探针切入死亡演出：僵直、锁血、排定殉爆时刻（ai[1]），不再立即清场。
+        /// ai[0]=0 表示尚未殉爆；ai[3]=ProbeDeathPerformanceMarker 供 ProbeAI 识别。
+        /// </summary>
+        private static void PrepareProbesForDeathPerformance() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            foreach (var probe in Main.ActiveNPCs) {
+                if (probe.type != NPCID.Probe) {
+                    continue;
+                }
+
+                probe.ai[3] = ProbeDeathPerformanceMarker;
+                probe.ai[0] = 0f;
+                probe.ai[1] = PreludeTime + (probe.whoAmI * 11) % Math.Max(ChainTime - 15, 1);
+                probe.velocity = Vector2.Zero;
+                probe.damage = 0;
+                probe.dontTakeDamage = true;
+                if (probe.life < 1) {
+                    probe.life = 1;
+                }
+                probe.timeLeft = 120;
+                probe.netUpdate = true;
+            }
+        }
+
+        /// <summary>演出期间维持探针僵直、无害，并镜像当前演出计时到 ai[2] 供客户端表现参考</summary>
+        private void KeepProbesInDeathPerformance() {
+            foreach (var probe in Main.ActiveNPCs) {
+                if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker) {
+                    continue;
+                }
+                if (probe.ai[0] >= 1f) {
+                    continue;
+                }
+
+                probe.velocity *= 0.85f;
+                if (probe.velocity.Length() < 0.1f) {
+                    probe.velocity = Vector2.Zero;
+                }
+                probe.damage = 0;
+                probe.dontTakeDamage = true;
+                if (probe.life < 1) {
+                    probe.life = 1;
+                }
+                probe.timeLeft = 120;
+                probe.ai[2] = Timer;
+            }
+        }
+
+        /// <summary>连环爆炸阶段：在排定帧精确引爆探针，避免重复殉爆</summary>
+        private void UpdateProbeChainExplosions() {
+            foreach (var probe in Main.ActiveNPCs) {
+                if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker || probe.ai[0] >= 1f) {
+                    continue;
+                }
+                if (Timer != (int)probe.ai[1]) {
+                    continue;
+                }
+                ExplodeProbe(probe, Main.rand.NextFloat(1.1f, 1.9f), false);
+            }
+        }
+
+        /// <summary>终爆阶段：引爆所有尚未殉爆的探针</summary>
+        private static void ExplodeAllRemainingProbes(bool isFinale) {
+            foreach (var probe in Main.ActiveNPCs) {
+                if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker || probe.ai[0] >= 1f) {
+                    continue;
+                }
+                ExplodeProbe(probe, Main.rand.NextFloat(isFinale ? 1.6f : 1.1f, isFinale ? 2.6f : 1.9f), isFinale);
+            }
+        }
+
+        private static void ExplodeProbe(NPC probe, float scale, bool isFinale) {
+            if (probe.ai[0] >= 1f) {
+                return;
+            }
+
+            if (!VaultUtils.isClient) {
+                probe.ai[0] = 1f;
+                probe.life = 0;
+                probe.HitEffect();
+                probe.active = false;
+                probe.netUpdate = true;
+            }
+
+            if (!VaultUtils.isServer && OnScreen(probe.Center)) {
+                SpawnBlast(probe.Center, scale, isFinale);
+            }
+        }
+
+        /// <summary>前奏/连环阶段：为僵直探针喷射过载火花</summary>
+        private static void SpawnSparksOnDeathPerformanceProbes(float chance, float speed, Color color) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            foreach (var probe in Main.ActiveNPCs) {
+                if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker || probe.ai[0] >= 1f) {
+                    continue;
+                }
+                if (Main.rand.NextFloat() >= chance || !OnScreen(probe.Center)) {
+                    continue;
+                }
+
+                Vector2 pos = probe.Center + Main.rand.NextVector2Circular(probe.width * 0.45f, probe.height * 0.45f);
+                Vector2 vel = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(1f, speed);
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, color, Main.rand.NextFloat(0.7f, 1.3f))
+                    .Configure(true, Main.rand.Next(12, 22));
+            }
+        }
+
+        /// <summary>供 ProbeAI 判断当前探针是否应进入死亡演出僵直模式</summary>
+        internal static bool IsProbeInDeathPerformance(NPC probe) {
+            if (probe == null || probe.type != NPCID.Probe) {
+                return false;
+            }
+            if (probe.ai[3] == ProbeDeathPerformanceMarker) {
+                return probe.ai[0] < 1f;
+            }
+
+            //标记尚未同步时的兜底：只要毁灭者头部处于 Death 状态，也视为演出探针
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type == NPCID.TheDestroyer && npc.active
+                    && (int)npc.ai[2] == (int)DestroyerStateIndex.Death) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static void DoScreenShake(Vector2 pos, float strength, int time) {
