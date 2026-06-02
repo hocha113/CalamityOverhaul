@@ -53,12 +53,12 @@ namespace CalamityOverhaul
         private static FieldInfo calWorld_death_Field;
         private static FieldInfo calWorld_revenge_Field;
         // BossRushEvent
-        private static PropertyInfo bossRush_Active_Prop;
+        private static MemberInfo bossRush_Active_M;
         // AcidRainEvent
-        private static PropertyInfo acidRain_Ongoing_Prop;
+        private static MemberInfo acidRain_Ongoing_M;
         private static FieldInfo acidRain_KillPoints_Field;
         private static MethodInfo acidRain_UpdateInvasion_Method;
-        private static PropertyInfo acidRain_OldDukeEncountered_Prop;
+        private static MemberInfo acidRain_OldDukeEncountered_M;
         // CalamityServerConfig
         private static object calamityServerConfigInstance;
         private static PropertyInfo calConfig_EarlyHardmodeRework_Prop;
@@ -177,22 +177,26 @@ namespace CalamityOverhaul
             return method;
         }
 
-        private static void LogMissingCalamityContent(string name) {
-            LogFailedReflection(name, $"CalamityMod/{name}");
-        }
-
-        private static MemberInfo FindMember(Type type, string name) {
+        private static MemberInfo GetFieldOrProperty(Type type, string name, BindingFlags flags) {
             if (type == null) {
                 return null;
             }
-            MemberInfo member = type.GetField(name, AnyInstanceFlags);
+            MemberInfo member = type.GetField(name, flags);
             if (member == null) {
-                member = type.GetProperty(name, AnyInstanceFlags);
+                member = type.GetProperty(name, flags);
             }
             if (member == null) {
                 LogFailedReflection(name, $"{type.FullName}.{name}");
             }
             return member;
+        }
+
+        private static void LogMissingCalamityContent(string name) {
+            LogFailedReflection(name, $"CalamityMod/{name}");
+        }
+
+        private static MemberInfo FindMember(Type type, string name) {
+            return GetFieldOrProperty(type, name, AnyInstanceFlags);
         }
 
         private static object GetMember(MemberInfo m, object obj) {
@@ -322,14 +326,14 @@ namespace CalamityOverhaul
             }
 
             Type bossRush = GetModType(mod, "CalamityMod.Events.BossRushEvent");
-            bossRush_Active_Prop = GetProperty(bossRush, "BossRushActive", PublicStaticFlags);
+            bossRush_Active_M = GetFieldOrProperty(bossRush, "BossRushActive", PublicStaticFlags);
 
             Type acidRain = GetModType(mod, "CalamityMod.Events.AcidRainEvent");
             if (acidRain != null) {
-                acidRain_Ongoing_Prop = GetProperty(acidRain, "AcidRainEventIsOngoing", PublicStaticFlags);
+                acidRain_Ongoing_M = GetFieldOrProperty(acidRain, "AcidRainEventIsOngoing", PublicStaticFlags);
                 acidRain_KillPoints_Field = GetField(acidRain, "AccumulatedKillPoints", PublicStaticFlags);
                 acidRain_UpdateInvasion_Method = GetMethod(acidRain, "UpdateInvasion", PublicStaticFlags);
-                acidRain_OldDukeEncountered_Prop = GetProperty(acidRain, "OldDukeHasBeenEncountered", PublicStaticFlags);
+                acidRain_OldDukeEncountered_M = GetFieldOrProperty(acidRain, "OldDukeHasBeenEncountered", PublicStaticFlags);
             }
 
             Type calConfig = GetModType(mod, "CalamityMod.CalamityServerConfig");
@@ -441,11 +445,11 @@ namespace CalamityOverhaul
 
             calWorld_death_Field = null;
             calWorld_revenge_Field = null;
-            bossRush_Active_Prop = null;
-            acidRain_Ongoing_Prop = null;
+            bossRush_Active_M = null;
+            acidRain_Ongoing_M = null;
             acidRain_KillPoints_Field = null;
             acidRain_UpdateInvasion_Method = null;
-            acidRain_OldDukeEncountered_Prop = null;
+            acidRain_OldDukeEncountered_M = null;
             calamityServerConfigInstance = null;
             calConfig_EarlyHardmodeRework_Prop = null;
             calNPC_SetNewBossJustDowned_Method = null;
@@ -702,15 +706,15 @@ namespace CalamityOverhaul
         }
 
         public static bool GetBossRushActive() {
-            return bossRush_Active_Prop != null && (bool)bossRush_Active_Prop.GetValue(null);
+            return bossRush_Active_M != null && (bool)GetMember(bossRush_Active_M, null);
         }
 
         public static void SetBossRushActive(bool value) {
-            bossRush_Active_Prop?.SetValue(null, value);
+            SetMember(bossRush_Active_M, null, value);
         }
 
         public static bool GetAcidRainEventIsOngoing() {
-            return acidRain_Ongoing_Prop != null && (bool)acidRain_Ongoing_Prop.GetValue(null);
+            return acidRain_Ongoing_M != null && (bool)GetMember(acidRain_Ongoing_M, null);
         }
 
         public static DamageClass GetTrueMeleeDamageClass() => trueMeleeDamageClass ?? DamageClass.Default;
@@ -870,9 +874,9 @@ namespace CalamityOverhaul
                 return true;
             if (CWRID.NPC_AresBody > NPCID.None && NPC.AnyNPCs(CWRID.NPC_AresBody))
                 return true;
-            if (CWRID.NPC_ArtemisBoss > NPCID.None && NPC.AnyNPCs(CWRID.NPC_ArtemisBoss))
+            if (CWRID.NPC_Artemis > NPCID.None && NPC.AnyNPCs(CWRID.NPC_Artemis))
                 return true;
-            if (CWRID.NPC_ApolloBoss > NPCID.None && NPC.AnyNPCs(CWRID.NPC_ApolloBoss))
+            if (CWRID.NPC_Apollo > NPCID.None && NPC.AnyNPCs(CWRID.NPC_Apollo))
                 return true;
             return false;
         }
@@ -1060,7 +1064,7 @@ namespace CalamityOverhaul
             StopAcidRain();
             calNPC_SetNewBossJustDowned_Method?.Invoke(null, new object[] { npc });
             SetDownedProp(downedBoomerDukeProp, true);
-            acidRain_OldDukeEncountered_Prop?.SetValue(null, true);
+            SetMember(acidRain_OldDukeEncountered_M, null, true);
             NPCLoader.OnKill(npc);
         }
 
