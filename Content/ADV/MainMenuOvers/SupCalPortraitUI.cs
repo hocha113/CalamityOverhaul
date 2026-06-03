@@ -69,6 +69,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private Vector2 _rightPortraitOffset = Vector2.Zero; //右侧立绘偏移
         private Vector2 _dragStartMousePos = Vector2.Zero;
         private Vector2 _dragStartOffset = Vector2.Zero;
+        private const float MinVisibleSize = 80f; //立绘在屏幕内的最小可见像素
 
         //表情切换按钮相关
         private const float ExpressionButtonSize = 30f;
@@ -276,6 +277,39 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             _rightPortraitScale = Math.Clamp(_rightPortraitScale + delta, MinScale, MaxScale);
             MarkNeedsSave();
         }
+
+        private void ClampPortraitOffsets() {
+            Texture2D tex = GetCurrentPortraitTexture();
+            if (tex == null || Main.screenWidth <= 0 || Main.screenHeight <= 0) return;
+
+            float baseScaleLeft = _leftPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            float hitboxScaleLeft = baseScaleLeft * 1.8f;
+            Vector2 sizeLeft = new Vector2(tex.Width, tex.Height) * hitboxScaleLeft;
+            Vector2 basePosLeft = new Vector2(
+                Main.screenWidth * LeftPortraitXRatio - tex.Width * baseScaleLeft / 2,
+                Main.screenHeight - tex.Height * (1f - LeftPortraitCropBottom) * baseScaleLeft - 140
+            );
+            _leftPortraitOffset.X = Math.Clamp(_leftPortraitOffset.X,
+                MinVisibleSize - basePosLeft.X - sizeLeft.X,
+                Main.screenWidth - MinVisibleSize - basePosLeft.X);
+            _leftPortraitOffset.Y = Math.Clamp(_leftPortraitOffset.Y,
+                MinVisibleSize - basePosLeft.Y - sizeLeft.Y,
+                Main.screenHeight - MinVisibleSize - basePosLeft.Y);
+
+            float baseScaleRight = _rightPortraitScale * (0.95f + _transitionProgress * 0.05f);
+            float hitboxScaleRight = baseScaleRight * 2f;
+            Vector2 sizeRight = tex.Size() * hitboxScaleRight;
+            Vector2 basePosRight = new Vector2(
+                Main.screenWidth * RightPortraitXRatio - tex.Width * baseScaleRight / 2 - 300,
+                Main.screenHeight - tex.Height * baseScaleRight - 220
+            );
+            _rightPortraitOffset.X = Math.Clamp(_rightPortraitOffset.X,
+                MinVisibleSize - basePosRight.X - sizeRight.X,
+                Main.screenWidth - MinVisibleSize - basePosRight.X);
+            _rightPortraitOffset.Y = Math.Clamp(_rightPortraitOffset.Y,
+                MinVisibleSize - basePosRight.Y - sizeRight.Y,
+                Main.screenHeight - MinVisibleSize - basePosRight.Y);
+        }
         #endregion
 
         #region 更新逻辑
@@ -329,6 +363,9 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             UpdateParticles();
             UpdateInteraction();
             UpdateScaleInput();
+            if (_showFullPortrait) {
+                ClampPortraitOffsets();
+            }
         }
 
         private void UpdateInteraction() {
