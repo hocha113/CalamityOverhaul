@@ -72,8 +72,6 @@ namespace CalamityOverhaul.Common
         public LocalizedText LoadItemRecipe_Condition_Text1 { get; private set; }
         public LocalizedText Murasama_Text0 { get; private set; }
         public LocalizedText Murasama_Text1 { get; private set; }
-        public LocalizedText Murasama_Text2 { get; private set; }
-        public LocalizedText Murasama_Text3 { get; private set; }
         public LocalizedText MouseTextContactPanel_TextContent { get; private set; }
         public LocalizedText CWRItem_IsRemakeItem_TextContent { get; private set; }
         public LocalizedText OnEnterWorld_TextContent { get; private set; }

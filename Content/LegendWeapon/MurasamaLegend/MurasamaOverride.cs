@@ -83,18 +83,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// 获取时期对应的击退力度
         /// </summary>
         public static float GetOnKnockback(Item item) => KnockbackDictionary[GetLevel(item)];
+        public static int Skill1Unhook = 3;
         /// <summary>
         /// 是否解锁升龙斩
         /// </summary>
-        public static bool UnlockSkill1(Item item) => GetLevel(item) >= 3;
+        public static bool UnlockSkill1(Item item) => GetLevel(item) >= Skill1Unhook;
+        public static int Skill2Unhook = 8;
         /// <summary>
         /// 是否解锁下砸
         /// </summary>
-        public static bool UnlockSkill2(Item item) => GetLevel(item) >= 8;
+        public static bool UnlockSkill2(Item item) => GetLevel(item) >= Skill2Unhook;
+        public static int Skill3Unhook = 21;
         /// <summary>
         /// 是否解锁终结技
         /// </summary>
-        public static bool UnlockSkill3(Item item) => GetLevel(item) >= 21;
+        public static bool UnlockSkill3(Item item) => GetLevel(item) >= Skill3Unhook;
         /// <summary>
         /// 获得成长等级
         /// </summary>

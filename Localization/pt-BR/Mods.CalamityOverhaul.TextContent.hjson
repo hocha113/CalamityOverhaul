@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	TemperatureText: Temperatura de Combustao
 	EnergyShortage: Falta de Energia
 	ChargingStation_Text1: Coloque itens para carregar
@@ -112,9 +112,7 @@ CWRLocText: {
 	CWRRecipes_FishGroup: peixe
 	LoadItemRecipe_Condition_Text1: Precisa ter um Livro Overhaul The Bible na mochila
 	Murasama_Text0: Desbloqueado
-	Murasama_Text1: Ainda nao desbloqueado. Precisa passar no teste 2
-	Murasama_Text2: Ainda nao desbloqueado. Precisa passar no teste 5
-	Murasama_Text3: Ainda nao desbloqueado. Precisa passar no teste 9
+	Murasama_Text1: Ainda nao desbloqueado. Precisa passar no teste [Unhook]
 	MouseTextContactPanel_TextContent: Pressione [KEY] para alternar a Previsao da Receita de Sintese Final.
 	CWRItem_IsRemakeItem_TextContent: -reformulacoes-
 	OnEnterWorld_TextContent: " o reset da arma foi carregado"

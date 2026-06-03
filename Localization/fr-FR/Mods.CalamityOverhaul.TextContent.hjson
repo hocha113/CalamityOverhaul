@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	// TemperatureText: Combustion Temperature
 	// EnergyShortage: Energy Shortage
 	// ChargingStation_Text1: Put in charge items
@@ -109,9 +109,7 @@ CWRLocText: {
 	CWRRecipes_FishGroup: Poissons
 	LoadItemRecipe_Condition_Text1: Il faut avoir un Codex de Calamité dans l'inventaire
 	Murasama_Text0: Déverrouillé
-	Murasama_Text1: Non déverrouillé - Requiert l'épreuve 2
-	Murasama_Text2: Non déverrouillé - Requiert l'épreuve 5
-	Murasama_Text3: Non déverrouillé - Requiert l'épreuve 9
+	Murasama_Text1: Non déverrouillé - Requiert l'épreuve [Unhook]
 	MouseTextContactPanel_TextContent: Appuyez sur [KEY] pour basculer l'aperçu des recettes de synthèse finale.
 	CWRItem_IsRemakeItem_TextContent: - Calamité -
 	OnEnterWorld_TextContent: armes réinitialisées sont déjà chargées

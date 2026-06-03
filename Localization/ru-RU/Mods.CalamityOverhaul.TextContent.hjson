@@ -1,4 +1,4 @@
-CWRLocText: {
+﻿CWRLocText: {
 	TemperatureText: Температура сгорания
 	EnergyShortage: Недостаток энергии
 	ChargingStation_Text1: Положите предметы для зарядки
@@ -109,9 +109,7 @@ CWRLocText: {
 	CWRRecipes_FishGroup: рыб
 	LoadItemRecipe_Condition_Text1: В рюкзаке должен быть большой справочник
 	Murasama_Text0: (способность разблокирована)
-	Murasama_Text1: (Способность заблокирована. Требуется пройти 2-е испытание)
-	Murasama_Text2: (Способность заблокирована. Требуется пройти 5-е испытание)
-	Murasama_Text3: (Способность заблокирована. Требуется пройти 9-е испытание)
+	Murasama_Text1: (Способность заблокирована. Требуется пройти [Unhook]-е испытание)
 	MouseTextContactPanel_TextContent: Нажмите [KEY], чтобы переключить предварительный просмотр рецептов финального синтеза.
 	CWRItem_IsRemakeItem_TextContent: -ремонт-
 	OnEnterWorld_TextContent: " заряда для сброса оружия"

@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             string text2 = CWRLocText.GetTextValue("Murasama_Text0");
 
             //试炼叙事文本已迁移至委托系统(MurasamaTrialQuestLine)，此处仅保留技能解锁与传奇状态
-            tooltips.ReplacePlaceholder("[Lang1]", UnlockSkill1(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]");
-            tooltips.ReplacePlaceholder("[Lang2]", UnlockSkill2(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]");
-            tooltips.ReplacePlaceholder("[Lang3]", UnlockSkill3(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]");
+            tooltips.ReplacePlaceholder("[Lang1]", UnlockSkill1(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1").Replace("[Unhook]", Skill1Unhook.ToString())}]");
+            tooltips.ReplacePlaceholder("[Lang2]", UnlockSkill2(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1").Replace("[Unhook]", Skill2Unhook.ToString())}]");
+            tooltips.ReplacePlaceholder("[Lang3]", UnlockSkill3(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1").Replace("[Unhook]", Skill3Unhook.ToString())}]");
 
             int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
             string num = (index + 1).ToString();
