@@ -1,11 +1,7 @@
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// Documents the synchronized AI slots used by Brutal Skeletron Prime.
-    /// Keep this as the single reference when moving logic out of legacy ai[] branches.
-    /// </summary>
     internal static class PrimeAiSlots
     {
         public const int HeadMainState = 0;
