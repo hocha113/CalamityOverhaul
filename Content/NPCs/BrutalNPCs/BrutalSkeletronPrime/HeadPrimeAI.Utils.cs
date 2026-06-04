@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -71,23 +72,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive) {
-            cannonAlive = viceAlive = sawAlive = laserAlive = false;
-            if (CWRWorld.primeCannon != -1) {
-                if (Main.npc[CWRWorld.primeCannon].active)
-                    cannonAlive = true;
-            }
-            if (CWRWorld.primeVice != -1) {
-                if (Main.npc[CWRWorld.primeVice].active)
-                    viceAlive = true;
-            }
-            if (CWRWorld.primeSaw != -1) {
-                if (Main.npc[CWRWorld.primeSaw].active)
-                    laserAlive = true;
-            }
-            if (CWRWorld.primeLaser != -1) {
-                if (Main.npc[CWRWorld.primeLaser].active)
-                    sawAlive = true;
-            }
+            PrimeLimbStatus status = PrimeFacts.GetLimbStatus();
+            cannonAlive = status.CannonAlive;
+            viceAlive = status.ViceAlive;
+            sawAlive = status.SawAlive;
+            laserAlive = status.LaserAlive;
         }
 
         internal static void SpanFireLerterDustEffect(NPC npc, int modes) {

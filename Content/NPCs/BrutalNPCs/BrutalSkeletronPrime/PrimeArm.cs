@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using InnoVault.StateMachines;
 using Terraria;
 using Terraria.ID;
@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             bossRush = CWRRef.GetBossRushActive();
             masterMode = Main.masterMode || bossRush;
             death = CWRRef.GetDeathMode() || bossRush;
-            head = Main.npc[(int)npc.ai[1]];
+            head = Main.npc[(int)npc.ai[PrimeAiSlots.ArmHeadIndex]];
             player = Main.player[npc.target];
-            npc.spriteDirection = -(int)npc.ai[0];
+            npc.spriteDirection = -(int)npc.ai[PrimeAiSlots.ArmSide];
             npc.damage = 0;
             if (npc.type == NPCID.PrimeLaser) {
                 CWRWorld.primeLaser = npc.whoAmI;
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            if (head.ai[0] == 3 || head.ai[1] == 2f) {
+            if (PrimeFacts.IsDeathPerformance(head) || head.ai[PrimeAiSlots.HeadMainState] == 3 || head.ai[PrimeAiSlots.HeadAttackState] == 2f) {
                 //手臂的"被头部消灭"必须服务端单点决策，否则客户端单方面 active=false
                 //会让该手臂在客户端凭空消失，但服务端继续保留并不停同步回来，造成抖动
                 if (!VaultUtils.isClient) {
@@ -90,9 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armStateContext, aiSlot: 2);
+            armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armStateContext, aiSlot: PrimeAiSlots.ArmState);
             IVaultState<PrimeArmStateContext> syncedState = null;
-            int syncedStateId = (int)npc.ai[2];
+            int syncedStateId = (int)npc.ai[PrimeAiSlots.ArmState];
             if (VaultUtils.isClient && syncedStateId > 0) {
                 syncedState = VaultStateRegistry<PrimeArmStateContext>.Create(syncedStateId);
             }

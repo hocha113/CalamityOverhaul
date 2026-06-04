@@ -1,6 +1,8 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.OtherMods.InfernumMode;
+using InnoVault.StateMachines;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -80,118 +82,152 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void ProtogenesisAI() {
-            if (npc.ai[1] == 0f) {
-                npc.damage = 0;
-                npc.ai[2] += 1f;
-                float aiThreshold = Main.masterMode ? 600f : 800f;
-                if (npc.ai[2] >= aiThreshold) {
-                    npc.ai[2] = 0f;
-                    npc.ai[1] = 1f;
-                    ai11++;
-                    if (!VaultUtils.isClient && ai11 >= 2) {
-                        if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
-                            SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-                            int damage = SetMultiplier(npc.defDamage / 3);
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
-                                , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
-                        }
-                        ai11 = 0;
-                        npc.netUpdate = true;//强制更新NPC
+            RunPhaseOneSubStateMachine();
+        }
+
+        private void RunPhaseOneSubStateMachine() {
+            EnsurePhaseOneStateMachine();
+            PrimeHeadStateBase desiredState = CreatePhaseOneSubStateFromAi();
+            if (phaseOneStateMachine.CurrentState?.StateId != desiredState.StateId) {
+                phaseOneStateMachine.ChangeState(desiredState);
+            }
+            phaseOneStateMachine.Update();
+        }
+
+        private void EnsurePhaseOneStateMachine() {
+            EnsureHeadStateMachine();
+            UpdateHeadStateContext();
+            phaseOneStateMachine ??= new VaultStateMachine<PrimeHeadStateContext>(headStateContext);
+            if (phaseOneStateMachine.CurrentState == null) {
+                phaseOneStateMachine.SetInitialState(CreatePhaseOneSubStateFromAi());
+            }
+        }
+
+        private PrimeHeadStateBase CreatePhaseOneSubStateFromAi() {
+            return (int)npc.ai[PrimeAiSlots.HeadAttackState] switch {
+                1 => new PrimeHeadDashChargeState(),
+                2 => new PrimeHeadDayEnrageState(),
+                3 => new PrimeHeadDespawnState(),
+                4 => new PrimeHeadCoinGunFuryState(),
+                _ => new PrimeHeadHoverTrackingState()
+            };
+        }
+
+        internal void RunPhaseOneHoverTrackingState() {
+            npc.damage = 0;
+            npc.ai[PrimeAiSlots.HeadAttackTimer] += 1f;
+            float aiThreshold = Main.masterMode ? 600f : 800f;
+            if (npc.ai[PrimeAiSlots.HeadAttackTimer] >= aiThreshold) {
+                npc.ai[PrimeAiSlots.HeadAttackTimer] = 0f;
+                npc.ai[PrimeAiSlots.HeadAttackState] = 1f;
+                ai11++;
+                if (!VaultUtils.isClient && ai11 >= 2) {
+                    if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
+                        SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                        int damage = SetMultiplier(npc.defDamage / 3);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
+                            , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                     }
-                    npc.TargetClosest();
-                    npc.netUpdate = true;
+                    ai11 = 0;
+                    npc.netUpdate = true;//强制更新NPC
                 }
-
-                npc.rotation = NPC.IsMechQueenUp ? npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f) : npc.velocity.X / 15f;
-
-                float verticalAcceleration = 0.1f;
-                float maxVerticalSpeed = 2f;
-                float horizontalAcceleration = 0.1f;
-                float maxHorizontalSpeed = 8f;
-                float deceleration = Main.masterMode ? 0.94f : Main.expertMode ? 0.96f : 0.98f;
-                int verticalOffset = 200;
-                int verticalThreshold = 500;
-                float horizontalOffset = 0f;
-                int directionMultiplier = (Main.player[npc.target].Center.X < npc.Center.X) ? -1 : 1;
-
-                if (NPC.IsMechQueenUp) {
-                    horizontalOffset = -450f * directionMultiplier;
-                    verticalOffset = 300;
-                    verticalThreshold = 350;
-                }
-
-                if (Main.expertMode) {
-                    verticalAcceleration = Main.masterMode ? 0.04f : 0.03f;
-                    maxVerticalSpeed = Main.masterMode ? 5f : 4f;
-                    horizontalAcceleration = Main.masterMode ? 0.1f : 0.08f;
-                    maxHorizontalSpeed = Main.masterMode ? 10f : 9.5f;
-                    if (death) {
-                        verticalAcceleration += 0.01f;
-                        maxVerticalSpeed += 0.3f;
-                        horizontalAcceleration += 0.1f;
-                        maxHorizontalSpeed += 1f;
-                    }
-                    if (bossRush) {
-                        verticalAcceleration += 0.01f;
-                        maxVerticalSpeed += 0.5f;
-                        horizontalAcceleration += 0.1f;
-                        maxHorizontalSpeed += 1f;
-                    }
-                    if (noArm) {
-                        verticalAcceleration += 0.01f;
-                        maxVerticalSpeed += 0.125f;
-                        horizontalAcceleration += 0.025f;
-                        maxHorizontalSpeed += 0.25f;
-                    }
-                }
-
-                AdjustVerticalMovement(verticalAcceleration, maxVerticalSpeed, deceleration, verticalOffset, verticalThreshold);
-                AdjustHorizontalMovement(horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
+                npc.TargetClosest();
+                npc.netUpdate = true;
             }
-            else if (npc.ai[1] == 1f) {
-                npc.defense *= (int)(npc.defDefense * 1.25f);
-                npc.damage = npc.defDamage * 2;
 
-                npc.ai[2]++;
-                if (npc.ai[2] == 2f) {
-                    SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
-                }
+            npc.rotation = NPC.IsMechQueenUp ? npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f) : npc.velocity.X / 15f;
 
-                if (npc.ai[2] == 36f) {
-                    SoundStyle sound = "CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound();
-                    SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
-                }
+            float verticalAcceleration = 0.1f;
+            float maxVerticalSpeed = 2f;
+            float horizontalAcceleration = 0.1f;
+            float maxHorizontalSpeed = 8f;
+            float deceleration = Main.masterMode ? 0.94f : Main.expertMode ? 0.96f : 0.98f;
+            int verticalOffset = 200;
+            int verticalThreshold = 500;
+            float horizontalOffset = 0f;
+            int directionMultiplier = (Main.player[npc.target].Center.X < npc.Center.X) ? -1 : 1;
 
-                float aiThreshold = Main.masterMode ? 200f : 300f;
-                if (npc.ai[2] >= aiThreshold) {
-                    npc.ai[2] = 0f;
-                    npc.ai[1] = 0f;
-                }
-
-                UpdateRotation();
-
-                Vector2 targetVector = Main.player[npc.target].Center - npc.Center;
-                float distanceToTarget = targetVector.Length();
-                float initialSpeed = 5f;
-                float speedMultiplier = CalculateSpeedMultiplier(distanceToTarget, initialSpeed);
-                if (NPC.IsMechQueenUp) {
-                    float mechQueenSpeedFactor = NPC.npcsFoundForCheckActive[NPCID.TheDestroyerBody] ? 0.6f : 0.75f;
-                    speedMultiplier *= mechQueenSpeedFactor;
-                }
-
-                UpdateVelocity(targetVector, speedMultiplier, distanceToTarget);
+            if (NPC.IsMechQueenUp) {
+                horizontalOffset = -450f * directionMultiplier;
+                verticalOffset = 300;
+                verticalThreshold = 350;
             }
-            else if (npc.ai[1] == 2f) {
-                EnrageNPC();
-                UpdateRotation();
-                MoveTowardsPlayer(10f, 8f, 32f, 100f);
+
+            if (Main.expertMode) {
+                verticalAcceleration = Main.masterMode ? 0.04f : 0.03f;
+                maxVerticalSpeed = Main.masterMode ? 5f : 4f;
+                horizontalAcceleration = Main.masterMode ? 0.1f : 0.08f;
+                maxHorizontalSpeed = Main.masterMode ? 10f : 9.5f;
+                if (death) {
+                    verticalAcceleration += 0.01f;
+                    maxVerticalSpeed += 0.3f;
+                    horizontalAcceleration += 0.1f;
+                    maxHorizontalSpeed += 1f;
+                }
+                if (bossRush) {
+                    verticalAcceleration += 0.01f;
+                    maxVerticalSpeed += 0.5f;
+                    horizontalAcceleration += 0.1f;
+                    maxHorizontalSpeed += 1f;
+                }
+                if (noArm) {
+                    verticalAcceleration += 0.01f;
+                    maxVerticalSpeed += 0.125f;
+                    horizontalAcceleration += 0.025f;
+                    maxHorizontalSpeed += 0.25f;
+                }
             }
-            else if (npc.ai[1] == 3f) {
-                HandleDespawn();
+
+            AdjustVerticalMovement(verticalAcceleration, maxVerticalSpeed, deceleration, verticalOffset, verticalThreshold);
+            AdjustHorizontalMovement(horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
+        }
+
+        internal void RunPhaseOneDashChargeState() {
+            npc.defense *= (int)(npc.defDefense * 1.25f);
+            npc.damage = npc.defDamage * 2;
+
+            npc.ai[PrimeAiSlots.HeadAttackTimer]++;
+            if (npc.ai[PrimeAiSlots.HeadAttackTimer] == 2f) {
+                SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
             }
-            else {
-                FulyByCoinGun();
+
+            if (npc.ai[PrimeAiSlots.HeadAttackTimer] == 36f) {
+                SoundStyle sound = "CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound();
+                SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
             }
+
+            float aiThreshold = Main.masterMode ? 200f : 300f;
+            if (npc.ai[PrimeAiSlots.HeadAttackTimer] >= aiThreshold) {
+                npc.ai[PrimeAiSlots.HeadAttackTimer] = 0f;
+                npc.ai[PrimeAiSlots.HeadAttackState] = 0f;
+            }
+
+            UpdateRotation();
+
+            Vector2 targetVector = Main.player[npc.target].Center - npc.Center;
+            float distanceToTarget = targetVector.Length();
+            float initialSpeed = 5f;
+            float speedMultiplier = CalculateSpeedMultiplier(distanceToTarget, initialSpeed);
+            if (NPC.IsMechQueenUp) {
+                float mechQueenSpeedFactor = NPC.npcsFoundForCheckActive[NPCID.TheDestroyerBody] ? 0.6f : 0.75f;
+                speedMultiplier *= mechQueenSpeedFactor;
+            }
+
+            UpdateVelocity(targetVector, speedMultiplier, distanceToTarget);
+        }
+
+        internal void RunPhaseOneDayEnrageState() {
+            EnrageNPC();
+            UpdateRotation();
+            MoveTowardsPlayer(10f, 8f, 32f, 100f);
+        }
+
+        internal void RunPhaseOneDespawnState() {
+            HandleDespawn();
+        }
+
+        internal void RunPhaseOneCoinGunFuryState() {
+            FulyByCoinGun();
         }
 
         private void FulyByCoinGun() {
@@ -199,6 +235,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.defense = 999;
             npc.ChasingBehavior(player.Center, 33);
             npc.rotation += npc.velocity.X > 0 ? 0.42f : -0.42f;
+        }
+
+        private bool RunPhaseTwoSubStateMachine() {
+            EnsurePhaseTwoStateMachine();
+            PrimeHeadStateBase desiredState = CreatePhaseTwoSubStateFromAi();
+            if (phaseTwoStateMachine.CurrentState?.StateId != desiredState.StateId) {
+                phaseTwoStateMachine.ChangeState(desiredState);
+            }
+            phaseTwoStateMachine.Update();
+            return phaseTwoStateMachine.CurrentState is PrimeHeadPhaseTwoSubStateBase { SkipRemainingFrame: true };
+        }
+
+        private void EnsurePhaseTwoStateMachine() {
+            EnsureHeadStateMachine();
+            UpdateHeadStateContext();
+            phaseTwoStateMachine ??= new VaultStateMachine<PrimeHeadStateContext>(headStateContext);
+            if (phaseTwoStateMachine.CurrentState == null) {
+                phaseTwoStateMachine.SetInitialState(CreatePhaseTwoSubStateFromAi());
+            }
+        }
+
+        private PrimeHeadStateBase CreatePhaseTwoSubStateFromAi() {
+            return (int)ai3 switch {
+                1 => new PrimeHeadRadialBarrageState(),
+                2 => new PrimeHeadLaserWallState(),
+                3 => new PrimeHeadPhaseRecoveryState(),
+                _ => new PrimeHeadSpreadBarrageState()
+            };
+        }
+
+        internal bool RunPhaseTwoLegacyState() {
+            if (TwoStageAI()) {
+                return true;
+            }
+
+            ProtogenesisAI();
+            return false;
         }
 
         private bool TwoStageAI() {

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool noEye;
         private PrimeHeadStateContext headStateContext;
         private VaultStateMachine<PrimeHeadStateContext> headStateMachine;
+        private VaultStateMachine<PrimeHeadStateContext> phaseOneStateMachine;
+        private VaultStateMachine<PrimeHeadStateContext> phaseTwoStateMachine;
         internal static int setPosingStarmCount;
         internal ref float ai0 => ref ai[0];
         internal ref float ai1 => ref ai[1];

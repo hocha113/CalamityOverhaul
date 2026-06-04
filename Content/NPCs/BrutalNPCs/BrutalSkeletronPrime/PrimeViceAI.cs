@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -104,8 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float chargeRate = CalculateChargeRate();
             npc.ai[3] += chargeRate;
 
-            int chargeThreshold = masterMode ? 120 : 180;
-            if (death) chargeThreshold = 60;
+            int chargeThreshold = PrimeDirector.GetArmChargeThreshold(masterMode, death);
 
             if (npc.ai[3] >= chargeThreshold) {
                 //去随机化：用 localAI[3] 做轮换计数器，每 3 次选 1 次 Combo（替代原 1/3 概率）
@@ -349,15 +348,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #region 辅助函数
         private void TransitionToState(AttackState newState) {
             stateTimer = 0;
-            armStateMachine?.ChangeState(newState switch {
+            PrimeArmActions.ChangeState(armStateMachine, newState switch {
                 AttackState.WindUp => new ViceWindUpState(),
                 AttackState.Strike => new ViceStrikeState(),
                 AttackState.Recovery => new ViceRecoveryState(),
                 AttackState.Combo => new ViceComboState(),
                 AttackState.SpecialCharge => new ViceSpecialChargeState(),
                 _ => new ViceIdleState()
-            });
-            npc.netUpdate = true;
+            }, npc);
         }
 
         [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]
@@ -515,11 +513,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private float CalculateChargeRate() {
             float baseRate = masterMode ? 2f : 1f;
-            if (death) baseRate *= 2f;
-            if (!cannonAlive) baseRate += 0.5f;
-            if (!laserAlive) baseRate += 0.5f;
-            if (!sawAlive) baseRate += 0.5f;
-            return baseRate;
+            if (death) baseRate *= PrimeDirector.DeathChargeMultiplier;
+            return baseRate + PrimeDirector.GetMissingLimbChargeBonus(cannonAlive, laserAlive, sawAlive);
         }
 
         private float CalculateChargeVelocity(bool bossRush, float bossRushVelocity, float defaultVelocity) {

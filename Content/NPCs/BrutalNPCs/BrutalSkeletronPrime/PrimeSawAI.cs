@@ -110,8 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float chargeRate = CalculateChargeRate();
             npc.ai[3] += chargeRate;
 
-            int chargeThreshold = masterMode ? 120 : 180;
-            if (death) chargeThreshold = 60;
+            int chargeThreshold = PrimeDirector.GetArmChargeThreshold(masterMode, death);
 
             if (npc.ai[3] >= chargeThreshold) {
                 //去除 Main.rand.Next(3) 随机选择，改为以 npc.ai[1] 槽（自增的"已选轮次"）做确定性轮换。
@@ -358,15 +357,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void TransitionToState(AttackState newState) {
             stateTimer = 0;
             hasPlayedSpinSound = false;
-            armStateMachine?.ChangeState(newState switch {
+            PrimeArmActions.ChangeState(armStateMachine, newState switch {
                 AttackState.SpinUp => new SawSpinUpState(),
                 AttackState.Dash => new SawDashState(),
                 AttackState.Orbit => new SawOrbitState(),
                 AttackState.DrillChase => new SawDrillChaseState(),
                 AttackState.Recovery => new SawRecoveryState(),
                 _ => new SawIdleState()
-            });
-            npc.netUpdate = true;
+            }, npc);
         }
 
         [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]
@@ -506,11 +504,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private float CalculateChargeRate() {
             float baseRate = masterMode ? 2f : 1f;
-            if (death) baseRate *= 2f;
-            if (!cannonAlive) baseRate += 0.5f;
-            if (!laserAlive) baseRate += 0.5f;
-            if (!viceAlive) baseRate += 0.5f;
-            return baseRate;
+            if (death) baseRate *= PrimeDirector.DeathChargeMultiplier;
+            return baseRate + PrimeDirector.GetMissingLimbChargeBonus(cannonAlive, laserAlive, viceAlive);
         }
 
         private float CalculateDashSpeed() {

@@ -19,18 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal const int SingleShotStateId = 200;
         internal const int SpreadShotStateId = 201;
 
-        #region 状态枚举
-        private enum AttackState
-        {
-            Idle = 0,           //待机瞄准
-            SingleShot = 1,     //单发射击
-            SpreadShot = 2,     //扩散射击
-            BarrageMode = 3     //弹幕模式
-        }
-        #endregion
-
         #region 常量与变量
-        private const float TimeToNotAttack = 180f;
         private float recoilIntensity = 0f;
         private Vector2 aimDirection = Vector2.Zero;
         private bool isFiring = false;
@@ -39,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #region AI主循环
         public override bool ArmBehavior() {
             ai[0]++;
-            dontAttack = ai[0] < TimeToNotAttack;
+            dontAttack = ai[0] < PrimeAiSlots.ArmSpawnGraceFrames;
 
             //更新后坐力效果
             UpdateRecoilEffects();
@@ -297,11 +286,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private float CalculateChargeBonus() {
-            float bonus = 0f;
-            if (!laserAlive) bonus += 1f;
-            if (!viceAlive) bonus += 1f;
-            if (!sawAlive) bonus += 1f;
-            return bonus;
+            return PrimeDirector.GetMissingLimbChargeBonus(
+                laserAlive,
+                viceAlive,
+                sawAlive,
+                PrimeDirector.MissingHeavyLimbChargeBonus
+            );
         }
 
         private float GetTimeMult() {
@@ -320,9 +310,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            npc.localAI[0] = 0f;
-            npc.ai[3] = 0f;
-            armStateMachine?.ChangeState(singleShot ? new CannonSingleShotState() : new CannonSpreadShotState());
+            PrimeArmActions.ResetLocalCooldown(npc);
+            PrimeArmActions.ResetSharedTimer(npc);
+            PrimeArmActions.ChangeState(armStateMachine, singleShot ? new CannonSingleShotState() : new CannonSpreadShotState(), npc, sync: false);
             if (!VaultUtils.isClient) {
                 npc.TargetClosest();
                 npc.netUpdate = true;

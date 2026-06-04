@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #endregion
 
         #region 常量与变量
-        private const float TimeToNotAttack = 180f;
         private const float LaserChargeTime = 45f;
         private const float MaxLaserIntensity = 2.5f;
 
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #region AI主循环
         public override bool ArmBehavior() {
             ai[0]++;
-            dontAttack = ai[0] < TimeToNotAttack;
+            dontAttack = ai[0] < PrimeAiSlots.ArmSpawnGraceFrames;
             normalLaserRotation = npc.localAI[1] % 2f == 0f;
 
             //更新视觉效果
@@ -437,21 +436,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void TransitionToState(AttackState newState) {
             stateTimer = 0;
-            armStateMachine?.ChangeState(newState switch {
+            PrimeArmActions.ChangeState(armStateMachine, newState switch {
                 AttackState.RapidFire => new LaserRapidFireState(),
                 AttackState.ChargedShot => new LaserChargedShotState(),
                 AttackState.LaserBarrage => new LaserBarrageState(),
                 _ => new LaserIdleState()
-            });
-            npc.netUpdate = true;
+            }, npc);
         }
 
         private float CalculateChargeRate() {
             float baseRate = 1f;
-            if (!cannonAlive) baseRate += 1f;
-            if (!viceAlive) baseRate += 1f;
-            if (!sawAlive) baseRate += 1f;
-            return baseRate;
+            return baseRate + PrimeDirector.GetMissingLimbChargeBonus(
+                cannonAlive,
+                viceAlive,
+                sawAlive,
+                PrimeDirector.MissingHeavyLimbChargeBonus
+            );
         }
 
         [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]

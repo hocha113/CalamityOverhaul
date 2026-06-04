@@ -195,12 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal bool RunPhaseTwoState() {
-            if (TwoStageAI()) {
-                return true;
-            }
-
-            ProtogenesisAI();
-            return false;
+            return RunPhaseTwoSubStateMachine();
         }
 
         internal bool RunDeathPerformanceState() {
