@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     }
 
     /// <summary>
-    /// 机械骷髅王死亡演出——当只剩头部（noArm）且生命值低于 <see cref="DeathTriggerLife"/> 时触发。
+    /// 机械骷髅王死亡演出——当头部进入正式战斗阶段且生命值低于 <see cref="DeathTriggerLife"/> 时触发。
     /// <para>流程：假死爆炸（误导） → 再生双钳 → 扑抓玩家 → 拖拽举起 → 怒吼 → 终爆真死。</para>
     /// <para>多人同步策略：演出主状态用原版自动同步的 <c>npc.ai[0] == <see cref="DeathPerformanceMainState"/></c> 标记，
     /// 各端检测到后本地确定性推进计时；钳子由 <see cref="PrimeDeathClawActor"/>（本地视觉 Actor）表现，
@@ -114,9 +114,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// 死亡演出主驱动。返回 <see langword="true"/> 表示演出已接管 AI（调用方应提前结束本帧常规 AI）。
         /// </summary>
         internal bool UpdateDeathPerformance() {
-            //触发检测：只剩头部、处于三阶段、生命见底 → 由服务端/单人端开启演出（经 npc.ai[0] 同步）
+            //触发检测：正式战斗阶段生命见底 → 由服务端/单人端开启演出（经 npc.ai[0] 同步）
             if (npc.ai[0] != DeathPerformanceMainState) {
-                if (!VaultUtils.isClient && noArm && npc.ai[0] == 3f && npc.life <= DeathTriggerLife) {
+                if (!VaultUtils.isClient && CanStartDeathPerformance()) {
                     npc.ai[0] = DeathPerformanceMainState;
                     npc.netUpdate = true;
                 }

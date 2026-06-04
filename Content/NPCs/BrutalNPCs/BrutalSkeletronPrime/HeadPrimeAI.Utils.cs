@@ -233,8 +233,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 return true;
             }
-            //只剩头部时即便被秒杀也先锁血，等待下一帧 AI 开启死亡演出，避免"只炸一下就死"
-            if (npc.ai[0] == 3f && noArm) {
+            //正式战斗阶段即便被秒杀也先锁血，等待下一帧 AI 开启死亡演出，避免"只炸一下就死"
+            if (npc.ai[0] > 1f) {
                 npc.dontTakeDamage = true;
                 npc.life = 1;
                 return false;

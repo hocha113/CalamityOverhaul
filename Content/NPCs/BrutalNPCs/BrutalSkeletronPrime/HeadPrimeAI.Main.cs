@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private bool TryRunDeathPerformanceState() {
             bool shouldRunDeathState = npc.ai[0] == DeathPerformanceMainState
-                || (!VaultUtils.isClient && noArm && npc.ai[0] == 3f && npc.life <= DeathTriggerLife);
+                || (!VaultUtils.isClient && CanStartDeathPerformance());
             if (!shouldRunDeathState) {
                 return false;
             }
@@ -126,6 +126,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             headStateMachine.Update();
             return headStateMachine.CurrentState is PrimeHeadDeathPerformanceState { HandledFrame: true };
+        }
+
+        internal bool CanStartDeathPerformance() {
+            return npc.ai[0] > 1f && npc.ai[0] != DeathPerformanceMainState && npc.life <= DeathTriggerLife;
         }
 
         private void EnsureHeadStateMachine() {
