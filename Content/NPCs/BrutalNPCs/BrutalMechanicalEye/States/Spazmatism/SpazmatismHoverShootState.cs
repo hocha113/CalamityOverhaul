@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// <summary>
     /// 魔焰眼一阶段悬停射击状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismHoverShoot, typeof(TwinsStateContext))]
     internal class SpazmatismHoverShootState : TwinsStateBase
     {
         public override string StateName => "SpazmatismHoverShoot";
@@ -26,7 +27,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// 一阶段固定招式套路: 悬停射击→火焰漩涡→悬停射击→冲刺准备，循环往复
         /// comboStep 为偶数时进入火焰漩涡，奇数时进入冲刺准备
         /// </summary>
-        public SpazmatismHoverShootState(int currentComboStep = 0) {
+        public SpazmatismHoverShootState() : this(0) {
+        }
+
+        public SpazmatismHoverShootState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

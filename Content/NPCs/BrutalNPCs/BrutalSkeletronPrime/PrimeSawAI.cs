@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -12,6 +13,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.PrimeSaw;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
+
+        internal const int IdleStateId = 300;
+        internal const int SpinUpStateId = 301;
+        internal const int DashStateId = 302;
+        internal const int OrbitStateId = 303;
+        internal const int DrillChaseStateId = 304;
+        internal const int RecoveryStateId = 305;
 
         #region 状态枚举
         private enum AttackState
@@ -42,8 +50,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region AI主循环
         public override bool ArmBehavior() {
-            AttackState currentState = (AttackState)(int)npc.ai[2];
-
             //更新旋转动画
             UpdateSpinAnimation();
 
@@ -53,8 +59,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float sawArmIdleYPos = head.position.Y + 230f - sawArmLocation.Y;
             float sawArmIdleDistance = (float)Math.Sqrt(sawArmIdleXPos * sawArmIdleXPos + sawArmIdleYPos * sawArmIdleYPos);
 
+            EnsureArmStateMachine(new SawIdleState());
+            UpdateArmStateContext();
+
             //距离检测
-            if (currentState != AttackState.Recovery) {
+            if (armStateMachine.CurrentState is not SawRecoveryState) {
                 if (sawArmIdleDistance > 800f) {
                     TransitionToState(AttackState.Recovery);
                 }
@@ -63,27 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 TransitionToState(AttackState.Idle);
             }
 
-            //状态机
-            switch (currentState) {
-                case AttackState.Idle:
-                    State_Idle();
-                    break;
-                case AttackState.SpinUp:
-                    State_SpinUp();
-                    break;
-                case AttackState.Dash:
-                    State_Dash();
-                    break;
-                case AttackState.Orbit:
-                    State_Orbit();
-                    break;
-                case AttackState.DrillChase:
-                    State_DrillChase();
-                    break;
-                case AttackState.Recovery:
-                    State_Recovery();
-                    break;
-            }
+            armStateMachine.Update();
 
             //更新动画
             UpdateAnimation();
@@ -367,10 +356,83 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 辅助函数
         private void TransitionToState(AttackState newState) {
-            npc.ai[2] = (float)newState;
             stateTimer = 0;
             hasPlayedSpinSound = false;
+            armStateMachine?.ChangeState(newState switch {
+                AttackState.SpinUp => new SawSpinUpState(),
+                AttackState.Dash => new SawDashState(),
+                AttackState.Orbit => new SawOrbitState(),
+                AttackState.DrillChase => new SawDrillChaseState(),
+                AttackState.Recovery => new SawRecoveryState(),
+                _ => new SawIdleState()
+            });
             npc.netUpdate = true;
+        }
+
+        [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawIdleState : PrimeArmStateBase
+        {
+            public override int StateId => IdleStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_Idle();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(SpinUpStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawSpinUpState : PrimeArmStateBase
+        {
+            public override int StateId => SpinUpStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_SpinUp();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(DashStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawDashState : PrimeArmStateBase
+        {
+            public override int StateId => DashStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_Dash();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(OrbitStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawOrbitState : PrimeArmStateBase
+        {
+            public override int StateId => OrbitStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_Orbit();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(DrillChaseStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawDrillChaseState : PrimeArmStateBase
+        {
+            public override int StateId => DrillChaseStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_DrillChase();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(RecoveryStateId, typeof(PrimeArmStateContext))]
+        public sealed class SawRecoveryState : PrimeArmStateBase
+        {
+            public override int StateId => RecoveryStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeSawAI)ctx.Owner).State_Recovery();
+                return null;
+            }
         }
 
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {

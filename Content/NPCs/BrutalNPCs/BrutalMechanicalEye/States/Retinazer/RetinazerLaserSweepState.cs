@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 激光眼一阶段激光扫射状态
     /// 在玩家上方悬停并发射扫射激光
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserSweep, typeof(TwinsStateContext))]
     internal class RetinazerLaserSweepState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserSweep";
@@ -49,7 +50,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private bool hasFiredWarningShot;
         private int comboStep;
 
-        public RetinazerLaserSweepState(int currentComboStep = 0) {
+        public RetinazerLaserSweepState() : this(0) {
+        }
+
+        public RetinazerLaserSweepState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

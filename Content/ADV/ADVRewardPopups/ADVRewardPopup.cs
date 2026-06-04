@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
 
         public static ADVRewardPopup Instance => UIHandleLoader.GetUIHandleOfType<ADVRewardPopup>();
 
+        public override float RenderPriority => 1.1f;
+
         /// <summary>
         /// 奖励弹窗风格枚举
         /// </summary>

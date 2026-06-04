@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using InnoVault.StateMachines;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
@@ -26,6 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool death;
         private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
         private bool noEye;
+        private PrimeHeadStateContext headStateContext;
+        private VaultStateMachine<PrimeHeadStateContext> headStateMachine;
         internal static int setPosingStarmCount;
         internal ref float ai0 => ref ai[0];
         internal ref float ai1 => ref ai[1];

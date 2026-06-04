@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// 当激光眼死亡后进入，攻击更加疯狂和不可预测
     /// 包含多种攻击模式的快速切换
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismSoloRage, typeof(TwinsStateContext))]
     internal class SpazmatismSoloRageState : TwinsStateBase
     {
         public override string StateName => "SpazmatismSoloRage";
@@ -58,6 +59,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private float VortexSpeed => Context.IsDeathMode ? 0.1f : 0.08f;
         private int BurstFireRate => Context.IsDeathMode ? 7 : 8;
         private int BurstCount => Context.IsDeathMode ? 12 : 10;
+
+        public SpazmatismSoloRageState() {
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);

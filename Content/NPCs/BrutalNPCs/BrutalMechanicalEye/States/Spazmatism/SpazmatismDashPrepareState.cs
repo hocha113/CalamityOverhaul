@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// <summary>
     /// 魔焰眼一阶段冲刺准备状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashPrepare, typeof(TwinsStateContext))]
     internal class SpazmatismDashPrepareState : TwinsStateBase
     {
         public override string StateName => "SpazmatismDashPrepare";
@@ -21,7 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private int currentDashCount;
         private int comboStep;
 
-        public SpazmatismDashPrepareState(int dashCount = 0, int currentComboStep = 0) {
+        public SpazmatismDashPrepareState() : this(0, 0) {
+        }
+
+        public SpazmatismDashPrepareState(int dashCount, int currentComboStep = 0) {
             currentDashCount = dashCount;
             comboStep = currentComboStep;
         }

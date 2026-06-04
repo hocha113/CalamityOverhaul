@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 激光弹幕状态：体节沿身体依次发光预警，然后波次射击
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.LaserBarrage, typeof(DestroyerStateContext))]
     internal class DestroyerLaserBarrageState : DestroyerStateBase
     {
         public override string StateName => "LaserBarrage";
@@ -16,6 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private const int ChargeTime = 60;
         private const int FireTime = 240;
+
+        public DestroyerLaserBarrageState() {
+        }
 
         public override IDestroyerState OnUpdate(DestroyerStateContext context) {
             NPC npc = context.Npc;

@@ -7,10 +7,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 巡空状态：椭圆轨迹盘旋，带高度起伏
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Patrol, typeof(DestroyerStateContext))]
     internal class DestroyerPatrolState : DestroyerStateBase
     {
         public override string StateName => "Patrol";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Patrol;
+
+        public DestroyerPatrolState() {
+        }
 
         private int PatrolDuration(DestroyerStateContext ctx) => ctx.IsEnraged ? 240 : 300;
 

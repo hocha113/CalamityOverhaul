@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.PrimeCannon;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
+
+        internal const int SingleShotStateId = 200;
+        internal const int SpreadShotStateId = 201;
 
         #region 状态枚举
         private enum AttackState
@@ -43,54 +47,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //移动控制
             Movement();
 
-            //确定攻击模式
-            bool fireSlower = false;
+            EnsureArmStateMachine(new CannonSingleShotState());
+            UpdateArmStateContext();
+
             if (laserAlive) {
-                if (Main.npc[CWRWorld.primeLaser].ai[2] == 1f)
-                    fireSlower = true;
+                bool shouldSingleShot = Main.npc[CWRWorld.primeLaser].ai[2] == PrimeLaserAI.RapidFireStateId;
+                ChangeCannonState(shouldSingleShot);
             }
-            else {
-                fireSlower = npc.ai[2] == 0f;
-                if (fireSlower) {
-                    npc.ai[3] += 1f + CalculateChargeBonus();
-
-                    if (npc.ai[3] >= (masterMode ? 200f : 800f)) {
-                        npc.localAI[0] = 0f;
-                        npc.ai[2] = 1f;
-                        fireSlower = false;
-                        npc.ai[3] = 0f;
-                        if (!VaultUtils.isClient) {
-                            //目标切换走服务端权威，客户端等下一次 SyncNPC 同步
-                            npc.TargetClosest();
-                            npc.netUpdate = true;
-                        }
-                    }
-                }
-                else {
-                    npc.ai[3] += 1f + CalculateChargeBonus() * 0.5f;
-
-                    float timeLimit = 120f * GetTimeMult();
-
-                    if (npc.ai[3] >= timeLimit) {
-                        npc.localAI[0] = 0f;
-                        npc.ai[2] = 0f;
-                        fireSlower = true;
-                        npc.ai[3] = 0f;
-                        if (!VaultUtils.isClient) {
-                            npc.TargetClosest();
-                            npc.netUpdate = true;
-                        }
-                    }
-                }
-            }
-
-            //执行攻击
-            if (fireSlower) {
-                State_SingleShot();
-            }
-            else {
-                State_SpreadShot();
-            }
+            armStateMachine.Update();
 
             //跟随炮弹旋转
             if (FindPrimeCannonOnSpan(out Projectile primeCannonOnSpan)) {
@@ -346,6 +310,74 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (!viceAlive) timeMult *= 1.882075f;
             if (!sawAlive) timeMult *= 1.882075f;
             return timeMult;
+        }
+
+        private void ChangeCannonState(bool singleShot) {
+            bool alreadyInState = singleShot
+                ? armStateMachine?.CurrentState is CannonSingleShotState
+                : armStateMachine?.CurrentState is CannonSpreadShotState;
+            if (alreadyInState) {
+                return;
+            }
+
+            npc.localAI[0] = 0f;
+            npc.ai[3] = 0f;
+            armStateMachine?.ChangeState(singleShot ? new CannonSingleShotState() : new CannonSpreadShotState());
+            if (!VaultUtils.isClient) {
+                npc.TargetClosest();
+                npc.netUpdate = true;
+            }
+        }
+
+        private void UpdateSingleShotMode() {
+            if (laserAlive) {
+                return;
+            }
+
+            npc.ai[3] += 1f + CalculateChargeBonus();
+            if (npc.ai[3] >= (masterMode ? 200f : 800f)) {
+                ChangeCannonState(singleShot: false);
+            }
+        }
+
+        private void UpdateSpreadShotMode() {
+            if (laserAlive) {
+                return;
+            }
+
+            npc.ai[3] += 1f + CalculateChargeBonus() * 0.5f;
+            float timeLimit = 120f * GetTimeMult();
+            if (npc.ai[3] >= timeLimit) {
+                ChangeCannonState(singleShot: true);
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(SingleShotStateId, typeof(PrimeArmStateContext))]
+        public sealed class CannonSingleShotState : PrimeArmStateBase
+        {
+            public override int StateId => SingleShotStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                PrimeCannonAI cannon = (PrimeCannonAI)ctx.Owner;
+                cannon.UpdateSingleShotMode();
+                cannon.State_SingleShot();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(SpreadShotStateId, typeof(PrimeArmStateContext))]
+        public sealed class CannonSpreadShotState : PrimeArmStateBase
+        {
+            public override int StateId => SpreadShotStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                PrimeCannonAI cannon = (PrimeCannonAI)ctx.Owner;
+                cannon.UpdateSpreadShotMode();
+                cannon.State_SpreadShot();
+                return null;
+            }
         }
 
         private bool FindPrimeCannonOnSpan(out Projectile projectile) {

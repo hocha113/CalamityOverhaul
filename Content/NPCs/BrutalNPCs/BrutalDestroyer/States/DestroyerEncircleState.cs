@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 包围状态：加速旋转+半径收缩，体节激光密度递增
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Encircle, typeof(DestroyerStateContext))]
     internal class DestroyerEncircleState : DestroyerStateBase
     {
         public override string StateName => "Encircle";
@@ -20,6 +21,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private static float MaxRadius => 1080f;
 
         private bool tightenPause;
+
+        public DestroyerEncircleState() {
+        }
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);

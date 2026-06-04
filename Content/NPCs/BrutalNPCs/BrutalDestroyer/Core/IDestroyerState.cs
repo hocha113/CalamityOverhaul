@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using InnoVault.StateMachines;
+using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 {
@@ -22,9 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
     /// <summary>
     /// 毁灭者状态接口
     /// </summary>
-    internal interface IDestroyerState
+    internal interface IDestroyerState : IVaultState<DestroyerStateContext>
     {
-        string StateName { get; }
         DestroyerStateIndex StateIndex { get; }
         void OnEnter(DestroyerStateContext context);
         IDestroyerState OnUpdate(DestroyerStateContext context);
@@ -34,12 +34,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
     /// <summary>
     /// 毁灭者状态基类
     /// </summary>
-    internal abstract class DestroyerStateBase : IDestroyerState
+    internal abstract class DestroyerStateBase : VaultState<DestroyerStateContext>, IDestroyerState
     {
-        public abstract string StateName { get; }
+        public override int StateId => (int)StateIndex;
+        public abstract override string StateName { get; }
         public abstract DestroyerStateIndex StateIndex { get; }
-        protected int Timer { get; set; }
-        protected int Counter { get; set; }
 
         public virtual void OnEnter(DestroyerStateContext context) {
             Timer = 0;
@@ -50,6 +49,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 
         public virtual void OnExit(DestroyerStateContext context) {
             context.ResetChargeState();
+        }
+
+        public override void OnEnter(VaultStateMachine<DestroyerStateContext> machine, DestroyerStateContext ctx) {
+            OnEnter(ctx);
+        }
+
+        public override IVaultState<DestroyerStateContext> OnUpdate(VaultStateMachine<DestroyerStateContext> machine, DestroyerStateContext ctx) {
+            return OnUpdate(ctx);
+        }
+
+        public override void OnExit(VaultStateMachine<DestroyerStateContext> machine, DestroyerStateContext ctx) {
+            OnExit(ctx);
         }
 
         #region 工具方法

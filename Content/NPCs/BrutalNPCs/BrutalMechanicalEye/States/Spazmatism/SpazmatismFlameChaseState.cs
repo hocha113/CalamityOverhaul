@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// <summary>
     /// 魔焰眼二阶段喷火追击状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFlameChase, typeof(TwinsStateContext))]
     internal class SpazmatismFlameChaseState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameChase";
@@ -48,7 +49,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private int comboStep;
 
         /// <param name="currentComboStep">二阶段固定招式循环的当前步骤索引</param>
-        public SpazmatismFlameChaseState(int currentComboStep = 0) {
+        public SpazmatismFlameChaseState() : this(0) {
+        }
+
+        public SpazmatismFlameChaseState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

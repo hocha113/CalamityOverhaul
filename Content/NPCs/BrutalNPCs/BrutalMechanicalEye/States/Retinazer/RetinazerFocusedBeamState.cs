@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 激光眼二阶段聚焦光束状态
     /// 持续追踪玩家位置，在发射前一刻锁定方向
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerFocusedBeam, typeof(TwinsStateContext))]
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
         public override string StateName => "RetinazerFocusedBeam";
@@ -60,7 +61,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int comboStep;
         private int fireCount;
 
-        public RetinazerFocusedBeamState(int currentComboStep = 0) {
+        public RetinazerFocusedBeamState() : this(0) {
+        }
+
+        public RetinazerFocusedBeamState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

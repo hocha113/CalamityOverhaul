@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -37,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// </summary>
         internal const int DeathPerformanceTriggerLife = 10;
 
-        private DestroyerStateMachine stateMachine;
+        private VaultStateMachine<DestroyerStateContext> stateMachine;
         private DestroyerStateContext stateContext;
         private Player targetPlayer;
 
@@ -64,12 +65,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 Npc = npc,
                 IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
             };
-            stateMachine = new DestroyerStateMachine(stateContext);
+            stateMachine = new NpcStateMachine<DestroyerStateContext>(stateContext, aiSlot: 2);
 
             //客户端加入时从npc.ai[2]恢复服务端当前状态，避免状态desync
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
-                IDestroyerState syncedState = DestroyerStateMachine.CreateStateFromIndex((DestroyerStateIndex)serverStateIndex);
+                IVaultState<DestroyerStateContext> syncedState = VaultStateRegistry<DestroyerStateContext>.Create(serverStateIndex);
                 stateMachine.SetInitialState(syncedState ?? new DestroyerIntroState());
             }
             else {
@@ -144,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return;
             }
             if (npc.life <= DeathPerformanceTriggerLife) {
-                stateMachine.ForceChangeState(new DestroyerDeathState());
+                stateMachine.ChangeState(new DestroyerDeathState());
             }
         }
 
@@ -209,7 +210,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (!targetPlayer.Alives()) {
                 if (!VaultUtils.isClient && stateMachine?.CurrentState is not DestroyerDespawnState and not DestroyerDeathState) {
-                    stateMachine?.ForceChangeState(new DestroyerDespawnState());
+                    stateMachine?.ChangeState(new DestroyerDespawnState());
                 }
             }
         }
@@ -377,7 +378,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.dontTakeDamage = true;
 
             if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not DestroyerDeathState) {
-                stateMachine.ForceChangeState(new DestroyerDeathState());
+                stateMachine.ChangeState(new DestroyerDeathState());
             }
 
             return false;

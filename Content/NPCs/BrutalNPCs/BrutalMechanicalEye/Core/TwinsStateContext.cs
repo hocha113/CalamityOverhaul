@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using InnoVault.StateMachines;
+using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
@@ -7,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
     /// 双子魔眼状态上下文
     /// 存储状态机运行所需的共享数据
     /// </summary>
-    internal class TwinsStateContext
+    internal class TwinsStateContext : INpcStateContext
     {
         #region 静态同步数据
         /// <summary>

@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// <summary>
     /// 激光眼一阶段调整位置状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerRepositionState, typeof(TwinsStateContext))]
     internal class RetinazerRepositionState : TwinsStateBase
     {
         public override string StateName => "RetinazerReposition";
@@ -30,7 +31,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private Vector2 targetPosition;
         private int comboStep;
 
-        public RetinazerRepositionState(int currentComboStep = 0) {
+        public RetinazerRepositionState() : this(0) {
+        }
+
+        public RetinazerRepositionState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -12,6 +13,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.PrimeVice;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
+
+        internal const int IdleStateId = 400;
+        internal const int WindUpStateId = 401;
+        internal const int StrikeStateId = 402;
+        internal const int RecoveryStateId = 403;
+        internal const int ComboStateId = 404;
+        internal const int SpecialChargeStateId = 405;
 
         #region 状态枚举
         private enum AttackState
@@ -40,8 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region AI主循环
         public override bool ArmBehavior() {
-            AttackState currentState = (AttackState)(int)npc.ai[2];
-
             //更新物理效果
             UpdatePhysicsEffects();
 
@@ -51,39 +57,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float viceArmIdleYPos = head.position.Y + 230f - viceArmPosition.Y;
             float viceArmIdleDistance = MathF.Sqrt(viceArmIdleXPos * viceArmIdleXPos + viceArmIdleYPos * viceArmIdleYPos);
 
+            EnsureArmStateMachine(new ViceIdleState());
+            UpdateArmStateContext();
+
             //距离过远则返回
-            if (currentState != AttackState.SpecialCharge && viceArmIdleDistance > 800f) {
-                npc.ai[2] = (float)AttackState.SpecialCharge;
-                stateTimer = 0;
-                npc.netUpdate = true;
+            if (armStateMachine.CurrentState is not ViceSpecialChargeState && viceArmIdleDistance > 800f) {
+                TransitionToState(AttackState.SpecialCharge);
             }
-            else if (currentState == AttackState.SpecialCharge && viceArmIdleDistance < 400f) {
-                npc.ai[2] = (float)AttackState.Idle;
-                stateTimer = 0;
-                npc.netUpdate = true;
+            else if (armStateMachine.CurrentState is ViceSpecialChargeState && viceArmIdleDistance < 400f) {
+                TransitionToState(AttackState.Idle);
             }
 
-            //状态机
-            switch (currentState) {
-                case AttackState.Idle:
-                    State_Idle();
-                    break;
-                case AttackState.WindUp:
-                    State_WindUp();
-                    break;
-                case AttackState.Strike:
-                    State_Strike();
-                    break;
-                case AttackState.Recovery:
-                    State_Recovery();
-                    break;
-                case AttackState.Combo:
-                    State_Combo();
-                    break;
-                case AttackState.SpecialCharge:
-                    State_SpecialCharge();
-                    break;
-            }
+            armStateMachine.Update();
 
             //更新动画
             UpdateAnimation();
@@ -363,9 +348,82 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 辅助函数
         private void TransitionToState(AttackState newState) {
-            npc.ai[2] = (float)newState;
             stateTimer = 0;
+            armStateMachine?.ChangeState(newState switch {
+                AttackState.WindUp => new ViceWindUpState(),
+                AttackState.Strike => new ViceStrikeState(),
+                AttackState.Recovery => new ViceRecoveryState(),
+                AttackState.Combo => new ViceComboState(),
+                AttackState.SpecialCharge => new ViceSpecialChargeState(),
+                _ => new ViceIdleState()
+            });
             npc.netUpdate = true;
+        }
+
+        [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceIdleState : PrimeArmStateBase
+        {
+            public override int StateId => IdleStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_Idle();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(WindUpStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceWindUpState : PrimeArmStateBase
+        {
+            public override int StateId => WindUpStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_WindUp();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(StrikeStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceStrikeState : PrimeArmStateBase
+        {
+            public override int StateId => StrikeStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_Strike();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(RecoveryStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceRecoveryState : PrimeArmStateBase
+        {
+            public override int StateId => RecoveryStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_Recovery();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(ComboStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceComboState : PrimeArmStateBase
+        {
+            public override int StateId => ComboStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_Combo();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(SpecialChargeStateId, typeof(PrimeArmStateContext))]
+        public sealed class ViceSpecialChargeState : PrimeArmStateBase
+        {
+            public override int StateId => SpecialChargeStateId;
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeViceAI)ctx.Owner).State_SpecialCharge();
+                return null;
+            }
         }
 
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {

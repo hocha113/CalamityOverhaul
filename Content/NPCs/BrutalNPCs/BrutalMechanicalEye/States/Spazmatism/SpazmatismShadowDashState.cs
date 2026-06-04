@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// 魔焰眼二阶段影分身冲刺状态
     /// 产生多个残影同时向玩家冲刺
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismShadowDash, typeof(TwinsStateContext))]
     internal class SpazmatismShadowDashState : TwinsStateBase
     {
         public override string StateName => "SpazmatismShadowDash";
@@ -60,7 +61,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private bool hasDashed;
         private int comboStep;
 
-        public SpazmatismShadowDashState(int currentComboStep = 0) {
+        public SpazmatismShadowDashState() : this(0) {
+        }
+
+        public SpazmatismShadowDashState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

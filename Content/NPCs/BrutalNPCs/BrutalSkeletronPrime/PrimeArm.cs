@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using InnoVault.StateMachines;
+using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
@@ -16,6 +18,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal Player player;
         internal int frame;
         internal bool dontAttack;
+        internal PrimeArmStateContext armStateContext;
+        internal VaultStateMachine<PrimeArmStateContext> armStateMachine;
         public sealed override bool? CanCWROverride() {
             return null;
         }
@@ -72,6 +76,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             return ArmBehavior();
+        }
+
+        internal void EnsureArmStateMachine(IVaultState<PrimeArmStateContext> initialState) {
+            armStateContext ??= new PrimeArmStateContext {
+                Npc = npc,
+                Owner = this
+            };
+
+            UpdateArmStateContext();
+
+            if (armStateMachine != null) {
+                return;
+            }
+
+            armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armStateContext, aiSlot: 2);
+            IVaultState<PrimeArmStateContext> syncedState = null;
+            int syncedStateId = (int)npc.ai[2];
+            if (VaultUtils.isClient && syncedStateId > 0) {
+                syncedState = VaultStateRegistry<PrimeArmStateContext>.Create(syncedStateId);
+            }
+            armStateMachine.SetInitialState(syncedState ?? initialState);
+        }
+
+        internal void UpdateArmStateContext() {
+            if (armStateContext == null) {
+                return;
+            }
+            armStateContext.Npc = npc;
+            armStateContext.Head = head;
+            armStateContext.Target = player;
+            armStateContext.Owner = this;
+            armStateContext.BossRush = bossRush;
+            armStateContext.MasterMode = masterMode;
+            armStateContext.Death = death;
+            armStateContext.ViceAlive = viceAlive;
+            armStateContext.CannonAlive = cannonAlive;
+            armStateContext.SawAlive = sawAlive;
+            armStateContext.LaserAlive = laserAlive;
+            armStateContext.DontAttack = dontAttack;
         }
 
         public virtual bool ArmBehavior() {

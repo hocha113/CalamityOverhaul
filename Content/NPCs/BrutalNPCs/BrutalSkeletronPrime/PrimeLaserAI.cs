@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     {
         public override int TargetID => NPCID.PrimeLaser;
         public override bool CanLoad() => true;
+
+        internal const int IdleStateId = 100;
+        internal const int RapidFireStateId = 101;
+        internal const int ChargedShotStateId = 102;
+        internal const int LaserBarrageStateId = 103;
 
         #region 状态枚举
         private enum AttackState
@@ -51,23 +57,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //移动控制
             Movement();
 
-            AttackState currentState = (AttackState)(int)npc.ai[2];
-
-            //状态机
-            switch (currentState) {
-                case AttackState.Idle:
-                    State_Idle();
-                    break;
-                case AttackState.RapidFire:
-                    State_RapidFire();
-                    break;
-                case AttackState.ChargedShot:
-                    State_ChargedShot();
-                    break;
-                case AttackState.LaserBarrage:
-                    State_LaserBarrage();
-                    break;
-            }
+            EnsureArmStateMachine(new LaserIdleState());
+            UpdateArmStateContext();
+            armStateMachine.Update();
 
             return false;
         }
@@ -444,8 +436,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void TransitionToState(AttackState newState) {
-            npc.ai[2] = (float)newState;
             stateTimer = 0;
+            armStateMachine?.ChangeState(newState switch {
+                AttackState.RapidFire => new LaserRapidFireState(),
+                AttackState.ChargedShot => new LaserChargedShotState(),
+                AttackState.LaserBarrage => new LaserBarrageState(),
+                _ => new LaserIdleState()
+            });
             npc.netUpdate = true;
         }
 
@@ -455,6 +452,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (!viceAlive) baseRate += 1f;
             if (!sawAlive) baseRate += 1f;
             return baseRate;
+        }
+
+        [InnoVault.StateMachines.VaultState(IdleStateId, typeof(PrimeArmStateContext))]
+        public sealed class LaserIdleState : PrimeArmStateBase
+        {
+            public override int StateId => IdleStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeLaserAI)ctx.Owner).State_Idle();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(RapidFireStateId, typeof(PrimeArmStateContext))]
+        public sealed class LaserRapidFireState : PrimeArmStateBase
+        {
+            public override int StateId => RapidFireStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeLaserAI)ctx.Owner).State_RapidFire();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(ChargedShotStateId, typeof(PrimeArmStateContext))]
+        public sealed class LaserChargedShotState : PrimeArmStateBase
+        {
+            public override int StateId => ChargedShotStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeLaserAI)ctx.Owner).State_ChargedShot();
+                return null;
+            }
+        }
+
+        [InnoVault.StateMachines.VaultState(LaserBarrageStateId, typeof(PrimeArmStateContext))]
+        public sealed class LaserBarrageState : PrimeArmStateBase
+        {
+            public override int StateId => LaserBarrageStateId;
+
+            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
+                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
+                ((PrimeLaserAI)ctx.Owner).State_LaserBarrage();
+                return null;
+            }
         }
         #endregion
 

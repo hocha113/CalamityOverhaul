@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     /// 双子魔眼同步转阶段动画状态
     /// 用于一阶段到二阶段的过渡演出，包含移动动画确保玩家可见
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsPhaseTransition, typeof(TwinsStateContext))]
     internal class TwinsPhaseTransitionState : TwinsStateBase
     {
         public override string StateName => "TwinsPhaseTransition";
@@ -57,6 +58,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         private bool hasBurst;
         private bool hasPlayedGatherSound;
         private NPC partnerNpc;
+
+        public TwinsPhaseTransitionState() {
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);

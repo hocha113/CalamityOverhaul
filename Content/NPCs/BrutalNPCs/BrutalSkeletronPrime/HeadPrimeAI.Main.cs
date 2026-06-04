@@ -1,5 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using InnoVault.StateMachines;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -63,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
 
             //死亡演出接管——一旦进入便完全托管本帧 AI，跳过常规寻敌/攻击/脱战/切阶段逻辑
-            if (UpdateDeathPerformance()) {
+            if (TryRunDeathPerformanceState()) {
                 UpdateMechThermalVisualState();
                 ai9++;
                 return false;
@@ -79,27 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            switch (npc.ai[0]) {
-                case 1:
-                    Debut();
-                    break;
-                case 2:
-                    if (setPosingStarmCount > 0 && !noEye) {
-                        npc.damage = 0;
-                        MoveToPoint(player.Center + new Vector2(0, -300));
-                        npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-
-                        ai3 = 0;
-                        return false;
-                    }
-                    ProtogenesisAI();
-                    break;
-                case 3:
-                    if (TwoStageAI()) {
-                        return false;
-                    }
-                    ProtogenesisAI();
-                    break;
+            if (RunHeadStateMachine()) {
+                return false;
             }
 
             if (npc.life < npc.lifeMax - 20 && bossRush) {
@@ -121,6 +104,103 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             ai9++;
             return false;
+        }
+
+        private bool RunHeadStateMachine() {
+            EnsureHeadStateMachine();
+            SyncHeadStateToAi();
+            headStateMachine.Update();
+            return headStateMachine.CurrentState is PrimeHeadPhaseTwoState { SkipRemainingFrame: true };
+        }
+
+        private bool TryRunDeathPerformanceState() {
+            bool shouldRunDeathState = npc.ai[0] == DeathPerformanceMainState
+                || (!VaultUtils.isClient && noArm && npc.ai[0] == 3f && npc.life <= DeathTriggerLife);
+            if (!shouldRunDeathState) {
+                return false;
+            }
+
+            EnsureHeadStateMachine();
+            if (headStateMachine.CurrentState is not PrimeHeadDeathPerformanceState) {
+                headStateMachine.ChangeState(new PrimeHeadDeathPerformanceState());
+            }
+            headStateMachine.Update();
+            return headStateMachine.CurrentState is PrimeHeadDeathPerformanceState { HandledFrame: true };
+        }
+
+        private void EnsureHeadStateMachine() {
+            headStateContext ??= new PrimeHeadStateContext {
+                Npc = npc,
+                Owner = this
+            };
+            UpdateHeadStateContext();
+            headStateMachine ??= new VaultStateMachine<PrimeHeadStateContext>(headStateContext);
+            if (headStateMachine.CurrentState == null) {
+                headStateMachine.SetInitialState(CreateHeadStateFromAi());
+            }
+        }
+
+        private void UpdateHeadStateContext() {
+            if (headStateContext == null) {
+                return;
+            }
+
+            headStateContext.Npc = npc;
+            headStateContext.Target = player;
+            headStateContext.Owner = this;
+            headStateContext.BossRush = bossRush;
+            headStateContext.Death = death;
+            headStateContext.CannonAlive = cannonAlive;
+            headStateContext.ViceAlive = viceAlive;
+            headStateContext.SawAlive = sawAlive;
+            headStateContext.LaserAlive = laserAlive;
+            headStateContext.NoEye = noEye;
+        }
+
+        private PrimeHeadStateBase CreateHeadStateFromAi() {
+            return (int)npc.ai[0] switch {
+                2 => new PrimeHeadPhaseOneState(),
+                3 => new PrimeHeadPhaseTwoState(),
+                DeathPerformanceMainState => new PrimeHeadDeathPerformanceState(),
+                _ => new PrimeHeadDebutState()
+            };
+        }
+
+        private void SyncHeadStateToAi() {
+            PrimeHeadStateBase desired = CreateHeadStateFromAi();
+            if (headStateMachine.CurrentState?.StateId == desired.StateId) {
+                return;
+            }
+            headStateMachine.ChangeState(desired);
+        }
+
+        internal void RunDebutState() {
+            Debut();
+        }
+
+        internal void RunPhaseOneState() {
+            if (setPosingStarmCount > 0 && !noEye) {
+                npc.damage = 0;
+                MoveToPoint(player.Center + new Vector2(0, -300));
+                npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
+                ai3 = 0;
+                return;
+            }
+
+            ProtogenesisAI();
+        }
+
+        internal bool RunPhaseTwoState() {
+            if (TwoStageAI()) {
+                return true;
+            }
+
+            ProtogenesisAI();
+            return false;
+        }
+
+        internal bool RunDeathPerformanceState() {
+            return UpdateDeathPerformance();
         }
 
         /// <summary>

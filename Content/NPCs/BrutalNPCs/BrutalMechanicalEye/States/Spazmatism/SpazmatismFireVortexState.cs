@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// 魔焰眼一阶段火焰漩涡状态
     /// 在玩家上方悬停并释放环形火焰弹幕
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFireVortex, typeof(TwinsStateContext))]
     internal class SpazmatismFireVortexState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFireVortex";
@@ -27,7 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private TwinsStateContext Context;
         private int comboStep;
 
-        public SpazmatismFireVortexState(int currentComboStep = 0) {
+        public SpazmatismFireVortexState() : this(0) {
+        }
+
+        public SpazmatismFireVortexState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

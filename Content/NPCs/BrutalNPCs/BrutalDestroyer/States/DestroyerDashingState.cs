@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 冲刺中状态：高速移动+轻微追踪
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Dashing, typeof(DestroyerStateContext))]
     internal class DestroyerDashingState : DestroyerStateBase
     {
         public override string StateName => "Dashing";
@@ -15,6 +16,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private int currentDashCount;
         private int maxDashCount;
+
+        public DestroyerDashingState() : this(0, 3) {
+        }
 
         public DestroyerDashingState(int dashCount, int maxCount) {
             currentDashCount = dashCount;
@@ -58,6 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 冲刺冷却状态：减速回转，决定继续冲刺还是回归巡空
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashCooldown, typeof(DestroyerStateContext))]
     internal class DestroyerDashCooldownState : DestroyerStateBase
     {
         public override string StateName => "DashCooldown";
@@ -65,6 +70,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private int currentDashCount;
         private int maxDashCount;
+
+        public DestroyerDashCooldownState() : this(0, 3) {
+        }
 
         public DestroyerDashCooldownState(int dashCount, int maxCount) {
             currentDashCount = dashCount;

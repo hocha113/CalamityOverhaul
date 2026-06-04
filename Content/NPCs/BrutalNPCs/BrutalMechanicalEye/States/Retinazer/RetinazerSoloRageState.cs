@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 当魔焰眼死亡后进入，攻击更加疯狂和精准
     /// 包含多种激光攻击模式的快速切换
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerSoloRage, typeof(TwinsStateContext))]
     internal class RetinazerSoloRageState : TwinsStateBase
     {
         public override string StateName => "RetinazerSoloRage";
@@ -56,6 +57,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private float LaserSpeed => Context.IsDeathMode ? 16f : 14f;
         private int CrossBeamCount => Context.IsDeathMode ? 5 : 4;
         private int MatrixPointCount => Context.IsDeathMode ? 5 : 4;
+
+        public RetinazerSoloRageState() {
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);

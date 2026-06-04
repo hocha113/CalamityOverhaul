@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     /// <br/>状态切换与最终击杀由服务端驱动（经 npc.ai[1] 同步），
     /// 所有爆炸粒子/音效/震动均在客户端本地生成，纯视觉，多人安全。
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsDeath, typeof(TwinsStateContext))]
     internal class TwinsDeathState : TwinsStateBase
     {
         public override string StateName => "TwinsDeath";
@@ -32,6 +33,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         //殉爆配色（按眼睛区分：魔焰眼橙红、激光眼品红）
         private Color warmA;
         private Color warmB;
+
+        public TwinsDeathState() {
+        }
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);

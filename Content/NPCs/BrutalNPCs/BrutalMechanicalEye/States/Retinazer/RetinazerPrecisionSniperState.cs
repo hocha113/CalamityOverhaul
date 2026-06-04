@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 激光眼二阶段精准狙击状态
     /// 蓄力后发射扇形激光弹幕
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerPrecisionSniper, typeof(TwinsStateContext))]
     internal class RetinazerPrecisionSniperState : TwinsStateBase
     {
         public override string StateName => "RetinazerPrecisionSniper";
@@ -28,7 +29,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int sniperCount;
         private int comboStep;
 
-        public RetinazerPrecisionSniperState(int currentCount = 0, int currentComboStep = 0) {
+        public RetinazerPrecisionSniperState() : this(0, 0) {
+        }
+
+        public RetinazerPrecisionSniperState(int currentCount, int currentComboStep = 0) {
             sniperCount = currentCount;
             comboStep = currentComboStep;
         }

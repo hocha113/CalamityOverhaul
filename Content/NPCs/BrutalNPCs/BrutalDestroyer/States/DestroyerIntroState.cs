@@ -7,11 +7,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 进场状态：从地下冲出，生成身体
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Intro, typeof(DestroyerStateContext))]
     internal class DestroyerIntroState : DestroyerStateBase
     {
         public override string StateName => "Intro";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Intro;
         private bool hasSpawned;
+
+        public DestroyerIntroState() {
+        }
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);

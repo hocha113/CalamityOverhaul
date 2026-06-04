@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// 魔焰眼二阶段火焰风暴状态
     /// 在玩家周围制造旋转的火焰风暴
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFlameStorm, typeof(TwinsStateContext))]
     internal class SpazmatismFlameStormState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameStorm";
@@ -64,7 +65,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private bool hasPlayedWarningSound;
         private int comboStep;
 
-        public SpazmatismFlameStormState(int currentComboStep = 0) {
+        public SpazmatismFlameStormState() : this(0) {
+        }
+
+        public SpazmatismFlameStormState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

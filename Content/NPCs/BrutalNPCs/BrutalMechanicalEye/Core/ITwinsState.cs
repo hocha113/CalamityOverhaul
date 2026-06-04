@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using InnoVault.StateMachines;
+using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
@@ -42,13 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
     /// 双子魔眼状态接口
     /// 定义状态的基本行为
     /// </summary>
-    internal interface ITwinsState
+    internal interface ITwinsState : IVaultState<TwinsStateContext>
     {
-        /// <summary>
-        /// 状态名称，用于调试
-        /// </summary>
-        string StateName { get; }
-
         /// <summary>
         /// 状态索引，用于网络同步
         /// </summary>
@@ -75,20 +71,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
     /// 双子魔眼状态基类
     /// 提供状态的通用实现
     /// </summary>
-    internal abstract class TwinsStateBase : ITwinsState
+    internal abstract class TwinsStateBase : VaultState<TwinsStateContext>, ITwinsState
     {
-        public abstract string StateName { get; }
+        public override int StateId => (int)StateIndex;
+        public abstract override string StateName { get; }
         public abstract TwinsStateIndex StateIndex { get; }
-
-        /// <summary>
-        /// 状态内部计时器
-        /// </summary>
-        protected int Timer { get; set; }
-
-        /// <summary>
-        /// 状态内部计数器
-        /// </summary>
-        protected int Counter { get; set; }
 
         public virtual void OnEnter(TwinsStateContext context) {
             Timer = 0;
@@ -99,6 +86,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 
         public virtual void OnExit(TwinsStateContext context) {
             context.ResetChargeState();
+        }
+
+        public override void OnEnter(VaultStateMachine<TwinsStateContext> machine, TwinsStateContext ctx) {
+            OnEnter(ctx);
+        }
+
+        public override IVaultState<TwinsStateContext> OnUpdate(VaultStateMachine<TwinsStateContext> machine, TwinsStateContext ctx) {
+            return OnUpdate(ctx);
+        }
+
+        public override void OnExit(VaultStateMachine<TwinsStateContext> machine, TwinsStateContext ctx) {
+            OnExit(ctx);
         }
 
         #region 工具方法

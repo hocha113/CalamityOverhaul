@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 激光眼二阶段激光矩阵状态
     /// 在玩家周围布置激光发射点后同时发射
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserMatrix, typeof(TwinsStateContext))]
     internal class RetinazerLaserMatrixState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserMatrix";
@@ -62,7 +63,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private bool hasFired;
         private int comboStep;
 
-        public RetinazerLaserMatrixState(int currentComboStep = 0) {
+        public RetinazerLaserMatrixState() : this(0) {
+        }
+
+        public RetinazerLaserMatrixState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

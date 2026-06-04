@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 冲刺蓄力状态：减速制动→对准目标→粒子聚集→震动→释放
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashPrepare, typeof(DestroyerStateContext))]
     internal class DestroyerDashPrepareState : DestroyerStateBase
     {
         public override string StateName => "DashPrepare";
@@ -21,7 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private int currentDashCount;
         private Vector2 dashDirection;
 
-        public DestroyerDashPrepareState(int dashCount = 0) {
+        public DestroyerDashPrepareState() : this(0) {
+        }
+
+        public DestroyerDashPrepareState(int dashCount) {
             currentDashCount = dashCount;
         }
 

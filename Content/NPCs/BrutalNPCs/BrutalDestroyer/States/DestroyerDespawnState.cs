@@ -13,10 +13,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <summary>
     /// 脱战状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Despawn, typeof(DestroyerStateContext))]
     internal class DestroyerDespawnState : DestroyerStateBase
     {
         public override string StateName => "Despawn";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Despawn;
+
+        public DestroyerDespawnState() {
+        }
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
@@ -48,6 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// <br/>状态切换与最终击杀由服务端驱动（经 npc.ai[2] 同步），
     /// 所有爆炸粒子/音效/震动均在客户端本地生成，纯视觉，多人安全。
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Death, typeof(DestroyerStateContext))]
     internal class DestroyerDeathState : DestroyerStateBase
     {
         public override string StateName => "Death";
@@ -62,6 +67,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         /// <summary>探针 ai[3] 标记：死亡演出期间由 DestroyerDeathState 接管，ProbeAI 进入僵直殉爆模式</summary>
         internal const float ProbeDeathPerformanceMarker = -2f;
+
+        public DestroyerDeathState() {
+        }
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);

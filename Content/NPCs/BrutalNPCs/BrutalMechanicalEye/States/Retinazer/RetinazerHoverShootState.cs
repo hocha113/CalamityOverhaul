@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// <summary>
     /// 激光眼一阶段悬停射击状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHoverShoot, typeof(TwinsStateContext))]
     internal class RetinazerHoverShootState : TwinsStateBase
     {
         public override string StateName => "RetinazerHoverShoot";
@@ -25,7 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// 一阶段固定招式套路: 悬停射击→激光扫射→悬停射击→调整位置，循环往复
         /// comboStep 为偶数时进入激光扫射，奇数时进入调整位置
         /// </summary>
-        public RetinazerHoverShootState(int currentComboStep = 0) {
+        public RetinazerHoverShootState() : this(0) {
+        }
+
+        public RetinazerHoverShootState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

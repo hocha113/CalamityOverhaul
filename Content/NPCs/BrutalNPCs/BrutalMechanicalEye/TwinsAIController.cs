@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazma
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.GameSystem;
+using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -82,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// <summary>
         /// 状态机实例
         /// </summary>
-        protected TwinsStateMachine stateMachine;
+        protected VaultStateMachine<TwinsStateContext> stateMachine;
 
         /// <summary>
         /// 状态上下文
@@ -210,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 IsSpazmatism = npc.type == NPCID.Spazmatism
             };
 
-            stateMachine = new TwinsStateMachine(stateContext);
+            stateMachine = new NpcStateMachine<TwinsStateContext>(stateContext, aiSlot: 1);
             accompanyHandler = new TwinsAccompanyHandler(stateContext);
         }
 
@@ -488,7 +489,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return;
             }
             if (npc.life <= DeathPerformanceTriggerLife) {
-                stateMachine.ForceChangeState(new TwinsDeathState());
+                stateMachine.ChangeState(new TwinsDeathState());
             }
         }
 
@@ -556,12 +557,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// 初始化状态机
         /// </summary>
         private void InitializeStateMachine() {
-            ITwinsState initialState;
+            IVaultState<TwinsStateContext> initialState;
 
             //客户端从 npc.ai[1] 恢复服务端当前状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[1];
-                initialState = TwinsStateMachine.CreateStateFromIndex((TwinsStateIndex)serverStateIndex);
+                initialState = VaultStateRegistry<TwinsStateContext>.Create(serverStateIndex);
             }
             else {
                 initialState = null;
@@ -611,7 +612,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
                 //切换到转阶段动画状态而不是直接进入二阶段
                 TwinsPhaseTransitionState transitionState = new TwinsPhaseTransitionState();
-                stateMachine.ForceChangeState(transitionState);
+                stateMachine.ChangeState(transitionState);
             }
         }
 
@@ -695,7 +696,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             npc.life = 1;
             npc.dontTakeDamage = true;
             if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not TwinsDeathState) {
-                stateMachine.ForceChangeState(new TwinsDeathState());
+                stateMachine.ChangeState(new TwinsDeathState());
             }
             return false;
         }

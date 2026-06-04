@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
     /// <summary>
     /// 魔焰眼二阶段冲刺中状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismPhase2Dashing, typeof(TwinsStateContext))]
     internal class SpazmatismPhase2DashingState : TwinsStateBase
     {
         public override string StateName => "SpazmatismPhase2Dashing";
@@ -16,6 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private int currentDashCount;
         private int maxDashCount;
         private int comboStep;
+
+        public SpazmatismPhase2DashingState() : this(0, 4, 0) {
+        }
 
         public SpazmatismPhase2DashingState(int dashCount, int maxCount, int currentComboStep = 0) {
             currentDashCount = dashCount;

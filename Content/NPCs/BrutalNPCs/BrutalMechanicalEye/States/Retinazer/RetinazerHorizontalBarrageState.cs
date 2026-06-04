@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
     /// 激光眼二阶段水平弹幕状态
     /// 在玩家上方发射激光弹幕
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHorizontalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerHorizontalBarrageState : TwinsStateBase
     {
         public override string StateName => "RetinazerHorizontalBarrage";
@@ -20,7 +21,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private TwinsStateContext Context;
         private int comboStep;
 
-        public RetinazerHorizontalBarrageState(int currentComboStep = 0) {
+        public RetinazerHorizontalBarrageState() : this(0) {
+        }
+
+        public RetinazerHorizontalBarrageState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

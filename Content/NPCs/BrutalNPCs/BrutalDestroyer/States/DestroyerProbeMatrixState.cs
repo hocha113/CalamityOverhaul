@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     /// 阶段3 (140~200帧): 探针锁定目标，发射PrimeCannonOnSpan预判线
     /// 阶段4 (200~260帧): 恢复期，探针散开消失，切换状态
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.ProbeMatrix, typeof(DestroyerStateContext))]
     internal class DestroyerProbeMatrixState : DestroyerStateBase
     {
         public override string StateName => "ProbeMatrix";
@@ -31,6 +32,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private bool probesSpawned;
         private bool probesFired;
         private int formationType; // 0=圆环 1=十字 2=V字
+
+        public DestroyerProbeMatrixState() {
+        }
 
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);

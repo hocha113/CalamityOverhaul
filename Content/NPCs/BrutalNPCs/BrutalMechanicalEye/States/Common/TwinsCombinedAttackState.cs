@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
     /// 双子魔眼合击状态
     /// 魔焰眼和激光眼同步进行碰撞合击
     /// </summary>
+    [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCombinedAttack, typeof(TwinsStateContext))]
     internal class TwinsCombinedAttackState : TwinsStateBase
     {
         public override string StateName => "TwinsCombinedAttack";
@@ -63,7 +64,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         private float chargeSpeed;
         private int comboStep;
 
-        public TwinsCombinedAttackState(int currentComboStep = 0) {
+        public TwinsCombinedAttackState() : this(0) {
+        }
+
+        public TwinsCombinedAttackState(int currentComboStep) {
             comboStep = currentComboStep;
         }
 

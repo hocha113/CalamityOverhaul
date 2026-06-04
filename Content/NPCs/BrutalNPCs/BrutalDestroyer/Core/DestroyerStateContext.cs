@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using InnoVault.StateMachines;
 using Terraria;
 using Terraria.ID;
 
@@ -7,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
     /// <summary>
     /// 毁灭者状态上下文，存储状态机运行所需的共享数据
     /// </summary>
-    internal class DestroyerStateContext
+    internal class DestroyerStateContext : INpcStateContext
     {
         #region 核心引用
         public NPC Npc { get; set; }
