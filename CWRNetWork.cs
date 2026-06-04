@@ -7,7 +7,6 @@ using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
@@ -29,7 +28,6 @@ namespace CalamityOverhaul
         GlobalSleep,
         CrabulonFeed,
         CrabulonModifyNetWork,
-        HalibutMouseWorld,
         DraedonEffect,
         TzeentchEffect,
         SignalTowerTargetManager,
@@ -121,7 +119,6 @@ namespace CalamityOverhaul
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
-            HalibutPlayer.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);
             TzeentchEffect.NetHandle(type, reader, whoAmI);
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);

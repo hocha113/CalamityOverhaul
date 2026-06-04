@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //所有 Projectile.NewProjectile 由本地玩家创建后会通过 NetMessage 自动同步到其它端
             int fishCount = 3 + HalibutData.GetDomainLayer() / 2;
 
-            //使用同步过的鼠标方向（HalibutPlayer.MouseWorld 已通过专用包广播给其它端）
+            //使用同步过的鼠标方向（HalibutPlayer.MouseWorld 由 InnoVault PlayerNetwork 提供）
             Vector2 aimDir = (hp.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
             float arc = MathHelper.ToRadians(140f);
@@ -267,8 +267,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //owner 由弹幕本身的 owner 字段决定，已是各端一致的玩家索引
             Player owner = Main.player[Projectile.owner];
             if (owner == null || !owner.active) { Projectile.Kill(); return; }
-            if (owner.TryGetHalibutPlayer(out var halibutPlayer)) {
-                AimDirection = owner.To(halibutPlayer.MouseWorld).UnitVector();
+            if (owner.TryGetHalibutPlayer(out var halibutPlayer)
+                && halibutPlayer.TryGetMouseWorld(out Vector2 mouseWorld)) {
+                AimDirection = owner.To(mouseWorld).UnitVector();
             }
             LocalTimer++;
             glowPulse = (float)Math.Sin(LocalTimer * 0.28f + FishIndex) * 0.5f + 0.5f;

@@ -5,9 +5,9 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
+using InnoVault.VaultNetworks;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -49,33 +49,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public Vector2 MouseWorld {
             get {
-                if (Player.whoAmI == Main.myPlayer) {
-                    UpdateMouseWorld();
-                    return Player.Center + Player.To(Main.MouseWorld);
+                if (TryGetMouseWorld(out Vector2 mouseWorld)) {
+                    return mouseWorld;
                 }
-                //返回玩家中心 + 方向向量 * 固定距离，用于动画计算
-                return Player.Center + _mouseDirection * 500f;
-            }
-            set {
-                //接收网络同步时，计算并存储方向
-                Vector2 toMouse = value - Player.Center;
-                if (toMouse.LengthSquared() > 1f) {
-                    _mouseDirection = Vector2.Normalize(toMouse);
-                }
+
+                return Main.MouseWorld;
             }
         }
+
         /// <summary>
-        /// 鼠标相对于玩家的方向
+        /// 尝试读取由 InnoVault 玩家网络框架同步的鼠标世界坐标
         /// </summary>
-        private Vector2 _mouseDirection;
-        /// <summary>
-        /// 上一次同步的鼠标方向（相对于玩家）
-        /// </summary>
-        private Vector2 _lastSyncedMouseDirection;
-        /// <summary>
-        /// 方向变化的最小角度阈值（弧度）
-        /// </summary>
-        private const float MIN_DIRECTION_CHANGE_THRESHOLD = 0.16f;
+        public bool TryGetMouseWorld(out Vector2 mouseWorld) {
+            if (Player.whoAmI == Main.myPlayer) {
+                mouseWorld = Main.MouseWorld;
+                return true;
+            }
+
+            PlayerNetwork.KeepAlive(Player, PlayerNetworkDataFlags.BasicAim);
+            return PlayerNetwork.TryGetApproxMouseWorld(Player, out mouseWorld);
+        }
 
         internal int PlayerLifeMax;
 
@@ -331,90 +324,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public void UpdateDomainSystemData() {
             SeaDomainLayers = CalculateActiveDomainLayers();
             UpdateResurrectionRate();
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (type != CWRMessageType.HalibutMouseWorld) {
-                return;
-            }
-
-            try {
-                int playerIndex = reader.ReadByte();
-
-                if (!playerIndex.TryGetPlayer(out var player) || player == null) {
-                    return;
-                }
-                if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || halibutPlayer == null) {
-                    return;
-                }
-
-                //读取同步的方向向量
-                Vector2 mouseDirection = reader.ReadVector2();
-
-                //验证方向向量的合法性（应该是单位向量）
-                float lengthSq = mouseDirection.LengthSquared();
-                if (lengthSq < 0.9f || lengthSq > 1.1f) {
-                    return;//不是有效的单位向量，忽略
-                }
-
-                //更新方向
-                halibutPlayer._mouseDirection = mouseDirection;
-
-                halibutPlayer.MouseWorld = player.Center + mouseDirection * 500f;
-
-                if (!VaultUtils.isServer) {
-                    return;
-                }
-
-                //服务器转发给其他客户端
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
-                modPacket.Write((byte)playerIndex);
-                modPacket.WriteVector2(mouseDirection);
-                modPacket.Send(-1, whoAmI);
-            } catch (Exception ex) {
-                CWRMod.Instance.Logger.Error("Error in HandleHalibutMouseWorld: " + ex.Message);
-            }
-        }
-
-        private void UpdateMouseWorld() {
-            if (Player.whoAmI != Main.myPlayer) {
-                return;
-            }
-
-            //计算鼠标相对于玩家的方向
-            Vector2 mouseWorld = Main.MouseWorld;
-            Vector2 mouseDirection = mouseWorld - Player.Center;
-
-            if (mouseDirection.LengthSquared() < 1f) {
-                //鼠标太接近玩家中心，不更新方向
-                return;
-            }
-            mouseDirection.Normalize();
-
-            //计算方向变化的角度差
-            float directionDot = Vector2.Dot(mouseDirection, _lastSyncedMouseDirection);
-
-            //只有当角度差超过阈值时才同步
-            if (directionDot >= 1f || (_lastSyncedMouseDirection != Vector2.Zero &&
-                Math.Acos(MathHelper.Clamp(directionDot, -1f, 1f)) < MIN_DIRECTION_CHANGE_THRESHOLD)) {
-                return;
-            }
-
-            //更新本地方向
-            _mouseDirection = mouseDirection;
-
-            //方向发生了显著变化，执行网络同步
-            //只同步方向向量，而不是完整的世界坐标
-            if (VaultUtils.isClient) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
-                modPacket.Write((byte)Player.whoAmI);
-                //同步归一化的方向向量
-                modPacket.WriteVector2(_mouseDirection);
-                modPacket.Send();
-            }
-            _lastSyncedMouseDirection = mouseDirection;
         }
 
         public void CloseEyes() {
