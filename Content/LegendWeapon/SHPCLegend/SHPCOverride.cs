@@ -42,15 +42,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static float BeamSpreadAngle => 0.08f;
         /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
         public static float ItemScale => 0.8f;
-        /// <summary>持握时武器中心距玩家的距离</summary>
-        public static float HoldDistance => 0f * ItemScale;
-        /// <summary>左键开火后坐力最大回退距离（像素）</summary>
-        public static float RecoilMaxOffset => 8f * ItemScale;
-        /// <summary>持握精灵的原点偏移</summary>
-        public static Vector2 HoldOrigin => new Vector2(-56, 10) * ItemScale;
-        /// <summary>后坐力发生的动画前段占比</summary>
-        public static float RecoilPhase => 1f / 3f;
-
         public override int TargetID => ID;
 
         /// <summary>
@@ -290,90 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
             return false; //阻止原版射击行为
         }
-
-        #region 持握动画
-        /// <summary>
-        /// 与 Terraria Overhaul 的持握样式冲突时，不接管动画
-        /// </summary>
-        private static bool DontModifyHeldStyle() => CWRMod.Instance.terrariaOverhaul != null;
-
-        /// <summary>
-        /// 左键使用时的持握样式：武器朝鼠标瞄准，并在开火瞬间产生后坐力回退。
-        /// <br/>右键蓄力由 <see cref="SHPCChargeHeldProj"/> 接管手臂与绘制，这里直接跳过
-        /// </summary>
-        public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            if (player.altFunctionUse == 2 || DontModifyHeldStyle()) {
-                return;
-            }
-
-            Vector2 mouseWorld = Main.MouseWorld;
-            player.ChangeDir(Math.Sign((mouseWorld - player.Center).X));
-
-            float itemRotation = player.compositeFrontArm.rotation + MathHelper.PiOver2 * player.gravDir;
-            Vector2 itemPosition = player.GetPlayerStabilityCenter() + itemRotation.ToRotationVector2() * HoldDistance;
-
-            if (!SHPCModificationSystem.Resolve(player).LaserMode) {
-                //开火后坐力：动画前段沿瞄准方向快速回退，随后归位
-                float progress = GetAnimationProgress(player);
-                if (progress < RecoilPhase) {
-                    float kick = (RecoilPhase - progress) / RecoilPhase * RecoilMaxOffset;
-                    itemPosition -= (mouseWorld - player.Center).SafeNormalize(Vector2.UnitX) * kick;
-                }
-            }
-
-            ApplyHoldingStyle(player, itemRotation, itemPosition,
-                item.Size, HoldOrigin);
-        }
-
-        /// <summary>
-        /// 左键使用时的手臂动画：复合前臂跟随鼠标方向
-        /// </summary>
-        public override void UseItemFrame(Item item, Player player) {
-            if (player.altFunctionUse == 2 || DontModifyHeldStyle()) {
-                return;
-            }
-
-            Vector2 mouseWorld = Main.MouseWorld;
-            player.ChangeDir(Math.Sign((mouseWorld - player.Center).X));
-
-            float rotation = (player.Center - mouseWorld).ToRotation() * player.gravDir + MathHelper.PiOver2;
-            player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation);
-        }
-
-        /// <summary>
-        /// 计算使用动画进度（0 起始 → 1 结束）
-        /// </summary>
-        private static float GetAnimationProgress(Player player) {
-            if (player.itemTimeMax <= 0) {
-                return 1f;
-            }
-            return 1f - player.itemTime / (float)player.itemTimeMax;
-        }
-
-        /// <summary>
-        /// 应用清爽的持握样式，参照大比目鱼的实现，使武器以鼠标方向锚定绘制
-        /// </summary>
-        private static void ApplyHoldingStyle(Player player, float rotation, Vector2 position, Vector2 itemSize, Vector2 originOffset) {
-            originOffset.X *= player.direction;
-            originOffset.Y *= player.gravDir;
-
-            player.itemRotation = rotation;
-            if (player.direction < 0) {
-                player.itemRotation += MathHelper.Pi;
-            }
-
-            Vector2 centerAnchor = player.itemRotation.ToRotationVector2() * (itemSize.X / -2f - 10f) * player.direction;
-            Vector2 anchor = centerAnchor - originOffset.RotatedBy(player.itemRotation);
-            Vector2 finalPosition = position + itemSize * -0.5f + anchor;
-
-            int frame = player.bodyFrame.Y / player.bodyFrame.Height;
-            if ((frame > 6 && frame < 10) || (frame > 13 && frame < 17)) {
-                finalPosition -= Vector2.UnitY * 2f;
-            }
-
-            player.itemLocation = finalPosition + new Vector2(itemSize.X * 0.5f, 0);
-        }
-        #endregion
 
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();
