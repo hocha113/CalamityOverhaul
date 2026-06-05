@@ -19,7 +19,13 @@ namespace CalamityOverhaul
         //并提醒别人不要在错误的线程上调用这个单例就行了
         //-HoCha113 - 2024/9/20/ 14:32
         //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
-        internal static CWRMod Instance { get; private set; }
+        private static CWRMod instance;
+        internal static CWRMod Instance {
+            get {
+                instance ??= (CWRMod)ModLoader.GetMod("CalamityOverhaul");
+                return instance;
+            }
+        }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
         internal Mod calamity = null;
         internal Mod musicMod = null;
@@ -73,7 +79,6 @@ namespace CalamityOverhaul
         }
 
         public override void Load() {
-            Instance = this;
             FindMod();
 
             if (CWRRef.Has) {
@@ -105,7 +110,6 @@ namespace CalamityOverhaul
             CWRLoad.UnLoad();
             CWRID.UnLoad();
             CWRRef.UnLoad();
-            Instance = null;
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
