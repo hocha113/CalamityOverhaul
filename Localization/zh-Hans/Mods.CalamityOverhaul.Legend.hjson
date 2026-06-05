@@ -1,12 +1,12 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
-		[i:CalamityMod/HalibutCannon]:
+		[i:CalamityOverhaul/HalibutItem]:
 		这条鱼可被研究
 		'''
 	FishOnStudied:
 		'''
-		[i:CalamityMod/HalibutCannon]:
+		[i:CalamityOverhaul/HalibutItem]:
 		这条鱼已经研究
 		'''
 	DisplayName: 大比目鱼

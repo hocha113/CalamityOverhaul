@@ -1,12 +1,12 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
-		[i:CalamityMod/HalibutCannon]:
+		[i:CalamityOverhaul/HalibutItem]:
 		Este pez puede ser investigado.
 		'''
 	FishOnStudied:
 		'''
-		[i:CalamityMod/HalibutCannon]:
+		[i:CalamityOverhaul/HalibutItem]:
 		Este pez ha sido investigado.
 		'''
 	DisplayName: Halibut

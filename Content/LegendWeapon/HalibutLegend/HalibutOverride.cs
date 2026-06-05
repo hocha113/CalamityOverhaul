@@ -115,12 +115,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override void SetStaticDefaults() {
             FishByStudied = this.GetLocalization(nameof(FishByStudied), () =>
                 """
-                [i:CalamityMod/HalibutCannon]:
+                [i:CalamityOverhaul/HalibutItem]:
                 这条鱼可被研究
                 """);
             FishOnStudied = this.GetLocalization(nameof(FishOnStudied), () =>
                 """
-                [i:CalamityMod/HalibutCannon]:
+                [i:CalamityOverhaul/HalibutItem]:
                 这条鱼已经研究
                 """);
             LoadWeaponData();
