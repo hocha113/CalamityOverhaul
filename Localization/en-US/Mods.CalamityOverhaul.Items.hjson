@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -243,8 +243,13 @@ SpectralMatter: {
 }
 
 InfiniteToiletItem: {
-	DisplayName: Infinite Toilet
-	Tooltip: The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet.
+	OnlyZenithCondition: Only in Zenith World
+
+	InfiniteToiletItem: {
+		OnlyZenithCondition: 仅在天顶世界
+		DisplayName: Infinite Toilet Item
+		Tooltip: ""
+	}
 }
 
 StormGoddessSpear: {
@@ -2541,12 +2546,26 @@ CWRItem: {
 		To lift this restriction, please re-enter the world.
 		'''
 	ItemLegendOnMouseLang: Press 'Shift' to listen to the story...
+
+	CWRItem: {
+		TemperatureText: 燃烧温度
+		InternalStoredEnergy: 能量存储
+		DeathModeItemText: 死亡模式
+		LegendItemUpgradeDisable:
+			'''
+			这把传奇武器在当前世界中已被设定为无法升级
+			若需要解除禁用状态，请重新进入世界
+			'''
+		ItemLegendOnMouseLang: 按下'Shift'聆听故事...
+	}
 }
 
 RMagicConch: {
 	DontUseMagicConch: You're being watched by a powerful creature...
-}
 
-InfiniteToiletItem: {
-	OnlyZenithCondition: Only in Zenith World
+	RMagicConch: {
+		DontUseMagicConch: 你被一个强大的生物盯住了...
+		DisplayName: 魔法海螺
+		Tooltip: 仔细听，你会听到海洋的声音
+	}
 }

@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	DisplayName: 大比目鱼
 	Tooltip:
 		'''
@@ -55,4 +55,13 @@ DyeVatItem: {
 		放置后右键打开操作面板，允许给物品染色
 		将水桶放置到染料槽中可以洗掉物品的染色
 		'''
+}
+
+RDemonConch: {
+	// DisplayName: 恶魔海螺
+	/* Tooltip:
+		'''
+		仔细听，你会听到尖叫声
+		“小心”
+		''' */
 }

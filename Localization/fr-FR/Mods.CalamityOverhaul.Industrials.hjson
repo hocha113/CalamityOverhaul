@@ -1,15 +1,14 @@
 ElectricMinRocket: {
 	EnergyShortage: Energy Shortage
+	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	// Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Battery Runs Out
+	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	// Tooltip: ""
 }
 
-WGGWildernessTP: {
-	WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
-}
-
-WGGMK2WildernessTP: {
-	WindGrivenDiscovery2: You are awed by this massive machine and feel you should try building one yourself...
-}
+WGGWildernessTP.WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+WGGMK2WildernessTP.WindGrivenDiscovery2: You are awed by this massive machine and feel you should try building one yourself...

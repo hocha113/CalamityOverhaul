@@ -40,6 +40,7 @@ CWRServerConfig: {
 		Label: Objektiv-Easing
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
+
 	BiologyOverhaul: {
 		Label: Biologische Verhaltensüberlagerung[c/06e33f:(Experimentell)]
 		Tooltip:

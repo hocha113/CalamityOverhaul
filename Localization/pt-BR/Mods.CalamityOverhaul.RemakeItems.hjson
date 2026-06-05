@@ -60,3 +60,12 @@ DyeVatItem: {
 		Coloque um Balde d'Agua no slot de tintura para lavar tinturas dos itens
 		'''
 }
+
+RDemonConch: {
+	// DisplayName: 恶魔海螺
+	/* Tooltip:
+		'''
+		仔细听，你会听到尖叫声
+		“小心”
+		''' */
+}

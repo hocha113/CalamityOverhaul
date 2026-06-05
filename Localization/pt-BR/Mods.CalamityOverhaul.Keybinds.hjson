@@ -19,7 +19,4 @@ Murasama_DownKey.DisplayName: Murasama: Golpe Descendente
 WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
 WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
 Accessory_Skills.DisplayName: Habilidade de Acessorio
-
-CWRKeySystem: {
-	Notbound: "[Teclas nao vinculadas]"
-}
+CWRKeySystem.Notbound: "[Teclas nao vinculadas]"

@@ -1,14 +1,16 @@
 HalibutOverride: {
 	FishByStudied:
-			'''
-			[i:CalamityMod/HalibutCannon]:
-			Эту рыбу можно изучить
-			'''
-		FishOnStudied:
-			'''
-			[i:CalamityMod/HalibutCannon]:
-			Эта рыба уже изучена
-			'''
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		Эту рыбу можно изучить
+		'''
+	FishOnStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		Эта рыба уже изучена
+		'''
+	// DisplayName: 大比目鱼
+	// Tooltip: ""
 }
 
 HalibutText: {
@@ -174,6 +176,8 @@ MurasamaOverride: {
 	Text0: (способность разблокирована)
 	Text1: (Способность заблокирована. Требуется пройти [Unhook]-е испытание)
 	Text_Lang_0: Испытание
+	// DisplayName: MurasamaOverride
+	// Tooltip: ""
 }
 
 LegendUpgradeManagerSystem: {

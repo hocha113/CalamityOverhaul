@@ -1,8 +1,6 @@
-HighFPSRef: {
-	DisableMotionInterpolationMessage:
-		'''
-		检测到您启用了HighFPSSupport:[运动流畅化]功能
-		已经自动为您禁用，以保证模组的部分视觉效果运行稳定
-		为了确保更改生效，强烈建议您手动切换并保持此功能的关闭
-		'''
-}
+HighFPSRef.DisableMotionInterpolationMessage:
+	'''
+	检测到您启用了HighFPSSupport:[运动流畅化]功能
+	已经自动为您禁用，以保证模组的部分视觉效果运行稳定
+	为了确保更改生效，强烈建议您手动切换并保持此功能的关闭
+	'''

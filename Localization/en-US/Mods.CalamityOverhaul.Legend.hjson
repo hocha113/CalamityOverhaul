@@ -1,14 +1,16 @@
 HalibutOverride: {
 	FishByStudied:
-			'''
-			[i:CalamityMod/HalibutCannon]:
-			This fish can be researched.
-			'''
-		FishOnStudied:
-			'''
-			[i:CalamityMod/HalibutCannon]:
-			This fish has been researched.
-			'''
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		This fish can be researched.
+		'''
+	FishOnStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		This fish has been researched.
+		'''
+	DisplayName: 大比目鱼
+	Tooltip: ""
 }
 
 HalibutText: {
@@ -174,6 +176,8 @@ MurasamaOverride: {
 	Text0: Unlocked
 	Text1: Not yet unlocked. Need to pass test [Unhook]
 	Text_Lang_0: Trial:
+	DisplayName: MurasamaOverride
+	Tooltip: ""
 }
 
 LegendUpgradeManagerSystem: {

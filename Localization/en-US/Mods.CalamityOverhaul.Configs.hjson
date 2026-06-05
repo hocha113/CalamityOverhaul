@@ -1,4 +1,4 @@
-﻿CWRServerConfig: {
+CWRServerConfig: {
 	DisplayName: Content Config
 
 	WeaponOverhaul: {
@@ -40,6 +40,7 @@
 		Label: Lens Easing
 		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 	}
+
 	BiologyOverhaul: {
 		Label: Biology Overhaul [c/06e33f:(Experimental)]
 		Tooltip:

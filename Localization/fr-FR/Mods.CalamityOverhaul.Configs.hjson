@@ -40,6 +40,7 @@ CWRServerConfig: {
 		Label: Adoucissement de la caméra
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
+
 	BiologyOverhaul: {
 		Label: Modification du comportement biologique [c/06e33f:(expérimental)]
 		Tooltip:

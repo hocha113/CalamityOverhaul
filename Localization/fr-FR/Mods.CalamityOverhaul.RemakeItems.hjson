@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	DisplayName: Hippoglosse
 	Tooltip:
 		'''
@@ -54,5 +54,14 @@ DyeVatItem: {
 		Used for crafting dyes
 		Right-click after placing to open the control panel, allowing you to dye items
 		Place a Water Bucket into the dye slot to wash dyes off items
+		''' */
+}
+
+RDemonConch: {
+	// DisplayName: 恶魔海螺
+	/* Tooltip:
+		'''
+		仔细听，你会听到尖叫声
+		“小心”
 		''' */
 }

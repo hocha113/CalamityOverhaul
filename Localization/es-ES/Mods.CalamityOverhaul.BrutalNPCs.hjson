@@ -1,6 +1,4 @@
-HeadPrimeAI: {
-	SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
-}
+HeadPrimeAI.SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
 
 TwinsAIController: {
 	Spazmatism_Text1: Despliegue exitoso de EUX_001, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
@@ -10,4 +8,14 @@ TwinsAIController: {
 	Spazmatism_Text5: Objetivo eliminado
 	Spazmatism_Text6: Retirándose...
 	Spazmatism_Text7: Misión fallida, intentando retirarse del campo de batalla...
+}
+
+RetinazerAIController: {
+	// Spazmatism_Text1: EUX_001部署成功，行为写入:协同PCZ_001终结目标
+	// Spazmatism_Text2: EUX_002部署成功，行为写入:协同PCZ_001终结目标
+	// Spazmatism_Text3: EUX_001主结构受损，尝试从战场撤离...
+	// Spazmatism_Text4: EUX_002主结构受损，尝试从战场撤离...
+	// Spazmatism_Text5: 目标已被终结
+	// Spazmatism_Text6: 正在撤离...
+	// Spazmatism_Text7: 任务失败，尝试从战场撤离...
 }

@@ -40,6 +40,7 @@ CWRServerConfig: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
+
 	BiologyOverhaul: {
 		Label: Reformulacao de Biologia [c/06e33f:(Experimental)]
 		Tooltip:

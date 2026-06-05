@@ -9,6 +9,8 @@ HalibutOverride: {
 		[i:CalamityMod/HalibutCannon]:
 		这条鱼已经研究
 		'''
+	// DisplayName: 大比目鱼
+	// Tooltip: ""
 }
 
 HalibutText: {
@@ -174,6 +176,8 @@ MurasamaOverride: {
 	Text0: 已解锁
 	Text1: 未解锁 需要通过试炼[Unhook]
 	Text_Lang_0: 试炼:
+	// DisplayName: MurasamaOverride
+	// Tooltip: ""
 }
 
 LegendUpgradeManagerSystem: {
