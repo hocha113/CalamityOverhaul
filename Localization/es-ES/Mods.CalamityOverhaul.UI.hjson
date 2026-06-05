@@ -858,6 +858,6 @@ CWRPlayer: {
 		Se ha detectado que ha instalado [Mejor Experiencia], pero su versión de [Mejor Experiencia] está desactualizada.
 		Para garantizar el funcionamiento normal del juego, asegúrese de que la versión de [Mejor Experiencia] no sea inferior a 1.7.1.7
 		'''
-	HellfireExplosionDeathReason: "{0} "{0} Se convierte en cenizas en el fuego del infierno""
+	HellfireExplosionDeathReason: "{0} Se convierte en cenizas en el fuego del infierno"
 	SoulfireExplosionDeathReason: "{0} The Soul Rises In Fire"
 }

@@ -857,6 +857,6 @@ CWRPlayer: {
 		Было установлено, что вы установили [Quality of Terraria Mod], но ваша [Quality of Terraria Mod] версия была переработана
 		Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
 		'''
-	HellfireExplosionDeathReason: "{0} "{0} Сгореть в пламени ада""
+	HellfireExplosionDeathReason: "{0} Сгореть в пламени ада"
 	SoulfireExplosionDeathReason: "{0} Душа восстаёт в огне"
 }

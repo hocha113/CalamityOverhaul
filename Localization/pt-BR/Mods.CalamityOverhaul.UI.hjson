@@ -863,6 +863,6 @@ CWRPlayer: {
 		Para garantir que o jogo funcione corretamente, certifique-se de que sua
 		versao do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
 		'''
-	HellfireExplosionDeathReason: "{0} "{0} Para Queimar Nas Chamas do Inferno""
+	HellfireExplosionDeathReason: "{0} Para Queimar Nas Chamas do Inferno"
 	SoulfireExplosionDeathReason: "{0} A Alma Se Eleva em Fogo"
 }

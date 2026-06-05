@@ -1,14 +1,17 @@
+HalibutOverride: {
+	FishByStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		Ce poisson peut être étudié.
+		'''
+	FishOnStudied:
+		'''
+		[i:CalamityMod/HalibutCannon]:
+		Ce poisson a été étudié.
+		'''
+}
+
 HalibutText: {
-	/* FishByStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish can be researched.
-		''' */
-	/* FishOnStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish has been researched.
-		''' */
 	SkillSlot: {
 		// Hover1: Left Click: Select
 		// Hover2: Right Click: Pin
