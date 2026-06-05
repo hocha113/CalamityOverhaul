@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Common
         public static SoundStyle Bees;
         public static SoundStyle BlankGun;
         public static SoundStyle Case;
+        public static SoundStyle CaseEjection;
+        public static SoundStyle CaseEjection2;
         public static SoundStyle Ejection;
         public static SoundStyle Liquids_Fill_0;
         public static SoundStyle EndSilkOrbSpanSound;
